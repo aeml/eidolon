@@ -1,3 +1,4 @@
+import { applyStatusEffectIcon } from '../art/StatusEffectIcons.js';
 import { TOWN_SERVICE_POINTS } from './townServiceConfig.js';
 import { isAtlasPartyMemberVisible, isOverworldAtlas, getWaypointGuidance, drawAtlasWaypoint, getAtlasWorldLocations } from './AtlasNavigation.js';
 import { getInstanceAtlas, drawInstanceAtlasFloor } from './InstanceAtlas.js';
@@ -129,6 +130,8 @@ export class Minimap {
         this.buffList = document.createElement('div');
         this.buffList.id = 'minimap-buff-list';
         this.buffList.className = 'minimap-buff-list';
+        this.buffRows = new Map();
+        this.buffButtons = new Map();
 
         this.canvas = document.createElement('canvas');
         this.canvas.id = 'minimap-canvas';
@@ -145,6 +148,7 @@ export class Minimap {
         this.buffTooltip = document.createElement('div');
         this.buffTooltip.id = 'minimap-buff-tooltip';
         this.buffTooltip.className = 'minimap-buff-tooltip';
+        this.buffTooltip.setAttribute('role', 'tooltip');
         this.buffTooltip.style.display = 'none';
 
         this.wrapper.appendChild(this.buffList);
@@ -166,6 +170,9 @@ export class Minimap {
         if (this.disposed) return;
         this.disposed = true;
         this.phoneStatus?.dispose();
+        this._hideBuffTooltip();
+        this.buffRows.clear();
+        this.buffButtons.clear();
         this.wrapper.remove();
         this.buffTooltip.remove();
         this.gameEngine = null;
@@ -307,86 +314,101 @@ export class Minimap {
     }
 
     _renderBuffList() {
-        if (!this.buffList) {
-            return;
-        }
-        const buffs = Array.isArray(this.gameEngine?.getActiveBuffs?.()) ? this.gameEngine.getActiveBuffs() : [];
+        if (!this.buffList) return;
+        const supplied = this.gameEngine?.getActiveBuffs?.();
+        const buffs = Array.isArray(supplied) ? supplied.filter(buff => buff?.id) : [];
         this.phoneStatus?.update(buffs, Boolean(this.gameEngine?.isMobile), this.gameEngine?.player?.id);
-        const buffListSignature = buffs.map((buff) => [
-            buff?.id || '',
-            buff?.name || '',
-            buff?.icon || '',
-            buff?.detail || '',
-            buff?.timeLabel || '',
-            buff?.isDebuff ? 1 : 0,
-            buff?.timeLabel ? '' : Number(buff?.remainingSeconds || 0).toFixed(1),
-            buff?.timeLabel ? '' : Number(buff?.durationSeconds || 0).toFixed(0)
-        ].join(':')).join('|');
-        this.buffList.style.display = buffs.length > 0 ? 'flex' : 'none';
-        if (buffs.length === 0) {
-            if (this.lastBuffListSignature !== '') {
-                this.buffList.innerHTML = '';
-                this.lastBuffListSignature = '';
+        const signature = JSON.stringify(buffs.map(buff => [buff.id, buff.name, buff.detail,
+            buff.timeLabel, Boolean(buff.isDebuff), buff.timeLabel ? '' : Number(buff.remainingSeconds || 0).toFixed(1),
+            buff.timeLabel ? '' : Number(buff.durationSeconds || 0).toFixed(0)]));
+        this.buffList.style.display = buffs.length ? 'flex' : 'none';
+        if (signature === this.lastBuffListSignature) return;
+        this.lastBuffListSignature = signature;
+        const present = new Set(), focused = document.activeElement;
+        for (const type of ['buffs', 'debuffs']) {
+            const items = buffs.filter(buff => Boolean(buff.isDebuff) === (type === 'debuffs'));
+            let row = this.buffRows.get(type);
+            if (!items.length) { row?.remove(); this.buffRows.delete(type); continue; }
+            if (!row) {
+                row = document.createElement('div');
+                row.className = `minimap-buff-row minimap-buff-row--${type}`;
+                row.dataset.rowType = type;
+                this.buffRows.set(type, row);
+                this.buffList.insertBefore(row, type === 'buffs' ? this.buffList.firstChild : null);
             }
-            return;
-        }
-        if (buffListSignature === this.lastBuffListSignature) {
-            return;
-        }
-        this.buffList.innerHTML = '';
-        this.lastBuffListSignature = buffListSignature;
-
-        const buffRows = [
-            {
-                key: 'buffs',
-                items: buffs.filter((buff) => !buff?.isDebuff)
-            },
-            {
-                key: 'debuffs',
-                items: buffs.filter((buff) => buff?.isDebuff)
-            }
-        ].filter((row) => row.items.length > 0);
-
-        buffRows.forEach((row) => {
-            const rowElement = document.createElement('div');
-            rowElement.className = `minimap-buff-row minimap-buff-row--${row.key}`;
-            rowElement.dataset.rowType = row.key;
-
-            row.items.forEach((buff) => {
-                const icon = document.createElement('button');
-                icon.type = 'button';
-                icon.className = `minimap-buff-icon ${buff.isDebuff ? 'is-debuff' : 'is-buff'}`;
-                icon.dataset.buffId = buff.id;
-                icon.dataset.buffType = buff.isDebuff ? 'debuff' : 'buff';
-                icon.textContent = buff.icon || '✨';
-                icon.setAttribute('aria-label', `${buff.name} (${buff.timeLabel || `${buff.remainingSeconds?.toFixed?.(1) || '0.0'}s`})`);
-                icon.addEventListener('mouseenter', (event) => this._showBuffTooltip(buff, event));
-                icon.addEventListener('mousemove', (event) => this._showBuffTooltip(buff, event));
-                icon.addEventListener('mouseleave', () => this._hideBuffTooltip());
-                rowElement.appendChild(icon);
+            items.forEach((buff, index) => {
+                present.add(buff.id);
+                let entry = this.buffButtons.get(buff.id);
+                if (!entry) {
+                    const button = document.createElement('button');
+                    button.type = 'button'; button.dataset.buffId = buff.id;
+                    entry = { button, buff, hovered: false, point: null };
+                    this.buffButtons.set(buff.id, entry);
+                    const show = point => {
+                        entry.point = point;
+                        this.activeBuffTooltip = entry;
+                        this._showBuffTooltip(entry.buff, point, button);
+                    };
+                    button.addEventListener('mouseenter', event => { entry.hovered = true; show(event); });
+                    button.addEventListener('mousemove', event => show(event));
+                    button.addEventListener('mouseleave', () => {
+                        entry.hovered = false;
+                        if (document.activeElement === button) show(null); else this._hideBuffTooltip();
+                    });
+                    button.addEventListener('focus', () => show(null));
+                    button.addEventListener('blur', () => { if (!entry.hovered) this._hideBuffTooltip(); });
+                    button.addEventListener('keydown', event => {
+                        if (event.key === 'Escape' && this.activeBuffTooltip === entry) {
+                            event.preventDefault(); event.stopPropagation(); this._hideBuffTooltip();
+                        }
+                    });
+                }
+                entry.buff = buff;
+                const button = entry.button;
+                button.className = `minimap-buff-icon ${buff.isDebuff ? 'is-debuff' : 'is-buff'}`;
+                button.dataset.buffType = buff.isDebuff ? 'debuff' : 'buff';
+                applyStatusEffectIcon(button, buff);
+                button.setAttribute('aria-label', `${buff.name || 'Status effect'} (${buff.timeLabel || `${Number(buff.remainingSeconds || 0).toFixed(1)}s`})`);
+                if (row.children[index] !== button) row.insertBefore(button, row.children[index] || null);
             });
-
-            this.buffList.appendChild(rowElement);
-        });
+        }
+        for (const [id, entry] of this.buffButtons) {
+            if (present.has(id)) continue;
+            if (this.activeBuffTooltip === entry) this._hideBuffTooltip();
+            entry.button.remove(); this.buffButtons.delete(id);
+        }
+        // A rare row/order change must not steal an existing keyboard focus.
+        if (focused?.isConnected && focused !== document.activeElement &&
+            this.buffList.contains(focused)) focused.focus({ preventScroll: true });
+        if (this.activeBuffTooltip) {
+            const entry = this.activeBuffTooltip;
+            this._showBuffTooltip(entry.buff, entry.point, entry.button);
+        }
     }
 
-    _showBuffTooltip(buff, event) {
-        if (!this.buffTooltip || !buff) {
-            return;
-        }
+    _showBuffTooltip(buff, event, anchor) {
+        if (!this.buffTooltip || !buff) return;
+        if (this.buffTooltipOwner !== anchor) this.buffTooltipOwner?.removeAttribute('aria-describedby');
+        this.buffTooltipOwner = anchor;
+        anchor?.setAttribute('aria-describedby', this.buffTooltip.id);
         const remaining = Number(buff.remainingSeconds || 0).toFixed(1);
         const duration = Number(buff.durationSeconds || 0).toFixed(0);
         const timeLabel = buff.timeLabel || `${remaining}s left${duration !== '0' ? ` / ${duration}s` : ''}`;
-        this.buffTooltip.textContent = `${buff.name} • ${timeLabel} • ${buff.detail || ''}`;
+        this.buffTooltip.textContent = `${buff.name || 'Status effect'} • ${timeLabel} • ${buff.detail || ''}`;
         this.buffTooltip.style.display = 'block';
-        this.buffTooltip.style.left = `${(event?.clientX || 0) + 12}px`;
-        this.buffTooltip.style.top = `${(event?.clientY || 0) + 12}px`;
+        const bounds = anchor?.getBoundingClientRect();
+        const x = Number.isFinite(event?.clientX) ? event.clientX + 12 : (bounds?.left || 0);
+        const y = Number.isFinite(event?.clientY) ? event.clientY + 12 : (bounds?.bottom || 0) + 8;
+        const width = this.buffTooltip.offsetWidth, height = this.buffTooltip.offsetHeight;
+        this.buffTooltip.style.left = `${Math.max(8, Math.min(x, window.innerWidth - width - 8))}px`;
+        this.buffTooltip.style.top = `${Math.max(8, Math.min(y, window.innerHeight - height - 8))}px`;
     }
 
     _hideBuffTooltip() {
-        if (this.buffTooltip) {
-            this.buffTooltip.style.display = 'none';
-        }
+        if (this.buffTooltip) this.buffTooltip.style.display = 'none';
+        this.buffTooltipOwner?.removeAttribute('aria-describedby');
+        this.buffTooltipOwner = null;
+        this.activeBuffTooltip = null;
     }
 
     setDungeonDebugOverlayEnabled(enabled) {

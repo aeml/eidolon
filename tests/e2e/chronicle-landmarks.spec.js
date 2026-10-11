@@ -50,6 +50,7 @@ test('all fifteen readable Chronicle landmarks render with distinct silhouettes'
         camera.position.set(18, 48, 54);
         camera.lookAt(18, 0, -15);
         renderer.render(scene, camera);
+        window.__chronicleLandmarkGallery = { renderer, scene, camera };
         return { total, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, contextLost: renderer.getContext().isContextLost() };
     });
     expect(metrics.total).toBe(15);
@@ -57,6 +58,15 @@ test('all fifteen readable Chronicle landmarks render with distinct silhouettes'
     expect(metrics.triangles).toBeLessThan(30000);
     expect(metrics.contextLost).toBe(false);
     await page.locator('#chronicle-art-fixture').screenshot({ path: testInfo.outputPath('chronicle-landmarks.png') });
+    for (const [realm, x] of [['water', 12], ['fire', 24]]) {
+        await page.evaluate(x => {
+            const { renderer, scene, camera } = window.__chronicleLandmarkGallery;
+            Object.assign(camera, { left: -1.62, right: 1.62, top: 1.125, bottom: -1.125 });
+            camera.position.set(x + 2, 3.8, 4); camera.lookAt(x, 1.45, 0);
+            camera.updateProjectionMatrix(); renderer.render(scene, camera);
+        }, x);
+        await page.locator('#chronicle-art-fixture').screenshot({ path: testInfo.outputPath(`${realm}-evidence-book.png`) });
+    }
     await testInfo.attach('model-metrics', { body: JSON.stringify(metrics), contentType: 'application/json' });
     expect(failures, failures.join('\n')).toEqual([]);
 });

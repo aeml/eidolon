@@ -1,0 +1,3185 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-11T05:25:40.168918+00:00",
+  "classification": "Progress: selected shallow mapped boss-floor masonry, preserving authoritative floor and arena footprint.98focused checks and6distinct native cases pass; prepared rendering/lifetime scope only. Public29 motion/aura/admin unchanged.",
+  "qualifiedRuntime": "Held3e03221e adds49stone grounded boss masonry on the existing staged world/material/HUD/actor/worker milestone. Public29 unchanged.",
+  "rejectedSourceCommits": [
+    "282d0a78",
+    "ab3ce06d",
+    "dd354331f8a32ff1d874ce891f9e9587daa3193d",
+    "b90d1ac5218064442a013d9ced134bdd35824792",
+    "26659ce364dc9465ffeae7f30d010cda198959cf",
+    "0dbe93f4066434b19bf8d5de637f0c0625e25ea3",
+    "4b108ffbd5f68f9d6aada2ed0876feffeb063168"
+  ],
+  "longSoak": {
+    "readOnlyObservationUTC": "2026-10-10T04:02:31Z",
+    "result": {
+      "observed_at_utc": "2026-10-10T04:02:31Z",
+      "run": {
+        "id": 37880032315,
+        "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
+        "status": "completed",
+        "conclusion": "failure",
+        "run_attempt": 1,
+        "updated_at": "2026-10-10T03:37:38Z",
+        "url": "https://github.com/aeml/eidolon/actions/runs/37880032315"
+      },
+      "jobs": [
+        {
+          "name": "100-client authoritative-state soak",
+          "status": "completed",
+          "conclusion": "failure",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Initialize containers",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Checkout",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Setup Go",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Setup Node.js",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Run multiplayer soak",
+              "status": "completed",
+              "conclusion": "failure"
+            },
+            {
+              "name": "Upload soak evidence",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Post Setup Node.js",
+              "status": "completed",
+              "conclusion": "skipped"
+            },
+            {
+              "name": "Post Setup Go",
+              "status": "completed",
+              "conclusion": "skipped"
+            },
+            {
+              "name": "Post Checkout",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Stop containers",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success"
+            }
+          ]
+        }
+      ]
+    },
+    "action": "Terminal failure and successful upload inspected read-only. Retained raw evidence hashes/source pins; original ZIP digest is API metadata only. No restart/cancel or substitute soak. Failure remains open.",
+    "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
+  },
+  "nextRequiredResult": "Continue coherent room/world construction and regional composition at ordinary gameplay camera with supplied equipped actors/HUD, plus integrated contact/audio and supported-device qualification. Sparse rooms, repeated base tiles/simple props and original performance failures remain. Original operations/F1-F5/beta/launch/handoff stay active; no campaign/soak replay.",
+  "currentReceipt": "docs/plans/2026-10-11-dungeon-boss-masonry-qualification.json",
+  "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
+  "previousGoalTurnClassification": "progress",
+  "nextAction": "Inspect regional room-wall/threshold composition and combat/contact/audio for the next concrete milestone repair. Use prepared High/Low ordinary-camera controls and bounded source/copy lifecycle checks for changed behavior. Historical gameplay timing/draw/triangle failures and physical devices remain open.",
+  "qualifiedRuntimeReceipt": "docs/plans/2026-10-11-dungeon-boss-masonry-qualification.json",
+  "wearableMaterialLayerPreparation": {
+    "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
+    "preparedNotSelected": true,
+    "runtimeBase": "c09b32ee4cbaa2088b9ece964fc24fa99213c7ce",
+    "sourceFitsPerMode": 40,
+    "gltfValidVariants": 160,
+    "focusedTestsPassed": 223,
+    "softSubsetHighTriangles": [
+      285208,
+      256512
+    ],
+    "softSubsetLowTriangles": [
+      150348,
+      131318
+    ],
+    "actualHighEquippedRootTriangles": 436106,
+    "actualHighSceneTriangles": 502083,
+    "actualHighDrawCalls": 476,
+    "actualHighRawP95Ms": 33.400000000001455,
+    "wholeHighBudget": "fail",
+    "wholeLowDeviceAndFinalArt": "open"
+  },
+  "bodyMorphBasisPreparation": {
+    "receipt": "docs/plans/2026-10-10-body-morph-basis-preparation.json",
+    "preparedNotSelected": false,
+    "highBodyTriangles": [
+      123204,
+      81216
+    ],
+    "allFourLowExactReviewedBytes": true,
+    "focusedTestsPassed": 44,
+    "nativeBareAndBlinkSamplesPerRun": 56,
+    "sourceVerticesVerified": 170960,
+    "allMovingBlinkVerticesRetained": 8334,
+    "actualHighEquippedRootTriangles": 405076,
+    "actualHighSceneTriangles": 466590,
+    "actualHighDrawCalls": 460,
+    "actualHighRawP95Ms": 33.30000000000291,
+    "wholeHighBudget": "fail",
+    "wholeLowDeviceAndFinalArt": "open",
+    "selectionReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
+    "status": "Detailed High bytes now selected at immutable v3paths in current private milestone; initial coarse trial remains rejected, Low exact fallback retained."
+  },
+  "bodyMorphBasisSelection": {
+    "receipt": "docs/plans/2026-10-10-body-morph-selection.json",
+    "selectedOnlyInHeldPrivateMilestone": true,
+    "highBodyTriangles": [
+      123204,
+      81216
+    ],
+    "lowExactReviewedBytes": true,
+    "versionedFilesCachedAndFreshParsedOffline": 16,
+    "nativeGalleryPoses": 56,
+    "actualHighSceneTriangles": 458642,
+    "actualHighDrawCalls": 436,
+    "actualHighRawP95Ms": 16.799999999999272,
+    "actualHighEquippedRootTriangles": 405078,
+    "wholeHighBudget": "fail",
+    "wholeLowDeviceAndFinalArt": "open"
+  },
+  "shadowGeometryFeasibility": {
+    "receipt": "docs/plans/2026-10-10-shadow-geometry-feasibility.json",
+    "state": "counts only; no models/runtime selected",
+    "selectedRuntimeBase": "e47d748038115216eb5255f760b552d307d81f0a",
+    "sourceFilesPerScreen": 256,
+    "primitivesPerScreen": 875,
+    "finalErrors": [
+      0.006,
+      0.012,
+      0.024
+    ],
+    "partitionedOver32Primitives": 28,
+    "maximumPartitionActiveBones": 32,
+    "defaultBareCharacters": [
+      184890,
+      58514
+    ],
+    "defaultWholeWearableCatalog": [
+      769432,
+      271280
+    ],
+    "nativePoseShadowLifetimeAndWholeGame": "open",
+    "lowShadowPathUnchanged": true
+  },
+  "shadowGeometryPilot": {
+    "receipt": "docs/plans/2026-10-10-shadow-geometry-pilot.json",
+    "productionSelected": false,
+    "nativeExactPairs": 16,
+    "nativeRGBChangedPixels": 0,
+    "nativeSimplifiedPairs": 16,
+    "nativeFallbacks": [
+      "stealth",
+      "shadows disabled"
+    ],
+    "nativeResourceCycles": 4,
+    "actualPairedTriangles": [
+      456947,
+      317983
+    ],
+    "actualPairedDraws": [
+      420,
+      420
+    ],
+    "actualProfile": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 16.69999999999709,
+      "frameP95Ms": 33.39999999999418,
+      "frameP99Ms": 33.400000000001455,
+      "framesOver33ms": 12,
+      "cpuLoopMedianMs": 19.099999994039536,
+      "cpuLoopP95Ms": 25.30000001192093,
+      "drawCallsMedian": 416,
+      "trianglesMedian": 318386,
+      "geometries": 465,
+      "textures": 299,
+      "activeEntities": 29,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "ownedBufferBytes": 9858200,
+    "fullHighDrawTrianglePass": false,
+    "LowAndDeviceQualification": "open"
+  },
+  "gameplayColorPilot": {
+    "receipt": "docs/plans/2026-10-10-gameplay-color-lod-pilot.json",
+    "productionSelected": false,
+    "nativeSamples": 72,
+    "closeRGBExactControls": 24,
+    "resourceCycles": 4,
+    "independentSourcesAudited": 80,
+    "gearEyeCounts": {
+      "high": [
+        152558,
+        66832
+      ],
+      "low": [
+        77910,
+        41010
+      ]
+    },
+    "actualHigh": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 16.69999999999709,
+      "frameP95Ms": 33.30000000000291,
+      "frameP99Ms": 33.400000000001455,
+      "framesOver33ms": 8,
+      "cpuLoopMedianMs": 17.299999982118607,
+      "cpuLoopP95Ms": 21.700000017881393,
+      "drawCallsMedian": 420,
+      "trianglesMedian": 253753,
+      "geometries": 479,
+      "textures": 292,
+      "activeEntities": 32,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "actualLow": {
+      "quality": "low",
+      "label": "single-renderer-equipped-raised-party-low",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 16.69999999999709,
+      "frameP95Ms": 16.799999999995634,
+      "frameP99Ms": 16.799999999999272,
+      "framesOver33ms": 0,
+      "cpuLoopMedianMs": 11.099999994039536,
+      "cpuLoopP95Ms": 15.200000017881393,
+      "drawCallsMedian": 156,
+      "trianglesMedian": 102800,
+      "geometries": 395,
+      "textures": 272,
+      "activeEntities": 25,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "wholeHighLowBudgetsPass": false,
+    "currentMaskedBodies": {
+      "high": 42137,
+      "low": 32856
+    },
+    "continuousLifecycleDeviceArt": "open"
+  },
+  "gameplayBodyPilot": {
+    "receipt": "docs/plans/2026-10-10-gameplay-body-lod-pilot.json",
+    "preparedNotSelected": true,
+    "maskedBodyTriangles": {
+      "high": [
+        42137,
+        16923
+      ],
+      "low": [
+        32856,
+        16532
+      ]
+    },
+    "nativePoseZoomPairsPerRun": 336,
+    "exactCloseControlsPerRun": 112,
+    "sourceAuditInputs": 48,
+    "actualFinalPartySavePassed": {
+      "high": true,
+      "low": true
+    },
+    "highActualLimitsMet": {
+      "frameMedianMs": false,
+      "frameP95Ms": false,
+      "drawCallsMedian": false,
+      "trianglesMedian": true
+    },
+    "lowActualLimitsMet": {
+      "frameMedianMs": true,
+      "frameP95Ms": true,
+      "drawCallsMedian": true,
+      "trianglesMedian": false
+    },
+    "firstTwoHighPeerCloseFailuresRetained": true,
+    "qaTransportOnlyRepair": true,
+    "newRuntimeActivation": false,
+    "fullRoadmapRemainsActive": true
+  },
+  "gameplayColorCollarsPilot": {
+    "receipt": "docs/plans/2026-10-10-gameplay-color-collars-pilot.json",
+    "preparedNotSelected": true,
+    "nativeGalleryTriangles": {
+      "high": [
+        66832,
+        39496
+      ],
+      "low": [
+        41010,
+        33396
+      ]
+    },
+    "nativePoseZoomPairs": 72,
+    "exactCloseControls": 24,
+    "sourceAuditInputs": 160,
+    "actualHigh": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.30000000000291,
+      "frameP95Ms": 50.099999999998545,
+      "frameP99Ms": 66.70000000000437,
+      "framesOver33ms": 65,
+      "cpuLoopMedianMs": 28.399999976158142,
+      "cpuLoopP95Ms": 43,
+      "drawCallsMedian": 388,
+      "trianglesMedian": 164532,
+      "geometries": 478,
+      "textures": 291,
+      "activeEntities": 25,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "actualLow": {
+      "quality": "low",
+      "label": "single-renderer-equipped-raised-party-low",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.299999999995634,
+      "frameP95Ms": 50,
+      "frameP99Ms": 50,
+      "framesOver33ms": 51,
+      "cpuLoopMedianMs": 24.299999982118607,
+      "cpuLoopP95Ms": 39.20000001788139,
+      "drawCallsMedian": 200,
+      "trianglesMedian": 90620,
+      "geometries": 386,
+      "textures": 262,
+      "activeEntities": 35,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "actualLimitsMet": {
+      "high": {
+        "frameMedianMs": false,
+        "frameP95Ms": false,
+        "drawCallsMedian": false,
+        "trianglesMedian": true
+      },
+      "low": {
+        "frameMedianMs": true,
+        "frameP95Ms": true,
+        "drawCallsMedian": true,
+        "trianglesMedian": false
+      }
+    },
+    "actualRigidCensusTriangles": {
+      "high": 20266,
+      "low": 10604
+    },
+    "newRuntimeActivation": false,
+    "wholeHighLowBudgetsPass": false,
+    "fullRoadmapRemainsActive": true
+  },
+  "actorInstanceViewPilot": {
+    "receipt": "docs/plans/2026-10-10-actor-instance-view-pilot.json",
+    "preparedNotSelected": true,
+    "nativeTests": 12,
+    "strictNativePairs": 70,
+    "focusedChecks": 91,
+    "actualHigh": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.400000000001455,
+      "frameP95Ms": 66.69999999999709,
+      "frameP99Ms": 83.30000000000291,
+      "framesOver33ms": 108,
+      "cpuLoopMedianMs": 35.30000001192093,
+      "cpuLoopP95Ms": 58.099999994039536,
+      "drawCallsMedian": 297,
+      "trianglesMedian": 166903,
+      "geometries": 485,
+      "textures": 293,
+      "activeEntities": 28,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "actualLow": {
+      "quality": "low",
+      "label": "single-renderer-equipped-raised-party-low",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.299999999995634,
+      "frameP95Ms": 50,
+      "frameP99Ms": 50.10000000000582,
+      "framesOver33ms": 45,
+      "cpuLoopMedianMs": 22.400000005960464,
+      "cpuLoopP95Ms": 34.900000005960464,
+      "drawCallsMedian": 145,
+      "trianglesMedian": 75762,
+      "geometries": 380,
+      "textures": 254,
+      "activeEntities": 37,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "actualLimitsMet": {
+      "high": {
+        "frameMedianMs": false,
+        "frameP95Ms": false,
+        "drawCallsMedian": true,
+        "trianglesMedian": true
+      },
+      "low": {
+        "frameMedianMs": true,
+        "frameP95Ms": true,
+        "drawCallsMedian": true,
+        "trianglesMedian": true
+      }
+    },
+    "sameSceneControl": {
+      "high": {
+        "reference": {
+          "calls": 419,
+          "triangles": 181519,
+          "restored": true,
+          "stats": null
+        },
+        "candidate": {
+          "calls": 296,
+          "triangles": 166891,
+          "restored": true,
+          "stats": {
+            "checked": 646,
+            "culled": 412,
+            "boundsBuilt": 0,
+            "lightScanNodes": 4193,
+            "unknownShadow": false
+          }
+        },
+        "referenceAgain": {
+          "calls": 419,
+          "triangles": 181519,
+          "restored": true,
+          "stats": null
+        },
+        "image": {
+          "width": 1280,
+          "height": 844,
+          "frozenRenderClock": true,
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0
+        },
+        "cpu": {
+          "scope": "Synchronous frozen-world ABBA submission timing; real clock; 2 warm renders then 12 measured renders per block. Not whole-frame pacing.",
+          "blocks": [
+            {
+              "enabled": false,
+              "milliseconds": [
+                22.799999982118607,
+                22.200000017881393,
+                16.5,
+                18.5,
+                26,
+                20.399999976158142,
+                30,
+                65.5,
+                32,
+                21.700000017881393,
+                31,
+                47.79999998211861
+              ],
+              "restored": true
+            },
+            {
+              "enabled": true,
+              "milliseconds": [
+                44.69999998807907,
+                46.70000001788139,
+                28,
+                18.69999998807907,
+                33.69999998807907,
+                21.80000001192093,
+                26.900000005960464,
+                18.799999982118607,
+                28.80000001192093,
+                25.69999998807907,
+                18.400000005960464,
+                15.099999994039536
+              ],
+              "restored": true
+            },
+            {
+              "enabled": true,
+              "milliseconds": [
+                21.19999998807907,
+                22,
+                35.900000005960464,
+                19.799999982118607,
+                18.900000005960464,
+                15.300000011920929,
+                21.5,
+                24,
+                28.5,
+                34,
+                17.299999982118607,
+                17.700000017881393
+              ],
+              "restored": true
+            },
+            {
+              "enabled": false,
+              "milliseconds": [
+                23.799999982118607,
+                20.900000005960464,
+                25.30000001192093,
+                48.19999998807907,
+                27.599999994039536,
+                27.900000005960464,
+                23.400000005960464,
+                20.299999982118607,
+                18.80000001192093,
+                24.30000001192093,
+                30.19999998807907,
+                27.400000005960464
+              ],
+              "restored": true
+            }
+          ],
+          "reference": {
+            "frames": 24,
+            "median": 25.30000001192093,
+            "p95": 48.19999998807907
+          },
+          "candidate": {
+            "frames": 24,
+            "median": 22,
+            "p95": 44.69999998807907
+          }
+        },
+        "quality": "high",
+        "zoom": 15
+      },
+      "low": {
+        "reference": {
+          "calls": 169,
+          "triangles": 82117,
+          "restored": true,
+          "stats": null
+        },
+        "candidate": {
+          "calls": 145,
+          "triangles": 75508,
+          "restored": true,
+          "stats": {
+            "checked": 986,
+            "culled": 926,
+            "boundsBuilt": 0,
+            "lightScanNodes": 0,
+            "unknownShadow": false
+          }
+        },
+        "referenceAgain": {
+          "calls": 169,
+          "triangles": 82117,
+          "restored": true,
+          "stats": null
+        },
+        "image": {
+          "width": 1280,
+          "height": 844,
+          "frozenRenderClock": true,
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0
+        },
+        "cpu": {
+          "scope": "Synchronous frozen-world ABBA submission timing; real clock; 2 warm renders then 12 measured renders per block. Not whole-frame pacing.",
+          "blocks": [
+            {
+              "enabled": false,
+              "milliseconds": [
+                20.200000017881393,
+                18.799999982118607,
+                21.599999994039536,
+                16.400000005960464,
+                13.5,
+                15.199999988079071,
+                17.599999994039536,
+                15.800000011920929,
+                14.5,
+                14.299999982118607,
+                13.600000023841858,
+                12.899999976158142
+              ],
+              "restored": true
+            },
+            {
+              "enabled": true,
+              "milliseconds": [
+                14.599999994039536,
+                15.900000005960464,
+                15.5,
+                14.599999994039536,
+                12.900000005960464,
+                17.400000005960464,
+                23.599999994039536,
+                15.300000011920929,
+                15.599999994039536,
+                14.300000011920929,
+                21.599999994039536,
+                19.400000005960464
+              ],
+              "restored": true
+            },
+            {
+              "enabled": true,
+              "milliseconds": [
+                22.19999998807907,
+                21.5,
+                19.5,
+                22.80000001192093,
+                23.099999994039536,
+                25.400000005960464,
+                22.69999998807907,
+                15.599999994039536,
+                15.900000005960464,
+                19.400000005960464,
+                13.5,
+                17.099999994039536
+              ],
+              "restored": true
+            },
+            {
+              "enabled": false,
+              "milliseconds": [
+                20.900000005960464,
+                21.19999998807907,
+                26.80000001192093,
+                21.599999994039536,
+                18.19999998807907,
+                28.900000005960464,
+                32.599999994039536,
+                22.900000005960464,
+                12.700000017881393,
+                14.5,
+                20.5,
+                36.5
+              ],
+              "restored": true
+            }
+          ],
+          "reference": {
+            "frames": 24,
+            "median": 18.799999982118607,
+            "p95": 32.599999994039536
+          },
+          "candidate": {
+            "frames": 24,
+            "median": 17.400000005960464,
+            "p95": 23.599999994039536
+          }
+        },
+        "quality": "low",
+        "zoom": 15
+      }
+    },
+    "rigidSourceDiagnosis": "Count-only Low savings12or192catalog triangles not useful; retained privately, no runtime/art selection.",
+    "evidence": {
+      "artifacts": 720,
+      "inventorySHA256": "e9d1423705e13188fbcc94a253abc7875a21b6c79e48ef8dc723530cab849a59"
+    }
+  },
+  "currentServerCandidate": "Additive process-lifetime first-observed closure counters staged privately; prospective diagnostics only. Exact deployed/server/save/session acceptance still required with the coherent milestone. Rendering qualification remains in the unchanged e47 receipt.",
+  "transportDiagnosticsVerification": {
+    "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json",
+    "testedGoPackagesPassedUnderRace": 9,
+    "packagesWithoutTests": 5,
+    "gameTopLevelPassed": 1306,
+    "gameTopLevelSkipped": 6,
+    "soakPolicyJestPassed": 7,
+    "productionGoBuild": "pass",
+    "eslint": "pass",
+    "inventoryArtifacts": 74,
+    "inventorySHA256": "95bf96eaf5cfc9d336ef7a150486e51b6654d41f7d85ae56d8ee10b25c4d12f7",
+    "longSoakAcceptance": "FAIL; underlying closure cause unknown",
+    "scope": "Private prospective diagnostics. Current server candidate still needs coherent exact deployed/live/session qualification."
+  },
+  "highFrameAttribution": {
+    "baseCommit": "01787bbb542a55e70c823f274ac80882901bb72c",
+    "method": "Exact existing connected-party-observer scenario with one native hardware renderer and three normal equipped/socket peers; ordinary180frame sample followed by3s CPU sampling. Existing shadow, gameplay color/collar/body, terrain-body-selection and actor-instance-view pilots enabled explicitly. No source edits during measurement. Server race binary and disposable Mongo fixture. Four-browser mode not run.",
+    "ordinaryFrame": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.40000000000873,
+      "frameP95Ms": 66.60000000000582,
+      "frameP99Ms": 66.70000000001164,
+      "framesOver33ms": 118,
+      "cpuLoopMedianMs": 37,
+      "cpuLoopP95Ms": 56,
+      "drawCallsMedian": 300,
+      "trianglesMedian": 166785,
+      "geometries": 489,
+      "textures": 303,
+      "activeEntities": 35,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "gate": {
+      "highDrawLimit": 350,
+      "highTriangleLimit": 250000,
+      "frameMedianLimitMs": 20,
+      "frameP95LimitMs": 33.4,
+      "geometryPassed": true,
+      "framePassed": false
+    },
+    "foliage": {
+      "frames": 68,
+      "visits": 162248,
+      "viewChanges": 0,
+      "shadowChanges": 0,
+      "initialRoots": 10
+    },
+    "hostAtStart": {
+      "loadAverage": [
+        33.9072265625,
+        34.73681640625,
+        31.18896484375
+      ],
+      "cpuCount": 16,
+      "baseCommit": "01787bbb542a55e70c823f274ac80882901bb72c",
+      "scope": "post-timing3s CPU attribution; no timing acceptance inferred from profiler overhead"
+    },
+    "interpretation": "Scene projection, bounds/frustum checks, shadow traversal and matrices remain significant sampled costs. ActorInstanceView scans4553visible nodes for current casting lights; traverseVisible under its beginFrame accounts for80926sample-weighted microseconds. This identifies work to investigate, not an established repair or safe cache invalidation design. The same-scene paired image control is exact; live populations differ from prior runs, so no cross-run gain claim.",
+    "evidence": "/home/aeml/.local/share/eidolon-high-frame-attribution-checks-20261010",
+    "frozenArtifacts": 24,
+    "inventorySHA256": "69fafdf7c765ea96007b7137b4b9212429194b6c444c3b218288d4474f8e4849",
+    "qualification": "Single current High/native renderer/three live equipped socket peers. CPU profile is3s after ordinary180frame sample, with diagnostic wrapper overhead and substantial shared-host load. Sample-weighted elapsed durations, not hardware CPU exclusive time. Same-scene image/control valid; no cross-run/device/long-session/art or root-cause certificate.",
+    "receipt": "docs/plans/2026-10-10-high-frame-attribution.json"
+  },
+  "localMatrixInvalidation": {
+    "receipt": "docs/plans/2026-10-10-local-matrix-invalidation.json",
+    "sourceCommit": "94ecf926",
+    "checks": {
+      "focused": "63 passed in1.475s across UnchangedLocalMatrix, FoliageShadowInfluence, ActorInstanceView; scoped ESLint and whitespace passed. Earlier61-check pass retained before explicit manual-world controls.",
+      "native": "Final native Chrome AMD ANGLE Vulkan RADV RENOIR: eight stages of manual-to-auto, direct-world-write and restore-world-auto exact color/shadow comparisons; zero changed/unstable RGBA channels and exact world matrices. One test2.6s/total4.8s. Earlier native8-control pass retained before manual-world refinement. Opt-in EIDOLON_E2E_MATRIX_INVALIDATION route; standard CI skips it.",
+      "ownedCleanup": "Port4196 free and zero matching fixture workers at final collection."
+    },
+    "inventorySHA256": "dcca50150f221d25c6eb3a82eef0ef9b59e3bd5fa188d2f4409ea9d5d12cdb40",
+    "extraComparisonCopyCost": "unmeasured",
+    "wholeEquippedPartyFrames": "Actual post-repairHigh270draws/168891triangles,33.3median/33.4p95ms; median fails20ms. Race/save/party and exact RGB pass,28entities differs from prior35; no cross-run gain claim.",
+    "publicActivation": false,
+    "partyReceipt": "docs/plans/2026-10-10-matrix-equipped-party-checks.json",
+    "remainingContract": "Unflagged manual descendant local/world mutations diverge when automatic ancestors skip implicit force; private cache not generally qualified. No repair yet.",
+    "descendantDiagnosisReceipt": "docs/plans/2026-10-10-local-matrix-descendant-diagnosis.json"
+  },
+  "jumpSpeedRelease": {
+    "sourceCommit": "2e519bb07fc9eaf2c8afa87b24f2bbb7521a50e9",
+    "version": "Alpha1.79.23",
+    "run": 38026431419,
+    "attempt": 1,
+    "status": "deployed/verified; all10CIjobs successful; live7expected/1flaky/1skip/0unexpected, initial startup failure retained",
+    "nativeElapsedMs": 1641,
+    "acceptedJumpSeconds": 1.5,
+    "privateRenderTerrainDiagnosticPilotsExcluded": true,
+    "acceptanceReceipt": "docs/plans/2026-10-10-jump-speed-public-acceptance.json",
+    "inventorySHA256": "9ec6338d3ce37afc90d8834e999235ca3d4e830c67d2d2b4ecc2ebe84ee62750"
+  },
+  "matrixWorldForcePropagation": {
+    "codeCommit": "6553fec14bed1042f0533488b350e6df1a873026",
+    "publicBaseline": "2e519bb07fc9eaf2c8afa87b24f2bbb7521a50e9",
+    "scopeCorrection": "Original cache was already deployed in public Alpha1.79.23. Earlier private-only labels are incorrect; original frozen evidence remains unchanged and is superseded by public-cache-scope-correction.json. Private94ecf926 partial fix and terrain/actor/diagnostic pilots were not selected publicly.",
+    "implementation": "Cache only unchanged local composition; preserve normal dirty flag and stock world traversal so ancestor force reaches manual descendants. No static-child world-multiply skip or performance gain claimed.",
+    "checks": {
+      "baseline": "Five of eleven new cases fail on held partial helper. Public original helper independently fails eight of eleven cases.",
+      "focused": "66 passed originally; integrated RenderSystem ownership/manual-child fixture updated and all80checks/4suites passed. Older fixture expected unsafe child-world skip; its publisher failure retained separately.",
+      "native": "14 native ordinary/cached/ordinary world/color/shadow stages exact; zero changed/unstable RGBA channels.",
+      "party": "High and corrected Low actual one-renderer/three-socket-peer four-class race/save checks passed. Four-browser case deliberately skipped. Initial Low invocation rejected High-only shadow flag before sampling; original retained. Corrected Low disables only that flag."
+    },
+    "profiles": {
+      "high": {
+        "quality": "high",
+        "label": "single-renderer-equipped-raised-party-high",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 33.299999999995634,
+        "frameP95Ms": 33.400000000001455,
+        "frameP99Ms": 50,
+        "framesOver33ms": 42,
+        "cpuLoopMedianMs": 23.700000017881393,
+        "cpuLoopP95Ms": 35.099999994039536,
+        "drawCallsMedian": 272,
+        "trianglesMedian": 157914,
+        "geometries": 485,
+        "textures": 290,
+        "activeEntities": 28,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      },
+      "low": {
+        "quality": "low",
+        "label": "single-renderer-equipped-raised-party-low",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 16.69999999999709,
+        "frameP95Ms": 33.400000000001455,
+        "frameP99Ms": 33.400000000001455,
+        "framesOver33ms": 19,
+        "cpuLoopMedianMs": 18.19999998807907,
+        "cpuLoopP95Ms": 26.19999998807907,
+        "drawCallsMedian": 162,
+        "trianglesMedian": 89808,
+        "geometries": 395,
+        "textures": 275,
+        "activeEntities": 40,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      }
+    },
+    "originalBudgets": {
+      "high": {
+        "medianMs": 20,
+        "p95Ms": 33.4,
+        "drawCalls": 350,
+        "triangles": 250000
+      },
+      "low": {
+        "medianMs": 33.4,
+        "p95Ms": 50,
+        "drawCalls": 200,
+        "triangles": 85000
+      }
+    },
+    "budgetResult": {
+      "high": "Median33.3ms fails20ms; rawp95 33.400000000001455 exceeds exact33.4. Geometry272calls/157914triangles passes.",
+      "low": "Median16.7/p9533.4ms and162calls pass;89808triangles fails85000."
+    },
+    "limits": "Different populations28/40, varying shared-host load21.7\u201328.8 on16CPUs and private geometry/body/actor-filter pilots prohibit cross-run matrix performance attribution. No physical-device, full moving art, production or final roadmap acceptance. Failed24hsoak unchanged.",
+    "status": "Private narrow correction qualified; isolated24deployed but mandatory live acceptance failed. Seepublic24Failed.",
+    "evidence": {
+      "path": "/home/aeml/.local/share/eidolon-matrix-world-force-checks-20261010",
+      "files": 74,
+      "inventorySHA256": "5bba256821386499c6207f207a37af0d1c5da9117b2ced33cdc7152a4ffc546c"
+    }
+  },
+  "unselectedActorLightMembership": {
+    "codeCommit": "b90d1ac5218064442a013d9ced134bdd35824792",
+    "receipt": "docs/plans/2026-10-10-actor-light-membership-unselected.json",
+    "decision": "Same-scene hardware ABBA submission median17.3\u219216.7ms improves0.6ms butp9523.7\u219224.3ms worsens. Discovery4075\u21923visible lights, but6058watched nodes require12116listener entries. Node-only phase diagnostic0.182\u21920.0048ms median is real in that synthetic scope, while cold first preparation1.63\u219211.38ms and10208listener entries increase. This does not establish an overall native frame gain worth the graph-registration/ownership complexity; retain prior full live light scan.",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-actor-shadow-light-index-checks-20261010",
+      "files": 77,
+      "inventorySHA256": "fd1f24c48c6424847ddbcd89b8310a51ab4954a38c8e6d3b65dc9b1bd755ffbc"
+    }
+  },
+  "unselectedActorWorldBounds": {
+    "codeCommit": "26659ce364dc9465ffeae7f30d010cda198959cf",
+    "receipt": "docs/plans/2026-10-10-actor-world-bounds-unselected.json",
+    "decision": "Frozen same-scene world boxes reuse816/816, but native submission median18.1\u219218.9ms worsens whilep9528.6\u219227.6ms improves. Actual animated180frames build145329/reuse1551 boxes, only1.06%hits; median815builds/1reuse per frame. Additional per-leaf Matrix4/Box3/record and compare/copy work is poorly amortized. Retain prior scratch-box transform instead of selecting this cache.",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-actor-world-bounds-checks-20261010",
+      "inventorySHA256": "39e54017ee185838e74b24d0eeaad277c62067ff4305e5eecf866ec2a6d237f8",
+      "files": 73
+    }
+  },
+  "public24Failed": {
+    "head": "922753a72dd127eb2fffa6e2e5892235cd549318",
+    "run": 38030283856,
+    "attempt": 1,
+    "status": "completed failure;9jobs success/mandatory live QA failure",
+    "receipt": "docs/plans/2026-10-10-matrix-world-force-public-failure.json",
+    "evidence": {
+      "path": "/home/aeml/.local/share/eidolon-matrix-world-force-release-checks-20261010",
+      "files": 2919,
+      "inventorySHA256": "edf101c1f63b0e38d365dbfbef1032cf40ef0f3c19cc2973aa3680725f5ebd69"
+    },
+    "failure": "Required expiry journey never got engine/player/state because module-download failed. Persistent stash gold equality expected381847/received382022 passed retry, remains flaky. Cause unknown; no rerun.",
+    "boundedControls": "Normal TLS frontend/backend/readiness and six asset hashes exact. Manual14stage raw-helper world/RGBA exact;3fresh anonymous published-bundle imports succeeded, broad probe invocationexit1 on /g/collect aborted requests retained. These do not pass failed recovery gate.",
+    "followup": "3fresh ordinary live recovery/party checks passed without gameplay retries on unchanged24 at initialQA170c41af. Startup download didnot recur; causeunproven, canonicalCIstillfailed. VendorGold ordering defect proven incontrolledfixture and repaired privately, not proof of originalflaky175Gold cause."
+  },
+  "affineArithmeticDiagnostic": {
+    "receipt": "docs/plans/2026-10-10-affine-world-box-diagnostic.json",
+    "evidence": {
+      "path": "/home/aeml/.local/share/eidolon-affine-world-box-diagnostic-20261010",
+      "files": 4,
+      "inventorySHA256": "d2d064caa5900bb5603f6601e85b29bf9f927681e51fc5209d0ab5edb01e84bd"
+    },
+    "status": "32780Node arithmetic cases, not frame/device proof; source unchanged."
+  },
+  "unselectedActorAffineBounds": {
+    "codeCommit": "0dbe93f4066434b19bf8d5de637f0c0625e25ea3",
+    "receipt": "docs/plans/2026-10-10-actor-affine-bounds-unselected.json",
+    "decision": "Direct same-scene synchronous ABBA ordinary21.5median/29.7p95 versus affine23.8/35ms does not establish a gain; both statistics are worse in this shared-host scope. Node-only arithmetic gain did not translate into a measured full-scene benefit. Do not select or claim a general causal regression; retain prior transform. No new actual Low party repetition for an unselected candidate; Low native cases passed.",
+    "evidence": {
+      "path": "/home/aeml/.local/share/eidolon-actor-affine-bounds-checks-20261010",
+      "files": 71,
+      "inventorySHA256": "80df76f102992353d93ccd775042da4115c462f26b671de126c78794dc3b50e5"
+    }
+  },
+  "privateLiveFailureDiagnostics": {
+    "candidateCommit": "d1616fba7481bf5087ab693fc881a475664cb0ee",
+    "heldQACommit": "4fc34f6a321836aed71167ac692d188882267ca2",
+    "receipt": "docs/plans/2026-10-10-live-failure-diagnostics.json",
+    "evidence": {
+      "path": "/home/aeml/.local/share/eidolon-live-failure-diagnostics-checks-20261010",
+      "files": 61,
+      "inventorySHA256": "4e4fdec016fba110d257ce38e05cd27d49730391e65600cc5d370f1490d97c5a"
+    },
+    "checks": {
+      "initialFocused": "89passed/5suites1.016s",
+      "finalFocused": "91passed/5suites1.117s",
+      "heldFocused": "91passed/5suites1.327s; private integration preserves other pilots and all original stash equality checks.",
+      "nativeInitial": "1routed local startup-control passed35.2s; abortactualentry GET yielded engine/player/statefalse andGameEngine.js/ERR_CONNECTION_CLOSED",
+      "nativeFinal": "Same1control after lifecycle/privacy refinement passed35.2s; original30sassertion andcause retained",
+      "lint": "Scoped ESLint and whitespace passed.",
+      "productInputs": "3441tracked product/release/workflow inputs byte-exact to public24; only5QAfilescherry-picked into held, public24not ancestor."
+    },
+    "liveRecovery": {
+      "source": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "qaSource": "170c41af23cabfac5661170c0015909b43d312c9",
+      "result": "3passed/0failed/0retry: two expiry/combat/reentry journeys then two-player High/Low/high-repeat party auras; originalrequiredassertionsunchanged",
+      "environment": "Native AMDANGLEVulkan Chrome149,390px emulated Androidviewport, normalTLS, ordinary fresh level1 registrations; randomcredentials generatedinmemory, recordingsdisabled, artifactcredentialscanpassed",
+      "identity": "Six public hashes/frontend/backend/DBready exact before; identities/DBready exact after.",
+      "notReproduced": "Originalengine-module download failure didnot recur; failedCI38030283856attempt1 remainsfailed, causeunknown. No canonicalCIrerun, artifactdeletion, successorpush or24merge.",
+      "performanceLimits": "PublicHigh33.2\u201333.3median exceeds20ms; Highrepeatp9550ms exceeds33.4. Low243draws/236579triangles exceeds200/85000. No physicalphone/fullmoving-art/performance acceptance."
+    },
+    "status": "Qualified private QA only; no runtime/product/public/source24merge. Original stash gold equality unchanged; public24 CI remains failed."
+  },
+  "goalScopeReconciliation": {
+    "originalGoal": "/home/aeml/Github/eidolon/goal.md",
+    "originalSHA256": "783256a0f1b53608906612a5900e3c2e73d9d3c22e9cf893ea4b08c4bde949a7",
+    "originalLines": 146,
+    "heldArchive": "docs/plans/archive/2026-10-10-held-goal-execution-history.md",
+    "heldArchiveSHA256": "54d97797d65e9146327eda92f82e8ef42a7bf476becb5842602f8b6e49e7a5c2",
+    "heldArchiveLines": 2911,
+    "originalGoalIsExactNewPrefix": true,
+    "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
+  },
+  "currentGoalTurnClassification": "progress",
+  "actorCellTranslationPrototype": {
+    "selected": false,
+    "receipt": "docs/plans/2026-10-10-actor-cell-translation-unselected.json",
+    "candidate": "4b108ffbd5f68f9d6aada2ed0876feffeb063168",
+    "actualHighSubmissionMedianMs": {
+      "reference": 23.5,
+      "candidate": 24.100000023841858
+    },
+    "actualHighSubmissionP95Ms": {
+      "reference": 31.80000001192093,
+      "candidate": 39.099999994039536
+    },
+    "equippedUntimedTriangleSubmissions": 405078,
+    "opaqueInstancesUntimedTriangleSubmissions": 21162
+  },
+  "gameplayGeometryLifecyclePreparation": {
+    "preparedNotSelected": true,
+    "sourceCommit": "26d475d7b097e04cd461e17d350fac27a355a745",
+    "integrationCommit": "df766240c09c2827ba8ddebda499ab1088f34558",
+    "receipt": "docs/plans/2026-10-10-gameplay-geometry-lifecycle-preparation.json",
+    "unitTests": 123,
+    "nativeControls": 64,
+    "exactCloseControls": 32,
+    "actualHighGeometry": [
+      297,
+      192648
+    ],
+    "actualLowGeometry": [
+      150,
+      82366
+    ],
+    "highWholeFrameStillFails": true,
+    "productionDerivativeDeliveryMissing": true,
+    "closeSourceGeometryStillOverTargets": true
+  },
+  "gameplayGeometryWorkerDelivery": {
+    "preparedNotSelected": true,
+    "sourceCommit": "11be4c673b840f9fc8b254715c6e45181563b539",
+    "integrationCommit": "4baabd9ef929faf1e20e6b1570f342be71dea452",
+    "receipt": "docs/plans/2026-10-10-gameplay-geometry-worker-delivery.json",
+    "unitTests": 145,
+    "nativeControls": 32,
+    "exactCloseControls": 16,
+    "productionActorBuildVersionIntegrationMissing": true,
+    "controllerBypassSubmissionBothMediansWorse": true,
+    "closeSourceGeometryStillOverTargets": true,
+    "actualHigh": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 16.69999999999709,
+      "frameP95Ms": 33.400000000001455,
+      "frameP99Ms": 33.5,
+      "framesOver33ms": 13,
+      "cpuLoopMedianMs": 19.099999994039536,
+      "cpuLoopP95Ms": 24.19999998807907,
+      "drawCallsMedian": 268,
+      "trianglesMedian": 181443,
+      "geometries": 442,
+      "textures": 302,
+      "activeEntities": 28,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "actualHighRawTargetChecks": {
+      "median": true,
+      "p95": false,
+      "calls": true,
+      "triangles": true
+    },
+    "actualLow": {
+      "quality": "low",
+      "label": "single-renderer-equipped-raised-party-low",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 16.69999999999709,
+      "frameP95Ms": 33.400000000001455,
+      "frameP99Ms": 33.400000000001455,
+      "framesOver33ms": 13,
+      "cpuLoopMedianMs": 18.099999994039536,
+      "cpuLoopP95Ms": 22.700000017881393,
+      "drawCallsMedian": 151,
+      "trianglesMedian": 82828,
+      "geometries": 401,
+      "textures": 279,
+      "activeEntities": 46,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "actualLowRawTargetChecks": {
+      "median": true,
+      "p95": true,
+      "calls": true,
+      "triangles": true
+    }
+  },
+  "gameplayGeometryRuntimeOwner": {
+    "defaultEnabled": false,
+    "sourceCommit": "f63a862744fbffe7b623d499cd16c0b02d87ae0c",
+    "integrationCommit": "b7dc57b2efb0aa6afcab501995382764ed20af4c",
+    "receipt": "docs/plans/2026-10-10-gameplay-geometry-runtime-owner.json",
+    "unitTests": 150,
+    "nativeControls": 32,
+    "exactCloseControls": 16,
+    "immutablePublicationAndOfflineWorkerPassed": true,
+    "realHighLowPoolReplacementPassed": true,
+    "fullyUnallocatedReference": {
+      "label": "equipped-party-before-geometry-owner-allocation",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.29999999999927,
+      "frameP95Ms": 33.400000000001455,
+      "frameP99Ms": 49.89999999999782,
+      "framesOver33ms": 45,
+      "cpuLoopMedianMs": 25.5,
+      "cpuLoopP95Ms": 34.5,
+      "drawCallsMedian": 278,
+      "trianglesMedian": 441160,
+      "geometries": 399,
+      "textures": 289,
+      "activeEntities": 36,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "actualInstalledHigh": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.299999999995634,
+      "frameP95Ms": 33.400000000001455,
+      "frameP99Ms": 50,
+      "framesOver33ms": 43,
+      "cpuLoopMedianMs": 24.5,
+      "cpuLoopP95Ms": 33.19999998807907,
+      "drawCallsMedian": 293,
+      "trianglesMedian": 191657,
+      "geometries": 441,
+      "textures": 293,
+      "activeEntities": 35,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "highWholeFrameStillFails": true,
+    "closeSourceGeometryStillOverTargets": true,
+    "noPilotDefaultAndLowOwnerDeviceArtQualificationMissing": true
+  },
+  "jumpWallClock": {
+    "sourceCommit": "45ef41113ef0fa12b5e6bb5664430aca846f5683",
+    "status": "Deployed in Alpha1.79.25/d15a882e; requested jump independently verified live; full release CI failed separate Gold/stash gate.",
+    "receipt": "docs/plans/2026-10-10-jump-wall-clock.json",
+    "inventorySHA256": "bc703d5f672264ba270f23655688ddc3b5a4986cbdb63e34d080c38cd87e9991",
+    "native": {
+      "samples": [
+        {
+          "fps": 15,
+          "frames": 23,
+          "elapsedMs": 1547.7999999821186,
+          "maxFrameGapMs": 68,
+          "positionError": 0,
+          "renderError": 0
+        },
+        {
+          "fps": 60,
+          "frames": 90,
+          "elapsedMs": 1524.5,
+          "maxFrameGapMs": 31.699999994039445,
+          "positionError": 0,
+          "renderError": 0
+        }
+      ],
+      "errors": []
+    }
+  },
+  "currentHighDefaultAttribution": {
+    "sourceCommit": "61df35aa1b7cb7b39edf6b07b1fc5c6bd4ab4c4a",
+    "receipt": "docs/plans/2026-10-10-high-current-default-attribution.json",
+    "inventorySHA256": "d72a4c802db85674012c22ece5e87cfc44f4fa78df124b655d24ddc7e8809644",
+    "status": "Fresh default-submission High CPU and matrix-owner attribution complete; no runtime repair or activation. High frame/draw gates still fail.",
+    "frames": {
+      "firstAbsentMedianMs": 33.29999999999927,
+      "firstInstalledMedianMs": 33.30000000000291,
+      "firstInstalledP95Ms": 50,
+      "firstInstalledDraws": 478,
+      "secondAbsentMedianMs": 16.700000000000728,
+      "secondInstalledMedianMs": 33.299999999995634,
+      "secondInstalledP95Ms": 33.400000000001455,
+      "secondInstalledDraws": 454
+    }
+  },
+  "jumpLive24Bundle": {
+    "sourceCommit": "c7937f1737c3be5650340cb70c25b5fac006ba32",
+    "receipt": "docs/plans/2026-10-10-jump-live24-bundle.json",
+    "inventorySHA256": "2894fe795d1d2a1ae35b97d7e50f073630d02edf4ccfa76feadd9576bdfcb888",
+    "status": "Deployed in Alpha1.79.25/d15a882e; requested jump independently verified live; full release CI failed separate Gold/stash gate."
+  },
+  "preparedGeometryPending": {
+    "sourceCommit": "3207fb568df0a754ff1e71efa8d82734a4b9d81d",
+    "receipt": "docs/plans/2026-10-10-prepared-geometry-compaction.json",
+    "status": "Final source qualified; storage improvement selected privately, optional owner default null. Historical earlier attempts retained."
+  },
+  "preparedGeometryCompaction": {
+    "sourceCommit": "3207fb568df0a754ff1e71efa8d82734a4b9d81d",
+    "receipt": "docs/plans/2026-10-10-prepared-geometry-compaction.json",
+    "inventorySHA256": "780dbaa88cc3def76241f91a2b85b4104a4729c158b08713522408f0887623e9",
+    "status": "Qualified lossless candidate storage compaction selected privately; optional geometry owner still default null and no publication.",
+    "galleryRetainedBytes": 17464220,
+    "partyRetainedBytes": 8741512,
+    "consistentFPSGain": false
+  },
+  "engineModuleRecovery": {
+    "sourceCommit": "48f352939e2f93de084f0ddc3832efbb3e9885ff",
+    "receipt": "docs/plans/2026-10-10-engine-module-recovery.json",
+    "inventorySHA256": "a585bf0f1a2674d8801d4083b07359772709a58f8e9def6951839e346b21d816",
+    "status": "Included in deployed corrective Alpha1.79.25; exact public eight-asset proof and jump verification retained. Required release CI fails Gold/stash; original24startup root cause remains unknown.",
+    "publicVerificationReceipt": "docs/plans/2026-10-10-jump-wall-clock-public-verification.json"
+  },
+  "publishedVendorAddons": {
+    "sourceCommit": "fa8168f00084fa6a1e6669dc1c9235581b7e1f44",
+    "receipt": "docs/plans/2026-10-10-published-vendor-addons.json",
+    "inventorySHA256": "02840d3a46ec4f99e894251c70409d11e08e3cca3a7c55e48590eb7cc87d3e02",
+    "status": "Included in deployed corrective Alpha1.79.25; exact public eight-asset proof and jump verification retained. Required release CI fails Gold/stash; original24startup root cause remains unknown.",
+    "publicVerificationReceipt": "docs/plans/2026-10-10-jump-wall-clock-public-verification.json"
+  },
+  "gameplayFrameEvidence": {
+    "sourceCommit": "00742d442865d02a937d31b7aa0f3bca26f0af1a",
+    "receipt": "docs/plans/2026-10-10-gameplay-frame-evidence.json",
+    "inventorySHA256": "6e9cdc100ea4fda9b5b72ae7fa48bcea284c9f72019715f27a1ceb1a40a993c0",
+    "status": "Gameplay profiler measurement corrected and qualified privately; no production change or deployment.",
+    "samplesAudited": 1080
+  },
+  "vendorStashBrowserQualification": {
+    "sourceCommit": "d76413a46347e45b8c62145060a342fa75562596",
+    "heldQACommit": "2d9a2db0b4dff09447d17d88a0e3c29dbb82e298",
+    "receipt": "docs/plans/2026-10-10-vendor-stash-browser-qualification.json",
+    "inventorySHA256": "2f0fb40c6241f4cbe063017c8a5e46b823d7c04a2278b967f6951504493387ff",
+    "status": "Original private ordinary/one-second FIFO175-credit qualification retained. Deployed25 current required live sale-credit/stash equality failures show an uncovered boundary; root cause remains unestablished, no waiver."
+  },
+  "jumpStartupMaintenanceCandidate": {
+    "sourceCommit": "c0d120a3f9065c3699e817f16de726cf1e201469",
+    "documentationCommit": "3404c644629ec64b9534100b06213abee4226acb",
+    "receipt": "docs/plans/2026-10-10-jump-startup-maintenance-candidate.json",
+    "inventorySHA256": "d4d43b86e61b413810a65c617edadfc702fc4bc34d3dd4da1f82cfb66fb74a25",
+    "status": "Included in deployed corrective Alpha1.79.25; exact public eight-asset proof and jump verification retained. Required release CI fails Gold/stash; original24startup root cause remains unknown.",
+    "publicVerificationReceipt": "docs/plans/2026-10-10-jump-wall-clock-public-verification.json"
+  },
+  "maintenanceConnectedJump": {
+    "receipt": "docs/plans/2026-10-10-maintenance-connected-jump.json",
+    "status": "Alpha1.79.25/d15a882e deployed and exact identities/database/eight assets verified. Fresh ordinary live27unit Ctrl-click jump1648.6ms total,1582.9ms observed flight, authoritative1.5s, endpoints0; one native pass/no retries. RequiredCI38051193149 failed live Gold/stash assertions (all nine other jobs passed); later live recovery skipped. Release not accepted.",
+    "commit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79",
+    "ci": 38051193149,
+    "firstReleaseAttempt": {
+      "ci": 38050260227,
+      "commit": "3ac476e63beba25829fb9cab981ac908bf5b5929",
+      "conclusion": "failure",
+      "reason": "Server DATA RACE; all deployments skipped; qualified correction retained separately"
+    }
+  },
+  "abilityFrameSerialization": {
+    "receipt": "docs/plans/2026-10-10-ability-frame-serialization.json",
+    "sourceCommit": "6fb97aeb83fd31f21c234e0347258bc6158af599",
+    "release": {
+      "version": "Alpha 1.79.25",
+      "commit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79",
+      "ci": 38051193149,
+      "status": "Deployed; server CI passes; jump independently verified; required live Gold/stash gate failed, release not accepted",
+      "initialAttempt": {
+        "commit": "3ac476e63beba25829fb9cab981ac908bf5b5929",
+        "ci": 38050260227,
+        "status": "Terminal failure; Client Tests and all3browser shards succeeded, all deployments skipped due server race"
+      },
+      "heldIntegration": "Docs only; no public24/25product merge into held."
+    },
+    "publicVerificationReceipt": "docs/plans/2026-10-10-jump-wall-clock-public-verification.json"
+  },
+  "currentPublicVerification": {
+    "receipt": "docs/plans/2026-10-10-public29-terminal-qualification.json",
+    "version": "Alpha 1.79.29",
+    "commit": "12e5e3c41a3b4e897138973a7514fc8da7881bcb",
+    "ci": 38078784320,
+    "requiredCIPassed": true,
+    "releaseAccepted": true,
+    "requestedMotionAndAdminFixesAccepted": true,
+    "allEightAssetsMatch": true,
+    "identitiesAndDatabaseMatch": true,
+    "totalMs": 1396.7999999821186,
+    "walkingAccepted": true,
+    "walkingFrames": 88,
+    "maxWalkingAuraError": 0,
+    "phaseBacksteps": 0,
+    "maxRenderedPathError": 0,
+    "releaseInventorySHA256": "740010fcdfbff1d58707d822cbe14e128359711e99ffaed9f54bd2610b0b1ee3"
+  },
+  "actorInstanceShadowViewPrototype": {
+    "receipt": "docs/plans/2026-10-10-actor-instance-shadow-view.json",
+    "sourceCommit": "bf2039bf4b0f1c71d7b421a6953b71396b33c38e",
+    "status": "Explicit private unselected prototype; no RenderSystem import or production integration",
+    "checks": "32 units,12 native/70 exact RGB controls; no connected/CPU/whole-frame acceptance",
+    "inventorySHA256": "6716fb0b2873516279d70a2ad6fc17a46c981e89f1a303d0934b122a3287fd91"
+  },
+  "vendorPreexistingCreditCounterexamples": {
+    "sourceCommit": "8c9aa23686b31daf614f9e1a1f723c7efe5c7067",
+    "receipt": "docs/plans/2026-10-10-vendor-preexisting-credit-counterexamples.json",
+    "evidence": {
+      "directory": "/home/aeml/.local/share/eidolon-vendor-gold-coherence-checks-20261010",
+      "inventoryEntries": 59,
+      "inventorySHA256": "f151554f2863af27b40d44ac246e6a1d42360f0d29b00b0b0d03a49594c61e92"
+    },
+    "status": "Private real-server FIFO preceding-sales reproduce242Gold overshoot and175Gold crossing stash snapshot. Sale native case passes in otherwise failed diagnostic suite; corrected selected stash native/Go-race/Mongo passes. Not original live root-cause proof or a repair. Required25CI remains failure; product inputs unchanged.",
+    "next": "Trace which real transaction or state snapshot precedes the live QA baseline. Qualify a source-specific synchronization repair with strict balances/custody/save checks before any successor release. A correlated read-only authoritative wallet baseline is one candidate, subject to the existing5requests/10s limit and exact owner/request matching; no timer-only settle or >= assertion."
+  },
+  "vendorGoldSynchronization": {
+    "receipt": "docs/plans/2026-10-10-vendor-gold-synchronization.json",
+    "version": "Alpha 1.79.26",
+    "commit": "77859697a71329facd0584a95167c80eac392398",
+    "run": 38056289769,
+    "attempt": 1,
+    "status": "completed",
+    "url": "https://github.com/aeml/eidolon/actions/runs/38056289769",
+    "qualifiedNotReleaseAccepted": true,
+    "conclusion": "failure",
+    "deployed": true,
+    "liveRepairEstablished": false,
+    "next": "Diagnose actual live +175 discrepancy; fresh baselines passed but strict sale/stash checks still failed."
+  },
+  "actorShadowConnectedCandidate": {
+    "receipt": "docs/plans/2026-10-10-actor-shadow-connected-gameplay.json",
+    "source": "5c5494ef3cecead62924a4bf6dd47d6c7513f33b",
+    "defaultEnabled": false,
+    "status": "Private connected High integration qualified within scope; defaultOFF/unselected; no stable whole-frame gain."
+  },
+  "connectedPartyNameplates": {
+    "receipt": "docs/plans/2026-10-10-connected-party-nameplates.json",
+    "sourceCommit": "2723cff1904671b5be3b6d01f996402e6bf9a0b0",
+    "visibleLabels": 7,
+    "overlappingPairs": 0,
+    "productChanged": false
+  },
+  "previousPublicVerification25": {
+    "receipt": "docs/plans/2026-10-10-jump-wall-clock-public-verification.json",
+    "commit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79",
+    "ci": 38051193149,
+    "jumpFixVerified": true,
+    "releaseAccepted": false,
+    "inventorySHA256": "1468dfa6a0cd6dbd908616d0fb7d4234c66cc6b46ae046431a885401bee8d055"
+  },
+  "worldMaintenanceIntegration": {
+    "receipt": "docs/plans/2026-10-10-world-maintenance-integration.json",
+    "commit": "14d4ea1f2fb8a6458ddec7f907da70aa1f042dfb",
+    "qualified": true,
+    "published": false,
+    "selectedIntoHeldRuntime": false,
+    "nativePassed": 2,
+    "nativeSkipped": 0,
+    "inventorySHA256": "a94ddf920e494de01e19a00776d360f473290d3729ddfb099386f9f5f2976f20"
+  },
+  "goldRoomRewardBoundary": {
+    "receipt": "docs/plans/2026-10-10-gold-room-reward-boundary.json",
+    "commit": "1c7cbd9031b7232276f907da7aec0e8235e664a8",
+    "qualifiedControlledDiagnostic": true,
+    "productChanged": false,
+    "originalLiveCauseEstablished": false,
+    "next": "Bounded disposable actual browser/server/Mongo provenance proof; preserve strict assertions and original failed live gates."
+  },
+  "goldRoomRewardNativeBoundary": {
+    "receipt": "docs/plans/2026-10-10-gold-room-reward-native-boundary.json",
+    "commit": "a69cd244e298d97875c04480c1dd7577e8cb22e1",
+    "nativePassed": 2,
+    "nativeSkipped": 0,
+    "actualMongoExact": true,
+    "controlledPostAwardHostSchedule": true,
+    "productChanged": false,
+    "originalLiveCauseEstablished": false,
+    "next": "Prepare a bounded instrumented instance of the existing live QA route; original failed release stays failed."
+  },
+  "actualLiveGoldProvenance": {
+    "receipt": "docs/plans/2026-10-10-live-gold-provenance.json",
+    "run": 38061055843,
+    "oneSale": true,
+    "walletGold": 387855,
+    "saleCredit": 1500,
+    "earnedRoomCredit": 175,
+    "finalGold": 389530,
+    "decodeErrors": 0,
+    "complete": true,
+    "originalObservedSaleCauseEstablished": true,
+    "originalRequiredGateRemainsFailed": true
+  },
+  "jumpTotalTimeRelease27": {
+    "receipt": "docs/plans/2026-10-10-jump-total-time-release27.json",
+    "commit": "a9d6fc9bab6c7835bce621f53ecde7f381f23137",
+    "version": "Alpha 1.79.27",
+    "run": 38064138468,
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "success",
+    "deployed": true,
+    "requiredGateAccepted": true,
+    "privateClickToLandingMs": {
+      "normal": 1504.9,
+      "15FPS": 1459.9
+    },
+    "flightSeconds": 1.3,
+    "qaLedgerQualified": true,
+    "accepted": true,
+    "firstCandidateFailure": {
+      "commit": "392c4a7993118a87f51342cb1881a22055ab405b",
+      "run": 38062443230,
+      "conclusion": "failure",
+      "deployed": false,
+      "cause": "Missed published-bundle timing1500ms floor contradicted intended1.3s flight; actual1393.7/1425.2ms and configured retry1447.1/1339.9ms, endpoint errors0.",
+      "evidence": "/home/aeml/.local/share/eidolon-release27-checks-20261010",
+      "inventorySHA256": "81f550f3a39598f0b92929f75ddb50baf751f5c929213a56a056824fc515a82e"
+    },
+    "correctionReceipt": "docs/plans/2026-10-10-release27-published-timing-correction.json",
+    "publicClickToLandingMs": 1429.7,
+    "publicJumpVerified": true,
+    "publicVerification": "docs/plans/2026-10-10-public27-jump-verification.json",
+    "terminalVerification": "docs/plans/2026-10-10-public27-terminal-verification.json"
+  },
+  "worldTotalJumpIntegration": {
+    "commit": "ddadf7c9d0c157298150ba28d77bba7c902c0389",
+    "status": "Qualified private integration only; not published or selected into held runtime.",
+    "sourcePublic": "392c4a7993118a87f51342cb1881a22055ab405b",
+    "receipt": "docs/plans/2026-10-10-world-total-jump-integration.json",
+    "evidence": "/home/aeml/.local/share/eidolon-world-jump-total-integration-checks-20261010",
+    "inventorySHA256": "9242c0bddc0005486ad10f74e75bed52d154c5816cf88ea56b407fb656d0c95f",
+    "normalTotalMs": 1511.8,
+    "slow15FPSTotalMs": 1411.7,
+    "native": {
+      "total": 2,
+      "expected": 2,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 0,
+      "ok": true
+    },
+    "focusedChecks": 128,
+    "exactEndpointsAndFreshSaves": true,
+    "limits": "Release27 exact earned-room Gold helper is included; independent CI/public qualification remains separate. The movement cap is the only held runtime path change. No public rollout, shadow prototype, High/device/art acceptance, long-soak replacement, owner-deferred campaign/phone substitution, beta or launch claim.",
+    "testOnlyFollowup": {
+      "merge": "72038fb3",
+      "optionalTrustedInputTiming": "511edfaa",
+      "runtimeByteIdenticalToQualified": true,
+      "optionalNativeProof": "Exactly matching public acceptance body passed1429.7ms with endpoints0; optional enclosing test not separately executed/published."
+    }
+  },
+  "previousPublicVerification26": {
+    "receipt": "docs/plans/2026-10-10-public26-terminal-verification.json",
+    "commit": "77859697a71329facd0584a95167c80eac392398",
+    "ci": 38056289769,
+    "jumpFixRetained": true,
+    "allEightAssetsMatch": true,
+    "identitiesAndDatabaseMatch": true,
+    "requiredCIPassed": false,
+    "releaseAccepted": false,
+    "inventorySHA256": "6fd711a168018cc8f722db58b485c53d0e479fbc43d1ab38654723a6ce445cc7"
+  },
+  "unselectedActorFrameStorage": {
+    "receipt": "docs/plans/2026-10-10-actor-frame-storage-unselected.json",
+    "source": "3aea15aa4ce91d64829e563621e0a4eeb222e210",
+    "selected": false,
+    "published": false,
+    "native": "2anonymousHighLowpass4.3s; actualHighparty1pass1skip38.5s,Go44.24s/package45.285s",
+    "units": 69,
+    "fixedSceneSubmissionMediansMs": {
+      "reference": [
+        9.0,
+        9.85
+      ],
+      "candidate": [
+        10.6,
+        11.35
+      ]
+    },
+    "realFrames": 720,
+    "wholeFrameMedianMsAllPhases": 16.7,
+    "pixelDifferences": 0,
+    "decision": "Keep prior ordinary batching; no measured gain. FullHighdraw/triangle gates remain open."
+  },
+  "currentLowGeometryOwner": {
+    "receipt": "docs/plans/2026-10-10-world-geometry-low-qualification.json",
+    "source": "511edfaa",
+    "qualifiedNativeSource": "eeed562f",
+    "currentPrivateIntegration": "11df89b4a81140fa65ca3c2f3d89a0e187645745",
+    "native": "1pass1skip26.0s; all retry0; original failure retained",
+    "wholeLowAccepted": false,
+    "defaultActivated": false,
+    "actualInstalled": {
+      "frames": 180,
+      "medianMs": 16.7,
+      "p95Ms": 16.7,
+      "draws": 175,
+      "triangles": 89377
+    },
+    "fixedScene": {
+      "draws": 176,
+      "sourceTriangles": 147783,
+      "candidateTriangles": 85491,
+      "closePixelDifferences": 0
+    },
+    "runtimePrepared": {
+      "sources": 4,
+      "registered": 44,
+      "failed": 0,
+      "rejected": 0
+    },
+    "rigidSourceDeclaredTriangles": 10604,
+    "limits": "Actual Low one renderer/3normal socket peers and exact14slot saves; no physical-device/wholebudget/art/public acceptance."
+  },
+  "boundedRigidEquipment": {
+    "receipt": "docs/plans/2026-10-10-rigid-equipment-geometry-qualification.json",
+    "source": "de9c9a15af4849bade095208e564bc3bad83eec5",
+    "implementationSource": "09fba6f8d6ea4098d3db32405e0d60437911a0b3",
+    "privateIntegration": "de9c9a15af4849bade095208e564bc3bad83eec5",
+    "defaultActivated": false,
+    "published": false,
+    "native": "Original2pass1fail; QA-only correction1pass; actualLow1pass1skip/High1pass1skip; all retry0. No-test selector setup failure retained.",
+    "galleryControls": 64,
+    "exactCloseControls": 32,
+    "sameSceneRigidTriangleSavings": {
+      "low": 3356,
+      "high": 19304
+    },
+    "actualLow": {
+      "frames": 180,
+      "visibleFrames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.7,
+      "cpuLoopMedianMs": 8.300000011920929,
+      "cpuLoopP95Ms": 10.099999994039536,
+      "drawCallsMedian": 179,
+      "trianglesMedian": 85056,
+      "geometries": 434,
+      "textures": 282,
+      "activeEntitiesMin": 30,
+      "activeEntitiesMax": 30
+    },
+    "actualHigh": {
+      "frames": 180,
+      "visibleFrames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.7,
+      "cpuLoopMedianMs": 10.899999976158142,
+      "cpuLoopP95Ms": 13.800000011920929,
+      "drawCallsMedian": 334,
+      "trianglesMedian": 181569,
+      "geometries": 474,
+      "textures": 299,
+      "activeEntitiesMin": 22,
+      "activeEntitiesMax": 22
+    },
+    "wholeLowAccepted": false,
+    "sampledHighLimitsPass": true,
+    "evidence": "/home/aeml/.local/share/eidolon-rigid-equipment-geometry-checks-20261010",
+    "inventorySHA256": "b8d227aad6ecddc913b3a2cbe76f5b1a3d1b6a914251cf8ddfdc405dddcbea78",
+    "limits": "One renderer and three ordinary live peers per High/Low run with exact four-class14slot inventory/EP/party/logout saves. Normal movement, not four independent GPU clients, physical phone, natural battle budget, campaign or whole-game acceptance. Different evolving native windows do not prove causal FPS/CPU gains. No public release, full-goal/F1-F5/soak/beta/launch completion."
+  },
+  "lowUnderstoryDetail": {
+    "receipt": "docs/plans/2026-10-10-low-understory-detail-qualification.json",
+    "source": "011fddda712d101474f76be347f598c62b671ee5",
+    "privateIntegration": "011fddda712d101474f76be347f598c62b671ee5",
+    "defaultActivated": false,
+    "published": false,
+    "distinctUnitChecks": 24,
+    "native": "1pass1skip27.9s; retry0",
+    "actualLow": {
+      "frames": 180,
+      "visibleFrames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.8,
+      "cpuLoopMedianMs": 9.099999994039536,
+      "cpuLoopP95Ms": 11.399999976158142,
+      "drawCallsMedian": 158,
+      "trianglesMedian": 80382,
+      "geometries": 432,
+      "textures": 282,
+      "activeEntitiesMin": 31,
+      "activeEntitiesMax": 31
+    },
+    "sampledLowLimitsPass": true,
+    "wholeLowAccepted": false,
+    "sameSceneSceneryTrianglesSaved": 3248,
+    "plantCount": 7439,
+    "HighBuffersByteExact": true,
+    "priorHighNativeReused": "de9c9a15 sampled334draws/181569triangles/16.7ms; not new High native execution",
+    "evidence": "/home/aeml/.local/share/eidolon-low-understory-detail-checks-20261010",
+    "inventorySHA256": "f58c7be7e33088755dc132e08f3c0bc927935682d677e8ace53e70bb6f834170",
+    "limits": "One renderer/three normal live peers, exact four-class14slot inventory/EP/party/logout saves and normal clicks. No physical-phone substitute, campaign/soak/beta/launch/full-project acceptance. Public27 jump unchanged and verified; held art runtime remains separate until milestone selection."
+  },
+  "defaultGeometryStartup": {
+    "receipt": "docs/plans/2026-10-10-default-geometry-startup-qualification.json",
+    "source": "fa2f7075fae15562aaccf1b8e7cd76c8372841bd",
+    "toolingSource": "44e0c67ca0f65798b2841b0524b3562c8f6f83eb",
+    "heldMerge": "41f595cce9f2cd4df63a7c4742e1575a3ba47b96",
+    "privateIntegration": "44e0c67ca0f65798b2841b0524b3562c8f6f83eb",
+    "defaultActivatedPrivately": true,
+    "published": false,
+    "units": 87,
+    "native": {
+      "tests": 16,
+      "expected": 14,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 2,
+      "retries": 0
+    },
+    "actualLow": {
+      "frames": 180,
+      "visibleFrames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.7,
+      "cpuLoopMedianMs": 8.800000011920929,
+      "cpuLoopP95Ms": 11.300000011920929,
+      "drawCallsMedian": 175,
+      "trianglesMedian": 84361,
+      "geometries": 428,
+      "textures": 276,
+      "activeEntitiesMin": 38,
+      "activeEntitiesMax": 38
+    },
+    "actualHigh": {
+      "frames": 180,
+      "visibleFrames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.7,
+      "cpuLoopMedianMs": 12.599999994039536,
+      "cpuLoopP95Ms": 15.199999988079071,
+      "drawCallsMedian": 417,
+      "trianglesMedian": 191783,
+      "geometries": 491,
+      "textures": 296,
+      "activeEntitiesMin": 39,
+      "activeEntitiesMax": 39
+    },
+    "HighDrawBudgetPass": false,
+    "wholeGameAccepted": false,
+    "inventorySHA256": "691d3a1091edeab06ff6c9495ec096163defd2f28957a442bd4b65fd7a64a92d",
+    "workerPreparationInventorySHA256": "a27335c99fb0d715aba14750baeb0f9edf1ee83b73ef11c55ae7b69c3ec9b2a7"
+  },
+  "actorShadowInfluence": {
+    "receipt": "docs/plans/2026-10-10-actor-shadow-influence-qualification.json",
+    "source": "e8eec1b951fbfdf9e4f4d0039353af4b3f12feeb",
+    "selectedOnlyPrivately": true,
+    "published": false,
+    "focusedUnits": 89,
+    "nativeDefaultPasses": 9,
+    "nativeDefaultExactPixelPairs": 34,
+    "defaultHigh": {
+      "frames": 180,
+      "visibleFrames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.7,
+      "cpuLoopMedianMs": 11.900000005960464,
+      "cpuLoopP95Ms": 15.5,
+      "drawCallsMedian": 324,
+      "trianglesMedian": 176626,
+      "geometries": 466,
+      "textures": 292,
+      "activeEntitiesMin": 33,
+      "activeEntitiesMax": 33
+    },
+    "defaultLow": {
+      "frames": 180,
+      "visibleFrames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.7,
+      "cpuLoopMedianMs": 8.5,
+      "cpuLoopP95Ms": 10.600000023841858,
+      "drawCallsMedian": 202,
+      "trianglesMedian": 79857,
+      "geometries": 414,
+      "textures": 267,
+      "activeEntitiesMin": 30,
+      "activeEntitiesMax": 31
+    },
+    "currentHighDrawTargetPass": true,
+    "currentLowDrawTargetPass": false,
+    "wholeQualityAccepted": false,
+    "inventorySHA256": "6571931292cac7ae8d408156b3a95986bb99e39f6757762dd0e3952d4f0c5c43",
+    "heldNormalPreparationPass": true,
+    "heldSetupFailureRetained": "Owned dependency symlink lacked esbuild; repointed only that symlink to already validated current tree. Exact worker and source runtime verified; separate3-entry preparation evidence in selected receipt."
+  },
+  "unselectedLowActorView": {
+    "receipt": "docs/plans/2026-10-10-low-actor-view-unselected.json",
+    "source": "378a79a2c6bd59409813f01dc43351e6daeb0402",
+    "selected": false,
+    "nativeFunctionalPasses": 11,
+    "focusedUnits": 90,
+    "actualNativeFailure": "No draw reduction154-to154, exact RGB and86238-to83650triangles; strict actual draw-gain failure retained before final profile/save.",
+    "actualFinalProfile": null,
+    "actualFinalPartySavePassed": false,
+    "inventorySHA256": "12e39d8899cc46a4eff80c244f8292f47282b7097d69cc075a50bb78d5a15b89"
+  },
+  "motionAdminCorrections": {
+    "receipt": "docs/plans/2026-10-10-motion-admin-qualification.json",
+    "privateRuntime": "fd852472",
+    "publicRelease": "12e5e3c41a3b4e897138973a7514fc8da7881bcb",
+    "ci": 38078784320,
+    "status": "completed",
+    "deployed": true,
+    "accepted": true,
+    "legacyJumpAccountsClassified": true,
+    "configuredAutomationRosterExplicit": true,
+    "auraFinalRenderedTransform": true,
+    "flightSeconds": 1.3,
+    "terminalReceipt": "docs/plans/2026-10-10-public29-terminal-qualification.json",
+    "allSixConfiguredQAAccountsExcluded": true
+  },
+  "jumpPoseContinuity": {
+    "receipt": "docs/plans/2026-10-10-jump-pose-continuity-qualification.json",
+    "privateSource": "561d392d",
+    "heldRuntime": "1e60f126",
+    "publicCandidateRuntime": "57f8386b",
+    "focusedPassed": 73,
+    "nativePassed": 2,
+    "published": true,
+    "publicRelease": "12e5e3c41a3b4e897138973a7514fc8da7881bcb",
+    "accepted": true
+  },
+  "jumpCorrectionHandoff": {
+    "receipt": "docs/plans/2026-10-10-jump-correction-handoff-qualification.json",
+    "privateSource": "f9479908",
+    "heldRuntime": "d4942e15",
+    "publicCandidateRuntime": "4c8252e0",
+    "preparedRelease": "12e5e3c41a3b4e897138973a7514fc8da7881bcb",
+    "version": "Alpha 1.79.29",
+    "pushed": true,
+    "focusedPassed": 74,
+    "publicReleaseChecksPassed": 466,
+    "nativePassed": 3,
+    "ci": 38078784320,
+    "status": "completed",
+    "deployed": true,
+    "accepted": true,
+    "terminalReceipt": "docs/plans/2026-10-10-public29-terminal-qualification.json"
+  },
+  "actualSubmissionCensus": {
+    "receipt": "docs/plans/2026-10-10-actual-actor-submission-census.json",
+    "source": "5912fb46",
+    "runtimeUnchanged": "2fee46ee/e8eec1b9",
+    "nativeExpected": 1,
+    "nativeSkipped": 1,
+    "actualGoRaceFourClassSaves": true,
+    "rigidHandgearColorCalls": 32,
+    "actorInstanceColorBuckets": 24,
+    "compatibleSiblingGroups": 7,
+    "potentialDrawReduction": 8,
+    "acceptedDrawGain": false,
+    "sample": {
+      "entities": 26,
+      "draws": 146,
+      "triangles": 69813,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.7
+    },
+    "limitations": "Different population; no causal performance improvement or closure of prior Low31-entity202draw failure. No optimization selected."
+  },
+  "previousPublicVerification27": {
+    "receipt": "docs/plans/2026-10-10-public27-terminal-verification.json",
+    "commit": "a9d6fc9bab6c7835bce621f53ecde7f381f23137",
+    "ci": 38064138468,
+    "jumpTotalTimeVerified": true,
+    "totalMs": 1429.7,
+    "allEightAssetsMatch": true,
+    "identitiesAndDatabaseMatch": true,
+    "requiredCIPassed": true,
+    "releaseAccepted": true,
+    "ciStatus": "completed",
+    "publicJumpInventorySHA256": "6f9a71498d550ef0f6a962e53b4d19449f6d9964b87e97720887383ba2e30bc5",
+    "ciConclusion": "success",
+    "releaseInventorySHA256": "a0b01efbf552bf84473865e316526286c3a0b0e07ef4773c42a90619570df5ad",
+    "native": {
+      "total": 9,
+      "expected": 8,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 1,
+      "ok": true
+    },
+    "recoveryPassed": 3,
+    "optionalFourClass": "skipped"
+  },
+  "jumpAcceptanceRender": {
+    "receipt": "docs/plans/2026-10-10-jump-acceptance-render-qualification.json",
+    "privateSource": "97447d12",
+    "publicRuntime": "35672cbd",
+    "heldRuntime": "6da880b6",
+    "reproducedBackstepUnits": 1.6615384615384614,
+    "focusedPassed": 85,
+    "publicPassed": 477,
+    "nativePassed": 3,
+    "retries": 0,
+    "inventorySHA256": "5bbffe3378e56f33a7eed6f03a518595204acb56e069468cfe43a8afafdd0714",
+    "publicRelease": "12e5e3c41a3b4e897138973a7514fc8da7881bcb",
+    "accepted": true,
+    "publicBacksteps": 0,
+    "publicPathError": 0
+  },
+  "adminOwnedMongo": {
+    "receipt": "docs/plans/2026-10-10-admin-owned-mongo-qualification.json",
+    "actualMongoPassed": 1,
+    "race": true,
+    "skipped": 0,
+    "inventorySHA256": "c56a2cd722ca93198e4e98be3e9710b999ccdba0de626723be1b34bdb5295c99",
+    "productionMutation": false
+  },
+  "motionOwnedSession": {
+    "receipt": "docs/plans/2026-10-10-motion-owned-session-qualification.json",
+    "client": "exact public29 copied bundle",
+    "totalMs": 1452.9000000059605,
+    "maxRenderedPathError": 0,
+    "movingFrames": 87,
+    "walkingAuraError": 0,
+    "inventorySHA256": "48fb22ae6afeb18e0c27f941c6d4c8fb8d6a3c98a6302de29e87cb6083b795c8",
+    "publicAcceptance": false
+  },
+  "fittedRigidSurfacePilot": {
+    "source": "10098530d2bc2dbf0f939403125ef51ee6e77d5e",
+    "selected": false,
+    "public": false,
+    "defaultEnabled": false,
+    "receipt": "docs/plans/2026-10-10-fitted-rigid-surface-pilot.json",
+    "evidenceRoot": "/home/aeml/.local/share/eidolon-fitted-rigid-flat-surface-checks-20261010",
+    "inventorySHA256": "0337337871705f469ff18be1bcae53f0f867c075b9cc0583e8f7129068f6cff7",
+    "focusedPassed": 143,
+    "nativeSurfacePassed": 2,
+    "exactRGBPoseComparisons": 156,
+    "connectedLow": {
+      "drawCallsMedian": 166,
+      "trianglesMedian": 82282,
+      "sameSceneDrawsBefore": 179,
+      "sameSceneDrawsAfter": 171
+    },
+    "connectedHigh": {
+      "drawCallsMedian": 389,
+      "drawLimit": 350,
+      "passed": false,
+      "sameSceneDrawsBefore": 336,
+      "sameSceneDrawsAfter": 320
+    },
+    "remaining": "High389draw failure and historical Low202draw failure remain open. Different population/view prevents substituting Low166 sample. Actual scoped draw savings qualified; no default selection, startup/pool lifecycle or whole-game performance acceptance."
+  },
+  "previousPublicVerification28": {
+    "receipt": "docs/plans/2026-10-10-public28-terminal-qualification.json",
+    "version": "Alpha 1.79.28",
+    "commit": "77a48916be49184a04ecceeb979c75668d1972b8",
+    "ci": 38076277436,
+    "requiredCIPassed": true,
+    "releaseAccepted": true,
+    "allEightAssetsMatch": true,
+    "identitiesAndDatabaseMatch": true,
+    "totalMs": 1426.300000011921,
+    "walkingAccepted": false,
+    "releaseInventorySHA256": "0858d66501ca2e97a1ac0ec68b2b803049bf211e48e8cac635613a580d0b680d"
+  },
+  "partySubmissionFrames": {
+    "recordedUTC": "2026-10-10T21:37:05.675078+00:00",
+    "source": "c61c6f51c883cdd60e07481752eddbc7b4394aef",
+    "runtime": "10098530; QA-only diagnostic addition",
+    "evidenceRoot": "/home/aeml/.local/share/eidolon-party-submission-frames-checks-20261010",
+    "inventorySHA256": "43d7ddeeb9b818afdad8e1b8ad88beec92e6a1aa6a28feb81d7e85a5705d8e0d",
+    "actualNative": {
+      "total": 2,
+      "expected": 1,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 1,
+      "ok": true
+    },
+    "goRace": true,
+    "fourClassFourteenSlotPersistence": true,
+    "profile": {
+      "frames": 180,
+      "drawCallsMedian": 316,
+      "trianglesMedian": 200392,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 33.3,
+      "activeEntitiesMin": 34,
+      "activeEntitiesMax": 35
+    },
+    "diagnostic": {
+      "frames": 12,
+      "allDrawCountsAccountedFor": true,
+      "frameDraws": [
+        273,
+        273,
+        273,
+        273,
+        273,
+        273,
+        273,
+        273,
+        273,
+        273,
+        273,
+        273
+      ],
+      "firstFramePassCounts": {
+        "shadow-0": 98,
+        "color": 160,
+        "auxiliary": 15
+      },
+      "firstFrameInstances": {
+        "color": 24,
+        "shadow": 20,
+        "cellOrigins": 1
+      },
+      "excludedFromTimingSample": true
+    },
+    "previousFailedHigh": {
+      "drawMedian": 389,
+      "limit": 350,
+      "source": "10098530",
+      "instanceColorBuckets": 72,
+      "origins": 3,
+      "exactSameGeometryMaterialOriginMergeSavings": 0
+    },
+    "finding": "Every submitted draw is accounted for. New random world has24color instance buckets at one cell origin versus prior72at three; lower sample does not clear historicalHigh389 orLow202 failures. Same-origin different geometries share materials:7+7+2+2+2+3+1=24buckets across7groups. Next private opt-in stock BatchedMesh pilot preserves each original cell origin, float32matrix, source geometry/material and per-camera whole-bucket frustum decision while consolidating different geometries. No cross-origin rounding or changed culling policy.",
+    "limits": "Attribution diagnostic, not whole-game performance acceptance or publication/default selection. Twelve instrumented frames excluded from normal180frame timing sample. Original modern-art/device/soak/beta/launch/handoff goal remains open."
+  },
+  "actorCellMultiDraw": {
+    "source": "bcbc7147f4064939c0281b7cfcc6afcb8ebf11d9",
+    "runtime": "702a2755; connected9a93a779 identical runtime",
+    "selected": false,
+    "public": false,
+    "defaultEnabled": false,
+    "receipt": "docs/plans/2026-10-10-actor-cell-multidraw-qualification.json",
+    "inventorySHA256": "57c09dbeeb090266d08dc2113600350bd42a4ca069227e86aedb355d3fbc8854",
+    "focusedPassed": 71,
+    "nativeAnimatedCases": 12,
+    "nativeRecordedPopulationCases": 10,
+    "rgbError": 0,
+    "trianglesExact": true,
+    "nativeFrameFailureCleanup": true,
+    "nativeResourceCountersReturned": true,
+    "actualGoRaceFourClassFourteenSlotSaves": {
+      "high": true,
+      "low": true
+    },
+    "actualHigh": {
+      "drawCallsMedian": 242,
+      "trianglesMedian": 162655,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.7,
+      "sameSceneBefore": 256,
+      "sameSceneAfter": 244,
+      "sameSceneTriangles": 162659,
+      "sameSceneRGBError": 0,
+      "ownedGeometryBytes": 404160,
+      "ownedMatrixTextureBytes": 29184,
+      "ownedIndirectTextureBytes": 1640
+    },
+    "actualLow": {
+      "drawCallsMedian": 178,
+      "trianglesMedian": 87602,
+      "triangleLimit": 85000,
+      "triangleBudgetPassed": false,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.7,
+      "sameSceneBefore": 195,
+      "sameSceneAfter": 174,
+      "sameSceneTriangles": 87584,
+      "sameSceneRGBError": 0,
+      "ownedGeometryBytes": 549696,
+      "ownedMatrixTextureBytes": 44288,
+      "ownedIndirectTextureBytes": 2292
+    },
+    "remaining": "Actual Low87602triangles exceeds85000; historical High389draw andLow202draw failures retained. Native rendering equivalence and measured submissions qualified, but ordinary default/startup/pool/dynamic membership/representative whole-game/device acceptance remains open. No runtime selected into held branch or public29."
+  },
+  "actorInstanceFrustum": {
+    "receipt": "docs/plans/2026-10-10-actor-instance-frustum-qualification.json",
+    "source": "59004143",
+    "runtime": "e474d774",
+    "selected": false,
+    "focusedPassed": 74,
+    "nativePassed": 8,
+    "clippedComparisons": 24,
+    "wholeBucketControls": 24,
+    "rgbError": 0,
+    "actualOwnedLow": {
+      "drawCallsMedian": 135,
+      "trianglesMedian": 78808,
+      "activeEntities": 40,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.8,
+      "sameSceneTrianglesBefore": 81418,
+      "sameSceneTrianglesAfter": 78748,
+      "sameSceneRGBError": 0,
+      "goRaceFourClassFourteenSlotSaves": true
+    },
+    "inventorySHA256": "a0738d060f92ac48e3de4fd6dbd653facee09bb53fdb227f45871fd1cf30eec2",
+    "limits": "Different population cannot erase Low87602/High389/Low202 failures. Separate automatically enabled default candidate d2a82c66 under qualification, not yet held/public selected."
+  },
+  "defaultActorCellDelivery": {
+    "selectedIntoHeld": true,
+    "public": false,
+    "source": "695cee4ac7539f8c3ae1711ea5bf2db3eac7ba2c",
+    "runtimeFiles": 3,
+    "focusedPassed": 99,
+    "nativeIntegratedPassed": 12,
+    "nativePublicationPassed": 3,
+    "exactRGBComparisons": 48,
+    "originalCandidateHigh": {
+      "draws": 265,
+      "triangles": 176732,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.8
+    },
+    "originalCandidateLow": {
+      "draws": 149,
+      "triangles": 79962,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.8
+    },
+    "receipts": [
+      "docs/plans/2026-10-10-default-actor-cell-qualification.json",
+      "docs/plans/2026-10-10-actor-default-integration-qualification.json",
+      "docs/plans/2026-10-10-actor-default-publication-qualification.json"
+    ],
+    "limits": "Candidate startup/timing are modular client runs despite overbroad compiled wording in initial QA attachments. Separate actual bundle checks pass construction/default-owner lifecycle only. Historical Low202/Low87602/High389 failures retained. New route failures remain open; no full-world/device/art acceptance."
+  },
+  "defaultActorMovingRoute": {
+    "receipt": "docs/plans/2026-10-10-actor-default-moving-route-qualification.json",
+    "source": "c8df935f5aa4b0ceffdc0cfa69626b15e7b4a690",
+    "accepted": false,
+    "ordinaryGroundRouteCompleted": true,
+    "frames": 444,
+    "profiles": {
+      "town": {
+        "draws": 400,
+        "limit": 350,
+        "passed": false
+      },
+      "earthRoad": {
+        "draws": 190,
+        "passed": true
+      },
+      "woodland": {
+        "draws": 468,
+        "limit": 350,
+        "passed": false
+      },
+      "verdantApproach": {
+        "draws": 145,
+        "passed": true
+      }
+    },
+    "allTriangleAndFrameBudgetsPassed": true,
+    "finalPartyAndSavesExecuted": false
+  },
+  "townWoodlandSubmissions": {
+    "receipt": "docs/plans/2026-10-10-town-woodland-submission-qualification.json",
+    "source": "83a7c968d8fd4fcd685d6d48b8ed99e210b20f21",
+    "runtime": "695cee4a; later changes QA only",
+    "framesAttributed": 24,
+    "allCallsAccountedFor": true,
+    "hooksRestored": true,
+    "nativeExpected": 1,
+    "nativeSkipped": 1,
+    "fourClassFourteenSlotGoRaceSavesPassed": true,
+    "woodland": {
+      "callsMin": 550,
+      "callsMax": 556,
+      "demonOrcShadowCalls": 225,
+      "demonOrcColorCallsMin": 131,
+      "demonOrcColorCallsMax": 137
+    },
+    "town": {
+      "callsMin": 355,
+      "callsMax": 400,
+      "respecColor": 27,
+      "questColor": 24,
+      "respecShadow": 12,
+      "questShadow": 18,
+      "courtyardShadow": 29
+    },
+    "normalPartySample": {
+      "frames": 180,
+      "drawCallsMedian": 298,
+      "trianglesMedian": 216290,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.8,
+      "activeEntitiesMin": 30,
+      "activeEntitiesMax": 31
+    },
+    "inventorySHA256": "aef171c69669ff13cccba958f63050de45f8f158d259178757b049b1a7e34188",
+    "limits": "Diagnostic intervals establish identity only; different population cannot waive prior town400/woodland468High350 failures. No new runtime/family/default selection."
+  },
+  "demonOrcRigidCandidate": {
+    "source": "af0bfd0a100498b0ddb47dc8c4577ef32405850d",
+    "runtime": "7cf1373e7e640d204431f5882e75cad49b8fca9a",
+    "selected": false,
+    "receipt": "docs/plans/2026-10-10-demon-orc-rigid-qualification.json",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-demon-orc-rigid-checks-20261010",
+      "inventorySHA256": "f585334a2e688cdad8015c140119f8a85854749ad4bd53784a7d6522016a86a3",
+      "inventoryEntries": 822,
+      "frozen": true
+    }
+  },
+  "singletonActorCandidate": {
+    "source": "f8e994d058adeafa8a6e2057604b2b0fb12953ce",
+    "runtime": "75a4403f65a4bb5600c11be9484c54d017a71864",
+    "selected": false,
+    "receipt": "docs/plans/2026-10-10-singleton-actor-qualification.json",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-singleton-actor-checks-20261010",
+      "inventorySHA256": "c5445b130db8550c004f66d1ef365a62dfce197b2d5aba01032d5f190a776614",
+      "inventoryEntries": 891,
+      "frozen": true
+    },
+    "nativePassed": 12,
+    "focusedPassed": 105,
+    "highPartyDraws": 361,
+    "lowTownTriangles": 103110,
+    "pendingTownGeometryJobs": 0
+  },
+  "campInstanceFrustum": {
+    "source": "9fe14c1999036780740e9f6c51e23b4fe7f9c0ae",
+    "runtime": "1f87c0b7",
+    "selected": false,
+    "receipt": "docs/plans/2026-10-10-camp-instance-frustum-qualification.json",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-camp-instance-checks-20261010",
+      "inventorySHA256": "1ac5f899045562a3ac955d7956815af34eb9d53be4a9b18270717919dc369271",
+      "inventoryEntries": 986,
+      "frozen": true
+    },
+    "exactNativeComparisons": 42,
+    "actualRouteProfilesPassed": 8,
+    "fourClassSavedPartiesPassed": 2,
+    "ownedBytesPerField": 171552,
+    "allCampsRetained": 15,
+    "highTownTriangles": 198283,
+    "lowTownTriangles": 83366,
+    "earlierCounterexamplesRetained": true
+  },
+  "equippedFightFirstDungeon": {
+    "source": "ca9e1c5bc5a6e390d33cd03a6e5a8ed9142797d0",
+    "runtimeIdenticalToCampCandidate": true,
+    "selected": false,
+    "receipt": "docs/plans/2026-10-10-equipped-fight-first-dungeon-qualification.json",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-equipped-fight-dungeon-checks-20261010",
+      "inventoryEntries": 3230,
+      "files": 3231,
+      "inventorySHA256": "6decd5cc676542a770e5b8d10fd948fbf7d4cf7ee7b82453687919b7a46c59d6",
+      "frozen": true
+    },
+    "focusedChecksPassed": 41,
+    "highKitKills": 6,
+    "highCombatProfiles": 3,
+    "highLowFirstDungeonProfiles": 2,
+    "fourClassSavedPartiesPassed": 2,
+    "overallFailedPhasesRetained": 4,
+    "maximumObservedHighCombatDraws": 384,
+    "lowCombat": "unexecuted",
+    "combinedOffRoadReturn": "failed; not waived",
+    "modernArtOrDeviceApproval": false
+  },
+  "statusHudPresentation": {
+    "privateSource": "aebc87abc4426bc97aea0cbe177ee3ccf37694ac",
+    "heldSource": "ae675ba2291960521209d71a696681a56e692330",
+    "runtime": "27bf88a8",
+    "selected": true,
+    "published": false,
+    "receipt": "docs/plans/2026-10-10-status-hud-qualification.json",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-status-hud-checks-20261010",
+      "inventoryEntries": 58,
+      "files": 59,
+      "inventorySHA256": "3f79342c055821903e571b2cd2c854dd8685eba9958966ac01048515aebc1107",
+      "frozen": true
+    },
+    "focusedUniquePassed": 33,
+    "originalModuleFailuresRetained": 4,
+    "nativePassed": 13,
+    "nativeSkipped": 1,
+    "knownTrackedStatusSymbols": 21,
+    "actualTrayWidth": 62,
+    "heldEngineSHA256": "bea1f3019a0247b5db289a83b0d080dcd3b8fb8f50d843aa34516e4ef4276d12",
+    "actualSavedFourClassPartyPassed": true,
+    "scope": "HUD-only stage. Actual saved-character/party uses private camp context; exact selected held publication separately qualified. No universal performance/art/device or release claim.",
+    "requiredBrowserCI": {
+      "source": "1625ac2e8db5c173e0bb6f1b26ab6db3da173126",
+      "receipt": "docs/plans/2026-10-11-status-hud-ci-enrollment.json",
+      "focusedPassed": 19,
+      "discoveredExactCases": 329,
+      "runtimeUnchanged": true,
+      "published": false
+    }
+  },
+  "collisionAwareFightReturn": {
+    "source": "846d63edf54bc56d3c9f56f347f093312f6586b5",
+    "runtimeUnchanged": true,
+    "selected": false,
+    "published": false,
+    "receipt": "docs/plans/2026-10-11-collision-aware-fight-return-qualification.json",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-collision-return-checks-20261011",
+      "inventoryEntries": 1588,
+      "files": 1589,
+      "inventorySHA256": "d950e6040a4a05d4e1af5b9f604653a537ade12ae2591865ecadf0924eb95041",
+      "frozen": true
+    },
+    "focusedUniquePassed": 30,
+    "nativePassed": 2,
+    "nativeSkipped": 2,
+    "highLowCombinedFightDungeonAndSavePassed": true,
+    "lowRetainedPositionWalkingDetourPassed": true,
+    "highCombatMedianDraws": 348,
+    "highCombatMaximumDraws": 438,
+    "highCombatFramesOver350": 87,
+    "lowCombatMedianDraws": 124,
+    "lowCombatMedianTriangles": 33469,
+    "previousFailuresRetained": true,
+    "scope": "Private QA only; normal movement around actual generated scenery. Existing per-sample median gates pass; dynamic costs, modern art, contact/audio and supported-device acceptance stay open."
+  },
+  "additiveEffectSubmissions": {
+    "receipt": "docs/plans/2026-10-11-additive-effects-qualification.json",
+    "runtime": "cd92dc01",
+    "requiredBrowserCI": "ca03de05",
+    "selected": true,
+    "published": false,
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-additive-effects-checks-20261011",
+      "inventoryEntries": 95,
+      "files": 96,
+      "inventorySHA256": "8f26a7d7115a0956ba041ee65104ef47706e57b70789640d42ebf3a9417cce8e",
+      "frozen": true
+    },
+    "attributionEvidence": {
+      "source": "97dc3b64",
+      "root": "/home/aeml/.local/share/eidolon-combat-submission-checks-20261011",
+      "inventoryEntries": 907,
+      "files": 908,
+      "inventorySHA256": "b98802ed63a0b6e757c9a689389203d07c80ef2ad4d174d621dd169d117237da",
+      "frozen": true,
+      "focusedPassed": 16,
+      "actualFrames": 180,
+      "allDrawsAccountedFor": true,
+      "hooksRestored": true,
+      "capturedPeakCalls": 345,
+      "peakEffectMeshes": 60,
+      "peakEffectCalls": 120,
+      "nativeGameplayFailuresRetained": 2,
+      "nativeGameplayPasses": 0,
+      "scope": "First attempt timed out before attribution; pending target changed and Charge was rejected during500msGCD. QA observer now retains actually acquired deaths with local damage evidence and waits real GCD. Corrected capture accounts for every draw but the Fighter dies before defeat: no party/dungeon/save certificate. Heavy instrumentation disturbed scheduling; do not use these frames as timing or balance evidence."
+    },
+    "focusedUniquePassed": 87,
+    "nativeCorpusViews": 1560,
+    "exactRGBViews": 1549,
+    "actualSavedSceneCalls": [
+      316,
+      283
+    ],
+    "actualSavedFourClassPartyPassed": true,
+    "heldEngineSHA256": "58dfe04f1bb700ffef53ef5090b31ead63cafbdf0da5e42c89092fd5a8a59b4a",
+    "heldDiscoveredCases": 332,
+    "highPartyMaximumTriangles": 284882,
+    "historicalFailuresRetained": true
+  },
+  "dungeonEntryWard": {
+    "receipt": "docs/plans/2026-10-11-dungeon-entry-ward-qualification.json",
+    "runtime": "c9e3b2ba",
+    "selectedSource": "68e30c83",
+    "selected": true,
+    "published": false,
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-dungeon-entry-ward-checks-20261011",
+      "inventoryEntries": 884,
+      "files": 885,
+      "inventorySHA256": "1dbedb63909295971178334f9b9c8db63f02951bd54baa61d09fb72ce5734557",
+      "frozen": true
+    },
+    "supportedThemes": 5,
+    "preparedLayoutsPerQuality": 20,
+    "preparedMotionFrames": 1440,
+    "preparedNativePassed": 2,
+    "ciDefaultLowPassed": 1,
+    "copiedBundlePassed": 2,
+    "connectedNativePassed": 1,
+    "connectedNativeSkipped": 1,
+    "savedFourClassCustodyPassed": true,
+    "firstDungeon": {
+      "frames": 180,
+      "drawCallsMedian": 105,
+      "trianglesMedian": 53029,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.7,
+      "maximumCalls": 105,
+      "maximumTriangles": 53029
+    },
+    "party": {
+      "frames": 180,
+      "drawCallsMedian": 262,
+      "trianglesMedian": 216766,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 33.3,
+      "maximumCalls": 284,
+      "maximumTriangles": 289302
+    },
+    "engineSHA256": "62f538c037982250147e7896c225bf9cc10d3c2178463861887c7d59d2fe23d4",
+    "requiredDiscoveredCases": 335,
+    "limits": "Entry-ward art stage only; private connected QA context unselected. Historical dynamic draw failures, startup triangle peak289302, narrow floor/shadow artifacts and broader world/art/device/operations/F1\u2013F5/beta/launch/handoff remain open.",
+    "laterNarrowViewDiagnosis": "See dungeonGraveRoots: thin floor strokes were decorative grave-root geometry; bottom straight line was the XP bar. No shadow/batching fault established. The old narrow-artifact hypothesis is historical, superseded by native component isolation and ray/pixel probes."
+  },
+  "dungeonGraveRoots": {
+    "receipt": "docs/plans/2026-10-11-verdant-grave-roots-qualification.json",
+    "source": "420a3cfabbc715e4405ba5ed28ed9b1392861b5a",
+    "selected": true,
+    "published": false,
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-dungeon-floor-checks-20261011",
+      "frozen": true,
+      "inventoryEntries": 580,
+      "files": 581,
+      "inventorySHA256": "17eb49e3128525c87f28ef9405dce3d28948afd28a098a33e193123e47b58a36"
+    },
+    "focusedPassed": 72,
+    "preparedLayoutsPerQuality": 20,
+    "preparedViews": 140,
+    "preparedAnimatedFrames": 1440,
+    "cameraSweepFrames": 288,
+    "copiedBundlePassed": 2,
+    "engineSHA256": "e0760ffb4f0e9b8938ebcb8dfc6f4c7874874e9554b70492583278cb3c5a3009",
+    "maximumPreparedCalls": {
+      "high": 92,
+      "low": 47
+    },
+    "maximumPreparedTriangles": {
+      "high": 117231,
+      "low": 37143
+    },
+    "lowFactoryFailureRetained": true,
+    "scope": "Prepared production layouts, ordinary gameplay zoom, actual supplied14slot Fighter, HUD and touch controls; ready/inactive and root-side views, bounded camera pans. No server-earned clear, normal-input route, timing, physical-device, whole-world or final art certificate.",
+    "limits": "Floor repetition, broader code-owned scenery/material/contact/audio quality, actual-device/owner art feedback, dynamic High438/361draw and289302triangle peak counterexamples and original operations/F1-F5/beta/launch/handoff remain open. No threshold waiver, campaign/soak replay, public push or beta/access change."
+  },
+  "verdantFloorMaterial": {
+    "receipt": "docs/plans/2026-10-11-verdant-floor-qualification.json",
+    "source": "ef70a3b4241618570214e12905d6b1540bb10450",
+    "selected": true,
+    "published": false,
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-verdant-floor-checks-20261011",
+      "frozen": true,
+      "inventoryEntries": 851,
+      "files": 852,
+      "inventorySHA256": "12fb3e169976543bead0e390a76c71be0ce1bcd3af427db6a6e56171fc07ff72"
+    },
+    "focusedPassed": 70,
+    "nativePassed": 7,
+    "nativeSkipped": 1,
+    "preparedLayoutsPerQuality": 20,
+    "preparedAnimatedFrames": 1440,
+    "copiedBundle": "df7410314c5d40694d7fac097ec5565e7e829f420605aee00b3a946be2ebb02f",
+    "normalDungeon": {
+      "frames": 180,
+      "drawCallsMedian": 105,
+      "trianglesMedian": 55079,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.8,
+      "maximumCalls": 105,
+      "maximumTriangles": 55079
+    },
+    "party": {
+      "frames": 180,
+      "drawCallsMedian": 285,
+      "trianglesMedian": 211709,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.8,
+      "maximumCalls": 286,
+      "maximumTriangles": 281603
+    },
+    "savedFourClassCustodyPassed": true,
+    "requiredCIDiscovered": 336,
+    "limits": "New281603triangle party startup peak exceeds250000; older289302triangle and438/361draw counterexamples remain. Prepared scene/normal180frame successes do not causally clear different populations or establish sustained device/owner art acceptance. Broader world/scenery/material/contact/audio, original operations/F1-F5/beta/launch/handoff still open. No campaign/soak replay, public push/version/beta/access change."
+  },
+  "geometryPreparationPriority": {
+    "receipt": "docs/plans/2026-10-11-geometry-preparation-priority-qualification.json",
+    "source": "cda30fd0c9355c43780f69c335a2514754b73297",
+    "runtime": "88e250af",
+    "selected": true,
+    "published": false,
+    "focusedUniquePassed": 139,
+    "nativeDistinctCorrectnessPassed": 8,
+    "nativeSkipped": 1,
+    "nativeScheduling": [
+      {
+        "quality": "high",
+        "exactPreparedIndexBuffers": 65,
+        "pixelHashIdentical": true,
+        "draws": 183,
+        "triangles": 127461,
+        "queueOrderingAndFairnessPassed": true,
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "engineSHA256": "dfe24e6ee072b34b63e249b8c313a19b7431d2f972ffcc413a564d733307ec3c"
+      },
+      {
+        "quality": "low",
+        "exactPreparedIndexBuffers": 71,
+        "pixelHashIdentical": true,
+        "draws": 88,
+        "triangles": 58278,
+        "queueOrderingAndFairnessPassed": true,
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "engineSHA256": "dfe24e6ee072b34b63e249b8c313a19b7431d2f972ffcc413a564d733307ec3c"
+      }
+    ],
+    "requiredCI": {
+      "hostedCasesDiscovered": 335,
+      "nativeCases": 5,
+      "combinedDistinctRequired": 338,
+      "allPrior338CaseIdentitiesRetained": true,
+      "hostedExactlyOnce": true,
+      "scope": "Two outfit cases intentionally checked on both backends. Three full dungeon reviews moved intact from hosted to unconditional native predeploy with required hardware and zero retries. Native verification remains a dependency of publishing. Discovery is not execution."
+    },
+    "initialDiagnostic": {
+      "evidence": {
+        "root": "/home/aeml/.local/share/eidolon-party-startup-checks-20261011",
+        "inventoryEntries": 604,
+        "files": 605,
+        "inventorySHA256": "12f54909a762f5e50e5a4277009334eef89303a1083a100a3a8516f81163d5a3",
+        "frozen": true
+      },
+      "capture": {
+        "frames": 120,
+        "firstTriangles": 347498,
+        "lastTriangles": 222033,
+        "maximumTriangles": 347498,
+        "firstPrepared": 29,
+        "lastPrepared": 48,
+        "firstPending": 44,
+        "lastPending": 20,
+        "everySubmissionAccountedFor": true,
+        "hooksRestored": true,
+        "scope": "Instrumented actual normal party sequence before the separate60warmup+180frame sample. Submission identity/counts only; no timing or performance acceptance. Different populations and initial preparation states cannot establish a causal cross-run gain."
+      }
+    },
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-geometry-priority-checks-20261011",
+      "inventoryEntries": 677,
+      "files": 678,
+      "inventorySHA256": "6b575577492117a869e5eaf3071b5d908653417056591c9204d7e2b5547e804c",
+      "frozen": true
+    },
+    "party": {
+      "frames": 180,
+      "drawCallsMedian": 300,
+      "trianglesMedian": 168340,
+      "frameMedianMs": 33.3,
+      "frameP95Ms": 50,
+      "activeEntitiesMin": 35,
+      "activeEntitiesMax": 36,
+      "maximumCalls": 317,
+      "maximumTriangles": 170198
+    },
+    "partyPerformanceAccepted": false,
+    "limits": "New uninstrumented party33.3msmedian FAIL20 and50msp95 FAIL33.4,35\u201336active entities versus earlier28\u201331. New instrumented startup386370triangles also retains failure against250000; timing there is invalid. Earlier281603/289302triangle,438/361draw and other historical failures remain. Current lower triangle totals cannot clear different populations or prove causal FPS gains. Broader modern world/art/contact/audio/device acceptance, original operations/F1-F5/beta/launch/handoff remain open. No campaign/soak replay, public push/version/access change or wholesale private camp/singleton/DemonOrc selection."
+  },
+  "partyCPUAttribution20261011": {
+    "source": "7890349eb4aca35e32d9d17991f54a961dd6148c",
+    "runtimeChanged": false,
+    "published": false,
+    "receipt": "docs/plans/2026-10-11-party-cpu-attribution.json",
+    "method": "Existing connected-party-observer High scenario, one native hardware renderer and three normal authenticated socket peers; prepared four-class fourteen-slot fixture and actual UI party formation. Existing opt-in three-second CDP CPU sampler runs after the ordinary sixty-warmup/180-frame sample. No new instrumentation or source edits. Go race/save fixture passes; one browser pass and one optional four-browser skip.",
+    "nativeStats": {
+      "total": 2,
+      "expected": 1,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 1,
+      "ok": true
+    },
+    "ordinaryFrame": {
+      "frames": 180,
+      "frameMedianMs": 49.9,
+      "frameP95Ms": 66.6,
+      "drawCallsMedian": 269,
+      "trianglesMedian": 169766,
+      "activeEntitiesMin": 30,
+      "activeEntitiesMax": 31,
+      "maximumCalls": 269,
+      "maximumTriangles": 233828
+    },
+    "performanceAccepted": false,
+    "foliage": {
+      "frames": 70,
+      "visits": 167020,
+      "viewChanges": 0,
+      "shadowChanges": 0,
+      "initialRoots": 10
+    },
+    "interpretation": "Sampled matrix propagation/composition, scene projection/frustum checks and shadow traversal remain significant costs. updateMatrixWorld contributes189977sample-weighted microseconds; multiplyMatrices182667. The actor live-light traversal caller contributes82322. Foliage still revisits2386cells/frame despite unchanged view/light revisions. These are sampled elapsed attribution with profiler and wrapper overhead, not exclusive hardware CPU time or a causal frame-rate repair.",
+    "decision": "Retain stock world-force propagation and actual live light scanning. Previously rejected ancestor-force skips break manual descendants; light-membership registration adds thousands of listeners without established whole-frame benefit; animated world-box caching had1.06percent hits. Current evidence does not justify selecting them or changing geometry-copy code. Future matrix ownership diagnosis can use the existing EIDOLON_TERRAIN_PARTY_MATRIX_OWNERS opt-in; do not create duplicate instrumentation or repeat unchanged campaigns.",
+    "scopeLimits": "This private source includes unselected camp/singleton/DemonOrc context. It is not a held/public performance qualification. Population30-31 differs from earlier35-36; recorded shared-host load21.76 on16CPUs cannot establish the cause or waive49.9msmedian/66.6msp95 failures. No fresh normal dungeon route, campaign, combat, physical-device or long-soak acceptance. Existing historical failures and original full roadmap gates remain open. Jump/aura/admin fixes already accepted public29; no new public mutation.",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-party-cpu-checks-20261011",
+      "inventoryEntries": 22,
+      "files": 23,
+      "inventorySHA256": "1d08fe52a19a63e50c0e9e85fffbb190bd362170cb0a872338d2963f377d0605",
+      "frozen": true
+    }
+  },
+  "elementalFloorMaterial": {
+    "receipt": "docs/plans/2026-10-11-elemental-floor-material-qualification.json",
+    "source": "75a37d888b1d0244f8747a00a701735e29e8cb77",
+    "selected": true,
+    "published": false,
+    "focusedDistinctPassed": 86,
+    "nativeDistinctPassed": 14,
+    "preparedAnimatedFrames": 288,
+    "preparedViews": 16,
+    "pairedScreenshots": 32,
+    "preservedMapPins": 56,
+    "engineSHA256": "820000040a39b988edd0c0043e1376575b1b408c0119e1412ec9b76d3d2c50bb",
+    "requiredCI": {
+      "hostedCount": 337,
+      "nativeCount": 15,
+      "combinedDistinctRequired": 348,
+      "priorDistinctRequired": 338,
+      "lost": [],
+      "scope": "337hosted exactlyonce,15mandatorynative,348distinctcombined; four intentional backend overlaps (two outfits/two floor publication). Discovery only; no claim all348or15 executed this turn. Required native hardware and zero retries preserved.",
+      "newDistinctCases": 10,
+      "allPrior338IdentitiesRetained": true
+    },
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-elemental-floor-checks-20261011",
+      "inventoryEntries": 297,
+      "files": 298,
+      "inventorySHA256": "df7a284a8a24befdb864997ec573a82a0a1d0013b6c9d467ee891773c15b5fa8",
+      "frozen": true
+    },
+    "scopeLimits": "Staged only. Public Alpha1.79.29/12e5e3c4 and accepted jump/aura/admin unchanged. Original49.9median/66.6p95 CPU and386370/281603/289302triangle/438/361draw/Low202draw counterexamples remain unresolved; no frame-time/performance acceptance. Full world/art/contact/audio/device/operations/F1-F5/beta/launch/handoff goal active; no campaign/soak replay or version/access/beta change."
+  },
+  "partyMatrixOwnerAttribution": {
+    "receipt": "docs/plans/2026-10-11-party-matrix-owner-attribution.json",
+    "source": "7890349eb4aca35e32d9d17991f54a961dd6148c",
+    "nativePassed": 1,
+    "nativeSkipped": 1,
+    "ownerFrames": 90,
+    "foliageInclusiveMsPerFrame": 2.8144444462325837,
+    "sceneInclusiveMsPerFrame": 6.665555556615193,
+    "ordinaryMedianMs": 50,
+    "ordinaryP95Ms": 66.7,
+    "scope": "Nested inclusive wrappers overlap; not exclusive CPU. Private source,40-43entities, one GPU renderer/three live socket peers; no held/public performance acceptance.",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-party-matrix-owner-checks-20261011",
+      "inventoryEntries": 18,
+      "files": 19,
+      "inventorySHA256": "63da522dad00bf2b7e64cb15f7d6e05522ed364924aeb40139406b24a0fb8d6d",
+      "frozen": true
+    }
+  },
+  "unselectedFoliageMatrixProduct": {
+    "receipt": "docs/plans/2026-10-11-foliage-matrix-product-unselected.json",
+    "source": "cbff101407d2a8a0f265f1cb07d96e5f976e1196",
+    "selected": false,
+    "published": false,
+    "focusedDistinctPassed": 15,
+    "nativeDistinctPassed": 2,
+    "finalNativeControls": 12,
+    "finalNativeRAFRenders": 480,
+    "decision": "REJECT BOTH VARIANTS. Loop version increases targeted transform medians High2.0\u21922.6ms andLow2.2\u21922.5ms, despite modest pooled submission improvement. Unrolled final High submission12.3\u219214.6msmedian/17.5\u219218.8p95 and transforms1.5\u21922.5msmedian/2.0\u21923.0p95 are worse; Low submission improves8.35\u21926.85ms but transform median1.85\u21921.95ms. Shared-host timing and fixed prepared scenes cannot establish a broad causal speedup. Do not select cache or run another unchanged full party to justify it. Preserve held renderer arithmetic and dirty/force behavior.",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-foliage-product-checks-20261011",
+      "inventoryEntries": 23,
+      "files": 24,
+      "inventorySHA256": "2ffd0c78055f93bd9728188a8d1feb6412394afb6ba872afe5108445690fc648",
+      "frozen": true
+    }
+  },
+  "dungeonPropMaterials": {
+    "receipt": "docs/plans/2026-10-11-dungeon-prop-material-qualification.json",
+    "source": "3da66d6741f02a470d6428c1013e814fa422b660",
+    "selected": true,
+    "published": false,
+    "themes": 5,
+    "focusedDistinctPassed": 68,
+    "nativeDistinctPassed": 7,
+    "propViews": 30,
+    "pairedPropScreenshots": 60,
+    "preparedAnimationUpdates": 2088,
+    "engineSHA256": "d74a603c1fa19c12c099676caca75cc06dab07d6c2dd1ac4e74d429bacf98881",
+    "requiredCI": {
+      "hostedCount": 337,
+      "nativeCount": 15,
+      "combinedDistinctRequired": 348,
+      "priorDistinctRequired": 348,
+      "lost": [],
+      "added": [],
+      "scope": "337hosted/15native/348distinct case identities unchanged, zero added/lost. Discovery only. Prior exact-once hosted partition proof reused: package, browser plan and CI policy unchanged. Existing mandatory native copied-bundle High/Low cases now cover both prop materials and exact GPU resource return for all five themes. No all348execution claim."
+    },
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-dungeon-prop-checks-20261011",
+      "inventoryEntries": 164,
+      "files": 165,
+      "inventorySHA256": "f7f9d70b6f2dbee412425c9cec548aa9272ac812e23f67ff2cb5a0c7b90e3ac4",
+      "frozen": true
+    },
+    "cost": "Six added RGBA maps:384KiB raw CPU pixels High/96KiB Low per kit; approximately512KiB/128KiB for full RGBA8 mip chains, excluding driver overhead. Existing PBR shaders now sample albedo/normal/roughness. This adds shading/texture work; no FPS or broad performance improvement claimed.",
+    "scopeLimits": "Staged unpublished. PublicAlpha1.79.29 motion/aura/admin fixes unchanged; prior unselected matrix/cache/camp/singleton/DemonOrc branches not merged. Existing50/66.7ms and49.9/66.6ms timing,386370/281603/289302triangles,438/361draw andLow202draw counterexamples remain. Full original world/art/contact/audio/devices/performance/operations/F1-F5/beta/launch/handoff goal active. No campaign/soak replay, version/access/commerce or beta change."
+  },
+  "dungeonProcessionalPaving": {
+    "receipt": "docs/plans/2026-10-11-dungeon-processional-paving-qualification.json",
+    "source": "aa97abd38b8c597fcaed5d8c5f787fa01f64d015",
+    "selected": true,
+    "published": false,
+    "themes": 5,
+    "focusedDistinctPassed": 74,
+    "newChecks": 13,
+    "nativeDistinctPassed": 6,
+    "propViews": 30,
+    "pairedScreenshots": 60,
+    "preparedAnimationUpdates": 2088,
+    "engineSHA256": "3969f7501a16c163dc156590809c34c065478ff99b987e5ba50c9d01582b7834",
+    "addedSourceGeometryBytesPerKit": 231264,
+    "addedMaterialPerKit": 1,
+    "addedBatchPerPavedRoom": 1,
+    "newTextures": 0,
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-dungeon-paving-checks-20261011",
+      "inventoryEntries": 133,
+      "files": 134,
+      "inventorySHA256": "a21e9d9adc288a117c269cf587f4923c00c8fc3a3b207bfcc0da138db5537c21",
+      "frozen": true
+    },
+    "scopeLimits": "Staged unpublished; publicAlpha1.79.29 requested jump/aura/admin acceptance retained. No unrelated private cache/camp/singleton/DemonOrc/route QA selected. Original50/66.7ms,49.9/66.6ms,386370/281603/289302triangle,438/361draw andLow202draw failures unresolved. No full-room/device/party/combat performance or owner art approval. Original world/art/contact/audio/devices/operations/F1-F5/beta/launch/handoff goal active; no campaign/soak replay, version/access/commerce/beta change."
+  },
+  "dungeonRegionalRelics": {
+    "receipt": "docs/plans/2026-10-11-dungeon-regional-relics-qualification.json",
+    "source": "a32939c47be839ca71afb6bb378eb871ed1a1488",
+    "selected": true,
+    "published": false,
+    "families": 4,
+    "focusedPassed": 29,
+    "newChecks": 15,
+    "nativeDistinctPassed": 7,
+    "selectedPairedViews": 16,
+    "pairedScreenshots": 32,
+    "actorMixerUpdates": 864,
+    "wardStateAnimationFrames": 1440,
+    "productionLayoutsPerQuality": 20,
+    "engineSHA256": "54eb11d1747069177fc0950e7c94b3818fc2f301e5a979690977b5f57bb010e2",
+    "newTextures": 0,
+    "newMaterials": 0,
+    "newLights": 0,
+    "batchDeltaMin": -1,
+    "batchDeltaMax": 2,
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-dungeon-relic-checks-20261011",
+      "inventoryEntries": 306,
+      "files": 307,
+      "inventorySHA256": "dcfed337ecde8ee17cb084dbf13edd1bd2005ef4bd88bff1581707b167c54469",
+      "frozen": true
+    },
+    "scopeLimits": "Staged unpublished. PublicAlpha1.79.29 requested jump/aura/admin fixes remain accepted. No private cache/camp/singleton/DemonOrc/route QA selected. Original50/66.7ms,49.9/66.6ms,386370/281603/289302triangle,438/361draw andLow202draw failures remain. Full original world/art/contact/audio/devices/performance/operations/F1-F5/beta/launch/handoff active. No campaign/soak replay, version/access/commerce/beta change."
+  },
+  "combatImpactContinuity": {
+    "receipt": "docs/plans/2026-10-11-combat-impact-continuity-qualification.json",
+    "source": "5ae298f18dbc52a33ab0a0a8cd57eeeb4e3a389b",
+    "selected": true,
+    "published": false,
+    "focusedPassed": 106,
+    "newChecks": 8,
+    "nativeDistinctPassed": 1,
+    "suppliedRigs": 8,
+    "preparedMixerRenderFrames": 224,
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-combat-impact-checks-20261011",
+      "inventoryEntries": 58,
+      "files": 59,
+      "inventorySHA256": "b163b15955329577ac57f9a1b7ce53427e611766fe4749c6a1fae63afc96378a",
+      "frozen": true
+    },
+    "scopeLimits": "Prepared local message/mixer/render and audio-call checks, not live combat timing, physical-device, speaker/listening, busy-party performance or modern-art approval. No server, damage, cooldown, collision, assets, settings or account-data change. Prior jump/aura/admin public acceptance reused and matching public engine freshly rehashed. All historical performance failures and original roadmap/operations/F1-F5/beta/launch/handoff remain open. No campaign/soak replay or public push."
+  },
+  "equippedSkillMotions": {
+    "source": "2f9c284bcf1e765046ce20ae9211de258cf1abd1",
+    "selected": true,
+    "published": false,
+    "focused": {
+      "passed": 138,
+      "suites": 7,
+      "newTests": 16,
+      "failed": 0,
+      "skipped": 0,
+      "seconds": 6.544
+    },
+    "native": {
+      "distinctPassed": 3,
+      "failedFinal": 0,
+      "skipped": 0,
+      "retries": 0,
+      "flaky": 0,
+      "artCases": 2,
+      "runtimeCases": 1,
+      "artSeconds": 115.554931,
+      "runtimeSeconds": 14.57869,
+      "selectedArtRoot": "native-contact-results",
+      "runtimeRoot": "native-runtime-qualified-results",
+      "scenariosEachQuality": 12,
+      "classQualityRigs": 8,
+      "equippedSlotsEach": 14,
+      "preparedArtFrames": 1920,
+      "artScreenshots": 110,
+      "runtimeAnimationRenderFrames": 224,
+      "remoteActorUpdates": 32,
+      "counts": "Repeated draft/final runs share three identities and count once. Art frames explicitly advance mixers at prepared time steps; runtime case includes 32 actual Actor.update calls. No full-frame game-loop performance claim.",
+      "maxPreparedDraws": {
+        "high": 76,
+        "low": 39
+      },
+      "maxPreparedTriangles": {
+        "high": 44015,
+        "low": 21492
+      },
+      "referenceCandidateDrawTrianglePairsEqual": true
+    },
+    "allocation": {
+      "generatedClipsPerRig": {
+        "Fighter": 20,
+        "Rogue": 10,
+        "Cleric": 5,
+        "Wizard": 0
+      },
+      "uniqueKeyframeArrayBytesPerRig": {
+        "Fighter": 38060,
+        "Rogue": 33460,
+        "Cleric": 29060,
+        "Wizard": 0
+      },
+      "scope": "Per-instance typed arrays, including shared stance tracks; excludes JS objects, action/binding overhead. No global cache, added GPU resource, source clip edits, assets or timer. No FPS saving claim."
+    },
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-equipped-skill-checks-20261011",
+      "inventoryEntries": 678,
+      "files": 679,
+      "inventorySHA256": "b8a4ca0ff59ddda999ae02dc7ed9f056ad3280f24df089281ade63d54c693578",
+      "frozen": true
+    },
+    "limits": "Prepared supplied-rig motion/remote-update checks, not live server combat/contact timing, speaker/listening, physical-device, sustained party performance or owner modern-art approval. Source art views precede remote-only timing guard; final actual Actor-update case qualifies the guard. Existing50/66.7ms,49.9/66.6ms,386370/281603/289302triangles,438/361draw and Low202draw failures remain. Sparse room/world composition, contact/audio, supported devices and original operations/F1-F5/beta/launch/handoff remain open. No campaign/soak replay or unrelated private selection.",
+    "receipt": "docs/plans/2026-10-11-equipped-skill-motion-qualification.json"
+  },
+  "dungeonFloorComposition": {
+    "source": "51b84ca2380f5362bd1094940c9c0ce214c38a3f",
+    "selected": true,
+    "published": false,
+    "focused": {
+      "passed": 80,
+      "newChecks": 11,
+      "suites": 4,
+      "failedFinal": 0,
+      "skipped": 0,
+      "seconds": 156.341
+    },
+    "native": {
+      "distinctPassed": 7,
+      "sourceArtCases": 4,
+      "copiedBundleCases": 3,
+      "additionalDefaultHistoryFreePass": 1,
+      "counts": "Default desktop Verdant repeats one of the four art identities; count once. Repeated draft/final runs are not additional identities.",
+      "retries": 0,
+      "skips": 0,
+      "flaky": 0,
+      "sourceArtStats": {
+        "startTime": "2026-10-11T04:57:24.255Z",
+        "duration": 165423.348,
+        "expected": 4,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "copiedStats": {
+        "startTime": "2026-10-11T05:01:17.176Z",
+        "duration": 29244.728000000003,
+        "expected": 3,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "defaultStats": {
+        "startTime": "2026-10-11T05:02:22.986Z",
+        "duration": 12710.559000000001,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "artViews": 38,
+      "artPairedScreenshots": 76,
+      "preparedAnimationUpdates": 912,
+      "copiedPlanViews": 38,
+      "themes": 5,
+      "qualities": [
+        "high",
+        "low"
+      ],
+      "hero": "Supplied fourteen-slot Fighter with actual desktop/phone HUD at zoom15.",
+      "sourceMaxPreparedDraws": {
+        "high": 102,
+        "low": 51
+      },
+      "sourceMaxPreparedTriangles": {
+        "high": 64707,
+        "low": 25201
+      },
+      "scope": "Actual production layouts, one room for each present plan. Umbral has three plans and no pure boss_approach in this layout; all four plans covered by other themes. Mixer/render time steps are prepared presentation, not full engine cadence, server combat, sustained party performance or physical devices.",
+      "sourceControl": "Historical parent dressing at the exact same hero/camera/lighting state. Entry/cache geometry adds320/440triangles without another batch; approach/arena adds220/160triangles and one opaque batch. Production room batch cap8 and whole-scene350/200draw,250000/85000triangle assertions remain unchanged.",
+      "copiedGPU": "Actual production copier/versioned engine; all five themes render available plans and compile PBR/patina/prop materials. Exact warmed geometry/texture counts after every cleared theme and final cleanup. Ward state/collider/matrix stability and original High root2880triangles retained.",
+      "historyFreeCI": "Default comparator disabled and deliberately unavailable historical reference; desktop Verdant passes. Default CI does not invoke git show or import parent modules. No test identities or CI commands added/removed; no claim full CI executed."
+    },
+    "cost": {
+      "plans": [
+        {
+          "plan": "nave",
+          "stones": 32,
+          "visualOnly": true,
+          "triangles": 320,
+          "sourceAttributeBytes": 42240,
+          "bounds": [
+            [
+              -20.875,
+              0.10400000214576721,
+              -20.875
+            ],
+            [
+              20.875,
+              0.12300000339746475,
+              20.875
+            ]
+          ]
+        },
+        {
+          "plan": "court",
+          "stones": 44,
+          "visualOnly": true,
+          "triangles": 440,
+          "sourceAttributeBytes": 58080,
+          "bounds": [
+            [
+              -20.25,
+              0.10400000214576721,
+              -20.25
+            ],
+            [
+              20.25,
+              0.12300000339746475,
+              20.25
+            ]
+          ]
+        },
+        {
+          "plan": "procession",
+          "stones": 22,
+          "visualOnly": true,
+          "triangles": 220,
+          "sourceAttributeBytes": 29040,
+          "bounds": [
+            [
+              -7,
+              0.10400000214576721,
+              -22.954999923706055
+            ],
+            [
+              7,
+              0.12300000339746475,
+              22.954999923706055
+            ]
+          ]
+        },
+        {
+          "plan": "arena",
+          "stones": 16,
+          "visualOnly": true,
+          "triangles": 160,
+          "sourceAttributeBytes": 21120,
+          "bounds": [
+            [
+              -21.497968673706055,
+              0.10400000214576721,
+              -21.497968673706055
+            ],
+            [
+              21.497968673706055,
+              0.12300000339746475,
+              21.497968673706055
+            ]
+          ]
+        }
+      ],
+      "sourceAttributeBytesIfAllFourUsed": 150480,
+      "mergedRoomOwnership": "Each optimized room additionally owns its plan attribute bytes in the existing material batch (or one new batch). Source shapes lazily cached at most four per kit; no global cache.",
+      "newTextures": 0,
+      "newMaterials": 0,
+      "newLights": 0,
+      "newColliders": 0,
+      "surface": "Opaque existing mapped stone material with vertex colors, receives shadows and does not cast. Nonemissive, no animation clock or time uniform. TopY=.119-.123 above authoritative rendered floorY=.1 and below local inlays.",
+      "performance": "Additional geometry, buffer and fragment work; no FPS saving or clearance of historical performance failures."
+    },
+    "visualFindings": {
+      "improved": "Nave borders frame vigils/ward; courtyard edging grounds central coffers/fonts; processional bands and arena perimeter give broad empty floor a room-scale composition without adding obstacles.",
+      "remaining": "Existing boss buried dais remains a broad almost-black polygon and primary next material/geometry repair. Repeated base tiles, sparse furniture/composition, simple props and broader world/actor/contact/audio remain short of final owner art acceptance."
+    },
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-dungeon-floor-composition-checks-20261011",
+      "inventoryEntries": 546,
+      "files": 547,
+      "inventorySHA256": "6ae2f67471530b5a4f7d4872ff2b93813df5b1cad6819c48739582a864c0bb09",
+      "frozen": true
+    },
+    "limits": "Prepared source and copied-bundle presentation/lifecycle proof only. Existing50/66.7ms,49.9/66.6ms,386370/281603/289302triangles,438/361draw andLow202draw counterexamples remain. No server route/campaign/soak replay, listening, supported physical-device, whole-party performance or owner modern-art approval. Original operations/F1-F5/beta/launch/handoff scope remains active. No unrelated private source selected.",
+    "receipt": "docs/plans/2026-10-11-dungeon-floor-composition-qualification.json"
+  },
+  "dungeonBossMasonry": {
+    "source": "3e03221eed6477d72ad906dbd26d4a05608d8e36",
+    "selected": true,
+    "published": false,
+    "focused": {
+      "passed": 98,
+      "mainPassed": 87,
+      "mainSuites": 5,
+      "mainSeconds": 170.177,
+      "existingIntervalChecks": 11,
+      "intervalSeconds": 0.587,
+      "newChecks": 7,
+      "failedFinal": 0,
+      "skipped": 0
+    },
+    "native": {
+      "distinctPassed": 6,
+      "sourceArtCases": 4,
+      "copiedBundleCases": 2,
+      "retries": 0,
+      "skips": 0,
+      "flaky": 0,
+      "counts": "Initial three passing source identities plus final High source identity and two copied identities. Intermediate nanosecond High also passes but repeats the same identity and is excluded from selected counts. Initial failed High retained.",
+      "initialStats": {
+        "startTime": "2026-10-11T05:12:03.944Z",
+        "duration": 162840.111,
+        "expected": 3,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "finalHighStats": {
+        "startTime": "2026-10-11T05:21:43.646Z",
+        "duration": 80489.10100000001,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "copiedStats": {
+        "startTime": "2026-10-11T05:23:12.447Z",
+        "duration": 14374.24,
+        "expected": 2,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "artViews": 48,
+      "artPairedScreenshots": 96,
+      "preparedAnimationUpdates": 1632,
+      "bossViews": 20,
+      "bossPreparedAnimationUpdates": 960,
+      "bossWalkDistancePerView": 3.6,
+      "copiedPlanViews": 48,
+      "themes": 5,
+      "qualities": [
+        "high",
+        "low"
+      ],
+      "hero": "Supplied fourteen-slot Fighter and actual desktop/phone HUD at zoom15.",
+      "sourceMaxPreparedDraws": {
+        "high": 102,
+        "low": 51
+      },
+      "sourceMaxPreparedTriangles": {
+        "high": 69873,
+        "low": 25703
+      },
+      "sourceControl": "Parent5d272649 dressing at identical camera, hero, pose, lighting and room-state visibility. Nonboss geometry/batches unchanged; boss adds470triangles and removes one opaque batch. Center and edge views per arena;48mixer/render frames and3.6world-unit prepared walk per boss view cross stone joints/perimeter.",
+      "copiedGPU": "Exact copied/versioned engine hash matches saved bundle. All five themes, center/edge arenas and other present plans render High/Low with linked existing PBR materials, stable colliders and exact warmed GPU counts after every cleared theme and final cleanup.",
+      "scope": "Prepared source presentation and copied-bundle resource lifetime only. Umbral has three plans; other themes have four. No continuous engine/server combat, sustained party performance or physical-device acceptance. Synthetic crystal_vigil unit coverage is not a fresh raid-route acceptance."
+    },
+    "cost": {
+      "stones": 49,
+      "triangles": 502,
+      "outerRadius": 17.4,
+      "visualOnly": true,
+      "sourceAttributeBytes": 66264,
+      "bounds": [
+        [
+          -17.36676025390625,
+          0.10400000214576721,
+          -17.36676025390625
+        ],
+        [
+          17.36676025390625,
+          0.12399999797344208,
+          17.36676025390625
+        ]
+      ],
+      "additionalTrianglesPerBoss": 470,
+      "opaqueBatchesPerBoss": -1,
+      "sourceShapes": "One additional lazy kit-owned geometry, shared across boss rooms; at most five composition shapes including four border plans. Source49stones/502triangles/66264attribute bytes, plus merged per-room attribute ownership. Old cylinder source remains in the existing shape kit but is no longer placed.",
+      "newTextures": 0,
+      "newMaterials": 0,
+      "newLights": 0,
+      "newColliders": 0,
+      "surface": "Existing mapped stone paving material, vertex color variation, nonemissive. TopY=.121-.124; bevel baseY=.104, above floorY=.1. Grout reveals the existing floor. Top covers over90% of original octagon area. Original .32-high top covered feet/state markings; inlays move .35to.14.",
+      "performance": "Additional geometry/buffer/shading cost despite one fewer boss batch. No FPS saving or clearance of historical performance failures."
+    },
+    "checks": {
+      "scopedESLint": "pass",
+      "gitDiffCheck": "pass",
+      "copiedProductionBundle": {
+        "worker": {
+          "output": "src/core/ActorGameplayGeometryWorker.44618fbd1160aa63.js",
+          "sha256": "44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43",
+          "bytes": 137178,
+          "modules": 10,
+          "imports": []
+        },
+        "bundledModules": 462,
+        "bytes": 3480239,
+        "sharedLoginModules": 22,
+        "vendorModules": [
+          "vendor/three/examples/jsm/geometries/RoundedBoxGeometry.js",
+          "vendor/three/examples/jsm/loaders/GLTFLoader.js",
+          "vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+          "vendor/three/examples/jsm/postprocessing/MaskPass.js",
+          "vendor/three/examples/jsm/postprocessing/OutputPass.js",
+          "vendor/three/examples/jsm/postprocessing/Pass.js",
+          "vendor/three/examples/jsm/postprocessing/RenderPass.js",
+          "vendor/three/examples/jsm/postprocessing/ShaderPass.js",
+          "vendor/three/examples/jsm/postprocessing/UnrealBloomPass.js",
+          "vendor/three/examples/jsm/shaders/CopyShader.js",
+          "vendor/three/examples/jsm/shaders/FXAAShader.js",
+          "vendor/three/examples/jsm/shaders/LuminosityHighPassShader.js",
+          "vendor/three/examples/jsm/shaders/OutputShader.js",
+          "vendor/three/examples/jsm/utils/BufferGeometryUtils.js",
+          "vendor/three/examples/jsm/utils/SkeletonUtils.js"
+        ],
+        "externalImports": [
+          "../assets/ServiceWorkerBoot.js",
+          "../data/worldGeography.js",
+          "../ui/EmailRecoveryUI.js",
+          "../ui/OwnedEvents.js",
+          "../ui/PasswordChangeUI.js",
+          "../ui/ReportUI.js",
+          "../ui/reportTypes.js",
+          "./CredentialToken.js",
+          "./GraphicsStartup.js",
+          "three"
+        ],
+        "engineSHA256": "f6c7b8b4584cdcdfbd8f6916869002eb18cb537bedda3f85202759743e86750a"
+      },
+      "ownedStaticServer": "stopped;4204free",
+      "timingMethod": "Existing renderFrameInterval exact browser-reported decimal subtraction reused; rawIntervals retained. Original median20/33.4 andp9533.4/50 limits unchanged."
+    },
+    "visualFindings": {
+      "improved": "Mapped broad stone surface and joints replace the dark filled polygon. Feet, shadows and existing state seals are visible in equipped center/edge desktop/phone views. Grounded perimeter transition.",
+      "remaining": "Sparse room furniture/composition, repeated underlying tiles and simple props remain short of final modern-art acceptance. Broader world/actor/contact/audio/device work remains."
+    },
+    "limits": "Existing50/66.7ms,49.9/66.6ms,386370/281603/289302triangles,438/361draw andLow202draw failures remain. No campaign/soak replay, listening, supported physical-device, whole-party performance or owner modern-art approval. Original operations/F1-F5/beta/launch/handoff scope stays active. No unrelated private source selected.",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-dungeon-boss-masonry-checks-20261011",
+      "frozen": true,
+      "inventoryEntries": 448,
+      "files": 449,
+      "inventorySHA256": "488537f6d363119411b38e24f649a5bfec39238e722b9dce7169bd565b2fa8e7"
+    },
+    "receipt": "docs/plans/2026-10-11-dungeon-boss-masonry-qualification.json"
+  }
+}

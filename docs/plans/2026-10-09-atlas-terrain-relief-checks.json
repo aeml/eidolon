@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "status": "qualified local map component for staged raised-Earth delivery; not public activation or full art approval",
+  "base": "f1b71841e5b0328a8f1b9d0db7dc24178c938ad9",
+  "ownedWorktree": "/home/aeml/.local/share/eidolon-atlas-relief-XKsLzhuX",
+  "implementation": {
+    "profile": "WorldMap passes its existing server-authoritative terrain profile. Flat/default tiles stay flat; unknown profiles retain the existing clear reload failure.",
+    "heights": "Contours at 3m intervals intersect the exact canonical rendered/server triangles. Hillshade samples that same field; no new terrain, paths or gameplay authority.",
+    "rocks": "Only earth-elevation-rocks-v1 draws the 18 exact registered solid collision footprints, including heel/toe rocks. Elevation-only maps do not invent them.",
+    "ownership": "CPU-backed existing tile canvas, baked once at existing 1024/512 resolution; cached pans do not resample. Temporary raster bytes are not retained. Existing disposal zeroes canvas storage.",
+    "legend": "Explains contour intervals and hills versus roads, hidden on flat worlds and all interior maps.",
+    "preserved": "Canonical foliage, roads, gates, markers, filters, waypoints, private-instance separation, public terrain selection, server collision/saves/progression, actor assets and all original performance budgets. No new microversion."
+  },
+  "checks": {
+    "units": "7 actual focused suites / 50 checks pass20.018s. Every contour endpoint and midpoint checked against canonical height; actual footprints checked at both resolutions; cache/disposal/profile handoff/legend transition included.",
+    "routing": "2 actual browser-plan/coverage suites / 22 checks pass0.777s. New two-case atlas file added once to the existing interface command, no new runner or duplicated mandatory case.",
+    "browser": "8 distinct anonymous System Chrome cases pass36.7s, retries0: desktop/mobile relief plus existing destination, waypoint, quest and interior maps. Final legend change reruns only its 2 affected cases: pass9.1s. Not 10 distinct passes.",
+    "pixels": "Town, Water, Fire and Air tiles are byte-identical across all three profiles. Earth hillshade and registered rocks change pixels only on their applicable profiles.",
+    "review": "Root viewed both desktop and 390px screenshots: smoother relief, existing clear roads and service/quest markers. Modest cartography improvement, not full modern ARPG art or physical-phone qualification.",
+    "lint": "All eight affected source/test files scoped lint; whitespace check passes. No broad campaign, party, soak or load rerun needed for static map pixels."
+  },
+  "retainedTrials": [
+    "First footprint checks fail on floating-point multiplication order, not wrong coordinates; compare every actual projected vertex to 1e-8 and rerun.",
+    "Initial per-triangle hillshade passes checks but screenshot shows facets; rejected before promotion. Final per-pixel sampled slope removes faceting; exact triangulated contour contract unchanged."
+  ],
+  "artifacts": {
+    "integration": "/home/aeml/.local/share/eidolon-atlas-relief-browser-final-20261009",
+    "finalLegend": "/home/aeml/.local/share/eidolon-atlas-relief-legend-20261009",
+    "desktopSHA256": "7073067aa8397d99e3077deeda71074732ddae0b61da911be51f01b280f8c458",
+    "mobileSHA256": "4d9a9f6d9f807f3a80828126b6e0b7c58586076779d36d4fd39f0bd70dc535a4"
+  },
+  "next": "Select into staged 1.87 terrain work without importing unrelated future/current release versions. Current dc77 CI acceptance and sequential 1.79.12-18 deliveries remain separate prerequisites. Raised public profile remains disabled until its full compatible party/device/rendering/gameplay/save gates qualify."
+}

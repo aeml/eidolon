@@ -1,0 +1,36 @@
+{
+  "recordedUTC": "2026-10-10T15:04:32.068851+00:00",
+  "sourceCommit": "7d3e1a11e8d7fafdee6632dfd402b9bb88bdc8bc",
+  "liveCommit": "77859697a71329facd0584a95167c80eac392398",
+  "run": 38061055843,
+  "attempt": 1,
+  "conclusion": "failure",
+  "nativeStats": {
+    "total": 1,
+    "expected": 0,
+    "unexpected": 1,
+    "flaky": 0,
+    "skipped": 0,
+    "ok": false
+  },
+  "archive": {
+    "artifactID": 11673465253,
+    "sha256": "1247bef3175f13ac2b85681d1d29546224255d2ce6c659df699ba7def6e86fe6",
+    "apiDigestMatches": true,
+    "safeExtraction": "bounded20MB; no absolute paths, traversal or symlinks"
+  },
+  "complete": true,
+  "decodeErrors": 0,
+  "oneSale": true,
+  "walletGold": 387855,
+  "exactSaleGold": 389355,
+  "separateRoomRewardGold": 175,
+  "subsequentWireGold": 389530,
+  "observedClientPollGold": 389530,
+  "causalEvidence": "The actual live failing sale credited its exact1500Gold first, then delivered a separate earned room175Gold reward and state. Unchanged strict helper incorrectly required sale-only389355 after final389530 arrived. One sale, no retries, no artificial pacing, original helpers and verbatim packets.",
+  "importantInterpretation": "Room event success/pending=false are observer defaults for absent flags, not evidence of failed delivery. Host observer timestamps do not establish exact server execution time.",
+  "limits": "This resolves the observed public26 diagnostic vendor failure, not every historical failure. Required original CI remains failed; no retry/waiver or gate acceptance.",
+  "evidence": "/home/aeml/.local/share/eidolon-live-gold-provenance-checks-20261010",
+  "inventoryEntries": 9,
+  "inventorySHA256": "e8c9e2a3e48755cb65e75792121cc499457e6f295f858136d8790cf646e0d7ec"
+}

@@ -1,0 +1,30 @@
+{
+  "status": "Staged growth-habit refinement; not deployed or final art/performance acceptance",
+  "base": "aa7455a7 raised-current preparation; canonical selection retains unrelated held16 tint/smoothing/6.5m batching",
+  "change": "Existing bracken/sedge breadth and height vary independently by stable position. No new plants, positions, geometry, materials, maps, lights, solids, rewards, equipment or production profile activation. Horizontal reach cannot exceed the existing envelope. Shared rooted-wind shader compensates unequal horizontal scale so every plant retains one world breeze and original .22*1.4 maximum displacement; bounded vertex arithmetic changes, no FPS improvement claim.",
+  "placementProof": {
+    "high": {
+      "count": 13087,
+      "sha256": "4dc9a074cc190329491eb7bf33e1bd79e5adc4d113a0f6c84e6aaaf1a4280ef9"
+    },
+    "low": {
+      "count": 7439,
+      "sha256": "b71333ddd3c17fd8ba46ccd05bcb2cf3853b8e918daaf0eefa179b55ed6f7e74"
+    },
+    "comparison": "Exact JSON placement hashes independently equal pre-change records; Low retains identical High shapes."
+  },
+  "verification": "14 focused growth/bounds/wind units pass38.105s; scoped lint and whitespace pass. Original exact transformed-vertex bounds, path clearance, rooted wind, reduced-motion, material ownership and disposal assertions retained. No budget/tolerance/timeouts changed.",
+  "native": "Existing equipped raised-world High1280x844 and Low390x844 cases2pass23.5s, retries0, System Chrome AMD Vulkan/RADV. Original14 supplied equipment/no-fallback, movement/jump/picking/abilities/effects/shadow/culling checks pass. High road calls/triangles260/220515,344/244630,271/212899; Low132/73350,100/65723,103/67456. Original350draw/250kHigh and200draw/85kLow road budgets remain. Timed profile flag OFF; no FPS/physical-phone qualification.",
+  "review": "Root inspected prior/current High grove, current High woodland approach and Low grove at gameplay camera. Improvement is modest: narrower/taller individual growth reduces identical star-shaped silhouettes, roads remain readable. Broad sparse composition, repeated underlying plant geometry, rock forms/materials and final modern-art approval remain open.",
+  "evidence": {
+    "units": "/home/aeml/.local/share/eidolon-understory-growth-habits-final-units-20261009.log",
+    "unitsSHA256": "a8ab790dd2507633d9a57743887dba05442526f68998a2232ce87e858fc9e8f1",
+    "native": "/home/aeml/.local/share/eidolon-understory-growth-habits-native-20261009",
+    "nativeLogSHA256": "6e1211d867acd7cace0b2e33dc2e8669ae522de28c2d7874ee7a1b8ddd7d244d",
+    "sourceSHA256": {
+      "src/art/EarthUnderstory.js": "0336dfd00b432236f2493e198ae77ead4a7191b333799964fd4534a2392a3671",
+      "src/art/WoodlandWindMaterial.js": "f9d7a1cbdac7d862397e3402c5a08e0d0796b9378edbd9483320ffcf4ef58f00"
+    }
+  },
+  "next": "Queued15-18 unchanged. Await own15 CI/public acceptance; held16 strict timing remains open. Do not activate raised terrain or raise version for this component. Full modern-art/F1-F5/1.81-1.99/owner beta-and-launch gates remain open."
+}

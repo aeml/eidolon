@@ -11,14 +11,19 @@ uniform float woodlandMotion;
 vec2 woodlandBend() {
     vec3 anchor = vec3(0.);
     vec2 direction = normalize(vec2(.86, .5));
-    #ifdef USE_INSTANCING
-        anchor = (modelMatrix * instanceMatrix * vec4(0., 0., 0., 1.)).xyz;
+    #if defined(USE_BATCHING) || defined(USE_INSTANCING)
+        #ifdef USE_BATCHING
+            mat4 woodlandMatrix = getBatchingMatrix(getIndirectIndex(gl_DrawID));
+        #else
+            mat4 woodlandMatrix = instanceMatrix;
+        #endif
+        anchor = (modelMatrix * woodlandMatrix * vec4(0., 0., 0., 1.)).xyz;
         // Undo horizontal stretch as well as rotation. Different growth habits
         // must still share one breeze; retain the original maximum wind reach.
-        vec2 woodlandStretch = vec2(length(instanceMatrix[0].xz), length(instanceMatrix[2].xz));
+        vec2 woodlandStretch = vec2(length(woodlandMatrix[0].xz), length(woodlandMatrix[2].xz));
         vec2 woodlandSafeStretch = max(woodlandStretch, vec2(.001));
-        direction = vec2(dot(instanceMatrix[0].xz / woodlandSafeStretch.x, direction),
-                         dot(instanceMatrix[2].xz / woodlandSafeStretch.y, direction));
+        direction = vec2(dot(woodlandMatrix[0].xz / woodlandSafeStretch.x, direction),
+                         dot(woodlandMatrix[2].xz / woodlandSafeStretch.y, direction));
         direction *= min(woodlandStretch.x, woodlandStretch.y) / woodlandSafeStretch;
     #endif
     float phase = dot(anchor.xz, vec2(.09, .055));
@@ -42,7 +47,7 @@ export function createWoodlandWindMaterial({ now = () => performance.now() / 100
     material.onBeforeCompile = shader => {
         shader.uniforms.woodlandTime = time;
         shader.uniforms.woodlandMotion = motion;
-        shader.vertexShader = shader.vertexShader.replace('#include <common>', `#include <common>\n${windShader}`)
+        shader.vertexShader = shader.vertexShader.replace('#include <batching_pars_vertex>', `#include <batching_pars_vertex>\n${windShader}`)
             .replace('#include <beginnormal_vertex>', `#include <beginnormal_vertex>
                 // Analytic normal for x/z shear proportional to height squared.
                 // Root vertices (y=0) stay fixed, including on raised terrain.
@@ -52,7 +57,7 @@ export function createWoodlandWindMaterial({ now = () => performance.now() / 100
             .replace('#include <begin_vertex>', `#include <begin_vertex>
                 transformed.xz += woodlandOffset * woodlandHeight * woodlandHeight;`);
     };
-    material.customProgramCacheKey = () => 'woodland-rooted-wind-v2';
+    material.customProgramCacheKey = () => 'woodland-rooted-wind-v3';
     material.userData.woodlandWind = true;
     return material;
 }

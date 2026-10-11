@@ -155,6 +155,18 @@ export class FoliageShadowInfluence {
                 }
                 if (!cached.intersectsShadow) {
                     this.omitted.push(object); object.castShadow = false;
+                    // A static leaf whose geometry AND complete swept shadow
+                    // are outside this camera cannot contribute to either
+                    // pass. Avoid repeating Three's sphere/sort/submission work
+                    // for these cells. Incoming off-screen shadows stay live;
+                    // descendants, deforming materials and unknown filters
+                    // retain ordinary traversal. Restore before every camera.
+                    // The swept-volume test includes the original caster box,
+                    // and its planes include the full filter padding, so its
+                    // rejection already proves the geometry is outside too.
+                    if (!object.children.length) {
+                        this.hidden.push(object); object.visible = false;
+                    }
                 }
             }
         };

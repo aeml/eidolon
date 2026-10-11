@@ -2,13 +2,21 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { getRegionTheme } from './darkFantasyTheme.js';
 import { getDungeonRoomIdentityTag } from '../utils/dungeonRoomMetadata.js';
-import { createTaperedRoot } from './EarthLandmarkGeometry.js';
+import { createDungeonGraveRootGeometry } from './DungeonGraveRootGeometry.js';
 import { sampleVerdantMasonry } from './VerdantMasonry.js';
 import { createCryptWallGeometry } from './CryptWallGeometry.js';
 import { sampleElementalDungeonSurface } from './ElementalDungeonSurface.js';
 import { createElementalDungeonWallGeometry } from './ElementalDungeonWallGeometry.js';
 import { createDungeonVigilBase, createDungeonVigilShaft, createDungeonVigilCage,
     createDungeonBevelBlock, createDungeonFontBasin, createDungeonCofferLid } from './DungeonVigilGeometry.js';
+import { createDungeonEntryWard } from './DungeonEntryWard.js';
+import { applyVerdantFloorPatina } from './VerdantFloorPatina.js';
+import { applyElementalFloorPatina } from './ElementalFloorPatina.js';
+import { createDungeonPropSurfaceMaps } from './DungeonPropSurface.js';
+import { createDungeonProcessionalPaving } from './DungeonProcessionalPaving.js';
+import { createDungeonRegionalRelics } from './DungeonRegionalRelics.js';
+import { createDungeonFloorComposition, getDungeonFloorCompositionPlan } from './DungeonFloorComposition.js';
+import { createDungeonDaisMasonry } from './DungeonDaisMasonry.js';
 
 const TEXTURE_SIZE = 64;
 export const DUNGEON_FLOOR_TEXTURE_SPAN = 24;
@@ -163,26 +171,37 @@ function configureDungeonMaterial(material, isTransparent = false) {
 }
 
 function makeDetailMaterial(color, options = {}) {
-    return configureDungeonMaterial(new THREE.MeshStandardMaterial({
+    const material = configureDungeonMaterial(new THREE.MeshStandardMaterial({
         color,
+        vertexColors: options.vertexColors ?? false,
         roughness: options.roughness ?? 0.85,
         metalness: options.metalness ?? 0,
         emissive: options.emissive ?? 0x000000,
         emissiveIntensity: options.emissiveIntensity ?? 0,
         side: options.side ?? THREE.FrontSide
     }));
+    material.flatShading = options.flatShading ?? true;
+    return material;
 }
 
-function createMaterialSet(dungeonType) {
+function createMaterialSet(dungeonType, quality) {
     const theme = getRegionTheme(dungeonType);
+    const finished = (surface, color, metalness) => {
+        const material = makeDetailMaterial(color, { roughness: 1, metalness, flatShading: false });
+        Object.assign(material, createDungeonPropSurfaceMaps(surface, quality));
+        material.normalScale.set(.35, .35);
+        material.userData.dungeonPropSurface = surface;
+        return material;
+    };
+    const stone = finished('stone', new THREE.Color(theme.palette.midtone).lerp(new THREE.Color(0x92908a), .8), 0);
+    const paving = stone.clone();
+    paving.color.multiplyScalar(.48);
+    paving.vertexColors = true;
     return Object.freeze({
         shadow: makeDetailMaterial(theme.palette.shadow, { roughness: 0.98 }),
-        stone: makeDetailMaterial(theme.palette.midtone, { roughness: 0.94 }),
-        metal: makeDetailMaterial(mixBytes(
-            colorBytes(theme.palette.shadow),
-            colorBytes(theme.palette.midtone),
-            0.62
-        ).reduce((value, byte) => (value << 8) + byte, 0), { roughness: 0.42, metalness: 0.68 }),
+        stone,
+        paving,
+        metal: finished('metal', new THREE.Color(0x8e887d).lerp(new THREE.Color(theme.palette.midtone), .08), .68),
         accent: makeDetailMaterial(theme.palette.accent, {
             roughness: 0.4,
             emissive: theme.palette.accent,
@@ -197,11 +216,15 @@ function createMaterialSet(dungeonType) {
         inlay: makeDetailMaterial(theme.palette.midtone, {
             roughness: .82, metalness: .25,
             emissive: theme.palette.accent, emissiveIntensity: .08
-        })
+        }),
+        ...(dungeonType === 'verdant_bastion_catacombs' ? {
+            bark: makeDetailMaterial(0x6e6451, { roughness: .94, vertexColors: true, flatShading: false })
+        } : {})
     });
 }
 
-function createShapes() {
+function createShapes(dungeonType, quality) {
+    const relics = dungeonType === 'verdant_bastion_catacombs' ? null : createDungeonRegionalRelics(dungeonType, quality);
     return Object.freeze({
         box: new THREE.BoxGeometry(1, 1, 1),
         cylinder6: new THREE.CylinderGeometry(0.5, 0.5, 1, 6),
@@ -210,13 +233,17 @@ function createShapes() {
         cone6: new THREE.ConeGeometry(0.5, 1, 6),
         cofferLid: createDungeonCofferLid(),
         vigilInlay: new THREE.RingGeometry(0.486, 0.5, 48),
-        graveRoot: createTaperedRoot([[-1, 0, 0], [-.6, .18, .12], [.2, .08, -.12], [1, 0, 0]], .07, 'low'),
+        graveRoot: createDungeonGraveRootGeometry(quality),
         octahedron: new THREE.OctahedronGeometry(0.5, 0),
         vigilBase: createDungeonVigilBase(),
         vigilShaft: createDungeonVigilShaft(),
         vigilCage: createDungeonVigilCage(),
         bevelBlock: createDungeonBevelBlock(),
-        fontBasin: createDungeonFontBasin()
+        fontBasin: createDungeonFontBasin(),
+        entryPaving: createDungeonProcessionalPaving('entry_gate'),
+        cachePaving: createDungeonProcessionalPaving('treasure_cache'),
+        shrinePaving: createDungeonProcessionalPaving('restorative_shrine'),
+        ...(relics ? { regionalBody: relics.body, regionalMetal: relics.metal, regionalGlow: relics.glow } : {})
     });
 }
 
@@ -316,7 +343,6 @@ export function createDungeonRoomStatePresentation(dungeonType, room, roomIndex,
     const currentMaterial = makeRoomStateMaterial(theme.palette.spirit, 0.26);
     const clearedMaterial = makeRoomStateMaterial(0xa8ffd0, 0.46);
     const sealMaterial = makeRoomStateMaterial(theme.palette.accent, 0.82);
-    const portalMaterial = makeRoomStateMaterial(theme.palette.spirit, 0.18);
 
     const objectiveHalo = addRoomStateMesh(
         root,
@@ -376,13 +402,10 @@ export function createDungeonRoomStatePresentation(dungeonType, room, roomIndex,
 
     let exitPortal = null;
     if (room?.type === 'start') {
-        exitPortal = addRoomStateMesh(
-            root,
-            'DungeonExitPortal',
-            new THREE.TorusGeometry(3.25, 0.24, 8, 36),
-            portalMaterial,
-            { position: [0, 3.7, -radius * 0.42] }
-        );
+        const ward = createDungeonEntryWard(theme);
+        ward.position.z = -radius * .42;
+        root.add(ward);
+        exitPortal = ward.getObjectByName('DungeonExitPortal');
     }
 
     objectiveHalo.visible = false;
@@ -416,7 +439,6 @@ export function applyDungeonRoomStatePresentation(presentation, roomState = null
     if (exitPortal) {
         exitPortal.visible = true;
         exitPortal.material.opacity = exitReady ? 0.9 : 0.18;
-        exitPortal.scale.setScalar(exitReady ? 1.08 : 0.94);
     }
     presentation.userData.cleared = cleared;
     presentation.userData.objective = objective;
@@ -443,7 +465,7 @@ export function animateDungeonRoomStatePresentation(presentation, elapsedSeconds
         rewardSeal.position.y = 3.6 + (pulse * 0.28);
     }
     if (exitPortal?.visible) {
-        exitPortal.rotation.z = elapsedSeconds * (presentation.userData.exitReady ? 0.2 : 0.07);
+        exitPortal.material.userData.dungeonVeilTime.value = Math.max(0, Number(elapsedSeconds) || 0);
         exitPortal.material.opacity = presentation.userData.exitReady
             ? 0.72 + (pulse * 0.22)
             : 0.14 + (pulse * 0.08);
@@ -453,49 +475,30 @@ export function animateDungeonRoomStatePresentation(presentation, elapsedSeconds
 function buildRegionalMotif(root, dungeonType, shapes, materials, radius) {
     if (dungeonType === 'verdant_bastion_catacombs') {
         for (const side of [-1, 1]) {
-            const rootBeam = addPart(root, `verdant:grave-root:${side}`, shapes.graveRoot, materials.shadow, {
+            const rootBeam = addPart(root, `verdant:grave-root:${side}`, shapes.graveRoot, materials.bark, {
                 position: [side * radius * 0.78, .2, radius * 0.58],
-                scale: [radius * .36, 2, 3]
+                scale: [radius * .24, 2, 4]
             });
             rootBeam.rotation.y = side * .6;
         }
-    } else if (dungeonType === 'molten_core') {
-        for (const side of [-1, 1]) {
-            addPart(root, `molten:crucible-fang:${side}`, shapes.cone4, materials.accent, {
-                position: [side * radius * 0.56, 0.72, radius * 0.56],
-                scale: [1.4, 2.8, 1.4]
-            });
-        }
-    } else if (dungeonType === 'tempest_spire') {
-        for (const side of [-1, 1]) {
-            addPart(root, `tempest:floating-slate:${side}`, shapes.box, materials.stone, {
-                position: [side * radius * 0.62, 1.4 + (side + 1) * 0.35, radius * 0.52],
-                rotation: [0.18, side * 0.32, side * 0.12],
-                scale: [3.2, 0.55, 2.1]
-            });
-        }
-    } else if (dungeonType === 'abyssal_well') {
-        for (const side of [-1, 1]) {
-            addPart(root, `abyssal:coral-antler:${side}`, shapes.cone6, materials.spirit, {
-                position: [side * radius * 0.58, 1.5, radius * 0.55],
-                rotation: [0, 0, side * 0.38],
-                scale: [1.15, 3.5, 1.15],
-                castShadow: false
-            });
-        }
     } else {
+        const [x, z] = dungeonType === 'molten_core' ? [.56, .56]
+            : dungeonType === 'tempest_spire' ? [.62, .52] : [.58, .55];
+        root.userData.regionalRelic = { type: dungeonType, count: 2, channels: ['body', 'metal', 'glow'],
+            quality: shapes.regionalBody.userData.dungeonRegionalRelic.quality };
         for (const side of [-1, 1]) {
-            const shard = addPart(root, `umbral:memory-shard:${side}`, shapes.octahedron, side > 0 ? materials.accent : materials.spirit, {
-                position: [side * radius * 0.58, 1.8, radius * 0.54],
-                scale: [1.4, 3.6, 1.4],
-                castShadow: false
+            for (const [role, shape, material] of [
+                ['body', shapes.regionalBody, materials.stone], ['metal', shapes.regionalMetal, materials.metal],
+                ['glow', shapes.regionalGlow, dungeonType === 'abyssal_well' || (dungeonType === 'umbral_nexus' && side < 0)
+                    ? materials.spirit : materials.accent]
+            ]) addPart(root, `regional:${dungeonType}:${side}:${role}`, shape, material, {
+                position: [side * radius * x, 0, radius * z], rotation: [0, side * .18, 0], castShadow: role !== 'glow'
             });
-            shard.rotation.z = side * 0.34;
         }
     }
 }
 
-function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials) {
+function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials, composition, dais) {
     const identity = getDungeonRoomIdentityTag(room) || 'route_hall';
     const size = Math.max(40, Number(room.width) || 80);
     const radius = Math.max(8, Math.min(24, size * 0.2));
@@ -509,6 +512,20 @@ function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials) {
     root.userData.visualOnly = true;
     root.userData.roomBounds = [Number(room.width) || size, Number(room.height) || size];
 
+    root.userData.floorComposition = { ...composition.userData.dungeonFloorComposition };
+    addPart(root, `${identity}:floor-composition`, composition, materials.paving, {
+        scale: [radius / 24, 1, Math.min(radius, (Number(room.height) || size) * .2) / 24], castShadow: false
+    });
+
+    const paving = { entry_gate: shapes.entryPaving, treasure_cache: shapes.cachePaving,
+        restorative_shrine: shapes.shrinePaving }[identity];
+    if (paving) {
+        root.userData.processionalPaving = { ...paving.userData.dungeonProcessionalPaving };
+        addPart(root, `${identity}:processional-paving`, paving, materials.paving, {
+            scale: [radius / 24, 1, radius / 24], castShadow: false
+        });
+    }
+
     const wardRadius = Math.min(6, radius * .32);
     addFloorRing(root, shapes, materials.shadow, `${identity}:outer-ward`, wardRadius);
     addFloorRing(root, shapes, materials.inlay, `${identity}:inner-ward`, wardRadius * 0.67, 0.16);
@@ -518,9 +535,6 @@ function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials) {
     case 'entry_gate':
         addPylon(root, shapes, materials, 'entry:left-vigil', -radius * 0.62, -radius * 0.42, 5.8);
         addPylon(root, shapes, materials, 'entry:right-vigil', radius * 0.62, -radius * 0.42, 5.8);
-        addPart(root, 'entry:oath-threshold', shapes.bevelBlock, materials.stone, {
-            position: [0, 0.2, -radius * 0.42], scale: [radius * 0.85, 0.4, 1.1]
-        });
         break;
     case 'treasure_cache':
         addPart(root, 'cache:reliquary-plinth', shapes.vigilBase, materials.stone, {
@@ -575,18 +589,19 @@ function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials) {
         }
         break;
     case 'boss_lair':
-        addPart(root, 'boss:buried-dais', shapes.cylinder8, materials.shadow, {
-            position: [0, 0.16, 0], scale: [radius * 1.45, 0.32, radius * 1.45]
+        root.userData.bossMasonry = { ...dais.userData.dungeonDaisMasonry };
+        addPart(root, 'boss:buried-dais', dais, materials.paving, {
+            scale: [radius / 24, 1, radius / 24], castShadow: false
         });
         if (room.hook === 'crystal_vigil') {
             // The old broad, emissive boss disc overwhelms Maelin/the crystal
             // under bloom. This is decorative inlay, not a combat telegraph.
             addPart(root, 'boss:crystal-vigil-inlay', shapes.vigilInlay, materials.metal, {
-                position: [0, 0.35, 0], rotation: [-Math.PI / 2, 0, 0],
+                position: [0, 0.14, 0], rotation: [-Math.PI / 2, 0, 0],
                 scale: [radius * 0.84, radius * 0.84, 1], castShadow: false, receiveShadow: false
             });
         } else {
-            addFloorRing(root, shapes, materials.inlay, 'boss:soul-circuit', radius * 0.42, 0.35);
+            addFloorRing(root, shapes, materials.inlay, 'boss:soul-circuit', radius * 0.42, 0.14);
         }
         for (let i = 0; i < 6; i += 1) {
             const angle = (i / 6) * Math.PI * 2;
@@ -670,8 +685,9 @@ export function createProceduralDungeonInteriorKit(dungeonType, { quality = 'hig
     sampleCache.clear();
     const materials = new Map();
     const geometries = new Map();
-    const shapes = createShapes();
-    const detailMaterials = createMaterialSet(dungeonType);
+    const compositions = new Map();
+    const shapes = createShapes(dungeonType, surfaceQuality);
+    const detailMaterials = createMaterialSet(dungeonType, surfaceQuality);
 
     const surfaceMaterial = (surface, width, height, transparent = false) => {
         // Keep masonry legible at gameplay zoom without adding geometry.
@@ -703,6 +719,8 @@ export function createProceduralDungeonInteriorKit(dungeonType, { quality = 'hig
         material.userData.proceduralDungeonSurface = true;
         material.userData.dungeonType = dungeonType;
         material.userData.surface = surface;
+        if (dungeonType === 'verdant_bastion_catacombs' && surface === 'floor') applyVerdantFloorPatina(material);
+        else if (surface === 'floor') applyElementalFloorPatina(material, dungeonType);
         materials.set(key, material);
         return material;
     };
@@ -733,7 +751,10 @@ export function createProceduralDungeonInteriorKit(dungeonType, { quality = 'hig
         floorMaterial: (width, depth) => surfaceMaterial('floor', width, depth, false),
         wallMaterial: (width, height, transparent = false) => surfaceMaterial('wall', width, height, transparent),
         createRoomDressing(room, roomIndex, { optimized = true } = {}) {
-            const source = buildRoomDressing(dungeonType, room, roomIndex, shapes, detailMaterials);
+            const plan = getDungeonFloorCompositionPlan(getDungeonRoomIdentityTag(room));
+            if (!compositions.has(plan)) compositions.set(plan, createDungeonFloorComposition(plan));
+            if (plan === 'arena' && !compositions.has('dais')) compositions.set('dais', createDungeonDaisMasonry());
+            const source = buildRoomDressing(dungeonType, room, roomIndex, shapes, detailMaterials, compositions.get(plan), compositions.get('dais'));
             const result = optimized ? batchDressing(source) : source;
             result.add(createDungeonRoomStatePresentation(dungeonType, room, roomIndex, { worldSpace: optimized }));
             return result;
@@ -743,7 +764,7 @@ export function createProceduralDungeonInteriorKit(dungeonType, { quality = 'hig
                 surfaceTextures: Object.keys(baseTextures).length,
                 surfaceMaterials: materials.size,
                 surfaceGeometries: geometries.size,
-                detailGeometries: Object.keys(shapes).length,
+                detailGeometries: Object.keys(shapes).length + compositions.size,
                 detailMaterials: Object.keys(detailMaterials).length
             });
         }

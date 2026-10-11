@@ -1,0 +1,508 @@
+{
+  "status": "Deployed exact Alpha1.79.24, mandatory live acceptance FAILED; not accepted and no successor publication.",
+  "recordedUTC": "2026-10-10T07:02:26.543141+00:00",
+  "sourceCommit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+  "version": "Alpha 1.79.24",
+  "predecessor": "2e519bb07fc9eaf2c8afa87b24f2bbb7521a50e9",
+  "preparedRelease": {
+    "status": "Prepared isolated maintenance release; normal publication and own exact CI/public acceptance pending.",
+    "version": "Alpha 1.79.24",
+    "predecessor": "2e519bb07fc9eaf2c8afa87b24f2bbb7521a50e9",
+    "diagnosis": "The original local-matrix cache already exists in public23 RenderSystem and FoliageShadowInfluence. Earlier private-only descriptions were incorrect. Exact public helper fails8/11 new cases, including manual descendants that write no dirty flag, direct world writes and auto/manual mode changes. Original frozen receipts are retained and superseded by this audit.",
+    "change": "Cache only unchanged local TRS composition; retain updateMatrix dirty side effect and stock Three world traversal/force propagation. Manual descendants refresh normally. Bone/skinned/instance hooks remain untouched; teardown preserves later owner hooks. Previous unsafe static-child world-multiply skip removed; no performance improvement claimed.",
+    "scope": "Only transform helper changes game behavior. Jump prediction/authoritative world and timing-route source remain byte-exact to23: travel cap1.5s. Private terrain/art/body/actor-filter/diagnostic pilots excluded; original cache was already public. Saves, authority, collisions, balance and Gold/EP unchanged.",
+    "checks": {
+      "publicBaseline": "8failed3passed against original public helper; baseline log retained.",
+      "focused": "552passed/11suites in8.005s. Initial mistaken invocation of3nonexistent suite names and subsequent stale child-world-skip fixture failure retained; fixture now verifies skipped local composition plus ordinary child-world refresh. Scoped ESLint and whitespace passed.",
+      "native": "Native AMD ANGLE Vulkan: all14 ordinary/cached/ordinary stages have equal world matrices and zero changed/unstable RGBA channels, including manual descendants and color/shadows. Explicit opt-in test, not standard CI or live test.",
+      "populated": [
+        {
+          "case": "populated-earth-world-popu-1478c-rth-and-town-high-at-1280px",
+          "quality": "high",
+          "views": 9,
+          "maxima": {
+            "median": 16.7,
+            "p95": 33.4,
+            "calls": 240,
+            "triangles": 245636
+          },
+          "limits": {
+            "median": 20,
+            "p95": 33.4,
+            "calls": 350,
+            "triangles": 250000
+          },
+          "stableResources": true
+        },
+        {
+          "case": "populated-earth-world-popu-41144-ter-and-Fire-high-at-1280px",
+          "quality": "high",
+          "views": 12,
+          "maxima": {
+            "median": 16.7,
+            "p95": 33.4,
+            "calls": 108,
+            "triangles": 196707
+          },
+          "limits": {
+            "median": 20,
+            "p95": 33.4,
+            "calls": 350,
+            "triangles": 250000
+          },
+          "stableResources": true
+        },
+        {
+          "case": "populated-earth-world-populated-Air-high-at-1280px",
+          "quality": "high",
+          "views": 9,
+          "maxima": {
+            "median": 16.7,
+            "p95": 33.4,
+            "calls": 110,
+            "triangles": 180781
+          },
+          "limits": {
+            "median": 20,
+            "p95": 33.4,
+            "calls": 350,
+            "triangles": 250000
+          },
+          "stableResources": true
+        },
+        {
+          "case": "populated-earth-world-populated-Air-low-at-390px",
+          "quality": "low",
+          "views": 9,
+          "maxima": {
+            "median": 16.7,
+            "p95": 16.8,
+            "calls": 50,
+            "triangles": 50678
+          },
+          "limits": {
+            "median": 33.4,
+            "p95": 50,
+            "calls": 200,
+            "triangles": 85000
+          },
+          "stableResources": true
+        },
+        {
+          "case": "populated-earth-world-populated-Earth-and-town-low-at-390px",
+          "quality": "low",
+          "views": 9,
+          "maxima": {
+            "median": 16.7,
+            "p95": 16.8,
+            "calls": 109,
+            "triangles": 78990
+          },
+          "limits": {
+            "median": 33.4,
+            "p95": 50,
+            "calls": 200,
+            "triangles": 85000
+          },
+          "stableResources": true
+        },
+        {
+          "case": "populated-earth-world-populated-Water-and-Fire-low-at-390px",
+          "quality": "low",
+          "views": 12,
+          "maxima": {
+            "median": 16.7,
+            "p95": 16.7,
+            "calls": 43,
+            "triangles": 61420
+          },
+          "limits": {
+            "median": 33.4,
+            "p95": 50,
+            "calls": 200,
+            "triangles": 85000
+          },
+          "stableResources": true
+        }
+      ],
+      "populatedResult": "6passed/60timedviews in4.5min; every original High20/33.4ms/350calls/250000triangles and Low33.4/50ms/200calls/85000triangles ceiling met, resource repeat stable. Scene fixture only, not full equipped-party/device/art acceptance.",
+      "notes": "459entries; all458prior entries byte-exact.",
+      "publisher": {
+        "bundledModules": 424,
+        "bytes": 3259359,
+        "sharedLoginModules": 21,
+        "externalImports": [
+          "../assets/ServiceWorkerBoot.js",
+          "../data/worldGeography.js",
+          "../ui/EmailRecoveryUI.js",
+          "../ui/OwnedEvents.js",
+          "../ui/PasswordChangeUI.js",
+          "../ui/ReportUI.js",
+          "../ui/reportTypes.js",
+          "./CredentialToken.js",
+          "./GraphicsStartup.js",
+          "three",
+          "three/addons/geometries/RoundedBoxGeometry.js",
+          "three/addons/loaders/GLTFLoader.js",
+          "three/addons/postprocessing/EffectComposer.js",
+          "three/addons/postprocessing/OutputPass.js",
+          "three/addons/postprocessing/RenderPass.js",
+          "three/addons/postprocessing/ShaderPass.js",
+          "three/addons/postprocessing/UnrealBloomPass.js",
+          "three/addons/shaders/FXAAShader.js",
+          "three/addons/utils/BufferGeometryUtils.js",
+          "three/addons/utils/SkeletonUtils.js"
+        ]
+      },
+      "compiler": "Exact locked esbuild0.28.2 copied from prior frozen qualified private prefix, byte-identical build script; restored executable permissions on new copy only. Shared dependencies and frozen source untouched."
+    },
+    "privateQualification": {
+      "code": "6553fec14bed1042f0533488b350e6df1a873026",
+      "receipt": "docs/plans/2026-10-10-matrix-world-force-checks.json",
+      "evidence": "/home/aeml/.local/share/eidolon-matrix-world-force-checks-20261010",
+      "inventorySHA256": "5bba256821386499c6207f207a37af0d1c5da9117b2ced33cdc7152a4ffc546c",
+      "limits": "80focused/14native/actual High-and-Low party-race-save scopes passed. High33.3median exceeds20ms;Low89808triangles exceeds85000. Private pilots/population/host differences prohibit cross-run matrix gain claims."
+    },
+    "evidence": "/home/aeml/.local/share/eidolon-matrix-world-force-release-checks-20261010",
+    "limits": "Physical devices, complete moving art/equipped combat, original full Alpha1.11\u20131.99/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff remain open. Failed24hsoak37880032315 remains failed; no restart, waiver or unchanged long replacement performed."
+  },
+  "terminalReview": {
+    "observedAtUtc": "2026-10-10T06:56:39Z",
+    "run": {
+      "id": 38030283856,
+      "attempt": 1,
+      "headSha": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/aeml/eidolon/actions/runs/38030283856"
+    },
+    "failedGate": {
+      "job": "Live Release and Character QA",
+      "step": "Run live town recovery and Well Rested QA",
+      "test": "tests/e2e/well-rested-expiry-gameplay.spec.js",
+      "resultSummary": "1 failed, 1 passed in the town recovery QA step",
+      "failureEvidence": {
+        "enginePresent": false,
+        "playerReady": false,
+        "firstStateReceived": false,
+        "startupPhase": "engine-module",
+        "startupFailureKind": "module-download"
+      },
+      "interpretation": "The test did not receive authoritative rendered world state; evidence identifies module-download startup failure. No cause beyond this diagnostic is asserted; no rerun was performed."
+    },
+    "liveBrowserReport": {
+      "stats": {
+        "total": 9,
+        "expected": 7,
+        "unexpected": 0,
+        "flaky": 1,
+        "skipped": 1,
+        "ok": false
+      },
+      "flakyTests": [
+        {
+          "file": "authenticated.spec.js",
+          "test": "kills and loots in the overworld, enters and exits a dungeon, and persists",
+          "outcome": "flaky",
+          "attemptCount": 2
+        }
+      ],
+      "flakyAttemptDetail": {
+        "initialFailure": "authenticated persistent-character stash test asserted gold unchanged; expected 381847, received 382022",
+        "retry": "passed; overall test outcome flaky",
+        "originalFailurePreserved": true
+      },
+      "skippedTests": [
+        {
+          "file": "authenticated.spec.js",
+          "test": "long Ctrl-click jump reaches its landing point in 1.5 seconds"
+        }
+      ]
+    },
+    "predeployReports": {
+      "regional-quality": {
+        "total": 7,
+        "expected": 7,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      },
+      "celebration": {
+        "total": 1,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      },
+      "authored-equipment": {
+        "total": 2,
+        "expected": 2,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      }
+    },
+    "stepExceptions": [
+      {
+        "job": "Predeploy Character QA (System Chrome)",
+        "step": "Run deterministic High/Low animation gallery",
+        "conclusion": "skipped"
+      },
+      {
+        "job": "Predeploy Character QA (System Chrome)",
+        "step": "Run required Well Rested rendering and GPU lifecycle QA",
+        "conclusion": "skipped"
+      },
+      {
+        "job": "Predeploy Character QA (System Chrome)",
+        "step": "Run disposable full-character gameplay",
+        "conclusion": "skipped"
+      },
+      {
+        "job": "Live Release and Character QA",
+        "step": "Run live four-class and remote-animation QA",
+        "conclusion": "skipped"
+      },
+      {
+        "job": "Live Release and Character QA",
+        "step": "Run live town recovery and Well Rested QA",
+        "conclusion": "failure"
+      },
+      {
+        "job": "Live Release and Character QA",
+        "step": "Post Setup Node.js",
+        "conclusion": "skipped"
+      }
+    ],
+    "artifactDigestVerification": [
+      {
+        "id": 11663026399,
+        "name": "live-browser-evidence-922753a72dd127eb2fffa6e2e5892235cd549318",
+        "apiSizeBytes": 4926507,
+        "zipSizeBytes": 4926507,
+        "apiDigest": "sha256:449eac3f201fecc121d843ae3ebd2a2d646684ea042fb531abdf8bd368c1f450",
+        "downloadedZipSha256": "449eac3f201fecc121d843ae3ebd2a2d646684ea042fb531abdf8bd368c1f450",
+        "digestMatches": true,
+        "localPath": "/home/aeml/.local/share/eidolon-matrix-world-force-release-checks-20261010/candidate/terminal/live-browser-evidence/live-browser-evidence.zip"
+      },
+      {
+        "id": 11662211509,
+        "name": "predeploy-character-evidence-922753a72dd127eb2fffa6e2e5892235cd549318",
+        "apiSizeBytes": 9563126,
+        "zipSizeBytes": 9563126,
+        "apiDigest": "sha256:cc59d4cb93e48df9b36a4015b3903ae0847a3f7f0ec236e6c20545e66c682b32",
+        "downloadedZipSha256": "cc59d4cb93e48df9b36a4015b3903ae0847a3f7f0ec236e6c20545e66c682b32",
+        "digestMatches": true,
+        "localPath": "/home/aeml/.local/share/eidolon-matrix-world-force-release-checks-20261010/candidate/terminal/predeploy-character-evidence/predeploy-character-evidence.zip"
+      }
+    ],
+    "limits": [
+      "The live report is not a clean-live pass: it has one flaky test and one skipped test; the separate mandatory town recovery/Well Rested step failed.",
+      "The standard live long-jump test is skipped; opt-in native control remains separate.",
+      "Optional full-stabilization steps are skipped and are not counted as passes."
+    ]
+  },
+  "independentPublic": {
+    "atUTC": "2026-10-10T06:50:36.128037+00:00",
+    "normalTLS": true,
+    "head": "922753a72dd127eb2fffa6e2e5892235cd549318",
+    "version": "Alpha 1.79.24",
+    "frontend": {
+      "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "version": "Alpha 1.79.24",
+      "httpStatus": 200
+    },
+    "health": {
+      "version": "Alpha 1.79.24",
+      "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "status": "ok",
+      "database": "ready",
+      "httpStatus": 200
+    },
+    "assets": {
+      "index.html": {
+        "httpStatus": 200,
+        "bytes": 112108,
+        "sha256": "0ecef64ee8774850754f6d6d17094e25dcac7b2304f4d66423a1e0d2ceaefeb7",
+        "expected": "0ecef64ee8774850754f6d6d17094e25dcac7b2304f4d66423a1e0d2ceaefeb7",
+        "matches": true
+      },
+      "src/main.js": {
+        "httpStatus": 200,
+        "bytes": 28461,
+        "sha256": "a84a7d93820cdbe902975b24cc0a6c5c86542151e042c6bd032007dc62ee943f",
+        "expected": "a84a7d93820cdbe902975b24cc0a6c5c86542151e042c6bd032007dc62ee943f",
+        "matches": true
+      },
+      "src/core/GameEngine.bundle.js": {
+        "httpStatus": 200,
+        "bytes": 3261417,
+        "sha256": "d579595604b7d0b36b16ceababf088ade4783962332a9556d21578ea6e6cfb7a",
+        "expected": "d579595604b7d0b36b16ceababf088ade4783962332a9556d21578ea6e6cfb7a",
+        "matches": true
+      },
+      "src/styles/index.css": {
+        "httpStatus": 200,
+        "bytes": 251361,
+        "sha256": "ab4ecd7dddc28b70d3aca3288259fba2688f7bd721a3f6b417960d423c679951",
+        "expected": "ab4ecd7dddc28b70d3aca3288259fba2688f7bd721a3f6b417960d423c679951",
+        "matches": true
+      },
+      "release.json": {
+        "httpStatus": 200,
+        "bytes": 89,
+        "sha256": "7b684ef34b8e9a014bd0270663a876334f15b3cbf98c168656f55afe21121fd8",
+        "expected": "7b684ef34b8e9a014bd0270663a876334f15b3cbf98c168656f55afe21121fd8",
+        "matches": true
+      },
+      "assets/notices/index.html": {
+        "httpStatus": 200,
+        "bytes": 3475,
+        "sha256": "233700903f8a31db3d73cae219e915c8b0e31882296342df1aefde64f51e003d",
+        "expected": "233700903f8a31db3d73cae219e915c8b0e31882296342df1aefde64f51e003d",
+        "matches": true
+      }
+    },
+    "allSixMatch": true
+  },
+  "manualPublicNative": {
+    "scope": "Explicit manual14stage public raw-helper control at verified same publisher identity, not standard CI, authenticated gameplay or full bundled-game acceptance.",
+    "result": {
+      "graphics": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "reports": [
+        {
+          "name": "manual-to-auto",
+          "step": 0,
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "worldEqual": true
+        },
+        {
+          "name": "manual-to-auto",
+          "step": 1,
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "worldEqual": true
+        },
+        {
+          "name": "manual-to-auto",
+          "step": 2,
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "worldEqual": true
+        },
+        {
+          "name": "direct-world-write",
+          "step": 0,
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "worldEqual": true
+        },
+        {
+          "name": "direct-world-write",
+          "step": 1,
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "worldEqual": true
+        },
+        {
+          "name": "restore-world-auto",
+          "step": 0,
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "worldEqual": true
+        },
+        {
+          "name": "restore-world-auto",
+          "step": 1,
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "worldEqual": true
+        },
+        {
+          "name": "restore-world-auto",
+          "step": 2,
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "worldEqual": true
+        },
+        {
+          "name": "manual-child-local",
+          "step": 0,
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "worldEqual": true
+        },
+        {
+          "name": "manual-child-local",
+          "step": 1,
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "worldEqual": true
+        },
+        {
+          "name": "manual-child-world",
+          "step": 0,
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "worldEqual": true
+        },
+        {
+          "name": "manual-child-world",
+          "step": 1,
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "worldEqual": true
+        },
+        {
+          "name": "manual-group-world",
+          "step": 0,
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "worldEqual": true
+        },
+        {
+          "name": "manual-group-world",
+          "step": 1,
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "worldEqual": true
+        }
+      ]
+    }
+  },
+  "publicModuleProbe": {
+    "recordedUTC": "2026-10-10T07:01:11.473319+00:00",
+    "scope": "Read-only fresh anonymous Chrome module imports at unchanged exact public release, no engine construction, account or gameplay. No retry inside context; does not identify earlier failure cause.",
+    "moduleImports": {
+      "cases": 3,
+      "ready": 3,
+      "milliseconds": [
+        441.59999999403954,
+        420.30000001192093,
+        433.7999999821186
+      ]
+    },
+    "interpretation": "All3fresh anonymous public bundle imports succeeded with correct export at unchanged24. Invocationexit1 retained because generic probe flags every request failure; each context recorded /g/collect ERR_ABORTED, and origin was not retained. This is an import-specific result, not a clean full-network result or diagnosis of CI startup failure. No account/world or recovery checks occurred."
+  },
+  "jumpRetention": {
+    "baseline": "2e519bb07fc9eaf2c8afa87b24f2bbb7521a50e9",
+    "allByteExact": true,
+    "pins": {
+      "src/core/GameEngineMovement.js": "52814c623c87ce93373bdff769da378f6da1efd5d1f51564031bb8cf883d01e1",
+      "server/internal/game/world.go": "fe1283c4271872f91db0054e60cbd1299e8fbeb690ebbd393299e72e5772eb6e",
+      "server/internal/game/jump_input_authority_test.go": "cdd92d15f51ce6e5c8b8e09b0c5333618153809e65aa966f7697c46f5de8777e",
+      "tests/e2e/authenticated.spec.js": "65535b88d15a116f88594fa43aba4cd60644291ed0571e936115e68de2b8737a"
+    }
+  },
+  "decision": "Preserve both original CI failures and raw digested artifacts. One required expiry test never reached engine/player/state because engine-module download failed. A separate persistent-stash gold equality failure passed workflow retry and remains flaky, with cause unknown. No product fix inferred, no assertion weakening, no CI rerun, no public successor or failed-gate waiver. Public23 jump acceptance remains bounded precedent; current24 has same1.5s travel source and corrected transforms but live acceptance remains failed.",
+  "next": "Investigate bounded module-load/request failure evidence and persistent-stash gold delta without weakening account/economy/recovery assertions. Keep supplied assets, authority, full inherited goal and failed24hsoak unchanged; no unchanged campaign/long-soak restart.",
+  "evidence": {
+    "path": "/home/aeml/.local/share/eidolon-matrix-world-force-release-checks-20261010",
+    "files": 2919,
+    "inventorySHA256": "edf101c1f63b0e38d365dbfbef1032cf40ef0f3c19cc2973aa3680725f5ebd69"
+  }
+}

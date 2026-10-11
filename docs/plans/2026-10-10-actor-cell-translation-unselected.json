@@ -1,0 +1,351 @@
+{
+  "recordedUTC": "2026-10-10T07:44:41.000241+00:00",
+  "status": "Unselected direct actor cell-translation prototype. Retain existing inverse/multiply runtime; no held/public source selection.",
+  "codeCommit": "4b108ffbd5f68f9d6aada2ed0876feffeb063168",
+  "base": "acdf161a",
+  "change": "Cell origin and all eligibility/visibility/ownership rules preserved. Translation-only batch origin permits copying world coefficients and subtracting X/Z before float32 storage. Initial scratch-matrix variant and final direct typed-buffer variant both retained.",
+  "tests": {
+    "suites": 4,
+    "tests": 90,
+    "seconds": 15.589,
+    "generatedNumericCoefficients": 51200
+  },
+  "native": {
+    "tests": 14,
+    "strictViewPairs": 70,
+    "strictCellPairs": 10,
+    "changedRGBAChannels": 0,
+    "unstableRGBAChannels": 0,
+    "numericMatrixDifferences": 0,
+    "actualObservedSignedZeroDifferences": 0,
+    "originalBoundsOriginsCountsAndFailureCleanup": "unchanged; native ownership/lifecycle controls pass",
+    "finalTiming": [
+      {
+        "quality": "high",
+        "cpu": {
+          "reference": {
+            "frames": 48,
+            "median": 7.200000017881393,
+            "p95": 10.199999988079071
+          },
+          "candidate": {
+            "frames": 48,
+            "median": 7.0999999940395355,
+            "p95": 13.5
+          }
+        }
+      },
+      {
+        "quality": "low",
+        "cpu": {
+          "reference": {
+            "frames": 48,
+            "median": 3.9000000059604645,
+            "p95": 5.5999999940395355
+          },
+          "candidate": {
+            "frames": 48,
+            "median": 4.200000017881393,
+            "p95": 5.9000000059604645
+          }
+        }
+      }
+    ]
+  },
+  "actualHigh": {
+    "scope": "One hardware renderer plus three normal equipped socket peers, four supplied classes, fourteen-slot saves, race-enabled disposable server/Mongo. No optional shadow/color/body/view policies. Not four-renderer combat/device/art acceptance.",
+    "paired": {
+      "reference": {
+        "calls": 445,
+        "triangles": 465683,
+        "restored": true
+      },
+      "candidate": {
+        "calls": 445,
+        "triangles": 465683,
+        "restored": true
+      },
+      "again": {
+        "calls": 445,
+        "triangles": 465683,
+        "restored": true
+      },
+      "matrices": {
+        "batches": 224,
+        "coefficients": 11808,
+        "matrixDifferences": 0,
+        "signedZeros": 0
+      },
+      "image": {
+        "changedChannels": 0,
+        "unstableChannels": 0,
+        "width": 1280,
+        "height": 844,
+        "frozenRenderClock": true
+      },
+      "cpu": {
+        "scope": "Same-scene synchronous submission, real clock, eight ABBA blocks; not whole-frame pacing or hardware GPU time.",
+        "reference": {
+          "frames": 48,
+          "median": 23.5,
+          "p95": 31.80000001192093
+        },
+        "candidate": {
+          "frames": 48,
+          "median": 24.100000023841858,
+          "p95": 39.099999994039536
+        },
+        "blocks": [
+          {
+            "candidate": false,
+            "milliseconds": [
+              16.599999994039536,
+              15.5,
+              17.5,
+              20.900000005960464,
+              17.599999994039536,
+              18,
+              31.80000001192093,
+              29.099999994039536,
+              27.80000001192093,
+              17.69999998807907,
+              17,
+              19.19999998807907
+            ],
+            "restored": true
+          },
+          {
+            "candidate": true,
+            "milliseconds": [
+              33.79999998211861,
+              28.30000001192093,
+              26.400000005960464,
+              20.19999998807907,
+              27.099999994039536,
+              20.700000017881393,
+              36.69999998807907,
+              28,
+              41.20000001788139,
+              27.400000005960464,
+              26.5,
+              17.299999982118607
+            ],
+            "restored": true
+          },
+          {
+            "candidate": true,
+            "milliseconds": [
+              28.700000017881393,
+              41.69999998807907,
+              39.099999994039536,
+              38.900000005960464,
+              37.900000005960464,
+              35.900000005960464,
+              26.799999982118607,
+              19.200000017881393,
+              29,
+              33.29999998211861,
+              33,
+              24.80000001192093
+            ],
+            "restored": true
+          },
+          {
+            "candidate": false,
+            "milliseconds": [
+              24.299999982118607,
+              28.599999994039536,
+              32.10000002384186,
+              42.69999998807907,
+              23.69999998807907,
+              29.80000001192093,
+              31.80000001192093,
+              26.899999976158142,
+              28.5,
+              18.30000001192093,
+              27.099999994039536,
+              28.30000001192093
+            ],
+            "restored": true
+          },
+          {
+            "candidate": false,
+            "milliseconds": [
+              16.100000023841858,
+              26.5,
+              19,
+              24.69999998807907,
+              29.900000005960464,
+              17.5,
+              20.5,
+              22.299999982118607,
+              22.200000017881393,
+              28.099999994039536,
+              20.69999998807907,
+              29.80000001192093
+            ],
+            "restored": true
+          },
+          {
+            "candidate": true,
+            "milliseconds": [
+              22.400000005960464,
+              20.69999998807907,
+              24.100000023841858,
+              21.599999994039536,
+              33.400000005960464,
+              35.5,
+              22,
+              17.799999982118607,
+              18,
+              16.30000001192093,
+              23.799999982118607,
+              19.100000023841858
+            ],
+            "restored": true
+          },
+          {
+            "candidate": true,
+            "milliseconds": [
+              15.799999982118607,
+              18,
+              16.599999994039536,
+              17.80000001192093,
+              16.599999994039536,
+              21,
+              31.700000017881393,
+              24.099999994039536,
+              16.299999982118607,
+              19.700000017881393,
+              15.5,
+              18.5
+            ],
+            "restored": true
+          },
+          {
+            "candidate": false,
+            "milliseconds": [
+              23.5,
+              16,
+              15.799999982118607,
+              18.600000023841858,
+              25.299999982118607,
+              19.900000005960464,
+              25.69999998807907,
+              27,
+              24,
+              17.599999994039536,
+              16.19999998807907,
+              18.700000017881393
+            ],
+            "restored": true
+          }
+        ]
+      }
+    },
+    "frameProfile": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.30000000000291,
+      "frameP95Ms": 33.5,
+      "frameP99Ms": 50,
+      "framesOver33ms": 52,
+      "cpuLoopMedianMs": 27.600000023841858,
+      "cpuLoopP95Ms": 37.19999998807907,
+      "drawCallsMedian": 422,
+      "trianglesMedian": 464410,
+      "geometries": 395,
+      "textures": 292,
+      "activeEntities": 35,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "raceAndFourteenSlotSavesPassed": true,
+    "expectedFourBrowserTestSkippedNotPassed": true,
+    "wholeFrameAcceptance": false,
+    "budgetFailures": [
+      "33.30000000000291ms median exceeds20ms High target",
+      "33.5ms p95 exceeds33.4ms",
+      "464410triangles exceeds250000",
+      "422draws exceeds350"
+    ],
+    "lowRepeated": false,
+    "budgetComparisonScope": "Compare against unchanged populated-world High targets, not a newly invented party test gate. The party fixture reports metrics and asserts correctness; it does not enforce these performance ceilings.",
+    "originalTargets": {
+      "high": {
+        "medianMs": 20,
+        "p95Ms": 33.4,
+        "draws": 350,
+        "triangles": 250000
+      },
+      "low": {
+        "medianMs": 33.4,
+        "p95Ms": 50,
+        "draws": 200,
+        "triangles": 85000
+      },
+      "source": "tests/e2e/populated-earth-world.spec.js:604"
+    }
+  },
+  "decision": "No consistent native submission gain; actual High median and p95 both worse. Retain ordinary inverse/multiply path. No blanket causal regression claim on shared host.",
+  "timingLimit": "Old inverse/multiply arithmetic is installed through the same writer dispatch as the candidate; the reference adds an index-zero branch. This is a same-scene diagnostic, not an exact original whole-frame baseline.",
+  "geometryAttribution": {
+    "candidate": "4b108ffbd5f68f9d6aada2ed0876feffeb063168",
+    "scope": "Actual High four-class, ordinary selected supplied bodies and default rendering; optional body/color/shadow/view policies off. Untimed renderer-boundary triangle estimator after the180-frame profile, not the same frame or a causal CPU/GPU attribution.",
+    "equippedRows": [
+      {
+        "name": "Equipped Cleric",
+        "color": 26,
+        "shadow": 21,
+        "triangles": 105496
+      },
+      {
+        "name": "Equipped Wizard",
+        "color": 26,
+        "shadow": 21,
+        "triangles": 93692
+      },
+      {
+        "name": "Equipped Fighter",
+        "color": 22,
+        "shadow": 20,
+        "triangles": 110172
+      },
+      {
+        "name": "Equipped Rogue",
+        "color": 23,
+        "shadow": 18,
+        "triangles": 95718
+      }
+    ],
+    "equippedTriangleSubmissions": 405078,
+    "opaqueInstanceTriangleSubmissions": 21162,
+    "limits": [
+      "Estimator treats Points as triangles; its aggregate sum is not an exact triangle counter. Equipped class rows are mesh color/shadow submissions.",
+      "Different live populations and host loads prohibit comparison to earlier optional-pilot runs.",
+      "Single still HUD image is inspected for context, not moving-world or modern-art acceptance."
+    ],
+    "nextAction": "Concentrate on complete supplied body/equipment color and shadow submissions and qualify existing staged LOD policies together in actual motion/HUD. Preserve rigs, silhouette, material identity, gear slots, warnings, authority and original budgets; avoid more unmeasured leaf-math optimizations."
+  },
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-actor-cell-translation-checks-20261010",
+    "files": 107,
+    "inventorySHA256": "e88db37868569b3209fc6cbb1da7ba2681153a549bd969207c7f7ee26b1874be",
+    "partyReportSupplement": "/home/aeml/.local/share/eidolon-actor-cell-translation-party-report-20261010",
+    "supplementFiles": 5,
+    "supplementInventorySHA256": "6e163cf721870c159c3df55c129aa8efe9a0bf6dc2c04d8d0892c5e7e4f19422",
+    "frozenPermissions": "directories700/files600; no symlinks; inventories exclude themselves"
+  },
+  "public": "24/922753a7 remains unchanged and unaccepted. No CI rerun, release push, wholesale24merge, activation or failed-gate waiver. Original module-download and flaky175Gold findings remain open.",
+  "fullGoal": "All inherited1.11\u20131.99, modern art/motion/HUD, supplied assets, performance/support devices, Q/CB/F1\u2013F5, operational, rights, owner/human/beta/launch/handoff requirements remain active."
+}

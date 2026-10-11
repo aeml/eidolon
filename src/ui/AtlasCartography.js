@@ -2,6 +2,8 @@ import { WORLD_REGIONS } from '../data/worldGeography.js';
 import { PROCEDURAL_FOLIAGE_RECIPES, createProceduralFoliagePlacements } from '../data/worldFoliage.js';
 import { EARTH_PATHS } from '../data/worldPopulation.js';
 import { WATER_PATHS, FIRE_PATHS, AIR_PATHS } from '../data/elementalPopulation.js';
+import { resolveWorldElevationProfile } from '../data/worldElevation.js';
+import { drawAtlasTerrainRelief } from './AtlasTerrainRelief.js';
 import { drawAtlasFoliageGlyph } from './AtlasFoliageGlyphs.js';
 
 const PATHS = Object.freeze({ earth: EARTH_PATHS, water: WATER_PATHS, fire: FIRE_PATHS, air: AIR_PATHS });
@@ -17,8 +19,10 @@ const INKS = Object.freeze({
 // Original code-rendered ink texture, not fabricated terrain heights or paths.
 // Foliage glyphs use the exact same deterministic placement source as the world.
 export class AtlasCartography {
-    constructor({ mobile = false, createCanvas = () => document.createElement('canvas') } = {}) {
+    constructor({ mobile = false, terrainProfile = 'flat-v1', createCanvas = () => document.createElement('canvas') } = {}) {
         this.resolution = mobile ? 512 : 1024;
+        this.terrainProfile = terrainProfile;
+        this.elevation = resolveWorldElevationProfile(terrainProfile);
         this.createCanvas = createCanvas;
         this.tiles = new Map();
         this.buildCount = 0;
@@ -47,6 +51,7 @@ export class AtlasCartography {
             ctx.fillRect(x, y, 1 + random() * 6, 1);
         }
         ctx.globalAlpha = 1;
+        drawAtlasTerrainRelief(ctx, region, canvas.width, canvas.height, this.elevation, this.terrainProfile);
         const sx = canvas.width / (region.maxX - region.minX), sz = canvas.height / (region.maxZ - region.minZ);
         for (const recipe of PROCEDURAL_FOLIAGE_RECIPES.filter(r => r.region === id)) {
             for (const p of createProceduralFoliagePlacements(recipe)) {

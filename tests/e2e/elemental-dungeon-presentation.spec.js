@@ -1,17 +1,34 @@
 import fs from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { writeFile } from 'node:fs/promises';
 import { test, expect } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 import { compareFilmicLighting } from './lighting-comparison.js';
-import { reviewDungeonProps } from './dungeon-prop-review.js';
+import { reviewDungeonProps, prepareDungeonPropReference } from './dungeon-prop-review.js';
+import { reviewDungeonRelics, prepareDungeonRelicReference } from './dungeon-relic-review.js';
+import { requiresHardwareWebGL } from './browserLaunchPolicy.js';
+import { reviewEquippedSkillMotions } from './equipped-skill-motion-review.js';
+import { prepareDungeonFloorCompositionReference, reviewDungeonFloorComposition } from './dungeon-floor-composition-review.js';
 
 const fixtures = JSON.parse(fs.readFileSync('tests/fixtures/production-dungeon-layouts.json', 'utf8'));
 const methods = { molten_core: 'createMoltenCore', tempest_spire: 'createTempestSpire',
     abyssal_well: 'createAbyssalWell', umbral_nexus: 'createUmbralNexus' };
+const compareFloor = process.env.EIDOLON_E2E_ELEMENTAL_FLOOR_COMPARE === '1';
+const referenceCommit = process.env.EIDOLON_E2E_ELEMENTAL_FLOOR_REFERENCE || '34ca5b97';
 
 for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
     test(`equipped elemental dungeon rooms at ${width}px`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
+        await prepareDungeonFloorCompositionReference(page);
+        await prepareDungeonPropReference(page);
+        await prepareDungeonRelicReference(page);
+        if (compareFloor) {
+            const previous = execFileSync('git', ['show', `${referenceCommit}:src/art/ProceduralDungeonInteriors.js`], { encoding: 'utf8' })
+                .replace("'./ElementalDungeonSurface.js'", "'./ElementalDungeonSurfaceReference.js'");
+            const surface = execFileSync('git', ['show', `${referenceCommit}:src/art/ElementalDungeonSurface.js`], { encoding: 'utf8' });
+            await page.route('**/src/art/ElementalDungeonInteriorsReference.js', route => route.fulfill({ body: previous, contentType: 'text/javascript' }));
+            await page.route('**/src/art/ElementalDungeonSurfaceReference.js', route => route.fulfill({ body: surface, contentType: 'text/javascript' }));
+        }
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         await page.setViewportSize({ width, height });
         await page.goto('/', { waitUntil: 'networkidle' });
@@ -45,10 +62,16 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
             await hero.mesh.userData.equipmentReady;
             render.entityGroup.add(hero.mesh); ui.updatePlayerStats(hero);
             render.onWindowResize();
-            window.__dungeonArtReview = { render, hero, input };
+            window.__dungeonArtReview = { render, hero, input, ui };
             return { authoredClass: hero.mesh.userData.authoredClass, items: hero.mesh.userData.equipmentVisualItemCount };
         }, mobile);
         expect(actor).toEqual({ authoredClass: 'Fighter', items: 14 });
+        // The control changes only floor materials. Settle asynchronous outfit
+        // preparation before measuring either arm of the paired comparison.
+        await page.waitForFunction(() => {
+            const delivery = window.__dungeonArtReview.render.actorGameplayGeometry?.delivery;
+            return delivery && !delivery.active && delivery.jobs.size === 0;
+        });
         const samples = [];
         for (const [type, method] of Object.entries(methods)) {
             const { layout } = fixtures.find(fixture => fixture.dungeonType === type);
@@ -89,10 +112,85 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
                 if (view === 'center') await compareFilmicLighting(page, testInfo, '__dungeonArtReview', type);
                 await page.screenshot({ path: testInfo.outputPath(`${type}-${view}.png`),
                     style: '#perf-overlay { visibility: hidden !important; }' });
+                if (compareFloor) {
+                    const reference = await page.evaluate(async type => {
+                        const { createProceduralDungeonInteriorKit } = await import('/src/art/ElementalDungeonInteriorsReference.js');
+                        const { render } = window.__dungeonArtReview;
+                        const kit = createProceduralDungeonInteriorKit(type, { quality: render.graphicsQuality });
+                        const floors = [];
+                        render.instanceEnvironmentGroup.traverse(mesh => {
+                            if (mesh.material?.userData.surface !== 'floor') return;
+                            floors.push([mesh, mesh.material]);
+                            mesh.material = kit.floorMaterial(mesh.material.map.repeat.x * 24, mesh.material.map.repeat.y * 24);
+                        });
+                        window.__dungeonArtReview.restoreFloor = () => {
+                            const materials = new Set(floors.map(([mesh]) => mesh.material));
+                            for (const [mesh, material] of floors) mesh.material = material;
+                            for (const material of materials) {
+                                for (const key of ['map', 'normalMap', 'roughnessMap', 'emissiveMap']) material[key].dispose();
+                                material.dispose();
+                            }
+                        };
+                        render.render(); render.render();
+                        return { calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles, floors: floors.length };
+                    }, type);
+                    try {
+                        expect(reference.floors).toBeGreaterThan(0);
+                        expect(reference.calls).toBe(sample.calls); expect(reference.triangles).toBe(sample.triangles);
+                        await page.screenshot({ path: testInfo.outputPath(`${type}-${view}-reference.png`),
+                            style: '#perf-overlay { visibility: hidden !important; }' });
+                    } finally {
+                        await page.evaluate(() => { const state = window.__dungeonArtReview; state.restoreFloor(); delete state.restoreFloor; state.render.render(); });
+                    }
+                }
+                if (view === 'center') {
+                    const motion = await page.evaluate(async () => {
+                        const { render, hero } = window.__dungeonArtReview;
+                        const start = hero.position.clone(), animation = hero.currentAnimationName || 'Idle';
+                        const clip = hero.getMovementAnimationName(true);
+                        let skin; hero.mesh.traverse(part => { if (!skin && part.isSkinnedMesh) skin = part; });
+                        const pose = () => skin.skeleton.bones.flatMap(bone => [...bone.position.toArray(), ...bone.quaternion.toArray(), ...bone.scale.toArray()]);
+                        let previousPose = pose(), poseChanged = false;
+                        const played = Boolean(clip && hero.playAnimation(clip, true, true));
+                        let calls = 0, triangles = 0;
+                        try {
+                            for (let frame = 0; frame < 36; frame++) {
+                                await new Promise(requestAnimationFrame);
+                                hero.position.x = start.x + (frame + 1) * .035;
+                                hero.mesh.position.copy(hero.position); hero.updateAnimationMixer(1 / 60);
+                                const currentPose = pose();
+                                poseChanged ||= previousPose.some((value, i) => Math.abs(value - currentPose[i]) > 1e-5);
+                                previousPose = currentPose;
+                                render.setCameraTarget(hero.position); render.render();
+                                calls = Math.max(calls, render.renderer.info.render.calls);
+                                triangles = Math.max(triangles, render.renderer.info.render.triangles);
+                            }
+                            return { frames: 36, played, poseChanged,
+                                calls, triangles, scope: 'Prepared animation and camera movement through the real generated room; no gameplay authority, frame-time or physical-device claim.' };
+                        } finally {
+                            hero.position.copy(start); hero.mesh.position.copy(start);
+                            hero.playAnimation(animation, true, true); hero.updateAnimationMixer(0);
+                            render.setCameraTarget(start); render.render();
+                        }
+                    });
+                    expect(motion.played).toBe(true); expect(motion.poseChanged).toBe(true);
+                    expect(motion.calls).toBeLessThanOrEqual(mobile ? 200 : 350);
+                    expect(motion.triangles).toBeLessThanOrEqual(mobile ? 85000 : 250000);
+                    await testInfo.attach(`${type}-floor-motion`, { body: JSON.stringify(motion), contentType: 'application/json' });
+                }
             }
             await reviewDungeonProps(page, testInfo, '__dungeonArtReview', type, layout);
+            await reviewDungeonRelics(page, testInfo, type, layout);
+            await reviewDungeonFloorComposition(page, testInfo, '__dungeonArtReview', type, layout);
         }
         await writeFile(testInfo.outputPath('render-scopes.json'), JSON.stringify(samples, null, 2));
+        await reviewEquippedSkillMotions(page, testInfo);
+        const gpu = await page.evaluate(() => {
+            const gl = window.__dungeonArtReview.render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
+            return debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+        });
+        await testInfo.attach('elemental-floor-gpu', { body: JSON.stringify({ gpu, compareFloor, referenceCommit }), contentType: 'application/json' });
+        if (requiresHardwareWebGL()) expect(gpu).not.toMatch(/SwiftShader|llvmpipe|software/i);
         await page.evaluate(() => window.__dungeonArtReview.input.dispose());
         expect(failures).toEqual([]);
     });

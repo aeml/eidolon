@@ -1,0 +1,1223 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-10T00:20:07.060606+00:00",
+  "classification": "Opt-in supplied-body morph endpoint basis preparation. More detailed High trial retained for future immutable selection; initial coarser High/Low trial rejected for visible neck/shoulder faceting. No runtime/catalog/asset/public selection.",
+  "baseCommit": "20f1209a5b73fc7431ed7459b0e4440aa2d227e0",
+  "worktree": "/home/aeml/.local/share/eidolon-body-morph-basis-20261010",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-body-morph-basis-checks-20261010",
+  "publicBaseline": {
+    "version": "1.79.22",
+    "commit": "30a8b6038df9e071eef0f57564ae94087d1a0b11",
+    "ciRun": 37967212738,
+    "changed": false
+  },
+  "scope": {
+    "runtime": "Qualified6fbffd34 rendering plus c09b32ee protected High body selection remains exact. Server/package/version/profile/access unchanged. No repository model file or generated asset catalog changes.",
+    "goal": "Entire inherited1.11\u20131.99, modern art/Q/CB, equipped whole-game High/Low/support devices, compatible raised rollout/rollback, F1\u2013F5, operations/rights/owner/human/beta/admission/launch/handoff remains active.",
+    "ownerDeferred": "Uninterrupted campaign/pacing and physical-phone party/dungeon evidence remain owner/cohort playtests. Existing long soak was not restarted or cancelled."
+  },
+  "finding": {
+    "sourceCensus": "morph-census.json",
+    "description": "Most nonzero Blink normal deltas are normal-only changes at roughly Float32 precision. Old all-morph lock pins about17000vertices/class. No delta thresholding or morph removal is used.",
+    "normalOnlyVertexLocksByClass": {
+      "Fighter": 15453,
+      "Rogue": 14935,
+      "Wizard": 15160,
+      "Cleric": 14995
+    }
+  },
+  "algorithm": {
+    "mode": "morph-basis",
+    "source": "Original source model, independently hash pinned; never simplify a prior derivative.",
+    "indicesOnly": true,
+    "positionErrorMaximum": 0.002,
+    "ratioBothQualities": 0.2,
+    "normalTangentWeight": 0.5,
+    "uvWeight": 0.1,
+    "attributeChannels": 18,
+    "basis": "Base normal, tangent and UV plus unnormalized normals at independent Blink_L/R endpoints [1,0],[0,1],[1,1]. Base supplies [0,0]. All supplied deltas contribute to Float32 error attributes; arithmetic packing can round. Raw original morph bytes remain exact at every retained vertex.",
+    "locks": "Every vertex with any nonzero POSITION morph channel remains fixed; LockBorder. No Permissive, Prune, Sloppy or vertex update.",
+    "fallback": "Candidate body triangle count >= hash-pinned current selected baseline copies that entire reviewed file exactly. All four Low candidates use this fallback.",
+    "preservation": "Body-only accessor/index replacement into reviewed runtime file. Other geometry/corner order, source transforms, rig/skin palettes, inverse binds, animation payloads, materials, textures and morph semantics retain existing strict derivation checks.",
+    "limitations": "Weighted normal endpoint error is not proof of identical rendered shading or all poses. All53bone blend interpolation is not constrained by the simplifier; retained joint/weight values remain exact. Native review remains required."
+  },
+  "initialRejectedTrial": {
+    "parameters": "High ratio0.12/error0.002; Low ratio0.08/error0.006; basis weight0.5.",
+    "receipts": [
+      {
+        "actorClass": "Cleric",
+        "source": "assets/archetypes/Cleric/cleric.glb",
+        "sourceHash": "3957360ca8bdf931ada2b48164fb7c917d8b1872737fa1ea79b13feac6d1ee7f",
+        "classification": "Body-only original-source strict LOD pilot, unchanged error bounds. Exact reviewed other geometry/rig/animation/texture payloads. Native morph/motion/fit and visual approval required.",
+        "variants": {
+          "high": {
+            "file": "/home/aeml/.local/share/eidolon-body-morph-basis-checks-20261010/pilots/Cleric/cleric-body-pilot-high.glb",
+            "sha256": "cdbcbe8b12f4403aacd52f90d3d3b09b667726e5268a6857b95880f884e3e0b2",
+            "bytes": 4419664,
+            "baselineFile": "assets/archetypes/Cleric/cleric-runtime-body-v2-high.glb",
+            "baselineSHA256": "deb1613081222e60a32d6b199fcabc646e294d85ab4054100e136af978965ca7",
+            "originalBodyTriangles": 100144,
+            "baselineBodyTriangles": 30476,
+            "bodyTriangles": 14712,
+            "ratio": 0.12,
+            "maximumError": 0.002,
+            "mode": "morph-basis",
+            "algorithm": "morph-basis",
+            "details": [
+              {
+                "reportedError": 0.001969241304323077,
+                "lockedMorphVertices": 2055,
+                "morphBasis": true,
+                "attributeWidth": 18
+              }
+            ],
+            "cornerSHA256": [
+              "b9f7df88ccf66605930081c3232f2a39be87af45f265879975193d62312067fa"
+            ],
+            "gltfErrors": 0,
+            "gltfWarnings": 0
+          },
+          "low": {
+            "file": "/home/aeml/.local/share/eidolon-body-morph-basis-checks-20261010/pilots/Cleric/cleric-body-pilot-low.glb",
+            "sha256": "14f05bd4caf0e54cce754d04aa8b8d030b0ed182f3bd018cf7df0dae37dfd710",
+            "bytes": 3620472,
+            "baselineFile": "assets/archetypes/Cleric/cleric-runtime-low.glb",
+            "baselineSHA256": "19784ca41b98d40ba7bf5ae26d6b4f3bba707fb288a120254cc0bc2172319364",
+            "originalBodyTriangles": 100144,
+            "baselineBodyTriangles": 18024,
+            "bodyTriangles": 11608,
+            "ratio": 0.08,
+            "maximumError": 0.006,
+            "mode": "morph-basis",
+            "algorithm": "morph-basis",
+            "details": [
+              {
+                "reportedError": 0.005986962467432022,
+                "lockedMorphVertices": 2055,
+                "morphBasis": true,
+                "attributeWidth": 18
+              }
+            ],
+            "cornerSHA256": [
+              "33054859a9d34f3c8c312d1533790996c16bd152b4d736f711900884605fa1b9"
+            ],
+            "gltfErrors": 0,
+            "gltfWarnings": 0
+          }
+        }
+      },
+      {
+        "actorClass": "Fighter",
+        "source": "assets/archetypes/Fighter/fighter.glb",
+        "sourceHash": "dcb48696059094dc5d79e8539fd9368b9932ebb8f3bc57d14b1c4098caae2a3a",
+        "classification": "Body-only original-source strict LOD pilot, unchanged error bounds. Exact reviewed other geometry/rig/animation/texture payloads. Native morph/motion/fit and visual approval required.",
+        "variants": {
+          "high": {
+            "file": "/home/aeml/.local/share/eidolon-body-morph-basis-checks-20261010/pilots/Fighter/fighter-body-pilot-high.glb",
+            "sha256": "6fbbf5fc92a497e94dc5316a470f1dda0103fa805a8fba2aeb3e411e9452a584",
+            "bytes": 5596288,
+            "baselineFile": "assets/archetypes/Fighter/fighter-runtime-body-v2-high.glb",
+            "baselineSHA256": "4c36254cb53208323e65e0b4d7d0ee2b6634db14ef2b8f4d2524fd729b0540ae",
+            "originalBodyTriangles": 102416,
+            "baselineBodyTriangles": 31748,
+            "bodyTriangles": 16412,
+            "ratio": 0.12,
+            "maximumError": 0.002,
+            "mode": "morph-basis",
+            "algorithm": "morph-basis",
+            "details": [
+              {
+                "reportedError": 0.001999115804210305,
+                "lockedMorphVertices": 2167,
+                "morphBasis": true,
+                "attributeWidth": 18
+              }
+            ],
+            "cornerSHA256": [
+              "de06427e6c647c15cc42f05bedf83f419e4adf42e9790b96dbfc31e08005bafb"
+            ],
+            "gltfErrors": 0,
+            "gltfWarnings": 0
+          },
+          "low": {
+            "file": "/home/aeml/.local/share/eidolon-body-morph-basis-checks-20261010/pilots/Fighter/fighter-body-pilot-low.glb",
+            "sha256": "9c0210004c1489e03a11b4b64443f22f6ae00544eea7cdd9e50e3bb3870f2321",
+            "bytes": 3267716,
+            "baselineFile": "assets/archetypes/Fighter/fighter-runtime-low.glb",
+            "baselineSHA256": "357284df9e9f22f9823e2ca0bbb1d15e40ac00024a02046d90f48b9be8524c0b",
+            "originalBodyTriangles": 102416,
+            "baselineBodyTriangles": 18434,
+            "bodyTriangles": 12252,
+            "ratio": 0.08,
+            "maximumError": 0.006,
+            "mode": "morph-basis",
+            "algorithm": "morph-basis",
+            "details": [
+              {
+                "reportedError": 0.005951489321887493,
+                "lockedMorphVertices": 2167,
+                "morphBasis": true,
+                "attributeWidth": 18
+              }
+            ],
+            "cornerSHA256": [
+              "f90d2b0b9801b97112c92aaea853566a4b67bce5fd036f55eccb36ffa3a771a8"
+            ],
+            "gltfErrors": 0,
+            "gltfWarnings": 0
+          }
+        }
+      },
+      {
+        "actorClass": "Rogue",
+        "source": "assets/archetypes/Rogue/rogue.glb",
+        "sourceHash": "f3cee5ce0564c2c14f201e35e296c4e91556b76702701bc70db9a9919f70d9c9",
+        "classification": "Body-only original-source strict LOD pilot, unchanged error bounds. Exact reviewed other geometry/rig/animation/texture payloads. Native morph/motion/fit and visual approval required.",
+        "variants": {
+          "high": {
+            "file": "/home/aeml/.local/share/eidolon-body-morph-basis-checks-20261010/pilots/Rogue/rogue-body-pilot-high.glb",
+            "sha256": "555a1367b0a98a26cb89b6ef813084606798dc446d4c253a45f9cdd3a90d0de9",
+            "bytes": 4413168,
+            "baselineFile": "assets/archetypes/Rogue/rogue-runtime-body-v2-high.glb",
+            "baselineSHA256": "8bc912a249103a3f279be70496e63d8181292b7ab46fbc89bbc37e44cf206d8f",
+            "originalBodyTriangles": 100136,
+            "baselineBodyTriangles": 30134,
+            "bodyTriangles": 14628,
+            "ratio": 0.12,
+            "maximumError": 0.002,
+            "mode": "morph-basis",
+            "algorithm": "morph-basis",
+            "details": [
+              {
+                "reportedError": 0.001958919456228614,
+                "lockedMorphVertices": 2057,
+                "morphBasis": true,
+                "attributeWidth": 18
+              }
+            ],
+            "cornerSHA256": [
+              "fff713f22294864807dca75b3660a4faa00f1b61addcf64cc0b1c835a3be4988"
+            ],
+            "gltfErrors": 0,
+            "gltfWarnings": 0
+          },
+          "low": {
+            "file": "/home/aeml/.local/share/eidolon-body-morph-basis-checks-20261010/pilots/Rogue/rogue-body-pilot-low.glb",
+            "sha256": "f17759580ff1744a1db568865c81c1143e6ef9cfd2f79a0ddc1730ab8d7882fb",
+            "bytes": 3575428,
+            "baselineFile": "assets/archetypes/Rogue/rogue-runtime-low.glb",
+            "baselineSHA256": "8ec12238f6b622143e0dcc7cfffc0955019ef268a3fd472e7e3156a5c17685d7",
+            "originalBodyTriangles": 100136,
+            "baselineBodyTriangles": 18024,
+            "bodyTriangles": 11590,
+            "ratio": 0.08,
+            "maximumError": 0.006,
+            "mode": "morph-basis",
+            "algorithm": "morph-basis",
+            "details": [
+              {
+                "reportedError": 0.005987993441522121,
+                "lockedMorphVertices": 2057,
+                "morphBasis": true,
+                "attributeWidth": 18
+              }
+            ],
+            "cornerSHA256": [
+              "4465e09d02aa6c5b83bc1dbd6fa2c05ce6acfa8d77d0a83b44f75ed0fba5424f"
+            ],
+            "gltfErrors": 0,
+            "gltfWarnings": 0
+          }
+        }
+      },
+      {
+        "actorClass": "Wizard",
+        "source": "assets/archetypes/Wizard/wizard.glb",
+        "sourceHash": "130d4d06573861e4accd2eac9bccb8b9b409949ebb2b8f07438b60199a821841",
+        "classification": "Body-only original-source strict LOD pilot, unchanged error bounds. Exact reviewed other geometry/rig/animation/texture payloads. Native morph/motion/fit and visual approval required.",
+        "variants": {
+          "high": {
+            "file": "/home/aeml/.local/share/eidolon-body-morph-basis-checks-20261010/pilots/Wizard/wizard-body-pilot-high.glb",
+            "sha256": "f50c3dd7d332a1891d2cc32c4edbbc40b8c1154183c3e50302bec64c68baa3c0",
+            "bytes": 3440628,
+            "baselineFile": "assets/archetypes/Wizard/wizard-runtime-body-v2-high.glb",
+            "baselineSHA256": "6c4c56be8339d3bd7271f39c64216f014211ed457e4364b426649595d121109e",
+            "originalBodyTriangles": 103400,
+            "baselineBodyTriangles": 30846,
+            "bodyTriangles": 15206,
+            "ratio": 0.12,
+            "maximumError": 0.002,
+            "mode": "morph-basis",
+            "algorithm": "morph-basis",
+            "details": [
+              {
+                "reportedError": 0.0019886838272213936,
+                "lockedMorphVertices": 2055,
+                "morphBasis": true,
+                "attributeWidth": 18
+              }
+            ],
+            "cornerSHA256": [
+              "f44ddf6a762e5d9129ce17a498a90a2afa3fe32d1344cf5ab1a1ce1248bcf445"
+            ],
+            "gltfErrors": 0,
+            "gltfWarnings": 0
+          },
+          "low": {
+            "file": "/home/aeml/.local/share/eidolon-body-morph-basis-checks-20261010/pilots/Wizard/wizard-body-pilot-low.glb",
+            "sha256": "2cec30bf5852de79090f1ff818870a46e1799f5d5cd9b8f95e63d20f441e1493",
+            "bytes": 2743068,
+            "baselineFile": "assets/archetypes/Wizard/wizard-runtime-low.glb",
+            "baselineSHA256": "52adfd98bd8ac6ebe7a85e84c989e8c7f42eb57b16c0dcfea41a3570c9eebd24",
+            "originalBodyTriangles": 103400,
+            "baselineBodyTriangles": 18612,
+            "bodyTriangles": 11610,
+            "ratio": 0.08,
+            "maximumError": 0.006,
+            "mode": "morph-basis",
+            "algorithm": "morph-basis",
+            "details": [
+              {
+                "reportedError": 0.005989119876176119,
+                "lockedMorphVertices": 2055,
+                "morphBasis": true,
+                "attributeWidth": 18
+              }
+            ],
+            "cornerSHA256": [
+              "3a575c62a64459e63b2294b98826475215f97fd1126b6af37b2d1e6da4e9a970"
+            ],
+            "gltfErrors": 0,
+            "gltfWarnings": 0
+          }
+        }
+      }
+    ],
+    "functionalNativePass": true,
+    "decision": "Reject coarse Low neck/shoulder faceting; High Fighter neck/shoulder also prompted more detailed revision. Functional/source checks are not visual approval. Retain initial source copies and evidence."
+  },
+  "detailedPreparation": {
+    "receipts": [
+      {
+        "actorClass": "Cleric",
+        "source": "assets/archetypes/Cleric/cleric.glb",
+        "sourceHash": "3957360ca8bdf931ada2b48164fb7c917d8b1872737fa1ea79b13feac6d1ee7f",
+        "classification": "Body-only original-source strict LOD pilot, unchanged error bounds. Exact reviewed other geometry/rig/animation/texture payloads. Native morph/motion/fit and visual approval required.",
+        "variants": {
+          "high": {
+            "file": "/home/aeml/.local/share/eidolon-body-morph-basis-checks-20261010/detailed-pilots/Cleric/cleric-body-pilot-high.glb",
+            "sha256": "154b3a7ca0a93b240611674ed1b0e6ee8734a8bfa2c3bb5e9cede6da79dd9631",
+            "bytes": 4771400,
+            "baselineFile": "assets/archetypes/Cleric/cleric-runtime-body-v2-high.glb",
+            "baselineSHA256": "deb1613081222e60a32d6b199fcabc646e294d85ab4054100e136af978965ca7",
+            "originalBodyTriangles": 100144,
+            "baselineBodyTriangles": 30476,
+            "bodyTriangles": 20028,
+            "ratio": 0.2,
+            "maximumError": 0.002,
+            "mode": "morph-basis",
+            "algorithm": "morph-basis",
+            "details": [
+              {
+                "reportedError": 0.0009294839692302048,
+                "lockedMorphVertices": 2055,
+                "morphBasis": true,
+                "attributeWidth": 18
+              }
+            ],
+            "cornerSHA256": [
+              "86b19f62f76b055840ca4fc1a374d811ffd9070fa10cae52abe0703b48907ed7"
+            ],
+            "gltfErrors": 0,
+            "gltfWarnings": 0
+          },
+          "low": {
+            "file": "/home/aeml/.local/share/eidolon-body-morph-basis-checks-20261010/detailed-pilots/Cleric/cleric-body-pilot-low.glb",
+            "sha256": "19784ca41b98d40ba7bf5ae26d6b4f3bba707fb288a120254cc0bc2172319364",
+            "bytes": 4061680,
+            "baselineFile": "assets/archetypes/Cleric/cleric-runtime-low.glb",
+            "baselineSHA256": "19784ca41b98d40ba7bf5ae26d6b4f3bba707fb288a120254cc0bc2172319364",
+            "originalBodyTriangles": 100144,
+            "baselineBodyTriangles": 18024,
+            "bodyTriangles": 18024,
+            "attemptedBodyTriangles": 20028,
+            "algorithm": "exact-reviewed-runtime",
+            "ratio": 0.2,
+            "maximumError": 0.002,
+            "mode": "morph-basis",
+            "details": [
+              {
+                "reportedError": 0.0009294839692302048,
+                "lockedMorphVertices": 2055,
+                "morphBasis": true,
+                "attributeWidth": 18
+              }
+            ],
+            "cornerSHA256": [
+              "5aa7c04e966f493d9bce14a7d55f640d5977063bd11aadfe93a1395360b142c4"
+            ],
+            "gltfErrors": 0,
+            "gltfWarnings": 0
+          }
+        }
+      },
+      {
+        "actorClass": "Fighter",
+        "source": "assets/archetypes/Fighter/fighter.glb",
+        "sourceHash": "dcb48696059094dc5d79e8539fd9368b9932ebb8f3bc57d14b1c4098caae2a3a",
+        "classification": "Body-only original-source strict LOD pilot, unchanged error bounds. Exact reviewed other geometry/rig/animation/texture payloads. Native morph/motion/fit and visual approval required.",
+        "variants": {
+          "high": {
+            "file": "/home/aeml/.local/share/eidolon-body-morph-basis-checks-20261010/detailed-pilots/Fighter/fighter-body-pilot-high.glb",
+            "sha256": "86f49ec116e36b4ed9659e18f908852d7bbad26c1de73c6b361e4a9c827c2202",
+            "bytes": 5855108,
+            "baselineFile": "assets/archetypes/Fighter/fighter-runtime-body-v2-high.glb",
+            "baselineSHA256": "4c36254cb53208323e65e0b4d7d0ee2b6634db14ef2b8f4d2524fd729b0540ae",
+            "originalBodyTriangles": 102416,
+            "baselineBodyTriangles": 31748,
+            "bodyTriangles": 20482,
+            "ratio": 0.2,
+            "maximumError": 0.002,
+            "mode": "morph-basis",
+            "algorithm": "morph-basis",
+            "details": [
+              {
+                "reportedError": 0.001219642348587513,
+                "lockedMorphVertices": 2167,
+                "morphBasis": true,
+                "attributeWidth": 18
+              }
+            ],
+            "cornerSHA256": [
+              "c272c4dda9dd3139e8d5ff2db3da369db20e056cb7d195183e5dd672603223c3"
+            ],
+            "gltfErrors": 0,
+            "gltfWarnings": 0
+          },
+          "low": {
+            "file": "/home/aeml/.local/share/eidolon-body-morph-basis-checks-20261010/detailed-pilots/Fighter/fighter-body-pilot-low.glb",
+            "sha256": "357284df9e9f22f9823e2ca0bbb1d15e40ac00024a02046d90f48b9be8524c0b",
+            "bytes": 3680212,
+            "baselineFile": "assets/archetypes/Fighter/fighter-runtime-low.glb",
+            "baselineSHA256": "357284df9e9f22f9823e2ca0bbb1d15e40ac00024a02046d90f48b9be8524c0b",
+            "originalBodyTriangles": 102416,
+            "baselineBodyTriangles": 18434,
+            "bodyTriangles": 18434,
+            "attemptedBodyTriangles": 20482,
+            "algorithm": "exact-reviewed-runtime",
+            "ratio": 0.2,
+            "maximumError": 0.002,
+            "mode": "morph-basis",
+            "details": [
+              {
+                "reportedError": 0.001219642348587513,
+                "lockedMorphVertices": 2167,
+                "morphBasis": true,
+                "attributeWidth": 18
+              }
+            ],
+            "cornerSHA256": [
+              "783ecaae62ffae1ae2ad692e61caca23fc14e8edc428fc30abb820dc8fb4c33b"
+            ],
+            "gltfErrors": 0,
+            "gltfWarnings": 0
+          }
+        }
+      },
+      {
+        "actorClass": "Rogue",
+        "source": "assets/archetypes/Rogue/rogue.glb",
+        "sourceHash": "f3cee5ce0564c2c14f201e35e296c4e91556b76702701bc70db9a9919f70d9c9",
+        "classification": "Body-only original-source strict LOD pilot, unchanged error bounds. Exact reviewed other geometry/rig/animation/texture payloads. Native morph/motion/fit and visual approval required.",
+        "variants": {
+          "high": {
+            "file": "/home/aeml/.local/share/eidolon-body-morph-basis-checks-20261010/detailed-pilots/Rogue/rogue-body-pilot-high.glb",
+            "sha256": "152a5349bc78bab104124bf160331c44f6046a537b5018a7ca108d45093dafe4",
+            "bytes": 4768692,
+            "baselineFile": "assets/archetypes/Rogue/rogue-runtime-body-v2-high.glb",
+            "baselineSHA256": "8bc912a249103a3f279be70496e63d8181292b7ab46fbc89bbc37e44cf206d8f",
+            "originalBodyTriangles": 100136,
+            "baselineBodyTriangles": 30134,
+            "bodyTriangles": 20026,
+            "ratio": 0.2,
+            "maximumError": 0.002,
+            "mode": "morph-basis",
+            "algorithm": "morph-basis",
+            "details": [
+              {
+                "reportedError": 0.0009296021889895201,
+                "lockedMorphVertices": 2057,
+                "morphBasis": true,
+                "attributeWidth": 18
+              }
+            ],
+            "cornerSHA256": [
+              "ead88964348f553a6b2f3b86ee40d71672af37ec5e78e5361a25f0b57235891c"
+            ],
+            "gltfErrors": 0,
+            "gltfWarnings": 0
+          },
+          "low": {
+            "file": "/home/aeml/.local/share/eidolon-body-morph-basis-checks-20261010/detailed-pilots/Rogue/rogue-body-pilot-low.glb",
+            "sha256": "8ec12238f6b622143e0dcc7cfffc0955019ef268a3fd472e7e3156a5c17685d7",
+            "bytes": 4017940,
+            "baselineFile": "assets/archetypes/Rogue/rogue-runtime-low.glb",
+            "baselineSHA256": "8ec12238f6b622143e0dcc7cfffc0955019ef268a3fd472e7e3156a5c17685d7",
+            "originalBodyTriangles": 100136,
+            "baselineBodyTriangles": 18024,
+            "bodyTriangles": 18024,
+            "attemptedBodyTriangles": 20026,
+            "algorithm": "exact-reviewed-runtime",
+            "ratio": 0.2,
+            "maximumError": 0.002,
+            "mode": "morph-basis",
+            "details": [
+              {
+                "reportedError": 0.0009296021889895201,
+                "lockedMorphVertices": 2057,
+                "morphBasis": true,
+                "attributeWidth": 18
+              }
+            ],
+            "cornerSHA256": [
+              "0a8853c39f8d463603facfa60d007d7be94b8790f2d0e6ce48f70d78c7aaab50"
+            ],
+            "gltfErrors": 0,
+            "gltfWarnings": 0
+          }
+        }
+      },
+      {
+        "actorClass": "Wizard",
+        "source": "assets/archetypes/Wizard/wizard.glb",
+        "sourceHash": "130d4d06573861e4accd2eac9bccb8b9b409949ebb2b8f07438b60199a821841",
+        "classification": "Body-only original-source strict LOD pilot, unchanged error bounds. Exact reviewed other geometry/rig/animation/texture payloads. Native morph/motion/fit and visual approval required.",
+        "variants": {
+          "high": {
+            "file": "/home/aeml/.local/share/eidolon-body-morph-basis-checks-20261010/detailed-pilots/Wizard/wizard-body-pilot-high.glb",
+            "sha256": "af4b3a845155a502fe9d65f9c500a04fb54bf5b7749d929c4a071c1ab3c07341",
+            "bytes": 3796088,
+            "baselineFile": "assets/archetypes/Wizard/wizard-runtime-body-v2-high.glb",
+            "baselineSHA256": "6c4c56be8339d3bd7271f39c64216f014211ed457e4364b426649595d121109e",
+            "originalBodyTriangles": 103400,
+            "baselineBodyTriangles": 30846,
+            "bodyTriangles": 20680,
+            "ratio": 0.2,
+            "maximumError": 0.002,
+            "mode": "morph-basis",
+            "algorithm": "morph-basis",
+            "details": [
+              {
+                "reportedError": 0.0009451441001147032,
+                "lockedMorphVertices": 2055,
+                "morphBasis": true,
+                "attributeWidth": 18
+              }
+            ],
+            "cornerSHA256": [
+              "80ecaa87ee5a1f2fcead1265f7a02552ad6234e267463c963a8a159041fb3ef9"
+            ],
+            "gltfErrors": 0,
+            "gltfWarnings": 0
+          },
+          "low": {
+            "file": "/home/aeml/.local/share/eidolon-body-morph-basis-checks-20261010/detailed-pilots/Wizard/wizard-body-pilot-low.glb",
+            "sha256": "52adfd98bd8ac6ebe7a85e84c989e8c7f42eb57b16c0dcfea41a3570c9eebd24",
+            "bytes": 3215076,
+            "baselineFile": "assets/archetypes/Wizard/wizard-runtime-low.glb",
+            "baselineSHA256": "52adfd98bd8ac6ebe7a85e84c989e8c7f42eb57b16c0dcfea41a3570c9eebd24",
+            "originalBodyTriangles": 103400,
+            "baselineBodyTriangles": 18612,
+            "bodyTriangles": 18612,
+            "attemptedBodyTriangles": 20680,
+            "algorithm": "exact-reviewed-runtime",
+            "ratio": 0.2,
+            "maximumError": 0.002,
+            "mode": "morph-basis",
+            "details": [
+              {
+                "reportedError": 0.0009451441001147032,
+                "lockedMorphVertices": 2055,
+                "morphBasis": true,
+                "attributeWidth": 18
+              }
+            ],
+            "cornerSHA256": [
+              "36115c04fb2747aba6e0ee180403aa50d6358a6e480d17d4c9f714e8ef35471c"
+            ],
+            "gltfErrors": 0,
+            "gltfWarnings": 0
+          }
+        }
+      }
+    ],
+    "highBodyTrianglesBefore": 123204,
+    "highBodyTrianglesAfter": 81216,
+    "highTriangleReduction": 41988,
+    "highReductionPercent": 34.08006233563846,
+    "selectedHighBytesBefore": 22396288,
+    "preparedHighBytesAfter": 19191288,
+    "allFourLowExactReviewedBytes": true,
+    "gltfValidVariantsIncludingRejected": 16
+  },
+  "independentProof": {
+    "allVertexSource": "detailed-all-vertex-source-proof.json",
+    "verifiedVariants": 8,
+    "verifiedVertices": 170960,
+    "scope": "Every serialized vertex raw base position/normal/tangent/UV/joints/weights and all morph attributes matches an original source vertex, including component types/normalization. Does not prove surface/pose equivalence.",
+    "movingVertexProof": {
+      "classification": "Independent original-source moving-vertex retention. Does not prove re-triangulated eyelid surface or all posed interpolation equivalent.",
+      "rows": [
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "candidateSHA256": "86f49ec116e36b4ed9659e18f908852d7bbad26c1de73c6b361e4a9c827c2202",
+          "uniqueOriginalMovingVertexSignatures": 2167,
+          "allOriginalNonzeroPositionMorphVerticesRetained": true
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "candidateSHA256": "152a5349bc78bab104124bf160331c44f6046a537b5018a7ca108d45093dafe4",
+          "uniqueOriginalMovingVertexSignatures": 2057,
+          "allOriginalNonzeroPositionMorphVerticesRetained": true
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "candidateSHA256": "af4b3a845155a502fe9d65f9c500a04fb54bf5b7749d929c4a071c1ab3c07341",
+          "uniqueOriginalMovingVertexSignatures": 2055,
+          "allOriginalNonzeroPositionMorphVerticesRetained": true
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "candidateSHA256": "154b3a7ca0a93b240611674ed1b0e6ee8734a8bfa2c3bb5e9cede6da79dd9631",
+          "uniqueOriginalMovingVertexSignatures": 2055,
+          "allOriginalNonzeroPositionMorphVerticesRetained": true
+        }
+      ]
+    },
+    "retainedFailedAttempt": "moving-blink-vertex-proof-node18-failed.log; script succeeded using required Node24 after Node18 CommonJS/ESM dependency failure."
+  },
+  "focusedValidation": {
+    "suites": 5,
+    "tests": 44,
+    "seconds": 1.951,
+    "log": "corrected-focused-tests.log",
+    "newTests": "Three actual Meshopt properties: normal-only deltas permit reduction with moving eyelid vertices fixed; no input array mutation; unsupported/missing morph semantics reject.",
+    "retainedInitialFailures": "Node test-environment pragma conflicted with existing HTMLCanvas global setup; extra path regex token tripped existing migration guard. Fixed without weakening runtime/test limits or adding legacy asset exceptions. Initial/focused logs retained.",
+    "lint": {
+      "exitCode": 0,
+      "files": [
+        "scripts/lib/body-lod-indices.mjs",
+        "scripts/derive-body-lod-pilot.mjs",
+        "tests/e2e/body-lod-pilot.js",
+        "tests/e2e/authored-class-equipment.spec.js",
+        "tests/BodyMorphBasis.test.js"
+      ]
+    },
+    "commentOnlyFinalEdit": "Clarifies Float32 endpoint arithmetic; final source snapshots distinguish this comment from native-tested detailed snapshot."
+  },
+  "native": {
+    "terminals": [
+      {
+        "runs": [
+          {
+            "mode": "reference",
+            "exitCode": 0,
+            "startedUnix": 1791590739.7391605,
+            "finishedUnix": 1791590761.7807992
+          },
+          {
+            "mode": "candidate",
+            "exitCode": 0,
+            "startedUnix": 1791590761.781139,
+            "finishedUnix": 1791590784.06415
+          }
+        ],
+        "complete": true
+      },
+      {
+        "runs": [
+          {
+            "mode": "candidate",
+            "exitCode": 0,
+            "startedUnix": 1791590941.1701915,
+            "finishedUnix": 1791590963.8336086
+          }
+        ],
+        "complete": true
+      }
+    ],
+    "runs": {
+      "reference": {
+        "path": "native/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes",
+        "bareAndIndependentBlinkPoses": 56,
+        "everyPosedBodyVertexFinite": true,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "eightFullOutfitColorPassCostsIncludingTwoFloorTriangles": [
+          {
+            "actorClass": "Fighter",
+            "quality": "high",
+            "items": 14,
+            "calls": 26,
+            "triangles": 64289
+          },
+          {
+            "actorClass": "Fighter",
+            "quality": "low",
+            "items": 14,
+            "calls": 23,
+            "triangles": 33019
+          },
+          {
+            "actorClass": "Rogue",
+            "quality": "high",
+            "items": 14,
+            "calls": 25,
+            "triangles": 56703
+          },
+          {
+            "actorClass": "Rogue",
+            "quality": "low",
+            "items": 14,
+            "calls": 21,
+            "triangles": 28485
+          },
+          {
+            "actorClass": "Wizard",
+            "quality": "high",
+            "items": 14,
+            "calls": 27,
+            "triangles": 61094
+          },
+          {
+            "actorClass": "Wizard",
+            "quality": "low",
+            "items": 14,
+            "calls": 24,
+            "triangles": 32342
+          },
+          {
+            "actorClass": "Cleric",
+            "quality": "high",
+            "items": 14,
+            "calls": 25,
+            "triangles": 57157
+          },
+          {
+            "actorClass": "Cleric",
+            "quality": "low",
+            "items": 14,
+            "calls": 24,
+            "triangles": 28686
+          }
+        ]
+      },
+      "initialCandidate": {
+        "path": "native/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes",
+        "bareAndIndependentBlinkPoses": 56,
+        "everyPosedBodyVertexFinite": true,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "eightFullOutfitColorPassCostsIncludingTwoFloorTriangles": [
+          {
+            "actorClass": "Fighter",
+            "quality": "high",
+            "items": 14,
+            "calls": 26,
+            "triangles": 58031
+          },
+          {
+            "actorClass": "Fighter",
+            "quality": "low",
+            "items": 14,
+            "calls": 23,
+            "triangles": 32891
+          },
+          {
+            "actorClass": "Rogue",
+            "quality": "high",
+            "items": 14,
+            "calls": 25,
+            "triangles": 50032
+          },
+          {
+            "actorClass": "Rogue",
+            "quality": "low",
+            "items": 14,
+            "calls": 21,
+            "triangles": 27900
+          },
+          {
+            "actorClass": "Wizard",
+            "quality": "high",
+            "items": 14,
+            "calls": 27,
+            "triangles": 51603
+          },
+          {
+            "actorClass": "Wizard",
+            "quality": "low",
+            "items": 14,
+            "calls": 24,
+            "triangles": 29092
+          },
+          {
+            "actorClass": "Cleric",
+            "quality": "high",
+            "items": 14,
+            "calls": 25,
+            "triangles": 50380
+          },
+          {
+            "actorClass": "Cleric",
+            "quality": "low",
+            "items": 14,
+            "calls": 24,
+            "triangles": 28099
+          }
+        ],
+        "actualRequestedVariants": {
+          "candidates": 8,
+          "requested": [
+            {
+              "url": "/assets/archetypes/Cleric/cleric-runtime-body-v2-high.glb",
+              "actorClass": "Cleric",
+              "quality": "high",
+              "sha256": "cdbcbe8b12f4403aacd52f90d3d3b09b667726e5268a6857b95880f884e3e0b2",
+              "reviewedBaselineFile": "assets/archetypes/Cleric/cleric-runtime-body-v2-high.glb",
+              "runtimeSelectedSHA256": "deb1613081222e60a32d6b199fcabc646e294d85ab4054100e136af978965ca7"
+            },
+            {
+              "url": "/assets/archetypes/Cleric/cleric-runtime-low.glb",
+              "actorClass": "Cleric",
+              "quality": "low",
+              "sha256": "14f05bd4caf0e54cce754d04aa8b8d030b0ed182f3bd018cf7df0dae37dfd710",
+              "reviewedBaselineFile": "assets/archetypes/Cleric/cleric-runtime-low.glb",
+              "runtimeSelectedSHA256": "19784ca41b98d40ba7bf5ae26d6b4f3bba707fb288a120254cc0bc2172319364"
+            },
+            {
+              "url": "/assets/archetypes/Fighter/fighter-runtime-body-v2-high.glb",
+              "actorClass": "Fighter",
+              "quality": "high",
+              "sha256": "6fbbf5fc92a497e94dc5316a470f1dda0103fa805a8fba2aeb3e411e9452a584",
+              "reviewedBaselineFile": "assets/archetypes/Fighter/fighter-runtime-body-v2-high.glb",
+              "runtimeSelectedSHA256": "4c36254cb53208323e65e0b4d7d0ee2b6634db14ef2b8f4d2524fd729b0540ae"
+            },
+            {
+              "url": "/assets/archetypes/Fighter/fighter-runtime-low.glb",
+              "actorClass": "Fighter",
+              "quality": "low",
+              "sha256": "9c0210004c1489e03a11b4b64443f22f6ae00544eea7cdd9e50e3bb3870f2321",
+              "reviewedBaselineFile": "assets/archetypes/Fighter/fighter-runtime-low.glb",
+              "runtimeSelectedSHA256": "357284df9e9f22f9823e2ca0bbb1d15e40ac00024a02046d90f48b9be8524c0b"
+            },
+            {
+              "url": "/assets/archetypes/Rogue/rogue-runtime-body-v2-high.glb",
+              "actorClass": "Rogue",
+              "quality": "high",
+              "sha256": "555a1367b0a98a26cb89b6ef813084606798dc446d4c253a45f9cdd3a90d0de9",
+              "reviewedBaselineFile": "assets/archetypes/Rogue/rogue-runtime-body-v2-high.glb",
+              "runtimeSelectedSHA256": "8bc912a249103a3f279be70496e63d8181292b7ab46fbc89bbc37e44cf206d8f"
+            },
+            {
+              "url": "/assets/archetypes/Rogue/rogue-runtime-low.glb",
+              "actorClass": "Rogue",
+              "quality": "low",
+              "sha256": "f17759580ff1744a1db568865c81c1143e6ef9cfd2f79a0ddc1730ab8d7882fb",
+              "reviewedBaselineFile": "assets/archetypes/Rogue/rogue-runtime-low.glb",
+              "runtimeSelectedSHA256": "8ec12238f6b622143e0dcc7cfffc0955019ef268a3fd472e7e3156a5c17685d7"
+            },
+            {
+              "url": "/assets/archetypes/Wizard/wizard-runtime-body-v2-high.glb",
+              "actorClass": "Wizard",
+              "quality": "high",
+              "sha256": "f50c3dd7d332a1891d2cc32c4edbbc40b8c1154183c3e50302bec64c68baa3c0",
+              "reviewedBaselineFile": "assets/archetypes/Wizard/wizard-runtime-body-v2-high.glb",
+              "runtimeSelectedSHA256": "6c4c56be8339d3bd7271f39c64216f014211ed457e4364b426649595d121109e"
+            },
+            {
+              "url": "/assets/archetypes/Wizard/wizard-runtime-low.glb",
+              "actorClass": "Wizard",
+              "quality": "low",
+              "sha256": "2cec30bf5852de79090f1ff818870a46e1799f5d5cd9b8f95e63d20f441e1493",
+              "reviewedBaselineFile": "assets/archetypes/Wizard/wizard-runtime-low.glb",
+              "runtimeSelectedSHA256": "52adfd98bd8ac6ebe7a85e84c989e8c7f42eb57b16c0dcfea41a3570c9eebd24"
+            }
+          ]
+        }
+      },
+      "detailedCandidate": {
+        "path": "native-detailed/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes",
+        "bareAndIndependentBlinkPoses": 56,
+        "everyPosedBodyVertexFinite": true,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "eightFullOutfitColorPassCostsIncludingTwoFloorTriangles": [
+          {
+            "actorClass": "Fighter",
+            "quality": "high",
+            "items": 14,
+            "calls": 26,
+            "triangles": 59320
+          },
+          {
+            "actorClass": "Fighter",
+            "quality": "low",
+            "items": 14,
+            "calls": 23,
+            "triangles": 33019
+          },
+          {
+            "actorClass": "Rogue",
+            "quality": "high",
+            "items": 14,
+            "calls": 25,
+            "triangles": 51939
+          },
+          {
+            "actorClass": "Rogue",
+            "quality": "low",
+            "items": 14,
+            "calls": 21,
+            "triangles": 28485
+          },
+          {
+            "actorClass": "Wizard",
+            "quality": "high",
+            "items": 14,
+            "calls": 27,
+            "triangles": 54952
+          },
+          {
+            "actorClass": "Wizard",
+            "quality": "low",
+            "items": 14,
+            "calls": 24,
+            "triangles": 32342
+          },
+          {
+            "actorClass": "Cleric",
+            "quality": "high",
+            "items": 14,
+            "calls": 25,
+            "triangles": 52244
+          },
+          {
+            "actorClass": "Cleric",
+            "quality": "low",
+            "items": 14,
+            "calls": 24,
+            "triangles": 28686
+          }
+        ],
+        "actualRequestedVariants": {
+          "candidates": 8,
+          "requested": [
+            {
+              "url": "/assets/archetypes/Cleric/cleric-runtime-body-v2-high.glb",
+              "actorClass": "Cleric",
+              "quality": "high",
+              "sha256": "154b3a7ca0a93b240611674ed1b0e6ee8734a8bfa2c3bb5e9cede6da79dd9631",
+              "reviewedBaselineFile": "assets/archetypes/Cleric/cleric-runtime-body-v2-high.glb",
+              "runtimeSelectedSHA256": "deb1613081222e60a32d6b199fcabc646e294d85ab4054100e136af978965ca7"
+            },
+            {
+              "url": "/assets/archetypes/Cleric/cleric-runtime-low.glb",
+              "actorClass": "Cleric",
+              "quality": "low",
+              "sha256": "19784ca41b98d40ba7bf5ae26d6b4f3bba707fb288a120254cc0bc2172319364",
+              "reviewedBaselineFile": "assets/archetypes/Cleric/cleric-runtime-low.glb",
+              "runtimeSelectedSHA256": "19784ca41b98d40ba7bf5ae26d6b4f3bba707fb288a120254cc0bc2172319364"
+            },
+            {
+              "url": "/assets/archetypes/Fighter/fighter-runtime-body-v2-high.glb",
+              "actorClass": "Fighter",
+              "quality": "high",
+              "sha256": "86f49ec116e36b4ed9659e18f908852d7bbad26c1de73c6b361e4a9c827c2202",
+              "reviewedBaselineFile": "assets/archetypes/Fighter/fighter-runtime-body-v2-high.glb",
+              "runtimeSelectedSHA256": "4c36254cb53208323e65e0b4d7d0ee2b6634db14ef2b8f4d2524fd729b0540ae"
+            },
+            {
+              "url": "/assets/archetypes/Fighter/fighter-runtime-low.glb",
+              "actorClass": "Fighter",
+              "quality": "low",
+              "sha256": "357284df9e9f22f9823e2ca0bbb1d15e40ac00024a02046d90f48b9be8524c0b",
+              "reviewedBaselineFile": "assets/archetypes/Fighter/fighter-runtime-low.glb",
+              "runtimeSelectedSHA256": "357284df9e9f22f9823e2ca0bbb1d15e40ac00024a02046d90f48b9be8524c0b"
+            },
+            {
+              "url": "/assets/archetypes/Rogue/rogue-runtime-body-v2-high.glb",
+              "actorClass": "Rogue",
+              "quality": "high",
+              "sha256": "152a5349bc78bab104124bf160331c44f6046a537b5018a7ca108d45093dafe4",
+              "reviewedBaselineFile": "assets/archetypes/Rogue/rogue-runtime-body-v2-high.glb",
+              "runtimeSelectedSHA256": "8bc912a249103a3f279be70496e63d8181292b7ab46fbc89bbc37e44cf206d8f"
+            },
+            {
+              "url": "/assets/archetypes/Rogue/rogue-runtime-low.glb",
+              "actorClass": "Rogue",
+              "quality": "low",
+              "sha256": "8ec12238f6b622143e0dcc7cfffc0955019ef268a3fd472e7e3156a5c17685d7",
+              "reviewedBaselineFile": "assets/archetypes/Rogue/rogue-runtime-low.glb",
+              "runtimeSelectedSHA256": "8ec12238f6b622143e0dcc7cfffc0955019ef268a3fd472e7e3156a5c17685d7"
+            },
+            {
+              "url": "/assets/archetypes/Wizard/wizard-runtime-body-v2-high.glb",
+              "actorClass": "Wizard",
+              "quality": "high",
+              "sha256": "af4b3a845155a502fe9d65f9c500a04fb54bf5b7749d929c4a071c1ab3c07341",
+              "reviewedBaselineFile": "assets/archetypes/Wizard/wizard-runtime-body-v2-high.glb",
+              "runtimeSelectedSHA256": "6c4c56be8339d3bd7271f39c64216f014211ed457e4364b426649595d121109e"
+            },
+            {
+              "url": "/assets/archetypes/Wizard/wizard-runtime-low.glb",
+              "actorClass": "Wizard",
+              "quality": "low",
+              "sha256": "52adfd98bd8ac6ebe7a85e84c989e8c7f42eb57b16c0dcfea41a3570c9eebd24",
+              "reviewedBaselineFile": "assets/archetypes/Wizard/wizard-runtime-low.glb",
+              "runtimeSelectedSHA256": "52adfd98bd8ac6ebe7a85e84c989e8c7f42eb57b16c0dcfea41a3570c9eebd24"
+            }
+          ]
+        }
+      }
+    },
+    "coverage": "Eight fully equipped High/Low14slot fits, mixed movement/strike/cast, alternating Rogue strikes, stealth, independent rigs, pool reuse and three preview types. Added independent left/right and partial Blink captures:56bare samples per run, every posed body vertex finite.",
+    "isolation": "Explicit opt-in pilot routes and blocked service workers. Actual8URLs/ hashes observed. Preview evidence does not qualify production cache or old clients.",
+    "imageComparison": "png-comparisons.json",
+    "descriptiveImageSummary": [
+      {
+        "trial": "native/candidate-results",
+        "images": 72,
+        "exactRGB": 0,
+        "lowPoseImages": 28,
+        "lowExactRGB": 0
+      },
+      {
+        "trial": "native-detailed/candidate-results",
+        "images": 72,
+        "exactRGB": 31,
+        "lowPoseImages": 28,
+        "lowExactRGB": 28
+      }
+    ],
+    "rootReview": "Initial FighterLow close-up visibly faceted; reject. Revised FighterHigh face, WizardHigh blink, paired RogueHigh left-blink, ClericHigh back/run and actual four-class HUD inspected. Revised neck/shoulder closer to reference and blinks retained; scoped preliminary review only. Final modern art/Q/CB remains open."
+  },
+  "actualParty": {
+    "terminal": {
+      "exitCode": 0,
+      "startedUnix": 1791591030.124794,
+      "finishedUnix": 1791591101.1731472
+    },
+    "goRaceTest": "TestTerrainActualEquippedBrowserParty PASS42.84s; supervisor exit0.",
+    "evidence": "/home/aeml/.local/share/eidolon-body-morph-basis-checks-20261010/eidolon-terrain-save-evidence-03IcEW51",
+    "scenario": "One native high-quality GPU observer with three connected party socket peers; four classes,14slots/3sockets and saves/gear/membership/inventory/EP preserved.",
+    "skipped": "Four simultaneous renderer scenario skipped; not passed. No new Low actual-party/device acceptance.",
+    "substitutions": {
+      "candidates": 8,
+      "requested": [
+        {
+          "url": "/assets/archetypes/Cleric/cleric-runtime-body-v2-high.glb",
+          "actorClass": "Cleric",
+          "quality": "high",
+          "sha256": "154b3a7ca0a93b240611674ed1b0e6ee8734a8bfa2c3bb5e9cede6da79dd9631",
+          "reviewedBaselineFile": "assets/archetypes/Cleric/cleric-runtime-body-v2-high.glb",
+          "runtimeSelectedSHA256": "deb1613081222e60a32d6b199fcabc646e294d85ab4054100e136af978965ca7"
+        },
+        {
+          "url": "/assets/archetypes/Fighter/fighter-runtime-body-v2-high.glb",
+          "actorClass": "Fighter",
+          "quality": "high",
+          "sha256": "86f49ec116e36b4ed9659e18f908852d7bbad26c1de73c6b361e4a9c827c2202",
+          "reviewedBaselineFile": "assets/archetypes/Fighter/fighter-runtime-body-v2-high.glb",
+          "runtimeSelectedSHA256": "4c36254cb53208323e65e0b4d7d0ee2b6634db14ef2b8f4d2524fd729b0540ae"
+        },
+        {
+          "url": "/assets/archetypes/Rogue/rogue-runtime-body-v2-high.glb",
+          "actorClass": "Rogue",
+          "quality": "high",
+          "sha256": "152a5349bc78bab104124bf160331c44f6046a537b5018a7ca108d45093dafe4",
+          "reviewedBaselineFile": "assets/archetypes/Rogue/rogue-runtime-body-v2-high.glb",
+          "runtimeSelectedSHA256": "8bc912a249103a3f279be70496e63d8181292b7ab46fbc89bbc37e44cf206d8f"
+        },
+        {
+          "url": "/assets/archetypes/Wizard/wizard-runtime-body-v2-high.glb",
+          "actorClass": "Wizard",
+          "quality": "high",
+          "sha256": "af4b3a845155a502fe9d65f9c500a04fb54bf5b7749d929c4a071c1ab3c07341",
+          "reviewedBaselineFile": "assets/archetypes/Wizard/wizard-runtime-body-v2-high.glb",
+          "runtimeSelectedSHA256": "6c4c56be8339d3bd7271f39c64216f014211ed457e4364b426649595d121109e"
+        }
+      ]
+    },
+    "profile": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 16.69999999999709,
+      "frameP95Ms": 33.30000000000291,
+      "frameP99Ms": 33.400000000001455,
+      "framesOver33ms": 6,
+      "cpuLoopMedianMs": 17.799999982118607,
+      "cpuLoopP95Ms": 22.599999994039536,
+      "drawCallsMedian": 460,
+      "trianglesMedian": 466590,
+      "geometries": 517,
+      "textures": 413,
+      "activeEntities": 33,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "equippedRootsUntimed": [
+      {
+        "name": "Equipped Cleric",
+        "color": 26,
+        "shadow": 21,
+        "triangles": 105496
+      },
+      {
+        "name": "Equipped Wizard",
+        "color": 25,
+        "shadow": 21,
+        "triangles": 93690
+      },
+      {
+        "name": "Equipped Fighter",
+        "color": 22,
+        "shadow": 20,
+        "triangles": 110172
+      },
+      {
+        "name": "Equipped Rogue",
+        "color": 23,
+        "shadow": 18,
+        "triangles": 95718
+      }
+    ],
+    "equippedRootTriangles": 405076,
+    "budget": {
+      "frameMedianLimitMs": 20,
+      "frameP95LimitMs": 33.4,
+      "drawLimit": 350,
+      "triangleLimit": 250000,
+      "rawFrameSample": "pass",
+      "wholeSceneDrawAndTriangle": "fail",
+      "lowWholeGameAndSupportedDevices": "open"
+    },
+    "attributionLimits": "Different entity populations and gear from other receipts do not establish controlled CPU gain. Untimed draw attribution is separate from180frame profiles. CPU timers are not GPU timings or physical-device memory measurements."
+  },
+  "longSoak": {
+    "readOnlySnapshot": {
+      "observed_at_utc": "2026-10-10T00:01:36Z",
+      "run": {
+        "id": 37880032315,
+        "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_attempt": 1,
+        "updated_at": "2026-10-09T03:36:16Z",
+        "url": "https://github.com/aeml/eidolon/actions/runs/37880032315"
+      },
+      "jobs": [
+        {
+          "name": "100-client authoritative-state soak",
+          "status": "in_progress",
+          "conclusion": null,
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Initialize containers",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Checkout",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Setup Go",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Setup Node.js",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Run multiplayer soak",
+              "status": "in_progress",
+              "conclusion": null
+            },
+            {
+              "name": "Upload soak evidence",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Post Setup Node.js",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Post Setup Go",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Post Checkout",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Stop containers",
+              "status": "pending",
+              "conclusion": null
+            }
+          ]
+        }
+      ]
+    },
+    "action": "One delegated read-only snapshot00:01:36UTC, exact run37880032315/attempt1 stillin_progress. Stale after timestamp; no restart/cancel/acceptance."
+  },
+  "cleanup": {
+    "recordedUTC": "2026-10-10T00:18:43.087702+00:00",
+    "ownedSupervisorsAbsent": [
+      1333273,
+      1358216,
+      1369453
+    ],
+    "ownedPortsAbsent": [
+      4190,
+      4192,
+      18189
+    ],
+    "ownedVendorSymlinkRemoved": true,
+    "ignoredNodeModulesSymlinkRetained": true,
+    "playerAndProductionStateChanged": false
+  },
+  "retainedEvidence": {
+    "artifactInventory": "artifact-inventory.json",
+    "entries": 324,
+    "sha256": "80d31f0494cf861ad92050bcd22f2151e5b8e1d9f8e2c0ac52a857a7debe0ca0",
+    "sourceHashes": "final-source-hashes.json",
+    "sourceFiles": 21,
+    "privacy": "Owned directories0700, files0600 or executable0700; no credentials copied to tracked receipt. No shared dependency or vendor mutation."
+  },
+  "decision": "Retain revised High/Low-fallback opt-in preparation and explicit coarse-trial rejection. No selected model/catalog/runtime changes now. Whole-scene budget remains failed; final art/device/cache/compatible raised activation not accepted.",
+  "next": "Continue larger body/eye/gear/scene costs while preserving supplied art, all slots, bones, morphs and motion. Deliberate additive selection/cache and whole-game High/Low/device/art/raised qualification precede coherent publication. Continue entire inherited1.11\u20131.99 and operations/rights/owner/human/beta/launch/handoff."
+}

@@ -1,0 +1,633 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-09T19:34:02.992986+00:00",
+  "status": "Qualified private actor submission change on held raised candidate; native/unit/functional/lifetime checks pass. Connected-party High frame budget, modern-art and supported-device gates remain open. No public push, version change, production profile activation or account mutation.",
+  "base": "0da9afacf25a26b8fb14276a91a62fa6380dac76 plus exact working hashes below",
+  "sourceSHA256": {
+    "src/art/FittedEquipment.js": "08e0362fcffc113114c787cb1ecbd9c3ec866beaa9a0bc625df43fac770fb9ce",
+    "src/art/FittedEquipmentBatches.js": "d40002d327d5de1c3d62660058abd409b4f44a95736dd28595a4c863b06ca9ee",
+    "tests/FittedEquipmentBatches.test.js": "987a551e38b02661cecf3480b9d6377e5c3f519b486d83d27b032cacba777841",
+    "tests/e2e/fitted-surface-batches.spec.js": "66e6d693648c4a75afcd58e85935cbe421f5880b630adf6d696527ae084d8b82",
+    "tests/e2e/terrain-equipped-party.spec.js": "2876bfeeef16e6e33122a334e65b7962928c2dc9b67cd99a952b2ad9407ebe35",
+    "scripts/diagnose-environment-matrices.mjs": "b6d632c660ac311f1ceb49b33903601b088d12f72072513e2cc9fb197192c0b0",
+    "scripts/diagnose-fitted-submissions.mjs": "3a43edf61cc7c7a551186e78a622a31562083dbd543b55db38d07e89b0956608"
+  },
+  "implementation": {
+    "eligibility": "Only opaque stock MeshStandard fitted skins with compatible exact flags/maps/attributes, identity transforms, matching parent/bind/shadow/layers, no callbacks, morphs, groups, partial draw ranges, foreign textures, custom depth/distance, vertex colors or reserved surface attributes. Unsupported cases retain originals.",
+    "surface": "Owned geometry copies carry exact Float32 per-piece diffuse/roughness and emissive/metalness values in flat varyings. Shared generated maps and all remaining PBR flags stay exact. Every triangle, index topology, weight, UV, position and normal is retained; no actor/gear asset, quality budget or supplied motion bank changed.",
+    "rig": "Union rig entries identify the actual live bone object AND its exact inverse matrix. Partial rig orders and differing rest inverses remap all four owned index channels without replacing inverses or sharing bones across actors. Invalid indices/inverses and foreign owners conservatively retain original submissions.",
+    "lifecycle": "Original pieces stay owned for normal transparent/stealth sorting and cleanup; derived geometry/material/union skeleton belong to the equip generation. Production applyFittedEquipment selects surface mode by default; explicit false retains previous strict batching and is included in the rebuild signature.",
+    "qualificationOrder": "Native exact comparisons used explicit true/false before default adoption. Default-production connected-party and GPU lifetime checks subsequently passed. Final constant Float32 array allocation refactor is byte-identical, confirmed by final41 units; native images were not rerun for that allocation-only edit."
+  },
+  "units": {
+    "defaultSuites": [
+      "FittedEquipmentBatches",
+      "FittedEquipmentCoverage",
+      "AuthoredEquipmentSurfaces",
+      "ActorStealthAppearance",
+      "AuthoredFighter"
+    ],
+    "defaultResult": "107 passed, five suites,3.09s",
+    "finalAllocationRefactor": "41 passed,1.513s",
+    "scope": "Animated triangle positions, exact bone/inverse/index mapping, shader-token placement, original-source immutability, conservative eligibility and exactly-once owned cleanup."
+  },
+  "native": {
+    "result": "Two cases passed1.1m (High37.8s, Low25.2s),140 strict zero-channel-delta comparisons across four supplied classes, Rare/Legendary full14-slot outfits, eight sampled motion/yaw combinations, stealth/restoration and mixed back-run fits. Hardware AMD ANGLE RADV; browser failures empty.",
+    "comparisons": [
+      {
+        "quality": "high",
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "artifact": "/home/aeml/.local/share/eidolon-fitted-surface-native-20261009/fitted-surface-batches-fit-a24b9-d-class-gear-in-motion-high/comparison.json",
+        "sha256": "45bce2ddad8232cc4d1c85dabe8c97c23c4c2a099e3bed829036ece818b7d474",
+        "comparisons": 70,
+        "everyStableBaselineAndCandidateChangedChannels": 0,
+        "everyMaximumChannelDelta": 0,
+        "everyComparisonTrianglesEqual": true,
+        "timings": [
+          {
+            "mode": "previous",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 33.4,
+            "cpuMedianMs": 12.599999994039536,
+            "cpuP95Ms": 27.400000005960464,
+            "calls": 352,
+            "triangles": 508699
+          },
+          {
+            "mode": "candidate",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "cpuMedianMs": 9.400000005960464,
+            "cpuP95Ms": 18.30000001192093,
+            "calls": 212,
+            "triangles": 508699
+          },
+          {
+            "mode": "candidate",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "cpuMedianMs": 9.900000005960464,
+            "cpuP95Ms": 16.900000005960464,
+            "calls": 212,
+            "triangles": 508699
+          },
+          {
+            "mode": "previous",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "cpuMedianMs": 12.299999982118607,
+            "cpuP95Ms": 21.099999994039536,
+            "calls": 352,
+            "triangles": 508699
+          }
+        ]
+      },
+      {
+        "quality": "low",
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "artifact": "/home/aeml/.local/share/eidolon-fitted-surface-native-20261009/fitted-surface-batches-fit-b173b-ed-class-gear-in-motion-low/comparison.json",
+        "sha256": "8801c41f7a6ba1a025cff7a2c6af5dd73b09c31777f50fcfe07ddb5bd4223ae3",
+        "comparisons": 70,
+        "everyStableBaselineAndCandidateChangedChannels": 0,
+        "everyMaximumChannelDelta": 0,
+        "everyComparisonTrianglesEqual": true,
+        "timings": [
+          {
+            "mode": "previous",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "cpuMedianMs": 7.0999999940395355,
+            "cpuP95Ms": 13.099999994039536,
+            "calls": 176,
+            "triangles": 139469
+          },
+          {
+            "mode": "candidate",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "cpuMedianMs": 4.5,
+            "cpuP95Ms": 10.599999994039536,
+            "calls": 106,
+            "triangles": 139469
+          },
+          {
+            "mode": "candidate",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "cpuMedianMs": 4.199999988079071,
+            "cpuP95Ms": 8.100000023841858,
+            "calls": 106,
+            "triangles": 139469
+          },
+          {
+            "mode": "previous",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "cpuMedianMs": 5.699999988079071,
+            "cpuP95Ms": 12,
+            "calls": 176,
+            "triangles": 139469
+          }
+        ]
+      }
+    ],
+    "timingScope": "Four equipped classes under production renderer/composer/lighting, fixed sampled poses and real RAF/browser clocks. Four alternating120-frame blocks after30-frame warmups. Native visual values are exact; timing is diagnostic, not whole-game/device qualification. A1.265s unit process overlapped the native process, so this is not a perfectly isolated benchmark."
+  },
+  "resources": {
+    "cpuCensus": [
+      {
+        "class": "Fighter",
+        "triangles": 63225,
+        "previousVisibleMeshes": 27,
+        "candidateVisibleMeshes": 20,
+        "previousVisibleGearAttributeBytes": 1745016,
+        "candidateVisibleGearAttributeBytes": 2953104,
+        "addedVisibleGearAttributeBytes": 1208088
+      },
+      {
+        "class": "Rogue",
+        "triangles": 56928,
+        "previousVisibleMeshes": 27,
+        "candidateVisibleMeshes": 18,
+        "previousVisibleGearAttributeBytes": 1412216,
+        "candidateVisibleGearAttributeBytes": 2389904,
+        "addedVisibleGearAttributeBytes": 977688
+      },
+      {
+        "class": "Wizard",
+        "triangles": 62368,
+        "previousVisibleMeshes": 30,
+        "candidateVisibleMeshes": 21,
+        "previousVisibleGearAttributeBytes": 1136460,
+        "candidateVisibleGearAttributeBytes": 1923240,
+        "addedVisibleGearAttributeBytes": 786780
+      },
+      {
+        "class": "Cleric",
+        "triangles": 53354,
+        "previousVisibleMeshes": 31,
+        "candidateVisibleMeshes": 21,
+        "previousVisibleGearAttributeBytes": 1397500,
+        "candidateVisibleGearAttributeBytes": 2365000,
+        "addedVisibleGearAttributeBytes": 967500
+      }
+    ],
+    "byteMeaning": "Count visible gear vertex attribute buffers once per geometry, deduplicating interleaved attributes. Excludes indices, hidden source copies, shared pools, textures and driver overhead; not total GPU allocation or VRAM. Surface attributes add32bytes per vertex, with canonical Uint16 skin indices.",
+    "connectedCost": "Same connected scene geometry count422\u2192402, texture count277\u2192285; eight additional union-rig textures.",
+    "nativeLifetime": {
+      "artifact": "/home/aeml/.local/share/eidolon-fitted-surface-lifetime-20261009/fitted-surface-batches-def-a58c9-etain-bounded-GPU-resources/lifetime.json",
+      "sha256": "d7c44603a9a4b441f92352da9abb43f05b1addd0d22c4f3943655f19374a0092",
+      "result": "One case passed15.3s (test11.9s), normal default production equip and Actor.dispose/pool release.",
+      "warmup": [
+        {
+          "quality": "high",
+          "allocated": {
+            "geometries": 92,
+            "textures": 91
+          },
+          "released": {
+            "geometries": 72,
+            "textures": 71
+          },
+          "attachedActors": 0
+        },
+        {
+          "quality": "low",
+          "allocated": {
+            "geometries": 148,
+            "textures": 112
+          },
+          "released": {
+            "geometries": 128,
+            "textures": 92
+          },
+          "attachedActors": 0
+        }
+      ],
+      "baseline": {
+        "geometries": 128,
+        "textures": 92
+      },
+      "cycles": [
+        {
+          "quality": "high",
+          "allocated": {
+            "geometries": 148,
+            "textures": 112
+          },
+          "released": {
+            "geometries": 128,
+            "textures": 92
+          },
+          "attachedActors": 0
+        },
+        {
+          "quality": "low",
+          "allocated": {
+            "geometries": 148,
+            "textures": 112
+          },
+          "released": {
+            "geometries": 128,
+            "textures": 92
+          },
+          "attachedActors": 0
+        },
+        {
+          "quality": "high",
+          "allocated": {
+            "geometries": 148,
+            "textures": 112
+          },
+          "released": {
+            "geometries": 128,
+            "textures": 92
+          },
+          "attachedActors": 0
+        },
+        {
+          "quality": "low",
+          "allocated": {
+            "geometries": 148,
+            "textures": 112
+          },
+          "released": {
+            "geometries": 128,
+            "textures": 92
+          },
+          "attachedActors": 0
+        }
+      ],
+      "scope": "Four complete outfits per cycle; generated gear releases, intentionally retained body/asset pools warmed for both qualities. High renderer/composer stays fixed while body/equipment detail changes."
+    }
+  },
+  "connectedParty": {
+    "result": "Race-enabled actual server/disposable Mongo7.0.14 plus native browser and three normal connected socket peers; TestTerrainActualEquippedBrowserParty passed90.00s, package91.077s. Four classes with all14slots and independent owned rigs, normal bag/Gold/EP/membership/terrain saves preserved through disconnect. Disposable container and4190/18189 listeners confirmed removed.",
+    "diagnosticFlags": [
+      "EIDOLON_TERRAIN_PARTY_FITTED_SURFACE_COMPARE=1",
+      "EIDOLON_TERRAIN_PARTY_CPU_PROFILE=1"
+    ],
+    "initialDefaultProfile": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.30000000000291,
+      "frameP95Ms": 50,
+      "frameP99Ms": 66.59999999999854,
+      "framesOver33ms": 77,
+      "cpuLoopMedianMs": 29.80000001192093,
+      "cpuLoopP95Ms": 44.400000005960464,
+      "drawCallsMedian": 448,
+      "trianglesMedian": 546593,
+      "geometries": 396,
+      "textures": 285,
+      "activeEntities": 38,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "pairedProfiles": [
+      {
+        "mode": "previous",
+        "label": "paired-fitted-surface-previous",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 33.30000000000291,
+        "frameP95Ms": 50,
+        "frameP99Ms": 50.099999999998545,
+        "framesOver33ms": 59,
+        "cpuLoopMedianMs": 28.900000005960464,
+        "cpuLoopP95Ms": 37.900000005960464,
+        "drawCallsMedian": 477,
+        "trianglesMedian": 547162,
+        "geometries": 422,
+        "textures": 277,
+        "activeEntities": 38,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      },
+      {
+        "mode": "candidate",
+        "label": "paired-fitted-surface-candidate",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 33.299999999995634,
+        "frameP95Ms": 33.400000000001455,
+        "frameP99Ms": 49.900000000001455,
+        "framesOver33ms": 37,
+        "cpuLoopMedianMs": 25.200000017881393,
+        "cpuLoopP95Ms": 32.80000001192093,
+        "drawCallsMedian": 442,
+        "trianglesMedian": 550837,
+        "geometries": 402,
+        "textures": 285,
+        "activeEntities": 38,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      },
+      {
+        "mode": "candidate",
+        "label": "paired-fitted-surface-candidate",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 33.30000000000291,
+        "frameP95Ms": 50,
+        "frameP99Ms": 50.099999999998545,
+        "framesOver33ms": 66,
+        "cpuLoopMedianMs": 29,
+        "cpuLoopP95Ms": 41.5,
+        "drawCallsMedian": 422,
+        "trianglesMedian": 549710,
+        "geometries": 402,
+        "textures": 285,
+        "activeEntities": 38,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      },
+      {
+        "mode": "previous",
+        "label": "paired-fitted-surface-previous",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 33.30000000000291,
+        "frameP95Ms": 50,
+        "frameP99Ms": 50.099999999998545,
+        "framesOver33ms": 67,
+        "cpuLoopMedianMs": 27.400000005960464,
+        "cpuLoopP95Ms": 40.19999998807907,
+        "drawCallsMedian": 478,
+        "trianglesMedian": 548966,
+        "geometries": 422,
+        "textures": 277,
+        "activeEntities": 37,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      }
+    ],
+    "budgetStatus": "FAIL/OPEN: High requires20ms median and33.4ms p95. Actual medians~33.3ms, candidate p95 values33.400000000001455 and50ms; no rounding or tolerance converts excess to pass. First candidate CPU sample improves, second has slower tail; no consistent full-game performance claim.",
+    "profileScope": "Same live four roots; force normal outfit rebuild, await all14slots,20 real RAF warmups,180-frame blocks previous/candidate/candidate/previous, restore candidate. Simulation/AI/weather/poses/game clocks retained; active entities38/38/38/37. No busy fight, raid clear, campaign pacing or physical-phone certificate.",
+    "safeDiagnostics": {
+      "path": "/home/aeml/.local/share/eidolon-fitted-surface-checks-20261009/diagnostic-functions.json",
+      "sha256": "d29878f0a52c3dcf8b3aba8a70de036d2321a962a1738f5b9f40dffcad23f929",
+      "contents": "Numeric timings plus function/source/caller chains only, five explicitly selected tags. Raw credential-bearing browser.log remains private0600 and is not copied or committed."
+    },
+    "cpuTopFunctions": [
+      {
+        "source": "",
+        "name": "(program)",
+        "line": 0,
+        "samples": 118,
+        "selfMicros": 702022
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "updateMatrixWorld",
+        "line": 14354,
+        "samples": 118,
+        "selfMicros": 170553
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "projectObject",
+        "line": 16814,
+        "samples": 110,
+        "selfMicros": 149001
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "intersectsObject",
+        "line": 26581,
+        "samples": 107,
+        "selfMicros": 147599
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "renderObject",
+        "line": 8914,
+        "samples": 102,
+        "selfMicros": 140904
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "multiplyMatrices",
+        "line": 11917,
+        "samples": 73,
+        "selfMicros": 89970
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "updateMatrix",
+        "line": 14335,
+        "samples": 64,
+        "selfMicros": 88616
+      },
+      {
+        "source": "/src/art/ActorInstanceBatches.js",
+        "name": "beginFrame",
+        "line": 108,
+        "samples": 46,
+        "selfMicros": 65478
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "setProgram",
+        "line": 17279,
+        "samples": 43,
+        "selfMicros": 63573
+      },
+      {
+        "source": "/src/core/FoliageShadowInfluence.js",
+        "name": "FoliageShadowInfluence.visit",
+        "line": 105,
+        "samples": 35,
+        "selfMicros": 53381
+      },
+      {
+        "source": "",
+        "name": "bindVertexArray",
+        "line": 0,
+        "samples": 37,
+        "selfMicros": 52114
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "equals",
+        "line": 5635,
+        "samples": 38,
+        "selfMicros": 49800
+      }
+    ],
+    "visualReview": {
+      "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-N2ODWE1M/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/single-renderer-equipped-party-high.png",
+      "sha256": "c2320531e4f775fe7388d975a715ed4e6e0fa97370fa479d97bb40bd7fbcefd0",
+      "review": "Root reviewed post-login actual equipped party/HUD image. Actors, gear and shadows remain visible on raised ground. Sparse/repeated muddy woodland composition remains a broader art gap; image is functional evidence, not Q/CB art acceptance."
+    }
+  },
+  "rejectedWorldMatrixExperiment": {
+    "result": {
+      "scope": "CPU-only actual authored world matrix diagnostic; casino sign canvas paint stubbed, geometry retained. No renderer/actors/RAF/visual/device budget claim",
+      "counts": {
+        "objects": 4034,
+        "groups": 121,
+        "meshes": 3913,
+        "instanced": 3155,
+        "batched": 332,
+        "automaticMeshes": 437
+      },
+      "cachedGroups": 110,
+      "reports": [
+        {
+          "mode": "current",
+          "medianMs": 0.28316599999971004,
+          "p95Ms": 0.4959790000002613
+        },
+        {
+          "mode": "environment-groups",
+          "medianMs": 0.27311599999984537,
+          "p95Ms": 0.5416250000002947
+        },
+        {
+          "mode": "current-again",
+          "medianMs": 0.2954589999999371,
+          "p95Ms": 0.3709019999996599
+        }
+      ]
+    },
+    "decision": "Additional110 environment group caches have no meaningful median/tail benefit; no broad runtime cache patch adopted. These CPU-only matrix costs cannot substitute for actual renderer/actor CPU attribution."
+  },
+  "bundle": {
+    "result": "Copied-site publication engine bundle passes with existing esbuild0.28.2,426modules3271780bytes. No dependency/install/shared-node_modules mutation.",
+    "summary": {
+      "bundledModules": 426,
+      "bytes": 3271780,
+      "sharedLoginModules": 21,
+      "externalImports": [
+        "../assets/ServiceWorkerBoot.js",
+        "../data/worldGeography.js",
+        "../ui/EmailRecoveryUI.js",
+        "../ui/OwnedEvents.js",
+        "../ui/PasswordChangeUI.js",
+        "../ui/ReportUI.js",
+        "../ui/reportTypes.js",
+        "./CredentialToken.js",
+        "./GraphicsStartup.js",
+        "three",
+        "three/addons/geometries/RoundedBoxGeometry.js",
+        "three/addons/loaders/GLTFLoader.js",
+        "three/addons/postprocessing/EffectComposer.js",
+        "three/addons/postprocessing/OutputPass.js",
+        "three/addons/postprocessing/RenderPass.js",
+        "three/addons/postprocessing/ShaderPass.js",
+        "three/addons/postprocessing/UnrealBloomPass.js",
+        "three/addons/shaders/FXAAShader.js",
+        "three/addons/utils/BufferGeometryUtils.js",
+        "three/addons/utils/SkeletonUtils.js"
+      ]
+    }
+  },
+  "lint": "All seven affected source/test/diagnostic JavaScript files pass ESLint max-warnings0 under Node24.18.0; git diff --check passes.",
+  "retainedSafeFiles": [
+    {
+      "path": "/home/aeml/.local/share/eidolon-fitted-surface-checks-20261009/eidolon-fitted-surface-default-units.log",
+      "sha256": "071597c7a2e1e1430d539f2b1065ef4f7e34b6d1d6952c3ba171a42ee6f8cf7c"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-fitted-surface-checks-20261009/eidolon-fitted-surface-final-units.log",
+      "sha256": "913a33248781cf6d0c90a31c01b2b2727e426a39627b8590b992890f2d38e5c1"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-fitted-surface-checks-20261009/eidolon-fitted-surface-native.log",
+      "sha256": "12d2f99e250a0a8639d6b9ad0d53cd33396105bc896c4a781ef8e808f44cf74b"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-fitted-surface-checks-20261009/eidolon-fitted-surface-lifetime.log",
+      "sha256": "6f98158b0afcac94df7401d688d73e63cbc4763a77ed25b4c471eebe20e8ffa5"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-fitted-surface-checks-20261009/eidolon-environment-matrix-diagnostic.log",
+      "sha256": "6bc43e0e775ac56abf1ba8b6ea7365423e6430f785a72379a69df1578d9e084e"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-fitted-surface-checks-20261009/eidolon-environment-matrix-diagnostic-dom.log",
+      "sha256": "1486dc6b65f08a9d572d679969a3c2a55a2ce65a7bab4807f82e2ec7ed9356c3"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-fitted-surface-checks-20261009/eidolon-fitted-surface-final-lint-node24.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-fitted-surface-checks-20261009/eidolon-fitted-surface-bundle.json",
+      "sha256": "f8c8439cbb72e4c3a80308237496e6420276fb89feceb10a73e35c54020ac81c"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-fitted-surface-checks-20261009/eidolon-fitted-surface-baseline-buffers.json",
+      "sha256": "2bd4a700bbd7494e57af6902d7e35d307bd6d77911a9c68195a731f2eb1c452e"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-fitted-surface-checks-20261009/eidolon-fitted-surface-candidate-buffers.json",
+      "sha256": "46a74dfd3ffa678f8b28a774b188e149af4955660e226f35248c45bfc363b3fb"
+    }
+  ],
+  "supersededDiagnostics": [
+    {
+      "path": "/tmp/eidolon-environment-matrix-diagnostic.log",
+      "result": "Initial Node probe fails because casino sign needs document; corrected CPU-only paint stub retains plaque geometry/material/texture ownership. Failed probe retained, not a pass."
+    },
+    {
+      "paths": [
+        "/tmp/eidolon-fitted-surface-baseline-final.json",
+        "/tmp/eidolon-fitted-surface-candidate-final.json"
+      ],
+      "result": "Early census repeatedly counted one interleaved buffer for each attribute. Inflated overall byte counts invalid and superseded by corrected unique-buffer reports; no claimed VRAM reduction."
+    }
+  ],
+  "remaining": "Held terrain milestone still needs coherent modern-art work, actual equipped-party/busy-group whole-game budget and supported devices, matching client/server/profile rollout plus return-to-flat proof and exact release acceptance. Full inherited1.11\u20131.99 scope, F1\u2013F5, operations, owner rights/policy decisions, owner/cohort playtests, CB and launch/handoff stay open."
+}

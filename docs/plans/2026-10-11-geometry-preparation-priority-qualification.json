@@ -1,0 +1,180 @@
+{
+  "recordedUTC": "2026-10-11T02:14:23.741138+00:00",
+  "previousGoalTurn": "Progress: finalized/froze/staged Verdant floor qualification. This turn diagnoses early party triangle submissions, implements fair large-surface preparation and corrects actual CI backend ownership. Full original goal remains active.",
+  "source": "cda30fd0c9355c43780f69c335a2514754b73297",
+  "runtime": "88e250af",
+  "privateNormalSource": "7890349eb4aca35e32d9d17991f54a961dd6148c",
+  "selectedPrivately": true,
+  "published": false,
+  "scope": "Largest pending source meshes prepare first; every fourth worker dispatch serves the oldest job. One in-flight job, existing copied-buffer/maxJobs/source budgets, stale-generation checks, worker cache/algorithms, original visible sources and all GPU derivatives remain unchanged. No assets, actors, gameplay/authority or quality reductions.",
+  "cost": "Linear scan of at most2048queued jobs per worker dispatch, outside rendering. One source triangle count and session dispatch counter. No additional buffers, textures, lights or geometry. No claimed frame-rate gain.",
+  "focusedUniquePassed": 139,
+  "nativeStats": {
+    "native": {
+      "total": 4,
+      "expected": 4,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 0,
+      "ok": true
+    },
+    "native-gate": {
+      "total": 5,
+      "expected": 5,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 0,
+      "ok": true
+    },
+    "hosted-functional": {
+      "total": 5,
+      "expected": 4,
+      "unexpected": 1,
+      "flaky": 0,
+      "skipped": 0,
+      "ok": false
+    },
+    "connected-high": {
+      "total": 2,
+      "expected": 1,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 1,
+      "ok": true
+    }
+  },
+  "nativeUniqueCorrectnessPassed": 8,
+  "nativeUniqueSkipped": 1,
+  "nativeScheduling": [
+    {
+      "quality": "high",
+      "exactPreparedIndexBuffers": 65,
+      "pixelHashIdentical": true,
+      "draws": 183,
+      "triangles": 127461,
+      "queueOrderingAndFairnessPassed": true,
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "engineSHA256": "dfe24e6ee072b34b63e249b8c313a19b7431d2f972ffcc413a564d733307ec3c"
+    },
+    {
+      "quality": "low",
+      "exactPreparedIndexBuffers": 71,
+      "pixelHashIdentical": true,
+      "draws": 88,
+      "triangles": 58278,
+      "queueOrderingAndFairnessPassed": true,
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "engineSHA256": "dfe24e6ee072b34b63e249b8c313a19b7431d2f972ffcc413a564d733307ec3c"
+    }
+  ],
+  "hostedFunctional": "Both exact High/Low four-class outfit scheduling cases pass on actual SwiftShader. Earlier combined hosted probe is terminal4pass1fail: full High20-layout animation sweep times out after180seconds (4layouts recorded). Retained; not reported as success. Native5case run passes all original assertions. No skip, reduced quality/frames or threshold waiver.",
+  "requiredCI": {
+    "hostedCasesDiscovered": 335,
+    "nativeCases": 5,
+    "combinedDistinctRequired": 338,
+    "allPrior338CaseIdentitiesRetained": true,
+    "hostedExactlyOnce": true,
+    "scope": "Two outfit cases intentionally checked on both backends. Three full dungeon reviews moved intact from hosted to unconditional native predeploy with required hardware and zero retries. Native verification remains a dependency of publishing. Discovery is not execution."
+  },
+  "initialDiagnostic": {
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-party-startup-checks-20261011",
+      "inventoryEntries": 604,
+      "files": 605,
+      "inventorySHA256": "12f54909a762f5e50e5a4277009334eef89303a1083a100a3a8516f81163d5a3",
+      "frozen": true
+    },
+    "capture": {
+      "frames": 120,
+      "firstTriangles": 347498,
+      "lastTriangles": 222033,
+      "maximumTriangles": 347498,
+      "firstPrepared": 29,
+      "lastPrepared": 48,
+      "firstPending": 44,
+      "lastPending": 20,
+      "everySubmissionAccountedFor": true,
+      "hooksRestored": true,
+      "scope": "Instrumented actual normal party sequence before the separate60warmup+180frame sample. Submission identity/counts only; no timing or performance acceptance. Different populations and initial preparation states cannot establish a causal cross-run gain."
+    }
+  },
+  "currentDiagnostic": {
+    "frames": 120,
+    "firstTriangles": 386370,
+    "lastTriangles": 177636,
+    "maximumTriangles": 386430,
+    "firstPrepared": 3,
+    "lastPrepared": 27,
+    "firstPending": 73,
+    "lastPending": 48,
+    "everySubmissionAccountedFor": true,
+    "hooksRestored": true,
+    "scope": "Instrumented actual normal party sequence before the separate60warmup+180frame sample. Submission identity/counts only; no timing or performance acceptance. Different populations and initial preparation states cannot establish a causal cross-run gain."
+  },
+  "normalEntry": {
+    "frames": 180,
+    "drawCallsMedian": 104,
+    "trianglesMedian": 57197,
+    "frameMedianMs": 16.7,
+    "frameP95Ms": 16.8,
+    "activeEntitiesMin": 1,
+    "activeEntitiesMax": 1,
+    "maximumCalls": 104,
+    "maximumTriangles": 57197
+  },
+  "actualFloorShader": {
+    "floorMeshes": 33,
+    "floorPatina": true,
+    "compiled": true
+  },
+  "fourClassFourteenSlotGoRaceSavesPassed": true,
+  "party": {
+    "frames": 180,
+    "drawCallsMedian": 300,
+    "trianglesMedian": 168340,
+    "frameMedianMs": 33.3,
+    "frameP95Ms": 50,
+    "activeEntitiesMin": 35,
+    "activeEntitiesMax": 36,
+    "maximumCalls": 317,
+    "maximumTriangles": 170198
+  },
+  "partyPerformanceAccepted": false,
+  "criticalScan": {
+    "remainingTextualSyntheticIdentities": 0,
+    "criticalServerSignatures": {
+      "race": 0,
+      "panic": 0,
+      "fatal": 0,
+      "saveWorker": 0
+    },
+    "binaryPostLoginSyntheticLabelsRetained": true
+  },
+  "limits": "New uninstrumented party33.3msmedian FAIL20 and50msp95 FAIL33.4,35\u201336active entities versus earlier28\u201331. New instrumented startup386370triangles also retains failure against250000; timing there is invalid. Earlier281603/289302triangle,438/361draw and other historical failures remain. Current lower triangle totals cannot clear different populations or prove causal FPS gains. Broader modern world/art/contact/audio/device acceptance, original operations/F1-F5/beta/launch/handoff remain open. No campaign/soak replay, public push/version/access change or wholesale private camp/singleton/DemonOrc selection.",
+  "sourceSHA256": {
+    ".github/workflows/ci.yml": "495e0faf9410ca67f0eca01e15444f6dd181217887f2e45e1ea3567aa9b21d37",
+    "package.json": "bf7f46bb02f804caa1fc0bea2e792501788ee41247241c0aa83b8849af5d6f6e",
+    "src/core/ActorGameplayGeometryDelivery.js": "5dcc93f93a093ae6d339d0dc2108a80d81100d5270d01943f6068194e44ce5f0",
+    "tests/ActorGameplayGeometryDelivery.test.js": "98d99a36996701d213a1865db9820d7081a3e10270e58fc3dd661510cfc45e83",
+    "tests/BrowserSmokePlan.test.js": "7e8faf5c5ba4c3f44c4cc3caa61601a3ec2896aaa0ba91d5e9443e7b31d63f41",
+    "tests/E2EHelpers.test.js": "e2ca40cfea2e0527e5af48d0b04e40706e4d3babb71d1322b6b6357af5e5012c",
+    "tests/NativeVisualEvidence.test.js": "584ddba0d3f7428ad3a9ae76f1358ef6e1b5349259c7dbf5fbe79b8b4c66d466",
+    "tests/e2e/browserLaunchPolicy.js": "f79e2d3a4499080a2fabae300aa774f42910e58b83f743fbc42e9c82a83782c7",
+    "tests/e2e/dungeon-floor-material.spec.js": "7a9703bd83056895fbdb2e94dfa008615b8dca251aace268e7bab40e0ded4a98",
+    "tests/e2e/published-game-bundle.spec.js": "23ec0084d3ce8b39491559aab379e2feb5a33f06589cfe5f6930b98d996441dc"
+  },
+  "unchangedAlgorithmSHA256": {
+    "src/art/GameplayBodyIndices.js": "c4e10ec3f4dac273789685d40de8860395b12ac17c1e045fc124f39dd4a2d652",
+    "src/art/GameplayColorIndices.js": "fc52a481e984af783f433ca71e43a0a46ca90eab40f3ea52517d304004bf2241",
+    "src/art/GameplayRigidIndices.js": "4a07deee4763d793483e627a203e48dde288c837169ec99b8f7251ef0bf38607",
+    "src/core/ActorGameplayGeometryWorker.js": "4d32594cf90c996f5f6baea8d781c969cea6e08ed49d666b8d7b612c01e4af2b",
+    "src/core/PreparedGeometry.js": "dfa34e3a4d0250cc96bbf417da3120b13040583f2b7b3e1669ad8954a8f9cef0"
+  },
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-geometry-priority-checks-20261011",
+    "inventoryEntries": 677,
+    "files": 678,
+    "inventorySHA256": "6b575577492117a869e5eaf3071b5d908653417056591c9204d7e2b5547e804c",
+    "frozen": true
+  }
+}

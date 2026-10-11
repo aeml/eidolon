@@ -1,0 +1,70 @@
+{
+  "status": "Isolated live24-based jump correction implemented and verified locally; not deployed.",
+  "recordedUTC": "2026-10-10T10:35:26.551645+00:00",
+  "sourceCommit": "c7937f1737c3be5650340cb70c25b5fac006ba32",
+  "baseCommit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+  "scope": "Owner reiterates approximately1.5seconds total jump travel. Correct frame-capped flight clock while retaining short-hop scaling and capped ordinary movement simulation. Isolated live24 candidate contains only two production file changes; no private geometry/terrain pilots.",
+  "verification": {
+    "unit": "110 checks / 6 suites passed, 3.779 seconds",
+    "native": "3 tests passed, 16.0 seconds, no retries/skips",
+    "publishedBundle": {
+      "samples": [
+        {
+          "fps": 15,
+          "frames": 23,
+          "elapsedMs": 1547.4000000059605,
+          "maxFrameGapMs": 73.50000000596037,
+          "positionError": 0,
+          "renderError": 0
+        },
+        {
+          "fps": 60,
+          "frames": 91,
+          "elapsedMs": 1522.6000000238419,
+          "maxFrameGapMs": 16.800000000000182,
+          "positionError": 0,
+          "renderError": 0
+        }
+      ],
+      "errors": []
+    },
+    "sourceModules": {
+      "samples": [
+        {
+          "fps": 15,
+          "frames": 23,
+          "elapsedMs": 1551.199999988079,
+          "maxFrameGapMs": 72.69999998807907,
+          "positionError": 0,
+          "renderError": 0
+        },
+        {
+          "fps": 60,
+          "frames": 90,
+          "elapsedMs": 1520.5999999940395,
+          "maxFrameGapMs": 32.599999994039536,
+          "positionError": 0,
+          "renderError": 0
+        }
+      ],
+      "errors": []
+    },
+    "lint": "Scoped lint and whitespace pass."
+  },
+  "evidence": "/home/aeml/.local/share/eidolon-jump-live24-checks-20261010",
+  "inventorySHA256": "2894fe795d1d2a1ae35b97d7e50f073630d02edf4ccfa76feadd9576bdfcb888",
+  "inventoryFiles": 15,
+  "public": {
+    "version": "Alpha 1.79.24",
+    "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+    "engineSHA256": "d579595604b7d0b36b16ceababf088ade4783962332a9556d21578ea6e6cfb7a",
+    "containsWallClockFix": false,
+    "health": "ok",
+    "database": "ready",
+    "ciRun": 38030283856,
+    "ciAttempt": 1,
+    "ciConclusion": "failure"
+  },
+  "limits": "Browser fixtures use the supplied Fighter in an empty local stage. Built/versioned release bundle verified locally, not deployed. Not a populated production network or physical-device timing proof. Existing cap remains 1.5 seconds; short hops are faster. No public push, CI retry, acceptance waiver, server/account change. Original dirty repository preserved.",
+  "relationship": "Same production fix as45ef4111 already selected in private heldc4f197ab. New qualification applies to exact live24 base and actual locally built/versioned publication bundle. This does not accept the failed live release, merge24 into held source, or qualify other held pilots."
+}

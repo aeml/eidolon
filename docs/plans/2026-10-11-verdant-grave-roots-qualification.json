@@ -1,0 +1,266 @@
+{
+  "recordedUTC": "2026-10-11T01:28:32.602275+00:00",
+  "status": "Selected privately for held milestone; unpublished",
+  "source": "420a3cfabbc715e4405ba5ed28ed9b1392861b5a",
+  "base": "150825bc",
+  "previousGoalTurn": "No progress: revalidated and restated existing motion/admin acceptance. This turn implemented and qualified the next available art/preset repair.",
+  "diagnosis": {
+    "floorStroke": "Actual entry grave-root geometry; ray at140,576 hits entry batch2 with color101710. Removing walls, normals or polygon offset does not remove it; removing dressing does. Unbatched roots have the same silhouette.",
+    "bottomStroke": "Existing XP bar. Pixels150,783 and150,784 remain identical with all dressing removed; CSS agrees with the screen bounds.",
+    "rendererFaultEstablished": false,
+    "rendererChanges": false
+  },
+  "scope": "Curved, branched, partially buried Verdant grave roots with smooth PBR bark, slow vertex-color variation, same two motifs and one draw batch per room. Correct missing Verdant quality forwarding. No imported actors, authority, collisions, interactions, textures or lighting changes.",
+  "model": [
+    {
+      "quality": "low",
+      "branches": 3,
+      "sourceTrianglesPerRoot": 432,
+      "sourceBytesPerRoot": 14604,
+      "trianglesPerRoom": 864,
+      "mergedBytesPerRoom": 114048,
+      "drawBatchesPerRoom": 1,
+      "textures": 0,
+      "extraLights": 0,
+      "extraColliders": 0,
+      "bounds": {
+        "min": [
+          -1.1008453369140625,
+          -0.17351193726062775,
+          -0.6022084355354309
+        ],
+        "max": [
+          1.0015051364898682,
+          0.26371219754219055,
+          0.6617472767829895
+        ]
+      }
+    },
+    {
+      "quality": "high",
+      "branches": 3,
+      "sourceTrianglesPerRoot": 1440,
+      "sourceBytesPerRoot": 44940,
+      "trianglesPerRoom": 2880,
+      "mergedBytesPerRoom": 380160,
+      "drawBatchesPerRoom": 1,
+      "textures": 0,
+      "extraLights": 0,
+      "extraColliders": 0,
+      "bounds": {
+        "min": [
+          -1.098306655883789,
+          -0.17351193726062775,
+          -0.6023316383361816
+        ],
+        "max": [
+          1.001527190208435,
+          0.2639753520488739,
+          0.6618373394012451
+        ]
+      }
+    }
+  ],
+  "memoryLimit": "Source bytes and merged per-room buffers are recorded separately. Source detail increases intentionally; these are not memory/FPS reduction claims.",
+  "focused": {
+    "distinctPassed": 72,
+    "interiorArtLifecycleAndFiveFactories": 41,
+    "rootAndSharedLandmarkGeometry": 12,
+    "unchangedBrowserPlan": 19,
+    "factoryScope": "Focused single-room layout fallback at High/Low for all five factories; actual canonical production layouts are exercised by native review."
+  },
+  "native": {
+    "high": {
+      "quality": "high",
+      "layouts": 20,
+      "themes": [
+        "abyssal_well",
+        "molten_core",
+        "tempest_spire",
+        "umbral_nexus",
+        "verdant_bastion_catacombs"
+      ],
+      "stateAndRootViews": 84,
+      "animatedFrames": 720,
+      "cameraSweepFrames": 144,
+      "rootTrianglesPerRoom": 2880,
+      "rootBatchesPerRoom": 1,
+      "maximumCalls": 92,
+      "maximumTriangles": 117231,
+      "allFourteenSlotsPresent": true,
+      "collidersStable": true,
+      "blockedSamples": 0,
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "reportStats": {
+        "total": 1,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      }
+    },
+    "low": {
+      "quality": "low",
+      "layouts": 20,
+      "themes": [
+        "abyssal_well",
+        "molten_core",
+        "tempest_spire",
+        "umbral_nexus",
+        "verdant_bastion_catacombs"
+      ],
+      "stateAndRootViews": 56,
+      "animatedFrames": 720,
+      "cameraSweepFrames": 144,
+      "rootTrianglesPerRoom": 864,
+      "rootBatchesPerRoom": 1,
+      "maximumCalls": 47,
+      "maximumTriangles": 37143,
+      "allFourteenSlotsPresent": true,
+      "collidersStable": true,
+      "blockedSamples": 0,
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "reportStats": {
+        "total": 3,
+        "expected": 3,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      }
+    },
+    "highEvidenceSource": "4fdf6c96",
+    "lowAndBundleEvidenceSource": "420a3cfabbc715e4405ba5ed28ed9b1392861b5a",
+    "highReuse": "Only later runtime change forwards the graphics preset to Verdant: High passes the previous default explicitly. High geometry/material/shader paths are unchanged; both presets are covered by factory checks. No duplicate High replay.",
+    "scope": "Prepared production layouts, ordinary gameplay zoom, actual supplied14slot Fighter, HUD and touch controls; ready/inactive and root-side views, bounded camera pans. No server-earned clear, normal-input route, timing, physical-device, whole-world or final art certificate."
+  },
+  "copiedBundle": {
+    "passed": 2,
+    "engineSHA256": "e0760ffb4f0e9b8938ebcb8dfc6f4c7874874e9554b70492583278cb3c5a3009",
+    "wardAndTenRootBatches": {
+      "parts": 3,
+      "visualOnly": true,
+      "phases": [
+        {
+          "ready": false,
+          "appliedOpacity": 0.18,
+          "time": 0.25,
+          "stable": true
+        },
+        {
+          "ready": true,
+          "appliedOpacity": 0.9,
+          "time": 0.5,
+          "stable": true
+        },
+        {
+          "ready": false,
+          "appliedOpacity": 0.18,
+          "time": 0.75,
+          "stable": true
+        }
+      ],
+      "roots": [
+        {
+          "triangles": 2880,
+          "maxY": 0.7279506921768188,
+          "roughness": 0.94,
+          "smooth": true,
+          "textures": 0
+        },
+        {
+          "triangles": 2880,
+          "maxY": 0.7279506921768188,
+          "roughness": 0.94,
+          "smooth": true,
+          "textures": 0
+        },
+        {
+          "triangles": 2880,
+          "maxY": 0.7279506921768188,
+          "roughness": 0.94,
+          "smooth": true,
+          "textures": 0
+        },
+        {
+          "triangles": 2880,
+          "maxY": 0.7279506921768188,
+          "roughness": 0.94,
+          "smooth": true,
+          "textures": 0
+        },
+        {
+          "triangles": 2880,
+          "maxY": 0.7279506921768188,
+          "roughness": 0.94,
+          "smooth": true,
+          "textures": 0
+        },
+        {
+          "triangles": 2880,
+          "maxY": 0.7279506921768188,
+          "roughness": 0.94,
+          "smooth": true,
+          "textures": 0
+        },
+        {
+          "triangles": 2880,
+          "maxY": 0.7279506921768188,
+          "roughness": 0.94,
+          "smooth": true,
+          "textures": 0
+        },
+        {
+          "triangles": 2880,
+          "maxY": 0.7279506921768188,
+          "roughness": 0.94,
+          "smooth": true,
+          "textures": 0
+        },
+        {
+          "triangles": 2880,
+          "maxY": 0.7279506921768188,
+          "roughness": 0.94,
+          "smooth": true,
+          "textures": 0
+        },
+        {
+          "triangles": 2880,
+          "maxY": 0.7279506921768188,
+          "roughness": 0.94,
+          "smooth": true,
+          "textures": 0
+        }
+      ],
+      "collidersStable": true
+    },
+    "lazyFourClassPassed": true
+  },
+  "failuresRetained": {
+    "initialWorldMatrixFixtureFailures": 2,
+    "defaultLowFactoryQualityFailure": 1,
+    "lowFailure": "Expected864 but received2880 root triangles. Factory omitted quality; fixed by forwarding graphicsQuality without relaxing the assertion.",
+    "draftReviews": "Initial straighter geometry/native comparisons retained; superseded after visual inspection, not erased or counted as final qualification."
+  },
+  "runtimeAndQASourceSHA256": {
+    "src/art/DungeonGraveRootGeometry.js": "c663c86e4416fa1e884e0103c7bd80797fc1a2783962ff90c57391847096161c",
+    "src/art/ProceduralDungeonInteriors.js": "01a35911dfd213b7e0048f94f0a20eae318a980fd4bc33e8c14d8d45e106c6c3",
+    "src/world/WorldGenerator.js": "e66bf7e2d4c210c4eab5c5cd947440459beee743f443c7f2cb7364e881437c74",
+    "tests/DungeonGraveRootGeometry.test.js": "27cf8efb485f0c05949eee1ceb4d5d70bef7a3884d1cb7d052121d05b77ca2a4",
+    "tests/ProceduralDungeonInteriors.test.js": "170bae060c61891c23a2dba97f238676aa938d39593c9f2d1715be4dd95ae4df",
+    "tests/e2e/dungeon-entry-ward.spec.js": "d84e19290cde63df51c42a32f036c0872193fc007caf4c10ca21ec2845529272",
+    "tests/e2e/published-game-bundle.spec.js": "fb8395952476cf6b21be17fad70a9f2cdffaf0ef09a66aa61aed70ea85662267"
+  },
+  "existingEvidence": "Prior normal-input first-dungeon entry/Recall and four-class saves remain retained for their original source/scope; not rerun or relabeled as new-root gameplay evidence.",
+  "limits": "Floor repetition, broader code-owned scenery/material/contact/audio quality, actual-device/owner art feedback, dynamic High438/361draw and289302triangle peak counterexamples and original operations/F1-F5/beta/launch/handoff remain open. No threshold waiver, campaign/soak replay, public push or beta/access change.",
+  "published": false,
+  "selectedPrivately": true,
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-dungeon-floor-checks-20261011",
+    "frozen": true,
+    "inventoryEntries": 580,
+    "files": 581,
+    "inventorySHA256": "17eb49e3128525c87f28ef9405dce3d28948afd28a098a33e193123e47b58a36"
+  }
+}

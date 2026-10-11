@@ -71,7 +71,7 @@ describe('Procedural dungeon interior art', () => {
         }
     });
 
-    test('sRGB floor bytes preserve the authored basalt palette rather than double-darkening it', () => {
+    test('sRGB floor bytes preserve the mineral basalt albedo rather than double-darkening it', () => {
         const map = createProceduralDungeonInteriorKit('abyssal_well').floorMaterial(120, 120).map;
         const palette = Object.fromEntries(Object.entries(getRegionTheme('abyssal_well').palette).map(([name, hex]) => {
             const color = new THREE.Color(hex).convertLinearToSRGB();
@@ -83,9 +83,7 @@ describe('Procedural dungeon interior art', () => {
         const expected = sampleElementalDungeonSurface(10, 10, 'abyssal_well', false, palette).color;
         expect(map.colorSpace).toBe(THREE.SRGBColorSpace);
         expect(Array.from(map.image.data.slice(offset, offset + 4))).toEqual([...expected, 255]);
-        expect(expected[0]).toBeGreaterThanOrEqual(10); expect(expected[0]).toBeLessThanOrEqual(18);
-        expect(expected[1]).toBeGreaterThanOrEqual(29); expect(expected[1]).toBeLessThanOrEqual(45);
-        expect(expected[2]).toBeGreaterThanOrEqual(38); expect(expected[2]).toBeLessThanOrEqual(57);
+        expect(expected).toEqual([63, 84, 91]);
     });
 
     test.each(DUNGEON_INTERIOR_IDS)('%s keeps floor detail broad and smoothly filtered without changing wall scale', (dungeonType) => {
@@ -184,8 +182,8 @@ describe('Procedural dungeon interior art', () => {
             surfaceTextures: 8,
             surfaceMaterials: 2,
             surfaceGeometries: 1,
-            detailGeometries: 14,
-            detailMaterials: 6
+            detailGeometries: 22,
+            detailMaterials: 7
         });
     });
 
@@ -207,7 +205,11 @@ describe('Procedural dungeon interior art', () => {
             for (const side of [-1, 1]) {
                 const root = dressing.getObjectByName(`verdant:grave-root:${side}`);
                 const bounds = new THREE.Box3().setFromObject(root);
-                expect(root.geometry.type).toBe('TubeGeometry');
+                expect(root.geometry.userData.dungeonGraveRoot).toEqual({ branches: 3, visualOnly: true });
+                expect(root.material.vertexColors).toBe(true);
+                expect(root.material.flatShading).toBe(false);
+                expect(root.material.emissive.getHex()).toBe(0);
+                expect(root.material.map).toBeNull();
                 expect(bounds.max.y).toBeLessThan(1);
             }
         }
@@ -252,11 +254,12 @@ describe('Procedural dungeon interior art', () => {
         ['createVerdantBastionCatacombs', 'verdant_bastion_catacombs'],
         ['createMoltenCore', 'molten_core'],
         ['createTempestSpire', 'tempest_spire'],
-        ['createAbyssalWell', 'abyssal_well']
-    ])('%s builds exact canonical surfaces without loading authored cobblestone textures', async (methodName, dungeonType) => {
+        ['createAbyssalWell', 'abyssal_well'],
+        ['createUmbralNexus', 'umbral_nexus']
+    ].flatMap(entry => ['low', 'high'].map(quality => [quality, ...entry])))('%s %s builds exact canonical surfaces without loading authored cobblestone textures', async (quality, methodName, dungeonType) => {
         const scene = new THREE.Group();
         const collisionManager = { addCollider: jest.fn() };
-        const generator = new WorldGenerator(scene, collisionManager);
+        const generator = new WorldGenerator(scene, collisionManager, { graphicsQuality: quality });
         const preloadSpy = jest.spyOn(generator, 'preloadTextures');
         const layout = {
             rooms: [
@@ -270,6 +273,7 @@ describe('Procedural dungeon interior art', () => {
 
         await generator[methodName](0, 0, layout);
 
+        expect(generator.dungeonInteriorKit.surfaceQuality).toBe(quality);
         expect(preloadSpy).not.toHaveBeenCalled();
         const floor = scene.getObjectByName('ProceduralDungeonRoomFloor');
         const dressing = scene.children.find((child) => child.userData?.proceduralDungeonInterior);
@@ -278,6 +282,10 @@ describe('Procedural dungeon interior art', () => {
         expect(floor.material.map).toBeInstanceOf(THREE.DataTexture);
         expect(floor.geometry.parameters).toEqual(expect.objectContaining({ width: 120, height: 120 }));
         expect(dressing.userData.roomIdentity).toBe('entry_gate');
+        if (dungeonType === 'verdant_bastion_catacombs') {
+            const bark = dressing.children.find(part => part.isMesh && part.material.vertexColors && !part.material.map);
+            expect(bark.geometry.attributes.position.count / 3).toBe(quality === 'low' ? 864 : 2880);
+        }
         expect(collisionManager.addCollider).toHaveBeenCalledTimes(4);
 
         const colliderSizes = collisionManager.addCollider.mock.calls.map(([box]) => box.getSize(new THREE.Vector3()));

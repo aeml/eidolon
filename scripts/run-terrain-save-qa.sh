@@ -6,9 +6,10 @@ readonly terrain_mongo_port="${EIDOLON_TERRAIN_SAVE_QA_PORT:-18189}"
 readonly terrain_scenario="${EIDOLON_TERRAIN_SAVE_QA_SCENARIO:-world}"
 case "${terrain_scenario}" in
   world) terrain_test='^TestTerrainActualSavedSessionsAcrossProfileChanges$'; terrain_timeout=120s ;;
+  readiness) terrain_test='^TestTerrainActualHealthMatchesLoginProfile$'; terrain_timeout=120s ;;
   connected-party) terrain_test='^TestTerrainActualEquippedBrowserParty$'; terrain_timeout=300s ;;
   connected-party-observer) terrain_test='^TestTerrainActualEquippedBrowserParty$'; terrain_timeout=300s ;;
-  *) echo "Terrain save QA scenario must be world, connected-party or connected-party-observer." >&2; exit 1 ;;
+  *) echo "Terrain save QA scenario must be world, readiness, connected-party or connected-party-observer." >&2; exit 1 ;;
 esac
 readonly terrain_test terrain_timeout
 if [[ "${terrain_scenario}" == connected-party* ]]; then
@@ -18,6 +19,16 @@ if [[ "${terrain_scenario}" == connected-party* ]]; then
   fi
   if ! [[ "${EIDOLON_TERRAIN_PARTY_QUALITY:-}" == high || "${EIDOLON_TERRAIN_PARTY_QUALITY:-}" == low ]]; then
     echo "Connected party QA requires explicit high or low quality." >&2
+    exit 1
+  fi
+  for terrain_browser_asset in vendor/three/build/three.module.js vendor/three/build/three.core.js vendor/protobuf/protobuf.min.js; do
+    if ! [[ -r "${terrain_browser_asset}" ]]; then
+      echo "Connected party QA needs prepared browser vendor files; run npm run prepare:client in this checkout." >&2
+      exit 1
+    fi
+  done
+  if ! [[ -r src/core/ActorGameplayGeometryWorker.bundle.js ]]; then
+    echo "Connected party QA needs its default geometry worker; run npm run prepare:client in this checkout." >&2
     exit 1
   fi
   if ss -ltn | grep -Eq ':4190[[:space:]]'; then

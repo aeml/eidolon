@@ -21,6 +21,7 @@ func runHub() {
 		case reply := <-hubQuiesce:
 			closing := make([]*Client, 0, len(clients))
 			for client := range clients {
+				client.recordTransportClosure(transportHubShutdown)
 				client.markTransportClosed()
 				if client.conn != nil {
 					client.conn.Close()
@@ -333,6 +334,7 @@ func (c *Client) readPump() {
 	for {
 		_, message, err := reader.readMessage()
 		if err != nil {
+			c.recordTransportClosure(transportReadFailure(err))
 			if !errors.Is(err, errInboundFrameLimit) && websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				logWebsocketReadError(err, time.Now())
 			}
@@ -341,6 +343,7 @@ func (c *Client) readPump() {
 
 		now := time.Now()
 		if !guard.acceptPayload(len(message), now) {
+			c.recordTransportClosure(transportInboundLimit)
 			_ = guard.rejectFrame(c.conn, now)
 			return
 		}
@@ -349,6 +352,7 @@ func (c *Client) readPump() {
 			// Do not write raw decode errors/body fragments to the general log.
 			// Repeated malformed frames have their own transport budget.
 			if !guard.acceptMalformed(now) {
+				c.recordTransportClosure(transportInboundLimit)
 				c.conn.WriteControl(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.ClosePolicyViolation, "Malformed message limit exceeded"), now.Add(writeWait))
 				return
 			}
@@ -413,6 +417,7 @@ func (c *Client) writePumpWithTicks(pings <-chan time.Time) {
 		// Flush the denial before ending this game transport. Older clients
 		// also lose world control and must pass the new entry/resume gate.
 		if bytes.HasPrefix(message, []byte(`{"type":"world_access_denied",`)) {
+			c.recordTransportClosure(transportAccessDenied)
 			return fmt.Errorf("world access denial delivered")
 		}
 		return nil
@@ -429,7 +434,8 @@ func (c *Client) writePumpWithTicks(pings <-chan time.Time) {
 		// existing writer emits it; control still precedes queued state.
 		select {
 		case <-pings:
-			if writePing() != nil {
+			if err := writePing(); err != nil {
+				c.recordTransportClosure(transportWriteFailure(err))
 				return
 			}
 		default:
@@ -437,7 +443,12 @@ func (c *Client) writePumpWithTicks(pings <-chan time.Time) {
 		// Give already-queued control traffic precedence over state.
 		select {
 		case message, ok := <-c.prioritySend:
-			if !ok || writeMessage(message) != nil {
+			if !ok {
+				c.recordTransportClosure(transportQueuesClosed)
+				return
+			}
+			if err := writeMessage(message); err != nil {
+				c.recordTransportClosure(transportWriteFailure(err))
 				return
 			}
 			continue
@@ -446,19 +457,27 @@ func (c *Client) writePumpWithTicks(pings <-chan time.Time) {
 
 		select {
 		case message, ok := <-c.prioritySend:
-			if !ok || writeMessage(message) != nil {
+			if !ok {
+				c.recordTransportClosure(transportQueuesClosed)
+				return
+			}
+			if err := writeMessage(message); err != nil {
+				c.recordTransportClosure(transportWriteFailure(err))
 				return
 			}
 		case message, ok := <-c.send:
 			if !ok {
+				c.recordTransportClosure(transportQueuesClosed)
 				_ = c.conn.WriteMessage(websocket.CloseMessage, []byte{})
 				return
 			}
-			if writeMessage(message) != nil {
+			if err := writeMessage(message); err != nil {
+				c.recordTransportClosure(transportWriteFailure(err))
 				return
 			}
 		case <-pings:
-			if writePing() != nil {
+			if err := writePing(); err != nil {
+				c.recordTransportClosure(transportWriteFailure(err))
 				return
 			}
 		}

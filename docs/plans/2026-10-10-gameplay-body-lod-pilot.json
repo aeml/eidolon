@@ -1,0 +1,1220 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-10T02:48:59.177416+00:00",
+  "classification": "Unselected source-index gameplay body pilot with full supplied blink/bone basis and exact repaired seam collars.60focused checks,8CLI guards,48source audit, two336pair native reviews and actualHigh/Low race/save observers pass. High208455triangles meets250000but378draws/33.4median/66.7p95 fail;Low90850triangles exceeds85000. Full inherited roadmap remains active.",
+  "baseCommit": "15ca4eddedef713b4972754555f8e442bfbed0f4",
+  "previousGoalTurnClassification": "Progress:15ca4edd retained opt-in supplied gear/eye color pilot with native/source/resource/actualHighLow/save evidence; full budgets failed and production activation stayed off.",
+  "worktree": "/home/aeml/.local/share/eidolon-gameplay-body-lod-20261010",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-gameplay-body-lod-checks-20261010",
+  "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
+  "publicBaseline": {
+    "version": "1.79.22",
+    "commit": "30a8b6038df9e071eef0f57564ae94087d1a0b11",
+    "ciRun": 37967212738,
+    "acceptanceReceipt": "docs/plans/2026-10-09-ready22-actor-publisher.json",
+    "noPublicPushOrChangeByThisWork": true
+  },
+  "scope": {
+    "newDerivedModelFiles": 0,
+    "productionRuntimeSourceChanged": false,
+    "sourceAssetsCatalogsOrSelectionChanged": false,
+    "newRuntimeActivation": false,
+    "publicPush": false,
+    "serverAuthorityOrPlayerDataChanged": false,
+    "versionProfileAccessChanged": false,
+    "originalDirtyWorktreeEdited": false,
+    "deferredHumanCampaignOrPhysicalPhoneSubstituted": false
+  },
+  "implementation": {
+    "indices": "New gameplayBodyIndices changes only referenced source indices. Strict LockBorder, ratio0.12/error0.006. No Permissive/Prune/Sloppy/vertex relocation/attribute updates in final body operator. Source raw arrays and both relative POSITION/NORMAL blink targets remain exact.",
+    "basis": "Base normal3+tangentXYZ3+UV2 and all three independent Blink_L/R normal endpoints9, normal/tangent weight0.25/UV0.1. Every referenced nonzero bone gets a canonical summed weight0.1 channel; none dropped or normalized. Nonmoving triangles use17basis channels plus up to15bones. Moving triangles add all three position endpoints9 in full-mesh extent units, weight1, leaving up to6bones. No tiny morph delta deleted. Approximate weighted error is not a bound on every posed vertex or pixel.",
+    "categoricalAndSeams": "Tangent handedness remains categorical; mixed-handedness or over-capacity triangles retain exact source corners. Bone palettes partition triangles within handedness/moving categories. Shared boundary/conflicting skin/blink positions are locked, including coincident position copies. If a protected complete raw vertex signature disappears, preserve its incident source triangles as an exact collar and lock the new interface; at most8repair rounds, then exact original partition fallback. Empty results also keep exact source indices.",
+    "ownership": "QA-only owned BufferGeometry clones retain copied raw attributes and both blink targets with new Uint32indices. Explicit selector rejects a replaced geometry generation; teardown restores sources and disposes only candidates. No production selector or automatic invalidation/LOD lifecycle supplied.",
+    "camera": "Orthographic1440x900, isometric offset100/100/100, zoom5/15/30. Close5explicitly selects originals;15/30select candidates. Actual party uses ordinary zoom15/1280x844. No continuous zoom, hysteresis, per-device projected-size or active-equip selection policy qualified.",
+    "qaTransport": "Body,gear/eye and shadow capture now return the same numeric source data in one JSON string, avoiding per-number Playwright protocol objects. Two High peer-close failures are retained; final same-policy High/Low runs stay connected. Server liveness, socket expectations and timeouts remain unchanged. This is a QA transport repair, not a production network fix."
+  },
+  "countScreen": {
+    "file": "body-count-collar-006.json",
+    "high": [
+      81216,
+      35602
+    ],
+    "low": [
+      73094,
+      34902
+    ],
+    "scope": "Current selected unmasked sources, not a post-coverage or whole-scene result. All selected GLBs unchanged.",
+    "rows": [
+      {
+        "actorClass": "Fighter",
+        "quality": "high",
+        "file": "assets/archetypes/Fighter/fighter-runtime-body-v3-high.glb",
+        "sha256": "86f49ec116e36b4ed9659e18f908852d7bbad26c1de73c6b361e4a9c827c2202",
+        "inputTriangles": 20482,
+        "candidateTriangles": 9194,
+        "exactTriangles": 0,
+        "movingReferencedVertices": 2167,
+        "lockedVertices": 765
+      },
+      {
+        "actorClass": "Fighter",
+        "quality": "low",
+        "file": "assets/archetypes/Fighter/fighter-runtime-low.glb",
+        "sha256": "357284df9e9f22f9823e2ca0bbb1d15e40ac00024a02046d90f48b9be8524c0b",
+        "inputTriangles": 18434,
+        "candidateTriangles": 9072,
+        "exactTriangles": 0,
+        "movingReferencedVertices": 310,
+        "lockedVertices": 851
+      },
+      {
+        "actorClass": "Rogue",
+        "quality": "high",
+        "file": "assets/archetypes/Rogue/rogue-runtime-body-v3-high.glb",
+        "sha256": "152a5349bc78bab104124bf160331c44f6046a537b5018a7ca108d45093dafe4",
+        "inputTriangles": 20026,
+        "candidateTriangles": 8720,
+        "exactTriangles": 0,
+        "movingReferencedVertices": 2057,
+        "lockedVertices": 481
+      },
+      {
+        "actorClass": "Rogue",
+        "quality": "low",
+        "file": "assets/archetypes/Rogue/rogue-runtime-low.glb",
+        "sha256": "8ec12238f6b622143e0dcc7cfffc0955019ef268a3fd472e7e3156a5c17685d7",
+        "inputTriangles": 18024,
+        "candidateTriangles": 8556,
+        "exactTriangles": 0,
+        "movingReferencedVertices": 286,
+        "lockedVertices": 431
+      },
+      {
+        "actorClass": "Wizard",
+        "quality": "high",
+        "file": "assets/archetypes/Wizard/wizard-runtime-body-v3-high.glb",
+        "sha256": "af4b3a845155a502fe9d65f9c500a04fb54bf5b7749d929c4a071c1ab3c07341",
+        "inputTriangles": 20680,
+        "candidateTriangles": 8880,
+        "exactTriangles": 0,
+        "movingReferencedVertices": 2055,
+        "lockedVertices": 722
+      },
+      {
+        "actorClass": "Wizard",
+        "quality": "low",
+        "file": "assets/archetypes/Wizard/wizard-runtime-low.glb",
+        "sha256": "52adfd98bd8ac6ebe7a85e84c989e8c7f42eb57b16c0dcfea41a3570c9eebd24",
+        "inputTriangles": 18612,
+        "candidateTriangles": 8668,
+        "exactTriangles": 0,
+        "movingReferencedVertices": 261,
+        "lockedVertices": 591
+      },
+      {
+        "actorClass": "Cleric",
+        "quality": "high",
+        "file": "assets/archetypes/Cleric/cleric-runtime-body-v3-high.glb",
+        "sha256": "154b3a7ca0a93b240611674ed1b0e6ee8734a8bfa2c3bb5e9cede6da79dd9631",
+        "inputTriangles": 20028,
+        "candidateTriangles": 8808,
+        "exactTriangles": 0,
+        "movingReferencedVertices": 2055,
+        "lockedVertices": 498
+      },
+      {
+        "actorClass": "Cleric",
+        "quality": "low",
+        "file": "assets/archetypes/Cleric/cleric-runtime-low.glb",
+        "sha256": "19784ca41b98d40ba7bf5ae26d6b4f3bba707fb288a120254cc0bc2172319364",
+        "inputTriangles": 18024,
+        "candidateTriangles": 8606,
+        "exactTriangles": 0,
+        "movingReferencedVertices": 288,
+        "lockedVertices": 400
+      }
+    ]
+  },
+  "focusedChecks": {
+    "newBodyTests": 14,
+    "coupledReusedColorShadowOwnershipMigrationTests": 46,
+    "totalJestTests": 60,
+    "suites": 5,
+    "seconds": 3.221,
+    "log": "focused-final.log",
+    "cliNegativeGuards": 8,
+    "cliGuardEvidence": "cli-guards.json",
+    "lintChangedCodeFiles": 8,
+    "lintLog": "lint-all-string-transport.log",
+    "lintExitCode": 0
+  },
+  "independentAudit": {
+    "file": "body-input-audit.json",
+    "sources": 48,
+    "simplifierCallsInspected": 328,
+    "basisChannelsChecked": 36573138,
+    "protectedCompleteSignaturesVerified": 16269,
+    "everySourceBufferUnchanged": true,
+    "everyCandidateIndexMatchesRecordedResult": true,
+    "everyReferencedBoneAndBlinkEndpointChannelInspected": true,
+    "noNewSourceVerticesOrLostMixedHandednessTriangles": true,
+    "includesMathematicalInputsFromFailedPartyAttempts": true,
+    "limit": "Exact raw data and protected signatures do not bound all intermediate skin/morph interpolation or rendered pixels."
+  },
+  "native": {
+    "runs": [
+      {
+        "run": "native-collar",
+        "terminal": {
+          "exitCode": 0,
+          "startedUnix": 1791598558.3729877,
+          "finishedUnix": 1791598803.3710806
+        },
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "pairs": 336,
+        "closeExactControls": 112,
+        "sourceAgainUnstableChannels": 0,
+        "invalidPosedVertices": 0,
+        "allForcedBlinkValuesVerified": true,
+        "lifetimes": [
+          {
+            "outfit": "equipped",
+            "baseline": {
+              "geometries": 161,
+              "textures": 96,
+              "programs": 30
+            },
+            "cycles": [
+              {
+                "geometries": 161,
+                "textures": 96,
+                "programs": 30
+              },
+              {
+                "geometries": 161,
+                "textures": 96,
+                "programs": 30
+              },
+              {
+                "geometries": 161,
+                "textures": 96,
+                "programs": 30
+              },
+              {
+                "geometries": 161,
+                "textures": 96,
+                "programs": 30
+              }
+            ],
+            "originalsRestored": true
+          },
+          {
+            "outfit": "bare",
+            "baseline": {
+              "geometries": 167,
+              "textures": 102,
+              "programs": 26
+            },
+            "cycles": [
+              {
+                "geometries": 167,
+                "textures": 102,
+                "programs": 26
+              },
+              {
+                "geometries": 167,
+                "textures": 102,
+                "programs": 26
+              },
+              {
+                "geometries": 167,
+                "textures": 102,
+                "programs": 26
+              },
+              {
+                "geometries": 167,
+                "textures": 102,
+                "programs": 26
+              }
+            ],
+            "originalsRestored": true
+          }
+        ],
+        "derivation": [
+          {
+            "outfit": "equipped",
+            "quality": "high",
+            "sourceTriangles": 41967,
+            "candidateTriangles": 16729,
+            "algorithmMilliseconds": 1872.9014929999976,
+            "wholePreparationMilliseconds": null
+          },
+          {
+            "outfit": "equipped",
+            "quality": "low",
+            "sourceTriangles": 32678,
+            "candidateTriangles": 16340,
+            "algorithmMilliseconds": 1440.9962619999933,
+            "wholePreparationMilliseconds": null
+          },
+          {
+            "outfit": "bare",
+            "quality": "high",
+            "sourceTriangles": 81216,
+            "candidateTriangles": 35602,
+            "algorithmMilliseconds": 3464.7637240000186,
+            "wholePreparationMilliseconds": null
+          },
+          {
+            "outfit": "bare",
+            "quality": "low",
+            "sourceTriangles": 73094,
+            "candidateTriangles": 34902,
+            "algorithmMilliseconds": 3251.4014169999864,
+            "wholePreparationMilliseconds": null
+          }
+        ],
+        "descriptiveChanges": [
+          {
+            "outfit": "bare",
+            "quality": "high",
+            "pairs": 28,
+            "medianChangedPixels": 1176.5,
+            "maxChangedPixels": 1426,
+            "maximumChannel": 205
+          },
+          {
+            "outfit": "bare",
+            "quality": "low",
+            "pairs": 28,
+            "medianChangedPixels": 1187.5,
+            "maxChangedPixels": 1380,
+            "maximumChannel": 215
+          },
+          {
+            "outfit": "equipped",
+            "quality": "high",
+            "pairs": 28,
+            "medianChangedPixels": 175.0,
+            "maxChangedPixels": 492,
+            "maximumChannel": 239
+          },
+          {
+            "outfit": "equipped",
+            "quality": "low",
+            "pairs": 28,
+            "medianChangedPixels": 187.0,
+            "maxChangedPixels": 457,
+            "maximumChannel": 239
+          }
+        ]
+      },
+      {
+        "run": "native-string-transport",
+        "terminal": {
+          "exitCode": 0,
+          "startedUnix": 1791599219.8253372,
+          "finishedUnix": 1791599375.8511949
+        },
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "pairs": 336,
+        "closeExactControls": 112,
+        "sourceAgainUnstableChannels": 0,
+        "invalidPosedVertices": 0,
+        "allForcedBlinkValuesVerified": true,
+        "lifetimes": [
+          {
+            "outfit": "equipped",
+            "baseline": {
+              "geometries": 161,
+              "textures": 96,
+              "programs": 30
+            },
+            "cycles": [
+              {
+                "geometries": 161,
+                "textures": 96,
+                "programs": 30
+              },
+              {
+                "geometries": 161,
+                "textures": 96,
+                "programs": 30
+              },
+              {
+                "geometries": 161,
+                "textures": 96,
+                "programs": 30
+              },
+              {
+                "geometries": 161,
+                "textures": 96,
+                "programs": 30
+              }
+            ],
+            "originalsRestored": true
+          },
+          {
+            "outfit": "bare",
+            "baseline": {
+              "geometries": 167,
+              "textures": 102,
+              "programs": 26
+            },
+            "cycles": [
+              {
+                "geometries": 167,
+                "textures": 102,
+                "programs": 26
+              },
+              {
+                "geometries": 167,
+                "textures": 102,
+                "programs": 26
+              },
+              {
+                "geometries": 167,
+                "textures": 102,
+                "programs": 26
+              },
+              {
+                "geometries": 167,
+                "textures": 102,
+                "programs": 26
+              }
+            ],
+            "originalsRestored": true
+          }
+        ],
+        "derivation": [
+          {
+            "outfit": "equipped",
+            "quality": "high",
+            "sourceTriangles": 41967,
+            "candidateTriangles": 16729,
+            "algorithmMilliseconds": 1717.9110989999972,
+            "wholePreparationMilliseconds": 7717.86774
+          },
+          {
+            "outfit": "equipped",
+            "quality": "low",
+            "sourceTriangles": 32678,
+            "candidateTriangles": 16340,
+            "algorithmMilliseconds": 1309.175204000001,
+            "wholePreparationMilliseconds": 7717.86774
+          },
+          {
+            "outfit": "bare",
+            "quality": "high",
+            "sourceTriangles": 81216,
+            "candidateTriangles": 35602,
+            "algorithmMilliseconds": 3468.3634500000044,
+            "wholePreparationMilliseconds": 11861.571511000002
+          },
+          {
+            "outfit": "bare",
+            "quality": "low",
+            "sourceTriangles": 73094,
+            "candidateTriangles": 34902,
+            "algorithmMilliseconds": 2936.194592999993,
+            "wholePreparationMilliseconds": 11861.571511000002
+          }
+        ],
+        "descriptiveChanges": [
+          {
+            "outfit": "bare",
+            "quality": "high",
+            "pairs": 28,
+            "medianChangedPixels": 1176.5,
+            "maxChangedPixels": 1426,
+            "maximumChannel": 205
+          },
+          {
+            "outfit": "bare",
+            "quality": "low",
+            "pairs": 28,
+            "medianChangedPixels": 1187.5,
+            "maxChangedPixels": 1380,
+            "maximumChannel": 215
+          },
+          {
+            "outfit": "equipped",
+            "quality": "high",
+            "pairs": 28,
+            "medianChangedPixels": 175.0,
+            "maxChangedPixels": 492,
+            "maximumChannel": 239
+          },
+          {
+            "outfit": "equipped",
+            "quality": "low",
+            "pairs": 28,
+            "medianChangedPixels": 187.0,
+            "maxChangedPixels": 457,
+            "maximumChannel": 239
+          }
+        ]
+      }
+    ],
+    "transportNumericEquivalence": "string-transport-source-equivalence.json:16sources/indices exact across both body runs.",
+    "transportImageEquivalence": "string-transport-image-equivalence.json:672of672source/candidate PNGs byte-exact across transport repair.",
+    "visualReview": "Root inspected actual gameplay-size paired Fighter/Cleric bare blink, Wizard bare attack/equipped partial-blink and Rogue bare back-run plus equipped Fighter. Source silhouette/regions remain present in viewed samples; small face scale and whole-frame means do not qualify all facial pixels, every continuous pose/zoom or final modern art.",
+    "limits": "336pairs per run includes112exact close-original controls and224descriptive simplified pairs, not336simplified equivalence tests. Every forced asymmetric blink value verified, finite referenced posed vertices and stable source-again controls. Four cycles per bare/equipped baseline only; not zero VRAM, cross-outfit lifetime or active equip/reconnect/long-session proof. Existing8outfit/14slot/independent rig/Rogue alternate/stealth/pool3previews run after pilot disposal."
+  },
+  "coupledTransportNative": {
+    "terminal": {
+      "exitCode": 0,
+      "startedUnix": 1791599625.9906867,
+      "finishedUnix": 1791599713.1906161
+    },
+    "sourceEquivalence": "all-string-transport-source-equivalence.json:all80gear/eye and44shadow source hashes and candidate indices equal retained native runs.",
+    "colorPairs": 72,
+    "colorCloseControls": 24,
+    "colorSourceAgainUnstableChannels": 0,
+    "shadowExactPairs": 16,
+    "shadowExactChangedPixels": 0,
+    "shadowSimplifiedPairs": 16,
+    "shadowFallbacks": {
+      "stealth": {
+        "reference": {
+          "calls": 197,
+          "triangles": 155213,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 197,
+          "triangles": 155213,
+          "swaps": 0
+        },
+        "changedPixels": 0,
+        "maximumChannel": 0,
+        "meanChannel": 0,
+        "unstableReference": 0
+      },
+      "disabled": {
+        "reference": {
+          "calls": 25,
+          "triangles": 51939,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 25,
+          "triangles": 51939,
+          "swaps": 0
+        },
+        "changedPixels": 0,
+        "maximumChannel": 0,
+        "meanChannel": 0,
+        "unstableReference": 0
+      }
+    },
+    "shadowLifetime": {
+      "baseline": {
+        "geometries": 208,
+        "textures": 99,
+        "programs": 75
+      },
+      "cycles": [
+        {
+          "geometries": 208,
+          "textures": 99,
+          "programs": 75
+        },
+        {
+          "geometries": 208,
+          "textures": 99,
+          "programs": 75
+        },
+        {
+          "geometries": 208,
+          "textures": 99,
+          "programs": 75
+        },
+        {
+          "geometries": 208,
+          "textures": 99,
+          "programs": 75
+        }
+      ],
+      "originalsRestored": true,
+      "examined": 48,
+      "rejected": 4,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    },
+    "scope": "Same operators/raw inputs and within-pass native controls, shadows-off color and exact-index shadow parity. No claim of cross-gallery image equality with separate earlier gear/shadow scopes."
+  },
+  "actualParty": {
+    "rows": [
+      {
+        "quality": "high",
+        "supervisor": "party-high-all-string-transport",
+        "evidence": "eidolon-terrain-save-evidence-Nsv8q5Fk",
+        "terminal": {
+          "exitCode": 0,
+          "startedUnix": 1791599741.9948375,
+          "finishedUnix": 1791599842.829139
+        },
+        "goSeconds": 84.64,
+        "browserFourClientSkipped": true,
+        "report": {
+          "quality": "high",
+          "label": "single-renderer-equipped-raised-party-high",
+          "frames": 180,
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "viewport": {
+            "width": 1280,
+            "height": 844,
+            "pixelRatio": 1
+          },
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+          "visibility": "visible",
+          "frameMedianMs": 33.400000000001455,
+          "frameP95Ms": 66.69999999999709,
+          "frameP99Ms": 66.80000000000291,
+          "framesOver33ms": 115,
+          "cpuLoopMedianMs": 37.20000001788139,
+          "cpuLoopP95Ms": 55.5,
+          "drawCallsMedian": 378,
+          "trianglesMedian": 208455,
+          "geometries": 486,
+          "textures": 293,
+          "activeEntities": 34,
+          "previewFramesDuringSample": 0,
+          "previewGeometries": 0,
+          "previewTextures": 0
+        },
+        "unchangedLimits": {
+          "frameMedianMs": 20,
+          "frameP95Ms": 33.4,
+          "drawCallsMedian": 350,
+          "trianglesMedian": 250000
+        },
+        "limitsMet": {
+          "frameMedianMs": false,
+          "frameP95Ms": false,
+          "drawCallsMedian": false,
+          "trianglesMedian": true
+        },
+        "body": {
+          "sources": 4,
+          "sourceTriangles": 42137,
+          "candidateTriangles": 16923,
+          "wallPreparationMilliseconds": 6303.168100000003,
+          "paired": {
+            "reference": {
+              "calls": 405,
+              "triangles": 472210
+            },
+            "candidate": {
+              "calls": 405,
+              "triangles": 421782
+            },
+            "referenceAgain": {
+              "calls": 405,
+              "triangles": 472210
+            },
+            "quality": "high",
+            "zoom": 15,
+            "ownedBufferBytes": 40090764
+          }
+        },
+        "color": {
+          "sourceTriangles": 139005,
+          "candidateTriangles": 56443,
+          "wallPreparationMilliseconds": 12675.711082999995,
+          "paired": {
+            "reference": {
+              "calls": 377,
+              "triangles": 417329
+            },
+            "candidate": {
+              "calls": 377,
+              "triangles": 252205
+            },
+            "referenceAgain": {
+              "calls": 377,
+              "triangles": 417329
+            },
+            "quality": "high",
+            "zoom": 15,
+            "ownedBufferBytes": 13986548
+          }
+        },
+        "equippedRootTriangles": 145764,
+        "drawAttribution": [
+          {
+            "name": "OpaqueActorInstances",
+            "color": 24,
+            "shadow": 108,
+            "triangles": 38569
+          },
+          {
+            "name": "Equipped Cleric",
+            "color": 26,
+            "shadow": 21,
+            "triangles": 33402
+          },
+          {
+            "name": "Equipped Wizard",
+            "color": 26,
+            "shadow": 21,
+            "triangles": 40260
+          },
+          {
+            "name": "Equipped Fighter",
+            "color": 23,
+            "shadow": 20,
+            "triangles": 30456
+          },
+          {
+            "name": "Equipped Rogue",
+            "color": 22,
+            "shadow": 18,
+            "triangles": 41646
+          },
+          {
+            "name": "EnvironmentGroup",
+            "color": 19,
+            "shadow": 6,
+            "triangles": 23531
+          },
+          {
+            "name": "ProceduralSkeleton",
+            "color": 11,
+            "shadow": 12,
+            "triangles": 815
+          },
+          {
+            "name": "Mesh",
+            "color": 1,
+            "shadow": 15,
+            "triangles": 17
+          },
+          {
+            "name": "Canonical terrain tiles",
+            "color": 8,
+            "shadow": 0,
+            "triangles": 1024
+          },
+          {
+            "name": "ProceduralEidolicBlackwater",
+            "color": 1,
+            "shadow": 0,
+            "triangles": 2
+          },
+          {
+            "name": "ProceduralRealmTerrain:water",
+            "color": 1,
+            "shadow": 0,
+            "triangles": 4
+          },
+          {
+            "name": "ProceduralRealmTerrain:air",
+            "color": 1,
+            "shadow": 0,
+            "triangles": 4
+          },
+          {
+            "name": "Points",
+            "color": 1,
+            "shadow": 0,
+            "triangles": 46.666666666666664
+          }
+        ],
+        "peerLiveness": {
+          "stages": [
+            {
+              "stage": "preparation-start",
+              "readyStates": [
+                1,
+                1,
+                1
+              ]
+            },
+            {
+              "stage": "body-prepared",
+              "readyStates": [
+                1,
+                1,
+                1
+              ]
+            },
+            {
+              "stage": "gear-prepared",
+              "readyStates": [
+                1,
+                1,
+                1
+              ]
+            },
+            {
+              "stage": "shadow-prepared",
+              "readyStates": [
+                1,
+                1,
+                1
+              ]
+            },
+            {
+              "stage": "profiling",
+              "readyStates": [
+                1,
+                1,
+                1
+              ]
+            },
+            {
+              "stage": "profile-complete",
+              "readyStates": [
+                1,
+                1,
+                1
+              ]
+            }
+          ],
+          "beforeCleanupReadyStates": [
+            1,
+            1,
+            1
+          ],
+          "closes": [
+            [],
+            [],
+            []
+          ]
+        },
+        "cacheEvidence": "eidolon-terrain-save-evidence-Nsv8q5Fk/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/selected-body-runtime.json",
+        "saveScope": "Go race check passed normal fresh logouts, party membership,14slots/inventory/EP unchanged for all four classes. Ordinary selected paths/worker/cacheSHA checked. No four-renderer input/heal/battle, device, deployed old-client or campaign acceptance.",
+        "shadow": {
+          "scope": "Explicit High shadow-only pilot in one actual connected renderer; ordinary selected assets and service worker. Untimed synchronous counts, no physical-device, four-renderer, battle, or production acceptance.",
+          "selection": {
+            "registered": 44,
+            "sourceTriangles": 73366,
+            "candidateTriangles": 29604
+          },
+          "paired": {
+            "reference": {
+              "calls": 379,
+              "triangles": 252219,
+              "swaps": 0
+            },
+            "candidate": {
+              "calls": 379,
+              "triangles": 208457,
+              "swaps": 44
+            },
+            "referenceAgain": {
+              "calls": 379,
+              "triangles": 252219,
+              "swaps": 0
+            },
+            "ownedBufferBytes": 9707312,
+            "restored": true,
+            "registered": 44
+          },
+          "wallPreparationMilliseconds": 6142.250589999996
+        }
+      },
+      {
+        "quality": "low",
+        "supervisor": "party-low",
+        "evidence": "eidolon-terrain-save-evidence-8Wtb8XPi",
+        "terminal": {
+          "exitCode": 0,
+          "startedUnix": 1791600001.55002,
+          "finishedUnix": 1791600072.8401585
+        },
+        "goSeconds": 56.94,
+        "browserFourClientSkipped": true,
+        "report": {
+          "quality": "low",
+          "label": "single-renderer-equipped-raised-party-low",
+          "frames": 180,
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "viewport": {
+            "width": 1280,
+            "height": 844,
+            "pixelRatio": 1
+          },
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+          "visibility": "visible",
+          "frameMedianMs": 33.30000000000291,
+          "frameP95Ms": 50,
+          "frameP99Ms": 50,
+          "framesOver33ms": 59,
+          "cpuLoopMedianMs": 26.30000001192093,
+          "cpuLoopP95Ms": 38.79999998211861,
+          "drawCallsMedian": 197,
+          "trianglesMedian": 90850,
+          "geometries": 385,
+          "textures": 266,
+          "activeEntities": 37,
+          "previewFramesDuringSample": 0,
+          "previewGeometries": 0,
+          "previewTextures": 0
+        },
+        "unchangedLimits": {
+          "frameMedianMs": 33.4,
+          "frameP95Ms": 50,
+          "drawCallsMedian": 200,
+          "trianglesMedian": 85000
+        },
+        "limitsMet": {
+          "frameMedianMs": true,
+          "frameP95Ms": true,
+          "drawCallsMedian": true,
+          "trianglesMedian": false
+        },
+        "body": {
+          "sources": 4,
+          "sourceTriangles": 32856,
+          "candidateTriangles": 16532,
+          "wallPreparationMilliseconds": 4543.988444000002,
+          "paired": {
+            "reference": {
+              "calls": 198,
+              "triangles": 149908
+            },
+            "candidate": {
+              "calls": 198,
+              "triangles": 133584
+            },
+            "referenceAgain": {
+              "calls": 198,
+              "triangles": 149908
+            },
+            "quality": "low",
+            "zoom": 15,
+            "ownedBufferBytes": 38268456
+          }
+        },
+        "color": {
+          "sourceTriangles": 80549,
+          "candidateTriangles": 38299,
+          "wallPreparationMilliseconds": 7181.620716999998,
+          "paired": {
+            "reference": {
+              "calls": 172,
+              "triangles": 130550
+            },
+            "candidate": {
+              "calls": 172,
+              "triangles": 88300
+            },
+            "referenceAgain": {
+              "calls": 172,
+              "triangles": 130550
+            },
+            "quality": "low",
+            "zoom": 15,
+            "ownedBufferBytes": 9843228
+          }
+        },
+        "equippedRootTriangles": 67167,
+        "drawAttribution": [
+          {
+            "name": "OpaqueActorInstances",
+            "color": 72,
+            "shadow": 0,
+            "triangles": 8925
+          },
+          {
+            "name": "Equipped Cleric",
+            "color": 25,
+            "shadow": 0,
+            "triangles": 16667
+          },
+          {
+            "name": "Equipped Wizard",
+            "color": 25,
+            "shadow": 0,
+            "triangles": 19320
+          },
+          {
+            "name": "Equipped Fighter",
+            "color": 23,
+            "shadow": 0,
+            "triangles": 15747
+          },
+          {
+            "name": "Equipped Rogue",
+            "color": 23,
+            "shadow": 0,
+            "triangles": 15433
+          },
+          {
+            "name": "EnvironmentGroup",
+            "color": 19,
+            "shadow": 0,
+            "triangles": 13736
+          },
+          {
+            "name": "Canonical terrain tiles",
+            "color": 7,
+            "shadow": 0,
+            "triangles": 896
+          },
+          {
+            "name": "ProceduralSkeleton",
+            "color": 5,
+            "shadow": 0,
+            "triangles": 40
+          },
+          {
+            "name": "Mesh",
+            "color": 1,
+            "shadow": 0,
+            "triangles": 2
+          },
+          {
+            "name": "ProceduralEidolicBlackwater",
+            "color": 1,
+            "shadow": 0,
+            "triangles": 2
+          },
+          {
+            "name": "ProceduralRealmTerrain:water",
+            "color": 1,
+            "shadow": 0,
+            "triangles": 4
+          },
+          {
+            "name": "ProceduralRealmTerrain:air",
+            "color": 1,
+            "shadow": 0,
+            "triangles": 4
+          },
+          {
+            "name": "Actor ground contacts",
+            "color": 1,
+            "shadow": 0,
+            "triangles": 74
+          }
+        ],
+        "peerLiveness": {
+          "stages": [
+            {
+              "stage": "preparation-start",
+              "readyStates": [
+                1,
+                1,
+                1
+              ]
+            },
+            {
+              "stage": "body-prepared",
+              "readyStates": [
+                1,
+                1,
+                1
+              ]
+            },
+            {
+              "stage": "gear-prepared",
+              "readyStates": [
+                1,
+                1,
+                1
+              ]
+            },
+            {
+              "stage": "profiling",
+              "readyStates": [
+                1,
+                1,
+                1
+              ]
+            },
+            {
+              "stage": "profile-complete",
+              "readyStates": [
+                1,
+                1,
+                1
+              ]
+            }
+          ],
+          "beforeCleanupReadyStates": [
+            1,
+            1,
+            1
+          ],
+          "closes": [
+            [],
+            [],
+            []
+          ]
+        },
+        "cacheEvidence": "eidolon-terrain-save-evidence-8Wtb8XPi/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/selected-body-runtime.json",
+        "saveScope": "Go race check passed normal fresh logouts, party membership,14slots/inventory/EP unchanged for all four classes. Ordinary selected paths/worker/cacheSHA checked. No four-renderer input/heal/battle, device, deployed old-client or campaign acceptance."
+      }
+    ],
+    "comparisonLimit": "Body,gear and shadow controls are independently synchronous, separated by natural world updates and QA preparations. Profiles have different populations from prior turns and each other; no controlled CPU gain or same-state aggregate A/B is asserted."
+  },
+  "copiesAndStartup": {
+    "highRawOwnedBodyBytes": 40090764,
+    "highRawOwnedBodyColorShadowBytes": 63784624,
+    "lowRawOwnedBodyBytes": 38268456,
+    "lowRawOwnedBodyColorBytes": 48111684,
+    "scope": "Independent QA buffer byte counts, not total memory or VRAM. Raw clone payloads retain unreferenced delivered vertices. Preparation/serialization/cloning is outside profiles; High body6.3s/gear12.7s/shadow6.1s excludes production startup qualification. No runtime simplification or copying scheme selected; compact baking/shared ownership requires separate proof."
+  },
+  "failuresAndRejectedScreens": [
+    {
+      "evidence": "count-initial-failure.txt",
+      "result": "Initial inspector searched mesh name instead of supplied named node; corrected. Ad hoc NodeIO read omitted registered WebP extension; corrected inspector uses ALL_EXTENSIONS."
+    },
+    {
+      "evidence": "body-unit-initial.log",
+      "result": "1failed/12passed: endpoint test erroneously expected right-only delta in left endpoint. Corrected check and final14new tests pass."
+    },
+    {
+      "evidence": "body-count-006.json",
+      "result": "Permissive first screen retained all81216High/73094Low source triangles after full protected-signature fallback; no candidate promoted."
+    },
+    {
+      "evidence": "body-count-strict-006.json",
+      "result": "Strict screen without collars72076High/68308Low; most partitions retained originals due protected tangent/UV signatures. Exact collar repair added without weakening guard."
+    },
+    {
+      "evidence": "lint-initial.log",
+      "result": "One unused inspector binding; corrected."
+    },
+    {
+      "evidence": "party-high/party-terminal.json",
+      "exitCode": 1,
+      "evidenceDirectory": "eidolon-terrain-save-evidence-3kflI7mV",
+      "result": "Peer closed by post-profile assertion. Geometry controls retained, no party/save/profile acceptance."
+    },
+    {
+      "evidence": "party-high-string-transport/party-terminal.json",
+      "exitCode": 1,
+      "evidenceDirectory": "eidolon-terrain-save-evidence-qkrghmYj",
+      "result": "Body JSON transport fixed, but one peer still closed code1006 after remaining gear/shadow preparation, elapsed80.2s. All preparation-entry states open, third peer closed by shadow completion. Body wall5.9s; remaining captures converted to JSON strings. No liveness-policy relaxation or reconnect."
+    }
+  ],
+  "unchangedLimits": {
+    "source": "docs/art/2026-09-28-beta-device-matrix.md:43–48",
+    "high": {
+      "frameMedianMs": 20,
+      "frameP95Ms": 33.4,
+      "drawCalls": 350,
+      "triangles": 250000
+    },
+    "low": {
+      "frameMedianMs": 33.4,
+      "frameP95Ms": 50,
+      "drawCalls": 200,
+      "triangles": 85000
+    },
+    "scope": "Carried sampled-view regression ceilings used for qualification; no tolerance changes and no universal raid/device certification."
+  },
+  "evidence": {
+    "artifacts": 1730,
+    "artifactInventory": "artifact-inventory.json",
+    "artifactInventorySHA256": "a9f9758ee86430ee2fd5db13d11b4239e275c92fef384aef316a645b34986130",
+    "sourcePins": "source-hashes.json",
+    "sourceFiles": 526,
+    "sourcePinsSHA256": "a71ffe6e47f9653b10a630c3826815a465a3a2f0219c5e1e434a9980b22e7cae",
+    "unchangedGLBs": 508,
+    "vendorFilesVerified": 407,
+    "privateDirectoriesMode": "0700",
+    "privateFilesMode": "0600",
+    "verification": "final-verification.json",
+    "allOwnedSupervisorsAbsent": true,
+    "portsFree": [
+      4190,
+      4192,
+      18189
+    ],
+    "ownedVendorLinkRemoved": true,
+    "retainedSourceVersions": [
+      "source-before-string-transport",
+      "source-before-all-string-transport"
+    ],
+    "finalWhitespaceOnlyCorrection": "One trailing empty helper line removed after native runs; exact native source archived, executed functions unchanged."
+  },
+  "longSoak": {
+    "observation": {
+      "observed_at_utc": "2026-10-10T02:03:02Z",
+      "run": {
+        "id": 37880032315,
+        "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_attempt": 1,
+        "updated_at": "2026-10-09T03:36:16Z",
+        "url": "https://github.com/aeml/eidolon/actions/runs/37880032315"
+      },
+      "authoritative_state_job": "in_progress",
+      "run_multiplayer_soak_step": "in_progress",
+      "evidence_upload": "pending",
+      "jobs": [
+        {
+          "name": "100-client authoritative-state soak",
+          "status": "in_progress",
+          "conclusion": null,
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Initialize containers",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Checkout",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Setup Go",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Setup Node.js",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Run multiplayer soak",
+              "status": "in_progress",
+              "conclusion": null
+            },
+            {
+              "name": "Upload soak evidence",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Post Setup Node.js",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Post Setup Go",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Post Checkout",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Stop containers",
+              "status": "pending",
+              "conclusion": null
+            }
+          ]
+        }
+      ]
+    },
+    "action": "One delegated read-only snapshot at02:03:02UTC; stale thereafter. No restart/cancel/retry/current terminal or acceptance claim."
+  },
+  "nextAction": "Investigate measured High submission/frame cost and Low remaining fitted/rigid/scene geometry, with controlled source-equivalent comparisons and full source material/skin/blink/slot preservation. Bake compact immutable geometry/LOD data instead of synchronous QA preparation/raw buffer duplication, qualify coverage masks, continuous zoom/hysteresis, active equip/pool/reconnect/respawn, cold/offline/returning cache, targeting/contact/combat and whole High/Low/support-device/moving-art gates. Continue full inherited1.11–1.99/art/Q/CB/F1–F5/operations/rights/owner/human/beta/launch/handoff; no narrower completion or public microrelease.",
+  "fullRoadmap": "Full inherited1.11–1.99, modern-art/Q/CB/F1–F5, content/party/device/accessibility, operations/recovery/rights/owner/human/beta/launch/handoff remains active. No beta/launch/policy/commerce/rights/recovery/staffing decisions invented. No goal completion or narrower renderer/version objective."
+}

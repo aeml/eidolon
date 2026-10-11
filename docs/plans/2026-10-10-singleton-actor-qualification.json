@@ -1,0 +1,1163 @@
+{
+  "recordedUTC": "2026-10-10T22:46:33.373001+00:00",
+  "source": "f8e994d058adeafa8a6e2057604b2b0fb12953ce",
+  "runtime": "75a4403f65a4bb5600c11be9484c54d017a71864",
+  "runtimeSHA256": {
+    "src/art/ProceduralLegacyEnemies.js": "0143ccf889b1bb14c20127143d8382f4d52b3b2128e665bd60c499292c8b9842",
+    "src/utils/MeshFactory.js": "b16f629e5cb6f1429649824936ff660ff6e89bf89e9e7adca26ea5b9e4787194",
+    "src/art/ActorInstanceBatches.js": "2659229ffd9107cf0016e3e0db051b55c04f3af4df1e44eac7a259896285d8ec",
+    "src/core/RenderSystem.js": "4f1305c5240f467dacb6790b95c4a34e8a94d13e8cad4c467530021fa146e0c8"
+  },
+  "selectedIntoHeld": false,
+  "public": false,
+  "focused": {
+    "suites": 6,
+    "passed": 105
+  },
+  "native": {
+    "stats": {
+      "total": 12,
+      "expected": 12,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 0,
+      "ok": true
+    },
+    "maxRetry": 0,
+    "singletonComparisons": 60,
+    "exactSingletonComparisons": 13,
+    "maximumMeanError": 0.00047177940542869455,
+    "maximumChangedFraction": 9.694097371822491e-06
+  },
+  "sanitization": {
+    "observedPreparedAccountsRedacted": 17,
+    "plainFilesScanned": 112,
+    "embeddedEntriesScanned": 17,
+    "remainingPreparedNames": 0,
+    "automaticCredentialRecordings": "disabled"
+  },
+  "decision": "Keep combined DemonOrc/singleton candidate private and unselected. Native source/pose/shadow/lifecycle checks pass, but actual High party361draws FAIL350 and Low town103102/103110triangles FAIL85000. All four High route stops pass their unchanged gates. Low frozen original83draws\u2192candidate90draws is a retained negative counterexample with exact pixels; no universal draw reduction claim. Different successful later party populations and real four-class14slot Go-race saved custody do not clear failures. Initial12frame town census sampled streaming/appearance changes and is unsuitable as steady-state attribution. New fixed60warmup+180frame town startup sample and12untimed frames show worker quiescent(pending0),18selected entries and103110triangles every frame: not unfinished geometry delivery. Largest contributors are imported Ilyra31289triangles, all-fifteen-camp field19740 and equipped Fighter15219. Investigate conservative source-preserving camp-instance frustum clipping and reviewed NPC derivatives, retaining all objects, source geometry, animation/material identities, unsupported fallbacks and original budgets. Publication of this exact candidate and complete world/art/device/operations/freeze/beta/launch/handoff acceptance remain open.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-singleton-actor-checks-20261010",
+    "inventorySHA256": "c5445b130db8550c004f66d1ef365a62dfce197b2d5aba01032d5f190a776614",
+    "inventoryEntries": 891,
+    "frozen": true
+  },
+  "actual": {
+    "high-route": {
+      "terminal": {
+        "source": "75a4403f65a4bb5600c11be9484c54d017a71864",
+        "quality": "high",
+        "exitCode": 1,
+        "startedUnix": 1791671555.9999557,
+        "finishedUnix": 1791671674.4318335
+      },
+      "native": {
+        "total": 2,
+        "expected": 0,
+        "unexpected": 1,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": false
+      },
+      "maxRetry": 0,
+      "serverMarkers": {
+        "WARNING: DATA RACE": 0,
+        "panic:": 0,
+        "fatal error:": 0,
+        "Worker panic:": 0,
+        "Recovered from panic in Update:": 0
+      },
+      "finalFourClassPartyAndGoRaceSavesPassed": false,
+      "routeFrames": 471,
+      "routeObservations": 49,
+      "routeProfiles": [
+        {
+          "label": "town-start",
+          "budget": {
+            "draws": 350,
+            "triangles": 250000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "profile": {
+            "frames": 180,
+            "drawCallsMedian": 347,
+            "trianglesMedian": 229567,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "activeEntitiesMin": 155,
+            "activeEntitiesMax": 155
+          }
+        },
+        {
+          "label": "earth-road",
+          "budget": {
+            "draws": 350,
+            "triangles": 250000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "profile": {
+            "frames": 180,
+            "drawCallsMedian": 207,
+            "trianglesMedian": 121354,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "activeEntitiesMin": 73,
+            "activeEntitiesMax": 73
+          }
+        },
+        {
+          "label": "woodland-cut",
+          "budget": {
+            "draws": 350,
+            "triangles": 250000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "profile": {
+            "frames": 180,
+            "drawCallsMedian": 231,
+            "trianglesMedian": 137206,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "activeEntitiesMin": 38,
+            "activeEntitiesMax": 38
+          }
+        },
+        {
+          "label": "bastion-approach",
+          "budget": {
+            "draws": 350,
+            "triangles": 250000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "profile": {
+            "frames": 180,
+            "drawCallsMedian": 125,
+            "trianglesMedian": 65263,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "activeEntitiesMin": 29,
+            "activeEntitiesMax": 30
+          }
+        }
+      ],
+      "normalPartyProfile": {
+        "frames": 180,
+        "drawCallsMedian": 361,
+        "trianglesMedian": 198397,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 33.4,
+        "activeEntitiesMin": 37,
+        "activeEntitiesMax": 37
+      },
+      "demonOrcComparison": {
+        "roots": 37,
+        "original": {
+          "calls": 483,
+          "triangles": 131766
+        },
+        "candidate": {
+          "calls": 217,
+          "triangles": 135126
+        },
+        "meanError": 0.00017124555687203792,
+        "changed": 2.7769549763033174e-06,
+        "exactChanges": 140,
+        "unstable": 0,
+        "restored": true,
+        "scope": "Same synchronous frozen actual woodland view. Original raw constructors temporarily reproduce every live root, named animation pivot and runtime auxiliary attachment; originals/packed/default delivery/originals again. No camera, authority, animation clock, material or geometry mutation. Temporary source roots removed and original visibility restored. Exact full body triangle inventories and existing rigid-surface pixel tolerance retained. Submitted triangles can increase when a consolidated primitive intersects a pass whose separate source parts were culled; candidate must still pass the original quality triangle budget. Untimed diagnostic, not a triangle-gain claim; original raw geometry may warm additional borrowed GPU caches. Separate route profiles carry all unchanged budgets.",
+        "bodyInventories": 37,
+        "allBodyInventories1202": true
+      }
+    },
+    "low-route": {
+      "terminal": {
+        "source": "75a4403f65a4bb5600c11be9484c54d017a71864",
+        "quality": "low",
+        "exitCode": 1,
+        "startedUnix": 1791671674.4321873,
+        "finishedUnix": 1791671732.225751
+      },
+      "native": {
+        "total": 2,
+        "expected": 0,
+        "unexpected": 1,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": false
+      },
+      "maxRetry": 0,
+      "serverMarkers": {
+        "WARNING: DATA RACE": 0,
+        "panic:": 0,
+        "fatal error:": 0,
+        "Worker panic:": 0,
+        "Recovered from panic in Update:": 0
+      },
+      "finalFourClassPartyAndGoRaceSavesPassed": false,
+      "routeFrames": 287,
+      "routeObservations": 33,
+      "routeProfiles": [
+        {
+          "label": "town-start",
+          "budget": {
+            "draws": 200,
+            "triangles": 85000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "profile": {
+            "frames": 180,
+            "drawCallsMedian": 172,
+            "trianglesMedian": 103102,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "activeEntitiesMin": 153,
+            "activeEntitiesMax": 154
+          }
+        },
+        {
+          "label": "earth-road",
+          "budget": {
+            "draws": 200,
+            "triangles": 85000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "profile": {
+            "frames": 180,
+            "drawCallsMedian": 83,
+            "trianglesMedian": 33575,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "activeEntitiesMin": 71,
+            "activeEntitiesMax": 72
+          }
+        }
+      ],
+      "demonOrcComparison": {
+        "roots": 27,
+        "original": {
+          "calls": 83,
+          "triangles": 37579
+        },
+        "candidate": {
+          "calls": 90,
+          "triangles": 39643
+        },
+        "meanError": 0,
+        "changed": 0,
+        "exactChanges": 0,
+        "unstable": 0,
+        "restored": true,
+        "scope": "Same synchronous frozen actual woodland view. Original raw constructors temporarily reproduce every live root, named animation pivot and runtime auxiliary attachment; originals/packed/default delivery/originals again. No camera, authority, animation clock, material or geometry mutation. Temporary source roots removed and original visibility restored. Exact full body triangle inventories and existing rigid-surface pixel tolerance retained. Submitted triangles can increase when a consolidated primitive intersects a pass whose separate source parts were culled; candidate must still pass the original quality triangle budget. Untimed diagnostic, not a triangle-gain claim; original raw geometry may warm additional borrowed GPU caches. Separate route profiles carry all unchanged budgets.",
+        "bodyInventories": 27,
+        "allBodyInventories1202": true
+      }
+    },
+    "low-census": {
+      "terminal": {
+        "source": "93680d9f93041a22fe85fc414725086c80ea0e22",
+        "quality": "low",
+        "exitCode": 0,
+        "startedUnix": 1791671859.1549335,
+        "finishedUnix": 1791671890.6500335
+      },
+      "native": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "maxRetry": 0,
+      "serverMarkers": {
+        "WARNING: DATA RACE": 0,
+        "panic:": 0,
+        "fatal error:": 0,
+        "Worker panic:": 0,
+        "Recovered from panic in Update:": 0
+      },
+      "finalFourClassPartyAndGoRaceSavesPassed": true,
+      "normalPartyProfile": {
+        "frames": 180,
+        "drawCallsMedian": 147,
+        "trianglesMedian": 73319,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.8,
+        "activeEntitiesMin": 28,
+        "activeEntitiesMax": 30
+      },
+      "town-submission-frames.json": {
+        "frames": 12,
+        "quality": "low",
+        "zoom": 15,
+        "allCallsAndTrianglesAccountedFor": true,
+        "hooksRestored": true,
+        "calls": [
+          80,
+          79,
+          79,
+          98,
+          109,
+          109,
+          109,
+          117,
+          126,
+          129,
+          129,
+          129
+        ],
+        "triangles": [
+          77545,
+          77539,
+          68177,
+          69706,
+          78225,
+          78225,
+          78227,
+          79634,
+          85990,
+          87383,
+          87385,
+          87385
+        ],
+        "activeEntities": [
+          26,
+          33,
+          40,
+          48,
+          53,
+          59,
+          67,
+          71,
+          73,
+          76,
+          82,
+          85
+        ],
+        "firstFrameContributors": [
+          {
+            "family": "Equipped Fighter",
+            "pass": "color",
+            "calls": 14,
+            "triangles": 36704
+          },
+          {
+            "family": "Lanternhold:Pilgrim Vigil Field",
+            "pass": "color",
+            "calls": 9,
+            "triangles": 19740
+          },
+          {
+            "family": "lanternhold-casino-shell",
+            "pass": "color",
+            "calls": 11,
+            "triangles": 7308
+          },
+          {
+            "family": "Lanternhold:Ashen Smithy",
+            "pass": "color",
+            "calls": 9,
+            "triangles": 4756
+          },
+          {
+            "family": "Lanternhold:Votive Market",
+            "pass": "color",
+            "calls": 10,
+            "triangles": 4172
+          },
+          {
+            "family": "Earth authored paths",
+            "pass": "color",
+            "calls": 4,
+            "triangles": 2183
+          },
+          {
+            "family": "Lanternhold planted street edges",
+            "pass": "color",
+            "calls": 6,
+            "triangles": 1142
+          },
+          {
+            "family": "Canonical terrain tiles",
+            "pass": "color",
+            "calls": 8,
+            "triangles": 1024
+          },
+          {
+            "family": "EffectGroup",
+            "pass": "color",
+            "calls": 4,
+            "triangles": 496
+          },
+          {
+            "family": "ProceduralRealmTerrain:town",
+            "pass": "color",
+            "calls": 1,
+            "triangles": 10
+          },
+          {
+            "family": "ProceduralRealmTerrain:water",
+            "pass": "color",
+            "calls": 1,
+            "triangles": 4
+          },
+          {
+            "family": "Mesh",
+            "pass": "color",
+            "calls": 1,
+            "triangles": 2
+          }
+        ],
+        "firstGameplayGeometryState": null,
+        "allGameplayGeometryStatesQuiescent": false
+      },
+      "party-submission-frames.json": {
+        "frames": 12,
+        "quality": "low",
+        "zoom": 15,
+        "allCallsAndTrianglesAccountedFor": true,
+        "hooksRestored": true,
+        "calls": [
+          161,
+          161,
+          161,
+          161,
+          161,
+          161,
+          161,
+          161,
+          161,
+          161,
+          161,
+          161
+        ],
+        "triangles": [
+          74857,
+          74857,
+          74857,
+          74857,
+          74857,
+          74857,
+          74857,
+          74857,
+          74857,
+          74857,
+          74857,
+          74857
+        ],
+        "activeEntities": [
+          28,
+          28,
+          28,
+          28,
+          28,
+          28,
+          28,
+          28,
+          28,
+          28,
+          28,
+          28
+        ],
+        "firstFrameContributors": [
+          {
+            "family": "Equipped Wizard",
+            "pass": "color",
+            "calls": 26,
+            "triangles": 15902
+          },
+          {
+            "family": "Equipped Fighter",
+            "pass": "color",
+            "calls": 23,
+            "triangles": 15217
+          },
+          {
+            "family": "Equipped Cleric",
+            "pass": "color",
+            "calls": 26,
+            "triangles": 15093
+          },
+          {
+            "family": "Equipped Rogue",
+            "pass": "color",
+            "calls": 23,
+            "triangles": 13929
+          },
+          {
+            "family": "Gloamwood heath and fern beds",
+            "pass": "color",
+            "calls": 7,
+            "triangles": 7410
+          },
+          {
+            "family": "OpaqueActorInstances",
+            "pass": "color",
+            "calls": 28,
+            "triangles": 2310
+          },
+          {
+            "family": "ActorInstanceMultiDraw",
+            "pass": "color",
+            "calls": 3,
+            "triangles": 1780
+          },
+          {
+            "family": "Canonical terrain tiles",
+            "pass": "color",
+            "calls": 8,
+            "triangles": 1024
+          },
+          {
+            "family": "Earth exposed rock shelves",
+            "pass": "color",
+            "calls": 1,
+            "triangles": 618
+          },
+          {
+            "family": "Earth authored paths",
+            "pass": "color",
+            "calls": 2,
+            "triangles": 574
+          },
+          {
+            "family": "EffectGroup",
+            "pass": "color",
+            "calls": 4,
+            "triangles": 496
+          },
+          {
+            "family": "foliage:earth:grave_pine",
+            "pass": "color",
+            "calls": 1,
+            "triangles": 408
+          }
+        ],
+        "firstGameplayGeometryState": null,
+        "allGameplayGeometryStatesQuiescent": false
+      }
+    },
+    "high-census": {
+      "terminal": {
+        "source": "93680d9f93041a22fe85fc414725086c80ea0e22",
+        "quality": "high",
+        "exitCode": 0,
+        "startedUnix": 1791671890.6504118,
+        "finishedUnix": 1791671925.9533668
+      },
+      "native": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "maxRetry": 0,
+      "serverMarkers": {
+        "WARNING: DATA RACE": 0,
+        "panic:": 0,
+        "fatal error:": 0,
+        "Worker panic:": 0,
+        "Recovered from panic in Update:": 0
+      },
+      "finalFourClassPartyAndGoRaceSavesPassed": true,
+      "normalPartyProfile": {
+        "frames": 180,
+        "drawCallsMedian": 323,
+        "trianglesMedian": 214090,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 33.4,
+        "activeEntitiesMin": 34,
+        "activeEntitiesMax": 34
+      },
+      "town-submission-frames.json": {
+        "frames": 12,
+        "quality": "high",
+        "zoom": 15,
+        "allCallsAndTrianglesAccountedFor": true,
+        "hooksRestored": true,
+        "calls": [
+          184,
+          184,
+          184,
+          186,
+          186,
+          188,
+          188,
+          193,
+          193,
+          211,
+          222,
+          222
+        ],
+        "triangles": [
+          180204,
+          180204,
+          180204,
+          181311,
+          181311,
+          182490,
+          182490,
+          182694,
+          182694,
+          215570,
+          218142,
+          218142
+        ],
+        "activeEntities": [
+          13,
+          20,
+          27,
+          36,
+          45,
+          49,
+          54,
+          60,
+          64,
+          66,
+          74,
+          82
+        ],
+        "firstFrameContributors": [
+          {
+            "family": "Equipped Fighter",
+            "pass": "color",
+            "calls": 14,
+            "triangles": 38752
+          },
+          {
+            "family": "Equipped Fighter",
+            "pass": "shadow-0",
+            "calls": 11,
+            "triangles": 38546
+          },
+          {
+            "family": "Lanternhold:Pilgrim Vigil Field",
+            "pass": "shadow-0",
+            "calls": 9,
+            "triangles": 19740
+          },
+          {
+            "family": "Lanternhold:Pilgrim Vigil Field",
+            "pass": "color",
+            "calls": 9,
+            "triangles": 19740
+          },
+          {
+            "family": "TownFence",
+            "pass": "shadow-0",
+            "calls": 3,
+            "triangles": 11304
+          },
+          {
+            "family": "Lanternhold communal courtyards",
+            "pass": "shadow-0",
+            "calls": 29,
+            "triangles": 8668
+          },
+          {
+            "family": "lanternhold-casino-shell",
+            "pass": "shadow-0",
+            "calls": 11,
+            "triangles": 7308
+          },
+          {
+            "family": "lanternhold-casino-shell",
+            "pass": "color",
+            "calls": 11,
+            "triangles": 7308
+          },
+          {
+            "family": "Lanternhold:Ashen Smithy",
+            "pass": "shadow-0",
+            "calls": 10,
+            "triangles": 4804
+          },
+          {
+            "family": "Lanternhold:Ashen Smithy",
+            "pass": "color",
+            "calls": 9,
+            "triangles": 4756
+          },
+          {
+            "family": "Lanternhold planted street edges",
+            "pass": "shadow-0",
+            "calls": 6,
+            "triangles": 4708
+          },
+          {
+            "family": "Lanternhold:Votive Market",
+            "pass": "shadow-0",
+            "calls": 10,
+            "triangles": 4172
+          }
+        ],
+        "firstGameplayGeometryState": null,
+        "allGameplayGeometryStatesQuiescent": false
+      },
+      "party-submission-frames.json": {
+        "frames": 12,
+        "quality": "high",
+        "zoom": 15,
+        "allCallsAndTrianglesAccountedFor": true,
+        "hooksRestored": true,
+        "calls": [
+          310,
+          310,
+          310,
+          310,
+          310,
+          310,
+          310,
+          310,
+          310,
+          310,
+          310,
+          310
+        ],
+        "triangles": [
+          171907,
+          171907,
+          171907,
+          171907,
+          171907,
+          171907,
+          171907,
+          171907,
+          171907,
+          171907,
+          171907,
+          171907
+        ],
+        "activeEntities": [
+          34,
+          34,
+          34,
+          34,
+          34,
+          34,
+          34,
+          34,
+          34,
+          34,
+          34,
+          34
+        ],
+        "firstFrameContributors": [
+          {
+            "family": "Equipped Wizard",
+            "pass": "color",
+            "calls": 26,
+            "triangles": 17491
+          },
+          {
+            "family": "Gloamwood heath and fern beds",
+            "pass": "color",
+            "calls": 6,
+            "triangles": 17205
+          },
+          {
+            "family": "Equipped Wizard",
+            "pass": "shadow-0",
+            "calls": 21,
+            "triangles": 17157
+          },
+          {
+            "family": "Equipped Cleric",
+            "pass": "color",
+            "calls": 25,
+            "triangles": 16739
+          },
+          {
+            "family": "Equipped Fighter",
+            "pass": "color",
+            "calls": 22,
+            "triangles": 16710
+          },
+          {
+            "family": "Equipped Fighter",
+            "pass": "shadow-0",
+            "calls": 20,
+            "triangles": 16506
+          },
+          {
+            "family": "Equipped Cleric",
+            "pass": "shadow-0",
+            "calls": 21,
+            "triangles": 16407
+          },
+          {
+            "family": "Equipped Rogue",
+            "pass": "color",
+            "calls": 22,
+            "triangles": 15160
+          },
+          {
+            "family": "Equipped Rogue",
+            "pass": "shadow-0",
+            "calls": 18,
+            "triangles": 14828
+          },
+          {
+            "family": "ActorInstanceMultiDraw",
+            "pass": "shadow-0",
+            "calls": 6,
+            "triangles": 7632
+          },
+          {
+            "family": "OpaqueActorInstances",
+            "pass": "shadow-0",
+            "calls": 39,
+            "triangles": 3610
+          },
+          {
+            "family": "foliage:earth:grave_pine",
+            "pass": "shadow-0",
+            "calls": 5,
+            "triangles": 2938
+          }
+        ],
+        "firstGameplayGeometryState": null,
+        "allGameplayGeometryStatesQuiescent": false
+      }
+    },
+    "low-startup-census": {
+      "terminal": {
+        "source": "f8e994d058adeafa8a6e2057604b2b0fb12953ce",
+        "quality": "low",
+        "exitCode": 0,
+        "startedUnix": 1791672196.7890851,
+        "finishedUnix": 1791672232.772334
+      },
+      "native": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "maxRetry": 0,
+      "serverMarkers": {
+        "WARNING: DATA RACE": 0,
+        "panic:": 0,
+        "fatal error:": 0,
+        "Worker panic:": 0,
+        "Recovered from panic in Update:": 0
+      },
+      "finalFourClassPartyAndGoRaceSavesPassed": true,
+      "normalPartyProfile": {
+        "frames": 180,
+        "drawCallsMedian": 150,
+        "trianglesMedian": 78609,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "activeEntitiesMin": 33,
+        "activeEntitiesMax": 35
+      },
+      "fixedInitialTownProfile": {
+        "frames": 180,
+        "drawCallsMedian": 172,
+        "trianglesMedian": 103110,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.8,
+        "activeEntitiesMin": 164,
+        "activeEntitiesMax": 164
+      },
+      "town-submission-frames.json": {
+        "frames": 12,
+        "quality": "low",
+        "zoom": 15,
+        "allCallsAndTrianglesAccountedFor": true,
+        "hooksRestored": true,
+        "calls": [
+          172,
+          172,
+          172,
+          172,
+          172,
+          172,
+          172,
+          172,
+          172,
+          172,
+          172,
+          172
+        ],
+        "triangles": [
+          103110,
+          103110,
+          103110,
+          103110,
+          103110,
+          103110,
+          103110,
+          103110,
+          103110,
+          103110,
+          103110,
+          103110
+        ],
+        "activeEntities": [
+          164,
+          164,
+          164,
+          164,
+          164,
+          164,
+          164,
+          164,
+          164,
+          164,
+          164,
+          164
+        ],
+        "firstFrameContributors": [
+          {
+            "family": "ArchmageIlyra",
+            "pass": "color",
+            "calls": 25,
+            "triangles": 31289
+          },
+          {
+            "family": "Lanternhold:Pilgrim Vigil Field",
+            "pass": "color",
+            "calls": 9,
+            "triangles": 19740
+          },
+          {
+            "family": "Equipped Fighter",
+            "pass": "color",
+            "calls": 23,
+            "triangles": 15219
+          },
+          {
+            "family": "lanternhold-casino-shell",
+            "pass": "color",
+            "calls": 11,
+            "triangles": 7308
+          },
+          {
+            "family": "Lanternhold:The Gilded Compact",
+            "pass": "color",
+            "calls": 9,
+            "triangles": 6356
+          },
+          {
+            "family": "Lanternhold:Ashen Smithy",
+            "pass": "color",
+            "calls": 9,
+            "triangles": 4756
+          },
+          {
+            "family": "ActorInstanceMultiDraw",
+            "pass": "color",
+            "calls": 4,
+            "triangles": 4469
+          },
+          {
+            "family": "Lanternhold:Votive Market",
+            "pass": "color",
+            "calls": 9,
+            "triangles": 4164
+          },
+          {
+            "family": "FourfoldResonancePlaza",
+            "pass": "color",
+            "calls": 2,
+            "triangles": 2840
+          },
+          {
+            "family": "Earth authored paths",
+            "pass": "color",
+            "calls": 4,
+            "triangles": 2183
+          },
+          {
+            "family": "OpaqueActorInstances",
+            "pass": "color",
+            "calls": 19,
+            "triangles": 1184
+          },
+          {
+            "family": "Lanternhold planted street edges",
+            "pass": "color",
+            "calls": 6,
+            "triangles": 1142
+          }
+        ],
+        "firstGameplayGeometryState": {
+          "enabled": true,
+          "reduced": true,
+          "entries": 18,
+          "lastSwaps": 18,
+          "pending": 0,
+          "stats": {
+            "requested": 59,
+            "installed": 19,
+            "stale": 2,
+            "fallback": 1,
+            "failed": 0,
+            "cacheHits": 1,
+            "rejected": 0,
+            "maxCopiedBytes": 2920472,
+            "workerCacheBytes": 289356,
+            "workerCacheEntries": 21
+          }
+        },
+        "allGameplayGeometryStatesQuiescent": true
+      },
+      "party-submission-frames.json": {
+        "frames": 12,
+        "quality": "low",
+        "zoom": 15,
+        "allCallsAndTrianglesAccountedFor": true,
+        "hooksRestored": true,
+        "calls": [
+          150,
+          150,
+          150,
+          150,
+          150,
+          150,
+          150,
+          150,
+          150,
+          150,
+          150,
+          150
+        ],
+        "triangles": [
+          78609,
+          78609,
+          78609,
+          78609,
+          78609,
+          78609,
+          78609,
+          78609,
+          78609,
+          78609,
+          78609,
+          78609
+        ],
+        "activeEntities": [
+          33,
+          33,
+          33,
+          33,
+          33,
+          33,
+          33,
+          33,
+          33,
+          33,
+          33,
+          33
+        ],
+        "firstFrameContributors": [
+          {
+            "family": "Equipped Wizard",
+            "pass": "color",
+            "calls": 26,
+            "triangles": 15930
+          },
+          {
+            "family": "Equipped Fighter",
+            "pass": "color",
+            "calls": 22,
+            "triangles": 15217
+          },
+          {
+            "family": "Equipped Cleric",
+            "pass": "color",
+            "calls": 26,
+            "triangles": 14971
+          },
+          {
+            "family": "Equipped Rogue",
+            "pass": "color",
+            "calls": 23,
+            "triangles": 14051
+          },
+          {
+            "family": "Gloamwood heath and fern beds",
+            "pass": "color",
+            "calls": 5,
+            "triangles": 8205
+          },
+          {
+            "family": "ActorInstanceMultiDraw",
+            "pass": "color",
+            "calls": 3,
+            "triangles": 4450
+          },
+          {
+            "family": "OpaqueActorInstances",
+            "pass": "color",
+            "calls": 14,
+            "triangles": 1925
+          },
+          {
+            "family": "foliage:earth:grave_pine",
+            "pass": "color",
+            "calls": 4,
+            "triangles": 1258
+          },
+          {
+            "family": "Canonical terrain tiles",
+            "pass": "color",
+            "calls": 6,
+            "triangles": 768
+          },
+          {
+            "family": "Earth exposed rock shelves",
+            "pass": "color",
+            "calls": 1,
+            "triangles": 618
+          },
+          {
+            "family": "Earth authored paths",
+            "pass": "color",
+            "calls": 2,
+            "triangles": 574
+          },
+          {
+            "family": "EffectGroup",
+            "pass": "color",
+            "calls": 4,
+            "triangles": 496
+          }
+        ],
+        "firstGameplayGeometryState": {
+          "enabled": true,
+          "reduced": true,
+          "entries": 71,
+          "lastSwaps": 71,
+          "pending": 0,
+          "stats": {
+            "requested": 294,
+            "installed": 90,
+            "stale": 5,
+            "fallback": 6,
+            "failed": 0,
+            "cacheHits": 27,
+            "rejected": 0,
+            "maxCopiedBytes": 2920472,
+            "workerCacheBytes": 1103100,
+            "workerCacheEntries": 72
+          }
+        },
+        "allGameplayGeometryStatesQuiescent": true
+      }
+    }
+  }
+}

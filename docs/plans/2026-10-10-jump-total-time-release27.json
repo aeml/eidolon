@@ -1,6 +1,6 @@
 {
-  "recordedUTC": "2026-10-10T15:08:27.994972+00:00",
-  "status": "qualified local cumulative corrective milestone; deployment and unchanged required gate pending",
+  "recordedUTC": "2026-10-10T16:11:00.339483+00:00",
+  "status": "deployed; exact assets/identities/database, public total jump and required CI/live gates accepted",
   "version": "Alpha 1.79.27",
   "publicPredecessor": "77859697a71329facd0584a95167c80eac392398",
   "ownerRequest": "Approximately1.5seconds TOTAL click-to-landing jump time.",
@@ -46,8 +46,29 @@
     "versionChecks": 386,
     "evidence": "/home/aeml/.local/share/eidolon-earned-room-credit-checks-20261010",
     "inventorySHA256": "857302c04255478ce1c32c2145dffed4be317639d9d3a927a1d606c022d4bdc7",
-    "limits": "Private room proof selects post-award host reads without changing client loop or FIFO messages. Economy/save runtime unchanged. Required production gates pending."
+    "limits": "Private controlled room and preceding-credit evidence remains scoped; actual public27 persistent-character QA now passed retry0. Economy/save runtime unchanged."
   },
   "scope": "Only jump flight cap runtime changes. No raised/body/geometry/shadow pilots, budget waivers, manual CI reruns, access changes or account wipes. Full original1.11\u20131.99 goal, failed24hsoak, art/device/owner/F1\u2013F5/beta/launch/handoff stay open.",
-  "goalOriginalPrefixSHA256": "783256a0f1b53608906612a5900e3c2e73d9d3c22e9cf893ea4b08c4bde949a7"
+  "goalOriginalPrefixSHA256": "783256a0f1b53608906612a5900e3c2e73d9d3c22e9cf893ea4b08c4bde949a7",
+  "commit": "a9d6fc9bab6c7835bce621f53ecde7f381f23137",
+  "run": 38064138468,
+  "attempt": 1,
+  "originalCandidate": {
+    "commit": "392c4a7993118a87f51342cb1881a22055ab405b",
+    "run": 38062443230,
+    "conclusion": "failure",
+    "deployed": false,
+    "cause": "Missed published-bundle timing1500ms floor contradicted intended1.3s flight; actual1393.7/1425.2ms and configured retry1447.1/1339.9ms, endpoint errors0.",
+    "evidence": "/home/aeml/.local/share/eidolon-release27-checks-20261010",
+    "inventorySHA256": "81f550f3a39598f0b92929f75ddb50baf751f5c929213a56a056824fc515a82e"
+  },
+  "correctionReceipt": "docs/plans/2026-10-10-release27-published-timing-correction.json",
+  "deployed": true,
+  "publicJumpTotalMs": 1429.7,
+  "publicVerification": "docs/plans/2026-10-10-public27-jump-verification.json",
+  "requiredCIPassed": true,
+  "releaseGateAccepted": true,
+  "ciStatus": "completed",
+  "ciConclusion": "success",
+  "terminalVerification": "docs/plans/2026-10-10-public27-terminal-verification.json"
 }

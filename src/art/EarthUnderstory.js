@@ -5,6 +5,7 @@ import { createWoodlandUnderstoryGeometry } from './WoodlandUnderstoryGeometry.j
 import { createWoodlandWindMaterial, WOODLAND_WIND_REACH } from './WoodlandWindMaterial.js';
 import { computeFoliageCellBounds } from './FoliageRenderBatches.js';
 import { STARTER_ROAD_CLEARINGS, LANTERNHOLD_ROAD_CART } from '../data/lanternholdApproach.js';
+import { createSpatialUnderstoryBatches } from './SpatialUnderstoryBatches.js';
 
 // First playable art reference: north grove route and east dungeon approach.
 // Low vegetation only: no new blockers, server footprints or reward sources.
@@ -41,10 +42,22 @@ export function isEarthUnderstoryClear(x, z, radius = 2.2) {
 // its own off-centre focus/density; invalid destinations retain their anchor.
 // Source anchors still own quality selection, so Low remains a High subset.
 export function composeEarthUnderstoryPlacement(x, z) {
-    const cx = Math.floor(x / 9), cz = Math.floor(z / 9);
-    const focusX = cx * 9 + 2.5 + random(cx, cz, 71) * 4;
-    const focusZ = cz * 9 + 2.5 + random(cx, cz, 72) * 4;
-    const pull = .30 + random(cx, cz, 73) * .28;
+    const cell = 9, cx = Math.floor(x / cell), cz = Math.floor(z / cell);
+    let focusX = x, focusZ = z, nearest = Infinity, pull = 0;
+    // A plant can belong to a neighbouring jittered stand. Fixed ownership of
+    // each square used to align gaps into a visible lattice at gameplay zoom.
+    // Every original anchor survives; this only redistributes its growth.
+    for (let ox = -1; ox <= 1; ox++) for (let oz = -1; oz <= 1; oz++) {
+        const ix = cx + ox, iz = cz + oz;
+        const fx = (ix + .1 + random(ix, iz, 71) * .8) * cell;
+        const fz = (iz + .1 + random(ix, iz, 72) * .8) * cell;
+        const distance = Math.hypot(x - fx, z - fz);
+        if (distance < nearest) {
+            nearest = distance; focusX = fx; focusZ = fz;
+            pull = .48 + random(ix, iz, 73) * .18;
+        }
+    }
+    pull = Math.min(pull, 5.2 / Math.max(nearest, .000001));
     const px = x + (focusX - x) * pull, pz = z + (focusZ - z) * pull;
     if (sampleEarthMeadow(px, pz) < .32 || !isEarthUnderstoryClear(px, pz)) return { x, z };
     return { x: px, z: pz };
@@ -80,14 +93,19 @@ export function earthUnderstoryScale(plant) {
         plant.scale * (.74 + random(x, z, 82) * .26)];
 }
 
-export function createEarthUnderstory({ quality = 'high', terrainElevation = null } = {}) {
+export function createEarthUnderstory({ quality = 'high', terrainElevation = null, spatialBatches = false } = {}) {
     const root = new THREE.Group();
     root.name = 'Gloamwood heath and fern beds';
     root.userData.earthUnderstory = true;
     const plants = createEarthUnderstoryPlacements(quality);
     root.userData.plantCount = plants.length;
-    const geometries = ['bracken', 'sedge'].map(createWoodlandUnderstoryGeometry);
+    const geometries = ['bracken', 'sedge'].map(kind => createWoodlandUnderstoryGeometry(kind, { quality }));
     const material = createWoodlandWindMaterial();
+    if (spatialBatches) {
+        root.add(...createSpatialUnderstoryBatches({ plants, geometries, material, terrainElevation,
+            scaleForPlant: earthUnderstoryScale, tintForPlant: earthUnderstoryTint }));
+        return root;
+    }
     const cells = new Map();
     // High's dense plants need tighter submission cells at the camera edge.
     // Change batching only: retain every transform, blade and full wind bound.

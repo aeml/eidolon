@@ -27,8 +27,10 @@ function smoothRibbonNormals(geometry, ranges) {
 // Low silhouettes that read as ground-cover masses at gameplay distance.
 // Opaque folded leaves avoid alpha-card sorting and overdraw; the world uses
 // just two shared instanced geometries, not a mesh/material for every blade.
-export function createWoodlandUnderstoryGeometry(kind) {
+export function createWoodlandUnderstoryGeometry(kind, { quality = 'high' } = {}) {
     if (!['bracken', 'sedge'].includes(kind)) throw new Error(`Unknown woodland cover: ${kind}`);
+    if (!['high', 'low'].includes(quality)) throw new Error(`Unknown woodland quality: ${quality}`);
+    const sections = quality === 'low' ? 2 : 3;
     const positions = [], colors = [], ribbons = [];
     let seed = kind === 'bracken' ? 8927 : 3149;
     const random = () => {
@@ -49,14 +51,20 @@ export function createWoodlandUnderstoryGeometry(kind) {
     for (let blade = 0; blade < count; blade++) {
         const angle = blade * 2.39996323 + random() * .5;
         const dx = Math.cos(angle), dz = Math.sin(angle), sx = -dz, sz = dx;
-        const height = .38 + random() * .34;
-        const reach = kind === 'bracken' ? .95 + random() * .37 : .45 + random() * .55;
-        const originRadius = kind === 'bracken' ? .07 : Math.sqrt(random()) * .43;
+        const height = kind === 'bracken' ? .38 + random() * .34 : .20 + random() * .24;
+        const reach = kind === 'bracken' ? .95 + random() * .37 : .68 + random() * .32;
+        const originRadius = kind === 'bracken' ? .07 : Math.sqrt(random()) * .30;
         const originAngle = random() * Math.PI * 2;
         const ox = Math.cos(originAngle) * originRadius, oz = Math.sin(originAngle) * originRadius;
-        const curve = t => [ox + dx * reach * t,
-            Math.sin(t * Math.PI * (kind === 'sedge' ? .96 : .86)) * height, oz + dz * reach * t];
-        // Three bent sections retain the silhouette at gameplay scale.
+        // Sedge spreads into low arching fans. The old tall, short leaves
+        // read as repeated corn-like tufts, disconnected from the ground bed.
+        // Side curvature breaks radial spokes without another leaf or mesh.
+        const bend = kind === 'sedge' ? Math.sin(blade * 1.91) * .18 : 0;
+        const curve = t => [ox + dx * reach * t + sx * bend * Math.sin(Math.PI * t),
+            Math.sin(t * Math.PI * (kind === 'sedge' ? .96 : .86)) * height,
+            oz + dz * reach * t + sz * bend * Math.sin(Math.PI * t)];
+        // Low keeps every leaf, root, tip and fern leaflet, with one fewer
+        // interior ribbon subdivision. High's authored recipe stays intact.
         const tone = .85 + random() * .25;
         // Woodland sedge has a narrow rooted base, a broad arching leaf and
         // a hanging tip, not sixteen identical thin upright grass strips.
@@ -70,8 +78,8 @@ export function createWoodlandUnderstoryGeometry(kind) {
         const edge = (point, t, signedWidth) => offset(point, sx, sz, signedWidth,
             kind === 'sedge' ? signedWidth * Math.sin(t * Math.PI) * Math.sin(blade * 1.7 + t * 2.2) * .7 : 0);
         const ribbonStart = positions.length / 3;
-        for (let segment = 0; segment < 3; segment++) {
-            const t = segment / 3, next = (segment + 1) / 3;
+        for (let segment = 0; segment < sections; segment++) {
+            const t = segment / sections, next = (segment + 1) / sections;
             const a = curve(t), b = curve(next);
             const wa = halfWidth(t), wb = halfWidth(next);
             triangle(edge(a, t, -wa), edge(a, t, wa), edge(b, next, -wb), tone);

@@ -18,7 +18,13 @@ function fixture() {
 test('verified batching is enabled by default and cannot be reactivated after retirement', () => {
     const render = new RenderSystem(false);
     expect(render.actorInstances).not.toBeNull(); expect(render.actorInstances.enabled).toBe(true);
+    const shadow = render.actorInstances.shadowFilter;
+    const multiDraw = render.actorInstances.multiDraw;
+    expect(multiDraw).not.toBeNull(); expect(multiDraw.enabled).toBe(true); expect(multiDraw.perInstanceFrustum).toBe(true);
+    expect(shadow).not.toBeNull(); expect(shadow.enabled).toBe(true);
     render.dispose();
+    expect(multiDraw.disposed).toBe(true); expect(multiDraw.entries.size).toBe(0); expect(multiDraw.group.parent).toBeNull();
+    expect(shadow.disposed).toBe(true); expect(shadow.roots.size).toBe(0); expect(shadow.omitted).toHaveLength(0);
     render.setActorInstancesEnabled(true); expect(render.actorInstances).toBeNull();
 });
 
@@ -72,4 +78,28 @@ test('disabling removes only owned hooks and streaming listeners', () => {
         f.roots[1].removeFromParent(); f.render.add(f.roots[1]); expect(helper.roots.size).toBe(0);
         f.roots.forEach(root => expect(root.children[0].visible).toBe(true));
     } finally { f.render.dispose(); }
+});
+
+test('automatic multi-draw survives scene retirement and returning actor membership without retaining GPU copies', () => {
+    const f = fixture(), other = new THREE.SphereGeometry(1, 6, 4);
+    f.geometry.clearGroups();
+    for (const root of f.roots) root.add(new THREE.Mesh(other, f.material));
+    const renderer = { extensions: { has: () => true }, shadowMap: { enabled: false } };
+    const begin = () => { f.render.scene.updateMatrixWorld(true); f.render.actorInstances.beginFrame(renderer, f.render.camera); };
+    const geometry = jest.spyOn(f.geometry, 'dispose'), sphere = jest.spyOn(other, 'dispose'), material = jest.spyOn(f.material, 'dispose');
+    try {
+        begin(); const owner = f.render.actorInstances.multiDraw;
+        expect(owner.entries.size).toBe(1);
+        const mesh = [...owner.entries.values()][0].mesh;
+        const copied = jest.spyOn(mesh.geometry, 'dispose'), matrices = jest.spyOn(mesh._matricesTexture, 'dispose'), indirect = jest.spyOn(mesh._indirectTexture, 'dispose');
+        f.render.clearInstanceScene();
+        expect(owner.entries.size).toBe(0); expect(owner.hidden).toHaveLength(0);
+        expect(copied).toHaveBeenCalledTimes(1); expect(matrices).toHaveBeenCalledTimes(1); expect(indirect).toHaveBeenCalledTimes(1);
+        expect(geometry).not.toHaveBeenCalled(); expect(sphere).not.toHaveBeenCalled(); expect(material).not.toHaveBeenCalled();
+        for (const root of f.roots) f.render.add(root);
+        begin(); expect(owner.entries.size).toBe(1);
+        f.render.actorInstances.endFrame();
+        for (const root of f.roots) root.traverse(part => expect(part.visible).toBe(true));
+        expect(owner.group.visible).toBe(false);
+    } finally { f.render.dispose(); jest.restoreAllMocks(); }
 });

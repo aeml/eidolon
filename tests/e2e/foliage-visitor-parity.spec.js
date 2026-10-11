@@ -4,13 +4,14 @@ import { collectBrowserFailures } from './helpers.js';
 
 test('direct foliage visitor retains exact previous color and shadow pixels across qualities and realms', async ({ page, baseURL }, testInfo) => {
     test.skip(process.env.EIDOLON_E2E_FOLIAGE_VISITOR_COMPARE !== '1', 'Explicit private comparison requires the recorded predecessor source');
-    const previous = execFileSync('git', ['show', 'd04aa7c6:src/core/FoliageShadowInfluence.js'], { encoding: 'utf8' });
+    const restorationComparison = process.env.EIDOLON_E2E_FOLIAGE_RESTORE_COMPARE === '1';
+    const previous = execFileSync('git', ['show', `${restorationComparison ? '5d0ccb54' : 'd04aa7c6'}:src/core/FoliageShadowInfluence.js`], { encoding: 'utf8' });
     await page.route('**/src/core/FoliageShadowInfluenceReference.js', route => route.fulfill({ body: previous, contentType: 'text/javascript' }));
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     const failures = collectBrowserFailures(page, baseURL);
     await page.setViewportSize({ width: 1100, height: 844 });
     await page.goto('/', { waitUntil: 'networkidle' });
-    const result = await page.evaluate(async () => {
+    const result = await page.evaluate(async restorationComparison => {
         const THREE = await import('three');
         const { RenderSystem } = await import('/src/core/RenderSystem.js');
         const { WorldGenerator } = await import('/src/world/WorldGenerator.js');
@@ -30,7 +31,7 @@ test('direct foliage visitor retains exact previous color and shadow pixels acro
         }
         const copy = document.createElement('canvas'); copy.width = render.renderer.domElement.width; copy.height = render.renderer.domElement.height;
         const ctx = copy.getContext('2d', { willReadFrequently: true });
-        const reports = [], now = performance.now;
+        const reports = [], now = performance.now.bind(performance);
         // Frozen shader time, identical scene/camera/materials/geometry. Only
         // traversal changes; no render deadlines or image tolerances weakened.
         performance.now = () => 10_000;
@@ -53,6 +54,22 @@ test('direct foliage visitor retains exact previous color and shadow pixels acro
                     };
                     capture(reference); capture(candidate);
                     const old = capture(reference), current = capture(candidate);
+                    const timings = restorationComparison ? { previous: [], candidate: [] } : null;
+                    if (timings) {
+                        // Same frozen scene/flags/camera/bounds: alternate the
+                        // controllers after warmup and time their CPU work only.
+                        // No renderer/GPU/frame-rate improvement is inferred.
+                        const measure = controller => {
+                            const start = now();
+                            for (let i = 0; i < 30; i++) {
+                                controller.beginFrame(render.scene, render.camera, render.keyLight);
+                                controller.endFrame();
+                            }
+                            return (now() - start) / 30;
+                        };
+                        for (let i = 0; i < 6; i++) for (const key of i % 2 ? ['candidate', 'previous'] : ['previous', 'candidate'])
+                            timings[key].push(measure(key === 'candidate' ? candidate : reference));
+                    }
                     let changed = 0, maximum = 0;
                     for (let i = 0; i < old.pixels.length; i++) {
                         const delta = Math.abs(old.pixels[i] - current.pixels[i]);
@@ -60,7 +77,7 @@ test('direct foliage visitor retains exact previous color and shadow pixels acro
                     }
                     reports.push({ quality, realm, x, z, changed, maximum, previousCalls: old.calls,
                         calls: current.calls, previousTriangles: old.triangles, triangles: current.triangles,
-                        previousVisits: old.visits, visits: current.visits });
+                        previousVisits: old.visits, visits: current.visits, ...(timings ? { controllerCpuMs: timings } : {}) });
                 }
             }
         } finally {
@@ -68,7 +85,7 @@ test('direct foliage visitor retains exact previous color and shadow pixels acro
             reference.dispose(); render.dispose();
         }
         return reports;
-    });
+    }, restorationComparison);
     await testInfo.attach('previous-foliage-visitor-pixel-comparison', { body: JSON.stringify(result, null, 2), contentType: 'application/json' });
     console.log('[foliage-visitor-parity]', JSON.stringify(result));
     for (const sample of result) {
@@ -76,7 +93,8 @@ test('direct foliage visitor retains exact previous color and shadow pixels acro
         expect(sample.changed).toBe(0);
         expect(sample.calls).toBe(sample.previousCalls);
         expect(sample.triangles).toBe(sample.previousTriangles);
-        expect(sample.visits).toBeLessThan(sample.previousVisits);
+        if (restorationComparison) expect(sample.visits).toBe(sample.previousVisits);
+        else expect(sample.visits).toBeLessThan(sample.previousVisits);
     }
     expect(failures, failures.join('\n')).toEqual([]);
 });

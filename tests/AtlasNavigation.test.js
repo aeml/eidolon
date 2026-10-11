@@ -8,6 +8,19 @@ import { getPublicEventLocations, publicEventTime } from '../src/ui/PublicEventD
 
 const engine = () => ({ player: { id: 'me', level: 30, position: { x: 0, z: 200 } }, currentInstanceId: '', currentInstanceType: '' });
 
+test('terrain legend explains actual Earth relief only in a raised overworld, never in flat or instance maps', () => {
+    document.body.innerHTML = '<div id="map"><canvas></canvas></div>';
+    const ge = engine(), map = { gameEngine: ge, container: document.getElementById('map'), canvas: document.querySelector('canvas') };
+    const navigation = new AtlasNavigation(map), legend = navigation.root.querySelector('[data-atlas-terrain-legend]');
+    expect(legend.hidden).toBe(true);
+    map.cartography = { elevation: {} }; navigation.refresh();
+    expect(legend.hidden).toBe(false); expect(legend.textContent).toContain('3m elevation intervals');
+    ge.currentInstanceId = 'casino-shared'; ge.currentInstanceType = 'casino'; navigation.refresh();
+    expect(legend.hidden).toBe(true);
+    ge.currentInstanceId = ''; ge.currentInstanceType = 'overworld'; navigation.refresh();
+    expect(legend.hidden).toBe(false);
+});
+
 test('atlas publishes authoritative event windows with objectives and stable occurrence waypoints', () => {
     const ge = engine();
     const current = { id: 'disturbance-1', phase: 'defending', site: { title: 'Root ward', realm: 'earth', x: -750, z: 200, level: 35, objective: 'Hold the center.', lore: '<b>Old road</b>' },

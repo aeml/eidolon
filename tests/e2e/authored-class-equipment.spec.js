@@ -1,8 +1,28 @@
 import { expect, test } from '@playwright/test';
+import { writeFile } from 'node:fs/promises';
+import { installWearableAttributePilot } from './wearable-attribute-pilot.js';
+import { installBodyLodPilot, captureBodyLodReview } from './body-lod-pilot.js';
 import { collectBrowserFailures } from './helpers.js';
+import { captureShadowGeometryPilot } from './shadow-geometry-pilot.js';
+import { captureGameplayColorPilot, captureGameplayColorResources } from './gameplay-color-lod-pilot.js';
+import { captureGameplayBodyPilot } from './gameplay-body-lod-pilot.js';
+import { captureGameplayGeometryLifecycle } from './gameplay-geometry-lifecycle.js';
+import { captureGameplayGeometryDelivery } from './gameplay-geometry-delivery.js';
+import { captureImpactAnimationContinuity } from './impact-animation-continuity.js';
+
+// Explicit routed-asset comparisons need both controls to bypass the service
+// worker, which would otherwise serve reviewed files outside page.route.
+test.use({ serviceWorkers: process.env.EIDOLON_E2E_WEARABLE_ATTRIBUTE_COMPARE === '1' ||
+    process.env.EIDOLON_E2E_WEARABLE_ATTRIBUTE_PILOT || process.env.EIDOLON_E2E_BODY_LOD_COMPARE === '1' ||
+    process.env.EIDOLON_E2E_BODY_LOD_PILOT ? 'block' : 'allow' });
 
 test('all delivered classes use fitted gear, independent rigs and alternating Rogue strikes', async ({ page, baseURL }, testInfo) => {
+    if (process.env.EIDOLON_E2E_SHADOW_GEOMETRY_PILOT === '1' || process.env.EIDOLON_E2E_GAMEPLAY_COLOR_PILOT === '1') test.setTimeout(180_000);
+    if (process.env.EIDOLON_E2E_GAMEPLAY_BODY_PILOT === '1') test.setTimeout(360_000);
+    if (process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_LIFECYCLE === '1') test.setTimeout(240_000);
     const failures = collectBrowserFailures(page, baseURL);
+    const attributePilot = await installWearableAttributePilot(page);
+    const bodyPilot = await installBodyLodPilot(page);
     const surfaceReference = process.env.EIDOLON_E2E_AUTHORED_SURFACES_REFERENCE === '1';
     if (surfaceReference) {
         // Explicit isolated A/B reference: identical gear/poses/batching but
@@ -16,7 +36,8 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
     const evidence = await page.evaluate(async () => {
         const THREE = await import('three');
         const { MeshFactory } = await import('/src/utils/MeshFactory.js');
-        const { Actor } = await import('/src/entities/Actor.js');
+        const actorClasses = Object.fromEntries(await Promise.all(['Fighter', 'Rogue', 'Wizard', 'Cleric'].map(async type =>
+            [type, (await import(`/src/entities/${type}.js`))[type]])));
         document.getElementById('start-screen').style.display = 'none';
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(1440, 900); renderer.setPixelRatio(1);
@@ -42,7 +63,7 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
         for (const [i, type] of classes.entries()) for (const quality of ['high', 'low']) {
             const root = await MeshFactory.createMeshForType(type, { quality });
             if (root.userData.authoredClass !== type) throw new Error(`Authored ${type} failed (${quality})`);
-            const actor = new Actor(`asset-${type}-${quality}`, {}); actor.meshType = type; actor.setMesh(root);
+            const actor = new actorClasses[type](`asset-${type}-${quality}`); actor.setMesh(root);
             root.position.set((i - 1.5) * 5.3, 0, quality === 'high' ? 0 : -8); scene.add(root);
             const gear = Object.fromEntries(Object.entries({ ...outfits[type], ring1: 'Ruby Ring', ring2: 'Silver Ring', neck: 'Necklace', trinket1: 'Amulet of Power', trinket2: 'Orb of Mana' })
                 .map(([slot, name]) => [slot, { id: `${type}-${quality}-${slot}`, name, baseName: name, type: ['Iron Sword', 'Steel Dagger', 'Wooden Staff', 'Cleric Mace'].includes(name) ? 'WEAPON' : 'ARMOR',
@@ -104,6 +125,58 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
         return { classes: actors.map(({ type, quality, attached, wrongBones, items }) => ({ type, quality, attached, wrongBones, items })), strikes, costs, resources,
             independent: actors.every(({ root }, i) => i % 2 === 0 || root.getObjectByName(`${actors[i].type}_Body`).skeleton.bones[0] !== actors[i - 1].root.getObjectByName(`${actors[i].type}_Body`).skeleton.bones[0]) };
     });
+    if (process.env.EIDOLON_E2E_SHADOW_GEOMETRY_PILOT === '1') await captureShadowGeometryPilot(page, testInfo);
+    if (process.env.EIDOLON_E2E_GAMEPLAY_BODY_PILOT === '1') await captureGameplayBodyPilot(page, testInfo);
+    if (process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_DELIVERY === '1') await captureGameplayGeometryDelivery(page, testInfo);
+    if (process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_LIFECYCLE === '1') await captureGameplayGeometryLifecycle(page, testInfo);
+    if (process.env.EIDOLON_E2E_GAMEPLAY_COLOR_PILOT === '1') {
+        if (process.env.EIDOLON_E2E_GAMEPLAY_COLOR_RESOURCES_ONLY === '1') await captureGameplayColorResources(page, testInfo);
+        else await captureGameplayColorPilot(page, testInfo);
+    }
+    if (process.env.EIDOLON_E2E_EQUIPPED_TRIANGLE_DIAGNOSIS === '1') {
+        const census = await page.evaluate(() => {
+            const { renderer, scene, camera, actors } = window.__classGear;
+            const original = renderer.renderBufferDirect, visibility = actors.map(entry => entry.root.visible);
+            const variants = []; let meshes;
+            renderer.renderBufferDirect = function (camera, scene, geometry, material, object, group) {
+                if (object.isMesh && object !== scene.children.find(child => child.geometry?.type === 'PlaneGeometry')) {
+                    const count = group?.count ?? Math.min(geometry.drawRange.count,
+                        geometry.index?.count ?? geometry.attributes.position.count);
+                    meshes.push({ name: object.name, triangles: count / 3, vertices: geometry.attributes.position.count,
+                        skinned: Boolean(object.isSkinnedMesh), morphTargets: Object.keys(geometry.morphAttributes),
+                        fitted: Boolean(object.userData.authoredEquipment), slots: object.userData.fittedSlots ||
+                            (object.userData.slot ? [object.userData.slot] : []), surfaceBatch: Boolean(material.userData.fittedSurfaceAttributes) });
+                }
+                return original.call(this, camera, scene, geometry, material, object, group);
+            };
+            try {
+                for (const entry of actors) {
+                    for (const other of actors) other.root.visible = other === entry;
+                    meshes = []; renderer.render(scene, camera);
+                    variants.push({ type: entry.type, quality: entry.quality, items: entry.items,
+                        calls: renderer.info.render.calls, trianglesIncludingFloor: renderer.info.render.triangles,
+                        meshes: meshes.sort((a, b) => b.triangles - a.triangles) });
+                }
+            } finally {
+                renderer.renderBufferDirect = original;
+                actors.forEach((entry, index) => { entry.root.visible = visibility[index]; });
+            }
+            const gl = renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
+            return { renderer: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER), variants };
+        });
+        expect(census.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
+        expect(census.variants).toHaveLength(8);
+        for (const variant of census.variants) {
+            expect(variant.trianglesIncludingFloor).toBe(2 + variant.meshes.reduce((sum, mesh) => sum + mesh.triangles, 0));
+        }
+        await writeFile(testInfo.outputPath('equipped-triangle-diagnosis.json'), JSON.stringify({
+            scope: 'Separate untimed native gallery draw census. Eight fully fitted High/Low class outfits, color pass only; actual game shadow/party timing recorded separately. ' +
+                (attributePilot || bodyPilot ? 'Explicit generated geometry substitutions; source hashes and requests recorded separately.' : 'Normal selected runtime geometry.'), ...census
+        }, null, 2));
+        console.log('[diagnostic-equipped-triangles]', JSON.stringify(census.variants.map(({ type, quality, meshes }) => ({
+            type, quality, total: meshes.reduce((sum, mesh) => sum + mesh.triangles, 0), top: meshes.slice(0, 4)
+        }))));
+    }
     expect(evidence.independent).toBe(true);
     await testInfo.attach('equipped-surface-costs', { body: JSON.stringify({ surfaceReference, costs: evidence.costs, resources: evidence.resources }), contentType: 'application/json' });
     console.log(`[equipped surface costs] ${JSON.stringify({ surfaceReference, costs: evidence.costs, resources: evidence.resources })}`);
@@ -202,12 +275,24 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
             actor.syncEquipmentVisuals(gear); await root.userData.equipmentReady;
         }
     });
+    if (process.env.EIDOLON_E2E_BODY_LOD_COMPARE === '1') {
+        const samples = await captureBodyLodReview(page, testInfo);
+        expect(samples).toHaveLength(process.env.EIDOLON_E2E_BODY_MORPH_BASIS_COMPARE === '1' ? 56 : 32);
+        for (const sample of samples) {
+            expect(sample.badVertices).toBe(0);
+            expect(sample.morphNames).toEqual(['Blink_L', 'Blink_R']);
+            expect(sample.morphInfluences).toEqual([sample.blinkLeft, sample.blinkRight]);
+        }
+        await writeFile(testInfo.outputPath('body-lod-review.json'), JSON.stringify(samples, null, 2));
+    }
+    await captureImpactAnimationContinuity(page, testInfo);
     const ownership = await page.evaluate(async () => {
         const { actors, MeshFactory } = window.__classGear;
+        const { fighterRuntimePath } = await import('/src/art/AuthoredFighter.js');
         const first = actors[0], second = actors[1];
         const secondIndex = second.root.getObjectByName('Fighter_Body').geometry.index.count;
         first.actor.syncEquipmentVisuals({}); await first.root.userData.equipmentReady;
-        const ownRestored = first.root.getObjectByName('Fighter_Body').geometry === (await MeshFactory.loadModel('./assets/archetypes/Fighter/fighter-runtime-high.glb')).scene.getObjectByName('Fighter_Body').geometry;
+        const ownRestored = first.root.getObjectByName('Fighter_Body').geometry === (await MeshFactory.loadModel(fighterRuntimePath('high'))).scene.getObjectByName('Fighter_Body').geometry;
         const otherUnchanged = second.root.getObjectByName('Fighter_Body').geometry.index.count === secondIndex;
         first.actor.syncEquipmentVisuals(first.gear); MeshFactory.releaseMesh('Fighter', first.root);
         await first.root.userData.equipmentReady;
@@ -241,5 +326,15 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
         await page.locator('.character-preview-stage canvas').screenshot({ path: testInfo.outputPath(`${type}-equipped-preview.png`) });
     }
     await page.evaluate(() => { window.__classGear.preview.dispose(); window.__classGear.previewHost.remove(); });
+    if (attributePilot) {
+        const substitution = attributePilot.read();
+        expect(substitution.requested.length).toBeGreaterThan(0);
+        await writeFile(testInfo.outputPath('wearable-pilot-substitution.json'), JSON.stringify(substitution, null, 2));
+    }
+    if (bodyPilot) {
+        const substitution = bodyPilot.read();
+        expect(substitution.requested).toHaveLength(8);
+        await writeFile(testInfo.outputPath('body-pilot-substitution.json'), JSON.stringify(substitution, null, 2));
+    }
     expect(failures, failures.join('\n')).toEqual([]);
 });

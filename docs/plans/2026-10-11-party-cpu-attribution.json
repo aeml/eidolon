@@ -1,0 +1,1228 @@
+{
+  "source": "7890349eb4aca35e32d9d17991f54a961dd6148c",
+  "productChangedThisTurn": false,
+  "published": false,
+  "method": "Existing connected-party-observer High scenario, one native hardware renderer and three normal authenticated socket peers; prepared four-class fourteen-slot fixture and actual UI party formation. Existing opt-in three-second CDP CPU sampler runs after the ordinary sixty-warmup/180-frame sample. No new instrumentation or source edits. Go race/save fixture passes; one browser pass and one optional four-browser skip.",
+  "nativeStats": {
+    "total": 2,
+    "expected": 1,
+    "unexpected": 0,
+    "flaky": 0,
+    "skipped": 1,
+    "ok": true
+  },
+  "ordinaryFrame": {
+    "label": "single-renderer-equipped-raised-party-high",
+    "warmupFrames": 60,
+    "activityObserved": false,
+    "observedBone": "Root",
+    "frames": 180,
+    "intervalMethod": "exact-reported-decimal",
+    "restored": true,
+    "visibleFrames": 180,
+    "rawFrameMedianMs": 49.89999999999418,
+    "rawFrameP95Ms": 66.59999999999854,
+    "rawFrameP99Ms": 66.70000000000073,
+    "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+    "viewport": {
+      "width": 1280,
+      "height": 844,
+      "pixelRatio": 1
+    },
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+    "visibility": "visible",
+    "frameMedianMs": 49.9,
+    "frameP95Ms": 66.6,
+    "frameP99Ms": 66.7,
+    "framesOver33ms": 118,
+    "cpuLoopMedianMs": 38.20000001788139,
+    "cpuLoopP95Ms": 49.80000001192093,
+    "drawCallsMedian": 269,
+    "trianglesMedian": 169766,
+    "geometries": 442,
+    "textures": 380,
+    "activeEntities": 30,
+    "activeEntitiesMin": 30,
+    "activeEntitiesMax": 31,
+    "previewFramesDuringSample": 0,
+    "previewGeometries": 0,
+    "previewTextures": 0,
+    "scope": "One actual GPU renderer, three live normal authenticated socket peers; standing/movement snapshot, not peer input or a battle frame-budget certificate.",
+    "maximumCalls": 269,
+    "maximumTriangles": 233828
+  },
+  "budgets": {
+    "highMedianMs": 20,
+    "highP95Ms": 33.4,
+    "highDrawCalls": 350,
+    "highTriangles": 250000
+  },
+  "budgetResult": {
+    "geometryPassed": true,
+    "frameMedianPassed": false,
+    "frameP95Passed": false,
+    "performanceAccepted": false
+  },
+  "cpu": {
+    "scope": "Three-second opt-in CPU function sample with foliage revision/visit counters; probe/profiling overhead excluded from the preceding frame report.",
+    "summary": [
+      {
+        "source": "",
+        "name": "(program)",
+        "line": 0,
+        "samples": 111,
+        "selfMicros": 720772
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "updateMatrixWorld",
+        "line": 14354,
+        "samples": 140,
+        "selfMicros": 189977
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "multiplyMatrices",
+        "line": 11917,
+        "samples": 127,
+        "selfMicros": 182667
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "intersectsObject",
+        "line": 26581,
+        "samples": 93,
+        "selfMicros": 134481
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "projectObject",
+        "line": 16814,
+        "samples": 84,
+        "selfMicros": 110082
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "renderObject",
+        "line": 8914,
+        "samples": 81,
+        "selfMicros": 109021
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "traverseVisible",
+        "line": 14294,
+        "samples": 74,
+        "selfMicros": 102787
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "getProgram",
+        "line": 17132,
+        "samples": 53,
+        "selfMicros": 71185
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "updateMatrix",
+        "line": 14335,
+        "samples": 48,
+        "selfMicros": 60257
+      },
+      {
+        "source": "/src/core/FoliageShadowInfluence.js",
+        "name": "FoliageShadowInfluence.visit",
+        "line": 105,
+        "samples": 42,
+        "selfMicros": 54838
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "getParameters",
+        "line": 7009,
+        "samples": 37,
+        "selfMicros": 47591
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "WebGLRenderer.renderBufferDirect",
+        "line": 16193,
+        "samples": 25,
+        "selfMicros": 42592
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "equals",
+        "line": 5635,
+        "samples": 31,
+        "selfMicros": 41828
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "update",
+        "line": 54151,
+        "samples": 25,
+        "selfMicros": 41039
+      },
+      {
+        "source": "",
+        "name": "bindVertexArray",
+        "line": 0,
+        "samples": 33,
+        "selfMicros": 40231
+      },
+      {
+        "source": "",
+        "name": "texSubImage2D",
+        "line": 0,
+        "samples": 23,
+        "selfMicros": 39024
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "evaluate",
+        "line": 41515,
+        "samples": 29,
+        "selfMicros": 38732
+      },
+      {
+        "source": "",
+        "name": "bindTexture",
+        "line": 0,
+        "samples": 26,
+        "selfMicros": 38106
+      },
+      {
+        "source": "/src/art/ActorInstanceBatches.js",
+        "name": "beginFrame",
+        "line": 118,
+        "samples": 25,
+        "selfMicros": 34919
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "setProgram",
+        "line": 17279,
+        "samples": 26,
+        "selfMicros": 34286
+      },
+      {
+        "source": "",
+        "name": "(idle)",
+        "line": 0,
+        "samples": 14,
+        "selfMicros": 33587
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "applyMatrix4",
+        "line": 10571,
+        "samples": 23,
+        "selfMicros": 29199
+      },
+      {
+        "source": "/src/core/CollisionManager.js",
+        "name": "checkEntityCollision",
+        "line": 170,
+        "samples": 21,
+        "selfMicros": 29006
+      },
+      {
+        "source": "/src/art/ActorInstanceBatches.js",
+        "name": "<anonymous>",
+        "line": 127,
+        "samples": 21,
+        "selfMicros": 26397
+      }
+    ],
+    "callerChains": [
+      {
+        "stack": [
+          {
+            "source": "",
+            "name": "(program)",
+            "line": 0
+          },
+          {
+            "source": "",
+            "name": "(root)",
+            "line": 0
+          }
+        ],
+        "samples": 111,
+        "selfMicros": 720772
+      },
+      {
+        "stack": [
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "updateMatrixWorld",
+            "line": 14354
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "render",
+            "line": 1212
+          },
+          {
+            "source": "",
+            "name": "game.renderSystem.render",
+            "line": 30
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "render",
+            "line": 933
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "loop",
+            "line": 51
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "<anonymous>",
+            "line": 92
+          },
+          {
+            "source": "",
+            "name": "(root)",
+            "line": 0
+          }
+        ],
+        "samples": 139,
+        "selfMicros": 188904
+      },
+      {
+        "stack": [
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "multiplyMatrices",
+            "line": 11917
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "updateMatrixWorld",
+            "line": 14354
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "render",
+            "line": 1212
+          },
+          {
+            "source": "",
+            "name": "game.renderSystem.render",
+            "line": 30
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "render",
+            "line": 933
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "loop",
+            "line": 51
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "<anonymous>",
+            "line": 92
+          },
+          {
+            "source": "",
+            "name": "(root)",
+            "line": 0
+          }
+        ],
+        "samples": 102,
+        "selfMicros": 149174
+      },
+      {
+        "stack": [
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "projectObject",
+            "line": 16814
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "render",
+            "line": 1212
+          },
+          {
+            "source": "",
+            "name": "game.renderSystem.render",
+            "line": 30
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "render",
+            "line": 933
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "loop",
+            "line": 51
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "<anonymous>",
+            "line": 92
+          },
+          {
+            "source": "",
+            "name": "(root)",
+            "line": 0
+          }
+        ],
+        "samples": 84,
+        "selfMicros": 110082
+      },
+      {
+        "stack": [
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "renderObject",
+            "line": 8914
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLShadowMap.render",
+            "line": 8644
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "render",
+            "line": 1212
+          },
+          {
+            "source": "",
+            "name": "game.renderSystem.render",
+            "line": 30
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "render",
+            "line": 933
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "loop",
+            "line": 51
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "<anonymous>",
+            "line": 92
+          },
+          {
+            "source": "",
+            "name": "(root)",
+            "line": 0
+          }
+        ],
+        "samples": 81,
+        "selfMicros": 109021
+      },
+      {
+        "stack": [
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "intersectsObject",
+            "line": 26581
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "projectObject",
+            "line": 16814
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "render",
+            "line": 1212
+          },
+          {
+            "source": "",
+            "name": "game.renderSystem.render",
+            "line": 30
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "render",
+            "line": 933
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "loop",
+            "line": 51
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "<anonymous>",
+            "line": 92
+          },
+          {
+            "source": "",
+            "name": "(root)",
+            "line": 0
+          }
+        ],
+        "samples": 57,
+        "selfMicros": 84538
+      },
+      {
+        "stack": [
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "traverseVisible",
+            "line": 14294
+          },
+          {
+            "source": "/src/art/ActorInstanceView.js",
+            "name": "beginFrame",
+            "line": 20
+          },
+          {
+            "source": "/src/art/ActorShadowInfluence.js",
+            "name": "beginFrame",
+            "line": 87
+          },
+          {
+            "source": "/src/art/ActorInstanceBatches.js",
+            "name": "beginFrame",
+            "line": 118
+          },
+          {
+            "source": "/src/art/ActorInstanceBatches.js",
+            "name": "ActorInstanceBatches.beforeHook",
+            "line": 80
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "render",
+            "line": 1212
+          },
+          {
+            "source": "",
+            "name": "game.renderSystem.render",
+            "line": 30
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "render",
+            "line": 933
+          }
+        ],
+        "samples": 58,
+        "selfMicros": 82322
+      },
+      {
+        "stack": [
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "getProgram",
+            "line": 17132
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "setProgram",
+            "line": 17279
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.renderBufferDirect",
+            "line": 16193
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "renderObject",
+            "line": 17101
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "renderObjects",
+            "line": 17074
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "renderScene",
+            "line": 16928
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "render",
+            "line": 1212
+          },
+          {
+            "source": "",
+            "name": "game.renderSystem.render",
+            "line": 30
+          }
+        ],
+        "samples": 42,
+        "selfMicros": 56503
+      },
+      {
+        "stack": [
+          {
+            "source": "/src/core/FoliageShadowInfluence.js",
+            "name": "FoliageShadowInfluence.visit",
+            "line": 105
+          },
+          {
+            "source": "",
+            "name": "visit",
+            "line": 22
+          },
+          {
+            "source": "/src/core/FoliageShadowInfluence.js",
+            "name": "beginFrame",
+            "line": 175
+          },
+          {
+            "source": "",
+            "name": "begin",
+            "line": 13
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "RenderSystem.scene.onBeforeRender",
+            "line": 151
+          },
+          {
+            "source": "/src/art/ActorInstanceBatches.js",
+            "name": "ActorInstanceBatches.beforeHook",
+            "line": 80
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "render",
+            "line": 1212
+          },
+          {
+            "source": "",
+            "name": "game.renderSystem.render",
+            "line": 30
+          }
+        ],
+        "samples": 42,
+        "selfMicros": 54838
+      },
+      {
+        "stack": [
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "updateMatrix",
+            "line": 14335
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "updateMatrixWorld",
+            "line": 14354
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "render",
+            "line": 1212
+          },
+          {
+            "source": "",
+            "name": "game.renderSystem.render",
+            "line": 30
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "render",
+            "line": 933
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "loop",
+            "line": 51
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "<anonymous>",
+            "line": 92
+          },
+          {
+            "source": "",
+            "name": "(root)",
+            "line": 0
+          }
+        ],
+        "samples": 40,
+        "selfMicros": 48919
+      },
+      {
+        "stack": [
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "equals",
+            "line": 5635
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "equals",
+            "line": 10217
+          },
+          {
+            "source": "/src/core/FoliageShadowInfluence.js",
+            "name": "FoliageShadowInfluence.visit",
+            "line": 105
+          },
+          {
+            "source": "",
+            "name": "visit",
+            "line": 22
+          },
+          {
+            "source": "/src/core/FoliageShadowInfluence.js",
+            "name": "beginFrame",
+            "line": 175
+          },
+          {
+            "source": "",
+            "name": "begin",
+            "line": 13
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "RenderSystem.scene.onBeforeRender",
+            "line": 151
+          },
+          {
+            "source": "/src/art/ActorInstanceBatches.js",
+            "name": "ActorInstanceBatches.beforeHook",
+            "line": 80
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          }
+        ],
+        "samples": 31,
+        "selfMicros": 41828
+      },
+      {
+        "stack": [
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "intersectsObject",
+            "line": 26581
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "renderObject",
+            "line": 8914
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLShadowMap.render",
+            "line": 8644
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "render",
+            "line": 1212
+          },
+          {
+            "source": "",
+            "name": "game.renderSystem.render",
+            "line": 30
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "render",
+            "line": 933
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "loop",
+            "line": 51
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "<anonymous>",
+            "line": 92
+          }
+        ],
+        "samples": 27,
+        "selfMicros": 37090
+      },
+      {
+        "stack": [
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "getParameters",
+            "line": 7009
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "getProgram",
+            "line": 17132
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "setProgram",
+            "line": 17279
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.renderBufferDirect",
+            "line": 16193
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "renderObject",
+            "line": 17101
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "renderObjects",
+            "line": 17074
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "renderScene",
+            "line": 16928
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "render",
+            "line": 1212
+          }
+        ],
+        "samples": 27,
+        "selfMicros": 35668
+      },
+      {
+        "stack": [
+          {
+            "source": "/src/art/ActorInstanceBatches.js",
+            "name": "beginFrame",
+            "line": 118
+          },
+          {
+            "source": "/src/art/ActorInstanceBatches.js",
+            "name": "ActorInstanceBatches.beforeHook",
+            "line": 80
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "render",
+            "line": 1212
+          },
+          {
+            "source": "",
+            "name": "game.renderSystem.render",
+            "line": 30
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "render",
+            "line": 933
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "loop",
+            "line": 51
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "<anonymous>",
+            "line": 92
+          },
+          {
+            "source": "",
+            "name": "(root)",
+            "line": 0
+          }
+        ],
+        "samples": 25,
+        "selfMicros": 34919
+      },
+      {
+        "stack": [
+          {
+            "source": "",
+            "name": "(idle)",
+            "line": 0
+          },
+          {
+            "source": "",
+            "name": "(root)",
+            "line": 0
+          }
+        ],
+        "samples": 14,
+        "selfMicros": 33587
+      },
+      {
+        "stack": [
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "applyMatrix4",
+            "line": 10571
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "intersectsObject",
+            "line": 26581
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "projectObject",
+            "line": 16814
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "render",
+            "line": 1212
+          },
+          {
+            "source": "",
+            "name": "game.renderSystem.render",
+            "line": 30
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "render",
+            "line": 933
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "loop",
+            "line": 51
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "<anonymous>",
+            "line": 92
+          }
+        ],
+        "samples": 21,
+        "selfMicros": 26775
+      }
+    ],
+    "foliage": {
+      "frames": 70,
+      "visits": 167020,
+      "viewChanges": 0,
+      "shadowChanges": 0,
+      "initialRoots": 10
+    }
+  },
+  "hostAtStart": {
+    "recordedUTC": "2026-10-11T02:17:56.122683+00:00",
+    "logicalCPUs": 16,
+    "loadAverage": [
+      21.7646484375,
+      20.4921875,
+      16.77783203125
+    ],
+    "cpuPressure": "some avg10=40.87 avg60=27.11 avg300=24.29 total=51314274466\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memoryPressure": "some avg10=0.18 avg60=0.05 avg300=0.01 total=100548027\nfull avg10=0.18 avg60=0.05 avg300=0.01 total=65010762\n",
+    "scope": "Read-only shared-host load snapshot; no process arguments or unrelated user data. Cannot establish the cause of a game frame-time failure."
+  },
+  "interpretation": "Sampled matrix propagation/composition, scene projection/frustum checks and shadow traversal remain significant costs. updateMatrixWorld contributes189977sample-weighted microseconds; multiplyMatrices182667. The actor live-light traversal caller contributes82322. Foliage still revisits2386cells/frame despite unchanged view/light revisions. These are sampled elapsed attribution with profiler and wrapper overhead, not exclusive hardware CPU time or a causal frame-rate repair.",
+  "decision": "Retain stock world-force propagation and actual live light scanning. Previously rejected ancestor-force skips break manual descendants; light-membership registration adds thousands of listeners without established whole-frame benefit; animated world-box caching had1.06percent hits. Current evidence does not justify selecting them or changing geometry-copy code. Future matrix ownership diagnosis can use the existing EIDOLON_TERRAIN_PARTY_MATRIX_OWNERS opt-in; do not create duplicate instrumentation or repeat unchanged campaigns.",
+  "scopeLimits": "This private source includes unselected camp/singleton/DemonOrc context. It is not a held/public performance qualification. Population30-31 differs from earlier35-36; recorded shared-host load21.76 on16CPUs cannot establish the cause or waive49.9msmedian/66.6msp95 failures. No fresh normal dungeon route, campaign, combat, physical-device or long-soak acceptance. Existing historical failures and original full roadmap gates remain open. Jump/aura/admin fixes already accepted public29; no new public mutation.",
+  "criticalScan": {
+    "remainingTextualSyntheticIdentities": 0,
+    "criticalServerSignatures": {
+      "race": 0,
+      "panic": 0,
+      "fatal": 0,
+      "saveWorker": 0
+    },
+    "binaryPostLoginSyntheticLabelsRetained": true,
+    "rawCDPProfileRetained": false
+  },
+  "trackedSourcePins": 6115,
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-party-cpu-checks-20261011",
+    "inventoryEntries": 22,
+    "files": 23,
+    "inventorySHA256": "1d08fe52a19a63e50c0e9e85fffbb190bd362170cb0a872338d2963f377d0605",
+    "frozen": true
+  }
+}

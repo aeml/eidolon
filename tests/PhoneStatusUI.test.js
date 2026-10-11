@@ -49,9 +49,9 @@ test('timers update keyed rows without replacing focus or scroll content', () =>
 });
 
 test('unchanged frames do not rewrite row text', () => {
-    const textNode = ui.rows.get(buff.id).name.firstChild;
+    const textNode = ui.rows.get(buff.id).title.firstChild;
     ui.update([{ ...buff, remainingSeconds: 24.79 }], true, 'player');
-    expect(ui.rows.get(buff.id).name.firstChild).toBe(textNode);
+    expect(ui.rows.get(buff.id).title.firstChild).toBe(textNode);
 });
 
 test('expired effects disappear while the open reading surface stays available', () => {

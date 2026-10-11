@@ -1237,8 +1237,8 @@ test.describe('deterministic production animation gallery', () => {
                 surfaceTextures: 8,
                 surfaceMaterials: 3,
                 surfaceGeometries: 3,
-                detailGeometries: 9,
-                detailMaterials: 5
+                detailGeometries: entry.dungeonType === 'verdant_bastion_catacombs' ? 17 : 20,
+                detailMaterials: entry.dungeonType === 'verdant_bastion_catacombs' ? 8 : 7
             });
             expect(entry.finite).toBe(true);
         }

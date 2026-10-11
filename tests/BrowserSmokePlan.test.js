@@ -66,7 +66,7 @@ test('the interface family balances whole files across all existing jobs without
 
 test('integrated desktop presentation checks run once in the existing interface stage', () => {
     const stages = [1, 2, 3].flatMap(shard => buildBrowserSmokePlan(manifest, shard));
-    for (const file of ['desktop-combat-hud-layout', 'desktop-item-inspection', 'minimap-service-labels', 'keyboard-settings', 'phone-session-input', 'pvp-feedback', 'authored-fighter-pilot', 'cosmetic-vendor', 'public-event-presentation']) {
+    for (const file of ['desktop-combat-hud-layout', 'desktop-item-inspection', 'minimap-service-labels', 'status-effects-presentation', 'keyboard-settings', 'phone-session-input', 'pvp-feedback', 'authored-fighter-pilot', 'cosmetic-vendor', 'public-event-presentation', 'additive-effects-render']) {
         const owners = stages.filter(stage => stage.files.includes(`tests/e2e/${file}.spec.js`));
         expect(owners.map(stage => stage.name)).toEqual(['interface']);
     }
@@ -143,4 +143,17 @@ test('all planned stages must succeed, and failed launch or signal is never succ
     expect(execute).toHaveBeenCalledTimes(plan.length);
     expect(runBrowserSmokePlan(plan, () => ({ status: null, signal: 'SIGTERM' }))).toBe(1);
     expect(runBrowserSmokePlan(plan, () => ({ error: new Error('spawn failed') }))).toBe(1);
+});
+
+
+test('hardware dungeon reviews move intact to the mandatory native release job', () => {
+    const workflow = readFileSync('.github/workflows/ci.yml', 'utf8');
+    const native = workflow.split('      - name: Run required native dungeon materials and prepared outfits\n')[1].split('\n      - name:')[0];
+    expect(native).not.toContain('if:');
+    expect(native).toContain("EIDOLON_E2E_REQUIRE_NATIVE_GPU: '1'");
+    for (const file of ['dungeon-entry-ward', 'dungeon-floor-material']) {
+        const name = `tests/e2e/${file}.spec.js`;
+        expect(browserSmokeBaselineFiles(manifest)).not.toContain(name);
+        expect(native).toContain(name);
+    }
 });

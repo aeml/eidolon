@@ -1,0 +1,16 @@
+{
+  "recordedUTC": "2026-10-10T19:34:21.809162+00:00",
+  "terminal": {
+    "exitCode": 0,
+    "seconds": 31.014124870300293,
+    "qaSource": "0666350b3de39f3aa0e59cd5468e9c9084ff732a",
+    "runtime": "same deployed public28 admin/database implementation",
+    "database": "owned disposable loopback; unique fixture database; removed",
+    "productionMutation": false
+  },
+  "passed": 1,
+  "skipped": 0,
+  "race": true,
+  "scope": "Actual Mongo implementation used by public28/29; unique owned fixture database. Three real/three test identities, explicit mixed-case roster, literal-dot escaping, exact historical jump shape, normal lookalike names, real/tests/all pagination and complete daily login/session aggregation. No production writes or user data accessed.",
+  "oldFixture": "Original hardcoded27017 fixture stays skipped in previous frozen evidence; this distinct owned fixture now supplies the missing actual database query proof."
+}

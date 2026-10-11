@@ -7,7 +7,9 @@ import { applyActorStealthAppearance, restoreActorStealthAppearance } from '../s
 import { batchHumanoidRenderParts } from '../src/art/HumanoidRenderBatches.js';
 import { MeshFactory } from '../src/utils/MeshFactory.js';
 import { Actor } from '../src/entities/Actor.js';
-import { createProceduralSkeleton } from '../src/art/ProceduralLegacyEnemies.js';
+import { createProceduralTownActor, TOWN_ACTOR_TYPES } from '../src/art/ProceduralTownActors.js';
+import { getHumanoidBatchGeometryCount } from '../src/art/HumanoidRenderBatches.js';
+import { createProceduralInfernoTitan, createProceduralSkeleton } from '../src/art/ProceduralLegacyEnemies.js';
 
 const cases = [
     ['Fighter', createProceduralFighter, 61, 53], ['Rogue', createProceduralRogue, 77, 60],
@@ -225,4 +227,32 @@ test('skeleton batches preserve every animated surface and pooled reset without 
     const other = createProceduralSkeleton({ batch: true });
     expect(other.getObjectByName(batch.name).geometry).toBe(geometry);
     expect(other.getObjectByName(batch.name).material).toBe(original);
+});
+
+const serviceCases = [...TOWN_ACTOR_TYPES.map(type => [type, options => createProceduralTownActor(type, options)]),
+    ['InfernoTitan', createProceduralInfernoTitan]];
+test.each(serviceCases)('%s owned rigid batching preserves all surfaces, animation targets, cache and pooled reset', async (type, make) => {
+    const source = make(), batched = make({ batch: true });
+    expect(visibleMeshes(batched).length).toBeLessThan(visibleMeshes(source).length);
+    for (const clip of source.userData.animations) {
+        for (const track of clip.tracks) {
+            const name = THREE.PropertyBinding.parseTrackName(track.name).nodeName;
+            expect(batched.getObjectByName(name)?.parent.name).toBe(source.getObjectByName(name)?.parent.name);
+        }
+        const mixers = [source, batched].map(root => new THREE.AnimationMixer(root));
+        mixers.forEach(mixer => { mixer.clipAction(clip).play(); mixer.update(.37); });
+        checkSurfaces(source, batched);
+        mixers.forEach(mixer => { mixer.stopAllAction(); mixer.uncacheRoot(mixer.getRoot()); });
+        source.userData.resetPose(); batched.userData.resetPose();
+    }
+    const count = getHumanoidBatchGeometryCount();
+    const production = await MeshFactory.createMeshForType(type);
+    expect(getHumanoidBatchGeometryCount()).toBe(count);
+    expect(production.userData.humanoidRenderBatches).toEqual(make({ batch: true, surfaceAttributes: true }).userData.humanoidRenderBatches);
+    const child = visibleMeshes(batched).find(mesh => !mesh.matrixAutoUpdate);
+    const restMatrix = child.matrix.clone(); child.visible = false; child.position.x += 10; child.updateMatrix();
+    MeshFactory.releaseMesh(type, batched);
+    expect(MeshFactory.getPooledMesh(type)).toBe(batched);
+    expect(child.matrix.elements).toEqual(restMatrix.elements);
+    checkSurfaces(source, batched);
 });

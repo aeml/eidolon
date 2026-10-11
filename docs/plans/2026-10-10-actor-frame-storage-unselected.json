@@ -1,0 +1,252 @@
+{
+  "recordedUTC": "2026-10-10T16:20:04.920701+00:00",
+  "candidate": "3aea15aa4ce91d64829e563621e0a4eeb222e210",
+  "base": "511edfaa",
+  "status": "Rejected performance candidate; private branch retained, no merge or publication.",
+  "decision": "Keep existing default batching. Synchronous fixed-scene reference medians9.0/9.85ms versus candidate10.6/11.35ms give no benefit; native High pose results are mostly slower.720real frames all median16.7ms, changing world population/draws and shared load prevent causal whole-frame claims. No retry or budget waiver. Next work is missing actual Low geometry-owner qualification rather than more actor scratch tuning.",
+  "sourcePins": {
+    "src/art/ActorInstanceBatches.js": "9adea8c16d56aff88beb2edf3228199036d2aa9d1a189fe3dd6d3a3d745f7576",
+    "tests/ActorInstanceBatches.test.js": "16ee104e3321c852ad1fb2487007dfc670add655eb60096dd4f498fe008dfc25",
+    "tests/e2e/actor-frame-storage-comparison.js": "c8a46a5070e2f50fb605a95c3ada328d3be9b1d97f3f3688b05904c9c079c330",
+    "tests/e2e/actor-frame-storage.spec.js": "c26d12f7d27eee4c97fa6fe7d9d47e30958c2cfaf74428debcf42edc7a7bc953",
+    "tests/e2e/terrain-equipped-party.spec.js": "4d87eaae47dc14a7ce8c03e61242b3335210727a0fac28871e0b1c6286823331",
+    "tests/fixtures/actor-frame-storage/ActorInstanceBatches.reference.js": "67709d0be60b40dd50d9e7737f8e40a106fec4b4061ae876789f78ff79a58c5e"
+  },
+  "referenceExactlyMatchesBaseAfterRelocatedImport": true,
+  "units": "69pass/3suites/1.006s",
+  "scopedLint": "pass after corrected QA finally structure; initial lint failure retained",
+  "native": [
+    {
+      "path": "native/playwright-report/index.html",
+      "stats": {
+        "total": 2,
+        "expected": 2,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      },
+      "attempts": [
+        {
+          "title": "actor frame storage preserves exact high color/shadows and changing live eligibility",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "actor frame storage preserves exact low color/shadows and changing live eligibility",
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "path": "party-high/playwright-report/index.html",
+      "stats": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "attempts": [
+        {
+          "title": "connected equipped four-class party shares raised ground, fitted outfits, Fireball draws and targeted healing",
+          "status": "skipped",
+          "retry": 0
+        },
+        {
+          "title": "single native renderer observes three live equipped party socket peers on raised ground",
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    }
+  ],
+  "partyExact": {
+    "reference": {
+      "calls": 410,
+      "triangles": 444337,
+      "batches": 184,
+      "restored": true
+    },
+    "candidate": {
+      "calls": 410,
+      "triangles": 444337,
+      "batches": 184,
+      "restored": true
+    },
+    "referenceAgain": {
+      "calls": 410,
+      "triangles": 444337,
+      "batches": 184,
+      "restored": true
+    },
+    "image": {
+      "width": 1280,
+      "height": 844,
+      "frozenRenderClock": true,
+      "changedChannels": 0,
+      "unstableChannels": 0,
+      "maximumChannel": 0
+    },
+    "cpu": {
+      "scope": "Synchronous ABBA submission, unchanged world poses; real clock;2warm+12measured renders/block. Not a frame pacing certificate.",
+      "blocks": [
+        {
+          "enabled": false,
+          "milliseconds": [
+            8.399999976158142,
+            7.700000017881393,
+            8.299999982118607,
+            7.800000011920929,
+            9.400000005960464,
+            9.199999988079071,
+            10.5,
+            13.5,
+            14,
+            11.900000005960464,
+            8.800000011920929,
+            7
+          ],
+          "restored": true
+        },
+        {
+          "enabled": true,
+          "milliseconds": [
+            12.599999994039536,
+            12.400000005960464,
+            11.099999994039536,
+            10.300000011920929,
+            6.799999982118607,
+            8,
+            7,
+            8.400000005960464,
+            9.700000017881393,
+            10.899999976158142,
+            11.200000017881393,
+            13.099999994039536
+          ],
+          "restored": true
+        },
+        {
+          "enabled": true,
+          "milliseconds": [
+            12.800000011920929,
+            10,
+            15.799999982118607,
+            11.600000023841858,
+            12.799999982118607,
+            8.5,
+            7.5,
+            7.700000017881393,
+            10,
+            13.199999988079071,
+            13,
+            11.099999994039536
+          ],
+          "restored": true
+        },
+        {
+          "enabled": false,
+          "milliseconds": [
+            7.299999982118607,
+            6.700000017881393,
+            8.5,
+            9.799999982118607,
+            11.5,
+            12.100000023841858,
+            9.899999976158142,
+            7.4000000059604645,
+            8.700000017881393,
+            10.699999988079071,
+            12.800000011920929,
+            15.099999994039536
+          ],
+          "restored": true
+        }
+      ]
+    }
+  },
+  "realFrames": [
+    {
+      "enabled": false,
+      "profile": {
+        "frames": 180,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.8,
+        "cpuLoopMedianMs": 12.099999994039536,
+        "cpuLoopP95Ms": 14.400000005960464,
+        "drawCallsMedian": 391,
+        "trianglesMedian": 443224,
+        "activeEntitiesMin": 25,
+        "activeEntitiesMax": 26
+      }
+    },
+    {
+      "enabled": true,
+      "profile": {
+        "frames": 180,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.8,
+        "cpuLoopMedianMs": 12.200000017881393,
+        "cpuLoopP95Ms": 16.099999994039536,
+        "drawCallsMedian": 406,
+        "trianglesMedian": 443769,
+        "activeEntitiesMin": 25,
+        "activeEntitiesMax": 25
+      }
+    },
+    {
+      "enabled": true,
+      "profile": {
+        "frames": 180,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.8,
+        "cpuLoopMedianMs": 13.900000005960464,
+        "cpuLoopP95Ms": 16,
+        "drawCallsMedian": 405,
+        "trianglesMedian": 443697,
+        "activeEntitiesMin": 25,
+        "activeEntitiesMax": 25
+      }
+    },
+    {
+      "enabled": false,
+      "profile": {
+        "frames": 180,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "cpuLoopMedianMs": 15.200000017881393,
+        "cpuLoopP95Ms": 17.900000005960464,
+        "drawCallsMedian": 442,
+        "trianglesMedian": 448923,
+        "activeEntitiesMin": 25,
+        "activeEntitiesMax": 25
+      }
+    }
+  ],
+  "GoBrowserMongo": "PASS44.24s/package45.285s; actual four-class14slot equipment/inventory/EP, party and logout saved exactly",
+  "serverMarkers": {
+    "WARNING: DATA RACE": 0,
+    "panic:": 0,
+    "fatal error:": 0,
+    "Worker panic:": 0,
+    "Recovered from panic in Update:": 0
+  },
+  "privacy": {
+    "actualPreparedAccounts": 4,
+    "sanitizedBeforeArchive": true,
+    "finalPlainAndEmbeddedMembersScanned": 29,
+    "credentialedRecordings": "off; deliberate post-login screenshot only"
+  },
+  "limits": "High native only for actual connected party; anonymous High/Low poses are renderer controls. WholeHigh350draw/250ktri still fails. No support-device/art/full-goal/F1-F5/soak/beta/launch acceptance; public27 unchanged.",
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-actor-frame-storage-checks-20261010",
+    "inventoryEntries": 35,
+    "filesIncludingInventory": 36,
+    "inventorySHA256": "afa3b38125f49b39623cf276ab7097d5b0c2fa38fb49030820461007a093b561",
+    "frozen": true,
+    "independentlyVerified": true
+  }
+}

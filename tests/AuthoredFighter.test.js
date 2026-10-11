@@ -38,7 +38,7 @@ describe('delivered Fighter runtime candidates', () => {
         for (const quality of ['high', 'low']) {
             const file = fs.readFileSync(fighterRuntimePath(quality));
             const json = JSON.parse(file.subarray(20, 20 + file.readUInt32LE(12)));
-            const result = manifest.variants[quality];
+            const result = JSON.parse(fs.readFileSync('assets/archetypes/runtime-selection.json')).characters.Fighter.variants[quality];
             expect(file.readUInt32LE(8)).toBe(file.length);
             expect(createHash('sha256').update(file).digest('hex')).toBe(result.sha256);
             // Preserve the fitted secondary meshes and lossless data maps:

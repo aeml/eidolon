@@ -7,6 +7,7 @@ const step = name => native.split(`      - name: ${name}\n`)[1]?.split('\n      
 test.each([
     ['Run deterministic High/Low animation gallery', 'animation-gallery'],
     ['Run required native High regional quality-switch coverage', 'regional-quality'],
+    ['Run required native dungeon materials and prepared outfits', 'dungeon-outfits'],
     ['Run focused level-up and sanctuary presentation', 'celebration'],
     ['Verify delivered class bodies and fitted equipment', 'authored-equipment']
 ])('%s preserves both images and report outside the rolling smoke directories', (name, folder) => {
@@ -38,4 +39,14 @@ test('artifact retention does not reduce native coverage or enable optional long
         expect(step(name)).toContain("if: inputs.full_stabilization == true || vars.EIDOLON_FULL_STABILIZATION == 'true'");
     }
     expect(step('Run focused disposable release smoke')).toContain('EIDOLON_ISOLATED_QA_ROUTE: release-smoke');
+});
+
+
+test('native dungeon and outfit assertions block release independently of hosted functional coverage', () => {
+    const body = step('Run required native dungeon materials and prepared outfits');
+    expect(body).toContain("EIDOLON_E2E_REQUIRE_NATIVE_GPU: '1'");
+    expect(body).toContain('--workers=1 --retries=0 --reporter=line,html');
+    expect(body).not.toContain('if:');
+    for (const file of ['dungeon-entry-ward', 'dungeon-floor-material', 'published-game-bundle']) expect(body).toContain(`tests/e2e/${file}.spec.js`);
+    expect(body).toContain('grounded entry wards|floor weathering|geometry scheduling|elemental floor materials');
 });

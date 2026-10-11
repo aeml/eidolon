@@ -1,0 +1,313 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-10T04:41:51.447332+00:00",
+  "classification": "Failed 24-hour soak retained as a failure; prospective bounded transport closure diagnostics staged privately. Underlying server-side loss cause unknown. No replacement long run, public microrelease, relaxed acceptance, or full-roadmap completion.",
+  "baseCommit": "d026ba63d85955ef087c9c9ce1d9791049f465f7",
+  "worktree": "/home/aeml/.local/share/eidolon-high-scene-frame-diagnosis-20261010",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-high-scene-frame-checks-20261010",
+  "publicBaseline": {
+    "commit": "30a8b6038df9e071eef0f57564ae94087d1a0b11",
+    "version": "Alpha1.79.22",
+    "acceptanceReceipt": "docs/plans/2026-10-09-ready22-actor-publisher.json",
+    "newPushOrDeployment": false
+  },
+  "qualifiedRenderingReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
+  "failedSoak": {
+    "run": {
+      "id": 37880032315,
+      "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_attempt": 1,
+      "updated_at": "2026-10-10T03:37:38Z",
+      "url": "https://github.com/aeml/eidolon/actions/runs/37880032315"
+    },
+    "artifactID": 11658027610,
+    "upload": "success",
+    "archiveSHA256FromAPI": "c814503e42c0e8667928a7c99d211351c75d9099ad7ada0c09181310f69076fb",
+    "archiveDigestQualification": "API metadata only; extracted file hashes verified independently. Original ZIP bytes not retained, so API archive digest is not claimed verified.",
+    "terminalSummaries": {
+      "Load summary": {
+        "connected": 100,
+        "joined": 100,
+        "state_frames": 213385404,
+        "read_errors": 7,
+        "write_errors": 0,
+        "decode_errors": 0
+      },
+      "State coverage": {
+        "clients": 100,
+        "min_frames": 32327,
+        "min_active_ms": 1222837,
+        "max_gap_ms": 1210,
+        "wire_bytes": 3311296153052
+      },
+      "Own state coverage": {
+        "clients": 100,
+        "min_updates": 32327
+      },
+      "Cohort interval coverage": {
+        "clients": 100,
+        "latest_first_ms": 1791517017732,
+        "earliest_last_ms": 1791518232960,
+        "common_active_ms": 1215228
+      },
+      "Admission coverage": {
+        "authenticated": 100,
+        "failed": 0,
+        "max_registration_ms": 88,
+        "max_login_ms": 137,
+        "max_join_ms": 99
+      },
+      "Read failure coverage": {
+        "timeout": 0,
+        "policy": 0,
+        "abnormal": 6,
+        "going_away": 0,
+        "normal": 0,
+        "protocol": 0,
+        "too_big": 0,
+        "server": 0,
+        "eof": 0,
+        "unknown": 1
+      },
+      "Recovery coverage": {
+        "clients": 100,
+        "requested": 3087,
+        "completed": 3087,
+        "pending": 0,
+        "failed": 0
+      }
+    },
+    "coverage": {
+      "commonAll100Minutes": 20.2538,
+      "requiredMinFramesPerClient": 432000,
+      "observedMinFramesPerClient": 32327,
+      "requiredMinActiveMSPerClient": 77760000,
+      "observedMinActiveMSPerClient": 1222837
+    },
+    "runtime": {
+      "samples": 1440,
+      "allReadySameRun": true,
+      "commit": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8-eidolon-soak-VSAckT",
+      "goroutinesMin": 37,
+      "goroutinesMax": 340,
+      "heapMin": 52143536,
+      "heapMax": 155593816,
+      "heapFirst": 52143536,
+      "heapLast": 110083584,
+      "heapGrowth": 57940048,
+      "allBroadcastDropsZero": true,
+      "closureCountersPresent": false
+    },
+    "sanitizedServerEvidence": {
+      "lines": 221199,
+      "resumeExpirationsUTC": [
+        "2026-10-09 04:02:16 UTC",
+        "2026-10-09 04:12:46 UTC",
+        "2026-10-09 05:13:46 UTC",
+        "2026-10-09 12:13:46 UTC",
+        "2026-10-09 14:23:16 UTC",
+        "2026-10-09 15:25:16 UTC",
+        "2026-10-09 19:43:46 UTC"
+      ],
+      "missingClosureDiagnostics": true
+    },
+    "sourceMapping": {
+      "childExit": "server/cmd/loadtest/main.go exits1 for any read error; other reported admission/write/decode/own-state/recovery fields pass. Client-owned final shutdown does not count as a read failure.",
+      "wrapper": "scripts/run-nightly-soak.mjs asserts child exit0 before validateSoakEvidence; failure was not the Actions runner deadline.",
+      "independentCoverageFailure": "Replaying actual log rejects seven read errors. Counterfactual zero read errors still rejects per-client declared duration/rate. Retained logs are never edited.",
+      "workflowDriverPolicyLoadtestUnchangedFailedSourceToBase": true
+    },
+    "rootCause": "Unknown: six abnormal and one unknown client-side read failures do not distinguish a local server timeout, queue saturation, network failure or other cause. Seven server resume expirations confirm retirement timing but cannot localize closure. All-ready minute health samples cannot establish per-connection continuity.",
+    "acceptance": "FAIL; no restart/cancel/substitute soak or inferred repair."
+  },
+  "implementation": {
+    "files": [
+      "server/admin_mutation_handlers.go",
+      "server/client_messaging.go",
+      "server/client_queues.go",
+      "server/connection_work.go",
+      "server/email_recovery.go",
+      "server/equipment_loadout_persistence_test.go",
+      "server/inbound_message_reader_test.go",
+      "server/main.go",
+      "server/network.go",
+      "server/protocol_types.go",
+      "tests/SoakIsolation.test.js",
+      "server/transport_diagnostics.go",
+      "server/transport_diagnostics_test.go"
+    ],
+    "healthField": "websocketClosures",
+    "labels": 22,
+    "ownership": "One atomic first-observed closing reason per upgraded socket Client; process-lifetime fixed aggregate counters. New WebSockets create new Clients, including resumes. In-process/nil clients are ignored.",
+    "semantics": "The first reader/writer/local closing intent or cleanup observation wins. This is bounded diagnostic attribution, not proof of the underlying physical cause. Expected closes and policy intents count as well as failures. Counters reset at process restart; individual atomic loads do not form a transactional whole-map snapshot.",
+    "classification": "Wrapped standard peer close codes, local size/frame/malformed limits, read/write timeout/network/other, priority overflow, access denial, hub shutdown, session replacement, account recovery, admin storage/admission refusal, QA disconnect and final queue cleanup.",
+    "privacy": "No accounts, addresses, peer text, error strings, payloads, dynamic labels or per-socket event history retained. The socket stores only its fixed enum. No new error logging or profiling endpoint.",
+    "policyUnchanged": "No changes to authority, accounts/saves, Gold/EP, game behavior, queues/capacity/coalescing, deadlines, keepalive scheduling, liveness/assembly guards, recovery ownership or soak acceptance/workflow/driver. Telemetry does not mark a transport closed or adjust resume time.",
+    "fixtureCorrection": "Existing initial loadout join/resume unit fixture owns and drains scheduled guild-presence work before restoring db/world. Initial broader race failure retained; production task scheduling is unchanged."
+  },
+  "verification": {
+    "status": "All9tested Go packages passed under race across the broad run and complete game-package retry;5packages have no tests. Explicit integration/fixture skips remain skipped. Initial broad command exit1 remains retained.",
+    "checks": {
+      "recordedUTC": "2026-10-10T04:40:54.724569+00:00",
+      "toolVersions": {
+        "go": "go version go1.27.2 linux/amd64",
+        "node": "v24.18.0"
+      },
+      "completed": [
+        {
+          "name": "initial transport-only race checks",
+          "command": "GOTOOLCHAIN=go1.27.2 GOMAXPROCS=2 go test -race -p 2 -count=1 -timeout=120s -run TestTransport .",
+          "log": "go-transport-initial.log",
+          "exitCode": 0,
+          "qualification": "Historical first pass before final read-limit and real-read-pump cases; not substituted for final source checks."
+        },
+        {
+          "name": "initial broader network race checks",
+          "log": "go-network-focused.log",
+          "exitCode": 1,
+          "failure": "Existing loadout fixture scheduled guild-presence work without joining it; next test replaced db. Corrected by fixture-owned lifecycle group/drain, with first failure retained."
+        },
+        {
+          "name": "loadtest package race",
+          "command": "GOTOOLCHAIN=go1.27.2 GOMAXPROCS=2 go test -race -p 2 -count=1 -timeout=180s -v ./cmd/loadtest",
+          "log": "go-loadtest.log",
+          "exitCode": 0
+        },
+        {
+          "name": "soak policy Jest",
+          "log": "soak-policy-jest.log",
+          "exitCode": 0,
+          "suites": 1,
+          "tests": 7
+        },
+        {
+          "name": "changed JS ESLint",
+          "log": "soak-policy-eslint.log",
+          "exitCode": 0
+        },
+        {
+          "name": "real retained evidence policy replay",
+          "log": "soak-policy-replay.log",
+          "exitCode": 0,
+          "qualification": "Both actual terminal evidence and counterfactual zero read errors reject under unchanged 24h/5state-frames-per-client-per-second declaration."
+        },
+        {
+          "name": "ordinary production Go build all packages",
+          "command": "GOTOOLCHAIN=go1.27.2 GOMAXPROCS=2 go -C server build ./...",
+          "log": "go-production-build.log",
+          "exitCode": 0
+        },
+        {
+          "name": "broad Go race suite first attempt",
+          "command": "GOTOOLCHAIN=go1.27.2 GOMAXPROCS=2 go test -race -p 2 -count=1 -timeout=240s -v ./...",
+          "log": "go-full-final.log",
+          "exitCode": 1,
+          "failure": "Only internal/game exceeded the aggregate per-package 4m test deadline after490completed top-level cases. Other tested packages passed. No data race or assertion failure preceded this timeout. All original cases remain; rerun only that package with15m timeout."
+        },
+        {
+          "name": "final transport and fixture/assembly regressions",
+          "log": "go-network-final.log",
+          "exitCode": 0,
+          "qualification": "Exact real socket closure paths, full existing assembly timeout, due keepalive/control order and formerly racing adjacent loadout/recovery fixtures."
+        },
+        {
+          "name": "internal/game race retry after harness time limit",
+          "command": "GOTOOLCHAIN=go1.27.2 GOMAXPROCS=2 go test -race -p 2 -count=1 -timeout=15m -v ./internal/game",
+          "log": "go-game-final.log",
+          "exitCode": 0,
+          "topLevelPassed": 1306,
+          "topLevelSkipped": 6
+        }
+      ],
+      "finalPackageResults": [
+        {
+          "package": "eidolon-server",
+          "duration": "140.085s"
+        },
+        {
+          "package": "eidolon-server/cmd/loadtest",
+          "duration": "18.454s"
+        },
+        {
+          "package": "eidolon-server/cmd/monitor",
+          "duration": "7.033s"
+        },
+        {
+          "package": "eidolon-server/internal/arena",
+          "duration": "1.017s"
+        },
+        {
+          "package": "eidolon-server/internal/database",
+          "duration": "11.119s"
+        },
+        {
+          "package": "eidolon-server/internal/forging",
+          "duration": "1.018s"
+        },
+        {
+          "package": "eidolon-server/internal/lifecycle",
+          "duration": "1.023s"
+        },
+        {
+          "package": "eidolon-server/internal/operations",
+          "duration": "7.274s"
+        },
+        {
+          "package": "eidolon-server/internal/game",
+          "duration": "788.379s"
+        }
+      ],
+      "packagesWithoutTests": [
+        "eidolon-server/cmd/migrate",
+        "eidolon-server/cmd/reports",
+        "eidolon-server/cmd/simulator",
+        "eidolon-server/cmd/vip-period",
+        "eidolon-server/internal/proto"
+      ],
+      "allTestedPackagesPassedUnderRace": true,
+      "qualification": "Combined source-matched package coverage: broad run passes all tested packages except internal/game aggregate4m deadline; retry runs every original game test with15m deadline and passes. First aggregate command remains exit1, not rewritten as success. Explicit external/disposable-database/build/device integration skips remain skips."
+    },
+    "newTransportTopLevelTests": 7,
+    "newRealSocketCases": 6,
+    "additionalExistingRealSocketChecks": [
+      "due keepalive before priority",
+      "control before state",
+      "actual10s assembly deadline despite Pongs/empty fragments, now asserts readTimeout"
+    ],
+    "concurrentFirstObservationWorkers": 100,
+    "retainedEvidenceReplay": "Actual1440samples/log rejected; counterfactual zero read errors also rejected. Seven Jest tests and changed-file ESLint pass.",
+    "currentSourcePins": 27,
+    "failedSourcePins": 18,
+    "browserNativeSaveSessionOrDeviceRerun": false,
+    "qualification": "No new renderer/assets changes. Prior actor-view/native/save evidence remains valid only for its recorded source and scope; it does not qualify this server as deployed, repair the failed soak, or establish High/device/long-session/art/beta/launch acceptance.",
+    "retainedEvidenceFiles": 7,
+    "inventory": {
+      "artifacts": 74,
+      "sha256": "95bf96eaf5cfc9d336ef7a150486e51b6654d41f7d85ae56d8ee10b25c4d12f7",
+      "allArtifactsRehashed": true,
+      "permissions": "Private directories0700/files0600; no evidence symlinks. Frozen after all check sessions terminal and owned test/build/browser workers absent.",
+      "qualification": "Original ZIP digest is API metadata only; unpacked artifact file hashes are verified. Initial failed checks and complete passing retry retained."
+    },
+    "gamePackage": {
+      "topLevelPassed": 1306,
+      "topLevelSkipped": 6,
+      "durationSeconds": 788.379,
+      "timeoutSeconds": 900,
+      "everyOriginalCaseRetained": true
+    },
+    "goBroadInitial": {
+      "exitCode": 1,
+      "qualification": "Only game package exceeded local240s aggregate test deadline. All other tested packages passed; complete unchanged game package passed its15m retry. No single broad invocation is relabelled as passing."
+    }
+  },
+  "remaining": [
+    "Exact coherent-milestone deployment and live server/session/save qualification.",
+    "Concrete transport failure diagnosis; no claim that closure counters repair the failed24h gate. No unchanged long-run restart.",
+    "Measured High whole-frame CPU/scene bounds/matrix attribution before optimization; actual whole High/Low/support-device budgets and moving equipped combat/art.",
+    "Compact bake/coverage/continuous zoom/hysteresis/equip-pool-reconnect-respawn/cache and every inherited1.11\u20131.99/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff requirement."
+  ],
+  "originalDirtyRepositoryEdited": false,
+  "goalComplete": false
+}

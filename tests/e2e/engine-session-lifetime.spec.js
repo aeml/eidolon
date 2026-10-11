@@ -9,11 +9,17 @@ const dungeonFixture = JSON.parse(readFileSync('tests/fixtures/production-dungeo
 // Exercise the real constructor, models, renderer and destructor without
 // running a campaign or adding power/currency to any character.
 for (const quality of ['high', 'low']) test(`${quality}: three retired engines release their own HUD, map listeners and GPU contexts`, async ({ page, baseURL }, testInfo) => {
+    test.setTimeout(180_000);
     const failures = collectBrowserFailures(page, baseURL);
+    const workers = [], closed = [];
+    page.on('worker', worker => { if (worker.url().includes('ActorGameplayGeometryWorker')) {
+        workers.push(worker.url()); worker.on('close', () => closed.push(worker.url()));
+    } });
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.goto('/', { waitUntil: 'networkidle' });
     const result = await page.evaluate(async quality => {
         const { GameEngine } = await import('/src/core/GameEngine.js');
+        const { waitForGeometryOwner } = await import('/tests/e2e/geometry-owner-observation.js');
         const { Fighter } = await import('/src/entities/Fighter.js');
         const { BASE_ITEMS, RARITY } = await import('/src/core/ItemSystem.js');
         const { EQUIPMENT_RENDER_SLOTS } = await import('/src/art/ProceduralEquipment.js');
@@ -34,14 +40,25 @@ for (const quality of ['high', 'low']) test(`${quality}: three retired engines r
             await engine.player.mesh.userData.equipmentReady;
             if (engine.player.mesh.userData.equipmentVisualItemCount !== 14 || engine.player.mesh.userData.equipmentVisualMissing?.length) throw Error('Incomplete lifetime fixture equipment');
             engine.renderSystem.add(engine.player.mesh);
+            const enemy = engine.createRemotePlayer('Enemy', `lifetime-enemy-${session}`, 'Skeleton');
+            await enemy.ensureMesh(); enemy.position.set(100, 0, 0); enemy.render(1);
+            engine.remotePlayers.set(enemy.id, enemy); engine.renderSystem.add(enemy.mesh);
+            const geometry = await waitForGeometryOwner(engine.renderSystem);
             engine.renderSystem.setCameraTarget(engine.player.position);
             engine.renderSystem.render();
-            const render = engine.renderSystem, context = render.renderer.getContext(), instances = render.actorInstances;
+            const render = engine.renderSystem, context = render.renderer.getContext(), instances = render.actorInstances,
+                owner = render.actorGameplayGeometry, shadow = instances.shadowFilter;
+            if (!shadow || shadow.disposed || shadow.roots.size !== 1 || shadow.omitted.length) throw Error('Default shadow owner not restored');
+            const shadowBefore = { roots: shadow.roots.size, ...shadow.stats };
             const before = { ...render.renderer.info.memory };
             const minimaps = document.querySelectorAll('#minimap-hud').length;
             engine.destroy(); engine.destroy();
             await new Promise(resolve => requestAnimationFrame(resolve));
-            reports.push({ before, minimaps, retiredMinimaps: document.querySelectorAll('#minimap-hud').length,
+            reports.push({ before, geometry, shadowBefore, shadowRetired: shadow.disposed && shadow.view.disposed &&
+                    !shadow.roots.size && !shadow.omitted.length && !shadow.watchedGroups.length && !instances.shadowFilter,
+                geometryRetired: owner.disposed && owner.pass.disposed && owner.delivery.disposed &&
+                    !owner.delivery.roots.size && !owner.delivery.jobs.size && !owner.pass.entries.size && !render.actorGameplayGeometry,
+                minimaps, retiredMinimaps: document.querySelectorAll('#minimap-hud').length,
                 retiredTooltips: document.querySelectorAll('#minimap-buff-tooltip').length,
                 mapOwnerCleared: !document.getElementById('world-map').__eidolonWorldMap,
                 mapListenersAborted: engine.worldMap.listeners.signal.aborted,
@@ -53,10 +70,17 @@ for (const quality of ['high', 'low']) test(`${quality}: three retired engines r
         }
         return reports;
     }, quality);
+    await expect.poll(() => closed.length).toBe(3); expect(workers).toHaveLength(3);
     await testInfo.attach('engine-retirement', { body: JSON.stringify(result), contentType: 'application/json' });
     console.log('[engine-retirement]', JSON.stringify(result));
     for (const report of result) {
         expect(report.instancesRetired).toBe(true);
+        expect(report.shadowRetired).toBe(true); expect(report.shadowBefore.roots).toBe(1);
+        if (quality === 'high') expect(report.shadowBefore.omitted).toBeGreaterThan(0);
+        else expect(report.shadowBefore.omitted).toBe(0);
+        expect(report.geometryRetired).toBe(true);
+        expect(report.geometry.workerStarted && report.geometry.valid && report.geometry.restored).toBe(true);
+        expect(report.geometry.entries).toBeGreaterThan(0);
         expect(report.before.geometries).toBeGreaterThan(0);
         expect(report.minimaps).toBe(1); expect(report.retiredMinimaps).toBe(0); expect(report.retiredTooltips).toBe(0);
         expect(report.mapOwnerCleared).toBe(true); expect(report.mapListenersAborted).toBe(true);
@@ -75,6 +99,7 @@ for (const quality of ['high', 'low']) test(`${quality}: repeated town, dungeon,
     await page.goto('/', { waitUntil: 'networkidle' });
     expect(dungeonFixture).toBeDefined();
     const reports = await page.evaluate(async ({ quality, layout }) => {
+        const { waitForGeometryOwner } = await import('/tests/e2e/geometry-owner-observation.js');
         const { actorRenderingIsOwned } = await import('/tests/e2e/actor-render-ownership.js');
         const { GameEngine } = await import('/src/core/GameEngine.js');
         const { Fighter } = await import('/src/entities/Fighter.js');
@@ -92,13 +117,14 @@ for (const quality of ['high', 'low']) test(`${quality}: repeated town, dungeon,
             return [slot, { ...base, id: `lifetime-${index}-${slot}`, baseName: base.name, rarity: RARITY.RARE }];
         })));
         const reports = [], player = engine.player;
-        const capture = label => {
+        const capture = async label => {
+            const geometry = await waitForGeometryOwner(engine.renderSystem);
             player.render(1); engine.casino.beforeUpdate(0);
             engine.renderSystem.setCameraTarget(player.position);
             engine.renderSystem.updateEnvironmentLighting(player.position, 0);
             engine.renderSystem.render();
             const hitbox = player.mesh.getObjectByName('ActorInteractionHitbox');
-            return { label, ...engine.renderSystem.renderer.info.memory,
+            return { label, geometry, ...engine.renderSystem.renderer.info.memory,
                 playerRenderOwned: actorRenderingIsOwned(engine.renderSystem, player.mesh),
                 chunks: engine.chunkManager.chunks.size, activeActors: engine.chunkManager.getActiveEntities().length,
                 playerTracked: engine.chunkManager.chunks.get(player._chunkKey)?.has(player) === true,
@@ -112,24 +138,24 @@ for (const quality of ['high', 'low']) test(`${quality}: repeated town, dungeon,
                     player.syncEquipmentVisuals(equipment);
                     await player.mesh.userData.equipmentReady;
                     if (player.mesh.userData.equipmentVisualItemCount !== 14 || player.mesh.userData.equipmentVisualMissing?.length) throw Error('Incomplete transition gear');
-                    capture('gear');
+                    await capture('gear');
                 }
-                player.die(); player.respawn(-1.25, 200); reports.push({ cycle, ...capture('town-death') });
+                player.die(); player.respawn(-1.25, 200); reports.push({ cycle, ...await capture('town-death') });
                 await engine.enterInstance(`lifetime-dungeon-${cycle}`, 'verdant_bastion_catacombs', layout);
-                reports.push({ cycle, ...capture('dungeon') });
+                reports.push({ cycle, ...await capture('dungeon') });
                 // Render a real equipped actor, then place its ownership only
                 // in a dormant chunk. Transition must release it, not retain a
                 // model merely because it is absent from the remote map.
                 const actor = new Fighter('transition-remote'); actor.gameEngine = engine;
                 await actor.ensureMesh(); actor.syncEquipmentVisuals(gear[0]); await actor.mesh.userData.equipmentReady;
-                actor.position.copy(player.position); engine.addEntity(actor); actor.render(1); capture('remote');
+                actor.position.copy(player.position); engine.addEntity(actor); actor.render(1); await capture('remote');
                 engine.chunkManager.chunks.get(actor._chunkKey).delete(actor);
                 actor.position.set(9000, 0, 9000); actor._chunkKey = engine.chunkManager.getChunkKey(9000, 9000);
                 engine.chunkManager.chunks.set(actor._chunkKey, new Set([actor]));
                 await engine.enterInstance('lanternhold-casino', 'casino', null, null, { x: 0, y: .5, z: 152 });
                 if (actor.isActive || actor.mesh) throw Error('Dormant actor retained after casino entry');
-                engine.casino.setFloor({ upstairs: false, x: 0, y: .5, z: 152 }); reports.push({ cycle, ...capture('casino-public') });
-                engine.casino.setFloor({ upstairs: true, x: 0, y: 8.5, z: 152 }); reports.push({ cycle, ...capture('casino-vip') });
+                engine.casino.setFloor({ upstairs: false, x: 0, y: .5, z: 152 }); reports.push({ cycle, ...await capture('casino-public') });
+                engine.casino.setFloor({ upstairs: true, x: 0, y: 8.5, z: 152 }); reports.push({ cycle, ...await capture('casino-vip') });
                 engine.casino.setFloor({ upstairs: false, x: 0, y: .5, z: 152 });
             }
         } finally { engine.destroy(); }
@@ -138,6 +164,9 @@ for (const quality of ['high', 'low']) test(`${quality}: repeated town, dungeon,
     await testInfo.attach('transition-resources', { body: JSON.stringify(reports), contentType: 'application/json' });
     console.log('[transition-resources]', quality, JSON.stringify(reports));
     for (const report of reports) {
+        expect(report.geometry.valid && report.geometry.restored && report.geometry.workerStarted).toBe(true);
+        expect(report.geometry.entries).toBeGreaterThan(0);
+        expect(report.geometry.workerCacheBytes).toBeLessThanOrEqual(16 * 1024 * 1024);
         expect(report.geometries).toBeGreaterThan(0); expect(report.playerTracked).toBe(true);
         expect(report.playerAttached).toBe(true); expect(report.hiddenHitbox).toBe(true);
         expect(report.playerRenderOwned).toBe(true);
@@ -224,13 +253,15 @@ for (const quality of ['high', 'low']) test(`${quality}: three transport recover
                 return f.token === `fixture-token-${count}` && f.engine.network.messageQueue.some(message => message.type === 'enter_instance');
             }, cycle + 1);
             await page.evaluate(async cycle => {
+                const { waitForGeometryOwner } = await import('/tests/e2e/geometry-owner-observation.js');
                 const { actorRenderingIsOwned } = await import('/tests/e2e/actor-render-ownership.js');
                 const f = window.__lifetimeRecovery, engine = f.engine;
                 for (const message of engine.network.drainMessages()) engine.handleServerMessage(message);
                 await f.entryPromise;
                 engine.player.die(); engine.player.respawn(0, 0); engine.player.render(1);
+                const geometry = await waitForGeometryOwner(engine.renderSystem);
                 engine.renderSystem.setCameraTarget(engine.player.position); engine.renderSystem.render();
-                f.reports.push({ cycle, ...engine.renderSystem.renderer.info.memory,
+                f.reports.push({ cycle, geometry, ...engine.renderSystem.renderer.info.memory,
                     playerRenderOwned: actorRenderingIsOwned(engine.renderSystem, engine.player.mesh),
                     instance: engine.currentInstanceId, playerTracked: engine.chunkManager.chunks.get(engine.player._chunkKey)?.has(engine.player),
                     playerAttached: engine.player.mesh.parent === engine.renderSystem.entityGroup,
@@ -254,6 +285,8 @@ for (const quality of ['high', 'low']) test(`${quality}: three transport recover
         expect(resumes).toBe(3); expect(protocolFailures).toEqual([]);
         expect(result.states).toEqual(['reconnecting', 'connected', 'reconnecting', 'connected', 'reconnecting', 'connected']);
         for (const report of result.reports) {
+            expect(report.geometry.valid && report.geometry.restored && report.geometry.workerStarted).toBe(true);
+            expect(report.geometry.entries).toBeGreaterThan(0);
             expect(report.geometries).toBeGreaterThan(0); expect(report.instance).toBe(`lifetime-arena-${report.cycle + 1}`);
             for (const key of ['playerTracked', 'playerAttached', 'playerRenderOwned', 'connected', 'emptyQueue', 'oldCallbacksDetached']) expect(report[key], key).toBe(true);
         }

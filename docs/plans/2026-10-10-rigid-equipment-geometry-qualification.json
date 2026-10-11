@@ -1,0 +1,644 @@
+{
+  "recordedUTC": "2026-10-10T16:52:17.277803+00:00",
+  "source": "de9c9a15af4849bade095208e564bc3bad83eec5",
+  "implementationSource": "09fba6f8d6ea4098d3db32405e0d60437911a0b3",
+  "base": "11df89b4a81140fa65ca3c2f3d89a0e187645745",
+  "status": "Functional rigid equipment extension qualified on actual High/Low; Low triangle target still fails; default owner remains null, not published.",
+  "algorithm": "Index-only original-vertex rigid hand gear; UV/normal/tangent weighted Meshopt error High0.006/Low0.012. Geometric edge-incidence guard preserves original borders/nonmanifold edges; bounded exact original-face collars repair new open edges or retain the full source. No vertex/attribute rewriting. Incidence guard is not a formal directed-winding or all-pose pixel guarantee.",
+  "unchanged": "Delivered GLBs/assets, body/garment algorithms, server, dependencies, geometry 42/47pixel thresholds, ordinary actor view/shadow policies and performance gates unchanged. Default geometry controller null.",
+  "native": [
+    {
+      "label": "native",
+      "stats": {
+        "total": 3,
+        "expected": 2,
+        "unexpected": 1,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": false
+      },
+      "attempts": [
+        {
+          "title": "all delivered classes use fitted gear, independent rigs and alternating Rogue strikes",
+          "status": "failed",
+          "retry": 0
+        },
+        {
+          "title": "actual published engine stays lazy at login and constructs each class from the bounded module graph",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "published geometry owner loads its immutable worker, retires streamed roots and reuses the exact cached worker offline",
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "label": "native-qualified",
+      "stats": {
+        "total": 1,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      },
+      "attempts": [
+        {
+          "title": "all delivered classes use fitted gear, independent rigs and alternating Rogue strikes",
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "label": "party-low",
+      "stats": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "attempts": [
+        {
+          "title": "connected equipped four-class party shares raised ground, fitted outfits, Fireball draws and targeted healing",
+          "status": "skipped",
+          "retry": 0
+        },
+        {
+          "title": "single native renderer observes three live equipped party socket peers on raised ground",
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "label": "party-high",
+      "stats": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "attempts": [
+        {
+          "title": "connected equipped four-class party shares raised ground, fitted outfits, Fireball draws and targeted healing",
+          "status": "skipped",
+          "retry": 0
+        },
+        {
+          "title": "single native renderer observes three live equipped party socket peers on raised ground",
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    }
+  ],
+  "firstFailure": "First anonymous gallery reached pool replacement but obsolete eleven-skinned-only assertion observed twenty-one pieces. QA-only de9c9a15 retains exact11skinned+10rigid and both mainHand/offHand checks; runtime unchanged. Original failure/anonymous trace retained.",
+  "setupFailure": "Corrected gallery selector accidentally anchored against full qualified title, yielding No tests found before browser work. Fixed selector, separate terminal receipt retained. No unchanged gameplay retry.",
+  "worker": {
+    "output": "src/core/ActorGameplayGeometryWorker.bundle.js",
+    "sha256": "44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43",
+    "bytes": 137178,
+    "modules": 10,
+    "imports": []
+  },
+  "publishedWorker": "Actual copied publication lazy-login and immutable offline worker tests passed on09fba6f8 for both color and rigid payloads; no external imports. Followup de9 changes only QA pool assertions.",
+  "units": {
+    "focusedChecks": 86,
+    "suites": 4,
+    "seconds": 0.865,
+    "lint": "All changed files passed; final QA file scoped lint and diff check passed."
+  },
+  "gallery": {
+    "controls": 64,
+    "closeExact": 32,
+    "initial": {
+      "milliseconds": 5603.199999988079,
+      "renderedFrames": 336,
+      "registered": 150,
+      "stats": {
+        "requested": 163,
+        "installed": 150,
+        "stale": 0,
+        "fallback": 13,
+        "failed": 0,
+        "cacheHits": 44,
+        "rejected": 0,
+        "maxCopiedBytes": 3058764,
+        "workerCacheBytes": 1356420,
+        "workerCacheEntries": 116
+      },
+      "candidateStorageBytes": 18432796,
+      "legacyStorageBytes": 42075588,
+      "sourceTriangles": 336711,
+      "reducedTriangles": 124593
+    },
+    "replacement": {
+      "oldRetired": true,
+      "quality": "low",
+      "installed": 21,
+      "skinned": 11,
+      "rigid": 10,
+      "rigidSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "valid": true,
+      "samePoolRootReturned": true
+    }
+  },
+  "visualReview": "Actual High/Low rigid-only reference/candidate canvas images inspected at gameplay zoom15, plus actual moving Low HUD image. Sword, shield, staff, mace, dagger and tome identities/mounts remain readable at that scale; small highlight/silhouette changes are bounded by native controls. Close originals are exact. Terrain still shows broad patches and angular rocks/trees; long synthetic labels clutter some views. Not final modern-art approval.",
+  "serverMarkers": {
+    "party-low": {
+      "WARNING: DATA RACE": 0,
+      "panic:": 0,
+      "fatal error:": 0,
+      "Worker panic:": 0,
+      "Recovered from panic in Update:": 0
+    },
+    "party-high": {
+      "WARNING: DATA RACE": 0,
+      "panic:": 0,
+      "fatal error:": 0,
+      "Worker panic:": 0,
+      "Recovered from panic in Update:": 0
+    }
+  },
+  "privacy": {
+    "preparedAccounts": 8,
+    "credentialedAutomaticRecordings": "off",
+    "plainEmbeddedAndAnonymousTraceMembersScanned": 917,
+    "actualAccountIdentifiersRemaining": 0,
+    "deliberatePixels": "Post-login PNG/JPEG contain synthetic fixture labels; no login/password-entry/session recordings. Initial anonymous failure trace/video contains no registered fixture sessions. Disposable databases destroyed by harness."
+  },
+  "nextAction": "Create measured Low scenery geometry margin while preserving every plant/leaf, original supplied models, High recipe, ordinary gameplay visibility and full wind bounds. Low median85056 remains failed; do not rerun unchanged to obtain a lucky population. Retain High334draws/181569triangles sampled pass; broader support-device/art/representative combat/default activation remains open.",
+  "limits": "One renderer and three ordinary live peers per High/Low run with exact four-class14slot inventory/EP/party/logout saves. Normal movement, not four independent GPU clients, physical phone, natural battle budget, campaign or whole-game acceptance. Different evolving native windows do not prove causal FPS/CPU gains. No public release, full-goal/F1-F5/soak/beta/launch completion.",
+  "evidence": "/home/aeml/.local/share/eidolon-rigid-equipment-geometry-checks-20261010",
+  "inventorySHA256": "b8d227aad6ecddc913b3a2cbe76f5b1a3d1b6a914251cf8ddfdc405dddcbea78",
+  "inventoryEntries": 196,
+  "filesIncludingInventory": 197,
+  "privateIntegration": {
+    "path": "/home/aeml/.local/share/eidolon-world-jump-total-integration-20261010",
+    "commit": "de9c9a15af4849bade095208e564bc3bad83eec5",
+    "method": "Fast-forward of qualified private candidate; source identical native tests. Held world runtime and public release unchanged; default geometry owner null."
+  },
+  "quality": {
+    "low": {
+      "preparation": {
+        "method": "automatic-worker-exact-source-cache",
+        "milliseconds": 2293.800000011921,
+        "body": {
+          "sources": 4
+        },
+        "rigid": {
+          "sources": 27,
+          "originalTriangles": 9940,
+          "candidateTriangles": 6584
+        },
+        "installed": {
+          "registered": 71,
+          "originalTriangles": 123345,
+          "candidateTriangles": 57667
+        },
+        "stats": {
+          "requested": 76,
+          "installed": 71,
+          "stale": 0,
+          "fallback": 5,
+          "failed": 0,
+          "cacheHits": 8,
+          "rejected": 0,
+          "maxCopiedBytes": 2840900,
+          "workerCacheBytes": 680388,
+          "workerCacheEntries": 67
+        }
+      },
+      "frameSummary": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "cpuLoopMedianMs": 8.300000011920929,
+        "cpuLoopP95Ms": 10.099999994039536,
+        "drawCallsMedian": 179,
+        "trianglesMedian": 85056,
+        "geometries": 434,
+        "textures": 282,
+        "activeEntitiesMin": 30,
+        "activeEntitiesMax": 30
+      },
+      "absentFrameSummary": {
+        "frames": 180,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "cpuLoopMedianMs": 8.5,
+        "drawCallsMedian": 189,
+        "trianglesMedian": 152242
+      },
+      "budget": {
+        "maximumDraws": 200,
+        "maximumTriangles": 85000,
+        "drawsPass": true,
+        "trianglesPass": false,
+        "sampledFrameTimingPass": true
+      },
+      "movement": {
+        "normalGroundClicks": 3,
+        "samples": 87,
+        "retainedPostLoginFrames": 26,
+        "allGearSlots": 14,
+        "allRestored": true
+      },
+      "actualServerMongoTerminal": [
+        "--- PASS: TestTerrainActualEquippedBrowserParty (31.70s)",
+        "PASS",
+        "ok  \teidolon-server\t32.745s"
+      ],
+      "paired": {
+        "samples": [
+          {
+            "zoom": 5,
+            "changedChannels": 0,
+            "unstableChannels": 0,
+            "compactChangedChannels": 0,
+            "source": {
+              "calls": 149,
+              "triangles": 136190,
+              "swaps": 0,
+              "restored": true
+            },
+            "candidate": {
+              "calls": 149,
+              "triangles": 136190,
+              "swaps": 0,
+              "restored": true
+            },
+            "again": {
+              "calls": 149,
+              "triangles": 136190,
+              "swaps": 0,
+              "restored": true
+            }
+          },
+          {
+            "zoom": 15,
+            "changedChannels": 19428,
+            "unstableChannels": 0,
+            "compactChangedChannels": 0,
+            "source": {
+              "calls": 163,
+              "triangles": 147963,
+              "swaps": 0,
+              "restored": true
+            },
+            "candidate": {
+              "calls": 163,
+              "triangles": 82285,
+              "swaps": 71,
+              "restored": true
+            },
+            "again": {
+              "calls": 163,
+              "triangles": 147963,
+              "swaps": 0,
+              "restored": true
+            }
+          }
+        ],
+        "transitions": [
+          {
+            "pixels": 45,
+            "reduced": false,
+            "restored": true,
+            "swaps": 0
+          },
+          {
+            "pixels": 41,
+            "reduced": true,
+            "restored": true,
+            "swaps": 71
+          },
+          {
+            "pixels": 45,
+            "reduced": true,
+            "restored": true,
+            "swaps": 71
+          },
+          {
+            "pixels": 48,
+            "reduced": false,
+            "restored": true,
+            "swaps": 0
+          },
+          {
+            "pixels": 45,
+            "reduced": false,
+            "restored": true,
+            "swaps": 0
+          },
+          {
+            "pixels": 30,
+            "reduced": true,
+            "restored": true,
+            "swaps": 71
+          }
+        ],
+        "rigidPairs": [
+          {
+            "zoom": 5,
+            "reference": {
+              "calls": 149,
+              "triangles": 136190,
+              "swaps": 0,
+              "restored": true
+            },
+            "candidate": {
+              "calls": 149,
+              "triangles": 136190,
+              "swaps": 0,
+              "restored": true
+            },
+            "repeat": {
+              "calls": 149,
+              "triangles": 136190,
+              "swaps": 0,
+              "restored": true
+            },
+            "changedChannels": 0,
+            "unstableChannels": 0
+          },
+          {
+            "zoom": 15,
+            "reference": {
+              "calls": 163,
+              "triangles": 85641,
+              "swaps": 44,
+              "restored": true
+            },
+            "candidate": {
+              "calls": 163,
+              "triangles": 82285,
+              "swaps": 71,
+              "restored": true
+            },
+            "repeat": {
+              "calls": 163,
+              "triangles": 85641,
+              "swaps": 44,
+              "restored": true
+            },
+            "changedChannels": 2463,
+            "unstableChannels": 0
+          }
+        ],
+        "actorViewFilterAllocated": false,
+        "cpu": {
+          "scope": "Same-scene source arm bypasses controller wrapper/validation; combined arm includes it. Real clock,48 samples per path. Delivery idle; allocated candidates/cache remain. Submission only, not frame pacing or installation/memory baseline.",
+          "reference": {
+            "frames": 48,
+            "median": 5,
+            "p95": 5.800000011920929
+          },
+          "candidate": {
+            "frames": 48,
+            "median": 5.300000011920929,
+            "p95": 6.199999988079071
+          }
+        }
+      }
+    },
+    "high": {
+      "preparation": {
+        "method": "automatic-worker-exact-source-cache",
+        "milliseconds": 3863.5999999940395,
+        "body": {
+          "sources": 4
+        },
+        "rigid": {
+          "sources": 21,
+          "originalTriangles": 19014,
+          "candidateTriangles": 9362
+        },
+        "installed": {
+          "registered": 65,
+          "originalTriangles": 200156,
+          "candidateTriangles": 63218
+        },
+        "stats": {
+          "requested": 76,
+          "installed": 65,
+          "stale": 0,
+          "fallback": 11,
+          "failed": 0,
+          "cacheHits": 6,
+          "rejected": 0,
+          "maxCopiedBytes": 2995424,
+          "workerCacheBytes": 747528,
+          "workerCacheEntries": 67
+        }
+      },
+      "frameSummary": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "cpuLoopMedianMs": 10.899999976158142,
+        "cpuLoopP95Ms": 13.800000011920929,
+        "drawCallsMedian": 334,
+        "trianglesMedian": 181569,
+        "geometries": 474,
+        "textures": 299,
+        "activeEntitiesMin": 22,
+        "activeEntitiesMax": 22
+      },
+      "absentFrameSummary": {
+        "frames": 180,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "cpuLoopMedianMs": 11.399999976158142,
+        "drawCallsMedian": 357,
+        "trianglesMedian": 455096
+      },
+      "budget": {
+        "maximumDraws": 350,
+        "maximumTriangles": 250000,
+        "drawsPass": true,
+        "trianglesPass": true,
+        "sampledFrameTimingPass": true
+      },
+      "movement": {
+        "normalGroundClicks": 3,
+        "samples": 100,
+        "retainedPostLoginFrames": 30,
+        "allGearSlots": 14,
+        "allRestored": true
+      },
+      "actualServerMongoTerminal": [
+        "--- PASS: TestTerrainActualEquippedBrowserParty (36.63s)",
+        "PASS",
+        "ok  \teidolon-server\t37.668s"
+      ],
+      "paired": {
+        "samples": [
+          {
+            "zoom": 5,
+            "changedChannels": 0,
+            "unstableChannels": 0,
+            "compactChangedChannels": 0,
+            "source": {
+              "calls": 302,
+              "triangles": 433012,
+              "swaps": 0,
+              "restored": true
+            },
+            "candidate": {
+              "calls": 302,
+              "triangles": 433012,
+              "swaps": 0,
+              "restored": true
+            },
+            "again": {
+              "calls": 302,
+              "triangles": 433012,
+              "swaps": 0,
+              "restored": true
+            }
+          },
+          {
+            "zoom": 15,
+            "changedChannels": 32415,
+            "unstableChannels": 0,
+            "compactChangedChannels": 0,
+            "source": {
+              "calls": 359,
+              "triangles": 454476,
+              "swaps": 0,
+              "restored": true
+            },
+            "candidate": {
+              "calls": 359,
+              "triangles": 180600,
+              "swaps": 65,
+              "restored": true
+            },
+            "again": {
+              "calls": 359,
+              "triangles": 454476,
+              "swaps": 0,
+              "restored": true
+            }
+          }
+        ],
+        "transitions": [
+          {
+            "pixels": 45,
+            "reduced": false,
+            "restored": true,
+            "swaps": 0
+          },
+          {
+            "pixels": 41,
+            "reduced": true,
+            "restored": true,
+            "swaps": 65
+          },
+          {
+            "pixels": 45,
+            "reduced": true,
+            "restored": true,
+            "swaps": 65
+          },
+          {
+            "pixels": 48,
+            "reduced": false,
+            "restored": true,
+            "swaps": 0
+          },
+          {
+            "pixels": 45,
+            "reduced": false,
+            "restored": true,
+            "swaps": 0
+          },
+          {
+            "pixels": 30,
+            "reduced": true,
+            "restored": true,
+            "swaps": 65
+          }
+        ],
+        "rigidPairs": [
+          {
+            "zoom": 5,
+            "reference": {
+              "calls": 302,
+              "triangles": 433012,
+              "swaps": 0,
+              "restored": true
+            },
+            "candidate": {
+              "calls": 302,
+              "triangles": 433012,
+              "swaps": 0,
+              "restored": true
+            },
+            "repeat": {
+              "calls": 302,
+              "triangles": 433012,
+              "swaps": 0,
+              "restored": true
+            },
+            "changedChannels": 0,
+            "unstableChannels": 0
+          },
+          {
+            "zoom": 15,
+            "reference": {
+              "calls": 359,
+              "triangles": 199904,
+              "swaps": 44,
+              "restored": true
+            },
+            "candidate": {
+              "calls": 359,
+              "triangles": 180600,
+              "swaps": 65,
+              "restored": true
+            },
+            "repeat": {
+              "calls": 359,
+              "triangles": 199904,
+              "swaps": 44,
+              "restored": true
+            },
+            "changedChannels": 2055,
+            "unstableChannels": 0
+          }
+        ],
+        "actorViewFilterAllocated": false,
+        "cpu": {
+          "scope": "Same-scene source arm bypasses controller wrapper/validation; combined arm includes it. Real clock,48 samples per path. Delivery idle; allocated candidates/cache remain. Submission only, not frame pacing or installation/memory baseline.",
+          "reference": {
+            "frames": 48,
+            "median": 9.300000011920929,
+            "p95": 13.799999982118607
+          },
+          "candidate": {
+            "frames": 48,
+            "median": 8.900000005960464,
+            "p95": 13.100000023841858
+          }
+        }
+      }
+    }
+  }
+}

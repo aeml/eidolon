@@ -70,7 +70,7 @@ case "$*" in
   *clean*) echo clean >> "$STORAGE_COMMANDS" ;;
 esac
 `,
-				"bin/curl": "#!/bin/sh\necho '{\"commit\":\"fixture-commit\",\"database\":\"ready\"}'\n",
+				"bin/curl": "#!/bin/sh\necho '{\"commit\":\"fixture-commit\",\"database\":\"ready\",\"terrainProfile\":\"flat-v1\"}'\n",
 				"bin/docker": `#!/bin/sh
 echo "$*" >> "$STORAGE_COMMANDS"
 case "$*" in

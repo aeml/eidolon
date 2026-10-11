@@ -1,0 +1,207 @@
+{
+  "recordedUTC": "2026-10-10T22:07:03.321323+00:00",
+  "source": "5e3c4d3faf17fad3e532c91e7b8f8d18669d43cf",
+  "runtime": "d2a82c666458c840d1ee77ca53b297e7240d039b",
+  "ordinaryPartySource": "a5d2f66f420302a6f55e460c0bdfd41e1da7c60c",
+  "laterRuntimeDelta": "Resource ownership comment only",
+  "runtimeSHA256": {
+    "src/art/ActorInstanceMultiDraw.js": "09b55219719dddf6c3b7081f8069d218762d8ae20128ffdb1de6bc54aba6e4ec",
+    "src/art/ActorInstanceBatches.js": "f21a116db9ab7356ab4c31879f38bc6f1ac1f2cd4bc2ba9e0739970cf4b78b5a",
+    "src/core/RenderSystem.js": "ff551bdd2ef974ab3c4a87594790c53d5590d819e26bfbc4aae92421e4b5fe72"
+  },
+  "selectedIntoHeld": false,
+  "privateDefault": true,
+  "public": false,
+  "focused": {
+    "suites": 6,
+    "passed": 99
+  },
+  "native": {
+    "first": {
+      "stats": {
+        "total": 8,
+        "expected": 8,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      },
+      "maxRetry": 0
+    },
+    "lifecycle": {
+      "stats": {
+        "total": 2,
+        "expected": 2,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      },
+      "maxRetry": 0
+    }
+  },
+  "exactRGBComparisons": {
+    "wholeBucketControls": 24,
+    "perInstanceClipped": 24,
+    "changedRGB": 0
+  },
+  "defaultLifecycle": [
+    {
+      "qualityProof": 0,
+      "retiredCycles": 3,
+      "pooledRootsReturned": 12,
+      "fallback": {
+        "changedRGB": 0,
+        "groups": 0,
+        "originalsRestored": true
+      },
+      "disposed": true
+    },
+    {
+      "qualityProof": 1,
+      "retiredCycles": 3,
+      "pooledRootsReturned": 12,
+      "fallback": {
+        "changedRGB": 0,
+        "groups": 0,
+        "originalsRestored": true
+      },
+      "disposed": true
+    }
+  ],
+  "connectedParty": {
+    "high": {
+      "terminal": {
+        "exitCode": 1,
+        "startedUnix": 1791669397.2306695,
+        "finishedUnix": 1791669447.2234168,
+        "commit": "d2a82c666458c840d1ee77ca53b297e7240d039b"
+      },
+      "native": {
+        "total": 2,
+        "expected": 0,
+        "unexpected": 1,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": false
+      },
+      "maxRetry": 0,
+      "serverMarkers": {
+        "WARNING: DATA RACE": 0,
+        "panic:": 0,
+        "fatal error:": 0,
+        "Worker panic:": 0,
+        "Recovered from panic in Update:": 0
+      },
+      "finalGoRaceAndFourClassSavesPassed": false,
+      "failure": "Unchanged strict paired helper requires triangle reduction; this actual fully visible High view has equal triangles. Normal profiling/final saved custody did not execute. Failed run retained; no retry or relaxed paired assertion."
+    },
+    "high-startup": {
+      "terminal": {
+        "exitCode": 0,
+        "startedUnix": 1791669580.1600304,
+        "finishedUnix": 1791669621.37892,
+        "commit": "a5d2f66f420302a6f55e460c0bdfd41e1da7c60c"
+      },
+      "native": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "maxRetry": 0,
+      "serverMarkers": {
+        "WARNING: DATA RACE": 0,
+        "panic:": 0,
+        "fatal error:": 0,
+        "Worker panic:": 0,
+        "Recovered from panic in Update:": 0
+      },
+      "finalGoRaceAndFourClassSavesPassed": true,
+      "startup": {
+        "selectedAutomatically": true,
+        "groups": 21,
+        "extension": true,
+        "restored": true
+      },
+      "originalBudgets": {
+        "maximumDraws": 350,
+        "maximumTriangles": 250000,
+        "maximumFrameMedianMs": 20,
+        "maximumFrameP95Ms": 33.4
+      },
+      "sampledBudgetsPassed": true,
+      "profile": {
+        "frames": 180,
+        "drawCallsMedian": 265,
+        "trianglesMedian": 176732,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.8,
+        "activeEntitiesMin": 30,
+        "activeEntitiesMax": 30,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      }
+    },
+    "low-startup": {
+      "terminal": {
+        "exitCode": 0,
+        "startedUnix": 1791669621.40712,
+        "finishedUnix": 1791669659.7282126,
+        "commit": "a5d2f66f420302a6f55e460c0bdfd41e1da7c60c"
+      },
+      "native": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "maxRetry": 0,
+      "serverMarkers": {
+        "WARNING: DATA RACE": 0,
+        "panic:": 0,
+        "fatal error:": 0,
+        "Worker panic:": 0,
+        "Recovered from panic in Update:": 0
+      },
+      "finalGoRaceAndFourClassSavesPassed": true,
+      "startup": {
+        "selectedAutomatically": true,
+        "groups": 23,
+        "extension": true,
+        "restored": true
+      },
+      "originalBudgets": {
+        "maximumDraws": 200,
+        "maximumTriangles": 85000,
+        "maximumFrameMedianMs": 20,
+        "maximumFrameP95Ms": 33.4
+      },
+      "sampledBudgetsPassed": true,
+      "profile": {
+        "frames": 180,
+        "drawCallsMedian": 149,
+        "trianglesMedian": 79962,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.8,
+        "activeEntitiesMin": 30,
+        "activeEntitiesMax": 30,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      }
+    }
+  },
+  "scope": "Automatic stock multi-draw and conservative per-instance clipping of existing generated actor instance buckets, preserving exact original cell origins, float32 matrices, source geometry/material, color/shadow ordering, borrowed assets and exception restoration. Ordinary High and Low startup, 180-frame original quality budgets and four-class fourteen-slot Go-race saves passed. Select only the three pinned actor/runtime files, not the inherited private opt-in fitted rigid handgear pilot. No same-population comparison is claimed across ordinary High/Low runs. Prior High389draw/Low202draw/Low87602triangle failures retained; sampled passes do not establish universal hardware, full moving world/combat, art, device, soak, beta, launch or full-goal acceptance.",
+  "sanitization": {
+    "preparedAccounts": 12,
+    "plainFilesScanned": 84,
+    "embeddedEntriesScanned": 13,
+    "remainingPreparedNames": 0,
+    "automaticCredentialRecordings": "disabled"
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-default-actor-cell-checks-20261010",
+  "inventorySHA256": "867ab5effbddc808cc3955d36a425ac72b65a58a95053f5495e94188faa2c905",
+  "evidenceState": "Historical frozen candidate receipt; current held selection is recorded separately in actor-default-integration receipt. Modular startup, despite overbroad compiled-client wording in initial QA attachment."
+}

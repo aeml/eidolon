@@ -67,7 +67,12 @@ self.addEventListener('message', (event) => {
 
 self.addEventListener('fetch', (event) => {
     const requestUrl = new URL(event.request.url);
-    if (event.request.method !== 'GET' || !requestUrl.pathname.includes('/assets/')) {
+    // Immutable generated worker names keep a returning engine paired with its
+    // exact code. Other application JavaScript remains outside this asset cache.
+    const geometryWorker = requestUrl.origin === self.location.origin &&
+        /\/src\/core\/ActorGameplayGeometryWorker\.[a-f0-9]{16}\.js$/.test(requestUrl.pathname) &&
+        /^[A-Za-z0-9._-]{7,80}$/.test(requestUrl.searchParams.get('release') || '');
+    if (event.request.method !== 'GET' || (!requestUrl.pathname.includes('/assets/') && !geometryWorker)) {
         return;
     }
 

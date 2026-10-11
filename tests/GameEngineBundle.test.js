@@ -1,4 +1,5 @@
 import { execFile } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { promisify } from 'node:util';
 import { cp, mkdtemp, mkdir, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -17,6 +18,10 @@ async function fixture() {
     fixtures.push(root);
     await mkdir(path.join(root, 'src/core'), { recursive: true });
     await mkdir(path.join(root, 'src/ui'), { recursive: true });
+    for (const filename of ['core/ActorGameplayGeometryWorker.js', 'core/ActorGameplayGeometryDelivery.js', 'art/GameplayBodyIndices.js', 'art/GameplayColorIndices.js']) {
+        await mkdir(path.dirname(path.join(root, 'src', filename)), { recursive: true });
+        await cp(path.join('src', filename), path.join(root, 'src', filename));
+    }
     await writeFile(path.join(root, 'package.json'), '{"type":"module"}');
     await writeFile(path.join(root, 'release.json'), '{"version":"Alpha 1.79.11"}');
     await writeFile(path.join(root, 'src/main.js'), "import {setToken} from './core/CredentialToken.js'; export {setToken}; export const enter=()=>import('./core/GameEngine.js'); export const retry=()=>import('./core/GameEngine.js?startupRetry=1');");
@@ -32,9 +37,16 @@ test('published lazy engine preserves shared credential identity, asset paths an
     const original = await readFile(path.join(root, 'src/core/GameEngine.js'), 'utf8');
     const result = await bundleGameEngine(root);
     expect(result.bundledModules).toBe(2);
+    const worker = await readFile(path.join(root, result.worker.output));
+    expect(createHash('sha256').update(worker).digest('hex')).toBe(result.worker.sha256);
+    expect(result.worker.output).toContain(result.worker.sha256.slice(0, 16));
+    expect(result.worker.imports).toEqual([]);
+    expect(worker.toString()).toContain('Permission is hereby granted');
+    expect(await readFile(path.join(root, 'src/core/ActorGameplayGeometryDelivery.js'), 'utf8')).toContain(path.basename(result.worker.output));
     expect(result.externalImports).toEqual(['./CredentialToken.js']);
     expect(await readFile(path.join(root, 'src/core/GameEngine.js'), 'utf8')).toBe(original);
     await versionPagesRuntime(root, 'abcdefgh123');
+    expect(createHash('sha256').update(await readFile(path.join(root, result.worker.output))).digest('hex')).toBe(result.worker.sha256);
     const mainURL = `${pathToFileURL(path.join(root, 'src/main.js'))}?release=abcdefgh123`;
     const { stdout } = await execute(process.execPath, ['--input-type=module', '-e',
         `const login=await import(${JSON.stringify(mainURL)}); login.setToken('synthetic-only');

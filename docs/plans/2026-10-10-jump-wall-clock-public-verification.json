@@ -1,0 +1,201 @@
+{
+  "recordedUTC": "2026-10-10T12:57:30.037965+00:00",
+  "version": "Alpha 1.79.25",
+  "commit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79",
+  "ci": 38051193149,
+  "attempt": 1,
+  "status": "Deployed; requested jump correction independently verified live; required release CI failed Gold/stash gameplay assertions. Not release acceptance.",
+  "jumpFixVerified": true,
+  "releaseAccepted": false,
+  "deployment": {
+    "frontend": {
+      "commit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79",
+      "version": "Alpha 1.79.25"
+    },
+    "backend": {
+      "status": "ok",
+      "database": "ready",
+      "commit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79",
+      "version": "Alpha 1.79.25",
+      "goroutines": 40,
+      "heapAllocBytes": 80810024,
+      "heapObjects": 86789,
+      "broadcastQueues": {
+        "queued": 0,
+        "capacity": 1024,
+        "encounterQueued": 0,
+        "encounterCapacity": 128,
+        "dropped": 0,
+        "encounterDropped": 0,
+        "invalidDropped": 0
+      },
+      "operational": {
+        "characterJournal": {
+          "inFlight": 0,
+          "inFlightKnown": true,
+          "completed": 26,
+          "failed": 0,
+          "timedSamples": 26,
+          "totalMicros": 295992,
+          "maxMicros": 46845
+        },
+        "characterCommit": {
+          "inFlight": 0,
+          "inFlightKnown": true,
+          "completed": 26,
+          "failed": 0,
+          "timedSamples": 26,
+          "totalMicros": 225829,
+          "maxMicros": 25875
+        },
+        "characterCleanup": {
+          "inFlight": 0,
+          "inFlightKnown": true,
+          "completed": 26,
+          "failed": 0,
+          "timedSamples": 26,
+          "totalMicros": 142565,
+          "maxMicros": 23980
+        },
+        "characterRecovery": {
+          "inFlight": 0,
+          "inFlightKnown": true,
+          "completed": 9,
+          "failed": 0,
+          "timedSamples": 9,
+          "totalMicros": 650,
+          "maxMicros": 100
+        },
+        "casinoGold": {
+          "inFlight": 0,
+          "inFlightKnown": true,
+          "completed": 0,
+          "failed": 0,
+          "timedSamples": 0,
+          "totalMicros": 0,
+          "maxMicros": 0
+        },
+        "casinoEP": {
+          "inFlight": 0,
+          "inFlightKnown": true,
+          "completed": 0,
+          "failed": 0,
+          "timedSamples": 0,
+          "totalMicros": 0,
+          "maxMicros": 0
+        },
+        "realtimeUpdate": {
+          "inFlight": 1,
+          "inFlightKnown": true,
+          "completed": 15966,
+          "failed": 0,
+          "timedSamples": 15966,
+          "totalMicros": 68154739,
+          "maxMicros": 15512
+        },
+        "stateBroadcast": {
+          "inFlight": 0,
+          "inFlightKnown": true,
+          "completed": 15966,
+          "failed": 0,
+          "timedSamples": 15966,
+          "totalMicros": 4287781,
+          "maxMicros": 9630
+        }
+      }
+    },
+    "normalTLS": true,
+    "allEightAssetsMatch": true,
+    "engineSHA256": "6ee2df499108f1337ca99b9f770595083a05f042782e2dff9aeb7f5b3f7458d7"
+  },
+  "requiredCI": {
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "name": "Server Tests (Go)",
+        "conclusion": "success"
+      },
+      {
+        "name": "Browser Smoke (Playwright 1/3)",
+        "conclusion": "success"
+      },
+      {
+        "name": "Browser Smoke (Playwright 3/3)",
+        "conclusion": "success"
+      },
+      {
+        "name": "Browser Smoke (Playwright 2/3)",
+        "conclusion": "success"
+      },
+      {
+        "name": "Client Tests (Jest)",
+        "conclusion": "success"
+      },
+      {
+        "name": "Predeploy Character QA (System Chrome)",
+        "conclusion": "success"
+      },
+      {
+        "name": "Validate Production QA Inputs",
+        "conclusion": "success"
+      },
+      {
+        "name": "Deploy to GitHub Pages",
+        "conclusion": "success"
+      },
+      {
+        "name": "Deploy Server (SSH)",
+        "conclusion": "success"
+      },
+      {
+        "name": "Live Release and Character QA",
+        "conclusion": "failure"
+      }
+    ],
+    "liveReport": {
+      "total": 9,
+      "expected": 7,
+      "unexpected": 1,
+      "flaky": 0,
+      "skipped": 1
+    },
+    "failure": {
+      "firstAttempt": "freePersistentQALootSlot exact vendor Gold credit, expected384489 received384731; 15000ms poll expired",
+      "automaticConfiguredRetry": "storePersistentQALootSpare unchanged-Gold assertion, expected384731 received384906 (+175)",
+      "rootCause": "Not established. Sale/stash sequencing is implicated; original24failure causes remain unproven. No equality/assertion relaxation or rerun.",
+      "laterLiveSteps": "Required town recovery/Well Rested and optional four-class were skipped; not passes."
+    }
+  },
+  "freshPublicJump": {
+    "test": "Trusted native Ctrl-click through actual visible landing; fresh ordinary Fighter registration, no QA grants, no private rendering owner",
+    "clickToLandingMs": 1648.5999999940395,
+    "observedFlightMs": 1582.9000000059605,
+    "serverDuration": 1.5,
+    "distance": 26.966157155164755,
+    "positionError": 0,
+    "renderError": 0,
+    "frames": 51,
+    "nativeReport": {
+      "total": 1,
+      "expected": 1,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "retries": 0,
+    "recordings": "off; sanitized before immediate native report archive"
+  },
+  "firstReleaseAttempt": {
+    "ci": 38050260227,
+    "commit": "3ac476e63beba25829fb9cab981ac908bf5b5929",
+    "conclusion": "failure",
+    "reason": "Server DATA RACE; all deployments skipped; qualified correction retained separately"
+  },
+  "next": "Diagnose and reproduce exact Gold/stash boundary in disposable actual server/browser/Mongo, preserve exact economy invariants and unchanged required gates; no blind retry, waiver, cancellation or successor push. Separate private renderer prototype remains unselected.",
+  "limits": "Bounded actual public jump and local15FPS qualification do not establish all devices, complete release acceptance, modern-art, 24h soak, feature freeze, beta or full1.11\u20131.99 completion. Public24/25product remains unmerged into held renderer/terrain branch.",
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-release25-checks-20261010",
+    "inventoryEntries": 63,
+    "inventorySHA256": "1468dfa6a0cd6dbd908616d0fb7d4234c66cc6b46ae046431a885401bee8d055"
+  }
+}

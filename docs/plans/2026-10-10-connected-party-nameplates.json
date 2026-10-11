@@ -1,0 +1,42 @@
+{
+  "recordedUTC": "2026-10-10T13:57:40.079555+00:00",
+  "sourceCommit": "2723cff1904671b5be3b6d01f996402e6bf9a0b0",
+  "productSourceUnchangedSince": "5c5494ef3cecead62924a4bf6dd47d6c7513f33b",
+  "sourcePins": {
+    "tests/e2e/terrain-equipped-party.spec.js": "a52adcec41ae2f8b708b70f6645ebfbfe5ee8562fea3aba6db3b5ddd9d550a6d",
+    "server/terrain_browser_party_integration_test.go": "419dda8d36221f91a450f29ffea7f0beb560912c626569331aab29ba2e54a8fe",
+    "src/core/NameplatePresentation.js": "de69dd5baed912cbb92f1e492b76f44783f6a8efc721c54222c079e272d7ab2a"
+  },
+  "state": "Actual connected High nameplate ownership/layout check passes; screenshot suspicion not reproduced, no product repair or acceptance inferred.",
+  "scope": "Seven visible NameTag sprites beneath active entity roots after ordinary live connected four-class gameplay, one renderer/three authenticated socket peers; full actual world/HUD, selected supplied High bodies, default shadow and geometry owners null. Does not prove every transient/nameplate/HUD interaction or physical-device layout.",
+  "checks": {
+    "visibleLabels": 7,
+    "allOwnedAndChosen": true,
+    "heightPixels": 22,
+    "overlappingPairs": 0,
+    "native": {
+      "total": 2,
+      "expected": 1,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 1,
+      "ok": true
+    },
+    "nativeElapsed": "1pass23.1s; single-renderer case21.5s; four-renderer alternative skipped; no retries/flaky/unexpected",
+    "GoRace": "Actual private server/disposable Mongo party30.09s/package31.152s; exact14slot equipment/inventory/EP/party/logout persistence assertions unchanged; no new Gold/resource assertion claimed",
+    "serverMarkers": {
+      "WARNING: DATA RACE": 0,
+      "panic:": 0,
+      "fatal error:": 0,
+      "Worker panic:": 0,
+      "Recovered from panic in Update:": 0
+    }
+  },
+  "privacy": "Four prepared accounts sanitized in logs/results/embedded native ZIP before immediate archive; server copy sanitized; no recordings; explicit postlogin HUD PNG has synthetic labels, requires separate visual review and is not text-sanitizer proof.",
+  "next": "Retain existing bounded/priority crowd layout. Do not modify it from apparent image density alone. Continue exact26 publication and real remaining visual/device/performance gates.",
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-party-nameplate-checks-20261010",
+    "inventoryEntries": 19,
+    "inventorySHA256": "65fc4d5b3613c410eea8b4ddc778605f1df4bcfbd221ad1d0af06d9afc1685db"
+  }
+}

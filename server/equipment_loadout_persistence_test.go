@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"eidolon-server/internal/game"
+	"eidolon-server/internal/lifecycle"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -46,6 +47,14 @@ func TestLoadoutPersistenceRoundTripOwnsItsReferences(t *testing.T) {
 
 func TestLoadoutInitialJoinAndResumePublishesSavedBar(t *testing.T) {
 	_, _ = setupCharacterJournalTest(t)
+	previousWork := backgroundCharacterWork
+	backgroundCharacterWork = &lifecycle.Group{}
+	t.Cleanup(func() {
+		// Initial state schedules guild presence work. Join it before the
+		// journal fixture restores db/world and the next test replaces them.
+		backgroundCharacterWork.SealWhenIdle()
+		backgroundCharacterWork = previousWork
+	})
 	world = game.NewWorld(nil)
 	c := newLevelCommandClient()
 	p := newLevelCommandPlayer(c.playerID)

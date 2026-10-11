@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { groundEnemyDeathClip } from './EnemyDeathGrounding.js';
 import { batchHumanoidRenderParts } from './HumanoidRenderBatches.js';
+import { batchRigidSurfaceParts } from './RigidSurfaceBatches.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -168,12 +169,13 @@ function installRestPoseReset(root) {
             object.quaternion.copy(quaternion);
             object.scale.copy(scale);
             object.visible = visible;
+            if (!object.matrixAutoUpdate) object.updateMatrix();
         });
         root.updateMatrixWorld(true);
     };
 }
 
-function finalizeEnemy(root, type, clips, { batch = false } = {}) {
+function finalizeEnemy(root, type, clips, { batch = false, surfaceAttributes = false } = {}) {
     const definition = PROCEDURAL_LEGACY_ENEMY_DEFINITIONS[type];
     root.name = `Procedural${type}`;
     root.userData.proceduralEnemyFamily = true;
@@ -193,7 +195,10 @@ function finalizeEnemy(root, type, clips, { batch = false } = {}) {
     // Batch before recording the reset pose so pooled actors own only the
     // actual render tree, not removed source meshes. Skeleton uses the same
     // immutable rigid-pivot contract as the procedural player rigs.
-    if (batch) batchHumanoidRenderParts(root);
+    if (batch) {
+        batchHumanoidRenderParts(root);
+        if (surfaceAttributes) batchRigidSurfaceParts(root);
+    }
     installRestPoseReset(root);
     return root;
 }
@@ -1058,7 +1063,7 @@ function createInfernoTitanClips() {
     ];
 }
 
-export function createProceduralInfernoTitan() {
+export function createProceduralInfernoTitan({ batch = false, surfaceAttributes = false } = {}) {
     const definition = PROCEDURAL_LEGACY_ENEMY_DEFINITIONS.InfernoTitan;
     const p = definition.palette;
     const materials = {
@@ -1137,7 +1142,7 @@ export function createProceduralInfernoTitan() {
     addMesh(censer, 'InfernoTitan_CenserCoal', geometry('titan-censer-coal', () => new THREE.OctahedronGeometry(0.17, 0)), materials.ember,
         { position: [0, -1.28, 0.25], castShadow: false });
 
-    return finalizeEnemy(root, 'InfernoTitan', createInfernoTitanClips());
+    return finalizeEnemy(root, 'InfernoTitan', createInfernoTitanClips(), { batch, surfaceAttributes });
 }
 
 export function createProceduralLegacyEnemy(type) {

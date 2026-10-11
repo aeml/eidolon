@@ -1,0 +1,88 @@
+{
+  "recordedUTC": "2026-10-10T19:45:52.992861+00:00",
+  "version": "Alpha 1.79.29",
+  "commit": "12e5e3c41a3b4e897138973a7514fc8da7881bcb",
+  "ci": 38078784320,
+  "attempt": 1,
+  "url": "https://github.com/aeml/eidolon/actions/runs/38078784320",
+  "status": "completed",
+  "conclusion": "success",
+  "deployed": true,
+  "requiredCIPassed": true,
+  "releaseGateAccepted": true,
+  "requestedMotionAndAdminFixesAccepted": true,
+  "terminalIdentityMatches": true,
+  "assetProof": {
+    "files": 8,
+    "allAssetsMatch": true,
+    "engineSHA256": "c925851b181df865ce4dcd48acb1b1bd732c391fc2f348caf47e7143a6ed671e"
+  },
+  "jobs": {
+    "Browser Smoke (Playwright 3/3)": "success",
+    "Browser Smoke (Playwright 1/3)": "success",
+    "Server Tests (Go)": "success",
+    "Client Tests (Jest)": "success",
+    "Browser Smoke (Playwright 2/3)": "success",
+    "Predeploy Character QA (System Chrome)": "success",
+    "Validate Production QA Inputs": "success",
+    "Deploy to GitHub Pages": "success",
+    "Deploy Server (SSH)": "success",
+    "Live Release and Character QA": "success"
+  },
+  "requiredLiveSteps": {
+    "Wait for matching live releases": "success",
+    "Run live anonymous and persistent-character QA": "success",
+    "Run live town recovery and Well Rested QA": "success"
+  },
+  "optionalFourClass": "skipped",
+  "native": {
+    "reports": [
+      {
+        "total": 9,
+        "expected": 8,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      }
+    ],
+    "maxRetry": 0,
+    "terminalLines": [
+      "2026-10-10T19:43:20.7764785Z   1 skipped",
+      "2026-10-10T19:43:20.7765080Z   8 passed (5.7m)",
+      "2026-10-10T19:44:38.2490594Z   2 passed (1.3m)",
+      "2026-10-10T19:45:18.6412971Z   1 passed (39.7s)",
+      "2026-10-10T19:45:18.8908673Z Live town recovery and Well Rested QA passed."
+    ],
+    "archiveSHA256": "0bcb1af217bf399bd6c155fe0d68fd365be7e53534efabe8ae27c6645a357cd1",
+    "archiveDigestMatchesAPI": true
+  },
+  "publicJump": {
+    "elapsedMs": 1396.7999999821186,
+    "acceptedDuration": 1.2999999523162842,
+    "auraSamples": 64,
+    "maxAuraError": 0,
+    "phaseBacksteps": 0,
+    "maxRenderedPathError": 0,
+    "positionError": 0,
+    "renderError": 0,
+    "distance": 26.941422735495323
+  },
+  "walkingAcceptance": {
+    "accepted": true,
+    "movingSamples": 88,
+    "maxAuraError": 0,
+    "elapsedMs": 1802.4000000059605,
+    "walkDistance": 20.59200081825244
+  },
+  "admin": {
+    "recordedUTC": "2026-10-10T19:43:29.650672+00:00",
+    "method": "Read-only SSH and in-memory Docker Config.Env classification; no identities or credentials retained",
+    "containerRunning": true,
+    "explicitTestAccounts": 6,
+    "configuredQAAccounts": 6,
+    "allConfiguredQAAccountsExcludedFromRealPlayerViews": true,
+    "databaseProof": "Owned real-Mongo fixture passed1,skipped0; distinct fixture database cleaned, production accounts unchanged"
+  },
+  "limits": "Scoped user-requested motion/aura/admin fixes accepted. Skips remain skips. Full original roadmap, held world geometry/shadow, private unselected rigid batching, historical performance failures, art/device/failed24hsoak/beta/launch/handoff remain open."
+}

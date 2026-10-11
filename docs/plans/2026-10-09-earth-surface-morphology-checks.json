@@ -1,0 +1,933 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-09T20:08:27.158930+00:00",
+  "status": "Selected private physical-material foundation, not deployed or Q/CB accepted",
+  "baseCommit": "acf38363c799102d2ff3b90530f449aeb827f575",
+  "referenceRuntime": "8e6cdb8f5c3a2bc165443233f4a3cf3cc128647e",
+  "testedSourceSHA256": {
+    "src/art/EarthGroundComposition.js": "22e5d7b30235c9c9e2556fcfa5a3f26586c0dd919b6639ade58155a1b930fc9d",
+    "src/art/EarthSurfaceDetail.js": "595eaae1fcefdd70489df9d2c233e6e4e5144bd1009055479710de3cea10efda",
+    "tests/EarthGroundComposition.test.js": "43a8ff9d80004a6c5db722a14cc738100a1146e175e6806ef47e14d19503d9a8",
+    "tests/EarthSurfaceDetail.test.js": "862e36d65bad19f050684b34d276b815007fdc07567e3e2b8cb3a0ee012e9f0a",
+    "tests/e2e/earth-surface-morphology.spec.js": "6e0faaa3fab167be07fbec255da43c1be688a6260fbabdfc2c76a4b636bea3ab"
+  },
+  "implementation": {
+    "purpose": "Replace arbitrary grain contrast with seamless physical soil aggregates, separate embedded stones and larger moss cushions; correlate color, roughness and relief at actual gameplay scale.",
+    "morphology": "Deterministic rotated/jittered elliptical sites across a wrapped8m field:32 soil cells (25cm),16 sparse stone cells (50cm),8 moss cells (1m). Stone sites have clipped mineral faces; no complete paving/crack network. Descriptor arrays only are shared; every material owns its textures.",
+    "channels": "Linear R soil height/G stone coverage/B moss height/A stone height. Existing authored canopy/trail/meadow/mineral fields and actual terrain normal exposure retained. Normal relief changes shading only; geometry/collision/actor placement/gameplay unchanged.",
+    "filtering": "Linear mipmapped fields consumed directly; no nonlinear threshold re-amplifies small soil grain after mip averaging. Height transition uses bounded fwidth filtering. Supplied actor/gear assets, all plants, shadows and ordinary lighting retained.",
+    "cost": {
+      "additionalOwnedTextures": 1,
+      "highBaseRGBABytes": 262144,
+      "lowBaseRGBABytes": 65536,
+      "highRGBAWithFullMipChainBytes": 349524,
+      "lowRGBAWithFullMipChainBytes": 87380,
+      "compositionTextureFetchesBefore": 6,
+      "compositionTextureFetchesAfter": 5,
+      "meaning": "Raw RGBA backing and mip-chain arithmetic, not measured total VRAM. Adds one map while replacing two grain fetches with one packed fetch; no claim of GPU speedup. New map CPU generation is synchronous at material construction, not per frame."
+    },
+    "ownership": "Material disposal releases mask/detail/surface exactly once and leaves caller-owned base map intact."
+  },
+  "units": {
+    "result": "2 suites/13 tests pass34.967s; no failed or skipped tests in this run. Periodic finite fields, seam continuity, High/Low canonical byte registration, sparse separated stone islands, varying relief, shader/material integration and ownership checked. Unchanged terrain geometry reuses retained evidence.",
+    "log": {
+      "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-checks-20261009/eidolon-earth-surface-morphology-units.log",
+      "sha256": "764564d43dc4c57d984794e56da4732db56148ebf040e52192ef65860cd9568b"
+    }
+  },
+  "native": {
+    "result": "First bounded comparison2 passes24.3s. Expanded native comparison2 passes46.4s (High26.0s/Low17.9s), with exact stable predecessor repeat, visibly changed candidate and identical paired submissions/geometry resources in eight views; four extra material GPU allocation/release cycles return to baseline.",
+    "qualification": [
+      {
+        "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-qualified-20261009/earth-surface-morphology-E-53745-hter-and-raised-scenery-low/comparison.json",
+        "sha256": "568cb877ad49222d04ba4f613ff83e40a8fcba64973b0ddaacd97ba1522e5f5c",
+        "report": {
+          "quality": "low",
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "reports": [
+            {
+              "label": "gate-run",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 782036,
+                "maximum": 66
+              },
+              "previous": {
+                "calls": 55,
+                "triangles": 60793,
+                "geometries": 62,
+                "textures": 60
+              },
+              "current": {
+                "calls": 55,
+                "triangles": 60793,
+                "geometries": 62,
+                "textures": 60
+              }
+            },
+            {
+              "label": "road-attack",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 732477,
+                "maximum": 61
+              },
+              "previous": {
+                "calls": 50,
+                "triangles": 44776,
+                "geometries": 81,
+                "textures": 84
+              },
+              "current": {
+                "calls": 50,
+                "triangles": 44776,
+                "geometries": 81,
+                "textures": 84
+              }
+            },
+            {
+              "label": "woodland-idle",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 750064,
+                "maximum": 53
+              },
+              "previous": {
+                "calls": 65,
+                "triangles": 49839,
+                "geometries": 101,
+                "textures": 105
+              },
+              "current": {
+                "calls": 65,
+                "triangles": 49839,
+                "geometries": 101,
+                "textures": 105
+              }
+            },
+            {
+              "label": "road-detail",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 624937,
+                "maximum": 74
+              },
+              "previous": {
+                "calls": 44,
+                "triangles": 39382,
+                "geometries": 101,
+                "textures": 105
+              },
+              "current": {
+                "calls": 44,
+                "triangles": 39382,
+                "geometries": 101,
+                "textures": 105
+              }
+            }
+          ],
+          "warm": {
+            "geometries": 101,
+            "textures": 105
+          },
+          "afterRepeat": {
+            "geometries": 101,
+            "textures": 105
+          },
+          "timings": [
+            {
+              "mode": "previous",
+              "frames": 120,
+              "rafMedianMs": 16.69999999999891,
+              "rafP95Ms": 16.700000000000728,
+              "submissionMedianMs": 6.5,
+              "submissionP95Ms": 11.800000011920929
+            },
+            {
+              "mode": "candidate",
+              "frames": 120,
+              "rafMedianMs": 16.69999999999891,
+              "rafP95Ms": 16.700000000000728,
+              "submissionMedianMs": 7.199999988079071,
+              "submissionP95Ms": 14
+            },
+            {
+              "mode": "candidate",
+              "frames": 120,
+              "rafMedianMs": 16.69999999999891,
+              "rafP95Ms": 16.799999999999272,
+              "submissionMedianMs": 5.0999999940395355,
+              "submissionP95Ms": 8.800000011920929
+            },
+            {
+              "mode": "previous",
+              "frames": 120,
+              "rafMedianMs": 16.69999999999891,
+              "rafP95Ms": 16.700000000000728,
+              "submissionMedianMs": 6,
+              "submissionP95Ms": 10.599999994039536
+            }
+          ],
+          "lifetime": [
+            {
+              "cycle": 0,
+              "generationMs": 141.90000000596046,
+              "baseline": {
+                "geometries": 101,
+                "textures": 105
+              },
+              "allocated": {
+                "geometries": 101,
+                "textures": 108
+              },
+              "released": {
+                "geometries": 101,
+                "textures": 105
+              },
+              "borrowedMapPresent": true
+            },
+            {
+              "cycle": 1,
+              "generationMs": 117.5,
+              "baseline": {
+                "geometries": 101,
+                "textures": 105
+              },
+              "allocated": {
+                "geometries": 101,
+                "textures": 108
+              },
+              "released": {
+                "geometries": 101,
+                "textures": 105
+              },
+              "borrowedMapPresent": true
+            }
+          ],
+          "scope": "Production raised scene, supplied14-slot Fighter and fixed sampled poses, gameplay zoom18/detail10. Same geometry/shadows/camera; candidate adds one owned packed map (both materials warm in comparison); wind shader uniform held only for comparison. No actual connected combat/HUD/whole-game/device budget acceptance."
+        },
+        "images": [
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-qualified-20261009/earth-surface-morphology-E-53745-hter-and-raised-scenery-low/gate-run-candidate.png",
+            "sha256": "629c725b2fa6af11df3ed58e044a66609e2e99a05a1fda52369e881ed44b9346"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-qualified-20261009/earth-surface-morphology-E-53745-hter-and-raised-scenery-low/gate-run-previous.png",
+            "sha256": "516a4073f59119dc7ce8bd912241ad0dc295b267b6e627b777a6fa11c110a3b1"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-qualified-20261009/earth-surface-morphology-E-53745-hter-and-raised-scenery-low/road-attack-candidate.png",
+            "sha256": "0fd729c51273ae598536a5848be38c4b0d9d4804b0be0f297a5a629a243926eb"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-qualified-20261009/earth-surface-morphology-E-53745-hter-and-raised-scenery-low/road-attack-previous.png",
+            "sha256": "3fe19d5e26489c5e1b524d41946fac8060bf8804dc694639401437bc1b365873"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-qualified-20261009/earth-surface-morphology-E-53745-hter-and-raised-scenery-low/road-detail-candidate.png",
+            "sha256": "9c46b92e183240e58748744d5411e8dc4113f8641512b34b087bda132fc86e66"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-qualified-20261009/earth-surface-morphology-E-53745-hter-and-raised-scenery-low/road-detail-previous.png",
+            "sha256": "57315b5db9002421771643c4ea5f13cc9fca9a42ec0b892de0469baab067331b"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-qualified-20261009/earth-surface-morphology-E-53745-hter-and-raised-scenery-low/woodland-idle-candidate.png",
+            "sha256": "a92fb2fcce6cdef0c95a18eaef553633da3d0376455c9fe8708f52ed15cc1735"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-qualified-20261009/earth-surface-morphology-E-53745-hter-and-raised-scenery-low/woodland-idle-previous.png",
+            "sha256": "01612e657892fb7acaf75307f42bb85de901388ad91bdaaed05667d96e65430e"
+          }
+        ]
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-qualified-20261009/earth-surface-morphology-E-b585d-ter-and-raised-scenery-high/comparison.json",
+        "sha256": "16c78029502a6b6d0fd2d62c7cac23676c7a74f55aba26698623df4b9175b7e8",
+        "report": {
+          "quality": "high",
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "reports": [
+            {
+              "label": "gate-run",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 2555707,
+                "maximum": 62
+              },
+              "previous": {
+                "calls": 110,
+                "triangles": 183522,
+                "geometries": 69,
+                "textures": 80
+              },
+              "current": {
+                "calls": 110,
+                "triangles": 183522,
+                "geometries": 69,
+                "textures": 80
+              }
+            },
+            {
+              "label": "road-attack",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 2356711,
+                "maximum": 64
+              },
+              "previous": {
+                "calls": 220,
+                "triangles": 242327,
+                "geometries": 101,
+                "textures": 116
+              },
+              "current": {
+                "calls": 220,
+                "triangles": 242327,
+                "geometries": 101,
+                "textures": 116
+              }
+            },
+            {
+              "label": "woodland-idle",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 2600722,
+                "maximum": 62
+              },
+              "previous": {
+                "calls": 164,
+                "triangles": 222220,
+                "geometries": 125,
+                "textures": 152
+              },
+              "current": {
+                "calls": 164,
+                "triangles": 222220,
+                "geometries": 125,
+                "textures": 152
+              }
+            },
+            {
+              "label": "road-detail",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 2268008,
+                "maximum": 76
+              },
+              "previous": {
+                "calls": 146,
+                "triangles": 184855,
+                "geometries": 125,
+                "textures": 152
+              },
+              "current": {
+                "calls": 146,
+                "triangles": 184855,
+                "geometries": 125,
+                "textures": 152
+              }
+            }
+          ],
+          "warm": {
+            "geometries": 125,
+            "textures": 152
+          },
+          "afterRepeat": {
+            "geometries": 125,
+            "textures": 152
+          },
+          "timings": [
+            {
+              "mode": "previous",
+              "frames": 120,
+              "rafMedianMs": 16.69999999999891,
+              "rafP95Ms": 33.29999999999927,
+              "submissionMedianMs": 14.400000005960464,
+              "submissionP95Ms": 24.19999998807907
+            },
+            {
+              "mode": "candidate",
+              "frames": 120,
+              "rafMedianMs": 16.69999999999891,
+              "rafP95Ms": 33.30000000000109,
+              "submissionMedianMs": 14.099999994039536,
+              "submissionP95Ms": 26.099999994039536
+            },
+            {
+              "mode": "candidate",
+              "frames": 120,
+              "rafMedianMs": 16.700000000000728,
+              "rafP95Ms": 33.400000000001455,
+              "submissionMedianMs": 15.400000005960464,
+              "submissionP95Ms": 27.30000001192093
+            },
+            {
+              "mode": "previous",
+              "frames": 120,
+              "rafMedianMs": 16.700000000000728,
+              "rafP95Ms": 33.30000000000291,
+              "submissionMedianMs": 15.400000005960464,
+              "submissionP95Ms": 24.400000005960464
+            }
+          ],
+          "lifetime": [
+            {
+              "cycle": 0,
+              "generationMs": 606.6999999880791,
+              "baseline": {
+                "geometries": 125,
+                "textures": 152
+              },
+              "allocated": {
+                "geometries": 125,
+                "textures": 155
+              },
+              "released": {
+                "geometries": 125,
+                "textures": 152
+              },
+              "borrowedMapPresent": true
+            },
+            {
+              "cycle": 1,
+              "generationMs": 469.80000001192093,
+              "baseline": {
+                "geometries": 125,
+                "textures": 152
+              },
+              "allocated": {
+                "geometries": 125,
+                "textures": 155
+              },
+              "released": {
+                "geometries": 125,
+                "textures": 152
+              },
+              "borrowedMapPresent": true
+            }
+          ],
+          "scope": "Production raised scene, supplied14-slot Fighter and fixed sampled poses, gameplay zoom18/detail10. Same geometry/shadows/camera; candidate adds one owned packed map (both materials warm in comparison); wind shader uniform held only for comparison. No actual connected combat/HUD/whole-game/device budget acceptance."
+        },
+        "images": [
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-qualified-20261009/earth-surface-morphology-E-b585d-ter-and-raised-scenery-high/gate-run-candidate.png",
+            "sha256": "34c6892b03c818c7580f9cc146bce8c701f7929cb917f20cb21e4f1bf8bb63a8"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-qualified-20261009/earth-surface-morphology-E-b585d-ter-and-raised-scenery-high/gate-run-previous.png",
+            "sha256": "304b9036945739bc4c1dccec60dff399c824317c676e1964069006c0bbdd445f"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-qualified-20261009/earth-surface-morphology-E-b585d-ter-and-raised-scenery-high/road-attack-candidate.png",
+            "sha256": "5db7c9198df3adeb4835d604717d6b4534ba598d0f5f0cb32373fa941c321353"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-qualified-20261009/earth-surface-morphology-E-b585d-ter-and-raised-scenery-high/road-attack-previous.png",
+            "sha256": "1e701e2e4872bf6e6a25f77677a6427aa86ff1eeafd98b02f2fb95b9aa8d44c1"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-qualified-20261009/earth-surface-morphology-E-b585d-ter-and-raised-scenery-high/road-detail-candidate.png",
+            "sha256": "c7101e921c8ffa3d87e7f753d0f5e7ba8001ddbab0bf0b133f6f7a471d30b6d1"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-qualified-20261009/earth-surface-morphology-E-b585d-ter-and-raised-scenery-high/road-detail-previous.png",
+            "sha256": "e062ac4e0c0ca505dfbae4d83c0d22c68e3a5d6e471e144186f63dea4c535b32"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-qualified-20261009/earth-surface-morphology-E-b585d-ter-and-raised-scenery-high/woodland-idle-candidate.png",
+            "sha256": "c4f61e954d3c85578fb91f5dc4aab04884aa6b958fef030b4ccb3fdb6d20e8ab"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-qualified-20261009/earth-surface-morphology-E-b585d-ter-and-raised-scenery-high/woodland-idle-previous.png",
+            "sha256": "ee7fc6587b5d395605436ab14baf9fc3010c2a21fc5a6b801af90a451b95c54c"
+          }
+        ]
+      }
+    ],
+    "initialCapture": [
+      {
+        "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-native-20261009/earth-surface-morphology-E-075b6-hter-and-raised-scenery-low/comparison.json",
+        "sha256": "e8f68937d54c3ff0d38ad137c0e929c415e45c5922c5c324ddbb3788a62e92af",
+        "report": {
+          "quality": "low",
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "reports": [
+            {
+              "label": "gate-run",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 782036,
+                "maximum": 66
+              },
+              "previous": {
+                "calls": 55,
+                "triangles": 60793,
+                "geometries": 62,
+                "textures": 60
+              },
+              "current": {
+                "calls": 55,
+                "triangles": 60793,
+                "geometries": 62,
+                "textures": 60
+              }
+            },
+            {
+              "label": "road-attack",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 732477,
+                "maximum": 61
+              },
+              "previous": {
+                "calls": 50,
+                "triangles": 44776,
+                "geometries": 81,
+                "textures": 84
+              },
+              "current": {
+                "calls": 50,
+                "triangles": 44776,
+                "geometries": 81,
+                "textures": 84
+              }
+            },
+            {
+              "label": "woodland-idle",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 750064,
+                "maximum": 53
+              },
+              "previous": {
+                "calls": 65,
+                "triangles": 49839,
+                "geometries": 101,
+                "textures": 105
+              },
+              "current": {
+                "calls": 65,
+                "triangles": 49839,
+                "geometries": 101,
+                "textures": 105
+              }
+            },
+            {
+              "label": "road-detail",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 624937,
+                "maximum": 74
+              },
+              "previous": {
+                "calls": 44,
+                "triangles": 39382,
+                "geometries": 101,
+                "textures": 105
+              },
+              "current": {
+                "calls": 44,
+                "triangles": 39382,
+                "geometries": 101,
+                "textures": 105
+              }
+            }
+          ],
+          "warm": {
+            "geometries": 101,
+            "textures": 105
+          },
+          "afterRepeat": {
+            "geometries": 101,
+            "textures": 105
+          },
+          "scope": "Production raised scene, supplied14-slot Fighter and fixed sampled poses, gameplay zoom18/detail10. Same geometry/shadows/camera/maps; wind shader uniform held only for comparison. No actual connected combat/HUD/whole-game/device budget acceptance."
+        },
+        "images": [
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-native-20261009/earth-surface-morphology-E-075b6-hter-and-raised-scenery-low/gate-run-candidate.png",
+            "sha256": "629c725b2fa6af11df3ed58e044a66609e2e99a05a1fda52369e881ed44b9346"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-native-20261009/earth-surface-morphology-E-075b6-hter-and-raised-scenery-low/gate-run-previous.png",
+            "sha256": "516a4073f59119dc7ce8bd912241ad0dc295b267b6e627b777a6fa11c110a3b1"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-native-20261009/earth-surface-morphology-E-075b6-hter-and-raised-scenery-low/road-attack-candidate.png",
+            "sha256": "0fd729c51273ae598536a5848be38c4b0d9d4804b0be0f297a5a629a243926eb"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-native-20261009/earth-surface-morphology-E-075b6-hter-and-raised-scenery-low/road-attack-previous.png",
+            "sha256": "3fe19d5e26489c5e1b524d41946fac8060bf8804dc694639401437bc1b365873"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-native-20261009/earth-surface-morphology-E-075b6-hter-and-raised-scenery-low/road-detail-candidate.png",
+            "sha256": "9c46b92e183240e58748744d5411e8dc4113f8641512b34b087bda132fc86e66"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-native-20261009/earth-surface-morphology-E-075b6-hter-and-raised-scenery-low/road-detail-previous.png",
+            "sha256": "57315b5db9002421771643c4ea5f13cc9fca9a42ec0b892de0469baab067331b"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-native-20261009/earth-surface-morphology-E-075b6-hter-and-raised-scenery-low/woodland-idle-candidate.png",
+            "sha256": "a92fb2fcce6cdef0c95a18eaef553633da3d0376455c9fe8708f52ed15cc1735"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-native-20261009/earth-surface-morphology-E-075b6-hter-and-raised-scenery-low/woodland-idle-previous.png",
+            "sha256": "01612e657892fb7acaf75307f42bb85de901388ad91bdaaed05667d96e65430e"
+          }
+        ]
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-native-20261009/earth-surface-morphology-E-dbb7f-ter-and-raised-scenery-high/comparison.json",
+        "sha256": "0fa052d76bb7295d99242030acb504a647bf8491f33ed96b5ae791a1a16732b4",
+        "report": {
+          "quality": "high",
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "reports": [
+            {
+              "label": "gate-run",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 2555707,
+                "maximum": 62
+              },
+              "previous": {
+                "calls": 110,
+                "triangles": 183522,
+                "geometries": 69,
+                "textures": 80
+              },
+              "current": {
+                "calls": 110,
+                "triangles": 183522,
+                "geometries": 69,
+                "textures": 80
+              }
+            },
+            {
+              "label": "road-attack",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 2356711,
+                "maximum": 64
+              },
+              "previous": {
+                "calls": 220,
+                "triangles": 242327,
+                "geometries": 101,
+                "textures": 116
+              },
+              "current": {
+                "calls": 220,
+                "triangles": 242327,
+                "geometries": 101,
+                "textures": 116
+              }
+            },
+            {
+              "label": "woodland-idle",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 2600722,
+                "maximum": 62
+              },
+              "previous": {
+                "calls": 164,
+                "triangles": 222220,
+                "geometries": 125,
+                "textures": 152
+              },
+              "current": {
+                "calls": 164,
+                "triangles": 222220,
+                "geometries": 125,
+                "textures": 152
+              }
+            },
+            {
+              "label": "road-detail",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 2268008,
+                "maximum": 76
+              },
+              "previous": {
+                "calls": 146,
+                "triangles": 184855,
+                "geometries": 125,
+                "textures": 152
+              },
+              "current": {
+                "calls": 146,
+                "triangles": 184855,
+                "geometries": 125,
+                "textures": 152
+              }
+            }
+          ],
+          "warm": {
+            "geometries": 125,
+            "textures": 152
+          },
+          "afterRepeat": {
+            "geometries": 125,
+            "textures": 152
+          },
+          "scope": "Production raised scene, supplied14-slot Fighter and fixed sampled poses, gameplay zoom18/detail10. Same geometry/shadows/camera/maps; wind shader uniform held only for comparison. No actual connected combat/HUD/whole-game/device budget acceptance."
+        },
+        "images": [
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-native-20261009/earth-surface-morphology-E-dbb7f-ter-and-raised-scenery-high/gate-run-candidate.png",
+            "sha256": "34c6892b03c818c7580f9cc146bce8c701f7929cb917f20cb21e4f1bf8bb63a8"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-native-20261009/earth-surface-morphology-E-dbb7f-ter-and-raised-scenery-high/gate-run-previous.png",
+            "sha256": "304b9036945739bc4c1dccec60dff399c824317c676e1964069006c0bbdd445f"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-native-20261009/earth-surface-morphology-E-dbb7f-ter-and-raised-scenery-high/road-attack-candidate.png",
+            "sha256": "5db7c9198df3adeb4835d604717d6b4534ba598d0f5f0cb32373fa941c321353"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-native-20261009/earth-surface-morphology-E-dbb7f-ter-and-raised-scenery-high/road-attack-previous.png",
+            "sha256": "1e701e2e4872bf6e6a25f77677a6427aa86ff1eeafd98b02f2fb95b9aa8d44c1"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-native-20261009/earth-surface-morphology-E-dbb7f-ter-and-raised-scenery-high/road-detail-candidate.png",
+            "sha256": "c7101e921c8ffa3d87e7f753d0f5e7ba8001ddbab0bf0b133f6f7a471d30b6d1"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-native-20261009/earth-surface-morphology-E-dbb7f-ter-and-raised-scenery-high/road-detail-previous.png",
+            "sha256": "e062ac4e0c0ca505dfbae4d83c0d22c68e3a5d6e471e144186f63dea4c535b32"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-native-20261009/earth-surface-morphology-E-dbb7f-ter-and-raised-scenery-high/woodland-idle-candidate.png",
+            "sha256": "c4f61e954d3c85578fb91f5dc4aab04884aa6b958fef030b4ccb3fdb6d20e8ab"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-native-20261009/earth-surface-morphology-E-dbb7f-ter-and-raised-scenery-high/woodland-idle-previous.png",
+            "sha256": "ee7fc6587b5d395605436ab14baf9fc3010c2a21fc5a6b801af90a451b95c54c"
+          }
+        ]
+      }
+    ],
+    "timingMeaning": "Per quality4x120 frames in ABBA order in the same road-detail scene. Actual native RAF and synchronous scene submission; wind uniform held for image stability, fixed sampled actor poses. High RAF medians16.7/p9533.3\u201333.4, Low16.7/p9516.7\u201316.8ms. Mixed CPU samples support no stable speedup or regression claim. Excludes connected simulation/HUD/whole-game and physical device qualification.",
+    "memoryMeaning": "Both predecessor and candidate materials are warmed before paired memory counts; equal counts do not mean zero additional texture. Compared with previous receipt, candidate adds one allocated map. Each temporary composition allocates exactly3 owned maps and releases them while using borrowed albedo; same geometry retained."
+  },
+  "generation": {
+    "report": {
+      "scope": "Node24 CPU-only generation, not browser/device load-time qualification",
+      "result": [
+        {
+          "quality": "high",
+          "cycle": 0,
+          "generationMs": 166.95268400000003,
+          "bytes": 262144
+        },
+        {
+          "quality": "high",
+          "cycle": 1,
+          "generationMs": 144.69643399999998,
+          "bytes": 262144
+        },
+        {
+          "quality": "high",
+          "cycle": 2,
+          "generationMs": 140.85704999999996,
+          "bytes": 262144
+        },
+        {
+          "quality": "low",
+          "cycle": 0,
+          "generationMs": 36.00451300000009,
+          "bytes": 65536
+        },
+        {
+          "quality": "low",
+          "cycle": 1,
+          "generationMs": 35.870318999999995,
+          "bytes": 65536
+        },
+        {
+          "quality": "low",
+          "cycle": 2,
+          "generationMs": 35.40472799999998,
+          "bytes": 65536
+        }
+      ]
+    },
+    "meaning": "Additional map Node24 CPU-only construction140.9\u2013167.0ms High/35.4\u201336.0ms Low. Expanded native lifetime generation469.8\u2013606.7ms High/117.5\u2013141.9ms Low includes all three composition maps, not just new map. Load-time/support-device gates not closed."
+  },
+  "connectedParty": {
+    "result": "Race-enabled actual server/disposable Mongo7.0.14 plus one native GPU browser and three normal authenticated socket peers. Four supplied classes with all14 fitted slots, independent bones/grounding, normal ground-click movement and preserved equipment/inventory/EP/membership through logout pass47.74s (package48.826s).",
+    "profile": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.30000000000291,
+      "frameP95Ms": 50,
+      "frameP99Ms": 50.099999999998545,
+      "framesOver33ms": 72,
+      "cpuLoopMedianMs": 29.69999998807907,
+      "cpuLoopP95Ms": 40.599999994039536,
+      "drawCallsMedian": 445,
+      "trianglesMedian": 547326,
+      "geometries": 396,
+      "textures": 281,
+      "activeEntities": 31,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "budgetStatus": "FAIL/OPEN: High20ms median/33.4ms p95 target; observed33.3/50ms with31 active entities. This is a functional standing/movement snapshot, not sustained combat/dungeon/phone certification. Previous rejected soil run had26 entities; do not infer CPU or memory benefit/regression from these different scenes.",
+    "reviewedHUD": {
+      "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-E6lgnFOF/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/single-renderer-equipped-party-high.png",
+      "sha256": "bcf46a27731cd8a79a7a800d02b67658c8ec8c171291d190ef7a945fc5b32b8d"
+    },
+    "safeSummary": {
+      "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-checks-20261009/party-frame-profile.json",
+      "sha256": "a53deb524750bfdd3653f5b4a303e0960486a2d5af227bdaa0ea3e5f74d9e44d"
+    },
+    "cleanup": "Owned disposable container eidolon-terrain-save-qa-fd3b1d2b2894 and4190/18189/4192 listeners independently confirmed absent after terminal pass.",
+    "privacy": "Raw browser.log remains0600, credential-bearing and uncommitted; only safe numeric summary and reviewed post-login artifact references retained."
+  },
+  "visualReview": {
+    "selected": "Normal High/Low road views and actual equipped-party/HUD show recognisable embedded stones and coherent soil/moss response, improving bare ground distinction compared with predecessor and rejected flat-filtered prototype. Retained as material foundation only.",
+    "remaining": [
+      "Gravel distribution is too evenly scattered over bare ground at close scale; introduce deliberate patches tied to composition rather than uniform confetti.",
+      "Repeated plant clumps, sparse understory composition and angular shelves remain obvious; finish silhouettes/composition alongside material detail.",
+      "The actual HUD screenshot contains open party/chat panels; it does not establish clean moving Lanternhold\u2192Earth\u2192fight\u2192dungeon approach acceptance.",
+      "Every other realm, dungeon/raid/finale/interior/casino/PvP family and supported devices still require their own relevant review."
+    ],
+    "acceptance": "Modern Q/CB and overall art/fun gates remain open. No equivalent Diablo/PoE production-quality claim."
+  },
+  "build": {
+    "result": "Copied-site engine bundle passes using identical tool-local esbuild0.28.2; editable/shared dependencies untouched.",
+    "summary": {
+      "bundledModules": 427,
+      "bytes": 3274037,
+      "sharedLoginModules": 21,
+      "externalImports": [
+        "../assets/ServiceWorkerBoot.js",
+        "../data/worldGeography.js",
+        "../ui/EmailRecoveryUI.js",
+        "../ui/OwnedEvents.js",
+        "../ui/PasswordChangeUI.js",
+        "../ui/ReportUI.js",
+        "../ui/reportTypes.js",
+        "./CredentialToken.js",
+        "./GraphicsStartup.js",
+        "three",
+        "three/addons/geometries/RoundedBoxGeometry.js",
+        "three/addons/loaders/GLTFLoader.js",
+        "three/addons/postprocessing/EffectComposer.js",
+        "three/addons/postprocessing/OutputPass.js",
+        "three/addons/postprocessing/RenderPass.js",
+        "three/addons/postprocessing/ShaderPass.js",
+        "three/addons/postprocessing/UnrealBloomPass.js",
+        "three/addons/shaders/FXAAShader.js",
+        "three/addons/utils/BufferGeometryUtils.js",
+        "three/addons/utils/SkeletonUtils.js"
+      ]
+    }
+  },
+  "lint": "All5 affected JS source/test files pass ESLint max-warnings0; git diff --check passes.",
+  "safeLogs": [
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-checks-20261009/eidolon-earth-surface-bundle.json",
+      "sha256": "ea03e580b6803c588d58f93a5eb44fdff7f191e753ab2e0de8d1f3563533a7a0"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-checks-20261009/eidolon-earth-surface-generation.json",
+      "sha256": "70eba021edc2053114436ee4bd966f297f1befbcb38d97939137603e577b7244"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-checks-20261009/eidolon-earth-surface-morphology-lint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-checks-20261009/eidolon-earth-surface-morphology-native.log",
+      "sha256": "10fe4793f15c74dfa9a50644a09e58803cd8afaa83b831897ce25b5113ba1505"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-checks-20261009/eidolon-earth-surface-morphology-qualified.log",
+      "sha256": "eda6045327c36daa5a2f085d8ff767a228456b3a23037c8ac4864708b384b131"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-checks-20261009/eidolon-earth-surface-morphology-units.log",
+      "sha256": "764564d43dc4c57d984794e56da4732db56148ebf040e52192ef65860cd9568b"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-checks-20261009/party-frame-profile.json",
+      "sha256": "a53deb524750bfdd3653f5b4a303e0960486a2d5af227bdaa0ea3e5f74d9e44d"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-checks-20261009/party-terminal.log",
+      "sha256": "817f92e9a07194407448e74827d6d1a26a990133a814aae88d9e84c7b0bf2bbc"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-surface-morphology-checks-20261009/tested-source-fingerprints.json",
+      "sha256": "bfa98f9a842e09e96243bf6473698be03675013becc7c717d0a76f53979433db"
+    }
+  ],
+  "nextRequiredWork": "Break uniform gravel distribution and repeated vegetation into deliberate soil/shoulder/canopy/encounter compositions, preserving content/counts and movement space. Review ordinary moving equipped/HUD Lanternhold\u2192Earth\u2192fight\u2192dungeon approach and diagnose current connected rendering costs; retain all budget failures and owner-deferred playtests.",
+  "remaining": "Full inherited1.11\u20131.99 goal, modern-art Q/CB, actual equipped party/device/terrain rollout, F1\u2013F5, operations, policy/rights/playtest/beta/launch approval and handoff remain open. No version/public push/profile/access change."
+}

@@ -1,3 +1,5 @@
+import { applyStatusEffectIcon } from '../art/StatusEffectIcons.js';
+
 const node = (tag, className, text = '') => {
     const element = document.createElement(tag);
     element.className = className;
@@ -87,7 +89,9 @@ export class PhoneStatusUI {
             if (!row) {
                 row = { root: node('article', 'phone-status-effect'), name: node('h3', ''),
                     kind: node('span', 'phone-status-kind'), remaining: node('span', 'phone-status-remaining'),
-                    detail: node('p', 'phone-status-detail') };
+                    detail: node('p', 'phone-status-detail'), symbol: node('span', 'phone-status-symbol'),
+                    title: node('span', '') };
+                row.name.append(row.symbol, row.title);
                 row.root.dataset.buffId = buff.id;
                 row.root.append(row.kind, row.remaining, row.name, row.detail);
                 this.rows.set(buff.id, row); this.body.append(row.root);
@@ -95,7 +99,8 @@ export class PhoneStatusUI {
             row.root.classList.toggle('is-debuff', Boolean(buff.isDebuff));
             row.root.classList.toggle('has-time-label', Boolean(buff.timeLabel));
             setText(row.kind, buff.isDebuff ? 'Debuff' : 'Buff');
-            setText(row.name, buff.name || 'Unnamed effect');
+            applyStatusEffectIcon(row.symbol, buff);
+            setText(row.title, buff.name || 'Unnamed effect');
             setText(row.remaining, buff.timeLabel || `${Number(buff.remainingSeconds).toFixed(1)}s left`);
             setText(row.detail, buff.detail || 'A temporary effect on your character.');
         }

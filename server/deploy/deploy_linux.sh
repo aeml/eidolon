@@ -39,6 +39,16 @@ set -a
 source .env
 set +a
 
+# Compose's default command is replaced by each read-only preflight command.
+# Validate and pass the same operator-owned profile explicitly, before any
+# image/backup/service mutation; preflight must not silently fall back to flat.
+EIDOLON_TERRAIN_PROFILE="${EIDOLON_TERRAIN_PROFILE:-flat-v1}"
+case "${EIDOLON_TERRAIN_PROFILE}" in
+  flat-v1|earth-elevation-rocks-v1) ;;
+  *) echo "EIDOLON_TERRAIN_PROFILE must be flat-v1 or earth-elevation-rocks-v1; previous services remain unchanged." >&2; exit 1 ;;
+esac
+export EIDOLON_TERRAIN_PROFILE
+
 case "${EIDOLON_MONITOR_ENABLED:-false}" in
   true|false) ;;
   *) echo "EIDOLON_MONITOR_ENABLED must be true or false." >&2; exit 1 ;;
@@ -132,7 +142,7 @@ fi
 echo "Preparing database for read-only compatibility check..."
 docker compose up -d --no-recreate --wait mongo
 echo "Checking target server compatibility before replacing the live API..."
-schema_preflight="$(docker compose run --rm --no-deps -T api --check-schema --mongo-uri="${MONGO_URI}")"
+schema_preflight="$(docker compose run --rm --no-deps -T api --check-schema --mongo-uri="${MONGO_URI}" --terrain-profile="${EIDOLON_TERRAIN_PROFILE}")"
 printf '%s\n' "${schema_preflight}"
 # Only the target binary's complete single-line receipt may authorize stopping
 # the old writer. Reject a stale/wrong image, surrounding noise or unsafe numeric
@@ -177,7 +187,7 @@ if (( database_schema < target_schema )); then
   bash ./deploy/backup_before_upgrade.sh
   if (( target_schema >= 23 )); then
     echo "Checking drained account-bound character journals before target startup..."
-    if ! journal_preflight="$(docker compose run --rm --no-deps -T -v "${SERVER_DIR}/logs:/app/logs:ro" api --check-save-journal --save-journal-dir=/app/logs/character-saves)" || \
+    if ! journal_preflight="$(docker compose run --rm --no-deps -T -v "${SERVER_DIR}/logs:/app/logs:ro" api --check-save-journal --save-journal-dir=/app/logs/character-saves --terrain-profile="${EIDOLON_TERRAIN_PROFILE}")" || \
        [ "${journal_preflight}" != "Character journal preflight passed: supported=2 commit=${EIDOLON_BUILD_COMMIT}" ]; then
       echo "Journal transition refused before migration; backup and pending files preserved." >&2
       if [ "${journal_previous_running}" = true ]; then
@@ -208,12 +218,13 @@ fi
 
 HOST_PORT="${APP_HOST_PORT:-18082}"
 HEALTH_URL="http://127.0.0.1:${HOST_PORT}/healthz"
-echo "Waiting for healthy release ${EIDOLON_BUILD_COMMIT} at ${HEALTH_URL} ..."
+echo "Waiting for healthy release ${EIDOLON_BUILD_COMMIT}, terrain ${EIDOLON_TERRAIN_PROFILE} at ${HEALTH_URL} ..."
 health_json=""
 for attempt in $(seq 1 30); do
   if health_json="$(curl --connect-timeout 2 --max-time 5 -fsS "${HEALTH_URL}" 2>/dev/null)" && \
      printf '%s' "${health_json}" | grep -Fq "\"commit\":\"${EIDOLON_BUILD_COMMIT}\"" && \
-     printf '%s' "${health_json}" | grep -Fq '"database":"ready"'; then
+     printf '%s' "${health_json}" | grep -Fq '"database":"ready"' && \
+     printf '%s' "${health_json}" | grep -Fq "\"terrainProfile\":\"${EIDOLON_TERRAIN_PROFILE}\""; then
     break
   fi
   if [ "${attempt}" -eq 30 ]; then
@@ -229,4 +240,4 @@ if [ "${EIDOLON_MONITOR_ENABLED:-false}" = true ]; then
   docker compose --profile operations up -d --no-deps monitor
 fi
 
-echo "Deployment complete. Server release identity and database readiness verified."
+echo "Deployment complete. Server release identity, terrain profile and database readiness verified."

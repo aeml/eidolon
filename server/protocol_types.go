@@ -130,6 +130,7 @@ type Client struct {
 	retired              atomic.Bool
 	transportClosed      atomic.Bool
 	transportClosedAt    atomic.Pointer[time.Time]
+	transportCloseReason atomic.Uint32
 	sessionStartedMillis atomic.Int64
 	sendMu               sync.RWMutex
 	sendClosed           bool

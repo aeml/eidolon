@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "status": "Implemented and privately verified; staged for the raised-world milestone, not deployed or activated",
+  "base": "73a3d48e8f6507bb71337e4ad003090ef823dc41 (normal raised candidate merge of public 1.79.22 source)",
+  "problem": "Compose run replaces the API command. Existing read-only schema/journal preflights omitted the operator-selected terrain flag; live health exposed no initialized profile.",
+  "change": "Validate complete supported profile before image/backup/service mutations. Pass the same explicit profile to schema and journal preflights. Health advertises initialized world profile; deployment requires it to match. Keep flat-v1 default and existing QA separation. Add bounded real-process HTTP/login agreement to the existing CI-owned Mongo/binary route.",
+  "checks": [
+    {
+      "command": "GOTOOLCHAIN=go1.27.2 GOMAXPROCS=2 go -C server test -race -p 2 -count=1 -run '^(TestHealth|TestTerrainStartup|TestDeploy)' .",
+      "result": "PASS 11.575s; actual deploy script with fake commands, runtime worlds with HTTP fixtures. Optional real-container tests in this selector were skipped without opt-in, not passed.",
+      "logSHA256": "549328054b0a4d3c19343554b67c0550a2750d6c3206d6530d47f48cf73b9031"
+    },
+    {
+      "command": "GOTOOLCHAIN=go1.27.2 GOMAXPROCS=2 go -C server test -race -p 2 -count=1 -run '^TestDeployJournalUpgrade' .",
+      "result": "PASS 2.241s after adding explicit flat/raised assertions to both journal/schema command paths."
+    },
+    {
+      "command": "EIDOLON_TERRAIN_SAVE_QA_SCENARIO=readiness bash scripts/run-terrain-save-qa.sh",
+      "result": "Actual race server binary, owned loopback Mongo 7.0.14: one test and two profile cases PASS 11.09s/package 12.175s. Both exact schema preflights, ordinary HTTP/login profile agreement and raised-to-flat process transition; invalid incomplete profile rejected before unavailable database IO. No browser/character progression or party performance certificate.",
+      "logSHA256": "41bb1e65114d5237612ecb21c0690b97391fa4e8811f232434fc24a89514eb34",
+      "evidence": "/home/aeml/.local/share/eidolon-terrain-save-evidence-wE2i8yPL",
+      "cleanup": "Wrapper terminal exit0; independently observed no remaining eidolon-terrain-save-qa container."
+    }
+  ],
+  "liveBaselineRevalidation": {
+    "observedAt": "2026-10-09T17:58:12.998079+00:00",
+    "head": "541c2edadf4a682e63000f8e1acfae4747d7f051",
+    "assets": [
+      {
+        "path": "index.html",
+        "expected": "299a114cd19fbbb67f34a0e277a8758b6780efb2e000b8549f09ddf3a8f1e475",
+        "actual": "299a114cd19fbbb67f34a0e277a8758b6780efb2e000b8549f09ddf3a8f1e475",
+        "match": true
+      },
+      {
+        "path": "src/main.js",
+        "expected": "51170a8afb9d4c579b2409ee3476e280946211513531363ac47b287d18c173b9",
+        "actual": "51170a8afb9d4c579b2409ee3476e280946211513531363ac47b287d18c173b9",
+        "match": true
+      },
+      {
+        "path": "src/core/GameEngine.bundle.js",
+        "expected": "7ab4be837da81bd1abb25a4ab909cf751d2e70b23e61f835442a22617f3e8880",
+        "actual": "7ab4be837da81bd1abb25a4ab909cf751d2e70b23e61f835442a22617f3e8880",
+        "match": true
+      },
+      {
+        "path": "src/styles/index.css",
+        "expected": "b45ce05d486ba2b7cf6ca4dcc71b26a3a9af88e32e137818b7b4cf6de9a64c87",
+        "actual": "b45ce05d486ba2b7cf6ca4dcc71b26a3a9af88e32e137818b7b4cf6de9a64c87",
+        "match": true
+      },
+      {
+        "path": "release.json",
+        "expected": "67ee919a92967f2f856a36b5e3a70b29b5932204b6667c1d046888cdd5adb151",
+        "actual": "67ee919a92967f2f856a36b5e3a70b29b5932204b6667c1d046888cdd5adb151",
+        "match": true
+      },
+      {
+        "path": "assets/notices/index.html",
+        "expected": "233700903f8a31db3d73cae219e915c8b0e31882296342df1aefde64f51e003d",
+        "actual": "233700903f8a31db3d73cae219e915c8b0e31882296342df1aefde64f51e003d",
+        "match": true
+      }
+    ],
+    "allMatch": true
+  },
+  "repositoryPolicyRevalidation": {
+    "observedAt": "2026-10-09T17:58:59.087387+00:00",
+    "master": "30a8b6038df9e071eef0f57564ae94087d1a0b11",
+    "protected": false,
+    "rulesets": [],
+    "source": "Authenticated read-only GitHub branch/rulesets APIs; current CI source uses trusted SSH pin and StrictHostKeyChecking=yes. No settings/credential/service changes."
+  },
+  "remaining": "1.79.22 own terminal CI/native/live/exact-public acceptance; raised-world coherent art, equipped-party/device budgets and deliberate compatible activation/return-to-flat qualification. Complete original 1.11-1.99, F1-F5, owner/human/rights/recovery/support/beta/launch gates remain open. This patch is prepared for a coherent milestone, not a separate microrelease."
+}

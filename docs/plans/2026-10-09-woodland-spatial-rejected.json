@@ -1,0 +1,2595 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-09T22:06:47.567616+00:00",
+  "classification": "PROGRESS through verified rejection: private woodland spatial multi-draw prototype is unselected. Strict native color comparison fails; current CPU samples lack stable benefit; raw duplicated geometry cost is unacceptable. Preserve qualified6fbffd34 runtime and full goal.",
+  "baseCommit": "6fbffd3435e1798841a56ab120e938db3d512e34",
+  "privatePrototypeWorktree": "/home/aeml/.local/share/eidolon-woodland-spatial-batching-20261009",
+  "publicBaseline": {
+    "version": "1.79.22",
+    "commit": "30a8b6038df9e071eef0f57564ae94087d1a0b11",
+    "acceptedCI": 37967212738,
+    "receipt": "2026-10-09-ready22-actor-publisher.json",
+    "scope": "Existing acceptance retained, no new public verification or release."
+  },
+  "implementation": {
+    "scope": "Optional producer only: original Earth birch/pine/willow source cells become material-compatible64m BatchedMesh sectors. Every source placement/piece/material/collider/Float32 matrix retained, individual per-instance culling remains; other realms and default WorldGenerator callers keep original instances. Actual GameEngine capability selection was never changed or activated. Owned mesh/geometry/matrix-indirection storage stays with batch; shared source recipes persist.",
+    "changes": [
+      "SpatialWoodlandBatches factory and tracked ownership/quality update",
+      "Explicit default-false WorldGenerator option, source cells converted only after unchanged original producer/collider work",
+      "Existing conservative swept-shadow visitor recognizes only factory-owned batches, retaining current bounds/material/light/camera validation and restoration",
+      "Quality updates preserve instance IDs/matrices and allocation while replacing every active original shape; Low reserves High capacities, measured and rejected below"
+    ],
+    "initialSourceHashes": {
+      "src/art/SpatialWoodlandBatches.js": "753b6bbf3c8340c08af571a61ddbea99a7fe5083f5236dfb3489f784680f4ff0",
+      "src/art/FoliageRenderBatches.js": "879fb553550933a47c0fc40ff8682d6be5c028c87de12239f7d8fbdb3ff234c9",
+      "src/core/FoliageShadowInfluence.js": "0ff3f8ac49e4c3c70dc089eaa2e2ed29daa943efd26e8206af9cea44c2a2d491",
+      "src/world/WorldGenerator.js": "4afe9bf58c83d15a2047f4692a330de877547cee0ff5ef3c0e89cfa51e2d2db9",
+      "tests/SpatialWoodlandBatches.test.js": "9a7f27831e34659b5557bc8afd227554997c7cbee9a13212880055872a1f6eec",
+      "tests/e2e/woodland-spatial-batches.spec.js": "7edc2b620a974049a9c0b744afb210e6f2f99d753e9944c31cd8fa231f3dad30"
+    },
+    "finalSourceHashes": {
+      "src/art/SpatialWoodlandBatches.js": "3bd9115cb231e6a16f88f5c5f7ec66437544926855aa9ea9d740c7bc6a90d9cc",
+      "src/art/FoliageRenderBatches.js": "879fb553550933a47c0fc40ff8682d6be5c028c87de12239f7d8fbdb3ff234c9",
+      "src/core/FoliageShadowInfluence.js": "0ff3f8ac49e4c3c70dc089eaa2e2ed29daa943efd26e8206af9cea44c2a2d491",
+      "src/world/WorldGenerator.js": "4afe9bf58c83d15a2047f4692a330de877547cee0ff5ef3c0e89cfa51e2d2db9",
+      "tests/SpatialWoodlandBatches.test.js": "45c885f3a4f6aaa08a3e4c9a402b919d478c58fe66215c48f412fc6a1b32f584",
+      "tests/e2e/woodland-spatial-batches.spec.js": "df21f0a33c4f04c52ddeb05abf430dc5eb8b5fdef45285e31fa69b0de4244845"
+    },
+    "finalSourceSnapshot": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/final-sources",
+    "selection": "No runtime from this branch is selected into held candidate. Do not merge the prototype wholesale. No public push, version/profile/access change, supplied model replacement, gameplay/authority/balance mutation or owner decision."
+  },
+  "units": {
+    "initial": {
+      "checks": 63,
+      "suites": 3,
+      "seconds": 87.225,
+      "log": {
+        "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/eidolon-woodland-spatial-units.log",
+        "sha256": "3982f06432c70bde21297c805a9a329bb104936e277643183d1de7bd2c5a7abe"
+      },
+      "scope": "Initial expanded-geometry prototype plus all existing foliage-shadow and render-batch suites."
+    },
+    "finalIndexed": {
+      "checks": 6,
+      "suites": 1,
+      "seconds": 83.718,
+      "log": {
+        "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/eidolon-woodland-spatial-indexed-units-final.log",
+        "sha256": "97d42c858f318f39c9e7c24a936474cdf3820bbd95af13f771d17cc5e5272c20"
+      },
+      "scope": "Indexed revision checks every source index/attribute/Float32 matrix/triangle count/material/collider on High and Low; low-high-low stable IDs/matrices/buffers; unsupported source material fallback; live bounds/wind/filter flags/restoration; direct owned mesh disposal."
+    },
+    "interruptedCheck": {
+      "artifact": {
+        "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/indexed-unit-interruption.json",
+        "sha256": "216351b899d516bf749086a1faa791f2099b7cd92e1bf0ceef5845982ca682f6"
+      },
+      "result": {
+        "pid": 353460,
+        "observedUnix": 1791583199.6147661,
+        "reason": "Stopped owned short unit run to replace excessive per-index Jest matcher overhead with one complete maximum-index-error assertion. Every index still checked; no source runtime change or passing result inferred.",
+        "testSHA256": "cd437d57c09d168596f849a2aa5ecde23287c3ed159aff3ee2d03e7e8a9ffeec"
+      },
+      "log": {
+        "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/eidolon-woodland-spatial-indexed-units.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "scope": "Verified owned Jest PID/cwd stopped; session exits143. Not passed. Complete index verification changed from millions of separate matchers to one maximum-index-error assertion, preserving every index and exact zero-error requirement; only affected6case suite rerun."
+    }
+  },
+  "initialNative": {
+    "terminal": {
+      "artifact": {
+        "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/native-terminal.json",
+        "sha256": "49262a4900d491462ba050730a7647af0095f1852b712025ab5eaafa34bb17ab"
+      },
+      "result": {
+        "exitCode": 1,
+        "startedUnix": 1791582822.994263,
+        "finishedUnix": 1791582864.140479
+      }
+    },
+    "log": {
+      "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/native.log",
+      "sha256": "19a0ee8769b016bab73e3854687d2422d06b4d706dbfb0662468b3a8497a7b17"
+    },
+    "comparisons": [
+      {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/native-results/woodland-spatial-batches-h-e1c3d-ixels-and-individual-shapes/comparison.json",
+          "sha256": "91e5de959b7a4c7504228764c7e243aa5b555af9c59428847b52fb25a3976845"
+        },
+        "result": {
+          "quality": "high",
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "reports": [
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": -75,
+              "z": -330,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 137,
+              "afterCalls": 61,
+              "beforeTriangles": 109386,
+              "afterTriangles": 109386
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": -33,
+              "z": -235,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 194,
+              "afterCalls": 77,
+              "beforeTriangles": 134932,
+              "afterTriangles": 135772
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 340,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 276,
+              "afterCalls": 99,
+              "beforeTriangles": 186125,
+              "afterTriangles": 188009
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 470,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 219,
+              "afterCalls": 86,
+              "beforeTriangles": 156429,
+              "afterTriangles": 157269
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 600,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 239,
+              "afterCalls": 83,
+              "beforeTriangles": 171723,
+              "afterTriangles": 171723
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 800,
+              "z": 250,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 22,
+              "afterCalls": 19,
+              "beforeTriangles": 5545,
+              "afterTriangles": 5545
+            },
+            {
+              "quality": "high",
+              "realm": "water",
+              "x": 0,
+              "z": -1000,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 28,
+              "afterCalls": 28,
+              "beforeTriangles": 7369,
+              "afterTriangles": 7369
+            },
+            {
+              "quality": "high",
+              "realm": "fire",
+              "x": -1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 35,
+              "afterCalls": 35,
+              "beforeTriangles": 2775,
+              "afterTriangles": 2775
+            },
+            {
+              "quality": "high",
+              "realm": "air",
+              "x": 1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 43,
+              "afterCalls": 43,
+              "beforeTriangles": 12723,
+              "afterTriangles": 12723
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": -75,
+              "z": -330,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 9,
+              "afterCalls": 9,
+              "beforeTriangles": 31505,
+              "afterTriangles": 31505
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": -33,
+              "z": -235,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 50,
+              "afterCalls": 25,
+              "beforeTriangles": 36243,
+              "afterTriangles": 36663
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 340,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 45,
+              "afterCalls": 28,
+              "beforeTriangles": 23226,
+              "afterTriangles": 24168
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 470,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 64,
+              "afterCalls": 28,
+              "beforeTriangles": 43474,
+              "afterTriangles": 43474
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 600,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 2,
+                "maximum": 1
+              },
+              "beforeCalls": 45,
+              "afterCalls": 23,
+              "beforeTriangles": 36340,
+              "afterTriangles": 36340
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 800,
+              "z": 250,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 1,
+              "afterCalls": 1,
+              "beforeTriangles": 2,
+              "afterTriangles": 2
+            },
+            {
+              "quality": "low",
+              "realm": "water",
+              "x": 0,
+              "z": -1000,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 1,
+              "afterCalls": 1,
+              "beforeTriangles": 2,
+              "afterTriangles": 2
+            },
+            {
+              "quality": "low",
+              "realm": "fire",
+              "x": -1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 9,
+              "afterCalls": 9,
+              "beforeTriangles": 1026,
+              "afterTriangles": 1026
+            },
+            {
+              "quality": "low",
+              "realm": "air",
+              "x": 1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 10,
+              "afterCalls": 10,
+              "beforeTriangles": 3900,
+              "afterTriangles": 3900
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": -75,
+              "z": -330,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 137,
+              "afterCalls": 61,
+              "beforeTriangles": 109386,
+              "afterTriangles": 109386
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": -33,
+              "z": -235,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 194,
+              "afterCalls": 77,
+              "beforeTriangles": 134932,
+              "afterTriangles": 135772
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 340,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 276,
+              "afterCalls": 99,
+              "beforeTriangles": 186125,
+              "afterTriangles": 188009
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 470,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 219,
+              "afterCalls": 86,
+              "beforeTriangles": 156429,
+              "afterTriangles": 157269
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 600,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 239,
+              "afterCalls": 83,
+              "beforeTriangles": 171723,
+              "afterTriangles": 171723
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 800,
+              "z": 250,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 22,
+              "afterCalls": 19,
+              "beforeTriangles": 5545,
+              "afterTriangles": 5545
+            },
+            {
+              "quality": "high",
+              "realm": "water",
+              "x": 0,
+              "z": -1000,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 28,
+              "afterCalls": 28,
+              "beforeTriangles": 7369,
+              "afterTriangles": 7369
+            },
+            {
+              "quality": "high",
+              "realm": "fire",
+              "x": -1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 35,
+              "afterCalls": 35,
+              "beforeTriangles": 2775,
+              "afterTriangles": 2775
+            },
+            {
+              "quality": "high",
+              "realm": "air",
+              "x": 1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 43,
+              "afterCalls": 43,
+              "beforeTriangles": 12723,
+              "afterTriangles": 12723
+            }
+          ],
+          "timings": [
+            {
+              "variant": 0,
+              "frames": 120,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 16.7,
+              "cpuMedianMs": 10.900000005960464,
+              "cpuP95Ms": 17.599999994039536,
+              "calls": 219,
+              "triangles": 156429
+            },
+            {
+              "variant": 1,
+              "frames": 120,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 16.7,
+              "cpuMedianMs": 9,
+              "cpuP95Ms": 13.199999988079071,
+              "calls": 86,
+              "triangles": 157269
+            },
+            {
+              "variant": 1,
+              "frames": 120,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 16.7,
+              "cpuMedianMs": 8.599999994039536,
+              "cpuP95Ms": 14.5,
+              "calls": 86,
+              "triangles": 157269
+            },
+            {
+              "variant": 0,
+              "frames": 120,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 16.7,
+              "cpuMedianMs": 8.599999994039536,
+              "cpuP95Ms": 13.599999994039536,
+              "calls": 219,
+              "triangles": 156429
+            }
+          ],
+          "scope": "Current native renderer, original source versus optional spatial woodland producer;27views/quality toggles plus separate ABBA120-frame samples. No supplied equipment, live game, whole-game or supported-device certificate."
+        },
+        "images": [
+          {
+            "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/native-results/woodland-spatial-batches-h-e1c3d-ixels-and-individual-shapes/candidate.png",
+            "sha256": "fab102788e580f322cd2bd8b9693c056b519dcdc0258440877e00f2fa312d42e"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/native-results/woodland-spatial-batches-h-e1c3d-ixels-and-individual-shapes/test-failed-1.png",
+            "sha256": "dd0afceea8ebe56339447e6d79c030ea69d724d2a76c8e31e0922155d48354a6"
+          }
+        ]
+      },
+      {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/native-results/woodland-spatial-batches-l-2b93c-ixels-and-individual-shapes/comparison.json",
+          "sha256": "7936a260241d55f21da93ab535693bb4b75425cd7c81d364141f54bda2207714"
+        },
+        "result": {
+          "quality": "low",
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "reports": [
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": -75,
+              "z": -330,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 8,
+              "afterCalls": 8,
+              "beforeTriangles": 8471,
+              "afterTriangles": 8471
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": -33,
+              "z": -235,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 31,
+              "afterCalls": 15,
+              "beforeTriangles": 15390,
+              "afterTriangles": 15390
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 340,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 24,
+              "afterCalls": 19,
+              "beforeTriangles": 10144,
+              "afterTriangles": 11086
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 470,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 18,
+              "afterCalls": 11,
+              "beforeTriangles": 9372,
+              "afterTriangles": 9372
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 600,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 10,
+              "afterCalls": 8,
+              "beforeTriangles": 7541,
+              "afterTriangles": 7541
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 800,
+              "z": 250,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 1,
+              "afterCalls": 1,
+              "beforeTriangles": 2,
+              "afterTriangles": 2
+            },
+            {
+              "quality": "low",
+              "realm": "water",
+              "x": 0,
+              "z": -1000,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 1,
+              "afterCalls": 1,
+              "beforeTriangles": 2,
+              "afterTriangles": 2
+            },
+            {
+              "quality": "low",
+              "realm": "fire",
+              "x": -1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 2,
+              "afterCalls": 2,
+              "beforeTriangles": 70,
+              "afterTriangles": 70
+            },
+            {
+              "quality": "low",
+              "realm": "air",
+              "x": 1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 4,
+              "afterCalls": 4,
+              "beforeTriangles": 1038,
+              "afterTriangles": 1038
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": -75,
+              "z": -330,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 117,
+              "afterCalls": 57,
+              "beforeTriangles": 72516,
+              "afterTriangles": 72516
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": -33,
+              "z": -235,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 175,
+              "afterCalls": 67,
+              "beforeTriangles": 110771,
+              "afterTriangles": 110771
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 340,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 241,
+              "afterCalls": 83,
+              "beforeTriangles": 159369,
+              "afterTriangles": 162093
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 470,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 160,
+              "afterCalls": 69,
+              "beforeTriangles": 101571,
+              "afterTriangles": 102595
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 600,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 201,
+              "afterCalls": 66,
+              "beforeTriangles": 133186,
+              "afterTriangles": 134026
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 800,
+              "z": 250,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 22,
+              "afterCalls": 19,
+              "beforeTriangles": 5545,
+              "afterTriangles": 5545
+            },
+            {
+              "quality": "high",
+              "realm": "water",
+              "x": 0,
+              "z": -1000,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 24,
+              "afterCalls": 24,
+              "beforeTriangles": 4849,
+              "afterTriangles": 4849
+            },
+            {
+              "quality": "high",
+              "realm": "fire",
+              "x": -1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 25,
+              "afterCalls": 25,
+              "beforeTriangles": 1513,
+              "afterTriangles": 1513
+            },
+            {
+              "quality": "high",
+              "realm": "air",
+              "x": 1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 35,
+              "afterCalls": 35,
+              "beforeTriangles": 8559,
+              "afterTriangles": 8559
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": -75,
+              "z": -330,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 8,
+              "afterCalls": 8,
+              "beforeTriangles": 8471,
+              "afterTriangles": 8471
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": -33,
+              "z": -235,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 31,
+              "afterCalls": 15,
+              "beforeTriangles": 15390,
+              "afterTriangles": 15390
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 340,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 24,
+              "afterCalls": 19,
+              "beforeTriangles": 10144,
+              "afterTriangles": 11086
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 470,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 18,
+              "afterCalls": 11,
+              "beforeTriangles": 9372,
+              "afterTriangles": 9372
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 600,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 10,
+              "afterCalls": 8,
+              "beforeTriangles": 7541,
+              "afterTriangles": 7541
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 800,
+              "z": 250,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 1,
+              "afterCalls": 1,
+              "beforeTriangles": 2,
+              "afterTriangles": 2
+            },
+            {
+              "quality": "low",
+              "realm": "water",
+              "x": 0,
+              "z": -1000,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 1,
+              "afterCalls": 1,
+              "beforeTriangles": 2,
+              "afterTriangles": 2
+            },
+            {
+              "quality": "low",
+              "realm": "fire",
+              "x": -1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 2,
+              "afterCalls": 2,
+              "beforeTriangles": 70,
+              "afterTriangles": 70
+            },
+            {
+              "quality": "low",
+              "realm": "air",
+              "x": 1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "beforeCalls": 4,
+              "afterCalls": 4,
+              "beforeTriangles": 1038,
+              "afterTriangles": 1038
+            }
+          ],
+          "timings": [
+            {
+              "variant": 0,
+              "frames": 120,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 16.7,
+              "cpuMedianMs": 5.0999999940395355,
+              "cpuP95Ms": 12.100000023841858,
+              "calls": 18,
+              "triangles": 9372
+            },
+            {
+              "variant": 1,
+              "frames": 120,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 16.7,
+              "cpuMedianMs": 5.4000000059604645,
+              "cpuP95Ms": 10,
+              "calls": 11,
+              "triangles": 9372
+            },
+            {
+              "variant": 1,
+              "frames": 120,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 16.7,
+              "cpuMedianMs": 4.799999982118607,
+              "cpuP95Ms": 8.400000005960464,
+              "calls": 11,
+              "triangles": 9372
+            },
+            {
+              "variant": 0,
+              "frames": 120,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 16.8,
+              "cpuMedianMs": 5.700000017881393,
+              "cpuP95Ms": 9.599999994039536,
+              "calls": 18,
+              "triangles": 9372
+            }
+          ],
+          "scope": "Current native renderer, original source versus optional spatial woodland producer;27views/quality toggles plus separate ABBA120-frame samples. No supplied equipment, live game, whole-game or supported-device certificate."
+        },
+        "images": [
+          {
+            "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/native-results/woodland-spatial-batches-l-2b93c-ixels-and-individual-shapes/candidate.png",
+            "sha256": "d02942389a7647de1d137da00779cf4fb914ad8a5f42cdbd6a2d14ab26a5b137"
+          }
+        ]
+      }
+    ]
+  },
+  "indexedNative": {
+    "terminal": {
+      "artifact": {
+        "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/indexed/native-terminal.json",
+        "sha256": "50c1dd1ac0bc11970db02215a80776cc84460c728c45f6b9823b8415c2b8c387"
+      },
+      "result": {
+        "exitCode": 1,
+        "startedUnix": 1791583312.4467921,
+        "finishedUnix": 1791583356.7856169
+      }
+    },
+    "log": {
+      "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/indexed/native.log",
+      "sha256": "c6952b8f309e320df0f5ab6eb39dd519c3365e0522987555887a0d3e6e6b0e64"
+    },
+    "comparisons": [
+      {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/indexed/native-results/woodland-spatial-batches-h-e1c3d-ixels-and-individual-shapes/comparison.json",
+          "sha256": "e5787d5842899b9620d31698731fad35911c8141086533b183c86d594b0ffb58"
+        },
+        "result": {
+          "quality": "high",
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "reports": [
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": -75,
+              "z": -330,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 137,
+              "afterCalls": 61,
+              "beforeTriangles": 109386,
+              "afterTriangles": 109386
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": -33,
+              "z": -235,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 194,
+              "afterCalls": 77,
+              "beforeTriangles": 134932,
+              "afterTriangles": 135772
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 340,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 276,
+              "afterCalls": 99,
+              "beforeTriangles": 186125,
+              "afterTriangles": 188009
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 470,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 219,
+              "afterCalls": 86,
+              "beforeTriangles": 156429,
+              "afterTriangles": 157269
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 600,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 239,
+              "afterCalls": 83,
+              "beforeTriangles": 171723,
+              "afterTriangles": 171723
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 800,
+              "z": 250,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 22,
+              "afterCalls": 19,
+              "beforeTriangles": 5545,
+              "afterTriangles": 5545
+            },
+            {
+              "quality": "high",
+              "realm": "water",
+              "x": 0,
+              "z": -1000,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 28,
+              "afterCalls": 28,
+              "beforeTriangles": 7369,
+              "afterTriangles": 7369
+            },
+            {
+              "quality": "high",
+              "realm": "fire",
+              "x": -1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 35,
+              "afterCalls": 35,
+              "beforeTriangles": 2775,
+              "afterTriangles": 2775
+            },
+            {
+              "quality": "high",
+              "realm": "air",
+              "x": 1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 43,
+              "afterCalls": 43,
+              "beforeTriangles": 12723,
+              "afterTriangles": 12723
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": -75,
+              "z": -330,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 9,
+              "afterCalls": 9,
+              "beforeTriangles": 31505,
+              "afterTriangles": 31505
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": -33,
+              "z": -235,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 50,
+              "afterCalls": 25,
+              "beforeTriangles": 36243,
+              "afterTriangles": 36663
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 340,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 45,
+              "afterCalls": 28,
+              "beforeTriangles": 23226,
+              "afterTriangles": 24168
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 470,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 64,
+              "afterCalls": 28,
+              "beforeTriangles": 43474,
+              "afterTriangles": 43474
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 600,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 2,
+                "maximum": 1
+              },
+              "differingChannels": [
+                {
+                  "x": 981,
+                  "y": 10,
+                  "channel": 0,
+                  "before": 47,
+                  "after": 46
+                },
+                {
+                  "x": 981,
+                  "y": 10,
+                  "channel": 1,
+                  "before": 63,
+                  "after": 62
+                }
+              ],
+              "beforeCalls": 45,
+              "afterCalls": 23,
+              "beforeTriangles": 36340,
+              "afterTriangles": 36340
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 800,
+              "z": 250,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 1,
+              "afterCalls": 1,
+              "beforeTriangles": 2,
+              "afterTriangles": 2
+            },
+            {
+              "quality": "low",
+              "realm": "water",
+              "x": 0,
+              "z": -1000,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 1,
+              "afterCalls": 1,
+              "beforeTriangles": 2,
+              "afterTriangles": 2
+            },
+            {
+              "quality": "low",
+              "realm": "fire",
+              "x": -1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 9,
+              "afterCalls": 9,
+              "beforeTriangles": 1026,
+              "afterTriangles": 1026
+            },
+            {
+              "quality": "low",
+              "realm": "air",
+              "x": 1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 10,
+              "afterCalls": 10,
+              "beforeTriangles": 3900,
+              "afterTriangles": 3900
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": -75,
+              "z": -330,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 137,
+              "afterCalls": 61,
+              "beforeTriangles": 109386,
+              "afterTriangles": 109386
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": -33,
+              "z": -235,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 194,
+              "afterCalls": 77,
+              "beforeTriangles": 134932,
+              "afterTriangles": 135772
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 340,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 276,
+              "afterCalls": 99,
+              "beforeTriangles": 186125,
+              "afterTriangles": 188009
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 470,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 219,
+              "afterCalls": 86,
+              "beforeTriangles": 156429,
+              "afterTriangles": 157269
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 600,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 239,
+              "afterCalls": 83,
+              "beforeTriangles": 171723,
+              "afterTriangles": 171723
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 800,
+              "z": 250,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 22,
+              "afterCalls": 19,
+              "beforeTriangles": 5545,
+              "afterTriangles": 5545
+            },
+            {
+              "quality": "high",
+              "realm": "water",
+              "x": 0,
+              "z": -1000,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 28,
+              "afterCalls": 28,
+              "beforeTriangles": 7369,
+              "afterTriangles": 7369
+            },
+            {
+              "quality": "high",
+              "realm": "fire",
+              "x": -1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 35,
+              "afterCalls": 35,
+              "beforeTriangles": 2775,
+              "afterTriangles": 2775
+            },
+            {
+              "quality": "high",
+              "realm": "air",
+              "x": 1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 43,
+              "afterCalls": 43,
+              "beforeTriangles": 12723,
+              "afterTriangles": 12723
+            }
+          ],
+          "timings": [
+            {
+              "variant": 0,
+              "frames": 120,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 33.3,
+              "cpuMedianMs": 12.900000005960464,
+              "cpuP95Ms": 23.30000001192093,
+              "calls": 219,
+              "triangles": 156429
+            },
+            {
+              "variant": 1,
+              "frames": 120,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 33.3,
+              "cpuMedianMs": 14.299999982118607,
+              "cpuP95Ms": 26.700000017881393,
+              "calls": 86,
+              "triangles": 157269
+            },
+            {
+              "variant": 1,
+              "frames": 120,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 16.8,
+              "cpuMedianMs": 13.200000017881393,
+              "cpuP95Ms": 20.600000023841858,
+              "calls": 86,
+              "triangles": 157269
+            },
+            {
+              "variant": 0,
+              "frames": 120,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 16.8,
+              "cpuMedianMs": 13.199999988079071,
+              "cpuP95Ms": 21.5,
+              "calls": 219,
+              "triangles": 156429
+            }
+          ],
+          "firstMismatch": {
+            "quality": "low",
+            "realm": "earth",
+            "x": 600,
+            "z": 200
+          },
+          "scope": "Current native renderer, original source versus optional spatial woodland producer;27views/quality toggles plus separate ABBA120-frame samples. No supplied equipment, live game, whole-game or supported-device certificate."
+        },
+        "images": [
+          {
+            "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/indexed/native-results/woodland-spatial-batches-h-e1c3d-ixels-and-individual-shapes/candidate.png",
+            "sha256": "bdbdb299e73a6b85efcf5c65f1b30b539e67c9878e72356918035d9a7e06c75b"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/indexed/native-results/woodland-spatial-batches-h-e1c3d-ixels-and-individual-shapes/mismatch-afterPNG.png",
+            "sha256": "7f1aac4b6aae68490230f6e79bc29f6d332938b68b3ca1e309177c8339225e22"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/indexed/native-results/woodland-spatial-batches-h-e1c3d-ixels-and-individual-shapes/mismatch-beforePNG.png",
+            "sha256": "94c9ef2142ea5bc60c38c8d53085d32bc29657a2ea9a850db7f5cef86e139048"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/indexed/native-results/woodland-spatial-batches-h-e1c3d-ixels-and-individual-shapes/test-failed-1.png",
+            "sha256": "dd0afceea8ebe56339447e6d79c030ea69d724d2a76c8e31e0922155d48354a6"
+          }
+        ]
+      },
+      {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/indexed/native-results/woodland-spatial-batches-l-2b93c-ixels-and-individual-shapes/comparison.json",
+          "sha256": "041e161c9c337aecf0890a7d4829be0208efeb3a5e538d544f2d993624a41e7d"
+        },
+        "result": {
+          "quality": "low",
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "reports": [
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": -75,
+              "z": -330,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 8,
+              "afterCalls": 8,
+              "beforeTriangles": 8471,
+              "afterTriangles": 8471
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": -33,
+              "z": -235,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 31,
+              "afterCalls": 15,
+              "beforeTriangles": 15390,
+              "afterTriangles": 15390
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 340,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 24,
+              "afterCalls": 19,
+              "beforeTriangles": 10144,
+              "afterTriangles": 11086
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 470,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 18,
+              "afterCalls": 11,
+              "beforeTriangles": 9372,
+              "afterTriangles": 9372
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 600,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 10,
+              "afterCalls": 8,
+              "beforeTriangles": 7541,
+              "afterTriangles": 7541
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 800,
+              "z": 250,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 1,
+              "afterCalls": 1,
+              "beforeTriangles": 2,
+              "afterTriangles": 2
+            },
+            {
+              "quality": "low",
+              "realm": "water",
+              "x": 0,
+              "z": -1000,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 1,
+              "afterCalls": 1,
+              "beforeTriangles": 2,
+              "afterTriangles": 2
+            },
+            {
+              "quality": "low",
+              "realm": "fire",
+              "x": -1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 2,
+              "afterCalls": 2,
+              "beforeTriangles": 70,
+              "afterTriangles": 70
+            },
+            {
+              "quality": "low",
+              "realm": "air",
+              "x": 1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 4,
+              "afterCalls": 4,
+              "beforeTriangles": 1038,
+              "afterTriangles": 1038
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": -75,
+              "z": -330,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 117,
+              "afterCalls": 57,
+              "beforeTriangles": 72516,
+              "afterTriangles": 72516
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": -33,
+              "z": -235,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 175,
+              "afterCalls": 67,
+              "beforeTriangles": 110771,
+              "afterTriangles": 110771
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 340,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 241,
+              "afterCalls": 83,
+              "beforeTriangles": 159369,
+              "afterTriangles": 162093
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 470,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 160,
+              "afterCalls": 69,
+              "beforeTriangles": 101571,
+              "afterTriangles": 102595
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 600,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 201,
+              "afterCalls": 66,
+              "beforeTriangles": 133186,
+              "afterTriangles": 134026
+            },
+            {
+              "quality": "high",
+              "realm": "earth",
+              "x": 800,
+              "z": 250,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 22,
+              "afterCalls": 19,
+              "beforeTriangles": 5545,
+              "afterTriangles": 5545
+            },
+            {
+              "quality": "high",
+              "realm": "water",
+              "x": 0,
+              "z": -1000,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 24,
+              "afterCalls": 24,
+              "beforeTriangles": 4849,
+              "afterTriangles": 4849
+            },
+            {
+              "quality": "high",
+              "realm": "fire",
+              "x": -1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 25,
+              "afterCalls": 25,
+              "beforeTriangles": 1513,
+              "afterTriangles": 1513
+            },
+            {
+              "quality": "high",
+              "realm": "air",
+              "x": 1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 35,
+              "afterCalls": 35,
+              "beforeTriangles": 8559,
+              "afterTriangles": 8559
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": -75,
+              "z": -330,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 8,
+              "afterCalls": 8,
+              "beforeTriangles": 8471,
+              "afterTriangles": 8471
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": -33,
+              "z": -235,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 31,
+              "afterCalls": 15,
+              "beforeTriangles": 15390,
+              "afterTriangles": 15390
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 340,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 24,
+              "afterCalls": 19,
+              "beforeTriangles": 10144,
+              "afterTriangles": 11086
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 470,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 18,
+              "afterCalls": 11,
+              "beforeTriangles": 9372,
+              "afterTriangles": 9372
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 600,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 10,
+              "afterCalls": 8,
+              "beforeTriangles": 7541,
+              "afterTriangles": 7541
+            },
+            {
+              "quality": "low",
+              "realm": "earth",
+              "x": 800,
+              "z": 250,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 1,
+              "afterCalls": 1,
+              "beforeTriangles": 2,
+              "afterTriangles": 2
+            },
+            {
+              "quality": "low",
+              "realm": "water",
+              "x": 0,
+              "z": -1000,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 1,
+              "afterCalls": 1,
+              "beforeTriangles": 2,
+              "afterTriangles": 2
+            },
+            {
+              "quality": "low",
+              "realm": "fire",
+              "x": -1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 2,
+              "afterCalls": 2,
+              "beforeTriangles": 70,
+              "afterTriangles": 70
+            },
+            {
+              "quality": "low",
+              "realm": "air",
+              "x": 1100,
+              "z": 200,
+              "repeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "difference": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "differingChannels": [],
+              "beforeCalls": 4,
+              "afterCalls": 4,
+              "beforeTriangles": 1038,
+              "afterTriangles": 1038
+            }
+          ],
+          "timings": [
+            {
+              "variant": 0,
+              "frames": 120,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 16.7,
+              "cpuMedianMs": 6.300000011920929,
+              "cpuP95Ms": 12.199999988079071,
+              "calls": 18,
+              "triangles": 9372
+            },
+            {
+              "variant": 1,
+              "frames": 120,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 16.8,
+              "cpuMedianMs": 6.9000000059604645,
+              "cpuP95Ms": 11.400000005960464,
+              "calls": 11,
+              "triangles": 9372
+            },
+            {
+              "variant": 1,
+              "frames": 120,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 16.7,
+              "cpuMedianMs": 6.300000011920929,
+              "cpuP95Ms": 11.599999994039536,
+              "calls": 11,
+              "triangles": 9372
+            },
+            {
+              "variant": 0,
+              "frames": 120,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 16.8,
+              "cpuMedianMs": 6.699999988079071,
+              "cpuP95Ms": 11.199999988079071,
+              "calls": 18,
+              "triangles": 9372
+            }
+          ],
+          "firstMismatch": null,
+          "scope": "Current native renderer, original source versus optional spatial woodland producer;27views/quality toggles plus separate ABBA120-frame samples. No supplied equipment, live game, whole-game or supported-device certificate."
+        },
+        "images": [
+          {
+            "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/indexed/native-results/woodland-spatial-batches-l-2b93c-ixels-and-individual-shapes/candidate.png",
+            "sha256": "797f2e00603d95eb816c394e96fba1c8b75867ccc07dc1ecfcf8b1b76951ebc8"
+          }
+        ]
+      }
+    ]
+  },
+  "nativeConclusion": {
+    "initial": "One High1280case fails20.2s, Low390passes; entire invocation1failed/1passed40.3s exit1. Of54source/candidate view comparisons,53exact and one wide Low toggle differs in two color channels by1. All source repeats exact. Failed trace/video/images retained. Native strict zero-difference requirement unchanged.",
+    "indexed": "Preserving original vertex/index topology does not remove mismatch: High case fails, Low passes; invocation1failed/1passed43.6s exit1. Same one pixel at981,10 hasR47→46/G63→62 after qualityHigh→Low at Earth600,200; exact cause unresolved. Indexed source/unit equality does not establish GPU pixel equality. Do not reclassify as pass or reduce the assertion.",
+    "cpu": "Initial High ABBA source10.9/8.6ms versus candidate9.0/8.6ms; final source12.9/13.2ms versus14.3/13.2ms. No consistent incremental CPU or whole-frame improvement. Final Low source6.3/6.7ms versus6.9/6.3ms also mixed. Highdraws219→86 at156429→157269submitted triangles, Low18→11 at9372tri. Geometry preserved, aggregate bounds/order can change submissions; no same-triangle-submission or whole-game certificate.",
+    "scope": "One current native AMDANGLE/RADV renderer, scenery-only controlled captures,27views per viewport across initial/opposite/initial qualities, three additional realms and separate120frame ABBA phases. Frozen shader time only for pixels, real clock for timings. No live connected game, equipped party, sustained physical-device, final-art or beta acceptance."
+  },
+  "resourceCensus": {
+    "artifact": {
+      "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/indexed/resource-census.json",
+      "sha256": "755b5a9adb11e431d5231d3f5556418de3e5152504b584f090e4c8bc3a8fb52a"
+    },
+    "script": {
+      "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/indexed/resource-census.mjs",
+      "sha256": "ad0b7b53dc6bef6c93ed0adab73000361db0a3175d5cc91060cc99b848c2d785"
+    },
+    "result": {
+      "scope": "Node24 CPU raw complete Earth tree-buffer census; deduplicated live geometry and mesh-owned matrix/indirection data arrays. Legacy shared source geometry/material recipes remain retained. Native driver storage, other world/understory resources, JavaScript object overhead and VRAM are not measured. Construction times are one cold/order-dependent diagnostic each, not a paired benchmark.",
+      "rows": [
+        {
+          "quality": "high",
+          "spatial": false,
+          "constructionMs": 652.5886990000001,
+          "earth": {
+            "meshes": 2060,
+            "instances": 2070,
+            "triangles": 1258986,
+            "uniqueGeometries": 12,
+            "uniqueMaterials": 10,
+            "rawAttributeIndexBytes": 837444,
+            "matrixAttributeBytes": 132480,
+            "ownedBatchTextures": 0,
+            "rawOwnedTextureArrayBytes": 0
+          },
+          "colliders": 391
+        },
+        {
+          "quality": "high",
+          "spatial": true,
+          "constructionMs": 993.675911,
+          "earth": {
+            "meshes": 696,
+            "instances": 2070,
+            "triangles": 1258986,
+            "uniqueGeometries": 696,
+            "uniqueMaterials": 10,
+            "rawAttributeIndexBytes": 88397740,
+            "matrixAttributeBytes": 0,
+            "ownedBatchTextures": 1392,
+            "rawOwnedTextureArrayBytes": 274140
+          },
+          "colliders": 391
+        },
+        {
+          "quality": "low",
+          "spatial": false,
+          "constructionMs": 369.432558,
+          "earth": {
+            "meshes": 2060,
+            "instances": 2070,
+            "triangles": 708982,
+            "uniqueGeometries": 12,
+            "uniqueMaterials": 10,
+            "rawAttributeIndexBytes": 476388,
+            "matrixAttributeBytes": 132480,
+            "ownedBatchTextures": 0,
+            "rawOwnedTextureArrayBytes": 0
+          },
+          "colliders": 391
+        },
+        {
+          "quality": "low",
+          "spatial": true,
+          "constructionMs": 588.7188110000002,
+          "earth": {
+            "meshes": 696,
+            "instances": 2070,
+            "triangles": 708982,
+            "uniqueGeometries": 696,
+            "uniqueMaterials": 10,
+            "rawAttributeIndexBytes": 88397740,
+            "matrixAttributeBytes": 0,
+            "ownedBatchTextures": 1392,
+            "rawOwnedTextureArrayBytes": 274140
+          },
+          "colliders": 391
+        }
+      ]
+    },
+    "decision": "Original High2060leaves/2070piece instances/1258986recipe triangles with837444unique raw geometry bytes, Low708982triangles/476388bytes;132480matrix bytes each. Candidate696meshes preserves instances/triangles/colliders but allocates88397740raw geometry bytes on both qualities, plus1392owned batch textures/274140CPU array bytes. Low reserves High capacity. Source caches remain additional retained storage. The roughly88MBgeometry duplication rejects this design; these are raw CPU buffers, not byte-accurate VRAM or complete world memory. Single ordered construction samples are diagnostics, not a benchmark."
+  },
+  "review": "Root viewed failed wide-Low scene and exact differing channel coordinates. No obvious macro silhouette loss is visible; strict pixel failure and resource/CPU evidence still govern selection. Standalone scenery screenshots cannot establish coherent gameplay-scale art.",
+  "nextAction": "Keep6fbffd34 qualified runtime. Investigate reusable stock BatchedMesh draw preparation for existing owned understory with exact camera/world/geometry/instance/visibility invalidation; prove native output and actual equipped-party effect before selecting. Avoid geometry copies per spatial sector and unsupported assumption that stationary foliage needs no live validation. Continue whole-scene triangle/matrix/render and full art/roadmap work.",
+  "longSoakReadOnly": {
+    "artifact": {
+      "path": "/home/aeml/.local/share/eidolon-woodland-spatial-checks-20261009/eidolon-run-37880032315-20261009T214532Z.json",
+      "sha256": "dcf9495579409d1ad9cb7bec4ed10dc71477be39c69f6a37fc18bb5fd7bdf765"
+    },
+    "result": {
+      "observed_at_utc": "2026-10-09T21:45:31Z",
+      "run": {
+        "id": 37880032315,
+        "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_attempt": 1,
+        "html_url": "https://github.com/aeml/eidolon/actions/runs/37880032315",
+        "updated_at": "2026-10-09T03:36:16Z"
+      },
+      "jobs": [
+        {
+          "name": "100-client authoritative-state soak",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_at": "2026-10-09T03:36:15Z",
+          "completed_at": null,
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1
+            },
+            {
+              "name": "Initialize containers",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2
+            },
+            {
+              "name": "Checkout",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3
+            },
+            {
+              "name": "Setup Go",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4
+            },
+            {
+              "name": "Setup Node.js",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5
+            },
+            {
+              "name": "Run multiplayer soak",
+              "status": "in_progress",
+              "conclusion": null,
+              "number": 6
+            },
+            {
+              "name": "Upload soak evidence",
+              "status": "pending",
+              "conclusion": null,
+              "number": 7
+            },
+            {
+              "name": "Post Setup Node.js",
+              "status": "pending",
+              "conclusion": null,
+              "number": 11
+            },
+            {
+              "name": "Post Setup Go",
+              "status": "pending",
+              "conclusion": null,
+              "number": 12
+            },
+            {
+              "name": "Post Checkout",
+              "status": "pending",
+              "conclusion": null,
+              "number": 13
+            },
+            {
+              "name": "Stop containers",
+              "status": "pending",
+              "conclusion": null,
+              "number": 14
+            }
+          ]
+        }
+      ]
+    },
+    "scope": "Single Luna read-only observation21:45:31UTC confirms existing37880032315attempt1/exactdc7d22f2 remainsin_progress, step6running/uploadpending. Historical snapshot, no restart/cancel/terminal acceptance."
+  },
+  "cleanup": "Both owned native supervisors collected exit1 and no4192listener remains. Owned vendor symlink removed before committing prototype. Original dirty workspace, held qualified runtime, public release, accounts/services and separate soak unchanged.",
+  "remaining": "Full inherited1.11–1.99 goal stays active: modern-art/Q/CB, full supplied actors/equipment/fit/contact/warnings/world families, actual equipped whole-game High/Low budgets and supported devices, deliberate raised profile/client/server/rollback, F1–F5 freeze, operations1.81–1.86/recovery/support/rights, consolidation1.87–1.89, owner-approved1.90beta/cohort, findings1.91–1.98, final1.99launch and evidence/operations handoff. Human campaign/pacing and physical-phone party/dungeon owner-deferred; no unchanged campaign/soak repeats, hidden content, lowered gates, fabricated owner policy/commerce/rights/recovery/staffing/admission/launch decisions.",
+  "remainingRegister": "2026-10-09-release-readiness-remaining.md",
+  "evidenceIntegrity": {
+    "finalSourcesChecked": 6,
+    "artifactRecordsChecked": 23
+  },
+  "retainedPrototypeCommit": "dd354331f8a32ff1d874ce891f9e9587daa3193d",
+  "selectionRecord": "Only this rejection evidence is copied to the held ledger. Prototype source, tests and factory integration remain on the isolated branch; qualified6fbffd34runtime hashes retained."
+}

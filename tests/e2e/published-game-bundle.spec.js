@@ -1,6 +1,8 @@
+import { requiresHardwareWebGL } from './browserLaunchPolicy.js';
 import { expect, test } from '@playwright/test';
 import { cp, mkdtemp, readFile, rm, stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
+import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { bundleGameEngine } from '../../scripts/bundle-game-engine.mjs';
@@ -34,6 +36,7 @@ test.beforeAll(async () => {
     for (const filename of ['src', 'assets', 'vendor', 'index.html', 'release.json', 'sw.js'])
         await cp(path.resolve(filename), path.join(root, filename), { recursive: true });
     metadata = await bundleGameEngine(root);
+    metadata.engineSHA256 = createHash('sha256').update(await readFile(path.join(root, 'src/core/GameEngine.bundle.js'))).digest('hex');
     await versionPagesRuntime(root, release);
     const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json',
         '.ttf': 'font/ttf', '.glb': 'model/gltf-binary', '.png': 'image/png', '.svg': 'image/svg+xml', '.webp': 'image/webp' };
@@ -69,13 +72,11 @@ test('published login recovers one interrupted engine download and constructs on
     expect(requests).toEqual([`?release=${release}`, `?startupRetry=1&release=${release}`]);
     const state = await page.evaluate(() => {
         const game = window.game;
-        const state = { className: game.constructor.name,
-            geometryOwnerAbsent: !('actorGameplayGeometry' in game.renderSystem) &&
-                typeof game.renderSystem.setActorGameplayGeometryEnabled === 'undefined',
+        const state = { className: game.constructor.name, defaultGeometryOwned: Boolean(game.renderSystem.actorGameplayGeometry),
             errorHidden: document.getElementById('game-startup-status').hidden };
         game.destroy(); return state;
     });
-    expect(state).toEqual({ className: 'GameEngine', geometryOwnerAbsent: true, errorHidden: true });
+    expect(state).toEqual({ className: 'GameEngine', defaultGeometryOwned: true, errorHidden: true });
     expect(constructions).toBe(1);
     await testInfo.attach('published-module-download-recovery', { body: JSON.stringify({ requests, constructions, state }), contentType: 'application/json' });
 });
@@ -111,6 +112,145 @@ for (const kind of ['persistent-download', 'evaluation', 'export', 'dependency-d
         await testInfo.attach(`published-module-${kind}`, { body: JSON.stringify({ requests, dependencyFailures, failureKind, enginePresent: false }), contentType: 'application/json' });
     });
 }
+
+test('copied published engine keeps status symbols and keyboard reading through countdowns', async ({ page }, testInfo) => {
+    const failures = collectBrowserFailures(page, origin);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto(origin, { waitUntil: 'networkidle' });
+    const result = await page.evaluate(async release => {
+        const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
+        document.getElementById('start-screen').style.display = 'none';
+        const game = new GameEngine('Fighter', false, true, '', 'synthetic-bundle-only', null, 'flat-v1');
+        try {
+            game.uiManager.showHUD();
+            game.upsertActiveBuff({ id: 'well_rested', name: 'Well Rested', durationSeconds: 100,
+                remainingSeconds: 100, detail: '+10% all stats · +25% enemy-kill XP only' });
+            game.minimap._renderBuffList();
+            const button = game.minimap.buffList.querySelector('button');
+            button.focus();
+            const firstSymbol = button.firstChild;
+            game.activeBuffs[0].remainingSeconds = 98.5;
+            game.minimap._renderBuffList();
+            const desktop = { sameButton: game.minimap.buffList.querySelector('button') === button,
+                focused: document.activeElement === button, sameSymbol: button.firstChild === firstSymbol,
+                symbolCount: button.querySelectorAll('svg').length, textGlyphs: button.textContent,
+                width: game.minimap.buffList.getBoundingClientRect().width,
+                tooltip: game.minimap.buffTooltip.textContent, describedBy: button.getAttribute('aria-describedby') };
+            game.isMobile = true; document.body.classList.add('mobile-mode');
+            game.minimap._renderBuffList();
+            const phone = game.minimap.phoneStatus;
+            phone.open();
+            const mobile = { visible: !phone.root.hidden, symbolCount: phone.root.querySelectorAll('svg').length,
+                details: phone.root.textContent };
+            game.activeBuffs.length = 0; game.minimap._renderBuffList();
+            const expired = { desktopIcons: game.minimap.buffList.querySelectorAll('button').length,
+                tooltipHidden: game.minimap.buffTooltip.style.display === 'none', phoneRows: phone.rows.size };
+            return { desktop, mobile, expired };
+        } finally { game.destroy(); document.body.classList.remove('mobile-mode'); }
+    }, release);
+    expect(result.desktop).toMatchObject({ sameButton: true, focused: true, sameSymbol: true,
+        symbolCount: 1, textGlyphs: '', describedBy: 'minimap-buff-tooltip' });
+    expect(result.desktop.width).toBeLessThanOrEqual(64);
+    expect(result.desktop.tooltip).toContain('98.5s');
+    expect(result.mobile).toMatchObject({ visible: true, symbolCount: 1 });
+    expect(result.mobile.details).toContain('+25% enemy-kill XP only');
+    expect(result.expired).toEqual({ desktopIcons: 0, tooltipHidden: true, phoneRows: 0 });
+    expect(failures, failures.join('\n')).toEqual([]);
+    await testInfo.attach('published-status-symbols', { body: JSON.stringify({ result, engineSHA256: metadata.engineSHA256,
+        scope: 'Actual copied/versioned game bundle UI construction; synthetic status metadata, no server/gameplay/device claim' }), contentType: 'application/json' });
+});
+
+test('copied published engine retains filled additive and wireframe effect policies', async ({ page }, testInfo) => {
+    const failures = collectBrowserFailures(page, origin);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto(origin, { waitUntil: 'networkidle' });
+    const result = await page.evaluate(async release => {
+        const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
+        const { AdditiveBlending } = await import('three');
+        const game = new GameEngine('Fighter', false, true, '', 'synthetic-bundle-only', null, 'flat-v1');
+        const actor = game.createRemotePlayer('Player', 'synthetic-effect-fighter', 'Fighter');
+        try {
+            actor.gameEngine = game; actor.ironFortressTimer = 10; actor.syncAttachedStatusEffects(.04);
+            game.spawnTransientEffect('sphere', actor.position, 0xddbb77,
+                { source: actor, abilityName: 'Iron Fortress', abilityLayer: 0 });
+            game.spawnTransientEffect('combat_feedback', actor.position, 0xddbb77,
+                { feedbackKind: 'fighter_strike', amount: 100 });
+            for (const effect of game.effects) effect.update(.04);
+            const counts = { single: 0, wireframe: 0, ordinary: 0, invalid: 0 };
+            game.renderSystem.effectGroup.traverse(mesh => {
+                if (!mesh.isMesh) return;
+                for (const material of Array.isArray(mesh.material) ? mesh.material : [mesh.material]) {
+                    const eligible = material.blending === AdditiveBlending && !material.wireframe;
+                    if (eligible) counts.single++; else if (material.wireframe) counts.wireframe++; else counts.ordinary++;
+                    if (material.forceSinglePass !== eligible) counts.invalid++;
+                }
+            });
+            return { counts, statuses: actor.attachedStatusEffects.size, transients: game.effects.length };
+        } finally { actor.dispose(); game.destroy(); }
+    }, release);
+    expect(result.statuses).toBeGreaterThan(0); expect(result.transients).toBe(2);
+    expect(result.counts.single).toBeGreaterThan(0); expect(result.counts.wireframe).toBeGreaterThan(0);
+    expect(result.counts.ordinary).toBeGreaterThan(0); expect(result.counts.invalid).toBe(0);
+    expect(failures, failures.join('\n')).toEqual([]);
+    await testInfo.attach('published-additive-policy', { body: JSON.stringify({ result, engineSHA256: metadata.engineSHA256,
+        scope: 'Actual copied/versioned bundle factories exercised through engine/actor entry points; synthetic metadata, no server or gameplay timing claim.' }), contentType: 'application/json' });
+});
+
+test('copied published engine constructs a grounded ward and drives its state through the world owner', async ({ page }, testInfo) => {
+    const failures = collectBrowserFailures(page, origin);
+    const layout = JSON.parse(await readFile('tests/fixtures/production-dungeon-layouts.json', 'utf8'))
+        .find(fixture => fixture.dungeonType === 'verdant_bastion_catacombs').layout;
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto(origin, { waitUntil: 'networkidle' });
+    const result = await page.evaluate(async ({ release, layout }) => {
+        const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
+        const game = new GameEngine('Fighter', false, true, '', 'synthetic-bundle-only', null, 'flat-v1');
+        try {
+            const world = game.worldGenerator;
+            await world.createVerdantBastionCatacombs(0, 0, layout);
+            const target = game.renderSystem.cameraTarget.clone().set(layout.rooms[0].x, .1, layout.rooms[0].z);
+            game.renderSystem.setEnvironmentContext('verdant_bastion_catacombs', target, true);
+            game.renderSystem.setCameraTarget(target); game.renderSystem.updateEnvironmentLighting(target, 0);
+            const floor = game.renderSystem.instanceEnvironmentGroup.children.find(part => part.name === 'DungeonUnionFloor');
+            const rootBatches = game.renderSystem.instanceEnvironmentGroup.children
+                .filter(part => part.userData.proceduralDungeonInterior)
+                .flatMap(part => part.children.filter(mesh => mesh.isMesh && mesh.material.vertexColors && !mesh.material.map));
+            const roots = rootBatches.map(mesh => ({ triangles: (mesh.geometry.index?.count || mesh.geometry.attributes.position.count) / 3,
+                maxY: mesh.geometry.boundingBox.max.y, roughness: mesh.material.roughness,
+                smooth: !mesh.material.flatShading, textures: Object.values(mesh.material).filter(value => value?.isTexture).length }));
+            const state = world.dungeonRoomPresentations.get(0), ward = state.getObjectByName('DungeonEntryWard');
+            const veil = ward.getObjectByName('DungeonExitPortal');
+            veil.updateMatrix();
+            const matrix = veil.matrix.toArray();
+            const colliders = JSON.stringify(game.collisionManager.colliders), phases = [];
+            for (const objectiveRoomIndex of [0, -1, 0]) {
+                world.updateDungeonRoomState({ currentRoomIndex: 0, objectiveRoomIndex, rooms: [{ index: 0, cleared: objectiveRoomIndex === -1 }] });
+                const appliedOpacity = veil.material.opacity;
+                world.updateDungeonPresentation(.25);
+                game.renderSystem.render();
+                phases.push({ ready: state.userData.exitReady, appliedOpacity, time: veil.material.userData.dungeonVeilTime.value,
+                    stable: veil.matrix.elements.every((value, index) => value === matrix[index]) });
+            }
+            const gl = game.renderSystem.renderer.getContext();
+            const floorPatinaCompiled = game.renderSystem.renderer.info.programs.some(program =>
+                gl.getShaderSource(program.fragmentShader)?.includes('verdantWeather'));
+            return { parts: ward.children.length, visualOnly: ward.userData.visualOnly, phases, roots,
+                floorPatinaCompiled, floorPatina: floor.material.userData.verdantFloorPatina === true,
+                collidersStable: JSON.stringify(game.collisionManager.colliders) === colliders };
+        } finally { game.destroy(); }
+    }, { release, layout });
+    expect(result).toMatchObject({ parts: 3, visualOnly: true, collidersStable: true, floorPatina: true, floorPatinaCompiled: true });
+    expect(result.roots).toHaveLength(layout.rooms.length);
+    for (const root of result.roots) {
+        expect(root).toMatchObject({ triangles: 2880, roughness: .94, smooth: true, textures: 0 });
+        expect(root.maxY).toBeLessThan(1);
+    }
+    expect(result.phases).toEqual([{ ready: false, appliedOpacity: .18, time: .25, stable: true },
+        { ready: true, appliedOpacity: .9, time: .5, stable: true }, { ready: false, appliedOpacity: .18, time: .75, stable: true }]);
+    expect(failures, failures.join('\n')).toEqual([]);
+    await testInfo.attach('published-entry-ward', { body: JSON.stringify({ result, engineSHA256: metadata.engineSHA256,
+        scope: 'Copied/versioned engine and actual WorldGenerator entry points, prepared layout and room summaries. No server or earned completion claim.' }), contentType: 'application/json' });
+});
 
 test('actual published engine stays lazy at login and constructs each class from the bounded module graph', async ({ page }) => {
     const failures = collectBrowserFailures(page, origin), modules = new Set();
@@ -151,6 +291,382 @@ test('actual published engine stays lazy at login and constructs each class from
     expect(failures, failures.join('\n')).toEqual([]);
 });
 
+for (const quality of ['high', 'low']) test(`published ${quality} actor defaults render generated roots and retire owned copies`, async ({ page }, testInfo) => {
+    const failures = collectBrowserFailures(page, origin);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto(origin, { waitUntil: 'networkidle' });
+    const result = await page.evaluate(async ({ release, quality }) => {
+        const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
+        const game = new GameEngine('Fighter', false, true, '', 'synthetic-bundle-only', null, 'flat-v1');
+        const render = game.renderSystem, owner = render.actorInstances, multi = owner?.multiDraw, actors = [];
+        let result;
+        try {
+            render.setGraphicsQuality(quality);
+            for (let i = 0; i < 6; i++) {
+                const actor = game.createRemotePlayer('Enemy', `published-skeleton-${i}`, 'Skeleton');
+                actors.push(actor); await actor.ensureMesh();
+                actor.mesh.position.set(i % 3 * 3, 0, i < 3 ? 0 : 3); render.add(actor.mesh);
+            }
+            render.render();
+            result = { enabled: Boolean(owner?.enabled && multi?.enabled && multi.perInstanceFrustum),
+                groups: multi?.entries.size || 0, extension: render.renderer.extensions.has('WEBGL_multi_draw'),
+                restored: !owner.hidden.length && !multi.hidden.length && !owner.group.visible && !multi.group.visible,
+                draws: render.renderer.info.render.calls };
+        } finally {
+            for (const actor of actors) actor.dispose();
+            game.destroy();
+        }
+        result.disposed = multi.disposed && multi.entries.size === 0 && multi.group.parent === null && owner.roots.size === 0;
+        return result;
+    }, { release, quality });
+    await testInfo.attach('published-default-actor-owner', { body: JSON.stringify({ quality, result, engineSHA256: metadata.engineSHA256 }), contentType: 'application/json' });
+    expect(result.enabled && result.extension && result.restored && result.disposed).toBe(true);
+    expect(result.groups).toBeGreaterThan(0); expect(result.draws).toBeGreaterThan(0);
+    expect(failures, failures.join('\n')).toEqual([]);
+});
+
+test('published geometry owner loads its immutable worker, retires streamed roots and reuses the exact cached worker offline', async ({ page, context }, testInfo) => {
+    test.setTimeout(180_000);
+    const failures = collectBrowserFailures(page, origin), workers = [];
+    page.on('worker', worker => workers.push(worker.url()));
+    await page.goto(origin, { waitUntil: 'networkidle' });
+    await page.evaluate(() => navigator.serviceWorker.ready);
+    await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
+    const startup = await page.evaluate(async release => {
+        const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
+        const game = new GameEngine('Fighter', false, true, '', 'synthetic-bundle-only', null, 'flat-v1');
+        const render = game.renderSystem, defaultOwned = Boolean(render.actorGameplayGeometry),
+            workerDeferred = render.actorGameplayGeometry.delivery.worker === null;
+        const actor = game.createRemotePlayer('Player', 'owned-worker-fighter', 'Fighter'); actor.gameEngine = game;
+        await actor.ensureMesh(); render.add(actor.mesh);
+        window.__publishedGeometry = { game, actor, owner: render.actorGameplayGeometry };
+        return { defaultOwned, workerDeferred, authored: actor.mesh.userData.authoredClass };
+    }, release);
+    expect(startup).toEqual({ defaultOwned: true, workerDeferred: true, authored: 'Fighter' });
+    await page.waitForFunction(() => {
+        const { delivery, pass } = window.__publishedGeometry.owner;
+        if (delivery.failed) throw Error('Published geometry worker failed');
+        return !delivery.active && !delivery.jobs.size && pass.entries.size > 0;
+    }, null, { timeout: 90_000 });
+    const workerURL = `${origin}/${metadata.worker.output}?release=${release}`;
+    expect(workers).toEqual([workerURL]);
+    await expect.poll(() => page.evaluate(async workerURL => {
+        for (const key of await caches.keys()) if (await (await caches.open(key)).match(workerURL)) return true;
+        return false;
+    }, workerURL)).toBe(true);
+    const lifecycle = await page.evaluate(() => {
+        const { game, actor, owner } = window.__publishedGeometry;
+        const before = { roots: owner.delivery.roots.size, entries: owner.pass.entries.size, cacheHits: owner.delivery.stats.cacheHits };
+        actor.mesh.removeFromParent();
+        const retired = !owner.delivery.roots.has(actor.mesh) && [...owner.pass.entries.values()].every(row => row.root !== actor.mesh);
+        game.renderSystem.add(actor.mesh);
+        const reattached = owner.delivery.roots.has(actor.mesh);
+        return { before, retired, reattached };
+    });
+    await page.waitForFunction(() => {
+        const { delivery, pass } = window.__publishedGeometry.owner;
+        if (delivery.failed) throw Error('Returning geometry worker failed');
+        return !delivery.active && !delivery.jobs.size && pass.entries.size > 0;
+    });
+    Object.assign(lifecycle, await page.evaluate(() => {
+        const { game, actor, owner } = window.__publishedGeometry;
+        const returning = { entries: owner.pass.entries.size, cacheHits: owner.delivery.stats.cacheHits };
+        actor.dispose(); game.destroy(); delete window.__publishedGeometry;
+        return { returning, disposed: owner.disposed && owner.delivery.disposed,
+            rootsAfter: owner.delivery.roots.size, jobsAfter: owner.delivery.jobs.size, entriesAfter: owner.pass.entries.size };
+    }));
+    expect(lifecycle.retired && lifecycle.reattached && lifecycle.disposed).toBe(true);
+    expect([lifecycle.rootsAfter, lifecycle.jobsAfter, lifecycle.entriesAfter]).toEqual([0, 0, 0]);
+    expect(lifecycle.returning.cacheHits).toBeGreaterThan(lifecycle.before.cacheHits);
+    await context.setOffline(true);
+    const offline = [];
+    try {
+        for (const kind of ['color', 'rigid']) offline.push({ kind, ...await page.evaluate(({ workerURL, kind }) => new Promise((resolve, reject) => {
+            const worker = new Worker(workerURL, { type: 'module' });
+            const timer = setTimeout(() => { worker.terminate(); reject(Error('Offline worker timeout')); }, 15_000);
+            worker.onerror = () => { clearTimeout(timer); worker.terminate(); reject(Error('Offline worker failed')); };
+            worker.onmessage = ({ data }) => { clearTimeout(timer); worker.terminate(); resolve({ id: data.id,
+                indices: data.indices?.length, error: data.error || null }); };
+            const attribute = (array, itemSize) => ({ array: new Float32Array(array), itemSize });
+            worker.postMessage({ id: 7, kind, source: { quality: 'low', index: new Uint32Array([0, 1, 2, 0, 2, 3]), attributes: {
+                position: attribute([0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0], 3),
+                normal: attribute([0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1], 3),
+                ...(kind === 'rigid' ? { uv: attribute([0, 0, 1, 0, 1, 1, 0, 1], 2) } : {
+                    skinIndex: attribute(new Float32Array(16), 4),
+                    skinWeight: attribute([1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], 4) })
+            } } });
+        }), { workerURL, kind }) });
+    } finally { await context.setOffline(false); }
+    for (const row of offline) { expect(row.id).toBe(7); expect(row.error).toBeNull(); expect(row.indices).toBeGreaterThan(0); }
+    await testInfo.attach('published-geometry-worker', { body: JSON.stringify({ startup, worker: metadata.worker,
+        workerURL, lifecycle, offline }, null, 2), contentType: 'application/json' });
+    expect(failures, failures.join('\n')).toEqual([]);
+});
+
+for (const quality of ['high', 'low']) test(`copied published ${quality} elemental floor materials render through the world owner`, async ({ page }, testInfo) => {
+    const failures = collectBrowserFailures(page, origin);
+    const fixtures = JSON.parse(await readFile('tests/fixtures/production-dungeon-layouts.json', 'utf8'));
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto(origin, { waitUntil: 'networkidle' });
+    const result = await page.evaluate(async ({ release, quality, fixtures }) => {
+        const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
+        localStorage.setItem('eidolon.graphicsQuality', quality);
+        const game = new GameEngine('Fighter', false, true, '', 'synthetic-floor-only', null, 'flat-v1');
+        const render = game.renderSystem, world = game.worldGenerator, samples = [];
+        try {
+            game.uiManager.setGraphicsQuality(quality);
+            render.render();
+            const unwarmedBaseline = { ...render.renderer.info.memory };
+            // An empty scene has not initialized Three's PBR reflection/PMREM
+            // resources. Warm an actual room, then require exact return to that
+            // baseline after every subsequent room, rather than counting the
+            // renderer's first PBR allocation as a dungeon ownership leak.
+            const warmLayout = fixtures.find(fixture => fixture.dungeonType === 'molten_core').layout;
+            await world.createMoltenCore(0, 0, warmLayout);
+            const warmTarget = render.cameraTarget.clone().set(warmLayout.rooms[0].x, .1, warmLayout.rooms[0].z);
+            render.setEnvironmentContext('molten_core', warmTarget, true);
+            render.setCameraTarget(warmTarget); render.updateEnvironmentLighting(warmTarget, 0);
+            render.render(); render.render();
+            const warmFloor = render.instanceEnvironmentGroup.children.find(part => part.name === 'DungeonUnionFloor');
+            const warmed = Boolean(render.renderer.properties.get(warmFloor.material).currentProgram);
+            render.clearGroupChildren(render.instanceEnvironmentGroup, { dispose: true }); render.render();
+            const baseline = { ...render.renderer.info.memory }, cleared = [];
+            const methods = { molten_core: 'createMoltenCore', tempest_spire: 'createTempestSpire',
+                abyssal_well: 'createAbyssalWell', umbral_nexus: 'createUmbralNexus',
+                verdant_bastion_catacombs: 'createVerdantBastionCatacombs' };
+            const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
+            for (const [type, method] of Object.entries(methods)) {
+                render.clearGroupChildren(render.instanceEnvironmentGroup, { dispose: true });
+                const layout = fixtures.find(fixture => fixture.dungeonType === type).layout;
+                await world[method](0, 0, layout);
+                const target = render.cameraTarget.clone().set(layout.rooms[0].x, .1, layout.rooms[0].z);
+                render.setEnvironmentContext(type, target, true); render.setCameraTarget(target); render.updateEnvironmentLighting(target, 0);
+                const colliders = JSON.stringify(game.collisionManager.colliders);
+                render.render(); render.render();
+                const floor = render.instanceEnvironmentGroup.children.find(part => part.name === 'DungeonUnionFloor');
+                const program = render.renderer.properties.get(floor.material).currentProgram;
+                const compiled = Boolean(program && gl.getShaderSource(program.fragmentShader)?.includes('elementalFloorWeather') &&
+                    gl.getProgramParameter(program.program, gl.LINK_STATUS));
+                const propMaterials = new Map();
+                render.instanceEnvironmentGroup.traverse(part => {
+                    const role = part.material?.userData.dungeonPropSurface;
+                    if (role) propMaterials.set(`${role}:${part.material.vertexColors}`, { role, material: part.material });
+                });
+                const props = [...propMaterials.values()].map(({ role, material }) => {
+                    const propProgram = render.renderer.properties.get(material).currentProgram;
+                    return { role, vertexColors: material.vertexColors,
+                        compiled: Boolean(propProgram && gl.getProgramParameter(propProgram.program, gl.LINK_STATUS)),
+                        maps: ['map', 'normalMap', 'roughnessMap'].map(key => ({ key, size: material[key].image.width,
+                            colorSpace: material[key].colorSpace })) };
+                });
+                const compositions = render.instanceEnvironmentGroup.children.filter(part => part.userData.floorComposition);
+                const plans = new Map();
+                for (const dressing of compositions) {
+                    const { plan, stones } = dressing.userData.floorComposition;
+                    if (plans.has(plan)) continue;
+                    const room = layout.rooms[dressing.userData.roomIndex];
+                    const views = [];
+                    for (const [view, offset] of plan === 'arena' ? [['center', 0], ['edge', 17]] : [['feature', 8]]) {
+                        target.set(room.x, .1, room.z + offset);
+                        render.setCameraTarget(target); render.updateEnvironmentLighting(target, 0); render.render();
+                        views.push({ view, calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles });
+                    }
+                    plans.set(plan, { plan, stones, calls: render.renderer.info.render.calls,
+                        triangles: render.renderer.info.render.triangles, masonry: dressing.userData.bossMasonry || null, views });
+                }
+                samples.push({ type, compiled, floorLinked: Boolean(program && gl.getProgramParameter(program.program, gl.LINK_STATUS)),
+                    patina: floor.material.userData.elementalFloorPatina,
+                    verdant: floor.material.userData.verdantFloorPatina, props,
+                    paving: render.instanceEnvironmentGroup.children.filter(part => part.userData.processionalPaving)
+                        .map(part => part.userData.processionalPaving.identity),
+                    relics: render.instanceEnvironmentGroup.children.filter(part => part.userData.regionalRelic)
+                        .map(part => part.userData.regionalRelic),
+                    compositions: [...plans.values()], compositionRooms: compositions.length, roomCount: layout.rooms.length,
+                    quality: world.graphicsQuality, mapSize: floor.material.map.image.width,
+                    calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles,
+                    collidersStable: colliders === JSON.stringify(game.collisionManager.colliders) });
+                render.clearGroupChildren(render.instanceEnvironmentGroup, { dispose: true }); render.render();
+                cleared.push({ type, ...render.renderer.info.memory });
+            }
+            render.clearGroupChildren(render.instanceEnvironmentGroup, { dispose: true }); render.render();
+            const remainingMeshes = [];
+            render.scene.traverse(part => {
+                if (part.geometry) remainingMeshes.push({ name: part.name, type: part.type, geometry: part.geometry.type, parent: part.parent?.name });
+            });
+            return { samples, warmed, unwarmedBaseline, baseline, cleared, after: { ...render.renderer.info.memory }, remainingMeshes,
+                gpu: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER) };
+        } finally { game.destroy(); }
+    }, { release, quality, fixtures });
+    await testInfo.attach('published-elemental-floors', { body: JSON.stringify({ ...result, engineSHA256: metadata.engineSHA256,
+        scope: 'Actual copied/versioned engine, normal saved quality preference and world builders. Prepared materials, shader compilation, collider stability and GPU cleanup; no server, gameplay timing or physical-device claim.' }), contentType: 'application/json' });
+    for (const row of result.samples) {
+        expect(row).toMatchObject({ quality, floorLinked: true,
+            mapSize: quality === 'low' && row.type !== 'verdant_bastion_catacombs' ? 64 : 256, collidersStable: true });
+        if (row.type === 'verdant_bastion_catacombs') expect(row.verdant).toBe(true);
+        else expect(row).toMatchObject({ compiled: true, patina: row.type });
+        expect(row.props.map(prop => `${prop.role}:${prop.vertexColors}`).sort()).toEqual(['metal:false', 'stone:false', 'stone:true']);
+        for (const identity of ['entry_gate', 'treasure_cache', 'restorative_shrine']) expect(row.paving).toContain(identity);
+        expect(row.compositionRooms).toBe(row.roomCount);
+        expect(row.compositions.map(part => part.plan).sort()).toEqual(row.type === 'umbral_nexus'
+            ? ['arena', 'court', 'nave'] : ['arena', 'court', 'nave', 'procession']);
+        for (const part of row.compositions) {
+            expect(part.stones).toBeGreaterThan(0); expect(part.stones).toBeLessThanOrEqual(44);
+            expect(part.calls).toBeGreaterThan(0); expect(part.calls).toBeLessThanOrEqual(quality === 'low' ? 200 : 350);
+            expect(part.triangles).toBeGreaterThan(0); expect(part.triangles).toBeLessThanOrEqual(quality === 'low' ? 85000 : 250000);
+            if (part.plan === 'arena') {
+                expect(part.masonry).toMatchObject({ outerRadius: 17.4, visualOnly: true });
+                expect(part.masonry.triangles).toBeLessThanOrEqual(640);
+                expect(part.views.map(view => view.view)).toEqual(['center', 'edge']);
+            }
+            for (const view of part.views) {
+                expect(view.calls).toBeGreaterThan(0); expect(view.calls).toBeLessThanOrEqual(quality === 'low' ? 200 : 350);
+                expect(view.triangles).toBeGreaterThan(0); expect(view.triangles).toBeLessThanOrEqual(quality === 'low' ? 85000 : 250000);
+            }
+        }
+        if (row.type === 'verdant_bastion_catacombs') expect(row.relics).toEqual([]);
+        else {
+            expect(row.relics.length).toBeGreaterThan(0);
+            for (const relic of row.relics) expect(relic).toEqual({ type: row.type, count: 2, channels: ['body', 'metal', 'glow'], quality });
+        }
+        for (const prop of row.props) {
+            expect(prop.compiled, `${row.type} ${prop.role}`).toBe(true);
+            for (const map of prop.maps) expect(map).toMatchObject({ size: quality === 'low' ? 64 : 128,
+                colorSpace: map.key === 'map' ? 'srgb' : '' });
+        }
+        expect(row.calls).toBeGreaterThan(0); expect(row.calls).toBeLessThanOrEqual(quality === 'low' ? 200 : 350);
+        expect(row.triangles).toBeGreaterThan(0); expect(row.triangles).toBeLessThanOrEqual(quality === 'low' ? 85000 : 250000);
+    }
+    expect(result.after).toEqual(result.baseline);
+    expect(result.warmed).toBe(true);
+    for (const { type, ...memory } of result.cleared) expect(memory, type).toEqual(result.baseline);
+    if (requiresHardwareWebGL()) expect(result.gpu).not.toMatch(/SwiftShader|llvmpipe|software/i);
+    expect(failures, failures.join('\n')).toEqual([]);
+});
+
+for (const quality of ['high', 'low']) test(`published ${quality} geometry scheduling preserves prepared four-class outfits`, async ({ page }, testInfo) => {
+    test.setTimeout(180_000);
+    const failures = collectBrowserFailures(page, origin);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto(origin, { waitUntil: 'networkidle' });
+    const result = await page.evaluate(async ({ release, quality }) => {
+        const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
+        const game = new GameEngine('Fighter', false, true, '', 'synthetic-scheduling-only', null, 'flat-v1');
+        const render = game.renderSystem, actors = [], arms = [];
+        const outfits = {
+            Fighter: ['Iron Helm', 'Plate Mail', 'Plate Greaves', 'Iron Boots', 'Iron Gauntlets', 'Steel Pauldrons', 'Plated Girdle', 'Iron Sword', 'Wooden Shield'],
+            Rogue: ['Leather Cap', 'Leather Tunic', 'Leather Pants', 'Leather Boots', 'Leather Gloves', 'Reinforced Spaulders', 'Studded Belt', 'Steel Dagger', 'Iron Sword'],
+            Wizard: ['Silk Hood', 'Robes', 'Silk Skirt', 'Sandals', 'Silk Gloves', 'Velvet Mantle', 'Silk Sash', 'Wooden Staff', 'Spell Tome'],
+            Cleric: ['Iron Helm', 'Robes', 'Leather Pants', 'Iron Boots', 'Silk Gloves', 'Steel Pauldrons', 'Studded Belt', 'Cleric Mace', 'Wooden Shield']
+        };
+        const slots = ['head', 'chest', 'legs', 'feet', 'gloves', 'shoulders', 'belt', 'mainHand', 'offHand', 'ring1', 'ring2', 'neck', 'trinket1', 'trinket2'];
+        const digest = async array => [...new Uint8Array(await crypto.subtle.digest('SHA-256', array))].map(byte => byte.toString(16).padStart(2, '0')).join('');
+        try {
+            render.setGraphicsQuality(quality); render.setActorGameplayGeometryEnabled(false);
+            for (const [index, character] of Object.keys(outfits).entries()) {
+                const actor = game.createRemotePlayer('Player', `schedule-${character}`, character);
+                actor.gameEngine = game; actors.push(actor); await actor.ensureMesh();
+                actor.syncEquipmentVisuals(Object.fromEntries([...outfits[character], 'Ruby Ring', 'Silver Ring', 'Necklace', 'Amulet of Power', 'Orb of Mana'].map((name, i) =>
+                    [slots[i], { id: `schedule-${character}-${slots[i]}`, name, baseName: name, slot: i === 8 && character === 'Rogue' ? 'mainHand' : slots[i],
+                        type: [7, 8].includes(i) ? 'WEAPON' : 'ARMOR', rarity: 'Rare', potency: 5 }])));
+                await actor.mesh.userData.equipmentReady;
+                actor.mesh.position.set((index - 1.5) * 4, 0, 0); render.add(actor.mesh);
+            }
+            render.setZoom(18); render.setCameraTarget(actors[1].mesh.position);
+            const canvas = render.renderer.domElement, copy = document.createElement('canvas');
+            copy.width = canvas.width; copy.height = canvas.height;
+            const context = copy.getContext('2d', { willReadFrequently: true });
+            for (const reference of [true, false]) {
+                render.setActorGameplayGeometryEnabled(false); render.setActorGameplayGeometryEnabled(true);
+                const { pass, delivery } = render.actorGameplayGeometry, order = [], indices = new Map();
+                const next = delivery.nextJob, register = pass.register;
+                delivery.nextJob = function () {
+                    const pending = this.queue.map(job => ({ id: job.id, triangles: job.sourceTriangles }));
+                    const expected = reference || this.dispatched % 4 === 3 ? pending[0] : pending.reduce((best, job) => !best || job.triangles > best.triangles ? job : best, null);
+                    const job = reference ? this.queue.shift() : next.call(this);
+                    if (job) order.push({ id: job.id, mesh: job.generation.mesh.name, triangles: job.sourceTriangles, expected: expected.id });
+                    return job;
+                };
+                pass.register = function (mesh, prepared) {
+                    const installed = register.call(this, mesh, prepared);
+                    if (installed) indices.set(mesh.uuid, prepared.slice());
+                    return installed;
+                };
+                const deadline = performance.now() + 90_000;
+                while (delivery.active || delivery.jobs.size) {
+                    if (delivery.failed || performance.now() > deadline) throw Error('Four-class geometry scheduling did not complete');
+                    await new Promise(resolve => setTimeout(resolve, 10));
+                }
+                render.render(); render.render(); context.drawImage(canvas, 0, 0);
+                const pixels = context.getImageData(0, 0, copy.width, copy.height).data;
+                arms.push({ reference, order, indices: Object.fromEntries(await Promise.all([...indices].map(async ([id, array]) => [id, await digest(array)]))),
+                    pixels: await digest(pixels), draws: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles,
+                    restored: !pass.active.length && [...pass.entries.values()].every(entry => entry.mesh.geometry === entry.source), stats: { ...delivery.stats } });
+            }
+            const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
+            return { quality, arms, classes: actors.map(actor => ({ character: actor.mesh.userData.authoredClass,
+                quality: actor.mesh.userData.authoredQuality, items: actor.mesh.userData.equipmentVisualItemCount,
+                missing: actor.mesh.userData.equipmentVisualMissing.length, fallback: actor.mesh.userData.equipmentVisualFallback.length })),
+                gpu: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER), engineSHA256: null };
+        } finally {
+            for (const actor of actors) actor.dispose(); game.destroy();
+        }
+    }, { release, quality });
+    result.engineSHA256 = metadata.engineSHA256;
+    await testInfo.attach('published-geometry-scheduling', { body: JSON.stringify(result), contentType: 'application/json' });
+    if (requiresHardwareWebGL()) expect(result.gpu).not.toMatch(/swiftshader|llvmpipe|software/i);
+    expect(result.classes).toHaveLength(4);
+    for (const actor of result.classes) expect(actor).toMatchObject({ quality, items: 14, missing: 0, fallback: 0 });
+    const [reference, candidate] = result.arms;
+    for (const arm of result.arms) {
+        expect(arm.restored).toBe(true); expect(arm.stats.failed).toBe(0); expect(arm.stats.rejected).toBe(0);
+        expect(arm.order.length).toBeGreaterThan(60); expect(arm.order.every(row => row.id === row.expected)).toBe(true);
+    }
+    expect(Object.keys(candidate.indices).length).toBeGreaterThan(40);
+    expect(candidate.indices).toEqual(reference.indices);
+    expect(candidate.pixels).toBe(reference.pixels);
+    expect(candidate.draws).toBe(reference.draws); expect(candidate.triangles).toBe(reference.triangles);
+    expect(candidate.order.map(row => row.mesh)).not.toEqual(reference.order.map(row => row.mesh));
+    expect(failures, failures.join('\n')).toEqual([]);
+});
+
+test.describe('default geometry worker fallback', () => {
+    test.use({ serviceWorkers: 'block' });
+    test('actual published worker exception keeps the game and original model usable', async ({ page }, testInfo) => {
+        const failures = collectBrowserFailures(page, origin), workerURLs = [];
+        page.on('worker', worker => workerURLs.push(worker.url()));
+        await page.route('**/ActorGameplayGeometryWorker.*.js?*', route => route.fulfill({ contentType: 'text/javascript',
+            body: 'self.onmessage = () => { throw Error("intentional geometry worker failure"); };' }));
+        await page.goto(origin, { waitUntil: 'networkidle' });
+        await page.evaluate(async release => {
+            const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
+            const game = new GameEngine('Fighter', false, true, '', 'synthetic-fallback-only', null, 'flat-v1');
+            const actor = game.createRemotePlayer('Player', 'fallback-fighter', 'Fighter'); actor.gameEngine = game;
+            await actor.ensureMesh(); game.renderSystem.add(actor.mesh);
+            window.__workerFallback = { game, actor, owner: game.renderSystem.actorGameplayGeometry };
+        }, release);
+        await page.waitForFunction(() => window.__workerFallback.owner.delivery.failed);
+        const result = await page.evaluate(() => {
+            const { game, actor, owner } = window.__workerFallback, render = game.renderSystem;
+            render.setCameraTarget(actor.position);
+            const original = render.renderer.render, before = [];
+            actor.mesh.traverse(mesh => { if (mesh.isMesh) before.push([mesh, mesh.geometry]); });
+            render.render();
+            const result = { owned: owner === render.actorGameplayGeometry, failed: owner.delivery.failed,
+                entries: owner.pass.entries.size, jobs: owner.delivery.jobs.size, queue: owner.delivery.queue.length,
+                originalGeometry: before.every(([mesh, geometry]) => mesh.geometry === geometry),
+                rendererWrapped: render.renderer.render === original,
+                calls: render.renderer.info.render.calls, failures: owner.delivery.stats.failed };
+            actor.dispose(); game.destroy(); delete window.__workerFallback;
+            return { ...result, retired: owner.disposed && !owner.delivery.roots.size && !owner.pass.entries.size };
+        });
+        expect(workerURLs).toEqual([`${origin}/${metadata.worker.output}?release=${release}`]);
+        expect(result.failed && result.owned && result.originalGeometry && result.rendererWrapped && result.retired).toBe(true);
+        expect([result.entries, result.jobs, result.queue, result.failures]).toEqual([0, 0, 0, 1]);
+        expect(result.calls).toBeGreaterThan(0);
+        expect(failures.filter(message => !message.includes('intentional geometry worker failure'))).toEqual([]);
+        await testInfo.attach('default-worker-fallback', { body: JSON.stringify({ result, workerURLs, expectedFailures: failures }), contentType: 'application/json' });
+    });
+});
 
 test('published engine reaches the jump destination in real elapsed time at low FPS', async ({ page }, testInfo) => {
     const failures = collectBrowserFailures(page, origin);

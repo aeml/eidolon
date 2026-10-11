@@ -125,7 +125,7 @@ jobs:
           EIDOLON_WEEKLY_DISPOSABLE_DATABASE=1 MONGO_URI=mongodb://127.0.0.1:27017 EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestWeeklyRaid(Mongo|Production)' -count=1 -timeout=120s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestEmailRecoveryActualConnectedSessions$' -count=1 -timeout=45s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestResourceActualTokenResumeAndDeathRecovery$' -count=1 -timeout=45s
-          EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestTerrainActualSavedSessionsAcrossProfileChanges$' -count=1 -timeout=120s
+          EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestTerrainActual(SavedSessionsAcrossProfileChanges|HealthMatchesLoginProfile)$' -count=1 -timeout=120s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestDarkRealmAdministratorActualTravelAndRestart$' -count=1 -timeout=90s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestDuelActualSocketsReplacementConsentAndSurrender$' -count=1
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestAdmin(ConsoleActualSessionsAndHistoryRestart|ModerationActualSessionsAndRestart)$' -count=1
@@ -306,6 +306,13 @@ jobs:
         # All six original cases, original warm-up/twelve phases and resource
         # assertions. This step is mandatory and blocks both deploy jobs.
         run: sg render -c 'node node_modules/@playwright/test/cli.js test tests/e2e/populated-earth-world.spec.js --grep "high at 1280px quality switches" --workers=1 --retries=0 --reporter=line,html --output=native-visual-evidence/regional-quality/results'
+
+      - name: Run required native dungeon materials and prepared outfits
+        env:
+          EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
+          EIDOLON_E2E_REQUIRE_NATIVE_GPU: '1'
+          PLAYWRIGHT_HTML_OUTPUT_DIR: native-visual-evidence/dungeon-outfits/report
+        run: sg render -c 'node node_modules/@playwright/test/cli.js test tests/e2e/dungeon-entry-ward.spec.js tests/e2e/dungeon-floor-material.spec.js tests/e2e/published-game-bundle.spec.js --grep "grounded entry wards|floor weathering|geometry scheduling|elemental floor materials" --workers=1 --retries=0 --reporter=line,html --output=native-visual-evidence/dungeon-outfits/results'
 
       - name: Run required Well Rested rendering and GPU lifecycle QA
         if: inputs.full_stabilization == true || vars.EIDOLON_FULL_STABILIZATION == 'true'

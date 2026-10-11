@@ -1,0 +1,214 @@
+{
+  "recordedUTC": "2026-10-10T16:59:51.970783+00:00",
+  "source": "011fddda712d101474f76be347f598c62b671ee5",
+  "base": "de9c9a15af4849bade095208e564bc3bad83eec5",
+  "sourcePins": {
+    "src/art/EarthUnderstory.js": "5469c0347f2fe29bcefe8727e8195594239cb9f2d0d629410c819ca2d4b01faf",
+    "src/art/WoodlandUnderstoryGeometry.js": "63dc7e128c5476eb32b02d7d2ca4a49bf937d8d4500ef866bd34cf3cb572d9b0",
+    "src/art/SpatialUnderstoryBatches.js": "c93729541fabb2fb75b196bb98079de3a2f146e4cf7c6890bb4e377c19a44a4c",
+    "src/art/WoodlandWindMaterial.js": "479fe0ebd54756fc169a53a175939125d2319a069bfdad2fbe8adf8347bd0627",
+    "tests/WoodlandUnderstoryGeometry.test.js": "67285d7cc36aa3b2730368d497e3b0c9b16600a5716ea16468f03380df4cc587",
+    "tests/EarthUnderstory.test.js": "4cfe24055ba2a4d3fc6e40fee8a297e85c8de14a75ea75c50d8e0ce0c99ef982",
+    "tests/SpatialUnderstoryBatches.test.js": "b5fb5187fe449b29be7941b9471275d9d522602185958984acd13440b9424ff9",
+    "tests/e2e/understory-detail-comparison.js": "560d461a4390cdce0857d9d671e51678585ee6611f6476a39c4d09015da289c9",
+    "tests/e2e/terrain-equipped-party.spec.js": "144a18b2841332304485f2bb8412104e6514d7e8285f6cca34d2c0474f732ed1"
+  },
+  "status": "Low detail candidate passes sampled normal-gameplay limits and actual movement/save checks; optional geometry owner remains default-null, not publicly released.",
+  "change": "Low ribbons use two rather than three sections. Sedge80\u219248triangles; bracken231\u2192217. Same7439plants, all leaf roots/tips, all fern leaflets, exact transforms/tints, cell/batch/material ownership and full actual-vertex wind bounds. No content hidden or performance target changed.",
+  "HighUnchanged": "High position/color/normal buffers match pre-change SHA256 goldens for both recipes; High spatial copies/transforms/tints and full wind bounds pass. Server, assets, dependencies, core/actor/worker unchanged from qualified de9c9a15. Prior exact-source High native334draws/181569triangles/16.7ms is reused for unchanged High behavior, not rerun or counted as new native acceptance.",
+  "unit": {
+    "distinctPassingChecks": 24,
+    "suites": 3,
+    "initial": "23pass1fail34.336s; Low spatial test still compared against old High recipe. Failure retained.",
+    "correction": "Only expected quality-specific recipe selection updated; same exact copied buffer/matrix/tint checks. Four spatial checks pass6.071s. Other20checks reused; includes High golden buffers, preserved Low roots/tips/leaflets, all exact placement and wind bounds.",
+    "lint": "All six changed files and diff check pass."
+  },
+  "worker": {
+    "output": "src/core/ActorGameplayGeometryWorker.bundle.js",
+    "sha256": "44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43",
+    "bytes": 137178,
+    "modules": 10,
+    "imports": []
+  },
+  "native": {
+    "stats": {
+      "total": 2,
+      "expected": 1,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 1,
+      "ok": true
+    },
+    "attempts": [
+      {
+        "title": "connected equipped four-class party shares raised ground, fitted outfits, Fireball draws and targeted healing",
+        "status": "skipped",
+        "retry": 0
+      },
+      {
+        "title": "single native renderer observes three live equipped party socket peers on raised ground",
+        "status": "passed",
+        "retry": 0
+      }
+    ]
+  },
+  "frameSummary": {
+    "frames": 180,
+    "visibleFrames": 180,
+    "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+    "frameMedianMs": 16.7,
+    "frameP95Ms": 16.8,
+    "cpuLoopMedianMs": 9.099999994039536,
+    "cpuLoopP95Ms": 11.399999976158142,
+    "drawCallsMedian": 158,
+    "trianglesMedian": 80382,
+    "geometries": 432,
+    "textures": 282,
+    "activeEntitiesMin": 31,
+    "activeEntitiesMax": 31
+  },
+  "budget": {
+    "maximumDraws": 200,
+    "maximumTriangles": 85000,
+    "drawsPass": true,
+    "trianglesPass": true,
+    "triangleMargin": 4618,
+    "sampledFrameTimingPass": true,
+    "wholeLowAccepted": false,
+    "limits": "Actual ordinary-gameplay sample only. Close zoom138k triangles remains outside target; source/candidate count differences at different populations do not prove causal whole-frame gains. Representative combat/device/default-startup qualification remains open."
+  },
+  "detailComparison": {
+    "plants": 7439,
+    "currentPlants": 7439,
+    "matricesEqual": true,
+    "rows": [
+      {
+        "zoom": 15,
+        "reference": {
+          "calls": 158,
+          "triangles": 83630
+        },
+        "candidate": {
+          "calls": 158,
+          "triangles": 80382
+        },
+        "repeat": {
+          "calls": 158,
+          "triangles": 83630
+        },
+        "changedChannels": 120109,
+        "unstableChannels": 0
+      },
+      {
+        "zoom": 5,
+        "reference": {
+          "calls": 151,
+          "triangles": 138219
+        },
+        "candidate": {
+          "calls": 151,
+          "triangles": 137577
+        },
+        "repeat": {
+          "calls": 151,
+          "triangles": 138219
+        },
+        "changedChannels": 90553,
+        "unstableChannels": 0
+      }
+    ],
+    "restored": true,
+    "scope": "Untimed same-scene prior Low three-section recipe versus current two-section recipe. Same full Low plants, transforms, tints, wind clock, supplied actors and camera. Isolated comparison after actual frame profile; reference resources disposed. Pixel differences are reviewed, not waived as exact."
+  },
+  "preparation": {
+    "method": "automatic-worker-exact-source-cache",
+    "milliseconds": 2445.5999999940395,
+    "body": {
+      "sources": 4
+    },
+    "rigid": {
+      "sources": 27,
+      "originalTriangles": 9940,
+      "candidateTriangles": 6584
+    },
+    "installed": {
+      "registered": 71,
+      "originalTriangles": 123345,
+      "candidateTriangles": 57649
+    },
+    "stats": {
+      "requested": 76,
+      "installed": 71,
+      "stale": 0,
+      "fallback": 5,
+      "failed": 0,
+      "cacheHits": 8,
+      "rejected": 0,
+      "maxCopiedBytes": 2840900,
+      "workerCacheBytes": 680172,
+      "workerCacheEntries": 67
+    }
+  },
+  "geometryCloseExact": {
+    "zoom": 5,
+    "changedChannels": 0,
+    "unstableChannels": 0,
+    "compactChangedChannels": 0,
+    "source": {
+      "calls": 146,
+      "triangles": 134623,
+      "swaps": 0,
+      "restored": true
+    },
+    "candidate": {
+      "calls": 146,
+      "triangles": 134623,
+      "swaps": 0,
+      "restored": true
+    },
+    "again": {
+      "calls": 146,
+      "triangles": 134623,
+      "swaps": 0,
+      "restored": true
+    }
+  },
+  "movement": {
+    "normalGroundClicks": 3,
+    "samples": 96,
+    "retainedPostLoginFrames": 30,
+    "allGearSlots": 14,
+    "allRestored": true
+  },
+  "actualServerMongoTerminal": [
+    "--- PASS: TestTerrainActualEquippedBrowserParty (36.41s)",
+    "PASS",
+    "ok  \teidolon-server\t37.457s"
+  ],
+  "visualReview": "Actual prior/current Low recipe images inspected at ordinary15 and close5 zoom. Every plant remains and tips/fern leaflets retain their extent. Two-section sedge has visible changes to facets/highlights and arch shape, more evident close up; ordinary ground coverage remains readable. Existing broad ground patches, angular scenery and synthetic label clutter remain modern-art work, not accepted as final art.",
+  "serverMarkers": {
+    "WARNING: DATA RACE": 0,
+    "panic:": 0,
+    "fatal error:": 0,
+    "Worker panic:": 0,
+    "Recovered from panic in Update:": 0
+  },
+  "privacy": {
+    "preparedAccounts": 4,
+    "automaticRecordings": "off",
+    "plainAndEmbeddedMembersScanned": 76,
+    "actualAccountIdentifiersRemaining": 0,
+    "deliberatePixels": "Post-login PNG/JPEG retain synthetic fixture labels; no login/password-entry/session recording. Disposable database destroyed."
+  },
+  "nextAction": "Qualify geometry-owner default startup and session/resource lifetime on this integrated High/Low candidate: cold/returning cache, worker failure fallback, quality replacement and reconnect/disposal. Existing actual optional owner and unchanged High sampled limits pass; do not treat one Low scene as whole-device/combat/art acceptance. Preserve all original1.11\u20131.99 requirements and owner-deferred playtests.",
+  "limits": "One renderer/three normal live peers, exact four-class14slot inventory/EP/party/logout saves and normal clicks. No physical-phone substitute, campaign/soak/beta/launch/full-project acceptance. Public27 jump unchanged and verified; held art runtime remains separate until milestone selection.",
+  "evidence": "/home/aeml/.local/share/eidolon-low-understory-detail-checks-20261010",
+  "inventorySHA256": "f58c7be7e33088755dc132e08f3c0bc927935682d677e8ace53e70bb6f834170",
+  "inventoryEntries": 76,
+  "filesIncludingInventory": 77,
+  "privateIntegration": {
+    "path": "/home/aeml/.local/share/eidolon-world-jump-total-integration-20261010",
+    "commit": "011fddda712d101474f76be347f598c62b671ee5",
+    "method": "Fast-forward exact qualified candidate; default remains null, held/public runtime unchanged."
+  }
+}

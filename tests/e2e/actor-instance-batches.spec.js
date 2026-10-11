@@ -2,12 +2,13 @@ import { expect, test } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 import { collectBrowserFailures } from './helpers.js';
 
-for (const quality of ['high', 'low']) test(`${quality}: nearby Skeleton instances preserve independently animated color and shadow surfaces`, async ({ page, baseURL }, testInfo) => {
+for (const type of ['Skeleton', 'InfernoTitan', 'DwarfSalesman', 'QuestNPC', 'DungeonNPC', 'RespecNPC'])
+for (const quality of ['high', 'low']) test(`${quality}: nearby ${type} instances preserve independently animated color and shadow surfaces`, async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.setViewportSize({ width: 1100, height: 844 });
     await page.goto('/', { waitUntil: 'networkidle' });
-    const reports = await page.evaluate(async quality => {
+    const reports = await page.evaluate(async ({ quality, type }) => {
         const THREE = await import('three');
         const { RenderSystem } = await import('/src/core/RenderSystem.js');
         const { MeshFactory } = await import('/src/utils/MeshFactory.js');
@@ -17,7 +18,7 @@ for (const quality of ['high', 'low']) test(`${quality}: nearby Skeleton instanc
         floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; render.scene.add(floor);
         const models = [];
         for (let index = 0; index < 8; index++) {
-            const mesh = await MeshFactory.createMeshForType('Skeleton');
+            const mesh = await MeshFactory.createMeshForType(type);
             mesh.position.set((index % 4 - 1.5) * 4, 0, index < 4 ? -3 : 3);
             render.entityGroup.add(mesh); models.push(mesh);
         }
@@ -33,11 +34,12 @@ for (const quality of ['high', 'low']) test(`${quality}: nearby Skeleton instanc
         };
         capture(false); capture(true);
         try {
-            for (const state of ['Idle', 'Walk', 'Run', 'Attack', 'Death', 'StretchedAttack']) {
+            const states = ['Skeleton', 'InfernoTitan'].includes(type) ? ['Idle', 'Walk', 'Run', 'Attack', 'Death', 'StretchedAttack'] : ['Idle', 'StretchedIdle'];
+            for (const state of states) {
                 const mixers = models.map((mesh, index) => {
-                    mesh.scale.set(...(state === 'StretchedAttack' ? [1.7, .8, 1.1] : [1, 1, 1]));
+                    mesh.scale.set(...(state.startsWith('Stretched') ? [1.7, .8, 1.1] : [1, 1, 1]));
                     const mixer = new THREE.AnimationMixer(mesh);
-                    mixer.clipAction(mesh.userData.animations.find(clip => clip.name === (state === 'StretchedAttack' ? 'Attack' : state))).play();
+                    mixer.clipAction(mesh.userData.animations.find(clip => clip.name === (state.startsWith('Stretched') ? state.slice('Stretched'.length) : state))).play();
                     mixer.update(.2 + index * .07); return mixer;
                 });
                 const visibility = new Map(); models.forEach(mesh => mesh.traverse(part => visibility.set(part, part.visible)));
@@ -71,12 +73,12 @@ for (const quality of ['high', 'low']) test(`${quality}: nearby Skeleton instanc
             }
         } finally {
             render.setActorInstancesEnabled(false);
-            models.forEach(mesh => { mesh.removeFromParent(); MeshFactory.releaseMesh('Skeleton', mesh); });
+            models.forEach(mesh => { mesh.removeFromParent(); MeshFactory.releaseMesh(type, mesh); });
             floor.removeFromParent(); render.disposeObjectResources(floor); render.dispose();
         }
         return reports;
-    }, quality);
-    await writeFile(testInfo.outputPath('skeleton-instance-comparison.json'), JSON.stringify(reports, null, 2));
+    }, { quality, type });
+    await writeFile(testInfo.outputPath(`${type}-instance-comparison.json`), JSON.stringify(reports, null, 2));
     await testInfo.attach('skeleton-instance-comparison', { body: JSON.stringify(reports), contentType: 'application/json' });
     for (const row of reports) {
         expect(row.afterCalls).toBeLessThan(row.beforeCalls);
@@ -84,7 +86,7 @@ for (const quality of ['high', 'low']) test(`${quality}: nearby Skeleton instanc
         expect(row.meanError).toBeLessThan(.1); expect(row.changed).toBeLessThan(.001);
         expect(row.visibilityRestored).toBe(true);
         expect(row.unsafeInstances).toBe(0);
-        if (row.state === 'StretchedAttack') expect(row.shearedLeaves).toBeGreaterThan(0);
+        if (row.state.startsWith('Stretched')) expect(row.shearedLeaves).toBeGreaterThan(0);
     }
     expect(failures, failures.join('\n')).toEqual([]);
 });

@@ -8,8 +8,9 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.setViewportSize({ width, height: 844 });
     await page.goto('/', { waitUntil: 'networkidle' });
-    const result = await page.evaluate(async quality => {
+    const result = await page.evaluate(async ({ quality, equipped }) => {
         const THREE = await import('three');
+        const { renderFrameInterval } = await import('/tests/e2e/renderFrameInterval.js');
         const { RenderSystem } = await import('/src/core/RenderSystem.js');
         const { WOODLAND_WIND_REACH } = await import('/src/art/WoodlandWindMaterial.js');
         const { computeFoliageCellBounds } = await import('/src/art/FoliageRenderBatches.js');
@@ -53,7 +54,27 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
         const actor = new Actor('elevation-preview', {});
         engine.player = actor; actor.gameEngine = engine;
         actor.position.copy(focus).setY(0); // Exercise grounding of an old level-ground position.
-        actor.setMesh(await MeshFactory.createMeshForType('Fighter'));
+        actor.setMesh(await MeshFactory.createMeshForType('Fighter', { quality }));
+        if (equipped) {
+            // Opt-in prepared outfit, not campaign/party or earned gear proof.
+            // Keep the complete legal fourteen-slot supplied Fighter loadout.
+            const { BASE_ITEMS } = await import('/src/core/ItemSystem.js');
+            const outfit = { head: 'Iron Helm', chest: 'Plate Mail', legs: 'Plate Greaves', feet: 'Iron Boots',
+                gloves: 'Iron Gauntlets', shoulders: 'Steel Pauldrons', belt: 'Plated Girdle', mainHand: 'Iron Sword',
+                offHand: 'Wooden Shield', ring1: 'Ruby Ring', ring2: 'Silver Ring', neck: 'Necklace',
+                trinket1: 'Amulet of Power', trinket2: 'Orb of Mana' };
+            actor.syncEquipmentVisuals(Object.fromEntries(Object.entries(outfit).map(([slot, name], index) => {
+                const item = BASE_ITEMS.find(base => base.name === name);
+                if (!item) throw new Error(`Missing equipped-preview item ${name}`);
+                return [slot, { ...item, id: `raised-preview-${slot}`, baseName: name, level: 75,
+                    rarity: index % 2 ? 'Uncommon' : 'Rare', stats: { strength: 12, vitality: 8 } }];
+            })));
+            await actor.mesh.userData.equipmentReady;
+            if (actor.mesh.userData.equipmentVisualItemCount !== 14 || actor.mesh.userData.equipmentVisualMissing?.length ||
+                actor.mesh.userData.equipmentVisualFallback?.length) {
+                throw new Error('Raised-world pilot did not bind all14 supplied wearable models');
+            }
+        }
         actor.update(0); actor.resetTransformInterpolation(); actor.render(1);
         render.entityGroup.add(actor.mesh);
         // Exercise production generation, not fixture-only placement matrices.
@@ -278,7 +299,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
                 render.updateEnvironmentLighting(actor.position, 0);
                 render.render();
                 if (frame >= 30) {
-                    frames.push(now - previous);
+                    frames.push(renderFrameInterval(now, previous));
                     calls = Math.max(calls, render.renderer.info.render.calls);
                     triangles = Math.max(triangles, render.renderer.info.render.triangles);
                 }
@@ -308,13 +329,17 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
                     const count = group?.count ?? Math.min(geometry.drawRange.count,
                         geometry.index?.count ?? geometry.attributes.position.count);
                     const instances = mesh.isInstancedMesh ? mesh.count : geometry.isInstancedBufferGeometry ? geometry.instanceCount : 1;
-                    const triangles = count / 3 * instances;
+                    let triangles = count / 3 * instances;
+                    if (mesh.isBatchedMesh) {
+                        triangles = 0;
+                        for (let i = 0; i < mesh._multiDrawCount; i++) triangles += mesh._multiDrawCounts[i] / 3;
+                    }
                     entry.triangles += triangles;
                     entry[`${pass}Triangles`] += triangles;
                 };
                 originals.push({ mesh, color, shadow });
-                mesh.onBeforeRender = function(...args) { record('color', args[3], args[5]); return color.apply(this, args); };
-                mesh.onBeforeShadow = function(...args) { record('shadow', args[4], args[6]); return shadow.apply(this, args); };
+                mesh.onBeforeRender = function(...args) { const result = color.apply(this, args); record('color', args[3], args[5]); return result; };
+                mesh.onBeforeShadow = function(...args) { const result = shadow.apply(this, args); record('shadow', args[4], args[6]); return result; };
             });
             try {
                 render.render();
@@ -335,23 +360,52 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
                 .filter(group => group.userData.proceduralFoliage && group.userData.region === 'earth')
                 .map(group => ({ group, visible: group.visible }));
             let originalBatches = null;
+            const ownedPlantShapes = new Map();
             {
                 // Rebatch the exact production matrices into the prior16m cells.
                 // Share the same blade geometry/material/frozen wind; compare
                 // actual pixels, not a separately generated placement recipe.
                 originalBatches = new THREE.Group(); originalBatches.userData.earthUnderstory = true;
                 const cells = new Map(), matrix = new THREE.Matrix4();
-                for (const mesh of understory.children) for (let i = 0; i < mesh.count; i++) {
+                for (const mesh of understory.children) for (let i = 0; i < (mesh.isBatchedMesh ? mesh.instanceCount : mesh.count); i++) {
                     mesh.getMatrixAt(i, matrix);
-                    const variant = mesh.name.split(':').at(-1);
+                    const variant = mesh.isBatchedMesh ? mesh.getGeometryIdAt(i) : mesh.name.split(':').at(-1);
+                    let geometry = mesh.geometry;
+                    if (mesh.isBatchedMesh) {
+                        // Reconstruct only the packed source recipe's actual
+                        // attribute range, retaining the live production data.
+                        // Whole sector geometry would duplicate both shapes.
+                        if (!ownedPlantShapes.has(variant)) {
+                            const range = mesh.getGeometryRangeAt(variant), shape = new THREE.BufferGeometry();
+                            for (const [name, attribute] of Object.entries(mesh.geometry.attributes)) {
+                                const start = range.vertexStart * attribute.itemSize;
+                                shape.setAttribute(name, new THREE.BufferAttribute(attribute.array.slice(start,
+                                    start + range.vertexCount * attribute.itemSize), attribute.itemSize, attribute.normalized));
+                            }
+                            ownedPlantShapes.set(variant, shape);
+                        }
+                        geometry = ownedPlantShapes.get(variant);
+                    }
                     const key = `${Math.floor(matrix.elements[12] / 16)}:${Math.floor(matrix.elements[14] / 16)}:${variant}`;
-                    if (!cells.has(key)) cells.set(key, { source: mesh, matrices: [] });
+                    const hasColor = mesh.isBatchedMesh ? Boolean(mesh._colorsTexture) : Boolean(mesh.instanceColor);
+                    if (!cells.has(key)) cells.set(key, { source: { geometry, material: mesh.material, instanceColor: hasColor }, matrices: [], colors: [] });
                     cells.get(key).matrices.push(matrix.clone());
+                    // The retained production tint is part of the unchanged
+                    // scene, not a batching difference. Copy its exact buffer.
+                    if (hasColor) {
+                        const color = new THREE.Color(); mesh.getColorAt(i, color);
+                        cells.get(key).colors.push(color);
+                    }
                 }
-                for (const { source, matrices } of cells.values()) {
+                for (const { source, matrices, colors } of cells.values()) {
                     const mesh = new THREE.InstancedMesh(source.geometry, source.material, matrices.length);
                     mesh.receiveShadow = true; mesh.castShadow = false;
                     matrices.forEach((matrix, i) => mesh.setMatrixAt(i, matrix));
+                    if (source.instanceColor) {
+                        if (colors.length !== matrices.length) throw new Error('Rebatched foliage lost its production tints');
+                        colors.forEach((color, i) => mesh.setColorAt(i, color));
+                        mesh.instanceColor.needsUpdate = true;
+                    }
                     mesh.instanceMatrix.needsUpdate = true; mesh.computeBoundingBox();
                     mesh.boundingBox.expandByVector(new THREE.Vector3(WOODLAND_WIND_REACH * 1.4, 0, WOODLAND_WIND_REACH * 1.4));
                     mesh.boundingSphere = mesh.boundingBox.getBoundingSphere(new THREE.Sphere());
@@ -421,6 +475,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
                     if (mesh.isInstancedMesh) mesh.dispose();
                     if (mesh.userData.ownedComparisonGeometry) mesh.geometry.dispose();
                 });
+                for (const geometry of ownedPlantShapes.values()) geometry.dispose();
                 wind.onBeforeRender = updateWind;
                 render.renderer.setRenderTarget(previousTarget); target.dispose();
             }
@@ -437,7 +492,17 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
             try {
                 for (const spatial of [false, true]) {
                     baseline.visible = !spatial; render.groundEarth.visible = spatial;
-                    understory.children.forEach(mesh => { mesh.frustumCulled = spatial; });
+                    understory.children.forEach(mesh => {
+                        mesh.frustumCulled = spatial;
+                        if (mesh.isBatchedMesh) {
+                            // Baseline submits all original plants, just as
+                            // disabling the former instanced cells did. Both
+                            // sector and per-plant rejection must be disabled.
+                            mesh.perObjectFrustumCulled = spatial;
+                            const visible = mesh.getVisibleAt(0);
+                            mesh.setVisibleAt(0, !visible); mesh.setVisibleAt(0, visible);
+                        }
+                    });
                     render.renderer.setRenderTarget(target); render.renderer.render(render.scene, render.camera);
                     costs.push({ calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles });
                     const data = new Uint8Array(640 * 422 * 4);
@@ -452,10 +517,14 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
                 wind.onBeforeRender = updateWind; render.renderer.setRenderTarget(previousTarget);
                 target.dispose();
                 baseline.removeFromParent(); baseline.geometry.dispose(); render.groundEarth.visible = true;
-                understory.children.forEach(mesh => { mesh.frustumCulled = true; });
+                understory.children.forEach(mesh => {
+                    mesh.frustumCulled = true;
+                    if (mesh.isBatchedMesh) mesh.perObjectFrustumCulled = true;
+                });
             }
         };
-        return { treeCount, treeDraws, pathDraws, raisedPathTriangles, groundHeight: focus.y, pickedError: picked.distanceTo(focus),
+        return { equipped, equipmentItems: actor.mesh.userData.equipmentVisualItemCount || 0,
+            treeCount, treeDraws, pathDraws, raisedPathTriangles, groundHeight: focus.y, pickedError: picked.distanceTo(focus),
             attachedDraws, understoryCost, outcropDraws,
             beamDraws, beamParts: beamParts.length,
             impactDraws, impactSurfaceError,
@@ -466,7 +535,8 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
             movementError, jumpError, walked, jumpStarted, landed: !engine.playerJumpState && actor.state === 'IDLE',
             surfaceError: picked.distanceTo(visibleSurface), calls: render.renderer.info.render.calls,
             triangles: render.renderer.info.render.triangles, maxGrade: field.maxGrade };
-    }, quality);
+    }, { quality, equipped: process.env.EIDOLON_E2E_RAISED_EQUIPMENT === '1' });
+    if (process.env.EIDOLON_E2E_RAISED_EQUIPMENT === '1') expect(result.equipmentItems).toBe(14);
     await testInfo.attach('elevation-preview', { body: JSON.stringify(result, null, 2), contentType: 'application/json' });
     console.log(`[understory ${quality}] ${JSON.stringify(result.understoryCost)}`);
     expect(result.understoryCost.calls).toBeGreaterThan(0);

@@ -74,6 +74,10 @@ export class WorldGenerator {
         this.instanceType = options.instanceType || '';
         this.crystalChamber = options.layout?.rooms?.at(-1) || null;
         this.graphicsQuality = options.graphicsQuality || 'high';
+        // Runtime callers supply actual renderer capability. Three's emulated
+        // multi-draw submits each plant separately; retain established cells
+        // on those devices rather than increasing their draw-call budget.
+        this.understorySpatialBatches = options.understorySpatialBatches !== false;
         this.crystalSanctum = null;
         this.townCourtyards = null;
         this.reducedMotionQuery = createMotionPreference();
@@ -199,7 +203,7 @@ export class WorldGenerator {
             this.scene.add(group);
         }
         if (shouldAttach()) this.scene.add(createEarthUnderstory({
-            quality: this.graphicsQuality, terrainElevation: this.terrainElevation
+            quality: this.graphicsQuality, terrainElevation: this.terrainElevation, spatialBatches: this.understorySpatialBatches
         }));
         return true;
     }
@@ -742,7 +746,7 @@ export class WorldGenerator {
     async createVerdantBastionCatacombs(centerX, centerZ, layout) {
         console.log(`Generating Verdant Bastion Catacombs at ${centerX},${centerZ}`);
 
-        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('verdant_bastion_catacombs');
+        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('verdant_bastion_catacombs', { quality: this.graphicsQuality });
         
         if (this.createLayoutDrivenDungeon(layout)) {
             return;

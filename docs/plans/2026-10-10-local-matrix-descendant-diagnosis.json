@@ -1,0 +1,45 @@
+{
+  "status": "Read-only negative evidence: private opt-in matrix cache does not preserve arbitrary unflagged manual descendant mutations. No runtime repair or publication.",
+  "sourceRuntime": "94ecf926; same runtime in cleanhelde01efe8f",
+  "cases": [
+    {
+      "kind": "manual-child-local",
+      "ordinary": {
+        "groupWorld": 0,
+        "childWorld": 22
+      },
+      "cached": {
+        "groupWorld": 0,
+        "childWorld": 3
+      }
+    },
+    {
+      "kind": "manual-child-world",
+      "ordinary": {
+        "groupWorld": 0,
+        "childWorld": 3
+      },
+      "cached": {
+        "groupWorld": 0,
+        "childWorld": 99
+      }
+    },
+    {
+      "kind": "manual-group-world",
+      "ordinary": {
+        "groupWorld": 7,
+        "childWorld": 10
+      },
+      "cached": {
+        "groupWorld": 88,
+        "childWorld": 10
+      }
+    }
+  ],
+  "explanation": "Ordinary automatic ancestors recompose and force descendants every update; skipped unchanged ancestor composition removes that implicit force. Manual descendant local/world writes without explicit matrixWorldNeedsUpdate then diverge. Existing three root invalidation fixes and native/equipped controls remain valid only for their measured cases.",
+  "evidence": "/home/aeml/.local/share/eidolon-matrix-descendant-invalidation-checks-20261010",
+  "inventorySHA256": "115a0bda28ec144496a182f5da299f13656b52e75b29f19806b6fe24f18b4e6e",
+  "artifacts": 2,
+  "next": "Before extending or publicly activating matrix caching, preserve the complete descendant/manual invalidation contract or select an explicit conservative fallback; qualify differential/native controls and actual equipped-party cost. Do not infer a general Three-semantics certificate from prior63/eight controls.",
+  "scope": "Private held rendering candidate only. Publishedjump2e519bb0 excludes this cache and these renderer pilots. PriorHigh/24-hour/full inherited gates remain open."
+}

@@ -212,6 +212,7 @@ export function clearFittedEquipment(root) {
     root.userData.equipmentVisualItemCount = 0; root.userData.equipmentVisualPartCount = 0;
     root.userData.equipmentVisualFallback = [];
     root.userData.updateWeaponProfile?.({});
+    root.dispatchEvent({ type: 'equipmentvisualschanged' });
 }
 
 export function resolveFittedEquipmentModel(catalog, tier, actorClass, quality, original = false) {
@@ -227,7 +228,7 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
     const state = owners.get(root); if (!state) return { supported: false };
     const actorClass = root.userData.authoredClass; state.actorClass = actorClass;
     const active = Object.fromEntries(Object.entries(equipment).filter(([slot, item]) => isActiveEquipment(slot, item, actorClass)));
-    const signature = `${root.userData.authoredQuality}:${root.userData.fittedEquipmentLOD !== false}:${equipmentVisualSignature(active)}`;
+    const signature = `${root.userData.authoredQuality}:${root.userData.fittedEquipmentLOD !== false}:${root.userData.fittedEquipmentSurfaceBatching !== false}:${equipmentVisualSignature(active)}`;
     if (!force && signature === root.userData.equipmentVisualSignature) return { supported: true, changed: false };
     const epoch = ++state.epoch; root.userData.equipmentVisualSignature = signature;
     root.userData.updateWeaponProfile?.(active);
@@ -268,7 +269,8 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
             coverRobeUnderlayers(state, selection, staged);
             // Exact surfaces and native comparisons pass for compatible opaque
             // pieces. False retains the original path for diagnostic comparisons.
-            if (root.userData.fittedEquipmentBatching !== false) staged = batchFittedEquipment(staged);
+            if (root.userData.fittedEquipmentBatching !== false) staged = batchFittedEquipment(staged,
+                { surfaceAttributes: root.userData.fittedEquipmentSurfaceBatching !== false });
         } catch (error) {
             disposeParts(staged);
             if (state.epoch === epoch) root.userData.equipmentVisualSignature = '';
@@ -286,6 +288,7 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
         root.userData.equipmentVisualRevision = (root.userData.equipmentVisualRevision || 0) + 1;
         if (missing.length) root.userData.equipmentVisualSignature = ''; // Allow retry, never cache failure as success.
         root.updateMatrixWorld(true);
+        root.dispatchEvent({ type: 'equipmentvisualschanged' });
     }).catch(error => {
         console.warn('Fitted equipment unavailable', error);
         if (state.epoch === epoch) root.userData.equipmentVisualSignature = '';

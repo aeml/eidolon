@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "status": "Private current19 raised-Earth equipped-rendering scope PASSED; not production terrain activation or complete party/device/art acceptance",
+  "source": {
+    "head": "5d1c52b3983cec4f3ed37a8fdae0a68b476a215b",
+    "worktree": "/home/aeml/.local/share/eidolon-raised-world-rollout-20261009-V4BWRffv",
+    "merge": "444937a3782ba1f8d03bcbd083818b0476bc4f79 normally merges prepared19 fa47c57c into retained raised83311529 without runtime conflicts",
+    "runtimeDifferences": "Against19 only WorldSurfaceDetail (staged rock-v6) and four atlas modules; other production art/renderer/authority/asset source retained. No public activation, grants, provider, account or saved-data mutation."
+  },
+  "harnessCorrection": "Two first native cases failed original rebatching-pixel assertion at west bank before timed profiles: production tint buffer omitted by old same-scene16m-cell reference (1409/1571 changed pixels). Preserve original pixels/budgets; copy each actual instanceColor alongside its actual matrix, enforce equal counts. Test-only5d1c52b3; no runtime color/population or threshold change. Existing exact decimal RAF helper reused ataaa34514;11helper checks pass0.455s, no duration rounding/tolerance.",
+  "native": {
+    "result": "Actual System Chrome AMD Vulkan1.4.318/RADV:2 distinct High1280/Low390 cases PASS37.6s/retries0",
+    "scope": "Fourteen legal supplied Fighter equipment slots in real production raised-world builder. Movement/jump/picking/aim/projectile/impact/status/guardians and culling checks retain existing assertions. Prototype-driven renderer fixture, not authoritative network combat, naturally earned progress, four-renderer party or physical-phone certification.",
+    "profiles": "Six named road views,120realRAF intervals each: High maximum16.7median/33.3p95/344calls/244630tri;Low16.7/16.8/132/73350. Original High20/33.4/350/250000 and Low33.4/50/200/85000 retained. No claim of causal speedup or all workloads.",
+    "pixelComparisons": "At all six views culled vs unculled0changed; reconstructed same-scene batching0-4changed/270080 within original. Ground surface culling both qualities0changed/270080, same original cost-equivalence gate retained.",
+    "review": "Root viewed current High equipped rock-formation and Low woodland-cut captures: walkable road and hero remain visible, grounded physical formation and foliage match terrain. Faceted rock silhouettes, sparse broad spaces and overall modern-world finish still require art work; not final Diablo/PoE equivalence/art approval.",
+    "artifacts": "/home/aeml/.local/share/eidolon-raised19-equipped-final-native-20261009 with corresponding.log. Earlier failed native run retained separately. No native CI overlap:18 terminal first,19 still hosted, previous owned camp Chrome complete. Ongoing soak/services unchanged, not an isolated-host or sustained-device certificate.",
+    "logSHA256": "f0fa2096c7dd1bd806a73dc4d17a437e336871348686746e0b51bb264052b29c",
+    "earlierFailedLogSHA256": "3842b891daf03ab5a3507188c30e70627d94749c1059e4132e04d4cdc8fb6bf6"
+  },
+  "remaining": "Own19 terminal/native/live/public acceptance before later public changes. Broader current equipped-party/performance/device and coherent scene art, compatible deliberate activation/rollback,1.80F1-F5,1.81-1.99 and owner/human/rights/operations/beta/launch remain open. Existing real-save/profile-switch/earned dungeon-checkpoint receipts remain source-scoped, not rerun or re-certified by this rendering fixture."
+}

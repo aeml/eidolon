@@ -1,0 +1,195 @@
+{
+  "recordedUTC": "2026-10-10T18:36:24.716418+00:00",
+  "privateRuntime": "fd852472",
+  "publicRuntime": "bbdaaf1d",
+  "publicRelease": "77a48916be49184a04ecceeb979c75668d1972b8",
+  "version": "Alpha 1.79.28",
+  "sourceControls": {
+    "originalDirtyWorkspace": "read-only; untouched",
+    "privateBase": "2fee46ee",
+    "publicBase": "a9d6fc9b"
+  },
+  "behavior": {
+    "jump": "Matching prediction acceptance preserves animation and visual clock. Accepted trajectory survives unchanged-field deltas, advances independently of sparse server positions, samples supplied clip on the render clock, starts and ends root scale/rotation continuously, and completes remaining visual flight before landing recovery. Remote logical authority is retained while landing presentation blends to it. Flight cap remains 1.3 seconds.",
+    "aura": "Actor presentation hook follows final interpolated/corrected/jumping mesh position at render time, including frames between simulation ticks; zero time advance on transform synchronization.",
+    "admin": "Both reserved legacy prefixes and exact generated jumpN-12hex legacy checks excluded from real players. Separate explicit EIDOLON_TEST_USERNAMES roster propagated by CI for primary, secondary and four class automation identities; same server-owned roster used in online paging, history and daily totals. No QA/admin role inference; no deletion or save mutation."
+  },
+  "focusedClient": {
+    "suites": 11,
+    "passed": 182,
+    "log": "qualification-unit.log"
+  },
+  "publicReleaseChecks": {
+    "suites": 4,
+    "passed": 401,
+    "overlapWithFocused": true,
+    "log": "public-release-unit-final.log"
+  },
+  "server": {
+    "race": true,
+    "toolchain": "go1.27.2",
+    "databaseLog": "database-final.log",
+    "adminLog": "admin-final.log",
+    "limits": "Focused database filter/regex and live-world paging tests; disposable real-Mongo population integration case skipped because its explicit fixture was not enabled."
+  },
+  "native": {
+    "privateDeltas": {
+      "tests": 2,
+      "passed": 2,
+      "retries": 0,
+      "log": "native-deltas.log",
+      "scope": "Four supplied classes at High/Low, full and sparse trajectory metadata, actual engine RAF/render pipeline; no live server/account/world."
+    },
+    "publicSourceAndBundle": {
+      "tests": 9,
+      "passed": 9,
+      "retries": 0,
+      "log": "public-native.log",
+      "scope": "Four supplied classes High/Low continuity, bundled startup failures/recovery/lazy loading and 15/60FPS elapsed-time jump."
+    },
+    "hardwareProbe": "hardware-webgl.log",
+    "exactMeasurements": [
+      {
+        "quality": "low",
+        "samples": [
+          {
+            "className": "Fighter",
+            "supplied": "Fighter",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          },
+          {
+            "className": "Rogue",
+            "supplied": "Rogue",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          },
+          {
+            "className": "Cleric",
+            "supplied": "Cleric",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          },
+          {
+            "className": "Wizard",
+            "supplied": "Wizard",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          }
+        ],
+        "errors": []
+      },
+      {
+        "quality": "high",
+        "samples": [
+          {
+            "className": "Fighter",
+            "supplied": "Fighter",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          },
+          {
+            "className": "Rogue",
+            "supplied": "Rogue",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          },
+          {
+            "className": "Cleric",
+            "supplied": "Cleric",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          },
+          {
+            "className": "Wizard",
+            "supplied": "Wizard",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          }
+        ],
+        "errors": []
+      }
+    ]
+  },
+  "retainedFailures": [
+    {
+      "log": "reproduction.log",
+      "meaning": "Original runtime reproduces eight new jump/aura failures."
+    },
+    {
+      "logs": [
+        "motion-unit-first.log",
+        "focused-unit.log",
+        "selected-unit.log"
+      ],
+      "meaning": "All intermediate source and test failures retained. Historical fractional-turn angle assumptions replaced by direction/continuous upright-contact checks; early landing now completes remaining arc. Remote logical-position protection retained and source corrected to blend presentation instead."
+    },
+    {
+      "log": "native-first.log",
+      "meaning": "New fixture had not activated its chunk before between-tick render; added real chunk activation/assertion. Same strict aura gate retained."
+    },
+    {
+      "log": "native-final.log",
+      "meaning": "Both strict contact checks found separate Date.now landing progression. Implemented engine-owned render-clock landing; zero contact pose error now passes unchanged strict gates."
+    },
+    {
+      "log": "public-unit.log",
+      "meaning": "Initial release version-default checks failed before publication; all container/workflow/deploy/README defaults corrected, 401 final checks pass."
+    }
+  ],
+  "limits": "No FPS or whole-game budget claim. Bare supplied model native fixture is not final art/equipped-world/physical-phone/campaign acceptance. Full original goal remains active. Publication/actual live checks recorded separately.",
+  "frozenEvidence": {
+    "path": "/home/aeml/.local/share/eidolon-motion-admin-checks-20261010",
+    "entries": 123,
+    "files": 124,
+    "inventorySHA256": "42ffdfffe88a217c8afd400b4b25ce4d5b2fcb9df33e3cc2076ebca24063d621"
+  }
+}

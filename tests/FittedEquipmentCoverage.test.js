@@ -47,6 +47,24 @@ const gearParts = root => {
     return parts;
 };
 
+test('generation notification observes committed coverage, ignores superseded loads and restores coverage on clear', async () => {
+    const current = fixture('Fighter'), original = current.body.geometry, observations = [];
+    current.root.addEventListener('equipmentvisualschanged', () => observations.push({
+        geometry: current.body.geometry, revision: current.root.userData.equipmentVisualRevision,
+        items: current.root.userData.equipmentVisualItemCount }));
+    applyFittedEquipment(current.root, { chest: item('Robes', 'chest') });
+    const superseded = current.root.userData.equipmentReady;
+    applyFittedEquipment(current.root, { legs: item('Silk Skirt', 'legs') });
+    expect(observations).toHaveLength(0);
+    await Promise.all([superseded, current.root.userData.equipmentReady]);
+    expect(observations).toHaveLength(1);
+    expect(observations[0]).toEqual({ geometry: current.body.geometry, revision: 1, items: 1 });
+    expect(observations[0].geometry).not.toBe(original);
+    clearFittedEquipment(current.root);
+    expect(observations).toHaveLength(2); expect(observations[1].geometry).toBe(original);
+    expect(observations[1].items).toBe(0);
+});
+
 test.each(['Fighter', 'Cleric', 'Wizard', 'Rogue'])('%s long garments hide hip skin/underwear, retain crossing faces and restore unequipped coverage', async type => {
     for (const equipment of [{ chest: item('Robes', 'chest') }, { legs: item('Silk Skirt', 'legs') }]) {
         const current = fixture(type), other = fixture(type);

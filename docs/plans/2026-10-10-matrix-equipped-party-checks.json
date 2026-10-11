@@ -1,0 +1,174 @@
+{
+  "status": "Post-repair actual equipped party/save/native controls pass; ordinary High frame median still fails. No cross-run repair gain claimed.",
+  "sourceCommit": "2ffc59cbf008bef917e20ecf51afe1bd09bafb43",
+  "matrixRepair": "94ecf926",
+  "method": "Existing connected-party-observer with native hardware Chrome and three normal equipped socket peers; all14slots/four classes/party/save retained. Existing shadow/color/collar/body/actor-view pilots and terrain-body-selection explicit; CPU diagnostic disabled. Owned race server/disposable Mongo.",
+  "checks": "Go race integration passed69.918s; browser one pass57.3s, four-browser route one explicit skip. Supervisor exit0/111.283s. Same-scene source/candidate/source actor-view RGB control changed0/unstable0. Prior63focused/eight native invalidation controls remain scoped in their own receipt.",
+  "ordinaryFrame": {
+    "quality": "high",
+    "label": "single-renderer-equipped-raised-party-high",
+    "frames": 180,
+    "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+    "viewport": {
+      "width": 1280,
+      "height": 844,
+      "pixelRatio": 1
+    },
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+    "visibility": "visible",
+    "frameMedianMs": 33.299999999995634,
+    "frameP95Ms": 33.400000000001455,
+    "frameP99Ms": 50,
+    "framesOver33ms": 44,
+    "cpuLoopMedianMs": 24.099999994039536,
+    "cpuLoopP95Ms": 32.60000002384186,
+    "drawCallsMedian": 270,
+    "trianglesMedian": 168891,
+    "geometries": 482,
+    "textures": 296,
+    "activeEntities": 28,
+    "previewFramesDuringSample": 0,
+    "previewGeometries": 0,
+    "previewTextures": 0
+  },
+  "sameScene": {
+    "reference": {
+      "calls": 390,
+      "triangles": 182190,
+      "restored": true,
+      "stats": null
+    },
+    "candidate": {
+      "calls": 270,
+      "triangles": 168891,
+      "restored": true,
+      "stats": {
+        "checked": 680,
+        "culled": 646,
+        "boundsBuilt": 0,
+        "lightScanNodes": 4167,
+        "unknownShadow": false
+      }
+    },
+    "referenceAgain": {
+      "calls": 390,
+      "triangles": 182190,
+      "restored": true,
+      "stats": null
+    },
+    "image": {
+      "width": 1280,
+      "height": 844,
+      "frozenRenderClock": true,
+      "changedChannels": 0,
+      "unstableChannels": 0,
+      "maximumChannel": 0
+    },
+    "cpu": {
+      "scope": "Synchronous frozen-world ABBA submission timing; real clock; 2 warm renders then 12 measured renders per block. Not whole-frame pacing.",
+      "blocks": [
+        {
+          "enabled": false,
+          "milliseconds": [
+            18.900000005960464,
+            15,
+            14.400000005960464,
+            14.099999994039536,
+            15,
+            20.099999994039536,
+            26.200000017881393,
+            33.79999998211861,
+            18.599999994039536,
+            18.700000017881393,
+            27.799999982118607,
+            16.400000005960464
+          ],
+          "restored": true
+        },
+        {
+          "enabled": true,
+          "milliseconds": [
+            31.600000023841858,
+            27.399999976158142,
+            15.600000023841858,
+            18.19999998807907,
+            21,
+            16.80000001192093,
+            16.599999994039536,
+            27.19999998807907,
+            28.700000017881393,
+            18.799999982118607,
+            16.5,
+            25.80000001192093
+          ],
+          "restored": true
+        },
+        {
+          "enabled": true,
+          "milliseconds": [
+            21.5,
+            20.600000023841858,
+            30,
+            22.5,
+            15.399999976158142,
+            18.400000005960464,
+            20.700000017881393,
+            24,
+            17.19999998807907,
+            21.900000005960464,
+            33.900000005960464,
+            18.69999998807907
+          ],
+          "restored": true
+        },
+        {
+          "enabled": false,
+          "milliseconds": [
+            16.5,
+            17.799999982118607,
+            18.200000017881393,
+            23.799999982118607,
+            32.099999994039536,
+            23.200000017881393,
+            20.400000005960464,
+            15.5,
+            24.299999982118607,
+            17.900000005960464,
+            34.900000005960464,
+            19.400000005960464
+          ],
+          "restored": true
+        }
+      ],
+      "reference": {
+        "frames": 24,
+        "median": 18.900000005960464,
+        "p95": 33.79999998211861
+      },
+      "candidate": {
+        "frames": 24,
+        "median": 21,
+        "p95": 31.600000023841858
+      }
+    },
+    "quality": "high",
+    "zoom": 15
+  },
+  "gate": {
+    "highDrawLimit": 350,
+    "highTriangleLimit": 250000,
+    "frameMedianLimitMs": 20,
+    "frameP95LimitMs": 33.4,
+    "geometryPassed": true,
+    "frameMedianPassed": false,
+    "frameP95RawStrictPassed": false,
+    "note": "Rawp95 differs from33.4 at floating-point precision; median33.3ms independently fails20ms. No rounded whole-frame pass."
+  },
+  "evidence": "/home/aeml/.local/share/eidolon-matrix-equipped-party-checks-20261010",
+  "artifacts": 23,
+  "inventorySHA256": "5140b06a2341a274415da341f1ada6e037f7cb7a66861c33b93156c950872d86",
+  "sourcePinsVerified": 5645,
+  "vendorPinsVerified": 407,
+  "cleanup": "Zero fixture workers/terrain containers, ports4190/4192/18189 free before freeze.",
+  "limits": "Population28 differs from previous35; host load and CPU diagnostic differ. No cross-run performance gain, no isolated attribution for extra matrix comparisons/copies, no physical-device/full-game/modern-art certificate. Private matrix repair is excluded from public jump2e519bb0. Failed24-hour soak and all inherited1.11\u20131.99/art/Q/CB/F1\u2013F5/device/operations/rights/owner/human/beta/launch/handoff gates remain open."
+}

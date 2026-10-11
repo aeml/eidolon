@@ -1,0 +1,40 @@
+{
+  "recordedUTC": "2026-10-10T18:49:33.822536+00:00",
+  "privateSource": "f9479908",
+  "publicCandidateRuntime": "4c8252e0",
+  "heldRuntime": "d4942e15",
+  "problem": "A pre-jump movement correction remains paused during flight and replays an old displayed position after landing.",
+  "change": "Capture the current displayed takeoff offset, then retire the old walking correction as jump takes presentation ownership. Existing smooth0.12s offset convergence preserves the takeoff position.",
+  "reproduction": {
+    "log": "reproduction.log",
+    "expected": 27,
+    "received": 4.5,
+    "test": "jump takes over a rendered movement correction without replaying it after landing"
+  },
+  "focused": {
+    "suites": 2,
+    "passed": 74,
+    "log": "focused-unit.log",
+    "lint": "lint.log"
+  },
+  "publicRelease": {
+    "suites": 4,
+    "passed": 466,
+    "log": "public-unit.log",
+    "scope": "Combined full pose correction, walking handoff and synchronized29 version/history defaults."
+  },
+  "native": {
+    "passed": 3,
+    "retries": 0,
+    "log": "public-native.log",
+    "scope": "Selected public candidate: High/Low four supplied class continuous flight/clip/aura/contact/endpoints and actual compiled publication15/60FPS jump clock."
+  },
+  "limits": "Prepared public29 must wait for verified public28 completion before pushing. No live server acceptance inferred. Original full game/device/art/failed-soak/beta/launch goal stays active.",
+  "preparedPublicRelease": "ce7846b3ebe1a767a0a91f8dfffd437a98a8186f",
+  "frozenEvidence": {
+    "path": "/home/aeml/.local/share/eidolon-jump-correction-handoff-checks-20261010",
+    "entries": 15,
+    "files": 16,
+    "inventorySHA256": "a7fb3014f585ca9062462d55036739e36004871b2c5bee2d00c41eb539d4586f"
+  }
+}

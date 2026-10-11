@@ -88,3 +88,18 @@ test('declared duration and rate require coverage from every client, not just ag
         expect(() => validateSoakEvidence(evidence, [health, health], wrong)).toThrow();
     }
 });
+
+test('failed 24-hour soak stays rejected despite aggregate frames and ready health', () => {
+    // Sanitized terminal summary from run37880032315, attempt1. Its seven
+    // disconnects are a failure; aggregate traffic cannot replace each client's
+    // declared duration. Changing only read_errors below is a counterfactual.
+    const failed = 'Load summary: connected=100 joined=100 state_frames=213385404 read_errors=7 write_errors=0 decode_errors=0\n' +
+        'State coverage: clients=100 min_frames=32327 min_active_ms=1222837 max_gap_ms=1210 wire_bytes=3311296153052\n' +
+        'Own state coverage: clients=100 min_updates=32327\n' +
+        'Admission coverage: authenticated=100 failed=0 max_registration_ms=88 max_login_ms=137 max_join_ms=99\n' +
+        'Recovery coverage: clients=100 requested=3087 completed=3087 pending=0 failed=0';
+    const declaration = { durationSeconds: 86400, minimumClientStateRate: 5 };
+    expect(() => validateSoakEvidence(failed, [health, health], declaration)).toThrow('100-client soak summary failed');
+    expect(() => validateSoakEvidence(failed.replace('read_errors=7', 'read_errors=0'),
+        [health, health], declaration)).toThrow('Per-client soak coverage failed');
+});

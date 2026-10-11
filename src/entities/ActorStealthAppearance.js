@@ -13,6 +13,7 @@ export function restoreActorStealthAppearance(actor) {
     }
     appearances.delete(actor);
     suspendRigidEquipmentPivots(actor.mesh, false);
+    actor.mesh?.dispatchEvent({ type: 'appearancechanged' });
 }
 
 export function applyActorStealthAppearance(actor) {
@@ -20,6 +21,7 @@ export function applyActorStealthAppearance(actor) {
     suspendRigidEquipmentPivots(actor.mesh, true);
     let entries = appearances.get(actor);
     if (!entries) appearances.set(actor, entries = new Map());
+    let changed = false;
     const present = new Set();
     actor.mesh.traverse(mesh => {
         if (!mesh.isMesh || !mesh.material || mesh.name === 'ActorInteractionHitbox') return;
@@ -47,6 +49,7 @@ export function applyActorStealthAppearance(actor) {
         const applied = Array.isArray(original) ? original.map(fade) : fade(original);
         mesh.material = applied;
         entries.set(mesh, { original, applied, copies, originalVisible });
+        changed = true;
     });
     // Retire detached equipment, including meshes returned to a model pool.
     for (const [mesh, entry] of entries) {
@@ -55,5 +58,7 @@ export function applyActorStealthAppearance(actor) {
         if (entry.originalVisible !== undefined) mesh.visible = entry.originalVisible;
         for (const material of entry.copies) material.dispose();
         entries.delete(mesh);
+        changed = true;
     }
+    if (changed) actor.mesh.dispatchEvent({ type: 'appearancechanged' });
 }

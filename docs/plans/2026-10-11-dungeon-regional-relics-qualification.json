@@ -1,0 +1,633 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-11T03:58:45.925906+00:00",
+  "classification": "progress",
+  "source": "a32939c47be839ca71afb6bb378eb871ed1a1488",
+  "parent": "f37b035c6b93f27bf1b6d52c53975266b794ef85",
+  "selected": true,
+  "published": false,
+  "implementation": {
+    "families": [
+      "molten_core",
+      "tempest_spire",
+      "abyssal_well",
+      "umbral_nexus"
+    ],
+    "construction": [
+      "Hollow rolled-rim coal crucible with fitted iron bands and a small coal bed",
+      "Split slate in a forged conductor cradle with a narrow light seam",
+      "Rooted tapered branching coral with restrained pearl buds",
+      "Fractured opaque memory monoliths with a narrow inset light fracture"
+    ],
+    "ownership": "Three kit-local body/metal/glow geometry channels reused twice in every room, existing material roles and normal production batching. Existing High/Low texture maps and all material counts unchanged. No global cache, new textures/lights/materials/colliders/targets/clock or authoritative state. Verdant root bytes and behavior unchanged.",
+    "placement": "Existing motif areas retained; Molten/Tempest/Abyssal XZ centers retained. Umbral Z anchor changes .54radius to.55radius (maximum.24world units), within former decorative apron. No claim of exact same center there.",
+    "cost": "Additional physical geometry and shadows are explicit. Existing buckets change by-1..+2per room identity; maximum7 remains within8. No FPS/GPU saving claim. Per-kit shape bytes and per-room merged attribute/triangle costs in geometry-costs.json/room-costs.json; old primitive geometry remains where other room parts use it."
+  },
+  "focused": {
+    "passed": 29,
+    "newRegionalRelicChecks": 15,
+    "suites": 3,
+    "skippedNonmatching": 40,
+    "scope": "One clean focused run:15new relic checks,13paving checks and1material/geometry resource-count check.40 nonmatching cases are not passes. All8room identities/four new families, deterministic High/Low shapes, finite bounds/UVs/normals, source/baked far-origin bounds/counts, material reuse/disposal and Verdant preservation covered. Unchanged123second wall/floor suite not replayed.",
+    "logs": [
+      "focused.log",
+      "lint.log",
+      "final-lint.log",
+      "qualified-lint.log"
+    ]
+  },
+  "native": {
+    "distinctPassed": 7,
+    "gallery": 1,
+    "copiedEngine": 2,
+    "sourceElemental": 2,
+    "productionLayoutSweep": 2,
+    "scope": "Cumulative distinct identities: initial5pass2ward-observer failures; corrected ward2pass, final unobstructed elemental2pass overlaps initial elemental cases. Seven distinct, not9. All retry0; no skips/flakes. Actual AMD RADV system Chrome. Prepared supplied14slot Fighter/HUD, gameplayzoom15, desktop1280/High andphone390/Low; phone is browser emulation, not a physical device.",
+    "selectedRelicViews": 16,
+    "pairedRelicScreenshots": 32,
+    "actorMixerUpdates": 864,
+    "regionalActorMixerUpdates": 576,
+    "elementalCenterMixerUpdates": 288,
+    "productionLayoutsPerQuality": 20,
+    "wardStateAnimationFrames": 1440,
+    "wardCameraSweepFrames": 288,
+    "maxPreparedRelicDraws": 82,
+    "maxPreparedRelicTriangles": 60959,
+    "maxPreparedRelicP95Ms": 16.80000000000109,
+    "engineSHA256": "54eb11d1747069177fc0950e7c94b3818fc2f301e5a979690977b5f57bb010e2",
+    "copiedScope": "Actual copied/versioned engine, normal saved High/Low preference, all5world builders. New relic metadata/channel quality retained, all3physical prop/paving variants and actual floors link. Exact warmed GPU baseline after each of5rooms, remainingMeshes empty; render-time colliders stable. No server/save route replay.",
+    "reportStats": {
+      "baseline-gallery": {
+        "total": 1,
+        "expected": 0,
+        "unexpected": 1,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": false
+      },
+      "native": {
+        "total": 7,
+        "expected": 5,
+        "unexpected": 2,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": false
+      },
+      "corrected-ward": {
+        "total": 2,
+        "expected": 2,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      },
+      "clear-view": {
+        "total": 2,
+        "expected": 2,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      }
+    },
+    "warmBaselines": [
+      {
+        "quality": "high",
+        "baseline": {
+          "geometries": 9,
+          "textures": 18
+        },
+        "cleared": [
+          {
+            "type": "molten_core",
+            "geometries": 9,
+            "textures": 18
+          },
+          {
+            "type": "tempest_spire",
+            "geometries": 9,
+            "textures": 18
+          },
+          {
+            "type": "abyssal_well",
+            "geometries": 9,
+            "textures": 18
+          },
+          {
+            "type": "umbral_nexus",
+            "geometries": 9,
+            "textures": 18
+          },
+          {
+            "type": "verdant_bastion_catacombs",
+            "geometries": 9,
+            "textures": 18
+          }
+        ]
+      },
+      {
+        "quality": "low",
+        "baseline": {
+          "geometries": 8,
+          "textures": 4
+        },
+        "cleared": [
+          {
+            "type": "molten_core",
+            "geometries": 8,
+            "textures": 4
+          },
+          {
+            "type": "tempest_spire",
+            "geometries": 8,
+            "textures": 4
+          },
+          {
+            "type": "abyssal_well",
+            "geometries": 8,
+            "textures": 4
+          },
+          {
+            "type": "umbral_nexus",
+            "geometries": 8,
+            "textures": 4
+          },
+          {
+            "type": "verdant_bastion_catacombs",
+            "geometries": 8,
+            "textures": 4
+          }
+        ]
+      }
+    ],
+    "layoutBounds": {
+      "maximumDraws": 93,
+      "maximumTriangles": 88899
+    },
+    "timingLimit": "Prepared RAF-render samples, not the continuous GameEngine loop, actual input, parties, sustained device performance or causal cross-source FPS benefit. Original bounds retained."
+  },
+  "geometryCosts": [
+    {
+      "type": "molten_core",
+      "quality": "high",
+      "channels": {
+        "body": {
+          "triangles": 320,
+          "attributeBytes": 30720,
+          "min": [
+            -0.8399999737739563,
+            0.10999999940395355,
+            -0.8399999737739563
+          ],
+          "max": [
+            0.8399999737739563,
+            1.1399999856948853,
+            0.8399999737739563
+          ]
+        },
+        "metal": {
+          "triangles": 496,
+          "attributeBytes": 47616,
+          "min": [
+            -0.8149999976158142,
+            0.24424441158771515,
+            -0.8149999976158142
+          ],
+          "max": [
+            0.8848680257797241,
+            1.0630000829696655,
+            0.8149999976158142
+          ]
+        },
+        "glow": {
+          "triangles": 108,
+          "attributeBytes": 10368,
+          "min": [
+            -0.3297424614429474,
+            0.7989358305931091,
+            -0.4658864736557007
+          ],
+          "max": [
+            0.49057677388191223,
+            1.0210641622543335,
+            0.4658864736557007
+          ]
+        }
+      }
+    },
+    {
+      "type": "molten_core",
+      "quality": "low",
+      "channels": {
+        "body": {
+          "triangles": 200,
+          "attributeBytes": 19200,
+          "min": [
+            -0.7988874912261963,
+            0.10999999940395355,
+            -0.8399999737739563
+          ],
+          "max": [
+            0.7988874912261963,
+            1.1399999856948853,
+            0.8399999737739563
+          ]
+        },
+        "metal": {
+          "triangles": 304,
+          "attributeBytes": 29184,
+          "min": [
+            -0.8149999976158142,
+            0.24424441158771515,
+            -0.7751110792160034
+          ],
+          "max": [
+            0.8836748600006104,
+            1.0630000829696655,
+            0.7751110792160034
+          ]
+        },
+        "glow": {
+          "triangles": 108,
+          "attributeBytes": 10368,
+          "min": [
+            -0.3297424614429474,
+            0.7989358305931091,
+            -0.4658864736557007
+          ],
+          "max": [
+            0.49057677388191223,
+            1.0210641622543335,
+            0.4658864736557007
+          ]
+        }
+      }
+    },
+    {
+      "type": "tempest_spire",
+      "quality": "high",
+      "channels": {
+        "body": {
+          "triangles": 108,
+          "attributeBytes": 10368,
+          "min": [
+            -1.4055371284484863,
+            0.08500000089406967,
+            -0.8774883151054382
+          ],
+          "max": [
+            1.4470093250274658,
+            1.7108659744262695,
+            0.8806737065315247
+          ]
+        },
+        "metal": {
+          "triangles": 320,
+          "attributeBytes": 30720,
+          "min": [
+            -1.0605292320251465,
+            0.2033286690711975,
+            -0.4547158479690552
+          ],
+          "max": [
+            1.0605292320251465,
+            1.669223427772522,
+            0.4547158181667328
+          ]
+        },
+        "glow": {
+          "triangles": 80,
+          "attributeBytes": 7680,
+          "min": [
+            0.053737133741378784,
+            1.4650121927261353,
+            -0.681980550289154
+          ],
+          "max": [
+            0.4239989221096039,
+            1.5550462007522583,
+            0.6183009743690491
+          ]
+        }
+      }
+    },
+    {
+      "type": "tempest_spire",
+      "quality": "low",
+      "channels": {
+        "body": {
+          "triangles": 108,
+          "attributeBytes": 10368,
+          "min": [
+            -1.4055371284484863,
+            0.08500000089406967,
+            -0.8774883151054382
+          ],
+          "max": [
+            1.4470093250274658,
+            1.7108659744262695,
+            0.8806737065315247
+          ]
+        },
+        "metal": {
+          "triangles": 192,
+          "attributeBytes": 18432,
+          "min": [
+            -1.062490463256836,
+            0.2033286690711975,
+            -0.4547158479690552
+          ],
+          "max": [
+            1.062490463256836,
+            1.6691875457763672,
+            0.4547158181667328
+          ]
+        },
+        "glow": {
+          "triangles": 48,
+          "attributeBytes": 4608,
+          "min": [
+            0.054576367139816284,
+            1.4650121927261353,
+            -0.681980550289154
+          ],
+          "max": [
+            0.4239988923072815,
+            1.5536118745803833,
+            0.6183010339736938
+          ]
+        }
+      }
+    },
+    {
+      "type": "abyssal_well",
+      "quality": "high",
+      "channels": {
+        "body": {
+          "triangles": 2436,
+          "attributeBytes": 233856,
+          "min": [
+            -0.78927081823349,
+            0.08500000089406967,
+            -0.5660849213600159
+          ],
+          "max": [
+            0.8486658334732056,
+            1.9422096014022827,
+            0.6570779085159302
+          ]
+        },
+        "metal": {
+          "triangles": 128,
+          "attributeBytes": 12288,
+          "min": [
+            -0.4749999940395355,
+            0.19499999284744263,
+            -0.4749999940395355
+          ],
+          "max": [
+            0.4749999940395355,
+            0.24500000476837158,
+            0.4749999940395355
+          ]
+        },
+        "glow": {
+          "triangles": 300,
+          "attributeBytes": 28800,
+          "min": [
+            -0.6650000214576721,
+            1.565000057220459,
+            -0.2008398026227951
+          ],
+          "max": [
+            0.6050000190734863,
+            2.0250000953674316,
+            0.14083980023860931
+          ]
+        }
+      }
+    },
+    {
+      "type": "abyssal_well",
+      "quality": "low",
+      "channels": {
+        "body": {
+          "triangles": 756,
+          "attributeBytes": 72576,
+          "min": [
+            -0.78927081823349,
+            0.08500000089406967,
+            -0.5660849213600159
+          ],
+          "max": [
+            0.8486658334732056,
+            1.9421976804733276,
+            0.6570779085159302
+          ]
+        },
+        "metal": {
+          "triangles": 80,
+          "attributeBytes": 7680,
+          "min": [
+            -0.4749999940395355,
+            0.19499999284744263,
+            -0.45175185799598694
+          ],
+          "max": [
+            0.4749999940395355,
+            0.24500000476837158,
+            0.45175185799598694
+          ]
+        },
+        "glow": {
+          "triangles": 108,
+          "attributeBytes": 10368,
+          "min": [
+            -0.6650000214576721,
+            1.565000057220459,
+            -0.19361215829849243
+          ],
+          "max": [
+            0.6050000190734863,
+            2.0250000953674316,
+            0.13361215591430664
+          ]
+        }
+      }
+    },
+    {
+      "type": "umbral_nexus",
+      "quality": "high",
+      "channels": {
+        "body": {
+          "triangles": 108,
+          "attributeBytes": 10368,
+          "min": [
+            -0.9075053334236145,
+            -0.01804063841700554,
+            -0.4067123234272003
+          ],
+          "max": [
+            0.7749112248420715,
+            3.069776773452759,
+            0.48489469289779663
+          ]
+        },
+        "metal": {
+          "triangles": 80,
+          "attributeBytes": 7680,
+          "min": [
+            -0.7508572340011597,
+            0.14189350605010986,
+            0.39418184757232666
+          ],
+          "max": [
+            0.5427739024162292,
+            0.4610459804534912,
+            0.5348550081253052
+          ]
+        },
+        "glow": {
+          "triangles": 6,
+          "attributeBytes": 576,
+          "min": [
+            -0.049776118248701096,
+            0.4000000059604645,
+            0.3844059705734253
+          ],
+          "max": [
+            0.15955224633216858,
+            2.109999895095825,
+            0.40118804574012756
+          ]
+        }
+      }
+    },
+    {
+      "type": "umbral_nexus",
+      "quality": "low",
+      "channels": {
+        "body": {
+          "triangles": 108,
+          "attributeBytes": 10368,
+          "min": [
+            -0.9075053334236145,
+            -0.01804063841700554,
+            -0.4067123234272003
+          ],
+          "max": [
+            0.7749112248420715,
+            3.069776773452759,
+            0.48489469289779663
+          ]
+        },
+        "metal": {
+          "triangles": 48,
+          "attributeBytes": 4608,
+          "min": [
+            -0.7508572340011597,
+            0.14189350605010986,
+            0.393720418214798
+          ],
+          "max": [
+            0.5427711009979248,
+            0.4556129574775696,
+            0.5348549485206604
+          ]
+        },
+        "glow": {
+          "triangles": 6,
+          "attributeBytes": 576,
+          "min": [
+            -0.049776118248701096,
+            0.4000000059604645,
+            0.3844059705734253
+          ],
+          "max": [
+            0.15955224633216858,
+            2.109999895095825,
+            0.40118804574012756
+          ]
+        }
+      }
+    }
+  ],
+  "roomCostRange": {
+    "comparisons": 64,
+    "batchDeltaMin": -1,
+    "batchDeltaMax": 2,
+    "maxBatches": 7
+  },
+  "requiredCI": {
+    "hostedCount": 337,
+    "nativeCount": 15,
+    "combinedDistinctRequired": 348,
+    "priorDistinctRequired": 348,
+    "lost": [],
+    "added": [],
+    "scope": "Discovery only. Same case identities, package/browser partition plan and CI policy as qualified floor milestone; prior exact-once hosted partition proof reused. Existing required copied-bundle High/Low cases now retain new regional relic geometry alongside all prop and paving finishes and clear all five themes."
+  },
+  "retainedFailuresAndLimits": [
+    "Unchanged f37parent gallery fails9geometry/5material expectation; actual17/8Verdant already existed. Corrected explicit17/8Verdant,20/7elemental counts; no threshold reduction.",
+    "Initial wardHigh/Low observer counts all vertex-color batches as roots, including792triangle paving. Unchanged f37 source observer reproduces2batches/3672High and1656Low (stone+bark); corrected bark-only observer retains original2880/864root triangles and1batch.",
+    "First Node parent-observer adapter omitted ../relative import resolution and failed before geometry construction; corrected import resolution reproduces existing parent counts. Original parent source snapshot retained.",
+    "Initial16regional views obscure the reviewed object behind the hero. Excluded from selected art qualification; final16paired views move only the review actor4units alongX. Product geometry unchanged."
+  ],
+  "visualReview": "Viewed all4final desktop constructions, final Abyssal/Molten phone, and paired source controls. Hollow crucible, branching coral, split slate/cradle and narrow monolith fracture are legible as physical objects. Small scale, repeated symmetric pairs, broad empty rooms, primitive unrelated room furniture and floor repetition remain. Partial environment progress, not modern-ARPG completion or owner art approval.",
+  "custody": "Anonymous prepared fixtures only; no credentials, account/save fixture, Go/Mongo process, public release or production mutation. All observed jobs terminal and port free. Source pins and full git tree retained.",
+  "sourceFiles": [
+    {
+      "path": "src/art/DungeonRegionalRelics.js",
+      "bytes": 6571,
+      "sha256": "bd07a0804e157e5382bc0c3a8446c760a7c90d5dfc9e76706da710257ad2f99a"
+    },
+    {
+      "path": "src/art/ProceduralDungeonInteriors.js",
+      "bytes": 35452,
+      "sha256": "dae57fa86f7f29825d413469624998c0bccf3cea27525d7f58fe7e161afd9199"
+    },
+    {
+      "path": "tests/DungeonRegionalRelics.test.js",
+      "bytes": 5407,
+      "sha256": "21fe88faac1c9939f5b5b3c98ebee0d136208ae36029ae4b7a607f825fee6a55"
+    },
+    {
+      "path": "tests/ProceduralDungeonInteriors.test.js",
+      "bytes": 18200,
+      "sha256": "b8b22113cb7c2dc7f7a88c6139bdf7a5127723739be2459f1f676762f7da5724"
+    },
+    {
+      "path": "tests/e2e/animation-gallery.spec.js",
+      "bytes": 69536,
+      "sha256": "21cf7c257f09ff71b815827ea0693abd78dd1d58a6109e9c8bee9233eff0918b"
+    },
+    {
+      "path": "tests/e2e/dungeon-entry-ward.spec.js",
+      "bytes": 14667,
+      "sha256": "c4ab46c6e819d89f15e27ff7c1d8a714d5beb89a87da7fbecfd9fc525de660a0"
+    },
+    {
+      "path": "tests/e2e/dungeon-relic-review.js",
+      "bytes": 7749,
+      "sha256": "0cbc3c3a80c10bd0f46f396e3582beec469772ecc45c348376c0baaf4076c973"
+    },
+    {
+      "path": "tests/e2e/elemental-dungeon-presentation.spec.js",
+      "bytes": 14513,
+      "sha256": "c7e8c0e72ddd124b6eca8232b6bcaa5456ae441411d871a80fb79c542c1e0893"
+    },
+    {
+      "path": "tests/e2e/published-game-bundle.spec.js",
+      "bytes": 48220,
+      "sha256": "8815843da15695992a62e076e6d6084da38dbe863a853a61170e34a660161cb0"
+    }
+  ],
+  "scopeLimits": "Staged unpublished. PublicAlpha1.79.29 requested jump/aura/admin fixes remain accepted. No private cache/camp/singleton/DemonOrc/route QA selected. Original50/66.7ms,49.9/66.6ms,386370/281603/289302triangle,438/361draw andLow202draw failures remain. Full original world/art/contact/audio/devices/performance/operations/F1-F5/beta/launch/handoff active. No campaign/soak replay, version/access/commerce/beta change.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-dungeon-relic-checks-20261011",
+    "inventoryEntries": 306,
+    "files": 307,
+    "inventorySHA256": "dcfed337ecde8ee17cb084dbf13edd1bd2005ef4bd88bff1581707b167c54469",
+    "frozen": true
+  }
+}

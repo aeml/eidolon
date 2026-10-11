@@ -1,5 +1,18 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 current checkpoint: accepted public1.79.22/exact30a8b603 with all ten
+CI jobs, mandatory native/live evidence and exact public identities/assets.
+Qualified private terrain follow-up consolidates opaque NPC/Titan PBR surfaces
+inside animated pivots;157units,28native pose comparisons and High/Low lifetime
+checks pass. Incremental town CPU improves about30→26–27ms, but town and current
+equipped-party budgets still fail. Corrected controls, native differences and
+additional881280raw geometry bytes are explicit in the
+[receipt](2026-10-09-rigid-surface-render-checks.json). No public release/profile
+activation. Full original1.11–1.99 scope and every art/Q/CB, party/device, freeze,
+operations, owner/human/rights/beta/launch/handoff requirement remains open where
+unproven; see the [remaining register](2026-10-09-release-readiness-remaining.md).
+Older delivery checkpoints below are historical, not current queues.
+
 October9 accepted19 and combined20 preparation: exact293/CI37941972587 passes
 all ten jobs plus root five public bytes/identities/readyDB. Group larger worn
 street flagstones into the unpushed camp update20, with existing-map color/

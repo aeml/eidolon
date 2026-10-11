@@ -1,0 +1,254 @@
+{
+  "recordedUTC": "2026-10-11T00:13:36.973445+00:00",
+  "classification": "progress",
+  "source": "846d63edf54bc56d3c9f56f347f093312f6586b5",
+  "base": "aebc87abc4426bc97aea0cbe177ee3ccf37694ac",
+  "changes": [
+    "tests/CollisionAwareWalking.test.js",
+    "tests/collisionAwareWalking.js",
+    "tests/e2e/earth-moving-route.js"
+  ],
+  "selectedIntoHeld": false,
+  "published": false,
+  "runtimeUnchanged": true,
+  "diagnosis": "Prior failed route had no issued input: a straight chord from432.406616,245.255081 to the road intersects production generated scenery. A fixture containing only negotiated polygon rocks did not reproduce it; the complete production foliage/collider builder does. The prior informal rock attribution is narrowed to actual generated scenery, without inventing a specific collider identity.",
+  "implementation": "QA-only bounded visibility graph uses detached vectors, production colliders and negotiated convex rock planes. Conservative broad rejection never admits travel; every accepted edge samples full production checkCollision at0.25-unit intervals and actual elevation. Plan visible prefixes before strict arrival; verify current position/instance and whole unscaled path again, then issue ordinary ground clicks and require settlement. Reject blocked/exhausted/unsupported plans; no jump fallback, actor/stat/camera/cooldown/server/geometry changes.",
+  "focused": {
+    "passedUnique": 30,
+    "newPlannerCases": 5,
+    "existingProjectionPreparationCases": 25,
+    "initialHarnessFailuresRetained": [
+      "Node fs rejected jsdom URL in fixture; corrected explicit node:url import",
+      "Rock-only fixture omitted generated scenery and could not reproduce recorded failure; corrected production loadTrees fixture"
+    ],
+    "standaloneHeldFocusedPassed": 30,
+    "heldFocusedScope": "Temporary standalone planner/test files passed against held production collision/scenery; prospective route cherry-pick conflicted with absent private fight QA context and was cleanly aborted. QA commits remain private; no held product/test selection."
+  },
+  "phases": {
+    "high-combined": {
+      "terminal": {
+        "source": "1dc67c24b3f134d87621f1b5fa1381ee5cc156da",
+        "quality": "high",
+        "review": "combined fight-return-dungeon",
+        "exitCode": 0,
+        "startUnix": 1791677211.6375227,
+        "endUnix": 1791677347.1674256
+      },
+      "native": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "maxRetry": 0,
+      "framesRecorded": 715,
+      "walkingPlans": 10,
+      "plansWithDetour": 0,
+      "recordedOriginDetour": null,
+      "kills": 2,
+      "combatActiveFrames": 96,
+      "combatProfile": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "restored": true,
+        "drawCallsMedian": 348,
+        "trianglesMedian": 173799,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "maximumDraws": 438,
+        "maximumTriangles": 198177,
+        "maximumFrameMs": 50,
+        "framesOverDrawBudget": 87,
+        "framesOverTriangleBudget": 0
+      },
+      "dungeonProfile": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "restored": true,
+        "drawCallsMedian": 115,
+        "trianglesMedian": 51241,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "maximumDraws": 115,
+        "maximumTriangles": 51241,
+        "maximumFrameMs": 16.8,
+        "framesOverDrawBudget": 0,
+        "framesOverTriangleBudget": 0
+      },
+      "partyProfile": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "restored": true,
+        "drawCallsMedian": 334,
+        "trianglesMedian": 168134,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "maximumDraws": 335,
+        "maximumTriangles": 279698,
+        "maximumFrameMs": 16.8,
+        "framesOverDrawBudget": 0,
+        "framesOverTriangleBudget": 33
+      },
+      "hooksRestored": true,
+      "fourClass14SlotGoRaceCustodyPassed": true,
+      "sanitization": {
+        "observedPreparedAccounts": 4,
+        "plaintextFilesScanned": 17,
+        "embeddedEntriesScanned": 2,
+        "remainingPreparedNames": 0,
+        "serverMarkers": {
+          "WARNING: DATA RACE": 0,
+          "panic:": 0,
+          "fatal error:": 0,
+          "Worker panic:": 0,
+          "Recovered from panic in Update:": 0
+        },
+        "native": {
+          "total": 2,
+          "expected": 1,
+          "unexpected": 0,
+          "flaky": 0,
+          "skipped": 1,
+          "ok": true
+        },
+        "maxRetry": 0
+      }
+    },
+    "low-recorded-detour": {
+      "terminal": {
+        "source": "846d63edf54bc56d3c9f56f347f093312f6586b5",
+        "quality": "low",
+        "review": "combined fight with ordinary travel to the recorded failure origin and required walking detour, then dungeon",
+        "exitCode": 0,
+        "startUnix": 1791677381.2993648,
+        "endUnix": 1791677503.9211583
+      },
+      "native": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "maxRetry": 0,
+      "framesRecorded": 794,
+      "walkingPlans": 19,
+      "plansWithDetour": 7,
+      "recordedOriginDetour": {
+        "destination": {
+          "x": 470,
+          "z": 200
+        },
+        "waypoints": [
+          {
+            "x": 452.9068628618544,
+            "z": 231.15609306294564
+          },
+          {
+            "x": 460.3242949802951,
+            "z": 213.30437521887072
+          },
+          {
+            "x": 470,
+            "z": 200
+          }
+        ],
+        "queries": 9418,
+        "detour": true,
+        "visible": {
+          "dx": 14.83227865963026,
+          "dz": -10.198211106026232
+        },
+        "origin": {
+          "x": 432.3849843843734,
+          "z": 245.26629513022425,
+          "instanceId": ""
+        }
+      },
+      "kills": 2,
+      "combatActiveFrames": 176,
+      "combatProfile": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "restored": true,
+        "drawCallsMedian": 124,
+        "trianglesMedian": 33469,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "maximumDraws": 143,
+        "maximumTriangles": 57013,
+        "maximumFrameMs": 16.8,
+        "framesOverDrawBudget": 0,
+        "framesOverTriangleBudget": 0
+      },
+      "dungeonProfile": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "restored": true,
+        "drawCallsMedian": 57,
+        "trianglesMedian": 22425,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "maximumDraws": 57,
+        "maximumTriangles": 22425,
+        "maximumFrameMs": 16.8,
+        "framesOverDrawBudget": 0,
+        "framesOverTriangleBudget": 0
+      },
+      "partyProfile": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "restored": true,
+        "drawCallsMedian": 175,
+        "trianglesMedian": 77969,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "maximumDraws": 181,
+        "maximumTriangles": 79109,
+        "maximumFrameMs": 16.8,
+        "framesOverDrawBudget": 0,
+        "framesOverTriangleBudget": 0
+      },
+      "hooksRestored": true,
+      "fourClass14SlotGoRaceCustodyPassed": true,
+      "sanitization": {
+        "observedPreparedAccounts": 4,
+        "plaintextFilesScanned": 17,
+        "embeddedEntriesScanned": 2,
+        "remainingPreparedNames": 0,
+        "serverMarkers": {
+          "WARNING: DATA RACE": 0,
+          "panic:": 0,
+          "fatal error:": 0,
+          "Worker panic:": 0,
+          "Recovered from panic in Update:": 0
+        },
+        "native": {
+          "total": 2,
+          "expected": 1,
+          "unexpected": 0,
+          "flaky": 0,
+          "skipped": 1,
+          "ok": true
+        },
+        "maxRetry": 0
+      }
+    }
+  },
+  "nativePassed": 2,
+  "nativeSkipped": 2,
+  "observedKitKills": 4,
+  "scope": "Prepared saved level30Fighter kit, normal-input overworld fights, first-dungeon entry/movement and Recall, followed by actual four-class14slot save custody. Low explicitly travels to the retained failure origin through ordinary movement and requires a detour on return. High combined route passed without requiring a detour in that distinct population. Both native scopes use private camp/singleton/DemonOrc rendering context; none selected into held by this work.",
+  "limits": "Not earned campaign/clear, all-class balance, sustained180active-frame combat, contact/audio audibility or physical-device/final-art approval. High combat348median passes its existing350median gate but438peak and87of180frames over350 remain open dynamic costs; party334median168134tri passes but early279698triangle peak remains. Different populations do not causally clear historical361draw/384combat/Low83-to90 counterexamples. Original four failed sequences and both initial new fixture failures remain retained. No deployment/campaign/soak replay, production data or access change. Full original goal stays active.",
+  "next": "Attribute retained dynamic actor/effect/shadow submission peaks on controlled populations and qualify source-preserving improvements. Continue code-owned world/interior/material/contact polish and representative device gates without lowering budgets or hiding population.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-collision-return-checks-20261011",
+    "inventoryEntries": 1588,
+    "files": 1589,
+    "inventorySHA256": "d950e6040a4a05d4e1af5b9f604653a537ade12ae2591865ecadf0924eb95041",
+    "frozen": true
+  }
+}

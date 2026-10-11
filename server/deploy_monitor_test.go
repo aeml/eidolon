@@ -35,14 +35,14 @@ func TestDeployMonitorOptInAndValidationBeforeAPIReplacement(t *testing.T) {
 				"deploy/pin_previous_image.sh": "#!/bin/sh\nexit 0\n",
 				".env":                         "MONGO_INITDB_ROOT_USERNAME=fixture\nMONGO_INITDB_ROOT_PASSWORD=fixture\nMONGO_URI=mongodb://mongo:27017\nEIDOLON_MONITOR_ENABLED=" + optIn + "\n",
 				"bin/git":                      "#!/bin/sh\nexit 1\n",
-				"bin/curl":                     "#!/bin/sh\nprintf '%s' '{\"commit\":\"fixture-commit\",\"database\":\"ready\"}'\n",
+				"bin/curl":                     "#!/bin/sh\nprintf '%s' '{\"commit\":\"fixture-commit\",\"database\":\"ready\",\"terrainProfile\":\"flat-v1\"}'\n",
 				"bin/docker": `#!/bin/sh
 printf '%s\n' "$*" >> "$MONITOR_COMMANDS"
 case "$*" in
   'compose --profile operations build monitor') [ "$MONITOR_SCENARIO" != build-failed ] || exit 1 ;;
   'compose --profile operations run --rm --no-deps -T -e EIDOLON_MONITOR_CHECK_CONFIG=true monitor') [ "$MONITOR_SCENARIO" != validation-failed ] || exit 1 ;;
   'compose --profile operations up -d --no-deps monitor') [ "$MONITOR_SCENARIO" != start-failed ] || exit 1 ;;
-  'compose run --rm --no-deps -T api --check-schema --mongo-uri=mongodb://mongo:27017') echo 'Schema preflight passed: database=25 supported=25 commit=fixture-commit' ;;
+  'compose run --rm --no-deps -T api --check-schema --mongo-uri=mongodb://mongo:27017 --terrain-profile=flat-v1') echo 'Schema preflight passed: database=25 supported=25 commit=fixture-commit' ;;
 esac
 exit 0
 `,

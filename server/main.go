@@ -142,15 +142,17 @@ func isQAUsername(username string) bool {
 }
 
 type healthResponse struct {
-	Status          string                        `json:"status"`
-	Database        string                        `json:"database"`
-	Commit          string                        `json:"commit"`
-	Version         string                        `json:"version"`
-	Goroutines      int                           `json:"goroutines"`
-	HeapAllocBytes  uint64                        `json:"heapAllocBytes"`
-	HeapObjects     uint64                        `json:"heapObjects"`
-	BroadcastQueues broadcastQueueMetrics         `json:"broadcastQueues"`
-	Operational     operations.OperationalMetrics `json:"operational"`
+	Status            string                        `json:"status"`
+	Database          string                        `json:"database"`
+	Commit            string                        `json:"commit"`
+	Version           string                        `json:"version"`
+	TerrainProfile    string                        `json:"terrainProfile,omitempty"`
+	Goroutines        int                           `json:"goroutines"`
+	HeapAllocBytes    uint64                        `json:"heapAllocBytes"`
+	HeapObjects       uint64                        `json:"heapObjects"`
+	BroadcastQueues   broadcastQueueMetrics         `json:"broadcastQueues"`
+	WebsocketClosures map[string]uint64             `json:"websocketClosures"`
+	Operational       operations.OperationalMetrics `json:"operational"`
 }
 
 func collectHealthResponse(ctx context.Context, pingDatabase func(context.Context) error) (healthResponse, int) {
@@ -162,11 +164,17 @@ func collectHealthResponse(ctx context.Context, pingDatabase func(context.Contex
 		Commit:     buildCommit,
 		Version:    buildVersion,
 		Goroutines: runtime.NumGoroutine(), HeapAllocBytes: memory.HeapAlloc,
-		HeapObjects:     memory.HeapObjects,
-		BroadcastQueues: transientBroadcastMetrics(),
-		Operational:     operationalMetricsSnapshot(),
+		HeapObjects:       memory.HeapObjects,
+		BroadcastQueues:   transientBroadcastMetrics(),
+		WebsocketClosures: transportClosureMetrics(),
+		Operational:       operationalMetricsSnapshot(),
 	}
 	statusCode := http.StatusOK
+	// Report the initialized world, not a flag or environment default. Profile
+	// changes need the same exact live verification as the deployed executable.
+	if world != nil {
+		response.TerrainProfile = world.TerrainProfile()
+	}
 	if pingDatabase == nil || pingDatabase(ctx) != nil {
 		response.Status = "unavailable"
 		response.Database = "unavailable"

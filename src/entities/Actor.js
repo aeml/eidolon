@@ -550,7 +550,12 @@ export class Actor extends Entity {
 
     syncMovementAnimationSpeed(speed = this.stats?.speed) {
         const movementName = this.getMovementAnimationName(this.isRunning);
-        if (!movementName || this.currentAction !== this.animations[movementName]) return false;
+        if (!movementName) return false;
+        const resolvedName = this.mesh?.userData.resolveAnimationName?.(movementName, {
+            restart: false, currentName: this.currentAnimationName
+        }) || movementName;
+        const movementAction = this.animations[resolvedName] || this.animations[movementName];
+        if (!movementAction || this.currentAction !== movementAction) return false;
         this.currentAction.setEffectiveTimeScale?.(
             this.scaleAnimSpeed ? this.getMovementAnimationTimeScale(speed) : 1.0
         );
@@ -560,7 +565,9 @@ export class Actor extends Entity {
     playAbilityAnimation(skillName, options = {}) {
         const className = this.meshType || this.subType || this.constructor.name;
         const profile = getAbilityAnimationProfile(className, skillName);
-        let clipName = options.clip || profile.clip;
+        const presentation = getAbilityPresentation(className, skillName);
+        let clipName = options.clip || this.mesh?.userData.resolveAbilityAnimationName?.(
+            presentation?.animation, presentation?.canonicalName) || profile.clip;
         if (!this.animations[clipName]) {
             clipName = this.animations.Attack ? 'Attack' : (this.animations.Idle ? 'Idle' : null);
         }
@@ -1308,7 +1315,7 @@ export class Actor extends Entity {
             } else if (this.state === 'ATTACKING') {
                 this.playAnimation('Attack', false);
                 // Scale animation speed for remote entities
-                if (this.currentAction && this.stats.attackSpeed) {
+                if (!this.currentAbilityAnimation && this.currentAction && this.stats.attackSpeed) {
                     const cooldown = this.stats.attackSpeed;
 
                     // Play slightly faster (90% of cooldown) to ensure it finishes before server state reset

@@ -2,7 +2,7 @@
   "recordedUTC": "2026-10-10T12:13:11.876878+00:00",
   "sourceCommit": "6fb97aeb83fd31f21c234e0347258bc6158af599",
   "baseCommit": "3ac476e63beba25829fb9cab981ac908bf5b5929",
-  "status": "Corrected candidate qualified locally; not pushed or deployed yet.",
+  "status": "Local race repair qualified and deployed; current Server Tests pass. Live jump verified independently; required release gate fails Gold/stash.",
   "firstCI": {
     "run": 38050260227,
     "commit": "3ac476e63beba25829fb9cab981ac908bf5b5929",
@@ -86,5 +86,68 @@
   "limits": "High-concurrency actual four-player dungeon/save proof and bounded ability/jump checks; no100player/24h/device/performance/final-art acceptance. Flight remains1.5s; input/network/frame display delay remains outside authoritative duration. Original24failedCI and startup/Gold causes retained; successor must pass own unchanged release gates.",
   "evidence": "/home/aeml/.local/share/eidolon-room-race-checks-20261010",
   "inventoryFiles": 38,
-  "inventorySHA256": "ad4e5c1c733d14928afb6289db3d1cfe3dcb0d056fb0f55476340e7b856b3121"
+  "inventorySHA256": "ad4e5c1c733d14928afb6289db3d1cfe3dcb0d056fb0f55476340e7b856b3121",
+  "release": {
+    "version": "Alpha 1.79.25",
+    "commit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79",
+    "ci": 38051193149,
+    "status": "Alpha1.79.25/d15a882e deployed and exact identities/database/eight assets verified. Fresh ordinary live27unit Ctrl-click jump1648.6ms total,1582.9ms observed flight, authoritative1.5s, endpoints0; one native pass/no retries. RequiredCI38051193149 failed live Gold/stash assertions (all nine other jobs passed); later live recovery skipped. Release not accepted.",
+    "initialAttempt": {
+      "commit": "3ac476e63beba25829fb9cab981ac908bf5b5929",
+      "ci": 38050260227,
+      "status": "Terminal failure; Client Tests and all3browser shards succeeded, all deployments skipped due server race"
+    },
+    "heldIntegration": "Docs only; no public24/25product merge into held."
+  },
+  "publicAtCorrectedStart": {
+    "recordedUTC": "2026-10-10T12:21:30.894242+00:00",
+    "first": {
+      "ci": 38050260227,
+      "commit": "3ac476e63beba25829fb9cab981ac908bf5b5929",
+      "status": "completed",
+      "conclusion": "failure",
+      "client": "success",
+      "browserShards": "3/3 success",
+      "server": "failure: room-recovery DATA RACE",
+      "deployments": "skipped"
+    },
+    "corrected": {
+      "ci": 38051193149,
+      "commit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79",
+      "status": "in_progress",
+      "version": "Alpha 1.79.25"
+    },
+    "public": {
+      "frontend": {
+        "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+        "version": "Alpha 1.79.24"
+      },
+      "backend": {
+        "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+        "version": "Alpha 1.79.24",
+        "status": "ok",
+        "database": "ready"
+      }
+    }
+  },
+  "currentPublicVerification": {
+    "receipt": "docs/plans/2026-10-10-jump-wall-clock-public-verification.json",
+    "commit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79",
+    "ci": 38051193149,
+    "status": "Alpha1.79.25/d15a882e deployed and exact identities/database/eight assets verified. Fresh ordinary live27unit Ctrl-click jump1648.6ms total,1582.9ms observed flight, authoritative1.5s, endpoints0; one native pass/no retries. RequiredCI38051193149 failed live Gold/stash assertions (all nine other jobs passed); later live recovery skipped. Release not accepted.",
+    "jumpFixVerified": true,
+    "releaseAccepted": false
+  },
+  "initialReleaseRecord": {
+    "version": "Alpha 1.79.25",
+    "commit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79",
+    "ci": 38051193149,
+    "status": "Corrected revision pushed, CI in progress; public still24",
+    "initialAttempt": {
+      "commit": "3ac476e63beba25829fb9cab981ac908bf5b5929",
+      "ci": 38050260227,
+      "status": "Terminal failure; Client Tests and all3browser shards succeeded, all deployments skipped due server race"
+    },
+    "heldIntegration": "Docs only; no public24/25product merge into held."
+  }
 }

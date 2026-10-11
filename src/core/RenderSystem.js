@@ -11,6 +11,7 @@ import { CONSTANTS } from './Constants.js';
 import { SceneryVisibility } from './SceneryVisibility.js';
 import { ActorContactShadows } from './ActorContactShadows.js';
 import { ActorInstanceBatches } from '../art/ActorInstanceBatches.js';
+import { ActorGameplayGeometryRuntime } from './ActorGameplayGeometryRuntime.js';
 import { updateFoliageRenderQuality } from '../art/FoliageRenderBatches.js';
 import { updateElementalGroundCoverQuality } from '../art/ElementalGroundCover.js';
 import { getShadowViewBounds } from './ShadowViewCoverage.js';
@@ -154,7 +155,11 @@ export class RenderSystem {
         };
         this.scene.onAfterRender = () => this.foliageShadowInfluence.endFrame();
         this.actorInstances = null;
+        // Original close geometry stays live; prepare bounded derivatives only
+        // after an eligible actor arrives. Unsupported workers retain originals.
+        this.actorGameplayGeometry = null;
         this.setActorInstancesEnabled(true);
+        this.setActorGameplayGeometryEnabled(true);
         this.sceneryVisibility = new SceneryVisibility();
         this.sceneryFocus = null;
         // Cross-light the fixed isometric view: one visible face catches the
@@ -1054,9 +1059,19 @@ export class RenderSystem {
     setActorInstancesEnabled(enabled) {
         if (this._disposed) return;
         if (enabled && !this.actorInstances) {
-            this.actorInstances = new ActorInstanceBatches(this.scene, [this.scene, this.entityGroup]);
+            this.actorInstances = new ActorInstanceBatches(this.scene, [this.scene, this.entityGroup], { shadowInfluence: true, multiDraw: true, instanceFrustum: true });
         } else if (!enabled && this.actorInstances) {
             this.actorInstances.dispose(); this.actorInstances = null;
+        }
+    }
+
+    setActorGameplayGeometryEnabled(enabled, options = {}) {
+        if (this._disposed) return;
+        if (enabled && !this.actorGameplayGeometry) {
+            this.actorGameplayGeometry = new ActorGameplayGeometryRuntime(this.renderer, this.scene, this.camera,
+                [this.scene, this.entityGroup], options);
+        } else if (!enabled && this.actorGameplayGeometry) {
+            this.actorGameplayGeometry.dispose(); this.actorGameplayGeometry = null;
         }
     }
 
@@ -1089,6 +1104,7 @@ export class RenderSystem {
     }
 
     clearInstanceScene() {
+        this.actorGameplayGeometry?.clear();
         this.actorInstances?.clear();
         this.actorContactShadows?.clear();
         this.clearGroupChildren(this.instanceEnvironmentGroup, { dispose: true });
@@ -1273,6 +1289,7 @@ export class RenderSystem {
         if (this._disposed) return;
         this._disposed = true;
         this._initialViewPreparation?.finish(false);
+        this.actorGameplayGeometry?.dispose(); this.actorGameplayGeometry = null;
         this.actorInstances?.dispose(); this.actorInstances = null;
         this.foliageShadowInfluence?.dispose();
         for (const restore of this.restoreSceneMatrices || []) restore();

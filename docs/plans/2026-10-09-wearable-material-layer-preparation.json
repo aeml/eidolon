@@ -1,0 +1,555 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-09T23:59:07.225537+00:00",
+  "classification": "Prepared largest-layer wearable reduction with exact reviewed secondary material regions; no runtime/catalog/asset/version/public/profile/access activation. Whole High draw/triangle/raw-p95 and full inherited roadmap gates remain open.",
+  "baseCommit": "c09b32ee4cbaa2088b9ece964fc24fa99213c7ce",
+  "executionWorktree": "/home/aeml/.local/share/eidolon-wearable-surface-order-20261009",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-wearable-surface-order-checks-20261009",
+  "publicBaseline": {
+    "version": "1.79.22",
+    "commit": "30a8b6038df9e071eef0f57564ae94087d1a0b11",
+    "unchanged": true
+  },
+  "failedJointTopologyHypothesis": {
+    "screenVariants": 24,
+    "garments": [
+      "Plate Mail",
+      "Robes",
+      "Leather Tunic"
+    ],
+    "classes": [
+      "Fighter",
+      "Rogue",
+      "Wizard",
+      "Cleric"
+    ],
+    "tier": "legendary",
+    "qualities": [
+      "high",
+      "low"
+    ],
+    "distinctSources": 12,
+    "sourcesWithSharedPositionsBetweenLargestTwoMaterialRegions": 0,
+    "allCandidates": null,
+    "reason": "Separate layered surfaces, not a connected material seam. Do not weld unrelated layers or claim the unused protected-lock API was behaviorally qualified.",
+    "prototype": "source-copies/rejected-coordinated-wearable-indices.mjs",
+    "topology": "topology-screen.json",
+    "screen": "initial-screen.json"
+  },
+  "implementation": {
+    "scope": [
+      "Extend existing generated-asset CLI with explicit main-layer-soft and main-layer-protected modes; default guarded mode retains prior behavior.",
+      "Select the largest supplied primitive in each mesh, restricted to named main surfaces or Undersuit charcoal. Eight greaves fits have largest undersuit; their plate and edges remain exact.",
+      "Copy every other primitive geometry from the hash-verified reviewed quality file; verify all triangle-corner attributes before and after serialization.",
+      "Only the largest surface uses source-derived index-only weighted simplification, LockBorder and Permissive. No Prune, Sloppy, moved/new vertices, averaged attributes or source overwrite.",
+      "Main normal weights .05 (soft) or .25 (protected); UV and canonical continuous bone-blend weights .1. Conflicting coincident skin blends remain fixed. More than32 attributes/unknown semantics/morphs fail this explicit mode.",
+      "Original High .002 / Low .006 error bounds and .04/.02 ratio targets remain. Candidate whole-fit count must beat reviewed file or copy its exact bytes.",
+      "Separate attribute export, source matrix/TRS restoration, rig/palette/material/texture/animation/semantic contract checks and glTF validation retained.",
+      "Optional wearable route in single-renderer disposable party QA blocks workers consistently and records exact candidate requests. Normal default retains workers. Four-browser pilot scope is explicitly unsupported, and ordinary selected-body cache qualification rejects substituted wearables."
+    ],
+    "usage": "Node24 scripts/derive-wearable-attribute-pilot.mjs <item name> <class> <new empty absolute owned directory> [standard|legendary] [guarded|main-layer-soft|main-layer-protected]",
+    "runtimeAndRepositoryAssetChanges": []
+  },
+  "prepared": {
+    "roster": "5 garment types \u00d74 supplied classes \u00d72 tiers =40 source fits per mode; High/Low =80 GLBs per mode,160 total. All outside repository.",
+    "items": [
+      "Plate Greaves",
+      "Plate Mail",
+      "Robes",
+      "Leather Pants",
+      "Leather Tunic"
+    ],
+    "modes": {
+      "main-layer-soft": {
+        "fitPairs": 40,
+        "totals": {
+          "high": {
+            "baselineTriangles": 285208,
+            "candidateTriangles": 256512,
+            "changedVariants": 40,
+            "exactFallbacks": 0,
+            "baselineBytes": 16965960,
+            "candidateBytes": 14851952,
+            "savedTriangles": 28696,
+            "reductionPercent": 10.061428851925612
+          },
+          "low": {
+            "baselineTriangles": 150348,
+            "candidateTriangles": 131318,
+            "changedVariants": 40,
+            "exactFallbacks": 0,
+            "baselineBytes": 10703192,
+            "candidateBytes": 9263036,
+            "savedTriangles": 19030,
+            "reductionPercent": 12.657301726660814
+          }
+        },
+        "galleryActualRequests": 22,
+        "galleryChangedActualRequests": 22
+      },
+      "main-layer-protected": {
+        "fitPairs": 40,
+        "totals": {
+          "high": {
+            "baselineTriangles": 285208,
+            "candidateTriangles": 282708,
+            "changedVariants": 9,
+            "exactFallbacks": 31,
+            "baselineBytes": 16965960,
+            "candidateBytes": 16534388,
+            "savedTriangles": 2500,
+            "reductionPercent": 0.8765532523631876
+          },
+          "low": {
+            "baselineTriangles": 150348,
+            "candidateTriangles": 144626,
+            "changedVariants": 23,
+            "exactFallbacks": 17,
+            "baselineBytes": 10703192,
+            "candidateBytes": 9949296,
+            "savedTriangles": 5722,
+            "reductionPercent": 3.805837124537739
+          }
+        },
+        "galleryActualRequests": 22,
+        "galleryChangedActualRequests": 8
+      }
+    },
+    "validation": {
+      "successfulFitCLIProcesses": 80,
+      "validGLBs": 160,
+      "gltfErrors": 0,
+      "gltfWarnings": 0,
+      "sourceVertexMaterialProof": "Every output vertex matches one original vertex in ALL raw attributes, component/layout/normalized semantics. Every non-main candidate material region matches the reviewed baseline triangle-corner sequence. Exact whole-file fallbacks verified. This does not establish all posed-surface or pixel equivalence.",
+      "verifiedOutputVertices": 809952,
+      "exactReviewedSecondaryRegionsInChangedVariants": 285,
+      "exactWholeFileFallbackVariants": 48,
+      "proof": "independent-vertex-material-proof.json"
+    },
+    "finalCLIGuards": {
+      "unchangedTestedWizardSoftVariantHashes": [
+        "65f2f440cce7468da5d1fab9425c2c68856c0e3ccb4500bb3a18ae9cfe59875e",
+        "d8f1726d4e8f7fc78aa72c378cf9a444a0f335fbac5853aebc2acbf7bca393e0"
+      ],
+      "namedMainGuardCheckedFits": 40,
+      "negatives": [
+        {
+          "name": "Robes",
+          "cls": "Wizard",
+          "mode": "unreviewed",
+          "status": 1,
+          "outputFiles": 0
+        },
+        {
+          "name": "Iron Sword",
+          "cls": "universal",
+          "mode": "main-layer-soft",
+          "status": 1,
+          "outputFiles": 0
+        }
+      ],
+      "invalidNormalWeightsRejected": 4
+    },
+    "finalCLINote": "Native and party loads pin generated GLB hashes. Final naming guard/receipt metadata cleanup happened afterward; all40 main/undersuit names checked, final Wizard soft High/Low GLB hashes match tested files. Existing default guarded Wizard pair retains exact reviewed bytes.",
+    "assetPayloadNote": "Byte totals describe generated standalone variants, not VRAM or installed/published additions. No prepared GLB was copied into repository/runtime selection."
+  },
+  "native": {
+    "terminal": {
+      "runs": [
+        {
+          "mode": "reference",
+          "exitCode": 0,
+          "startedUnix": 1791589780.444055,
+          "finishedUnix": 1791589791.421608
+        },
+        {
+          "mode": "main-layer-soft",
+          "exitCode": 0,
+          "startedUnix": 1791589791.4218519,
+          "finishedUnix": 1791589802.48433
+        },
+        {
+          "mode": "main-layer-protected",
+          "exitCode": 0,
+          "startedUnix": 1791589802.4847066,
+          "finishedUnix": 1791589813.8416538
+        }
+      ],
+      "complete": true
+    },
+    "renderer": "ANGLE AMD Vulkan1.4.318 RADV RENOIR; mandatory hardware policy, no software fallback",
+    "scope": "Three controlled worker-blocked runs: ordinary selected-body/reference wearables, soft prepared wearables and protected prepared wearables. Each eight High/Low outfits,14slots, independent rigs, alternating Rogue strikes, finite sampled posed vertices, full/mixed front/back/side action views, stealth restore, pooled ownership and three close previews.",
+    "perOutfitColorPassTrianglesIncludingFloor": {
+      "main-layer-soft": [
+        {
+          "type": "Fighter",
+          "quality": "high",
+          "trianglesIncludingFloor": 63155
+        },
+        {
+          "type": "Fighter",
+          "quality": "low",
+          "trianglesIncludingFloor": 31735
+        },
+        {
+          "type": "Rogue",
+          "quality": "high",
+          "trianglesIncludingFloor": 55497
+        },
+        {
+          "type": "Rogue",
+          "quality": "low",
+          "trianglesIncludingFloor": 27731
+        },
+        {
+          "type": "Wizard",
+          "quality": "high",
+          "trianglesIncludingFloor": 59736
+        },
+        {
+          "type": "Wizard",
+          "quality": "low",
+          "trianglesIncludingFloor": 31734
+        },
+        {
+          "type": "Cleric",
+          "quality": "high",
+          "trianglesIncludingFloor": 56445
+        },
+        {
+          "type": "Cleric",
+          "quality": "low",
+          "trianglesIncludingFloor": 28129
+        }
+      ],
+      "main-layer-protected": [
+        {
+          "type": "Fighter",
+          "quality": "high",
+          "trianglesIncludingFloor": 64289
+        },
+        {
+          "type": "Fighter",
+          "quality": "low",
+          "trianglesIncludingFloor": 32497
+        },
+        {
+          "type": "Rogue",
+          "quality": "high",
+          "trianglesIncludingFloor": 56703
+        },
+        {
+          "type": "Rogue",
+          "quality": "low",
+          "trianglesIncludingFloor": 28425
+        },
+        {
+          "type": "Wizard",
+          "quality": "high",
+          "trianglesIncludingFloor": 60486
+        },
+        {
+          "type": "Wizard",
+          "quality": "low",
+          "trianglesIncludingFloor": 32044
+        },
+        {
+          "type": "Cleric",
+          "quality": "high",
+          "trianglesIncludingFloor": 57157
+        },
+        {
+          "type": "Cleric",
+          "quality": "low",
+          "trianglesIncludingFloor": 28496
+        }
+      ]
+    },
+    "referenceColorTrianglesIncludingFloor": [
+      64289,
+      33019,
+      56703,
+      28485,
+      61094,
+      32342,
+      57157,
+      28686
+    ],
+    "images": "descriptive-image-differences.json",
+    "rootVisualReview": [
+      "Paired Wizard Low close preview retains gold vertical/hem trim lost in prior independently reduced trial.",
+      "Paired Cleric Low close preview retains chest/hem trim; local fabric lighting differs intentionally.",
+      "Paired eight-outfit idle, mixed back run and side cast reviewed. No conspicuous new lost region in these views.",
+      "Actual equipped HUD party reviewed. This is scoped preliminary review, not every-pose/final modern-art/Q/CB approval."
+    ],
+    "comparisonLimit": "Intentional LOD surface changes produce nonzero pixels. Difference statistics are descriptive, not a waived zero-image criterion or universal posed-surface equivalence."
+  },
+  "actualConnectedParty": {
+    "terminal": {
+      "exitCode": 0,
+      "startedUnix": 1791589886.7420423,
+      "finishedUnix": 1791589959.2946036
+    },
+    "goRaceTest": "TestTerrainActualEquippedBrowserParty PASS44.50s",
+    "scenario": "connected-party-observer High, one native renderer plus3 live normal socket peers. Four-browser test skipped, not passed. Body/runtime catalog selected ordinarily; only wearable preview routes substituted and service worker blocked. No production cache compatibility claim.",
+    "evidenceDirectory": "eidolon-terrain-save-evidence-h09b811P",
+    "observedCandidateURLs": 7,
+    "classAndTier": "Fighter/Cleric standard Plate Mail+Plate Greaves; Rogue standard Leather Tunic+Leather Pants; Wizard standard Robes, allHigh. Exact requested SHA records retained.",
+    "functional": "Four supplied classes14slots, independent palettes, raised grounding, live party sockets and saved equipment/membership/inventory/EP preservation pass.",
+    "profile": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 16.700000000000728,
+      "frameP95Ms": 33.400000000001455,
+      "frameP99Ms": 33.400000000001455,
+      "framesOver33ms": 20,
+      "cpuLoopMedianMs": 20.19999998807907,
+      "cpuLoopP95Ms": 26.700000017881393,
+      "drawCallsMedian": 476,
+      "trianglesMedian": 502083,
+      "geometries": 497,
+      "textures": 393,
+      "activeEntities": 44,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "untimedRoots": [
+      {
+        "name": "OpaqueActorInstances",
+        "color": 48,
+        "shadow": 144,
+        "triangles": 34593
+      },
+      {
+        "name": "Equipped Wizard",
+        "color": 25,
+        "shadow": 21,
+        "triangles": 103310
+      },
+      {
+        "name": "Equipped Cleric",
+        "color": 25,
+        "shadow": 21,
+        "triangles": 112954
+      },
+      {
+        "name": "Equipped Fighter",
+        "color": 23,
+        "shadow": 20,
+        "triangles": 117044
+      },
+      {
+        "name": "Equipped Rogue",
+        "color": 23,
+        "shadow": 18,
+        "triangles": 102798
+      },
+      {
+        "name": "ProceduralSkeleton",
+        "color": 2,
+        "shadow": 36,
+        "triangles": 2153
+      },
+      {
+        "name": "EnvironmentGroup",
+        "color": 20,
+        "shadow": 6,
+        "triangles": 24611
+      },
+      {
+        "name": "Mesh",
+        "color": 1,
+        "shadow": 15,
+        "triangles": 17
+      },
+      {
+        "name": "Canonical terrain tiles",
+        "color": 6,
+        "shadow": 0,
+        "triangles": 768
+      },
+      {
+        "name": "ProceduralEidolicBlackwater",
+        "color": 1,
+        "shadow": 0,
+        "triangles": 2
+      },
+      {
+        "name": "ProceduralRealmTerrain:water",
+        "color": 1,
+        "shadow": 0,
+        "triangles": 4
+      },
+      {
+        "name": "ProceduralRealmTerrain:air",
+        "color": 1,
+        "shadow": 0,
+        "triangles": 4
+      },
+      {
+        "name": "Points",
+        "color": 1,
+        "shadow": 0,
+        "triangles": 46.666666666666664
+      }
+    ],
+    "untimedInstanceComparison": {
+      "without": {
+        "calls": 693,
+        "triangles": 480572
+      },
+      "with": {
+        "calls": 452,
+        "triangles": 498258
+      }
+    },
+    "equippedRootTriangles": 436106,
+    "priorSelectedBodySnapshotEquippedRootTriangles": 446678,
+    "priorWholeScenePopulation": 35,
+    "currentPopulation": 44,
+    "controlledCPUAttribution": false,
+    "unchangedHighLimits": {
+      "medianFrameMs": 20,
+      "p95FrameMs": 33.4,
+      "drawCalls": 350,
+      "triangles": 250000
+    },
+    "budgetResult": {
+      "medianFrame": "pass this sample",
+      "rawP95Frame": "fail33.400000000001455 >33.4; no rounding/tolerance",
+      "drawCalls": "fail476 >350",
+      "triangles": "fail502083 >250000",
+      "wholeHigh": "fail",
+      "wholeLow": "not measured here; remains open",
+      "physicalSupportedDevices": "not certified"
+    }
+  },
+  "focusedValidation": {
+    "suites": 6,
+    "testsPassed": 223,
+    "elapsedSeconds": 3.697,
+    "log": "focused-tests.log",
+    "finalLintFiles": 3,
+    "finalLintErrors": 0,
+    "lintLog": "final-lint.log"
+  },
+  "failuresRetained": [
+    "First derivation launcher opened its log inside required-empty output directory; CLI correctly refused the first fit before writing assets. Launcher also failed to serialize its already-started child PID due missing json import. Read-only process check found no remaining child; corrected supervisor uses logs outside output and80fit processes pass. Failed output/log/terminal retained.",
+    "Final named-main guard initially omitted the greaves largest Undersuit charcoal material. Independent40fit source read caught it; explicit undersuit allowance plus recognized-main validation verified all40. Failed guard log retained; no failed guard classified pass.",
+    "Connected functional/race/save acceptance does not turn failed whole-game rendering budgets into a pass. Earlier independently reduced robe and strict Low body rejections remain."
+  ],
+  "longSoak": {
+    "snapshot": {
+      "observed_at_utc": "2026-10-09T23:37:23Z",
+      "run": {
+        "id": 37880032315,
+        "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_attempt": 1,
+        "updated_at": "2026-10-09T03:36:16Z",
+        "url": "https://github.com/aeml/eidolon/actions/runs/37880032315"
+      },
+      "jobs": [
+        {
+          "name": "100-client authoritative-state soak",
+          "status": "in_progress",
+          "conclusion": null,
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Initialize containers",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Checkout",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Setup Go",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Setup Node.js",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Run multiplayer soak",
+              "status": "in_progress",
+              "conclusion": null
+            },
+            {
+              "name": "Upload soak evidence",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Post Setup Node.js",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Post Setup Go",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Post Checkout",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Stop containers",
+              "status": "pending",
+              "conclusion": null
+            }
+          ]
+        }
+      ]
+    },
+    "action": "One read-only delegated snapshot at23:37:23UTC, attempt1 exactdc7d22f2 stillin_progress; no restart/cancel/acceptance. Observation is stale after its timestamp."
+  },
+  "cleanup": {
+    "ownedSupervisorsAbsent": [
+      1205637,
+      1213570,
+      1227361
+    ],
+    "ownedPortsAbsent": [
+      4190,
+      4192,
+      18189
+    ],
+    "ownedVendorSymlinkRemoved": true,
+    "ignoredDependencySymlinkRetained": true,
+    "playerAndProductionStateChanged": false
+  },
+  "retainedEvidence": {
+    "artifactInventory": "artifact-inventory.json",
+    "entries": 453,
+    "sha256": "8fb8df8fd7669993039e589298303f6382dd397fa16b397c64f949eb688c65c8",
+    "sourceHashes": "final-source-hashes.json",
+    "sourceFiles": 12,
+    "privacy": "Owned evidence root/directories0700, regular files0600 or executable0700. No credentials copied into tracked receipt."
+  },
+  "decision": "Retain soft preparation and constrained comparison as opt-in tools/evidence. Select neither wearable mode into runtime now; c09protectedHigh body/runtime remains authoritative. Savings in actual geared scene are modest and cannot close250000triangle budget.",
+  "next": "Continue larger supplied-body/eye/base-layer/gear/scene cost reductions with original surfaces, motion, bones, morphs and material ordering preserved. Deliberate additive selection/cache and actual High/Low full-scene/device/art/raised-rollout qualification still required before coherent publication. Entire inherited1.11\u20131.99/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff remains active."
+}

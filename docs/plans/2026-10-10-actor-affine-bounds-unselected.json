@@ -1,0 +1,185 @@
+{
+  "status": "Unselected guarded affine arithmetic candidate; keep previous ordinary eight-corner scratch-box transform. No public or held runtime selection.",
+  "recordedUTC": "2026-10-10T06:57:49.430113+00:00",
+  "codeCommit": "0dbe93f4066434b19bf8d5de637f0c0625e25ea3",
+  "base": "0ea082472825ee9f16171a3905c30901e83567ac",
+  "change": "Finite affine input guards unchanged. Per-axis extremal corner arithmetic retains Three multiplication/addition order. No world-box cache or light membership index. Actor view policy stays opt-in/null by default.",
+  "tests": {
+    "focused": "110passed/4suites in2.675s;4096seeded finite-affine matrix controls plus6signed-zero/large cancellation cases, projective bottom row and nonfinite guards. Runtime bounds compared exactly with ordinary Three; invalids keep geometry.",
+    "native": "12cases/70strict RGB pairs exactly equal,High/Low,4stable GPU lifecycle cycles and failure ownership restored.",
+    "actual": "Owned four-class High party/Go-race/14-slot saves passed66.52s; private geometry/body/shadow/actor-filter pilots explicit, not production gameplay."
+  },
+  "sameScene": {
+    "scope": "Same scene: ordinary eight-corner world bounds versus guarded affine corner arithmetic; synchronous ABBA submission only, not whole-frame pacing.",
+    "reference": {
+      "calls": 262,
+      "triangles": 147536,
+      "restored": true,
+      "stats": {
+        "checked": 680,
+        "culled": 612,
+        "boundsBuilt": 0,
+        "lightScanNodes": 4015,
+        "unknownShadow": false
+      }
+    },
+    "candidate": {
+      "calls": 262,
+      "triangles": 147536,
+      "restored": true,
+      "stats": {
+        "checked": 680,
+        "culled": 612,
+        "boundsBuilt": 0,
+        "lightScanNodes": 4015,
+        "unknownShadow": false
+      }
+    },
+    "referenceAgain": {
+      "calls": 262,
+      "triangles": 147536,
+      "restored": true,
+      "stats": {
+        "checked": 680,
+        "culled": 612,
+        "boundsBuilt": 0,
+        "lightScanNodes": 4015,
+        "unknownShadow": false
+      }
+    },
+    "changedChannels": 0,
+    "unstableChannels": 0,
+    "blocks": [
+      {
+        "enabled": false,
+        "milliseconds": [
+          18.30000001192093,
+          22.19999998807907,
+          17.30000001192093,
+          16.599999994039536,
+          26.30000001192093,
+          15.5,
+          28.099999994039536,
+          28,
+          21.5,
+          17.30000001192093,
+          29.69999998807907,
+          17.80000001192093
+        ],
+        "restored": true
+      },
+      {
+        "enabled": true,
+        "milliseconds": [
+          35,
+          23.799999982118607,
+          14.200000017881393,
+          21.799999982118607,
+          17.5,
+          24.5,
+          21,
+          21,
+          34.80000001192093,
+          33,
+          22.900000005960464,
+          22.69999998807907
+        ],
+        "restored": true
+      },
+      {
+        "enabled": true,
+        "milliseconds": [
+          25.100000023841858,
+          44.099999994039536,
+          27.599999994039536,
+          25.19999998807907,
+          24,
+          14.700000017881393,
+          24.299999982118607,
+          15.5,
+          19.5,
+          26,
+          23.200000017881393,
+          23.19999998807907
+        ],
+        "restored": true
+      },
+      {
+        "enabled": false,
+        "milliseconds": [
+          16,
+          19.700000017881393,
+          23.799999982118607,
+          25.80000001192093,
+          20.599999994039536,
+          18.5,
+          17.69999998807907,
+          23.700000017881393,
+          19.299999982118607,
+          23.200000017881393,
+          22.69999998807907,
+          30.900000005960464
+        ],
+        "restored": true
+      }
+    ],
+    "cpu": {
+      "reference": {
+        "frames": 24,
+        "median": 21.5,
+        "p95": 29.69999998807907
+      },
+      "candidate": {
+        "frames": 24,
+        "median": 23.799999982118607,
+        "p95": 35
+      }
+    }
+  },
+  "actualFrames": {
+    "quality": "high",
+    "label": "single-renderer-equipped-raised-party-high",
+    "frames": 180,
+    "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+    "viewport": {
+      "width": 1280,
+      "height": 844,
+      "pixelRatio": 1
+    },
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+    "visibility": "visible",
+    "frameMedianMs": 33.299999999995634,
+    "frameP95Ms": 33.400000000001455,
+    "frameP99Ms": 50,
+    "framesOver33ms": 46,
+    "cpuLoopMedianMs": 23.5,
+    "cpuLoopP95Ms": 32.69999998807907,
+    "drawCallsMedian": 262,
+    "trianglesMedian": 147536,
+    "geometries": 480,
+    "textures": 290,
+    "activeEntities": 24,
+    "previewFramesDuringSample": 0,
+    "previewGeometries": 0,
+    "previewTextures": 0
+  },
+  "host": {
+    "loadAverage": [
+      26.4873046875,
+      27.26123046875,
+      26.2587890625
+    ],
+    "cpuCount": 16,
+    "baseCommit": "0dbe93f4066434b19bf8d5de637f0c0625e25ea3",
+    "scope": "Private guarded affine arithmetic: same-scene ordinary/affine ABBA and actual High equipped party; no cross-run gain inferred"
+  },
+  "decision": "Direct same-scene synchronous ABBA ordinary21.5median/29.7p95 versus affine23.8/35ms does not establish a gain; both statistics are worse in this shared-host scope. Node-only arithmetic gain did not translate into a measured full-scene benefit. Do not select or claim a general causal regression; retain prior transform. No new actual Low party repetition for an unselected candidate; Low native cases passed.",
+  "budgets": "ActualHigh33.3median exceeds20ms, rawp9533.400000000001455 exceeds exact33.4.262calls/147536triangles meet geometry ceilings. Different24entities versus earlier samples and load26.5on16CPUs prohibit cross-run claims.",
+  "diagnostic": "Standalone32780asymmetric/edge-box math diagnostic separately frozen; not browser or final frame acceptance.",
+  "limits": "Full inherited1.11\u20131.99/art/Q/CB/F1\u2013F5/device/operations/rights/owner/human/beta/launch/handoff remain open. Failed24hsoak unchanged; public24 now has mandatory live recovery CI failure, acceptance pending diagnosis.",
+  "evidence": {
+    "path": "/home/aeml/.local/share/eidolon-actor-affine-bounds-checks-20261010",
+    "files": 71,
+    "inventorySHA256": "80df76f102992353d93ccd775042da4115c462f26b671de126c78794dc3b50e5"
+  }
+}

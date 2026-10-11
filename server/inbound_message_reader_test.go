@@ -264,6 +264,9 @@ func TestInboundMessageActualReadPumpTimesOutDespitePongsAndEmptyFragments(t *te
 		if client == nil || !client.transportClosed.Load() {
 			t.Fatal("real read pump did not record transport closure")
 		}
+		if transportCloseReason(client.transportCloseReason.Load()) != transportReadTimeout {
+			t.Fatal("assembly deadline did not retain its bounded read-timeout category")
+		}
 		if retired := <-unregister; retired != client {
 			t.Fatal("retirement handoff changed")
 		}

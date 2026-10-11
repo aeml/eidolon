@@ -1,0 +1,2856 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-09T21:09:41.898595+00:00",
+  "status": "Selected private animation and reviewed rig rendering follow-up; whole-game/device/art/freeze/CB gates remain open; no public release",
+  "baseCommit": "e0b6e4dc9f252edb1fd8bbe4f435974b87de9e44",
+  "sourceSHA256": {
+    "src/entities/Actor.js": "7a86237f2b4db74eed6bcb04d3c342e3f913ab7bef29249f3d3ec11e24e2744c",
+    "src/art/ProceduralTownActors.js": "7afe05758418e210a8517f3d176979ef1f9c6a62dd922ef01288dcf9fb6a43b7",
+    "src/art/ProceduralLegacyEnemies.js": "857e515ba89ae5d4f6ccc894db22a638fc46d512053e07962217e6edd7656868",
+    "src/art/ActorInstanceBatches.js": "0c1e75dddf4a2e9e0c51e0ad45564086da198ab73092226c84df520d078be63c",
+    "src/utils/MeshFactory.js": "6fbf1f24687b15d2295f4e3790d82a5295d6afcd1925a29c6587fad5f822a39b",
+    "tests/ActorAnimationState.test.js": "f3cdfbedb24c58f50b0ea8740c350f0930a6239ccb524756e97850aa6907abb1",
+    "tests/HumanoidRenderBatches.test.js": "2c8a42660d1927b77056ce6f135b2333281ab30f8bf4b8d24880293871e4c7a3",
+    "tests/ActorInstanceBatches.test.js": "58e8a3d151784a265508222c4c04223e1ee573245e8bc6fb1a39b3baf80ebd3f",
+    "tests/e2e/humanoid-render-batches.spec.js": "c7c34106cc0c00c6a82ffc5fbb001f43cb43b74c708062034f768b8e4f32741d",
+    "tests/e2e/actor-instance-batches.spec.js": "3a8686f7422ceb01cde8b8c3b4cf0e020ce7b32114d9520534e764e31afa7294",
+    "tests/e2e/actual-scene-render-diagnosis.js": "bbff6acee4245474be32e00c613401e50aa0e0ee81a432912397fc4c4efd9f95",
+    "tests/e2e/terrain-equipped-party.spec.js": "88e0790585d851dc6f2e45511aeb115c984de7dc2b9aca79e0542aecc20ee62d"
+  },
+  "executedSourceSHA256": {
+    "src/entities/Actor.js": "7a86237f2b4db74eed6bcb04d3c342e3f913ab7bef29249f3d3ec11e24e2744c",
+    "src/art/ProceduralTownActors.js": "7afe05758418e210a8517f3d176979ef1f9c6a62dd922ef01288dcf9fb6a43b7",
+    "src/art/ProceduralLegacyEnemies.js": "857e515ba89ae5d4f6ccc894db22a638fc46d512053e07962217e6edd7656868",
+    "src/art/ActorInstanceBatches.js": "0c1e75dddf4a2e9e0c51e0ad45564086da198ab73092226c84df520d078be63c",
+    "src/utils/MeshFactory.js": "6fbf1f24687b15d2295f4e3790d82a5295d6afcd1925a29c6587fad5f822a39b",
+    "tests/ActorAnimationState.test.js": "f3cdfbedb24c58f50b0ea8740c350f0930a6239ccb524756e97850aa6907abb1",
+    "tests/HumanoidRenderBatches.test.js": "2c8a42660d1927b77056ce6f135b2333281ab30f8bf4b8d24880293871e4c7a3",
+    "tests/ActorInstanceBatches.test.js": "86606c8e73f7477794fc5ff48fc06e0490e5728caf4986efadf609ff1eb974e4",
+    "tests/e2e/humanoid-render-batches.spec.js": "c7c34106cc0c00c6a82ffc5fbb001f43cb43b74c708062034f768b8e4f32741d",
+    "tests/e2e/actor-instance-batches.spec.js": "f0e2588300a2f6babd7eb42c31e276345495115e89e9d82134a1fb304228091f",
+    "tests/e2e/actual-scene-render-diagnosis.js": "f6f8dea5606a724fbdaae652a1909517ee50b8680e426bd4427b15bb25238009",
+    "tests/e2e/terrain-equipped-party.spec.js": "88e0790585d851dc6f2e45511aeb115c984de7dc2b9aca79e0542aecc20ee62d"
+  },
+  "implementation": {
+    "animation": "Movement playback uses the same weapon-profile resolution as playAnimation, with action identity guard. Existing speed/slow/haste/walk/clamp and ability timing formulas stay unchanged. Actual delivered Sword_Run previously1 vs expected2.5 now2.5; bones already animated before the fix.",
+    "rigs": "Four reviewed service NPC constructors and InfernoTitan opt into existing exact-material sibling rigid geometry batching through MeshFactory. Constructor previews remain unbatched by default. Every triangle/material, rig pivot/clip, gameplay collider and supplied character/gear asset retained. Reset refreshes cached leaf local matrices.",
+    "instances": "Existing frame-owned ActorInstanceBatches admits only those five constructor-batched families in addition to previous Skeleton/humanoid cases. Shared geometry/material identity and all visibility/custom shader/callback/morph/skinned/normal-matrix guards retained; live independent animated world transforms,64m buckets and restored visibility/buffer disposal. No supplied-player admission.",
+    "resources": {
+      "scope": "CPU raw unique per-rig recipe storage and eight-actor instance attribute capacity, not GPU/VRAM or whole-scene memory. Source cache remains retained; merged buffers are additional shared family cache.",
+      "rows": [
+        {
+          "type": "DwarfSalesman",
+          "source": {
+            "meshes": 45,
+            "triangles": 1295,
+            "uniqueGeometries": 31,
+            "uniqueMaterials": 9,
+            "uniqueRawAttributeIndexBytes": 60238
+          },
+          "batched": {
+            "meshes": 35,
+            "triangles": 1295,
+            "uniqueGeometries": 28,
+            "uniqueMaterials": 9,
+            "uniqueRawAttributeIndexBytes": 80274
+          },
+          "eightActorInstances": {
+            "batches": 27,
+            "instances": 272,
+            "rawAllocatedMatrixAttributeBytes": 17408
+          }
+        },
+        {
+          "type": "QuestNPC",
+          "source": {
+            "meshes": 43,
+            "triangles": 1309,
+            "uniqueGeometries": 29,
+            "uniqueMaterials": 9,
+            "uniqueRawAttributeIndexBytes": 59594
+          },
+          "batched": {
+            "meshes": 34,
+            "triangles": 1309,
+            "uniqueGeometries": 27,
+            "uniqueMaterials": 9,
+            "uniqueRawAttributeIndexBytes": 76946
+          },
+          "eightActorInstances": {
+            "batches": 26,
+            "instances": 264,
+            "rawAllocatedMatrixAttributeBytes": 16896
+          }
+        },
+        {
+          "type": "DungeonNPC",
+          "source": {
+            "meshes": 42,
+            "triangles": 1271,
+            "uniqueGeometries": 31,
+            "uniqueMaterials": 9,
+            "uniqueRawAttributeIndexBytes": 60678
+          },
+          "batched": {
+            "meshes": 34,
+            "triangles": 1271,
+            "uniqueGeometries": 28,
+            "uniqueMaterials": 9,
+            "uniqueRawAttributeIndexBytes": 70950
+          },
+          "eightActorInstances": {
+            "batches": 27,
+            "instances": 264,
+            "rawAllocatedMatrixAttributeBytes": 16896
+          }
+        },
+        {
+          "type": "RespecNPC",
+          "source": {
+            "meshes": 46,
+            "triangles": 1385,
+            "uniqueGeometries": 31,
+            "uniqueMaterials": 9,
+            "uniqueRawAttributeIndexBytes": 67462
+          },
+          "batched": {
+            "meshes": 39,
+            "triangles": 1385,
+            "uniqueGeometries": 30,
+            "uniqueMaterials": 9,
+            "uniqueRawAttributeIndexBytes": 78050
+          },
+          "eightActorInstances": {
+            "batches": 28,
+            "instances": 272,
+            "rawAllocatedMatrixAttributeBytes": 17408
+          }
+        },
+        {
+          "type": "InfernoTitan",
+          "source": {
+            "meshes": 77,
+            "triangles": 1482,
+            "uniqueGeometries": 35,
+            "uniqueMaterials": 7,
+            "uniqueRawAttributeIndexBytes": 51688
+          },
+          "batched": {
+            "meshes": 46,
+            "triangles": 1482,
+            "uniqueGeometries": 33,
+            "uniqueMaterials": 7,
+            "uniqueRawAttributeIndexBytes": 99896
+          },
+          "eightActorInstances": {
+            "batches": 33,
+            "instances": 368,
+            "rawAllocatedMatrixAttributeBytes": 23552
+          }
+        }
+      ]
+    }
+  },
+  "validation": {
+    "units": {
+      "tests": 117,
+      "suites": 5,
+      "seconds": 6.321,
+      "log": "/home/aeml/.local/share/eidolon-actual-rig-checks-20261009/eidolon-actual-rig-units-final.log"
+    },
+    "nativeConstructor": {
+      "tests": 4,
+      "seconds": 15.2,
+      "scope": "Constructor-only source stage; four High/Low family views across12 pose/quality comparisons, same triangles, existing strict pixel thresholds. Instance roster not registered for nested fixture roots.",
+      "reports": [
+        {
+          "path": "/home/aeml/.local/share/eidolon-actual-rig-native-20261009/humanoid-render-batches-in-76342-reserve-rendered-poses-high/comparison.json",
+          "sha256": "7b6c16e14eb5e7cf3747d87e6b101a3d3b1cf1d0c478a0f165c32f382e09e0d4",
+          "comparisons": [
+            {
+              "state": "Idle",
+              "before": {
+                "calls": 145,
+                "triangles": 2711
+              },
+              "after": {
+                "calls": 95,
+                "triangles": 2711
+              },
+              "meanPixelError": 3.6622145626884964e-05,
+              "changedFraction": 1.0771219302024989e-06
+            },
+            {
+              "state": "Walk",
+              "before": {
+                "calls": 145,
+                "triangles": 2711
+              },
+              "after": {
+                "calls": 95,
+                "triangles": 2711
+              },
+              "meanPixelError": 2.908229211546747e-05,
+              "changedFraction": 0
+            },
+            {
+              "state": "Run",
+              "before": {
+                "calls": 145,
+                "triangles": 2711
+              },
+              "after": {
+                "calls": 95,
+                "triangles": 2711
+              },
+              "meanPixelError": 4.093063334769496e-05,
+              "changedFraction": 2.1542438604049977e-06
+            },
+            {
+              "state": "Attack",
+              "before": {
+                "calls": 145,
+                "triangles": 2711
+              },
+              "after": {
+                "calls": 95,
+                "triangles": 2711
+              },
+              "meanPixelError": 3.1236535975872466e-05,
+              "changedFraction": 0
+            },
+            {
+              "state": "Death",
+              "before": {
+                "calls": 145,
+                "triangles": 2711
+              },
+              "after": {
+                "calls": 95,
+                "triangles": 2711
+              },
+              "meanPixelError": 2.046531667384748e-05,
+              "changedFraction": 0
+            }
+          ]
+        },
+        {
+          "path": "/home/aeml/.local/share/eidolon-actual-rig-native-20261009/humanoid-render-batches-in-d93dd-preserve-rendered-poses-low/comparison.json",
+          "sha256": "248a76d6fec6dde72c1b1e79484029695bfd0b554227876eb44f52a61e028b3d",
+          "comparisons": [
+            {
+              "state": "Idle",
+              "before": {
+                "calls": 78,
+                "triangles": 1484
+              },
+              "after": {
+                "calls": 47,
+                "triangles": 1484
+              },
+              "meanPixelError": 0.00011525204653166738,
+              "changedFraction": 0
+            },
+            {
+              "state": "Walk",
+              "before": {
+                "calls": 78,
+                "triangles": 1484
+              },
+              "after": {
+                "calls": 47,
+                "triangles": 1484
+              },
+              "meanPixelError": 9.694097371822491e-06,
+              "changedFraction": 0
+            },
+            {
+              "state": "Run",
+              "before": {
+                "calls": 78,
+                "triangles": 1484
+              },
+              "after": {
+                "calls": 47,
+                "triangles": 1484
+              },
+              "meanPixelError": 0.00010986643688065488,
+              "changedFraction": 1.0771219302024989e-06
+            },
+            {
+              "state": "Attack",
+              "before": {
+                "calls": 78,
+                "triangles": 1484
+              },
+              "after": {
+                "calls": 47,
+                "triangles": 1484
+              },
+              "meanPixelError": 5.385609651012495e-06,
+              "changedFraction": 0
+            },
+            {
+              "state": "Death",
+              "before": {
+                "calls": 78,
+                "triangles": 1484
+              },
+              "after": {
+                "calls": 47,
+                "triangles": 1484
+              },
+              "meanPixelError": 3.8776389487289964e-05,
+              "changedFraction": 0
+            }
+          ]
+        },
+        {
+          "path": "/home/aeml/.local/share/eidolon-actual-rig-native-20261009/humanoid-render-batches-to-6b906-reserve-rendered-poses-high/comparison.json",
+          "sha256": "99522cc2815fe553c364d7b3e7a401f64f68d7a6e05bdadbddbfa88b872495d6",
+          "comparisons": [
+            {
+              "state": "Idle",
+              "before": {
+                "calls": 359,
+                "triangles": 10377
+              },
+              "after": {
+                "calls": 291,
+                "triangles": 10377
+              },
+              "meanPixelError": 0.00022511848341232228,
+              "changedFraction": 5.385609651012495e-06
+            }
+          ]
+        },
+        {
+          "path": "/home/aeml/.local/share/eidolon-actual-rig-native-20261009/humanoid-render-batches-to-ec99b-preserve-rendered-poses-low/comparison.json",
+          "sha256": "c2f5d3a235e4584e6d45a73573a4c3444188d5ed67f99759439139087480743b",
+          "comparisons": [
+            {
+              "state": "Idle",
+              "before": {
+                "calls": 185,
+                "triangles": 5678
+              },
+              "after": {
+                "calls": 151,
+                "triangles": 5678
+              },
+              "meanPixelError": 6.247307195174493e-05,
+              "changedFraction": 0
+            }
+          ]
+        }
+      ]
+    },
+    "nativeInstances": {
+      "tests": 10,
+      "seconds": 32.2,
+      "scope": "Reviewed families, High/Low;28 pose/quality comparisons, eight independent actors each. Normal/sheared animation states, same triangles, strict existing pixel thresholds, safe normals and visibility restoration.",
+      "reports": [
+        {
+          "path": "/home/aeml/.local/share/eidolon-actual-rig-instances-native-20261009/actor-instance-batches-hig-388d1-d-color-and-shadow-surfaces/QuestNPC-instance-comparison.json",
+          "sha256": "fa518b510d02b1de2ec98a0c666bec1df07a96882f0e241f5d2f34ad6fc39f9e",
+          "comparisons": [
+            {
+              "state": "Idle",
+              "shearedLeaves": 0,
+              "unsafeInstances": 0,
+              "beforeCalls": 544,
+              "afterCalls": 82,
+              "beforeTriangles": 20801,
+              "afterTriangles": 20801,
+              "meanError": 0.0012526928048255063,
+              "changed": 2.5850926324859973e-05,
+              "visibilityRestored": true
+            },
+            {
+              "state": "StretchedIdle",
+              "shearedLeaves": 184,
+              "unsafeInstances": 0,
+              "beforeCalls": 544,
+              "afterCalls": 398,
+              "beforeTriangles": 20801,
+              "afterTriangles": 20801,
+              "meanError": 3.2313657906074966e-06,
+              "changed": 0,
+              "visibilityRestored": true
+            }
+          ]
+        },
+        {
+          "path": "/home/aeml/.local/share/eidolon-actual-rig-instances-native-20261009/actor-instance-batches-hig-39b68-d-color-and-shadow-surfaces/RespecNPC-instance-comparison.json",
+          "sha256": "e779d705ae88298e406cd465e9e0d997997d30f29cda69ccf127ae16a66efe8d",
+          "comparisons": [
+            {
+              "state": "Idle",
+              "shearedLeaves": 0,
+              "unsafeInstances": 0,
+              "beforeCalls": 616,
+              "afterCalls": 149,
+              "beforeTriangles": 21377,
+              "afterTriangles": 21377,
+              "meanError": 0.0007432141318397242,
+              "changed": 9.694097371822491e-06,
+              "visibilityRestored": true
+            },
+            {
+              "state": "StretchedIdle",
+              "shearedLeaves": 224,
+              "unsafeInstances": 0,
+              "beforeCalls": 616,
+              "afterCalls": 470,
+              "beforeTriangles": 21377,
+              "afterTriangles": 21377,
+              "meanError": 1.0771219302024989e-06,
+              "changed": 0,
+              "visibilityRestored": true
+            }
+          ]
+        },
+        {
+          "path": "/home/aeml/.local/share/eidolon-actual-rig-instances-native-20261009/actor-instance-batches-hig-4d7ea-d-color-and-shadow-surfaces/DungeonNPC-instance-comparison.json",
+          "sha256": "0e3c6523f403876fa6a2b06bda51e20eedf72ea4df44007d7f09ed8759ac9dbc",
+          "comparisons": [
+            {
+              "state": "Idle",
+              "shearedLeaves": 0,
+              "unsafeInstances": 0,
+              "beforeCalls": 544,
+              "afterCalls": 84,
+              "beforeTriangles": 20193,
+              "afterTriangles": 20193,
+              "meanError": 0.0007992244722102542,
+              "changed": 9.694097371822491e-06,
+              "visibilityRestored": true
+            },
+            {
+              "state": "StretchedIdle",
+              "shearedLeaves": 184,
+              "unsafeInstances": 0,
+              "beforeCalls": 544,
+              "afterCalls": 398,
+              "beforeTriangles": 20193,
+              "afterTriangles": 20193,
+              "meanError": 1.0771219302024989e-06,
+              "changed": 0,
+              "visibilityRestored": true
+            }
+          ]
+        },
+        {
+          "path": "/home/aeml/.local/share/eidolon-actual-rig-instances-native-20261009/actor-instance-batches-hig-a3988-d-color-and-shadow-surfaces/InfernoTitan-instance-comparison.json",
+          "sha256": "01e2c8b2e7ade87afa3661461b4d6f7e70cdd166ff7afb3521359f435a3fedcc",
+          "comparisons": [
+            {
+              "state": "Idle",
+              "shearedLeaves": 0,
+              "unsafeInstances": 0,
+              "beforeCalls": 648,
+              "afterCalls": 72,
+              "beforeTriangles": 21569,
+              "afterTriangles": 21569,
+              "meanError": 0.0009489444205084016,
+              "changed": 1.4002585092632486e-05,
+              "visibilityRestored": true
+            },
+            {
+              "state": "Walk",
+              "shearedLeaves": 0,
+              "unsafeInstances": 0,
+              "beforeCalls": 648,
+              "afterCalls": 72,
+              "beforeTriangles": 21569,
+              "afterTriangles": 21569,
+              "meanError": 0.00011202068074105989,
+              "changed": 1.0771219302024989e-06,
+              "visibilityRestored": true
+            },
+            {
+              "state": "Run",
+              "shearedLeaves": 0,
+              "unsafeInstances": 0,
+              "beforeCalls": 648,
+              "afterCalls": 72,
+              "beforeTriangles": 21569,
+              "afterTriangles": 21569,
+              "meanError": 0.00011848341232227489,
+              "changed": 3.2313657906074966e-06,
+              "visibilityRestored": true
+            },
+            {
+              "state": "Attack",
+              "shearedLeaves": 0,
+              "unsafeInstances": 0,
+              "beforeCalls": 648,
+              "afterCalls": 72,
+              "beforeTriangles": 21569,
+              "afterTriangles": 21569,
+              "meanError": 0.00014002585092632485,
+              "changed": 2.1542438604049977e-06,
+              "visibilityRestored": true
+            },
+            {
+              "state": "Death",
+              "shearedLeaves": 0,
+              "unsafeInstances": 0,
+              "beforeCalls": 648,
+              "afterCalls": 72,
+              "beforeTriangles": 21569,
+              "afterTriangles": 21569,
+              "meanError": 0.0003834554071520896,
+              "changed": 6.462731581214993e-06,
+              "visibilityRestored": true
+            },
+            {
+              "state": "StretchedAttack",
+              "shearedLeaves": 360,
+              "unsafeInstances": 0,
+              "beforeCalls": 648,
+              "afterCalls": 641,
+              "beforeTriangles": 21569,
+              "afterTriangles": 21569,
+              "meanError": 0,
+              "changed": 0,
+              "visibilityRestored": true
+            }
+          ]
+        },
+        {
+          "path": "/home/aeml/.local/share/eidolon-actual-rig-instances-native-20261009/actor-instance-batches-hig-d213d-d-color-and-shadow-surfaces/DwarfSalesman-instance-comparison.json",
+          "sha256": "aa8f4d1c1d4ef5d070938235748646344b1f457dd7d7afed012f69170cf735d7",
+          "comparisons": [
+            {
+              "state": "Idle",
+              "shearedLeaves": 0,
+              "unsafeInstances": 0,
+              "beforeCalls": 560,
+              "afterCalls": 84,
+              "beforeTriangles": 20577,
+              "afterTriangles": 20577,
+              "meanError": 0.0008401551055579492,
+              "changed": 1.077121930202499e-05,
+              "visibilityRestored": true
+            },
+            {
+              "state": "StretchedIdle",
+              "shearedLeaves": 192,
+              "unsafeInstances": 0,
+              "beforeCalls": 560,
+              "afterCalls": 414,
+              "beforeTriangles": 20577,
+              "afterTriangles": 20577,
+              "meanError": 4.308487720809995e-06,
+              "changed": 0,
+              "visibilityRestored": true
+            }
+          ]
+        },
+        {
+          "path": "/home/aeml/.local/share/eidolon-actual-rig-instances-native-20261009/actor-instance-batches-low-6f5d7-d-color-and-shadow-surfaces/DwarfSalesman-instance-comparison.json",
+          "sha256": "bb9a7a9c5c84c7c830dae079b6cd799e9e6336210aad005dcbca7d3a93b4231e",
+          "comparisons": [
+            {
+              "state": "Idle",
+              "shearedLeaves": 0,
+              "unsafeInstances": 0,
+              "beforeCalls": 289,
+              "afterCalls": 44,
+              "beforeTriangles": 11130,
+              "afterTriangles": 11130,
+              "meanError": 0.0003791469194312796,
+              "changed": 0,
+              "visibilityRestored": true
+            },
+            {
+              "state": "StretchedIdle",
+              "shearedLeaves": 192,
+              "unsafeInstances": 0,
+              "beforeCalls": 289,
+              "afterCalls": 216,
+              "beforeTriangles": 11130,
+              "afterTriangles": 11130,
+              "meanError": 0,
+              "changed": 0,
+              "visibilityRestored": true
+            }
+          ]
+        },
+        {
+          "path": "/home/aeml/.local/share/eidolon-actual-rig-instances-native-20261009/actor-instance-batches-low-a8793-d-color-and-shadow-surfaces/DungeonNPC-instance-comparison.json",
+          "sha256": "d7433085375989bf08ea71f83cf0ee521d9419438c24c12342a0e73b2080c559",
+          "comparisons": [
+            {
+              "state": "Idle",
+              "shearedLeaves": 0,
+              "unsafeInstances": 0,
+              "beforeCalls": 281,
+              "afterCalls": 44,
+              "beforeTriangles": 10938,
+              "afterTriangles": 10938,
+              "meanError": 0.0005730288668677295,
+              "changed": 0,
+              "visibilityRestored": true
+            },
+            {
+              "state": "StretchedIdle",
+              "shearedLeaves": 184,
+              "unsafeInstances": 0,
+              "beforeCalls": 281,
+              "afterCalls": 208,
+              "beforeTriangles": 10938,
+              "afterTriangles": 10938,
+              "meanError": 0,
+              "changed": 0,
+              "visibilityRestored": true
+            }
+          ]
+        },
+        {
+          "path": "/home/aeml/.local/share/eidolon-actual-rig-instances-native-20261009/actor-instance-batches-low-d3f5f-d-color-and-shadow-surfaces/InfernoTitan-instance-comparison.json",
+          "sha256": "bc8313b6aff187a8b1db8cc5053f13055fcce11588e09af1cf2cecc3c8596caf",
+          "comparisons": [
+            {
+              "state": "Idle",
+              "shearedLeaves": 0,
+              "unsafeInstances": 0,
+              "beforeCalls": 369,
+              "afterCalls": 34,
+              "beforeTriangles": 11858,
+              "afterTriangles": 11858,
+              "meanError": 0.0007356742783283068,
+              "changed": 0,
+              "visibilityRestored": true
+            },
+            {
+              "state": "Walk",
+              "shearedLeaves": 0,
+              "unsafeInstances": 0,
+              "beforeCalls": 369,
+              "afterCalls": 34,
+              "beforeTriangles": 11858,
+              "afterTriangles": 11858,
+              "meanError": 0.00017664799655320982,
+              "changed": 0,
+              "visibilityRestored": true
+            },
+            {
+              "state": "Run",
+              "shearedLeaves": 0,
+              "unsafeInstances": 0,
+              "beforeCalls": 369,
+              "afterCalls": 34,
+              "beforeTriangles": 11858,
+              "afterTriangles": 11858,
+              "meanError": 0.0001109435588108574,
+              "changed": 0,
+              "visibilityRestored": true
+            },
+            {
+              "state": "Attack",
+              "shearedLeaves": 0,
+              "unsafeInstances": 0,
+              "beforeCalls": 369,
+              "afterCalls": 34,
+              "beforeTriangles": 11858,
+              "afterTriangles": 11858,
+              "meanError": 0.00014864282636794485,
+              "changed": 0,
+              "visibilityRestored": true
+            },
+            {
+              "state": "Death",
+              "shearedLeaves": 0,
+              "unsafeInstances": 0,
+              "beforeCalls": 369,
+              "afterCalls": 34,
+              "beforeTriangles": 11858,
+              "afterTriangles": 11858,
+              "meanError": 0.00018203360620422233,
+              "changed": 0,
+              "visibilityRestored": true
+            },
+            {
+              "state": "StretchedAttack",
+              "shearedLeaves": 360,
+              "unsafeInstances": 0,
+              "beforeCalls": 369,
+              "afterCalls": 362,
+              "beforeTriangles": 11858,
+              "afterTriangles": 11858,
+              "meanError": 0,
+              "changed": 0,
+              "visibilityRestored": true
+            }
+          ]
+        },
+        {
+          "path": "/home/aeml/.local/share/eidolon-actual-rig-instances-native-20261009/actor-instance-batches-low-d8335-d-color-and-shadow-surfaces/RespecNPC-instance-comparison.json",
+          "sha256": "b9fc04b8e06a1e87104bc747e4b6c9104a766165d362777850ae945f877dc871",
+          "comparisons": [
+            {
+              "state": "Idle",
+              "shearedLeaves": 0,
+              "unsafeInstances": 0,
+              "beforeCalls": 353,
+              "afterCalls": 109,
+              "beforeTriangles": 12106,
+              "afterTriangles": 12106,
+              "meanError": 0.0005934941835415769,
+              "changed": 2.1542438604049977e-06,
+              "visibilityRestored": true
+            },
+            {
+              "state": "StretchedIdle",
+              "shearedLeaves": 224,
+              "unsafeInstances": 0,
+              "beforeCalls": 353,
+              "afterCalls": 280,
+              "beforeTriangles": 12106,
+              "afterTriangles": 12106,
+              "meanError": 4.308487720809995e-06,
+              "changed": 0,
+              "visibilityRestored": true
+            }
+          ]
+        },
+        {
+          "path": "/home/aeml/.local/share/eidolon-actual-rig-instances-native-20261009/actor-instance-batches-low-dad6f-d-color-and-shadow-surfaces/QuestNPC-instance-comparison.json",
+          "sha256": "25b3a9b67dd70cde96750a018a46b1dcd81572b231cc9e5428f7738811984987",
+          "comparisons": [
+            {
+              "state": "Idle",
+              "shearedLeaves": 0,
+              "unsafeInstances": 0,
+              "beforeCalls": 281,
+              "afterCalls": 43,
+              "beforeTriangles": 11242,
+              "afterTriangles": 11242,
+              "meanError": 0.0015122791900043086,
+              "changed": 1.0771219302024989e-06,
+              "visibilityRestored": true
+            },
+            {
+              "state": "StretchedIdle",
+              "shearedLeaves": 184,
+              "unsafeInstances": 0,
+              "beforeCalls": 281,
+              "afterCalls": 208,
+              "beforeTriangles": 11242,
+              "afterTriangles": 11242,
+              "meanError": 0,
+              "changed": 0,
+              "visibilityRestored": true
+            }
+          ]
+        }
+      ]
+    },
+    "bundle": {
+      "bundledModules": 427,
+      "bytes": 3275720,
+      "sharedLoginModules": 21,
+      "externalImports": [
+        "../assets/ServiceWorkerBoot.js",
+        "../data/worldGeography.js",
+        "../ui/EmailRecoveryUI.js",
+        "../ui/OwnedEvents.js",
+        "../ui/PasswordChangeUI.js",
+        "../ui/ReportUI.js",
+        "../ui/reportTypes.js",
+        "./CredentialToken.js",
+        "./GraphicsStartup.js",
+        "three",
+        "three/addons/geometries/RoundedBoxGeometry.js",
+        "three/addons/loaders/GLTFLoader.js",
+        "three/addons/postprocessing/EffectComposer.js",
+        "three/addons/postprocessing/OutputPass.js",
+        "three/addons/postprocessing/RenderPass.js",
+        "three/addons/postprocessing/ShaderPass.js",
+        "three/addons/postprocessing/UnrealBloomPass.js",
+        "three/addons/shaders/FXAAShader.js",
+        "three/addons/utils/BufferGeometryUtils.js",
+        "three/addons/utils/SkeletonUtils.js"
+      ]
+    },
+    "lint": "Changed source/tests ESLint maxwarnings0 and diffcheck pass. Native fixture unrelated second block was restored to its original source after broad replacement was caught by lint; no unaffected rerun.",
+    "baseline": {
+      "artifact": "/home/aeml/.local/share/eidolon-terrain-save-evidence-TyJ2JGhM",
+      "party": "PASS75.62s/Go76.712s",
+      "scenes": [
+        {
+          "label": "actual-town",
+          "profile": {
+            "label": "actual-town",
+            "frames": 180,
+            "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "viewport": {
+              "width": 1280,
+              "height": 844,
+              "pixelRatio": 1
+            },
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+            "visibility": "visible",
+            "frameMedianMs": 33.30000000000291,
+            "frameP95Ms": 50.099999999998545,
+            "frameP99Ms": 66.70000000000073,
+            "framesOver33ms": 86,
+            "cpuLoopMedianMs": 32.5,
+            "cpuLoopP95Ms": 45.5,
+            "drawCallsMedian": 873,
+            "trianglesMedian": 330409,
+            "geometries": 275,
+            "textures": 160,
+            "activeEntities": 157,
+            "previewFramesDuringSample": 0,
+            "previewGeometries": 0,
+            "previewTextures": 0
+          },
+          "topRoots": [
+            {
+              "name": "ProceduralDwarfSalesman",
+              "color": 95,
+              "shadow": 126,
+              "other": 0,
+              "triangles": 6331,
+              "meshes": 135
+            },
+            {
+              "name": "ProceduralQuestNPC",
+              "color": 62,
+              "shadow": 80,
+              "other": 0,
+              "triangles": 4340,
+              "meshes": 88
+            },
+            {
+              "name": "ProceduralRespecNPC",
+              "color": 53,
+              "shadow": 76,
+              "other": 0,
+              "triangles": 3839,
+              "meshes": 86
+            },
+            {
+              "name": "ProceduralDungeonNPC",
+              "color": 0,
+              "shadow": 78,
+              "other": 0,
+              "triangles": 2310,
+              "meshes": 78
+            },
+            {
+              "name": "ArchmageIlyra",
+              "color": 25,
+              "shadow": 20,
+              "other": 0,
+              "triangles": 59022,
+              "meshes": 23
+            },
+            {
+              "name": "Equipped Fighter",
+              "color": 23,
+              "shadow": 20,
+              "other": 0,
+              "triangles": 126654,
+              "meshes": 22
+            },
+            {
+              "name": "Lanternhold communal courtyards",
+              "color": 0,
+              "shadow": 29,
+              "other": 0,
+              "triangles": 8668,
+              "meshes": 29
+            },
+            {
+              "name": "lanternhold-casino-shell",
+              "color": 11,
+              "shadow": 11,
+              "other": 0,
+              "triangles": 14616,
+              "meshes": 11
+            }
+          ]
+        },
+        {
+          "label": "actual-verdant-approach",
+          "profile": {
+            "label": "actual-verdant-approach",
+            "frames": 180,
+            "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "viewport": {
+              "width": 1280,
+              "height": 844,
+              "pixelRatio": 1
+            },
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+            "visibility": "visible",
+            "frameMedianMs": 33.29999999999927,
+            "frameP95Ms": 50,
+            "frameP99Ms": 50.10000000000218,
+            "framesOver33ms": 57,
+            "cpuLoopMedianMs": 25.099999994039536,
+            "cpuLoopP95Ms": 37.20000001788139,
+            "drawCallsMedian": 818,
+            "trianglesMedian": 168393,
+            "geometries": 376,
+            "textures": 234,
+            "activeEntities": 32,
+            "previewFramesDuringSample": 0,
+            "previewGeometries": 0,
+            "previewTextures": 0
+          },
+          "topRoots": [
+            {
+              "name": "ProceduralInfernoTitan",
+              "color": 146,
+              "shadow": 639,
+              "other": 0,
+              "triangles": 17646,
+              "meshes": 687
+            },
+            {
+              "name": "Equipped Fighter",
+              "color": 23,
+              "shadow": 20,
+              "other": 0,
+              "triangles": 126654,
+              "meshes": 22
+            },
+            {
+              "name": "DungeonEntrance",
+              "color": 9,
+              "shadow": 9,
+              "other": 0,
+              "triangles": 7142,
+              "meshes": 9
+            },
+            {
+              "name": "Mesh",
+              "color": 1,
+              "shadow": 0,
+              "other": 15,
+              "triangles": 17,
+              "meshes": 4
+            },
+            {
+              "name": "Earth authored locations",
+              "color": 5,
+              "shadow": 3,
+              "other": 0,
+              "triangles": 15878,
+              "meshes": 5
+            },
+            {
+              "name": "ProceduralRealmTerrain:earth",
+              "color": 6,
+              "shadow": 0,
+              "other": 0,
+              "triangles": 745,
+              "meshes": 6
+            },
+            {
+              "name": "EffectGroup",
+              "color": 5,
+              "shadow": 0,
+              "other": 0,
+              "triangles": 640,
+              "meshes": 5
+            },
+            {
+              "name": "Earth authored paths",
+              "color": 2,
+              "shadow": 0,
+              "other": 0,
+              "triangles": 943,
+              "meshes": 2
+            }
+          ]
+        }
+      ]
+    },
+    "actualCandidate": {
+      "artifact": "/home/aeml/.local/share/eidolon-terrain-save-evidence-7bmaQGNJ",
+      "terminal": {
+        "exitCode": 0,
+        "startedUnix": 1791579598.2733552,
+        "finishedUnix": 1791579750.1973867
+      },
+      "party": "PASS132.23s/Go133.308s; actual supplied four-class fourteen-slot outfits and preserved returning saves, one native GPU renderer +socket peers. Not four-GPU/device/campaign proof.",
+      "profile": {
+        "quality": "high",
+        "label": "single-renderer-equipped-raised-party-high",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 33.29999999998836,
+        "frameP95Ms": 33.40000000000873,
+        "frameP99Ms": 50,
+        "framesOver33ms": 39,
+        "cpuLoopMedianMs": 23.30000001192093,
+        "cpuLoopP95Ms": 33.70000001788139,
+        "drawCallsMedian": 401,
+        "trianglesMedian": 538727,
+        "geometries": 524,
+        "textures": 367,
+        "activeEntities": 20,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      },
+      "scenes": [
+        {
+          "label": "actual-town",
+          "profile": {
+            "label": "actual-town",
+            "frames": 180,
+            "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "viewport": {
+              "width": 1280,
+              "height": 844,
+              "pixelRatio": 1
+            },
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+            "visibility": "visible",
+            "frameMedianMs": 33.39999999999782,
+            "frameP95Ms": 50.099999999998545,
+            "frameP99Ms": 66.79999999999927,
+            "framesOver33ms": 93,
+            "cpuLoopMedianMs": 32.80000001192093,
+            "cpuLoopP95Ms": 50,
+            "drawCallsMedian": 640,
+            "trianglesMedian": 331658,
+            "geometries": 275,
+            "textures": 160,
+            "activeEntities": 161,
+            "previewFramesDuringSample": 0,
+            "previewGeometries": 0,
+            "previewTextures": 0
+          },
+          "attribution": {
+            "totals": {
+              "calls": 640,
+              "triangles": 331658
+            },
+            "lights": [
+              {
+                "name": "",
+                "type": "AmbientLight",
+                "intensity": 1.1499999999990724,
+                "visible": true,
+                "castShadow": false
+              },
+              {
+                "name": "",
+                "type": "DirectionalLight",
+                "intensity": 2.8000000000013943,
+                "visible": true,
+                "castShadow": true,
+                "near": 1,
+                "far": 688
+              },
+              {
+                "name": "",
+                "type": "DirectionalLight",
+                "intensity": 0.49999999999976746,
+                "visible": true,
+                "castShadow": false,
+                "near": 0.5,
+                "far": 500
+              }
+            ],
+            "roots": [
+              {
+                "name": "ProceduralRespecNPC",
+                "color": 34,
+                "shadow": 38,
+                "other": 0,
+                "triangles": 2771,
+                "meshes": 48
+              },
+              {
+                "name": "ProceduralQuestNPC",
+                "color": 34,
+                "shadow": 34,
+                "other": 0,
+                "triangles": 3084,
+                "meshes": 42
+              },
+              {
+                "name": "ArchmageIlyra",
+                "color": 25,
+                "shadow": 20,
+                "other": 0,
+                "triangles": 59022,
+                "meshes": 23
+              },
+              {
+                "name": "Equipped Fighter",
+                "color": 23,
+                "shadow": 20,
+                "other": 0,
+                "triangles": 126654,
+                "meshes": 22
+              },
+              {
+                "name": "Lanternhold communal courtyards",
+                "color": 0,
+                "shadow": 29,
+                "other": 0,
+                "triangles": 8668,
+                "meshes": 29
+              },
+              {
+                "name": "ProceduralDwarfSalesman",
+                "color": 7,
+                "shadow": 18,
+                "other": 0,
+                "triangles": 1163,
+                "meshes": 23
+              },
+              {
+                "name": "lanternhold-casino-shell",
+                "color": 11,
+                "shadow": 11,
+                "other": 0,
+                "triangles": 14616,
+                "meshes": 11
+              },
+              {
+                "name": "Lanternhold:Votive Market",
+                "color": 9,
+                "shadow": 10,
+                "other": 0,
+                "triangles": 8336,
+                "meshes": 10
+              },
+              {
+                "name": "Lanternhold:Ashen Smithy",
+                "color": 9,
+                "shadow": 10,
+                "other": 0,
+                "triangles": 9560,
+                "meshes": 10
+              },
+              {
+                "name": "Lanternhold:Pilgrim Vigil Field",
+                "color": 9,
+                "shadow": 9,
+                "other": 0,
+                "triangles": 39480,
+                "meshes": 9
+              },
+              {
+                "name": "Lanternhold:The Gilded Compact",
+                "color": 9,
+                "shadow": 8,
+                "other": 0,
+                "triangles": 12696,
+                "meshes": 9
+              },
+              {
+                "name": "Mesh",
+                "color": 1,
+                "shadow": 0,
+                "other": 15,
+                "triangles": 17,
+                "meshes": 4
+              },
+              {
+                "name": "Lanternhold planted street edges",
+                "color": 6,
+                "shadow": 6,
+                "other": 0,
+                "triangles": 7062,
+                "meshes": 6
+              },
+              {
+                "name": "FourfoldResonancePlaza",
+                "color": 2,
+                "shadow": 6,
+                "other": 0,
+                "triangles": 5712,
+                "meshes": 6
+              },
+              {
+                "name": "ProceduralRealmTerrain:earth",
+                "color": 8,
+                "shadow": 0,
+                "other": 0,
+                "triangles": 1024,
+                "meshes": 8
+              },
+              {
+                "name": "TownFence",
+                "color": 3,
+                "shadow": 3,
+                "other": 0,
+                "triangles": 11304,
+                "meshes": 3
+              },
+              {
+                "name": "Lanternhold:Wayfarer Reliquary",
+                "color": 0,
+                "shadow": 6,
+                "other": 0,
+                "triangles": 332,
+                "meshes": 6
+              },
+              {
+                "name": "Lanternhold:Oathfire Forge",
+                "color": 0,
+                "shadow": 5,
+                "other": 0,
+                "triangles": 204,
+                "meshes": 5
+              },
+              {
+                "name": "EffectGroup",
+                "color": 5,
+                "shadow": 0,
+                "other": 0,
+                "triangles": 640,
+                "meshes": 5
+              },
+              {
+                "name": "ActorInstances_QuestNPC_UpperArmLeft",
+                "color": 2,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 224,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_QuestNPC_PauldronLeft",
+                "color": 2,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 288,
+                "meshes": 2
+              },
+              {
+                "name": "Earth authored paths",
+                "color": 4,
+                "shadow": 0,
+                "other": 0,
+                "triangles": 2183,
+                "meshes": 4
+              },
+              {
+                "name": "ActorInstances_RespecNPC_ThighLeft",
+                "color": 1,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 168,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_RespecNPC_ShinPlateLeft",
+                "color": 1,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 60,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_RespecNPC_ShinLeft",
+                "color": 1,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 240,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_RespecNPC_UpperArmLeft",
+                "color": 1,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 168,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_RespecNPC_PauldronLeft",
+                "color": 1,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 216,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_RespecNPC_HandLeft",
+                "color": 1,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 216,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_ThighLeft",
+                "color": 1,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 280,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_ShinPlateLeft",
+                "color": 1,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 100,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_DwarfSalesman_ShinLeft",
+                "color": 1,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 400,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_UpperArmLeft",
+                "color": 1,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 280,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_PauldronLeft",
+                "color": 1,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 360,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_ForearmLeft",
+                "color": 1,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 280,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_HandLeft",
+                "color": 1,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 360,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_QuestNPC_ThighLeft",
+                "color": 1,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 168,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_QuestNPC_ShinPlateLeft",
+                "color": 1,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 60,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_QuestNPC_ShinLeft",
+                "color": 1,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 240,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_QuestNPC_ForearmLeft",
+                "color": 1,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 168,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_QuestNPC_HandLeft",
+                "color": 1,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 216,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_Skeleton_Brow",
+                "color": 0,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 48,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_Skeleton_Jaw",
+                "color": 0,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 48,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_Skeleton_Tooth1",
+                "color": 0,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 128,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_Skeleton_Skull",
+                "color": 0,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 240,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_Skeleton_ShoulderKnotLeft",
+                "color": 0,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 576,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_Skeleton_HumerusLeft",
+                "color": 0,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 160,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_Skeleton_ElbowLeft",
+                "color": 0,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 288,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_Skeleton_ForearmLeft",
+                "color": 0,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 160,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_Skeleton_HandLeft",
+                "color": 0,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 96,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_Skeleton_LanternFrame",
+                "color": 0,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 48,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_Skeleton_LanternCap",
+                "color": 0,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 32,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_Skeleton_GravesickleShaft",
+                "color": 0,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 96,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_Skeleton_GravesickleBlade",
+                "color": 0,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 288,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_Skeleton_FemurLeft",
+                "color": 0,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 160,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_Skeleton_ShinLeft",
+                "color": 0,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 160,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_Skeleton_KneeLeft",
+                "color": 0,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 384,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_Skeleton_Pelvis",
+                "color": 0,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 736,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_Skeleton_Spine",
+                "color": 0,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 1040,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_Skeleton_ShroudBack",
+                "color": 0,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 84,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_Skeleton_ShroudTatter2",
+                "color": 0,
+                "shadow": 2,
+                "other": 0,
+                "triangles": 64,
+                "meshes": 2
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_ServicePlinth",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 192,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_HipGuard",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 128,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_Belt",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 360,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_BeltSeal",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 32,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_Torso",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 128,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_Breastplate",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 144,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_Tabard",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 48,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_Cloak",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 28,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_CloakClasp",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 32,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_HammerHaft",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 112,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_HammerHead",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 48,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_Head",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 576,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_Cowl",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 64,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_DwarfSalesman_Brow",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 288,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_ForgeApron",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 48,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_Pack",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 48,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_PackLatch",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 48,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_DwarfSalesman_Collar",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 744,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_ServicePlinth",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 192,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_HipGuard",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 128,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_Belt",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 360,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_BeltSeal",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 32,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_ThighLeft",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 224,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_ShinPlateLeft",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 80,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_DungeonNPC_ShinLeft",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 320,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_Torso",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 128,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_Breastplate",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 144,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_Tabard",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 48,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_Collar",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 360,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_Cloak",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 28,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_CloakClasp",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 32,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_UpperArmLeft",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 224,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_PauldronLeft",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 288,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_ForearmLeft",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 112,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_HandLeft",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 288,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_LanternFrame",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 48,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_DungeonNPC_LanternCap",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 240,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_DungeonNPC_ForearmRight",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 224,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_Head",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 576,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_Cowl",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 64,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_Brow",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 48,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_KeyRing",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 288,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_DungeonNPC_Key0",
+                "color": 1,
+                "shadow": 1,
+                "other": 0,
+                "triangles": 144,
+                "meshes": 1
+              },
+              {
+                "name": "ProceduralEidolicBlackwater",
+                "color": 1,
+                "shadow": 0,
+                "other": 0,
+                "triangles": 2,
+                "meshes": 1
+              },
+              {
+                "name": "ProceduralRealmTerrain:water",
+                "color": 1,
+                "shadow": 0,
+                "other": 0,
+                "triangles": 4,
+                "meshes": 1
+              },
+              {
+                "name": "ProceduralRealmTerrain:town",
+                "color": 1,
+                "shadow": 0,
+                "other": 0,
+                "triangles": 10,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_Eyes",
+                "color": 1,
+                "shadow": 0,
+                "other": 0,
+                "triangles": 24,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DwarfSalesman_HammerRune",
+                "color": 1,
+                "shadow": 0,
+                "other": 0,
+                "triangles": 16,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_Eyes",
+                "color": 1,
+                "shadow": 0,
+                "other": 0,
+                "triangles": 24,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_DungeonNPC_LanternFlame",
+                "color": 1,
+                "shadow": 0,
+                "other": 0,
+                "triangles": 16,
+                "meshes": 1
+              },
+              {
+                "name": "Points",
+                "color": 1,
+                "shadow": 0,
+                "other": 0,
+                "triangles": 0,
+                "meshes": 1
+              }
+            ]
+          },
+          "paired": {
+            "scope": "ABBA normal-loop180-frame live source-leaf/constructor-batch-plus-reviewed-instance comparison; same registered actor roots and animation pivots. Server population continues naturally. No teleport, hidden content, imported player replacement or manual mixer.",
+            "census": {
+              "roots": [
+                {
+                  "type": "RespecNPC",
+                  "id": "respec-npc-1",
+                  "sourceMeshes": 46,
+                  "drawMeshes": 39
+                },
+                {
+                  "type": "DwarfSalesman",
+                  "id": "merchant-1",
+                  "sourceMeshes": 45,
+                  "drawMeshes": 35
+                },
+                {
+                  "type": "DwarfSalesman",
+                  "id": "chronicle-witness-dain",
+                  "sourceMeshes": 45,
+                  "drawMeshes": 35
+                },
+                {
+                  "type": "QuestNPC",
+                  "id": "quest-npc-1",
+                  "sourceMeshes": 43,
+                  "drawMeshes": 34
+                },
+                {
+                  "type": "DwarfSalesman",
+                  "id": "vip-cosmetic-vendor",
+                  "sourceMeshes": 45,
+                  "drawMeshes": 35
+                },
+                {
+                  "type": "QuestNPC",
+                  "id": "chronicle-witness-hessa",
+                  "sourceMeshes": 43,
+                  "drawMeshes": 34
+                },
+                {
+                  "type": "DungeonNPC",
+                  "id": "dungeon-npc-1",
+                  "sourceMeshes": 42,
+                  "drawMeshes": 34
+                },
+                {
+                  "type": "DungeonNPC",
+                  "id": "chronicle-witness-selen",
+                  "sourceMeshes": 42,
+                  "drawMeshes": 34
+                },
+                {
+                  "type": "RespecNPC",
+                  "id": "chronicle-witness-mara",
+                  "sourceMeshes": 46,
+                  "drawMeshes": 39
+                }
+              ],
+              "mergedGroups": 40,
+              "referenceLeaves": 118
+            },
+            "profiles": [
+              {
+                "reference": true,
+                "label": "actual-town-source",
+                "frames": 180,
+                "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+                "viewport": {
+                  "width": 1280,
+                  "height": 844,
+                  "pixelRatio": 1
+                },
+                "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+                "visibility": "visible",
+                "frameMedianMs": 33.29999999999927,
+                "frameP95Ms": 50,
+                "frameP99Ms": 50.099999999998545,
+                "framesOver33ms": 64,
+                "cpuLoopMedianMs": 30.099999994039536,
+                "cpuLoopP95Ms": 40.69999998807907,
+                "drawCallsMedian": 943,
+                "trianglesMedian": 327991,
+                "geometries": 290,
+                "textures": 160,
+                "activeEntities": 161,
+                "previewFramesDuringSample": 0,
+                "previewGeometries": 0,
+                "previewTextures": 0
+              },
+              {
+                "reference": false,
+                "label": "actual-town-batched",
+                "frames": 180,
+                "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+                "viewport": {
+                  "width": 1280,
+                  "height": 844,
+                  "pixelRatio": 1
+                },
+                "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+                "visibility": "visible",
+                "frameMedianMs": 33.30000000000291,
+                "frameP95Ms": 50,
+                "frameP99Ms": 50.10000000000582,
+                "framesOver33ms": 67,
+                "cpuLoopMedianMs": 30.299999982118607,
+                "cpuLoopP95Ms": 41.89999997615814,
+                "drawCallsMedian": 620,
+                "trianglesMedian": 330449,
+                "geometries": 290,
+                "textures": 160,
+                "activeEntities": 161,
+                "previewFramesDuringSample": 0,
+                "previewGeometries": 0,
+                "previewTextures": 0
+              },
+              {
+                "reference": false,
+                "label": "actual-town-batched",
+                "frames": 180,
+                "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+                "viewport": {
+                  "width": 1280,
+                  "height": 844,
+                  "pixelRatio": 1
+                },
+                "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+                "visibility": "visible",
+                "frameMedianMs": 33.30000000000291,
+                "frameP95Ms": 50,
+                "frameP99Ms": 50.099999999998545,
+                "framesOver33ms": 81,
+                "cpuLoopMedianMs": 30.900000005960464,
+                "cpuLoopP95Ms": 42.30000001192093,
+                "drawCallsMedian": 640,
+                "trianglesMedian": 331658,
+                "geometries": 290,
+                "textures": 160,
+                "activeEntities": 161,
+                "previewFramesDuringSample": 0,
+                "previewGeometries": 0,
+                "previewTextures": 0
+              },
+              {
+                "reference": true,
+                "label": "actual-town-source",
+                "frames": 180,
+                "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+                "viewport": {
+                  "width": 1280,
+                  "height": 844,
+                  "pixelRatio": 1
+                },
+                "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+                "visibility": "visible",
+                "frameMedianMs": 33.30000000000291,
+                "frameP95Ms": 50,
+                "frameP99Ms": 66.59999999999854,
+                "framesOver33ms": 73,
+                "cpuLoopMedianMs": 29.200000017881393,
+                "cpuLoopP95Ms": 46.5,
+                "drawCallsMedian": 943,
+                "trianglesMedian": 327991,
+                "geometries": 290,
+                "textures": 160,
+                "activeEntities": 161,
+                "previewFramesDuringSample": 0,
+                "previewGeometries": 0,
+                "previewTextures": 0
+              }
+            ]
+          }
+        },
+        {
+          "label": "actual-verdant-approach",
+          "profile": {
+            "label": "actual-verdant-approach",
+            "frames": 180,
+            "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "viewport": {
+              "width": 1280,
+              "height": 844,
+              "pixelRatio": 1
+            },
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+            "visibility": "visible",
+            "frameMedianMs": 33.19999999999709,
+            "frameP95Ms": 33.40000000000873,
+            "frameP99Ms": 50,
+            "framesOver33ms": 35,
+            "cpuLoopMedianMs": 22.30000001192093,
+            "cpuLoopP95Ms": 33.5,
+            "drawCallsMedian": 275,
+            "trianglesMedian": 174223,
+            "geometries": 388,
+            "textures": 234,
+            "activeEntities": 27,
+            "previewFramesDuringSample": 0,
+            "previewGeometries": 0,
+            "previewTextures": 0
+          },
+          "attribution": {
+            "totals": {
+              "calls": 277,
+              "triangles": 174503
+            },
+            "lights": [
+              {
+                "name": "",
+                "type": "AmbientLight",
+                "intensity": 0.9500000046037158,
+                "visible": true,
+                "castShadow": false
+              },
+              {
+                "name": "",
+                "type": "DirectionalLight",
+                "intensity": 3.0999999930944306,
+                "visible": true,
+                "castShadow": true,
+                "near": 1,
+                "far": 688
+              },
+              {
+                "name": "",
+                "type": "DirectionalLight",
+                "intensity": 0.45000000115092953,
+                "visible": true,
+                "castShadow": false,
+                "near": 0.5,
+                "far": 500
+              }
+            ],
+            "roots": [
+              {
+                "name": "ProceduralInfernoTitan",
+                "color": 21,
+                "shadow": 26,
+                "other": 0,
+                "triangles": 2122,
+                "meshes": 34
+              },
+              {
+                "name": "Equipped Fighter",
+                "color": 23,
+                "shadow": 20,
+                "other": 0,
+                "triangles": 126654,
+                "meshes": 22
+              },
+              {
+                "name": "DungeonEntrance",
+                "color": 9,
+                "shadow": 9,
+                "other": 0,
+                "triangles": 7142,
+                "meshes": 9
+              },
+              {
+                "name": "Mesh",
+                "color": 1,
+                "shadow": 0,
+                "other": 15,
+                "triangles": 17,
+                "meshes": 4
+              },
+              {
+                "name": "Earth authored locations",
+                "color": 5,
+                "shadow": 3,
+                "other": 0,
+                "triangles": 15878,
+                "meshes": 5
+              },
+              {
+                "name": "ActorInstances_InfernoTitan_ShoulderVentLeft",
+                "color": 1,
+                "shadow": 7,
+                "other": 0,
+                "triangles": 240,
+                "meshes": 7
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_InfernoTitan_CrucibleShoulderLeft",
+                "color": 1,
+                "shadow": 7,
+                "other": 0,
+                "triangles": 2560,
+                "meshes": 7
+              },
+              {
+                "name": "ActorInstances_InfernoTitan_KneeLeft",
+                "color": 1,
+                "shadow": 6,
+                "other": 0,
+                "triangles": 288,
+                "meshes": 6
+              },
+              {
+                "name": "ActorInstances_InfernoTitan_ShinLeft",
+                "color": 1,
+                "shadow": 6,
+                "other": 0,
+                "triangles": 1008,
+                "meshes": 6
+              },
+              {
+                "name": "ActorInstances_InfernoTitan_AnvilFootLeft",
+                "color": 1,
+                "shadow": 6,
+                "other": 0,
+                "triangles": 432,
+                "meshes": 6
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_InfernoTitan_ToeLeft-0.22",
+                "color": 1,
+                "shadow": 6,
+                "other": 0,
+                "triangles": 1080,
+                "meshes": 6
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_InfernoTitan_HipLeft",
+                "color": 1,
+                "shadow": 6,
+                "other": 0,
+                "triangles": 2304,
+                "meshes": 6
+              },
+              {
+                "name": "ActorInstances_InfernoTitan_ElbowLeft",
+                "color": 1,
+                "shadow": 6,
+                "other": 0,
+                "triangles": 288,
+                "meshes": 6
+              },
+              {
+                "name": "ActorInstances_InfernoTitan_ForearmLeft",
+                "color": 1,
+                "shadow": 6,
+                "other": 0,
+                "triangles": 1008,
+                "meshes": 6
+              },
+              {
+                "name": "ActorInstances_InfernoTitan_FurnaceFistLeft",
+                "color": 1,
+                "shadow": 6,
+                "other": 0,
+                "triangles": 1296,
+                "meshes": 6
+              },
+              {
+                "name": "ProceduralRealmTerrain:earth",
+                "color": 6,
+                "shadow": 0,
+                "other": 0,
+                "triangles": 745,
+                "meshes": 6
+              },
+              {
+                "name": "EffectGroup",
+                "color": 5,
+                "shadow": 0,
+                "other": 0,
+                "triangles": 640,
+                "meshes": 5
+              },
+              {
+                "name": "ActorInstances_InfernoTitan_BasaltPelvis",
+                "color": 0,
+                "shadow": 4,
+                "other": 0,
+                "triangles": 540,
+                "meshes": 4
+              },
+              {
+                "name": "ActorInstances_InfernoTitan_CrucibleWaist",
+                "color": 0,
+                "shadow": 4,
+                "other": 0,
+                "triangles": 480,
+                "meshes": 4
+              },
+              {
+                "name": "ActorInstances_InfernoTitan_CrucibleTorso",
+                "color": 0,
+                "shadow": 4,
+                "other": 0,
+                "triangles": 480,
+                "meshes": 4
+              },
+              {
+                "name": "ActorInstances_InfernoTitan_FurnaceCage",
+                "color": 0,
+                "shadow": 4,
+                "other": 0,
+                "triangles": 240,
+                "meshes": 4
+              },
+              {
+                "name": "ActorInstances_InfernoTitan_AshCenser",
+                "color": 0,
+                "shadow": 4,
+                "other": 0,
+                "triangles": 540,
+                "meshes": 4
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_InfernoTitan_CenserLink1",
+                "color": 0,
+                "shadow": 4,
+                "other": 0,
+                "triangles": 4200,
+                "meshes": 4
+              },
+              {
+                "name": "ActorInstances_InfernoTitan_CalderaCleaverGrip",
+                "color": 0,
+                "shadow": 4,
+                "other": 0,
+                "triangles": 420,
+                "meshes": 4
+              },
+              {
+                "name": "ActorInstances_InfernoTitan_CalderaCleaverBlade",
+                "color": 0,
+                "shadow": 4,
+                "other": 0,
+                "triangles": 180,
+                "meshes": 4
+              },
+              {
+                "name": "ActorInstances_InfernoTitan_ObsidianSkull",
+                "color": 0,
+                "shadow": 4,
+                "other": 0,
+                "triangles": 540,
+                "meshes": 4
+              },
+              {
+                "name": "ActorInstances_InfernoTitan_ExecutionMask",
+                "color": 0,
+                "shadow": 4,
+                "other": 0,
+                "triangles": 360,
+                "meshes": 4
+              },
+              {
+                "name": "ActorInstances_InfernoTitan_ForgeJaw",
+                "color": 0,
+                "shadow": 4,
+                "other": 0,
+                "triangles": 180,
+                "meshes": 4
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_InfernoTitan_MoltenCrown1",
+                "color": 0,
+                "shadow": 4,
+                "other": 0,
+                "triangles": 600,
+                "meshes": 4
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_InfernoTitan_FurnaceBar1",
+                "color": 0,
+                "shadow": 4,
+                "other": 0,
+                "triangles": 900,
+                "meshes": 4
+              },
+              {
+                "name": "Earth authored paths",
+                "color": 2,
+                "shadow": 0,
+                "other": 0,
+                "triangles": 943,
+                "meshes": 2
+              },
+              {
+                "name": "ProceduralEidolicBlackwater",
+                "color": 1,
+                "shadow": 0,
+                "other": 0,
+                "triangles": 2,
+                "meshes": 1
+              },
+              {
+                "name": "ProceduralRealmTerrain:water",
+                "color": 1,
+                "shadow": 0,
+                "other": 0,
+                "triangles": 4,
+                "meshes": 1
+              },
+              {
+                "name": "ProceduralRealmTerrain:air",
+                "color": 1,
+                "shadow": 0,
+                "other": 0,
+                "triangles": 4,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_HumanoidBatch_InfernoTitan_ForearmRiftLeft-0.16",
+                "color": 1,
+                "shadow": 0,
+                "other": 0,
+                "triangles": 48,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_InfernoTitan_ThighRiftLeft",
+                "color": 1,
+                "shadow": 0,
+                "other": 0,
+                "triangles": 24,
+                "meshes": 1
+              },
+              {
+                "name": "ActorInstances_InfernoTitan_VentFlameLeft",
+                "color": 1,
+                "shadow": 0,
+                "other": 0,
+                "triangles": 20,
+                "meshes": 1
+              },
+              {
+                "name": "Points",
+                "color": 1,
+                "shadow": 0,
+                "other": 0,
+                "triangles": 0,
+                "meshes": 1
+              },
+              {
+                "name": "Air authored paths",
+                "color": 1,
+                "shadow": 0,
+                "other": 0,
+                "triangles": 94,
+                "meshes": 1
+              }
+            ]
+          },
+          "paired": {
+            "scope": "ABBA normal-loop180-frame live source-leaf/constructor-batch-plus-reviewed-instance comparison; same registered actor roots and animation pivots. Server population continues naturally. No teleport, hidden content, imported player replacement or manual mixer.",
+            "census": {
+              "roots": [
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-271",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-118",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-170",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-51",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-217",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-131",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-65",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-12",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-73",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-261",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-290",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-133",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-251",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-53",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-199",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-112",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-233",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-285",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-135",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-288",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-145",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-119",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-144",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "elite-InfernoTitan-1791579621895189787",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-299",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                },
+                {
+                  "type": "InfernoTitan",
+                  "id": "InfernoTitan-201",
+                  "sourceMeshes": 77,
+                  "drawMeshes": 46
+                }
+              ],
+              "mergedGroups": 364,
+              "referenceLeaves": 1170
+            },
+            "profiles": [
+              {
+                "reference": true,
+                "label": "actual-verdant-approach-source",
+                "frames": 180,
+                "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+                "viewport": {
+                  "width": 1280,
+                  "height": 844,
+                  "pixelRatio": 1
+                },
+                "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+                "visibility": "visible",
+                "frameMedianMs": 33.19999999999709,
+                "frameP95Ms": 33.40000000000873,
+                "frameP99Ms": 50,
+                "framesOver33ms": 32,
+                "cpuLoopMedianMs": 22.900000005960464,
+                "cpuLoopP95Ms": 31.600000023841858,
+                "drawCallsMedian": 753,
+                "trianglesMedian": 166951,
+                "geometries": 400,
+                "textures": 234,
+                "activeEntities": 26,
+                "previewFramesDuringSample": 0,
+                "previewGeometries": 0,
+                "previewTextures": 0
+              },
+              {
+                "reference": false,
+                "label": "actual-verdant-approach-batched",
+                "frames": 180,
+                "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+                "viewport": {
+                  "width": 1280,
+                  "height": 844,
+                  "pixelRatio": 1
+                },
+                "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+                "visibility": "visible",
+                "frameMedianMs": 16.70000000001164,
+                "frameP95Ms": 33.40000000000873,
+                "frameP99Ms": 50,
+                "framesOver33ms": 30,
+                "cpuLoopMedianMs": 21.399999976158142,
+                "cpuLoopP95Ms": 32.69999998807907,
+                "drawCallsMedian": 271,
+                "trianglesMedian": 172423,
+                "geometries": 400,
+                "textures": 234,
+                "activeEntities": 26,
+                "previewFramesDuringSample": 0,
+                "previewGeometries": 0,
+                "previewTextures": 0
+              },
+              {
+                "reference": false,
+                "label": "actual-verdant-approach-batched",
+                "frames": 180,
+                "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+                "viewport": {
+                  "width": 1280,
+                  "height": 844,
+                  "pixelRatio": 1
+                },
+                "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+                "visibility": "visible",
+                "frameMedianMs": 16.69999999999709,
+                "frameP95Ms": 33.40000000000873,
+                "frameP99Ms": 50,
+                "framesOver33ms": 27,
+                "cpuLoopMedianMs": 20.30000001192093,
+                "cpuLoopP95Ms": 28.80000001192093,
+                "drawCallsMedian": 270,
+                "trianglesMedian": 173279,
+                "geometries": 400,
+                "textures": 234,
+                "activeEntities": 26,
+                "previewFramesDuringSample": 0,
+                "previewGeometries": 0,
+                "previewTextures": 0
+              },
+              {
+                "reference": true,
+                "label": "actual-verdant-approach-source",
+                "frames": 180,
+                "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+                "viewport": {
+                  "width": 1280,
+                  "height": 844,
+                  "pixelRatio": 1
+                },
+                "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+                "visibility": "visible",
+                "frameMedianMs": 16.79999999998836,
+                "frameP95Ms": 33.40000000000873,
+                "frameP99Ms": 50,
+                "framesOver33ms": 35,
+                "cpuLoopMedianMs": 22.19999998807907,
+                "cpuLoopP95Ms": 32.5,
+                "drawCallsMedian": 749,
+                "trianglesMedian": 166909,
+                "geometries": 400,
+                "textures": 234,
+                "activeEntities": 26,
+                "previewFramesDuringSample": 0,
+                "previewGeometries": 0,
+                "previewTextures": 0
+              }
+            ]
+          }
+        }
+      ],
+      "motion": {
+        "beforeMovingFrames": 15,
+        "beforeObservedScales": [
+          1
+        ],
+        "beforeExpectedScales": [
+          2.5
+        ],
+        "afterMovingFrames": 14,
+        "afterObservedScales": [
+          2.5
+        ],
+        "afterExpectedScales": [
+          2.5
+        ],
+        "changedBones": [
+          "spine_01",
+          "spine_02",
+          "spine_03",
+          "thigh_l",
+          "calf_l",
+          "foot_l",
+          "thigh_r",
+          "calf_r",
+          "foot_r"
+        ]
+      },
+      "performanceInterpretation": "Approach source753/749draws vs candidate271/270, CPU medians22.9/22.2 vs21.4/20.3ms; population26 across paired windows. Aggregate instance bounds submit some additional offscreen color/shadow triangles166.9k\u2192172.4\u2013173.3k; do not claim unchanged actual submissions. Normal pre-pair approach median33.2/p9533.4ms; paired optimized16.7/p9533.4ms but final source16.8/p9533.4ms, so no stable whole-scene frame-gate claim. Town640normaldraws/33.4median/50.1p95 and actual party401draws/538727triangles/33.3median remain above established whole-game20ms median target; High draw350/triangle250k and device gates remain open. Different baseline/candidate population and warm histories do not prove cross-run CPU benefit or memory leak.",
+      "controlLimitation": "Executed reference globally disabled all ActorInstanceBatches, including existing Skeleton instancing visible in town baseline. Town savings/CPU are not attributable solely to this change. Approach baseline contains no Skeleton instance draws, but population remains live. No new optimization benefit is inferred for town.",
+      "diagnosticHelperFollowup": "Checked-in helper now selectively withdraws only the five new families from the instance roster for its reference; previous Skeleton/humanoid paths stay enabled. This measurement-control repair is linted but has no connected runtime evidence yet. Executed helper is retained separately with hashes; do not conflate revised control with retained ABBA.",
+      "cleanup": "Owned fixture/server ports4190/4192/18189 empty and no terrain-save fixture container remains after terminal success."
+    },
+    "abortedAttempt": {
+      "artifact": "/home/aeml/.local/share/eidolon-terrain-save-evidence-VDerFnrL",
+      "launcherExitCode": 143,
+      "status": "Incomplete, no terminal browser/Go acceptance. Town screenshot and14MOVING Sword_Run samples all2.5 retained. No approach/four-class/save completion accepted.",
+      "recovery": "Confirmed owned launcher/test processes gone; inspected exact owned static server cwd/cmdline before terminating orphan PID4068939; removed only owned disposable Mongo container eidolon-terrain-save-qa-fd5de460aecb. Added durable per-scene/profile JSON and isolated supervisor with terminal receipt for the changed reviewed instance candidate, not a blind retry."
+    },
+    "finalInstanceUnitCheck": {
+      "tests": 36,
+      "suites": 1,
+      "seconds": 3.302,
+      "status": "PASS; clearer parameterized test labels, same independent pose/normal/visibility/resource assertions",
+      "log": "/home/aeml/.local/share/eidolon-actual-rig-checks-20261009/actor-instance-final-units.log"
+    }
+  },
+  "openWork": [
+    "Town whole-game CPU/frame cost; selective control needs measured evidence before attributing any improvement.",
+    "Whole-game equipped-party draw/triangle/frame/device/resource budgets.",
+    "All retained terrain/art/environment/motion quality gaps; current technical checks are not modern-art acceptance.",
+    "Full inherited1.11\u20131.99 feature/content/freeze/operations/closed-beta/findings/readiness/handoff scope.",
+    "Owner-deferred human campaign/pacing and physical-phone party/dungeon playtests; unanswered policy/rights/recovery/staffing/access/launch decisions unchanged."
+  ],
+  "publicBaseline": {
+    "version": "1.79.22",
+    "commit": "30a8b6038df9e071eef0f57564ae94087d1a0b11",
+    "state": "Last accepted18:14UTC; no publication/version/access/terrain production activation in this work."
+  },
+  "artifactSHA256": {
+    "/home/aeml/.local/share/eidolon-terrain-save-evidence-7bmaQGNJ/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-scene-diagnosis.json": "e93428ffe9961d7e82e8bb39870af41895f5df16a68f94323ef66509474e4c65",
+    "/home/aeml/.local/share/eidolon-terrain-save-evidence-7bmaQGNJ/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-movement-animation.json": "7bce5b8ba21ef76f2e6c4231714eaecc3025371b2c35e46c92c84aded2e65232",
+    "/home/aeml/.local/share/eidolon-terrain-save-evidence-7bmaQGNJ/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-town-rig-pair.json": "ee5668690eb8df1250b9e120ca2be9defd70eb8df3786d1e6271ce9d9b9edf9e",
+    "/home/aeml/.local/share/eidolon-terrain-save-evidence-7bmaQGNJ/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-verdant-approach-rig-pair.json": "da131777b08a6c419b06ede992ad7d041e2937ef3a2dd204f8fc4f3e388b9464",
+    "/home/aeml/.local/share/eidolon-actual-rig-checks-20261009/party-terminal.json": "3a491950f845c492e5aa42017ca6ee761092b1592757e84c47b7dd2f3171f569",
+    "/home/aeml/.local/share/eidolon-actual-rig-checks-20261009/party-final.log": "a9ece95f20fc9575f6598b5980d7efc800db977901e3eab7f043e1a4f90155e5",
+    "/home/aeml/.local/share/eidolon-actual-rig-checks-20261009/actual-scene-render-diagnosis.js": "f6f8dea5606a724fbdaae652a1909517ee50b8680e426bd4427b15bb25238009",
+    "/home/aeml/.local/share/eidolon-actual-rig-checks-20261009/resource-census.json": "ce0cc74feeea819f5df4d461868497a9345d0ede3aefe13cc1ba240a213417d0"
+  }
+}

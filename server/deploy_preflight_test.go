@@ -15,7 +15,7 @@ func TestDeploySchemaPreflightPrecedesLiveReplacement(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, scenario := range []string{"compatible", "upgrade", "backup-failed", "future-schema", "database-unavailable", "missing-contract", "foreign-mongo", "missing-previous-image", "wrong-build", "noisy-contract", "duplicate-contract", "unsupported-success", "zero-target", "leading-zero", "oversized-schema", "fresh-database"} {
+	for _, scenario := range []string{"compatible", "upgrade", "backup-failed", "future-schema", "database-unavailable", "missing-contract", "foreign-mongo", "missing-previous-image", "wrong-build", "noisy-contract", "duplicate-contract", "unsupported-success", "zero-target", "leading-zero", "oversized-schema", "fresh-database", "raised", "invalid-terrain", "partial-terrain", "health-terrain-mismatch", "health-terrain-missing"} {
 		t.Run(scenario, func(t *testing.T) {
 			root := t.TempDir()
 			for _, dir := range []string{"deploy", "bin"} {
@@ -33,15 +33,24 @@ if [ "$PREFLIGHT_SCENARIO" = missing-previous-image ]; then exit 1; fi
 printf '%s\n' backup >> "$PREFLIGHT_COMMANDS"
 if [ "$PREFLIGHT_SCENARIO" = backup-failed ]; then exit 1; fi
 `,
-				".env":     "MONGO_INITDB_ROOT_USERNAME=fixture\nMONGO_INITDB_ROOT_PASSWORD=fixture\nMONGO_URI=mongodb://mongo:27017\n",
-				"bin/git":  "#!/bin/sh\nexit 1\n",
-				"bin/curl": "#!/bin/sh\nprintf '%s' '{\"commit\":\"fixture-commit\",\"database\":\"ready\"}'\n",
+				".env":      "MONGO_INITDB_ROOT_USERNAME=fixture\nMONGO_INITDB_ROOT_PASSWORD=fixture\nMONGO_URI=mongodb://mongo:27017\n",
+				"bin/git":   "#!/bin/sh\nexit 1\n",
+				"bin/sleep": "#!/bin/sh\nexit 0\n",
+				"bin/curl": `#!/bin/sh
+profile=flat-v1
+if [ "$PREFLIGHT_SCENARIO" = raised ]; then profile=earth-elevation-rocks-v1; fi
+if [ "$PREFLIGHT_SCENARIO" = health-terrain-mismatch ]; then profile=earth-elevation-rocks-v1; fi
+if [ "$PREFLIGHT_SCENARIO" = health-terrain-missing ]; then
+  printf '%s' '{"commit":"fixture-commit","database":"ready"}'; exit 0
+fi
+printf '{"commit":"fixture-commit","database":"ready","terrainProfile":"%s"}' "$profile"
+`,
 				"bin/docker": `#!/bin/bash
 printf '%s\n' "$*" >> "$PREFLIGHT_COMMANDS"
 case "$*" in
   'compose up -d --no-recreate --wait mongo')
     if [ "$PREFLIGHT_SCENARIO" = database-unavailable ]; then exit 1; fi ;;
-  'compose run --rm --no-deps -T api --check-schema --mongo-uri=mongodb://mongo:27017')
+  'compose run --rm --no-deps -T api --check-schema --mongo-uri=mongodb://mongo:27017 --terrain-profile=flat-v1'|'compose run --rm --no-deps -T api --check-schema --mongo-uri=mongodb://mongo:27017 --terrain-profile=earth-elevation-rocks-v1')
     if [ "$PREFLIGHT_SCENARIO" = future-schema ]; then exit 1; fi
     if [ "$PREFLIGHT_SCENARIO" = missing-contract ]; then exit 0; fi
     case "$PREFLIGHT_SCENARIO" in
@@ -67,6 +76,15 @@ esac
 			if scenario == "foreign-mongo" {
 				files[".env"] = "MONGO_INITDB_ROOT_USERNAME=fixture\nMONGO_INITDB_ROOT_PASSWORD=fixture\nMONGO_URI=mongodb://remote.example:27017\n"
 			}
+			if scenario == "raised" {
+				files[".env"] += "EIDOLON_TERRAIN_PROFILE=earth-elevation-rocks-v1\n"
+			} else if scenario == "invalid-terrain" {
+				files[".env"] += "EIDOLON_TERRAIN_PROFILE=synthetic-private-invalid\n"
+			} else if scenario == "partial-terrain" {
+				files[".env"] += "EIDOLON_TERRAIN_PROFILE=earth-elevation-v1\n"
+			} else {
+				files[".env"] += "EIDOLON_TERRAIN_PROFILE=flat-v1\n"
+			}
 			for name, content := range files {
 				if err := os.WriteFile(filepath.Join(root, name), []byte(content), 0700); err != nil {
 					t.Fatal(err)
@@ -87,7 +105,23 @@ esac
 			if err != nil {
 				t.Fatal(err)
 			}
-			if scenario != "compatible" && scenario != "upgrade" && scenario != "fresh-database" {
+			if strings.HasPrefix(scenario, "health-terrain-") {
+				if runErr == nil || string(state) != "replaced" || !strings.Contains(string(output), "health/release verification failed") {
+					t.Fatalf("terrain mismatch must fail live acceptance without claiming rollback: %v %s", runErr, output)
+				}
+				return
+			}
+			if scenario == "invalid-terrain" || scenario == "partial-terrain" {
+				for _, mutation := range []string{"pin-previous-image", "compose build", "compose up", "backup"} {
+					if strings.Contains(string(commands), mutation) {
+						t.Fatalf("invalid terrain reached %s", mutation)
+					}
+				}
+				if strings.Contains(string(output), "synthetic-private-invalid") {
+					t.Fatal("invalid configuration text leaked")
+				}
+			}
+			if scenario != "compatible" && scenario != "upgrade" && scenario != "fresh-database" && scenario != "raised" {
 				if runErr == nil || string(state) != "healthy-previous-release" || strings.Contains(string(commands), "compose up -d\n") {
 					t.Fatalf("failed preflight replaced live API: %v\n%s\n%s", runErr, commands, output)
 				}
@@ -102,7 +136,10 @@ esac
 			if runErr != nil || string(state) != "replaced" {
 				t.Fatalf("compatible deployment failed: %v\n%s", runErr, output)
 			}
-			expected := "pin-previous-image\ncompose build api\ncompose up -d --no-recreate --wait mongo\ncompose run --rm --no-deps -T api --check-schema --mongo-uri=mongodb://mongo:27017\n"
+			expected := "pin-previous-image\ncompose build api\ncompose up -d --no-recreate --wait mongo\ncompose run --rm --no-deps -T api --check-schema --mongo-uri=mongodb://mongo:27017 --terrain-profile=flat-v1\n"
+			if scenario == "raised" {
+				expected = strings.ReplaceAll(expected, "--terrain-profile=flat-v1", "--terrain-profile=earth-elevation-rocks-v1")
+			}
 			if scenario == "upgrade" || scenario == "fresh-database" {
 				expected += "backup\n"
 			} else if strings.Contains(string(commands), "backup\n") {

@@ -1,0 +1,120 @@
+{
+  "recordedUTC": "2026-10-10T14:19:45.455704+00:00",
+  "status": "Qualified private integration only; not published or selected into held runtime.",
+  "commit": "14d4ea1f2fb8a6458ddec7f907da70aa1f042dfb",
+  "baseHeld": "9d724663",
+  "mergedPublic": "77859697a71329facd0584a95167c80eac392398",
+  "ordinaryMerge": "64bbee63",
+  "sourcePins": {
+    "scripts/bundle-game-engine.mjs": "752abb0a5383d4d9d3bf1f479056da2c5918fcf072dcf6bd02c3a29ff1707a65",
+    "server/maintenance_browser_integration_test.go": "2ba771276b2c521b515b5b50f8ea2df25542879b89777d193efe57f7e416c165",
+    "server/ep_wallet_handlers.go": "05f2d0cc424860785a975cb444abf5400933f31fa1d2cb4f2e52a8700c792149",
+    "tests/e2e/maintenance-connected-publication.spec.js": "4e03c06b66fcccca3fe34eaa46f34546ce83d9cd02cf01622dea0124385ec5f5",
+    "tests/e2e/persistent-qa-gold.js": "1ef718bf6f37491188b044be1491e36a2fd613613a1604d9c61d966ee72b9eea",
+    "tests/e2e/helpers.js": "e54cc50b862ccc1f3726d1dfa5e2ff34ef0f94689f94329031159a8078c5f229",
+    "tests/e2e/persistent-qa-stash.js": "12e9d90e6d6637d3af14ef72065feba9b9849d48fffb85a15e0ef03938bcc4a9"
+  },
+  "heldRuntimePathsByteIdentical": [
+    "src/art",
+    "assets/models",
+    "src/core/RenderSystem.js",
+    "src/core/GameEngineMovement.js",
+    "src/core/GameEngineRuntime.js",
+    "src/core/UnchangedLocalMatrix.js"
+  ],
+  "checks": {
+    "units": "469 checks across6 suites pass5.023s",
+    "GoWalletRace": "pass1.912s",
+    "GoAbilityFramesRace": "pass8.873s",
+    "scopedLint": "pass",
+    "nativeStats": {
+      "total": 2,
+      "expected": 2,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 0,
+      "ok": true
+    },
+    "nativeDurationMs": 31749.121000000003,
+    "GoBrowserMongo": "pass36.38s/package37.430s",
+    "serverMarkers": {
+      "WARNING: DATA RACE": 0,
+      "panic:": 0,
+      "fatal error:": 0,
+      "Worker panic:": 0,
+      "Recovered from panic in Update:": 0
+    }
+  },
+  "connected": [
+    {
+      "fps": 60,
+      "jump": {
+        "fps": 60,
+        "active": false,
+        "clickedAt": 6695.200000017881,
+        "startedAt": 6757.700000017881,
+        "distance": 26.966157155164755,
+        "end": {
+          "x": 25.716148376464844,
+          "z": 199.97824096679688
+        },
+        "acceptedDuration": 1.5,
+        "elapsedMs": 1688.5,
+        "positionError": 0,
+        "renderError": 0,
+        "restored": true
+      },
+      "initialRequests": [
+        "?release=14d4ea1f2fb8a6458ddec7f907da70aa1f042dfb"
+      ],
+      "freshLoginPositionExact": true,
+      "firstEntryConstructions": 1,
+      "totalConstructionsIncludingSeparateFreshLogin": 2,
+      "expectedInjectedFaultCount": 0
+    },
+    {
+      "fps": 15,
+      "jump": {
+        "fps": 15,
+        "active": false,
+        "clickedAt": 6128.300000011921,
+        "startedAt": 6133.9000000059605,
+        "distance": 26.966157155164755,
+        "end": {
+          "x": 25.716148376464844,
+          "z": 199.97824096679688
+        },
+        "acceptedDuration": 1.5,
+        "elapsedMs": 1617.9000000059605,
+        "positionError": 0,
+        "renderError": 0,
+        "restored": true
+      },
+      "initialRequests": [
+        "?release=14d4ea1f2fb8a6458ddec7f907da70aa1f042dfb",
+        "?startupRetry=1&release=14d4ea1f2fb8a6458ddec7f907da70aa1f042dfb"
+      ],
+      "freshLoginPositionExact": true,
+      "firstEntryConstructions": 1,
+      "totalConstructionsIncludingSeparateFreshLogin": 2,
+      "expectedInjectedFaultCount": 2
+    }
+  ],
+  "terrain": "earth-elevation-rocks-v1 explicitly active on actual disposable server.",
+  "geometry": "Existing static-import owner and setter retained, default owner null in both native logins; no activation.",
+  "startup": "Ordinary prepared saved-account login and real socket, authored supplied Fighter. Initial entry constructs exactly once, including interrupted first bundle download/retry. A separate fresh document login intentionally constructs again and verifies saved landing.",
+  "persistence": "Direct Mongo after normal disconnect asserts exact original Gold/EP/equipment/inventory, empty InstanceID, recent logout and landing error<.1 for both accounts. Accounts were prepared in DB, not registered through browser.",
+  "privacy": {
+    "actualPreparedAccounts": 2,
+    "sanitizedBeforeArchive": true,
+    "finalPlainAndEmbeddedMembersScanned": 20,
+    "serverCopy": "connected/server-sanitized.log",
+    "tracesVideoScreenshots": "off"
+  },
+  "limits": "Public26 Gold/stash required gate still fails. Integration preserves that helper and is not a repair of its original cause. No public rollout, shadow prototype, High/device/art acceptance, long-soak replacement, owner-deferred campaign/phone substitution, beta or launch claim.",
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-world-maintenance-integration-checks-20261010",
+    "inventoryEntries": 20,
+    "inventorySHA256": "a94ddf920e494de01e19a00776d360f473290d3729ddfb099386f9f5f2976f20"
+  }
+}

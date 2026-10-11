@@ -202,5 +202,6 @@
   },
   "evidence": "/home/aeml/.local/share/eidolon-jump-startup-maintenance-checks-20261010",
   "inventorySHA256": "d4d43b86e61b413810a65c617edadfc702fc4bc34d3dd4da1f82cfb66fb74a25",
-  "inventoryFiles": 66
+  "inventoryFiles": 66,
+  "candidateDocumentationCommit": "3404c644629ec64b9534100b06213abee4226acb"
 }

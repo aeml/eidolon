@@ -1,0 +1,510 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-09T23:33:27.771457+00:00",
+  "classification": "Qualified private selection of prepared protected High bodies at additive immutable paths. Native fit/morph/pool, production cache cold/offline and selected-path real party/save checks pass. Whole-game High geometry/draw and modern-art/support-device/full roadmap acceptance remain open.",
+  "base": "202f370884af21747d841404bd57f51f92396926",
+  "qualifiedRenderingBase": "6fbffd3435e1798841a56ab120e938db3d512e34",
+  "preparationReceipt": "docs/plans/2026-10-09-body-lod-preparation.json",
+  "publicBaseline": {
+    "version": "Alpha 1.79.22",
+    "commit": "30a8b6038df9e071eef0f57564ae94087d1a0b11",
+    "ciRun": 37967212738,
+    "acceptedUTC": "2026-10-09T18:14:50.894524Z",
+    "unchanged": true,
+    "scope": "Earlier accepted release; no new push, CI/deployment, public release, profile/access/commerce activation or owner approval in this work."
+  },
+  "selection": {
+    "manifest": "assets/archetypes/runtime-selection.json",
+    "schemaVersion": 1,
+    "highBodyTrianglesBefore": 182740,
+    "highBodyTrianglesAfter": 123204,
+    "reductionPercent": 32.579621319908064,
+    "selectedHighBytes": 22396288,
+    "previousHighBytesRetained": 25179328,
+    "lowBytesExactRetained": 14974908,
+    "additionalRepositoryAndPublishedAssetBytes": 22396288,
+    "policy": "Four new High files are exact prepared bytes. All source and previous High/Low files and manifests remain unchanged. Low keeps its previous path/hash; no faceted strict Low derivative selected. Catalog previousCharacters retains old High hash versions without adding silent fallback or full-source boot dependencies. Rendering implementation otherwise retains qualified6fbffd34.",
+    "generation": "Validate exact class/quality roster, source delivery hashes, baseline hashes, safe class-local paths and selected hashes before writing. Serialize versions in emitted catalog traversal order, independent of record insertion.740 model versions,741 overrides including Ilyra. Fighter and other classes select through the same catalog.",
+    "rollbackPreparation": "Previous files/hashes remain loadable. A future selection rollback must regenerate the catalog from reviewed prior variants while retaining both file families for clients already using either catalog. No deployment/profile rollback was executed or accepted here.",
+    "variants": {
+      "Fighter": {
+        "high": {
+          "file": "assets/archetypes/Fighter/fighter-runtime-body-v2-high.glb",
+          "sha256": "4c36254cb53208323e65e0b4d7d0ee2b6634db14ef2b8f4d2524fd729b0540ae",
+          "bytes": 6712312,
+          "bodyTriangles": 31748,
+          "baselineFile": "assets/archetypes/Fighter/fighter-runtime-high.glb",
+          "baselineSHA256": "fda495c5e7fe60dc2d79b644c0ee6acb868a6a36e3bf9c69792418f0b0a10bc5"
+        },
+        "low": {
+          "file": "assets/archetypes/Fighter/fighter-runtime-low.glb",
+          "sha256": "357284df9e9f22f9823e2ca0bbb1d15e40ac00024a02046d90f48b9be8524c0b",
+          "bytes": 3680212,
+          "bodyTriangles": 18434,
+          "baselineFile": "assets/archetypes/Fighter/fighter-runtime-low.glb",
+          "baselineSHA256": "357284df9e9f22f9823e2ca0bbb1d15e40ac00024a02046d90f48b9be8524c0b"
+        }
+      },
+      "Rogue": {
+        "high": {
+          "file": "assets/archetypes/Rogue/rogue-runtime-body-v2-high.glb",
+          "sha256": "8bc912a249103a3f279be70496e63d8181292b7ab46fbc89bbc37e44cf206d8f",
+          "bytes": 5546784,
+          "bodyTriangles": 30134,
+          "baselineFile": "assets/archetypes/Rogue/rogue-runtime-high.glb",
+          "baselineSHA256": "1da90eb1906730046be0cb3a03beac1881d92fd0cee33805a78b85ea37a5c9ef"
+        },
+        "low": {
+          "file": "assets/archetypes/Rogue/rogue-runtime-low.glb",
+          "sha256": "8ec12238f6b622143e0dcc7cfffc0955019ef268a3fd472e7e3156a5c17685d7",
+          "bytes": 4017940,
+          "bodyTriangles": 18024,
+          "baselineFile": "assets/archetypes/Rogue/rogue-runtime-low.glb",
+          "baselineSHA256": "8ec12238f6b622143e0dcc7cfffc0955019ef268a3fd472e7e3156a5c17685d7"
+        }
+      },
+      "Wizard": {
+        "high": {
+          "file": "assets/archetypes/Wizard/wizard-runtime-body-v2-high.glb",
+          "sha256": "6c4c56be8339d3bd7271f39c64216f014211ed457e4364b426649595d121109e",
+          "bytes": 4575428,
+          "bodyTriangles": 30846,
+          "baselineFile": "assets/archetypes/Wizard/wizard-runtime-high.glb",
+          "baselineSHA256": "facb882f8a68ab69c715113cf45cab03611e59cc8ec1b6854dfaf1188bc2f5aa"
+        },
+        "low": {
+          "file": "assets/archetypes/Wizard/wizard-runtime-low.glb",
+          "sha256": "52adfd98bd8ac6ebe7a85e84c989e8c7f42eb57b16c0dcfea41a3570c9eebd24",
+          "bytes": 3215076,
+          "bodyTriangles": 18612,
+          "baselineFile": "assets/archetypes/Wizard/wizard-runtime-low.glb",
+          "baselineSHA256": "52adfd98bd8ac6ebe7a85e84c989e8c7f42eb57b16c0dcfea41a3570c9eebd24"
+        }
+      },
+      "Cleric": {
+        "high": {
+          "file": "assets/archetypes/Cleric/cleric-runtime-body-v2-high.glb",
+          "sha256": "deb1613081222e60a32d6b199fcabc646e294d85ab4054100e136af978965ca7",
+          "bytes": 5561764,
+          "bodyTriangles": 30476,
+          "baselineFile": "assets/archetypes/Cleric/cleric-runtime-high.glb",
+          "baselineSHA256": "b0d77d7e0d3214860878ad61a8032146ad66b07c5079f8a6366db92291fc5eea"
+        },
+        "low": {
+          "file": "assets/archetypes/Cleric/cleric-runtime-low.glb",
+          "sha256": "19784ca41b98d40ba7bf5ae26d6b4f3bba707fb288a120254cc0bc2172319364",
+          "bytes": 4061680,
+          "bodyTriangles": 18024,
+          "baselineFile": "assets/archetypes/Cleric/cleric-runtime-low.glb",
+          "baselineSHA256": "19784ca41b98d40ba7bf5ae26d6b4f3bba707fb288a120254cc0bc2172319364"
+        }
+      }
+    }
+  },
+  "checks": {
+    "focusedUnits": {
+      "suites": 6,
+      "passed": 152,
+      "failed": 0,
+      "evidence": "unit-final.log"
+    },
+    "cacheAndFitUnits": {
+      "suites": 7,
+      "passed": 69,
+      "failed": 0,
+      "evidence": "cache-fit-units.log"
+    },
+    "lint": {
+      "exitCode": 0,
+      "files": [
+        "scripts/generate-authored-equipment.mjs",
+        "src/art/AuthoredFighter.js",
+        "src/assets/authoredEquipment.generated.js",
+        "tests/AssetVersioning.test.js",
+        "tests/AuthoredAssetCatalog.test.js",
+        "tests/AuthoredFighter.test.js",
+        "tests/MeshFactoryLoader.test.js",
+        "tests/ProceduralArtMigrationGuard.test.js",
+        "tests/e2e/authored-class-equipment.spec.js",
+        "tests/e2e/terrain-equipped-party.spec.js",
+        "scripts/lib/character-runtime-selection.mjs",
+        "tests/CharacterRuntimeSelection.test.js",
+        "tests/e2e/character-selection-cache.spec.js"
+      ],
+      "finalPartyLint": {
+        "exitCode": 0,
+        "evidence": "party-lint.log",
+        "scope": "Final party CacheAPI proof revision; remaining12 JavaScript files unchanged since lint-final.log."
+      }
+    },
+    "selectedGLTFValidation": [
+      {
+        "actorClass": "Fighter",
+        "quality": "high",
+        "file": "assets/archetypes/Fighter/fighter-runtime-body-v2-high.glb",
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "actorClass": "Fighter",
+        "quality": "low",
+        "file": "assets/archetypes/Fighter/fighter-runtime-low.glb",
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "actorClass": "Rogue",
+        "quality": "high",
+        "file": "assets/archetypes/Rogue/rogue-runtime-body-v2-high.glb",
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "actorClass": "Rogue",
+        "quality": "low",
+        "file": "assets/archetypes/Rogue/rogue-runtime-low.glb",
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "actorClass": "Wizard",
+        "quality": "high",
+        "file": "assets/archetypes/Wizard/wizard-runtime-body-v2-high.glb",
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "actorClass": "Wizard",
+        "quality": "low",
+        "file": "assets/archetypes/Wizard/wizard-runtime-low.glb",
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "actorClass": "Cleric",
+        "quality": "high",
+        "file": "assets/archetypes/Cleric/cleric-runtime-body-v2-high.glb",
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "actorClass": "Cleric",
+        "quality": "low",
+        "file": "assets/archetypes/Cleric/cleric-runtime-low.glb",
+        "errors": 0,
+        "warnings": 0
+      }
+    ],
+    "allVertexSourceProof": {
+      "variants": 8,
+      "evidence": "selected-all-vertex-proof.json",
+      "sha256": "ddca0d235fac8948af592a0a4eacad3796b2beaa943f84b3c37739ad6e6d7a71",
+      "scope": "Every serialized position/normal/UV/joints/weights/morph raw attribute tuple belongs to one original source vertex, with matching component/normalization layout. This does not prove dense53-bone weight-field interpolation or every pose/surface/image; preparation limitations remain."
+    },
+    "generationIdempotence": {
+      "exitCode": 0,
+      "beforeSHA256": "226e4bee6318ecb7979f6c868c16c35dacdf2a0e19f4ccf35bd94544a2f4b7b2",
+      "afterSHA256": "226e4bee6318ecb7979f6c868c16c35dacdf2a0e19f4ccf35bd94544a2f4b7b2",
+      "stdout": "Generated 4 classes and 36 item models (740 verified hashes).\n"
+    },
+    "negativeGeneratorCases": [
+      {
+        "case": "bad-roster",
+        "exitCode": 1,
+        "catalogBeforeSHA256": "9a97c8295cac5b16729fe03c7728c14e8eda4eb4ed0f0c9fceef98d2f2583450",
+        "catalogAfterSHA256": "9a97c8295cac5b16729fe03c7728c14e8eda4eb4ed0f0c9fceef98d2f2583450"
+      },
+      {
+        "case": "unsafe-path",
+        "exitCode": 1,
+        "catalogBeforeSHA256": "9a97c8295cac5b16729fe03c7728c14e8eda4eb4ed0f0c9fceef98d2f2583450",
+        "catalogAfterSHA256": "9a97c8295cac5b16729fe03c7728c14e8eda4eb4ed0f0c9fceef98d2f2583450"
+      },
+      {
+        "case": "bad-hash",
+        "exitCode": 1,
+        "catalogBeforeSHA256": "9a97c8295cac5b16729fe03c7728c14e8eda4eb4ed0f0c9fceef98d2f2583450",
+        "catalogAfterSHA256": "9a97c8295cac5b16729fe03c7728c14e8eda4eb4ed0f0c9fceef98d2f2583450"
+      }
+    ],
+    "copiedSiteBundle": {
+      "exitCode": 0,
+      "actualBuild": {
+        "bundledModules": 428,
+        "bytes": 3283107,
+        "sharedLoginModules": 21,
+        "externalImports": [
+          "../assets/ServiceWorkerBoot.js",
+          "../data/worldGeography.js",
+          "../ui/EmailRecoveryUI.js",
+          "../ui/OwnedEvents.js",
+          "../ui/PasswordChangeUI.js",
+          "../ui/ReportUI.js",
+          "../ui/reportTypes.js",
+          "./CredentialToken.js",
+          "./GraphicsStartup.js",
+          "three",
+          "three/addons/geometries/RoundedBoxGeometry.js",
+          "three/addons/loaders/GLTFLoader.js",
+          "three/addons/postprocessing/EffectComposer.js",
+          "three/addons/postprocessing/OutputPass.js",
+          "three/addons/postprocessing/RenderPass.js",
+          "three/addons/postprocessing/ShaderPass.js",
+          "three/addons/postprocessing/UnrealBloomPass.js",
+          "three/addons/shaders/FXAAShader.js",
+          "three/addons/utils/BufferGeometryUtils.js",
+          "three/addons/utils/SkeletonUtils.js"
+        ]
+      },
+      "originalMainBeforeSHA256": "74761168287e8a33afeffbd759338dfa017c244e0d371a4cff5e3599d7d2a711",
+      "originalMainAfterSHA256": "74761168287e8a33afeffbd759338dfa017c244e0d371a4cff5e3599d7d2a711",
+      "bundleSHA256": "d214da581585f182407f692d9c701947416e5a06b527c459de382c2a1d378327"
+    }
+  },
+  "nativeGallery": {
+    "source": "Actual selected catalog; no body/wearable page.route substitution. BODY_LOD_COMPARE=1 adds32 bare open/blink/back-run/side-attack captures with worker blocked for the comparison fixture only. Native AMDANGLE/RADV, eight outfits/full and mixed14-slot gear, independent skins, pool ownership, Rogue alternation/stealth and previews pass. Three original cache-denial/read/quota-and-network native cases also pass.",
+    "initialInvocation": {
+      "exitCode": 1,
+      "startedUnix": 1791588096.9640005,
+      "finishedUnix": 1791588118.9845345
+    },
+    "disposition": "Initial invocation4passed/1failed: gallery and three fault cases pass, new cache fixture fails. Do not count aggregate invocation as pass; corrected separate production cache test passes below.",
+    "bareSamples": 32,
+    "badVertices": 0,
+    "images": 48,
+    "triangleCensus": "native/results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/equipped-triangle-diagnosis.json",
+    "comparisons": {
+      "prepared": {
+        "rgbZeroViews": 47,
+        "totalViews": 48,
+        "oneDifference": "Fighter-low-bare-side-attack.png:1pixel/maxchannel35, same prepared-versus-original anomaly retained; Low files unchanged. Cause not established. No renderer zero gate weakened."
+      },
+      "original": {
+        "rgbZeroViews": 19,
+        "totalViews": 48,
+        "isolatedLowZeroViews": 16,
+        "scope": "High geometry intentionally changes. Descriptive RGB comparisons do not provide arbitrary art/renderer equivalence acceptance."
+      }
+    },
+    "rootVisualInspection": [
+      "Fighter-high-face-open.png",
+      "Wizard-high-face-blink.png",
+      "Cleric-high-bare-back-run.png",
+      "single-renderer-equipped-party-high.png"
+    ],
+    "visualDisposition": "Matches prepared High appearance; fitted gear, blink closures and current equipped HUD contacts retained in inspected views. Existing close-up limb/neck faceting, world repetition and full modern art/Q/CB review remain open. Earlier rejected strict Low faceting stays rejected."
+  },
+  "productionCache": {
+    "terminal": {
+      "exitCode": 0,
+      "startedUnix": 1791588198.0021787,
+      "finishedUnix": 1791588207.559992
+    },
+    "evidence": "cache-corrected/results/character-selection-cache--4394a-elected-rigs-render-offline/character-selection-cache.json",
+    "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+    "scope": "Production /sw.js controlling page, normal serviceWorkers allow, no page.route replacement/no-store bypass.12 exact selected/previous versioned assets have correct full hashes in served response and cache. Eight selected rigs render cold and then parse/render again offline after clearing MeshFactory cache/inflight. Identical offline/cold native draw/triangle/skin records, no GL errors or procedural fallback. Does not establish deployed old-client compatibility, cache eviction across releases, sustained devices or VRAM budgets."
+  },
+  "connectedParty": {
+    "terminal": {
+      "exitCode": 0,
+      "startedUnix": 1791588621.605229,
+      "finishedUnix": 1791588680.6151311
+    },
+    "goRaceResult": "TestTerrainActualEquippedBrowserParty PASS49.21s; terminal launcher0/59.0099s. Normal disposable four-class party,14-slot outfits, normal three socket peers, authoritative terrain and post-session saved gear/membership/inventory/EP preservation pass. Four-browser renderer case skipped, not passed.",
+    "scope": "Ordinary selected High paths, normal production worker, no BODY_LOD_COMPARE/PILOT or wearable substitution. Actual four200worker responses observed before login, exact cache-clone SHA256 verified without another fetch, already-loaded original body counts and actual masked equipped bodies checked.",
+    "selectedRuntime": {
+      "selected": [
+        {
+          "name": "Fighter",
+          "path": "./assets/archetypes/Fighter/fighter-runtime-body-v2-high.glb",
+          "expectedPath": "./assets/archetypes/Fighter/fighter-runtime-body-v2-high.glb",
+          "url": "http://127.0.0.1:4190/assets/archetypes/Fighter/fighter-runtime-body-v2-high.glb?v=4c36254cb5320832",
+          "expectedVersion": "4c36254cb5320832",
+          "expectedSHA256": "4c36254cb53208323e65e0b4d7d0ee2b6634db14ef2b8f4d2524fd729b0540ae",
+          "cachedSHA256": "4c36254cb53208323e65e0b4d7d0ee2b6634db14ef2b8f4d2524fd729b0540ae",
+          "cachedOriginalBodyTriangles": 31748,
+          "expectedBodyTriangles": 31748,
+          "liveMaskedBodyTriangles": 14072
+        },
+        {
+          "name": "Cleric",
+          "path": "./assets/archetypes/Cleric/cleric-runtime-body-v2-high.glb",
+          "expectedPath": "./assets/archetypes/Cleric/cleric-runtime-body-v2-high.glb",
+          "url": "http://127.0.0.1:4190/assets/archetypes/Cleric/cleric-runtime-body-v2-high.glb?v=deb1613081222e60",
+          "expectedVersion": "deb1613081222e60",
+          "expectedSHA256": "deb1613081222e60a32d6b199fcabc646e294d85ab4054100e136af978965ca7",
+          "cachedSHA256": "deb1613081222e60a32d6b199fcabc646e294d85ab4054100e136af978965ca7",
+          "cachedOriginalBodyTriangles": 30476,
+          "expectedBodyTriangles": 30476,
+          "liveMaskedBodyTriangles": 14205
+        },
+        {
+          "name": "Rogue",
+          "path": "./assets/archetypes/Rogue/rogue-runtime-body-v2-high.glb",
+          "expectedPath": "./assets/archetypes/Rogue/rogue-runtime-body-v2-high.glb",
+          "url": "http://127.0.0.1:4190/assets/archetypes/Rogue/rogue-runtime-body-v2-high.glb?v=8bc912a249103a3f",
+          "expectedVersion": "8bc912a249103a3f",
+          "expectedSHA256": "8bc912a249103a3f279be70496e63d8181292b7ab46fbc89bbc37e44cf206d8f",
+          "cachedSHA256": "8bc912a249103a3f279be70496e63d8181292b7ab46fbc89bbc37e44cf206d8f",
+          "cachedOriginalBodyTriangles": 30134,
+          "expectedBodyTriangles": 30134,
+          "liveMaskedBodyTriangles": 13949
+        },
+        {
+          "name": "Wizard",
+          "path": "./assets/archetypes/Wizard/wizard-runtime-body-v2-high.glb",
+          "expectedPath": "./assets/archetypes/Wizard/wizard-runtime-body-v2-high.glb",
+          "url": "http://127.0.0.1:4190/assets/archetypes/Wizard/wizard-runtime-body-v2-high.glb?v=6c4c56be8339d3bd",
+          "expectedVersion": "6c4c56be8339d3bd",
+          "expectedSHA256": "6c4c56be8339d3bd7271f39c64216f014211ed457e4364b426649595d121109e",
+          "cachedSHA256": "6c4c56be8339d3bd7271f39c64216f014211ed457e4364b426649595d121109e",
+          "cachedOriginalBodyTriangles": 30846,
+          "expectedBodyTriangles": 30846,
+          "liveMaskedBodyTriangles": 20710
+        }
+      ],
+      "bodyResponses": [
+        {
+          "url": "http://127.0.0.1:4190/assets/archetypes/Fighter/fighter-runtime-body-v2-high.glb?v=4c36254cb5320832",
+          "status": 200,
+          "fromServiceWorker": true
+        },
+        {
+          "url": "http://127.0.0.1:4190/assets/archetypes/Wizard/wizard-runtime-body-v2-high.glb?v=6c4c56be8339d3bd",
+          "status": 200,
+          "fromServiceWorker": true
+        },
+        {
+          "url": "http://127.0.0.1:4190/assets/archetypes/Cleric/cleric-runtime-body-v2-high.glb?v=deb1613081222e60",
+          "status": 200,
+          "fromServiceWorker": true
+        },
+        {
+          "url": "http://127.0.0.1:4190/assets/archetypes/Rogue/rogue-runtime-body-v2-high.glb?v=8bc912a249103a3f",
+          "status": 200,
+          "fromServiceWorker": true
+        }
+      ]
+    },
+    "profile": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 16.700000000004366,
+      "frameP95Ms": 33.30000000000291,
+      "frameP99Ms": 33.400000000001455,
+      "framesOver33ms": 9,
+      "cpuLoopMedianMs": 19.799999982118607,
+      "cpuLoopP95Ms": 25.5,
+      "drawCallsMedian": 497,
+      "trianglesMedian": 496215,
+      "geometries": 529,
+      "textures": 407,
+      "activeEntities": 35,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "equippedRoots": [
+      {
+        "name": "Equipped Wizard",
+        "color": 26,
+        "shadow": 21,
+        "triangles": 105976
+      },
+      {
+        "name": "Equipped Cleric",
+        "color": 26,
+        "shadow": 21,
+        "triangles": 115344
+      },
+      {
+        "name": "Equipped Fighter",
+        "color": 23,
+        "shadow": 20,
+        "triangles": 120112
+      },
+      {
+        "name": "Equipped Rogue",
+        "color": 23,
+        "shadow": 18,
+        "triangles": 105246
+      }
+    ],
+    "equippedColorAndShadowTriangles": 446678,
+    "untimedSameSceneInstanceComparison": {
+      "without": {
+        "calls": 641,
+        "triangles": 485817
+      },
+      "with": {
+        "calls": 515,
+        "triangles": 496555
+      }
+    },
+    "sceneDiagnostics": "eidolon-terrain-save-evidence-ZrMhR4a1/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-scene-diagnosis.json",
+    "conclusion": "High whole-scene budgets fail:497calls>350 and496215triangles>250000. Four equipped roots alone446678triangles exceed the full-scene limit. Raw frame16.700000000004366median/33.30000000000291p95 meets20/33.4 in this sample; CPU19.8/25.5,35entities. Different populations and cache states do not establish CPU attribution versus earlier24/29entity runs. Snapshot529geometries/407textures is not lifetime/VRAM or device acceptance."
+  },
+  "failedChecksRetained": "qualification-failures.json; initial4unit failures, unused generator binding, two new cache-fixture setup failures and three new party-proof API/assertion failures are retained separately. None accepted as full party/save/cache success.",
+  "cleanup": {
+    "supervisorsStillExist": {
+      "987705": false,
+      "995499": false,
+      "1000802": false,
+      "1005850": false,
+      "1022194": false,
+      "1035898": false,
+      "1054945": false
+    },
+    "portCheck": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\n",
+    "disposableContainers": "",
+    "ownedVendorSymlinkRemoved": true,
+    "ignoredNodeModulesSymlinkRetained": true
+  },
+  "longSoak": {
+    "readOnlyObservationUTC": "2026-10-09T23:13:07Z",
+    "runId": 37880032315,
+    "attempt": 1,
+    "headSHA": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
+    "status": "in_progress",
+    "scope": "100-client job and Run multiplayer soak step6 in progress; upload pending at sparse read-only observation. Not restarted, cancelled or accepted. Earlier exact revision is separate from current source.",
+    "evidence": "long-soak-snapshot-231307.json"
+  },
+  "runtimeDisposition": "Adopt protected High selection only in the owned private held milestone after this receipt/source review. No public version bump, push or deployment. Previous6fb rendering behavior retained apart from selected authored-body geometry/path; rejected woodland, forest and soil code remains unselected.",
+  "nextAction": "Continue dominant fitted-gear/body/eye and actual scene submission costs with coordinated material/attachment/morph preservation. Retain unchanged High/Low budgets and every full inherited1.11\u20131.99 modern-art/Q/CB, whole-game party/device, F1-F5, operations/rights/owner-policy, human-playtest, beta/admission/launch/final-handoff gate. No substitute long campaign or repeated soak.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-body-lod-integration-checks-20261009",
+  "sourceSHA256": {
+    "scripts/generate-authored-equipment.mjs": "4c1b6cc27802f1b1551fa87b443523722dc2f9ab2ec0f6a68e708782faf634fc",
+    "src/art/AuthoredFighter.js": "13189baf826ab655fe089f88114f2fc13c8c5946b57b3becef295526866638e5",
+    "src/assets/authoredEquipment.generated.js": "226e4bee6318ecb7979f6c868c16c35dacdf2a0e19f4ccf35bd94544a2f4b7b2",
+    "tests/AssetVersioning.test.js": "c730b3294a299a7da4194d19830f0d601088ca7919f841f27aa13e4bb3fd4f04",
+    "tests/AuthoredAssetCatalog.test.js": "9a814cf7924708dad8f77098edc5af2b635372762d8d10d9eb4e167ca7e30535",
+    "tests/AuthoredFighter.test.js": "feec62bb8ac0b3c958298f9d802b11f0a67a8723d3c684864e4ba166fc51a4c5",
+    "tests/MeshFactoryLoader.test.js": "b823a77e0e9796c253eda3e509916f407aa78e1dd93fd641487356dd625df1c2",
+    "tests/ProceduralArtMigrationGuard.test.js": "abd3b2bc33fa4ab8e444fec89b07adfc02ef8aa2f7d96522e046c8c26014b404",
+    "tests/e2e/authored-class-equipment.spec.js": "bbd70e32b5af5f4940dfec97c0ba50820fc56dc923a1ba0555ab51ae58264330",
+    "tests/e2e/terrain-equipped-party.spec.js": "0ba2926830f77c45dec76376406be3299ddd89bed39e362f847890dacc3863ac",
+    "assets/archetypes/Cleric/cleric-runtime-body-v2-high.glb": "deb1613081222e60a32d6b199fcabc646e294d85ab4054100e136af978965ca7",
+    "assets/archetypes/Fighter/fighter-runtime-body-v2-high.glb": "4c36254cb53208323e65e0b4d7d0ee2b6634db14ef2b8f4d2524fd729b0540ae",
+    "assets/archetypes/Rogue/rogue-runtime-body-v2-high.glb": "8bc912a249103a3f279be70496e63d8181292b7ab46fbc89bbc37e44cf206d8f",
+    "assets/archetypes/Wizard/wizard-runtime-body-v2-high.glb": "6c4c56be8339d3bd7271f39c64216f014211ed457e4364b426649595d121109e",
+    "assets/archetypes/runtime-selection.json": "b050fc057a1f7b10c704cb9c39e5b284e810e0cdd526f635c156543b113d9b58",
+    "scripts/lib/character-runtime-selection.mjs": "c9bf1f7d36486905988778fe269d6f3aa97917793038a9ec11826ed47996f497",
+    "tests/CharacterRuntimeSelection.test.js": "2380fe2b88a1ffe92ea51981f3f3550c4b20c6a88aae8341bd821867b64a2f11",
+    "tests/e2e/character-selection-cache.spec.js": "d92e05f08f9a56a56f5bd7e04c5778adff705207c0d2a0f8670561cfdf45169b"
+  },
+  "artifactInventory": {
+    "file": "/home/aeml/.local/share/eidolon-body-lod-integration-checks-20261009/artifact-inventory.json",
+    "sha256": "41039366ce8a99d0ff3cd2f2142d175e219078b561caacc6df569c3fd4fa6c7a",
+    "entries": 711,
+    "scope": "Inspectable retained native files/traces, failed and final logs, source snapshots, actual race binary/receipts, copied bundle and comparisons. Root/directories0700, sensitive logs0600. Dependency/model symlinks are identified rather than recursively copied."
+  }
+}

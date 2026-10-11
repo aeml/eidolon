@@ -1,0 +1,1164 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-09T22:52:51.702307+00:00",
+  "classification": "Rejected independent weighted wearable LOD selection. Retain source-pinned experiments and opt-in native substitution diagnostic only; runtime/assets/package unchanged.",
+  "base": "209108f0466b521916216050d6217cac4d61a3d8",
+  "qualifiedRuntimeCommit": "6fbffd3435e1798841a56ab120e938db3d512e34",
+  "publicBaseline": {
+    "version": "1.79.22",
+    "commit": "30a8b6038df9e071eef0f57564ae94087d1a0b11",
+    "unchanged": true
+  },
+  "intent": "Reduce measured dominant equipped body/gear geometry without losing fitted material detail, rig/morph/attachment identities or lowering whole-game budgets. Original assets and selected runtime catalogs never edited.",
+  "tools": {
+    "gltfTransform": "4.5.1",
+    "meshoptimizer": "1.2.0",
+    "vertexLayout": "separate"
+  },
+  "primaryDocumentation": [
+    "https://github.com/zeux/meshoptimizer",
+    "https://github.com/zeux/meshoptimizer/blob/master/js/README.md"
+  ],
+  "versionCaveat": "Primary README describes current upstream; installed 1.2.0 local JS API/types/source were inspected for actual Permissive/simplifyWithAttributes support. No dependency upgrade.",
+  "method": {
+    "screen": "Sixteen standard supplied fits; strict reproduction must equal existing runtime counts. Compare strict lower index targets separately from weighted attributes. LockBorder retained; no Prune or Sloppy. High error0.002 and Low0.006 unchanged. Weighted mode High target0.04/Low0.02, normal weights0.05, UV0.1 and continuous per-bone skin blend0.1; numeric JOINT IDs are not continuous errors. Coincident positions with different canonical skin blends fixed. Unsupported semantics/morphs/over32 attribute channels use original strict path.",
+    "contract": "Source manifest SHA-pinned originals. Index-only simplification; every surviving chosen triangle-corner semantic/component/normalized/raw value SHA exact through compaction and serialization. Separate buffers; exact nodes/TRS/skins/inverse binds/animation names/material names/texture payloads/morph roster/attribute semantics retained; serialized glTF0errors0warnings. A whole-fit candidate no smaller than existing runtime copies the exact reviewed GLB bytes. No catalog import or activation.",
+    "limits": "These contracts do not prove posed surface ordering, appearance or animation equivalence. Geometry changes deliberately require visual review. Existing strict native equivalence gates for renderer optimizations were not waived. This LOD trial is unselected.",
+    "seamVariant": "Before per-primitive mutations, within each mesh protect supplied vertices within a guard band of another material primitive vertex: radius2*qualityError*maximumPrimitiveExtent, plus existing skin-seam locks. Tested as conservative constraint only; not proof of all material-boundary correctness."
+  },
+  "screen": {
+    "sourceFits": 16,
+    "summedTrianglesByMode": {
+      "high": {
+        "strict": 105481,
+        "attributeStrict": 487419,
+        "attributePermissive": 487103,
+        "skinnedAttributePermissive": 126137,
+        "weightedSkinPermissive": 92205,
+        "strictLowerTarget": 103085
+      },
+      "low": {
+        "strict": 53579,
+        "attributeStrict": 483181,
+        "attributePermissive": 482555,
+        "skinnedAttributePermissive": 55483,
+        "weightedSkinPermissive": 38421,
+        "strictLowerTarget": 53617
+      }
+    },
+    "evidence": "target-controlled-screening.json"
+  },
+  "unprotected": {
+    "generated": {
+      "sourceFits": 40,
+      "qualities": {
+        "high": {
+          "baselineTriangles": 285208,
+          "candidateTriangles": 244452,
+          "reductionPercent": 14.28992174132563,
+          "exactReviewedFallbacks": 0,
+          "zeroGLTFErrorsAndWarnings": 40
+        },
+        "low": {
+          "baselineTriangles": 150348,
+          "candidateTriangles": 104096,
+          "reductionPercent": 30.763295820363425,
+          "exactReviewedFallbacks": 0,
+          "zeroGLTFErrorsAndWarnings": 40
+        }
+      }
+    },
+    "native": {
+      "terminal": {
+        "runs": [
+          {
+            "mode": "reference",
+            "exitCode": 0,
+            "startedUnix": 1791585729.768585,
+            "finishedUnix": 1791585742.830619
+          },
+          {
+            "mode": "candidate",
+            "exitCode": 0,
+            "startedUnix": 1791585742.830841,
+            "finishedUnix": 1791585757.8694983
+          }
+        ],
+        "complete": true
+      },
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "outfits": [
+        {
+          "class": "Fighter",
+          "quality": "high",
+          "colorTrianglesIncludingFloor": 65737,
+          "calls": 26,
+          "items": 14
+        },
+        {
+          "class": "Fighter",
+          "quality": "low",
+          "colorTrianglesIncludingFloor": 30809,
+          "calls": 23,
+          "items": 14
+        },
+        {
+          "class": "Rogue",
+          "quality": "high",
+          "colorTrianglesIncludingFloor": 59591,
+          "calls": 25,
+          "items": 14
+        },
+        {
+          "class": "Rogue",
+          "quality": "low",
+          "colorTrianglesIncludingFloor": 27093,
+          "calls": 21,
+          "items": 14
+        },
+        {
+          "class": "Wizard",
+          "quality": "high",
+          "colorTrianglesIncludingFloor": 68317,
+          "calls": 27,
+          "items": 14
+        },
+        {
+          "class": "Wizard",
+          "quality": "low",
+          "colorTrianglesIncludingFloor": 30804,
+          "calls": 24,
+          "items": 14
+        },
+        {
+          "class": "Cleric",
+          "quality": "high",
+          "colorTrianglesIncludingFloor": 59514,
+          "calls": 25,
+          "items": 14
+        },
+        {
+          "class": "Cleric",
+          "quality": "low",
+          "colorTrianglesIncludingFloor": 26980,
+          "calls": 24,
+          "items": 14
+        }
+      ],
+      "substitutionCandidates": 80,
+      "actualDistinctSubstitutions": 22,
+      "changedHashRequests": [
+        {
+          "url": "/assets/equipment/runtime/Cleric/leather-pants-legendary-high.glb",
+          "sha256": "121e7ee8dc60277902764d03997a1fa644b9ea6ed36ede47f69b4859e388b9fe",
+          "quality": "high",
+          "name": "Leather Pants",
+          "actorClass": "Cleric",
+          "tier": "legendary"
+        },
+        {
+          "url": "/assets/equipment/runtime/Cleric/leather-pants-standard-low.glb",
+          "sha256": "ea7da073aafc8e6c782e43177856f57a2a8ba72c78fb51637a0c1caa2e122e75",
+          "quality": "low",
+          "name": "Leather Pants",
+          "actorClass": "Cleric",
+          "tier": "standard"
+        },
+        {
+          "url": "/assets/equipment/runtime/Cleric/plate-greaves-legendary-high.glb",
+          "sha256": "f60661e05045ad0e65049d65b3ca0275a7bffb1dbd34f0f1db7d1d4364b5c111",
+          "quality": "high",
+          "name": "Plate Greaves",
+          "actorClass": "Cleric",
+          "tier": "legendary"
+        },
+        {
+          "url": "/assets/equipment/runtime/Cleric/plate-greaves-standard-low.glb",
+          "sha256": "73fb6c16f15c67483c83705b2b798482e1568471d1b0f7becce399597ff4b075",
+          "quality": "low",
+          "name": "Plate Greaves",
+          "actorClass": "Cleric",
+          "tier": "standard"
+        },
+        {
+          "url": "/assets/equipment/runtime/Cleric/robes-legendary-high.glb",
+          "sha256": "b2c8f31875ce3e7a5cd90b783a40ff37871c81ed224a5cdd0771910e76967ada",
+          "quality": "high",
+          "name": "Robes",
+          "actorClass": "Cleric",
+          "tier": "legendary"
+        },
+        {
+          "url": "/assets/equipment/runtime/Cleric/robes-standard-low.glb",
+          "sha256": "d1df9aecb780dce42ffa0fdae01c6e5499416282596a530ee8c643ee63917937",
+          "quality": "low",
+          "name": "Robes",
+          "actorClass": "Cleric",
+          "tier": "standard"
+        },
+        {
+          "url": "/assets/equipment/runtime/Fighter/leather-pants-legendary-high.glb",
+          "sha256": "ea8486536daca62b3ee9930e9076f5f7498dd2d9e620a76b9a60b5d008d1b486",
+          "quality": "high",
+          "name": "Leather Pants",
+          "actorClass": "Fighter",
+          "tier": "legendary"
+        },
+        {
+          "url": "/assets/equipment/runtime/Fighter/leather-pants-standard-low.glb",
+          "sha256": "fdedfa3e4085bef26881b7015d1bc444c803fbe7b687d458f4a933160a3f91df",
+          "quality": "low",
+          "name": "Leather Pants",
+          "actorClass": "Fighter",
+          "tier": "standard"
+        },
+        {
+          "url": "/assets/equipment/runtime/Fighter/plate-greaves-legendary-high.glb",
+          "sha256": "d344d9408bb939c0212deac282d33e441d0aa7ca7e314a87d408a34640e12a1d",
+          "quality": "high",
+          "name": "Plate Greaves",
+          "actorClass": "Fighter",
+          "tier": "legendary"
+        },
+        {
+          "url": "/assets/equipment/runtime/Fighter/plate-greaves-standard-low.glb",
+          "sha256": "d8d796a3ae2d972f338fcd1a2450bc7d83b350fdf904c0dd05d271091c17fd62",
+          "quality": "low",
+          "name": "Plate Greaves",
+          "actorClass": "Fighter",
+          "tier": "standard"
+        },
+        {
+          "url": "/assets/equipment/runtime/Fighter/plate-mail-legendary-high.glb",
+          "sha256": "58110a9b47293045135714c82da76d26252eb06d2c408bbcf36ec309cc7c0ae0",
+          "quality": "high",
+          "name": "Plate Mail",
+          "actorClass": "Fighter",
+          "tier": "legendary"
+        },
+        {
+          "url": "/assets/equipment/runtime/Fighter/plate-mail-standard-low.glb",
+          "sha256": "579b4aa3d1f1063049855896e9b5855fc8d56f0b1ef9e9feb44dc6cf53ab4c30",
+          "quality": "low",
+          "name": "Plate Mail",
+          "actorClass": "Fighter",
+          "tier": "standard"
+        },
+        {
+          "url": "/assets/equipment/runtime/Fighter/robes-legendary-high.glb",
+          "sha256": "3002a4af4e735aea404efd57243e2ff0e5199ec04ccfe6df3faf6e8a81a98c3b",
+          "quality": "high",
+          "name": "Robes",
+          "actorClass": "Fighter",
+          "tier": "legendary"
+        },
+        {
+          "url": "/assets/equipment/runtime/Fighter/robes-standard-low.glb",
+          "sha256": "e2716b18176622858a61df8eaeada1dc1790bd7ab4f67793c54820e1d29e2c09",
+          "quality": "low",
+          "name": "Robes",
+          "actorClass": "Fighter",
+          "tier": "standard"
+        },
+        {
+          "url": "/assets/equipment/runtime/Rogue/leather-pants-legendary-high.glb",
+          "sha256": "51a55e17c10afcfdc5352dd995497391f9db4205da9d9910a5177fff6db37b85",
+          "quality": "high",
+          "name": "Leather Pants",
+          "actorClass": "Rogue",
+          "tier": "legendary"
+        },
+        {
+          "url": "/assets/equipment/runtime/Rogue/leather-pants-standard-low.glb",
+          "sha256": "d24b20a01764fbc5b0d36b308044717ff172f507b6b517740e0f074150d47e0a",
+          "quality": "low",
+          "name": "Leather Pants",
+          "actorClass": "Rogue",
+          "tier": "standard"
+        },
+        {
+          "url": "/assets/equipment/runtime/Rogue/leather-tunic-legendary-high.glb",
+          "sha256": "b8eb7cb8eea9e46c16e5d2f0f7d35e25380906c21d609ce1f0c9e72ef7c1157d",
+          "quality": "high",
+          "name": "Leather Tunic",
+          "actorClass": "Rogue",
+          "tier": "legendary"
+        },
+        {
+          "url": "/assets/equipment/runtime/Rogue/leather-tunic-standard-low.glb",
+          "sha256": "a08210b4e90038164cbd64e523614b66a8e37ccbd76fb8357d3f0965e1caf2ce",
+          "quality": "low",
+          "name": "Leather Tunic",
+          "actorClass": "Rogue",
+          "tier": "standard"
+        },
+        {
+          "url": "/assets/equipment/runtime/Rogue/robes-legendary-high.glb",
+          "sha256": "7b4e156f45a826a7456ed75ceeff75bb9c742be7b00239f91251485141bc0b3d",
+          "quality": "high",
+          "name": "Robes",
+          "actorClass": "Rogue",
+          "tier": "legendary"
+        },
+        {
+          "url": "/assets/equipment/runtime/Rogue/robes-standard-low.glb",
+          "sha256": "1715806a46789a9db2a34d8ac398a50f66e88c5c0766f5b7332af50fe8ad1e43",
+          "quality": "low",
+          "name": "Robes",
+          "actorClass": "Rogue",
+          "tier": "standard"
+        },
+        {
+          "url": "/assets/equipment/runtime/Wizard/robes-legendary-high.glb",
+          "sha256": "6fd0b9b9acc0ccf33b3d313fc7dc8fdc1b648529e97f418b383169e1b95ce81f",
+          "quality": "high",
+          "name": "Robes",
+          "actorClass": "Wizard",
+          "tier": "legendary"
+        },
+        {
+          "url": "/assets/equipment/runtime/Wizard/robes-standard-low.glb",
+          "sha256": "24013f1645d91f70dce80602be70cf3a435d7b32b68ae49998762b33bfbc717c",
+          "quality": "low",
+          "name": "Robes",
+          "actorClass": "Wizard",
+          "tier": "standard"
+        }
+      ]
+    },
+    "decision": "Reject: inspected close Wizard preview visibly loses parts of gold vertical trim and chest detail. Front/back/mixed pose fixture and source/rig checks pass, but passing functional assertions and lower counts do not qualify art. Cause is consistent with separately simplified overlapping material surfaces; not proven by an isolation test.",
+    "rootReviewedImages": [
+      "native-controlled/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/0-CombatIdle.png",
+      "native-controlled/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/mixed-back-run.png",
+      "native-controlled/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/mixed-side-jump.png",
+      "native-controlled/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/Wizard-equipped-preview.png",
+      "native-controlled/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/0-CombatIdle.png",
+      "native-controlled/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/mixed-back-run.png",
+      "native-controlled/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/mixed-side-jump.png",
+      "native-controlled/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/Wizard-equipped-preview.png"
+    ]
+  },
+  "seamProtected": {
+    "generated": {
+      "sourceFits": 40,
+      "qualities": {
+        "high": {
+          "baselineTriangles": 285208,
+          "candidateTriangles": 283068,
+          "reductionPercent": 0.7503295840228885,
+          "exactReviewedFallbacks": 30,
+          "zeroGLTFErrorsAndWarnings": 40
+        },
+        "low": {
+          "baselineTriangles": 150348,
+          "candidateTriangles": 150348,
+          "reductionPercent": 0.0,
+          "exactReviewedFallbacks": 40,
+          "zeroGLTFErrorsAndWarnings": 40
+        }
+      }
+    },
+    "native": {
+      "terminal": {
+        "runs": [
+          {
+            "mode": "candidate",
+            "exitCode": 0,
+            "startedUnix": 1791586149.8562253,
+            "finishedUnix": 1791586163.3875964
+          }
+        ],
+        "complete": true
+      },
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "outfits": [
+        {
+          "class": "Fighter",
+          "quality": "high",
+          "colorTrianglesIncludingFloor": 67561,
+          "calls": 26,
+          "items": 14
+        },
+        {
+          "class": "Fighter",
+          "quality": "low",
+          "colorTrianglesIncludingFloor": 33019,
+          "calls": 23,
+          "items": 14
+        },
+        {
+          "class": "Rogue",
+          "quality": "high",
+          "colorTrianglesIncludingFloor": 60949,
+          "calls": 25,
+          "items": 14
+        },
+        {
+          "class": "Rogue",
+          "quality": "low",
+          "colorTrianglesIncludingFloor": 28485,
+          "calls": 21,
+          "items": 14
+        },
+        {
+          "class": "Wizard",
+          "quality": "high",
+          "colorTrianglesIncludingFloor": 70597,
+          "calls": 27,
+          "items": 14
+        },
+        {
+          "class": "Wizard",
+          "quality": "low",
+          "colorTrianglesIncludingFloor": 32342,
+          "calls": 24,
+          "items": 14
+        },
+        {
+          "class": "Cleric",
+          "quality": "high",
+          "colorTrianglesIncludingFloor": 61372,
+          "calls": 25,
+          "items": 14
+        },
+        {
+          "class": "Cleric",
+          "quality": "low",
+          "colorTrianglesIncludingFloor": 28686,
+          "calls": 24,
+          "items": 14
+        }
+      ],
+      "substitutionCandidates": 80,
+      "actualDistinctSubstitutions": 22,
+      "changedHashRequests": [
+        {
+          "url": "/assets/equipment/runtime/Cleric/plate-greaves-legendary-high.glb",
+          "sha256": "21dbcfdb90ebf23e23e38978b17902ce8fd7761dc526eba241ceee9cdb431ec5",
+          "quality": "high",
+          "name": "Plate Greaves",
+          "actorClass": "Cleric",
+          "tier": "legendary"
+        },
+        {
+          "url": "/assets/equipment/runtime/Rogue/leather-tunic-legendary-high.glb",
+          "sha256": "1b2d37373a51bfe5e3204218c65fb87b9200123aca803ab91f224366a5df3496",
+          "quality": "high",
+          "name": "Leather Tunic",
+          "actorClass": "Rogue",
+          "tier": "legendary"
+        }
+      ]
+    },
+    "decision": "Keep unselected. High selected-fit savings only0.75%; Low all40fits revert exact reviewed bytes. Gallery savings only182color triangles in Rogue High Leather Tunic; all other initial gallery counters unchanged. Wizard preview exactly matches all RGB pixels because robe uses unchanged reviewed GLB, not because modified robe was qualified. No full catalog or actual party rerun justified by this result.",
+    "rootReviewedImage": "native-seam-protected/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/Wizard-equipped-preview.png"
+  },
+  "reference": {
+    "terminal": {
+      "runs": [
+        {
+          "mode": "reference",
+          "exitCode": 0,
+          "startedUnix": 1791585729.768585,
+          "finishedUnix": 1791585742.830619
+        },
+        {
+          "mode": "candidate",
+          "exitCode": 0,
+          "startedUnix": 1791585742.830841,
+          "finishedUnix": 1791585757.8694983
+        }
+      ],
+      "complete": true
+    },
+    "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+    "outfits": [
+      {
+        "class": "Fighter",
+        "quality": "high",
+        "colorTrianglesIncludingFloor": 67561,
+        "calls": 26,
+        "items": 14
+      },
+      {
+        "class": "Fighter",
+        "quality": "low",
+        "colorTrianglesIncludingFloor": 33019,
+        "calls": 23,
+        "items": 14
+      },
+      {
+        "class": "Rogue",
+        "quality": "high",
+        "colorTrianglesIncludingFloor": 61131,
+        "calls": 25,
+        "items": 14
+      },
+      {
+        "class": "Rogue",
+        "quality": "low",
+        "colorTrianglesIncludingFloor": 28485,
+        "calls": 21,
+        "items": 14
+      },
+      {
+        "class": "Wizard",
+        "quality": "high",
+        "colorTrianglesIncludingFloor": 70597,
+        "calls": 27,
+        "items": 14
+      },
+      {
+        "class": "Wizard",
+        "quality": "low",
+        "colorTrianglesIncludingFloor": 32342,
+        "calls": 24,
+        "items": 14
+      },
+      {
+        "class": "Cleric",
+        "quality": "high",
+        "colorTrianglesIncludingFloor": 61372,
+        "calls": 25,
+        "items": 14
+      },
+      {
+        "class": "Cleric",
+        "quality": "low",
+        "colorTrianglesIncludingFloor": 28686,
+        "calls": 24,
+        "items": 14
+      }
+    ]
+  },
+  "initialNativeFailure": {
+    "terminal": {
+      "runs": [
+        {
+          "mode": "reference",
+          "exitCode": 0,
+          "startedUnix": 1791585600.391157,
+          "finishedUnix": 1791585614.2885914
+        },
+        {
+          "mode": "candidate",
+          "exitCode": 1,
+          "startedUnix": 1791585614.288984,
+          "finishedUnix": 1791585638.0702877
+        }
+      ],
+      "complete": true
+    },
+    "classification": "Reference passed; candidate fails final actual-substitution assertion with0 requests. Service worker serves baseline before page.route; no candidate native evidence in this run. Preserve failure, trace and source snapshots.",
+    "repair": "Both explicit comparison modes block service workers before navigation; candidate route hashes every generated asset and asserts actual substituted requests. Ordinary default gallery retains service workers. Same explicit native browser/viewport/outfits/poses used in corrected controls.",
+    "cacheLimit": "Preview response no-store on legacy paths is isolated diagnostic, not production cache/version qualification."
+  },
+  "provenanceNotes": [
+    "Initial retained native census scope string inherited a no-geometry-changes phrase. That phrase is false for corrected routed candidates; actual hash substitutions and this receipt define scope. Final test emits truthful candidate geometry scope.",
+    "native-controlled and native-seam-protected include exact pre-run source hashes and verified source copies. Final CLI differs only by refusing nonempty output directories; positive final High/Low generated hashes exactly match native seam candidate. Final gallery differs only in census scope description.",
+    "initial-screen-script.mjs was copied after the skinned mode was added; it does not reproduce earliest screening.json. Final six-mode source hash/report and other frozen revision snapshots retained.",
+    "No new frame-pacing, whole-game, active-party, device, full-catalog, service-worker integration, lifetime or VRAM acceptance claimed. Existing gallery independence,14items/outfit, alternating strikes,poses,mixed-outfit,stealth/pool/preview checks pass."
+  ],
+  "finalCLIValidation": {
+    "runs": [
+      {
+        "name": "positive-empty-directory",
+        "exitCode": 0
+      },
+      {
+        "name": "negative-nonempty-directory",
+        "exitCode": 1
+      }
+    ],
+    "matchesNativeSeamCandidateHashes": {
+      "high": true,
+      "low": true
+    }
+  },
+  "lint": {
+    "exitCode": 0,
+    "evidence": "final-lint.json"
+  },
+  "longSoak": {
+    "observed_at_utc": "2026-10-09T22:42:19Z",
+    "run": {
+      "id": 37880032315,
+      "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
+      "status": "in_progress",
+      "conclusion": null,
+      "run_attempt": 1,
+      "html_url": "https://github.com/aeml/eidolon/actions/runs/37880032315",
+      "updated_at": "2026-10-09T03:36:16Z"
+    },
+    "jobs": [
+      {
+        "name": "100-client authoritative-state soak",
+        "status": "in_progress",
+        "conclusion": null,
+        "started_at": "2026-10-09T03:36:15Z",
+        "completed_at": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Initialize containers",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Checkout",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Setup Go",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Setup Node.js",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Run multiplayer soak",
+            "status": "in_progress",
+            "conclusion": null,
+            "number": 6
+          },
+          {
+            "name": "Upload soak evidence",
+            "status": "pending",
+            "conclusion": null,
+            "number": 7
+          },
+          {
+            "name": "Post Setup Node.js",
+            "status": "pending",
+            "conclusion": null,
+            "number": 11
+          },
+          {
+            "name": "Post Setup Go",
+            "status": "pending",
+            "conclusion": null,
+            "number": 12
+          },
+          {
+            "name": "Post Checkout",
+            "status": "pending",
+            "conclusion": null,
+            "number": 13
+          },
+          {
+            "name": "Stop containers",
+            "status": "pending",
+            "conclusion": null,
+            "number": 14
+          }
+        ]
+      }
+    ]
+  },
+  "runtimeDisposition": "No new binary/catalog/version/public push or profile/access activation. Existing player/economy/authority untouched. Qualified runtime unchanged; full inherited1.11-1.99/art/Q/CB/equipped-party/devices/F1-F5/operations/owner/beta/launch/handoff remains active.",
+  "nextAction": "Investigate coordinated material-surface LOD and dominant supplied-body/eye geometry with source-derived rigs/morphs/fit retained. Current independent per-primitive weighted index collapse is not selected. Do not use counts or exact fallback preview to claim whole-game acceptance.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-wearable-attribute-checks-20261009",
+  "sourceSHA256": {
+    "scripts/derive-wearable-attribute-pilot.mjs": "5dd0e047894714a4b1f9c10065a8e859eb23fcfc735dcb01e85450d9c4fbc989",
+    "scripts/lib/weighted-wearable-indices.mjs": "622cb6781274d91c8b604ce98b9eca3e8beed6a19c6df162fd1330099195705e",
+    "scripts/inspect-wearable-simplification.mjs": "e676f331cbc8fdfd561df3181570e419ab2c282b61e449999f5f7bedab879d12",
+    "tests/e2e/wearable-attribute-pilot.js": "b81c3d70fecaf3394d765195e137bc3fa0e35adee9f154166921ceec70924472",
+    "tests/e2e/authored-class-equipment.spec.js": "0f18403a8ae3dfed3d555dd69a6ab44e52c9127f2cbd96001f513bdaa65d21a0"
+  },
+  "artifactSHA256": {
+    "compare-native-images.cjs": "8774739f13ee9a1c29bda8920405aa07252ce414388a7905114a23b6e7befb07",
+    "final-cli-fit/leather-tunic-legendary-pilot-high.glb": "1b2d37373a51bfe5e3204218c65fb87b9200123aca803ab91f224366a5df3496",
+    "final-cli-fit/leather-tunic-legendary-pilot-low.glb": "d7419706407648a054c4204302a78990e165c125d33412c37a43bd4cd79de59e",
+    "final-cli-fit/leather-tunic-legendary-pilot.json": "3db84e603712c9b8c792f6c1c940985cbbb8afb668da96f106b6ec1a818c2f53",
+    "final-cli-validation.json": "abad2a5f82aad7836b2cc2d4ed0ad71879517695e176e090d18af58ec9e79a71",
+    "final-lint.json": "b229d1d94b219e2d97e737b8964b6a52e506c00c5232906bbb2624ddd848c811",
+    "final-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-source-sha256.json": "1590830e9584e42f708115084f29f738f17127059a8703a69e6e7a387458ed06",
+    "gallery-fit-generation.json": "b7382303663d4f4090ad1769e9f69ee9007f312216f2f583ae0931a64d2cfa59",
+    "gallery-fits/Cleric/Leather-Pants/legendary/derive.log": "55a9fcfb3bb979f3c7733e1c140d9cba93ed63d692f35a29f2e66c89662aab94",
+    "gallery-fits/Cleric/Leather-Pants/legendary/leather-pants-legendary-pilot-high.glb": "121e7ee8dc60277902764d03997a1fa644b9ea6ed36ede47f69b4859e388b9fe",
+    "gallery-fits/Cleric/Leather-Pants/legendary/leather-pants-legendary-pilot-low.glb": "6b945d9014f529a00fb718afe5e12f07c1b2eb650966ac099fbe119335c30b21",
+    "gallery-fits/Cleric/Leather-Pants/legendary/leather-pants-legendary-pilot.json": "a3e91ea1965bee49e2dbe8c099a5bf0b617fb92b1af42dc3745a734790705dd6",
+    "gallery-fits/Cleric/Leather-Pants/standard/derive.log": "7dcec8a1cdfa181408ad8a939dc28904de1090c73757304a5974c576a5ba92b4",
+    "gallery-fits/Cleric/Leather-Pants/standard/leather-pants-standard-pilot-high.glb": "033a278e80d04b6a4b0bf52a9f1adeb604c4fc8bbac2619d484eef6630f7aff0",
+    "gallery-fits/Cleric/Leather-Pants/standard/leather-pants-standard-pilot-low.glb": "ea7da073aafc8e6c782e43177856f57a2a8ba72c78fb51637a0c1caa2e122e75",
+    "gallery-fits/Cleric/Leather-Pants/standard/leather-pants-standard-pilot.json": "1cddb5d4166523b3f87cdc5b4f6fecf2873d9952af9feabd2fc54d8f8d312ea9",
+    "gallery-fits/Cleric/Leather-Tunic/legendary/derive.log": "0129e85f3460eb6e7c95df8263e1f336fdc4e10fde3ab866986e288bc4618a79",
+    "gallery-fits/Cleric/Leather-Tunic/legendary/leather-tunic-legendary-pilot-high.glb": "dd08d6486d736110bc5ce95d56c5ef0a10754a161d992f45c58e61ee0cd3e639",
+    "gallery-fits/Cleric/Leather-Tunic/legendary/leather-tunic-legendary-pilot-low.glb": "673311a7c370908fab199201fec46708f33df4ca9e2f6438dd6d7ff554fae814",
+    "gallery-fits/Cleric/Leather-Tunic/legendary/leather-tunic-legendary-pilot.json": "ec6399d8cfd65370b219f2de8a4933461b125e218eaa2c7c2b5cb394a705d866",
+    "gallery-fits/Cleric/Leather-Tunic/standard/derive.log": "7fd6ecf6cb4f9b65e88d8afd4ac48e87c147010e2591bf6802c424f263b6095c",
+    "gallery-fits/Cleric/Leather-Tunic/standard/leather-tunic-standard-pilot-high.glb": "b9dfca879e32570220459289abdaadb6cf6a9b6c86f01ef3542dfa3f01ddd9f3",
+    "gallery-fits/Cleric/Leather-Tunic/standard/leather-tunic-standard-pilot-low.glb": "0ad091daa5bd386b64beb184435d625186419d1018210a9686dbb3460ca68f8b",
+    "gallery-fits/Cleric/Leather-Tunic/standard/leather-tunic-standard-pilot.json": "052c8c44bea96412b3393c2e1f796056ef04a32d4cf03f9abd3eda2228a8469b",
+    "gallery-fits/Cleric/Plate-Greaves/legendary/derive.log": "54ab40f813039bd07e0c304e9727fec2ee1e05f796583cb31a5a1794b1186349",
+    "gallery-fits/Cleric/Plate-Greaves/legendary/plate-greaves-legendary-pilot-high.glb": "f60661e05045ad0e65049d65b3ca0275a7bffb1dbd34f0f1db7d1d4364b5c111",
+    "gallery-fits/Cleric/Plate-Greaves/legendary/plate-greaves-legendary-pilot-low.glb": "4a48e76cab7335f047832a8960a136245999a508a9541cb98d85af4d6f82a70c",
+    "gallery-fits/Cleric/Plate-Greaves/legendary/plate-greaves-legendary-pilot.json": "ca3d4f38d70a71da35235974ee93fe605902ce8939ea314fec4b6cf7edbcac5a",
+    "gallery-fits/Cleric/Plate-Greaves/standard/derive.log": "ba557ac29120b72372541df6c7597ca0429f35450cf2346dfa41eb3ddf8bf040",
+    "gallery-fits/Cleric/Plate-Greaves/standard/plate-greaves-standard-pilot-high.glb": "5c279a3cb4ef64e6f8740f51803d30b912dfb9761200f6899d0150db0de3f22d",
+    "gallery-fits/Cleric/Plate-Greaves/standard/plate-greaves-standard-pilot-low.glb": "73fb6c16f15c67483c83705b2b798482e1568471d1b0f7becce399597ff4b075",
+    "gallery-fits/Cleric/Plate-Greaves/standard/plate-greaves-standard-pilot.json": "9938488af2ef8421df6b95db1d7e41d3ee3d241a9575238945fa8431ca8ee0ef",
+    "gallery-fits/Cleric/Plate-Mail/legendary/derive.log": "24f3275ae582ca71e88c61038f081474ac42c24aa991f8bd9b4fe6429ceed61d",
+    "gallery-fits/Cleric/Plate-Mail/legendary/plate-mail-legendary-pilot-high.glb": "11315841b13e4c36a9ea3b9afa89bd6b5dbd5b6bcf9cfb159f91a002eb8f4fdd",
+    "gallery-fits/Cleric/Plate-Mail/legendary/plate-mail-legendary-pilot-low.glb": "c1f6cd5b34a13ba2ed28dbbce34974b746204db2de63cfe4b0f49282f8607b62",
+    "gallery-fits/Cleric/Plate-Mail/legendary/plate-mail-legendary-pilot.json": "14d29d41d2a8cc8a959a11a01ba2b0c59e5703d019290d58d1628f9a87f014cc",
+    "gallery-fits/Cleric/Plate-Mail/standard/derive.log": "52502fd4e148645bf3f3e95a1656e6264fe8b3fdc4870a8f5ec6dbd6c34020da",
+    "gallery-fits/Cleric/Plate-Mail/standard/plate-mail-standard-pilot-high.glb": "a6c88acb4d0c0fc824315a6ed550af78eab4df499b1a7791a1622488d51625f6",
+    "gallery-fits/Cleric/Plate-Mail/standard/plate-mail-standard-pilot-low.glb": "44648b7d676855f9af9d61cfe103630fc271bfcda1e935349b5c1c3d5882fca9",
+    "gallery-fits/Cleric/Plate-Mail/standard/plate-mail-standard-pilot.json": "d46684c2f04ced31d15353098638ba4e5b6c1ceb45f5eab0088b4d2ab2f9c94b",
+    "gallery-fits/Cleric/Robes/legendary/derive.log": "8024222006d7683f4f1abe3f139b4e4259accd5c5cdde0197b93b3e653813dfa",
+    "gallery-fits/Cleric/Robes/legendary/robes-legendary-pilot-high.glb": "b2c8f31875ce3e7a5cd90b783a40ff37871c81ed224a5cdd0771910e76967ada",
+    "gallery-fits/Cleric/Robes/legendary/robes-legendary-pilot-low.glb": "9c95e1e48ab49be28451e1d74623b4975a14d34d7d8f10c7bbd8bfc289aaf38b",
+    "gallery-fits/Cleric/Robes/legendary/robes-legendary-pilot.json": "01390a8bfb8917bc0ee8b072d92cb10fbf8123d83a872d3569c6be8045ff8a87",
+    "gallery-fits/Cleric/Robes/standard/derive.log": "dd8e7e01de05cbb6990a0945a0621885e8f8718bdd8f682fde2b9b7e306425b7",
+    "gallery-fits/Cleric/Robes/standard/robes-standard-pilot-high.glb": "2f69ff1bdbbff247ecdaf90c9c331ed6a70c4e245a7c0d37edd18ae633610cc4",
+    "gallery-fits/Cleric/Robes/standard/robes-standard-pilot-low.glb": "d1df9aecb780dce42ffa0fdae01c6e5499416282596a530ee8c643ee63917937",
+    "gallery-fits/Cleric/Robes/standard/robes-standard-pilot.json": "07e037fd11bab24602e9e4ff9969dfe8c187c5db16cf4354cf9eb2596097c569",
+    "gallery-fits/Fighter/Leather-Pants/legendary/derive.log": "1e81a1181225a7020887977256de579ff28b998891566c268e7c34ba0f9b0eb9",
+    "gallery-fits/Fighter/Leather-Pants/legendary/leather-pants-legendary-pilot-high.glb": "ea8486536daca62b3ee9930e9076f5f7498dd2d9e620a76b9a60b5d008d1b486",
+    "gallery-fits/Fighter/Leather-Pants/legendary/leather-pants-legendary-pilot-low.glb": "e1cb5996d90d8bc7a2fac17a76e425167c0977583fce6f5c6579c0bd8cf6056c",
+    "gallery-fits/Fighter/Leather-Pants/legendary/leather-pants-legendary-pilot.json": "a45ac66badcbdb634a9f451e74f2dd509d839e84a45e92887f9aa0832651aafc",
+    "gallery-fits/Fighter/Leather-Pants/standard/derive.log": "b9f54da13512bcdc31d443d4b2e1c44a165608585b14af03143acc95cefa2d92",
+    "gallery-fits/Fighter/Leather-Pants/standard/leather-pants-standard-pilot-high.glb": "c8b410d1bc28559d619deeec6c58c85b42ac6356d895270f3e3e4afbb6ae7e77",
+    "gallery-fits/Fighter/Leather-Pants/standard/leather-pants-standard-pilot-low.glb": "fdedfa3e4085bef26881b7015d1bc444c803fbe7b687d458f4a933160a3f91df",
+    "gallery-fits/Fighter/Leather-Pants/standard/leather-pants-standard-pilot.json": "94fb8dae4d50464ba8380179f147b4ef19b60c1e1cd19c105141069cd9821f1a",
+    "gallery-fits/Fighter/Leather-Tunic/legendary/derive.log": "b4a7cdd714a822bdbf84b6b4d5065c09183c74f48d370edddc94bd638fb2c620",
+    "gallery-fits/Fighter/Leather-Tunic/legendary/leather-tunic-legendary-pilot-high.glb": "570a65a2d926e2659dbf46a18ca4c0b1ab3199f7291670741b266d2a18073264",
+    "gallery-fits/Fighter/Leather-Tunic/legendary/leather-tunic-legendary-pilot-low.glb": "9f5ae13077cdfc27e37d53c2d64496c72147a3034bf96d6c58c6ba99e8b3dadd",
+    "gallery-fits/Fighter/Leather-Tunic/legendary/leather-tunic-legendary-pilot.json": "e61adb87d04453ee49f96a8c52311d678aef5370bc2548de1e5ed855e6776109",
+    "gallery-fits/Fighter/Leather-Tunic/standard/derive.log": "11a70853f83c3b4b3e1848d205bf5c648d4692641a3247d328f2c36473596b21",
+    "gallery-fits/Fighter/Leather-Tunic/standard/leather-tunic-standard-pilot-high.glb": "5d857f313f0e622ac7a79dc7e5e1e1ef0f210002ae9fd142ec8bd47a3687f5a9",
+    "gallery-fits/Fighter/Leather-Tunic/standard/leather-tunic-standard-pilot-low.glb": "faf85a1acceee2b0952ce0f2c4227867b3525ae3f1d31a1e758edece01099507",
+    "gallery-fits/Fighter/Leather-Tunic/standard/leather-tunic-standard-pilot.json": "b21f070b3d4d98ae219e89771b29cd72371a340b6fa864f9668e798d7ac0fd29",
+    "gallery-fits/Fighter/Plate-Greaves/legendary/derive.log": "804e27eae585ea4c1b08ed426a969d1a76eadda7bb3b564f79b023b23cc907ee",
+    "gallery-fits/Fighter/Plate-Greaves/legendary/plate-greaves-legendary-pilot-high.glb": "d344d9408bb939c0212deac282d33e441d0aa7ca7e314a87d408a34640e12a1d",
+    "gallery-fits/Fighter/Plate-Greaves/legendary/plate-greaves-legendary-pilot-low.glb": "df13fbb68d29f1f40ab6f89e2f1da133e55a270e7d26ffc035001888ca3b1671",
+    "gallery-fits/Fighter/Plate-Greaves/legendary/plate-greaves-legendary-pilot.json": "67c5e54e72b444fbe444522e03d16e24741c43d1a4fa45a492d1489f7317c2ad",
+    "gallery-fits/Fighter/Plate-Greaves/standard/derive.log": "15b46e59fb6b3a3e13b9149779a87206565c8c555936e80b530727993d95bc37",
+    "gallery-fits/Fighter/Plate-Greaves/standard/plate-greaves-standard-pilot-high.glb": "a7ee20213f166f2270e1105c1c74ceca126a3e127bf62b7f40db2060025cac0f",
+    "gallery-fits/Fighter/Plate-Greaves/standard/plate-greaves-standard-pilot-low.glb": "d8d796a3ae2d972f338fcd1a2450bc7d83b350fdf904c0dd05d271091c17fd62",
+    "gallery-fits/Fighter/Plate-Greaves/standard/plate-greaves-standard-pilot.json": "27089a728dcf1bab0860430769ec0ef7828316188fd9628c65e5f9ad505740ff",
+    "gallery-fits/Fighter/Plate-Mail/legendary/derive.log": "e5a2d009eee5641e65cd0f921d3bacb09c9b29ceadc3cde5de45f97b613f97d9",
+    "gallery-fits/Fighter/Plate-Mail/legendary/plate-mail-legendary-pilot-high.glb": "58110a9b47293045135714c82da76d26252eb06d2c408bbcf36ec309cc7c0ae0",
+    "gallery-fits/Fighter/Plate-Mail/legendary/plate-mail-legendary-pilot-low.glb": "c89cee9fa648d55a6ffd85cf48c06a306e46fe45e672a234ff1b205fc5c6dec4",
+    "gallery-fits/Fighter/Plate-Mail/legendary/plate-mail-legendary-pilot.json": "71b0b447554d28ee8f3fb3d3c38cab1914e498a0fb2f4bb7ce98294383d28d96",
+    "gallery-fits/Fighter/Plate-Mail/standard/derive.log": "47811e1cab6f79f396a6aa4dfc07516f616df3e84cdde27407aa276d437d5fe1",
+    "gallery-fits/Fighter/Plate-Mail/standard/plate-mail-standard-pilot-high.glb": "d1a779f4a0596bc23255faf77fc96f5b327038b3047e2831143818280d5569b9",
+    "gallery-fits/Fighter/Plate-Mail/standard/plate-mail-standard-pilot-low.glb": "579b4aa3d1f1063049855896e9b5855fc8d56f0b1ef9e9feb44dc6cf53ab4c30",
+    "gallery-fits/Fighter/Plate-Mail/standard/plate-mail-standard-pilot.json": "5c00e4b004c9ef5f85897ccb329368af9cef7b60d6f4ff07c9f8fa09103bf21a",
+    "gallery-fits/Fighter/Robes/legendary/derive.log": "e0786f68d5757f24482862753d2b27a6db303ab1bc398877f30601b5033af4cd",
+    "gallery-fits/Fighter/Robes/legendary/robes-legendary-pilot-high.glb": "3002a4af4e735aea404efd57243e2ff0e5199ec04ccfe6df3faf6e8a81a98c3b",
+    "gallery-fits/Fighter/Robes/legendary/robes-legendary-pilot-low.glb": "9a7e9c633ef673cad1b492420b2e4d6ab11b2a24548f990658fc0c7a74df702b",
+    "gallery-fits/Fighter/Robes/legendary/robes-legendary-pilot.json": "1037626dbb6d015e8d123f9e75a4960b5189537511f4665d386e2f8e74f5da07",
+    "gallery-fits/Fighter/Robes/standard/derive.log": "474a07b7ef2c179037100371bcd87553f15da6388dbc832c79e0b9e6e4930317",
+    "gallery-fits/Fighter/Robes/standard/robes-standard-pilot-high.glb": "93e45e16e33c0a8ccdeb5cb875ce98a25490ecd9f3574c4ce737c2a967f276d4",
+    "gallery-fits/Fighter/Robes/standard/robes-standard-pilot-low.glb": "e2716b18176622858a61df8eaeada1dc1790bd7ab4f67793c54820e1d29e2c09",
+    "gallery-fits/Fighter/Robes/standard/robes-standard-pilot.json": "033a23a7b74bdf24229eda7e1b35ff4bf052ef1296f34ce7e6bc0dbc4d00609a",
+    "gallery-fits/Rogue/Leather-Pants/legendary/derive.log": "0447f3f4ca5c957ed5188f52dafcf720cc2541e18c7b407d81a637c240a389b2",
+    "gallery-fits/Rogue/Leather-Pants/legendary/leather-pants-legendary-pilot-high.glb": "51a55e17c10afcfdc5352dd995497391f9db4205da9d9910a5177fff6db37b85",
+    "gallery-fits/Rogue/Leather-Pants/legendary/leather-pants-legendary-pilot-low.glb": "f8b84d5deaa1fc82f98951f447ea4676ad6f6a563463cb31d33799f1e05dd40d",
+    "gallery-fits/Rogue/Leather-Pants/legendary/leather-pants-legendary-pilot.json": "280c0ee2389be08967540e131c59fbbc41f1139720ca236f17cb7207fbf9c219",
+    "gallery-fits/Rogue/Leather-Pants/standard/derive.log": "dbe3525c772fee94593e8c7bfcffd6305875ce519997c30d9fa23c0a79e90a44",
+    "gallery-fits/Rogue/Leather-Pants/standard/leather-pants-standard-pilot-high.glb": "0fc8bca9f7016647cd0c0b07cfb475ae1876ea1f3ba51a62edb17d8e27238c1a",
+    "gallery-fits/Rogue/Leather-Pants/standard/leather-pants-standard-pilot-low.glb": "d24b20a01764fbc5b0d36b308044717ff172f507b6b517740e0f074150d47e0a",
+    "gallery-fits/Rogue/Leather-Pants/standard/leather-pants-standard-pilot.json": "91c2a40395b45795918880e902f0999f684005aeecfc113c2ca6983b10ca2e8f",
+    "gallery-fits/Rogue/Leather-Tunic/legendary/derive.log": "e593cf9180a102888b635e093d13fa2598ecbd031391f954464e2ddf90433b8d",
+    "gallery-fits/Rogue/Leather-Tunic/legendary/leather-tunic-legendary-pilot-high.glb": "b8eb7cb8eea9e46c16e5d2f0f7d35e25380906c21d609ce1f0c9e72ef7c1157d",
+    "gallery-fits/Rogue/Leather-Tunic/legendary/leather-tunic-legendary-pilot-low.glb": "db66806920a00773abf38adb1c85e0dc542d03ff5b57269e3755bc656cc849df",
+    "gallery-fits/Rogue/Leather-Tunic/legendary/leather-tunic-legendary-pilot.json": "a209a3e064d3167b7c4e7a21680b83b9f15d780fa8d04569652f9c1a5e8f84a7",
+    "gallery-fits/Rogue/Leather-Tunic/standard/derive.log": "70d1b2774086c54d220d0f69c441bf1d1d884fde3dbfcaefec652a8ef059803c",
+    "gallery-fits/Rogue/Leather-Tunic/standard/leather-tunic-standard-pilot-high.glb": "31ee62e367cff04796c9d3c052c0fc93c9490e2d813bf31bcdac5003896c2e3d",
+    "gallery-fits/Rogue/Leather-Tunic/standard/leather-tunic-standard-pilot-low.glb": "a08210b4e90038164cbd64e523614b66a8e37ccbd76fb8357d3f0965e1caf2ce",
+    "gallery-fits/Rogue/Leather-Tunic/standard/leather-tunic-standard-pilot.json": "c30bb799835c81a1bac0e9cf60b93bee1d585779bc1a08fcb4c2ebff2013d05d",
+    "gallery-fits/Rogue/Plate-Greaves/legendary/derive.log": "b0a9b5529b2bcb17682181fd3340a756d96ae020f47222bfaaf549748cd8468a",
+    "gallery-fits/Rogue/Plate-Greaves/legendary/plate-greaves-legendary-pilot-high.glb": "093f2d061bc738aaebe1d6c6c053bb58603fa4632eb13c403a5dce7d7d108bd6",
+    "gallery-fits/Rogue/Plate-Greaves/legendary/plate-greaves-legendary-pilot-low.glb": "8d22f7955ade506994e3a28bfbe36b51129a62225f4cb81f4fafbe95d7c1c378",
+    "gallery-fits/Rogue/Plate-Greaves/legendary/plate-greaves-legendary-pilot.json": "25a4909c58ec613beee24ca3ab0073f8a90068ab5deead19996aa9c615055ad1",
+    "gallery-fits/Rogue/Plate-Greaves/standard/derive.log": "bbf3ebcde45534372befdc42b71c6d5a4ef812c8387e0e31b89bb1702b69aced",
+    "gallery-fits/Rogue/Plate-Greaves/standard/plate-greaves-standard-pilot-high.glb": "ce613a12b05c2766a4fa8bfd77fc421eb792b3a71b8fba23ffd709d7ec1c3b5c",
+    "gallery-fits/Rogue/Plate-Greaves/standard/plate-greaves-standard-pilot-low.glb": "7d0f0e7fab070c618b1ec0ee35508d1ffc6d2e6fb33fa43edab0d5ae679bef16",
+    "gallery-fits/Rogue/Plate-Greaves/standard/plate-greaves-standard-pilot.json": "01ae9a3a9b6756c328930cfcbc33a9c382d0ae1413ac09630aebc19176ff0067",
+    "gallery-fits/Rogue/Plate-Mail/legendary/derive.log": "2fa30450939d1e4a04215c8dce47ae216d209ba8598bdbcda6e6ff447e8a0bac",
+    "gallery-fits/Rogue/Plate-Mail/legendary/plate-mail-legendary-pilot-high.glb": "4bf430b64feebcf17db7cd200c33d68ce1600ad4fe3398e1920802a4f61cec53",
+    "gallery-fits/Rogue/Plate-Mail/legendary/plate-mail-legendary-pilot-low.glb": "7a6cef1d10fedda4d85a9e3f8f311609585ac3e786b202014c6ed0a0194741e6",
+    "gallery-fits/Rogue/Plate-Mail/legendary/plate-mail-legendary-pilot.json": "deeb10d612c5c41c5cf664346a3d69ed44006e2e6bd8f14b849ff55b6cb22497",
+    "gallery-fits/Rogue/Plate-Mail/standard/derive.log": "4aae7ef49e5e3b8945fd70c2a98f6b705a828da586fbb38171267fa23adef7ee",
+    "gallery-fits/Rogue/Plate-Mail/standard/plate-mail-standard-pilot-high.glb": "7f65dbfcdaafae3aee585c9f5269bf7c2e5087a04b565842bd75a0f6f06d6efa",
+    "gallery-fits/Rogue/Plate-Mail/standard/plate-mail-standard-pilot-low.glb": "a105459eb0c94b6faa15313bf1b33c2960b471e0f24698c791a76e78cd76144d",
+    "gallery-fits/Rogue/Plate-Mail/standard/plate-mail-standard-pilot.json": "e1a5790675457b7b29bd4cc98cb7b585896227675ef3a6560c50d75b362586dd",
+    "gallery-fits/Rogue/Robes/legendary/derive.log": "87ab9a3fdda9a6605a2bb1a962436123636a3146bcf2a807a6c11bb6741f9a4b",
+    "gallery-fits/Rogue/Robes/legendary/robes-legendary-pilot-high.glb": "7b4e156f45a826a7456ed75ceeff75bb9c742be7b00239f91251485141bc0b3d",
+    "gallery-fits/Rogue/Robes/legendary/robes-legendary-pilot-low.glb": "f534075b77b7f2006d0a5f1dbdb4bd0d3ecfb17c85f87fb140e14d2f97000f0a",
+    "gallery-fits/Rogue/Robes/legendary/robes-legendary-pilot.json": "04445013e137a1fdcc69cfad5443f73ed9e3e91d115308e298e6766e10c4cfd5",
+    "gallery-fits/Rogue/Robes/standard/derive.log": "1ae5db7f8175d757ed1ad9b06f883219b6b6ff704648141936d2b50e76a77d52",
+    "gallery-fits/Rogue/Robes/standard/robes-standard-pilot-high.glb": "514ff82211a0a490762d7acd19cdd81f4fb89384ab575d352c6f88a29128df98",
+    "gallery-fits/Rogue/Robes/standard/robes-standard-pilot-low.glb": "1715806a46789a9db2a34d8ac398a50f66e88c5c0766f5b7332af50fe8ad1e43",
+    "gallery-fits/Rogue/Robes/standard/robes-standard-pilot.json": "dfcfecc18a096799090150ff23a56f71330ae41d33d7bca7e457b786cf94c0ea",
+    "gallery-fits/Wizard/Leather-Pants/legendary/derive.log": "e4050f9a13a042c6e098bbc723ad493d760536d15e914b6234551bd4ec988bd0",
+    "gallery-fits/Wizard/Leather-Pants/legendary/leather-pants-legendary-pilot-high.glb": "d7701a848a7d61025e7aecf47a504616fb47d008b1f6b19fb541e707c4fa6d79",
+    "gallery-fits/Wizard/Leather-Pants/legendary/leather-pants-legendary-pilot-low.glb": "bcfb299fb4d1e7ceab9206083cb2ea9daa06cc16f1679ba349249bee9a3c948c",
+    "gallery-fits/Wizard/Leather-Pants/legendary/leather-pants-legendary-pilot.json": "5a695a9f74fdb4dd1b1a6a409cceed6e0fcb702407d530e0259ee9e16d4fb5c0",
+    "gallery-fits/Wizard/Leather-Pants/standard/derive.log": "b0c5bfab8a8ef6fe923752220ca3107b394e5fd345893a63a4f08e28a6f6173f",
+    "gallery-fits/Wizard/Leather-Pants/standard/leather-pants-standard-pilot-high.glb": "a03c57668c0731de4a6939a5a107f403be2e37d630ead0bdd14669d5d4b60201",
+    "gallery-fits/Wizard/Leather-Pants/standard/leather-pants-standard-pilot-low.glb": "7fa20d7e1b2cf92dd07c5287524200558d1d687c6804bf566af632c4322285b0",
+    "gallery-fits/Wizard/Leather-Pants/standard/leather-pants-standard-pilot.json": "aaf762b67d9df68647ad57d5e24c9a1e44a18ae3fdc43aa78f5c163476268fca",
+    "gallery-fits/Wizard/Leather-Tunic/legendary/derive.log": "0a574a88a16bbbdf88461bfa1c510bc27f76c096973f1849043edf963c2bbe98",
+    "gallery-fits/Wizard/Leather-Tunic/legendary/leather-tunic-legendary-pilot-high.glb": "24b4a81c7380a994b4ece7debc7ff25be86c50ff5f3034cf7a026199bf24d522",
+    "gallery-fits/Wizard/Leather-Tunic/legendary/leather-tunic-legendary-pilot-low.glb": "bcf3695957487e7d2abe863e6df4eb5ac23847d302e9d2d7dd0be48543c65a20",
+    "gallery-fits/Wizard/Leather-Tunic/legendary/leather-tunic-legendary-pilot.json": "d05f16219a98550799c412ce1e566e75467477751166989a2e97b718885264c1",
+    "gallery-fits/Wizard/Leather-Tunic/standard/derive.log": "8e6140ad8d2b1227bb8f5f128fb030246055b1ce8318bc19a8e93d1195d5121c",
+    "gallery-fits/Wizard/Leather-Tunic/standard/leather-tunic-standard-pilot-high.glb": "57cd244577dad3a517fb391cdbb8f3723b690c212f07173b64e453be947f83b7",
+    "gallery-fits/Wizard/Leather-Tunic/standard/leather-tunic-standard-pilot-low.glb": "538c02563165a943538eb1b01ec91b9137f3abae7297d56711c7fb19fce3cb54",
+    "gallery-fits/Wizard/Leather-Tunic/standard/leather-tunic-standard-pilot.json": "beacc7d936037b83c238b4d89f0c07523bdb404872706a8328c6702ea973c522",
+    "gallery-fits/Wizard/Plate-Greaves/legendary/derive.log": "dc29c2c69ca2dbcad3514a501d22ce821e2b10d529d8c106bf60a84e6db6a797",
+    "gallery-fits/Wizard/Plate-Greaves/legendary/plate-greaves-legendary-pilot-high.glb": "0e6166b0a6f11e16d7080b8608affdc9deb058e3fd8b7acb77008b53fc7cdcd9",
+    "gallery-fits/Wizard/Plate-Greaves/legendary/plate-greaves-legendary-pilot-low.glb": "dc4ba631c2979abe68d35cf7635d611ae6ec45355bbdd12578bb414b96d9ea7b",
+    "gallery-fits/Wizard/Plate-Greaves/legendary/plate-greaves-legendary-pilot.json": "7ee92bd3eaf406d664af5c1a7bdb0b793e90c2e2fc23345633eb9889d3b94a9f",
+    "gallery-fits/Wizard/Plate-Greaves/standard/derive.log": "f397982bc8730d0e13ae6c87f28965c535d41827155868c21438030ca6f69168",
+    "gallery-fits/Wizard/Plate-Greaves/standard/plate-greaves-standard-pilot-high.glb": "0bcfe987b31d66f43676af6758037aad3aa50885bb268cd1a75843130f32edb6",
+    "gallery-fits/Wizard/Plate-Greaves/standard/plate-greaves-standard-pilot-low.glb": "7d5282704334cf3700c15d8dd9e8a57dc73e373c247465a2777cdcbe42ec9df4",
+    "gallery-fits/Wizard/Plate-Greaves/standard/plate-greaves-standard-pilot.json": "912684d07821c81cf4ceb7665399ed35e6f6ed2fe4ba693b0567300b3ce83f0e",
+    "gallery-fits/Wizard/Plate-Mail/legendary/derive.log": "e5d974235a582248ba487eb0c33ef18c1ebe048702c8e63dc9e8fcbfcd351b99",
+    "gallery-fits/Wizard/Plate-Mail/legendary/plate-mail-legendary-pilot-high.glb": "feb360c6ac8651286b17f5eeba77799bc6dc2f2cdc0259cfc912d2b806109cf6",
+    "gallery-fits/Wizard/Plate-Mail/legendary/plate-mail-legendary-pilot-low.glb": "86fc7eb8e9e0a51a0d1a29a3bb2374659889b51c941bc27dad9e43b45a434701",
+    "gallery-fits/Wizard/Plate-Mail/legendary/plate-mail-legendary-pilot.json": "d7f4e2fee0fd1602217ceca901baea9d9284715f678acd998dfbaccb042821d9",
+    "gallery-fits/Wizard/Plate-Mail/standard/derive.log": "ea641f370537d0a95cc72b2d01747e379f608fabec87c87cc45b2e1fc0c71281",
+    "gallery-fits/Wizard/Plate-Mail/standard/plate-mail-standard-pilot-high.glb": "e5d098148203b5928c34bcff8a962866d2a6ef1e8b26245232d9c6ea89b9b759",
+    "gallery-fits/Wizard/Plate-Mail/standard/plate-mail-standard-pilot-low.glb": "942138da05e367bac8d22d57ab001540f674e7b2f1e4244e30d364cc4328f67b",
+    "gallery-fits/Wizard/Plate-Mail/standard/plate-mail-standard-pilot.json": "2049345ad801e1cfdd98a58ab77311e099b289fe2a5ec920e1abeaf0ec946394",
+    "gallery-fits/Wizard/Robes/legendary/derive.log": "0345b9805185dd141093b95bc4beef115b5060dd4c1888f7979e21e68d2dafd5",
+    "gallery-fits/Wizard/Robes/legendary/robes-legendary-pilot-high.glb": "6fd0b9b9acc0ccf33b3d313fc7dc8fdc1b648529e97f418b383169e1b95ce81f",
+    "gallery-fits/Wizard/Robes/legendary/robes-legendary-pilot-low.glb": "5c30ecf1d6311a585a8fd556dc86b6a4d9def1017ad0a33a7b464f4af194a4e8",
+    "gallery-fits/Wizard/Robes/legendary/robes-legendary-pilot.json": "63e76eaee83e724c41323dd00925596d00ab0c47336b47d2aca54767dcae476e",
+    "gallery-fits/Wizard/Robes/standard/derive.log": "ae9c539b72da95bbfe8da9ead84d45b835292c55dae2be37b4ea9d13bf80820d",
+    "gallery-fits/Wizard/Robes/standard/robes-standard-pilot-high.glb": "26dc46b4f8b62583b195a67228f62e5db9d5e376963f72ea8696354fe1ebbae9",
+    "gallery-fits/Wizard/Robes/standard/robes-standard-pilot-low.glb": "24013f1645d91f70dce80602be70cf3a435d7b32b68ae49998762b33bfbc717c",
+    "gallery-fits/Wizard/Robes/standard/robes-standard-pilot.json": "88b90dd873ee48674aa6329dcf826d104bb2d335e0b0d549d9dfb8745ccedef5",
+    "initial-screen-script.mjs": "8d800db5b8cd01693a904e3396eaf8f5ca5628dc0dd6b534c2045b8181cf0523",
+    "long-soak-readonly.json": "389b1421b99354e31f80e0cb836f370922e1f534e5cd424af4e396e7d64368eb",
+    "native/candidate-results/.last-run.json": "d1f059e806aece8adc0009c008437a240f0263ebf97eb2c38952862215b89743",
+    "native/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/0-CombatIdle.png": "05c167c3915e50b480268ac98167efb958933115297e7d176d668d3bfd00c7cc",
+    "native/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/1-Run.png": "19d67938088535e6ff6fc0e1d1870bbf7db06568d2497d9209d2c8107cfa1a5f",
+    "native/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/2-Attack.png": "ffec8e6cbdd17015417c464dd526dbb22c2003f8f253f44699a96c06a45ee8a4",
+    "native/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/3-Attack.png": "32ab2f8ca51461a8e488877b91da4423df1565f263c6034f40f43eecf8587eda",
+    "native/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/4-Cast.png": "63d095eead7fd025761910e5cc68f11b2e38b8aad5ad5cfc4d65b77b18555d7f",
+    "native/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/5-Channel.png": "311c324e613a1bfd6f80d0ee025fbd000734a13f8547b3c042575861ee70477b",
+    "native/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/6-Block.png": "624856491df7e827a1b57268ac15e75d97caad82253cd030f81d4c5dd790057f",
+    "native/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/Cleric-equipped-preview.png": "2a29c530e31f9b8d754b191aa34d405407cc663336b8e1262f0824edd4de7e4c",
+    "native/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/Rogue-equipped-preview.png": "9f2ee3f42f9266bc364e7dc10022e3a6946defc451e815f9f0c0891eb8618c69",
+    "native/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/Wizard-equipped-preview.png": "98a72aa323dbeac61a8a74076b0cd0892ffb2d0236faafae56b3fcd8100d3206",
+    "native/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/back-idle.png": "9d063b9cf3514a4f073980c24a7fe556034752a6160e17a66179be8fdf318369",
+    "native/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/back-run.png": "8a06692851d972cb6429795be4b0c45b4786e95f988783c094d3d0ac0ea923fb",
+    "native/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/equipped-triangle-diagnosis.json": "4ab4ee57c5b228a0f7b62c9a9af9cf987f3bd30451c23c579e822b1e236e9955",
+    "native/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/error-context.md": "00d946fb6dd24f0fb35dd27e637e426773666c5df9e5504577ed138b711a2f71",
+    "native/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/mixed-back-idle.png": "6e362d97743c2671f9dae1e9c5e629ee35165026ddead949bc6e83888af36375",
+    "native/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/mixed-back-run.png": "517f648fda026dff886be1c92b08bbc298819c1360230341eb92ab5b40d59351",
+    "native/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/mixed-side-jump.png": "45cf5706067837afa11bf52b399c735c49ed6a80fecdf247b5c3d40a109ef0e3",
+    "native/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/side-cast.png": "5c708c21116f743f897f1781a5bb8aa8e7b8b8fba750994e41d0fe0fef680314",
+    "native/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/test-failed-1.png": "45cf5706067837afa11bf52b399c735c49ed6a80fecdf247b5c3d40a109ef0e3",
+    "native/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/trace.zip": "dbfb2289d559d96f4dab0106352fd4688c22db1d531e8d756f5bc4a17434451f",
+    "native/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/video.webm": "577c2fb7d0d4edb5e8a062d292278d22e8249a4f7f4dd545170afb0a7d1a9174",
+    "native/candidate.log": "da0b9b11485fd887fecbd7549adb92acd78689d23ab53b13e4761c005fca15e4",
+    "native/native-supervisor.py": "5701c07be6f0157f245b658d6ca6d7b9ec02df91f634ba1ab51951ffc76900f6",
+    "native/native-terminal.json": "58022ea3eafbd65a9f6f74bb435ecf1c12296fffaba4fd7ac93dbd6d238a7537",
+    "native/reference-results/.last-run.json": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+    "native/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/0-CombatIdle.png": "05c167c3915e50b480268ac98167efb958933115297e7d176d668d3bfd00c7cc",
+    "native/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/1-Run.png": "19d67938088535e6ff6fc0e1d1870bbf7db06568d2497d9209d2c8107cfa1a5f",
+    "native/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/2-Attack.png": "ffec8e6cbdd17015417c464dd526dbb22c2003f8f253f44699a96c06a45ee8a4",
+    "native/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/3-Attack.png": "32ab2f8ca51461a8e488877b91da4423df1565f263c6034f40f43eecf8587eda",
+    "native/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/4-Cast.png": "63d095eead7fd025761910e5cc68f11b2e38b8aad5ad5cfc4d65b77b18555d7f",
+    "native/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/5-Channel.png": "311c324e613a1bfd6f80d0ee025fbd000734a13f8547b3c042575861ee70477b",
+    "native/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/6-Block.png": "624856491df7e827a1b57268ac15e75d97caad82253cd030f81d4c5dd790057f",
+    "native/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/Cleric-equipped-preview.png": "2a29c530e31f9b8d754b191aa34d405407cc663336b8e1262f0824edd4de7e4c",
+    "native/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/Rogue-equipped-preview.png": "9f2ee3f42f9266bc364e7dc10022e3a6946defc451e815f9f0c0891eb8618c69",
+    "native/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/Wizard-equipped-preview.png": "98a72aa323dbeac61a8a74076b0cd0892ffb2d0236faafae56b3fcd8100d3206",
+    "native/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/back-idle.png": "9d063b9cf3514a4f073980c24a7fe556034752a6160e17a66179be8fdf318369",
+    "native/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/back-run.png": "8a06692851d972cb6429795be4b0c45b4786e95f988783c094d3d0ac0ea923fb",
+    "native/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/equipped-triangle-diagnosis.json": "4ab4ee57c5b228a0f7b62c9a9af9cf987f3bd30451c23c579e822b1e236e9955",
+    "native/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/mixed-back-idle.png": "6e362d97743c2671f9dae1e9c5e629ee35165026ddead949bc6e83888af36375",
+    "native/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/mixed-back-run.png": "517f648fda026dff886be1c92b08bbc298819c1360230341eb92ab5b40d59351",
+    "native/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/mixed-side-jump.png": "45cf5706067837afa11bf52b399c735c49ed6a80fecdf247b5c3d40a109ef0e3",
+    "native/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/side-cast.png": "5c708c21116f743f897f1781a5bb8aa8e7b8b8fba750994e41d0fe0fef680314",
+    "native/reference.log": "a3b315e464c0f5cc4bd2291e4153122eb704026914de193b010961a3d7c82b3c",
+    "native/source-copies/scripts/derive-wearable-attribute-pilot.mjs": "e607c607e27b4de3bbbfb8dc7c727ad06ff98ec6f944697cde6e99916334321c",
+    "native/source-copies/scripts/inspect-wearable-simplification.mjs": "e676f331cbc8fdfd561df3181570e419ab2c282b61e449999f5f7bedab879d12",
+    "native/source-copies/scripts/lib/weighted-wearable-indices.mjs": "52c68ed394665d0b138c187847e5eec553e55c0465cf68729469914724d38113",
+    "native/source-copies/tests/e2e/authored-class-equipment.spec.js": "73516691dd2719c5a47cdf0422f13f2ae56d2badaea4ab7b7b532f7d570c4ba9",
+    "native/source-copies/tests/e2e/wearable-attribute-pilot.js": "b81c3d70fecaf3394d765195e137bc3fa0e35adee9f154166921ceec70924472",
+    "native/source-sha256.json": "c292045ddad3af2e36f43843393ca145bcb1fbdab9d0bff1766488bfbce18344",
+    "native/supervisor-pid.json": "f5b4711430eb2cb5d888bdee8818e510cdc46570d3fb5dde467e96af0b609091",
+    "native/supervisor.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-controlled/candidate-results/.last-run.json": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+    "native-controlled/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/0-CombatIdle.png": "9bc22268f0fc34077753282adce3d63eaac71f488f4626f3c2d98f2da3b49ab1",
+    "native-controlled/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/1-Run.png": "73065caba9a08bd6f8560721e384c6b49eb136bb368f04c3985b16cfaa166108",
+    "native-controlled/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/2-Attack.png": "244a01d0a0af42d0e7a42f1064b3fb8f52f1f6bf525aab299f0b8cc5e7ac29d5",
+    "native-controlled/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/3-Attack.png": "9c0e4e82f209dc060366543bd83e829e4cdbb17d7490d134fc480d10e773f9e6",
+    "native-controlled/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/4-Cast.png": "d49885015643d97f2c2048b33d918bf8c5272c3f95ff079f262fad28a1ef8d08",
+    "native-controlled/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/5-Channel.png": "57c20a2b321dea13acbf1c5ab9244b31524de4f42b6a677117a7eead8bd0e195",
+    "native-controlled/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/6-Block.png": "aedfd344cacfecf29d404e78e492b0b57c60111a29c9a18a3706b98d1294b0b9",
+    "native-controlled/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/Cleric-equipped-preview.png": "adb489a4dc7dbca992fd43a9c6560582306d425e20fcd6abbc8d0abf52139b21",
+    "native-controlled/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/Rogue-equipped-preview.png": "4f49c239a7861a9837d5e8f77406d6321c5e4239c76b257565ff81013ce7893c",
+    "native-controlled/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/Wizard-equipped-preview.png": "9a0ceb15391ac496d7604afed30a72290a272d671059385ce5667181f585df26",
+    "native-controlled/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/back-idle.png": "a15f11e5336c839d65601a60ff77df765e1acceb7e6be23eceb69d1b8436c31e",
+    "native-controlled/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/back-run.png": "259dcf3ffe25de1ff386945b03e70ec530a1d4bf442d60d7a715c4d390962b74",
+    "native-controlled/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/equipped-triangle-diagnosis.json": "491adacbfe7274d4755d7c3c4c8661c7fed2f6d74df018cee7d40e24d183b5e3",
+    "native-controlled/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/mixed-back-idle.png": "40120fc6be305b9e1765765dda40a2be6f21c303c6abe29a0e9bfab27349835e",
+    "native-controlled/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/mixed-back-run.png": "6b9c84034edf0ac8818b69d63f92c1c140fdf86c67ccf8e9494510f894821433",
+    "native-controlled/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/mixed-side-jump.png": "94ff9727a31927a35872e0d0aad0a1f1c1eb260b1f2966c03bf403ec4c0ee7d7",
+    "native-controlled/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/side-cast.png": "f831e81b0805ba1b5edc2d2b97746215d6fdcec533c64bb152967eb64eb8c7a0",
+    "native-controlled/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/wearable-pilot-substitution.json": "1e235bd2d2d6d9f13e5fa7fc3072525309736eec10a6120e3cdd32ac0de5004b",
+    "native-controlled/candidate.log": "614da30697e26af88fe58aca77c07e1390a3afe5c0804583a82fe07d0e71378a",
+    "native-controlled/native-supervisor.py": "19f5a9732b086fde4646acfadf1e7e357f142260dfc953d7d407a8e4d652217e",
+    "native-controlled/native-terminal.json": "5d3bacf94d8acb40bc69068264b21c1758bcbd4eb355d11830bf6ae19a571010",
+    "native-controlled/reference-results/.last-run.json": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+    "native-controlled/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/0-CombatIdle.png": "05c167c3915e50b480268ac98167efb958933115297e7d176d668d3bfd00c7cc",
+    "native-controlled/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/1-Run.png": "19d67938088535e6ff6fc0e1d1870bbf7db06568d2497d9209d2c8107cfa1a5f",
+    "native-controlled/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/2-Attack.png": "ffec8e6cbdd17015417c464dd526dbb22c2003f8f253f44699a96c06a45ee8a4",
+    "native-controlled/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/3-Attack.png": "32ab2f8ca51461a8e488877b91da4423df1565f263c6034f40f43eecf8587eda",
+    "native-controlled/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/4-Cast.png": "63d095eead7fd025761910e5cc68f11b2e38b8aad5ad5cfc4d65b77b18555d7f",
+    "native-controlled/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/5-Channel.png": "311c324e613a1bfd6f80d0ee025fbd000734a13f8547b3c042575861ee70477b",
+    "native-controlled/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/6-Block.png": "624856491df7e827a1b57268ac15e75d97caad82253cd030f81d4c5dd790057f",
+    "native-controlled/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/Cleric-equipped-preview.png": "2a29c530e31f9b8d754b191aa34d405407cc663336b8e1262f0824edd4de7e4c",
+    "native-controlled/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/Rogue-equipped-preview.png": "9f2ee3f42f9266bc364e7dc10022e3a6946defc451e815f9f0c0891eb8618c69",
+    "native-controlled/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/Wizard-equipped-preview.png": "98a72aa323dbeac61a8a74076b0cd0892ffb2d0236faafae56b3fcd8100d3206",
+    "native-controlled/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/back-idle.png": "9d063b9cf3514a4f073980c24a7fe556034752a6160e17a66179be8fdf318369",
+    "native-controlled/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/back-run.png": "8a06692851d972cb6429795be4b0c45b4786e95f988783c094d3d0ac0ea923fb",
+    "native-controlled/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/equipped-triangle-diagnosis.json": "4ab4ee57c5b228a0f7b62c9a9af9cf987f3bd30451c23c579e822b1e236e9955",
+    "native-controlled/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/mixed-back-idle.png": "6e362d97743c2671f9dae1e9c5e629ee35165026ddead949bc6e83888af36375",
+    "native-controlled/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/mixed-back-run.png": "517f648fda026dff886be1c92b08bbc298819c1360230341eb92ab5b40d59351",
+    "native-controlled/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/mixed-side-jump.png": "45cf5706067837afa11bf52b399c735c49ed6a80fecdf247b5c3d40a109ef0e3",
+    "native-controlled/reference-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/side-cast.png": "5c708c21116f743f897f1781a5bb8aa8e7b8b8fba750994e41d0fe0fef680314",
+    "native-controlled/reference.log": "6a4b50e569fed8aeb8ccf7d5e8d022f558900aae2a41363cbdaf13c265ea4c4a",
+    "native-controlled/source-copies/scripts/derive-wearable-attribute-pilot.mjs": "e607c607e27b4de3bbbfb8dc7c727ad06ff98ec6f944697cde6e99916334321c",
+    "native-controlled/source-copies/scripts/inspect-wearable-simplification.mjs": "e676f331cbc8fdfd561df3181570e419ab2c282b61e449999f5f7bedab879d12",
+    "native-controlled/source-copies/scripts/lib/weighted-wearable-indices.mjs": "52c68ed394665d0b138c187847e5eec553e55c0465cf68729469914724d38113",
+    "native-controlled/source-copies/tests/e2e/authored-class-equipment.spec.js": "288d8df99b0e45360ad2e74518589af71de997d675137944385f125ce142244c",
+    "native-controlled/source-copies/tests/e2e/wearable-attribute-pilot.js": "b81c3d70fecaf3394d765195e137bc3fa0e35adee9f154166921ceec70924472",
+    "native-controlled/source-sha256.json": "1e90cf2a2b2415909b56f83a7ac494131c686c6065ae5ebd66aeaf20e598ddbf",
+    "native-controlled/supervisor-pid.json": "1b54f9c69bb6422a2e604fe6fd2fe7ef8316535d406cd0101f78066c1a0d318d",
+    "native-controlled/supervisor.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-seam-protected/candidate-results/.last-run.json": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+    "native-seam-protected/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/0-CombatIdle.png": "7006fe39b18140ad2b2e526bc94ed5997ba4503ff9b45b5fb5991fbbb0c5b407",
+    "native-seam-protected/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/1-Run.png": "bbb22e995a45dadc4b0c2f84784e9dd34cc8bea4ba624e8152912fe84e54c3aa",
+    "native-seam-protected/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/2-Attack.png": "9d77ba2d321f97f085518e6b9995b126639cc0845f3959aa9318f8cfcab6e8e6",
+    "native-seam-protected/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/3-Attack.png": "e7a2998a1aabe0204ac8dd42c92a69b7e793b9fbbec45214d268742690ec091f",
+    "native-seam-protected/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/4-Cast.png": "2101cdde05d5b8d9a34fe02d91833866fc8ad3c9c22e8be6eb9e7f4f15e4844a",
+    "native-seam-protected/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/5-Channel.png": "d66d3b9c014f8163f2a38359e9dd3ec0f79ae67367bee827c66106cd1b14bad1",
+    "native-seam-protected/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/6-Block.png": "5f7bd1464a1220040ae05ca5f4e68e8f8930c972caa07a19d67dadca56db7d65",
+    "native-seam-protected/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/Cleric-equipped-preview.png": "2a29c530e31f9b8d754b191aa34d405407cc663336b8e1262f0824edd4de7e4c",
+    "native-seam-protected/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/Rogue-equipped-preview.png": "9f2ee3f42f9266bc364e7dc10022e3a6946defc451e815f9f0c0891eb8618c69",
+    "native-seam-protected/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/Wizard-equipped-preview.png": "98a72aa323dbeac61a8a74076b0cd0892ffb2d0236faafae56b3fcd8100d3206",
+    "native-seam-protected/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/back-idle.png": "709b3a25acc329a97eca389b79cc85fa064851c3cb3bf695bbf23f10cf031db8",
+    "native-seam-protected/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/back-run.png": "400bdb7300ff7859be864bc3cfa6d86a32fed6ff12233876d46f76d6bfb55ceb",
+    "native-seam-protected/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/equipped-triangle-diagnosis.json": "d3c4e03357fe199e0fc26e5e0b19a77aa8d6b678e304bb4a667fc96f7addcde0",
+    "native-seam-protected/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/mixed-back-idle.png": "5ae01128039f2093281a120c487e79ac60d4eb369d4a846c6e0308608b4fcabf",
+    "native-seam-protected/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/mixed-back-run.png": "74c699924bb53a36386eba60e4626887fb0f97b0b742bfd781a0eef6220a420c",
+    "native-seam-protected/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/mixed-side-jump.png": "cbea3a3d9931e3f960de22adcc3d6c66d8b06c7cfb551b693b1dd7e3bf9f9419",
+    "native-seam-protected/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/side-cast.png": "04b599f0afdbafaa9024743e1498a894a99710dd8b5c43994848fc61e8c275ba",
+    "native-seam-protected/candidate-results/authored-class-equipment-a-72a7c-d-alternating-Rogue-strikes/wearable-pilot-substitution.json": "204544b295a208eeef7f94bb9b89373b870196238a9dc9d5dea725d7b733bf02",
+    "native-seam-protected/candidate.log": "1875cf851d47ee09e2af1ab33851b807daae83e78fe988bbc85c771e81402cd2",
+    "native-seam-protected/native-supervisor.py": "f8572a5b80c5d1ced3fbaa1f88e22828bda4e76fdd746ee80a251388909c7811",
+    "native-seam-protected/native-terminal.json": "200407da006d00ef0bd42f6b76d03e9b98cf3577fbdba8f1f5f3605e1f348fff",
+    "native-seam-protected/source-copies/scripts/derive-wearable-attribute-pilot.mjs": "26a47b6a7e0f86a8e5b16bbb855f8d51429cfb54cbcfcafe449cd79789d6fe1f",
+    "native-seam-protected/source-copies/scripts/inspect-wearable-simplification.mjs": "e676f331cbc8fdfd561df3181570e419ab2c282b61e449999f5f7bedab879d12",
+    "native-seam-protected/source-copies/scripts/lib/weighted-wearable-indices.mjs": "622cb6781274d91c8b604ce98b9eca3e8beed6a19c6df162fd1330099195705e",
+    "native-seam-protected/source-copies/tests/e2e/authored-class-equipment.spec.js": "288d8df99b0e45360ad2e74518589af71de997d675137944385f125ce142244c",
+    "native-seam-protected/source-copies/tests/e2e/wearable-attribute-pilot.js": "b81c3d70fecaf3394d765195e137bc3fa0e35adee9f154166921ceec70924472",
+    "native-seam-protected/source-sha256.json": "f8b21b8284b49b7a2bb08936416a60170821df13efe72aae37e513b2c8c1064b",
+    "native-seam-protected/supervisor-pid.json": "aac2a3e96ce04e4b7a3ebe4287c82a5b27193261a91050a4c3fc80e1a5c698e1",
+    "native-seam-protected/supervisor.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "negative-nonempty-directory.log": "28aeeef776531de2f1846b7f6b4b1443244bce8b6bb44abdeb6c0d249d90e2c4",
+    "pilot-source-sha256.json": "4af761c0d1d89071b1e2ed308301ea1aa7731dd7a88baa1bbc67a389a9dc504d",
+    "pilots/robes-standard-pilot-high.glb": "26dc46b4f8b62583b195a67228f62e5db9d5e376963f72ea8696354fe1ebbae9",
+    "pilots/robes-standard-pilot-low.glb": "24013f1645d91f70dce80602be70cf3a435d7b32b68ae49998762b33bfbc717c",
+    "pilots/robes-standard-pilot.json": "e505fc6b25201dc8617f659eb0a60af15e36c1075a54b762eafd1414ab796244",
+    "positive-empty-directory.log": "d8f01e0782e87b4aa8f00837b5993471f03af708c42ff691d29d9906fb1f5ba8",
+    "screening.json": "60d465aeaa897b35b3f1834fb55a88a6294b0b984c3208aacc0dafeee404ae51",
+    "screening.log": "d00812d606a973068d82071d77bf8d12bd603a7fbe8b5cc02e4d2a354adc7c4a",
+    "seam-fit-generation.json": "e71bfcc1c54b282c96de858136ecf97955cfd823219c401bf419e29b391a0f79",
+    "seam-protected-fits/Cleric/Leather-Pants/legendary/derive.log": "bc1a4e7cbd29477569d76019e339b9c42cb63cdc3e13f7b92ef543d8541b2976",
+    "seam-protected-fits/Cleric/Leather-Pants/legendary/leather-pants-legendary-pilot-high.glb": "d8c6e2e9e6d053fd642b464ad29b012f84dd65fe5eaa65edce83c0ebfcdc7ddc",
+    "seam-protected-fits/Cleric/Leather-Pants/legendary/leather-pants-legendary-pilot-low.glb": "2ed2fbf7489eff22dc659dbaedc504e5eeff083e8b671bac300f7ae14bb0e871",
+    "seam-protected-fits/Cleric/Leather-Pants/legendary/leather-pants-legendary-pilot.json": "b806ed3d9cc60faaacb949c4b4f06584f5f1809a4c06bcad51b4a53249903c10",
+    "seam-protected-fits/Cleric/Leather-Pants/standard/derive.log": "0db6a7b8e7703b446b2ce90c445ff001185495b60488b2c15e7767a7df6a991a",
+    "seam-protected-fits/Cleric/Leather-Pants/standard/leather-pants-standard-pilot-high.glb": "e8a7ab7f4b1da3c13212d4c0fb69d3b5ef1973e3ca0a3bd0a84a71beab5945cc",
+    "seam-protected-fits/Cleric/Leather-Pants/standard/leather-pants-standard-pilot-low.glb": "06f6398f845b4137118ff73d487fcf498522ea223065c8172273904807c1a477",
+    "seam-protected-fits/Cleric/Leather-Pants/standard/leather-pants-standard-pilot.json": "b314ab0a894e0131a7521fb7ecdaf59266eaa22718a1787158eaaff421f3c973",
+    "seam-protected-fits/Cleric/Leather-Tunic/legendary/derive.log": "3398404f6ccd156116f8dd55df4df79d1d26248c6fb394be89a9be7929ce6230",
+    "seam-protected-fits/Cleric/Leather-Tunic/legendary/leather-tunic-legendary-pilot-high.glb": "d9ceaac39aa0ba365efc50ed46e68770bc15c07d564cbf54b3d868b5ea6de0c1",
+    "seam-protected-fits/Cleric/Leather-Tunic/legendary/leather-tunic-legendary-pilot-low.glb": "85f3d81fa71bd2f53dc5ab2ca8df5d0b19bbc190060700d353a590fa71db309a",
+    "seam-protected-fits/Cleric/Leather-Tunic/legendary/leather-tunic-legendary-pilot.json": "d87bbddeb1596c7fbdd404c5422d761da7375314b0359e588fcc7ab3b2c81303",
+    "seam-protected-fits/Cleric/Leather-Tunic/standard/derive.log": "576e613b5990377b57de7ccd0c1dc69dd69faa45157b41af9acc180a52a46a55",
+    "seam-protected-fits/Cleric/Leather-Tunic/standard/leather-tunic-standard-pilot-high.glb": "003812e4e0d3bb98791693606ddedd8b7ea8ccaa725c18ea9b6b7285ae4788a7",
+    "seam-protected-fits/Cleric/Leather-Tunic/standard/leather-tunic-standard-pilot-low.glb": "07f9acebe8ee82cfa95ffdc6ebd83cc7928cdadd5ea5b12fa3fa41e6c59e3d07",
+    "seam-protected-fits/Cleric/Leather-Tunic/standard/leather-tunic-standard-pilot.json": "1215598d3945858fa5f0e3d7836539e7451ff2d9f910566f490f059a05a546a3",
+    "seam-protected-fits/Cleric/Plate-Greaves/legendary/derive.log": "02bbab1b69503e4f88ce45e0262836c3eba549eeba7b92c942afbf23ae16c683",
+    "seam-protected-fits/Cleric/Plate-Greaves/legendary/plate-greaves-legendary-pilot-high.glb": "21dbcfdb90ebf23e23e38978b17902ce8fd7761dc526eba241ceee9cdb431ec5",
+    "seam-protected-fits/Cleric/Plate-Greaves/legendary/plate-greaves-legendary-pilot-low.glb": "22b76c1c80bd5786745576047d700939ff15d6fd00631e6406ce54777aa1333b",
+    "seam-protected-fits/Cleric/Plate-Greaves/legendary/plate-greaves-legendary-pilot.json": "cdf73448ba227c1f540ff1255635a6a95c824f34fe0a551e1788a9b809a3cfd0",
+    "seam-protected-fits/Cleric/Plate-Greaves/standard/derive.log": "9636e6c9f8aabd75916fb08528e277d96f25a5d0658e8e205dd6b443a9f8336d",
+    "seam-protected-fits/Cleric/Plate-Greaves/standard/plate-greaves-standard-pilot-high.glb": "258c2b2c74426e9264bc5ceb5161643ee412c8a0b78d72f036bf7780f3d9b241",
+    "seam-protected-fits/Cleric/Plate-Greaves/standard/plate-greaves-standard-pilot-low.glb": "041216913c97dfe2d534f646fb7b4ee30979247ab4fa7efea2d496009772f298",
+    "seam-protected-fits/Cleric/Plate-Greaves/standard/plate-greaves-standard-pilot.json": "a606828b07566993d50397b84157d1bd8842c9470f6726d35610ef3f50ac6878",
+    "seam-protected-fits/Cleric/Plate-Mail/legendary/derive.log": "81020a3de5205d956c3825d86d05c23cb006ae2dff5b28f6ecc6f54ddf9d6c3d",
+    "seam-protected-fits/Cleric/Plate-Mail/legendary/plate-mail-legendary-pilot-high.glb": "a4ee9c78a3bacb401113377d0dd240ee24ffa1309e00aa8eea19c6df6e3fff10",
+    "seam-protected-fits/Cleric/Plate-Mail/legendary/plate-mail-legendary-pilot-low.glb": "1d9698d10671755a405216cb5f9a3c5ed14888d4bdd44b0d9c7c3a8de3109540",
+    "seam-protected-fits/Cleric/Plate-Mail/legendary/plate-mail-legendary-pilot.json": "92e25fce0ef796624fa2a51f164c3166e272f7e46103567669ab55b68379f1d7",
+    "seam-protected-fits/Cleric/Plate-Mail/standard/derive.log": "685104be9157a85d231f5b82d3f009221a7ac8a0a7c2a8a853c9c71c22fa4ef0",
+    "seam-protected-fits/Cleric/Plate-Mail/standard/plate-mail-standard-pilot-high.glb": "a6ca7c1729f9d520bc53bd24c8b34c9afd5e268ff44ac9beb825a87b81e02c87",
+    "seam-protected-fits/Cleric/Plate-Mail/standard/plate-mail-standard-pilot-low.glb": "b330b2440fbadbef8734744fd7b5107263f4975691d86768073c957cf5d79498",
+    "seam-protected-fits/Cleric/Plate-Mail/standard/plate-mail-standard-pilot.json": "3f292eba3d8ce46efc45314cd13917ddccc29dc89dce719906abc70eb762e9d5",
+    "seam-protected-fits/Cleric/Robes/legendary/derive.log": "ec0c244c8fec34bec6b34f8cca71d0d89df94eb848c7ae4ec916c7419958f5c9",
+    "seam-protected-fits/Cleric/Robes/legendary/robes-legendary-pilot-high.glb": "caad83029ce5178f45cd5b7686ed6337d7ccddfef640cc1b95ef315e544c5f79",
+    "seam-protected-fits/Cleric/Robes/legendary/robes-legendary-pilot-low.glb": "f5264fc742b3a6480895740d764572baaff45f14e246f600f0a8b19872dfef1e",
+    "seam-protected-fits/Cleric/Robes/legendary/robes-legendary-pilot.json": "9c49290b01191bfc45db2508a3d68a805a59562799dcaa69d62d6bb364cec966",
+    "seam-protected-fits/Cleric/Robes/standard/derive.log": "2371aeb1e3e10fa72b39ca2981a3a7b4ee65f771f8bbe7cdab70d5e62ebd5a7b",
+    "seam-protected-fits/Cleric/Robes/standard/robes-standard-pilot-high.glb": "3a914a03c6259987b58326212b0527be43328d33693dabeb5491faedfafb7612",
+    "seam-protected-fits/Cleric/Robes/standard/robes-standard-pilot-low.glb": "6f73e6531ad6b19ca9e7e1a7d471fa60563f14db4cc17f88a932e6cc7871bed5",
+    "seam-protected-fits/Cleric/Robes/standard/robes-standard-pilot.json": "0aabc39c2c5854a1e1d2f6e30ea43842026ec66a898dbd1620c3c771bafef363",
+    "seam-protected-fits/Fighter/Leather-Pants/legendary/derive.log": "362c3d9b82ba7037afd670089301231e47e7126640209a2e8aa90ecdf54666fe",
+    "seam-protected-fits/Fighter/Leather-Pants/legendary/leather-pants-legendary-pilot-high.glb": "dd616e6f20e262594a6dbbd91b3a3ebcbe551d2817bb402edfb62fcd6a0f03df",
+    "seam-protected-fits/Fighter/Leather-Pants/legendary/leather-pants-legendary-pilot-low.glb": "706cc6dea524632228a014f858006166d3a70c099271ee7a83ebdce8aef7849d",
+    "seam-protected-fits/Fighter/Leather-Pants/legendary/leather-pants-legendary-pilot.json": "f483364306675471e3ede38f76b83ae51d58d27833c4d2430c1ab9792e5f24bb",
+    "seam-protected-fits/Fighter/Leather-Pants/standard/derive.log": "7b7031284034033a8c7203fc420f96729c4b6746f6ef079003a9fd50564543fa",
+    "seam-protected-fits/Fighter/Leather-Pants/standard/leather-pants-standard-pilot-high.glb": "e95aae299aa7c7bdf7a0984959c01a14075f1a55ba000d30a70594e213c07cee",
+    "seam-protected-fits/Fighter/Leather-Pants/standard/leather-pants-standard-pilot-low.glb": "d85f451f1e02186dededd81c1843395520ba2548fd1f7335c3ea19f16fda057f",
+    "seam-protected-fits/Fighter/Leather-Pants/standard/leather-pants-standard-pilot.json": "ec50fe228e2f1ac8fc64713cbfcabc9c2c4cfb7cf0729230802c2fe90e3fe229",
+    "seam-protected-fits/Fighter/Leather-Tunic/legendary/derive.log": "329850b673a20219c7bd2aff7a64d727e44b5a4c55e6242170bf473bae4b50cd",
+    "seam-protected-fits/Fighter/Leather-Tunic/legendary/leather-tunic-legendary-pilot-high.glb": "a735af9e2bf705e7be54edfc20bf7c56f0e4bb3c7f46ad5443e590b9bc038838",
+    "seam-protected-fits/Fighter/Leather-Tunic/legendary/leather-tunic-legendary-pilot-low.glb": "04d71c27f36c2b5d28e32b0f53060102280005a676970cee15e63d64e83869c2",
+    "seam-protected-fits/Fighter/Leather-Tunic/legendary/leather-tunic-legendary-pilot.json": "c392234ade7ec483805bef702c246ae99c87aa3c93c92be84e20776cd7f4fe7a",
+    "seam-protected-fits/Fighter/Leather-Tunic/standard/derive.log": "2344b7647794d66f6ac2af179a440c2f6b8d4a4c4d4532559766f31e19d1b07c",
+    "seam-protected-fits/Fighter/Leather-Tunic/standard/leather-tunic-standard-pilot-high.glb": "889463321349ec8e04dbdfd667b630909abc1af1617e6c6dde29e65af45df256",
+    "seam-protected-fits/Fighter/Leather-Tunic/standard/leather-tunic-standard-pilot-low.glb": "ad9bd3d1f4de2ceb962fe8335785263c16be8270b9e53cb13accfc6dfcde2187",
+    "seam-protected-fits/Fighter/Leather-Tunic/standard/leather-tunic-standard-pilot.json": "117dd1bb593408af622d8ac170b763f1c4a3f3a3a16bc05c6555afffed906764",
+    "seam-protected-fits/Fighter/Plate-Greaves/legendary/derive.log": "5e66f453b5033381d4e7344926ad9db050ca840077b0b92325019aba009f075e",
+    "seam-protected-fits/Fighter/Plate-Greaves/legendary/plate-greaves-legendary-pilot-high.glb": "35ac0dd112ef052470dd1087b6e42ed5abe6f5a0ad33dfaea344aea22a917eab",
+    "seam-protected-fits/Fighter/Plate-Greaves/legendary/plate-greaves-legendary-pilot-low.glb": "2356772d4b341378ebd2e612b062facbf637e2f1f45b56fd36d29ad7e3dcbe04",
+    "seam-protected-fits/Fighter/Plate-Greaves/legendary/plate-greaves-legendary-pilot.json": "b8043b2bcc08b2e477337ee12f2e35a3403c976c7152ce267918383c63eddaea",
+    "seam-protected-fits/Fighter/Plate-Greaves/standard/derive.log": "e6b7ac1d526306d2464afa03e38e2ce61d39feb5346a6140aa909ddd2dae95bf",
+    "seam-protected-fits/Fighter/Plate-Greaves/standard/plate-greaves-standard-pilot-high.glb": "ed2cfa2b7472df942a3d173347dc3ee707cf3846a9c39b50df46821359797e4e",
+    "seam-protected-fits/Fighter/Plate-Greaves/standard/plate-greaves-standard-pilot-low.glb": "44021dc406d9fa7f0a316b21faaa58f78f37d4259747e75474f4a31996ffab6b",
+    "seam-protected-fits/Fighter/Plate-Greaves/standard/plate-greaves-standard-pilot.json": "527b090bbbc07f9499a3f98cfcf7e161ba725db1e2c6af3049f3e3c91f9960ac",
+    "seam-protected-fits/Fighter/Plate-Mail/legendary/derive.log": "6cd324f0044f75a63299d10b3faa1b23a4ecc945c6367381d12ff90a14862a71",
+    "seam-protected-fits/Fighter/Plate-Mail/legendary/plate-mail-legendary-pilot-high.glb": "b7d1e7d75e9ac43fac55a94de673dc2c5bec961760ddb3cb5d0861eee48e1a20",
+    "seam-protected-fits/Fighter/Plate-Mail/legendary/plate-mail-legendary-pilot-low.glb": "e46ed8310b525823f356e6e1cacc3e4dafa3fe5a6a13f6f8181fb5b62e86d358",
+    "seam-protected-fits/Fighter/Plate-Mail/legendary/plate-mail-legendary-pilot.json": "59c7163173702b4b5d226a34ed241ee0b475b7b0b13801c2ab7f5b28abc78d6b",
+    "seam-protected-fits/Fighter/Plate-Mail/standard/derive.log": "f4f2807eeb76e91e15243a4aceecf262a12d21933313221a0c6dab8aeb91b6dc",
+    "seam-protected-fits/Fighter/Plate-Mail/standard/plate-mail-standard-pilot-high.glb": "d3acc3a207fc03a09435ef0f23c7b18edff012372395ba8dd8f2efa1fd946b56",
+    "seam-protected-fits/Fighter/Plate-Mail/standard/plate-mail-standard-pilot-low.glb": "a30261e30b9f32932be1020c82a40b989f01fa40f7bff3cf2e325b8b6051743b",
+    "seam-protected-fits/Fighter/Plate-Mail/standard/plate-mail-standard-pilot.json": "65cc88fb22757a3f8f280e40ff7014fae2b30048b5893fc983ee7278870e860d",
+    "seam-protected-fits/Fighter/Robes/legendary/derive.log": "8317502911c79b6b253ab6ec1b832409ae65ddfbd9f804a75396508ffbd7e7a9",
+    "seam-protected-fits/Fighter/Robes/legendary/robes-legendary-pilot-high.glb": "1d6c13544ad984a6ff6c2823422048a458b8547772ba49f142f38b3dd0e5ec9e",
+    "seam-protected-fits/Fighter/Robes/legendary/robes-legendary-pilot-low.glb": "e777c9f4b9e20dbaaf4ca4735cd31673b10faa5c51f78da6067007c172ccaba0",
+    "seam-protected-fits/Fighter/Robes/legendary/robes-legendary-pilot.json": "9e128248481e2470dd75b18faa30e6a7137e7a8881c958e59738521ad2730b2c",
+    "seam-protected-fits/Fighter/Robes/standard/derive.log": "97f1b7bbaba3c8d45aa17d30f28d4e6bc6c19d42d466e3fd6cf84fb3fec7a686",
+    "seam-protected-fits/Fighter/Robes/standard/robes-standard-pilot-high.glb": "2e98549e65d91e9f882169d8895a274e94ca45590be4a4e41d868a1dcd157656",
+    "seam-protected-fits/Fighter/Robes/standard/robes-standard-pilot-low.glb": "4206a9adf70160cd0fe08d3a92a9cc6d0fe4eca3ef75af3c5fcb9bbd9f335893",
+    "seam-protected-fits/Fighter/Robes/standard/robes-standard-pilot.json": "ff67d99a19f035c7594ff46e1b54e344418922a4a51f5b561242dbf0a000da4c",
+    "seam-protected-fits/Rogue/Leather-Pants/legendary/derive.log": "ce50db8781be21b1b7913b5b04fe470e3e2ff43d1fa518e66d88c2039f685947",
+    "seam-protected-fits/Rogue/Leather-Pants/legendary/leather-pants-legendary-pilot-high.glb": "1e3a4b7b136d1fc646c6c30db449ab0493a9638ebad6dbb6e6cc835433da12b8",
+    "seam-protected-fits/Rogue/Leather-Pants/legendary/leather-pants-legendary-pilot-low.glb": "a4703e24acee8519529ea2c3124430bed35c82396a96c3b71b11cbeadd81d729",
+    "seam-protected-fits/Rogue/Leather-Pants/legendary/leather-pants-legendary-pilot.json": "8b030b1caa4a94412609a2c727c8a7e91346b784128ca8b6865aa8c9b35fbdcb",
+    "seam-protected-fits/Rogue/Leather-Pants/standard/derive.log": "84197e7233c1f82f4d78237d1ae1d165c4dc56eb5ab64b25d0f2397b51d6597e",
+    "seam-protected-fits/Rogue/Leather-Pants/standard/leather-pants-standard-pilot-high.glb": "614c8d073741be345e8fd82eb6a24f68bf0625f765f30cd083ea8e2d181f9f9e",
+    "seam-protected-fits/Rogue/Leather-Pants/standard/leather-pants-standard-pilot-low.glb": "b82996e483a6082c63745360b88edbc38186160ca89d6c65142c65b3351f5383",
+    "seam-protected-fits/Rogue/Leather-Pants/standard/leather-pants-standard-pilot.json": "268c8465419ae39b145522c29336182f29bdcd4c6bd10d5d30bf505c4c8afb15",
+    "seam-protected-fits/Rogue/Leather-Tunic/legendary/derive.log": "909d9a01ee648687772a3ca45c9c99622ea01bbde6b6bd99ef9b3dbf05957328",
+    "seam-protected-fits/Rogue/Leather-Tunic/legendary/leather-tunic-legendary-pilot-high.glb": "1b2d37373a51bfe5e3204218c65fb87b9200123aca803ab91f224366a5df3496",
+    "seam-protected-fits/Rogue/Leather-Tunic/legendary/leather-tunic-legendary-pilot-low.glb": "d7419706407648a054c4204302a78990e165c125d33412c37a43bd4cd79de59e",
+    "seam-protected-fits/Rogue/Leather-Tunic/legendary/leather-tunic-legendary-pilot.json": "235bacbd648d410839ad74561768c3e8db193b6fd4b7307c7592f8c5e5791403",
+    "seam-protected-fits/Rogue/Leather-Tunic/standard/derive.log": "0c7dca29d5b14762ab359bac369b64e8feee5e8d416ae48f435c4bf5fc40107b",
+    "seam-protected-fits/Rogue/Leather-Tunic/standard/leather-tunic-standard-pilot-high.glb": "ead0d8a6dbc92caa5b3e565e003d8a3a077e2472e18abfa16fc12c664a59c71c",
+    "seam-protected-fits/Rogue/Leather-Tunic/standard/leather-tunic-standard-pilot-low.glb": "52d25f55b12812770206cbcd101e2263dad0ab94cfff4c236dd7f46ab09df3b3",
+    "seam-protected-fits/Rogue/Leather-Tunic/standard/leather-tunic-standard-pilot.json": "ef43a9eda7c1d0f1edbf46a491e607979630874b9d96170608cea1385bec060d",
+    "seam-protected-fits/Rogue/Plate-Greaves/legendary/derive.log": "c5ee48ee0c95f09f392e34f5956951b473677f69aad99bcf3c80b094f92450e5",
+    "seam-protected-fits/Rogue/Plate-Greaves/legendary/plate-greaves-legendary-pilot-high.glb": "260cf1c59743515300bc4345fd619fdb7cac0322e252ae9f4f1afccdd1b9bf22",
+    "seam-protected-fits/Rogue/Plate-Greaves/legendary/plate-greaves-legendary-pilot-low.glb": "d9de6114ccd7267f9191041bdfac6072a5bbbf6c24d4e0539f06dbcf89e62f05",
+    "seam-protected-fits/Rogue/Plate-Greaves/legendary/plate-greaves-legendary-pilot.json": "a9ff6e7141d69bd5a8364da862c424c11a114795994b0aabebae7fd64d5531e3",
+    "seam-protected-fits/Rogue/Plate-Greaves/standard/derive.log": "e014f76c06e229b2a855c043df5bb4aab5aa2dfb60a1dc03e447f18ec6083dbd",
+    "seam-protected-fits/Rogue/Plate-Greaves/standard/plate-greaves-standard-pilot-high.glb": "dc00ba97f9c5e786881919721e24aeb46e5300798bf1d657b056b01cd1923f2b",
+    "seam-protected-fits/Rogue/Plate-Greaves/standard/plate-greaves-standard-pilot-low.glb": "7a42ef1dfc8c36175a60ea894e633e978da34cc6464ac4a996e03e4d1dc658d5",
+    "seam-protected-fits/Rogue/Plate-Greaves/standard/plate-greaves-standard-pilot.json": "41232d3af6c387d2fafb4a2e92a402d6c94c503bbf2a1510327aadc2800400bc",
+    "seam-protected-fits/Rogue/Plate-Mail/legendary/derive.log": "f7022765756c888bdd4cae2eb0576013ead4b0fb5ad1157487283552417794c9",
+    "seam-protected-fits/Rogue/Plate-Mail/legendary/plate-mail-legendary-pilot-high.glb": "1263baa5ea3263a22ed7631ea42a54ddb57435ff066555541b9a1c480bddde0e",
+    "seam-protected-fits/Rogue/Plate-Mail/legendary/plate-mail-legendary-pilot-low.glb": "08d0ca664db79df877b5022eee8bafdd8c41ab37c8684729be1e044d1f29b9f1",
+    "seam-protected-fits/Rogue/Plate-Mail/legendary/plate-mail-legendary-pilot.json": "26f70907fdc0c5627b31c5e9d3547d314117ca122b3d399e653264341cdb481a",
+    "seam-protected-fits/Rogue/Plate-Mail/standard/derive.log": "c3c1a0498e40764067c491da9b7baf51ab6875a830f5b7a42cbf69dfbc77bd1f",
+    "seam-protected-fits/Rogue/Plate-Mail/standard/plate-mail-standard-pilot-high.glb": "6ec5ab3a9196a76065ca3759bfc000ba7166375252c05627bbd41740bcd612d4",
+    "seam-protected-fits/Rogue/Plate-Mail/standard/plate-mail-standard-pilot-low.glb": "732044eabfa2dfb5315c824a89908e271b903ade0e5d34bd9f6e2e9e279cbef7",
+    "seam-protected-fits/Rogue/Plate-Mail/standard/plate-mail-standard-pilot.json": "12939568d3a645df8d23276387e2cc2158aed9800d19ea817dd7bf6fea3a309d",
+    "seam-protected-fits/Rogue/Robes/legendary/derive.log": "7a7a224b73c607693064bc6b6f6da37bf3dc31680e8899d897fe015482fef3bb",
+    "seam-protected-fits/Rogue/Robes/legendary/robes-legendary-pilot-high.glb": "98408f19ce352fb2eeac10c2c096f2bb4ac08a387814e8e1648689c58b4e119c",
+    "seam-protected-fits/Rogue/Robes/legendary/robes-legendary-pilot-low.glb": "e2768f6cf3ec286e584341e0f41e6fef9d0925f684475b4f47b78b2650c57e2a",
+    "seam-protected-fits/Rogue/Robes/legendary/robes-legendary-pilot.json": "371d7926aceb088ccbe5a91fa20cdb443c3c9c0ae814557e75b7efcff621049e",
+    "seam-protected-fits/Rogue/Robes/standard/derive.log": "c075bdbe65ff0fb60eff086267f2a9145a96f331dc25a46905d85a5f15708e61",
+    "seam-protected-fits/Rogue/Robes/standard/robes-standard-pilot-high.glb": "6d1f7ce40c46e6dfa207d92e001eb43996ee018ac4dc165102449820fe153f3d",
+    "seam-protected-fits/Rogue/Robes/standard/robes-standard-pilot-low.glb": "38baf816fb01402c3f3cf13c803dbead059ceae76ea2b8661b5c881b2468da0b",
+    "seam-protected-fits/Rogue/Robes/standard/robes-standard-pilot.json": "979d2a0afffa3574f877b436fc0db570a15f66071610ba6fdd36c528d78d1a09",
+    "seam-protected-fits/Wizard/Leather-Pants/legendary/derive.log": "2a7e8b2d8d38bb66e34b0fd88e88c7d9d5402732e465857a2ce897f0875273ac",
+    "seam-protected-fits/Wizard/Leather-Pants/legendary/leather-pants-legendary-pilot-high.glb": "73600af3034794d93a355b1699de26066034c8dafbb2b524eed1b908a14c873a",
+    "seam-protected-fits/Wizard/Leather-Pants/legendary/leather-pants-legendary-pilot-low.glb": "b99e907a72b48fe62a44e294f913cec8c65994b00439276c8a4cb9e163c76be9",
+    "seam-protected-fits/Wizard/Leather-Pants/legendary/leather-pants-legendary-pilot.json": "7a29e830ea479e0dd4979460f41e52d6d783a51dd76e76e4628fdd14ae11396c",
+    "seam-protected-fits/Wizard/Leather-Pants/standard/derive.log": "18c4c831346e74019f8471a05ccdd8ec82a277b3dffb8e81e711a86c82453197",
+    "seam-protected-fits/Wizard/Leather-Pants/standard/leather-pants-standard-pilot-high.glb": "5154550a0f38925ba201ceac8644b0e523c304ff8bac208cb0a00dd998d978a8",
+    "seam-protected-fits/Wizard/Leather-Pants/standard/leather-pants-standard-pilot-low.glb": "628f36b906e3f8005a8d73593a080e31cd9e2758c715518c205bda6e7ac2d864",
+    "seam-protected-fits/Wizard/Leather-Pants/standard/leather-pants-standard-pilot.json": "9619bd0859b61a6900c02c29b454073ed23094cd554bfc195e09857b9bf71518",
+    "seam-protected-fits/Wizard/Leather-Tunic/legendary/derive.log": "d303c22e09098d8f774b355ca2d668aedf13f7a061f4716557f8897e3da09abc",
+    "seam-protected-fits/Wizard/Leather-Tunic/legendary/leather-tunic-legendary-pilot-high.glb": "f05c256f8a39bfc71859ee85b007f57308e66f99efcde02e20df30480b57fb54",
+    "seam-protected-fits/Wizard/Leather-Tunic/legendary/leather-tunic-legendary-pilot-low.glb": "058ad7e7ce48614042d428be35fe27f17f6d6e7746c518dda1762e490b5dd08f",
+    "seam-protected-fits/Wizard/Leather-Tunic/legendary/leather-tunic-legendary-pilot.json": "8ad862e37cdc29693384cd0606e0486371375280080fd7928955766b33b50a06",
+    "seam-protected-fits/Wizard/Leather-Tunic/standard/derive.log": "b0ab95d8922f609111a1ae53cb6c70b7511f56ade5d15d0e330e9ac1b91c9463",
+    "seam-protected-fits/Wizard/Leather-Tunic/standard/leather-tunic-standard-pilot-high.glb": "101c6bb6f2633bd3749d4ef08657c94c36b8402735298e8927a07e245242e80d",
+    "seam-protected-fits/Wizard/Leather-Tunic/standard/leather-tunic-standard-pilot-low.glb": "b70f28df5a1e1482577784702db4af9cea59bab62e3ce475f3061f4ad232ec22",
+    "seam-protected-fits/Wizard/Leather-Tunic/standard/leather-tunic-standard-pilot.json": "c7ecde4c0ec55e649131b108a78a386865bfdb0640a4a422e64f7276819030a3",
+    "seam-protected-fits/Wizard/Plate-Greaves/legendary/derive.log": "2cd2d11903bf8545d3f6640d2116bbd9bd2a589d736719f70de76919b64392d9",
+    "seam-protected-fits/Wizard/Plate-Greaves/legendary/plate-greaves-legendary-pilot-high.glb": "5bb2e61ae473f116d2cdad89be7d7f2736e7c38f200eb858f254ae1e37699889",
+    "seam-protected-fits/Wizard/Plate-Greaves/legendary/plate-greaves-legendary-pilot-low.glb": "e4bd42effcefbec6dd8bdec030da2d7ad2fccd67d2bcaf9fdff897adaf6f1cc2",
+    "seam-protected-fits/Wizard/Plate-Greaves/legendary/plate-greaves-legendary-pilot.json": "96f43d70bc5fe7f948315ae206565d5d4b16780cdb5670b038fdd292a2110b45",
+    "seam-protected-fits/Wizard/Plate-Greaves/standard/derive.log": "ac42aaf47dfe5d9708fba27bf7425f31ac5ecf40cf46acbc0ce64a20aa8d907b",
+    "seam-protected-fits/Wizard/Plate-Greaves/standard/plate-greaves-standard-pilot-high.glb": "0a774dc1b572d540f611630aaf1031196f2b1bc0d9f427b13f8853dbb66f2e6e",
+    "seam-protected-fits/Wizard/Plate-Greaves/standard/plate-greaves-standard-pilot-low.glb": "4156ec372acc0f3b72b2419080a97bb20459aded5942a9e185aa091666c619d0",
+    "seam-protected-fits/Wizard/Plate-Greaves/standard/plate-greaves-standard-pilot.json": "7ea1fb799d7f5130717c9301f5e842c931e95fe36db8debff8449f55eb489107",
+    "seam-protected-fits/Wizard/Plate-Mail/legendary/derive.log": "047a7a5da689ba847c65e8320f7e703f22c52ba99042d28ac2b8a58f515498f0",
+    "seam-protected-fits/Wizard/Plate-Mail/legendary/plate-mail-legendary-pilot-high.glb": "2d0d0e151362363a5c7e3596fa3a5625858e6fa6a01c8cda295c1c4f25e73846",
+    "seam-protected-fits/Wizard/Plate-Mail/legendary/plate-mail-legendary-pilot-low.glb": "2e1901da3525b3a570d5c6722f21134641ca2b38e0b7d5ddb0de46ccab04f5e7",
+    "seam-protected-fits/Wizard/Plate-Mail/legendary/plate-mail-legendary-pilot.json": "41d18ad4ab1b21016226ffd0684c69f967fef200bc89d13634a95d81445c3dd6",
+    "seam-protected-fits/Wizard/Plate-Mail/standard/derive.log": "b48de67c338d529b231237b841bac258c0ab15a6fe18ee5fa6a021c5da351cc2",
+    "seam-protected-fits/Wizard/Plate-Mail/standard/plate-mail-standard-pilot-high.glb": "1f5ce7c81075453345bdf266a44a32971abf8ab446bfc66468c910f34d3cb119",
+    "seam-protected-fits/Wizard/Plate-Mail/standard/plate-mail-standard-pilot-low.glb": "b545aab3e4f7cd9efa148f6c2d8c8a1b9d71d16b84465ce9c5eb6a3c604b05f8",
+    "seam-protected-fits/Wizard/Plate-Mail/standard/plate-mail-standard-pilot.json": "8c761d510064ba733062f562677e6fb84291bfeb99d9bd3078002a3963eb106b",
+    "seam-protected-fits/Wizard/Robes/legendary/derive.log": "af1c17948131780153f31ec91983d4c7b4a9eae8c4e9a8fb0c447faa4d80da07",
+    "seam-protected-fits/Wizard/Robes/legendary/robes-legendary-pilot-high.glb": "184b6ab8f65c38cc92cdd2f8d30a0f51ce524ed3b11df324f1ec6b1286472c96",
+    "seam-protected-fits/Wizard/Robes/legendary/robes-legendary-pilot-low.glb": "3d81c631b6ae3748a1656fe94aaf720e44c7aab9437978718696feb718b983c9",
+    "seam-protected-fits/Wizard/Robes/legendary/robes-legendary-pilot.json": "3438d078cccae44a00c9837db9e7fb81e9feae1360410eb5eecbd6e00c575906",
+    "seam-protected-fits/Wizard/Robes/standard/derive.log": "e6c10245cb72bc1ee5ac0720119d99bfad3acc22994cd4ea47a2de1ea097d1b0",
+    "seam-protected-fits/Wizard/Robes/standard/robes-standard-pilot-high.glb": "a27879d859e5c0a28ae01590fb713d5b534d24b6f05f3c563240f58972f895c2",
+    "seam-protected-fits/Wizard/Robes/standard/robes-standard-pilot-low.glb": "d9eb0af5612f7f0bba59e74a334a8dd0bb119abf16f11d1e253b3a5d9137d18a",
+    "seam-protected-fits/Wizard/Robes/standard/robes-standard-pilot.json": "0aaf49dce7acaea6ee5139acfb39091eb01cf871c87c1985f0e8afa03cc3c1b7",
+    "seam-protected-pixel-differences.json": "15734437aad28e44a8c21c70ce8edc9b807721be14dd27aac25693fd6956bd7c",
+    "seam-source-sha256.json": "6734a0e819cf918170deba56364ea67bbe9a6842488a00e7fa4a2f9fa80d610e",
+    "skinned-screening.json": "496698752b859ac7841580a664f8b3ff3c6fc79f1f5a053d97b791a859c7565f",
+    "skinned-screening.log": "5670d69439192a6871e4efc449c2569485e52f7ffafcb15a6c050c5c10a4fb5b",
+    "target-controlled-screening.json": "1590750b14e4190f5ad6bbf6f67fc5e94662c66c6879c42f4b5b95aa1547c900",
+    "target-controlled-screening.log": "88e0c553f1ba4c2c549f60d70a26afd2f76c4fddaf1ae723e0c01a636eefa596",
+    "unprotected-pixel-differences.json": "6f6cc33e9885832371cfa246c089079c5dfcb63616ae39f61028a9889d4f563a",
+    "weighted-screen-script.mjs": "b5ffb3e48251f50a42a3a37a433726ef5734a5318344f0d3ee94205e2c3dab28",
+    "weighted-screening.json": "5ec42122daa088328771a9ffe9fbb5f7eec732fd871eda34976925ce6b4b5a72",
+    "weighted-screening.log": "b588ce752c50eef0e05be82c8cbacb9a32b30e64897991aa0852c174cbb0401e"
+  }
+}

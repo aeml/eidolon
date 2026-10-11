@@ -30,7 +30,7 @@ func TestDeployHealthRealStalledResponseTimesOutAndRetries(t *testing.T) {
 			}
 			return
 		}
-		fmt.Fprint(w, `{"commit":"fixture-commit","database":"ready"}`)
+		fmt.Fprint(w, `{"commit":"fixture-commit","database":"ready","terrainProfile":"flat-v1"}`)
 	}))
 	defer origin.Close()
 	root := t.TempDir()

@@ -89,12 +89,12 @@ test.each(['high', 'low'])('soil aggregates retain coherent detail without a til
     texture.dispose();
 });
 
-test('owns and releases only the two added maps once; leaves ground depth behavior unchanged', () => {
+test('owns and releases all three added maps once; leaves ground depth behavior unchanged', () => {
     const shared = new THREE.Texture(), material = new THREE.MeshStandardMaterial({ map: shared });
     applyEarthGroundComposition(material, 'low');
-    const { mask, detail } = material.userData.earthGroundComposition;
-    const counts = [0, 0, 0];
-    [mask, detail, shared].forEach((texture, i) => texture.addEventListener('dispose', () => counts[i]++));
+    const { mask, detail, surface } = material.userData.earthGroundComposition;
+    const counts = [0, 0, 0, 0];
+    [mask, detail, surface, shared].forEach((texture, i) => texture.addEventListener('dispose', () => counts[i]++));
     expect(material.transparent).toBe(false); expect(material.depthWrite).toBe(true);
     expect(material.map).toBe(shared);
     const shader = { uniforms: {}, vertexShader: '#include <common>\n#include <worldpos_vertex>',
@@ -105,38 +105,37 @@ test('owns and releases only the two added maps once; leaves ground depth behavi
     expect(shader.fragmentShader).toContain('normalize(vEarthNormal)');
     expect(shader.fragmentShader).toContain('vEarthGround * .12');
     expect(shader.fragmentShader).toContain('earthStone.a * .028');
-    expect(shader.fragmentShader).toContain('earthGritDomain * .74');
-    expect(shader.fragmentShader).toContain('earthDomain.yx * 1.73');
+    expect(shader.uniforms.earthSurface.value).toBe(surface);
+    expect(shader.uniforms.earthSurfaceScale.value).toBe(1 / 8);
     // Ordinary soil has relief even when canopy, mineral and meadow masks
     // are zero; keep it distinct from the optional forest/rock contributions.
-    expect(shader.fragmentShader).toContain('(earthClod * .022 + earthPore * .006) * (1. - earthRock)');
-    expect(material.customProgramCacheKey()).toBe('eidolon-earth-ground-composition-v12');
+    expect(shader.fragmentShader).toContain('(earthClod * .035 + earthSurfaceSample.a * earthGravelPlacement * .055) * (1. - earthRock)');
+    expect(material.customProgramCacheKey()).toBe('eidolon-earth-ground-composition-v15');
     expect(shader.fragmentShader).not.toContain('earthBroad.a * .085');
     expect(shader.vertexShader).not.toContain('transformed.y +=');
     material.dispose(); material.dispose();
-    expect(counts).toEqual([1, 1, 0]); shared.dispose();
+    expect(counts).toEqual([1, 1, 1, 0]); shared.dispose();
 });
 
-test.each(['high', 'low'])('ground layers retain registered relief and filtered material boundaries without another map (%s)', quality => {
+test.each(['high', 'low'])('ground layers retain registered relief and filtered material boundaries with the owned physical surface map (%s)', quality => {
     const material = new THREE.MeshStandardMaterial();
     applyEarthGroundComposition(material, quality);
     const shader = { uniforms: {}, vertexShader: '#include <common>\n#include <worldpos_vertex>',
         fragmentShader: '#include <common>\n#include <map_fragment>\n#include <roughnessmap_fragment>\n#include <normal_fragment_maps>' };
     material.onBeforeCompile(shader);
-    expect(Object.keys(shader.uniforms).sort()).toEqual(['earthBounds', 'earthComposition', 'earthDetail']);
+    expect(Object.keys(shader.uniforms).sort()).toEqual(['earthBounds', 'earthComposition', 'earthDetail', 'earthSurface', 'earthSurfaceScale']);
     expect(shader.fragmentShader).toContain('(vEarthGround - earthBounds.xy) / earthBounds.zw');
     expect(shader.fragmentShader).toContain('(earthBroad.rr - .5) * vec2(1.4, -1.2)');
     expect(shader.fragmentShader).toContain('earthWear.ra * vec2(.8, -.9)');
     expect(shader.fragmentShader).not.toContain('(earthBroad.ra - .5)');
     expect(shader.fragmentShader.indexOf('vec4 earthBroad')).toBeLessThan(shader.fragmentShader.indexOf('vec2 earthDomain'));
-    expect(shader.fragmentShader).toContain('mat2(.8, -.6, .6, .8) * earthDomain');
-    expect(shader.fragmentShader).toContain('earthFiberDetail = 1. - smoothstep(.14, .65, earthFiberFootprint)');
-    expect(shader.fragmentShader).toContain('earthMossFiber = mix(.5,');
-    expect(shader.fragmentShader).toContain('earthGrit * .72 + earthFineGrit * .28');
-    expect(shader.fragmentShader).toContain('earthAggregateDetail = 1. - smoothstep(.1, .45, earthAggregateFootprint)');
-    expect(shader.fragmentShader).toContain('earthClod = mix(.5,');
-    expect(shader.fragmentShader).toContain('earthBroad.r * .68 + earthGrit * .32');
-    expect(shader.fragmentShader).toContain('vec3(.065, .050, .033), vec3(.079, .061, .040), earthClod');
+    expect(shader.fragmentShader).toContain('earthDomain * earthSurfaceScale');
+    expect(shader.fragmentShader).toContain('earthClod = earthSurfaceSample.r');
+    expect(shader.fragmentShader).toContain('earthMoss = earthSurfaceSample.b');
+    expect(shader.fragmentShader).toContain('earthGravel = earthSurfaceSample.g * earthGravelPlacement');
+    expect(shader.fragmentShader).toContain('earthGravelPlacement = earthGravelPatch');
+    expect(shader.fragmentShader).toContain('earthSoil = mix(earthSoil, earthGravelColor, earthGravel)');
+    expect(shader.fragmentShader).toContain('earthSurfaceSample.a * .10, earthGravel');
     expect(shader.fragmentShader).toContain('fwidth(earthMossHeight)');
     expect(shader.fragmentShader).toContain('earthWear.a * (1. - earthWear.a)');
     expect(shader.fragmentShader).toContain('earthMossCoverage');
@@ -148,13 +147,15 @@ test.each(['high', 'low'])('ground layers retain registered relief and filtered 
     expect(shader.fragmentShader).toContain('earthWear.r * (1. - earthWear.g)');
     expect(shader.fragmentShader).toContain('earthShelteredMoss * earthMossFiber * .018');
     expect(shader.fragmentShader).toContain('max(earthMossCoverage, earthShelteredMoss) * (1. - earthRock)');
-    // Existing sampled fields drive all three material channels. No added
-    // sampler, emission or displaced floor to obtain the additional detail.
-    expect(shader.fragmentShader.match(/texture2D\(/g)).toHaveLength(6);
+    // The physical map replaces two grain fetches. Its extra owned texture
+    // is explicit; no emission or displaced floor obtains the detail.
+    expect(shader.fragmentShader.match(/texture2D\(/g)).toHaveLength(5);
     expect(shader.vertexShader).not.toContain('transformed.y +=');
-    const { mask, detail } = material.userData.earthGroundComposition;
+    const { mask, detail, surface } = material.userData.earthGroundComposition;
     expect(mask.image.width).toBe(quality === 'low' ? 256 : 512);
     expect(detail.image.width).toBe(quality === 'low' ? 128 : 256);
+    expect(surface.image.width).toBe(detail.image.width);
+    expect(surface.colorSpace).toBe(THREE.NoColorSpace);
     expect(material.transparent).toBe(false);
     expect(material.emissiveIntensity).toBe(1); // Default black emissive, not added light.
     expect(material.emissive.getHex()).toBe(0);

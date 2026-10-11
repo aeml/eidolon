@@ -26,39 +26,55 @@ test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 test.describe('dedicated QA character', () => {
     test.skip(!hasCredentials, 'Set EIDOLON_E2E_USERNAME and EIDOLON_E2E_PASSWORD for character QA');
 
-    test('long Ctrl-click jump reaches its landing point in 1.5 seconds', async ({ page, baseURL }, testInfo) => {
+    test('long Ctrl-click jump completes in about 1.5 seconds total', async ({ page, baseURL }, testInfo) => {
+        test.skip(process.env.EIDOLON_E2E_JUMP_TIMING !== '1', 'Explicit fresh live jump acceptance');
         test.skip(process.env.EIDOLON_E2E_JUMP_TIMING !== '1', 'Focused connected jump timing route');
         const failures = collectBrowserFailures(page, baseURL);
-        await loginAndEnterWorld(page, credentials);
-        // Measure a visible actor after its asynchronous model has arrived.
+        await loginAndEnterWorld(page, credentialsFromEnvironment());
         await page.waitForFunction(() => Boolean(window.game?.player?.mesh?.parent));
         await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
         let target;
         for (const [x, z] of [[27, 0], [-27, 0], [0, 27], [0, -27]]) {
+            const availableDistance = await page.evaluate(({ x, z }) => {
+                const game = window.game, start = game.player.position, end = start.clone();
+                end.x += x; end.z += z;
+                game.collisionManager?.constrainRockMovementDestination?.(start, end, game.player.radius || 0);
+                game.collisionManager?.constrainToDungeonWalkableArea?.(end, game.player.radius || 0);
+                return Math.hypot(end.x - start.x, end.z - start.z);
+            }, { x, z });
+            if (availableDistance < 20.25) continue;
             const candidate = await projectGroundOffset(page, x, z, { allowScaling: false });
             if (candidate?.canvas) { target = candidate; break; }
         }
         expect(target, 'A full long-jump destination must be visible on the canvas').toBeTruthy();
         await page.evaluate(() => {
             const record = window.__jumpTiming = { frames: 0, acceptedDuration: null, history: [] };
+            const canvas = window.game.renderSystem.renderer.domElement;
+            const clicked = event => {
+                if (!event.isTrusted || !event.ctrlKey || event.button !== 0) return;
+                record.clickedAt = performance.now();
+                canvas.removeEventListener('pointerdown', clicked, true);
+            };
+            canvas.addEventListener('pointerdown', clicked, true);
             const sample = () => {
-                const game = window.game;
-                const jump = game.playerJumpState;
-                const now = performance.now();
+                const game = window.game, jump = game.playerJumpState, now = performance.now();
                 if (jump) {
                     record.startedAt ??= now;
                     record.frames++;
-                    record.history.push({ elapsedMs: now - record.startedAt, elapsed: jump.elapsed, progress: jump.progress, serverDriven: jump.serverDriven });
+                    record.history.push({ elapsedMs: now - record.clickedAt, elapsed: jump.elapsed, progress: jump.progress, serverDriven: jump.serverDriven });
                     record.distance = Math.hypot(jump.end.x - jump.start.x, jump.end.z - jump.start.z);
                     record.end = { x: jump.end.x, z: jump.end.z };
                     if (jump.serverDriven) record.acceptedDuration = jump.duration;
                 } else if (record.startedAt && game.player.state !== 'JUMPING') {
                     record.positionError = Math.hypot(game.player.position.x - record.end.x, game.player.position.z - record.end.z);
                     record.renderError = Math.hypot(game.player.mesh.position.x - record.end.x, game.player.mesh.position.z - record.end.z);
-                    record.elapsedMs = now - record.startedAt;
+                    record.elapsedMs = now - record.clickedAt;
+                    record.observedFlightMs = now - record.startedAt;
+                    canvas.removeEventListener('pointerdown', clicked, true);
                     return;
                 }
                 if (!record.startedAt || now - record.startedAt < 5_000) requestAnimationFrame(sample);
+                else canvas.removeEventListener('pointerdown', clicked, true);
             };
             requestAnimationFrame(sample);
         });
@@ -68,10 +84,11 @@ test.describe('dedicated QA character', () => {
         await expect.poll(() => page.evaluate(() => window.__jumpTiming.elapsedMs), { timeout: 6_000 }).toBeGreaterThan(0);
         const result = await page.evaluate(() => window.__jumpTiming);
         await testInfo.attach('connected-jump-timing', { body: JSON.stringify(result, null, 2), contentType: 'application/json' });
+        expect(Number.isFinite(result.clickedAt), 'Total time starts at the trusted native Ctrl-click').toBe(true);
         expect(result.distance).toBeGreaterThanOrEqual(20.25);
-        expect(result.acceptedDuration).toBe(1.5);
-        expect(result.elapsedMs).toBeGreaterThan(1_350);
-        expect(result.elapsedMs).toBeLessThan(1_850);
+        expect(result.acceptedDuration).toBeCloseTo(1.3, 6);
+        expect(result.elapsedMs).toBeGreaterThan(1_250);
+        expect(result.elapsedMs).toBeLessThan(1_600);
         expect(result.positionError).toBeLessThan(.1);
         expect(result.renderError).toBeLessThan(.1);
         expect(failures, failures.join('\n')).toEqual([]);

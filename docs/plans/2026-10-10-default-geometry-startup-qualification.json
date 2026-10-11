@@ -1,0 +1,1828 @@
+{
+  "recordedUTC": "2026-10-10T17:23:37.618181+00:00",
+  "source": "fa2f7075fae15562aaccf1b8e7cd76c8372841bd",
+  "base": "011fddda712d101474f76be347f598c62b671ee5",
+  "sourcePins": {
+    "src/core/RenderSystem.js": "b8d41d605c148fd2b319d7e084386e88da859a23fe997e1b91b3427b960c566f",
+    "src/core/ActorGameplayGeometryDelivery.js": "272a886cfa6b1e9060a8af40ff20b15926ceb9ef8403bb583e5680ae405350ab",
+    "tests/ActorGameplayGeometryDelivery.test.js": "0d3a9d409bfc943a4a6dd19f24a59fe9b8138a9da1dfe55817fdb8c494658ec1",
+    "tests/ActorGameplayGeometryRuntime.test.js": "e2873c8a8a0ae23235ece91eb67c7d30d276004675d7e12a1afc3f40f00910a3",
+    "tests/e2e/engine-session-lifetime.spec.js": "415d84bc5e3c07d465433a7bb56f2e6eaa6209c88d852005ae0ca6542865cb61",
+    "tests/e2e/gameplay-geometry-party.js": "7a347293e082cdca1f427f29daa2f9c388fe70446e3c60c0e7dfbbcd607625f6",
+    "tests/e2e/keyboard-settings.spec.js": "a61935f029a15e534bc0ca45a357867190cb2fe656a9e47ef7080c9506a82cb9",
+    "tests/e2e/maintenance-connected-publication.spec.js": "9a36e150834fcd016487e363ef1f1870959c59f5ce823c6192493548f08bb82c",
+    "tests/e2e/published-game-bundle.spec.js": "2158c318d42fef0ea445833ca9d9e4768ebe834c2c04e3ba2f6a5858c360a1bb",
+    "tests/e2e/geometry-owner-observation.js": "bef0c5297db5f10344835b698bbcbb1c7cb9cd8a68b01f0c4bb9b4c6292f719f"
+  },
+  "status": "Default lazy geometry ownership functionally qualified in private candidate; High417draws fails unchanged350 target; no public release or whole-game acceptance.",
+  "implementation": "RenderSystem owns geometry from construction. Worker allocation waits for first valid bounded source job, originals remain visible during preparation. Constructor/error/timeout/clone failure drains pending jobs and retires all prepared copies, preserving source geometry; no automatic retry. Existing group/root, close42/47pixel, quality and disposal ownership retained.",
+  "unchanged": "Original GLBs/assets, body/garment/rigid algorithms, worker artifact44618fbd, server/economy/jump runtime, dependencies, ordinary instancing and null actor view/shadow pilots unchanged.",
+  "units": {
+    "distinctPassingChecks": 87,
+    "suites": 4,
+    "initial": "86pass1fail1.024s; newly lazy test worker mock omitted postMessage and triggered intentional fallback plus later disposal.",
+    "correction": "Mock given normal postMessage, retaining exact once-termination assertion. Seven runtime checks pass0.513s; other80checks reused. Original failure retained.",
+    "lint": "All10changed files and diff check passed."
+  },
+  "native": [
+    {
+      "label": "native",
+      "stats": {
+        "total": 11,
+        "expected": 11,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      },
+      "attempts": [
+        {
+          "title": "high: three retired engines release their own HUD, map listeners and GPU contexts",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "low: three retired engines release their own HUD, map listeners and GPU contexts",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "high: repeated town, dungeon, casino floors, gear and death return to warmed resources",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "low: repeated town, dungeon, casino floors, gear and death return to warmed resources",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "high: three transport recoveries retire prior callbacks and retain warmed scene resources",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "low: three transport recoveries retire prior callbacks and retain warmed scene resources",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "graphics detail offers an optional reload and the saved Low body loads after acceptance",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "published login recovers one interrupted engine download and constructs only one engine",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "actual published engine stays lazy at login and constructs each class from the bounded module graph",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "published geometry owner loads its immutable worker, retires streamed roots and reuses the exact cached worker offline",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "actual published worker exception keeps the game and original model usable",
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "label": "native-jump",
+      "stats": {
+        "total": 1,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      },
+      "attempts": [
+        {
+          "title": "published engine reaches the jump destination in real elapsed time at low FPS",
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "label": "party-low",
+      "stats": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "attempts": [
+        {
+          "title": "connected equipped four-class party shares raised ground, fitted outfits, Fireball draws and targeted healing",
+          "status": "skipped",
+          "retry": 0
+        },
+        {
+          "title": "single native renderer observes three live equipped party socket peers on raised ground",
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "label": "party-high",
+      "stats": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "attempts": [
+        {
+          "title": "connected equipped four-class party shares raised ground, fitted outfits, Fireball draws and targeted healing",
+          "status": "skipped",
+          "retry": 0
+        },
+        {
+          "title": "single native renderer observes three live equipped party socket peers on raised ground",
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    }
+  ],
+  "nativeTotal": {
+    "tests": 16,
+    "expected": 14,
+    "unexpected": 0,
+    "flaky": 0,
+    "skipped": 2,
+    "retries": 0
+  },
+  "publication": {
+    "startup": {
+      "defaultOwned": true,
+      "workerDeferred": true,
+      "authored": "Fighter"
+    },
+    "worker": {
+      "output": "src/core/ActorGameplayGeometryWorker.44618fbd1160aa63.js",
+      "sha256": "44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43",
+      "bytes": 137178,
+      "modules": 10,
+      "imports": []
+    },
+    "workerURL": "http://127.0.0.1:35925/src/core/ActorGameplayGeometryWorker.44618fbd1160aa63.js?release=bundlefixture20261009",
+    "lifecycle": {
+      "before": {
+        "roots": 1,
+        "entries": 10,
+        "cacheHits": 0
+      },
+      "retired": true,
+      "reattached": true,
+      "returning": {
+        "entries": 10,
+        "cacheHits": 10
+      },
+      "disposed": true,
+      "rootsAfter": 0,
+      "jobsAfter": 0,
+      "entriesAfter": 0
+    },
+    "offline": [
+      {
+        "kind": "color",
+        "id": 7,
+        "indices": 6,
+        "error": null
+      },
+      {
+        "kind": "rigid",
+        "id": 7,
+        "indices": 6,
+        "error": null
+      }
+    ]
+  },
+  "nativeWorkerFallback": {
+    "result": {
+      "owned": true,
+      "failed": true,
+      "entries": 0,
+      "jobs": 0,
+      "queue": 0,
+      "originalGeometry": true,
+      "rendererWrapped": true,
+      "calls": 54,
+      "failures": 1,
+      "retired": true
+    },
+    "workerURLs": [
+      "http://127.0.0.1:35925/src/core/ActorGameplayGeometryWorker.44618fbd1160aa63.js?release=bundlefixture20261009"
+    ],
+    "expectedFailures": []
+  },
+  "publishedJump": {
+    "samples": [
+      {
+        "fps": 15,
+        "frames": 20,
+        "elapsedMs": 1359.2000000178814,
+        "maxFrameGapMs": 82.59999999999991,
+        "positionError": 0,
+        "renderError": 0
+      },
+      {
+        "fps": 60,
+        "frames": 79,
+        "elapsedMs": 1320.800000011921,
+        "maxFrameGapMs": 16.800000000000182,
+        "positionError": 0,
+        "renderError": 0
+      }
+    ],
+    "errors": []
+  },
+  "sessionRetirement": [
+    [
+      {
+        "before": {
+          "geometries": 30,
+          "textures": 41
+        },
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 0,
+          "workerCacheBytes": 177384,
+          "workerCacheEntries": 19,
+          "valid": true,
+          "restored": true
+        },
+        "geometryRetired": true,
+        "minimaps": 1,
+        "retiredMinimaps": 0,
+        "retiredTooltips": 0,
+        "mapOwnerCleared": true,
+        "mapListenersAborted": true,
+        "playerInactive": true,
+        "canvasDetached": true,
+        "contextLost": true,
+        "socketOpen": true,
+        "instancesRetired": true
+      },
+      {
+        "before": {
+          "geometries": 30,
+          "textures": 41
+        },
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 0,
+          "workerCacheBytes": 177384,
+          "workerCacheEntries": 19,
+          "valid": true,
+          "restored": true
+        },
+        "geometryRetired": true,
+        "minimaps": 1,
+        "retiredMinimaps": 0,
+        "retiredTooltips": 0,
+        "mapOwnerCleared": true,
+        "mapListenersAborted": true,
+        "playerInactive": true,
+        "canvasDetached": true,
+        "contextLost": true,
+        "socketOpen": true,
+        "instancesRetired": true
+      },
+      {
+        "before": {
+          "geometries": 30,
+          "textures": 41
+        },
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 0,
+          "workerCacheBytes": 177384,
+          "workerCacheEntries": 19,
+          "valid": true,
+          "restored": true
+        },
+        "geometryRetired": true,
+        "minimaps": 1,
+        "retiredMinimaps": 0,
+        "retiredTooltips": 0,
+        "mapOwnerCleared": true,
+        "mapListenersAborted": true,
+        "playerInactive": true,
+        "canvasDetached": true,
+        "contextLost": true,
+        "socketOpen": true,
+        "instancesRetired": true
+      }
+    ],
+    [
+      {
+        "before": {
+          "geometries": 29,
+          "textures": 27
+        },
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 0,
+          "workerCacheBytes": 164556,
+          "workerCacheEntries": 19,
+          "valid": true,
+          "restored": true
+        },
+        "geometryRetired": true,
+        "minimaps": 1,
+        "retiredMinimaps": 0,
+        "retiredTooltips": 0,
+        "mapOwnerCleared": true,
+        "mapListenersAborted": true,
+        "playerInactive": true,
+        "canvasDetached": true,
+        "contextLost": true,
+        "socketOpen": true,
+        "instancesRetired": true
+      },
+      {
+        "before": {
+          "geometries": 29,
+          "textures": 27
+        },
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 0,
+          "workerCacheBytes": 164556,
+          "workerCacheEntries": 19,
+          "valid": true,
+          "restored": true
+        },
+        "geometryRetired": true,
+        "minimaps": 1,
+        "retiredMinimaps": 0,
+        "retiredTooltips": 0,
+        "mapOwnerCleared": true,
+        "mapListenersAborted": true,
+        "playerInactive": true,
+        "canvasDetached": true,
+        "contextLost": true,
+        "socketOpen": true,
+        "instancesRetired": true
+      },
+      {
+        "before": {
+          "geometries": 29,
+          "textures": 27
+        },
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 0,
+          "workerCacheBytes": 164556,
+          "workerCacheEntries": 19,
+          "valid": true,
+          "restored": true
+        },
+        "geometryRetired": true,
+        "minimaps": 1,
+        "retiredMinimaps": 0,
+        "retiredTooltips": 0,
+        "mapOwnerCleared": true,
+        "mapListenersAborted": true,
+        "playerInactive": true,
+        "canvasDetached": true,
+        "contextLost": true,
+        "socketOpen": true,
+        "instancesRetired": true
+      }
+    ]
+  ],
+  "sceneResourceCycles": [
+    [
+      {
+        "cycle": 0,
+        "label": "town-death",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 24,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 121,
+        "textures": 81,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 0,
+        "label": "dungeon",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 40,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 51,
+        "textures": 67,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 0,
+        "label": "casino-public",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 72,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 75,
+        "textures": 60,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 0,
+        "label": "casino-vip",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 72,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 82,
+        "textures": 60,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 1,
+        "label": "town-death",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 119,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 122,
+        "textures": 82,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 1,
+        "label": "dungeon",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 135,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 52,
+        "textures": 68,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 1,
+        "label": "casino-public",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 167,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 75,
+        "textures": 60,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 1,
+        "label": "casino-vip",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 167,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 82,
+        "textures": 60,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 2,
+        "label": "town-death",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 214,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 122,
+        "textures": 82,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 2,
+        "label": "dungeon",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 230,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 52,
+        "textures": 68,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 2,
+        "label": "casino-public",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 262,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 75,
+        "textures": 60,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 2,
+        "label": "casino-vip",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 262,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 82,
+        "textures": 60,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      }
+    ],
+    [
+      {
+        "cycle": 0,
+        "label": "town-death",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 26,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 90,
+        "textures": 67,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 0,
+        "label": "dungeon",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 44,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 47,
+        "textures": 53,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 0,
+        "label": "casino-public",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 80,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 44,
+        "textures": 46,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 0,
+        "label": "casino-vip",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 80,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 50,
+        "textures": 46,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 1,
+        "label": "town-death",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 131,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 91,
+        "textures": 68,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 1,
+        "label": "dungeon",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 149,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 48,
+        "textures": 54,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 1,
+        "label": "casino-public",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 185,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 44,
+        "textures": 46,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 1,
+        "label": "casino-vip",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 185,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 50,
+        "textures": 46,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 2,
+        "label": "town-death",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 236,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 91,
+        "textures": 68,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 2,
+        "label": "dungeon",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 254,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 48,
+        "textures": 54,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 2,
+        "label": "casino-public",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 290,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 44,
+        "textures": 46,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 2,
+        "label": "casino-vip",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 290,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 50,
+        "textures": 46,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      }
+    ]
+  ],
+  "transportRecoveries": [
+    {
+      "reports": [
+        {
+          "cycle": 0,
+          "geometry": {
+            "roots": 1,
+            "entries": 16,
+            "workerStarted": true,
+            "cacheHits": 16,
+            "workerCacheBytes": 177384,
+            "workerCacheEntries": 19,
+            "valid": true,
+            "restored": true
+          },
+          "geometries": 43,
+          "textures": 42,
+          "playerRenderOwned": true,
+          "instance": "lifetime-arena-1",
+          "playerTracked": true,
+          "playerAttached": true,
+          "connected": true,
+          "emptyQueue": true,
+          "oldCallbacksDetached": true
+        },
+        {
+          "cycle": 1,
+          "geometry": {
+            "roots": 1,
+            "entries": 16,
+            "workerStarted": true,
+            "cacheHits": 32,
+            "workerCacheBytes": 177384,
+            "workerCacheEntries": 19,
+            "valid": true,
+            "restored": true
+          },
+          "geometries": 43,
+          "textures": 42,
+          "playerRenderOwned": true,
+          "instance": "lifetime-arena-2",
+          "playerTracked": true,
+          "playerAttached": true,
+          "connected": true,
+          "emptyQueue": true,
+          "oldCallbacksDetached": true
+        },
+        {
+          "cycle": 2,
+          "geometry": {
+            "roots": 1,
+            "entries": 16,
+            "workerStarted": true,
+            "cacheHits": 48,
+            "workerCacheBytes": 177384,
+            "workerCacheEntries": 19,
+            "valid": true,
+            "restored": true
+          },
+          "geometries": 43,
+          "textures": 42,
+          "playerRenderOwned": true,
+          "instance": "lifetime-arena-3",
+          "playerTracked": true,
+          "playerAttached": true,
+          "connected": true,
+          "emptyQueue": true,
+          "oldCallbacksDetached": true
+        }
+      ],
+      "states": [
+        "reconnecting",
+        "connected",
+        "reconnecting",
+        "connected",
+        "reconnecting",
+        "connected"
+      ],
+      "contextLost": true,
+      "borrowedOpen": true,
+      "retryRetired": true,
+      "callbacksRetired": true
+    },
+    {
+      "reports": [
+        {
+          "cycle": 0,
+          "geometry": {
+            "roots": 1,
+            "entries": 18,
+            "workerStarted": true,
+            "cacheHits": 18,
+            "workerCacheBytes": 164556,
+            "workerCacheEntries": 19,
+            "valid": true,
+            "restored": true
+          },
+          "geometries": 38,
+          "textures": 28,
+          "playerRenderOwned": true,
+          "instance": "lifetime-arena-1",
+          "playerTracked": true,
+          "playerAttached": true,
+          "connected": true,
+          "emptyQueue": true,
+          "oldCallbacksDetached": true
+        },
+        {
+          "cycle": 1,
+          "geometry": {
+            "roots": 1,
+            "entries": 18,
+            "workerStarted": true,
+            "cacheHits": 36,
+            "workerCacheBytes": 164556,
+            "workerCacheEntries": 19,
+            "valid": true,
+            "restored": true
+          },
+          "geometries": 38,
+          "textures": 28,
+          "playerRenderOwned": true,
+          "instance": "lifetime-arena-2",
+          "playerTracked": true,
+          "playerAttached": true,
+          "connected": true,
+          "emptyQueue": true,
+          "oldCallbacksDetached": true
+        },
+        {
+          "cycle": 2,
+          "geometry": {
+            "roots": 1,
+            "entries": 18,
+            "workerStarted": true,
+            "cacheHits": 54,
+            "workerCacheBytes": 164556,
+            "workerCacheEntries": 19,
+            "valid": true,
+            "restored": true
+          },
+          "geometries": 38,
+          "textures": 28,
+          "playerRenderOwned": true,
+          "instance": "lifetime-arena-3",
+          "playerTracked": true,
+          "playerAttached": true,
+          "connected": true,
+          "emptyQueue": true,
+          "oldCallbacksDetached": true
+        }
+      ],
+      "states": [
+        "reconnecting",
+        "connected",
+        "reconnecting",
+        "connected",
+        "reconnecting",
+        "connected"
+      ],
+      "contextLost": true,
+      "borrowedOpen": true,
+      "retryRetired": true,
+      "callbacksRetired": true
+    }
+  ],
+  "qualityReload": [
+    {
+      "ownership": [
+        {
+          "body": "high",
+          "quality": "high",
+          "geometry": {
+            "roots": 1,
+            "entries": 10,
+            "workerStarted": true,
+            "cacheHits": 0,
+            "workerCacheBytes": 173736,
+            "workerCacheEntries": 10,
+            "valid": true,
+            "restored": true
+          }
+        },
+        {
+          "body": "low",
+          "quality": "low",
+          "geometry": {
+            "roots": 1,
+            "entries": 10,
+            "workerStarted": true,
+            "cacheHits": 0,
+            "workerCacheBytes": 172272,
+            "workerCacheEntries": 10,
+            "valid": true,
+            "restored": true
+          }
+        }
+      ],
+      "workers": [
+        "http://127.0.0.1:4191/src/core/ActorGameplayGeometryWorker.bundle.js",
+        "http://127.0.0.1:4191/src/core/ActorGameplayGeometryWorker.bundle.js"
+      ],
+      "closed": [
+        "http://127.0.0.1:4191/src/core/ActorGameplayGeometryWorker.bundle.js",
+        "http://127.0.0.1:4191/src/core/ActorGameplayGeometryWorker.bundle.js"
+      ]
+    }
+  ],
+  "worker": {
+    "output": "src/core/ActorGameplayGeometryWorker.bundle.js",
+    "sha256": "44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43",
+    "bytes": 137178,
+    "modules": 10,
+    "imports": []
+  },
+  "quality": {
+    "low": {
+      "startupOwner": {
+        "defaultOwned": true,
+        "workerStarted": true,
+        "roots": 4,
+        "registered": 67,
+        "failed": false
+      },
+      "preparation": {
+        "method": "automatic-worker-exact-source-cache",
+        "milliseconds": 162.89999997615814,
+        "body": {
+          "sources": 4
+        },
+        "rigid": {
+          "sources": 27,
+          "originalTriangles": 9940,
+          "candidateTriangles": 6584
+        },
+        "installed": {
+          "registered": 71,
+          "originalTriangles": 123345,
+          "candidateTriangles": 57739
+        },
+        "stats": {
+          "requested": 320,
+          "installed": 90,
+          "stale": 5,
+          "fallback": 6,
+          "failed": 0,
+          "cacheHits": 27,
+          "rejected": 0,
+          "maxCopiedBytes": 2920472,
+          "workerCacheBytes": 1102716,
+          "workerCacheEntries": 72
+        }
+      },
+      "frameSummary": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "cpuLoopMedianMs": 8.800000011920929,
+        "cpuLoopP95Ms": 11.300000011920929,
+        "drawCallsMedian": 175,
+        "trianglesMedian": 84361,
+        "geometries": 428,
+        "textures": 276,
+        "activeEntitiesMin": 38,
+        "activeEntitiesMax": 38
+      },
+      "budget": {
+        "maximumDraws": 200,
+        "maximumTriangles": 85000,
+        "drawsPass": true,
+        "trianglesPass": true,
+        "sampledFrameTimingPass": true,
+        "wholeQualityAccepted": false
+      },
+      "paired": {
+        "samples": [
+          {
+            "zoom": 5,
+            "changedChannels": 0,
+            "unstableChannels": 0,
+            "compactChangedChannels": 0,
+            "source": {
+              "calls": 144,
+              "triangles": 133659,
+              "swaps": 0,
+              "restored": true
+            },
+            "candidate": {
+              "calls": 144,
+              "triangles": 133659,
+              "swaps": 0,
+              "restored": true
+            },
+            "again": {
+              "calls": 144,
+              "triangles": 133659,
+              "swaps": 0,
+              "restored": true
+            }
+          },
+          {
+            "zoom": 15,
+            "changedChannels": 19799,
+            "unstableChannels": 0,
+            "compactChangedChannels": 0,
+            "source": {
+              "calls": 181,
+              "triangles": 148333,
+              "swaps": 0,
+              "restored": true
+            },
+            "candidate": {
+              "calls": 181,
+              "triangles": 82727,
+              "swaps": 71,
+              "restored": true
+            },
+            "again": {
+              "calls": 181,
+              "triangles": 148333,
+              "swaps": 0,
+              "restored": true
+            }
+          }
+        ],
+        "transitions": [
+          {
+            "pixels": 45,
+            "reduced": false,
+            "restored": true,
+            "swaps": 0
+          },
+          {
+            "pixels": 41,
+            "reduced": true,
+            "restored": true,
+            "swaps": 71
+          },
+          {
+            "pixels": 45,
+            "reduced": true,
+            "restored": true,
+            "swaps": 71
+          },
+          {
+            "pixels": 48,
+            "reduced": false,
+            "restored": true,
+            "swaps": 0
+          },
+          {
+            "pixels": 45,
+            "reduced": false,
+            "restored": true,
+            "swaps": 0
+          },
+          {
+            "pixels": 30,
+            "reduced": true,
+            "restored": true,
+            "swaps": 71
+          }
+        ],
+        "rigidPairs": [
+          {
+            "zoom": 5,
+            "reference": {
+              "calls": 144,
+              "triangles": 133659,
+              "swaps": 0,
+              "restored": true
+            },
+            "candidate": {
+              "calls": 144,
+              "triangles": 133659,
+              "swaps": 0,
+              "restored": true
+            },
+            "repeat": {
+              "calls": 144,
+              "triangles": 133659,
+              "swaps": 0,
+              "restored": true
+            },
+            "changedChannels": 0,
+            "unstableChannels": 0
+          },
+          {
+            "zoom": 15,
+            "reference": {
+              "calls": 181,
+              "triangles": 86083,
+              "swaps": 44,
+              "restored": true
+            },
+            "candidate": {
+              "calls": 181,
+              "triangles": 82727,
+              "swaps": 71,
+              "restored": true
+            },
+            "repeat": {
+              "calls": 181,
+              "triangles": 86083,
+              "swaps": 44,
+              "restored": true
+            },
+            "changedChannels": 2098,
+            "unstableChannels": 0
+          }
+        ],
+        "actorViewFilterAllocated": false
+      },
+      "movement": {
+        "normalGroundClicks": 3,
+        "samples": 84,
+        "retainedPostLoginFrames": 25,
+        "allGearSlots": 14,
+        "allRestored": true
+      },
+      "drawAttribution": [
+        {
+          "name": "OpaqueActorInstances",
+          "color": 48,
+          "shadow": 0,
+          "triangles": 11475
+        },
+        {
+          "name": "Equipped Cleric",
+          "color": 26,
+          "shadow": 0,
+          "triangles": 15051
+        },
+        {
+          "name": "Equipped Wizard",
+          "color": 26,
+          "shadow": 0,
+          "triangles": 15930
+        },
+        {
+          "name": "Equipped Fighter",
+          "color": 23,
+          "shadow": 0,
+          "triangles": 15217
+        },
+        {
+          "name": "Equipped Rogue",
+          "color": 23,
+          "shadow": 0,
+          "triangles": 13941
+        },
+        {
+          "name": "EnvironmentGroup",
+          "color": 20,
+          "shadow": 0,
+          "triangles": 11845
+        },
+        {
+          "name": "Canonical terrain tiles",
+          "color": 6,
+          "shadow": 0,
+          "triangles": 768
+        },
+        {
+          "name": "ProceduralSkeleton",
+          "color": 5,
+          "shadow": 0,
+          "triangles": 50
+        },
+        {
+          "name": "Mesh",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 2
+        },
+        {
+          "name": "ProceduralEidolicBlackwater",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 2
+        },
+        {
+          "name": "ProceduralRealmTerrain:water",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 4
+        },
+        {
+          "name": "Actor ground contacts",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 76
+        }
+      ],
+      "actualServerMongoTerminal": [
+        "--- PASS: TestTerrainActualEquippedBrowserParty (26.72s)",
+        "PASS",
+        "ok  \teidolon-server\t27.761s"
+      ]
+    },
+    "high": {
+      "startupOwner": {
+        "defaultOwned": true,
+        "workerStarted": true,
+        "roots": 4,
+        "registered": 25,
+        "failed": false
+      },
+      "preparation": {
+        "method": "automatic-worker-exact-source-cache",
+        "milliseconds": 2270.899999976158,
+        "body": {
+          "sources": 4
+        },
+        "rigid": {
+          "sources": 21,
+          "originalTriangles": 19014,
+          "candidateTriangles": 9362
+        },
+        "installed": {
+          "registered": 65,
+          "originalTriangles": 200156,
+          "candidateTriangles": 63562
+        },
+        "stats": {
+          "requested": 203,
+          "installed": 81,
+          "stale": 1,
+          "fallback": 14,
+          "failed": 0,
+          "cacheHits": 22,
+          "rejected": 0,
+          "maxCopiedBytes": 3075480,
+          "workerCacheBytes": 861984,
+          "workerCacheEntries": 68
+        }
+      },
+      "frameSummary": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "cpuLoopMedianMs": 12.599999994039536,
+        "cpuLoopP95Ms": 15.199999988079071,
+        "drawCallsMedian": 417,
+        "trianglesMedian": 191783,
+        "geometries": 491,
+        "textures": 296,
+        "activeEntitiesMin": 39,
+        "activeEntitiesMax": 39
+      },
+      "budget": {
+        "maximumDraws": 350,
+        "maximumTriangles": 250000,
+        "drawsPass": false,
+        "trianglesPass": true,
+        "sampledFrameTimingPass": true,
+        "wholeQualityAccepted": false
+      },
+      "paired": {
+        "samples": [
+          {
+            "zoom": 5,
+            "changedChannels": 0,
+            "unstableChannels": 0,
+            "compactChangedChannels": 0,
+            "source": {
+              "calls": 325,
+              "triangles": 433425,
+              "swaps": 0,
+              "restored": true
+            },
+            "candidate": {
+              "calls": 325,
+              "triangles": 433425,
+              "swaps": 0,
+              "restored": true
+            },
+            "again": {
+              "calls": 325,
+              "triangles": 433425,
+              "swaps": 0,
+              "restored": true
+            }
+          },
+          {
+            "zoom": 15,
+            "changedChannels": 26071,
+            "unstableChannels": 0,
+            "compactChangedChannels": 0,
+            "source": {
+              "calls": 384,
+              "triangles": 457578,
+              "swaps": 0,
+              "restored": true
+            },
+            "candidate": {
+              "calls": 384,
+              "triangles": 184390,
+              "swaps": 65,
+              "restored": true
+            },
+            "again": {
+              "calls": 384,
+              "triangles": 457578,
+              "swaps": 0,
+              "restored": true
+            }
+          }
+        ],
+        "transitions": [
+          {
+            "pixels": 45,
+            "reduced": false,
+            "restored": true,
+            "swaps": 0
+          },
+          {
+            "pixels": 41,
+            "reduced": true,
+            "restored": true,
+            "swaps": 65
+          },
+          {
+            "pixels": 45,
+            "reduced": true,
+            "restored": true,
+            "swaps": 65
+          },
+          {
+            "pixels": 48,
+            "reduced": false,
+            "restored": true,
+            "swaps": 0
+          },
+          {
+            "pixels": 45,
+            "reduced": false,
+            "restored": true,
+            "swaps": 0
+          },
+          {
+            "pixels": 30,
+            "reduced": true,
+            "restored": true,
+            "swaps": 65
+          }
+        ],
+        "rigidPairs": [
+          {
+            "zoom": 5,
+            "reference": {
+              "calls": 325,
+              "triangles": 433425,
+              "swaps": 0,
+              "restored": true
+            },
+            "candidate": {
+              "calls": 325,
+              "triangles": 433425,
+              "swaps": 0,
+              "restored": true
+            },
+            "repeat": {
+              "calls": 325,
+              "triangles": 433425,
+              "swaps": 0,
+              "restored": true
+            },
+            "changedChannels": 0,
+            "unstableChannels": 0
+          },
+          {
+            "zoom": 15,
+            "reference": {
+              "calls": 384,
+              "triangles": 203694,
+              "swaps": 44,
+              "restored": true
+            },
+            "candidate": {
+              "calls": 384,
+              "triangles": 184390,
+              "swaps": 65,
+              "restored": true
+            },
+            "repeat": {
+              "calls": 384,
+              "triangles": 203694,
+              "swaps": 44,
+              "restored": true
+            },
+            "changedChannels": 1547,
+            "unstableChannels": 0
+          }
+        ],
+        "actorViewFilterAllocated": false
+      },
+      "movement": {
+        "normalGroundClicks": 3,
+        "samples": 107,
+        "retainedPostLoginFrames": 32,
+        "allGearSlots": 14,
+        "allRestored": true
+      },
+      "drawAttribution": [
+        {
+          "name": "OpaqueActorInstances",
+          "color": 24,
+          "shadow": 112,
+          "triangles": 32803
+        },
+        {
+          "name": "ProceduralSkeleton",
+          "color": 13,
+          "shadow": 48,
+          "triangles": 2968
+        },
+        {
+          "name": "Equipped Cleric",
+          "color": 26,
+          "shadow": 21,
+          "triangles": 33000
+        },
+        {
+          "name": "Equipped Wizard",
+          "color": 26,
+          "shadow": 21,
+          "triangles": 34948
+        },
+        {
+          "name": "Equipped Fighter",
+          "color": 23,
+          "shadow": 20,
+          "triangles": 33210
+        },
+        {
+          "name": "Equipped Rogue",
+          "color": 22,
+          "shadow": 18,
+          "triangles": 30732
+        },
+        {
+          "name": "ProceduralImp",
+          "color": 0,
+          "shadow": 33,
+          "triangles": 732
+        },
+        {
+          "name": "EnvironmentGroup",
+          "color": 19,
+          "shadow": 6,
+          "triangles": 23211
+        },
+        {
+          "name": "Mesh",
+          "color": 1,
+          "shadow": 15,
+          "triangles": 17
+        },
+        {
+          "name": "Canonical terrain tiles",
+          "color": 7,
+          "shadow": 0,
+          "triangles": 896
+        },
+        {
+          "name": "ProceduralEidolicBlackwater",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 2
+        },
+        {
+          "name": "ProceduralRealmTerrain:water",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 4
+        },
+        {
+          "name": "ProceduralRealmTerrain:air",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 4
+        },
+        {
+          "name": "Points",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 46.666666666666664
+        }
+      ],
+      "actualServerMongoTerminal": [
+        "--- PASS: TestTerrainActualEquippedBrowserParty (31.16s)",
+        "PASS",
+        "ok  \teidolon-server\t32.199s"
+      ]
+    }
+  },
+  "visualReview": "Actual High and Low normal-motion HUD images inspected. Supplied outfits, weapons, grips and class silhouettes remain readable; source geometry restores after render and exact close pairs pass. Broad ground patches, angular rocks/trees, procedural enemies and long synthetic labels remain modern-art work. Not final art approval.",
+  "serverMarkers": {
+    "party-low": {
+      "WARNING: DATA RACE": 0,
+      "panic:": 0,
+      "fatal error:": 0,
+      "Worker panic:": 0,
+      "Recovered from panic in Update:": 0
+    },
+    "party-high": {
+      "WARNING: DATA RACE": 0,
+      "panic:": 0,
+      "fatal error:": 0,
+      "Worker panic:": 0,
+      "Recovered from panic in Update:": 0
+    }
+  },
+  "privacy": {
+    "preparedAccounts": 8,
+    "credentialedAutomaticRecordings": "off",
+    "plainAndEmbeddedMembersScanned": 140,
+    "actualAccountIdentifiersRemaining": 0,
+    "deliberatePixels": "Post-login PNG/JPEG retain synthetic fixture labels; no login/password-entry/session recordings. Anonymous local publication tests use only routed fixture-only forms and no registered account. Disposable databases destroyed."
+  },
+  "nextAction": "Reduce measured High shadow submissions without losing visible shadows or hiding actors: untimed attribution has112OpaqueActorInstances,48unbatchedSkeleton and33Imp shadow draws, including zero color draws for Imp. Qualify conservative directional shadow-influence rejection with full current-pose/deformation and unknown-light fallback, exact frozen pixels/normal motion and existing350draw target. Prior view pilot remains unselected; avoid unsafe matrix skips or lucky-population reruns.",
+  "limits": "Private default activation only, pending held milestone integration. Low38entities175draws/84361triangles/16.7ms passes sampled limits; High39entities417draws fails350 though191783triangles/16.7ms frame sample pass. Prior High22entity334draw pass is not universal or superseded into success here. Different live windows do not prove causal FPS/CPU gains. One renderer/three normal socket peers, exact14slot inventory/EP/party/logout saves and normal clicks; not four independent GPU clients, physical-phone/campaign/combat/capacity/24hsoak/F1-F5/beta/launch/full-goal acceptance. Optional connected published jump route adapted but not executed; actual private published kinematic FPS controls remain separate from existing public1429.7ms trusted/server proof.",
+  "evidence": "/home/aeml/.local/share/eidolon-geometry-default-startup-checks-20261010",
+  "inventorySHA256": "691d3a1091edeab06ff6c9495ec096163defd2f28957a442bd4b65fd7a64a92d",
+  "inventoryEntries": 133,
+  "filesIncludingInventory": 134,
+  "toolingFollowup": {
+    "recordedUTC": "2026-10-10T17:19:05.164132+00:00",
+    "source": "44e0c67ca0f65798b2841b0524b3562c8f6f83eb",
+    "runtimeByteIdenticalTo": "fa2f7075fae15562aaccf1b8e7cd76c8372841bd",
+    "normalPreparationCreatesWorker": true,
+    "workerSHA256": "44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43",
+    "workerBytes": 137178,
+    "missingWorkerRejectedBeforeBinaryDatabaseAccounts": true,
+    "geometryQAFlagAbsent": true,
+    "lintAndShellSyntax": "pass",
+    "scope": "Tooling-only followup. Actual missing ignored worker followed by normal npm preparation; runtime/native evidence reused without rerunning unchanged browser/server campaigns.",
+    "evidence": "/home/aeml/.local/share/eidolon-default-worker-preparation-checks-20261010",
+    "inventoryEntries": 5,
+    "inventorySHA256": "a27335c99fb0d715aba14750baeb0f9edf1ee83b73ef11c55ae7b69c3ec9b2a7",
+    "nativeRuntimeUnchanged": true
+  },
+  "selection": {
+    "heldWorktree": "/home/aeml/.local/share/eidolon-raised-world-rollout-20261009-V4BWRffv",
+    "merge": "41f595cce9f2cd4df63a7c4742e1575a3ba47b96",
+    "runtimeByteIdenticalTo": "fa2f7075fae15562aaccf1b8e7cd76c8372841bd",
+    "privateIntegration": "44e0c67ca0f65798b2841b0524b3562c8f6f83eb",
+    "selectedPrivately": true,
+    "published": false,
+    "method": "Ordinary merge preserving held goal and later terminal release27 receipt; separate tooling-only followup. Actual default High and Low native evidence belongs to fa2f7075."
+  },
+  "publicJump": {
+    "version": "Alpha 1.79.27",
+    "commit": "a9d6fc9bab6c7835bce621f53ecde7f381f23137",
+    "trustedClickToLandingMs": 1429.7,
+    "endpointErrors": 0,
+    "requiredCIPassed": true,
+    "currentReadOnlyRecheckUTC": "2026-10-10T17:23:37.618181+00:00",
+    "rechecked": [
+      "release.json",
+      "src/core/GameEngineMovement.js",
+      "src/core/GameEngine.bundle.js"
+    ],
+    "allRecheckedHashesMatch": true,
+    "receipt": "docs/plans/2026-10-10-public27-terminal-verification.json",
+    "mutationThisTurn": false
+  }
+}

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { MeshFactory, PROCEDURAL_MESH_ALIASES } from '../src/utils/MeshFactory.js';
+import { fighterRuntimePath } from '../src/art/AuthoredFighter.js';
 import { MeshCatalog } from '../src/utils/MeshCatalog.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { jest } from '@jest/globals';
@@ -249,7 +250,7 @@ describe('MeshFactory catalog integration', () => {
             expect(mesh.userData.proceduralClass).toBe('Fighter');
             expect(mesh.userData.animations.map((entry) => entry.name))
                 .toEqual(PROCEDURAL_PLAYER_CLIPS);
-            expect(loadSpy).toHaveBeenCalledWith('./assets/archetypes/Fighter/fighter-runtime-high.glb', 8000);
+            expect(loadSpy).toHaveBeenCalledWith(fighterRuntimePath('high'), 8000);
             expect(mesh.userData.assetFallback).toBe(true);
             MeshFactory.releaseMesh('Fighter', mesh);
             expect(MeshFactory.pool.Fighter).toEqual([]);
@@ -649,15 +650,21 @@ describe('MeshFactory catalog integration', () => {
         MeshFactory.pool = {};
         const mesh = await MeshFactory.createMeshForType('QuestNPC');
         MeshFactory.pool.QuestNPC = Array.from({ length: 50 }, () => new THREE.Group());
-        const material = mesh.getObjectByName('QuestNPC_Torso').material;
-        const disposeSpy = jest.spyOn(material, 'dispose');
+        const resources = new Set();
+        mesh.traverse(part => {
+            if (!part.isMesh) return;
+            resources.add(part.geometry);
+            for (const material of Array.isArray(part.material) ? part.material : [part.material]) resources.add(material);
+        });
+        expect(resources.size).toBeGreaterThan(0);
+        const disposeSpies = [...resources].map(resource => jest.spyOn(resource, 'dispose'));
 
         try {
             MeshFactory.releaseMesh('QuestNPC', mesh);
-            expect(disposeSpy).not.toHaveBeenCalled();
+            for (const spy of disposeSpies) expect(spy).not.toHaveBeenCalled();
             expect(MeshFactory.pool.QuestNPC).toHaveLength(50);
         } finally {
-            disposeSpy.mockRestore();
+            for (const spy of disposeSpies) spy.mockRestore();
             MeshFactory.pool = previousPool;
         }
     });

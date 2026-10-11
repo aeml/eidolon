@@ -1,0 +1,71 @@
+{
+  "recordedUTC": "2026-10-10T14:18:14.952816+00:00",
+  "version": "Alpha 1.79.26",
+  "commit": "77859697a71329facd0584a95167c80eac392398",
+  "ci": 38056289769,
+  "attempt": 1,
+  "status": "completed",
+  "conclusion": "failure",
+  "url": "https://github.com/aeml/eidolon/actions/runs/38056289769",
+  "deployed": true,
+  "requiredCIPassed": false,
+  "releaseGateAccepted": false,
+  "terminalIdentityMatches": true,
+  "terminalIdentity": "deployed-proof/terminal-public-identity.json",
+  "assetProof": {
+    "path": "deployed-proof/receipt.json",
+    "recordedUTC": "2026-10-10T14:01:03.827080+00:00",
+    "files": 8,
+    "allAssetsMatch": true,
+    "engineSHA256": "9444eead1392ceddac639cb348284b065700d0caa97983ffab97549621ca391e",
+    "scope": "Eight actual assets independently compared with prepared exact publication; original observation retained unchanged."
+  },
+  "jobs": {
+    "Server Tests (Go)": "success",
+    "Browser Smoke (Playwright 2/3)": "success",
+    "Client Tests (Jest)": "success",
+    "Browser Smoke (Playwright 3/3)": "success",
+    "Browser Smoke (Playwright 1/3)": "success",
+    "Predeploy Character QA (System Chrome)": "success",
+    "Validate Production QA Inputs": "success",
+    "Deploy to GitHub Pages": "success",
+    "Deploy Server (SSH)": "success",
+    "Live Release and Character QA": "failure"
+  },
+  "requiredLiveSteps": {
+    "Wait for matching live releases": "success",
+    "Run live anonymous and persistent-character QA": "failure",
+    "Run live town recovery and Well Rested QA": "skipped"
+  },
+  "optionalFourClass": "skipped",
+  "native": {
+    "stats": {
+      "total": 9,
+      "expected": 7,
+      "unexpected": 1,
+      "flaky": 0,
+      "skipped": 1,
+      "ok": false
+    },
+    "artifactID": 11672505336,
+    "archiveSHA256": "afb0501785c92b1bbce39fbf14b8066334c330f3a32088060ae186d11e26eab6",
+    "archiveDigestMatchesAPI": true,
+    "failedTest": "kills and loots in the overworld, enters and exits a dungeon, and persists",
+    "initial": "Stash unchanged Gold expected385761, received385936 (+175).",
+    "configuredRetry": "Exact vendor Gold expected386536, received386711 (+175), after unchanged15s bounded poll.",
+    "freshBaselines": "Correlated baseline checks passed on both attempts; the controlled synchronization repair is insufficient for this live failure.",
+    "skipped": "Focused connected jump timing case is intentionally unselected in this broad live job. Prior public25 real jump proof retained separately."
+  },
+  "browserShards": {
+    "passed": 300,
+    "skipped": 10,
+    "logs": "browser-shards/"
+  },
+  "limits": "Original live Gold cause remains unproven. Required later recovery and optional four-class steps skipped, never counted as passed. No manual retry, cancellation, waiver, successor publication, or full-roadmap/art/device/soak/beta/launch acceptance.",
+  "privacy": "Actual artifact upload followed successful workflow credential sanitation; existing native archive digest matches GitHub API. No new credential material fetched.",
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-release26-checks-20261010",
+    "inventoryEntries": 43,
+    "inventorySHA256": "6fd711a168018cc8f722db58b485c53d0e479fbc43d1ab38654723a6ce445cc7"
+  }
+}

@@ -72,6 +72,7 @@ func closeReplacedClient(c *Client) {
 			c.sendError("Logged in from another location")
 			return
 		}
+		c.recordTransportClosure(transportSessionReplaced)
 		if !scheduleClientCharacterWork(c, func() {
 			c.sendError("Logged in from another location")
 			// Give the existing write pump a chance to flush the notification;

@@ -1,0 +1,376 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-09T19:53:40.836003+00:00",
+  "base": "8e6cdb8f5c3a2bc165443233f4a3cf3cc128647e",
+  "status": "REJECTED for adoption after actual visual review. Isolated experiment only; held candidate and public release remain unchanged. Technical tests passing do not establish art improvement.",
+  "sourceSHA256": {
+    "src/art/EarthGroundComposition.js": "6f4b0e5d4965dcc3d68436a1e5ff14f8955f8177a8ae3158dab129e108175d20",
+    "tests/EarthGroundComposition.test.js": "0e3e8f915d1435e7e5bc356c51125b7a2a3c17eeb10175825d298d17a6ce9280",
+    "tests/e2e/earth-soil-response.spec.js": "511b8e96ba2b9cbab44a35b96584f71f3f046bb313a60ec57a35107d15e3be64"
+  },
+  "experiment": "Increase local soil/moss contrast, then account for the detail texture having eight aggregates per tile in derivative-based filtering; filter the finer pore field before nonlinear amplification and share clod field with roughness. Original palette restored in final source after wider colors read as camouflage.",
+  "visualDecision": "Root reviewed original and candidate gameplay/detail High views, Low gameplay view and actual connected four-class party/HUD. Wider palette strengthens irregular pixel patches and is rejected. Filtering removes excessive grain contrast but leaves large bare brown-green washes and sparse repeated vegetation; this still falls short of the explicit modern ARPG visual contract. Do not promote a technically cleaner but visibly under-detailed surface as completion or ship a microrelease.",
+  "native": {
+    "result": "Final two actual AMD ANGLE RADV cases passed25.9s; High14.9s/Low8.6s. Four before/after pairs per quality: gate-run, road-attack, woodland-idle, road-detail. Exact stable baseline, visible candidate differences, identical calls/triangles/geometries/textures per pair and bounded warmed resource counts. Supplied full14-slot Fighter/production raised terrain/lighting/shadows retained.",
+    "reports": [
+      {
+        "path": "/home/aeml/.local/share/eidolon-earth-soil-response-qualified-20261009/earth-soil-response-Earth--51208-hter-and-raised-scenery-low/comparison.json",
+        "sha256": "1cdaf14d3312d99f3adb73bc2951b235ec4ec12da527aa3eb6eaec4bc84f11e0",
+        "quality": "low",
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "reports": [
+          {
+            "label": "gate-run",
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 753800,
+              "maximum": 27
+            },
+            "previous": {
+              "calls": 55,
+              "triangles": 60793,
+              "geometries": 62,
+              "textures": 59
+            },
+            "current": {
+              "calls": 55,
+              "triangles": 60793,
+              "geometries": 62,
+              "textures": 59
+            }
+          },
+          {
+            "label": "road-attack",
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 711626,
+              "maximum": 29
+            },
+            "previous": {
+              "calls": 50,
+              "triangles": 44776,
+              "geometries": 81,
+              "textures": 83
+            },
+            "current": {
+              "calls": 50,
+              "triangles": 44776,
+              "geometries": 81,
+              "textures": 83
+            }
+          },
+          {
+            "label": "woodland-idle",
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 728945,
+              "maximum": 33
+            },
+            "previous": {
+              "calls": 65,
+              "triangles": 49839,
+              "geometries": 101,
+              "textures": 104
+            },
+            "current": {
+              "calls": 65,
+              "triangles": 49839,
+              "geometries": 101,
+              "textures": 104
+            }
+          },
+          {
+            "label": "road-detail",
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 556384,
+              "maximum": 34
+            },
+            "previous": {
+              "calls": 44,
+              "triangles": 39382,
+              "geometries": 101,
+              "textures": 104
+            },
+            "current": {
+              "calls": 44,
+              "triangles": 39382,
+              "geometries": 101,
+              "textures": 104
+            }
+          }
+        ],
+        "warm": {
+          "geometries": 101,
+          "textures": 104
+        },
+        "afterRepeat": {
+          "geometries": 101,
+          "textures": 104
+        },
+        "scope": "Production raised scene, supplied14-slot Fighter and fixed sampled poses, gameplay zoom18/detail10. Same geometry/shadows/camera/maps; wind shader uniform held only for comparison. No actual connected combat/HUD/whole-game/device budget acceptance."
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-earth-soil-response-qualified-20261009/earth-soil-response-Earth--009b0-ter-and-raised-scenery-high/comparison.json",
+        "sha256": "93f14b5986e80abd717c6ba8946f4db3ec38c253f1b5d876790dd9e4af27662d",
+        "quality": "high",
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "reports": [
+          {
+            "label": "gate-run",
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 2464158,
+              "maximum": 44
+            },
+            "previous": {
+              "calls": 110,
+              "triangles": 183522,
+              "geometries": 69,
+              "textures": 79
+            },
+            "current": {
+              "calls": 110,
+              "triangles": 183522,
+              "geometries": 69,
+              "textures": 79
+            }
+          },
+          {
+            "label": "road-attack",
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 2270350,
+              "maximum": 50
+            },
+            "previous": {
+              "calls": 220,
+              "triangles": 242327,
+              "geometries": 101,
+              "textures": 115
+            },
+            "current": {
+              "calls": 220,
+              "triangles": 242327,
+              "geometries": 101,
+              "textures": 115
+            }
+          },
+          {
+            "label": "woodland-idle",
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 2511410,
+              "maximum": 45
+            },
+            "previous": {
+              "calls": 164,
+              "triangles": 222220,
+              "geometries": 125,
+              "textures": 151
+            },
+            "current": {
+              "calls": 164,
+              "triangles": 222220,
+              "geometries": 125,
+              "textures": 151
+            }
+          },
+          {
+            "label": "road-detail",
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 2041075,
+              "maximum": 47
+            },
+            "previous": {
+              "calls": 146,
+              "triangles": 184855,
+              "geometries": 125,
+              "textures": 151
+            },
+            "current": {
+              "calls": 146,
+              "triangles": 184855,
+              "geometries": 125,
+              "textures": 151
+            }
+          }
+        ],
+        "warm": {
+          "geometries": 125,
+          "textures": 151
+        },
+        "afterRepeat": {
+          "geometries": 125,
+          "textures": 151
+        },
+        "scope": "Production raised scene, supplied14-slot Fighter and fixed sampled poses, gameplay zoom18/detail10. Same geometry/shadows/camera/maps; wind shader uniform held only for comparison. No actual connected combat/HUD/whole-game/device budget acceptance."
+      }
+    ],
+    "scope": "Sampled poses, ordinary zoom18/detail10, no HUD or connected simulation in this fixture. Wind uniform held only for paired image comparability; no frame/device performance certificate.",
+    "testGuard": "Final test adds explicit EIDOLON_E2E_EARTH_SOIL_COMPARE=1 opt-in after the successful native execution to keep historical git references out of ordinary shallow CI. Execution body/assertions and runtime source unchanged; skipped future default runs are not this retained pass.",
+    "executedTestSHA256": "dc3f17dbb248ed1072d3ea6c9a61c14b4f7411702945d3ef2683bfaf03d2c68b"
+  },
+  "units": {
+    "initialResult": "35 terrain/ground-geometry/tile checks and nine Earth checks pass; one Earth check fails stale v12 program-cache expectation, not a runtime defect. Initial4-suite45-case run166.307s retained.",
+    "afterCorrection": "Earth10checks passed28.862s after correct cache/source expectations; following final palette restoration the three affected shader/ownership checks pass12.256s. Seven unselected tests are skipped, not independently rerun/passed. Unchanged map generation/ground geometry inputs reuse their earlier evidence.",
+    "meaning": "Canonical High/Low map registration, parent ground topology and map disposal remain. Shader has the same six texture fetches and owned map sizes; no geometry, collision, tree/plant density, ability footprint, source actors or gameplay change."
+  },
+  "connectedParty": {
+    "result": "Race-enabled disposable actual server/Mongo7.0.14, one native browser plus three normal connected socket peers. Four complete14-slot class outfits, independent bones, membership/Gold/EP/bag/terrain saves preserved through normal disconnect. Test passed51.47s, package52.552s; disposed container and4190/18189 listeners independently confirmed removed.",
+    "profile": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.29999999999927,
+      "frameP95Ms": 50,
+      "frameP99Ms": 66.59999999999854,
+      "framesOver33ms": 59,
+      "cpuLoopMedianMs": 27.19999998807907,
+      "cpuLoopP95Ms": 42.70000001788139,
+      "drawCallsMedian": 474,
+      "trianglesMedian": 515806,
+      "geometries": 418,
+      "textures": 282,
+      "activeEntities": 26,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "budgetStatus": "FAIL/OPEN: High20ms median/33.4ms p95 required; observed33.29999999999927ms median/50ms p95.26active entities; previous actor receipt used38, so do not claim a CPU benefit from comparing these different scenes.",
+    "safeSummary": {
+      "path": "/home/aeml/.local/share/eidolon-earth-soil-response-checks-20261009/party-frame-profile.json",
+      "sha256": "63383ef3cfb7eaa92f41939ffc0076598e267a0fbfea33829710f69ed4e9f21f"
+    },
+    "reviewedHUD": {
+      "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-fA3fA3s0/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/single-renderer-equipped-party-high.png",
+      "sha256": "d7ec471d2c793d88da3c6a16ea8e873a4a06b744a4607cdda4c9e556c7842698"
+    },
+    "privateLog": "Raw browser.log remains0600, credential-bearing, not copied or committed."
+  },
+  "build": {
+    "result": "Copied-site engine bundle passes using unchanged tool-local esbuild0.28.2; editable and shared dependency trees unmodified.",
+    "summary": {
+      "bundledModules": 426,
+      "bytes": 3272287,
+      "sharedLoginModules": 21,
+      "externalImports": [
+        "../assets/ServiceWorkerBoot.js",
+        "../data/worldGeography.js",
+        "../ui/EmailRecoveryUI.js",
+        "../ui/OwnedEvents.js",
+        "../ui/PasswordChangeUI.js",
+        "../ui/ReportUI.js",
+        "../ui/reportTypes.js",
+        "./CredentialToken.js",
+        "./GraphicsStartup.js",
+        "three",
+        "three/addons/geometries/RoundedBoxGeometry.js",
+        "three/addons/loaders/GLTFLoader.js",
+        "three/addons/postprocessing/EffectComposer.js",
+        "three/addons/postprocessing/OutputPass.js",
+        "three/addons/postprocessing/RenderPass.js",
+        "three/addons/postprocessing/ShaderPass.js",
+        "three/addons/postprocessing/UnrealBloomPass.js",
+        "three/addons/shaders/FXAAShader.js",
+        "three/addons/utils/BufferGeometryUtils.js",
+        "three/addons/utils/SkeletonUtils.js"
+      ]
+    }
+  },
+  "lint": "Three affected JavaScript files pass ESLint max-warnings0 with Node24.18.0; git diff --check passes.",
+  "failedAndSuperseded": [
+    {
+      "artifacts": "/home/aeml/.local/share/eidolon-earth-soil-response-native-20261009",
+      "result": "First2native cases fail because fixture writes .material on tiled ground Group, leaving actual tile materials unchanged. Zero candidate pixel deltas expose mistake. Corrected fixture traverses actual ground meshes; no assertion weakened."
+    },
+    {
+      "artifacts": "/home/aeml/.local/share/eidolon-earth-soil-response-native-final-20261009",
+      "result": "Corrected comparison technically passes but wide palette reads as camouflage; rejected after review."
+    },
+    {
+      "artifacts": [
+        "/home/aeml/.local/share/eidolon-earth-soil-response-filtered-20261009",
+        "/home/aeml/.local/share/eidolon-earth-soil-response-filtered-final-20261009"
+      ],
+      "result": "Intermediate filtering ranges/contrast tested and refined; technical passes do not constitute selected art quality."
+    }
+  ],
+  "retainedSafeLogs": [
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-soil-response-checks-20261009/eidolon-earth-soil-response-units.log",
+      "sha256": "ee8e775865fa0cdf1020b2f6a76fed14ec2fba89a55b99ecadb0d784a91fce8e"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-soil-response-checks-20261009/eidolon-earth-soil-response-units-final.log",
+      "sha256": "fd17110661280d00317ca42063aca4553d8bbab11907a7b173cd381b554e40de"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-soil-response-checks-20261009/eidolon-earth-soil-response-shader-final.log",
+      "sha256": "92b909903065c892decfce50325bffcdc882050a63130d5542e6733463adb1f4"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-soil-response-checks-20261009/eidolon-earth-soil-response-native.log",
+      "sha256": "82ad9168b512623630fecd14264976ed58a6984b30de6d838ca37aceb633899e"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-soil-response-checks-20261009/eidolon-earth-soil-response-native-final.log",
+      "sha256": "10eddec84fc8355971babb5d1d4a1be8206231259e1b40fb260b3a87e75378fb"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-soil-response-checks-20261009/eidolon-earth-soil-response-filtered.log",
+      "sha256": "86e8554801b49b69e0d96f8fb3751e56ee463a6e1bb8c10f96b98f6d16e12a3e"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-soil-response-checks-20261009/eidolon-earth-soil-response-filtered-final.log",
+      "sha256": "cb18613175321410bc0d6e53b40ee550df840879e389cf0a57cf6afba14cba5f"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-soil-response-checks-20261009/eidolon-earth-soil-response-qualified.log",
+      "sha256": "90f2f36a31304b847bd646ded75ad14752d98544b6f20ff28099a711d82bbdd1"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-soil-response-checks-20261009/eidolon-earth-soil-response-lint-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-soil-response-checks-20261009/eidolon-earth-soil-bundle.json",
+      "sha256": "6dedf44e20256dc84ba87b520ae3e829ca4da6b3ffb33b980724eea1f32aa01c"
+    }
+  ],
+  "nextRequiredWork": "Build richer registered ground material morphology at meaningful soil/moss/mineral/litter scales, with correct frequency filtering and deliberate vegetation composition. Review normal gameplay movement/kit/HUD from Lanternhold through Earth/fight/dungeon approach; qualify actual party/device costs without deleting content or weakening budgets. The exact generation/library source needs inspectable before/after evidence, rather than repeated coefficient changes.",
+  "remaining": "Full inherited1.11\u20131.99, modern-art Q/CB, actual equipped party/device/terrain rollout, F1\u2013F5, operations, owner policy/rights/playtest/beta/launch and handoff gates remain open. No version/public push/production profile/access change."
+}

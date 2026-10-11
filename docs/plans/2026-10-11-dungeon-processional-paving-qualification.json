@@ -1,0 +1,1098 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-11T03:43:53.640871+00:00",
+  "classification": "progress",
+  "source": "aa97abd38b8c597fcaed5d8c5f787fa01f64d015",
+  "parent": "f3adbbf0fa1363453dddc9ac54bb9cd03b512245",
+  "selected": true,
+  "published": false,
+  "implementation": {
+    "scope": "All five dungeon themes: worn processional entry terrace joins both vigils and ward to the room center; fitted paving grounds coffer and hollow font. Shared geometry plans preserve existing prop placements and all authoritative layout/state.",
+    "geometry": "Deterministic staggered joints, chipped corners and real bevels. Production floorY=.1; reliefY=.12-.13, beneath outerwardY=.14/innerwardY=.16 and objective seals. Planar world-scale mineral UVs and broad per-stone vertex shade.",
+    "ownership": "Three kit-local shapes reused across rooms; one shared paving material cloned from existing stone, darker linear color*.48 and vertex colors; same albedo/normal/roughness textures. Normal opaque production batching; casts no shadows and receives existing light/contact shadows. No global cache, new texture/light/collider/interaction/animation clock or authority change.",
+    "cost": {
+      "entry": {
+        "stones": 33,
+        "triangles": 792,
+        "sourceAttributeBytes": 104544
+      },
+      "cache": {
+        "stones": 20,
+        "triangles": 480,
+        "sourceAttributeBytes": 63360
+      },
+      "font": {
+        "stones": 20,
+        "triangles": 480,
+        "sourceAttributeBytes": 63360
+      },
+      "sourceShapeBytesPerKit": 231264,
+      "materialDeltaPerKit": 1,
+      "batchDeltaPerPavedRoom": 1,
+      "bakedGeometry": "Each production paved room also owns merged attribute bytes equal to its added source geometry; source and baked data are separate costs. Same shape detail on High/Low; no quality reduction or FPS saving claim."
+    }
+  },
+  "focused": {
+    "distinctPassed": 74,
+    "newPavingChecks": 13,
+    "suites": 4,
+    "scope": "Cumulative unique checks:41 ProceduralDungeonInteriors +8 vigil +12 physical surface +13 paving. Initial56pass/5failed bounds observers; corrected17pass/7failed (two conservative bounding-box comparisons and five stale material counts). Final25pass after precise vertex bounds and three-finish/six-shared-map contract; metrics1pass overlaps original41.40 nonmatching skips not counted. Original123second unchanged floor suite not replayed.",
+    "logs": [
+      "focused.log",
+      "corrected-focused.log",
+      "final-focused.log",
+      "metrics-focused.log",
+      "lint.log",
+      "final-lint.log",
+      "qualified-lint.log"
+    ]
+  },
+  "native": {
+    "distinctPassed": 6,
+    "sourceCases": 4,
+    "copiedEngineCases": 2,
+    "scope": "Actual AMD RADV system Chrome. Five actual production dungeon layouts on desktop1280/High and phone390/Low, supplied Fighter14slots, gameplayzoom15 and HUD.30prop views/60paired screenshots,1800prop animation updates plus288elemental center updates=2088. Paired oldf3adbbf0/current dressing swaps retain same actor/camera/world; exact792/480triangle andonebatch deltas. Render-to-next-RAF samples are prepared motion, not continuous-engine cadence, normal input, server-route or physical-phone performance.",
+    "propViews": 30,
+    "pairedScreenshots": 60,
+    "preparedAnimationUpdates": 2088,
+    "maxPreparedDraws": 102,
+    "maxPreparedTriangles": 59479,
+    "maxPreparedP95Ms": 16.80000000000109,
+    "engineSHA256": "3969f7501a16c163dc156590809c34c065478ff99b987e5ba50c9d01582b7834",
+    "copiedEngine": "High/Low actual copied/versioned engine, normal saved quality owner. All5floors and3prop/paving material variants link; six original prop maps shared. Exact warmed GPU counts after each of5rooms and remainingMeshes empty; render-time colliders stable. Initial6case sweep plus focused2case compiler extension overlap, never8distinct.",
+    "copies": [
+      {
+        "samples": [
+          {
+            "type": "molten_core",
+            "compiled": true,
+            "floorLinked": true,
+            "patina": "molten_core",
+            "props": [
+              {
+                "role": "stone",
+                "vertexColors": true,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "stone",
+                "vertexColors": false,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "metal",
+                "vertexColors": false,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              }
+            ],
+            "paving": [
+              "entry_gate",
+              "treasure_cache",
+              "treasure_cache",
+              "restorative_shrine"
+            ],
+            "quality": "high",
+            "mapSize": 256,
+            "calls": 38,
+            "triangles": 13737,
+            "collidersStable": true
+          },
+          {
+            "type": "tempest_spire",
+            "compiled": true,
+            "floorLinked": true,
+            "patina": "tempest_spire",
+            "props": [
+              {
+                "role": "stone",
+                "vertexColors": true,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "stone",
+                "vertexColors": false,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "metal",
+                "vertexColors": false,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              }
+            ],
+            "paving": [
+              "entry_gate",
+              "treasure_cache",
+              "treasure_cache",
+              "restorative_shrine"
+            ],
+            "quality": "high",
+            "mapSize": 256,
+            "calls": 36,
+            "triangles": 13645,
+            "collidersStable": true
+          },
+          {
+            "type": "abyssal_well",
+            "compiled": true,
+            "floorLinked": true,
+            "patina": "abyssal_well",
+            "props": [
+              {
+                "role": "stone",
+                "vertexColors": true,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "stone",
+                "vertexColors": false,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "metal",
+                "vertexColors": false,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              }
+            ],
+            "paving": [
+              "entry_gate",
+              "treasure_cache",
+              "treasure_cache",
+              "restorative_shrine"
+            ],
+            "quality": "high",
+            "mapSize": 256,
+            "calls": 37,
+            "triangles": 17329,
+            "collidersStable": true
+          },
+          {
+            "type": "umbral_nexus",
+            "compiled": true,
+            "floorLinked": true,
+            "patina": "umbral_nexus",
+            "props": [
+              {
+                "role": "stone",
+                "vertexColors": true,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "stone",
+                "vertexColors": false,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "metal",
+                "vertexColors": false,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              }
+            ],
+            "paving": [
+              "entry_gate",
+              "treasure_cache",
+              "restorative_shrine"
+            ],
+            "quality": "high",
+            "mapSize": 256,
+            "calls": 38,
+            "triangles": 11023,
+            "collidersStable": true
+          },
+          {
+            "type": "verdant_bastion_catacombs",
+            "compiled": false,
+            "floorLinked": true,
+            "verdant": true,
+            "props": [
+              {
+                "role": "stone",
+                "vertexColors": true,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "stone",
+                "vertexColors": false,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "metal",
+                "vertexColors": false,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              }
+            ],
+            "paving": [
+              "entry_gate",
+              "treasure_cache",
+              "treasure_cache",
+              "restorative_shrine"
+            ],
+            "quality": "high",
+            "mapSize": 256,
+            "calls": 38,
+            "triangles": 24157,
+            "collidersStable": true
+          }
+        ],
+        "warmed": true,
+        "unwarmedBaseline": {
+          "geometries": 1,
+          "textures": 14
+        },
+        "baseline": {
+          "geometries": 9,
+          "textures": 18
+        },
+        "cleared": [
+          {
+            "type": "molten_core",
+            "geometries": 9,
+            "textures": 18
+          },
+          {
+            "type": "tempest_spire",
+            "geometries": 9,
+            "textures": 18
+          },
+          {
+            "type": "abyssal_well",
+            "geometries": 9,
+            "textures": 18
+          },
+          {
+            "type": "umbral_nexus",
+            "geometries": 9,
+            "textures": 18
+          },
+          {
+            "type": "verdant_bastion_catacombs",
+            "geometries": 9,
+            "textures": 18
+          }
+        ],
+        "after": {
+          "geometries": 9,
+          "textures": 18
+        },
+        "remainingMeshes": [],
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "engineSHA256": "3969f7501a16c163dc156590809c34c065478ff99b987e5ba50c9d01582b7834",
+        "scope": "Actual copied/versioned engine, normal saved quality preference and world builders. Prepared materials, shader compilation, collider stability and GPU cleanup; no server, gameplay timing or physical-device claim."
+      },
+      {
+        "samples": [
+          {
+            "type": "molten_core",
+            "compiled": true,
+            "floorLinked": true,
+            "patina": "molten_core",
+            "props": [
+              {
+                "role": "stone",
+                "vertexColors": true,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "stone",
+                "vertexColors": false,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "metal",
+                "vertexColors": false,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              }
+            ],
+            "paving": [
+              "entry_gate",
+              "treasure_cache",
+              "treasure_cache",
+              "restorative_shrine"
+            ],
+            "quality": "low",
+            "mapSize": 64,
+            "calls": 15,
+            "triangles": 5966,
+            "collidersStable": true
+          },
+          {
+            "type": "tempest_spire",
+            "compiled": true,
+            "floorLinked": true,
+            "patina": "tempest_spire",
+            "props": [
+              {
+                "role": "stone",
+                "vertexColors": true,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "stone",
+                "vertexColors": false,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "metal",
+                "vertexColors": false,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              }
+            ],
+            "paving": [
+              "entry_gate",
+              "treasure_cache",
+              "treasure_cache",
+              "restorative_shrine"
+            ],
+            "quality": "low",
+            "mapSize": 64,
+            "calls": 14,
+            "triangles": 5782,
+            "collidersStable": true
+          },
+          {
+            "type": "abyssal_well",
+            "compiled": true,
+            "floorLinked": true,
+            "patina": "abyssal_well",
+            "props": [
+              {
+                "role": "stone",
+                "vertexColors": true,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "stone",
+                "vertexColors": false,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "metal",
+                "vertexColors": false,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              }
+            ],
+            "paving": [
+              "entry_gate",
+              "treasure_cache",
+              "treasure_cache",
+              "restorative_shrine"
+            ],
+            "quality": "low",
+            "mapSize": 64,
+            "calls": 15,
+            "triangles": 6166,
+            "collidersStable": true
+          },
+          {
+            "type": "umbral_nexus",
+            "compiled": true,
+            "floorLinked": true,
+            "patina": "umbral_nexus",
+            "props": [
+              {
+                "role": "stone",
+                "vertexColors": true,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "stone",
+                "vertexColors": false,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "metal",
+                "vertexColors": false,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              }
+            ],
+            "paving": [
+              "entry_gate",
+              "treasure_cache",
+              "restorative_shrine"
+            ],
+            "quality": "low",
+            "mapSize": 64,
+            "calls": 16,
+            "triangles": 5584,
+            "collidersStable": true
+          },
+          {
+            "type": "verdant_bastion_catacombs",
+            "compiled": false,
+            "floorLinked": true,
+            "verdant": true,
+            "props": [
+              {
+                "role": "stone",
+                "vertexColors": true,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "stone",
+                "vertexColors": false,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "metal",
+                "vertexColors": false,
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              }
+            ],
+            "paving": [
+              "entry_gate",
+              "treasure_cache",
+              "treasure_cache",
+              "restorative_shrine"
+            ],
+            "quality": "low",
+            "mapSize": 256,
+            "calls": 15,
+            "triangles": 8290,
+            "collidersStable": true
+          }
+        ],
+        "warmed": true,
+        "unwarmedBaseline": {
+          "geometries": 0,
+          "textures": 0
+        },
+        "baseline": {
+          "geometries": 8,
+          "textures": 4
+        },
+        "cleared": [
+          {
+            "type": "molten_core",
+            "geometries": 8,
+            "textures": 4
+          },
+          {
+            "type": "tempest_spire",
+            "geometries": 8,
+            "textures": 4
+          },
+          {
+            "type": "abyssal_well",
+            "geometries": 8,
+            "textures": 4
+          },
+          {
+            "type": "umbral_nexus",
+            "geometries": 8,
+            "textures": 4
+          },
+          {
+            "type": "verdant_bastion_catacombs",
+            "geometries": 8,
+            "textures": 4
+          }
+        ],
+        "after": {
+          "geometries": 8,
+          "textures": 4
+        },
+        "remainingMeshes": [],
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "engineSHA256": "3969f7501a16c163dc156590809c34c065478ff99b987e5ba50c9d01582b7834",
+        "scope": "Actual copied/versioned engine, normal saved quality preference and world builders. Prepared materials, shader compilation, collider stability and GPU cleanup; no server, gameplay timing or physical-device claim."
+      }
+    ],
+    "reports": {
+      "initial-native": {
+        "total": 1,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      },
+      "final-native": {
+        "total": 6,
+        "expected": 6,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      },
+      "compiled-paving": {
+        "total": 2,
+        "expected": 2,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      }
+    }
+  },
+  "requiredCI": {
+    "hostedCount": 337,
+    "nativeCount": 15,
+    "combinedDistinctRequired": 348,
+    "priorDistinctRequired": 348,
+    "lost": [],
+    "added": [],
+    "scope": "Discovery only. Same case identities, package/browser partition plan and CI policy as qualified floor milestone; prior exact-once hosted partition proof reused. Existing required copied-bundle High/Low cases now compile all prop and paving finishes and clear all five themes."
+  },
+  "retainedDraftsAndFailures": [
+    "Initial pale paving Y=.14-.16 intersected decorative outerward; rejected visual draft despite one native pass. Darker shared finish andY=.12-.13 selected.",
+    "Initial child mesh bounding-box observers had stale parent matrices; corrected source update. Later conservative transformed bounding boxes differ from actual baked vertices; precise vertex bounds used with unchanged.01world tolerance.",
+    "Physical-map test still expected two finishes after paving adds a third. Explicit three-material/six-texture contract corrected, not a budget waiver.",
+    "Prepared comparison previously applied room summaries to effect meshes lacking roomIndex, hiding objective runes. Observer now selects real room-state roots; current/reference objective visibility matches."
+  ],
+  "visualReview": "Viewed actual HUD/equipped entry terrace and cache before/after, final Tempest entry, Abyssal font, Molten phonecache and Verdant phonefont. Lower/darker fitted masonry improves local construction and preserves seals. Broad rooms remain sparse, motifs/furniture silhouettes basic, texture courses repetitive. This is partial art implementation, not modern-ARPG completion or owner approval.",
+  "sourceFiles": [
+    {
+      "path": "src/art/DungeonProcessionalPaving.js",
+      "bytes": 4312,
+      "sha256": "0db8bd522ee7f304fd56f0853e2f0ff960d0f3c5117c21fe65580b7d79c22e07"
+    },
+    {
+      "path": "src/art/ProceduralDungeonInteriors.js",
+      "bytes": 35662,
+      "sha256": "8d6b4a72aa52df7444392b298f7ba24db1dfffe6cbf091ecf50d17a6fc938338"
+    },
+    {
+      "path": "tests/DungeonProcessionalPaving.test.js",
+      "bytes": 5633,
+      "sha256": "76082c6f36af24f9aab3ca3bd83e1b6f57173d98eced6b68ebf0d6f6eb87227a"
+    },
+    {
+      "path": "tests/DungeonPropSurface.test.js",
+      "bytes": 4373,
+      "sha256": "3c7c1a2194e3015299828b70af5494b193729094444ee06d4a9c33a817500053"
+    },
+    {
+      "path": "tests/ProceduralDungeonInteriors.test.js",
+      "bytes": 18200,
+      "sha256": "f15478f00c3353f184d17a8f17cecd8a896ba534eef5fbf928d771e2af0830d1"
+    },
+    {
+      "path": "tests/e2e/dungeon-prop-review.js",
+      "bytes": 13319,
+      "sha256": "9c5e62f9b767eaeb0ec5266dfb6a53095fa634e20f3067f148b2d63376dc2f6f"
+    },
+    {
+      "path": "tests/e2e/published-game-bundle.spec.js",
+      "bytes": 47728,
+      "sha256": "7a00a8353b6ec3084b904254c06f5481179b1120511ecdc2a535ec7e59f558c7"
+    }
+  ],
+  "custody": "Anonymous prepared fixtures only; no credentials, Go/Mongo process, account/save fixture, production mutation or public deployment this turn. All observed sessions terminal; static port free.",
+  "scopeLimits": "Staged unpublished; publicAlpha1.79.29 requested jump/aura/admin acceptance retained. No unrelated private cache/camp/singleton/DemonOrc/route QA selected. Original50/66.7ms,49.9/66.6ms,386370/281603/289302triangle,438/361draw andLow202draw failures unresolved. No full-room/device/party/combat performance or owner art approval. Original world/art/contact/audio/devices/operations/F1-F5/beta/launch/handoff goal active; no campaign/soak replay, version/access/commerce/beta change.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-dungeon-paving-checks-20261011",
+    "inventoryEntries": 133,
+    "files": 134,
+    "inventorySHA256": "a21e9d9adc288a117c269cf587f4923c00c8fc3a3b207bfcc0da138db5537c21",
+    "frozen": true
+  }
+}

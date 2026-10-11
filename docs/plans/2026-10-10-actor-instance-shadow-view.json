@@ -1,0 +1,192 @@
+{
+  "recordedUTC": "2026-10-10T12:35:49.927464+00:00",
+  "baseCommit": "9db89dbffefbac95b8741a99431cfebc9b6e3170",
+  "status": "Explicit private unselected prototype; no RenderSystem import or production integration",
+  "mechanism": "Read renderer actual shadow-light array after color projection. Existing actor batches use already prepared sphere bounds; conservative enclosing box and all filter-padded directional sweeps must miss the view. Temporarily clear only castShadow during stock shadow pass; finally and nested-call restoration. No GPU rows or actor/color visibility changed. No complete scene light scan.",
+  "checks": {
+    "units": "Final32 pass0.484s; adjacent66 passed in initial combined run. Initial read-only reversedDepth fixture assignment failed and is retained; corrected fixture overrides getter without changing assertion.",
+    "native": "12 pass28.0s, zero retries/flaky/skips/unexpected; 70 source/candidate/source RGB comparisons across six existing rigid actor families, High/Low, motion/stretch, far world/cell boundary and unknown-point-shadow fallback",
+    "cleanup": "four stable GPU lifetime cycles per case and draw-failure restoration",
+    "lint": "scoped3file ESLint and diff check pass",
+    "visual": "Viewed actual high Skeleton and InfernoTitan candidates: visible actors/contact shadows and two incoming offscreen shadows retained"
+  },
+  "sourcePins": {
+    "src/art/ActorInstanceShadowView.js": "9ddf9856ab39f98c5b6765910a21b480cd3f4661c081ae341d92b04f73a1b65c",
+    "tests/ActorInstanceShadowView.test.js": "30873bad4260b2a1b8327c7528ab7ea0f14c214dc384772ffcf7c6c2479afd75",
+    "tests/e2e/actor-instance-shadow-view.spec.js": "aa24800701c53f622cf51c26e62e1c83e4f6d18467c21e31f2ea5f15e023f6ea"
+  },
+  "examples": [
+    {
+      "quality": "high",
+      "type": "RespecNPC",
+      "poses": 5,
+      "imageChannelsChanged": 0,
+      "unstableChannels": 0,
+      "idle": {
+        "state": "Idle",
+        "source": {
+          "calls": 109,
+          "triangles": 17127
+        },
+        "candidate": {
+          "calls": 67,
+          "triangles": 10185,
+          "stats": {
+            "lights": 1,
+            "checked": 56,
+            "omitted": 42
+          }
+        },
+        "changedChannels": 0,
+        "unstableChannels": 0,
+        "maximumChannel": 0,
+        "visibilityRestored": true
+      }
+    },
+    {
+      "quality": "high",
+      "type": "DwarfSalesman",
+      "poses": 5,
+      "imageChannelsChanged": 0,
+      "unstableChannels": 0,
+      "idle": {
+        "state": "Idle",
+        "source": {
+          "calls": 82,
+          "triangles": 16987
+        },
+        "candidate": {
+          "calls": 46,
+          "triangles": 9913,
+          "stats": {
+            "lights": 1,
+            "checked": 48,
+            "omitted": 36
+          }
+        },
+        "changedChannels": 0,
+        "unstableChannels": 0,
+        "maximumChannel": 0,
+        "visibilityRestored": true
+      }
+    },
+    {
+      "quality": "high",
+      "type": "DungeonNPC",
+      "poses": 5,
+      "imageChannelsChanged": 0,
+      "unstableChannels": 0,
+      "idle": {
+        "state": "Idle",
+        "source": {
+          "calls": 87,
+          "triangles": 16651
+        },
+        "candidate": {
+          "calls": 48,
+          "triangles": 9721,
+          "stats": {
+            "lights": 1,
+            "checked": 52,
+            "omitted": 39
+          }
+        },
+        "changedChannels": 0,
+        "unstableChannels": 0,
+        "maximumChannel": 0,
+        "visibilityRestored": true
+      }
+    },
+    {
+      "quality": "high",
+      "type": "Skeleton",
+      "poses": 9,
+      "imageChannelsChanged": 0,
+      "unstableChannels": 0,
+      "idle": {
+        "state": "Idle",
+        "source": {
+          "calls": 120,
+          "triangles": 17207
+        },
+        "candidate": {
+          "calls": 60,
+          "triangles": 9953,
+          "stats": {
+            "lights": 1,
+            "checked": 80,
+            "omitted": 60
+          }
+        },
+        "changedChannels": 0,
+        "unstableChannels": 0,
+        "maximumChannel": 0,
+        "visibilityRestored": true
+      }
+    },
+    {
+      "quality": "high",
+      "type": "InfernoTitan",
+      "poses": 9,
+      "imageChannelsChanged": 0,
+      "unstableChannels": 0,
+      "idle": {
+        "state": "Idle",
+        "source": {
+          "calls": 90,
+          "triangles": 18065
+        },
+        "candidate": {
+          "calls": 51,
+          "triangles": 10793,
+          "stats": {
+            "lights": 1,
+            "checked": 52,
+            "omitted": 39
+          }
+        },
+        "changedChannels": 0,
+        "unstableChannels": 0,
+        "maximumChannel": 0,
+        "visibilityRestored": true
+      }
+    },
+    {
+      "quality": "high",
+      "type": "QuestNPC",
+      "poses": 5,
+      "imageChannelsChanged": 0,
+      "unstableChannels": 0,
+      "idle": {
+        "state": "Idle",
+        "source": {
+          "calls": 87,
+          "triangles": 17183
+        },
+        "candidate": {
+          "calls": 48,
+          "triangles": 10025,
+          "stats": {
+            "lights": 1,
+            "checked": 52,
+            "omitted": 39
+          }
+        },
+        "changedChannels": 0,
+        "unstableChannels": 0,
+        "maximumChannel": 0,
+        "visibilityRestored": true
+      }
+    }
+  ],
+  "limits": "Synchronous native isolated rigid rigs only. No supplied GLB changes, connected equipped-party, CPU/whole-frame/FPS/physical-device/art acceptance. Actual connected High ABBA and ordinary frame metrics required before selection. Low shadows off remains original path. Jump corrective release remains separate and has priority.",
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-actor-batch-shadow-entry-checks-20261010",
+    "inventoryEntries": 53,
+    "inventorySHA256": "6716fb0b2873516279d70a2ad6fc17a46c981e89f1a303d0934b122a3287fd91",
+    "erratum": "Frozen qualification prose accidentally uses the previous29-test run time0.481s for32tests. Raw final-units.log and this receipt correctly record32/0.484s. Frozen evidence was not modified."
+  },
+  "sourceCommit": "bf2039bf4b0f1c71d7b421a6953b71396b33c38e",
+  "worktree": "/home/aeml/.local/share/eidolon-actor-batch-shadow-entry-20261010",
+  "heldIntegration": "Receipt only; prototype product and QA code remain in isolated candidate; no held/default/public activation"
+}

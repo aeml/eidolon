@@ -1,0 +1,73 @@
+{
+  "status": "Private QA boundary repair and bounded startup diagnostics qualified; no product/public change and original24 CI remains failed.",
+  "recordedUTC": "2026-10-10T07:21:50.046663+00:00",
+  "candidateCommit": "d1616fba7481bf5087ab693fc881a475664cb0ee",
+  "initialCandidate": "170c41af23cabfac5661170c0015909b43d312c9",
+  "heldQACommit": "4fc34f6a321836aed71167ac692d188882267ca2",
+  "previousGoalTurn": "progress: retained public24failure/native/identity evidence and rejected affine prototype after no measured scene gain.",
+  "change": "Vendor QA waits for exact safe integer sale Gold credit after exact bag removal before another sale or stash snapshot. Stash gold/equipment/custody assertions unchanged. QA captures8known static-module failures per current document with exact HTTP status or fixed browser-code enum; unknown code constant, no arbitrary text/query/host/header/body/credentials. Late abandoned-document failures excluded; callbacks disposed on close.",
+  "diagnosis": "Source vendor handler sends bag and buyback JSON acknowledgements, Gold comes in later state replication. Controlled175Gold-delayed boundary makes originalhelper fail expected520/received345 at next stash entry; revisedhelper waits for520, missing/extra/unrepresentable credits fail before further actions. This proves a fixture ordering defect but cannot establish original381847\u2192382022CI delta cause because original event/sale evidence was not retained. Do not claim product/economy repair.",
+  "checks": {
+    "initialFocused": "89passed/5suites1.016s",
+    "finalFocused": "91passed/5suites1.117s",
+    "heldFocused": "91passed/5suites1.327s; private integration preserves other pilots and all original stash equality checks.",
+    "nativeInitial": "1routed local startup-control passed35.2s; abortactualentry GET yielded engine/player/statefalse andGameEngine.js/ERR_CONNECTION_CLOSED",
+    "nativeFinal": "Same1control after lifecycle/privacy refinement passed35.2s; original30sassertion andcause retained",
+    "lint": "Scoped ESLint and whitespace passed.",
+    "productInputs": "3441tracked product/release/workflow inputs byte-exact to public24; only5QAfilescherry-picked into held, public24not ancestor."
+  },
+  "liveRecovery": {
+    "source": "922753a72dd127eb2fffa6e2e5892235cd549318",
+    "qaSource": "170c41af23cabfac5661170c0015909b43d312c9",
+    "result": "3passed/0failed/0retry: two expiry/combat/reentry journeys then two-player High/Low/high-repeat party auras; originalrequiredassertionsunchanged",
+    "environment": "Native AMDANGLEVulkan Chrome149,390px emulated Androidviewport, normalTLS, ordinary fresh level1 registrations; randomcredentials generatedinmemory, recordingsdisabled, artifactcredentialscanpassed",
+    "identity": "Six public hashes/frontend/backend/DBready exact before; identities/DBready exact after.",
+    "notReproduced": "Originalengine-module download failure didnot recur; failedCI38030283856attempt1 remainsfailed, causeunknown. No canonicalCIrerun, artifactdeletion, successorpush or24merge.",
+    "performanceLimits": "PublicHigh33.2\u201333.3median exceeds20ms; Highrepeatp9550ms exceeds33.4. Low243draws/236579triangles exceeds200/85000. No physicalphone/fullmoving-art/performance acceptance."
+  },
+  "fullScope": "Full original146line user goal now exact prefix ofownedgoal.md, old2911lineheldhistory archivedbyte-exact to avoid superseded procedural-artinstructions overriding current suppliedassets/modernARPGrequirements. All inherited1.11\u20131.99/Q/CB/F1\u2013F5/device/operations/rights/owner/human/beta/launch/handoff remain active; failed24hsoak unchanged.",
+  "next": "Keep24unaccepted. Preserveknownfixtureordering repair and newdiagnostics for a coherent milestone. Investigate capturedreal startupmodule/network failure and confirm persistentvendor/stash flow with ordinary dedicatedQA before closing originalfindings. Continue independent full-world art/performance/device and roadmap work; no unchanged campaign/longsoak restart.",
+  "evidence": {
+    "path": "/home/aeml/.local/share/eidolon-live-failure-diagnostics-checks-20261010",
+    "files": 61,
+    "inventorySHA256": "4e4fdec016fba110d257ce38e05cd27d49730391e65600cc5d370f1490d97c5a"
+  },
+  "sourcePins": {
+    "candidate": "d1616fba7481bf5087ab693fc881a475664cb0ee",
+    "liveQA": "170c41af23cabfac5661170c0015909b43d312c9",
+    "heldQA": "4fc34f6a321836aed71167ac692d188882267ca2",
+    "files": {
+      "tests/e2e/helpers.js": {
+        "candidateSHA256": "fa26c5a782aec2e3fea7cc8349d020a63b27ce3e57c50bbf34b14d4bda096af7",
+        "heldSHA256": "fa26c5a782aec2e3fea7cc8349d020a63b27ce3e57c50bbf34b14d4bda096af7"
+      },
+      "tests/e2e/startup-module-evidence.js": {
+        "candidateSHA256": "adec5f98dfb6ea75d4fb334ea975602b6f7a9aafd457af1c06529be0a6f78df1",
+        "heldSHA256": "adec5f98dfb6ea75d4fb334ea975602b6f7a9aafd457af1c06529be0a6f78df1"
+      },
+      "tests/e2e/startup-module-evidence.spec.js": {
+        "candidateSHA256": "1e8533eea6e81dbffb54ff86a5f0cf443841a22891ac7405943dc69ab5b84ef9",
+        "heldSHA256": "1e8533eea6e81dbffb54ff86a5f0cf443841a22891ac7405943dc69ab5b84ef9"
+      },
+      "tests/E2EHelpers.test.js": {
+        "candidateSHA256": "8f980cce9891aaafd0b2eba9773abf68a8df0a7c50f6291db94b60c8cd00d31d",
+        "heldSHA256": "8f980cce9891aaafd0b2eba9773abf68a8df0a7c50f6291db94b60c8cd00d31d"
+      },
+      "tests/StartupModuleEvidence.test.js": {
+        "candidateSHA256": "46a20edfa38f9b1a19fd78e16475749ea916f138bfe3cb63c61c8ebd46654842",
+        "heldSHA256": "46a20edfa38f9b1a19fd78e16475749ea916f138bfe3cb63c61c8ebd46654842"
+      }
+    },
+    "limits": "Live public recovery used initial170c41 observer. Finald161adds document/request generation and fixed-code privacy controls, requalified by91units and a second native fault control; unchanged successful gameplay route not repeated."
+  },
+  "goalScopeReconciliation": {
+    "originalGoal": "/home/aeml/Github/eidolon/goal.md",
+    "originalSHA256": "783256a0f1b53608906612a5900e3c2e73d9d3c22e9cf893ea4b08c4bde949a7",
+    "originalLines": 146,
+    "heldArchive": "docs/plans/archive/2026-10-10-held-goal-execution-history.md",
+    "heldArchiveSHA256": "54d97797d65e9146327eda92f82e8ef42a7bf476becb5842602f8b6e49e7a5c2",
+    "heldArchiveLines": 2911,
+    "originalGoalIsExactNewPrefix": true,
+    "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
+  }
+}

@@ -237,6 +237,7 @@ func handleEmailRecovery(c *Client, msg Message) {
 		previous := activeSessions[p.Username]
 		sessionsMu.Unlock()
 		if previous != nil {
+			previous.recordTransportClosure(transportAccountRecovery)
 			cleanupClientLocked(previous)
 			previous.retired.Store(true)
 			previous.sendError("Account recovery requires signing in again.")

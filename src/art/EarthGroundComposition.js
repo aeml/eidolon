@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createEarthSurfaceDetail, EARTH_SURFACE_TILE_METRES } from './EarthSurfaceDetail.js';
 import { EARTH_PATHS, distanceToPath } from '../data/worldPopulation.js';
 import { WORLD_REGIONS } from '../data/worldGeography.js';
 import { PROCEDURAL_FOLIAGE_RECIPES, createProceduralFoliagePlacements } from '../data/worldFoliage.js';
@@ -170,12 +171,12 @@ export function createForestFloorDetail(quality = 'high') {
 }
 
 export function applyEarthGroundComposition(material, quality = 'high') {
-    const mask = createEarthCompositionMask(quality), detail = createForestFloorDetail(quality);
+    const mask = createEarthCompositionMask(quality), detail = createForestFloorDetail(quality), surface = createEarthSurfaceDetail(quality);
     const region = WORLD_REGIONS.earth;
-    material.userData.earthGroundComposition = { mask, detail };
-    material.customProgramCacheKey = () => 'eidolon-earth-ground-composition-v12';
+    material.userData.earthGroundComposition = { mask, detail, surface };
+    material.customProgramCacheKey = () => 'eidolon-earth-ground-composition-v15';
     material.onBeforeCompile = shader => {
-        Object.assign(shader.uniforms, { earthComposition: { value: mask }, earthDetail: { value: detail },
+        Object.assign(shader.uniforms, { earthComposition: { value: mask }, earthDetail: { value: detail }, earthSurface: { value: surface }, earthSurfaceScale: { value: 1 / EARTH_SURFACE_TILE_METRES },
             earthBounds: { value: new THREE.Vector4(region.minX, region.minZ, region.maxX - region.minX, region.maxZ - region.minZ) } });
         shader.vertexShader = shader.vertexShader.replace('#include <common>', '#include <common>\nvarying vec2 vEarthGround;\nvarying vec3 vEarthNormal;')
             .replace('#include <worldpos_vertex>', `#include <worldpos_vertex>
@@ -187,6 +188,8 @@ export function applyEarthGroundComposition(material, quality = 'high') {
             varying vec3 vEarthNormal;
             uniform sampler2D earthComposition;
             uniform sampler2D earthDetail;
+            uniform sampler2D earthSurface;
+            uniform float earthSurfaceScale;
             uniform vec4 earthBounds;
         `).replace('#include <map_fragment>', `#include <map_fragment>
             vec4 earthWear = texture2D(earthComposition, (vEarthGround - earthBounds.xy) / earthBounds.zw);
@@ -199,12 +202,10 @@ export function applyEarthGroundComposition(material, quality = 'high') {
             vec2 earthDomain = vEarthGround + (earthBroad.rr - .5) * vec2(1.4, -1.2)
                 + earthWear.ra * vec2(.8, -.9);
             vec3 earthGrain = texture2D(earthDetail, earthDomain * .18).rgb;
-            // Physical-scale soil aggregates, independent of the broad realm
-            // color map. The second scale supplies grit between larger clods
-            // without another texture or a screen-space noise overlay.
-            vec2 earthGritDomain = mat2(.8, -.6, .6, .8) * earthDomain;
-            float earthGrit = texture2D(earthDetail, earthGritDomain * .74 + vec2(.13, .47)).r;
-            float earthFineGrit = texture2D(earthDetail, earthDomain.yx * 1.73 + vec2(.51, .29)).r;
+            // A packed linear texture contains real rounded aggregates,
+            // embedded stones and larger moss cushions. Mips average their
+            // physical fields directly; no threshold re-amplifies small grain.
+            vec4 earthSurfaceSample = texture2D(earthSurface, earthDomain * earthSurfaceScale);
             // Small fractured stone and broad mineral weathering have separate
             // scales. Drawing the broad cellular seams at full contrast made
             // the whole clearing resemble a tiled pavement.
@@ -226,19 +227,15 @@ export function applyEarthGroundComposition(material, quality = 'high') {
             // Exposed shoulders retain soil between mineral fragments. A
             // full replacement turned whole hillsides into pale cracked paving.
             earthRock = smoothstep(.14, .8, earthRock) * .72;
-            // The litter field's roughly70cm cells made bare dirt look like
-            // camouflage. Soil aggregates instead use the existing17cm grit
-            // field, independently of the unchanged fallen-leaf silhouettes.
-            // Fade contrast and relief together when the aggregates become
-            // subpixel, rather than re-amplifying mip averages into speckles.
-            float earthAggregateFootprint = max(fwidth(earthGritDomain.x * .74), fwidth(earthGritDomain.y * .74));
-            float earthAggregateDetail = 1. - smoothstep(.1, .45, earthAggregateFootprint);
-            float earthClod = mix(.5, smoothstep(.25, .69, earthGrit * .72 + earthFineGrit * .28), earthAggregateDetail);
-            float earthPore = smoothstep(.22, .65, earthFineGrit);
-            // Moss cushions and soil aggregates occupy different physical
-            // scales. Reusing the clod field for both flattened their height
-            // blend into a translucent green wash at ordinary play distance.
-            float earthMoss = smoothstep(.28, .65, earthBroad.r * .68 + earthGrit * .32);
+            float earthClod = earthSurfaceSample.r;
+            float earthMoss = earthSurfaceSample.b;
+            // Loose stones collect in irregular exposed patches, rather than
+            // covering every bare square metre with the same confetti. The
+            // existing coherent soil field breaks up the broad mineral mask;
+            // color and relief share this placement weight exactly.
+            float earthGravelPatch = smoothstep(.32, .65, earthBroad.r * .75 + earthWear.b * .25);
+            float earthGravelPlacement = earthGravelPatch * (1. - earthWear.a * .75) * (1. - earthWear.r * .75);
+            float earthGravel = earthSurfaceSample.g * earthGravelPlacement;
             // Height-sensitive blending exposes dry clod faces between moss
             // cushions instead of painting a translucent green wash. Restrict
             // breakup to the transition: zero/one authored coverage stays
@@ -253,23 +250,19 @@ export function applyEarthGroundComposition(material, quality = 'high') {
             // over worn routes or expose a new geometry/texture workload.
             float earthShelteredMoss = smoothstep(.42, .68,
                 earthBroad.r * .72 + earthMoss * .28) * earthWear.r * (1. - earthWear.g);
-            // Smoothstep re-amplifies the mip-filtered grain at long views.
-            // Fade fibre contrast toward its mean, keeping the broad moss
-            // cushions and authored coverage, rather than sparkling speckles.
-            float earthFiberFootprint = max(fwidth(earthGritDomain.x * .74), fwidth(earthGritDomain.y * .74));
-            float earthFiberDetail = 1. - smoothstep(.14, .65, earthFiberFootprint);
-            float earthMossFiber = mix(.5, smoothstep(.28, .72, earthGrit * .65 + earthFineGrit * .35), earthFiberDetail);
+            float earthMossFiber = earthMoss;
             float earthLeafCoverage = earthGrain.g * earthWear.r;
             // These are linear reflectances, lit by the existing physical
             // lights/shadows, never emissive colors or baked fake highlights.
             // Damp crevices and dry aggregate faces share the relief field;
             // don't inherit a blurry broad color stain as the entire soil bed.
-            vec3 earthSoil = mix(vec3(.065, .050, .033), vec3(.079, .061, .040), earthClod);
-            earthSoil *= mix(.92, 1.06, earthPore);
+            vec3 earthSoil = mix(vec3(.050, .040, .030), vec3(.093, .074, .052), earthClod);
+            vec3 earthGravelColor = mix(vec3(.084, .091, .092), vec3(.123, .128, .122), earthBroad.r);
+            earthSoil = mix(earthSoil, earthGravelColor, earthGravel);
             vec3 forestBed = earthSoil * vec3(.72, .76, .66);
             vec3 fallenLeaf = mix(vec3(.065, .038, .016), vec3(.17, .115, .052), earthScatter);
             fallenLeaf *= .9 + earthGrain.b * .1;
-            vec3 heathBed = mix(vec3(.046, .068, .029), vec3(.054, .076, .034), earthMossFiber);
+            vec3 heathBed = mix(vec3(.037, .062, .024), vec3(.065, .086, .033), earthMossFiber);
             heathBed *= mix(.96, 1.04, earthMossFiber) * mix(.96, 1.04, earthClod);
             diffuseColor.rgb = mix(earthSoil, heathBed, earthMossCoverage);
             diffuseColor.rgb = mix(diffuseColor.rgb, forestBed, earthWear.r);
@@ -287,13 +280,14 @@ export function applyEarthGroundComposition(material, quality = 'high') {
         `).replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
             roughnessFactor = mix(roughnessFactor, .92 + earthGrain.r * .07, earthWear.r);
             roughnessFactor = mix(roughnessFactor, .81 + earthStone.a * .15, earthRock);
-            roughnessFactor = mix(roughnessFactor, .87 + earthPore * .12,
+            roughnessFactor = mix(roughnessFactor, .85 + earthClod * .12,
                 (1. - earthWear.r) * (1. - earthRock));
-            roughnessFactor = mix(roughnessFactor, .88 + earthPore * .08, earthLeafCoverage * (1. - earthRock));
+            roughnessFactor = mix(roughnessFactor, .88 + earthClod * .08, earthLeafCoverage * (1. - earthRock));
             roughnessFactor = mix(roughnessFactor, .96,
                 max(earthMossCoverage, earthShelteredMoss) * (1. - earthRock));
+            roughnessFactor = mix(roughnessFactor, .79 + earthSurfaceSample.a * .10, earthGravel * (1. - earthRock));
         `).replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
-            float earthRelief = (earthClod * .022 + earthPore * .006) * (1. - earthRock)
+            float earthRelief = (earthClod * .035 + earthSurfaceSample.a * earthGravelPlacement * .055) * (1. - earthRock)
                 + earthMossCoverage * earthMoss * .012
                 + earthShelteredMoss * earthMossFiber * .018
                 + earthLeafCoverage * (.018 + earthGrain.b * .01)
@@ -305,7 +299,7 @@ export function applyEarthGroundComposition(material, quality = 'high') {
                 (dFdx(earthRelief) * earthR1 + dFdy(earthRelief) * earthR2));
         `);
     };
-    const release = () => { mask.dispose(); detail.dispose(); material.removeEventListener('dispose', release); };
+    const release = () => { mask.dispose(); detail.dispose(); surface.dispose(); material.removeEventListener('dispose', release); };
     material.addEventListener('dispose', release);
     return material;
 }

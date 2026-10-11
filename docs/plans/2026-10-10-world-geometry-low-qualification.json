@@ -1,0 +1,500 @@
+{
+  "recordedUTC": "2026-10-10T16:25:48.840226+00:00",
+  "source": "eeed562faeb0c2492aab88e9172b773ecfcd0989",
+  "runtimeByteIdenticalTo": "511edfaaf64e71d8625c5a2710e3f28231a92c3c",
+  "sourcePins": {
+    "scripts/run-terrain-save-qa.sh": "a5aada501d5b10ddd3548c6986f6bc1ef1b89ec0e3681ed154383039656226b4",
+    "scripts/build-gameplay-geometry-worker.mjs": "afd18c28be10f83c71020434e94ce9e1654f24c557c99d53dccff6f4b9fa5020",
+    "src/core/ActorGameplayGeometry.js": "87e74db8fd9b0263d364fe97a7c8e76e8ae416494de023415ce1e63f09517736",
+    "src/core/ActorGameplayGeometryDelivery.js": "9a440e64fccfcbe112a81a8d85bb94e80a5b2e303f7d7d2ed8d8c602201c2667",
+    "src/core/ActorGameplayGeometryRuntime.js": "0b653f14817e98e9e5dd8a1aea877dc42554daa15e0c48da049f8f6355d30b4f",
+    "src/core/ActorGameplayGeometryWorker.js": "a5444ad0320f0dfb5ec4c6e3069b682eb092ef814691e16444666f79fedc13ff",
+    "src/art/GameplayBodyIndices.js": "c4e10ec3f4dac273789685d40de8860395b12ac17c1e045fc124f39dd4a2d652",
+    "src/art/GameplayColorIndices.js": "fc52a481e984af783f433ca71e43a0a46ca90eab40f3ea52517d304004bf2241",
+    "tests/e2e/gameplay-geometry-party.js": "0fd46e6fe9fa2da43bf08e46fd00616c6f8347dfbacdcbd032ca0d281776eed0",
+    "tests/e2e/gameplay-geometry-delivery.js": "869a5ddd6c752807ce5652e133581896c9c2a5dadeea31a855b388d7b452cdce",
+    "tests/e2e/terrain-equipped-party.spec.js": "de3774bb214361c2c459e26233b33c509385a6494953ccda3b2b046584a05d26"
+  },
+  "status": "Actual Low geometry-owner functional/moving/save qualification passed; unchanged whole Low triangle budget failed; default remains disabled/unselected.",
+  "native": [
+    {
+      "label": "party-low",
+      "stats": {
+        "total": 2,
+        "expected": 0,
+        "unexpected": 1,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": false
+      },
+      "attempts": [
+        {
+          "title": "connected equipped four-class party shares raised ground, fitted outfits, Fireball draws and targeted healing",
+          "status": "skipped",
+          "retry": 0
+        },
+        {
+          "title": "single native renderer observes three live equipped party socket peers on raised ground",
+          "status": "failed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "label": "party-low-worker-prepared",
+      "stats": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "attempts": [
+        {
+          "title": "connected equipped four-class party shares raised ground, fitted outfits, Fireball draws and targeted healing",
+          "status": "skipped",
+          "retry": 0
+        },
+        {
+          "title": "single native renderer observes three live equipped party socket peers on raised ground",
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    }
+  ],
+  "initialFailure": {
+    "cause": "Local compiled ActorGameplayGeometryWorker.bundle.js was absent. Delivery uses this exact default URL; worker startup failed before geometry samples. Missing artifact confirmed before preparation.",
+    "correctiveSource": "eeed562f",
+    "scope": "Only preflight script changed; guard verified before binary/DB/accounts. Existing worker built byte-exact to prior qualified2504f588 artifact. New corrected run has retry0, not an unchanged retry. Initial native failure retained."
+  },
+  "preflightGuard": {
+    "exitCode": 1,
+    "output": "Connected geometry QA needs its local worker; run node scripts/build-gameplay-geometry-worker.mjs in this checkout.\n",
+    "beforeBinaryDatabaseAndAccountCreation": true
+  },
+  "worker": {
+    "output": "src/core/ActorGameplayGeometryWorker.bundle.js",
+    "sha256": "2504f5880f57633cf1ac76430cb2ea73de292a34ff2f09f72cb11337b13bf51c",
+    "bytes": 134129,
+    "modules": 9,
+    "imports": []
+  },
+  "preparation": {
+    "method": "automatic-worker-exact-source-cache",
+    "milliseconds": 2149.2000000178814,
+    "body": {
+      "sources": 4
+    },
+    "installed": {
+      "registered": 44,
+      "originalTriangles": 113405,
+      "candidateTriangles": 51113
+    },
+    "stats": {
+      "requested": 44,
+      "installed": 44,
+      "stale": 0,
+      "fallback": 0,
+      "failed": 0,
+      "cacheHits": 0,
+      "rejected": 0,
+      "maxCopiedBytes": 2840900,
+      "workerCacheBytes": 613356,
+      "workerCacheEntries": 44
+    }
+  },
+  "paired": {
+    "samples": [
+      {
+        "zoom": 5,
+        "changedChannels": 0,
+        "unstableChannels": 0,
+        "compactChangedChannels": 0,
+        "source": {
+          "calls": 167,
+          "triangles": 136489,
+          "swaps": 0,
+          "restored": true
+        },
+        "candidate": {
+          "calls": 167,
+          "triangles": 136489,
+          "swaps": 0,
+          "restored": true
+        },
+        "again": {
+          "calls": 167,
+          "triangles": 136489,
+          "swaps": 0,
+          "restored": true
+        }
+      },
+      {
+        "zoom": 15,
+        "changedChannels": 18348,
+        "unstableChannels": 0,
+        "compactChangedChannels": 0,
+        "source": {
+          "calls": 176,
+          "triangles": 147783,
+          "swaps": 0,
+          "restored": true
+        },
+        "candidate": {
+          "calls": 176,
+          "triangles": 85491,
+          "swaps": 44,
+          "restored": true
+        },
+        "again": {
+          "calls": 176,
+          "triangles": 147783,
+          "swaps": 0,
+          "restored": true
+        }
+      }
+    ],
+    "transitions": [
+      {
+        "pixels": 45,
+        "reduced": false,
+        "restored": true,
+        "swaps": 0
+      },
+      {
+        "pixels": 41,
+        "reduced": true,
+        "restored": true,
+        "swaps": 44
+      },
+      {
+        "pixels": 45,
+        "reduced": true,
+        "restored": true,
+        "swaps": 44
+      },
+      {
+        "pixels": 48,
+        "reduced": false,
+        "restored": true,
+        "swaps": 0
+      },
+      {
+        "pixels": 45,
+        "reduced": false,
+        "restored": true,
+        "swaps": 0
+      },
+      {
+        "pixels": 30,
+        "reduced": true,
+        "restored": true,
+        "swaps": 44
+      }
+    ],
+    "compactProof": null,
+    "actorViewFilterAllocated": false,
+    "cpu": {
+      "scope": "Same-scene source arm bypasses controller wrapper/validation; combined arm includes it. Real clock,48 samples per path. Delivery idle; allocated candidates/cache remain. Submission only, not frame pacing or installation/memory baseline.",
+      "reference": {
+        "frames": 48,
+        "median": 6.700000017881393,
+        "p95": 7.5
+      },
+      "candidate": {
+        "frames": 48,
+        "median": 6.5,
+        "p95": 7.5999999940395355
+      },
+      "blocks": [
+        {
+          "selected": false,
+          "controllerBypassed": true,
+          "milliseconds": [
+            7.199999988079071,
+            7.100000023841858,
+            6.0999999940395355,
+            7.299999982118607,
+            6.700000017881393,
+            5.9000000059604645,
+            7.299999982118607,
+            5.700000017881393,
+            6.799999982118607,
+            7.4000000059604645,
+            6.9000000059604645,
+            7.5
+          ],
+          "restored": true
+        },
+        {
+          "selected": true,
+          "controllerBypassed": false,
+          "milliseconds": [
+            7.199999988079071,
+            8.200000017881393,
+            7.0999999940395355,
+            6.5999999940395355,
+            6.5999999940395355,
+            6,
+            6.800000011920929,
+            5.5,
+            5.5,
+            7.9000000059604645,
+            6.5,
+            6.5999999940395355
+          ],
+          "restored": true
+        },
+        {
+          "selected": true,
+          "controllerBypassed": false,
+          "milliseconds": [
+            7.0999999940395355,
+            6.300000011920929,
+            6.5,
+            6.5,
+            6.300000011920929,
+            7.5999999940395355,
+            6.5999999940395355,
+            7,
+            6.5,
+            6.0999999940395355,
+            7.4000000059604645,
+            6.0999999940395355
+          ],
+          "restored": true
+        },
+        {
+          "selected": false,
+          "controllerBypassed": true,
+          "milliseconds": [
+            5.800000011920929,
+            7,
+            7.199999988079071,
+            6.0999999940395355,
+            6.9000000059604645,
+            5.700000017881393,
+            6.799999982118607,
+            6.700000017881393,
+            5.699999988079071,
+            6.800000011920929,
+            5.899999976158142,
+            5.9000000059604645
+          ],
+          "restored": true
+        },
+        {
+          "selected": false,
+          "controllerBypassed": true,
+          "milliseconds": [
+            6,
+            6.4000000059604645,
+            5.5999999940395355,
+            6.700000017881393,
+            6.199999988079071,
+            8.099999994039536,
+            6.700000017881393,
+            5.799999982118607,
+            6.4000000059604645,
+            5.300000011920929,
+            5,
+            5.699999988079071
+          ],
+          "restored": true
+        },
+        {
+          "selected": true,
+          "controllerBypassed": false,
+          "milliseconds": [
+            6.199999988079071,
+            5.4000000059604645,
+            5.199999988079071,
+            7.200000017881393,
+            6.699999988079071,
+            7.300000011920929,
+            6.5999999940395355,
+            5.5,
+            5.699999988079071,
+            5.5,
+            5.5,
+            6.700000017881393
+          ],
+          "restored": true
+        },
+        {
+          "selected": true,
+          "controllerBypassed": false,
+          "milliseconds": [
+            6,
+            5.699999988079071,
+            5.4000000059604645,
+            7.199999988079071,
+            5.5999999940395355,
+            5.600000023841858,
+            5.799999982118607,
+            5.800000011920929,
+            6.5,
+            5.799999982118607,
+            5.700000017881393,
+            6.699999988079071
+          ],
+          "restored": true
+        },
+        {
+          "selected": false,
+          "controllerBypassed": true,
+          "milliseconds": [
+            7,
+            6.5,
+            6.9000000059604645,
+            6.300000011920929,
+            6,
+            7.0999999940395355,
+            6.5,
+            7.299999982118607,
+            6.5,
+            7.100000023841858,
+            9,
+            6.399999976158142
+          ],
+          "restored": true
+        }
+      ]
+    }
+  },
+  "installedFrameSummary": {
+    "frames": 180,
+    "visibleFrames": 180,
+    "frameMedianMs": 16.7,
+    "frameP95Ms": 16.7,
+    "cpuLoopMedianMs": 8.800000011920929,
+    "cpuLoopP95Ms": 11.199999988079071,
+    "drawCallsMedian": 175,
+    "trianglesMedian": 89377,
+    "geometries": 406,
+    "textures": 286,
+    "activeEntitiesMin": 38,
+    "activeEntitiesMax": 38
+  },
+  "absentFrameSummary": {
+    "frames": 180,
+    "frameMedianMs": 16.7,
+    "frameP95Ms": 16.7,
+    "cpuLoopMedianMs": 8.899999976158142,
+    "drawCallsMedian": 203,
+    "trianglesMedian": 153379
+  },
+  "budget": {
+    "drawCallsMaximum": 200,
+    "trianglesMaximum": 85000,
+    "drawsPass": true,
+    "trianglesPass": false,
+    "sampledFrameTimingPass": true,
+    "wholeLowAccepted": false,
+    "sameFrozenSceneCandidateTriangles": 85491,
+    "installedMedianTriangles": 89377,
+    "scope": "Existing whole-game Low targets unchanged. Separate absent and installed windows have different evolving world/populations; no causal FPS/CPU/memory gain claim."
+  },
+  "moving": {
+    "samples": 90,
+    "postLoginFrames": 27,
+    "gearSlotsEverySample": 14,
+    "normalGroundClicks": 3,
+    "geometryRestoredEverySample": true,
+    "visualReview": "Actual moving-HUD screenshot inspected at gameplay zoom15. Four supplied class identities and outfits remain legible; broad ground patches, angular rocks/trees and synthetic long-name clutter remain. Not final art approval."
+  },
+  "rigidSourceCensus": {
+    "declaredTriangles": 10604,
+    "largest": [
+      {
+        "class": "Wizard",
+        "name": "wooden-staff__standard_4",
+        "triangles": 2128
+      },
+      {
+        "class": "Cleric",
+        "name": "cleric-mace__standard_2",
+        "triangles": 1728
+      },
+      {
+        "class": "Rogue",
+        "name": "steel-dagger__standard_3",
+        "triangles": 1042
+      },
+      {
+        "class": "Rogue",
+        "name": "steel-dagger__standard_3",
+        "triangles": 1042
+      },
+      {
+        "class": "Fighter",
+        "name": "iron-sword__standard_3",
+        "triangles": 1030
+      },
+      {
+        "class": "Wizard",
+        "name": "spell-tome__standard_3",
+        "triangles": 498
+      },
+      {
+        "class": "Cleric",
+        "name": "cleric-mace__standard_1",
+        "triangles": 262
+      },
+      {
+        "class": "Fighter",
+        "name": "wooden-shield__standard_4",
+        "triangles": 250
+      }
+    ],
+    "scope": "Untimed visible indexed rigid meshes beneath the four equipped roots after profiling; source metadata only, no geometry reduction or draw attribution guarantee."
+  },
+  "GoBrowserMongo": {
+    "native": "1pass1skip26.0s",
+    "terminal": [
+      "--- PASS: TestTerrainActualEquippedBrowserParty (31.65s)",
+      "PASS",
+      "ok  \teidolon-server\t32.696s"
+    ],
+    "custody": "Actual four-class14slot saves, inventory/EP/party/logout preserved; no natural encounter clear claim."
+  },
+  "serverMarkers": {
+    "party-low": {
+      "WARNING: DATA RACE": 0,
+      "panic:": 0,
+      "fatal error:": 0,
+      "Worker panic:": 0,
+      "Recovered from panic in Update:": 0
+    },
+    "party-low-worker-prepared": {
+      "WARNING: DATA RACE": 0,
+      "panic:": 0,
+      "fatal error:": 0,
+      "Worker panic:": 0,
+      "Recovered from panic in Update:": 0
+    }
+  },
+  "privacy": {
+    "preparedAccountsAcrossTwoRuns": 8,
+    "plainAndEmbeddedCredentialsSanitizedBeforeArchive": true,
+    "finalPlainAndEmbeddedMembersScanned": 68,
+    "automaticCredentialedRecordings": "off",
+    "deliberatePostLoginPixels": "Moving clip/screenshots contain synthetic fixture account labels; no login/password-entry/session recordings. Disposable fixture databases removed by harness."
+  },
+  "nextAction": "Close remaining Low scene geometry budget from measured original rigid weapon surfaces and remaining scenery without changing supplied identity, close detail or thresholds. Existing controller tracks skinned surfaces only; rigid source census10604 declared triangles identifies a bounded extension to investigate. High timing/close/default/device/memory/art still required before activation.",
+  "limits": "Local prepared worker and actual server/Mongo runtime, not a new immutable publication/offline certificate; prior exact-worker publication evidence is reused. No actor scratch/view/shadow pilot, new runtime policy selection, public rollout, physical-phone substitute, full-goal/F1-F5/soak/beta/launch acceptance.",
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-world-geometry-low-checks-20261010",
+    "inventoryEntries": 78,
+    "filesIncludingInventory": 79,
+    "inventorySHA256": "ff7e40651bd32e763b5a162840247e48df62682b37632fe88165e479e48a07d6",
+    "frozen": true,
+    "independentlyVerified": true
+  },
+  "privateIntegrationGuard": {
+    "commit": "11df89b4a81140fa65ca3c2f3d89a0e187645745",
+    "method": "Exact QA-only eeed562f cherry-pick; runtime/art/server identical to511edfaa; no public merge or activation."
+  }
+}
