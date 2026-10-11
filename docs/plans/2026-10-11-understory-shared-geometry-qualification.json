@@ -1,0 +1,202 @@
+{
+  "recordedUTC": "2026-10-11T11:10:39.520387+00:00",
+  "source": "3463e44744c929596ce305a47eb38fc264509d79",
+  "base": "c5af1b5cc39793e864488a94c089e167637a30f8",
+  "productSource": "c4b395733eeea0865c153e8847c96b6ee36ab9e7",
+  "status": "Qualified component selected for ordinary merge into local master; unpublished.",
+  "implementation": "Stock BatchedMesh sectors retain independent instance/matrix/color/indirection ownership and exact recipes/ranges/bounds. Immutable packed vertex geometry is shared within one field and released by its final sector. Per-sector disposal is idempotent, stock cloning remains independently owned, and RenderSystem visits every batch texture owner. No changed plant population, placement, tint, shader, triangles, distance LOD or public terrain policy.",
+  "rawRetainedGeometry": [
+    {
+      "quality": "high",
+      "before": {
+        "sectors": 326,
+        "geometryObjects": 326,
+        "geometryAttributeBytes": 17850456,
+        "plants": 13087
+      },
+      "after": {
+        "sectors": 326,
+        "geometryObjects": 1,
+        "geometryAttributeBytes": 54756,
+        "plants": 13087
+      },
+      "beforeHash": "11ae756dfa2dc1241d537053e121f07fa322817eb53724fe6129e4ef7180f775",
+      "afterHash": "11ae756dfa2dc1241d537053e121f07fa322817eb53724fe6129e4ef7180f775"
+    },
+    {
+      "quality": "low",
+      "before": {
+        "sectors": 320,
+        "geometryObjects": 320,
+        "geometryAttributeBytes": 15932160,
+        "plants": 7439
+      },
+      "after": {
+        "sectors": 320,
+        "geometryObjects": 1,
+        "geometryAttributeBytes": 49788,
+        "plants": 7439
+      },
+      "beforeHash": "ca028ded4fab66753d23729e3f1e2553fa67a21f5d4808321f251e63749b2cd0",
+      "afterHash": "ca028ded4fab66753d23729e3f1e2553fa67a21f5d4808321f251e63749b2cd0"
+    }
+  ],
+  "checks": {
+    "focusedDistinct": 51,
+    "productDistinct": 31,
+    "ciEnrollmentDistinct": 20,
+    "note": "Final seven ownership checks plus unchanged 24 RenderSystem/EarthUnderstory checks; enrollment20. Earlier six ownership cases superseded, not added to distinct count. Full lint passed; final baseline-only QA scoped lint passed.",
+    "nativeDistinct": 4,
+    "nativeSelectedFinal": {
+      "total": 2,
+      "expected": 2,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 0,
+      "ok": true
+    },
+    "nativeSelectedFinalSeconds": 16.3,
+    "selectedPassingReviews": [
+      {
+        "sourceReport": "/home/aeml/.local/share/eidolon-understory-shared-native-20261011/results/earth-rock-shelf-review-hi-5dfcd-d-views-and-owned-resources/rock-review.json",
+        "quality": "high",
+        "phonePolicy": false,
+        "views": 9,
+        "poses": 72,
+        "plantGeometryBytes": 54756,
+        "released": {
+          "geometry": 7,
+          "material": 2,
+          "plantTexture": 978
+        },
+        "exactRGBAcomparisons": 9
+      },
+      {
+        "sourceReport": "/home/aeml/.local/share/eidolon-understory-shared-native-20261011/results/earth-rock-shelf-review-lo-fae49-d-views-and-owned-resources/rock-review.json",
+        "quality": "low",
+        "phonePolicy": false,
+        "views": 9,
+        "poses": 72,
+        "plantGeometryBytes": 49788,
+        "released": {
+          "geometry": 7,
+          "material": 2,
+          "plantTexture": 960
+        },
+        "exactRGBAcomparisons": 9
+      },
+      {
+        "sourceReport": "/home/aeml/.local/share/eidolon-understory-shared-corrected-native-20261011/results/earth-rock-shelf-review-lo-ba37f-d-views-and-owned-resources/rock-review.json",
+        "quality": "low",
+        "phonePolicy": true,
+        "views": 9,
+        "poses": 72,
+        "plantGeometryBytes": 49788,
+        "released": {
+          "geometry": 7,
+          "material": 2,
+          "plantTexture": 960
+        },
+        "exactRGBAcomparisons": 9
+      }
+    ],
+    "lifetime": {
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "rendererPbrLookup": {
+        "width": 32,
+        "height": 32,
+        "bytes": 4096,
+        "rg16f": true
+      },
+      "baseline": {
+        "geometries": 0,
+        "textures": 2
+      },
+      "rows": [
+        {
+          "quality": "high",
+          "whole": {
+            "geometries": 1,
+            "textures": 8
+          },
+          "partial": {
+            "geometries": 1,
+            "textures": 5
+          },
+          "after": {
+            "geometries": 0,
+            "textures": 2
+          },
+          "stillShared": true,
+          "identicalPixels": true,
+          "changedColorChannels": 624
+        },
+        {
+          "quality": "low",
+          "whole": {
+            "geometries": 1,
+            "textures": 8
+          },
+          "partial": {
+            "geometries": 1,
+            "textures": 5
+          },
+          "after": {
+            "geometries": 0,
+            "textures": 2
+          },
+          "stillShared": true,
+          "identicalPixels": true,
+          "changedColorChannels": 626
+        },
+        {
+          "quality": "high",
+          "whole": {
+            "geometries": 1,
+            "textures": 8
+          },
+          "partial": {
+            "geometries": 1,
+            "textures": 5
+          },
+          "after": {
+            "geometries": 0,
+            "textures": 2
+          },
+          "stillShared": true,
+          "identicalPixels": true,
+          "changedColorChannels": 624
+        },
+        {
+          "quality": "low",
+          "whole": {
+            "geometries": 1,
+            "textures": 8
+          },
+          "partial": {
+            "geometries": 1,
+            "textures": 5
+          },
+          "after": {
+            "geometries": 0,
+            "textures": 2
+          },
+          "stillShared": true,
+          "identicalPixels": true,
+          "changedColorChannels": 626
+        }
+      ]
+    },
+    "ci": "New native lifetime case enrolled in existing mandatory predeploy native job; current release31 predates this candidate and does not execute the new case.",
+    "sanitizer": "Final report scan passed, zero changes."
+  },
+  "retainedFailures": "Initial four cases: High/Low pass; phone final browser guard fails on ERR_NETWORK_CHANGED; lifetime baseline omitted stock lazy DFG texture. Corrected only actual PBR baseline setup; original failures preserved in preliminary archive. No proven network cause, no gameplay retry, no relaxed cleanup tolerance.",
+  "evidence": {
+    "preliminaryRoot": "/home/aeml/.local/share/eidolon-understory-shared-preliminary-checks-20261011",
+    "preliminaryInventorySHA256": "5a27fe03cf8e99344c609fd97587aa035291c21e7cbdec4e9644bc42dadbc83f",
+    "finalRoot": "/home/aeml/.local/share/eidolon-understory-shared-final-checks-20261011",
+    "finalInventoryEntries": 22,
+    "finalInventorySHA256": "6a1055debca256edff4a0345645d8ef78edf89eafa38a3945a5d14b0bf34b290"
+  },
+  "limits": "27 qualified prepared full-HUD views/216 sampled walking poses and exact paired RGBA/calls/triangles plus four actual native lifetime cycles. Browser phone emulation, no ordinary connected input or physical phone. Raw vertex-array retention reduction is not whole-process VRAM, startup allocation or FPS acceptance: stock constructors still allocate/copy transient sector arrays. No final modern-art, broad performance, device or whole-goal completion."
+}
