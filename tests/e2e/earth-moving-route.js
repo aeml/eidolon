@@ -161,7 +161,17 @@ export async function captureEarthMovingRoute(page, testInfo) {
             await screenshot(label);
             if (reviewFights && label === 'woodland-cut') {
                 await captureEarthFight(page, testInfo, sample, screenshot);
-                await walkTo(x, z);
+                if (process.env.EIDOLON_E2E_COLLISION_RETURN_REVIEW === '1') {
+                    // Reach the retained failure origin through ordinary walking;
+                    // never teleport a fixture onto the far side of its obstacle.
+                    await walkTo(432.4066162109375, 245.2550811767578);
+                    await screenshot('off-road-return-start');
+                    const firstReturnPlan = walkingPlans.length;
+                    await walkTo(x, z);
+                    await screenshot('off-road-return-complete');
+                    expect(walkingPlans.slice(firstReturnPlan).some(plan => plan.detour),
+                        'The retained scenery crossing must exercise an actual walking detour').toBe(true);
+                } else await walkTo(x, z);
             }
         }
         if (reviewDungeon) await captureFirstDungeon(page, testInfo, walkTo, screenshot, sample);
