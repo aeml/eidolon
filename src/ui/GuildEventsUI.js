@@ -88,6 +88,7 @@ export class GuildEventsUI {
     }
 
     update(guild) {
+        const epoch = this.viewEpoch = Symbol('calendar view');
         this.currentGuild = guild;
         if (this.guildID !== guild.id) { this.resetEditor(); this.guildID = guild.id; }
         if (this.pending) {
@@ -121,11 +122,16 @@ export class GuildEventsUI {
             info.textContent = `${activity?.name || event.activity} · ${new Date(event.startsAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })} · ${event.durationMinutes} min · ${going}/${event.capacity} confirmed${event.cancelled ? ' · CANCELLED' : finished ? ' · Finished' : ''}`;
             card.append(heading, info);
             const active = !event.cancelled && !finished;
+            const eventButton = (label, callback) => this.button(label, () => {
+                if (this.disposed || this.viewEpoch !== epoch || event.cancelled ||
+                    Date.now() >= new Date(event.startsAt).getTime() + event.durationMinutes * 60000) return;
+                callback();
+            });
             const controls = document.createElement('div'); controls.className = 'guild-events__controls';
             if (active) {
                 if (activity && typeof this.findGroup === 'function') {
                     const guildID = guild.id, eventID = event.id, revision = event.revision;
-                    controls.append(this.button('Find companions for this activity', () => {
+                    controls.append(eventButton('Find companions for this activity', () => {
                         const current = this.currentGuild?.events?.find(entry => entry.id === eventID);
                         if (this.disposed || this.currentGuild?.id !== guildID || !current ||
                             current.revision !== revision || current.cancelled ||
@@ -141,15 +147,15 @@ export class GuildEventsUI {
                 const role = this.select('My role', ['tank', 'healer', 'damage', 'flexible'].map(role => [role, role]), controls);
                 role.value = mine?.role || 'flexible';
                 for (const [status, title] of [['going', 'Going'], ['tentative', 'Tentative']]) {
-                    const button = this.button(title, () => this.action({ action: 'rsvp', eventId: event.id, revision: event.revision, role: role.value, status }));
+                    const button = eventButton(title, () => this.action({ action: 'rsvp', eventId: event.id, revision: event.revision, role: role.value, status }));
                     button.setAttribute('aria-pressed', String(mine?.status === status));
                     controls.append(button);
                 }
-                if (mine) controls.append(this.button('Withdraw', () => this.action({ action: 'withdraw', eventId: event.id })));
+                if (mine) controls.append(eventButton('Withdraw', () => this.action({ action: 'withdraw', eventId: event.id })));
                 if (guild.permissions?.manage_events) {
-                    controls.append(this.button('Edit event', () => this.edit(event)));
-                    const cancel = this.button('Cancel event', () => {
-                        cancel.replaceWith(this.button('Confirm cancellation', () => this.action({ action: 'cancel', eventId: event.id, revision: event.revision })));
+                    controls.append(eventButton('Edit event', () => this.edit(event)));
+                    const cancel = eventButton('Cancel event', () => {
+                        cancel.replaceWith(eventButton('Confirm cancellation', () => this.action({ action: 'cancel', eventId: event.id, revision: event.revision })));
                     });
                     controls.append(cancel);
                 }
@@ -164,7 +170,7 @@ export class GuildEventsUI {
                 const row = document.createElement('div'); row.className = 'guild-events__controls';
                 const text = document.createElement('span'); text.textContent = `${member.displayName || member.username} · ${rsvp.role} · ${rsvp.status} · ${member.online ? `${member.class || 'Adventurer'} ${member.level || ''} · Online` : 'Offline'}`;
                 row.append(text);
-                if (active && member.online && member.playerId !== self?.playerId) row.append(this.button('Invite to party', () => this.invite(member.username)));
+                if (active && member.online && member.playerId !== self?.playerId) row.append(eventButton('Invite to party', () => this.invite(member.username)));
                 roster.append(row);
             }
             card.append(roster); this.list.append(card);
@@ -172,6 +178,7 @@ export class GuildEventsUI {
     }
 
     clear() {
+        this.viewEpoch = null;
         this.currentGuild = null;
     }
 

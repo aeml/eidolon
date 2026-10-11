@@ -155,6 +155,9 @@ export class SocialUI {
         this._activeTab = 'groups';
         this.toggleSocial(true);
         this._switchTab('groups');
+        // A calendar handoff starts at the recruitment guidance, even when
+        // the player scrolled far down the previous tab.
+        this.socialWindow.scrollTop = 0;
         this.groupFinder.focusActivity(activityId);
     }
 

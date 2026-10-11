@@ -69,7 +69,9 @@ test('guild calendar navigates to the existing activity board with reads only an
         events: [{ id: 'event', revision: 1, title: 'Spire expedition', activity: activity.id,
             startsAt: '2099-01-01T00:00:00Z', durationMinutes: 120, capacity: 4, rsvps: [] }] } });
     const button = [...ui.guild.events.list.querySelectorAll('button')].find(control => control.textContent === 'Find companions for this activity');
+    ui.socialWindow.scrollTop = 480;
     button.click();
+    expect(ui.socialWindow.scrollTop).toBe(0);
     expect(ui._activeTab).toBe('groups');
     expect(ui.groupFinder.filter.value).toBe(activity.id);
     expect(ui.groupFinder.activity.value).toBe(activity.id);
