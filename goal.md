@@ -899,3 +899,20 @@ and generator checks pass33/2suites plus scoped lint. Runtime/public assets and
 limits unchanged. Correction is on local master pending original terminal CI and
 ordinary publication. Accepted32 and the full goal remain; see
 [guard correction](docs/plans/2026-10-11-release33-client-guard-correction.json).
+
+## October11: Whirlwind history and corrective33 custody
+
+Completed01dbe625 validation history is ordinarily merged at780400ad. All seven
+source paths already have their selected work; preserve the current corrected
+specializationA, later stages, guards and timing arrays. Result tree is exactly
+the first-parent tree. Retained hosted observer/gate/timing tests pass; no native
+gameplay acceptance added.632local names now554merged/78unmerged; rejected and
+unfinished experiments remain isolated. See
+[reconciliation](docs/plans/2026-10-11-whirlwind-history-reconciliation.json).
+
+Release33's original client prerequisite is terminal failed, so its dependent
+predeploy/release-input/deploy jobs cannot run while final browser diagnostics
+finish. Corrective33 keeps exact runtime and all12versions/468notes; refresh
+source-bound seventeen-asset pins and ordinarily publish the guard/history
+correction. Never retry the unchanged failed source. Accepted32 remains current
+until corrective33's own ordered acceptance succeeds. Full scope stays active.

@@ -1,0 +1,17 @@
+{
+  "status": "completed-validation-history-ordinarily-merged-into-master",
+  "branch": "work/1-1-whirlwind-area-native",
+  "head": "01dbe625f21397768e2848122065f4a1af41c812",
+  "merge": "780400ad",
+  "beforeMaster": "b7397c0e",
+  "treeUnchanged": true,
+  "tree": "862c7c3fd66f2e0aa347770de0c887da0fe17a6e",
+  "review": "The branch has one distinct commit across seven paths. Its historical report and observer files already match master. Current gate adds the correct specialization A instead of the old B and retains later Earthshaker and Fighter mastery stages. Current isolated script and timing arrays include the branch's complete enrollment plus subsequent routes and guards. Resolve four historical conflicts to these later accepted current files; the ordinary merge tree equals its first parent exactly.",
+  "validation": "No runtime or test-tree change. Retained full hosted Client Tests run38140628469 reports PASS for WhirlwindAreaNativeObserver, WhirlwindAreaNativeGate and QAStageTimingIntegration. Its sole different failure is independently reproduced and corrected in the release33 client-guard receipt. No unchanged native/campaign replay or new gameplay acceptance claimed.",
+  "unmergedBefore": 79,
+  "unmergedAfter": 78,
+  "localBranches": 632,
+  "mergedBranches": 554,
+  "preserved": "Original dirty checkout and all unfinished/rejected experiments. No branch deletion, reset, stash or force-push.",
+  "publication": "Together with the narrow test-only release33 guard correction; original run's failed client prerequisite prevents all deployment jobs. Corrective publication must retain version33, exact runtime and seventeen pinned public asset checks. Full release-readiness goal remains active."
+}
