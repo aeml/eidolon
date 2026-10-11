@@ -23,6 +23,18 @@ if [ ! -f "${archive_file}" ] || [ ! -r "${archive_file}" ]; then
   echo "Explicit restore archive is missing or unreadable." >&2
   exit 1
 fi
+archive_dir="$(dirname -- "${archive_file}")"
+# Coordinated points require their matching journal/image artifacts before any
+# database access. Preserve the selected path so symlink checks see it unchanged.
+if [[ "$(basename -- "${archive_dir}")" == save-upgrade-* ]] ||
+   [ -e "${archive_dir}/COMPLETE" ] || [ -L "${archive_dir}/COMPLETE" ] ||
+   [ -e "${archive_dir}/SHA256SUMS" ] || [ -L "${archive_dir}/SHA256SUMS" ]; then
+  if [ "$(basename -- "${archive_file}")" != mongo.archive.gz ] || [ -L "${archive_file}" ]; then
+    echo "Selected archive is not the coordinated point's regular Mongo archive." >&2
+    exit 1
+  fi
+  bash "${SCRIPT_DIR}/verify_upgrade_backup.sh" "${archive_dir}"
+fi
 gzip -t -- "${archive_file}"
 
 if [ ! -f ".env" ]; then

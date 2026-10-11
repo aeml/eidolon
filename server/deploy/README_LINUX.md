@@ -445,6 +445,30 @@ checkpoints. A `COMPLETE` marker records backup completion, not current integrit
 verify its `SHA256SUMS` before recovery. Neither marker nor checksums authorize a
 restore or prove that an arbitrary image can read the saved format.
 
+The prepared read-only verifier accepts exactly one operator-selected completed
+upgrade directory:
+
+```sh
+bash ./deploy/verify_upgrade_backup.sh /exact/completed-upgrade-backup-directory
+```
+
+It requires nonempty regular completion/checksum markers, Mongo and journal
+archives, and the recorded previous-image identity/archive pair (or the explicit
+fresh-install no-image marker). Only fixed artifact names may appear in the
+checksum manifest; duplicates, symlinks, absolute/traversal/escaped paths,
+missing artifacts, checksum mismatch and corrupt gzip refuse. It does not
+extract files, access Docker/Mongo, choose the newest backup or remove anything.
+Checksums detect corruption, not authenticity or format compatibility.
+
+For a named `save-upgrade-*` point or a directory retaining either marker, the
+Mongo-only restore helper invokes that verifier before Docker/database access.
+Deleting markers from a named point does not silently downgrade it to a
+standalone dump. Only that point's regular `mongo.archive.gz` may be selected.
+Standalone Mongo dumps retain their distinct, explicitly approved recovery path;
+neither path restores journals/images or authorizes reopening game admission.
+Production restoration, off-machine destination, retention and recovery-time/
+recovery-point objectives still require their own operator decisions.
+
 After explicit recovery approval, specify the exact archive and confirm the
 loss of subsequent progress. The default requires an empty `eidolon` database,
 such as an isolated restoration target. There is no automatic archive selection:
