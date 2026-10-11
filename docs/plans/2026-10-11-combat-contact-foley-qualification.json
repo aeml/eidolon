@@ -1,0 +1,127 @@
+{
+  "recordedUTC": "2026-10-11T05:49:43.071808+00:00",
+  "source": "0a2cd3ae6152ce874ccc1e5a3082a1fba4617a5f",
+  "parent": "d7c1dfc7f5bc169d47efa61c55c8fe9e84c0dcc1",
+  "selected": true,
+  "published": false,
+  "change": "Short filtered-noise contact transients for physical, fire, cold, lightning and shadow confirmed damage. Existing logical event routing, arcane/holy/periodic profiles, gain buses, cooldowns and warning priority retained.",
+  "focused": {
+    "passed": 76,
+    "suites": 6,
+    "new": 5,
+    "failedFinal": 0,
+    "skipped": 0
+  },
+  "native": {
+    "distinctPassed": 3,
+    "identities": [
+      "confirmed damage types render distinct short impacts and quieter periodic ticks",
+      "cue voice budget and browser audio suspension recover without stale effects",
+      "copied published engine renders contact foley and releases its audio resources"
+    ],
+    "skips": 0,
+    "retries": 0,
+    "flaky": 0,
+    "offlineSamples": 18,
+    "rawWavFiles": 18,
+    "peakMaximum": 0.0655961,
+    "periodicRMS": 0.001080869,
+    "minimumHitRMS": 0.0035141,
+    "tailAfterQuarterSecond": 0,
+    "unchangedPCM": [
+      "arcane",
+      "holy",
+      "periodic",
+      "muted"
+    ],
+    "copied": {
+      "played": true,
+      "voices": 2,
+      "noiseVoices": 1,
+      "noiseBytes": 30720,
+      "peak": 0.059144336730241776,
+      "tailPeak": 0,
+      "activeAfter": 0,
+      "disposed": true,
+      "bufferReleased": true,
+      "contextReleased": true,
+      "engineSHA256": "bb276e28bdffceadb2b799c980bb82c8dae8b771a220f3582a83357ca608f353",
+      "scope": "Actual copied/versioned engine audio owner with OfflineAudioContext and synthetic confirmed physical cue. Signal and cleanup proof, not a server fight or listening approval."
+    },
+    "liveVoices": {
+      "burst": {
+        "before": 22,
+        "extra": false,
+        "warning": true,
+        "after": 24,
+        "limit": 24,
+        "noiseVoices": 11
+      },
+      "queued": 2,
+      "released": {
+        "noiseBytes": 28224,
+        "bufferReleased": true,
+        "active": 0
+      }
+    }
+  },
+  "cost": {
+    "lazyMonoCacheSeconds": 0.16,
+    "rawBytesAt48kHz": 30720,
+    "rawBytesAt44100Hz": 28224,
+    "voicesPerImpact": 2,
+    "totalVoiceLimit": 24,
+    "warningReservedVoices": 2,
+    "newFilterNodesPerTexturedImpact": 1,
+    "cleanup": "Source/filter/gain/panner owned and released on completion, mute, suspension, priority eviction, allocation/start failure and disposal; cache released on disposal."
+  },
+  "failuresRetained": [
+    "Unchanged parent fails all five new unit checks.",
+    "First offline case fails original quiet-periodic ratio: cold RMS0.00222294. Second candidate cold RMS0.00323061 still fails the same ratio. Final cold tonal gain0.045 and noise gain0.045 pass without weakening the existing gate. All failed traces and available PCM artifacts retained."
+  ],
+  "checks": {
+    "scopedESLint": "pass",
+    "gitDiffCheck": "pass",
+    "ownedStaticServer": "stopped;4205free",
+    "browserCoverage": {
+      "discoveryOnly": true,
+      "hosted": 338,
+      "native": 25,
+      "overlap": 11,
+      "distinct": 352,
+      "previousHosted": 337,
+      "missingPrevious": [],
+      "added": [
+        "[\"published-game-bundle.spec.js\",\"published-game-bundle.spec.js\",\"copied published engine renders contact foley and releases its audio resources\",\"\"]"
+      ],
+      "groups": [
+        44,
+        3,
+        2,
+        6,
+        3,
+        51,
+        48,
+        3,
+        3,
+        10,
+        83,
+        28,
+        4,
+        3,
+        4,
+        43
+      ]
+    },
+    "coverageCorrection": "Full current mandatory discovery is338hosted+25native with11overlap=352distinct. Prior337/15/348 summary omitted expanded native cases and authored equipment; fresh comparison preserves all337prior hosted identities. Discovery is not CI execution."
+  },
+  "limits": "Isolated synthetic OfflineAudioContext signals and browser audio lifetime only; no human listening, busy server fight mix, supported physical-device or final sound-design acceptance. Historical gameplay/performance failures and full original goal remain open.",
+  "review": "/home/aeml/.local/share/eidolon-combat-contact-foley-checks-20261011/audio-review.html",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-combat-contact-foley-checks-20261011",
+    "frozen": true,
+    "inventoryEntries": 101,
+    "files": 102,
+    "inventorySHA256": "e8f726795455a91e28f56aa40a9961e7c9932a87f9a39e9b21370fbc18302cb7"
+  }
+}
