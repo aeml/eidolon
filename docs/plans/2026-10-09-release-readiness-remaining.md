@@ -52,7 +52,10 @@ selection requires both existing race cases; native evidence follows its unique
 artifact directory and explicitly retains additive coverage.66focused checks,
 8final evidence checks and full lint pass. Ordinary local master merge8404ee85
 retains all selected camp work; only the current-release fixture correction was
-published. Corrective CI38119634774/2e6c6a14 is queued behind8acc; no acceptance yet.
+published. Corrective CI38119634774/2e6c6a14 is in_progress at07:19UTC with all five
+prerequisite jobs active; no acceptance yet. Preceding8accCI38118148918 is
+terminal failed on the known client fixtures; server and all three hosted
+browser shards pass, downstream native/deployment/live gates are skipped.
 The additional all-in-one local coverage diagnostic exhausted its4GBV8heap and
 exited134 without a suite summary. It is not a pass and is not automatically
 retried. Required hosted coverage remains a release gate.
@@ -77,6 +80,33 @@ acceptance. Hosted coverage checks the same three views at one pose each; full
 15overlap/356distinct preserves all338previous hosted identities. Frozen96-entry
 inventory2a98bcee328d18682b144546ca63e6191ef3352ec1bd6054db816aac74aa6191.
 [Camp qualification](2026-10-11-current-master-camp-clipping-qualification.json).
+
+**Qualified DemonOrc change is merged into local masterbdf22ce1.**
+Source3ee704f4 selects three reviewed product files and source/copied-owner QA;
+private singleton/default-renderer experiments remain excluded.236focused checks
+in8suites, full lint and6distinct native source/copied cases pass with no retries
+or skips. High/Low source comparisons cover8poses each and preserve1202body
+triangles; copied-engine tests cover5animation states and existing Skeleton
+regression cases. Frozen same-scene woodland draws High398→212 and Low253→97
+retain identical triangle counts in each control; pixel differences remain
+within unchanged tolerances, not universally exact. Current High route still
+fails town391draws/33.3ms median against350/20ms; final party/save custody is
+not reached in that run. Low strictly passes all four original route budgets
+and normal Go-race/Mongo four-class fourteen-slot saved custody. Its later
+party profile139draws/73525triangles/16.7median/33.4p95 is measured without the
+optional startup-budget assertion switch. One GPU renderer plus three live
+socket peers does not establish four-renderer or physical-phone acceptance.
+The actual100-client soak38109009521/public29 was concurrently active on this
+host; frame samples do not establish causal FPS gains or isolated-device
+acceptance. No job was altered. Packed constructor55→23meshes uses shared
+134400additional measured final derivative bytes; intermediate caches and
+GPU allocation are unmeasured. Discovery342hosted/35native/17overlap/360distinct
+preserves all previous identities; discovery is not execution of360cases.
+Frozen979-entry inventory0361cecf5e4c046487b5606ed9943963c1aeb1e45ce6a24673a4ba8e76e43f13
+verified in full. Publication waits for current release30 acceptance. This
+supersedes older private DemonOrc labels; singleton remains unselected and
+High town/world/art/device/operations/F1–F5/beta/launch/handoff remain open.
+[Qualification](2026-10-11-current-master-demon-orc-qualification.json).
 
 **Live: Alpha1.79.29/12e5e3c4 is accepted.** Exact CI38078784320 succeeded on
 attempt1; frontend/backend/database and eight served asset hashes match.

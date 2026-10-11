@@ -506,3 +506,20 @@ performance diagnostic: High town391/woodland398draws exceed350; all four
 median intervals33.3ms exceed20ms. Full route captured, strict assertion fails
 before final party/save custody. See2026-10-11-current-master-route-diagnostic;
 no waiver, retry, publication or whole-goal completion.
+
+
+2026-10-11 qualified DemonOrc custody: source3ee704f4 and frozen evidence
+ordinarily merged into local masterbdf22ce1 per owner instruction.236focused
+checks/full lint and6distinct native cases pass; source/copy comparisons retain
+original body geometry, animation pivots and unchanged visual tolerances.
+Same frozen woodland High398→212/Low253→97draws preserve triangle counts.
+High route still fails town391draws/33.3ms median; Low strictly passes all four
+routes and real Go-race/Mongo four-class fourteen-slot saved custody. Later
+Low party profile is measured without optional startup-budget assertion. Active
+100-client public29 soak38109009521 shares this host, so no causal FPS or
+isolated-device acceptance is claimed. Frozen979-entry inventory verified.
+See2026-10-11-current-master-demon-orc-qualification. Singleton remains excluded;
+full High/world/art/device/operations/F1–F5/beta/launch/handoff remain open.
+Corrective release30 CI38119634774/2e6c6a14 is in_progress07:19UTC; predecessor
+8acc run is terminal failed on known fixtures with downstream gates skipped.
+No new publication until current release acceptance. Full original goal active.
