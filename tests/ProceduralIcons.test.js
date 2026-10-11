@@ -48,12 +48,25 @@ describe('procedural UI icons', () => {
         const source = readFileSync('server/internal/game/quests.go', 'utf8');
         const dropTable = source.match(/var chronicleDropSources = [^\n]+\{([\s\S]*?)\n\}/)?.[1] || '';
         const names = [...dropTable.matchAll(/"([^"]+)":\s*\{/g)].map(match => match[1]);
+        const elemental = [...source.matchAll(/Type:\s*"COLLECT",\s*Target:\s*"([^"]+)"/g)].map(match => match[1]);
+        const dark = JSON.parse(readFileSync('server/internal/game/content/dark-realm-chronicle.json', 'utf8'))
+            .filter(chapter => chapter.type === 'COLLECT').map(chapter => chapter.item);
+        expect(elemental).toHaveLength(4);
+        expect(dark).toHaveLength(4);
+        expect(names.sort()).toEqual([...elemental, ...dark].sort());
         expect(names).toHaveLength(8);
         expect(names.sort()).toEqual(Object.keys(PROCEDURAL_ITEM_ICON_DEFINITIONS.quest).sort());
+        // Distinct IDs/colors alone do not establish distinct artwork.
+        expect(new Set(names.map(name => PROCEDURAL_ITEM_ICON_DEFINITIONS.quest[name].body)).size).toBe(8);
         const icons = names.map(name => {
             const item = { id: 'chronicle-item-123', name, type: 'RELIC', slot: 'relic' };
             const icon = UIManager.prototype.getItemIconPath(item);
             expect(decodeIcon(icon)).toContain('data-procedural-icon="quest:');
+            expect(decodeIcon(icon)).not.toContain('quest:chronicle-relic');
+            const document = new DOMParser().parseFromString(decodeIcon(icon), 'image/svg+xml');
+            expect(document.querySelector('parsererror')).toBeNull();
+            expect(document.documentElement.getAttribute('viewBox')).toBe('0 0 96 96');
+            expect(document.querySelector('script, foreignObject, image, use')).toBeNull();
             expect(getProceduralItemIcon({ ...item, id: 'chronicle-item-456', stack: 4 })).toBe(icon);
             return icon;
         });

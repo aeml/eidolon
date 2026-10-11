@@ -8,7 +8,10 @@
     "npm": ">=9.0.0"
   },
   "scripts": {
-    "prepare:client": "node scripts/generate-cosmetics.mjs && node scripts/prepare-client.mjs",
+    "prepare:client": "node scripts/prepare-client.mjs",
+    "check:content": "node scripts/check-content.mjs",
+    "generate:cosmetics": "node scripts/generate-cosmetics.mjs",
+    "generate:equipment": "node scripts/generate-authored-equipment.mjs",
     "postinstall": "npm run prepare:client",
     "serve": "node scripts/serve-static.mjs",
     "test:e2e:crystal-art": "playwright test tests/e2e/crystal-sanctum-presentation.spec.js tests/e2e/maelin-artificer-presentation.spec.js",
