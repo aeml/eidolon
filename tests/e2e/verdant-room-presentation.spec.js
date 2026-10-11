@@ -3,6 +3,7 @@ import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 import { compareFilmicLighting } from './lighting-comparison.js';
 import { reviewDungeonProps, prepareDungeonPropReference } from './dungeon-prop-review.js';
+import { prepareDungeonFloorCompositionReference, reviewDungeonFloorComposition } from './dungeon-floor-composition-review.js';
 
 const fixture = JSON.parse(fs.readFileSync('tests/fixtures/production-dungeon-layouts.json', 'utf8'))
     .find(value => value.dungeonType === 'verdant_bastion_catacombs');
@@ -11,6 +12,7 @@ const fixture = JSON.parse(fs.readFileSync('tests/fixtures/production-dungeon-la
 for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
     test(`Verdant masonry with gameplay HUD at ${width}px`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
+        await prepareDungeonFloorCompositionReference(page);
         await prepareDungeonPropReference(page);
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         await page.setViewportSize({ width, height });
@@ -86,6 +88,7 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
         expect(result.zoom).toBe(15);
         expect(result.textureSize).toBe(256);
         await reviewDungeonProps(page, testInfo, '__masonryReview', 'verdant_bastion_catacombs', fixture.layout);
+        await reviewDungeonFloorComposition(page, testInfo, '__masonryReview', 'verdant_bastion_catacombs', fixture.layout);
         expect(failures).toEqual([]);
     });
 }

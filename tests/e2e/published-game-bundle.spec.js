@@ -214,7 +214,7 @@ test('copied published engine constructs a grounded ward and drives its state th
             const floor = game.renderSystem.instanceEnvironmentGroup.children.find(part => part.name === 'DungeonUnionFloor');
             const rootBatches = game.renderSystem.instanceEnvironmentGroup.children
                 .filter(part => part.userData.proceduralDungeonInterior)
-                .flatMap(part => part.children.filter(mesh => mesh.isMesh && mesh.material.vertexColors));
+                .flatMap(part => part.children.filter(mesh => mesh.isMesh && mesh.material.vertexColors && !mesh.material.map));
             const roots = rootBatches.map(mesh => ({ triangles: (mesh.geometry.index?.count || mesh.geometry.attributes.position.count) / 3,
                 maxY: mesh.geometry.boundingBox.max.y, roughness: mesh.material.roughness,
                 smooth: !mesh.material.flatShading, textures: Object.values(mesh.material).filter(value => value?.isTexture).length }));
@@ -459,6 +459,17 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} element
                         maps: ['map', 'normalMap', 'roughnessMap'].map(key => ({ key, size: material[key].image.width,
                             colorSpace: material[key].colorSpace })) };
                 });
+                const compositions = render.instanceEnvironmentGroup.children.filter(part => part.userData.floorComposition);
+                const plans = new Map();
+                for (const dressing of compositions) {
+                    const { plan, stones } = dressing.userData.floorComposition;
+                    if (plans.has(plan)) continue;
+                    const room = layout.rooms[dressing.userData.roomIndex];
+                    target.set(room.x, .1, room.z + (plan === 'arena' ? 17 : 8));
+                    render.setCameraTarget(target); render.updateEnvironmentLighting(target, 0); render.render();
+                    plans.set(plan, { plan, stones, calls: render.renderer.info.render.calls,
+                        triangles: render.renderer.info.render.triangles });
+                }
                 samples.push({ type, compiled, floorLinked: Boolean(program && gl.getProgramParameter(program.program, gl.LINK_STATUS)),
                     patina: floor.material.userData.elementalFloorPatina,
                     verdant: floor.material.userData.verdantFloorPatina, props,
@@ -466,6 +477,7 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} element
                         .map(part => part.userData.processionalPaving.identity),
                     relics: render.instanceEnvironmentGroup.children.filter(part => part.userData.regionalRelic)
                         .map(part => part.userData.regionalRelic),
+                    compositions: [...plans.values()], compositionRooms: compositions.length, roomCount: layout.rooms.length,
                     quality: world.graphicsQuality, mapSize: floor.material.map.image.width,
                     calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles,
                     collidersStable: colliders === JSON.stringify(game.collisionManager.colliders) });
@@ -490,6 +502,14 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} element
         else expect(row).toMatchObject({ compiled: true, patina: row.type });
         expect(row.props.map(prop => `${prop.role}:${prop.vertexColors}`).sort()).toEqual(['metal:false', 'stone:false', 'stone:true']);
         for (const identity of ['entry_gate', 'treasure_cache', 'restorative_shrine']) expect(row.paving).toContain(identity);
+        expect(row.compositionRooms).toBe(row.roomCount);
+        expect(row.compositions.map(part => part.plan).sort()).toEqual(row.type === 'umbral_nexus'
+            ? ['arena', 'court', 'nave'] : ['arena', 'court', 'nave', 'procession']);
+        for (const part of row.compositions) {
+            expect(part.stones).toBeGreaterThan(0); expect(part.stones).toBeLessThanOrEqual(44);
+            expect(part.calls).toBeGreaterThan(0); expect(part.calls).toBeLessThanOrEqual(quality === 'low' ? 200 : 350);
+            expect(part.triangles).toBeGreaterThan(0); expect(part.triangles).toBeLessThanOrEqual(quality === 'low' ? 85000 : 250000);
+        }
         if (row.type === 'verdant_bastion_catacombs') expect(row.relics).toEqual([]);
         else {
             expect(row.relics.length).toBeGreaterThan(0);

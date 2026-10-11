@@ -182,7 +182,7 @@ describe('Procedural dungeon interior art', () => {
             surfaceTextures: 8,
             surfaceMaterials: 2,
             surfaceGeometries: 1,
-            detailGeometries: 20,
+            detailGeometries: 21,
             detailMaterials: 7
         });
     });
@@ -283,7 +283,7 @@ describe('Procedural dungeon interior art', () => {
         expect(floor.geometry.parameters).toEqual(expect.objectContaining({ width: 120, height: 120 }));
         expect(dressing.userData.roomIdentity).toBe('entry_gate');
         if (dungeonType === 'verdant_bastion_catacombs') {
-            const bark = dressing.children.find(part => part.isMesh && part.material.vertexColors);
+            const bark = dressing.children.find(part => part.isMesh && part.material.vertexColors && !part.material.map);
             expect(bark.geometry.attributes.position.count / 3).toBe(quality === 'low' ? 864 : 2880);
         }
         expect(collisionManager.addCollider).toHaveBeenCalledTimes(4);

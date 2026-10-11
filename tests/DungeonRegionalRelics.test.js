@@ -50,7 +50,7 @@ test.each(types)('%s shares shapes and existing physical finishes in every room 
         }); return triangles; };
         expect(count(root)).toBe(count(optimized));
     }
-    expect(kit.metrics().detailGeometries).toBe(20); expect(kit.metrics().surfaceTextures).toBe(8);
+    expect(kit.metrics().detailGeometries).toBe(24); expect(kit.metrics().surfaceTextures).toBe(8);
 });
 
 test('zone disposal releases shared relic channels once and keeps material/texture reuse', () => {
@@ -71,7 +71,7 @@ test('Verdant keeps its previously reviewed root geometry and material counts', 
     const root = kit.createRoomDressing({ type: 'start', width: 120 }, 0, { optimized: false });
     expect(root.userData.regionalRelic).toBeUndefined();
     expect(root.getObjectByName('verdant:grave-root:-1').geometry.userData.dungeonGraveRoot.branches).toBe(3);
-    expect(kit.metrics().detailGeometries).toBe(17); expect(kit.metrics().detailMaterials).toBe(8);
+    expect(kit.metrics().detailGeometries).toBe(18); expect(kit.metrics().detailMaterials).toBe(8);
 });
 
 test('unsupported families are rejected before constructing channels', () => {

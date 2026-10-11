@@ -15,6 +15,7 @@ import { applyElementalFloorPatina } from './ElementalFloorPatina.js';
 import { createDungeonPropSurfaceMaps } from './DungeonPropSurface.js';
 import { createDungeonProcessionalPaving } from './DungeonProcessionalPaving.js';
 import { createDungeonRegionalRelics } from './DungeonRegionalRelics.js';
+import { createDungeonFloorComposition, getDungeonFloorCompositionPlan } from './DungeonFloorComposition.js';
 
 const TEXTURE_SIZE = 64;
 export const DUNGEON_FLOOR_TEXTURE_SPAN = 24;
@@ -496,7 +497,7 @@ function buildRegionalMotif(root, dungeonType, shapes, materials, radius) {
     }
 }
 
-function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials) {
+function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials, composition) {
     const identity = getDungeonRoomIdentityTag(room) || 'route_hall';
     const size = Math.max(40, Number(room.width) || 80);
     const radius = Math.max(8, Math.min(24, size * 0.2));
@@ -509,6 +510,11 @@ function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials) {
     root.userData.roomIdentity = identity;
     root.userData.visualOnly = true;
     root.userData.roomBounds = [Number(room.width) || size, Number(room.height) || size];
+
+    root.userData.floorComposition = { ...composition.userData.dungeonFloorComposition };
+    addPart(root, `${identity}:floor-composition`, composition, materials.paving, {
+        scale: [radius / 24, 1, Math.min(radius, (Number(room.height) || size) * .2) / 24], castShadow: false
+    });
 
     const paving = { entry_gate: shapes.entryPaving, treasure_cache: shapes.cachePaving,
         restorative_shrine: shapes.shrinePaving }[identity];
@@ -677,6 +683,7 @@ export function createProceduralDungeonInteriorKit(dungeonType, { quality = 'hig
     sampleCache.clear();
     const materials = new Map();
     const geometries = new Map();
+    const compositions = new Map();
     const shapes = createShapes(dungeonType, surfaceQuality);
     const detailMaterials = createMaterialSet(dungeonType, surfaceQuality);
 
@@ -742,7 +749,9 @@ export function createProceduralDungeonInteriorKit(dungeonType, { quality = 'hig
         floorMaterial: (width, depth) => surfaceMaterial('floor', width, depth, false),
         wallMaterial: (width, height, transparent = false) => surfaceMaterial('wall', width, height, transparent),
         createRoomDressing(room, roomIndex, { optimized = true } = {}) {
-            const source = buildRoomDressing(dungeonType, room, roomIndex, shapes, detailMaterials);
+            const plan = getDungeonFloorCompositionPlan(getDungeonRoomIdentityTag(room));
+            if (!compositions.has(plan)) compositions.set(plan, createDungeonFloorComposition(plan));
+            const source = buildRoomDressing(dungeonType, room, roomIndex, shapes, detailMaterials, compositions.get(plan));
             const result = optimized ? batchDressing(source) : source;
             result.add(createDungeonRoomStatePresentation(dungeonType, room, roomIndex, { worldSpace: optimized }));
             return result;
@@ -752,7 +761,7 @@ export function createProceduralDungeonInteriorKit(dungeonType, { quality = 'hig
                 surfaceTextures: Object.keys(baseTextures).length,
                 surfaceMaterials: materials.size,
                 surfaceGeometries: geometries.size,
-                detailGeometries: Object.keys(shapes).length,
+                detailGeometries: Object.keys(shapes).length + compositions.size,
                 detailMaterials: Object.keys(detailMaterials).length
             });
         }

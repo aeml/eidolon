@@ -8,6 +8,7 @@ import { reviewDungeonProps, prepareDungeonPropReference } from './dungeon-prop-
 import { reviewDungeonRelics, prepareDungeonRelicReference } from './dungeon-relic-review.js';
 import { requiresHardwareWebGL } from './browserLaunchPolicy.js';
 import { reviewEquippedSkillMotions } from './equipped-skill-motion-review.js';
+import { prepareDungeonFloorCompositionReference, reviewDungeonFloorComposition } from './dungeon-floor-composition-review.js';
 
 const fixtures = JSON.parse(fs.readFileSync('tests/fixtures/production-dungeon-layouts.json', 'utf8'));
 const methods = { molten_core: 'createMoltenCore', tempest_spire: 'createTempestSpire',
@@ -18,6 +19,7 @@ const referenceCommit = process.env.EIDOLON_E2E_ELEMENTAL_FLOOR_REFERENCE || '34
 for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
     test(`equipped elemental dungeon rooms at ${width}px`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
+        await prepareDungeonFloorCompositionReference(page);
         await prepareDungeonPropReference(page);
         await prepareDungeonRelicReference(page);
         if (compareFloor) {
@@ -179,6 +181,7 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
             }
             await reviewDungeonProps(page, testInfo, '__dungeonArtReview', type, layout);
             await reviewDungeonRelics(page, testInfo, type, layout);
+            await reviewDungeonFloorComposition(page, testInfo, '__dungeonArtReview', type, layout);
         }
         await writeFile(testInfo.outputPath('render-scopes.json'), JSON.stringify(samples, null, 2));
         await reviewEquippedSkillMotions(page, testInfo);
