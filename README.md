@@ -430,15 +430,13 @@ analytics); the private recovery-link scrub must still run before analytics.
 Login registers the cache worker without importing the 3D asset catalog.
 For local Firefox QA, use port4173 or4192, not its restricted port4190.
 
-- Latest verified public build: `Alpha 1.79.33`, exact `9ce67fe3d2d0aeae55102d14b579107733d1a719`.
-  All ten ordered CI jobs and fresh post-terminal frontend/backend, ready-database
-  and17asset checks pass. [Acceptance](docs/plans/2026-10-11-public33-terminal-qualification.json).
-  Source34 below is separately qualified. Original CI failed one incomplete test
-  mesh fixture; a test-only correction is merged and pushed as3ec8bb15, with all23original
-  asset pins reproduced. Corrective CI38149199718attempt2 has successful predeploy/validation and both
-  deployments; live town recovery/Well Rested QA is active. Its own terminal and
-  fresh23asset verification remain pending. Attempt1’s diagnosed transient
-  network failure is retained. [Diagnosis/retry](docs/plans/2026-10-11-release34-predeploy-network-retry.json).
+- Latest verified public build: `Alpha 1.79.34`, exact `3ec8bb151f24909127b832a4035eb7e6eab9b635`.
+  All ten ordered CI jobs succeed on attempt2. Fresh post-terminal normal-TLS
+  frontend/backend identities, ready database and all23 served asset byte counts
+  and hashes match at16:10:48UTC. Four optional stages remain skips.
+  [Acceptance](docs/plans/2026-10-11-public34-terminal-qualification.json).
+  Original client-fixture failure and diagnosed predeploy network failure remain
+  retained. [Diagnosis/retry](docs/plans/2026-10-11-release34-predeploy-network-retry.json).
   [Correction](docs/plans/2026-10-11-release34-charging-fixture-correction.json).
 - Current source version: `Alpha 1.79.34`, steady dungeon radar context, independent
   mixed-weapon Rogue grips and faster character geometry preparation, alongside

@@ -3,14 +3,13 @@
 Last refreshed: October 11, 2026
 
 This is a short pointer to the [remaining-work register](plans/2026-10-09-release-readiness-remaining.md).
-Last accepted public release is Alpha1.79.33, exact
-`9ce67fe3d2d0aeae55102d14b579107733d1a719`, CI38142813857attempt2;
-all ten ordered jobs and fresh post-terminal identity/readyDB/17asset checks pass.
-[Acceptance](plans/2026-10-11-public33-terminal-qualification.json).
-Corrective Alpha1.79.34/3ec8bb15/CI38149199718attempt2 has successful
-predeploy/validation and both deploy jobs; live QA is active, so its own terminal
-and fresh23asset acceptance remain pending. Attempt1's diagnosed network failure
-is retained. [Diagnosis/retry](plans/2026-10-11-release34-predeploy-network-retry.json).
+Last accepted public release is Alpha1.79.34, exact
+`3ec8bb151f24909127b832a4035eb7e6eab9b635`, CI38149199718attempt2;
+all ten ordered jobs and fresh post-terminal normal-TLS identity/readyDB/23asset
+checks pass at16:10:48UTC. Four optional stages remain skips.
+[Acceptance](plans/2026-10-11-public34-terminal-qualification.json).
+Original client-fixture and predeploy network failures remain retained.
+[Diagnosis/retry](plans/2026-10-11-release34-predeploy-network-retry.json).
 Qualified guild/venue/build-menu/direct-trade work is merged into local master
 for a coherent successor.579of644local branches are merged;65unmerged histories
 remain under individual review. The complete world/art/gameplay/device/

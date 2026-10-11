@@ -46,14 +46,15 @@ Every explicit requirement in those sources remains part of the completion audit
   repair does not establish deployment success.
   [Receipt](2026-10-11-release33-scratch-capacity.json).
 
-- **Last accepted public build:** Alpha1.79.33,
-  `9ce67fe3d2d0aeae55102d14b579107733d1a719`, CI38142813857 attempt2.
+- **Last accepted public build:** Alpha1.79.34,
+  `3ec8bb151f24909127b832a4035eb7e6eab9b635`, CI38149199718 attempt2.
   All ten ordered jobs succeed. Fresh post-terminal normal-TLS checks at
-  14:18:21UTC verify exact frontend/backend identities, ready database and all17
-  expected served asset hashes and byte counts. Four optional steps remain
-  skips. Initial client-audit and later transient-network failures are retained;
-  the diagnosed failed-job-only retry changed no source or gate. Current terrain
-  stays flat-v1. [Acceptance](2026-10-11-public33-terminal-qualification.json).
+  16:10:48UTC verify exact frontend/backend identities, ready database and all23
+  expected served asset hashes and byte counts. Four optional stages remain
+  skips. Original client-fixture and diagnosed predeploy network failures are
+  retained; the failed-job-only retry changed no source or gate. Current terrain
+  stays flat-v1. [Acceptance](2026-10-11-public34-terminal-qualification.json).
+  Previous33 remains accepted in its [receipt](2026-10-11-public33-terminal-qualification.json).
 - **Previous accepted public build:** Alpha1.79.32,
   `d31246e9b53fbe73bd7f59beea4c3235df30a922`.
   [CI38136326810](https://github.com/aeml/eidolon/actions/runs/38136326810)
@@ -259,12 +260,13 @@ Every explicit requirement in those sources remains part of the completion audit
   predeploy with36native passes/one failure:179loopback ERR_NETWORK_CHANGED
   dependency failures before engine construction; GameEngine itself returned200.
   All five prerequisites passed; validation/deploy/live jobs skipped. One
-  failed-job-only retry on identical source is active as attempt2; no gate,
+  failed-job-only retry on identical source succeeded as attempt2; no gate,
   source, timeout or threshold changes. Initial failure retained.
-  Attempt2 predeploy/validation and both deployments now succeed; live QA is
-  active at town recovery/Well Rested. This is not terminal release acceptance.
+  All ten attempt2 jobs succeed, including live town recovery/Well Rested QA.
+  Fresh post-terminal normal-TLS identities, readyDB and all23asset pins pass.
   [Trace diagnosis/retry](2026-10-11-release34-predeploy-network-retry.json).
-  Own corrected ordered release and fresh23asset acceptance still required.
+  Exact corrected34 acceptance passes within its retained scope.
+  [Acceptance](2026-10-11-public34-terminal-qualification.json).
   [Failure/correction](2026-10-11-release34-charging-fixture-correction.json),
   [Corrective preparation](2026-10-11-release34-corrective-preparation.json),
   [Corrective publication](2026-10-11-release34-corrective-publication.json).
@@ -274,7 +276,7 @@ Every explicit requirement in those sources remains part of the completion audit
   decoding for ordinary packed/interleaved float buffers.90 focused checks, full
   lint and one actual GLTFLoader16source/118mesh case pass; complete character
   producer ABBA medians8.4–13.4ms→4.2–5.9ms. Qualified8c4e916d is merged
-  locally and included in prepared34; its own release acceptance remains pending. Source/worker limits and
+  locally and included in accepted34 within its scoped qualification. Source/worker limits and
   all original scene/frame targets remain.
   [Qualification](2026-10-11-geometry-transfer-copy-qualification.json).
 
@@ -282,7 +284,7 @@ Every explicit requirement in those sources remains part of the completion audit
 
 | Work | Current state and limits |
 | --- | --- |
-| Requested jump, aura and admin fixes | Merged and accepted in public 29, retained in accepted 30–33 and the active corrective 34 candidate. Approximately 1.5-second jump arrival, continuous takeoff/landing and network pose handling; Well Rested follows final rendered pose; automation accounts are reported separately. No final whole-game performance claim. |
+| Requested jump, aura and admin fixes | Merged and accepted in public 29, retained in accepted 30–34. Approximately 1.5-second jump arrival, continuous takeoff/landing and network pose handling; Well Rested follows final rendered pose; automation accounts are reported separately. No final whole-game performance claim. |
 | Supplied actors and equipment | Four class GLBs, equipment catalog and motion banks are delivered and integrated. Retain originals, provenance, rig/bone/morph/material/slot identity and compatibility. No replacement procedural player catalog or repeated asset request. |
 | Dungeon/environment/combat/HUD milestone | Selected ground/floor/prop maps, entrance wards, regional relics, paving, shallow boss masonry, equipped motions, impact continuity, bounded contact foley and status symbols are merged and included in accepted 30. Old “private/not published” labels in dated receipts are historical. Final art, human listening, busy fights and device gates remain open. |
 | Renderer/environment milestone 31 | High-only singleton batching, reviewed DemonOrc packing, camp instance clipping, display-space FXAA, rock shoulders, rooted foliage shading, pine growth/coverage, Earth map cleanup/ordered physical layers and tapered fern pinnae are merged and pushed as 88be47c5. Exact ordered publication acceptance passed; broader art/performance remains open. Earlier rejected all-quality singleton and renderer prototypes remain separate. |
@@ -305,7 +307,7 @@ acceptance is incomplete.
 
 | Requirement | Remaining work and evidence needed | Owner |
 | --- | --- | --- |
-| Next release | Observe exact corrective Alpha1.79.34/3ec8bb15/CI38149199718 to terminal, then verify its own ordered CI/deploy/live and fresh post-terminal normal-TLS frontend/backend/readyDB/all23pinned asset bytes/SHA256. All12versions/469notes and combined publication checks pass; exact33 acceptance and reused component evidence do not prequalify34. | Implementation |
+| Next release | Prepare coherent35 from qualified merged guild/venue/build-menu/direct-trade work. Exact34 ordered CI/deploy/live and fresh post-terminal normal-TLS frontend/backend/readyDB/all23pinned assets are accepted. Synchronize35versions/cumulative notes and qualify its copied publication before ordinary push; exact34 acceptance does not prequalify35. | Implementation |
 | Modern world and atlas | Finish coherent material scale, terrain transitions, grounded architecture, roads, vegetation/rock composition, landmarks, interiors, lighting, atmosphere and readable travel/combat spaces. Moving equipped/HUD review starts Lanternhold → Earth → fight → first dungeon, then all elemental realms/borders, dungeons/raids, Dark Realm, both casino floors and PvP. Required named places, optional interactions and accurate maps remain governed by the full world contract. Repetition, sparse rooms and broad muddy patches are not final art. | Implementation; final owner review |
 | Supplied actor/equipment presentation | Finish full/mixed/cosmetic fits and material identity across all classes, weapon restrictions, dual wielding, local/remote swaps, pooling/reconnect and motion. Preserve delivered assets and approved geometry/rig constraints. | Implementation; final owner review |
 | Combat, classes and audio | Validate all twelve specialization kits, attack anticipation/contact/recovery, movement, threat readability and role feel. Finish contact/audio integration and human listening/busy-group mix; essential warnings survive Low/reduced effects/mute. Prepared mixer frames or audio API calls are insufficient for full acceptance. | Implementation and playtests |
