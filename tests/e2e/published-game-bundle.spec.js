@@ -59,6 +59,130 @@ test.afterAll(async () => {
     if (root) await rm(root, { recursive: true, force: true });
 });
 
+for (const quality of ['high', 'low']) test(`copied published ${quality} camp clipping preserves equipped town views and cleanup`, async ({ page }, testInfo) => {
+    // Hosted software checks every view and ownership path. Native review also
+    // advances eight walking poses per view; this fixture measures no FPS.
+    const framesPerView = requiresHardwareWebGL() ? 8 : 1;
+    const failures = collectBrowserFailures(page, origin);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto(origin, { waitUntil: 'networkidle' });
+    try {
+        const result = await page.evaluate(async ({ release, quality, framesPerView }) => {
+            const THREE = await import('three');
+            const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
+            document.getElementById('start-screen').style.display = 'none';
+            const game = new GameEngine('Fighter', false, true, '', 'camp-bundle-fixture', null, 'flat-v1');
+            window.__publishedCampReview = { game };
+            const render = game.renderSystem, world = game.worldGenerator;
+            render.setGraphicsQuality(quality); world.graphicsQuality = quality;
+            await render.preloadEnvironment();
+            const supported = render.renderer.extensions.has('WEBGL_multi_draw');
+            if (world.campInstanceFrustum !== supported) throw Error('Published world owner did not select actual camp capability');
+            await world.createTownBase(0, 200, 100); await world.loadBuildings(0, 200);
+            const field = render.instanceEnvironmentGroup.getObjectByName('Lanternhold:Pilgrim Vigil Field');
+            const hero = game.createRemotePlayer('Player', 'camp-equipped-fighter', 'Fighter');
+            window.__publishedCampReview.hero = hero; hero.gameEngine = game;
+            await hero.ensureMesh();
+            const slots = ['head', 'chest', 'legs', 'feet', 'gloves', 'shoulders', 'belt', 'mainHand', 'offHand', 'ring1', 'ring2', 'neck', 'trinket1', 'trinket2'];
+            const names = ['Iron Helm', 'Plate Mail', 'Plate Greaves', 'Iron Boots', 'Iron Gauntlets', 'Steel Pauldrons', 'Plated Girdle', 'Iron Sword', 'Wooden Shield', 'Ruby Ring', 'Silver Ring', 'Necklace', 'Amulet of Power', 'Orb of Mana'];
+            hero.syncEquipmentVisuals(Object.fromEntries(names.map((name, i) => [slots[i], {
+                id: `camp-${slots[i]}`, name, baseName: name, slot: slots[i], type: [7, 8].includes(i) ? 'WEAPON' : 'ARMOR', rarity: 'Rare', potency: 5
+            }])));
+            await hero.mesh.userData.equipmentReady; render.add(hero.mesh); game.uiManager.showHUD();
+            const reference = new THREE.Group();
+            if (supported) for (const batch of field.children) {
+                const mesh = new THREE.InstancedMesh(batch.geometry, batch.material, 15);
+                mesh.castShadow = batch.castShadow; mesh.receiveShadow = batch.receiveShadow;
+                for (let i = 0; i < 15; i++) mesh.setMatrixAt(i, batch.getMatrixAt(i, new THREE.Matrix4()));
+                mesh.instanceMatrix.needsUpdate = true; mesh.computeBoundingBox(); mesh.computeBoundingSphere(); reference.add(mesh);
+            }
+            render.instanceEnvironmentGroup.add(reference);
+            const review = window.__publishedCampReview;
+            Object.assign(review, { field, reference, clock: Object.getOwnPropertyDescriptor(performance, 'now') });
+            const frozen = performance.now(); Object.defineProperty(performance, 'now', { configurable: true, value: () => frozen });
+            render.applyLightingPreset('town', true); render.setZoom(15); hero.playAnimation('Run', true, true);
+            const canvas = render.renderer.domElement, copy = document.createElement('canvas');
+            copy.width = canvas.width; copy.height = canvas.height;
+            const context = copy.getContext('2d', { willReadFrequently: true });
+            const capture = selected => {
+                field.visible = selected || !supported; reference.visible = !selected && supported;
+                render.render(); context.drawImage(canvas, 0, 0);
+                return { pixels: context.getImageData(0, 0, copy.width, copy.height).data,
+                    calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles };
+            };
+            const first = new THREE.Matrix4(); field.children[0].getMatrixAt(0, first);
+            const camp = new THREE.Vector3().setFromMatrixPosition(first);
+            const views = [{ name: 'town-center', x: -1.25, z: 200 }, { name: 'camp', x: camp.x + 4, z: camp.z + 4 },
+                { name: 'camp-edge', x: camp.x + 20, z: camp.z }];
+            const rows = [];
+            for (const view of views) {
+                render.setCameraTarget(new THREE.Vector3(view.x, 0, view.z));
+                render.updateEnvironmentLighting(new THREE.Vector3(view.x, 0, view.z), 0);
+                capture(false); capture(true); capture(false);
+                for (let frame = 0; frame < framesPerView; frame++) {
+                    hero.position.set(view.x - .6 + frame * 1.2 / Math.max(1, framesPerView - 1), 0, view.z + 4);
+                    hero.mesh.position.copy(hero.position); hero.updateAnimationMixer(1 / 60);
+                    const before = capture(false), after = capture(true), again = capture(false);
+                    let changedRGB = 0, unstableRGB = 0;
+                    for (let i = 0; i < before.pixels.length; i += 4) for (let channel = 0; channel < 3; channel++) {
+                        changedRGB += before.pixels[i + channel] !== after.pixels[i + channel] ? 1 : 0;
+                        unstableRGB += before.pixels[i + channel] !== again.pixels[i + channel] ? 1 : 0;
+                    }
+                    rows.push({ view: view.name, frame, changedRGB, unstableRGB,
+                        reference: { calls: before.calls, triangles: before.triangles }, selected: { calls: after.calls, triangles: after.triangles } });
+                }
+            }
+            field.visible = true; reference.visible = false; render.render();
+            const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
+            return { quality, framesPerView, supported, ownerEnabled: world.campInstanceFrustum, parts: field.children.length, camps: field.userData.instanceCount,
+                batchParts: field.children.filter(part => part.isBatchedMesh).length, rows,
+                hero: { quality: hero.mesh.userData.authoredQuality, items: hero.mesh.userData.equipmentVisualItemCount,
+                    missing: hero.mesh.userData.equipmentVisualMissing.length, fallback: hero.mesh.userData.equipmentVisualFallback.length },
+                gpu: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER) };
+        }, { release, quality, framesPerView });
+        await page.screenshot({ path: testInfo.outputPath(`camp-${quality}-selected.png`) });
+        await page.evaluate(() => {
+            const { game, field, reference } = window.__publishedCampReview;
+            field.visible = !game.worldGenerator.campInstanceFrustum; reference.visible = game.worldGenerator.campInstanceFrustum;
+            game.renderSystem.render();
+        });
+        await page.screenshot({ path: testInfo.outputPath(`camp-${quality}-reference.png`) });
+        const cleanup = await page.evaluate(() => {
+            const { game, field } = window.__publishedCampReview;
+            const counts = { batches: 0, geometry: 0, matrices: 0, indirection: 0 };
+            const observe = (object, key) => {
+                const dispose = object.dispose; object.dispose = function () { counts[key]++; return dispose.call(this); };
+            };
+            for (const batch of field.children) if (batch.isBatchedMesh) {
+                observe(batch, 'batches'); observe(batch.geometry, 'geometry'); observe(batch._matricesTexture, 'matrices'); observe(batch._indirectTexture, 'indirection');
+            }
+            game.renderSystem.clearInstanceScene(); game.renderSystem.clearInstanceScene();
+            return counts;
+        });
+        await testInfo.attach('published-camp-clipping', { body: JSON.stringify({ ...result, cleanup, engineSHA256: metadata.engineSHA256,
+            scope: `Current copied engine world owner, supplied fourteen-slot Fighter and real HUD. Three prepared town/camp views with ${3 * framesPerView} mixer updates per quality and same-pose whole-field reference. No server fight, continuous cadence, physical device or global performance acceptance.` }), contentType: 'application/json' });
+        expect(result).toMatchObject({ parts: 9, camps: 15, batchParts: result.supported ? 9 : 0, ownerEnabled: result.supported,
+            hero: { quality, items: 14, missing: 0, fallback: 0 } });
+        expect(result.framesPerView).toBe(framesPerView);
+        expect(result.rows).toHaveLength(3 * framesPerView);
+        for (const row of result.rows) {
+            expect(row.changedRGB, row.view).toBe(0); expect(row.unstableRGB, row.view).toBe(0);
+            expect(row.selected.calls).toBeLessThanOrEqual(row.reference.calls);
+            expect(row.selected.triangles).toBeLessThanOrEqual(row.reference.triangles);
+        }
+        expect(cleanup).toEqual(result.supported ? { batches: 9, geometry: 9, matrices: 9, indirection: 9 } : { batches: 0, geometry: 0, matrices: 0, indirection: 0 });
+        if (requiresHardwareWebGL()) { expect(result.supported).toBe(true); expect(result.gpu).not.toMatch(/SwiftShader|llvmpipe|software/i); }
+        expect(failures, failures.join('\n')).toEqual([]);
+    } finally {
+        await page.evaluate(() => {
+            const review = window.__publishedCampReview;
+            if (!review) return;
+            if (review.clock) Object.defineProperty(performance, 'now', review.clock); else delete performance.now;
+            review.hero?.dispose(); review.game.destroy(); delete window.__publishedCampReview;
+        });
+    }
+});
+
 test('copied published engine renders contact foley and releases its audio resources', async ({ page }, testInfo) => {
     const failures = collectBrowserFailures(page, origin);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
