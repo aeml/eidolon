@@ -1,0 +1,272 @@
+{
+  "recordedUTC": "2026-10-11T11:53:29.098120+00:00",
+  "source": "cf422bf6e07ea2c3a6e3fb969ab8a0f4749f6f63",
+  "base": "fdb1bba251922b140fd0d3127fef7685f79e5008",
+  "published": false,
+  "change": "Broader overlapping birch crowns and existing upper bough extended into its actual crown socket. Lower bough and rooted trunk exact. No newgeometry/material/texture/leaf/triangle/placement/collider/light/drawbucket/perframe work.",
+  "geometry": {
+    "partsCompared": 41,
+    "unchangedParts": 38,
+    "changedParts": [
+      {
+        "species": "ossuary_birch",
+        "name": "pale scarred trunk"
+      },
+      {
+        "species": "ossuary_birch",
+        "name": "layered birch leaves"
+      },
+      {
+        "species": "ossuary_birch",
+        "name": "low gloam crown"
+      }
+    ],
+    "allTriangleAndAttributeByteCountsExact": true,
+    "rootedTrunk": {
+      "vertices": 720,
+      "before": {
+        "position": "b65cb04427da5af2876b323430fd59cabc7710533acf09723b6180952337aacf",
+        "uv": "c4ccafcffed08edd476629f036976ee88946f597fcfb1ba4a84e0501dbfd369e",
+        "normal": "c182099644f35206491b6d4f5ccbe688611249510f5eef41b1b6df735d41033d"
+      },
+      "after": {
+        "position": "b65cb04427da5af2876b323430fd59cabc7710533acf09723b6180952337aacf",
+        "uv": "c4ccafcffed08edd476629f036976ee88946f597fcfb1ba4a84e0501dbfd369e",
+        "normal": "c182099644f35206491b6d4f5ccbe688611249510f5eef41b1b6df735d41033d"
+      },
+      "matrixExact": true
+    },
+    "birchInstances": 141,
+    "existingEightMetreSightlineAprons": "All original pervertex/maxplacementscale tests pass."
+  },
+  "focused": {
+    "passedDistinct": 40,
+    "suites": 3,
+    "seconds": 3.115,
+    "earlier38": "Superseded by final40, never counted as78distinct.",
+    "lint": "Changedsource/test/helper lint and whitespace pass."
+  },
+  "native": {
+    "recordedUTC": "2026-10-11T11:53:29.098120+00:00",
+    "source": "cf422bf6e07ea2c3a6e3fb969ab8a0f4749f6f63",
+    "base": "fdb1bba251922b140fd0d3127fef7685f79e5008",
+    "runs": [
+      {
+        "label": "draft-superseded",
+        "stats": {
+          "total": 3,
+          "expected": 3,
+          "unexpected": 0,
+          "flaky": 0,
+          "skipped": 0,
+          "ok": true
+        },
+        "seconds": 40.256072
+      },
+      {
+        "label": "final-source",
+        "stats": {
+          "total": 3,
+          "expected": 3,
+          "unexpected": 0,
+          "flaky": 0,
+          "skipped": 0,
+          "ok": true
+        },
+        "seconds": 38.8128
+      },
+      {
+        "label": "flat-pass-copied-disk-failure",
+        "stats": {
+          "total": 6,
+          "expected": 2,
+          "unexpected": 1,
+          "flaky": 0,
+          "skipped": 3,
+          "ok": false
+        },
+        "seconds": 30.777193
+      },
+      {
+        "label": "final-copied",
+        "stats": {
+          "total": 4,
+          "expected": 4,
+          "unexpected": 0,
+          "flaky": 0,
+          "skipped": 0,
+          "ok": true
+        },
+        "seconds": 46.590449
+      }
+    ],
+    "nativeDistinctPassed": 9,
+    "nativeCases": "Finalsource3+retainedflat2+finalcopied4. Draft3superseded. InitialcopiedbeforeAllENOSPC1fail/3notrun retained, only4affectedcases rechecked afterremoving5verifiedgeneratedpublicationcopies.",
+    "pairedViews": 45,
+    "walkingPoses": 360,
+    "changedPairs": 14,
+    "exactReferenceAgainPairs": 45,
+    "submittedDifferences": [
+      {
+        "label": "far-east",
+        "change": {
+          "changed": 43429,
+          "maximum": 97
+        },
+        "stability": {
+          "changed": 0,
+          "maximum": 0
+        },
+        "before": {
+          "calls": 196,
+          "triangles": 151823
+        },
+        "after": {
+          "calls": 198,
+          "triangles": 153871
+        }
+      },
+      {
+        "label": "east-verge",
+        "change": {
+          "changed": 94748,
+          "maximum": 114
+        },
+        "stability": {
+          "changed": 0,
+          "maximum": 0
+        },
+        "before": {
+          "calls": 128,
+          "triangles": 76890
+        },
+        "after": {
+          "calls": 129,
+          "triangles": 77914
+        }
+      },
+      {
+        "label": "far-east",
+        "change": {
+          "changed": 20580,
+          "maximum": 111
+        },
+        "stability": {
+          "changed": 0,
+          "maximum": 0
+        },
+        "before": {
+          "calls": 89,
+          "triangles": 52191
+        },
+        "after": {
+          "calls": 90,
+          "triangles": 52703
+        }
+      },
+      {
+        "label": "east-road",
+        "change": {
+          "changed": 9808,
+          "maximum": 221
+        },
+        "stability": {
+          "changed": 0,
+          "maximum": 0
+        },
+        "before": {
+          "calls": 80,
+          "triangles": 43072
+        },
+        "after": {
+          "calls": 81,
+          "triangles": 43584
+        }
+      },
+      {
+        "label": "east-verge",
+        "change": {
+          "changed": 94748,
+          "maximum": 114
+        },
+        "stability": {
+          "changed": 0,
+          "maximum": 0
+        },
+        "before": {
+          "calls": 128,
+          "triangles": 153946
+        },
+        "after": {
+          "calls": 129,
+          "triangles": 154970
+        }
+      },
+      {
+        "label": "far-east",
+        "change": {
+          "changed": 20580,
+          "maximum": 111
+        },
+        "stability": {
+          "changed": 0,
+          "maximum": 0
+        },
+        "before": {
+          "calls": 89,
+          "triangles": 52191
+        },
+        "after": {
+          "calls": 90,
+          "triangles": 52703
+        }
+      },
+      {
+        "label": "far-east",
+        "change": {
+          "changed": 43429,
+          "maximum": 97
+        },
+        "stability": {
+          "changed": 0,
+          "maximum": 0
+        },
+        "before": {
+          "calls": 196,
+          "triangles": 151823
+        },
+        "after": {
+          "calls": 198,
+          "triangles": 153871
+        }
+      }
+    ],
+    "flat": [
+      {
+        "case": "populated-earth-world-populated-Earth-and-town-low-at-390px",
+        "views": 20,
+        "callsMax": 95,
+        "trianglesMax": 71700
+      },
+      {
+        "case": "populated-earth-world-popu-1478c-rth-and-town-high-at-1280px",
+        "views": 20,
+        "callsMax": 223,
+        "trianglesMax": 158557
+      }
+    ],
+    "frameRateClaim": false
+  },
+  "artReview": "Actual supplied14-slot Fighter/HUD in45preparedviews360walkingposes, plus24flat-world site views. DesktopHigh/Low and390pxLow controls reviewed. Broader birch silhouette improves while sparse/repeated foliage, broad ground masks and procedural rock/architecture remain unfinished. Canvaspairedimages excludeDOMHUD; separatecandidate screenshots includeactualHUD.",
+  "failuresRetained": [
+    "Initial diagnostic found7.186mm stemshift from bounds-based root adjustment; keep lowerforkexact and finalrootattributes/transformgoldens pass. Draftnative3 superseded by affectedfinal3.",
+    "Copiedfixture beforeAll failedENOSPC copyingassets;2flatcasespass,1copiedfail/3notrun. Verified allpinnedassets of5ownedgeneratedpublicationcopies and removed only reproducible public/directories; immutablemanifests/builders/contexts/source/evidence retained. Then affectedcopied4pass, no CItaskretry/cancel."
+  ],
+  "submissionLimits": "Expanded crowns legitimately change visibility: up to2additionaldraws/2048triangles insampledHighviews,1draw/512trianglesLow. Alloriginalviewbudgets retained andpass; no equal-submission/whole-frame/FPSclaim.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-birch-connected-checks-20261011",
+    "inventoryEntries": 355,
+    "inventorySHA256": "762aa84e8f532be35b70329895c6a497de56719d94be975192fd4340eee03c8f"
+  },
+  "limits": "Notpublic, finalmodernart, sustainedperformance, ordinaryconnectedinput, campaign, physicalphone, fulloperation/F1-F5/beta/launch/handoff acceptance. Current32publication remains separatelypending; alloriginalgoalrequirements stayactive."
+}
