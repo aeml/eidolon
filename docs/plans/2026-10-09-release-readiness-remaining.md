@@ -169,8 +169,9 @@ identities, ready database and all78served asset hashes/byte counts match at
   for only marginal ordinary-zoom visual benefit. Private88eeabdb remains
   unselected with frozen evidence; no runtime/CI enrollment or budget change.
   [Selection](2026-10-11-earth-turf-unselected.json).
+- **Completed current recovery history:** four historical commits through`ef7510f0` are ordinarily merged as`cd9f05f3`. All pre-existing tracked files remain byte-exact; only the dated October6 receipt is added. Five recovery source/test files exactly match qualified`d81b1ef8`, reusing its66distinct checks and retained failures. Later path-alias protections remain in force. No unchanged restore/campaign replay, production restore or new publication. [Reconciliation](2026-10-11-recovery-current-history-reconciliation.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
-  unmerged tips are now **62**, reduced from 287; 590 of 652 local branch names
+  unmerged tips are now **61**, reduced from 287; 591 of 652 local branch names
   are already merged. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
   reset, stash or force-push. The latest historical merges retain dated diagnostic/release evidence and

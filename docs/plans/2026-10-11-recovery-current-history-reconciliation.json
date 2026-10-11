@@ -1,0 +1,59 @@
+{
+  "recordedUTC": "2026-10-11T18:03:53.335893+00:00",
+  "base": "365b2358ca2496708344aeb4f6c0659851ada4b4",
+  "historicalHead": "ef7510f07539b7d85ff291107f31e90366ebfd4d",
+  "masterMerge": "cd9f05f3ccf1aa6c48b9828250b81fda1dcf6672",
+  "selectedCommits": [
+    "ef7510f07539b7d85ff291107f31e90366ebfd4d",
+    "2559a9d22cb404083eed8ab1861ec4efdf2994a0",
+    "6a2e6f2f79acd4d7b94b40957d3fe579463fb2a7",
+    "e3cd10500c7e9c5f771f9d69ae460f747b076eb2"
+  ],
+  "onlyAddedPath": "docs/plans/2026-10-06-release1-81-current-recovery-checks.json",
+  "allPreExistingTrackedFilesUnchanged": true,
+  "custody": [
+    {
+      "path": "server/deploy/restore_mongo_archive.sh",
+      "sha256": "0a27b60971cbd0602a23c01686be7fdf7b1fbf4149094c5773c506bd5f000f34",
+      "exactParentAndQualifiedD81b1ef8": true
+    },
+    {
+      "path": "server/deploy/verify_upgrade_backup.sh",
+      "sha256": "a6efdd1994cb0ca3c87da95b27c2d5284202227083fa57d5e651d2c3bf372bea",
+      "exactParentAndQualifiedD81b1ef8": true
+    },
+    {
+      "path": "server/deploy_backup_integration_test.go",
+      "sha256": "e606100cddda295836bf61d95763bfe64f1393924635ef24a0d70567a13ddb56",
+      "exactParentAndQualifiedD81b1ef8": true
+    },
+    {
+      "path": "server/deploy_backup_verify_test.go",
+      "sha256": "b4ae8993197d2f49dbf3e153180e530882872ad60280a0b51a2fccb6fc09930e",
+      "exactParentAndQualifiedD81b1ef8": true
+    },
+    {
+      "path": "server/deploy_restore_integration_test.go",
+      "sha256": "9559d01e0fdd940cba4f80c1972ff111ab96b2b1e76eafe9bec7ebb2a8fd4296",
+      "exactParentAndQualifiedD81b1ef8": true
+    }
+  ],
+  "conflictsResolvedToLaterQualifiedMaster": [
+    "goal.md",
+    "server/deploy/README_LINUX.md",
+    "server/deploy/restore_mongo_archive.sh",
+    "server/deploy/verify_upgrade_backup.sh",
+    "server/deploy_backup_verify_test.go"
+  ],
+  "priorEvidence": "2026-10-11-recovery-integrity-qualification.json:66distinct checks including actual schema25 BSON restore/runtime checkpoint; original failures retained. No new runtime or test execution.",
+  "branches": {
+    "merged": 591,
+    "unmerged": 61
+  },
+  "publication": "Current36 CI38161891123 remains on exactaee9c3db; this documentation/history merge is local for next coherent publication; no successor pushed.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-recovery-current-history-checks-20261011",
+    "entries": 3,
+    "inventorySHA256": "aa7952541e9ca2c857ecb6a9bd1304ae6c2226e41287f10421557a5144c1aa8a"
+  }
+}
