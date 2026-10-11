@@ -438,3 +438,21 @@ Sparse room/world composition, contact/audio/devices, historical performance
 failures and original operations/F1–F5/beta/launch/handoff remain open. No
 campaign/soak/public/version/access change. Full original goal remains active.
 [Evidence](docs/plans/2026-10-11-dungeon-boss-masonry-qualification.json).
+
+
+### 2026-10-11 — owner branch workflow and master reconciliation
+
+Owner instruction: completed work must always be merged into master. Applied
+permanent repository workflow in AGENTS.md. Local master was1567commits behind
+origin/master; fast-forward synchronization resolved91false-unmerged branches.
+Qualified staged world/dungeon/equipment/HUD/geometry work and bounded combat
+contact audio are now ordinarily merged into master. Thirty historical branches
+have only already-cherry-picked patches; normal merges retain later accepted
+files and each resulting tree is byte-identical to its master parent.
+Unmerged count287→108; remaining branches require review and include rejected/
+unselected experiments and the dirty original checkout. No blanket merge or
+user-work reset. Prepared cumulative Alpha1.79.30; deployment acceptance pending.
+Full original roadmap/performance/art/device/operations/F1–F5/beta/launch/handoff
+remain open. Audio76focused/3distinct native cases pass; isolated PCM/voice
+cleanup does not establish human listening or busy-fight mix acceptance.
+[Audio proof](docs/plans/2026-10-11-combat-contact-foley-qualification.json).

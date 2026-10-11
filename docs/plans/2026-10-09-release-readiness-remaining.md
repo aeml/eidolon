@@ -7,6 +7,24 @@ Current checkpoint: October 11, 2026. The full objective in the owner's
 [threat ledger](2026-10-07-release1-80-threat-and-exception-ledger.md) remain authoritative.
 Historical test receipts do not close unchecked requirements.
 
+**Master reconciliation:** qualified staged world/dungeon/equipment/HUD/geometry
+work and bounded contact audio are now merged into local master. Cumulative
+Alpha1.79.30 is prepared; CI/deployment acceptance is pending. Older staged/private
+labels below describe historical qualification and do not override this checkpoint.
+Local master was1567commits behind upstream; synchronization resolved91branch
+ancestry mismatches. Qualified milestone integration resolves58more, and30branches
+with only already-cherry-picked patches are ordinarily merged with unchanged trees.
+Unmerged count287→108. Remaining branches have distinct patches requiring review;
+rejected experiments and dirty user work are preserved. Future completed validated
+work must merge into master, per [repository workflow](../../AGENTS.md).
+[Branch reconciliation](2026-10-11-master-branch-reconciliation.json).
+Contact audio76focused/3distinct native cases pass; human listening/busy-fight mix
+and physical devices remain open. Fresh required discovery preserves all337previous
+hosted identities and adds one:338hosted/25native/11overlap/352distinct. Earlier
+337/15/348 summaries omitted expanded mandatory native and authored-equipment
+coverage; this is discovery, not fresh hosted execution.
+[Audio qualification](2026-10-11-combat-contact-foley-qualification.json).
+
 **Live: Alpha1.79.29/12e5e3c4 is accepted.** Exact CI38078784320 succeeded on
 attempt1; frontend/backend/database and eight served asset hashes match.
 The requested jump, takeoff/landing, aura attachment and test-account filtering

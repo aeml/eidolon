@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-11T05:25:40.168918+00:00",
-  "classification": "Progress: selected shallow mapped boss-floor masonry, preserving authoritative floor and arena footprint.98focused checks and6distinct native cases pass; prepared rendering/lifetime scope only. Public29 motion/aura/admin unchanged.",
-  "qualifiedRuntime": "Held3e03221e adds49stone grounded boss masonry on the existing staged world/material/HUD/actor/worker milestone. Public29 unchanged.",
+  "recordedUTC": "2026-10-11T05:52:50.433564+00:00",
+  "classification": "Progress: qualified staged milestone and bounded contact audio merged into master; cumulative Alpha1.79.30 prepared, deployment pending. Original full goal remains active.",
+  "qualifiedRuntime": "Master includes qualified world/dungeon/equipment/HUD/geometry milestone and contact audio0a2cd3ae. Public29 remains last accepted release until pending30 deployment is verified.",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d",
@@ -99,11 +99,11 @@
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
   "nextRequiredResult": "Continue coherent room/world construction and regional composition at ordinary gameplay camera with supplied equipped actors/HUD, plus integrated contact/audio and supported-device qualification. Sparse rooms, repeated base tiles/simple props and original performance failures remain. Original operations/F1-F5/beta/launch/handoff stay active; no campaign/soak replay.",
-  "currentReceipt": "docs/plans/2026-10-11-dungeon-boss-masonry-qualification.json",
+  "currentReceipt": "docs/plans/2026-10-11-master-branch-reconciliation.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "progress",
-  "nextAction": "Inspect regional room-wall/threshold composition and combat/contact/audio for the next concrete milestone repair. Use prepared High/Low ordinary-camera controls and bounded source/copy lifecycle checks for changed behavior. Historical gameplay timing/draw/triangle failures and physical devices remain open.",
-  "qualifiedRuntimeReceipt": "docs/plans/2026-10-11-dungeon-boss-masonry-qualification.json",
+  "nextAction": "Verify master release CI/public assets and frontend/backend/database identity. Continue unfinished branch review without selecting rejected experiments, and full original world/art/device/performance/operations gates.",
+  "qualifiedRuntimeReceipt": "docs/plans/2026-10-11-combat-contact-foley-qualification.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
     "preparedNotSelected": true,

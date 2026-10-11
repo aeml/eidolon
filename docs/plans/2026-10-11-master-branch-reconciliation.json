@@ -1,0 +1,1205 @@
+{
+  "recordedUTC": "2026-10-11T05:52:50.433564+00:00",
+  "ownerInstruction": "Completed work must always be merged into master.",
+  "originalLocalMaster": "5c714e19460bf53b59c81afabf7aa61567608dd1",
+  "upstreamBefore": "12e5e3c41a3b4e897138973a7514fc8da7881bcb",
+  "localMasterWasBehind": 1567,
+  "unmergedBranchesBefore": 287,
+  "afterSynchronizingMaster": 196,
+  "afterQualifiedMilestoneMerge": 138,
+  "afterEquivalentHistoryReconciliation": 108,
+  "qualifiedMilestoneMerge": "cfe8a7e2",
+  "audioSource": "0a2cd3ae",
+  "preparedVersion": "Alpha 1.79.30",
+  "published": false,
+  "masterWorktree": "/home/aeml/.local/share/eidolon-master-20261011",
+  "sourceDiffFromQualifiedD7": "Only src/audio/AudioManager.js and src/audio/CombatImpactProfiles.js differ from qualified d7c1dfc7; remote jump/aura/admin work retained.",
+  "equivalentHistory": {
+    "branches": 30,
+    "patchesAlreadyCherryPicked": true,
+    "ordinaryMerges": true,
+    "resultTreesUnchanged": true,
+    "resolution": "Conflicting historical files retain the later accepted master version. Every completed merge tree equals its parent; no strategy-ours merge or rejected experiment selection.",
+    "results": [
+      {
+        "branch": "work/1-1-auth-inflight-recovery",
+        "source": "ef4f3ec26960354730fbad21447b3872025ebffd",
+        "result": "merged",
+        "merge": "70b1045ece00c29171f8700b26c419aec469fb39",
+        "patchEquivalentCommits": 1,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [],
+        "before": "fb1ac13f018879728daf941d886de5358c0265ef"
+      },
+      {
+        "branch": "work/1-1-death-spiral-area",
+        "source": "6f4800e75ed5198a62cfe46f4c8bf33908a9e063",
+        "result": "merged",
+        "merge": "b5edf6e608fb74fcf621e92c2741d8df88f8e213",
+        "patchEquivalentCommits": 1,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          "docs/plans/2026-09-12-death-spiral-area.md"
+        ],
+        "before": "70b1045ece00c29171f8700b26c419aec469fb39"
+      },
+      {
+        "branch": "work/1-1-earthshaker-native",
+        "source": "8e6189a6b1dcaca28a75be06c87b0d24b1192158",
+        "result": "merged",
+        "merge": "55038545453f8ffd202406eb704cb361fc48aaea",
+        "patchEquivalentCommits": 1,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          "scripts/run-isolated-character-qa.sh",
+          "tests/EarthshakerNativeGate.test.js",
+          "tests/QAStageTimingIntegration.test.js"
+        ],
+        "before": "b5edf6e608fb74fcf621e92c2741d8df88f8e213"
+      },
+      {
+        "branch": "work/1-1-fighter-buff-native",
+        "source": "0f15acd839f3c9fb3d3a0ade193351aae22a30ee",
+        "result": "merged",
+        "merge": "cfeb08f1b86225a661c6a6bf2f853307bd0074dd",
+        "patchEquivalentCommits": 2,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          "docs/plans/2026-09-12-fighter-buff-native.md",
+          "scripts/run-isolated-character-qa.sh",
+          "tests/FighterBuffNativeGate.test.js",
+          "tests/QAStageTimingIntegration.test.js",
+          "tests/e2e/fighter-buff-mastery-gameplay.spec.js"
+        ],
+        "before": "55038545453f8ffd202406eb704cb361fc48aaea"
+      },
+      {
+        "branch": "work/1-1-party-setup-bounds",
+        "source": "9e7278ea847407cb7f20ee21ec606f9b6a331b0c",
+        "result": "merged",
+        "merge": "95282e612f6606cb68e4bae4a6664437c34adb56",
+        "patchEquivalentCommits": 2,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          "tests/e2e/four-player-dungeon.spec.js"
+        ],
+        "before": "cfeb08f1b86225a661c6a6bf2f853307bd0074dd"
+      },
+      {
+        "branch": "work/1-1-party-tank-opener",
+        "source": "bfa908c8d7496bc57c9b46aab6ddec0a68e3559a",
+        "result": "merged",
+        "via": "earlier equivalent-history merge",
+        "treeUnchanged": true
+      },
+      {
+        "branch": "work/ability-defense-audit-20260911",
+        "source": "98a48f4f5ce27f42b73db20e972ad63a6be70c17",
+        "result": "merged",
+        "merge": "7867f54db08fa39026a5dd3f2dbcc609bf80050e",
+        "patchEquivalentCommits": 1,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          "docs/plans/2026-09-11-ability-defense-pipeline.md"
+        ],
+        "before": "95282e612f6606cb68e4bae4a6664437c34adb56"
+      },
+      {
+        "branch": "work/alpha-1-79-party-input-current-20261009",
+        "source": "24a4e168139340a55292522c53738bde05ccb48a",
+        "result": "merged",
+        "merge": "3a704db77a3dfb11c20da97113c4b57c0fecb5b9",
+        "patchEquivalentCommits": 2,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          "tests/e2e/foliage-visitor-parity.spec.js"
+        ],
+        "before": "7867f54db08fa39026a5dd3f2dbcc609bf80050e"
+      },
+      {
+        "branch": "work/alpha-1-87-grove-masonry-20261009",
+        "source": "46740f0436404ef6e272c1421479c1fbd2a95ccd",
+        "result": "merged",
+        "merge": "9b2257358094a306924828dd1f497b4fd1556683",
+        "patchEquivalentCommits": 1,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [],
+        "before": "3a704db77a3dfb11c20da97113c4b57c0fecb5b9"
+      },
+      {
+        "branch": "work/arena-review-20260919",
+        "source": "993a3e45628a3b8a6ac1f5b5bedd863b244a1895",
+        "result": "merged",
+        "merge": "41ebb6f2717dec60499a4f139e115b2978e454f8",
+        "patchEquivalentCommits": 1,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          "docs/plans/2026-09-19-rendered-team-arena-preparation.md",
+          "scripts/run-isolated-character-qa.sh"
+        ],
+        "before": "9b2257358094a306924828dd1f497b4fd1556683"
+      },
+      {
+        "branch": "work/art-1-41-candidate-20260929",
+        "source": "acdd20efade00c71cdc293756e08144f1575d848",
+        "result": "merged",
+        "merge": "ec11cdf07ebcd008b802d1ab1274937e0a445810",
+        "patchEquivalentCommits": 3,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          "docs/plans/2026-09-29-release1-41-candidate.md",
+          "package.json",
+          "src/animationGallery.js",
+          "src/art/HumanoidRenderBatches.js",
+          "src/art/ProceduralEquipment.js",
+          "src/art/ProceduralHumanoid.js",
+          "src/utils/MeshFactory.js",
+          "tests/AnimationGalleryJumpCleanup.test.js",
+          "tests/HumanoidRenderBatches.test.js",
+          "tests/ProceduralEquipment.test.js",
+          "tests/e2e/animation-gallery.spec.js",
+          "tests/e2e/humanoid-render-batches.spec.js"
+        ],
+        "before": "41ebb6f2717dec60499a4f139e115b2978e454f8"
+      },
+      {
+        "branch": "work/combat-preview-20260909",
+        "source": "e37bab66dc7da080fd49ac37bcbfeeb573440ceb",
+        "result": "merged",
+        "merge": "c8e472694f41143233fee8215d57f41e742db2da",
+        "patchEquivalentCommits": 2,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          ".github/workflows/ci.yml",
+          "docs/plans/2026-09-09-combat-action-preview.md",
+          "index.html",
+          "src/core/AbilityController.js",
+          "src/ui/UIManagerFeedback.js",
+          "tests/AbilityRangeInteraction.test.js",
+          "tests/CombatIntentUI.test.js",
+          "tests/GameEngineCombatIntent.test.js",
+          "tests/e2e/combat-action-preview.spec.js"
+        ],
+        "before": "ec11cdf07ebcd008b802d1ab1274937e0a445810"
+      },
+      {
+        "branch": "work/compact-party-roster-20260910",
+        "source": "ba481c090df51914cb175b24dfa1555dca10c149",
+        "result": "merged",
+        "merge": "09946412d4b4ebf09d66ef19d9b2234923433e2a",
+        "patchEquivalentCommits": 1,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          "docs/plans/2026-09-10-compact-party-roster.md"
+        ],
+        "before": "c8e472694f41143233fee8215d57f41e742db2da"
+      },
+      {
+        "branch": "work/dark-king-phase-integrity-20260909",
+        "source": "d3e21207f5bc7285cf5d0b73503464bbfe162546",
+        "result": "merged",
+        "merge": "3991ce6d4498c89d61b1364c5231663d1e1ee144",
+        "patchEquivalentCommits": 4,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          "server/internal/game/combat_attack.go",
+          "server/internal/game/combat_death.go",
+          "server/internal/game/combat_explosion.go",
+          "server/internal/game/raid_damage_paths_test.go",
+          "server/internal/game/raid_phase_integrity_test.go",
+          "server/internal/game/raid_phases.go",
+          "server/internal/game/status_bleed.go"
+        ],
+        "before": "09946412d4b4ebf09d66ef19d9b2234923433e2a"
+      },
+      {
+        "branch": "work/death-mana-recovery-20260908",
+        "source": "7440ccdd70602af0b5cbc8f49cd4f92f2db3944f",
+        "result": "merged",
+        "merge": "3af4dad895c1fb2a886a32c642acc93ad99c37fc",
+        "patchEquivalentCommits": 1,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          "server/internal/game/death_resource_recovery_test.go",
+          "server/internal/game/player_lifecycle.go",
+          "src/entities/Actor.js"
+        ],
+        "before": "3991ce6d4498c89d61b1364c5231663d1e1ee144"
+      },
+      {
+        "branch": "work/dot-defense-20260911",
+        "source": "81e95735f7d7b703ab4119d8d5ef7530bebc3c40",
+        "result": "merged",
+        "merge": "67c5dc53bf3c622ec24d4f2bcaf8ccae53dd1ca2",
+        "patchEquivalentCommits": 1,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          "docs/plans/2026-09-11-dot-and-shield-expiry.md"
+        ],
+        "before": "3af4dad895c1fb2a886a32c642acc93ad99c37fc"
+      },
+      {
+        "branch": "work/dungeon-floor-polish-20260919",
+        "source": "739b1768e7d1804508469ca9474a178a725c4103",
+        "result": "merged",
+        "merge": "9cd00bbd7e53b7be60e04679f18cda366b2201b9",
+        "patchEquivalentCommits": 3,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          "src/art/ProceduralDungeonInteriors.js",
+          "tests/ProceduralDungeonInteriors.test.js",
+          "tests/e2e/animation-gallery.spec.js"
+        ],
+        "before": "67c5dc53bf3c622ec24d4f2bcaf8ccae53dd1ca2"
+      },
+      {
+        "branch": "work/explicit-support-target-20260910",
+        "source": "20d9f17da07df8c751c68684abbcf91b0279ecd1",
+        "result": "merged",
+        "merge": "b1f33e61364c0fa75dc3837dc6886a92e11b8e4d",
+        "patchEquivalentCommits": 2,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          "docs/plans/2026-09-10-support-target-admission.md"
+        ],
+        "before": "9cd00bbd7e53b7be60e04679f18cda366b2201b9"
+      },
+      {
+        "branch": "work/explosive-defense-20260911",
+        "source": "0d3422f8db5c7b7c6b9ced6fbaae78d74278ff3d",
+        "result": "merged",
+        "merge": "b387cc85a36e5e58076216256f352d6ea0e49d2a",
+        "patchEquivalentCommits": 1,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [],
+        "before": "b1f33e61364c0fa75dc3837dc6886a92e11b8e4d"
+      },
+      {
+        "branch": "work/fighter-duration-repair-20260911",
+        "source": "97c0d511da620a0c3797db651f377aaee0a6c623",
+        "result": "merged",
+        "merge": "555d9143242c7e9d25e0427a7b5cee055d60b126",
+        "patchEquivalentCommits": 1,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [],
+        "before": "b387cc85a36e5e58076216256f352d6ea0e49d2a"
+      },
+      {
+        "branch": "work/functional-earth-chain-20260909",
+        "source": "644076dd0ee6987f7ca979fcfabd6a32af375c78",
+        "result": "merged",
+        "merge": "9b596f69b1c2fead9e02c16a58bf11e71601f000",
+        "patchEquivalentCommits": 1,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          "docs/plans/2026-09-09-functional-earth-chain-coverage.md",
+          "tests/EarnedTargetInput.test.js",
+          "tests/EarthFunctionalPrerequisites.test.js",
+          "tests/e2e/chronicle-earth-route.js",
+          "tests/e2e/earned-expedition-target.js",
+          "tests/e2e/fresh-story-hunt-route.js"
+        ],
+        "before": "555d9143242c7e9d25e0427a7b5cee055d60b126"
+      },
+      {
+        "branch": "work/journal-daily-context-20260909",
+        "source": "ca674c6e48c8c7e6a8e4699ed836c1f0f936019d",
+        "result": "merged",
+        "merge": "071ec6a4a65d79d5e9844c7724b521230f470ce4",
+        "patchEquivalentCommits": 2,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          ".github/workflows/ci.yml",
+          "docs/plans/2026-09-09-journal-daily-context.md",
+          "src/ui/QuestUI.js",
+          "tests/QuestUIObjectivesPanel.test.js",
+          "tests/e2e/journal-daily-presentation.spec.js"
+        ],
+        "before": "9b596f69b1c2fead9e02c16a58bf11e71601f000"
+      },
+      {
+        "branch": "work/live-failure-diagnostics-20261010",
+        "source": "d1616fba7481bf5087ab693fc881a475664cb0ee",
+        "result": "merged",
+        "merge": "8952a01984432cb2fb2996d6560965f984895661",
+        "patchEquivalentCommits": 2,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          "tests/E2EHelpers.test.js",
+          "tests/e2e/helpers.js",
+          "tests/e2e/startup-module-evidence.spec.js"
+        ],
+        "before": "071ec6a4a65d79d5e9844c7724b521230f470ce4"
+      },
+      {
+        "branch": "work/periodic-defense-20260911",
+        "source": "85045b2c53ef432317a702bdbe9bc75ac5f96ad3",
+        "result": "merged",
+        "merge": "106c20a95983a7880387cec43691b04d2189addb",
+        "patchEquivalentCommits": 1,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [],
+        "before": "8952a01984432cb2fb2996d6560965f984895661"
+      },
+      {
+        "branch": "work/phone-journal-legibility-20260908",
+        "source": "748711ed28130550b585f741c1ff4d23262a5bcd",
+        "result": "merged",
+        "merge": "0fcdace115aaaca3b7176e7cae2727944def0902",
+        "patchEquivalentCommits": 1,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          "src/styles/phone-quests.css",
+          "src/ui/QuestUI.js",
+          "tests/QuestUIObjectivesPanel.test.js"
+        ],
+        "before": "106c20a95983a7880387cec43691b04d2189addb"
+      },
+      {
+        "branch": "work/primary-merged-20260911",
+        "source": "75fc655e4610048993925b3de35d6885bc597e80",
+        "result": "merged",
+        "merge": "c1865174dada8690a334abf7a701eb9df861c4ae",
+        "patchEquivalentCommits": 0,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [],
+        "before": "0fcdace115aaaca3b7176e7cae2727944def0902"
+      },
+      {
+        "branch": "work/progression-bridge-20260908",
+        "source": "d30104794997cd5f3db237f5c9e43f2cd0fac2c8",
+        "result": "merged",
+        "merge": "6f05854da60e6aa0f246df74ba66cf645b3bf3d0",
+        "patchEquivalentCommits": 6,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          "server/client_dispatch.go",
+          "server/client_messaging.go",
+          "server/internal/database/db.go",
+          "server/internal/game/progression_bridge_test.go",
+          "server/internal/game/progression_migration.go",
+          "server/internal/game/progression_migration_test.go",
+          "server/internal/game/quests.go",
+          "server/internal/game/world_test.go",
+          "server/persistence.go",
+          "server/progression_bridge_persistence_test.go",
+          "server/progression_persistence_test.go",
+          "server/progression_session_integration_test.go"
+        ],
+        "before": "c1865174dada8690a334abf7a701eb9df861c4ae"
+      },
+      {
+        "branch": "work/ready-quest-guidance-20260910",
+        "source": "f1091179b893181938e375ec9fdc4fabff055318",
+        "result": "merged",
+        "merge": "b97544f08492a92b4b507963462a6788391fcbb4",
+        "patchEquivalentCommits": 4,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          "tests/e2e/journal-daily-presentation.spec.js"
+        ],
+        "before": "6f05854da60e6aa0f246df74ba66cf645b3bf3d0"
+      },
+      {
+        "branch": "work/reward-budgets-20260908",
+        "source": "c9fcc98fcbb0231a8605dce6b503587d387eaac9",
+        "result": "merged",
+        "merge": "946d192a8daf2261031c16e6601bcce2bba1d6fa",
+        "patchEquivalentCommits": 2,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          "index.html",
+          "src/core/ChronicleInspection.js",
+          "src/core/GameEngine.js",
+          "src/core/InputManager.js",
+          "tests/ChronicleKeyboardInspection.test.js",
+          "tests/e2e/chronicle-investigation-route.js",
+          "tests/e2e/fresh-collection-route.js"
+        ],
+        "before": "b97544f08492a92b4b507963462a6788391fcbb4"
+      },
+      {
+        "branch": "work/world-geometry-low-20261010",
+        "source": "eeed562faeb0c2492aab88e9172b773ecfcd0989",
+        "result": "merged",
+        "merge": "0c7e593920564279ba117d4b89721207646064fe",
+        "patchEquivalentCommits": 1,
+        "treeUnchanged": true,
+        "conflictsResolvedToLaterAcceptedMaster": [
+          "scripts/run-terrain-save-qa.sh"
+        ],
+        "before": "946d192a8daf2261031c16e6601bcce2bba1d6fa"
+      }
+    ]
+  },
+  "remainingBranches": [
+    {
+      "branch": "archive/root-ledger-never-push-20260914-296d747f",
+      "head": "296d747f8bf7cf4e9b5d25303b6228532bd6ae4f",
+      "patchEquivalentCommits": 5,
+      "distinctPatches": 639,
+      "latest": "docs: track bounded full public event run alongside deployment"
+    },
+    {
+      "branch": "qa/release14-click-diagnostic",
+      "head": "527a812bb17d8f18a54c550490cbc8fe697f1466",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "Diagnose exact live 1.0.14 click acquisition without deployment"
+    },
+    {
+      "branch": "work/1-1-fence-frame-profile",
+      "head": "30783498249340482fe3dce1c0d0ba0ac76f6fdc",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "test: retain update and render timings for moving casts"
+    },
+    {
+      "branch": "work/1-1-moving-cast-profile",
+      "head": "f0f250f1d394eeb0bafea19f88493648be7f7fb7",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "test: retain update and render timings for moving casts"
+    },
+    {
+      "branch": "work/1-1-party-partial-retreat",
+      "head": "6f00e00dece9a9e3b046df3735a14d2cc0dd2862",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "docs: retain compact-observation party resource failure"
+    },
+    {
+      "branch": "work/1-1-party-traversal-timing",
+      "head": "90b3313ae09c2c8744d5576da0cc7da0f469f753",
+      "patchEquivalentCommits": 1,
+      "distinctPatches": 1,
+      "latest": "test: separate party formation and input timing within dungeon traversal"
+    },
+    {
+      "branch": "work/1-1-recovered-boot-frame-profile",
+      "head": "8af627fe7ca9589e4990b6cbd0960d64884df4cd",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 2,
+      "latest": "docs: record recovered-boot Wizard frame profiles"
+    },
+    {
+      "branch": "work/1-1-stale-hover-casting",
+      "head": "8bcb302a2378eeefad568238a501108e03474713",
+      "patchEquivalentCommits": 1,
+      "distinctPatches": 1,
+      "latest": "fix: ignore expired hover samples for fresh ability casts"
+    },
+    {
+      "branch": "work/1-1-verdant-expedition-budget",
+      "head": "64a4881e565bbdf506e3877166708798bf5fdbf3",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 2,
+      "latest": "docs: retain first boss kill and Matron party failure evidence"
+    },
+    {
+      "branch": "work/1-1-whirlwind-area-native",
+      "head": "01dbe625f21397768e2848122065f4a1af41c812",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "test: cover paid Whirlwind area upgrades and saved phone presentation"
+    },
+    {
+      "branch": "work/actor-affine-bounds-20261010",
+      "head": "0dbe93f4066434b19bf8d5de637f0c0625e25ea3",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "perf: qualify guarded affine actor bounds arithmetic"
+    },
+    {
+      "branch": "work/actor-batch-shadow-entry-20261010",
+      "head": "bf2039bf4b0f1c71d7b421a6953b71396b33c38e",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "perf: qualify an explicit actor batch shadow-view prototype"
+    },
+    {
+      "branch": "work/actor-cell-translation-20261010",
+      "head": "4b108ffbd5f68f9d6aada2ed0876feffeb063168",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "perf: qualify direct actor cell matrix writes privately"
+    },
+    {
+      "branch": "work/actor-frame-storage-20261010",
+      "head": "3aea15aa4ce91d64829e563621e0a4eeb222e210",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "Reuse actor frame scratch storage without caching live eligibility"
+    },
+    {
+      "branch": "work/actor-shadow-gameplay-20261010",
+      "head": "2723cff1904671b5be3b6d01f996402e6bf9a0b0",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 6,
+      "latest": "test: inspect only labels with visible ancestors"
+    },
+    {
+      "branch": "work/actor-shadow-influence-20261010",
+      "head": "378a79a2c6bd59409813f01dc43351e6daeb0402",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "Reuse owned rigid camera bounds for Low actor color submissions"
+    },
+    {
+      "branch": "work/actor-shadow-light-index-20261010",
+      "head": "b90d1ac5218064442a013d9ced134bdd35824792",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "perf: prototype event-backed scene light membership"
+    },
+    {
+      "branch": "work/actor-world-bounds-20261010",
+      "head": "26659ce364dc9465ffeae7f30d010cda198959cf",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "perf: reuse exact rigid actor world bounds"
+    },
+    {
+      "branch": "work/additive-effect-single-pass-20261011",
+      "head": "fb03de23abccae327b9269fdf5173052908a2c27",
+      "patchEquivalentCommits": 3,
+      "distinctPatches": 23,
+      "latest": "Prepare the already unlocked Fighter hotbar for effect review"
+    },
+    {
+      "branch": "work/alpha-1-48-equipment-multidraw-probe-20260930",
+      "head": "998115b4ad4d33f623e25edbf64c3b2aec5bba49",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "experiment: archive rejected animated multi-draw performance probe"
+    },
+    {
+      "branch": "work/alpha-1-48-shadow-casters-probe-20260930",
+      "head": "360d612b789004b8a1fa2f65902def7ce043f38a",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "experiment(render): archive rejected rigid shadow-caster probe"
+    },
+    {
+      "branch": "work/alpha-1-48-surface-pivot-probe-20260930",
+      "head": "f4d3574011d4f9f30b0e3ded780e916870b0330f",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "experiment: archive rejected cross-surface equipment pivot batches"
+    },
+    {
+      "branch": "work/alpha-1-60-integration-20261001",
+      "head": "62eb40f5d8b888ccc02423639f00cfe7bee6c1ff",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "Merge branch 'work/alpha-1-59-moderation-20261001' into work/alpha-1-60-integration-20261001"
+    },
+    {
+      "branch": "work/alpha-1-61-venue-20261001",
+      "head": "c99de3fbee167324764d4135b8499ca52aaea462",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 2,
+      "latest": "Merge branch 'work/alpha-1-60-integration-20261001' into work/alpha-1-61-venue-20261001"
+    },
+    {
+      "branch": "work/alpha-1-62-blackjack-20261001",
+      "head": "c62fa027888b2f70971e92ff35b7c153d0cdb162",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 4,
+      "latest": "fix: release timed-out blackjack chairs without losing saved wagers"
+    },
+    {
+      "branch": "work/alpha-1-63-poker-20261001",
+      "head": "0b17c0691f3fc333412a063089207867f6258967",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 5,
+      "latest": "fix: turn over timed-out poker chairs while preserving escrowed chips"
+    },
+    {
+      "branch": "work/alpha-1-64-house-20261001",
+      "head": "794f2c16109211fbbcf6ca579b3ded47309a5c2f",
+      "patchEquivalentCommits": 1,
+      "distinctPatches": 5,
+      "latest": "Merge branch 'work/alpha-1-59-moderation-20261001' into work/alpha-1-64-house-20261001"
+    },
+    {
+      "branch": "work/alpha-1-65-slots-20261001",
+      "head": "1757c9691f64423020b9310e4168765a270382ce",
+      "patchEquivalentCommits": 2,
+      "distinctPatches": 5,
+      "latest": "fix(casino): pause queued spins for bonus choices and saved reveals"
+    },
+    {
+      "branch": "work/alpha-1-66-wallets-20261001",
+      "head": "bcec17110dfb639ca86a5e9e13b7ee6dac559bf6",
+      "patchEquivalentCommits": 3,
+      "distinctPatches": 5,
+      "latest": "fix: bind EP wallet replies to their owning character"
+    },
+    {
+      "branch": "work/alpha-1-67-cosmetics-20261001",
+      "head": "649066768cd572ba637d657ed9cb9d6da87f00a6",
+      "patchEquivalentCommits": 5,
+      "distinctPatches": 7,
+      "latest": "fix: retire stale wardrobe controls and private replies"
+    },
+    {
+      "branch": "work/alpha-1-68-membership-20261001",
+      "head": "bfbead1e2aba03e8d219a692a2a1f7ba56cd07e5",
+      "patchEquivalentCommits": 7,
+      "distinctPatches": 7,
+      "latest": "docs: reconcile retained VIP allowance and recovery evidence"
+    },
+    {
+      "branch": "work/alpha-1-73-valuable-operations-20261002",
+      "head": "229c3c2ae8fdaafb9ead6f123d8426712975cecc",
+      "patchEquivalentCommits": 16,
+      "distinctPatches": 35,
+      "latest": "docs: record active-call diagnostics without backlog or capacity claims"
+    },
+    {
+      "branch": "work/alpha-1-75-release-20261004",
+      "head": "2ccae4c8428360a1a74845461ec3382c6ff9f9e7",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 5,
+      "latest": "docs: carry independently accepted corrective Alpha 1.74 into privacy candidate"
+    },
+    {
+      "branch": "work/alpha-1-76-release-20261004",
+      "head": "5e8a140925dca71664e9f9a345f754708ec49041",
+      "patchEquivalentCommits": 5,
+      "distinctPatches": 26,
+      "latest": "Merge branch 'work/alpha-1-75-release-20261004' of /tmp/eidolon-1-75-release-Pv7He4 into work/alpha-1-76-release-20261004"
+    },
+    {
+      "branch": "work/alpha-1-77-network-current-20261004",
+      "head": "c40ec073505076461754d5cfbae4ee6794988462",
+      "patchEquivalentCommits": 5,
+      "distinctPatches": 27,
+      "latest": "Merge branch 'work/alpha-1-76-release-20261004' of /tmp/eidolon-1-76-release-0KSOkJ into work/alpha-1-77-network-current-20261004"
+    },
+    {
+      "branch": "work/alpha-1-78-operations-current-20261004",
+      "head": "b1bb20d927953bba735138cf547fa8bef8c5fd78",
+      "patchEquivalentCommits": 9,
+      "distinctPatches": 36,
+      "latest": "Merge branch 'work/alpha-1-75-release-20261004' into work/alpha-1-78-operations-current-20261004"
+    },
+    {
+      "branch": "work/alpha-1-79-1-recovered-20261008",
+      "head": "90af6491d99e00337b84f211f1c92c8c41f9679d",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 2,
+      "latest": "docs: accept scoped public 1.79.1 delivery through guarded local fallback"
+    },
+    {
+      "branch": "work/alpha-1-79-2-render-stabilization-20261008",
+      "head": "735baed754c7dceb33db10a042c0fa8fdc405366",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "docs: record alpha 1.79.2 live acceptance and approved alerts"
+    },
+    {
+      "branch": "work/alpha-1-79-3-acceptance-20261008",
+      "head": "1198722a52299838ce15ed2f6280b9310a38e80a",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "docs: record exact Alpha 1.79.3 live acceptance"
+    },
+    {
+      "branch": "work/alpha-1-79-capacity-current-20261004",
+      "head": "c6b228e4fce5b3b6d3d489b52b37a62bb125b3ae",
+      "patchEquivalentCommits": 9,
+      "distinctPatches": 123,
+      "latest": "docs(goal): record released queue and exact active maintenance CI"
+    },
+    {
+      "branch": "work/alpha-1-79-equipment-palette-current-20261009",
+      "head": "4c04f6ccd19c865d7bd53b46b301cbc55f318600",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "Record private disabled equipment palette experiment and parity results"
+    },
+    {
+      "branch": "work/alpha-1-80-current-freeze-20261008",
+      "head": "70af0d384008896ad6ace59dd7683b0ce51d53c3",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 2,
+      "latest": "docs: reconcile 1.80 review with accepted rendering and release guards"
+    },
+    {
+      "branch": "work/alpha-1-80-preparation-20261008",
+      "head": "82c9f8fa39b783810fa9a8b247ca051b9f7fc431",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 6,
+      "latest": "fix(ci): guard native QA behind canonical production refs"
+    },
+    {
+      "branch": "work/alpha-1-80-review-current-20261008",
+      "head": "c482b93381abdfc45fc1f3b205afc8196746ca30",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "docs: reconcile next freeze review with delivered alpha fixes"
+    },
+    {
+      "branch": "work/alpha-1-81-current-20261006",
+      "head": "ef7510f07539b7d85ff291107f31e90366ebfd4d",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 4,
+      "latest": "test(recovery): consume restored dungeon archive through runtime checkpoint paths"
+    },
+    {
+      "branch": "work/alpha-1-81-recovery-current-20261008",
+      "head": "eea1183f0acf6d42ebe167d0c0b7a56e7e698dc2",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 6,
+      "latest": "fix(recovery): qualify coordinated archive integrity on current source"
+    },
+    {
+      "branch": "work/alpha-1-82-current-20261006",
+      "head": "2879d3997bcaf71a638cd88fc7beb7f127db90c6",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 2,
+      "latest": "fix(deploy): pin verified SSH server host identity"
+    },
+    {
+      "branch": "work/alpha-1-83-current-20261006",
+      "head": "db29bd601451a7a6fa865bfb4d808f6a4ed93447",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 4,
+      "latest": "feat(admin): stage reviewed audited global maintenance notices"
+    },
+    {
+      "branch": "work/alpha-1-83-notices-current-20261008",
+      "head": "9e1d6f627ebcc668ac4b6b77217a6274ef6ef504",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 10,
+      "latest": "feat(admin): integrate audited maintenance notices on current runtime"
+    },
+    {
+      "branch": "work/alpha-1-83-public-probes-current-20261008",
+      "head": "89c18f71cd7cc3aa83a65aecf83c69dc4ac4210d",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 7,
+      "latest": "ops: prepare optional bounded public release monitoring"
+    },
+    {
+      "branch": "work/alpha-1-84-current-20261006",
+      "head": "67c97dfd40721bd23e503ef696a07057ff0aad77",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 5,
+      "latest": "feat(support): prepare private account and progress help before world entry"
+    },
+    {
+      "branch": "work/alpha-1-84-support-current-20261008",
+      "head": "516faa2b1dd3b507df01c16ca6181fd3540cd1e1",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 8,
+      "latest": "support: integrate private progress help on current runtime"
+    },
+    {
+      "branch": "work/alpha-1-85-current-20261006",
+      "head": "1320cec622a643250a0a88833731acbcf605ed78",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 6,
+      "latest": "docs(ui): prepare source-checked in-game player guide"
+    },
+    {
+      "branch": "work/alpha-1-85-player-guide-current-20261008",
+      "head": "7fbdee83743d8a2f27b06099bdb58e27cf2bc7a0",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 9,
+      "latest": "docs(ui): integrate current source-checked player guide"
+    },
+    {
+      "branch": "work/alpha-1-86-authoring-current-20261008",
+      "head": "aff0fe106b8ccdac597bbded31e33a7dc1bcb31f",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 3,
+      "latest": "Prepare content authoring validation and readable lore dialogs"
+    },
+    {
+      "branch": "work/alpha-1-86-current-20261006",
+      "head": "ce7a0a1ded9a65263ef3fbc5bf75f893bed29106",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 8,
+      "latest": "Validate cosmetic authoring and verify complete Chronicle icon coverage"
+    },
+    {
+      "branch": "work/alpha-1-87-atlas-relief-20261009",
+      "head": "05bb48f504cdd2f58b950547ea45f3033ae80f73",
+      "patchEquivalentCommits": 1,
+      "distinctPatches": 1,
+      "latest": "test(atlas): require profile-aware relief in browser smoke"
+    },
+    {
+      "branch": "work/alpha-1-87-current-20261006",
+      "head": "575a80f2d56c2f486817f097236e9eec6c4523a8",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 29,
+      "latest": "art: add registered wind-worn slate to Stormcrown terrain"
+    },
+    {
+      "branch": "work/alpha-1-87-dungeon-architecture-20261008",
+      "head": "b39bffe14777100697a423118ce38549fcba62cc",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 15,
+      "latest": "art: add bounded elemental dungeon wall architecture"
+    },
+    {
+      "branch": "work/alpha-1-87-dungeon-walls-20261008-0453",
+      "head": "a18ad39fca0cf79303777d4045484473c27abf3e",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 14,
+      "latest": "art: refine elemental dungeon stone surfaces with bounded quality maps"
+    },
+    {
+      "branch": "work/alpha-1-87-fire-surface-current-20261008",
+      "head": "61e8e69e89c1844db591539cc04d461fff80fdc0",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 11,
+      "latest": "art: refine cooled basalt and ash on Cinder terrain"
+    },
+    {
+      "branch": "work/alpha-1-87-floor-current-20261008",
+      "head": "6b39c503bda2c9a444077e359a11d98ad8743148",
+      "patchEquivalentCommits": 11,
+      "distinctPatches": 158,
+      "latest": "docs: accept delivered 21 and retain scoped actor successor publisher"
+    },
+    {
+      "branch": "work/alpha-1-87-moonfrost-current-20261008",
+      "head": "f8ffef302f033cfc9e1d7184a19289e149413c70",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 7,
+      "latest": "feat(art): prepare coherent Moonfrost ice and rime material"
+    },
+    {
+      "branch": "work/alpha-1-87-moonfrost-review-20261008",
+      "head": "6599fee636755add77c1eaf8616a08d74dab3cfb",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 13,
+      "latest": "art: refine Moonfrost ice and layered Tide Rib supports"
+    },
+    {
+      "branch": "work/alpha-1-87-outcrop-art-current-20261008",
+      "head": "72a9c37fad564cf5a43df3ee8f43dd7ca875e509",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "feat: refine Earth outcrop crowns and weathered mineral surfaces"
+    },
+    {
+      "branch": "work/alpha-1-87-party-callers-20261009",
+      "head": "24ab12a871ac3283548182edd9d00c039552f660",
+      "patchEquivalentCommits": 1,
+      "distinctPatches": 2,
+      "latest": "docs(performance): qualify measured casino scene-search fix"
+    },
+    {
+      "branch": "work/alpha-1-87-raised-budget-current-20261008",
+      "head": "165c423fbc9a4f11500ef003e855c0cfe2049865",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "test: qualify current raised-Earth reference and checkpoint paths"
+    },
+    {
+      "branch": "work/alpha-1-87-selection-current-20261008",
+      "head": "548e5381714d82fa92a33922d1bfa8d90bcf9b72",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 4,
+      "latest": "fix: restore flat-ground heights across terrain profile changes"
+    },
+    {
+      "branch": "work/alpha-1-87-skyreach-canvas-20261008",
+      "head": "eaf70ebfba759c6a6ec2e9b079a8ee3694fe2888",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 16,
+      "latest": "art: refine Stormcrown slate and camp canvas"
+    },
+    {
+      "branch": "work/alpha-1-87-terrain-selection-current-20261008",
+      "head": "54497bbbe1a26bd13dcbaf91913ecb1769793b4b",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 10,
+      "latest": "feat: prepare explicit server-owned raised terrain rollout selection"
+    },
+    {
+      "branch": "work/alpha-1-87-town-masonry-current-20261008",
+      "head": "fdfbd22347da680ae1219a65bfbb74a7f7878ae0",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 12,
+      "latest": "art: refine Lanternhold masonry in equipped populated town views"
+    },
+    {
+      "branch": "work/alpha-1-87-tree-cells-current-20261008",
+      "head": "d3c47e95e636c71a1feca339f129ba0ddcdcda16",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 9,
+      "latest": "perf(art): fit woodland reference budgets without reducing scenery"
+    },
+    {
+      "branch": "work/alpha-1-87-woodland-budget-current-20261008",
+      "head": "6b828ad8b441418f6a28643c685ea2699f83d5ee",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 8,
+      "latest": "art: preserve woodland detail with tighter High vegetation batches"
+    },
+    {
+      "branch": "work/alpha-1-88-current-20261006",
+      "head": "5bc8ed9a48c6597aa5547b71aea8035b96843fdf",
+      "patchEquivalentCommits": 1,
+      "distinctPatches": 13,
+      "latest": "docs: record fence frame optimization checks and limits"
+    },
+    {
+      "branch": "work/alpha-1-90-admission-preparation-20261008",
+      "head": "1037852c57149900a37a1a4493221a714724eb2d",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 4,
+      "latest": "test: qualify staged invitations across real signup and account restarts"
+    },
+    {
+      "branch": "work/browser-cost-partition-20260909",
+      "head": "df6f806a6c4ac1f50c79b1cd9ec72b3e83338b65",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 4,
+      "latest": "docs: separate runner starvation from browser partition timing"
+    },
+    {
+      "branch": "work/camp-instance-frustum-20261010",
+      "head": "9fe14c1999036780740e9f6c51e23b4fe7f9c0ae",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 10,
+      "latest": "test: require actual visible camp submissions from the publication bundle"
+    },
+    {
+      "branch": "work/collision-aware-fight-return-20261011",
+      "head": "846d63edf54bc56d3c9f56f347f093312f6586b5",
+      "patchEquivalentCommits": 2,
+      "distinctPatches": 18,
+      "latest": "test: require ordinary walking around the retained off-road obstacle"
+    },
+    {
+      "branch": "work/combat-1-43-candidate-20260929",
+      "head": "048aec6e343d193415e8bf5454b4675679c524e9",
+      "patchEquivalentCommits": 49,
+      "distinctPatches": 24,
+      "latest": "docs: refresh equipment candidate publication dependencies"
+    },
+    {
+      "branch": "work/combat-submission-attribution-20261011",
+      "head": "97dc3b64fa9fae7f30f3aae9d20c0ec24d36327a",
+      "patchEquivalentCommits": 2,
+      "distinctPatches": 20,
+      "latest": "test: retain combat attribution and confirmed acquired deaths through target changes"
+    },
+    {
+      "branch": "work/coordinated-xp-20260908",
+      "head": "5dc79ec4cc844e9d3c1aa26a1791bc2a8c5564c0",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "docs: close passing full progression and quote server regression"
+    },
+    {
+      "branch": "work/default-actor-cell-delivery-20261010",
+      "head": "5e3c4d3faf17fad3e532c91e7b8f8d18669d43cf",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 19,
+      "latest": "docs: describe resource ownership of automatic actor multi-draw"
+    },
+    {
+      "branch": "work/demon-orc-rigid-delivery-20261010",
+      "head": "af0bfd0a100498b0ddb47dc8c4577ef32405850d",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 3,
+      "latest": "test: include live actor attachments in original DemonOrc comparison"
+    },
+    {
+      "branch": "work/dungeon-entry-ward-live-20261011",
+      "head": "d3ac269e3cd9842c2aac0330be9f78b2a62624dc",
+      "patchEquivalentCommits": 2,
+      "distinctPatches": 19,
+      "latest": "Integrate entry-ward art with private qualified normal dungeon review"
+    },
+    {
+      "branch": "work/earth-soil-response-20261009",
+      "head": "ab3ce06d9c4609c05b4d0b0c5aadab3077dc67d9",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "experiment: retain rejected Earth soil contrast and filtering review"
+    },
+    {
+      "branch": "work/environment-1-42-candidate-20260929",
+      "head": "69cb2af121198a40161fbeff346b7a8b7bd16c20",
+      "patchEquivalentCommits": 1,
+      "distinctPatches": 1,
+      "latest": "docs: record Dark Realm environment integration review"
+    },
+    {
+      "branch": "work/equipped-fight-dungeon-review-20261010",
+      "head": "ca9e1c5bc5a6e390d33cd03a6e5a8ed9142797d0",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 15,
+      "latest": "test: qualify authored first dungeon route independently of completed fights"
+    },
+    {
+      "branch": "work/fighter-charge-20260915",
+      "head": "64ec325bd39be74293b653474101babed2800e04",
+      "patchEquivalentCommits": 1,
+      "distinctPatches": 1,
+      "latest": "test: include town surface visibility in automatic browser checks"
+    },
+    {
+      "branch": "work/fighter-charge-duration-20260911",
+      "head": "ff2212f32babf4b37997875c27275dc69171b0b4",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "docs: record full Charge and Earthshaker regression"
+    },
+    {
+      "branch": "work/fighter-rune-parity-20260911",
+      "head": "d253defa5553c3b0f7aafcebf721501141663798",
+      "patchEquivalentCommits": 1,
+      "distinctPatches": 1,
+      "latest": "docs: record full Fighter rune regression acceptance"
+    },
+    {
+      "branch": "work/fitted-rigid-flat-surfaces-20261010",
+      "head": "59004143652a498123d053039e4503c4da7d5735",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 15,
+      "latest": "test: exercise partially visible animated buckets with spread-out actors"
+    },
+    {
+      "branch": "work/foliage-world-product-20261011",
+      "head": "cbff101407d2a8a0f265f1cb07d96e5f976e1196",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "experiment: retain unselected exact foliage matrix product cache"
+    },
+    {
+      "branch": "work/forest-visibility-20261009",
+      "head": "282d0a78197d273dd36251bdfa8ae6e5b4914e1b",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "experiment: retain rejected all-realm foliage visibility evidence"
+    },
+    {
+      "branch": "work/gold-provenance-diagnostic-20261010",
+      "head": "7d3e1a11e8d7fafdee6632dfd402b9bb88bdc8bc",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 5,
+      "latest": "test: capture one bounded live Gold provenance trace with original gameplay assertions"
+    },
+    {
+      "branch": "work/gold-room-reward-boundary-20261010",
+      "head": "a69cd244e298d97875c04480c1dd7577e8cb22e1",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 4,
+      "latest": "test: select actual post-award host reads for the Gold boundary counterexample"
+    },
+    {
+      "branch": "work/motion-admin-fixes-20261010",
+      "head": "97447d12a2d83e670443664442d6ac75f652c1a7",
+      "patchEquivalentCommits": 2,
+      "distinctPatches": 2,
+      "latest": "Sample accepted local jumps at render after network acknowledgements"
+    },
+    {
+      "branch": "work/motion-live-acceptance-20261010",
+      "head": "0666350b3de39f3aa0e59cd5468e9c9084ff732a",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 8,
+      "latest": "Add owned Mongo proof for explicit automation population filtering and daily totals"
+    },
+    {
+      "branch": "work/opening-reward-20260908",
+      "head": "353e465e4485df5d6dbd68b5391e8fef047b23ec",
+      "patchEquivalentCommits": 2,
+      "distinctPatches": 2,
+      "latest": "docs: verify earned opening reward and retained collection handoff"
+    },
+    {
+      "branch": "work/party-startup-attribution-20261011",
+      "head": "7890349eb4aca35e32d9d17991f54a961dd6148c",
+      "patchEquivalentCommits": 2,
+      "distinctPatches": 23,
+      "latest": "Use the qualified preparation scheduler in the early party diagnostic"
+    },
+    {
+      "branch": "work/regen-rate-20260908",
+      "head": "42c70a2c6dfaa431dcf15dcef8346e19ca041a41",
+      "patchEquivalentCommits": 1,
+      "distinctPatches": 1,
+      "latest": "docs: close regeneration full regression evidence"
+    },
+    {
+      "branch": "work/release65-animation-rune-preparation",
+      "head": "1a491c4100617a86ab8d4c5ceb9de509327e1032",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "test: prepare actual base runes for persistent animation QA"
+    },
+    {
+      "branch": "work/singleton-actor-delivery-20261010",
+      "head": "f8e994d058adeafa8a6e2057604b2b0fb12953ce",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 6,
+      "latest": "test: observe fixed town startup interval before attributing geometry delivery"
+    },
+    {
+      "branch": "work/starter-pursuit-20260908",
+      "head": "9bf76b2abfc8ead5fc57ba1f95ebfe7b27d50def",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "docs: record automatic online growth and prepared collection failure"
+    },
+    {
+      "branch": "work/status-hud-icons-20261010",
+      "head": "aebc87abc4426bc97aea0cbe177ee3ccf37694ac",
+      "patchEquivalentCommits": 2,
+      "distinctPatches": 16,
+      "latest": "test: keep phone countdown text-node identity check on the actual title"
+    },
+    {
+      "branch": "work/vendor-gold-coherence-20261010",
+      "head": "9b252480dd8cf18a91f2d93c382d3c71e60e81f7",
+      "patchEquivalentCommits": 3,
+      "distinctPatches": 1,
+      "latest": "test: preserve wallet read pacing across reply latency"
+    },
+    {
+      "branch": "work/vendor-stash-boundary-20261010",
+      "head": "d76413a46347e45b8c62145060a342fa75562596",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 3,
+      "latest": "test: qualify ordinary and ordered delayed vendor saves without assuming acknowledgement order"
+    },
+    {
+      "branch": "work/verdant-floor-live-20261011",
+      "head": "603efd84fc5d0de1c2f432aeeb28f59c592e0c3f",
+      "patchEquivalentCommits": 2,
+      "distinctPatches": 21,
+      "latest": "Observe the staged floor shader during normal dungeon entry"
+    },
+    {
+      "branch": "work/woodland-spatial-batching-20261009",
+      "head": "dd354331f8a32ff1d874ce891f9e9587daa3193d",
+      "patchEquivalentCommits": 0,
+      "distinctPatches": 1,
+      "latest": "Retain unselected woodland multi-draw prototype and native failure evidence"
+    }
+  ],
+  "remainingScope": "108 branches have distinct patches and remain for review. Includes unselected/rejected experiments, historical diagnostics and original dirty user branch; not declared completed.",
+  "validation": {
+    "mergedFocusedPassed": 462,
+    "mergedFocusedSuites": 7,
+    "serverHealthDeployTransport": "pass,10.157seconds",
+    "completeClientESLint": "pass",
+    "diffCheck": "pass",
+    "originalCheckout": "Preserved branch and all pre-existing uncommitted work; only AGENTS.md added and goal.md appended.",
+    "audioEvidence": "docs/plans/2026-10-11-combat-contact-foley-qualification.json"
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-master-reconciliation-checks-20261011",
+  "next": "Fetch and ordinary-merge any new upstream changes, push master, then verify CI/deployment and exact public identities before another release."
+}
