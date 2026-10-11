@@ -22,16 +22,23 @@ float eidolonLeafVeins(vec2 uv) {
 }
 `;
 
+// Shared by canopy leaves and rooted ground cover. Return the standard
+// lighting chunk with only its thin-leaf diffuse response changed; callers
+// retain their own independent geometry/detail/wind shader hooks.
+export function woodlandLeafLighting() {
+    if (!ShaderChunk.lights_physical_pars_fragment.includes(DIFFUSE)) {
+        throw new Error('Unsupported standard diffuse lighting contract');
+    }
+    return ShaderChunk.lights_physical_pars_fragment.replace(DIFFUSE, LEAF_DIFFUSE);
+}
+
 export function applyWoodlandLeafDetail(material) {
     if (!material?.isMeshStandardMaterial) throw new TypeError('Leaf detail requires a standard material');
     if (material.userData.woodlandLeafDetail) return material;
     if (material.onBeforeCompile !== Material.prototype.onBeforeCompile) {
         throw new Error('Leaf detail cannot replace an existing shader hook');
     }
-    if (!ShaderChunk.lights_physical_pars_fragment.includes(DIFFUSE)) {
-        throw new Error('Unsupported standard diffuse lighting contract');
-    }
-    const lighting = ShaderChunk.lights_physical_pars_fragment.replace(DIFFUSE, LEAF_DIFFUSE);
+    const lighting = woodlandLeafLighting();
     material.userData.woodlandLeafDetail = true;
     material.customProgramCacheKey = () => 'eidolon-woodland-leaf-v1';
     material.onBeforeCompile = shader => {

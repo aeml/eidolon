@@ -3,12 +3,12 @@ import { createHash } from 'node:crypto';
 
 test.each([
     ['bracken', ['12a59b1f52aea48bb47f6bdb623a1e669457b0aa7ef1a61a90b5c3fbc0230e2e',
-        '27cf477bb214ff3ad74a7ee6942981074ac5344c9b8c2e9743a71b71eb937542',
-        'b2777c1c2fdfa09e7f58bfca5ec80775e105851329696c65c0b14d12126e7037']],
+        '2206fa07a29e3edd909289c256371323bf9356ea7823afa05d1cd75f79ebfe1a',
+        'ec07cf85f8126082b592a79e045a1b2e3224be1b50987fe9adf6526a657a51c4']],
     ['sedge', ['6003d7c03d0cca012fbb05c44b075f16efd0ab318b685e0959a9e6b247b4043f',
         '716973847a69be12e23be3828a32c3ebe4a3cf71703414017b13e8ec76ac0e7f',
         'e2f3abd273a90b5fd39a47971b5109d2aae56ad5c88b9dba8dcf04da95dd7c69']]
-])('%s High position, color and normal buffers retain the qualified recipe', (kind, hashes) => {
+])('%s High buffers retain the qualified silhouette and continuous leaf shading', (kind, hashes) => {
     const geometry = createWoodlandUnderstoryGeometry(kind, { quality: 'high' });
     try {
         expect(['position', 'color', 'normal'].map(name => {
@@ -117,5 +117,31 @@ test('sedge forms varied curved leaf clusters at the existing eighty-triangle co
         expect(rolledSections).toBeGreaterThanOrEqual(12);
         // Sum includes overlapping leaves. Not a screen-coverage assertion.
         expect(projectedArea).toBeGreaterThan(.9);
+    } finally { geometry.dispose(); }
+});
+
+
+test.each(['high', 'low'])('fern folds have continuous unit normals and colors without welding separate leaflets (%s)', quality => {
+    const geometry = createWoodlandUnderstoryGeometry('bracken', { quality });
+    try {
+        const { position: p, normal: n, color: c } = geometry.attributes;
+        const stride = quality === 'high' ? 99 : 93, ribbon = quality === 'high' ? 15 : 9;
+        let folds = 0;
+        for (let blade = 0; blade < 7; blade++) for (let pinna = 0; pinna < 14; pinna++) {
+            const start = blade * stride + ribbon + pinna * 6;
+            for (const [a, b] of [[start, start + 3], [start + 2, start + 4]]) {
+                for (const attribute of [p, n, c]) {
+                    expect([attribute.getX(a), attribute.getY(a), attribute.getZ(a)])
+                        .toEqual([attribute.getX(b), attribute.getY(b), attribute.getZ(b)]);
+                }
+                expect(Math.hypot(n.getX(a), n.getY(a), n.getZ(a))).toBeCloseTo(1, 5);
+            }
+            // Preserve the bend: the two outer edges keep distinct normals.
+            const left = start + 1, right = start + 5;
+            expect([n.getX(left), n.getY(left), n.getZ(left)])
+                .not.toEqual([n.getX(right), n.getY(right), n.getZ(right)]);
+            folds++;
+        }
+        expect(folds).toBe(98);
     } finally { geometry.dispose(); }
 });

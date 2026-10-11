@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { createMotionPreference } from '../core/MotionPreference.js';
+import { woodlandLeafLighting } from './WoodlandLeafMaterial.js';
 
 // Maximum local-space displacement, including the small leaf flutter. The
 // largest (1.4x) plant still fits its existing 2.2m clearance envelope.
@@ -39,12 +40,14 @@ export function createWoodlandWindMaterial({ now = () => performance.now() / 100
     const material = new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true,
         side: THREE.DoubleSide, roughness: 1 });
     const time = { value: 0 }, motion = { value: 1 };
+    const lighting = woodlandLeafLighting();
     material.onBeforeRender = () => {
         const seconds = now();
         time.value = Number.isFinite(seconds) ? seconds : 0;
         motion.value = motionPreference?.matches ? 0 : 1;
     };
     material.onBeforeCompile = shader => {
+        shader.fragmentShader = shader.fragmentShader.replace('#include <lights_physical_pars_fragment>', lighting);
         shader.uniforms.woodlandTime = time;
         shader.uniforms.woodlandMotion = motion;
         shader.vertexShader = shader.vertexShader.replace('#include <batching_pars_vertex>', `#include <batching_pars_vertex>\n${windShader}`)
@@ -57,7 +60,7 @@ export function createWoodlandWindMaterial({ now = () => performance.now() / 100
             .replace('#include <begin_vertex>', `#include <begin_vertex>
                 transformed.xz += woodlandOffset * woodlandHeight * woodlandHeight;`);
     };
-    material.customProgramCacheKey = () => 'woodland-rooted-wind-v3';
+    material.customProgramCacheKey = () => 'woodland-rooted-wind-leaf-v4';
     material.userData.woodlandWind = true;
     return material;
 }
