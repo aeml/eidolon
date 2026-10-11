@@ -1,0 +1,248 @@
+{
+  "recordedUTC": "2026-10-11T09:05:08.611658+00:00",
+  "source": "2a8d0c353430566e4a2c864a35c56418b799070e",
+  "base": "04794e4ea22aa58c6fee34c07a275ba2475e087a",
+  "masterMerge": "9e85a67c822cb8d0d3976fa84a0326bb87b3d375",
+  "published": false,
+  "change": "Constructor-only bounded branch angle/length/height/curvature and needle-tip width variation; coherent growth shading replaces alternating tiles. Same five whorls,seven boughs,six paired sprays,three production crown descriptors. Only product file ProceduralConiferBoughs.js. Low finite/bounds/cost check added to existing EarthWoodlandComposition coverage.",
+  "geometry": [
+    {
+      "quality": "high",
+      "before": {
+        "triangles": 840,
+        "attributeBytes": 90720,
+        "bounds": {
+          "min": [
+            -1.7873659133911133,
+            -1.780455470085144,
+            -1.8885324001312256
+          ],
+          "max": [
+            1.8949999809265137,
+            1.2310373783111572,
+            1.8885324001312256
+          ]
+        },
+        "sphere": 2.467305627421861,
+        "finite": true
+      },
+      "after": {
+        "triangles": 840,
+        "attributeBytes": 90720,
+        "bounds": {
+          "min": [
+            -1.665088415145874,
+            -1.795186996459961,
+            -1.6431597471237183
+          ],
+          "max": [
+            1.6639025211334229,
+            1.3304136991500854,
+            1.671675205230713
+          ]
+        },
+        "sphere": 2.4281312984425623,
+        "finite": true
+      },
+      "diff": {
+        "position": {
+          "changedComponents": 7536,
+          "count": 7560
+        },
+        "color": {
+          "changedComponents": 7560,
+          "count": 7560
+        },
+        "normal": {
+          "changedComponents": 7560,
+          "count": 7560
+        }
+      }
+    },
+    {
+      "quality": "low",
+      "before": {
+        "triangles": 420,
+        "attributeBytes": 45360,
+        "bounds": {
+          "min": [
+            -1.7873659133911133,
+            -1.780455470085144,
+            -1.8885324001312256
+          ],
+          "max": [
+            1.8949999809265137,
+            1.1777173280715942,
+            1.8885324001312256
+          ]
+        },
+        "sphere": 2.4511265452972197,
+        "finite": true
+      },
+      "after": {
+        "triangles": 420,
+        "attributeBytes": 45360,
+        "bounds": {
+          "min": [
+            -1.665088415145874,
+            -1.795186996459961,
+            -1.6431597471237183
+          ],
+          "max": [
+            1.6639025211334229,
+            1.2770936489105225,
+            1.671675205230713
+          ]
+        },
+        "sphere": 2.4110586401737266,
+        "finite": true
+      },
+      "diff": {
+        "position": {
+          "changedComponents": 3768,
+          "count": 3780
+        },
+        "color": {
+          "changedComponents": 3780,
+          "count": 3780
+        },
+        "normal": {
+          "changedComponents": 3780,
+          "count": 3780
+        }
+      }
+    }
+  ],
+  "focused": {
+    "passed": 40,
+    "suites": 3,
+    "seconds": 5.134,
+    "initial39Recheck": "Initial39before adding the Low finite/bounds case are the same checks, not additional passes.",
+    "lint": "Changed product/test files pass; full source lint already passed for otherwise unchanged master.",
+    "diffCheck": "pass"
+  },
+  "native": {
+    "passed": 5,
+    "retries": 0,
+    "skipped": 0,
+    "seconds": 59.9,
+    "scope": "Existing sourceHigh/Low1280px,narrow390pxDesktopChromeLow and copiedHigh/Low identities.9views/case,360manually sampled walking poses,45actualHUDscreens plus8existingFXAAcomparisonPNGs. Supplied14-slotFighter; raised-world generator. Not normal authenticated input, continuous frame timing or physical-phone review.",
+    "summary": [
+      {
+        "case": "earth-rock-shelf-review-hi-5dfcd-d-views-and-owned-resources",
+        "views": 9,
+        "maxCalls": 196,
+        "maxTriangles": 147081,
+        "released": {
+          "geometry": 332,
+          "material": 2
+        },
+        "expected": {
+          "geometry": 332,
+          "material": 2
+        }
+      },
+      {
+        "case": "published-game-bundle-copi-d794f--equipped-views-and-cleanup",
+        "views": 9,
+        "maxCalls": 196,
+        "maxTriangles": 147081,
+        "released": {
+          "geometry": 332,
+          "material": 2
+        },
+        "expected": {
+          "geometry": 332,
+          "material": 2
+        }
+      },
+      {
+        "case": "earth-rock-shelf-review-lo-fae49-d-views-and-owned-resources",
+        "views": 9,
+        "maxCalls": 89,
+        "maxTriangles": 50152,
+        "released": {
+          "geometry": 326,
+          "material": 2
+        },
+        "expected": {
+          "geometry": 326,
+          "material": 2
+        }
+      },
+      {
+        "case": "published-game-bundle-copi-befdd--equipped-views-and-cleanup",
+        "views": 9,
+        "maxCalls": 89,
+        "maxTriangles": 50152,
+        "released": {
+          "geometry": 326,
+          "material": 2
+        },
+        "expected": {
+          "geometry": 326,
+          "material": 2
+        }
+      },
+      {
+        "case": "earth-rock-shelf-review-lo-ba37f-d-views-and-owned-resources",
+        "views": 9,
+        "maxCalls": 55,
+        "maxTriangles": 41593,
+        "released": {
+          "geometry": 326,
+          "material": 2
+        },
+        "expected": {
+          "geometry": 326,
+          "material": 2
+        }
+      }
+    ]
+  },
+  "comparisons": {
+    "sourceCopyPairs": 18,
+    "sourceCopyExact": 15,
+    "differences": [
+      {
+        "kind": "copy-high",
+        "view": "deep-west.png",
+        "channels": 3240960,
+        "changed": 609,
+        "maximum": 32,
+        "mean": 0.0007942091232227488
+      },
+      {
+        "kind": "copy-high",
+        "view": "west-grove.png",
+        "channels": 3240960,
+        "changed": 4047,
+        "maximum": 86,
+        "mean": 0.009378085505529226
+      },
+      {
+        "kind": "copy-low",
+        "view": "deep-west.png",
+        "channels": 3240960,
+        "changed": 249,
+        "maximum": 146,
+        "mean": 0.001800083925750395
+      }
+    ],
+    "unattributed": true,
+    "oldCurrentArtPairs": 27,
+    "limits": "No universal source/copy pixel equivalence, causalFPS or isolated performance acceptance."
+  },
+  "manualReview": "Viewed ordinary High west-grove/east-road and Low west-grove alongside preflight predecessor High west-grove. Less evenly stacked needle silhouettes and smoother bough tone. Narrower/irregular branch spread is intentional. Crowns, sparse ground beds, repeated rock forms and architecture/terrain composition remain visibly procedural; no modern-art approval.",
+  "resourceScope": "Existing helper observes owned rock+understory geometry/material disposal on clear twice+destroy;332/326geometries+2materials once. Does not instrument shared pine-archetype cache retirement or prove zeroVRAM.",
+  "host": "Known custody: release31 prerequisites started08:58:49UTC; local59.9s run was terminal before09:01:37UTC. The frozen context gives an approximate minute locator, not an exact measured start/end timestamp. Native CI predeploy had not started; existing100clientsoakshareshost.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-pine-crown-checks-20261011",
+    "entries": 74,
+    "inventorySHA256": "4c658f0b3966debe5e7ee1baad380e66ab7fc247e72f2d35e1158c406609640f",
+    "readOnly": true,
+    "sanitization": "passed0fileschanged",
+    "setup": "Initial optional copy of a guessed immutable generated worker filename failed before validation; normal npm prepare:client produced the exact44618fbd worker and owned vendor successfully. No product failure or blind browser retry."
+  },
+  "remaining": "Full original world/art/gameplay/devices/performance/operations/F1-F5/beta/launch/handoff scope stays active. This held component must ordinary-merge into master after qualification; no new branch, no push until current1.79.31acceptance."
+}

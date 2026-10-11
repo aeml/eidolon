@@ -15,7 +15,7 @@ continues to merge into `master`, without adding work branches or force-pushing.
 [Repository workflow](../../AGENTS.md),
 [branch reconciliation](2026-10-11-master-branch-reconciliation.json).
 
-**Current release custody, October11 08:55UTC:** Alpha1.79.30/1aae8407 is now
+**Current release custody, October11 09:04UTC:** Alpha1.79.30/1aae8407 is now
 fully accepted through the ordered release gate. CI38124028177 attempt1 completed
 success: all10jobs, including required native predeploy, both deployments and
 mandatory live gameplay/town-recovery/Well Rested checks. Optional stabilization,
@@ -25,10 +25,24 @@ identity, ready database and all9expected asset hashes/byte counts. Earlier
 2e6c6a14 final helper-import failure remains retained. The test-only delivery
 correction preserves its game runtime. Alpha1.79.31 is prepared on local master
 with cumulative notes and the six qualified renderer/environment components
-below; its own publication/CI/live acceptance remains pending. Current100-client
+below. Exact42f06ad0 is now pushed to master; CI38126692286 is running. Its own
+deployment/CI/live acceptance remains pending. Per-component receipts below
+preserve their earlier, prepublication states. Current100-client
 soak38109009521 is still active on acceptedpublic29, not a completed capacity gate.
 [Release30 acceptance](2026-10-11-public30-terminal-qualification.json),
 [Live profiling correction](2026-10-11-live-profile-delivery-correction.json).
+
+**Next held pine refinement:**2a8d0c35 is ordinary-merged into local master9e85a67c.
+Pine boughs vary angle/height/length/curvature and needle-spray width, with coherent
+new-growth tones. Same5whorls/7boughs/6paired sprays and production crown owners;
+High840tri/90720attribute bytes,Low420/45360unchanged.391Earthtree placement and
+collision contracts preserved.40focused/3suites, changed-file lint and5existing
+native source/copy/narrow-desktop cases pass0retry/skip59.9s.45HUDviews/360sampled
+walking poses;15/18source-copy images exact,3small differences retained and
+unattributed. No FPS/physical-phone/final-art acceptance. Repeated/coarse foliage,
+rock/terrain/architecture composition and High frame targets remain open. No new
+branch; publication waits for current1.79.31acceptance and a coherent next milestone.
+[Pine qualification](2026-10-11-pine-bough-growth-qualification.json).
 
 Contact audio76focused/3distinct native cases pass; human listening/busy-fight mix
 and physical devices remain open. Fresh required discovery preserves all337previous
