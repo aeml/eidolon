@@ -125,6 +125,8 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 // applyAttackImpact is the actual post-wind-up damage path. Geometry is a
 // private snapshot taken before actor locking at attack admission.
 func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkRects []DungeonWalkRect, blindedMissChance float64) {
+	w.castImpactMu.RLock()
+	defer w.castImpactMu.RUnlock()
 
 	// Use fine-grained locking instead of global lock
 	att := w.GetEntity(attID)

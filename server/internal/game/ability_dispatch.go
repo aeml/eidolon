@@ -29,6 +29,10 @@ func (w *World) GetAbilityCooldownSnapshot(playerID string) (map[string]float64,
 }
 
 func (w *World) PerformAbility(playerID string, targetX, targetZ float64, targetID string, skillName string) AbilityResult {
+	// Wait for delayed impacts before taking the frame barrier, so their
+	// persistence callbacks cannot stall simulation while this cast waits.
+	w.castImpactMu.Lock()
+	defer w.castImpactMu.Unlock()
 	w.abilityFrameMu.Lock()
 	defer w.abilityFrameMu.Unlock()
 	w.Mu.Lock()

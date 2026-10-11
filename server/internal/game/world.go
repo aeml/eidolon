@@ -152,7 +152,11 @@ type World struct {
 	// Cast handlers use World.Mu and their own target-lock boundaries. Frame
 	// workers release World.Mu and use actor locks, so the complete cast must
 	// finish before workers can inspect or mutate its caster and recipients.
-	abilityFrameMu         sync.Mutex
+	abilityFrameMu sync.Mutex
+	// Delayed basic hits also inspect/mutate casters outside World.Mu. Casts
+	// take this exclusively; hits share it so unrelated impacts stay parallel.
+	// Order: castImpactMu, abilityFrameMu (casts only), World.Mu, Entity.Mu.
+	castImpactMu           sync.RWMutex
 	dungeonCombatRewardMu  sync.Mutex
 	dungeonCombatRewards   map[string]pendingDungeonCombatReward
 	dungeonRoomRewardMu    sync.Mutex
