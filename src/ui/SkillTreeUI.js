@@ -220,31 +220,43 @@ export class SkillTreeUI {
     }
 
     renderSkillTree(classType) {
-        if (!classType) return;
+        if (!classType || this.disposed) return;
         if (this.mobile) return this.mobile.render(classType);
         this.desktopClassType = classType;
         this.desktopTalents.synchronize(this.ctx.getLastPlayer());
-
-        // Tabs at top
-        this.skillTreeContent.innerHTML = '';
-        this.skillTreeContent.appendChild(this.createSkillTreeTabs(classType));
-
-        if (this.skillTreeMode === 'talents') {
-            this.renderTalentTree(classType);
-            return;
+        const content = this.skillTreeContent, previous = this.desktopView;
+        const view = { playerId: this.ctx.getLastPlayer()?.id, classType, mode: this.skillTreeMode, content };
+        const sameView = previous?.playerId === view.playerId && previous?.classType === classType &&
+            previous?.mode === view.mode && previous?.content === content;
+        const active = document.activeElement, ownedFocus = content.contains(active);
+        const focusKey = sameView ? active?.dataset.desktopBuildKey : null;
+        const scrollTop = sameView ? content.scrollTop : 0;
+        this.desktopView = view;
+        try {
+            content.replaceChildren(this.createSkillTreeTabs(classType));
+            if (view.mode === 'talents') this.renderTalentTree(classType);
+            else if (view.mode === 'runes') this.renderRunesTab(classType);
+            else if (view.mode === 'combos') this.renderCombosTab(classType);
+            else this.renderActiveSkillTree(classType);
+        } finally {
+            const controls = [...content.querySelectorAll('button, [role="button"]')];
+            for (const node of controls) node.addEventListener('click', event => {
+                const player = this.ctx.getLastPlayer();
+                // Detached nodes keep listeners. A previous view, character or
+                // closed owner must not turn a late input into a build request.
+                if (this.disposed || this.desktopView !== view || !content.contains(node) || !node.isConnected ||
+                    this.skillTreeWindow.style.display === 'none' || player?.id !== view.playerId ||
+                    (player?.subType && player.subType !== classType)) {
+                    event.preventDefault(); event.stopImmediatePropagation();
+                }
+            }, { capture: true });
+            content.scrollTop = scrollTop;
+            if (ownedFocus && this.skillTreeWindow.style.display !== 'none') {
+                const target = controls.find(node => node.dataset.desktopBuildKey === focusKey);
+                if (target && !target.disabled && target.getAttribute('aria-disabled') !== 'true') target.focus({ preventScroll: true });
+                else controls.find(node => node.dataset.desktopBuildKey === `tab:${view.mode}`)?.focus();
+            }
         }
-
-        if (this.skillTreeMode === 'runes') {
-            this.renderRunesTab(classType);
-            return;
-        }
-
-        if (this.skillTreeMode === 'combos') {
-            this.renderCombosTab(classType);
-            return;
-        }
-
-        this.renderActiveSkillTree(classType);
     }
 
     handleBuildActionResult(payload) {
@@ -271,6 +283,8 @@ export class SkillTreeUI {
 
         const makeBtn = (label, mode) => {
             const b = document.createElement('button');
+            b.type = 'button';
+            b.dataset.desktopBuildKey = `tab:${mode}`;
             b.textContent = label;
             b.style.padding = '6px 10px';
             b.style.cursor = 'pointer';
@@ -352,6 +366,8 @@ export class SkillTreeUI {
                 title.textContent += " (Active)";
             } else {
                 const selectBtn = document.createElement('button');
+                selectBtn.type = 'button';
+                selectBtn.dataset.desktopBuildKey = `branch:${branchKey}`;
                 selectBtn.textContent = "Select Spec";
                 selectBtn.style.marginLeft = "10px";
                 selectBtn.onclick = () => {
@@ -413,6 +429,7 @@ export class SkillTreeUI {
                 const skill = branchData[tierKey];
                 const node = document.createElement('button');
                 node.type = 'button';
+                node.dataset.desktopBuildKey = `skill:${skill?.name || tierKey}`;
                 node.className = 'skill-node';
 
                 const reqLevel = (i - 1) * 10;
@@ -532,6 +549,8 @@ export class SkillTreeUI {
         resetWrap.style.margin = '6px 0 10px 0';
 
         const resetBtn = document.createElement('button');
+        resetBtn.type = 'button';
+        resetBtn.dataset.desktopBuildKey = 'reset:talents';
         resetBtn.className = 'ui-button';
         resetBtn.textContent = 'Reset Talents';
         resetBtn.disabled = this.desktopTalents.disabled || spentPoints === 0 || !this.onResetTalents;
@@ -595,6 +614,7 @@ export class SkillTreeUI {
             const node = document.createElement('div');
             node.className = 'skill-node';
             node.dataset.talentId = t.id;
+            node.dataset.desktopBuildKey = `talent:${t.id}`;
             node.setAttribute('role', 'button');
             node.setAttribute('aria-disabled', String(!canRankUp));
             node.tabIndex = canRankUp ? 0 : -1;
@@ -739,6 +759,7 @@ export class SkillTreeUI {
                 runeBtn.type = 'button';
                 runeBtn.disabled = !canEquip;
                 runeBtn.dataset.runeId = rune.id;
+                runeBtn.dataset.desktopBuildKey = `rune:${rune.id}`;
                 runeBtn.setAttribute('aria-pressed', String(isEquipped));
                 runeBtn.style.textAlign = 'left';
                 runeBtn.style.flex = '1';

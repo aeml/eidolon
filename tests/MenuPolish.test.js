@@ -644,6 +644,7 @@ describe('menu polish regressions', () => {
         });
         skillTree.skillTreeMode = 'runes';
         skillTree.onSelectRune = jest.fn();
+        skillTree.skillTreeWindow.style.display = 'flex';
         skillTree.renderSkillTree('Fighter');
 
         const thorns = document.querySelector('#skill-tree-content button[data-rune-id="ironfortress_thorns"]');

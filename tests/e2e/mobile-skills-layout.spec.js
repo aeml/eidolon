@@ -46,9 +46,35 @@ test.describe('desktop build keyboard controls', () => {
             player.skillRunes.Charge = id; ui.skillTree.renderSkillTree('Fighter');
         }, runeId);
         await expect(rune).toHaveAttribute('aria-pressed', 'true');
-        await rune.focus(); await page.keyboard.press('Space');
+        await expect(rune).toBeFocused({ timeout: 2_000 });
+        await page.keyboard.press('Space');
         expect(await page.evaluate(() => window.__desktopBuildKeyboard.calls.at(-1))).toEqual({ skill: 'Charge', rune: '' });
         expect(await page.evaluate(() => window.__desktopBuildKeyboard.player.skillRunes.Charge)).toBe(runeId);
+        await page.evaluate(() => {
+            const { ui, player } = window.__desktopBuildKeyboard;
+            player.unlockedSkills = ['Iron Fortress']; ui.skillTree.renderSkillTree('Fighter');
+        });
+        const lowerRune = content.locator('button[data-rune-id="ironfortress_thorns"]');
+        // The tall desktop fits every rune; use a short desktop to exercise real scrolling.
+        await page.setViewportSize({ width: 1280, height: 600 });
+        await content.evaluate(node => { node.scrollTop = 250; });
+        await lowerRune.focus();
+        const beforeUpdateTop = await content.evaluate(n => n.scrollTop);
+        await testInfo.attach('desktop-scroll-metrics', { contentType: 'application/json', body: JSON.stringify(await content.evaluate(n => {
+            const nodes = [n, n.parentElement, ...n.children];
+            return nodes.map(node => ({ id: node.id, className: node.className, clientHeight: node.clientHeight,
+                scrollHeight: node.scrollHeight, scrollTop: node.scrollTop, overflowY: getComputedStyle(node).overflowY }));
+        })) });
+        expect(beforeUpdateTop).toBeGreaterThan(0);
+        await page.evaluate(() => {
+            const { ui, player } = window.__desktopBuildKeyboard;
+            window.__retiredRuneButton = document.querySelector('button[data-rune-id="ironfortress_thorns"]');
+            player.skillRunes['Iron Fortress'] = 'ironfortress_thorns'; ui.skillTree.renderSkillTree('Fighter');
+            window.__retiredRuneButton.click();
+        });
+        await expect(lowerRune).toBeFocused(); await expect(lowerRune).toHaveAttribute('aria-pressed', 'true');
+        expect(await content.evaluate(n => n.scrollTop)).toBe(beforeUpdateTop);
+        expect(await page.evaluate(() => window.__desktopBuildKeyboard.calls)).toHaveLength(4);
         await page.screenshot({ path: testInfo.outputPath('desktop-keyboard-runes.png') });
         await page.evaluate(() => window.__desktopBuildKeyboard.ui.dispose());
         expect(failures, failures.join('\n')).toEqual([]);

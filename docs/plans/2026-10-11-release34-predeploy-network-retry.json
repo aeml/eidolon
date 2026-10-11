@@ -1,0 +1,20 @@
+{
+  "recordedUTC": "2026-10-11T15:44:34.178274+00:00",
+  "source": "3ec8bb151f24909127b832a4035eb7e6eab9b635",
+  "run": 38149199718,
+  "attempt": 1,
+  "failedJob": 114504827998,
+  "status": "Predeploy failure diagnosed; one failed-job-only retry on identical source requested. Release34 acceptance pending.",
+  "prerequisites": "All five prerequisites passed. Native dungeon/outfit/additive surfaces36pass1fail; validation, both deploy jobs and live QA skipped. No deployment from attempt1.",
+  "diagnosis": "Failed High Earth shelf trace: GameEngine module200;179loopback imported dependencies failed net::ERR_NETWORK_CHANGED before engine construction. No failed art assertion executed; do not count it passed.",
+  "retry": {
+    "requestedUTC": "2026-10-11T15:41:37Z",
+    "runAttempt": 2,
+    "command": "gh run rerun38149199718 --failed",
+    "policy": "Same exact source; successful prerequisite jobs reused; no source, test, timeout, budget or gate changes. No further automatic retry."
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-release34-predeploy-failure-20261011",
+  "inventoryEntries": 7,
+  "inventorySHA256": "7260b6b7205dc79215f74b8b1bc53a31e95ab29d0023966740fcdc1488cfe772",
+  "acceptance": "Await own terminal success then fresh normal-TLS frontend/backend/readyDB and all23corrective34 pinned asset hashes. Last accepted public release33 remains acceptance baseline."
+}
