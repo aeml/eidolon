@@ -51,19 +51,21 @@ Every explicit requirement in those sources remains part of the completion audit
   [Failure and repair](2026-10-11-release32-storage-preflight-recovery.json),
   [publication](2026-10-11-release32-publication.json),
   [prepublication](2026-10-11-release32-world-resources-prepublication.json).
-- **Prepared33 milestone:** qualified birch/recovery/account-help/Player Guide/
-  authoring/lore changes are bundled on master for one coherent publication.
+- **Pushed33 milestone:** qualified birch/recovery/account-help/Player Guide/
+  authoring/lore changes are ordinarily pushed as exact `cc001f0062d161d1b706fa2ca4275a1724b6c221`,
+  CI38140628469 active, for one coherent publication.
  429distinct release checks/four suites and8distinct browser publication cases
   pass, retries/skips0. All12 version paths align33;468cumulative notes retain
   every467prior entry byte-exact. Initial missed CI deployment version is retained
   as428pass/1fail; affected386pass after correction, unchanged43 reused.
   Prepared copied-publication identity/help/guide/lore/history flows pass. Final
-  publication will pin17assets, including current authored catalog and notices.
-  Ordinary push and own ordered CI/deploy/live/public acceptance remain pending;
+  source publication pins17assets, including current authored catalog and notices.
+  [Publication custody](2026-10-11-release33-publication.json).
+  Own ordered CI/deploy/live/public acceptance remains pending;
   component qualification below does not substitute for that acceptance.
   [Prepublication](2026-10-11-release33-support-recovery-prepublication.json).
 - **Later qualified work:** connected, overlapping birch crowns `323e500c`
-  are merged into local master, unpublished after accepted32. Forty focused
+  are merged into master and pushed with33; acceptance pending after accepted32. Forty focused
   checks and nine distinct native cases qualify High/Low/phone, current flat
   world and copied publication. Forty-five reference-again pairs are exact;
   legitimate expanded visibility adds up to2draws/2048triangles while original
@@ -80,12 +82,13 @@ Every explicit requirement in those sources remains part of the completion audit
   were reproduced and corrected. Sixty-six distinct focused/disposable checks
   qualify current guards, generated backup sets, schema25 BSON custody and saved
   boss checkpoint consumption. All three owned test projects are cleaned up.
-  Existing actual archive restore is enrolled in CI. Unpublished; production
+  Existing actual archive restore is enrolled in CI. Pushed with33, acceptance
+  pending; production
   restore, off-machine recovery, RPO/RTO and final rehearsal remain open.
   [Recovery qualification](2026-10-11-recovery-integrity-qualification.json).
 - **Player support and guide:** current-source account/progress help and six
   Player Guide chapters are qualified and ordinarily merged at `f4efe198`,
-  unpublished. 137 distinct UI checks/eight suites,48 Go guard cases, one actual
+  pushed with33, acceptance pending.137 distinct UI checks/eight suites,48 Go guard cases, one actual
   disposable Mongo handler/store/review case and seven distinct native desktop/
   phone/landscape cases pass. Eight other conditional Mongo cases remain skips,
   not passes. Dependency setup and old text/scroll fixture failures are retained;
@@ -93,7 +96,8 @@ Every explicit requirement in those sources remains part of the completion audit
   byte-exact; older monitoring history is reconciled without another runtime.
   [Support/guide qualification](2026-10-11-support-player-guide-qualification.json).
 - **Content authoring/lore:** selected `aff0fe10` is ordinarily merged after
-  current-source adaptation at `596c170f`, qualified at `3d00395d`, unpublished.
+  current-source adaptation at `596c170f`, qualified at `3d00395d`, pushed with33
+  and awaiting acceptance.
   Read-only/import-safe asset validation retains exact744-path catalog, selected
   bodies/wearables and all retained baselines.58 distinct focused checks/seven
   suites and two actual Chrome desktop/phone lore cases pass with no retries or
@@ -149,7 +153,7 @@ acceptance is incomplete.
 
 | Requirement | Remaining work and evidence needed | Owner |
 | --- | --- | --- |
-| Next release | Push prepared Alpha1.79.33 after fresh ordinary remote reconciliation and final exact17asset pinning; observe its own ordered CI/deploy/live and normal-TLS identity/assets/readiness. Retain initial missed CI-version failure and failed32attempt1. Accepted32 does not prequalify33. | Implementation |
+| Next release | Observe pushed Alpha1.79.33/exactcc001f00/CI38140628469 to terminal; verify its own ordered CI/deploy/live and post-terminal normal-TLS frontend/backend/readyDB/all17asset bytes and hashes. Retain initial missed CI-version failure and failed32attempt1. Accepted32 does not prequalify33. | Implementation |
 | Modern world and atlas | Finish coherent material scale, terrain transitions, grounded architecture, roads, vegetation/rock composition, landmarks, interiors, lighting, atmosphere and readable travel/combat spaces. Moving equipped/HUD review starts Lanternhold → Earth → fight → first dungeon, then all elemental realms/borders, dungeons/raids, Dark Realm, both casino floors and PvP. Required named places, optional interactions and accurate maps remain governed by the full world contract. Repetition, sparse rooms and broad muddy patches are not final art. | Implementation; final owner review |
 | Supplied actor/equipment presentation | Finish full/mixed/cosmetic fits and material identity across all classes, weapon restrictions, dual wielding, local/remote swaps, pooling/reconnect and motion. Preserve delivered assets and approved geometry/rig constraints. | Implementation; final owner review |
 | Combat, classes and audio | Validate all twelve specialization kits, attack anticipation/contact/recovery, movement, threat readability and role feel. Finish contact/audio integration and human listening/busy-group mix; essential warnings survive Low/reduced effects/mute. Prepared mixer frames or audio API calls are insufficient for full acceptance. | Implementation and playtests |

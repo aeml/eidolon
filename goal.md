@@ -862,3 +862,27 @@ normalTLSfrontend/backend/readiness acceptance mandatory before next release.
 Public32/d31246e9 remains last accepted; existingpublic29soak remains active.
 All original world/art/gameplay/device/performance/operations/F1–F5/beta/launch/
 handoff requirements and owner-deferred reviews stayopen. No completion claim.
+
+
+## October11 ordinary publication of player-help/recovery milestone — 2026-10-11T12:50:11.652920+00:00
+
+Fresh fetch+ordinarymerge confirms no intervening remote changes; normalpush
+advances origin/master d31246e9→cc001f0062d161d1b706fa2ca4275a1724b6c221.
+CI38140628469attempt1 authoritativelyin_progress, exactsource. Publication
+manifest17assets readonlySHAf5fdf04297f8ed6e8caab8878d2de5c99fc812f321a7ab412ac1af049eff74ac;
+engine3491539bytesSHA89d2dd011ed1170fc827a79ed677d1a7c595b630cdcf3d3310d542aad8afc9a8,
+worker137178bytes unchanged44618fbd. Final source runtime byte-identical to
+qualified db4b31c6; only receipt/roadmap/goal docs differ. All17 finalasset bytes/
+hashes and both notices verify before exact reproduciblecopy retirement;
+source/builder/manifest/evidence kept,3109MiB storage aftercleanup. Existing
+release_monitor tasked sparsely with exact33 and separateactivepublic29soak, no
+retries/cancellations/mutations. Public32 remains lastaccepted until own33ordered
+CI/deploy/live/normalTLSidentity/readyDB/17assets qualify. No nextpublication
+before that acceptance. See2026-10-11-release33-publication.json.
+
+Independent next-world source review finds current town roofs already have
+physical lapped slate; assigning a projected slate grid blindly would duplicate
+geometry detail. Older town-masonry/dungeon-surface branches contain staged
+terrain/performance predecessors, so remain unselected pending current-source
+review rather than blanketmerge. Full world/art/gameplay/device/performance/
+operations/F1–F5/beta/launch/handoff goal remainsactive,79unmerged histories.

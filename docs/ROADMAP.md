@@ -10,12 +10,14 @@ ready database and all nine served asset hashes/byte counts match at12:33:35UTC.
 Attempt1's storage-preflight refusal and verified clean-scratch capacity repair
 remain recorded; the unchanged2048MiB guard was not lowered.
 [Failure and repair](plans/2026-10-11-release32-storage-preflight-recovery.json).
-Alpha1.79.33 player-help/recovery milestone is prepared on master, including
+Alpha1.79.33 player-help/recovery milestone is ordinarily pushed on master,
+exactcc001f00, CI38140628469active, including
 qualified birch/recovery/support/Player Guide/content-authoring/lore work.
 429distinct focused release checks and8browser publication cases pass;
 468cumulative note entries retain all467prior entries byte-exact.
 [Prepublication](plans/2026-10-11-release33-support-recovery-prepublication.json).
-Ordinary push and own ordered CI/deploy/live/17asset acceptance remain next;
+[Publication](plans/2026-10-11-release33-publication.json).
+Own ordered CI/deploy/live/17asset acceptance remains pending;
 last acceptedpublic32 and79unmerged histories remain explicit.
 The [remaining register](plans/2026-10-09-release-readiness-remaining.md) retains
 all inherited world/art/gameplay/device/performance/operations/F1–F5/beta/launch

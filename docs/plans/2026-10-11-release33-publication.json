@@ -1,0 +1,33 @@
+{
+  "recordedUTC": "2026-10-11T12:47:40.484786+00:00",
+  "version": "Alpha 1.79.33",
+  "source": "cc001f0062d161d1b706fa2ca4275a1724b6c221",
+  "expectedManifest": "/home/aeml/.local/share/eidolon-release33-support-recovery-publication-checks-20261011/expected-public33-assets.json",
+  "expectedManifestSHA256": "f5fdf04297f8ed6e8caab8878d2de5c99fc812f321a7ab412ac1af049eff74ac",
+  "expectedAssets": 17,
+  "runtimeIdenticalToQualifiedPreflight": "db4b31c6557d874b061a7a12167eb6d302e46d82; only qualification/roadmap/goal docs differ",
+  "sourceClean": true,
+  "allAssetsCheckedBeforeGeneratedCopyCleanup": true,
+  "publicationCopyRetired": "Exact reproducible copiedpublic only, after all17 hashes/bytes and both supplied notices verified. Source, builder, expectedmanifest and evidence retained.",
+  "lastAccepted": "Alpha1.79.32/d31246e9",
+  "status": "Pushed; own ordered CI/deploy/live and post-terminal normal-TLS identity/readiness/17asset acceptance pending.",
+  "pushedUTC": "2026-10-11T12:50:11.652920+00:00",
+  "normalPush": true,
+  "ciRun": 38140628469,
+  "ciAttempt": 1,
+  "ciURL": "https://github.com/aeml/eidolon/actions/runs/38140628469",
+  "initialStatus": "in_progress",
+  "originalCheckout": {
+    "source": "64ec325bd39be74293b653474101babed2800e04",
+    "trackedModified": 203,
+    "untracked": 262,
+    "preserved": true
+  },
+  "branchWorkflow": {
+    "unmergedLocalTips": 79,
+    "originalUnmergedLocalTips": 287,
+    "completedValidatedWork": "Ordinarily merged into master; unfinished/rejected source remains isolated."
+  },
+  "monitor": "Existing release_monitor monitors this exactCI and public29soak separately, no retries/cancellations/mutations.",
+  "goal": "Full original release-readiness objective remains active."
+}
