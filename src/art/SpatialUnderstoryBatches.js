@@ -5,25 +5,27 @@ import { WOODLAND_WIND_REACH } from './WoodlandWindMaterial.js';
 // BatchedMesh owns its geometry exclusively, so retain that implementation's
 // per-sector texture cleanup while releasing our shared recipe only at the
 // last sector. An empty, never-uploaded geometry isolates the stock dispose.
-class UnderstorySectorMesh extends THREE.BatchedMesh {
-    constructor(count, vertices, material, owner) {
-        super(count, vertices, 0, material);
-        this._understoryGeometryOwner = owner;
-        this._understoryDisposed = false;
-        owner.references++;
-    }
-
-    dispose() {
-        if (this._understoryDisposed) return;
-        this._understoryDisposed = true;
-        const owner = this._understoryGeometryOwner, geometry = this.geometry;
+function shareSectorGeometry(mesh, owner) {
+    if (owner.geometry) {
+        mesh.geometry.dispose();
+        mesh.geometry = owner.geometry;
+    } else owner.geometry = mesh.geometry;
+    owner.references++;
+    const dispose = mesh.dispose;
+    let disposed = false;
+    // Keep an ordinary BatchedMesh: stock cloning/copying retains its normal
+    // independent geometry ownership rather than copying this field's owner.
+    mesh.dispose = function () {
+        if (disposed) return;
+        disposed = true;
+        const geometry = this.geometry;
         this.geometry = owner.disposalGeometry;
-        try { super.dispose(); }
+        try { dispose.call(this); }
         finally {
             this.geometry = geometry;
             if (--owner.references === 0) owner.geometry.dispose();
         }
-    }
+    };
 }
 
 // A sector is rejected by Three before per-plant draw preparation. Retain
@@ -50,7 +52,7 @@ export function createSpatialUnderstoryBatches({ plants, geometries, material,
     const owner = { geometry: null, references: 0, disposalGeometry: new THREE.BufferGeometry() };
     const vertices = geometries.reduce((sum, geometry) => sum + geometry.attributes.position.count, 0);
     for (const [key, entries] of sectors) {
-        const mesh = new UnderstorySectorMesh(entries.length, vertices, material, owner);
+        const mesh = new THREE.BatchedMesh(entries.length, vertices, 0, material);
         mesh.name = `understory-sector:${key}`;
         mesh.sortObjects = false;
         mesh.perObjectFrustumCulled = true;
@@ -61,10 +63,7 @@ export function createSpatialUnderstoryBatches({ plants, geometries, material,
         // Let stock Three establish each sector's geometry ranges and bounds.
         // Only its identical immutable vertex storage is shared; matrices,
         // colors, visibility, indirection and camera preparation stay separate.
-        if (owner.geometry) {
-            mesh.geometry.dispose();
-            mesh.geometry = owner.geometry;
-        } else owner.geometry = mesh.geometry;
+        shareSectorGeometry(mesh, owner);
         for (const plant of entries) {
             const id = mesh.addInstance(shapes[plant.variant]);
             transform.position.set(plant.x, terrainElevation?.sample(plant.x, plant.z) ?? 0, plant.z);

@@ -124,3 +124,16 @@ test('separate fields never share geometry lifetime across scene replacement', (
     RenderSystem.prototype.disposeObjectResources.call({}, second);
     expect(release).toHaveBeenCalledTimes(1);
 });
+
+test('stock sector cloning keeps independent geometry ownership', () => {
+    const root = createEarthUnderstory({ quality: 'low', spatialBatches: true });
+    const sector = root.children[0], release = jest.spyOn(sector.geometry, 'dispose');
+    const clone = sector.clone();
+    expect(clone.geometry).not.toBe(sector.geometry);
+    expect(clone.geometry.attributes.position.array).toEqual(sector.geometry.attributes.position.array);
+    expect(clone.instanceCount).toBe(sector.instanceCount);
+    clone.dispose();
+    expect(release).not.toHaveBeenCalled();
+    RenderSystem.prototype.disposeObjectResources.call({}, root);
+    expect(release).toHaveBeenCalledTimes(1);
+});
