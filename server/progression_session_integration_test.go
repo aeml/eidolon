@@ -215,6 +215,40 @@ func compatExpected(before *database.Character, version int) *database.Character
 	return &after
 }
 
+// Retain complete race-detector stacks in hosted failures, where the owned
+// temporary directory is unavailable after the runner exits. Never print the
+// surrounding application log; it can contain account/session context.
+func compatRaceReports(contents string) string {
+	const marker, boundary = "WARNING: DATA RACE", "\n=================="
+	const limit, maxReports = 32 * 1024, 3
+	var reports strings.Builder
+	for count := 0; count < maxReports; count++ {
+		start := strings.Index(contents, marker)
+		if start < 0 {
+			break
+		}
+		contents = contents[start:]
+		end := strings.Index(contents, boundary)
+		if end < 0 {
+			const incomplete = "\n[incomplete race report; inspect owned evidence]"
+			reports.WriteString(incomplete[:min(len(incomplete), limit-reports.Len())])
+			break
+		}
+		report := contents[:end]
+		remaining := limit - reports.Len() - 1
+		if remaining <= 0 {
+			break
+		}
+		reports.WriteByte('\n')
+		reports.WriteString(report[:min(len(report), remaining)])
+		contents = contents[end+len(boundary):]
+		if len(report) > remaining {
+			break
+		}
+	}
+	return reports.String()
+}
+
 func compatStartServer(t *testing.T, binary, uri string, phase int, extraArgs ...string) (string, func()) {
 	t.Helper()
 	return compatStartServerWithCrash(t, binary, uri, phase, false, extraArgs...)
@@ -286,7 +320,7 @@ func compatStartServerWithCrash(t *testing.T, binary, uri string, phase int, int
 		}
 		for _, marker := range []string{"WARNING: DATA RACE", "panic:", "fatal error:", "Worker panic:", "Recovered from panic in Update:"} {
 			if strings.Contains(string(contents), marker) {
-				t.Errorf("phase%d owned server contains %q (evidence %s)", phase, marker, evidence)
+				t.Errorf("phase%d owned server contains %q (evidence %s)%s", phase, marker, evidence, compatRaceReports(string(contents)))
 			}
 		}
 	}

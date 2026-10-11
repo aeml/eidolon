@@ -1611,7 +1611,8 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.shop-guidance--tip\s*\{[^}]*color:\s*#8fb7d9;[^}]*font-size:\s*12px;[^}]*margin:\s*0 0 var\(--spacing-lg\) 0;/s);
         expect(css).toMatch(/\.shop-gamble-title\s*\{[^}]*color:\s*var\(--color-gold\);[^}]*border-bottom:\s*1px solid var\(--border-default\);/s);
         expect(css).toMatch(/\.shop-grid\s*\{[^}]*display:\s*grid;[^}]*grid-template-columns:\s*repeat\(3, 1fr\);[^}]*gap:\s*var\(--spacing-md\);/s);
-        expect(css).toMatch(/\.shop-buyback-grid\s*\{[^}]*grid-template-columns:\s*repeat\(5, 1fr\);[^}]*max-height:\s*300px;[^}]*overflow-y:\s*auto;/s);
+        expect(css).toMatch(/\.inventory-grid\.shop-buyback-grid\s*\{[^}]*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\);[^}]*max-height:\s*300px;[^}]*overflow-y:\s*auto;/s);
+        expect(css).toMatch(/@media\s*\(max-width:\s*600px\)\s*\{\s*\.inventory-grid\.shop-buyback-grid\s*\{[^}]*grid-template-columns:\s*minmax\(0, 1fr\);/s);
     });
 
     test('merchant sell all rarity buttons use shared modifier classes', () => {
