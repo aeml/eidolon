@@ -1,0 +1,18 @@
+{
+  "recordedUTC": "2026-10-11T11:00:05.940099+00:00",
+  "branch": "work/alpha-1-82-current-20261006",
+  "head": "2879d3997bcaf71a638cd88fc7beb7f127db90c6",
+  "beforeMaster": "c5af1b5cc39793e864488a94c089e167637a30f8",
+  "reviewedMerge": "7854e4c824ee47890b5b3326900b3da5c8dad97c",
+  "masterMerge": "655797c6ad8d2c8ba9340b39ed9db91b903a90a5",
+  "beforeDistinctUnmergedTips": 92,
+  "afterDistinctUnmergedTips": 91,
+  "changedPaths": [
+    "docs/plans/2026-10-06-release1-82-current-deployment-checks.json",
+    "server/deploy/README_LINUX.md"
+  ],
+  "change": "Reconcile two completed host-key and trusted-runner commits already incorporated into current master. Retain historical prepared-only receipt as dated evidence. Restore SSH host identity/fail-closed rotation and runner admission guidance dropped from the current operator guide; separate source protections from unresolved repository/runner administrative acceptance. No configuration or runtime change.",
+  "conflicts": "Five conflicts in ci.yml, goal.md, deployment README, DeploymentHostKey and RunnerQueueSeparation resolved with exact current master. Current bounded SSH connection settings, stronger guard tests, native enrollment and full goal retained. Operator guide then receives only the reviewed current trust section.",
+  "validation": "15 focused checks across DeploymentHostKey, RunnerQueueSeparation and executable DeploymentCheckout pass, 3 suites, 2.166s. Resulting diff contains only named documentation files; git diff --check passes. Exact branch head is now an ancestor of master. No service/repository/runner/key mutation or full security/recovery acceptance.",
+  "publication": "Merged locally; release31 exact88be47c5 is in live QA. No next release push."
+}
