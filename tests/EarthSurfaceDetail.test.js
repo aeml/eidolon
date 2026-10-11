@@ -1,5 +1,6 @@
+import { sampleEarthSurface as referenceSurface } from './fixtures/earth-surface-before-turf.js';
 import * as THREE from 'three';
-import { createEarthSurfaceDetail, EARTH_SURFACE_TILE_METRES, sampleEarthSurface } from '../src/art/EarthSurfaceDetail.js';
+import { createEarthSurfaceDetail, EARTH_SURFACE_TILE_METRES, sampleEarthSurface, sampleEarthTurf } from '../src/art/EarthSurfaceDetail.js';
 
 test('physical channels are finite, bounded and continuous across repeated tile seams', () => {
     expect(EARTH_SURFACE_TILE_METRES).toBe(8);
@@ -55,4 +56,29 @@ test('stones form sparse separate islands with varied relief rather than a pavin
     expect(islands).toBeGreaterThan(20); expect(largest / (width * width)).toBeLessThan(.012);
     heights.forEach(values => expect(values.size).toBeGreaterThan(80));
     texture.dispose();
+});
+
+test('matted turf only changes the registered vegetation relief channel', () => {
+    let changed = 0, minimum = 1, maximum = 0;
+    for (let z = 0; z < 64; z++) for (let x = 0; x < 64; x++) {
+        const point = [x / 8, z / 8], before = referenceSurface(...point), after = sampleEarthSurface(...point);
+        for (const channel of [0, 1, 3]) expect(after[channel]).toBe(before[channel]);
+        changed += before[2] !== after[2] ? 1 : 0;
+        const turf = sampleEarthTurf(...point);
+        minimum = Math.min(minimum, turf); maximum = Math.max(maximum, turf);
+        expect(turf).toBeGreaterThanOrEqual(0); expect(turf).toBeLessThanOrEqual(1);
+        expect(sampleEarthTurf(point[0] - 8, point[1] + 16)).toBe(turf);
+    }
+    expect(changed).toBeGreaterThan(1000);
+    expect(minimum).toBe(0); expect(maximum).toBeGreaterThan(.7);
+});
+
+test('turf ridges cross cell and tile boundaries continuously', () => {
+    for (let index = 0; index <= 96; index++) {
+        const boundary = index / 3, other = (index % 23) / 8;
+        for (const [a, b] of [
+            [[boundary - 1e-6, other], [boundary + 1e-6, other]],
+            [[other, boundary - 1e-6], [other, boundary + 1e-6]]
+        ]) expect(Math.abs(sampleEarthTurf(...a) - sampleEarthTurf(...b))).toBeLessThan(.001);
+    }
 });

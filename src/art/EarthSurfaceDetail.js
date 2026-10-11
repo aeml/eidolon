@@ -46,13 +46,48 @@ function sampleLayer(x, z, source, stone = false) {
     return { coverage, height };
 }
 
-// R soil relief, G stone coverage, B moss cushion relief, A stone relief.
+// Short flattened blades give planted earth a fibrous surface between the
+// existing standing plants. Their physical ridges share the moss channel;
+// there are no extra texture fetches, meshes, baked highlights or wind clocks.
+const TURF_CELLS = 24;
+const TURF = Array.from({ length: TURF_CELLS * TURF_CELLS }, (_, index) => {
+    const x = index % TURF_CELLS, z = Math.floor(index / TURF_CELLS);
+    const tone = hash(x, z, 0x6327ac91);
+    const angle = Math.sin(x * Math.PI * 2 / TURF_CELLS) * .8 +
+        Math.cos(z * Math.PI * 4 / TURF_CELLS) * .6 + tone * 1.4;
+    return { x: .15 + hash(x, z, 0x812376af) * .7,
+        z: .15 + hash(x, z, 0x5b1473a1) * .7,
+        blades: [-.55, 0, .45].map(turn => ({ cos: Math.cos(angle + turn), sin: Math.sin(angle + turn),
+            length: .8 + tone * .3, width: .18 + hash(x, z, 0x4127f8a3) * .06, height: .55 + tone * .35 })) };
+});
+export function sampleEarthTurf(x, z) {
+    const px = wrap(x, EARTH_SURFACE_TILE_METRES) / EARTH_SURFACE_TILE_METRES * TURF_CELLS;
+    const pz = wrap(z, EARTH_SURFACE_TILE_METRES) / EARTH_SURFACE_TILE_METRES * TURF_CELLS;
+    const cx = Math.floor(px), cz = Math.floor(pz);
+    let height = 0;
+    for (let ox = -1; ox <= 1; ox++) for (let oz = -1; oz <= 1; oz++) {
+        const ix = cx + ox, iz = cz + oz;
+        const tuft = TURF[wrap(iz, TURF_CELLS) * TURF_CELLS + wrap(ix, TURF_CELLS)];
+        const dx = px - ix - tuft.x, dz = pz - iz - tuft.z;
+        for (const blade of tuft.blades) {
+            const along = (dx * blade.cos + dz * blade.sin) / blade.length + .25;
+            if (along <= 0 || along >= 1) continue;
+            const across = -dx * blade.sin + dz * blade.cos - Math.sin(along * Math.PI) * .08;
+            const radius = Math.abs(across) / (blade.width * (1 - along * .75));
+            const shape = (1 - smooth(.1, 1, radius)) * smooth(0, .12, along) * (1 - smooth(.8, 1, along));
+            height = Math.max(height, shape * blade.height);
+        }
+    }
+    return height;
+}
+
+// R soil relief, G stone coverage, B moss/turf relief, A stone relief.
 // No baked directional illumination or emission. Shader color/roughness and
 // shallow normal relief consume these same registered physical features.
 export function sampleEarthSurface(x, z) {
     x = wrap(x, EARTH_SURFACE_TILE_METRES); z = wrap(z, EARTH_SURFACE_TILE_METRES);
     const soil = sampleLayer(x, z, SOIL), stones = sampleLayer(x, z, STONES, true), moss = sampleLayer(x, z, MOSS);
-    return [.24 + soil.height * .62, stones.coverage, .22 + moss.height * .70, stones.height];
+    return [.24 + soil.height * .62, stones.coverage, .22 + moss.height * .48 + sampleEarthTurf(x, z) * .30, stones.height];
 }
 
 export function createEarthSurfaceDetail(quality = 'high') {
