@@ -7,6 +7,7 @@ import { createEarthGroundCoverTuft, earthGroundCoverPlacements } from './EarthG
 import { createBastionPavingFragment, createBastionMarkerCap } from './BastionForecourtGeometry.js';
 import { createKeeperGardenPlant } from './KeeperCottage.js';
 import { createScarStandingStone } from './ReturningScar.js';
+import { createPilgrimCanopy } from './PilgrimCampGeometry.js';
 
 // The environment owns these resources; no external asset or global disposable
 // cache is needed. Each location/material is a separate cullable draw batch.
@@ -29,7 +30,7 @@ export function createEarthLocations({ quality = 'high' } = {}) {
         bark: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x504435, roughness: .98 }), 'bark'),
         iron: new THREE.MeshStandardMaterial({ color: 0x414647, roughness: .7, metalness: .65 }),
         brass: new THREE.MeshStandardMaterial({ color: 0x93815a, roughness: .62, metalness: .55 }),
-        cloth: new THREE.MeshStandardMaterial({ color: 0x746a53, roughness: 1, side: THREE.DoubleSide }),
+        cloth: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x746a53, vertexColors: true, roughness: 1, side: THREE.DoubleSide }), 'canvas'),
         moss: new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: 1, side: THREE.DoubleSide }),
         soil: new THREE.MeshStandardMaterial({ map: groundTexture, vertexColors: true, roughness: 1, transparent: true, depthWrite: false, alphaTest: .01 })
     };
@@ -53,7 +54,7 @@ export function createEarthLocations({ quality = 'high' } = {}) {
                 transformed.setAttribute('color', new THREE.Float32BufferAttribute(values, 3));
                 material = 'moss';
             }
-            if (['moss', 'soil', 'fieldstone'].includes(material) && !transformed.attributes.color) {
+            if (['moss', 'soil', 'fieldstone', 'cloth'].includes(material) && !transformed.attributes.color) {
                 const color = new THREE.Color(material === 'moss' ? 0x465942 : 0xffffff), values = [];
                 for (let i = 0; i < transformed.attributes.position.count; i++) values.push(color.r, color.g, color.b);
                 transformed.setAttribute('color', new THREE.Float32BufferAttribute(values, 3));
@@ -69,9 +70,9 @@ export function createEarthLocations({ quality = 'high' } = {}) {
             part(new THREE.CylinderGeometry(top, bottom, height, radial), m, x, y, z, rotation);
         const stone = (x, y, z, sx, sy, sz, angle = 0) =>
             part(new THREE.IcosahedronGeometry(1, quality === 'low' ? 0 : 1), 'stone', x, y, z, [0, angle, .15], [sx, sy, sz]);
-        const beam = (a, b, radius = .25, material = 'wood') => {
+        const beam = (a, b, radius = .25, material = 'wood', sides = radial) => {
             const start = new THREE.Vector3(...a), end = new THREE.Vector3(...b), direction = end.clone().sub(start);
-            const geometry = new THREE.CylinderGeometry(radius * .8, radius, direction.length(), radial);
+            const geometry = new THREE.CylinderGeometry(radius * .8, radius, direction.length(), sides);
             geometry.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.normalize()));
             const midpoint = start.add(end).multiplyScalar(.5);
             part(geometry, material, midpoint.x, midpoint.y, midpoint.z);
@@ -85,6 +86,7 @@ export function createEarthLocations({ quality = 'high' } = {}) {
                 x, height - .5, z, x + 1.8, height - 2, z + .15, x, height - 2.8, z
             ], 3));
             geometry.computeVertexNormals();
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(Array(18).fill(1), 3));
             geometry.setAttribute('uv', new THREE.Float32BufferAttribute([0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1], 2));
             // Already non-indexed; batching below expects a uniform attribute set.
             if (!batches.has('cloth')) batches.set('cloth', []);
@@ -195,14 +197,49 @@ export function createEarthLocations({ quality = 'high' } = {}) {
         case 'pilgrim-camp':
             hearth(0, -7);
             for (const side of [-1, 1]) {
+                const shelterX = side * 9.5;
+                // Feet support each bench inside its existing seat footprint.
                 box('wood', side * 7, .75, -7, 5, .3, 1.4, .15 * side);
-                box('cloth', side * 9, .15, 5, 2, .2, 3);
-                beam([side * 12, 0, 8], [side * 10, 4, 4], .2);
-                beam([side * 10, 4, 4], [side * 7, 0, 8], .2);
-                box('wood', side * 10, .7, -13, 2, 1.4, 2, 0, true);
+                for (const end of [-1, 1]) {
+                    const dx = end * 1.65, angle = .15 * side;
+                    box('wood', side * 7 + Math.cos(angle) * dx, .3,
+                        -7 - Math.sin(angle) * dx, .34, .6, 1.05, angle);
+                }
+                beam([side * 5.35, .3, -7], [side * 8.65, .3, -7], .09);
+                part(createPilgrimCanopy(quality), 'cloth', shelterX, 0, 5.8);
+                beam([shelterX, 3.8, 3.2], [shelterX, 3.8, 8.4], .1, 'wood', 6);
+                for (const z of [3.2, 8.4]) {
+                    beam([shelterX, .02, z], [shelterX, 3.8, z], .09, 'wood', 6);
+                    // Short tension ropes and pegs stay outside the trail.
+                    for (const edge of [-1, 1]) {
+                        beam([shelterX + edge * 2.5, .42, z], [shelterX + edge * 2.8, .04, z + .2], .022, 'cloth', 4);
+                        cylinder('wood', shelterX + edge * 2.8, .12, z + .2, .035, .045, .26);
+                    }
+                }
+                part(new THREE.SphereGeometry(1, radial, 6), 'cloth', shelterX, .12, 5.8,
+                    [0, 0, 0], [.8, .12, 1.35]);
+                cylinder('cloth', shelterX, .23, 6.85, .19, .19, 1.65, [0, 0, Math.PI / 2]);
+                for (const strap of [-1, 1]) {
+                    part(new THREE.TorusGeometry(.195, .024, 4, radial), 'wood', shelterX + strap * .5,
+                        .23, 6.85, [0, Math.PI / 2, 0]);
+                }
+                // Closed boarded stores retain the exact old solid. Narrow
+                // gaps and folded iron straps replace an anonymous brown cube.
+                footprints.push({ siteId: site.id, x: site.x + side * 10, z: site.z - 13,
+                    width: 2, depth: 2, height: 1.4, y: .7, angle: 0 });
+                for (let plank = 0; plank < 4; plank++) {
+                    box('wood', side * 10 - .75 + plank * .5, .7, -13, .47, 1.4, 2);
+                }
+                for (const strap of [-.64, .64]) {
+                    part(new THREE.PlaneGeometry(.065, 2), 'iron', side * 10 + strap, 1.402, -13, [-Math.PI / 2, 0, 0]);
+                    for (const face of [-1, 1]) part(new THREE.PlaneGeometry(.065, 1.4), 'iron',
+                        side * 10 + strap, .7, -13 + face * 1.002, [0, face < 0 ? Math.PI : 0, 0]);
+                }
             }
             pennant(-4, 10, 7);
             cylinder('iron', 0, .5, -7, .65, .5, .8);
+            part(new THREE.TorusGeometry(.65, .055, 4, radial * 2), 'iron', 0, .91, -7, [Math.PI / 2, 0, 0]);
+            part(new THREE.TorusGeometry(.52, .04, 4, radial * 2, Math.PI), 'iron', 0, .9, -7);
             break;
         case 'timber-yard':
             for (const x of [-12, 12]) for (const z of [-10, 10]) box('wood', x, 3, z, .7, 6, .7, 0, true);
