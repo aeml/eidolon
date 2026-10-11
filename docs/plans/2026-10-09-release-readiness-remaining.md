@@ -7,25 +7,25 @@ Current checkpoint: October 11, 2026. The full objective in the owner's
 [threat ledger](2026-10-07-release1-80-threat-and-exception-ledger.md) remain authoritative.
 Historical test receipts do not close unchecked requirements.
 
-**Master reconciliation:** qualified staged world/dungeon/equipment/HUD/geometry
-work and bounded contact audio are now merged into local master. Cumulative
-Alpha1.79.30 is prepared; CI/deployment acceptance is pending. Initial CI38116276417
-blocks deployment at generated-worker lint. Exact locked dependencies reproduce
-ten errors; corrective26e3a8c5 excludes only minified build output and full lint
-passes. The local full diagnostic run reproduced an Actor metadata fallback
-TypeError; optional metadata guards now pass122focused checks in5suites. That
-partial diagnostic run was stopped after diagnosis and is not a full-suite pass.
-Required hosted full-suite and deployment acceptance remain pending. Older staged/private
-labels below describe historical qualification and do not override this checkpoint.
-Local master was1567commits behind upstream; synchronization resolved91branch
-ancestry mismatches. Qualified milestone integration resolves58more, and30branches
-with only already-cherry-picked patches are ordinarily merged with unchanged trees.
-Four more completed histories merge cleanly with an unchanged tree, including the
-original motion/admin branches. Unmerged count287→104. Remaining branches have
-distinct patches requiring review;
-rejected experiments and dirty user work are preserved. Future completed validated
-work must merge into master, per [repository workflow](../../AGENTS.md).
-[Branch reconciliation](2026-10-11-master-branch-reconciliation.json).
+**Master reconciliation:** completed, qualified world/dungeon/equipment/HUD,
+renderer and contact-audio work is merged into local `master`. Branch
+reconciliation reduced distinct unmerged histories287→104; unfinished/rejected
+experiments and the dirty user checkout remain preserved. New completed work
+continues to merge into `master`, without adding work branches or force-pushing.
+[Repository workflow](../../AGENTS.md),
+[branch reconciliation](2026-10-11-master-branch-reconciliation.json).
+
+**Current release custody, October11 08:39UTC:** last fully accepted public build
+is Alpha1.79.29/12e5e3c. Alpha1.79.30/2e6c6a14 deployed successfully but failed its
+final live QA at a test-helper module download; it is not fully accepted.
+Corrective1aae8407 changes only QA delivery/regression/evidence, retaining the
+same game runtime and version. CI38124028177 has passed client, server and all
+three hosted browser jobs; required native predeployment QA is still running.
+Deployment/live identity, database and exact served assets must pass before the
+next feature milestone is published. The earlier lint/metadata/fixture failures
+and partial local coverage OOM remain in their receipts, not execution passes.
+[Live profiling correction](2026-10-11-live-profile-delivery-correction.json).
+
 Contact audio76focused/3distinct native cases pass; human listening/busy-fight mix
 and physical devices remain open. Fresh required discovery preserves all337previous
 hosted identities and adds one:338hosted/25native/11overlap/352distinct. Earlier
@@ -44,23 +44,21 @@ full locked-dependency lint pass. Actual discovery338hosted/27native/13overlap/
 upstream licensing/docs4e7fbe6f is preserved. Release deployment remains pending.
 [Correction proof](2026-10-11-additive-hosted-native-gate-correction.json).
 
-**Current release30 fixture correction2e6c6a14 is on origin/master.**
-Run38117717646/7df6cf22 is terminal failed: server and all three hosted browser
-shards pass, client has11failures in3fixtures; later inputs/native/deploy/live jobs
-are skipped. The corrected bundle fixture includes GameplayRigidIndices; terrain
-selection requires both existing race cases; native evidence follows its unique
-artifact directory and explicitly retains additive coverage.66focused checks,
-8final evidence checks and full lint pass. Ordinary local master merge8404ee85
-retains all selected camp work; only the current-release fixture correction was
-published. Corrective CI38119634774/2e6c6a14 remains in_progress at07:34UTC: client,
-server and hosted browser shards1/3and3/3 pass; shard2/3 remains active. No
-deployment or release acceptance yet. Preceding8accCI38118148918 is
-terminal failed on the known client fixtures; server and all three hosted
-browser shards pass, downstream native/deployment/live gates are skipped.
-The additional all-in-one local coverage diagnostic exhausted its4GBV8heap and
-exited134 without a suite summary. It is not a pass and is not automatically
-retried. Required hosted coverage remains a release gate.
+**Release30 fixture and live-gate history:**38117717646/7df6cf22 and
+38118148918/8acc are terminal failed on11client fixture failures; server and all
+hosted browser jobs pass, downstream jobs skip. Corrective2e6c6a14 retains all
+selected runtime and passes those fixtures plus native/inputs/both deploys.
+CI38119634774 then fails its last live two-player aura test before profiling:
+public deployment correctly omits/tests/e2e, but the observer tried to import it
+from the game origin. Test-only1aae8407 serves exact checkout observer modules
+through temporary page routes, retires the routes before sampling, and preserves
+the observer,180samples, cleanup and all gates. Its copied-publication transport
+regression and unchanged actual live two-player case pass with540sampled frames;
+that targeted proof does not waive the original failed CI. The new ordered run
+is pending as described above. The all-in-one local coverage diagnostic exited
+134 after exhausting its4GBV8heap without a suite summary; no automatic replay.
 [Fixture correction](2026-10-11-release30-fixture-correction.json),
+[live correction](2026-10-11-live-profile-delivery-correction.json),
 [local memory diagnostic](2026-10-11-local-coverage-memory-diagnostic.json).
 
 **Next qualified camp change:**346b9a58 is merged into local master at21a8bba4;
@@ -142,6 +140,26 @@ retained and unselected. Frozen1056-entry inventory
 verified in full. Publication waits for current release30 acceptance. High
 frame time and full world/art/device/operations/F1–F5/beta/launch/handoff remain open.
 [Qualification](2026-10-11-current-master-high-singleton-qualification.json).
+
+**Qualified scenery and display changes are also merged locally.**
+Earth rock shoulders remove outward contour fins and moss seams while retaining
+buried bases/collisions,3708triangles and one shared material. Rooted ferns then
+receive continuous fold normals/colors and existing canopy thin-leaf lighting;
+all plant positions/bounds, wind, source byte counts and canopy shaders stay exact.
+Display correction6f3b592f follows the installed Three contract: HDR world/bloom,
+then tone mapping/display encoding, then FXAA. It adds no passes/resources or
+geometry and preserves Low/phone bypass. Final18focused checks and8distinct
+native source/copy/integrated/resource cases pass; earlier rock/foliage case
+identities overlap these and must not be summed as new distinct coverage.
+Intentional High edge differences and small unattributed source/copy/Low image
+variations remain explicit. These are code-owned refinements, not modern-art,
+whole-world timing, physical-device or gameplay acceptance. Publication remains
+held behind current release custody. Next address broader repeated vegetation,
+pine/rock/floor/architecture composition and material/contact/audio quality,
+alongside the existing High frame-time failures.
+[Rock](2026-10-11-earth-rock-shoulders-qualification.json),
+[foliage](2026-10-11-rooted-foliage-shading-qualification.json),
+[display antialiasing](2026-10-11-display-fxaa-qualification.json).
 
 **Live: Alpha1.79.29/12e5e3c4 is accepted.** Exact CI38078784320 succeeded on
 attempt1; frontend/backend/database and eight served asset hashes match.

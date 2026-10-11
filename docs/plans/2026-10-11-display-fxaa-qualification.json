@@ -1,0 +1,265 @@
+{
+  "recordedUTC": "2026-10-11T08:41:22.424717+00:00",
+  "source": "6f3b592f931bc7c092533917d4abb3f0f3b07304",
+  "base": "aa0a2449",
+  "masterMerge": "0816d1d4700f07f060844f679f689b6895453c30",
+  "published": false,
+  "problem": "The old chain evaluated FXAA luminance thresholds on linear HDR scene/bloom values before tone mapping. Installed Three0.181.2OutputPass documentation explicitly requires FXAA after display conversion for its sRGB input.",
+  "primarySource": "node_modules/three/examples/jsm/postprocessing/OutputPass.js and shaders/FXAAShader.js from exact locked dependency. The frozen context has an imprecise comment line locator; this file-level pointer is authoritative.",
+  "change": "Keep world and bloom in HDR, then existing OutputPass tone mapping/display encoding, then existing FXAA. All four existing passes, uniforms, exposure, brightness, quality policies, shaders, target sizes and resource owners are retained. Low/mobile postprocessing bypass stays intact.",
+  "checks": {
+    "focusedDistinctPassed": 18,
+    "focusedSuites": 3,
+    "focusedLog": "focused.log",
+    "finalModifiedSuite": "resource-final.log;11same identities rechecked after bounded failure-format assertion change, not11extra passes.",
+    "predecessorControl": "3targeted checks fail at actual previous order[0,1,3,2], corrected order[0,1,2,3].8filtered cases are not passes. First whole-object comparator encountered Jest VideoFrame serialization error; retained.",
+    "lint": "Full source lint pass; final touched resource assertion lint pass; git diff --check pass.",
+    "nativeDistinctPassed": 8,
+    "nativeRetries": 0,
+    "nativeSkipped": 0,
+    "nativeLog": "native.log",
+    "nativeScope": "Five existing Earth source/copy/narrow-desktop identities, two prepared integrated venue routes(desktop and phone graphics policy), one real quality/resource transition identity. Supplied equipped four-class party, town/road/first-dungeon warnings/casino/VIP/return, settings and High/Medium/Low transitions. No ordinary authenticated server input, physical phone, battle/pacing or final-art acceptance.",
+    "earthSummary": [
+      {
+        "case": "earth-rock-shelf-review-hi-5dfcd-d-views-and-owned-resources",
+        "views": 9,
+        "maxCalls": 196,
+        "maxTriangles": 147081,
+        "released": {
+          "geometry": 332,
+          "material": 2
+        },
+        "expected": {
+          "geometry": 332,
+          "material": 2
+        },
+        "comparisons": [
+          {
+            "label": "west-grove",
+            "change": {
+              "changed": 233288,
+              "maximum": 45,
+              "mean": 0.13535943053909952
+            },
+            "stability": {
+              "changed": 0,
+              "maximum": 0,
+              "mean": 0
+            },
+            "before": {
+              "calls": 91,
+              "triangles": 101393
+            },
+            "after": {
+              "calls": 91,
+              "triangles": 101393
+            }
+          },
+          {
+            "label": "grove-bed",
+            "change": {
+              "changed": 388138,
+              "maximum": 73,
+              "mean": 0.19909309278732226
+            },
+            "stability": {
+              "changed": 0,
+              "maximum": 0,
+              "mean": 0
+            },
+            "before": {
+              "calls": 76,
+              "triangles": 57985
+            },
+            "after": {
+              "calls": 76,
+              "triangles": 57985
+            }
+          }
+        ]
+      },
+      {
+        "case": "earth-rock-shelf-review-lo-ba37f-d-views-and-owned-resources",
+        "views": 9,
+        "maxCalls": 55,
+        "maxTriangles": 41593,
+        "released": {
+          "geometry": 326,
+          "material": 2
+        },
+        "expected": {
+          "geometry": 326,
+          "material": 2
+        },
+        "comparisons": []
+      },
+      {
+        "case": "earth-rock-shelf-review-lo-fae49-d-views-and-owned-resources",
+        "views": 9,
+        "maxCalls": 89,
+        "maxTriangles": 50152,
+        "released": {
+          "geometry": 326,
+          "material": 2
+        },
+        "expected": {
+          "geometry": 326,
+          "material": 2
+        },
+        "comparisons": []
+      },
+      {
+        "case": "published-game-bundle-copi-befdd--equipped-views-and-cleanup",
+        "views": 9,
+        "maxCalls": 89,
+        "maxTriangles": 50152,
+        "released": {
+          "geometry": 326,
+          "material": 2
+        },
+        "expected": {
+          "geometry": 326,
+          "material": 2
+        },
+        "comparisons": []
+      },
+      {
+        "case": "published-game-bundle-copi-d794f--equipped-views-and-cleanup",
+        "views": 9,
+        "maxCalls": 196,
+        "maxTriangles": 147081,
+        "released": {
+          "geometry": 332,
+          "material": 2
+        },
+        "expected": {
+          "geometry": 332,
+          "material": 2
+        },
+        "comparisons": [
+          {
+            "label": "west-grove",
+            "change": {
+              "changed": 233200,
+              "maximum": 56,
+              "mean": 0.13524904657879147
+            },
+            "stability": {
+              "changed": 0,
+              "maximum": 0,
+              "mean": 0
+            },
+            "before": {
+              "calls": 91,
+              "triangles": 147081
+            },
+            "after": {
+              "calls": 91,
+              "triangles": 147081
+            }
+          },
+          {
+            "label": "grove-bed",
+            "change": {
+              "changed": 388138,
+              "maximum": 73,
+              "mean": 0.19909309278732226
+            },
+            "stability": {
+              "changed": 0,
+              "maximum": 0,
+              "mean": 0
+            },
+            "before": {
+              "calls": 76,
+              "triangles": 57985
+            },
+            "after": {
+              "calls": 76,
+              "triangles": 57985
+            }
+          }
+        ]
+      }
+    ],
+    "controlledImageScope": "Four High source/copy comparisons at west-grove and actual grove bed. Same scene, frozen clock, pose, camera, materials and geometry; only the owned composer pass order alternates. Every reference-again image exact, equal before/after draw/triangle counts. Intentional color/edge differences retained and manually reviewed.",
+    "imageComparisons": {
+      "pairs": 36,
+      "exact": 31,
+      "different": [
+        {
+          "kind": "copy-high",
+          "view": "deep-west.png",
+          "channels": 3240960,
+          "changed": 1875,
+          "maximum": 67,
+          "mean": 0.0027349921011058454
+        },
+        {
+          "kind": "copy-high",
+          "view": "west-grove.png",
+          "channels": 3240960,
+          "changed": 4047,
+          "maximum": 86,
+          "mean": 0.009378085505529226
+        },
+        {
+          "kind": "copy-low",
+          "view": "deep-west.png",
+          "channels": 3240960,
+          "changed": 825,
+          "maximum": 146,
+          "mean": 0.003094762045813586
+        },
+        {
+          "kind": "unchanged-narrow-desktop-low",
+          "view": "deep-east.png",
+          "channels": 987480,
+          "changed": 521,
+          "maximum": 44,
+          "mean": 0.0029752501316482357
+        },
+        {
+          "kind": "unchanged-narrow-desktop-low",
+          "view": "deep-west.png",
+          "channels": 987480,
+          "changed": 2880,
+          "maximum": 132,
+          "mean": 0.02913679264390165
+        }
+      ],
+      "scope": "18source/copy images plus18previous/currentLow images. SourceLow9/9exact; narrowdesktopLow7/9exact. Other small differences remain unattributed; no universal pixel-equivalence or performance claim."
+    },
+    "qualityResources": "Existing seven-quality sequence and repeated High check pass unchanged shadow resolutions, warm texture counts and target reuse. Unit phone-policy/Low startup and terminal cleanup checks pass.",
+    "ciEnrollment": "All eight native qualification identities already have required source/copied/integrated/animation enrollment. No test identity removed/skipped or new discovery/full campaign replayed."
+  },
+  "visualReview": "Reviewed same-scene Earth images, equipped actual-HUD dungeon warning view, phone-policy casino and current world scenes. Display-space edge filtering changes small silhouette/terrain edges while keeping threats and gear readable. Broad repeated vegetation/rock/floor/architecture composition, modern-world art and High frame-time targets remain unresolved.",
+  "retainedFailures": [
+    {
+      "log": "predecessor-control.log",
+      "reason": "Jest attempted deep serialization of differently ordered whole pass objects and hit missing VideoFrame. Assertion changed to bounded pass-identity indices; corrected predecessor-control-final.log proves3intended order failures.8filtered cases are not passes."
+    },
+    {
+      "operation": "master merge",
+      "reason": "Mistyped nonexistent f0c4c0ref produced no mutation; subsequently ordinary-merged exactqualified6f3b592f."
+    }
+  ],
+  "hostScope": "Local prepared browser run roughly08:34:56\u201308:37:01overlaps early CI native Highregionalcoverage and active100-client public29soak. No isolated GPU/FPS or causal frame-time acceptance. HighregionalCIstep advanced successfully08:37:39; no jobs/soak retried/cancelled.",
+  "publication": {
+    "correctiveSource": "1aae8407e51c0a6016ac9a27cff75be060001306",
+    "correctiveCI": "38124028177",
+    "asOfUTC": "2026-10-11T08:39:53Z",
+    "status": "Client,Server,all3hostedbrowserjobs successful; predeploy native advanced through Highregionalanddungeon/outfit/additive to focused sanctuary/level-up. Overall release stillin_progress.",
+    "currentDeployed": "Alpha1.79.30/2e6c6a14; original live helper-delivery gate failed.",
+    "lastFullyAccepted": "Alpha1.79.29/12e5e3c",
+    "policy": "Hold next feature milestone publication until exact corrective CI/deploy/live identity/database/served-asset acceptance. No feature/version/access/commerce/beta publication this component."
+  },
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-display-fxaa-checks-20261011",
+    "frozenInventoryEntries": 96,
+    "filesIncludingInventory": 97,
+    "inventorySHA256": "41076913eaaeeb3bf5c3872e2ecb25f1872371d90df5df7d78c1e6140764296a",
+    "sanitization": "Anonymous prepared fixtures only; scanner passes0fileschanged. Frozen files/directories read-only."
+  },
+  "remaining": "Full original1.11\u20131.99/world/art/class/equipment/gameplay/device/performance/operations/F1\u2013F5/beta/launch/handoff goal remains active. Owner campaign/pacing and physical-phone playtests remain deferred."
+}

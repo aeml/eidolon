@@ -606,3 +606,26 @@ or feature publication. Next corrective release acceptance, coherent held
 milestone publication, and broader world/material/contact/audio/device work.
 Full original roadmap/operations/F1–F5/beta/launch/handoff goal remains active;
 no campaign/soak replay, access/commerce/beta change or completion claim.
+
+
+2026-10-11 display antialiasing continuation (progress): previous turn merged
+rooted foliage with scoped evidence. This turn6f3b592f is ordinary-merged into
+localmaster0816d1d4. Installed Three requires FXAA after display conversion;
+existing four-pass chain now keeps world/bloomHDR then tone maps/encodes before
+edge filtering. No new passes, shaders, targets, geometry or authority changes.
+18distinct focused checks and8native source/copy/integrated/resource cases pass,
+retry0/skip0. Controlled High reference-again images exact with equal draws/
+triangles; intentional edge differences reviewed.9desktopLow predecessor pairs
+exact;7of9narrow-desktopLow exact. Other small source/copy/Low variations remain
+unattributed, with no pixel/FPS equivalence claim. Frozen96-entry evidence
+41076913, receipt2026-10-11-display-fxaa-qualification.json. Original checkout
+preserved; no new work branch or feature publication. Remaining-work register
+now distinguishes deployed-but-unaccepted2e from test-only corrective1aae.
+At08:39:53UTC CI38124028177 has client/server/all3hosted jobs successful;
+native predeploy has advanced to sanctuary/level-up after Highregional and
+dungeon/outfit/additive. Local prepared GPU review overlapped early native
+regional coverage08:34:56–08:37:01; no isolated performance claim or job retry.
+Soak38109009521 remains active. Current release acceptance precedes next coherent
+held milestone. Broader world/material/contact/audio/device/High-frame-time and
+full original roadmap/operations/F1–F5/beta/launch/handoff remain open. No
+campaign/soak replay, access/commerce/beta change or whole-goal completion.
