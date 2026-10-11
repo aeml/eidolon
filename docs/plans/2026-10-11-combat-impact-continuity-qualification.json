@@ -1,0 +1,56 @@
+{
+  "recordedUTC": "2026-10-11T04:11:17.177229+00:00",
+  "source": "5ae298f18dbc52a33ab0a0a8cd57eeeb4e3a389b",
+  "parent": "aabbbc50392963b6550f57f689176d5d7995354f",
+  "selected": true,
+  "published": false,
+  "change": "Damage reception no longer starts or rewinds the remote source Attack. Explicit attack/ability events and replicated state own starts; damage keeps floating text, feedback, hit reactions and typed local audio.",
+  "focused": {
+    "passed": 106,
+    "failed": 0,
+    "skipped": 0,
+    "newRegressionChecks": 8,
+    "suites": 3,
+    "seconds": 3.429
+  },
+  "native": {
+    "distinctPassed": 1,
+    "retry": 0,
+    "skipped": 0,
+    "flaky": 0,
+    "finalSeconds": 17.251496,
+    "suppliedClassQualityRigs": 8,
+    "equippedSlotsEach": 14,
+    "preparedMixerRenderFrames": 224,
+    "perRig": "Two explicit basic starts with contact and recovery, one ability hit and one periodic hit; action, time, timer, ability lock, state and local pose unchanged by damage; next mixer step advances. Rogue keeps right/left sequence. Four feedback/audio admissions per rig.",
+    "fixture": "Existing equipment case now constructs concrete class actors, rather than Actor placeholders, so production attack-event class dispatch is exercised. Continuity helper follows gallery sampling and restores presentation flags/attack speed.",
+    "counts": "Corrected and final passing native runs cover the same identity; count once."
+  },
+  "failuresRetained": [
+    "Initial Node baseline: 8 failed,11 passed; Jest object mismatch formatting hit undefined VideoFrame in two comparisons. Boolean identity comparisons remove serializer error. Corrected unchanged-runtime baseline still 8 failed,11 passed, proving attack rewind/cast interruption.",
+    "Initial native:1 failed,0passed; generic Actor fixture was intentionally ignored by player-class attack dispatch and retained prior pose. Concrete supplied class actors plus reset weapon-profile fixture correct the observer. Runtime fix unchanged. Corrected native passes; final helper ordering preserves pre-existing gallery sampling and passes."
+  ],
+  "checks": {
+    "scopedESLint": "pass",
+    "gitDiffCheck": "pass"
+  },
+  "public": {
+    "observedUTC": "2026-10-11T04:10:16.070268+00:00",
+    "release": {
+      "commit": "12e5e3c41a3b4e897138973a7514fc8da7881bcb",
+      "version": "Alpha 1.79.29"
+    },
+    "engine": {
+      "sha256": "c925851b181df865ce4dcd48acb1b1bd732c391fc2f348caf47e7143a6ed671e",
+      "bytes": 3378802
+    }
+  },
+  "limits": "Prepared local message/mixer/render and audio-call checks, not live combat timing, physical-device, speaker/listening, busy-party performance or modern-art approval. No server, damage, cooldown, collision, assets, settings or account-data change. Prior jump/aura/admin public acceptance reused and matching public engine freshly rehashed. All historical performance failures and original roadmap/operations/F1-F5/beta/launch/handoff remain open. No campaign/soak replay or public push.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-combat-impact-checks-20261011",
+    "inventoryEntries": 58,
+    "files": 59,
+    "inventorySHA256": "b163b15955329577ac57f9a1b7ce53427e611766fe4749c6a1fae63afc96378a",
+    "frozen": true
+  }
+}

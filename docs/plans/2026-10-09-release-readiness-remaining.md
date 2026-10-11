@@ -528,3 +528,27 @@ jump/aura/admin fixes and prior performance failures remain unchanged. Continue
 combat contact/audio, world composition, devices and original operations/F1–F5/
 beta/launch/handoff. No campaign/soak replay, public push or version/access change.
 [Regional relic qualification and retained failures](2026-10-11-dungeon-regional-relics-qualification.json).
+
+
+### 2026-10-11 — preserve source motion through confirmed combat impact
+
+Selected `5ae298f1` removes a damage-message restart that rewound remote
+swings at contact and interrupted casts on projectile/area/periodic damage.
+Explicit attack/ability events and replicated state still start animations;
+floating text, hit feedback/reactions and typed local impact audio remain.
+Eight new real-mixer regressions fail against the unchanged parent; final
+106 focused checks pass with no skips. One distinct native equipped-class case
+passes: eight supplied High/Low rigs, fourteen slots each and224 prepared
+mixer/render frames preserve action/time/timer/ability/state/pose at damage,
+then advance. Rogue retains alternating hands. Concrete class fixture replaces
+Actor placeholders so the actual attack-event dispatch is exercised; initial
+fixture failure and both Node baseline results are retained. Native passing
+runs share one identity and are counted once. Scoped lint/diff checks pass.
+
+Locally staged, unpublished. Public29 manifest and exact engine hash freshly
+match the prior jump/aura/admin acceptance. No live combat timing, speaker/
+listening, supported-device, busy-party performance or modern-art approval.
+Existing performance failures, contact/audio polish, world composition and all
+original operations/F1–F5/beta/launch/handoff requirements remain open. No
+campaign/soak replay or public/version/access change.
+[Scoped qualification](2026-10-11-combat-impact-continuity-qualification.json).

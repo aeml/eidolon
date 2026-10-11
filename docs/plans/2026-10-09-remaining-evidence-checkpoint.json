@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-11T03:59:58.731881+00:00",
-  "classification": "Progress: selected a32939c4 replaces isolated elemental dungeon primitives with hollow crucibles, conductor-held split slate, branching coral and fractured memory monoliths.29 focused checks and7 distinct native cases pass cumulatively; inherited gallery/root-observer failures retained and corrected.",
-  "qualifiedRuntime": "Held a32939c4 adds four regional relic families to f37b035c, retaining selected floor/prop/paving/ward/root, geometry-priority worker, additive effects, HUD and actor corrections. Staged unpublished; public Alpha1.79.29 unchanged. Private cache/camp/singleton/DemonOrc/route QA remains unselected.",
+  "recordedUTC": "2026-10-11T04:11:17.177229+00:00",
+  "classification": "Progress: selected 5ae298f1 preserves remote swing/cast continuity at confirmed impact.106 focused checks and1 distinct native equipped-class case pass; unchanged-runtime reproduction and fixture failures retained.",
+  "qualifiedRuntime": "Held 5ae298f1 removes damage-driven source attack restarts on top of selected regional relic/floor/prop/paving/ward/root, worker, additive, HUD and actor work. Staged unpublished; public Alpha1.79.29 exact engine rehash matches. Private rejected/unselected candidates unchanged.",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d",
@@ -2763,5 +2763,24 @@
       "frozen": true
     },
     "scopeLimits": "Staged unpublished. PublicAlpha1.79.29 requested jump/aura/admin fixes remain accepted. No private cache/camp/singleton/DemonOrc/route QA selected. Original50/66.7ms,49.9/66.6ms,386370/281603/289302triangle,438/361draw andLow202draw failures remain. Full original world/art/contact/audio/devices/performance/operations/F1-F5/beta/launch/handoff active. No campaign/soak replay, version/access/commerce/beta change."
+  },
+  "combatImpactContinuity": {
+    "receipt": "docs/plans/2026-10-11-combat-impact-continuity-qualification.json",
+    "source": "5ae298f18dbc52a33ab0a0a8cd57eeeb4e3a389b",
+    "selected": true,
+    "published": false,
+    "focusedPassed": 106,
+    "newChecks": 8,
+    "nativeDistinctPassed": 1,
+    "suppliedRigs": 8,
+    "preparedMixerRenderFrames": 224,
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-combat-impact-checks-20261011",
+      "inventoryEntries": 58,
+      "files": 59,
+      "inventorySHA256": "b163b15955329577ac57f9a1b7ce53427e611766fe4749c6a1fae63afc96378a",
+      "frozen": true
+    },
+    "scopeLimits": "Prepared local message/mixer/render and audio-call checks, not live combat timing, physical-device, speaker/listening, busy-party performance or modern-art approval. No server, damage, cooldown, collision, assets, settings or account-data change. Prior jump/aura/admin public acceptance reused and matching public engine freshly rehashed. All historical performance failures and original roadmap/operations/F1-F5/beta/launch/handoff remain open. No campaign/soak replay or public push."
   }
 }

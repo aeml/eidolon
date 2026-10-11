@@ -380,3 +380,15 @@ Private same-cell actor multi-draw runtime702a2755/sourcebcbc7147 remains unsele
 
 
 2026-10-11 regional dungeon continuation (progress): previous turn integrated qualified paving f37b035c. Selected a32939c4 privately: hollow Molten crucibles, conductor-held split Tempest slate, rooted branching Abyssal coral/pearl buds and fractured Umbral stone with narrow lit seams. Three shared kit-local geometry channels use existing physical materials/maps; no textures/materials/lights/colliders/targets/clocks added. Verdant roots unchanged; UmbralZ anchor shifts.01radius, at most.24units within old apron. Per-room High/Low additional triangles1832/1208Molten,992/672Tempest,5704/1864Abyssal,372/308Umbral; source and merged attribute ownership explicit.64identity/quality controls show-1..+2batches,max7/8; no FPS saving claim.29focused checks pass,15new;40nonmatching skips not counted. Seven distinct native checks pass cumulatively, initial5pass2ward failures then corrected ward2pass/final elemental2pass overlap. Unchanged parent gallery reproduces stale9/5resource expectations; unchanged parent ward observer includes792triangle paving as roots, corrected bark-only count retains original1batch/2880High/864Lowtriangles. Initial occluded art views excluded; final16paired views/32screenshots,14slot supplied Fighter/HUD,864actor mixer updates.20layouts per quality/1440ward-state frames/288camera sweeps preserve collisions and original sample budgets. Actual copied engine54eb11d1747069177fc0950e7c94b3818fc2f301e5a979690977b5f57bb010e2 compiles materials and returns exact warmed GPU baseline after each of5themes. Prepared motion is not continuous game-loop/server/device performance.337hosted/15native/348distinct required identities unchanged, discovery only. Frozen306-entry/307-file inventorydcfed337ecde8ee17cb084dbf13edd1bd2005ef4bd88bff1581707b167c54469; receipt2026-10-11-dungeon-regional-relics-qualification.json. Public29 motion/aura/admin fixes unchanged; staged unpublished. Sparse rooms, repeated small motifs, broader world/contact/audio/devices, original timing/geometry/draw failures and operations/F1–F5/beta/launch/handoff remain open. No campaign/soak replay, public push/version/access change or unrelated private selection. Full original goal active.
+
+
+### 2026-10-11 — combat impact continuity
+
+Selected 5ae298f1 stops damage reception from replaying a remote source
+windup or cancelling its current cast.106 focused checks and1 distinct native
+case pass: eight supplied equipped High/Low class rigs,224 prepared mixer/render
+frames, unchanged typed impact audio admissions. Baseline defects and native
+fixture failure retained. Staged unpublished; public29 engine freshly matches
+prior jump/aura/admin acceptance. Full original goal and historical performance,
+world/art/contact/audio/device/operations/F1–F5/beta/launch/handoff gaps stay open.
+[Evidence](docs/plans/2026-10-11-combat-impact-continuity-qualification.json).
