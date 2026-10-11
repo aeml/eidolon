@@ -4,14 +4,14 @@ import { createTaperedRoot } from './EarthLandmarkGeometry.js';
 
 // A low, partially buried root network. Branches and broad bark tones remain
 // readable from the ordinary isometric camera without textures or extra draws.
-export function createDungeonGraveRootGeometry() {
+export function createDungeonGraveRootGeometry(quality = 'high') {
     const paths = [
         { radius: .14, points: [[-1, -.05, 0], [-.72, .14, -.22], [-.35, .11, -.03], [0, .18, .22], [.4, .05, .05], [.7, 0, .29], [1, -.04, .38]] },
         { radius: .07, points: [[-.3, .12, .01], [-.15, .1, -.25], [.15, .02, -.5], [.5, -.03, -.6]] },
         { radius: .055, points: [[.15, .12, .2], [.28, .08, .42], [.55, .02, .56], [.9, -.04, .66]] }
     ];
     const parts = paths.map(({ points, radius }, branch) => {
-        const geometry = createTaperedRoot(points, radius, 'low');
+        const geometry = createTaperedRoot(points, radius, quality);
         const position = geometry.attributes.position, normal = geometry.attributes.normal;
         const colors = new Float32Array(position.count * 3);
         for (let i = 0; i < position.count; i++) {

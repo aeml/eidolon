@@ -208,7 +208,7 @@ function createMaterialSet(dungeonType) {
     });
 }
 
-function createShapes() {
+function createShapes(quality) {
     return Object.freeze({
         box: new THREE.BoxGeometry(1, 1, 1),
         cylinder6: new THREE.CylinderGeometry(0.5, 0.5, 1, 6),
@@ -217,7 +217,7 @@ function createShapes() {
         cone6: new THREE.ConeGeometry(0.5, 1, 6),
         cofferLid: createDungeonCofferLid(),
         vigilInlay: new THREE.RingGeometry(0.486, 0.5, 48),
-        graveRoot: createDungeonGraveRootGeometry(),
+        graveRoot: createDungeonGraveRootGeometry(quality),
         octahedron: new THREE.OctahedronGeometry(0.5, 0),
         vigilBase: createDungeonVigilBase(),
         vigilShaft: createDungeonVigilShaft(),
@@ -669,7 +669,7 @@ export function createProceduralDungeonInteriorKit(dungeonType, { quality = 'hig
     sampleCache.clear();
     const materials = new Map();
     const geometries = new Map();
-    const shapes = createShapes();
+    const shapes = createShapes(surfaceQuality);
     const detailMaterials = createMaterialSet(dungeonType);
 
     const surfaceMaterial = (surface, width, height, transparent = false) => {

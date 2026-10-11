@@ -233,7 +233,7 @@ test('copied published engine constructs a grounded ward and drives its state th
     expect(result).toMatchObject({ parts: 3, visualOnly: true, collidersStable: true });
     expect(result.roots).toHaveLength(layout.rooms.length);
     for (const root of result.roots) {
-        expect(root).toMatchObject({ triangles: 864, roughness: .94, smooth: true, textures: 0 });
+        expect(root).toMatchObject({ triangles: 2880, roughness: .94, smooth: true, textures: 0 });
         expect(root.maxY).toBeLessThan(1);
     }
     expect(result.phases).toEqual([{ ready: false, appliedOpacity: .18, time: .25, stable: true },

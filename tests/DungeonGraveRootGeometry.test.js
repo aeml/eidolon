@@ -4,12 +4,12 @@ import { createDungeonGraveRootGeometry } from '../src/art/DungeonGraveRootGeome
 import { createProceduralDungeonInteriorKit } from '../src/art/ProceduralDungeonInteriors.js';
 import { RenderSystem } from '../src/core/RenderSystem.js';
 
-test('grave roots form a bounded, low, branched silhouette with finite smooth normals and restrained bark tones', () => {
-    const geometry = createDungeonGraveRootGeometry(), repeat = createDungeonGraveRootGeometry();
+test.each(['low', 'high'])('%s grave roots form a bounded, low, branched silhouette with finite smooth normals and restrained bark tones', quality => {
+    const geometry = createDungeonGraveRootGeometry(quality), repeat = createDungeonGraveRootGeometry(quality);
     const { position, normal, color } = geometry.attributes, n = new THREE.Vector3();
-    expect(geometry.index.count / 3).toBeLessThanOrEqual(500);
+    expect(geometry.index.count / 3).toBeLessThanOrEqual(quality === 'low' ? 500 : 1500);
     const bytes = Object.values(geometry.attributes).reduce((sum, attribute) => sum + attribute.array.byteLength, geometry.index.array.byteLength);
-    expect(bytes).toBeLessThan(20000);
+    expect(bytes).toBeLessThan(quality === 'low' ? 20000 : 50000);
     for (let i = 0; i < position.count; i++) {
         expect([position.getX(i), position.getY(i), position.getZ(i)].every(Number.isFinite)).toBe(true);
         expect(n.fromBufferAttribute(normal, i).length()).toBeCloseTo(1, 5);

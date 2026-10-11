@@ -135,7 +135,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
         expect(setup.gpu).not.toMatch(/swiftshader|llvmpipe|software/i);
         expect(setup.blocked).toBe(0); expect(setup.equippedItems).toBe(14); expect(setup.missing + setup.fallback).toBe(0);
         expect(setup.rootBatches).toBe(type === 'verdant_bastion_catacombs' ? 1 : 0);
-        expect(setup.rootTriangles).toBe(type === 'verdant_bastion_catacombs' ? 864 : 0);
+        expect(setup.rootTriangles).toBe(type === 'verdant_bastion_catacombs' ? (quality === 'high' ? 2880 : 864) : 0);
         expect(motion.stable).toBe(true); expect(motion.colliders).toBe(setup.colliders);
         for (const view of views) {
             expect(view.calls).toBeGreaterThan(0); expect(view.calls).toBeLessThanOrEqual(quality === 'high' ? 350 : 200);
