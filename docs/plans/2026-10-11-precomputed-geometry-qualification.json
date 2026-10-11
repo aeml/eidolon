@@ -1,6 +1,6 @@
 {
   "recordedUTC": "2026-10-11T21:20:28.505672+00:00",
-  "status": "Qualified and ordinarily merged into local master; unpublished pending coherent milestone and ordered release38 acceptance.",
+  "status": "Qualified, ordinarily merged into local master and included in pushed39/c7271bdd; own CI/deployment/live acceptance pending.",
   "source": "f73d5225838be39188e4cb2650dcc2cb64f8951a",
   "implementationCommit": "81751781",
   "whitespaceProvenanceCorrection": "f73d5225",
@@ -114,5 +114,7 @@
   "masterBuild": {
     "metadata": "/home/aeml/.local/share/eidolon-master-precomputed-worker-20261011.json",
     "matchesQualifiedWorkerByteExact": true
-  }
+  },
+  "publication": "2026-10-11-release39-publication.json",
+  "laterCurrent133RuntimeTiming": "2026-10-11-precomputed-runtime-qualification.json"
 }

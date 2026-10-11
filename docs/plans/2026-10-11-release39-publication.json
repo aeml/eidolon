@@ -1,0 +1,52 @@
+{
+  "recordedUTC": "2026-10-11T21:32:52.062909+00:00",
+  "version": "Alpha 1.79.39",
+  "source": "c7271bddfa34f6267973cc1302c7512e24f1886e",
+  "status": "Qualified coherent39 ordinarily pushed after exact38terminal/live/fresh public acceptance. Exact CI38176727839attempt1active; not yet accepted.",
+  "ci": {
+    "run": 38176727839,
+    "attempt": 1,
+    "url": "https://github.com/aeml/eidolon/actions/runs/38176727839",
+    "initialStatus": "in_progress",
+    "createdUTC": "2026-10-11T21:31:29Z"
+  },
+  "previousAccepted": "2026-10-11-public38-terminal-qualification.json",
+  "prepublication": "2026-10-11-release39-prepublication-qualification.json",
+  "runtimeQualification": "2026-10-11-precomputed-runtime-qualification.json",
+  "worker": {
+    "output": "src/core/ActorGameplayGeometryWorker.ed74163bff6f2ccc.js",
+    "sha256": "ed74163bff6f2ccc48d8f4364cbca258858d68b95b1cc42f4b91d04304fc9203",
+    "bytes": 173395,
+    "modules": 15,
+    "imports": [],
+    "precomputed": {
+      "path": "assets/gameplay-geometry/indices.6aa8c7e199c910b5.bin",
+      "sha256": "6aa8c7e199c910b5fbf0f78dfae873b64e79aa0045e39b5775ff9ac7d7e93346",
+      "bytes": 777321,
+      "entries": 133
+    }
+  },
+  "assetPins": 93,
+  "expectedManifest": "/home/aeml/.local/share/eidolon-release39-publication-checks-20261011/expected-public39-assets.json",
+  "engine": {
+    "path": "src/core/GameEngine.bundle.js",
+    "bytes": 3507601,
+    "sha256": "e6f5fcb3f42c964a2d6193d920de6fa3989ee4e63cd6f9243b6347b969102554"
+  },
+  "copiedPublication": {
+    "verifiedPins": 93,
+    "source": "c7271bddfa34f6267973cc1302c7512e24f1886e",
+    "copyFiles": 3328,
+    "copyBytes": 443630265,
+    "ownedReproducibleCopyRemoved": "/home/aeml/.local/share/eidolon-release39-publication-checks-20261011/public",
+    "scope": "Only owned reproducible copied static publication retired after complete file inventory and93pin recheck. Source and evidence retained. Final docs-only commit leaves copied runtime source exact."
+  },
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-release39-publication-checks-20261011",
+    "entries": 9,
+    "inventorySHA256": "c51ead0c31deef2f4152ae6b6194ed8a2166b9f9b680926c99bee9efe6cbe3e9"
+  },
+  "metadataFailureRetained": "Initial local reader expected JSON from versioning CLI plain text. Manifest/retirement checks aborted. Exact anchored CLI count/release parsing repaired metadata; copied identity and all93pins verified before cleanup. No production/runtime effects.",
+  "acceptanceRequired": "Exact ordered CI/deploy/live success, then fresh normal-TLS identities/readyDB/all93asset lengths and SHA before another source publication.",
+  "limits": "Original full readiness scope stays active. Cold triangles, connected frame-time, first application frame, peak memory, physical devices, art, campaign, capacity, F1-F5/beta/launch/handoff remain open. Only master exists locally/on origin."
+}
