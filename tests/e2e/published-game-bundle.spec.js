@@ -466,7 +466,7 @@ test('copied published engine constructs a grounded ward and drives its state th
         scope: 'Copied/versioned engine and actual WorldGenerator entry points, prepared layout and room summaries. No server or earned completion claim.' }), contentType: 'application/json' });
 });
 
-test('actual published engine stays lazy at login and constructs each class from the bounded module graph', async ({ page }) => {
+test('actual published engine stays lazy at login and constructs each class from the bounded module graph', async ({ page, request }) => {
     const failures = collectBrowserFailures(page, origin), modules = new Set();
     page.on('request', request => {
         const url = new URL(request.url());
@@ -474,6 +474,10 @@ test('actual published engine stays lazy at login and constructs each class from
     });
     await page.goto(origin, { waitUntil: 'networkidle' });
     await expect(page.locator('#auth-username')).toBeVisible();
+    const manifest = await (await request.get(`${origin}/release.json`)).json();
+    const packageVersion = JSON.parse(await readFile('package.json', 'utf8')).version;
+    expect(manifest).toEqual({ commit: release, version: `Alpha ${packageVersion}` });
+    await expect(page.locator('.start-version-row__label')).toHaveText(manifest.version);
     expect([...modules].some(file => file.includes('GameEngine') || file.includes('/vendor/three/'))).toBe(false);
     const loginModules = new Set([...modules].filter(file => file.startsWith('/src/')));
     const result = await page.evaluate(async release => {
