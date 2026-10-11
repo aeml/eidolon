@@ -40,7 +40,8 @@ export function sampleVerdantMasonry(x, y, wall = false) {
         * smooth(.28, .65, erosion) * bevel : 0) : flagstone.fracture;
     const moss = smooth(.52, .82, weather) * (1 - bevel * .8) * .7;
     const tone = .45 + stone * .25 + weather * .2 + grain * .1;
-    const mortar = [46, 49, 45], shadow = [59, 62, 59], light = [91, 93, 85], growth = [48, 60, 37];
+    const mortar = wall ? [46, 49, 45] : [60, 63, 56];
+    const shadow = [59, 62, 59], light = [91, 93, 85], growth = [48, 60, 37];
     const color = mortar.map((joint, index) => {
         const face = shadow[index] + (light[index] - shadow[index]) * tone;
         const worn = (joint + (face - joint) * (.35 + bevel * .65))

@@ -207,6 +207,10 @@ test('copied published engine constructs a grounded ward and drives its state th
         try {
             const world = game.worldGenerator;
             await world.createVerdantBastionCatacombs(0, 0, layout);
+            const target = game.renderSystem.cameraTarget.clone().set(layout.rooms[0].x, .1, layout.rooms[0].z);
+            game.renderSystem.setEnvironmentContext('verdant_bastion_catacombs', target, true);
+            game.renderSystem.setCameraTarget(target); game.renderSystem.updateEnvironmentLighting(target, 0);
+            const floor = game.renderSystem.instanceEnvironmentGroup.children.find(part => part.name === 'DungeonUnionFloor');
             const rootBatches = game.renderSystem.instanceEnvironmentGroup.children
                 .filter(part => part.userData.proceduralDungeonInterior)
                 .flatMap(part => part.children.filter(mesh => mesh.isMesh && mesh.material.vertexColors));
@@ -226,11 +230,15 @@ test('copied published engine constructs a grounded ward and drives its state th
                 phases.push({ ready: state.userData.exitReady, appliedOpacity, time: veil.material.userData.dungeonVeilTime.value,
                     stable: veil.matrix.elements.every((value, index) => value === matrix[index]) });
             }
+            const gl = game.renderSystem.renderer.getContext();
+            const floorPatinaCompiled = game.renderSystem.renderer.info.programs.some(program =>
+                gl.getShaderSource(program.fragmentShader)?.includes('verdantWeather'));
             return { parts: ward.children.length, visualOnly: ward.userData.visualOnly, phases, roots,
+                floorPatinaCompiled, floorPatina: floor.material.userData.verdantFloorPatina === true,
                 collidersStable: JSON.stringify(game.collisionManager.colliders) === colliders };
         } finally { game.destroy(); }
     }, { release, layout });
-    expect(result).toMatchObject({ parts: 3, visualOnly: true, collidersStable: true });
+    expect(result).toMatchObject({ parts: 3, visualOnly: true, collidersStable: true, floorPatina: true, floorPatinaCompiled: true });
     expect(result.roots).toHaveLength(layout.rooms.length);
     for (const root of result.roots) {
         expect(root).toMatchObject({ triangles: 2880, roughness: .94, smooth: true, textures: 0 });

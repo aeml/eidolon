@@ -6,13 +6,22 @@ import { DUNGEON_INTERIOR_IDS } from '../../src/art/ProceduralDungeonInteriors.j
 
 const fixtures = JSON.parse(await readFile('tests/fixtures/production-dungeon-layouts.json', 'utf8'))
     .filter(fixture => DUNGEON_INTERIOR_IDS.includes(fixture.dungeonType));
-const comparePredecessor = process.env.EIDOLON_E2E_DUNGEON_WARD_COMPARE === '1';
+const compareFloor = process.env.EIDOLON_E2E_DUNGEON_FLOOR_COMPARE === '1';
+const comparePredecessor = process.env.EIDOLON_E2E_DUNGEON_WARD_COMPARE === '1' || compareFloor;
 const referenceCommit = process.env.EIDOLON_E2E_DUNGEON_WARD_REFERENCE || '7f966b58';
 for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}: grounded entry wards retain dungeon state and walkable layout`, async ({ page, baseURL }, testInfo) => {
     test.setTimeout(180000);
     const failures = collectBrowserFailures(page, baseURL);
     if (comparePredecessor) {
-        const previous = execFileSync('git', ['show', `${referenceCommit}:src/art/ProceduralDungeonInteriors.js`], { encoding: 'utf8' });
+        let previous = execFileSync('git', ['show', `${referenceCommit}:src/art/ProceduralDungeonInteriors.js`], { encoding: 'utf8' });
+        if (compareFloor) {
+            previous = previous.replace("'./VerdantMasonry.js'", "'./VerdantMasonryReference.js'");
+            const masonry = execFileSync('git', ['show', `${referenceCommit}:src/art/VerdantMasonry.js`], { encoding: 'utf8' })
+                .replace("'./DungeonFlagstone.js'", "'./DungeonFlagstoneReference.js'");
+            const flagstone = execFileSync('git', ['show', `${referenceCommit}:src/art/DungeonFlagstone.js`], { encoding: 'utf8' });
+            await page.route('**/src/art/VerdantMasonryReference.js', route => route.fulfill({ body: masonry, contentType: 'text/javascript' }));
+            await page.route('**/src/art/DungeonFlagstoneReference.js', route => route.fulfill({ body: flagstone, contentType: 'text/javascript' }));
+        }
         await page.route('**/src/art/DungeonInteriorsWardReference.js', route => route.fulfill({ body: previous, contentType: 'text/javascript' }));
     }
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
@@ -41,7 +50,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
     }, { quality, phone: width < 600 });
     const reports = [];
     for (const [fixtureIndex, { dungeonType: type, layout }] of fixtures.entries()) {
-        const setup = await page.evaluate(async ({ type, layout, quality, comparePredecessor }) => {
+        const setup = await page.evaluate(async ({ type, layout, quality, comparePredecessor, compareFloor }) => {
             const THREE = await import('three');
             const { WorldGenerator } = await import('/src/world/WorldGenerator.js');
             const { CollisionManager } = await import('/src/core/CollisionManager.js');
@@ -49,6 +58,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
             const { applyDungeonRoomStatePresentation, animateDungeonRoomStatePresentation } = await import('/src/art/ProceduralDungeonInteriors.js');
             const state = window.__entryWardReview, { render, ui, hero } = state;
             if (state.previous) render.disposeObjectResources(state.previous);
+            if (state.referenceFloorOwner) render.disposeObjectResources(state.referenceFloorOwner);
             render.clearGroupChildren(render.instanceEnvironmentGroup);
             const collision = new CollisionManager(), generator = new WorldGenerator(render.instanceEnvironmentGroup, collision, { graphicsQuality: quality });
             const methods = { verdant_bastion_catacombs: 'createVerdantBastionCatacombs', molten_core: 'createMoltenCore',
@@ -57,7 +67,11 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
             const room = layout.rooms[0];
             collision.setDungeonWalkableGeometry(layout.walkRects);
             const current = render.instanceEnvironmentGroup.children.find(part => part.userData.proceduralDungeonInterior && part.userData.roomIndex === 0);
-            const previous = reference?.createProceduralDungeonInteriorKit(type, { quality }).createRoomDressing(room, 0);
+            const referenceKit = reference?.createProceduralDungeonInteriorKit(type, { quality });
+            const previous = referenceKit?.createRoomDressing(room, 0);
+            const floors = render.instanceEnvironmentGroup.children.filter(part => part.name === 'DungeonUnionFloor').map(mesh => [mesh, mesh.material]);
+            const referenceFloor = compareFloor && type === 'verdant_bastion_catacombs' ? referenceKit.floorMaterial(24, 24) : null;
+            state.referenceFloorOwner = referenceFloor ? new THREE.Mesh(new THREE.BufferGeometry(), referenceFloor) : null;
             const currentState = current.getObjectByName(`DungeonRoomState:${type}:0`);
             const summary = { currentRoomIndex: 0, objectiveRoomIndex: 0 };
             applyDungeonRoomStatePresentation(currentState, { cleared: false }, summary);
@@ -67,6 +81,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
             ui.quest.renderObjectivesPanel([{ id: 'ward', title: 'Explore the dungeon', progressLabel: 'Entry', hint: 'Prepared art review' }]);
             const colliders = JSON.stringify([collision.colliders, collision.orientedColliders, collision.circularColliders, collision.dungeonWalkableRects]);
             state.select = mode => {
+                for (const [mesh, material] of floors) mesh.material = mode === 'reference' && referenceFloor ? referenceFloor : material;
                 current.removeFromParent(); previous?.removeFromParent();
                 render.instanceEnvironmentGroup.add(mode === 'reference' ? previous : current);
                 if (mode !== 'reference') {
@@ -96,12 +111,12 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
                 if (corrected?.distanceTo(p) > .01) blocked++;
             }
             const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
-            return { blocked, colliders, rootBatches: rootBatches.length,
+            return { blocked, colliders, floorReference: Boolean(referenceFloor), floorPatina: floors[0][1].userData.verdantFloorPatina === true, rootBatches: rootBatches.length,
                 rootTriangles: rootBatches.reduce((sum, part) => sum + (part.geometry.index?.count || part.geometry.attributes.position.count) / 3, 0),
                 equippedItems: hero.mesh.userData.equipmentVisualItemCount,
                 missing: hero.mesh.userData.equipmentVisualMissing?.length || 0, fallback: hero.mesh.userData.equipmentVisualFallback?.length || 0,
                 gpu: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER) };
-        }, { type, layout, quality, comparePredecessor });
+        }, { type, layout, quality, comparePredecessor, compareFloor });
         const views = [];
         for (const mode of comparePredecessor ? ['reference', 'candidate', 'ready'] : ['candidate', 'ready']) {
             views.push(await page.evaluate(mode => window.__entryWardReview.select(mode), mode));
@@ -135,6 +150,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
         expect(setup.gpu).not.toMatch(/swiftshader|llvmpipe|software/i);
         expect(setup.blocked).toBe(0); expect(setup.equippedItems).toBe(14); expect(setup.missing + setup.fallback).toBe(0);
         expect(setup.rootBatches).toBe(type === 'verdant_bastion_catacombs' ? 1 : 0);
+        expect(setup.floorPatina).toBe(type === 'verdant_bastion_catacombs');
         expect(setup.rootTriangles).toBe(type === 'verdant_bastion_catacombs' ? (quality === 'high' ? 2880 : 864) : 0);
         expect(motion.stable).toBe(true); expect(motion.colliders).toBe(setup.colliders);
         for (const view of views) {
@@ -143,7 +159,8 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
         }
     }
     await page.evaluate(() => {
-        const { render, hero, ui, previous, input } = window.__entryWardReview;
+        const { render, hero, ui, previous, referenceFloorOwner, input } = window.__entryWardReview;
+        if (referenceFloorOwner) render.disposeObjectResources(referenceFloorOwner);
         if (previous) render.disposeObjectResources(previous); hero.dispose(); input.dispose(); ui.destroy?.(); render.dispose(); delete window.__entryWardReview;
     });
     expect(failures, failures.join('\n')).toEqual([]);
