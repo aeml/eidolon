@@ -656,3 +656,19 @@ Frozen74-entryinventory4c658f0b3966debe5e7ee1baad380e66ab7fc247e72f2d35e1158c406
 No secondpush until current releaseacceptance, no newbranch/campaign/soak replay.
 Full originalworld/art/gameplay/devices/performance/operations/F1-F5/beta/launch/
 handoff objective remains active; broadcomposition and Highframetime gaps open.
+
+October11 09:53UTC: original31/42f06ad0 CI38126692286failed beforedeployment
+on copiedHigh9view/72pose reviewtimeout. Allfive downstreamjobs skipped;
+acceptedpublic remains30/1aae8407. Preserved28-entryfailureinventory
+47356945c296b9cc189df4e28ca28c8db89869dd7c54300850ccc402718a98a8.
+CorrectedHighfixture splits3independent3viewcases, preservesall72poses/bothFXAA
+comparisons/allbudgets/120secondtimeout; software4/native7/combined3 pass0retry/skip,
+415versionhistoryplan+28enrollment+full lintpass. Ordinarymerged97f43091.
+Frozen131-entryproof9d103bcf789629e6d6700de6ab4a7db4e1e177bf7fe0e3a50eb2dc8d50d39294.
+Coherentcorrected31 includesprevioussixcomponents plusqualifiedpine/Earthmaterial
+andphonefixture, normalpushed exact2c41890c; CI38129763146attempt1isactive.
+New9assetmanifest isseparate fromfailed42manifest; ownorderedgates remainpending.
+Completedregeneration+openingrewardhistories reconciled withunchangedtrees;
+unmerged287→98. Openingmerge20704ed0+thisreceipt areheldlocallywhilecurrentCIruns.
+Fulloriginalgoal remainsactive; nomarkcomplete/versionacceptance/betaapproval,
+no deferredcampaign/physicalphone substitution or retry/cancel/forcepush.

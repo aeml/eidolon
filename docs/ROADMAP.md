@@ -6,7 +6,8 @@ This file is a short pointer. Accepted public release: Alpha1.79.30/exact1aae840
 ([ordered release and live acceptance](plans/2026-10-11-public30-terminal-qualification.json)).
 Alpha1.79.31/exact42f06ad0 is pushed to master; CI38126692286 attempt1 failed
 in hosted High world-review rendering before deployment. Allfive downstream jobs
-skipped; public30 remains accepted. [Failure evidence](plans/2026-10-11-release31-hosted-review-failure.json). See the
+skipped; public30 remains accepted. Correctedexact2c41890c is pushed;
+CI38129763146attempt1 is active, with its own deployment/live acceptance pending. [Failure evidence](plans/2026-10-11-release31-hosted-review-failure.json). See the
 [remaining-work register](plans/2026-10-09-release-readiness-remaining.md) for the
 full inherited world/art/gameplay/device/performance/operations/F1–F5/beta/launch
 scope. These scoped releases do not complete those gates.

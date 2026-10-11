@@ -9,15 +9,16 @@ Historical test receipts do not close unchecked requirements.
 
 **Master reconciliation:** completed, qualified world/dungeon/equipment/HUD,
 renderer and contact-audio work is merged into local `master`. Branch
-reconciliation reduced distinct unmerged histories287→99; unfinished/rejected
+reconciliation reduced distinct unmerged histories287→98; unfinished/rejected
 experiments and the dirty user checkout remain preserved. New completed work
 continues to merge into `master`, without adding work branches or force-pushing.
 [Repository workflow](../../AGENTS.md),
 [branch reconciliation](2026-10-11-master-branch-reconciliation.json),
 [four completed-history follow-up merges](2026-10-11-completed-branch-followup.json),
-[completed regeneration history](2026-10-11-regeneration-branch-reconciliation.json).
+[completed regeneration history](2026-10-11-regeneration-branch-reconciliation.json),
+[completed opening reward history](2026-10-11-opening-reward-branch-reconciliation.json).
 
-**Current release custody, October11 09:45UTC:** Alpha1.79.30/1aae8407 is now
+**Current release custody, October11 09:53UTC:** Alpha1.79.30/1aae8407 is now
 fully accepted through the ordered release gate. CI38124028177 attempt1 completed
 success: all10jobs, including required native predeploy, both deployments and
 mandatory live gameplay/town-recovery/Well Rested checks. Optional stabilization,
@@ -37,7 +38,12 @@ Low/source coverage, original120second timeout and allbudgets retained.
 Software4cases174.58s/native7cases89.25s/combined3cases24.73s pass0retry/skip;
 415version/history/plan and28enrollment checks plusfull lint pass. Discovery is
 349hosted/46native/23overlap/372distinct; two old copied titles become four,
-with allother identities retained. New exactpublication/CI/deploy/live remains due.
+with allother identities retained. Correctedexact2c41890c is pushed normally; CI38129763146attempt1 started09:49:52UTC
+and remains active. Its ownordereddeployment/live/normalTLSassets remain due.
+New nine-asset expectedmanifest is preserved separately from failed42source.
+Engine3486705bytes/SHA299195a1c8d2e9fd77aa9e8fe034e8b8e9a6c50c67337c615577975a7c913019.
+Openingrewardancestry was subsequently merged localmaster20704ed0 with an unchanged
+tree; that98-branch checkpoint is held until currentexactreleaseverification.
 [World review correction](2026-10-11-release31-world-review-correction.json).
 Per-component receipts below preserve their
 earlier prepublication states. Current100-clientsoak38109009521 remains active on

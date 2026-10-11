@@ -12,6 +12,7 @@ previous dungeon/equipment/contact/HUD and jump/aura/admin fixes.415focused
 version/history/enrollment checks, full lint and3combined-publication native
 cases pass;370required anonymous identities are discovered, not370new executions.
 [Prepublication qualification](2026-10-11-release31-prepublication-qualification.json).
+Correctedexact2c41890c is pushed; CI38129763146attempt1 is active.
 Its own CI/deployment/live acceptance remains pending. Original High frame-time
 failures, broader world composition/material/vegetation, human contact-audio
 review and full inherited device/gameplay/operations/F1-F5/beta/launch/handoff

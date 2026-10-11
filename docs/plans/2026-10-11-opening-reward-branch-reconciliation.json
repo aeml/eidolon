@@ -1,0 +1,15 @@
+{
+  "recordedUTC": "2026-10-11T09:52:20.963635+00:00",
+  "branch": "work/opening-reward-20260908",
+  "head": "353e465e4485df5d6dbd68b5391e8fef047b23ec",
+  "reviewMerge": "d8d95ce04f7997c12efe0be90be808e30360ce9b",
+  "masterMerge": "20704ed04538bab4973176900261c6cdd9753315",
+  "beforeMaster": "2c41890c8e1abd296326e30f5a1972c70ae6dcfe",
+  "beforeUnmerged": 99,
+  "afterUnmerged": 98,
+  "treeUnchanged": true,
+  "validation": "Originalnew100XPoffer and retainedacceptedquotes already integrated via50b7724c and newer generalizedquotehandling. Currentearned-browserroute retains originalexact100gold/100XPdisplay/payout/savedreceipt assertions, plus newer ordinarycreation/phase/storyhandling. Datedearnedreceipt is byte-identical. Fourconflicts preservecurrentcatalog/rewardbudget mapping, InitialPlayerStats/currentprogression75XPexpectation, expandedBSONquotechecks and currentearnednormalinputroute. Entire result has no content difference from currentorigin2c41890c; exactancestorcheckpasses. No unchangedfullcampaign/regressionreplay.",
+  "pushed": false,
+  "reason": "CurrentCI38129763146attempt1 isrunning exact2c41890c; no subsequentpush untilownordereddeployment/liveacceptance.",
+  "remaining": "98distinct histories require individual review; no blanketmerge/delete. Originaldirtycheckout preserved."
+}
