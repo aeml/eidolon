@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { getRegionTheme } from './darkFantasyTheme.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
-import { createLappedSlateRoof, createDormerGable } from './LanternholdRoofGeometry.js';
+import { createLappedSlateRoof, createDormerGable, createRoofEndInfill } from './LanternholdRoofGeometry.js';
 import { createLanternholdArchPanel, createLanternholdArchFrame } from './LanternholdFacadeGeometry.js';
 import { createLanternholdCanopy } from './LanternholdCanopyGeometry.js';
 import { createLanternholdTentCanvas, createLanternholdTentFrame } from './LanternholdTentGeometry.js';
@@ -294,6 +294,28 @@ function addDormer(root, prefix, x, y, z) {
         [.13, 1.05, .15], [side * .9, .48, 1.04]);
 }
 
+function addRoofEnds(root, prefix, roofWidth, roofDepth, eaveY, rise,
+    wallWidth, wallDepth, wallTop, wallMaterial) {
+    const slope = Math.hypot(roofDepth / 2, rise), angle = Math.atan2(rise, roofDepth / 2);
+    // The backing's lower face lies .19m below its slope. A little overlap
+    // prevents a daylight seam while retaining the original slate silhouette.
+    const clearance = .15;
+    const shoulder = Math.max(.01, eaveY + rise * (1 - wallDepth / roofDepth) - clearance - wallTop);
+    const peak = eaveY + rise - clearance - wallTop;
+    const infill = geometry(`lanternhold-roof-end:${wallDepth}:${shoulder}:${peak}`,
+        () => createRoofEndInfill(wallDepth, shoulder, peak));
+    for (const end of [-1, 1]) {
+        addMesh(root, `${prefix}:gable-infill:${end}`, infill, wallMaterial,
+            { position: [end * (wallWidth / 2 - .08), wallTop - .02, 0] });
+        // Narrow bargeboards protect the exposed slate edge. Reuse the timber
+        // bucket in optimized structures; these do not add a draw/material.
+        for (const side of [-1, 1]) box(root, `${prefix}:roof-bargeboard:${end}:${side}`,
+            MATERIAL_SET.timber, [.16, .2, slope],
+            [end * (roofWidth / 2 - .08), eaveY + rise / 2 - .09, side * roofDepth / 4],
+            [side * angle, 0, 0]);
+    }
+}
+
 function addButtress(root, prefix, x, z, height, rotationY = 0) {
     addMesh(root, `${prefix}:buttress`, SHAPES.tapered, MATERIAL_SET.stone, {
         position: [x, height / 2, z],
@@ -367,6 +389,7 @@ function createOathhall(root) {
     box(root, 'oathhall:upper-timber-hall', MATERIAL_SET.paleStone, [15.3, 4.8, 13.2], [0, 9.15, 0]);
     addTimberFrame(root, 'oathhall', 15.3, 4.8, 13.2, 6.75);
     addGabledRoof(root, 'oathhall', 19.2, 17.8, 11.7, 4.4);
+    addRoofEnds(root, 'oathhall', 19.2, 17.8, 11.7, 4.4, 15.3, 13.2, 11.55, MATERIAL_SET.paleStone);
     for (const side of [-1, 1]) addDormer(root, `oathhall:${side}`, side * 5.1, 12.6, 5.8);
     addDoor(root, 'oathhall', 2.65, 7.95, 3.2, 4.6);
 
@@ -469,6 +492,7 @@ function createBlacksmith(root) {
     box(root, 'smithy:stone-workshop', MATERIAL_SET.stone, [11.8, 6.3, 10.2], [0, 3.85, 0]);
     addTimberFrame(root, 'smithy', 11.8, 6.3, 10.2, 0.7);
     addGabledRoof(root, 'smithy', 13.1, 11.8, 6.55, 3.25);
+    addRoofEnds(root, 'smithy', 13.1, 11.8, 6.55, 3.25, 11.8, 10.2, 7, MATERIAL_SET.stone);
     addDoor(root, 'smithy', 2.65, 5.28, 2.85, 4.25);
     addWindow(root, 'smithy:west-window', -4.05, 3.95, 5.25, 1.3, 1.8);
     addWindow(root, 'smithy:east-window', 4.05, 3.95, 5.25, 1.3, 1.8);
@@ -550,6 +574,7 @@ function createTradingHouse(root) {
     box(root, 'compact:ledger-hall', MATERIAL_SET.paleStone, [12.35, 6.0, 9.4], [0, 3.75, 0]);
     addTimberFrame(root, 'compact', 12.35, 6.0, 9.4, 0.75);
     addGabledRoof(root, 'compact', 13.5, 10.7, 6.55, 3.25);
+    addRoofEnds(root, 'compact', 13.5, 10.7, 6.55, 3.25, 12.35, 9.4, 6.75, MATERIAL_SET.paleStone);
     for (const side of [-1, 1]) addDormer(root, `compact:${side}`, side * 3.4, 7.1, 3.3);
     addDoor(root, 'compact', 2.7, 4.82, 2.8, 4.25);
     for (const x of [-4.55, -2.8, 2.8, 4.55]) {

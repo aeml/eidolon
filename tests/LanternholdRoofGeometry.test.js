@@ -35,3 +35,28 @@ test.each(['oathhall', 'trading_house'])('%s dormers keep picking and walking co
     }
     expect(batchTriangles).toBe(sourceTriangles);
 });
+
+test.each([['oathhall', 'oathhall', 15.3, 11.55, 16.1],
+    ['blacksmith', 'smithy', 11.8, 7, 9.8], ['trading_house', 'compact', 12.35, 6.75, 9.8]])(
+    '%s roof ends close the space above both wall ends without adding material batches', (id, prefix, wallWidth, wallTop, ridge) => {
+        const source = createProceduralLanternholdStructure(id);
+        const batched = createProceduralLanternholdStructure(id, { optimized: true });
+        source.updateMatrixWorld(true);
+        const parts = [];
+        source.traverse(part => { if (part.isMesh && part.userData.proceduralTownPart) parts.push(part); });
+        for (const sign of [-1, 1]) for (const fraction of [.25, .7]) {
+            const ray = new THREE.Raycaster(new THREE.Vector3(sign * (wallWidth / 2 + 1),
+                wallTop + (ridge - wallTop) * fraction, 0), new THREE.Vector3(-sign, 0, 0));
+            expect(ray.intersectObjects(parts, false)[0]?.object.name).toBe(`${prefix}:gable-infill:${sign}`);
+        }
+        const end = source.getObjectByName(`${prefix}:gable-infill:1`);
+        expect(end.geometry.attributes.normal.array.every(Number.isFinite)).toBe(true);
+        expect(end.geometry.attributes.uv.count).toBe(end.geometry.attributes.position.count);
+        expect(end.material.userData.worldSurfaceDetail).toBe('weathered-masonry');
+        const sourceMaterials = new Set(parts.map(part => part.material));
+        const batchedMaterials = new Set(batched.children.filter(part => part.userData.proceduralTownPart).map(part => part.material));
+        expect(batchedMaterials).toEqual(sourceMaterials);
+        const a = getLanternholdWalkCollider(source), b = getLanternholdWalkCollider(batched);
+        expect(a.box.equals(b.box)).toBe(true);
+        expect(batched.userData.drawMeshCount).toBeLessThanOrEqual(10);
+    });
