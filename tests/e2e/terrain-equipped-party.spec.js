@@ -1,4 +1,5 @@
 import { compareCampScene } from './camp-scene-comparison.js';
+import { compareSavedCharacterAdditiveEffects } from './additive-effect-scene-comparison.js';
 import { prepareActorCellMultiDrawParty } from './actor-cell-multidraw-party.js';
 import { capturePartySubmissionFrames } from './party-submission-frames.js';
 import { captureActorSubmissionCensus } from './actor-submission-census.js';
@@ -293,6 +294,7 @@ test('single native renderer observes three live equipped party socket peers on 
         await page.setViewportSize({ width: 1280, height: 844 });
         await page.addInitScript(quality => localStorage.setItem('eidolon.graphicsQuality', quality), quality);
         await loginAndEnterWorld(page, accounts[0]);
+        if (process.env.EIDOLON_E2E_ADDITIVE_EFFECTS_REVIEW === '1') await compareSavedCharacterAdditiveEffects(page, testInfo);
         if (process.env.EIDOLON_E2E_STATUS_HUD_REVIEW === '1') {
             await expect.poll(() => page.evaluate(() => window.game.player.mesh?.userData.equipmentVisualItemCount)).toBe(14);
             const button = page.locator('#minimap-buff-list [data-buff-id="well_rested"]');
