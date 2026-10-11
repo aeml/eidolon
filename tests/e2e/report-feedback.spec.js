@@ -124,7 +124,7 @@ for (const [width, height] of [[1280, 800], [390, 844], [844, 390]]) {
         await disclosure.focus(); await page.keyboard.press('Enter');
         await expect(page.locator('#help-alpha-status')).toHaveAttribute('open', '');
         await expect(help).toContainText('Closed beta waits until the game is nearly complete');
-        await expect(help).toContainText('optional diagnostics stay off');
+        await expect(help).toContainText('Optional diagnostics stay off unless you select them');
         const helpBounds = await help.boundingBox();
         expect(helpBounds.x).toBeGreaterThanOrEqual(0); expect(helpBounds.y).toBeGreaterThanOrEqual(0);
         expect(helpBounds.x + helpBounds.width).toBeLessThanOrEqual(width + 1);
@@ -135,6 +135,7 @@ for (const [width, height] of [[1280, 800], [390, 844], [844, 390]]) {
         expect(closeBounds.y + closeBounds.height).toBeLessThanOrEqual(helpBounds.y + helpBounds.height);
         const body = help.locator('.support-window__body');
         await body.evaluate(el => { el.scrollTop = el.scrollHeight; });
+        await help.getByText('Together, or a quieter evening:', { exact: true }).scrollIntoViewIfNeeded();
         await expect(help.getByText('Together, or a quieter evening:', { exact: true })).toBeInViewport();
         await disclosure.scrollIntoViewIfNeeded();
         await page.screenshot({ path: testInfo.outputPath('alpha-help-limits.png') });
