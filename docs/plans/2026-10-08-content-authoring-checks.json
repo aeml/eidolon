@@ -1,0 +1,39 @@
+{
+  "milestone": "1.86 content/update pipeline — staged, not published",
+  "checkedAt": "2026-10-08T04:35:00Z",
+  "acceptedRuntimeBase": "f9cbd41b2e5e0a9ca29dc19c07070658e57f0849",
+  "branch": "work/alpha-1-86-authoring-current-20261008",
+  "changes": [
+    "Existing equipment generator now supports read-only --check and import, rejects malformed coverage/schema/path/hash/grip/motion inputs, and correctly associates version IDs with intentionally shared model paths.",
+    "Contributor guidance maps canonical content/event/season sources to existing tools and records supplied asset/package notices without assigning a project license.",
+    "Bellkeeper's Cairn receives a short lore addition through its existing optional reading; location, IDs, eligibility, three-paragraph structure and reward-free behavior remain unchanged.",
+    "Actual phone scroll capture exposed the close control obscuring text. The reading now has a fixed control header and independently scrolling, keyboard-focusable text region; close/focus/input/lifetime behavior is retained."
+  ],
+  "retainedCatalog": {
+    "file": "src/assets/authoredEquipment.generated.js",
+    "sha256": "b3161c97227e0c698dd2ba4ddef626e58ba10d4458b4219feb60070ce79cacb1",
+    "result": "Byte-identical to accepted runtime; actual CLI/import/unknown-flag checks retain bytes and modification time. Four classes,36 base items,264 unique verified asset paths. Delivered GLBs/Blender sources and gameIntegration export metadata untouched."
+  },
+  "qualification": {
+    "focusedJest": "7 suites,47 checks PASS4.708s; root77905 terminal0. AuthoredEquipmentGenerator,AuthoredAssetCatalog,AssetAudit,WorldReading,WorldPopulation,LocalFontAssets,ChronicleInvestigationContent.",
+    "canonicalPopulation": "Actual generate-world-population.mjs --check PASS:520 spawn exclusions,8 optional readings; no generated footprint change.",
+    "lint": "All six changed JS files scoped ESLint max-warnings0 PASS; final browser-test-only correction lint PASS; git diff --check PASS.",
+    "native": "System Chrome1280px/390px,2 tests PASS12.7s; root6444 terminal0. Reading bounds, keyboard End reaches bottom, entire final paragraph lies inside scrolling region, close control above it, modal input isolation, close/reopen/death cleanup and no reward/network commands.",
+    "nativeEvidence": "/home/aeml/.local/share/eidolon-content-pipeline-evidence-20261008-3CjVMuEl/reading-final",
+    "inspection": "Actual desktop first reading and phone-sized ending inspected; final paragraph/footer readable, fixed close clear of content. Port4190 closed after terminal run.",
+    "noticesAndLinks": "29 local contributor/provenance links resolve. Existing published vendor/three/LICENSE and vendor/protobuf/LICENSE match installed supplied notices byte-for-byte; prepare-client builder and Pages assets/vendor copy retain them."
+  },
+  "failedAndIntermediateScopes": [
+    "Generator regression first failed because baseline lacked exported builder; no tests executed or old import writer run.",
+    "First new fixture used structuredClone unavailable in Jest's DOM context; corrected fixture construction, not game code.",
+    "Original-layout native2 PASS11.3s and added-scroll native2 PASS12.6s preceded the capture-discovered control/text overlap; neither proves the later layout.",
+    "First fixed-header native1 PASS/1 FAIL9.9s: scrollIntoView left final paragraph0.15625px outside the region. Final fixture uses actual keyboard End and waits for completed scroll, retaining strict paragraph/control bounds; final2 PASS supersedes that failed fixture scope."
+  ],
+  "candidatePatchNotes": [
+    "Improved optional lore reading on small screens, with independently scrolling text and a close control that cannot cover the story.",
+    "Expanded Bellkeeper's Cairn lore about Orun and the crystal's promise of shelter.",
+    "Added read-only authored-equipment validation and contributor/source-notice documentation."
+  ],
+  "remainingGate": "Project/art rights and complete third-party/backend/tool notice review remain open, as do ordered1.80 F1–F5 and later integration/modern-art/human gates. Guidance is localization-ready source practice, not a delivered translation system. No production event/season/economy policy, dependency, account, schema, version or access change. This narrow representative content check is not full1.86 acceptance, a physical-phone/connected campaign test, a new license grant or a deployment.",
+  "next": "Selectively integrate qualified files at the ordered milestone after fresh remote reconciliation; publish actual synchronized version/patch notes and independently accept exact live source then. Continue remaining code-owned roadmap work without substituting these checks for full gates."
+}
