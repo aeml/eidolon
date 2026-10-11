@@ -140,7 +140,7 @@ Every explicit requirement in those sources remains part of the completion audit
   and both copied package notices verify. Complete rights/1.86/campaign/device
   gates remain open. [Qualification](2026-10-11-content-authoring-qualification.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
-  unmerged tips are now **65**, reduced from 287; 578 of 643 local branch names
+  unmerged tips are now **65**, reduced from 287; 579 of 644 local branch names
   are already merged. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
   reset, stash or force-push. The latest historical merges retain dated diagnostic/release evidence and
@@ -184,6 +184,19 @@ Every explicit requirement in those sources remains part of the completion audit
   qualify GPU, earned progression or whole-game accessibility. Merged locally,
   unpublished for the coherent successor after34acceptance.
   [Qualification](2026-10-11-desktop-build-continuity-qualification.json).
+- **Direct trade review:** qualified source `032ac872`, ordinary master merge
+  `40c39d76`. Partner updates and acknowledgements preserve newer unsent drafts;
+  Confirm waits for outstanding offer requests and matching visible authority.
+  Whole Gold displayed/sent identity, explicit retry, recovery input freezing,
+  current-participant guards and stale-terminal handling retain server custody.
+  Centered scrollable window stays above HUD with44px actions and status
+  announcements.77distinct focused checks/six suites and three final native
+  desktop/portrait/landscape cases pass.15browser executions retain baseline
+  failure and changed-source/visual iterations;355CI cases discovered exactly
+  once, not execution passes. Prepared GPU-disabled UI/simulated replies do not
+  qualify durable settlement or physical-device/whole-game accessibility.
+  Merged locally, unpublished for the coherent successor after34acceptance.
+  [Qualification](2026-10-11-direct-trade-review-qualification.json).
 - **Dungeon radar context:** selected `260ea4d3`, qualified `5e039538`, merged
   `6d904417`. Entry-room walls and corridor mouths now fit the radar; the scale
   stays fixed while walking and advancing rooms.73 focused checks and two
@@ -248,6 +261,8 @@ Every explicit requirement in those sources remains part of the completion audit
   All five prerequisites passed; validation/deploy/live jobs skipped. One
   failed-job-only retry on identical source is active as attempt2; no gate,
   source, timeout or threshold changes. Initial failure retained.
+  Attempt2 predeploy/validation and both deployments now succeed; live QA is
+  active at town recovery/Well Rested. This is not terminal release acceptance.
   [Trace diagnosis/retry](2026-10-11-release34-predeploy-network-retry.json).
   Own corrected ordered release and fresh23asset acceptance still required.
   [Failure/correction](2026-10-11-release34-charging-fixture-correction.json),

@@ -435,7 +435,10 @@ For local Firefox QA, use port4173 or4192, not its restricted port4190.
   and17asset checks pass. [Acceptance](docs/plans/2026-10-11-public33-terminal-qualification.json).
   Source34 below is separately qualified. Original CI failed one incomplete test
   mesh fixture; a test-only correction is merged and pushed as3ec8bb15, with all23original
-  asset pins reproduced. Corrective CI38149199718 and public verification still follow.
+  asset pins reproduced. Corrective CI38149199718attempt2 has successful predeploy/validation and both
+  deployments; live town recovery/Well Rested QA is active. Its own terminal and
+  fresh23asset verification remain pending. Attempt1’s diagnosed transient
+  network failure is retained. [Diagnosis/retry](docs/plans/2026-10-11-release34-predeploy-network-retry.json).
   [Correction](docs/plans/2026-10-11-release34-charging-fixture-correction.json).
 - Current source version: `Alpha 1.79.34`, steady dungeon radar context, independent
   mixed-weapon Rogue grips and faster character geometry preparation, alongside
