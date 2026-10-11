@@ -1,0 +1,22 @@
+{
+  "recordedUTC": "2026-10-11T10:12:08.814280+00:00",
+  "branches": [
+    {
+      "name": "work/1-1-stale-hover-casting",
+      "head": "8bcb302a2378eeefad568238a501108e03474713"
+    },
+    {
+      "name": "work/release65-animation-rune-preparation",
+      "head": "1a491c4100617a86ab8d4c5ceb9de509327e1032"
+    }
+  ],
+  "reviewMerge": "5cfa8affa1340c725072314f9ad9c6e116d7706e",
+  "masterMerge": "2015521376020cbc9f6e537a086796674bb28e13",
+  "beforeMaster": "93ccd3498c096b68892e9d55735923f58ad7aa46",
+  "beforeUnmerged": 98,
+  "afterUnmerged": 96,
+  "treeUnchanged": true,
+  "validation": "Original stale-hover61fd4b96 and rune preparationdfc7a621 patches already integrated. Both dated receipts byte-identical. Three conflicts preserve current isolated-QA auth recovery route, hostile/support hover exclusion with isActive!==false and expanded IsolatedQADefaults terrain/auth checks. Exact whole-tree equality to first parent and both head ancestry verified; unchanged regression suites not replayed.",
+  "pushed": false,
+  "remaining": "96distinct local unmerged branch tips require review; unfinished/rejected experiments and originaldirty checkout preserved. No deletion, blanket merge, force push or new branch."
+}

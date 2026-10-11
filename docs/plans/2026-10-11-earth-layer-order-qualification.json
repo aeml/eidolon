@@ -1,0 +1,170 @@
+{
+  "recordedUTC": "2026-10-11T10:12:08.814280+00:00",
+  "source": "33a63731477ef726eb87e38e14c8983ef0c2af8b",
+  "base": "93ccd3498c096b68892e9d55735923f58ad7aa46",
+  "masterMerge": "35a37c6bef2edfc4ff50c1660934f8fd522248fe",
+  "published": false,
+  "change": "Earth v17 blends color, roughness and relief with the same ordered coverage. Moss rests above soil and leaf thickness above the preceding surface; mineral last overrides buried organic relief. Existing color values, maps, five custom fetches, geometry, placements, collisions, lighting and pass count retained.",
+  "focused": {
+    "initial": "11passed2failed/13 after old duplicated leaf-reference-count assertion; original log retained. Repaired assertion checks shared coverage, without weakening material behavior.",
+    "corrected": "10Earth checks pass25.453s before final coating height change; unchanged EarthSurface3checks passed initial run.",
+    "final": "3shader/ownership/layer cases pass12.353s;7unselected cases not counted as final passes. Other unchanged focused checks reused.",
+    "lint": "Full locked-dependency lint and diff check pass"
+  },
+  "native": {
+    "passed": 9,
+    "retries": 0,
+    "skipped": 0,
+    "seconds": 92.839837,
+    "scope": "7existing source/copied/phone Earth world cases, actual Earth High/Low GL samplers, quality shadow/composer resource transitions.45HUDviews/360sampled poses+4FXAAcomparison pairs+2isolated terrain images. Prepared equipped14slot Fighter; native AMD/RADV. Not connected normal input, continuous FPS or physical devices.",
+    "earlierDraft": "9passes before final coating height correction retained as draft only.",
+    "budgets": "Original350calls/250000tri High and200/85000Low pass; max196/181081High,89/50152Low. No targets changed.",
+    "ownership": "Observed rock/understory332High326Lowgeometries+2materials disposed once. Threeownedcompositionmaps disposed once/sharedmap0; not all-terrain VRAM accounting."
+  },
+  "maps": [
+    {
+      "key": "earth",
+      "quality": "high",
+      "albedoUnchanged": true,
+      "fields": [
+        {
+          "channel": "mask",
+          "bytes": 1048576,
+          "sha256": "9d8b5b040f09e5672620f3f7f7e8c485298b01625c85fb61558e19c2bdc38fde",
+          "unchanged": true
+        },
+        {
+          "channel": "detail",
+          "bytes": 262144,
+          "sha256": "893a06b06b2aaff289043833de3978f63e46636b4af15ecf7ba2dc80f80fbef8",
+          "unchanged": true
+        },
+        {
+          "channel": "surface",
+          "bytes": 262144,
+          "sha256": "a3e111deac16826a6615c56ad493ba5869800ea30c7d22fe9e1761848833c724",
+          "unchanged": true
+        }
+      ],
+      "ownedMapCount": 3,
+      "physicalDefaultsUnchanged": true
+    },
+    {
+      "key": "earth",
+      "quality": "low",
+      "albedoUnchanged": true,
+      "fields": [
+        {
+          "channel": "mask",
+          "bytes": 262144,
+          "sha256": "312742823ad8ca993323073b32c8d71f07c859ff64effe45f333d58e1ef9ac79",
+          "unchanged": true
+        },
+        {
+          "channel": "detail",
+          "bytes": 65536,
+          "sha256": "3d925a2aeceff66bfe74ac9058cf53e3f9b2e60f5fa671e5089e79e8db670158",
+          "unchanged": true
+        },
+        {
+          "channel": "surface",
+          "bytes": 65536,
+          "sha256": "76912334ba8e7385266d4da7addc63677d02ed3b154154dde7691efdad46b2bd",
+          "unchanged": true
+        }
+      ],
+      "ownedMapCount": 3,
+      "physicalDefaultsUnchanged": true
+    }
+  ],
+  "comparisonCustody": "material-comparison.mjs ran against exact93ccd349 master v16 before merge. Its master path is mutable and now v17; retained JSON is the completed before/after observation, not a rerunnable pinned baseline.",
+  "imageComparisons": {
+    "sourceCopyHighExact": 1,
+    "sourceCopyLowExact": 8,
+    "differences": [
+      {
+        "kind": "copy-high",
+        "view": "deep-west.png",
+        "channels": 3240960,
+        "changed": 604,
+        "maximum": 31,
+        "mean": 0.000779707247235387
+      },
+      {
+        "kind": "copy-high",
+        "view": "east-road.png",
+        "channels": 3240960,
+        "changed": 11006,
+        "maximum": 171,
+        "mean": 0.06363824298973143
+      },
+      {
+        "kind": "copy-high",
+        "view": "east-verge.png",
+        "channels": 3240960,
+        "changed": 23670,
+        "maximum": 193,
+        "mean": 0.07598551046603476
+      },
+      {
+        "kind": "copy-high",
+        "view": "far-east.png",
+        "channels": 3240960,
+        "changed": 9890,
+        "maximum": 173,
+        "mean": 0.06538649042259084
+      },
+      {
+        "kind": "copy-high",
+        "view": "grove-bed.png",
+        "channels": 3240960,
+        "changed": 31322,
+        "maximum": 177,
+        "mean": 0.13072114435229068
+      },
+      {
+        "kind": "copy-high",
+        "view": "road-break.png",
+        "channels": 3240960,
+        "changed": 12056,
+        "maximum": 131,
+        "mean": 0.09929989879541865
+      },
+      {
+        "kind": "copy-high",
+        "view": "road-detail.png",
+        "channels": 3240960,
+        "changed": 33101,
+        "maximum": 203,
+        "mean": 0.19692066548183254
+      },
+      {
+        "kind": "copy-high",
+        "view": "west-grove.png",
+        "channels": 3240960,
+        "changed": 4058,
+        "maximum": 86,
+        "mean": 0.009385182168246445
+      },
+      {
+        "kind": "copy-low",
+        "view": "deep-west.png",
+        "channels": 3240960,
+        "changed": 825,
+        "maximum": 146,
+        "mean": 0.003095379146919431
+      }
+    ],
+    "baseline": "Same frozen pre-v17 partitioned comparison High1/9exact,Low9/9exact. High differences predate v17; small new Lowdeepwest difference remains unattributed. No universal source/copy pixel equivalence or causal explanation claimed."
+  },
+  "manualReview": "Viewed ordinary High grovebed and phone Low eastroad alongside preceding High grovebed. Subtle material change; broad patch patterns, repeated plant clumps and wider modern-art requirements remain unfinished.",
+  "sanitization": "Anonymous prepared evidence scan passed0changes; no credentials used.",
+  "limits": "Original performance/art/device/contact/audio/operations/F1-F5/beta/launch/handoff remain open. Public30 remains accepted; corrected31 run38129763146 failed client conifer coverage and did not deploy.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-earth-layer-order-checks-20261011",
+    "entries": 148,
+    "files": 149,
+    "inventorySHA256": "7923e12af84c04e9d113ebbb14619d3a7748921f4fe74c587fd4d72d602b47a0",
+    "readOnly": true
+  }
+}
