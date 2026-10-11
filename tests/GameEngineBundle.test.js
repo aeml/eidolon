@@ -18,10 +18,17 @@ async function fixture() {
     fixtures.push(root);
     await mkdir(path.join(root, 'src/core'), { recursive: true });
     await mkdir(path.join(root, 'src/ui'), { recursive: true });
-    for (const filename of ['core/ActorGameplayGeometryWorker.js', 'core/ActorGameplayGeometryDelivery.js', 'art/GameplayBodyIndices.js', 'art/GameplayColorIndices.js', 'art/GameplayRigidIndices.js']) {
+    for (const filename of ['core/ActorGameplayGeometryWorker.js', 'core/ActorGameplayGeometryDelivery.js', 'art/GameplayBodyIndices.js', 'art/GameplayColorIndices.js', 'art/GameplayRigidIndices.js',
+        'core/GameplayGeometryFingerprint.js', 'core/GameplayGeometryPreparation.js', 'core/GameplayGeometryPrecomputed.js',
+        'core/GameplayGeometryIndexCodec.js', 'data/gameplayGeometryPrecomputed.js']) {
         await mkdir(path.dirname(path.join(root, 'src', filename)), { recursive: true });
         await cp(path.join('src', filename), path.join(root, 'src', filename));
     }
+    const catalogText = await readFile('src/data/gameplayGeometryPrecomputed.js', 'utf8');
+    const catalog = JSON.parse(catalogText.slice(catalogText.indexOf('export default ') + 15, -2));
+    const assetPath = catalog.url.slice(6);
+    await mkdir(path.dirname(path.join(root, assetPath)), { recursive: true });
+    await cp(assetPath, path.join(root, assetPath));
     await writeFile(path.join(root, 'package.json'), '{"type":"module"}');
     await writeFile(path.join(root, 'release.json'), '{"version":"Alpha 1.79.11"}');
     await writeFile(path.join(root, 'src/main.js'), "import {setToken} from './core/CredentialToken.js'; export {setToken}; export const enter=()=>import('./core/GameEngine.js'); export const retry=()=>import('./core/GameEngine.js?startupRetry=1');");
@@ -101,6 +108,7 @@ test('actual game graph compiles while login state and Three remain external', a
     const root = await mkdtemp(path.join(tmpdir(), 'eidolon-engine-actual-')); fixtures.push(root);
     await cp('src', path.join(root, 'src'), { recursive: true });
     await cp('vendor', path.join(root, 'vendor'), { recursive: true });
+    await cp('assets/gameplay-geometry', path.join(root, 'assets/gameplay-geometry'), { recursive: true });
     const originalMain = await readFile('src/main.js', 'utf8');
     const result = await bundleGameEngine(root);
     expect(result.bundledModules).toBeGreaterThan(350);

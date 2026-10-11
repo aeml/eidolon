@@ -282,6 +282,14 @@ Run these generators from the repository root (append `--check` for verification
 | Server `content/cosmetics.json` and `season-cosmetics.json` | `npm run generate:cosmetics` |
 | `assets/equipment/authored/` manifests, grips, motions and class runtime manifests/model bytes | `npm run generate:equipment` |
 | Actor, ability and attached-status visual manifests | `npm run docs:animations` |
+| Current geometry algorithms and supplied initial/four-class14-slot appearances | `npm run generate:gameplay-geometry` |
+
+The gameplay geometry generator uses local system Chrome (`EIDOLON_CHROME` can
+select another executable) and an isolated local fixture. It records exact index
+outputs without changing supplied vertex data. Its committed artifact is bound
+to the current algorithms and generator; `--check` validates it without launching
+a browser or rewriting files. Unknown or changed appearances and unavailable
+precomputed data use the existing bounded worker algorithms.
 
 Keep quest/site/class/base-item IDs, slot keys and authoritative enemy identifiers
 stable. Player-facing titles, acceptance/completion dialogue, summaries and lore
