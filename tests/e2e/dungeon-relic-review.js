@@ -12,6 +12,7 @@ export async function prepareDungeonRelicReference(page) {
 export async function reviewDungeonRelics(page, testInfo, type, layout) {
     for (const side of [-1, 1]) {
         const report = await page.evaluate(async ({ type, room, side }) => {
+            const { renderFrameInterval } = await import('/tests/e2e/renderFrameInterval.js');
             const state = window.__dungeonArtReview, { render, hero } = state;
             const radius = Math.max(8, Math.min(24, room.width * .2));
             const [x, z] = type === 'molten_core' ? [.56, .56] : type === 'tempest_spire' ? [.62, .52] : [.58, .55];
@@ -24,12 +25,16 @@ export async function reviewDungeonRelics(page, testInfo, type, layout) {
             let skin; hero.mesh.traverse(part => { if (!skin && part.isSkinnedMesh) skin = part; });
             const pose = () => skin.skeleton.bones.flatMap(bone => [...bone.position.toArray(), ...bone.quaternion.toArray()]);
             let previous = pose(), changed = false, last;
-            const played = hero.playAnimation(hero.getMovementAnimationName(true), true, true), intervals = [];
+            const played = hero.playAnimation(hero.getMovementAnimationName(true), true, true), intervals = [], rawIntervals = [];
             let calls = 0, triangles = 0;
             try {
                 for (let i = 0; i < 36; i++) {
                     const now = await new Promise(requestAnimationFrame);
-                    if (last !== undefined) intervals.push(now - last); last = now;
+                    if (last !== undefined) {
+                        rawIntervals.push(now - last);
+                        intervals.push(renderFrameInterval(now, last));
+                    }
+                    last = now;
                     hero.position.x = start.x + (i + 1) * .025;
                     hero.mesh.position.copy(hero.position); hero.updateAnimationMixer(1 / 60);
                     const current = pose(); changed ||= previous.some((v, i) => Math.abs(v - current[i]) > 1e-5); previous = current;
@@ -45,7 +50,8 @@ export async function reviewDungeonRelics(page, testInfo, type, layout) {
             return { type, side, quality: render.graphicsQuality, zoom: render.currentZoom,
                 relic: dressing?.userData.regionalRelic, batches: dressing?.userData.drawMeshCount,
                 equipped: hero.mesh.userData.equipmentVisualItemCount, authoredClass: hero.mesh.userData.authoredClass,
-                frames: 36, played, poseChanged: changed, calls, triangles, intervals,
+                frames: 36, played, poseChanged: changed, calls, triangles, intervals, rawIntervals,
+                intervalMethod: 'exact-reported-decimal',
                 medianMs: sorted[17], p95Ms: sorted[33],
                 gpu: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER) };
         }, { type, room: layout.rooms[0], side });

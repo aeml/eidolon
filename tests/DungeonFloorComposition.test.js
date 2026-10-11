@@ -63,7 +63,7 @@ test.each(DUNGEON_INTERIOR_IDS)('%s fits every identity and shares existing fini
             root.add(source, optimized);
         }
         expect(shapes.size).toBe(4);
-        expect(kit.metrics().detailGeometries).toBe(type === 'verdant_bastion_catacombs' ? 21 : 24);
+        expect(kit.metrics().detailGeometries).toBe(type === 'verdant_bastion_catacombs' ? 22 : 25);
         expect(kit.metrics().detailMaterials).toBe(type === 'verdant_bastion_catacombs' ? 8 : 7);
         const paving = root.getObjectByName('entry_gate:floor-composition');
         const old = root.getObjectByName('entry_gate:processional-paving');

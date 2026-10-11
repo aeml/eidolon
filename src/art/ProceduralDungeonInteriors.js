@@ -16,6 +16,7 @@ import { createDungeonPropSurfaceMaps } from './DungeonPropSurface.js';
 import { createDungeonProcessionalPaving } from './DungeonProcessionalPaving.js';
 import { createDungeonRegionalRelics } from './DungeonRegionalRelics.js';
 import { createDungeonFloorComposition, getDungeonFloorCompositionPlan } from './DungeonFloorComposition.js';
+import { createDungeonDaisMasonry } from './DungeonDaisMasonry.js';
 
 const TEXTURE_SIZE = 64;
 export const DUNGEON_FLOOR_TEXTURE_SPAN = 24;
@@ -497,7 +498,7 @@ function buildRegionalMotif(root, dungeonType, shapes, materials, radius) {
     }
 }
 
-function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials, composition) {
+function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials, composition, dais) {
     const identity = getDungeonRoomIdentityTag(room) || 'route_hall';
     const size = Math.max(40, Number(room.width) || 80);
     const radius = Math.max(8, Math.min(24, size * 0.2));
@@ -588,18 +589,19 @@ function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials, comp
         }
         break;
     case 'boss_lair':
-        addPart(root, 'boss:buried-dais', shapes.cylinder8, materials.shadow, {
-            position: [0, 0.16, 0], scale: [radius * 1.45, 0.32, radius * 1.45]
+        root.userData.bossMasonry = { ...dais.userData.dungeonDaisMasonry };
+        addPart(root, 'boss:buried-dais', dais, materials.paving, {
+            scale: [radius / 24, 1, radius / 24], castShadow: false
         });
         if (room.hook === 'crystal_vigil') {
             // The old broad, emissive boss disc overwhelms Maelin/the crystal
             // under bloom. This is decorative inlay, not a combat telegraph.
             addPart(root, 'boss:crystal-vigil-inlay', shapes.vigilInlay, materials.metal, {
-                position: [0, 0.35, 0], rotation: [-Math.PI / 2, 0, 0],
+                position: [0, 0.14, 0], rotation: [-Math.PI / 2, 0, 0],
                 scale: [radius * 0.84, radius * 0.84, 1], castShadow: false, receiveShadow: false
             });
         } else {
-            addFloorRing(root, shapes, materials.inlay, 'boss:soul-circuit', radius * 0.42, 0.35);
+            addFloorRing(root, shapes, materials.inlay, 'boss:soul-circuit', radius * 0.42, 0.14);
         }
         for (let i = 0; i < 6; i += 1) {
             const angle = (i / 6) * Math.PI * 2;
@@ -751,7 +753,8 @@ export function createProceduralDungeonInteriorKit(dungeonType, { quality = 'hig
         createRoomDressing(room, roomIndex, { optimized = true } = {}) {
             const plan = getDungeonFloorCompositionPlan(getDungeonRoomIdentityTag(room));
             if (!compositions.has(plan)) compositions.set(plan, createDungeonFloorComposition(plan));
-            const source = buildRoomDressing(dungeonType, room, roomIndex, shapes, detailMaterials, compositions.get(plan));
+            if (plan === 'arena' && !compositions.has('dais')) compositions.set('dais', createDungeonDaisMasonry());
+            const source = buildRoomDressing(dungeonType, room, roomIndex, shapes, detailMaterials, compositions.get(plan), compositions.get('dais'));
             const result = optimized ? batchDressing(source) : source;
             result.add(createDungeonRoomStatePresentation(dungeonType, room, roomIndex, { worldSpace: optimized }));
             return result;

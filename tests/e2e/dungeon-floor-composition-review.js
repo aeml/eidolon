@@ -20,11 +20,12 @@ export async function reviewDungeonFloorComposition(page, testInfo, key, type, l
             const plan = getDungeonFloorCompositionPlan(getDungeonRoomIdentityTag(room));
             if (!selected.has(plan)) selected.set(plan, { room, index, plan });
         });
-        return [...selected.values()];
+        return [...selected.values()].flatMap(row => row.plan === 'arena'
+            ? [{ ...row, view: 'center' }, { ...row, view: 'edge' }] : [{ ...row, view: 'feature' }]);
     }, layout);
     const reports = [];
-    for (const { room, index, plan } of rooms) {
-        const report = await page.evaluate(async ({ key, type, room, index, plan, compare }) => {
+    for (const { room, index, plan, view } of rooms) {
+        const report = await page.evaluate(async ({ key, type, room, index, plan, view, compare }) => {
             const { applyDungeonRoomStatePresentation } = await import('/src/art/ProceduralDungeonInteriors.js');
             const state = window[key], { render, hero } = state;
             const candidate = render.instanceEnvironmentGroup.children.find(part =>
@@ -32,7 +33,7 @@ export async function reviewDungeonFloorComposition(page, testInfo, key, type, l
             if (!candidate) throw new Error('Missing actual production room dressing');
             const roomState = candidate.children.find(part => part.userData.proceduralDungeonRoomState);
             applyDungeonRoomStatePresentation(roomState, { cleared: false }, { currentRoomIndex: index, objectiveRoomIndex: index });
-            hero.position.set(room.x, .1, room.z + (plan === 'arena' ? 17 : 8));
+            hero.position.set(room.x, .1, room.z + (plan === 'arena' ? (view === 'edge' ? 17 : 0) : 8));
             hero.mesh.position.copy(hero.position);
             render.setEnvironmentContext(type, hero.position, true);
             render.setCameraTarget(hero.position); render.updateEnvironmentLighting(hero.position, 0);
@@ -42,9 +43,11 @@ export async function reviewDungeonFloorComposition(page, testInfo, key, type, l
             const clip = hero.getMovementAnimationName(true);
             const played = Boolean(clip && hero.playAnimation(clip, true, true));
             let calls = 0, triangles = 0;
-            for (let frame = 0; frame < 24; frame++) {
+            const frames = plan === 'arena' ? 48 : 24;
+            for (let frame = 0; frame < frames; frame++) {
                 await new Promise(requestAnimationFrame);
-                hero.position.x += .025; hero.mesh.position.copy(hero.position); hero.updateAnimationMixer(1 / 60);
+                hero.position.x += plan === 'arena' ? .075 : .025;
+                hero.mesh.position.copy(hero.position); hero.updateAnimationMixer(1 / 60);
                 render.setCameraTarget(hero.position); render.render();
                 calls = Math.max(calls, render.renderer.info.render.calls);
                 triangles = Math.max(triangles, render.renderer.info.render.triangles);
@@ -72,29 +75,40 @@ export async function reviewDungeonFloorComposition(page, testInfo, key, type, l
                 children.splice(children.indexOf(candidate), 1); children.splice(childIndex, 0, candidate);
                 render.disposeObjectResources(previous); render.render();
             };
-            return { type, plan, index, quality: render.graphicsQuality, zoom: render.currentZoom,
-                composition: candidate.userData.floorComposition, frames: 24, played, poseChanged,
+            return { type, plan, view, index, quality: render.graphicsQuality, zoom: render.currentZoom,
+                composition: candidate.userData.floorComposition, masonry: candidate.userData.bossMasonry || null,
+                frames, played, poseChanged,
                 equipped: hero.mesh.userData.equipmentVisualItemCount, calls, triangles,
                 referenceCompared: compare,
+                referenceComposition: previous?.userData.floorComposition || null,
+                referenceMasonry: previous?.userData.bossMasonry || null,
+                referencePaving: Boolean(previous?.userData.processionalPaving),
                 addedTriangles: previous ? sum(candidate) - sum(previous) : null,
                 addedBatches: previous ? candidate.userData.drawMeshCount - previous.userData.drawMeshCount : null,
                 resources: { ...render.renderer.info.memory } };
-        }, { key, type, room, index, plan, compare });
+        }, { key, type, room, index, plan, view, compare });
         try {
             expect(report.zoom).toBe(15); expect(report.equipped).toBe(14);
             expect(report.played).toBe(true); expect(report.poseChanged).toBe(true);
             expect(report.composition).toMatchObject({ plan, visualOnly: true });
+            if (plan === 'arena') expect(report.masonry).toMatchObject({ outerRadius: 17.4, visualOnly: true });
             if (compare) {
-                expect(report.addedTriangles).toBe(report.composition.stones * 10);
-                expect(report.addedBatches).toBe(plan === 'nave' || plan === 'court' ? 0 : 1);
+                const borderDelta = (report.composition.stones - (report.referenceComposition?.stones || 0)) * 10;
+                // The old closed eight-sided cylinder has32triangles and its
+                // own shadow-casting batch. Masonry joins the existing paving.
+                const daisDelta = report.masonry ? report.masonry.triangles - (report.referenceMasonry?.triangles || 32) : 0;
+                expect(report.addedTriangles).toBe(borderDelta + daisDelta);
+                expect(report.addedBatches).toBe((report.referenceComposition || report.referencePaving ? 0 : 1)
+                    - (report.masonry && !report.referenceMasonry ? 1 : 0));
             }
             expect(report.calls).toBeLessThanOrEqual(report.quality === 'low' ? 200 : 350);
             expect(report.triangles).toBeLessThanOrEqual(report.quality === 'low' ? 85000 : 250000);
-            await page.screenshot({ path: testInfo.outputPath(`${type}-composition-${plan}.png`),
+            const label = `${type}-composition-${plan}${view === 'feature' ? '' : `-${view}`}`;
+            await page.screenshot({ path: testInfo.outputPath(`${label}.png`),
                 style: '#perf-overlay { visibility: hidden !important; }' });
             if (compare) {
                 report.reference = await page.evaluate(key => window[key].showCompositionReference(), key);
-                await page.screenshot({ path: testInfo.outputPath(`${type}-composition-${plan}-reference.png`),
+                await page.screenshot({ path: testInfo.outputPath(`${label}-reference.png`),
                     style: '#perf-overlay { visibility: hidden !important; }' });
             }
             reports.push(report);

@@ -465,10 +465,14 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} element
                     const { plan, stones } = dressing.userData.floorComposition;
                     if (plans.has(plan)) continue;
                     const room = layout.rooms[dressing.userData.roomIndex];
-                    target.set(room.x, .1, room.z + (plan === 'arena' ? 17 : 8));
-                    render.setCameraTarget(target); render.updateEnvironmentLighting(target, 0); render.render();
+                    const views = [];
+                    for (const [view, offset] of plan === 'arena' ? [['center', 0], ['edge', 17]] : [['feature', 8]]) {
+                        target.set(room.x, .1, room.z + offset);
+                        render.setCameraTarget(target); render.updateEnvironmentLighting(target, 0); render.render();
+                        views.push({ view, calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles });
+                    }
                     plans.set(plan, { plan, stones, calls: render.renderer.info.render.calls,
-                        triangles: render.renderer.info.render.triangles });
+                        triangles: render.renderer.info.render.triangles, masonry: dressing.userData.bossMasonry || null, views });
                 }
                 samples.push({ type, compiled, floorLinked: Boolean(program && gl.getProgramParameter(program.program, gl.LINK_STATUS)),
                     patina: floor.material.userData.elementalFloorPatina,
@@ -509,6 +513,15 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} element
             expect(part.stones).toBeGreaterThan(0); expect(part.stones).toBeLessThanOrEqual(44);
             expect(part.calls).toBeGreaterThan(0); expect(part.calls).toBeLessThanOrEqual(quality === 'low' ? 200 : 350);
             expect(part.triangles).toBeGreaterThan(0); expect(part.triangles).toBeLessThanOrEqual(quality === 'low' ? 85000 : 250000);
+            if (part.plan === 'arena') {
+                expect(part.masonry).toMatchObject({ outerRadius: 17.4, visualOnly: true });
+                expect(part.masonry.triangles).toBeLessThanOrEqual(640);
+                expect(part.views.map(view => view.view)).toEqual(['center', 'edge']);
+            }
+            for (const view of part.views) {
+                expect(view.calls).toBeGreaterThan(0); expect(view.calls).toBeLessThanOrEqual(quality === 'low' ? 200 : 350);
+                expect(view.triangles).toBeGreaterThan(0); expect(view.triangles).toBeLessThanOrEqual(quality === 'low' ? 85000 : 250000);
+            }
         }
         if (row.type === 'verdant_bastion_catacombs') expect(row.relics).toEqual([]);
         else {
