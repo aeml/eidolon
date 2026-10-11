@@ -1,0 +1,528 @@
+{
+  "recordedUTC": "2026-10-11T17:14:31.938174+00:00",
+  "status": "qualified completed historical branches ready for ordinary master merge; runtime source unchanged",
+  "qualification": {
+    "source": "4145fd91676e0d2ab42ffa1e04ba44ecdb86f77d",
+    "base": "dc0a9228",
+    "runtimeSourceUnchanged": true,
+    "restored": [
+      "both terrain profiles and landing floors in existing checkpoint tests",
+      "visible grove performance sample while retaining all three original road samples and exact thresholds",
+      "two dated historical qualification receipts"
+    ],
+    "native": {
+      "cases": [
+        {
+          "title": "Earth elevation preview uses the sampled surface: high",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "Earth elevation preview uses the sampled surface: low",
+          "status": "passed",
+          "retry": 0
+        }
+      ],
+      "profiles": [
+        {
+          "case": "Earth elevation preview uses the sampled surface: high",
+          "name": "raised-terrain-grove-formation-profile",
+          "quality": "high",
+          "frames": 120,
+          "median": 16.7,
+          "p95": 16.8,
+          "calls": 66,
+          "triangles": 73757,
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+        },
+        {
+          "case": "Earth elevation preview uses the sampled surface: high",
+          "name": "raised-terrain-west-bank-profile",
+          "quality": "high",
+          "frames": 120,
+          "median": 16.7,
+          "p95": 33.3,
+          "calls": 181,
+          "triangles": 127338,
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+        },
+        {
+          "case": "Earth elevation preview uses the sampled surface: high",
+          "name": "raised-terrain-woodland-cut-profile",
+          "quality": "high",
+          "frames": 120,
+          "median": 16.7,
+          "p95": 33.3,
+          "calls": 202,
+          "triangles": 155240,
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+        },
+        {
+          "case": "Earth elevation preview uses the sampled surface: high",
+          "name": "raised-terrain-outer-fold-profile",
+          "quality": "high",
+          "frames": 120,
+          "median": 16.7,
+          "p95": 16.8,
+          "calls": 143,
+          "triangles": 122692,
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+        },
+        {
+          "case": "Earth elevation preview uses the sampled surface: low",
+          "name": "raised-terrain-grove-formation-profile",
+          "quality": "low",
+          "frames": 120,
+          "median": 16.7,
+          "p95": 16.8,
+          "calls": 31,
+          "triangles": 25821,
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+        },
+        {
+          "case": "Earth elevation preview uses the sampled surface: low",
+          "name": "raised-terrain-west-bank-profile",
+          "quality": "low",
+          "frames": 120,
+          "median": 16.7,
+          "p95": 16.7,
+          "calls": 97,
+          "triangles": 52481,
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+        },
+        {
+          "case": "Earth elevation preview uses the sampled surface: low",
+          "name": "raised-terrain-woodland-cut-profile",
+          "quality": "low",
+          "frames": 120,
+          "median": 16.7,
+          "p95": 16.8,
+          "calls": 59,
+          "triangles": 44048,
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+        },
+        {
+          "case": "Earth elevation preview uses the sampled surface: low",
+          "name": "raised-terrain-outer-fold-profile",
+          "quality": "low",
+          "frames": 120,
+          "median": 16.7,
+          "p95": 16.7,
+          "calls": 63,
+          "triangles": 42594,
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+        }
+      ],
+      "seconds": 52.7,
+      "retries": 0,
+      "skips": 0,
+      "comparisons": [
+        {
+          "case": "Earth elevation preview uses the sampled surface: high",
+          "name": "bastion-west-bank-shadow-equivalence",
+          "result": {
+            "changed": 0,
+            "batchingChanged": 0,
+            "total": 270080,
+            "costs": [
+              {
+                "frame": 3424,
+                "calls": 299,
+                "triangles": 223009,
+                "points": 140,
+                "lines": 0
+              },
+              {
+                "frame": 3425,
+                "calls": 166,
+                "triangles": 127323,
+                "points": 140,
+                "lines": 0
+              },
+              {
+                "frame": 3426,
+                "calls": 129,
+                "triangles": 144949,
+                "points": 140,
+                "lines": 0
+              }
+            ]
+          }
+        },
+        {
+          "case": "Earth elevation preview uses the sampled surface: high",
+          "name": "bastion-woodland-cut-shadow-equivalence",
+          "result": {
+            "changed": 0,
+            "batchingChanged": 1,
+            "total": 270080,
+            "costs": [
+              {
+                "frame": 5859,
+                "calls": 243,
+                "triangles": 199783,
+                "points": 140,
+                "lines": 0
+              },
+              {
+                "frame": 5860,
+                "calls": 187,
+                "triangles": 155225,
+                "points": 140,
+                "lines": 0
+              },
+              {
+                "frame": 5861,
+                "calls": 153,
+                "triangles": 187806,
+                "points": 140,
+                "lines": 0
+              }
+            ]
+          }
+        },
+        {
+          "case": "Earth elevation preview uses the sampled surface: high",
+          "name": "bastion-outer-fold-shadow-equivalence",
+          "result": {
+            "changed": 0,
+            "batchingChanged": 1,
+            "total": 270080,
+            "costs": [
+              {
+                "frame": 8294,
+                "calls": 262,
+                "triangles": 214333,
+                "points": 140,
+                "lines": 0
+              },
+              {
+                "frame": 8295,
+                "calls": 128,
+                "triangles": 122677,
+                "points": 140,
+                "lines": 0
+              },
+              {
+                "frame": 8296,
+                "calls": 116,
+                "triangles": 149030,
+                "points": 140,
+                "lines": 0
+              }
+            ]
+          }
+        },
+        {
+          "case": "Earth elevation preview uses the sampled surface: high",
+          "name": "surface-culling-equivalence",
+          "result": {
+            "changed": 0,
+            "total": 270080,
+            "costs": [
+              {
+                "calls": 383,
+                "triangles": 2254015
+              },
+              {
+                "calls": 70,
+                "triangles": 72669
+              }
+            ]
+          }
+        },
+        {
+          "case": "Earth elevation preview uses the sampled surface: low",
+          "name": "bastion-west-bank-shadow-equivalence",
+          "result": {
+            "changed": 0,
+            "batchingChanged": 1,
+            "total": 270080,
+            "costs": [
+              {
+                "frame": 229,
+                "calls": 97,
+                "triangles": 52481,
+                "points": 0,
+                "lines": 0
+              },
+              {
+                "frame": 230,
+                "calls": 97,
+                "triangles": 52481,
+                "points": 0,
+                "lines": 0
+              },
+              {
+                "frame": 231,
+                "calls": 93,
+                "triangles": 65561,
+                "points": 0,
+                "lines": 0
+              }
+            ]
+          }
+        },
+        {
+          "case": "Earth elevation preview uses the sampled surface: low",
+          "name": "bastion-woodland-cut-shadow-equivalence",
+          "result": {
+            "changed": 0,
+            "batchingChanged": 2,
+            "total": 270080,
+            "costs": [
+              {
+                "frame": 384,
+                "calls": 59,
+                "triangles": 44048,
+                "points": 0,
+                "lines": 0
+              },
+              {
+                "frame": 385,
+                "calls": 59,
+                "triangles": 44048,
+                "points": 0,
+                "lines": 0
+              },
+              {
+                "frame": 386,
+                "calls": 77,
+                "triangles": 55939,
+                "points": 0,
+                "lines": 0
+              }
+            ]
+          }
+        },
+        {
+          "case": "Earth elevation preview uses the sampled surface: low",
+          "name": "bastion-outer-fold-shadow-equivalence",
+          "result": {
+            "changed": 0,
+            "batchingChanged": 1,
+            "total": 270080,
+            "costs": [
+              {
+                "frame": 539,
+                "calls": 63,
+                "triangles": 42594,
+                "points": 0,
+                "lines": 0
+              },
+              {
+                "frame": 540,
+                "calls": 63,
+                "triangles": 42594,
+                "points": 0,
+                "lines": 0
+              },
+              {
+                "frame": 541,
+                "calls": 81,
+                "triangles": 56792,
+                "points": 0,
+                "lines": 0
+              }
+            ]
+          }
+        },
+        {
+          "case": "Earth elevation preview uses the sampled surface: low",
+          "name": "surface-culling-equivalence",
+          "result": {
+            "changed": 0,
+            "total": 270080,
+            "costs": [
+              {
+                "calls": 372,
+                "triangles": 1093080
+              },
+              {
+                "calls": 63,
+                "triangles": 42594
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "checkpoint": {
+      "distinctCases": [
+        "TestDungeonTownReturnUsesLatestClearedBossCheckpoint/flat-v1/recall",
+        "TestDungeonTownReturnUsesLatestClearedBossCheckpoint/flat-v1/respawn",
+        "TestDungeonTownReturnUsesLatestClearedBossCheckpoint/earth-elevation-rocks-v1/recall",
+        "TestDungeonTownReturnUsesLatestClearedBossCheckpoint/earth-elevation-rocks-v1/respawn",
+        "TestDungeonCheckpointRequiresContiguousClearedRoute"
+      ],
+      "race": "pass",
+      "seconds": 1.993
+    },
+    "static": {
+      "scopedLint": "pass",
+      "gofmt": "pass",
+      "diff": "pass"
+    },
+    "existingEvidence": "All current art runtime files match accepted35 exactly. Its successful client CI and retained component qualification remain valid; no unchanged Jest/campaign/soak replay."
+  },
+  "histories": [
+    {
+      "before": "dc0a9228694ca0ed6d6727fc6d1feb0f7bb62c2c",
+      "branch": "work/alpha-1-87-moonfrost-current-20261008",
+      "source": "f8ffef302f033cfc9e1d7184a19289e149413c70",
+      "paths": [
+        {
+          "path": "docs/plans/2026-10-08-moonfrost-surface-checks.json",
+          "sourceSHA256": "6bfef8aed224dff190c81e17ea22875afecf8db7cdbd2dae737173185f4c539f",
+          "beforeSHA256": "6bfef8aed224dff190c81e17ea22875afecf8db7cdbd2dae737173185f4c539f",
+          "selectedSHA256": "6bfef8aed224dff190c81e17ea22875afecf8db7cdbd2dae737173185f4c539f",
+          "choice": "retained-current"
+        },
+        {
+          "path": "goal.md",
+          "sourceSHA256": "fffc5755374b1144945a82e3d4f87815b9665a4d5df5522409a7e879394bdf01",
+          "beforeSHA256": "4c9805219245752ee5fe2e970a14d7e8e09ddfe26beaccb0933957e09c87ca75",
+          "selectedSHA256": "4c9805219245752ee5fe2e970a14d7e8e09ddfe26beaccb0933957e09c87ca75",
+          "choice": "retained-current"
+        },
+        {
+          "path": "src/art/ElementalTerrainSurface.js",
+          "sourceSHA256": "dabc380f6ea25320ab087e88699a0b43fe06e7c18b1041ea194e8429c43586c1",
+          "beforeSHA256": "c9318a4df2db5f54ea1d072408e634a2579d9660ecfbf4af84599b2504712871",
+          "selectedSHA256": "c9318a4df2db5f54ea1d072408e634a2579d9660ecfbf4af84599b2504712871",
+          "choice": "retained-current"
+        },
+        {
+          "path": "tests/ElementalTerrainSurface.test.js",
+          "sourceSHA256": "7802e3515824b66ca3e83d62f88604e19428a541f023136241b5829af2cb5cf4",
+          "beforeSHA256": "f925eabd7fe596f2d8586cbec2a7c90946832f5eda1e1bdd2f3a6c9815aebd8c",
+          "selectedSHA256": "f925eabd7fe596f2d8586cbec2a7c90946832f5eda1e1bdd2f3a6c9815aebd8c",
+          "choice": "retained-current"
+        },
+        {
+          "path": "tests/e2e/terrain-polish.spec.js",
+          "sourceSHA256": "a1d85e21a9accbc722ae286ac09666549adba571316ec4c266d12adc51a02962",
+          "beforeSHA256": "203ba0cec330c76f59d930a5ceda961e872fa34ecdf810b2fe279eb676d86857",
+          "selectedSHA256": "203ba0cec330c76f59d930a5ceda961e872fa34ecdf810b2fe279eb676d86857",
+          "choice": "retained-current"
+        }
+      ],
+      "merge": "062348d72634f6417cbb5a30f6f6d513f3763607",
+      "changedFromCurrent": []
+    },
+    {
+      "before": "062348d72634f6417cbb5a30f6f6d513f3763607",
+      "branch": "work/alpha-1-87-raised-budget-current-20261008",
+      "source": "165c423fbc9a4f11500ef003e855c0cfe2049865",
+      "paths": [
+        {
+          "path": "docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md",
+          "sourceSHA256": "aec559c3686ae9cc42230c60ae0e673a48f1f675b5eee34b07dc12966a78d049",
+          "beforeSHA256": "9ae4ae0516a88518c68ce68bd61e3931dca91a637d06a72ad6ef1b1981f8c867",
+          "selectedSHA256": "9ae4ae0516a88518c68ce68bd61e3931dca91a637d06a72ad6ef1b1981f8c867",
+          "choice": "retained-current"
+        },
+        {
+          "path": "docs/plans/2026-10-07-release1-80-threat-and-exception-ledger.md",
+          "sourceSHA256": "b0c11e1ac49bcc30cfa90e138c3ef162bd04094438b636f0180df98a4d8531c9",
+          "beforeSHA256": "672413b1fc9404440f25a84d3f516f063ec13608e2182b80cd7b26e43e117d4f",
+          "selectedSHA256": "672413b1fc9404440f25a84d3f516f063ec13608e2182b80cd7b26e43e117d4f",
+          "choice": "retained-current"
+        },
+        {
+          "path": "docs/plans/2026-10-08-raised-terrain-reference-checks.json",
+          "sourceSHA256": "e32d307dfdd7d69408a7a641c50ae8eca9a2b41eb119c4c21f8267ebe9a5b3df",
+          "beforeSHA256": null,
+          "selectedSHA256": "e32d307dfdd7d69408a7a641c50ae8eca9a2b41eb119c4c21f8267ebe9a5b3df",
+          "choice": "restored-historical-receipt"
+        },
+        {
+          "path": "goal.md",
+          "sourceSHA256": "808291ea8a035265992c1160f2b36383fd1339cae7babb46f7bf03982b3e05a8",
+          "beforeSHA256": "4c9805219245752ee5fe2e970a14d7e8e09ddfe26beaccb0933957e09c87ca75",
+          "selectedSHA256": "4c9805219245752ee5fe2e970a14d7e8e09ddfe26beaccb0933957e09c87ca75",
+          "choice": "retained-current"
+        },
+        {
+          "path": "server/internal/game/dungeon_checkpoint_test.go",
+          "sourceSHA256": "74bef4f6977c11e6fc7a05442181eb0fc67703f34756340107c2bcf8bb48061d",
+          "beforeSHA256": "7fa70c96753aefb1ba0da30fbebb8e3c7b6efb46c78ee8371fd6a2a8e6e6811a",
+          "selectedSHA256": "74bef4f6977c11e6fc7a05442181eb0fc67703f34756340107c2bcf8bb48061d",
+          "choice": "restore-completed-checkpoint-fixture"
+        }
+      ],
+      "merge": "3afbe51a1db7f44cf9071b451d1a74578718f299",
+      "changedFromCurrent": [
+        "docs/plans/2026-10-08-raised-terrain-reference-checks.json",
+        "server/internal/game/dungeon_checkpoint_test.go"
+      ]
+    },
+    {
+      "before": "3afbe51a1db7f44cf9071b451d1a74578718f299",
+      "branch": "work/alpha-1-87-outcrop-art-current-20261008",
+      "source": "72a9c37fad564cf5a43df3ee8f43dd7ca875e509",
+      "paths": [
+        {
+          "path": "docs/plans/2026-10-08-outcrop-art-checks.json",
+          "sourceSHA256": "d28affaca5247aff522e60dad53b18963bc05573e74361a7febb3c5b0a034096",
+          "beforeSHA256": null,
+          "selectedSHA256": "d28affaca5247aff522e60dad53b18963bc05573e74361a7febb3c5b0a034096",
+          "choice": "restored-historical-receipt"
+        },
+        {
+          "path": "goal.md",
+          "sourceSHA256": "91d82e1eb586d305923965a16e6d8a369c141d74427e19caf19076cc3e7d1f9f",
+          "beforeSHA256": "4c9805219245752ee5fe2e970a14d7e8e09ddfe26beaccb0933957e09c87ca75",
+          "selectedSHA256": "4c9805219245752ee5fe2e970a14d7e8e09ddfe26beaccb0933957e09c87ca75",
+          "choice": "retained-current"
+        },
+        {
+          "path": "src/art/EarthOutcrops.js",
+          "sourceSHA256": "e6d98aa57b531bf24e89b1c1f86f295045ed626fcee18126670302a0ccb8a356",
+          "beforeSHA256": "8c48725d0e17f7823511d8f40a323ffbabc1de09bca9cebfdb1ac75188674762",
+          "selectedSHA256": "8c48725d0e17f7823511d8f40a323ffbabc1de09bca9cebfdb1ac75188674762",
+          "choice": "retained-current"
+        },
+        {
+          "path": "src/art/WorldSurfaceDetail.js",
+          "sourceSHA256": "88389da4b097aacd146e3b88e1aaa46e6383f79830b771855fcb1bf4db0fe5e8",
+          "beforeSHA256": "8a0b969379c5874b88345cb3aad78d7e80e5912735700f8d95f992af19e1c0da",
+          "selectedSHA256": "8a0b969379c5874b88345cb3aad78d7e80e5912735700f8d95f992af19e1c0da",
+          "choice": "retained-current"
+        },
+        {
+          "path": "tests/EarthOutcrops.test.js",
+          "sourceSHA256": "aacebb15b0fa11d9604caa0319814f05c99d5454244478d4f4e65adcb88f7745",
+          "beforeSHA256": "43a04c436e777e08fd151fda51cda49d3cb5f0500df900f2b868f37c6352f747",
+          "selectedSHA256": "43a04c436e777e08fd151fda51cda49d3cb5f0500df900f2b868f37c6352f747",
+          "choice": "retained-current"
+        },
+        {
+          "path": "tests/WorldSurfaceDetail.test.js",
+          "sourceSHA256": "fe329ec1568691b8d442fe7aae4f5e29bbd8871da9909dc6c45e7047571d6213",
+          "beforeSHA256": "0ffb68175caaba6a19b4e03f157333c7ac89583e53decd9f5e2fa85a6b109313",
+          "selectedSHA256": "0ffb68175caaba6a19b4e03f157333c7ac89583e53decd9f5e2fa85a6b109313",
+          "choice": "retained-current"
+        },
+        {
+          "path": "tests/e2e/world-elevation-preview.spec.js",
+          "sourceSHA256": "ae9ca4cc83321394db9e2b336d577cd6d0227b9b16aaead4ca33e2763d651416",
+          "beforeSHA256": "a47eed97a3d9e18a560701341143046036b26f8f3a02cabcb04ba7ed0e62d46b",
+          "selectedSHA256": "13f69d6593b731e951c920ae6a4313d2a7bb610ffc1f5d7a531e18804d364743",
+          "choice": "restore-missing-grove-profile-with-current-willow-and-all-original-road-gates"
+        }
+      ],
+      "merge": "4145fd91676e0d2ab42ffa1e04ba44ecdb86f77d",
+      "changedFromCurrent": [
+        "docs/plans/2026-10-08-outcrop-art-checks.json",
+        "tests/e2e/world-elevation-preview.spec.js"
+      ]
+    }
+  ],
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-terrain-history-checks-20261011",
+    "inventoryEntries": 30,
+    "inventorySHA256": "eeddcc37d4a80bda9a84199ef9141d85905450bc82766fd0e722d082edc657a8"
+  },
+  "limits": "Historical October8 receipts remain dated scoped evidence, not current production or final-art approval. Native previews use prepared unequipped actors without connected gameplay; eight passing samples do not erase equipped-party/dynamic/combat/device failures. Production terrain remains flat-v1. No release, access, authority, assets, gameplay runtime, campaign or soak change. Full goal remains active."
+}
