@@ -1,0 +1,62 @@
+{
+  "source": "a58f7e894d0e125f9ff9b921c30eaa43a0f8b812",
+  "stage": "c0b1a6d9968f3a9e89519ad06d9b0afc6f023889",
+  "status": "Qualified roof material scope; ready for ordinary master merge, not deployed.",
+  "CPU": "Reuse38checks/four suites/lint and exact complete-geometry/collision invariance; all six integrated source/test files byte-exact to qualified CPU stage.",
+  "views": {
+    "pairedImages": 48,
+    "profiles": 2,
+    "firstScreen": "32paired ordinary front-wall/decorative images; first ordinary views crop most roof detail.",
+    "visibleFollowup": "16paired ordinary right-edge roof-visible images at unchanged normal zoom15; shore/city extremes get16additionalABBAarms.",
+    "artReview": "Matte staggered mineral slate replaces plain roof faces; closed geometry, physical scale and roof slopes preserved. Eight decorative close views/profile are not performance samples.",
+    "remainingFinding": "Tall foreground city buildings hide supplied characters in both original and candidate scene. This existing cutaway gap is not waived by roof-material qualification and is next."
+  },
+  "timing": [
+    {
+      "quality": "high",
+      "scope": "front-wall",
+      "arms": 16,
+      "maximumMedian": 16.7,
+      "maximumP95": 16.8,
+      "maxCalls": 212,
+      "maxTriangles": 179727
+    },
+    {
+      "quality": "high",
+      "scope": "roof-visible",
+      "arms": 8,
+      "maximumMedian": 16.7,
+      "maximumP95": 16.8,
+      "maxCalls": 204,
+      "maxTriangles": 175963
+    },
+    {
+      "quality": "low",
+      "scope": "front-wall",
+      "arms": 16,
+      "maximumMedian": 16.7,
+      "maximumP95": 16.8,
+      "maxCalls": 106,
+      "maxTriangles": 80402
+    },
+    {
+      "quality": "low",
+      "scope": "roof-visible",
+      "arms": 8,
+      "maximumMedian": 16.7,
+      "maximumP95": 16.8,
+      "maxCalls": 101,
+      "maxTriangles": 78396
+    }
+  ],
+  "retirement": "Two GPUcycles/profile return exact original baseline; each of three roof maps disposes once. Both owned4244servers/browser contexts closed.",
+  "invariants": "All positions/normals,22colliders/landmarks/floor union unchanged. All32roofs retained,49scene meshes vs48prior,three shared maps per scene,one extra material/batch.",
+  "limits": "Prepared source actual layout/production entry, supplied four14slotRun actors/HUD. No connected campaign, physical-device, peak-memory, whole-world performance, final-art or full-goal acceptance.",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-roof-native-checks-20261012",
+    "entries": 78,
+    "inventorySHA256": "57bff01655f7300e621c8bddea620b298d3a4a62aceef76b033657395cd92e67"
+  },
+  "recordedUTC": "2026-10-12T18:03:25.965526+00:00",
+  "CPUReceipt": "2026-10-12-dark-district-roof-materials-staged.json"
+}

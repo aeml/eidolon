@@ -1429,3 +1429,17 @@ plaza failures persist; no FPS claim. Frozen46entry inventory
 393e59abccd823b3af9a8bfe1f019bc0429be73ad3de8218ed8db562dd5b291c.
 Qualified palette change ordinary merge into master next, publication pending.
 Roofmaterial native qualification remains next; full original goal active.
+
+
+October12 roof material integrationa58f7e89 qualifies original stagec0b1a6d9
+byte-exact:38CPUchecks/four suites reused,48paired High/Low native images and
+48ABBA120framearms within unchanged original budgets(16.7median/16.8p95max).
+Two GPUcycles/profile exactbaseline, each shared slate map disposes once.
+First front-wall crop observations retained; new normal-zoom roof-visible
+views inspected. Existing foreground city buildings obscure equipped actors
+in original and candidate; cutaway gap stays open and is next. Frozen78entry
+inventory57bff01655f7300e621c8bddea620b298d3a4a62aceef76b033657395cd92e67.
+All32roofs/positions/normals/22colliders/landmarks/floor union retained.
+Only scoped material acceptance, no final-art/whole-world performance/device/
+campaign/full-goal closure. Original-model palette already mergedf33e6fa7;
+roof ordinary master merge next, coherent publication pending.
