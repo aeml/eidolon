@@ -1,0 +1,106 @@
+{
+  "version": "Alpha 1.79.44",
+  "source": "a9f59da7a192479ff7b5b25d2a36c595c8b158e9",
+  "status": "Ordinarily pushed; own ordered CI/deployment/live and fresh normal-TLS126asset proof pending.",
+  "previousAccepted": "Alpha1.79.43 exact d7de00d88dc50116d595a52070a0f66d31400f55, own CI38208653308attempt1 accepted.",
+  "includedQualifications": [
+    "2026-10-12-ilyra-palette-sharing-qualification.json",
+    "2026-10-12-dark-roof-materials-qualification.json",
+    "2026-10-12-dark-district-cutaway-qualification.json"
+  ],
+  "releaseChecks": {
+    "focusedChecks": 468,
+    "suites": 6,
+    "generatedContentGroups": 14,
+    "synchronizedVersions": 12,
+    "notes": 479,
+    "priorNotesByteExact": 478,
+    "archivePages": 47,
+    "lint": "pass",
+    "setupFailure": "Initial npm prepare-client command was misspelled; actual prepare:client passed. No source/runtime correction or skipped gate."
+  },
+  "native": {
+    "profiles": 2,
+    "exactCopiedProductionEngine": true,
+    "districtControls": 8,
+    "restoreRGBA": "all bytes exact in all8district views; immediate repeats exact",
+    "Ilyra": "Both profiles load original27737triangle/20skin model; one palette per NPC and independent bones between two NPCs. No Low derivative selected.",
+    "roofs": "Three shared slate maps,High256/Low128;11architectural cutaway parts; floor/material/geometry/shadow contracts exact.",
+    "sourceEvidenceReused": "Qualified component images/motion/ABBA/resource evidence retained unchanged; no full campaign/long-soak replay.",
+    "retirement": "Both native browser contexts/owned4246server closed; all3576copied files rehashed then owned generated copy retired."
+  },
+  "build": {
+    "source": "a9f59da7a192479ff7b5b25d2a36c595c8b158e9",
+    "pins": 126,
+    "copyFiles": 3576,
+    "copyBytes": 447963799,
+    "build": {
+      "worker": {
+        "output": "src/core/ActorGameplayGeometryWorker.ed74163bff6f2ccc.js",
+        "sha256": "ed74163bff6f2ccc48d8f4364cbca258858d68b95b1cc42f4b91d04304fc9203",
+        "bytes": 173395,
+        "modules": 15,
+        "imports": [],
+        "precomputed": {
+          "path": "assets/gameplay-geometry/indices.6aa8c7e199c910b5.bin",
+          "sha256": "6aa8c7e199c910b5fbf0f78dfae873b64e79aa0045e39b5775ff9ac7d7e93346",
+          "bytes": 777321,
+          "entries": 133
+        }
+      },
+      "bundledModules": 475,
+      "bytes": 3744121,
+      "sharedLoginModules": 22,
+      "vendorModules": [
+        "vendor/three/examples/jsm/geometries/RoundedBoxGeometry.js",
+        "vendor/three/examples/jsm/loaders/GLTFLoader.js",
+        "vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+        "vendor/three/examples/jsm/postprocessing/MaskPass.js",
+        "vendor/three/examples/jsm/postprocessing/OutputPass.js",
+        "vendor/three/examples/jsm/postprocessing/Pass.js",
+        "vendor/three/examples/jsm/postprocessing/RenderPass.js",
+        "vendor/three/examples/jsm/postprocessing/ShaderPass.js",
+        "vendor/three/examples/jsm/postprocessing/UnrealBloomPass.js",
+        "vendor/three/examples/jsm/shaders/CopyShader.js",
+        "vendor/three/examples/jsm/shaders/FXAAShader.js",
+        "vendor/three/examples/jsm/shaders/LuminosityHighPassShader.js",
+        "vendor/three/examples/jsm/shaders/OutputShader.js",
+        "vendor/three/examples/jsm/utils/BufferGeometryUtils.js",
+        "vendor/three/examples/jsm/utils/SkeletonUtils.js"
+      ],
+      "externalImports": [
+        "../assets/ServiceWorkerBoot.js",
+        "../data/worldGeography.js",
+        "../ui/EmailRecoveryUI.js",
+        "../ui/OwnedEvents.js",
+        "../ui/PasswordChangeUI.js",
+        "../ui/ReportUI.js",
+        "../ui/reportTypes.js",
+        "./CredentialToken.js",
+        "./GraphicsStartup.js",
+        "three"
+      ]
+    },
+    "versioning": {
+      "root": "/home/aeml/.local/share/eidolon-release44-publication-copy-20261012",
+      "release": "a9f59da7a192479ff7b5b25d2a36c595c8b158e9",
+      "scannedFiles": 946,
+      "changedFiles": 426,
+      "bundledStyles": true
+    }
+  },
+  "publicManifest": "/home/aeml/.local/share/eidolon-release44-preparation-checks-20261012/expected-public44-assets.json",
+  "publicChecker": "/home/aeml/.local/share/eidolon-release44-preparation-checks-20261012/check-public.py",
+  "ci": {
+    "id": 38291884874,
+    "attempt": 1,
+    "url": "https://github.com/aeml/eidolon/actions/runs/38291884874"
+  },
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-release44-preparation-checks-20261012",
+    "entries": 29,
+    "inventorySHA256": "24071dc3be17c24bf5dbd4d9bb5cf71c7640e3f777eca048e9e77d2fc63b726a"
+  },
+  "limits": "Scoped prepared native qualification only. Whole-game crowded-town/performance, modern-world/final art, supported devices, owner-deferred campaign, F1\u2013F5/beta/launch/handoff remain open. Existing41soak continues; no new/restarted soak or automatic retry.",
+  "recordedUTC": "2026-10-12T18:36:10.774439+00:00"
+}

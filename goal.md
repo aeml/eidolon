@@ -1458,3 +1458,17 @@ Roof materials already merged e222547e; coherent44preparation is next with
 original-model palettes.43remains accepted live; crowded-town performance,
 final-art/device/gameplay/owner/F1–F5/beta/launch/handoff remain open.
 No unchanged campaign/long-soak replay; existing41soak remains running.
+
+
+October12 coherent44/exacta9f59da7 ordinarily pushed, ownCI38291884874attempt1
+queued/running.468focused publication checks/six suites,14generated groups,
+12versions and479notes/all478prior byte-exact pass. Exact copied production
+High/Low/eight completeRGBArestore controls and original27737triangle Ilyra
+one-palette/independent-bone checks pass.3576copy files rehashed then retired;
+475bundled modules/126public pins; worker unchanged. Frozen29entry preparation
+inventory24071dc3be17c24bf5dbd4d9bb5cf71c7640e3f777eca048e9e77d2fc63b726a.
+Require own ordered terminal CI/deploy/live and fresh normal-TLS126asset/
+frontend/backend/readyDB proof before another publication. Existing sparse
+monitor follows44and41soak without retries/cancels/newruns. Native GPU remains
+reserved for own44CI. Full original goal and retained crowded-town failures
+remain open; continue bounded independent CPU implementation during CI.
