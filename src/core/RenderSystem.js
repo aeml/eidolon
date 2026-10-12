@@ -12,6 +12,7 @@ import { SceneryVisibility } from './SceneryVisibility.js';
 import { ActorContactShadows } from './ActorContactShadows.js';
 import { ActorInstanceBatches } from '../art/ActorInstanceBatches.js';
 import { ActorGameplayGeometryRuntime } from './ActorGameplayGeometryRuntime.js';
+import { OpaqueSkinnedShadowRuntime } from './OpaqueSkinnedShadowRuntime.js';
 import { updateFoliageRenderQuality } from '../art/FoliageRenderBatches.js';
 import { updateElementalGroundCoverQuality } from '../art/ElementalGroundCover.js';
 import { getShadowViewBounds } from './ShadowViewCoverage.js';
@@ -158,8 +159,10 @@ export class RenderSystem {
         // Original close geometry stays live; prepare bounded derivatives only
         // after an eligible actor arrives. Unsupported workers retain originals.
         this.actorGameplayGeometry = null;
+        this.actorShadowBatches = null;
         this.setActorInstancesEnabled(true);
         this.setActorGameplayGeometryEnabled(true);
+        this.setActorShadowBatchesEnabled(true);
         this.sceneryVisibility = new SceneryVisibility();
         this.sceneryFocus = null;
         // Cross-light the fixed isometric view: one visible face catches the
@@ -735,6 +738,7 @@ export class RenderSystem {
         const isFirefox = /firefox/i.test(navigator.userAgent);
         const allowShadows = normalized !== 'low' && !this.isMobile;
         this.renderer.shadowMap.enabled = allowShadows;
+        if (!allowShadows) this.actorShadowBatches?.reset();
         if (allowShadows) this.actorContactShadows?.clear();
         this.renderer.shadowMap.autoUpdate = true;
         this.renderer.shadowMap.needsUpdate = true;
@@ -1071,12 +1075,24 @@ export class RenderSystem {
     }
 
     setActorGameplayGeometryEnabled(enabled, options = {}) {
-        if (this._disposed) return;
-        if (enabled && !this.actorGameplayGeometry) {
-            this.actorGameplayGeometry = new ActorGameplayGeometryRuntime(this.renderer, this.scene, this.camera,
+        if (this._disposed || Boolean(enabled) === Boolean(this.actorGameplayGeometry)) return;
+        // Retire the outer shadow wrapper before replacing its inner geometry
+        // owner, then reinstall in the same order for nested renderer passes.
+        const restoreShadows = Boolean(this.actorShadowBatches);
+        if (restoreShadows) this.setActorShadowBatchesEnabled(false);
+        try {
+            if (enabled) this.actorGameplayGeometry = new ActorGameplayGeometryRuntime(this.renderer, this.scene, this.camera,
                 [this.scene, this.entityGroup], options);
-        } else if (!enabled && this.actorGameplayGeometry) {
-            this.actorGameplayGeometry.dispose(); this.actorGameplayGeometry = null;
+            else { this.actorGameplayGeometry.dispose(); this.actorGameplayGeometry = null; }
+        } finally { if (restoreShadows) this.setActorShadowBatchesEnabled(true); }
+    }
+
+    setActorShadowBatchesEnabled(enabled) {
+        if (this._disposed) return;
+        if (enabled && !this.actorShadowBatches && typeof this.renderer.shadowMap?.render === 'function') {
+            this.actorShadowBatches = new OpaqueSkinnedShadowRuntime(this.renderer, this.scene, [this.scene, this.entityGroup]);
+        } else if (!enabled && this.actorShadowBatches) {
+            this.actorShadowBatches.dispose(); this.actorShadowBatches = null;
         }
     }
 
@@ -1109,6 +1125,7 @@ export class RenderSystem {
     }
 
     clearInstanceScene() {
+        this.actorShadowBatches?.clear();
         this.actorGameplayGeometry?.clear();
         this.actorInstances?.clear();
         this.actorContactShadows?.clear();
@@ -1293,6 +1310,7 @@ export class RenderSystem {
         if (this._disposed) return;
         this._disposed = true;
         this._initialViewPreparation?.finish(false);
+        this.actorShadowBatches?.dispose(); this.actorShadowBatches = null;
         this.actorGameplayGeometry?.dispose(); this.actorGameplayGeometry = null;
         this.actorInstances?.dispose(); this.actorInstances = null;
         this.foliageShadowInfluence?.dispose();

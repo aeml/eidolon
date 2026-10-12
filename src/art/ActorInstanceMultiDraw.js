@@ -1,5 +1,10 @@
 import { BatchedMesh, Frustum, Group, Matrix4, Vector4 } from 'three';
 
+const ownedSorts = new WeakMap();
+// Identity, rather than a userData flag, qualifies this module's existing
+// camera-local sorting callback. Replaced or foreign callbacks stay unknown.
+export const hasOwnedActorBatchSort = mesh => ownedSorts.has(mesh) && ownedSorts.get(mesh) === mesh.customSort;
+
 const layout = geometry => JSON.stringify([Boolean(geometry.index), Object.entries(geometry.attributes).map(([name, attr]) =>
     [name, attr.itemSize, attr.normalized, attr.array.constructor.name])]);
 const safeGeometry = geometry => geometry?.attributes.position && !geometry.groups.length &&
@@ -89,6 +94,7 @@ export class ActorInstanceMultiDraw {
                         list.sort((a, b) => (depth.get(owners[a.index]) || 0) - (depth.get(owners[b.index]) || 0) ||
                             owners[a.index].id - owners[b.index].id || a.index - b.index);
                     });
+                    ownedSorts.set(mesh, mesh.customSort);
                     entry = { mesh, signature, sourceSlots }; this.entries.set(key, entry); this.group.add(mesh);
                 }
                 // Optional stock per-instance clipping follows the same pass

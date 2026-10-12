@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
-import { ActorInstanceMultiDraw } from '../src/art/ActorInstanceMultiDraw.js';
+import { ActorInstanceMultiDraw, hasOwnedActorBatchSort } from '../src/art/ActorInstanceMultiDraw.js';
 
 function fixture() {
     const group = new THREE.Group(), material = new THREE.MeshStandardMaterial();
@@ -16,6 +16,19 @@ function fixture() {
     const begin = () => owner.beginFrame(renderer, camera, sources);
     return { group, sources, material, owner, camera, renderer, begin };
 }
+
+test('only the unchanged owned batch sorting callback has known shadow behavior', () => {
+    const f = fixture();
+    try {
+        f.begin(); const mesh = [...f.owner.entries.values()][0].mesh;
+        expect(hasOwnedActorBatchSort(mesh)).toBe(true);
+        const original = mesh.customSort;
+        mesh.setCustomSort(() => {}); expect(hasOwnedActorBatchSort(mesh)).toBe(false);
+        mesh.setCustomSort(original); expect(hasOwnedActorBatchSort(mesh)).toBe(true);
+        const foreign = new THREE.BatchedMesh(1, 3, 3, f.material);
+        foreign.setCustomSort(original); expect(hasOwnedActorBatchSort(foreign)).toBe(false); foreign.dispose();
+    } finally { f.owner.dispose(); }
+});
 
 test('same-origin source geometry and existing float32 instance rows survive delivery exactly', () => {
     const f = fixture();
