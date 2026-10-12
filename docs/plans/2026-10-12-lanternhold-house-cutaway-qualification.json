@@ -1,0 +1,73 @@
+{
+  "recordedUTC": "2026-10-12T21:49:31.937844+00:00",
+  "source": "f7f9434e5d18e21f713cb004b421660643d507ea",
+  "runtimeSource": "2adab8ea5697ca8a9e4f9d10f6885b96745fda0f",
+  "status": "Scoped town cutaway qualified and ordinarily merged into master2c6fcbfe; coherent45publication preparation next.",
+  "change": "Mark five wall/roof/door/window batches for existing SceneryVisibility view-space smooth window; foundation excluded. Original15homes/sixbatches/geometry/collision/material appearance/shadows retained outside window. Existing timber shader composes unchanged.",
+  "CPU": {
+    "distinctPassed": 44,
+    "suites": 4,
+    "scope": "23initial checks/3suites; one additional collision-clearance check;20CIenrollmentchecks. Four unchanged unit cases deliberately filtered in clearance-only run and reused from initialpass."
+  },
+  "profiles": {
+    "high": {
+      "views": 4,
+      "images": 8,
+      "RGBArestorationControls": 4,
+      "depthControls": 4,
+      "focusError": 0,
+      "cameraFocusError": 0,
+      "walkMinimumOpacity": 2.9620474761268604e-08,
+      "walkLastOpacity": 1,
+      "ABBAArms": 8,
+      "budgetFailureArms": 4,
+      "GPUCycles": 2,
+      "exactMemoryBaseline": {
+        "geometries": 186,
+        "textures": 150,
+        "programs": 61
+      },
+      "reusedHighComponents": "initial-lifetime-view-difference/house-cutaway-high.json: four color/depth/restoration controls, walk and8ABBAarms reused unchanged; only affected lifetime repeated"
+    },
+    "low": {
+      "views": 4,
+      "images": 8,
+      "RGBArestorationControls": 4,
+      "depthControls": 0,
+      "focusError": 0,
+      "cameraFocusError": 0,
+      "walkMinimumOpacity": 6.388380188451729e-08,
+      "walkLastOpacity": 1,
+      "ABBAArms": 8,
+      "budgetFailureArms": 4,
+      "GPUCycles": 2,
+      "exactMemoryBaseline": {
+        "geometries": 218,
+        "textures": 133,
+        "programs": 49
+      },
+      "reusedHighComponents": null
+    }
+  },
+  "requiredNative": {
+    "passed": 2,
+    "retries": 0,
+    "skipped": 0,
+    "durationSeconds": 52.1,
+    "viewsPerProfile": 2,
+    "fourClassesFourteenSlots": true,
+    "heroVisibility": "Highsouth source6658\u2192revealed18715RGBAbytes before fixture correction; final exact observations retained in controls.json. Bothprofiles require hero visibility gain>100bytes, source restoration/depth0 and originalmaterial identities."
+  },
+  "initialFailures": [
+    "Native fixture omitted GameEngineRuntime setSceneryFocus: no reveal; original source/log/images retained; corrected harness call, no runtime change.",
+    "Lifetime compared service-plaza baseline with moved south-home actor batch allocation; exact260/168\u2192259/166count mismatch retained. Corrected samepose/camera frozen-render cycles; originalHigh image/walk/ABBA evidence reused, only affectedHighlifetime repeated.",
+    "Required native fixture snapshot originalmaterials during fadedwarmup:2fail, all earlier image/shadow/hero checks pass. Snapshot moved after original reference restoration; identical identity assertion retained;2changed cases pass."
+  ],
+  "review": "Inspected Highsouth before/after: fully revealed equippedFighter through softly dithered foregroundroof, nearby houses and foundation remain solid. Highwest/east/north and Lowimages retained; scope does not approve finalworld art.",
+  "limits": "Bothprofiles service-plaza4of8ABBAarms fail retained originalbudgets; no globalperformance/FPS/device/fullart/campaign/beta/launch acceptance. No retries/cancellations/production mutations.",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-lanternhold-house-cutaway-checks-20261012",
+    "entries": 94,
+    "inventorySHA256": "fba810064cda92a4b6406787b8aa7d27c81000a964337473d7edf3853592cdb8"
+  }
+}

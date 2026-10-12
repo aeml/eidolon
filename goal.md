@@ -1661,3 +1661,16 @@ Both prototypes remain isolated/unselected; crowded-town budgets still fail.
 Town foreground-home cutaway stage2adab8ea passes23CPUchecks/three suites/lint;
 actualnative underway after retaining omitted-focus fixture failure. Public44
 accepted, qualifiedtimber merged but nextcoherentpublication pending. Fullgoal open.
+
+
+October12 Lanternhold housecutaway2adab8ea/finalf7f9434e qualified and ordinarily
+merged2c6fcbfe:44CPUchecks/four suites/lint, requirednative2cases52.1s/retries0
+with visible equippedhero gain and exactsurface/depth/material restoration.
+Broader16High/Lowimages/eightRGBArestores/fourHighdepthcontrols/16ABBAarms,
+twoexactGPUcycles/profile and actual4m/s walk reveal/return focuserror0 qualify
+within scope. All15homes/sixbatches/foundation/geometry/collision/shadows retained.
+Initial omittedfocus/crossviewlifetime/fadedsnapshot fixture failures retained;
+only affectedHighlifetime repeated, exactassertions unchanged. Frozen94entry
+inventory`fba810064cda92a4b6406787b8aa7d27c81000a964337473d7edf3853592cdb8`.
+Coherent45town timber+foregroundvisibility publication preparing; accepted44
+remains public. Crowded-town budgets/fulloriginal readiness goal remain open.
