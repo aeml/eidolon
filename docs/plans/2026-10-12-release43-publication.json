@@ -1,7 +1,7 @@
 {
   "version": "Alpha 1.79.43",
   "source": "d7de00d88dc50116d595a52070a0f66d31400f55",
-  "status": "Ordinary-pushed exact source; own ordered CI/deployment/live and fresh public121asset/frontend/backend/readyDB acceptance pending",
+  "status": "Accepted exact own ordered CI/deploy/live and fresh normal-TLS121assets/frontend/backend/readyDB proof",
   "previousAccepted": "Alpha1.79.41 defdb64e;42failed required native Earth timing before deployment",
   "includedQualifications": [
     "2026-10-12-lanternhold-neighborhood-qualification.json",
@@ -110,5 +110,6 @@
     "root": "/home/aeml/.local/share/eidolon-release43-preparation-checks-20261012",
     "entries": 60,
     "inventorySHA256": "eefa453503991b65242fb87e8699be11d608afcd54b51bc2e480c4d29668a2bb"
-  }
+  },
+  "acceptance": "2026-10-12-public43-terminal-qualification.json"
 }

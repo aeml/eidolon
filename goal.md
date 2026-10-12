@@ -1402,3 +1402,16 @@ entry inventory3ec38dc83bc1cd399c90e3cd21bd94960207d9ae96b7d21ea1afdc68dac2d38e.
 No runtime/catalog/model activation, native fit/motion/town/resource acceptance
 or Low plaza budget pass. Await43terminal before native work; onlymaster remains
 active and full original goal stays open. See ilyra-low-cpu-staging receipt.
+
+
+October12 exact43/d7de00d8 accepted: own CI38208653308attempt1 all ten ordered
+jobs success,741client suites/11014tests, both deployments and liveQA. Four
+optional steps skipped. Fresh15:39:35UTC normal-TLS121asset hashes/bytes,
+frontend/backend identities, readyDB and analyticsJS match. Frozen5entry
+terminal inventoryb8fc5405c8f2c24c19f46eca5afd86bed757980bc361c551091dc41115c02ed1.
+Town homes/residents/roads, map focus, districts and combat recipient correction
+are verified within scope. High crowded-town cadence/draw/triangle and Low plaza
+triangle failures persist. Ilyra derivative/palette integration and Dark roof
+material stage remain outside43; native qualification resumes after terminalCI.
+Scheduled41soak continues, no restart. Full original goal remains active; no
+unchanged campaign/device replay. See public43-terminal-qualification.

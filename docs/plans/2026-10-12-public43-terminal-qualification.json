@@ -1,0 +1,115 @@
+{
+  "recordedUTC": "2026-10-12T15:41:34.874087+00:00",
+  "version": "Alpha 1.79.43",
+  "source": "d7de00d88dc50116d595a52070a0f66d31400f55",
+  "status": "Accepted exact ordered CI/deployment/live and fresh post-terminal normal-TLS121assets/frontend/backend identity/readyDB/analytics proof. Full goal remains active.",
+  "ci": {
+    "conclusion": "success",
+    "created_at": "2026-10-12T05:36:14Z",
+    "head_sha": "d7de00d88dc50116d595a52070a0f66d31400f55",
+    "id": 38208653308,
+    "run_attempt": 1,
+    "status": "completed",
+    "updated_at": "2026-10-12T06:26:44Z"
+  },
+  "orderedJobs": [
+    {
+      "name": "Server Tests (Go)",
+      "startedAt": "2026-10-12T05:36:17Z",
+      "completedAt": "2026-10-12T05:57:02Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Browser Smoke (Playwright 1/3)",
+      "startedAt": "2026-10-12T05:36:17Z",
+      "completedAt": "2026-10-12T05:51:21Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Client Tests (Jest)",
+      "startedAt": "2026-10-12T05:36:17Z",
+      "completedAt": "2026-10-12T05:45:27Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Browser Smoke (Playwright 2/3)",
+      "startedAt": "2026-10-12T05:36:17Z",
+      "completedAt": "2026-10-12T05:52:37Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Browser Smoke (Playwright 3/3)",
+      "startedAt": "2026-10-12T05:36:17Z",
+      "completedAt": "2026-10-12T05:57:03Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Predeploy Character QA (System Chrome)",
+      "startedAt": "2026-10-12T05:57:05Z",
+      "completedAt": "2026-10-12T06:09:11Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Validate Production QA Inputs",
+      "startedAt": "2026-10-12T06:09:14Z",
+      "completedAt": "2026-10-12T06:09:18Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Deploy to GitHub Pages",
+      "startedAt": "2026-10-12T06:09:22Z",
+      "completedAt": "2026-10-12T06:10:43Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Deploy Server (SSH)",
+      "startedAt": "2026-10-12T06:09:20Z",
+      "completedAt": "2026-10-12T06:10:29Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Live Release and Character QA",
+      "startedAt": "2026-10-12T06:10:45Z",
+      "completedAt": "2026-10-12T06:26:44Z",
+      "conclusion": "success"
+    }
+  ],
+  "optionalSkippedSteps": [
+    {
+      "job": "Predeploy Character QA (System Chrome)",
+      "step": "Run deterministic High/Low animation gallery"
+    },
+    {
+      "job": "Predeploy Character QA (System Chrome)",
+      "step": "Run required Well Rested rendering and GPU lifecycle QA"
+    },
+    {
+      "job": "Predeploy Character QA (System Chrome)",
+      "step": "Run disposable full-character gameplay"
+    },
+    {
+      "job": "Live Release and Character QA",
+      "step": "Run live four-class and remote-animation QA"
+    }
+  ],
+  "public": {
+    "observedAtUtc": "2026-10-12T15:39:35.861907+00:00",
+    "pinsMatched": 121,
+    "identitiesMatch": true,
+    "database": "ready",
+    "analyticsJavaScript": true
+  },
+  "fullClient": {
+    "suites": 741,
+    "tests": 11014,
+    "conclusion": "success"
+  },
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-public43-terminal-checks-20261012",
+    "entries": 5,
+    "inventorySHA256": "b8fc5405c8f2c24c19f46eca5afd86bed757980bc361c551091dc41115c02ed1"
+  },
+  "publication": "2026-10-12-release43-publication.json",
+  "limits": "Town/map/district/transport milestone only. High crowded-town cadence/draw/triangle and Low plaza triangle limits still fail. No final art, whole-game performance, human pacing/device/F1-F5/beta/launch/handoff acceptance.",
+  "continuedWork": "Detached Ilyra Low geometry/palette integration and Dark roof material stage remain outside this release. Existing scheduled41soak continues without restart."
+}
