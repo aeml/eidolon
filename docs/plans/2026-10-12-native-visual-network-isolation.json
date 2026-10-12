@@ -1,0 +1,47 @@
+{
+  "source": "7469ed4b872c6451013ee14e0f0715f8c91b6801",
+  "basedOnRuntime": "e7c679b752e080c9edb98da457cf2b3cb130120a",
+  "runtimeFilesChanged": [],
+  "focusedChecks": 424,
+  "focusedSuites": 5,
+  "lint": "pass",
+  "shellcheck": "pass",
+  "bashSyntax": "pass",
+  "nativeGPU": "System Chrome153.0.8010.36 / AMD Radeon RADV RENOIR Vulkan1.4.318; same host binaries/drivers mounted read-only",
+  "nativeExistingCasesPassed": [
+    "High camp exact source color/shadows/triangles/GPU resources",
+    "Tempest High floor material partitions/weathering",
+    "Copied production bundle immutable worker cache/offline/resource lifecycle"
+  ],
+  "nativeRetries": 0,
+  "recordingProbe": {
+    "passed": true,
+    "videoFiles": 1,
+    "traceArchives": 1,
+    "screenshots": 1,
+    "videoBytes": 88289
+  },
+  "controlledChurn": {
+    "ownedTemporaryContainers": 2,
+    "hostControl": "Both real in-flight CSS/module loads succeed; original CI error not reproduced",
+    "private": "Distinct network namespace, loopback only, both real in-flight CSS/module loads succeed without request errors during owned host veth changes",
+    "limits": "Host baseline did not reproduce interruption; namespace isolation demonstrated, not a sole-cause proof for CI failure"
+  },
+  "environmentBoundary": "Fake caller username/baseURL/Docker host omitted; Docker socket absent; CI/port retained; forced nativeGPU and owned server; inner exit23 propagates exactly",
+  "workflow": "Only five anonymous local visual stages wrapped; backend/WellRested/full-character/release-smoke retain ordinary networking; mandatory test file roster, grep, workers1/retries0, limits and artifact paths unchanged",
+  "initialFailuresRetained": [
+    "local node runtime initially lacked npm; npm9.2.0 installed only in ownedNode24prefix",
+    "anchored targeted title filter selected no tests; corrected filter",
+    "floor browser creation initially lacked ffmpeg mount; exact host recorder now mounted read-only",
+    "copied fixture initially preserved detached vendor symlink; owned stage vendor copied locally, publication boundary assertion unchanged",
+    "VersionPresentation expected old launch literal; updated to retain same command with namespace wrapper"
+  ],
+  "retirement": "Playwright/browser/static servers closed after each command; private containers auto-remove; both controlled host churn containers waited/removed; no unrelated service mutations",
+  "recordedUTC": "2026-10-12T20:16:48.072280+00:00",
+  "limits": "Scoped QA infrastructure qualification only; no deployment/newCI/fullworld/performance/device/art/gameplay/readiness closure. Shadow prototype remains unselected.",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-native-network-isolation-checks-20261012",
+    "entries": 120,
+    "inventorySHA256": "0e83cc38a56be8bdeaa2406f72620109956ba9e720f8361582eb434ad0d0afec"
+  }
+}

@@ -1549,3 +1549,19 @@ readyDB retain public43. Initial fresh checker HTTP408 is retained separately.
 Detached local native namespace qualification is in progress; original visual
 assertions/error recording remain required. No blind CI retry/new publication.
 Full original readiness goal and retained failures remain open.
+
+
+October12 native visual network isolation7469ed4b qualified and ordinarily merged.
+424focused checks/five suites, lint/shellcheck/bash syntax pass. Original Highcamp,
+TempestHighfloor and copied-bundle immutable worker/offline cases pass with retries0;
+synthetic native recording retains video88289B, trace and screenshots. Same host
+Chrome153/Node24/AMD Vulkan/ffmpeg, loopback-only private network; real CSS/module
+loads survive owned host veth churn. Host baseline also passed, so original CI
+network error is not reproduced. Fake credentials/Docker endpoint omitted; no
+Docker socket; inner failure propagates exactly. Five local visual stages use
+wrapper; backend/WellRested/full-character/release-smoke connectivity preserved.
+No game runtime/assets/versions/479notes changed frome7; initial local setup/
+filter/vendor/recorder/command-contract failures retained. Frozen120entry inventory
+`0e83cc38a56be8bdeaa2406f72620109956ba9e720f8361582eb434ad0d0afec`.
+Next changed-source copied preparation/ownorderedCI/publiccustody; keep44version.
+Full original readiness goal and retained failures remain open.
