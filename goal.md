@@ -1684,3 +1684,15 @@ High/Low controls pass.127public pins prepared; frozen29entry inventory
 Onlymaster locally/origin; original dirty checkout preserved. OwnCI reserves
 GPU until terminal; ordered deployments/live/fresh public127asset/source/readyDB
 required. Public44lastaccepted; fulloriginal goal/crowdedtown failures open.
+
+
+October12 isolated geometry-synchronized shadow runtimef1f9105e/integrationf868
+passes99distinctCPUchecks/three suites and lint. One live variant/actor; steady
+frames reuse buffers after actual gameplay selection. Source/derivative zoom,
+equipment/skin generations, hidden/alpha recovery, streaming/pool/disposal and
+exceptions preserve source color ownership. Frozen19entry inventory
+`24328f7dbdc41e9e4ff1e6585e74e910dc682d6de2b09e71776d2cdc4429b6db`.
+Actualcurrenttown fullRGBA/depth/16movingABBAarms/fourGPUcycles prepared only;
+exactown45CI guard prevents GPU/browser launch until terminal. No default
+installation/native current-runtime/town/device/globalperformance acceptance.
+Current-publication table reconciled to45pending/44accepted. Fullgoal open.
