@@ -21,11 +21,11 @@ test('Fire search sectors agree with authoritative spawnFireArea bands', () => {
     expect(source).toContain('maxZ := 1000.0 - 5.0');
 });
 
-test('the Magma hunt points before the Wraith sector and preserves manual turn-in', () => {
+test('the entry-level Djinn hunt stays in the first sector and preserves manual turn-in', () => {
     const hunt = chronicleHunts.find(q => q.id === 'chronicle_fire_unending_war');
     const quest = active(hunt.id, `ChronicleHunt:${hunt.id}`), point = marker(quest);
-    expect(point).toMatchObject({ x: -1600, z: 200 });
-    expect(point.purpose).toContain('Magma Golem enemies of level 75 or higher');
+    expect(point).toMatchObject({ x: -1200, z: 200 });
+    expect(point.purpose).toContain('Sandstorm Djinn enemies of level 70 or higher');
     expect(point.purpose).toContain('not a specific spawn');
     expect(point.purpose).toContain('do not need to reach the Molten Core');
     quest.count = quest.maxCount;

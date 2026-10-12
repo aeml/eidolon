@@ -350,7 +350,7 @@ export const chronicleExpeditions = [
     ],
     "catchupAcceptance": "Your journey has already passed “The First Arrival”. Follow the first evacuation markers into Water and read the southern tally. Dain’s ledger must be compared with the ordinary hands that kept it alive. This earlier account is optional research; your earned dungeon, raid and story access will not wait for it.",
     "catchupCompletion": "This account joins the Chronicle without asking you to earn your passage twice. Follow the first evacuation markers into Water and read the southern tally. Dain’s ledger must be compared with the ordinary hands that kept it alive. The Fourfold covenant made a route possible without making its travelers anybody’s possession.",
-    "handoff": "The ferry’s surviving records leave another question for us. Speak to me to accept “The First Arrival”. Follow the first evacuation markers into Water and read the southern tally. Dain’s ledger must be compared with the ordinary hands that kept it alive."
+    "handoff": "“Mara's grove was taught to obey. Here, obedience is being written into the past, as though the people had asked for their own chains.\n\nThe ferry’s surviving records leave another question for us. Speak to me to accept “The First Arrival”. Follow the first evacuation markers into Water and read the southern tally. Dain’s ledger must be compared with the ordinary hands that kept it alive."
   },
   {
     "id": "chronicle_water_shelter_no_price",
@@ -468,7 +468,7 @@ export const chronicleExpeditions = [
     "lore": "The bank guards were bound to prevent the river from changing course. Their echoes still remember opening channels after a flood, before preservation was twisted into confinement. The water’s movement was once part of their duty.",
     "catchupAcceptance": "Your journey has already passed “Banks That Refuse the River”. Break the Troll bindings guarding the old watercourse. Their command treats a river’s banks as walls rather than the shape of a shared passage. This earlier account is optional research; your earned dungeon, raid and story access will not wait for it.",
     "catchupCompletion": "I have added this surviving account to the Chronicle. The bank guards were bound to prevent the river from changing course. Their echoes still remember opening channels after a flood, before preservation was twisted into confinement. The water’s movement was once part of their duty.",
-    "handoff": "The ferry’s surviving records leave another question for us. Speak to me to accept “Banks That Refuse the River”. Break the Troll bindings guarding the old watercourse. Their command treats a river’s banks as walls rather than the shape of a shared passage."
+    "handoff": "“The true memory was untidy. People spoke over one another. Someone was afraid, and someone else helped. That is what the false charter cannot allow: a promise made freely, with no certainty that the world will obey it.\n\nThe ferry’s surviving records leave another question for us. Speak to me to accept “Banks That Refuse the River”. Break the Troll bindings guarding the old watercourse. Their command treats a river’s banks as walls rather than the shape of a shared passage."
   },
   {
     "id": "chronicle_water_aqueduct_high_water",
@@ -742,7 +742,7 @@ export const chronicleExpeditions = [
     ],
     "catchupAcceptance": "Your journey has already passed “The Latch Left Open”. This account is optional research into the earlier road. Your earned access will not wait for it.\n\nWe have another surviving record to compare with the courier’s order. Read The cottage’s gate latch; preserve what its keeper chose before deciding what the altered command means.\n\nRead The cottage’s gate latch at (174, 236), then return to Ilyra in Lanternhold.",
     "catchupCompletion": "I have added this surviving account to the Chronicle. Mara tied the broken latch back instead of barring the gate. Beside the cord she scratched a direction to Lanternhold for anyone who arrived after the families left.",
-    "handoff": "The earlier account leaves another question. Speak to me to accept “The Latch Left Open”."
+    "handoff": "“She got them out. That matters more than a perfect ward or a brave last stand.\n\nThe earlier account leaves another question. Speak to me to accept “The Latch Left Open”."
   },
   {
     "id": "chronicle_earth_following_footsteps",
@@ -956,7 +956,7 @@ export const chronicleExpeditions = [
     ],
     "catchupAcceptance": "Your journey has already passed “The Seed Nobody Owned”. This account is optional research into the earlier road. Your earned access will not wait for it.\n\nWe have another surviving record to compare with the courier’s order. Read The shared planting stone; preserve what its keeper chose before deciding what the altered command means.\n\nRead The shared planting stone at (50, 100), then return to Ilyra in Lanternhold.",
     "catchupCompletion": "I have added this surviving account to the Chronicle. No family crest surrounds the planting mark. Generations added the day of the first rain instead of their names. The grove was tended as a shared promise, not held as an inherited possession.",
-    "handoff": "The earlier account leaves another question. Speak to me to accept “The Seed Nobody Owned”."
+    "handoff": "There is rain inside this seed, and a forest older than language. I will keep these memories safe for Maelin’s Vigil. They are repair materials, not a cure by themselves.\n\nThe earlier account leaves another question. Speak to me to accept “The Seed Nobody Owned”."
   },
   {
     "id": "chronicle_earth_restless_watch",
@@ -1248,7 +1248,7 @@ export const chronicleExpeditions = [
     ],
     "catchupAcceptance": "Your journey has already passed “The Measure of a Root”. This account is optional research into the earlier road. Your earned access will not wait for it.\n\nWe have another surviving record to compare with the courier’s order. Read The grove survey’s measuring stone; preserve what its keeper chose before deciding what the altered command means.\n\nRead The grove survey’s measuring stone at (350, -80), then return to Ilyra in Lanternhold.",
     "catchupCompletion": "I have added this surviving account to the Chronicle. The survey marks both the severed root and the living branch. Its keeper preserved the difference instead of correcting either to match a plan. The courier’s incision cuts through both measurements with the same command.",
-    "handoff": "The earlier account leaves another question. Speak to me to accept “The Measure of a Root”."
+    "handoff": "“Orun's covenant remembers care passing from one life to another. This mark replaces that exchange with a single master. Each time the grove grows, it is told the false story again.\n\nThe earlier account leaves another question. Speak to me to accept “The Measure of a Root”."
   },
   {
     "id": "chronicle_earth_scouts_question",
@@ -1511,7 +1511,7 @@ export const chronicleExpeditions = [
     "lore": "The workers left tools ready for the next firing, then carried their neighbors out together. They could have kept the furnace perfect by feeding its command. Instead they chose people over the appearance of success.",
     "catchupAcceptance": "Your journey has already passed “The Workers’ Choice”. This surviving account is optional research. Your earned access will not wait for it.\n\nCompare The Workers’ Court’s departure stone with the transit order we have uncovered. We must understand what this route was meant to carry before asking Fire to remember its own purpose.\n\nRead The Workers’ Court’s departure stone at (-1420, 500), then return to Ilyra in Lanternhold.",
     "catchupCompletion": "I have added this surviving account to the Chronicle. The workers left tools ready for the next firing, then carried their neighbors out together. They could have kept the furnace perfect by feeding its command. Instead they chose people over the appearance of success.",
-    "handoff": "We have opened the road, while its crystal still awaits Maelin’s Vigil. Speak to me to accept “The Workers’ Choice”. Compare The Workers’ Court’s departure stone with the transit order we have uncovered. We must understand what this route was meant to carry before asking Fire to remember its own purpose."
+    "handoff": "This ore warms the hand without burning it. That is the old compact: flame must serve a purpose beyond hunger. I will keep it for Maelin’s work within the Crucible.\n\nWe have opened the road, while its crystal still awaits Maelin’s Vigil. Speak to me to accept “The Workers’ Choice”. Compare The Workers’ Court’s departure stone with the transit order we have uncovered. We must understand what this route was meant to carry before asking Fire to remember its own purpose."
   },
   {
     "id": "chronicle_fire_quota_without_people",

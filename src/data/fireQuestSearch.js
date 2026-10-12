@@ -17,7 +17,7 @@ export function fireQuestSearch(quest, hunt) {
         ? 'Begin with creatures beyond Earth’s western passage into Fire. Cinderheart Ore is a chance drop: pick up the dropped quest item; not every kill yields one.'
         : enemy === 'MagmaGolem'
             ? 'Cross Earth’s western passage, then continue west beyond the Djinn grounds to the Magma Golem sector. You do not need to reach the Molten Core for this hunt.'
-            : 'Search the marked Fire sector west of Earth. Stronger creatures live farther west.';
+            : 'Search the marked Fire sector west of Earth. Stronger creatures live farther west. You do not need to reach the Molten Core for this hunt.';
     return {
         x: (sector[0] + sector[1]) / 2, z: 200,
         area: { ...WORLD_REGIONS.fire, minX: sector[0], maxX: sector[1], minZ: -595, maxZ: 995 },

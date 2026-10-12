@@ -51,9 +51,7 @@ export async function earnRegionToReadiness(page, credentials, realm, { step = (
     const hunt = id => chapter(id, options => earnFreshStoryHunt(page, credentials, id, {
         ...options, leaveTown
     }));
-    await step(route.investigation, () => investigate(route.investigation));
-    await step(route.hunt, () => hunt(route.hunt));
-    await step(route.collection, () => chapter(route.collection, async options => {
+    const collect = () => chapter(route.collection, async options => {
         const hunt = chronicleHunts.find(hunt => hunt.id === route.hunt);
         const result = await earnEarnedCollection(page, credentials, {
             ...options,
@@ -64,12 +62,18 @@ export async function earnRegionToReadiness(page, credentials, realm, { step = (
                 `before-${route.collection}`)
         });
         await setAutoLootThroughSettings(page, result.previousAutoLoot);
-    }));
-    await step(route.reflection, () => investigate(route.reflection));
-    if (route.finalHunt) await step(route.finalHunt, () => hunt(route.finalHunt));
+    });
+    const optional = new Set();
+    for (const id of route.steps) {
+        if (await page.evaluate(id => window.game.player.quests.find(q => q.id === id)?.legacyOptional === true, id)) {
+            optional.add(id);
+            continue;
+        }
+        await step(id, () => id === route.collection ? collect()
+            : chronicleHunts.some(q => q.id === id) ? hunt(id) : investigate(id));
+    }
     await step(`${route.dungeonType} readiness and saved handoff`, async () => {
-        const completed = [route.previous, route.investigation, route.hunt, route.collection, route.reflection,
-            ...(route.finalHunt ? [route.finalHunt] : [])];
+        const completed = [route.previous, ...route.steps.filter(id => !optional.has(id))];
         const id = route.dungeon;
         const state = waterChapterContinuation(await readChronicleChapter(page, id), realm);
         expect(state, 'This route must not replay an already completed dungeon').not.toBe('completed');

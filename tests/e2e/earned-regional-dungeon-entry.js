@@ -18,7 +18,10 @@ async function restoreEarnedEncounterReadiness(page, credentials, route) {
         await returnToTown(page, { allowRespawn: false });
     }
     const chapter = route.dungeon, prior = route.prior;
-    for (const id of prior) expect((await readChronicleChapter(page, id))?.completed, id).toBe(true);
+    for (const id of prior) expect(await page.evaluate(id => {
+        const q = window.game.player.quests.find(q => q.id === id);
+        return q?.completed || q?.legacyOptional === true;
+    }, id), id).toBe(true);
     const offered = await readChronicleChapter(page, chapter);
     expect(offered).toMatchObject({ completed: false, count: 0 });
     if (offered.accepted === false) {
@@ -35,7 +38,10 @@ async function restoreEarnedEncounterReadiness(page, credentials, route) {
     expect(earned.level).toBeGreaterThanOrEqual(route.level);
     const saved = readSavedEarnedHandoff(credentials.username, process.env, { includeQuests: true });
     expect(saved).toMatchObject({ ...earned, correctSaveKey: true });
-    for (const id of prior) expect(saved.quests.find(q => q.id === id)?.completed, `Saved ${id}`).toBe(true);
+    for (const id of prior) {
+        const q = saved.quests.find(q => q.id === id);
+        expect(q?.completed || q?.legacy_optional === true, `Saved ${id}`).toBe(true);
+    }
     expect(saved.quests.find(q => q.id === chapter)).toMatchObject({ accepted: true, completed: false, count: 0 });
     // Regional/raid continuation must use the same existing bag-upgrade route
     // as the first earned dungeon. Keep every actual item; normal UI swaps only.
