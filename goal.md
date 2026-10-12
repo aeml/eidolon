@@ -1251,3 +1251,17 @@ Original scene-count fixture failures retained/corrected; render budgets unchang
 Exact41allfiveprerequisites passed, predeployment nativeQA inprogress; existing
 soak remains active, neither is terminal acceptance. Full original goal active,
 no unchanged campaign/soak replay. See dark-district-art-staged.
+
+
+October12 own exact41/defdb64e accepted: CI38196589643attempt1 all ten ordered
+jobs successful, including737client suites/10965tests, server/race, three browser
+shards, native predeploy, both deployments and liveQA. Four optional steps remain
+skipped, not counted as passes. Fresh03:35:51UTC normal-TLS109asset hashes/bytes,
+frontend/backend exact identity, readyDB and actual analyticsJS match. Frozen5entry
+terminal inventoryda88a750c3e61ac6847cdfc72c24d465ae264851446793ace39feca9a72d4e1c.
+Detached district grouping6f8b64cb preserves every vertex attribute/triangle/
+material/renderflag,22colliders/floorUV/landmarks; six new CPUfrustum/disposal
+cases pass. Frozen16entry CPU inventory845ec8606bf6c78224ee70b19d49aa5592a31ffae468503d395f11a75a4403e3.
+Native combined-art review now running on owned4232 after own release terminal;
+visual/ABBA/GPU lifetime required before selecting source. Full original goal
+remains open; no unchanged campaign/soak replay. See public41-terminal-qualification.

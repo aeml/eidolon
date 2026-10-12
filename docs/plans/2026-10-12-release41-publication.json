@@ -2,7 +2,7 @@
   "recordedUTC": "2026-10-12T02:40:04.998833+00:00",
   "version": "Alpha 1.79.41",
   "source": "defdb64e3f9292201df7e5f90b4defc32c5d1bb9",
-  "status": "Ordinary-pushed to master. Own CI38196589643attempt1 is authoritatively in_progress; no deployment/public acceptance yet. Accepted40 remains prior baseline.",
+  "status": "Accepted exact ordered CI/deployment/live and fresh post-terminal normal-TLS frontend/backend identity, ready database and all109asset hashes/byte counts. Full original goal remains active.",
   "ci": {
     "id": 38196589643,
     "attempt": 1,
@@ -38,5 +38,6 @@
     "root": "/home/aeml/.local/share/eidolon-release41-preparation-checks-20261012",
     "entries": 31,
     "inventorySHA256": "c3d401502a122fe1f44fef60527e0514f5dc77e9ab1afcbfe5fd1b52f54e54ee"
-  }
+  },
+  "terminalAcceptance": "2026-10-12-public41-terminal-qualification.json"
 }

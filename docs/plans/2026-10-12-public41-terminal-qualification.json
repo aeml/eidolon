@@ -1,0 +1,102 @@
+{
+  "recordedUTC": "2026-10-12T03:37:34.557461+00:00",
+  "version": "Alpha 1.79.41",
+  "source": "defdb64e3f9292201df7e5f90b4defc32c5d1bb9",
+  "status": "Accepted exact ordered CI/deployment/live and fresh post-terminal normal-TLS frontend/backend identity, ready database and all109asset hashes/byte counts. Full original goal remains active.",
+  "ci": {
+    "id": 38196589643,
+    "attempt": 1,
+    "url": "https://github.com/aeml/eidolon/actions/runs/38196589643",
+    "status": "completed",
+    "conclusion": "success",
+    "updatedAt": "2026-10-12T03:35:08Z"
+  },
+  "orderedJobs": [
+    {
+      "name": "Server Tests (Go)",
+      "status": "completed",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Browser Smoke (Playwright 1/3)",
+      "status": "completed",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Client Tests (Jest)",
+      "status": "completed",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Browser Smoke (Playwright 2/3)",
+      "status": "completed",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Browser Smoke (Playwright 3/3)",
+      "status": "completed",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Predeploy Character QA (System Chrome)",
+      "status": "completed",
+      "conclusion": "success",
+      "optionalSkippedSteps": [
+        "Run deterministic High/Low animation gallery",
+        "Run required Well Rested rendering and GPU lifecycle QA",
+        "Run disposable full-character gameplay"
+      ]
+    },
+    {
+      "name": "Validate Production QA Inputs",
+      "status": "completed",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Deploy to GitHub Pages",
+      "status": "completed",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Deploy Server (SSH)",
+      "status": "completed",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Live Release and Character QA",
+      "status": "completed",
+      "conclusion": "success",
+      "optionalSkippedSteps": [
+        "Run live four-class and remote-animation QA"
+      ]
+    }
+  ],
+  "public": {
+    "normalTLSObservedUTC": "2026-10-12T03:35:51.930853+00:00",
+    "pinsMatched": 109,
+    "frontendBackendSourceAndVersionMatch": true,
+    "database": "ready",
+    "analyticsModuleIsJavaScript": true
+  },
+  "fullClient": {
+    "suites": 737,
+    "tests": 10965,
+    "conclusion": "success"
+  },
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-public41-terminal-checks-20261012",
+    "entries": 5,
+    "inventorySHA256": "da88a750c3e61ac6847cdfc72c24d465ae264851446793ace39feca9a72d4e1c"
+  },
+  "publication": "2026-10-12-release41-publication.json",
+  "limits": "Bounded shipped-world-art and QA-observer release; no final modern-art, whole-game performance, human pacing/device or F1-F5/beta/launch/handoff acceptance.",
+  "continuedWork": "Detached6f8b64cb combined district art with bounded geometry groups remains outside exact41; no visual/performance/master acceptance yet. Existing100clientsoak38109009521 remains separately active; no restart."
+}
