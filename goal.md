@@ -1322,3 +1322,23 @@ Root must own all-ten ordered terminal CI/deploy/live and fresh normal-TLS112ass
 frontend/backend/readyDB acceptance before next publication. Shared GPU reserved
 for release CI. Only master active; original465dirty paths preserved.
 Full original goal open. See release42-publication.
+
+
+October12 continuation: exact42 CI38203447428attempt1 terminated failure before
+deployment. High Earth thatch reference/candidate ABBA arms exceed unchanged
+20ms median/33.4ms p95; cause remains under diagnosis, no retry or waiver.
+Fresh04:58:26UTC normal-TLS proof retains accepted41/exactdefdb64e,109pins,
+frontend/backend identities and readyDB. Frozen6entry terminal evidence inventory
+1af8604a401f0912047ea67e21e0a6c5e2a13fc39c7f1440ce91b4f38eadca9b.
+Current scheduled41soak stays live; first50samples directly establish four
+priorityOverflow closures. Five real-socket reference regressions reproduce a
+healthy peer closing on combat visual bursts. Qualified0b73a41c correction
+retains critical receipts/telegraphs, queue capacities and full-state recovery;
+focused race2.816s/full server-root race191.747s pass. Ordinary master merge,
+publication pending. Frozen12entry inventory9771fa4c8961380540777103be0f0ce258bcbbd16e952b3399dad9691fe77570.
+Owner adds coherent-town priority: spread ordinary residents, server-owned
+walking with dialogue pauses, replace tents with small permanent homes, and
+blend town/Earth road surfaces. Isolated town staging has15homes/four routes/
+residential lanes/32m gate blend; server checks pass, client/native qualification
+and coherent publication pending. Roofmaterialc0b1a6d9 remains CPU-only staged,
+not selected. No new campaign/long-soak replay; full original goal remains open.

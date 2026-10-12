@@ -1,6 +1,6 @@
 # Eidolon Roadmap
 
-Alpha1.79.42/exact`6f9895ac` is ordinarily pushed with qualified district art and the owner-requested world-map focus correction. CI38203447428attempt1 is in progress; own ordered CI/deploy/live and fresh112asset/frontend/backend/readyDB acceptance are pending.438focused checks/six suites, two source atlas cases and16copied native district views with two managed map focus cases pass.477notes preserve all476prior entries byte-exact. Accepted41 remains the live baseline; full original readiness requirements remain open. [Publication](docs/plans/2026-10-12-release42-publication.json).
+Alpha1.79.42/exact`6f9895ac` failed CI38203447428attempt1 before deployment: required High Earth thatch reference/candidate frame timing exceeded20ms median/33.4ms p95. Five prerequisite jobs passed; downstream deployments/live checks skipped. No retry or waiver. Fresh04:58:26UTC normal-TLS checks retain accepted41/exact`defdb64e`,109asset hashes/bytes, source/version and readyDB. District art/map focus remain merged but undeployed; town coherence is being implemented in isolation. Full goal stays open. [Failure evidence](docs/plans/2026-10-12-public42-terminal-failure.json).
 
 > Project by [Robert Mendola](https://mendola.tech)
 >

@@ -1,0 +1,51 @@
+{
+  "source": "6f9895ac4bb3525861e75209211aaa7f5d0852a9",
+  "version": "Alpha 1.79.42",
+  "run": 38203447428,
+  "attempt": 1,
+  "status": "FAILED BEFORE DEPLOYMENT; never accepted",
+  "jobs": {
+    "success": 5,
+    "failure": 1,
+    "skipped": 4
+  },
+  "failedCheck": "Required native High Earth thatch ABBA frame time",
+  "observedArms": [
+    {
+      "mode": "baseline",
+      "medianMs": 33.3,
+      "p95Ms": 50
+    },
+    {
+      "mode": "candidate",
+      "medianMs": 16.8,
+      "p95Ms": 33.4
+    },
+    {
+      "mode": "candidate",
+      "medianMs": 33.3,
+      "p95Ms": 50
+    },
+    {
+      "mode": "baseline",
+      "medianMs": 33.2,
+      "p95Ms": 33.5
+    }
+  ],
+  "budgets": {
+    "medianMs": 20,
+    "p95Ms": 33.4
+  },
+  "sameInAllArms": {
+    "drawCalls": 200,
+    "triangles": 183748,
+    "shadowEnabled": true
+  },
+  "assessment": "Both reference and candidate exceeded required frame targets. Cause not yet established; no retry, waiver or lowered target. Dark district/map changes remain merged but not deployed.",
+  "retainedPublic": "Fresh normal-TLS public proof still matches accepted Alpha1.79.41 defdb64e3f9292201df7e5f90b4defc32c5d1bb9, ready database, all 109 pinned assets and real analytics JavaScript.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-public42-terminal-checks-20261012",
+    "entries": 6,
+    "inventorySHA256": "1af8604a401f0912047ea67e21e0a6c5e2a13fc39c7f1440ce91b4f38eadca9b"
+  }
+}
