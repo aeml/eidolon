@@ -1483,3 +1483,19 @@ qualification remains required after CI GPU reservation clears. Fresh18:52:56UTC
 normal-TLS121asset/frontend/backend/readyDB/analytics checks retain public43.
 Original preparation/component proofs remain frozen and the original mesh ceiling
 is not relaxed. Full original goal stays open.
+
+
+October12 corrective99c197e6 qualified and ordinarily merged into master.49mesh
+vertex masks preserve original<50ceiling, all original scene triangles/PBR/22
+colliders/landmarks and exact building/work-surface ownership.76focused/seven
+suites/four exact entrance shader controls and two native cases pass. Eight
+restoration plus sixteen51→49completeRGBAcontrols are byte-exact; work surfaces
+unchanged.32movingABBAarms16.7median16.8p95; High212→208draw,Low106→104,
+triangles unchanged. TwoGPUcycles/profile exactbaseline; natural approach/return
+opacity1→0→1,100transitionframes/profile,focuserror0. Frozen53entry inventory
+3fa647ac9e2ef6246529816a15af9ac7322cda67bed81ea936456f53c7a4c7cd.
+Initial44/a9 terminal1failure4success5skip, no deployment/native/live run; frozen
+7entry inventoryb9ed831eb16647759ddcbbf9a4655daa68d4c373459936705e49626195dfbd83.
+Fresh19:05:43UTC normal-TLS121assets/frontend/backend/readyDB/analytics retains43.
+Next exact corrective44 preparation/copied-bundle native/new own CI; keep44
+version and479cumulative notes. Full original goal/retained failures remain open.

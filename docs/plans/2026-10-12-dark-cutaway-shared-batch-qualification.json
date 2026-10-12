@@ -1,0 +1,218 @@
+{
+  "source": "99c197e6dedd75a524cbdb398c465d8cacbbaa0e",
+  "recordedUTC": "2026-10-12T19:12:11.739147+00:00",
+  "status": "Qualified corrective runtime ordinarily merged into master; exact corrective publication preparation pending.",
+  "problem": "Initial44 client gate failed because architecture-only cutaway splits produce51meshes against unchanged<50ceiling.",
+  "runtime": "Restore original49shared meshes with1byte-per-vertex building mask; bronze/shadow paving and work vertices0, complete architecture1. Ray tests and shader both respect mask. Existing entrance shaders byte-exact.",
+  "CPU": {
+    "passed": 76,
+    "suites": 7,
+    "lint": "pass",
+    "fullSceneInvariance": [
+      {
+        "quality": "high",
+        "triangles": 38462,
+        "hash": "1dfd05af7bca62caf3cd1994145424583813f88d659f9fd37a80a70e9684045f",
+        "materials": 18,
+        "colliders": 22,
+        "scope": "Every scene triangle and its building/work-surface ownership, all original attribute bytes, material/PBR map/shader settings, transforms and render flags exact before cutaway. All floors included; only batching/occluder metadata changes."
+      },
+      {
+        "quality": "low",
+        "triangles": 29406,
+        "hash": "b3ade43f5d65cd471256b51032320949ed35ecfaf794e3bc85736c9f54e01304",
+        "materials": 18,
+        "colliders": 22,
+        "scope": "Every scene triangle and its building/work-surface ownership, all original attribute bytes, material/PBR map/shader settings, transforms and render flags exact before cutaway. All floors included; only batching/occluder metadata changes."
+      }
+    ],
+    "entranceShaderControls": 4,
+    "failureRetained": "First focused run had73pass/2failed stale exact51inventory assertions. Corrected exact inventory to49; original<50test unchanged and passes both runs."
+  },
+  "native": {
+    "casesPassed": 2,
+    "retries": 0,
+    "districtRestorationControls": 8,
+    "allRGBAExact": true,
+    "mixedBatchWorkSurfaceChangedBytes": 0,
+    "mixedBatchBuildingChangedBytesPerProfile": 5928,
+    "mixedBatchRestoreChangedBytes": 0,
+    "GPU": "AMD Vulkan RADV RENOIR hardware",
+    "beforeAfterCompleteRGBAControls": 16,
+    "beforeAfterMaximumDelta": 0,
+    "timing": [
+      {
+        "quality": "high",
+        "controls": 8,
+        "arms": 16,
+        "maxMedian": 16.7,
+        "maxP95": 16.8,
+        "referenceMaxDraws": 212,
+        "candidateMaxDraws": 208,
+        "maxTriangles": 177809,
+        "baseline": {
+          "geometries": 109,
+          "textures": 73
+        },
+        "cycles": [
+          {
+            "cycle": 0,
+            "resident": {
+              "geometries": 121,
+              "textures": 80
+            },
+            "retired": {
+              "geometries": 109,
+              "textures": 73
+            },
+            "opacity": 1.549110265644079e-08,
+            "cloneCounts": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "roofMapDisposeCounts": [
+              1,
+              1,
+              1
+            ],
+            "entries": 0
+          },
+          {
+            "cycle": 1,
+            "resident": {
+              "geometries": 121,
+              "textures": 80
+            },
+            "retired": {
+              "geometries": 109,
+              "textures": 73
+            },
+            "opacity": 2.5109991557439812e-08,
+            "cloneCounts": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "roofMapDisposeCounts": [
+              1,
+              1,
+              1
+            ],
+            "entries": 0
+          }
+        ]
+      },
+      {
+        "quality": "low",
+        "controls": 8,
+        "arms": 16,
+        "maxMedian": 16.7,
+        "maxP95": 16.8,
+        "referenceMaxDraws": 106,
+        "candidateMaxDraws": 104,
+        "maxTriangles": 78740,
+        "baseline": {
+          "geometries": 123,
+          "textures": 59
+        },
+        "cycles": [
+          {
+            "cycle": 0,
+            "resident": {
+              "geometries": 135,
+              "textures": 66
+            },
+            "retired": {
+              "geometries": 123,
+              "textures": 59
+            },
+            "opacity": 8.104996665586738e-08,
+            "cloneCounts": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "roofMapDisposeCounts": [
+              1,
+              1,
+              1
+            ],
+            "entries": 0
+          },
+          {
+            "cycle": 1,
+            "resident": {
+              "geometries": 135,
+              "textures": 66
+            },
+            "retired": {
+              "geometries": 123,
+              "textures": 59
+            },
+            "opacity": 1.3064266357438629e-07,
+            "cloneCounts": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "roofMapDisposeCounts": [
+              1,
+              1,
+              1
+            ],
+            "entries": 0
+          }
+        ]
+      }
+    ],
+    "naturalMotion": {
+      "high": {
+        "open": 1,
+        "occluded": 3.231464350074968e-58,
+        "restored": 1,
+        "transitionFrames": 100,
+        "maxOpacityStep": 0.24315742003977403,
+        "maxFocusError": 0
+      },
+      "low": {
+        "open": 1,
+        "occluded": 9.01721378932663e-58,
+        "restored": 1,
+        "transitionFrames": 100,
+        "maxOpacityStep": 0.2040349492279252,
+        "maxFocusError": 0
+      }
+    },
+    "visualReview": "High approach/occluded and Low approach/occluded/restored actualHUD/four equipped Run actor screenshots inspected; matching moving videos retained. Local hero remains visible; other party members outside local reveal window can remain occluded.",
+    "reservation": "Initial terminal failed client and exact workflow needs made native gate ineligible; local GPU process census empty. Native skipped subsequently authoritatively confirmed. No overlap with CI native execution.",
+    "retirement": "Owned native browser contexts and4245/4246servers closed; bothportsconfirmedno listener; twoGPUcycles/profile restore exactbaseline, eightprivateclones and three roofmaps dispose once."
+  },
+  "limits": "Prepared actual GameEngine/HUD/supplied14slot classes only. No connected campaign, physical device, whole-world/crowded-town performance, final-art, beta or overall-goal acceptance. Initial44 failure preserved; no retry/cancel/target relaxation.",
+  "masterMerge": "7b4864a91825bcd8a1da6b12339bf98875a4a77e",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-dark-cutaway-mask-checks-20261012",
+    "entries": 53,
+    "inventorySHA256": "3fa647ac9e2ef6246529816a15af9ac7322cda67bed81ea936456f53c7a4c7cd"
+  }
+}
