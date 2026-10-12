@@ -52,8 +52,11 @@ export function mapLanternholdTimberUV(geometry, scale, phase = [0, 0, 0]) {
     return geometry;
 }
 
-export function createLanternholdTimberMaterials(quality = 'high') {
-    const size = quality === 'low' ? 128 : 256;
+// Two immutable CPU recipes, bounded to 960KiB. Scene textures always receive
+// independent copies; returning to town does not regenerate 65,536 samples.
+const pixelsBySize = new Map();
+function timberPixels(size) {
+    if (pixelsBySize.has(size)) return pixelsBySize.get(size);
     const samples = Array.from({ length: size * size }, (_, i) =>
         sampleLanternholdTimber((i % size + .5) / size, (Math.floor(i / size) + .5) / size));
     const arrays = Array.from({ length: 3 }, () => new Uint8Array(size * size * 4));
@@ -69,8 +72,14 @@ export function createLanternholdTimberMaterials(quality = 'high') {
         const roughness = byte(sample.roughness * 255);
         arrays[2].set([roughness, roughness, roughness, 255], i);
     }
-    const maps = arrays.map((data, i) => {
-        const texture = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
+    pixelsBySize.set(size, arrays);
+    return arrays;
+}
+
+export function createLanternholdTimberMaterials(quality = 'high') {
+    const size = quality === 'low' ? 128 : 256;
+    const maps = timberPixels(size).map((data, i) => {
+        const texture = new THREE.DataTexture(new Uint8Array(data), size, size, THREE.RGBAFormat);
         texture.name = `lanternhold-timber-${['color', 'normal', 'roughness'][i]}`;
         texture.colorSpace = i === 0 ? THREE.SRGBColorSpace : THREE.NoColorSpace;
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;

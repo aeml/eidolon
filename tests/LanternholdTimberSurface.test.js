@@ -49,7 +49,8 @@ test.each([['high', 256, false], ['low', 128, true]])('%s homes retain six batch
         expect(map.wrapS).toBe(THREE.RepeatWrapping); expect(map.wrapT).toBe(THREE.RepeatWrapping);
         expect(map.generateMipmaps).toBe(true); expect(map.minFilter).toBe(THREE.LinearMipmapLinearFilter);
         const other = b.children.find(m => m.name === 'residential-shacks:timber').material[key];
-        expect(other).not.toBe(map); expect(Buffer.from(other.image.data).equals(Buffer.from(map.image.data))).toBe(true);
+        expect(other).not.toBe(map); expect(other.image.data).not.toBe(map.image.data);
+        expect(Buffer.from(other.image.data).equals(Buffer.from(map.image.data))).toBe(true);
         const count = { n: 0 }; map.addEventListener('dispose', () => count.n++); counts.push(count);
     }
     const normals = timber.normalMap.image.data;
