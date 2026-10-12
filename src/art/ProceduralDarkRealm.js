@@ -8,6 +8,8 @@ import { createWorldPathNetwork } from './ProceduralWorldPaths.js';
 import { createDarkRealmStreetMaterial } from './DarkRealmStreetSurface.js';
 import { createDarkCampShelterGeometry } from './DarkCampShelterGeometry.js';
 import { createDarkCampLanternGeometry } from './DarkCampLanternGeometry.js';
+import { createDarkDistrictArchitectureGeometry } from './DarkDistrictArchitectureGeometry.js';
+import { createDarkCourtWorkbenchGeometry, createDarkCourtStandardGeometry } from './DarkCourtFurnitureGeometry.js';
 
 const CAMP_LANTERNS = [[-24, -24], [24, -24], [24, 24], [-24, 24]];
 const CAMP_SHELTERS = [[-22, 12], [22, 12]];
@@ -64,11 +66,16 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
     const bronze = new THREE.MeshStandardMaterial({ color: 0x84755c, metalness: .55, roughness: .6 });
     const shadow = new THREE.MeshStandardMaterial({ color: 0x171925, roughness: .9 });
     const palettes = [0x9bd5d2, 0x8aafc1, 0xc2a6db, 0xe8a475, 0x9c8fce];
-    const batches = new Map();
-    const append = (material, geometry, position) => {
+    const batches = new Map(), spatialBatches = new Map();
+    const append = (material, geometry, position, district = null) => {
         geometry.translate(...position);
-        const parts = batches.get(material) || [];
-        parts.push(geometry); batches.set(material, parts);
+        let owner = batches;
+        if (district) {
+            if (!spatialBatches.has(district)) spatialBatches.set(district, new Map());
+            owner = spatialBatches.get(district);
+        }
+        const parts = owner.get(material) || [];
+        parts.push(geometry); owner.set(material, parts);
     };
     const block = (material, size, position, angle = 0) => {
         const geometry = new THREE.BoxGeometry(...size).toNonIndexed();
@@ -92,8 +99,10 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
     root.userData.landmarks = [];
     // Inhabited-scale spaces within the real districts. These complement, not
     // replace, the distant skyline and the original discovery models.
-    const paper = new THREE.MeshStandardMaterial({ color: 0xa69b89, roughness: 1 });
-    const cloth = new THREE.MeshStandardMaterial({ color: 0x71687e, roughness: 1 });
+    const paper = new THREE.MeshStandardMaterial({ color: 0xa69b89, roughness: 1, vertexColors: true });
+    const cloth = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x71687e, roughness: 1, vertexColors: true }), 'canvas');
+    const timber = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x695344, roughness: .92 }), 'timber');
+    const courtMaterials = { stone, bronze, shadow, paper, cloth, timber };
     for (const site of DARK_REALM_COURTS) {
         const x = site.x - origin.x, z = site.z - origin.z;
         // Broken paving inlays stay below ankle height; not extra walk floors.
@@ -105,35 +114,10 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
     }
     for (const solid of DARK_REALM_COURT_SOLIDS) {
         const x = solid.x - origin.x, z = solid.z - origin.z;
-        if (solid.kind === 'standard') {
-            block(stone, [2, .8, 2], [x, .4, z]);
-            block(bronze, [.25, 5, .25], [x, 3, z]);
-            block(cloth, [1.3, 2.2, .08], [x, 4.7, z]);
-            for (const side of [-1, 1]) block(bronze, [.08, 2.3, .1], [x + side * .68, 4.7, z]);
-            continue;
-        }
-        block(stone, [4, .3, 2.5], [x, 1.2, z]);
-        for (const side of [-1, 1]) block(stone, [.45, 1.2, 2.1], [x + side * 1.6, .6, z]);
-        if (solid.recipe === 'shore') {
-            for (let i = 0; i < 4; i++) {
-                block(paper, [.65, .07, 1.25], [x - 1.35 + i * .9, 1.4, z]);
-                block(bronze, [.5, .45, .5], [x - 1.35 + i * .9, 1.65, z + .7]);
-            }
-        } else if (solid.recipe === 'archive') {
-            for (let i = 0; i < 4; i++) {
-                block(cloth, [.7, .4 + i % 2 * .2, 1.5], [x - 1.35 + i * .9, 1.6, z]);
-                block(paper, [.72, .08, 1.3], [x - 1.35 + i * .9, 1.85, z]);
-            }
-        } else if (solid.recipe === 'foundry') {
-            block(bronze, [1.7, .7, 1], [x - .7, 1.7, z]);
-            for (let i = 0; i < 3; i++) {
-                block(shadow, [.2, .2, 1.7], [x + .4 + i * .5, 1.5, z]);
-                block(bronze, [.4, .3, .4], [x + .4 + i * .5, 1.6, z - .6]);
-            }
-        } else {
-            for (const side of [-1, 1]) block(bronze, [4, .15, .12], [x, 1.8, z + side]);
-            for (let i = 0; i < 4; i++) block(paper, [.65, .4, 1.3], [x - 1.35 + i * .9, 1.55, z]);
-        }
+        const parts = solid.kind === 'standard' ? createDarkCourtStandardGeometry(solid.recipe, quality) :
+            createDarkCourtWorkbenchGeometry(solid.recipe, quality);
+        for (const [key, geometry] of Object.entries(parts)) append(courtMaterials[key], geometry, [x, 0, z],
+            key === 'paper' || key === 'cloth' ? `court-${solid.recipe}` : null);
     }
     for (const [index, room] of layout.rooms.entries()) {
         const x = room.x - origin.x, z = room.z - origin.z;
@@ -177,34 +161,26 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
         // space for authored investigation sites and real encounter actors.
         for (const side of [-1, 1]) for (const offset of [-160, -80, 80, 160]) {
             const px = x + side * (room.width / 2 + 22), pz = z + offset;
-            const height = index === 4 ? 42 : index === 3 ? 28 : 20;
-            block(stone, [24, height, 28], [px, height / 2 - 2, pz]);
-            block(shadow, [28, 3, 32], [px, height - 1, pz]);
-            for (const windowZ of [-7, 7]) block(glow, [1, 7, 4], [px - side * 12.1, height * .65, pz + windowZ]);
-            if (index === 1) {
-                // Broken mooring spars on the nameless shore.
-                block(bronze, [2, 28, 2], [px, 23, pz], .2);
-                block(shadow, [16, 2, 3], [px, 30, pz]);
-            } else if (index === 2) {
-                // Archive stacks: gilt bindings on monumental sealed volumes.
-                for (let tier = 0; tier < 3; tier++) block(bronze, [26, 1, 30], [px, 5 + tier * 6, pz]);
-            } else if (index === 3) {
-                // Foundry exhaust and glowing resonance conduits.
-                block(shadow, [8, 30, 8], [px + side * 5, 35, pz]);
-                block(glow, [4, 1, 26], [px, 28, pz]);
-            } else {
-                // The king's crown repeats across a city frozen in one morning.
-                for (const tooth of [-8, 0, 8]) block(bronze, [3, 8, 3], [px + tooth, height + 5, pz]);
+            const recipe = ['camp', 'shore', 'archive', 'foundry', 'city'][index];
+            const architecture = createDarkDistrictArchitectureGeometry(recipe, quality);
+            for (const [key, geometry] of Object.entries(architecture)) {
+                geometry.rotateY(-side * Math.PI / 2);
+                append({ stone, bronze, shadow, glow }[key], geometry, [px, 0, pz], key === 'stone' ? `skyline-${recipe}` : null);
             }
             root.userData.landmarks.push({ kind: ['camp', 'shore', 'archive', 'foundry', 'city'][index],
                 x: px + origin.x, z: pz + origin.z });
         }
     }
-    for (const [material, geometries] of batches) {
+    // Paper and cloth remain local to each court; skyline masonry remains
+    // local to its district. Geometry is already baked in the same root frame,
+    // so ordinary color/shadow-camera frustum tests use exact authored bounds.
+    const groups = [[null, batches], ...spatialBatches];
+    for (const [district, group] of groups) for (const [material, geometries] of group) {
         const mesh = new THREE.Mesh(mergeGeometries(geometries, false), material);
         mesh.name = material.userData.darkRealmLanternCore ? 'dark-realm-resonance-core' :
             material.userData.darkRealmShelterCanvas ? 'expedition-canvas-shelter' : 'dark-realm-scenery-batch';
         mesh.castShadow = true; mesh.receiveShadow = true;
+        if (district) mesh.userData.sceneryDistrict = district;
         root.add(mesh);
         geometries.forEach(geometry => geometry.dispose());
     }
