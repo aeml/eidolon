@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-// Overworld landmarks stay solid for navigation and targeting. Only their
+// Landmarks and district buildings stay solid for navigation and targeting. Only their
 // presentation gains a soft cutaway while they hide the local hero.
 export class SceneryVisibility {
     constructor() {
@@ -16,7 +16,7 @@ export class SceneryVisibility {
     createEntry(root) {
         const parts = [];
         root.traverse(part => {
-            if (!part.isMesh || !part.userData.proceduralDungeonEntrancePart) return;
+            if (!part.isMesh || !(part.userData.proceduralDungeonEntrancePart || part.userData.sceneryOccluderPart)) return;
             parts.push({ mesh: part, material: part.material, castShadow: part.castShadow });
         });
         return { root, parts, meshes: parts.map(part => part.mesh), clones: new Map(),
@@ -106,7 +106,8 @@ export class SceneryVisibility {
         // when rendering is slow; preserve its wall-clock duration instead.
         const dt = this.previousTime === null ? 1 / 60 : Math.max(0, now - this.previousTime);
         this.previousTime = now;
-        const roots = new Set((group?.children || []).filter(root => root.visible && root.userData.proceduralDungeonEntrance));
+        const roots = new Set((group?.children || []).filter(root => root.visible &&
+            (root.userData.proceduralDungeonEntrance || root.userData.sceneryOccluder)));
         for (const [root, entry] of this.entries) {
             if (!roots.has(root)) { this.release(entry); this.entries.delete(root); }
         }
