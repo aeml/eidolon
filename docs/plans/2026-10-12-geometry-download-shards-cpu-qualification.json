@@ -1,0 +1,114 @@
+{
+  "atUTC": "2026-10-12T23:55:44.337700+00:00",
+  "status": "CPU-qualified detached candidate; native real-worker transfer and copied published owner/cache/offline gates pending own46 terminal. No master runtime merge/publication.",
+  "base": "011108ca9e84ae02cd73e090e61aa4dc38e77619",
+  "cpuPassed": 132,
+  "suites": 6,
+  "artifact": {
+    "path": "assets/gameplay-geometry/indices.6aa8c7e199c910b5.bin",
+    "sha256": "6aa8c7e199c910b5fbf0f78dfae873b64e79aa0045e39b5775ff9ac7d7e93346",
+    "bytes": 777321,
+    "entries": 133,
+    "shards": [
+      {
+        "path": "assets/gameplay-geometry/indices.62dceb9abec13cb0.bin",
+        "bytes": 64411,
+        "sha256": "62dceb9abec13cb09ab25fe730382241a5fbcf1817b839941e9995f9843e4697"
+      },
+      {
+        "path": "assets/gameplay-geometry/indices.492b64fcc6657fc5.bin",
+        "bytes": 62475,
+        "sha256": "492b64fcc6657fc54d829dd4c7766e9d02b3b953fc71fae2095af66298ea91f5"
+      },
+      {
+        "path": "assets/gameplay-geometry/indices.a8e4573b9f020cff.bin",
+        "bytes": 65216,
+        "sha256": "a8e4573b9f020cff14f66422c28aa0e53e4917701deade51f6dd2980fdb9dd5f"
+      },
+      {
+        "path": "assets/gameplay-geometry/indices.71f4b276ae9218f5.bin",
+        "bytes": 54754,
+        "sha256": "71f4b276ae9218f5378733f29f1bde7f23dfcd10457fc74de5c2663fee476de2"
+      },
+      {
+        "path": "assets/gameplay-geometry/indices.796064b1159706c0.bin",
+        "bytes": 43601,
+        "sha256": "796064b1159706c0c57e425bd02cf9de251a34a1cddc03f5dd270d4cf6a3d178"
+      },
+      {
+        "path": "assets/gameplay-geometry/indices.590ea8d42219fe53.bin",
+        "bytes": 58638,
+        "sha256": "590ea8d42219fe530050b5ba2886c8c6e7bf4233017b7f0c497d11b5c72470d6"
+      },
+      {
+        "path": "assets/gameplay-geometry/indices.927fa72b1036cdc4.bin",
+        "bytes": 60257,
+        "sha256": "927fa72b1036cdc4fa62f98fdf7e9194be5f46e1471226dbd74235a91de17fdb"
+      },
+      {
+        "path": "assets/gameplay-geometry/indices.fa8c332b1b158f42.bin",
+        "bytes": 59698,
+        "sha256": "fa8c332b1b158f42e03cea80cf2cf82690f7786b39d440f4357488dc52a55c98"
+      },
+      {
+        "path": "assets/gameplay-geometry/indices.5d09cf75404d7d80.bin",
+        "bytes": 55905,
+        "sha256": "5d09cf75404d7d807e7a93df3b990cf31ced511d466e592aa387d0d8c5c69bff"
+      },
+      {
+        "path": "assets/gameplay-geometry/indices.8005a3dfbb147be0.bin",
+        "bytes": 37007,
+        "sha256": "8005a3dfbb147be0eda039e856a45c7bac9b495cea65fbfe8cdc2a9bc78fc501"
+      },
+      {
+        "path": "assets/gameplay-geometry/indices.b92aae6f7fe78a87.bin",
+        "bytes": 34450,
+        "sha256": "b92aae6f7fe78a87d26d1868d2bc91ce196901d7d4a51030aead970a178901e1"
+      },
+      {
+        "path": "assets/gameplay-geometry/indices.51e1054c0867a1e5.bin",
+        "bytes": 62385,
+        "sha256": "51e1054c0867a1e5a1890b69226847966210eff4fbec4f8260c491683a2da35b"
+      },
+      {
+        "path": "assets/gameplay-geometry/indices.f4d836ae9209700e.bin",
+        "bytes": 62002,
+        "sha256": "f4d836ae9209700e9babeb3483f3479434c2c652c58950feed98400b849e4777"
+      },
+      {
+        "path": "assets/gameplay-geometry/indices.637f0a8ba2de3e76.bin",
+        "bytes": 56522,
+        "sha256": "637f0a8ba2de3e76e3a09f3c95627d5967df8747fb61f49d1b830d05a9fc1470"
+      }
+    ]
+  },
+  "largestShardBytes": 65216,
+  "workerSHA256": "28b738eaf5aa3a9ba5df513fbd8c400f3d82a5f0f2624d529731c57b80a95f03",
+  "method": "Mechanical transport-only repack of previously checked133canonical outputs. Algorithm/codec/body/color/rigid/fingerprint/source-fixture hashes and lockedmeshopt identical. All original row fields/hashes and777321canonicalencodedbytes exact; only packing/catalog provenance changes. No native regeneration or runtime qualification claimed.",
+  "timeoutsUnchanged": {
+    "activeFetchMs": 1500,
+    "deliveryJobMs": 30000
+  },
+  "failuresRetained": [
+    "JSDOM structuredClone unavailable: plain JSON catalog clone.",
+    "Node Buffer/JSDOM byte-view mismatch: explicit Uint8Array expected decoder input.",
+    "Symlinked vendor copied by negative fixtures allowed generated master mutation; pinned versions/two links restored and all407files publication-hash verified. Failed repair copy/run retained. Independent vendor copy and root-resolving fixture helper prevent recurrence."
+  ],
+  "pending": [
+    "real-worker-transfer.mjs",
+    "updated published-game-bundle immutable-worker/offline case"
+  ],
+  "limits": [
+    "All133indices,777321canonical bytes and original algorithm/fixture identities preserved.",
+    "Largest65216B,14requestsmax,1500ms active-fetch and30s delivery deadlines unchanged.",
+    "CPU64KiB/s fake-timer case passes; real browser/HTTP/network evidence pending.",
+    "Public45ERR_ABORTED cause unproven;ERR_NETWORK_CHANGED separate open finding.",
+    "Full original readiness, crowded-town and device gates remain open."
+  ],
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-geometry-download-shards-cpu-checks-20261012",
+    "entries": 51,
+    "inventorySHA256": "2ad85c3915bf78a07b56a02de4b8e6e8958e5a172a1c204010de0e63f818b85d"
+  },
+  "isolatedSource": "8f8dd735"
+}
