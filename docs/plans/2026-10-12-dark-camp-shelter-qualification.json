@@ -1,0 +1,315 @@
+{
+  "recordedUTC": "2026-10-12T02:21:28.082549+00:00",
+  "source": "2eb211db2572a9cfb51675234229f426f68d01dd",
+  "status": "Qualified bounded Dark Realm camp shelter art, merge into local master for future coherent world-art milestone. Public40 unchanged.",
+  "change": "Replace two box/pyramid shelters with closed canvas panels, a tensioned ridge, hipped ends, poles, stakes and tie-downs. Static folds, seams and weathered pigment use existing filtered canvas shader. Both shelters share one opaque material batch; no new maps, lights or render passes.",
+  "focused": {
+    "testsPassed": 12,
+    "suitesPassed": 3,
+    "seconds": 11.326,
+    "scopedLintPassed": true,
+    "diffCheckPassed": true
+  },
+  "geometry": {
+    "rows": [
+      {
+        "quality": "high",
+        "before": {
+          "meshes": 40,
+          "triangles": 6550,
+          "excludedShelterTriangles": 184,
+          "outsideShelterTriangles": 6366,
+          "outsideShelterSHA256": "390d707e3bfd1b139efa4217815483259792432f19f3f4590c2eb579d1444d70"
+        },
+        "after": {
+          "meshes": 38,
+          "triangles": 8150,
+          "excludedShelterTriangles": 1784,
+          "outsideShelterTriangles": 6366,
+          "outsideShelterSHA256": "390d707e3bfd1b139efa4217815483259792432f19f3f4590c2eb579d1444d70"
+        },
+        "addedTriangles": 1600,
+        "floorUVGeometryAndLandmarksExact": true
+      },
+      {
+        "quality": "low",
+        "before": {
+          "meshes": 40,
+          "triangles": 6550,
+          "excludedShelterTriangles": 184,
+          "outsideShelterTriangles": 6366,
+          "outsideShelterSHA256": "390d707e3bfd1b139efa4217815483259792432f19f3f4590c2eb579d1444d70"
+        },
+        "after": {
+          "meshes": 38,
+          "triangles": 7254,
+          "excludedShelterTriangles": 888,
+          "outsideShelterTriangles": 6366,
+          "outsideShelterSHA256": "390d707e3bfd1b139efa4217815483259792432f19f3f4590c2eb579d1444d70"
+        },
+        "addedTriangles": 704,
+        "floorUVGeometryAndLandmarksExact": true
+      }
+    ],
+    "colliders": [
+      {
+        "min": [
+          39974.9,
+          -1,
+          40774.9
+        ],
+        "max": [
+          39977.1,
+          6,
+          40777.1
+        ]
+      },
+      {
+        "min": [
+          40022.9,
+          -1,
+          40774.9
+        ],
+        "max": [
+          40025.1,
+          6,
+          40777.1
+        ]
+      },
+      {
+        "min": [
+          40022.9,
+          -1,
+          40822.9
+        ],
+        "max": [
+          40025.1,
+          6,
+          40825.1
+        ]
+      },
+      {
+        "min": [
+          39974.9,
+          -1,
+          40822.9
+        ],
+        "max": [
+          39977.1,
+          6,
+          40825.1
+        ]
+      },
+      {
+        "min": [
+          39974.6,
+          -1,
+          40808.6
+        ],
+        "max": [
+          39981.4,
+          5,
+          40815.4
+        ]
+      },
+      {
+        "min": [
+          40018.6,
+          -1,
+          40808.6
+        ],
+        "max": [
+          40025.4,
+          5,
+          40815.4
+        ]
+      }
+    ],
+    "colliderCount": 22,
+    "scope": "All triangles outside the two exact existing camp shelter solids retain sorted world positions/attributes/material/flags; floor geometry/UV/metadata and landmarks exact. Only sheltered fabric/frame/ties change. Collider equality checked against retained baseline source."
+  },
+  "native": {
+    "high": {
+      "quality": "high",
+      "arms": [
+        {
+          "label": "reference",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.8,
+          "renderMedianMs": 10.300000011920929,
+          "renderP95Ms": 16.400000035762787,
+          "callsMedian": 211,
+          "trianglesMedian": 138135,
+          "visible": true
+        },
+        {
+          "label": "final",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.8,
+          "renderMedianMs": 9.599999964237213,
+          "renderP95Ms": 15.400000035762787,
+          "callsMedian": 208,
+          "trianglesMedian": 141343,
+          "visible": true
+        },
+        {
+          "label": "final",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.8,
+          "renderMedianMs": 11,
+          "renderP95Ms": 19.19999998807907,
+          "callsMedian": 208,
+          "trianglesMedian": 141343,
+          "visible": true
+        },
+        {
+          "label": "reference",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.7,
+          "renderMedianMs": 9.699999988079071,
+          "renderP95Ms": 15.699999988079071,
+          "callsMedian": 211,
+          "trianglesMedian": 138135,
+          "visible": true
+        }
+      ],
+      "baseline": {
+        "geometries": 101,
+        "textures": 72
+      },
+      "cycles": [
+        {
+          "resident": {
+            "geometries": 118,
+            "textures": 76
+          },
+          "retired": {
+            "geometries": 101,
+            "textures": 72
+          }
+        },
+        {
+          "resident": {
+            "geometries": 118,
+            "textures": 76
+          },
+          "retired": {
+            "geometries": 101,
+            "textures": 72
+          }
+        }
+      ],
+      "scope": "Prepared production Dark Realm baseline/final roots attached one at a time, same four supplied14slot outfits/Run/HUD and normal clock. ABBA60warmup/120frames per arm and two scene retirement cycles. No network/earned route/physical-device/peak-memory/whole-world performance/final-art acceptance."
+    },
+    "low": {
+      "quality": "low",
+      "arms": [
+        {
+          "label": "reference",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.7,
+          "renderMedianMs": 5.5,
+          "renderP95Ms": 9.800000011920929,
+          "callsMedian": 104,
+          "trianglesMedian": 63872,
+          "visible": true
+        },
+        {
+          "label": "final",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.7,
+          "renderMedianMs": 4.900000035762787,
+          "renderP95Ms": 9.199999988079071,
+          "callsMedian": 103,
+          "trianglesMedian": 64584,
+          "visible": true
+        },
+        {
+          "label": "final",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.7,
+          "renderMedianMs": 4.900000035762787,
+          "renderP95Ms": 8.800000011920929,
+          "callsMedian": 103,
+          "trianglesMedian": 64584,
+          "visible": true
+        },
+        {
+          "label": "reference",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.7,
+          "renderMedianMs": 5.800000011920929,
+          "renderP95Ms": 9.699999988079071,
+          "callsMedian": 104,
+          "trianglesMedian": 63872,
+          "visible": true
+        }
+      ],
+      "baseline": {
+        "geometries": 106,
+        "textures": 58
+      },
+      "cycles": [
+        {
+          "resident": {
+            "geometries": 120,
+            "textures": 62
+          },
+          "retired": {
+            "geometries": 106,
+            "textures": 58
+          }
+        },
+        {
+          "resident": {
+            "geometries": 120,
+            "textures": 62
+          },
+          "retired": {
+            "geometries": 106,
+            "textures": 58
+          }
+        }
+      ],
+      "scope": "Prepared production Dark Realm baseline/final roots attached one at a time, same four supplied14slot outfits/Run/HUD and normal clock. ABBA60warmup/120frames per arm and two scene retirement cycles. No network/earned route/physical-device/peak-memory/whole-world performance/final-art acceptance."
+    }
+  },
+  "visualReview": "Retained baseline/candidate/final High1280x844 and Low390x844, three actual-floor views each with actual HUD, four supplied14slot-class outfits and90Run updates/view. Inspected baseline/candidate/final west shelter. Initial clean blue candidate refined to muted canvas with stronger static folds and weather. Closed shelters match unchanged walk solids. No owner/final-world approval.",
+  "interpretation": "ABBA reference/final/final/reference,120measured real-clock frames per arm. All arms16.7ms frame median, p95at most16.8ms. FinalHigh208draw141343tri,Low103draw64584tri within original scoped budgets. Two GPU retirement cycles/profile return exact baseline. Render timing varies; no speedup claim. Broader connected/cold/device performance gates remain open.",
+  "custody": {
+    "source": "2eb211db2572a9cfb51675234229f426f68d01dd",
+    "base": "61360f1df324f609c4db2517e2557b20fda58aee",
+    "patchSHA256": "3e2c27af18b533ac77be9ab50aded770b9f8890e14468660ac9446bb596fb226",
+    "changedPaths": [
+      "src/art/DarkCampShelterGeometry.js",
+      "src/art/ProceduralDarkRealm.js",
+      "tests/DarkCampShelterGeometry.test.js"
+    ],
+    "workingTreeClean": true,
+    "workerSHA256": "ed74163bff6f2ccc48d8f4364cbca258858d68b95b1cc42f4b91d04304fc9203"
+  },
+  "retirement": {
+    "recordedUTC": "2026-10-12T02:20:51.975522+00:00",
+    "pid": 3878752,
+    "cwd": "/home/aeml/.local/share/eidolon-dark-camp-20261012",
+    "command": "/home/aeml/.npm/_npx/17533ff5f2b7389f/node_modules/node/bin/node scripts/serve-static.mjs ",
+    "action": "SIGTERM owned static server after browser contexts closed by finally",
+    "browserContextsClosedByFinally": true,
+    "afterPortCheck": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\n"
+  },
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-dark-camp-checks-20261012",
+    "entries": 48,
+    "inventorySHA256": "ff96b92bd2d1b8311644cdb9d128baec42a800adbeafded5fb43725468c2f8ce"
+  },
+  "scopeLimits": "Prepared production Dark Realm entry/geometry; no server, accounts, database, earned campaign or physical device. Floor geometry/UV/landmarks and22colliders exact. Only triangles inside two original shelter solids differ; scene meshes40to38, addedHigh1600/Low704triangles. No asset/data/reward/version/access/deployment changes. Existing whole-world/final-art/operations/F1-F5/beta/launch/handoff goal stays active; no unchanged campaign/soak replay.",
+  "nextAction": "Merge qualified art into master. Batch with held waystones and Dark Realm floor for a coherent future milestone with own ordered CI/deploy/live acceptance. Continue sparse districts and elemental lantern composition; broader CPU submission investigation remains open."
+}

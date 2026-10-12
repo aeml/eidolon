@@ -6,6 +6,7 @@ import { DARK_REALM_COURTS, DARK_REALM_COURT_SOLIDS, DARK_REALM_PATHS } from '..
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createWorldPathNetwork } from './ProceduralWorldPaths.js';
 import { createDarkRealmStreetMaterial } from './DarkRealmStreetSurface.js';
+import { createDarkCampShelterGeometry } from './DarkCampShelterGeometry.js';
 
 const CAMP_LANTERNS = [[-24, -24], [24, -24], [24, 24], [-24, 24]];
 const CAMP_SHELTERS = [[-22, 12], [22, 12]];
@@ -63,12 +64,20 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
     const shadow = new THREE.MeshStandardMaterial({ color: 0x171925, roughness: .9 });
     const palettes = [0x9bd5d2, 0x8aafc1, 0xc2a6db, 0xe8a475, 0x9c8fce];
     const batches = new Map();
-    const block = (material, size, position, angle = 0) => {
-        const geometry = new THREE.BoxGeometry(...size).toNonIndexed();
-        geometry.rotateY(angle);
+    const append = (material, geometry, position) => {
         geometry.translate(...position);
         const parts = batches.get(material) || [];
         parts.push(geometry); batches.set(material, parts);
+    };
+    const block = (material, size, position, angle = 0) => {
+        const geometry = new THREE.BoxGeometry(...size).toNonIndexed();
+        geometry.rotateY(angle); append(material, geometry, position);
+    };
+    const tie = (a, b) => {
+        const from = new THREE.Vector3(...a), to = new THREE.Vector3(...b), delta = to.clone().sub(from);
+        const geometry = new THREE.CylinderGeometry(.022, .022, delta.length(), quality === 'low' ? 4 : 6).toNonIndexed();
+        geometry.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), delta.normalize()));
+        append(bronze, geometry, from.add(to).multiplyScalar(.5).toArray());
     };
     // Low broken quay edges outline the void without tall foreground walls.
     for (const wall of walls) {
@@ -141,19 +150,20 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
                 block(elemental, [1.2, 1.6, 1.2], [px, 5, pz], Math.PI / 4);
                 root.userData.landmarks.push({ kind: 'resonance-lantern', x: px + origin.x, z: pz + origin.z });
             }
-            const canvas = new THREE.MeshStandardMaterial({ color: 0x587c83, roughness: .94 });
+            const canvas = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({
+                color: 0x687c80, roughness: .94, vertexColors: true
+            }), 'canvas');
+            canvas.userData.darkRealmShelterCanvas = true;
             for (const [sx, sz] of CAMP_SHELTERS) {
                 const px = x + sx, pz = z + sz;
-                block(canvas, [6.4, 2, 6.4], [px, 1.1, pz]);
-                block(shadow, [1.8, 1.8, .03], [px, 1, pz + 3.22]);
-                block(bronze, [6.45, .1, 6.45], [px, 2.13, pz]);
-                for (const side of [-1, 1]) block(bronze, [.08, 1.9, .04], [px + side * 1, 1.05, pz + 3.24]);
-                const roof = new THREE.Mesh(new THREE.CylinderGeometry(0, 4.6, 2.8, 4, 1, false, Math.PI / 4), canvas);
-                roof.position.set(px, 3.5, pz);
-                roof.name = 'expedition-canvas-shelter';
-                roof.castShadow = true;
-                root.add(roof);
-                for (const side of [-1, 1]) block(bronze, [.14, 2.3, .14], [px + side * 3.2, 1.15, pz + 3.2]);
+                const fabric = createDarkCampShelterGeometry(quality);
+                append(canvas, fabric.toNonIndexed(), [px, 0, pz]); fabric.dispose();
+                block(bronze, [.11, .1, 2.9], [px, 4.74, pz]);
+                for (const dx of [-1, 1]) for (const dz of [-1, 1]) {
+                    block(bronze, [.1, 2.15, .1], [px + dx * 3.21, 1.175, pz + dz * 3.21]);
+                    block(bronze, [.065, .28, .065], [px + dx * 3.3, .24, pz + dz * 3.3]);
+                    tie([px + dx * 3.2, 2.15, pz + dz * 3.2], [px + dx * 3.3, .2, pz + dz * 3.3]);
+                }
                 root.userData.landmarks.push({ kind: 'camp-shelter', x: px + origin.x, z: pz + origin.z });
             }
             continue;
@@ -189,7 +199,7 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
     }
     for (const [material, geometries] of batches) {
         const mesh = new THREE.Mesh(mergeGeometries(geometries, false), material);
-        mesh.name = 'dark-realm-scenery-batch';
+        mesh.name = material.userData.darkRealmShelterCanvas ? 'expedition-canvas-shelter' : 'dark-realm-scenery-batch';
         mesh.castShadow = true; mesh.receiveShadow = true;
         root.add(mesh);
         geometries.forEach(geometry => geometry.dispose());
