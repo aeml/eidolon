@@ -5,8 +5,9 @@ all ten ordered jobs, including737client suites/10965tests and native predeploy/
 live characterQA; four optional stages remain skipped. Fresh03:35:51UTC
 normal-TLS checks match all109asset bytes/SHA, frontend/backend identity and
 readyDB. Qualified waystones/Dark paving/shelters/lanterns and QA-only GPU
-observer are shipped; detached district architecture/court art6f8b64cb is still
-under native qualification. Full original world/art/performance/device/F1–F5/
+observer are shipped. District architecture/court art6f8b64cb passed native
+qualification and was ordinarily merged into master55d18e7b; its next coherent
+publication is pending. Full original world/art/performance/device/F1–F5/
 beta/launch/handoff requirements remain open.
 [Acceptance](2026-10-12-public41-terminal-qualification.json).
 

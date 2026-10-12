@@ -142,15 +142,10 @@
     ],
     "preparedBrowserAssets": true,
     "noBrowserOrServerStarted": false,
-    "notFrozen": true,
+    "notFrozen": false,
     "scope": "12court views plus4ordinary street-edge views and4decorative architecture inspection focuses; four supplied14slot classes/Run/HUD. Prepared isolated scene, not connected campaign or physical device.",
-    "status": "Owned4232 native reference/candidate review started only after exact41terminal success. Initial reference close-up budget scope error retained; ordinaryzoom15budget unchanged. Initial candidate module-fetch interruption retained; local transport now persistentHTTP/1.1with128requestbacklog and owned exactNode24.18.0runtime."
+    "status": "Completed native qualification; all owned4232/browser resources closed. See2026-10-12-dark-district-art-qualification.json and its frozen227entry inventory."
   },
-  "pending": [
-    "Native before/after visual review, including readable court props and district construction",
-    "Real-clock ABBA timing/draw/triangle budget checks for combined cost",
-    "Two GPU retirement cycles per profile"
-  ],
   "fullGoal": "Original1.11\u20131.99 world/art/gameplay/device/performance/operations/F1-F5/beta/launch/handoff remains active.",
   "custody": {
     "root": "/home/aeml/.local/share/eidolon-dark-districts-cpu-checks-20261012",
@@ -173,5 +168,13 @@
     }
   },
   "qualification": "2026-10-12-dark-district-art-qualification.json",
-  "masterMerge": "55d18e7b3c4613da38bf95b1a1429609792f1652"
+  "masterMerge": "55d18e7b3c4613da38bf95b1a1429609792f1652",
+  "historicalPendingAtCPUStage": [
+    "Native before/after visual review, including readable court props and district construction",
+    "Real-clock ABBA timing/draw/triangle budget checks for combined cost",
+    "Two GPU retirement cycles per profile"
+  ],
+  "pending": [
+    "Coherent publication preparation and exact ordered CI/deploy/live/public acceptance"
+  ]
 }
