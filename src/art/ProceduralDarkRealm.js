@@ -66,11 +66,16 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
     const bronze = new THREE.MeshStandardMaterial({ color: 0x84755c, metalness: .55, roughness: .6 });
     const shadow = new THREE.MeshStandardMaterial({ color: 0x171925, roughness: .9 });
     const palettes = [0x9bd5d2, 0x8aafc1, 0xc2a6db, 0xe8a475, 0x9c8fce];
-    const batches = new Map();
-    const append = (material, geometry, position) => {
+    const batches = new Map(), spatialBatches = new Map();
+    const append = (material, geometry, position, district = null) => {
         geometry.translate(...position);
-        const parts = batches.get(material) || [];
-        parts.push(geometry); batches.set(material, parts);
+        let owner = batches;
+        if (district) {
+            if (!spatialBatches.has(district)) spatialBatches.set(district, new Map());
+            owner = spatialBatches.get(district);
+        }
+        const parts = owner.get(material) || [];
+        parts.push(geometry); owner.set(material, parts);
     };
     const block = (material, size, position, angle = 0) => {
         const geometry = new THREE.BoxGeometry(...size).toNonIndexed();
@@ -111,7 +116,8 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
         const x = solid.x - origin.x, z = solid.z - origin.z;
         const parts = solid.kind === 'standard' ? createDarkCourtStandardGeometry(solid.recipe, quality) :
             createDarkCourtWorkbenchGeometry(solid.recipe, quality);
-        for (const [key, geometry] of Object.entries(parts)) append(courtMaterials[key], geometry, [x, 0, z]);
+        for (const [key, geometry] of Object.entries(parts)) append(courtMaterials[key], geometry, [x, 0, z],
+            key === 'paper' || key === 'cloth' ? `court-${solid.recipe}` : null);
     }
     for (const [index, room] of layout.rooms.entries()) {
         const x = room.x - origin.x, z = room.z - origin.z;
@@ -159,17 +165,22 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
             const architecture = createDarkDistrictArchitectureGeometry(recipe, quality);
             for (const [key, geometry] of Object.entries(architecture)) {
                 geometry.rotateY(-side * Math.PI / 2);
-                append({ stone, bronze, shadow, glow }[key], geometry, [px, 0, pz]);
+                append({ stone, bronze, shadow, glow }[key], geometry, [px, 0, pz], key === 'stone' ? `skyline-${recipe}` : null);
             }
             root.userData.landmarks.push({ kind: ['camp', 'shore', 'archive', 'foundry', 'city'][index],
                 x: px + origin.x, z: pz + origin.z });
         }
     }
-    for (const [material, geometries] of batches) {
+    // Paper and cloth remain local to each court; skyline masonry remains
+    // local to its district. Geometry is already baked in the same root frame,
+    // so ordinary color/shadow-camera frustum tests use exact authored bounds.
+    const groups = [[null, batches], ...spatialBatches];
+    for (const [district, group] of groups) for (const [material, geometries] of group) {
         const mesh = new THREE.Mesh(mergeGeometries(geometries, false), material);
         mesh.name = material.userData.darkRealmLanternCore ? 'dark-realm-resonance-core' :
             material.userData.darkRealmShelterCanvas ? 'expedition-canvas-shelter' : 'dark-realm-scenery-batch';
         mesh.castShadow = true; mesh.receiveShadow = true;
+        if (district) mesh.userData.sceneryDistrict = district;
         root.add(mesh);
         geometries.forEach(geometry => geometry.dispose());
     }
