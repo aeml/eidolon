@@ -1,7 +1,7 @@
 {
   "version": "Alpha 1.79.44",
   "source": "a9f59da7a192479ff7b5b25d2a36c595c8b158e9",
-  "status": "Initial candidate client gate failed before deployment; other prerequisites still running. Corrective runtime is isolated and native qualification pending.",
+  "status": "Initial candidate terminal failure before deployment; corrected49mesh source is in native qualification.",
   "previousAccepted": "Alpha1.79.43 exact d7de00d88dc50116d595a52070a0f66d31400f55, own CI38208653308attempt1 accepted.",
   "includedQualifications": [
     "2026-10-12-ilyra-palette-sharing-qualification.json",
@@ -117,5 +117,22 @@
     "correction": "Restore original49mesh shared batches with per-vertex building reveal masks. Original geometry/PBR/landmarks/22colliders and mask ownership match exactly in High/Low;76focused checks pass. New native qualification and own corrective CI required.",
     "evidence": "/home/aeml/.local/share/eidolon-release44-terminal-checks-20261012/client-job.log",
     "public43Recheck": "2026-10-12T18:52:56.739858+00:00 normalTLS121assets/frontend/backend/readyDB and analyticsJS match d7de00d8; no44deployment."
+  },
+  "terminal": {
+    "run": 38291884874,
+    "attempt": 1,
+    "source": "a9f59da7a192479ff7b5b25d2a36c595c8b158e9",
+    "successes": 4,
+    "failures": 1,
+    "skipped": 5,
+    "native": "skipped",
+    "deployments": "both skipped",
+    "liveQA": "skipped",
+    "postTerminalPublic43": "2026-10-12T19:05:43.760819+00:00 all121assets/frontend/backend/readyDB/analytics exact",
+    "custody": {
+      "root": "/home/aeml/.local/share/eidolon-release44-terminal-checks-20261012",
+      "entries": 7,
+      "inventorySHA256": "b9ed831eb16647759ddcbbf9a4655daa68d4c373459936705e49626195dfbd83"
+    }
   }
 }
