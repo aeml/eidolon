@@ -12,6 +12,7 @@ export function createLanternholdNeighborhood(cx = 0, cz = 200, { perInstanceFru
     root.userData.walkFootprints = [];
     root.userData.instanceCount = LANTERNHOLD_HOMES.length;
     root.userData.drawMeshCount = 6;
+    root.userData.sceneryOccluder = true;
     const materials = {
         stone: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x6c6658, roughness: .96 }), 'weathered-masonry'),
         ...createLanternholdTimberMaterials(quality),
@@ -70,6 +71,9 @@ export function createLanternholdNeighborhood(cx = 0, cz = 200, { perInstanceFru
         const geometryId = perInstanceFrustum ? mesh.addGeometry(geometry) : null;
         if (perInstanceFrustum) { mesh.perObjectFrustumCulled = true; mesh.sortObjects = false; geometry.dispose(); }
         mesh.name = `residential-shacks:${key}`; mesh.castShadow = key !== 'window'; mesh.receiveShadow = true;
+        // The existing view-space window reveals the hero through foreground
+        // walls/roofs only. Foundations retain solid color and depth.
+        if (key !== 'stone') mesh.userData.sceneryOccluderPart = true;
         LANTERNHOLD_HOMES.forEach((home, i) => {
             matrix.makeRotationY(home.rotation); matrix.setPosition(cx + home.x, .025, cz + home.z - 200);
             const instanceId = perInstanceFrustum ? mesh.addInstance(geometryId) : i;
