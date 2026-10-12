@@ -1502,7 +1502,7 @@ version and479cumulative notes. Full original goal/retained failures remain open
 
 
 October 12 corrective44 / e7c679b752e080c9edb98da457cf2b3cb130120a
-ordinarily pushed on master. Own CI 38296738287 attempt 1 is running.
+ordinarily pushed on master. Own CI 38296738287 attempt 1 reached terminal failure before deployment at19:53:52UTC.
 468 release checks / six suites, 14 generated groups, 12 versions and all
 479 initial44 notes byte-exact pass. Exact copied 475-module production
 bundle passes High/Low, eight complete restoration controls and the actual
@@ -1512,8 +1512,8 @@ with independent bones. All 3576 copied files rehashed then copy retired.
 Frozen 29-entry preparation inventory:
 6fd7f6aef13dac48d50b6d750169a54fbb37d8c2c75527d404895da389b69bb3.
 Only master active; original 465 dirty paths remain untouched. Sparse monitor
-follows corrective44 and existing41 soak without retries/cancels/new runs.
-Native GPU is reserved for own corrective CI. Require terminal ordered gates
+retains corrective44 terminal failure and follows existing41 soak without retries/cancels/new runs.
+Native GPU is free after terminal CI for isolated QA qualification. Require terminal ordered gates
 and fresh 126-asset/frontend/backend/ready-DB proof before another publication.
 Full original goal and retained world/art/performance/device/gameplay/owner/
 F1-F5/beta/launch/handoff requirements remain open; continue independent CPU work.
@@ -1529,9 +1529,23 @@ Frozen21entry CPU inventory
 `ea84a25277143ddfcd2a09d18854c6abbe918554aac1a4404fd1c0c0e37dbe35`.
 Detached prototype remains unselected; native full color/depth, meaningful moving
 actual-renderer/HUD performance and GPU lifetime gates remain open. Native GPU
-reserved for corrective44 CI38296738287, whose743suites/11026tests, Go and all
-three browser shards passed; native predeploy remains running. Public44 still
+released after corrective44 CI38296738287 terminated:743suites/11026tests, Go and all
+three browser shards passed; native predeploy failed on two asset network interruptions. Public44 still
 requires deployment/live/fresh126asset identity/readyDB custody before any next
 publication. Original465dirty paths untouched, onlymaster active locally/origin.
 Full original readiness goal and all retained world/performance/art/device/
 gameplay/owner/F1-F5/beta/launch/handoff requirements remain open.
+
+
+October12 corrective44 exacte7 terminal evidence is frozen35entries, inventory
+`84a13917297f4a0ea1a44dc1dd6c8ed4416c5663afa9f438f35a8fd5bb0953a2`.
+Five prerequisite jobs pass; native regional7pass, dungeon/outfit41pass/2fail
+with retries0. Changed High/Low Dark cutaway cases pass. ActorInstanceView.js
+and phone-community.css requests fail with ERR_NETWORK_CHANGED, correlated
+with unrelated host bridge/veth changes; no sole-cause proof or unrelated
+service mutation. Four downstream jobs skip, e7 never deployed, later native
+stages never run. Fresh20:08:41UTC normal-TLS all121assets/frontend/backend/
+readyDB retain public43. Initial fresh checker HTTP408 is retained separately.
+Detached local native namespace qualification is in progress; original visual
+assertions/error recording remain required. No blind CI retry/new publication.
+Full original readiness goal and retained failures remain open.
