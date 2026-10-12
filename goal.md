@@ -1205,3 +1205,20 @@ Owned4228/browser resources closed. Preparing coherentAlpha1.79.41 with held
 waystones/floor/shelters/lanterns and QA-only GPU observer; own ordered acceptance
 required before another publication. Public40 remains accepted. Full original
 1.11–1.99/F1–F5/beta/launch/handoff scope active. No unchanged campaign/soak replay.
+
+
+October12 coherentAlpha1.79.41/exactdefdb64e ordinary-pushed after fresh
+fetch+ordinarymerge. CI38196589643attempt1 is authoritatively in_progress; no
+deployment/public acceptance yet.428focused checks/five suites,13generated groups,
+12versions,476notes/all475prior byte-exact and eight exact copied native High/Low
+actual Dark floor/camp/waystone HUD/four supplied14slot-class views pass.109asset
+pins and3428copiedfile hashes retained; immutable worker unchanged. All owned
+browsers/staticports/copy closed/retired. Frozen31entry preparation inventory
+c3d401502a122fe1f44fef60527e0514f5dc77e9ab1afcbfe5fd1b52f54e54ee.
+Existing Luna monitor follows own41CI and active100clientsoak38109009521, no
+retries/cancellations/mutations. Shared GPU reserved for release now. Public40
+accepted baseline remains; require exact41ordered CI/deploy/live and fresh
+normal-TLS109asset/frontend/backend/readyDB acceptance before next publication.
+Only master active, original465dirtypaths preserved. Sparse district composition,
+CPU submission and full original1.11–1.99/F1–F5/beta/launch/handoff remain open.
+No unchanged campaign/soak replay. See release41-publication.

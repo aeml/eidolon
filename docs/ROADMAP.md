@@ -2,10 +2,13 @@
 
 Last refreshed: October 12, 2026
 
-Alpha1.79.41 is being prepared from qualified Dark Realm floor/camp and elemental
-waystone art merged locally. Own ordered CI/deploy/live/public acceptance is
-pending; accepted40 XP/motion/admin fixes remain live. Full original world/art/
-performance/device/F1–F5/beta/launch/handoff requirements remain open.
+Alpha1.79.41/exact`defdb64e` is ordinary-pushed with qualified Dark Realm floor/
+camp and elemental waystone art. CI38196589643attempt1 is in progress; own ordered
+CI/deploy/live/public109asset acceptance is pending.428focused/five suites,
+13generated groups,12versions,476notes/all475prior byte-exact and eight copied
+native High/Low views pass. Accepted40 remains the public baseline. Full original
+world/art/performance/device/F1–F5/beta/launch/handoff requirements remain open.
+[Publication](plans/2026-10-12-release41-publication.json).
 
 Alpha 1.79.40 is accepted live at `5e98360a4cd7aa8c48aecebaa7bf826d6066e795`. Corrective CI38189518140 attempt1 passed all ten ordered jobs, including 733 client suites/10,925 tests, server race checks, three browser shards, native predeployment checks and live QA. Fresh 01:35:56 UTC normal-TLS checks match frontend/backend identities, ready database and all 101 served asset sizes/SHA. Ordinary quests pay 75% and dungeon story quests 125% of their content-level bar, with a two-level turn-in ceiling and 62 smaller regional chapters. Existing earned progression, paid receipts and access remain intact. Original stale QA reader failure is retained; human pacing remains owner-deferred. [Acceptance](plans/2026-10-12-public40-terminal-qualification.json).
 

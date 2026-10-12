@@ -1,0 +1,42 @@
+{
+  "recordedUTC": "2026-10-12T02:40:04.998833+00:00",
+  "version": "Alpha 1.79.41",
+  "source": "defdb64e3f9292201df7e5f90b4defc32c5d1bb9",
+  "status": "Ordinary-pushed to master. Own CI38196589643attempt1 is authoritatively in_progress; no deployment/public acceptance yet. Accepted40 remains prior baseline.",
+  "ci": {
+    "id": 38196589643,
+    "attempt": 1,
+    "url": "https://github.com/aeml/eidolon/actions/runs/38196589643"
+  },
+  "includedQualifications": [
+    "2026-10-12-chronicle-waystone-qualification.json",
+    "2026-10-12-dark-realm-streets-qualification.json",
+    "2026-10-12-dark-camp-shelter-qualification.json",
+    "2026-10-12-dark-camp-lantern-qualification.json",
+    "2026-10-12-world-gpu-diagnostic-qualification.json"
+  ],
+  "focusedReleaseChecks": 428,
+  "focusedReleaseSuites": 5,
+  "generatedGroups": 13,
+  "versionFiles": 12,
+  "cumulativeNotes": 476,
+  "priorNotesPreservedByteExact": 475,
+  "copiedNativeQualityCases": 2,
+  "copiedNativeViews": 8,
+  "nativeFailures": 0,
+  "nativeRetries": 0,
+  "publicPins": 109,
+  "bundledModules": 468,
+  "copiedFiles": 3428,
+  "workerSHA256": "ed74163bff6f2ccc48d8f4364cbca258858d68b95b1cc42f4b91d04304fc9203",
+  "sourceIntegration": "Fresh fetch, ordinary merge already up to date, clean master ordinary-pushed from5e98360a todefdb64e. Only master active; original203modified/262untracked paths preserved.",
+  "acceptanceRequired": "Own ten ordered CI/deploy/live jobs, then fresh normal-TLS109asset bytes/SHA and exact frontend/backend source/version/readyDB. No next publication before acceptance.",
+  "expectedManifest": "/home/aeml/.local/share/eidolon-release41-preparation-checks-20261012/expected-public41-assets.json",
+  "publicChecker": "/home/aeml/.local/share/eidolon-release41-preparation-checks-20261012/check-public.py",
+  "limits": "Code-owned bounded world-art milestone, not final modern-world/connected performance/physical-device/human pacing/F1\u2013F5/beta/launch/handoff acceptance. GPU observer QA-only. Prior failures and original full scope remain open. No unchanged campaign/soak replay. Existing100clientsoak38109009521 remains authoritatively running, not capacity proof.",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-release41-preparation-checks-20261012",
+    "entries": 31,
+    "inventorySHA256": "c3d401502a122fe1f44fef60527e0514f5dc77e9ab1afcbfe5fd1b52f54e54ee"
+  }
+}
