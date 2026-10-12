@@ -1,0 +1,42 @@
+{
+  "observedAtUtc": "2026-10-12T05:55:14.554730+00:00",
+  "sourceCommit": "26f951727080c641552f3f8a45eda66d395d6cb6",
+  "state": "CPU-qualified experimental derivative only; unselected, no runtime/asset catalog/production changes",
+  "sourceTriangles": 27737,
+  "candidateTriangles": 16993,
+  "reduction": 10744,
+  "candidateBytes": 1483760,
+  "candidateSHA256": "629e4076335bd9c4a18a1ff1b4d3b4a17335150150cbfaffc16c99796fa3863d",
+  "cpuTests": {
+    "suites": 1,
+    "passed": 3,
+    "seconds": 10.134
+  },
+  "scopedLint": "pass",
+  "retainedFailures": [
+    "Initial missing extension registration",
+    "Initial color partition rejected morphs",
+    "Position locks alone did not retain all protected color signatures; final retains complete affected triangles",
+    "Ordinary GLB exporter normalizes near-identity TRS; final repacks original raw views/metadata",
+    "Initial raw rewrite rejected shared gem/eye indices; final retains identical shared results and gives differing results their own index view/accessor"
+  ],
+  "constraints": [
+    "Full source metadata/rig/Idle/material/image identity exact",
+    "All supplied attribute/morph array bytes exact after binary read",
+    "Protected morph/material triangles retain exact ordered vertices",
+    "Every material primitive remains nonempty",
+    "Repeated generation byte-exact; no-overwrite guard tested"
+  ],
+  "limitations": [
+    "Native front/side/back/isometric fit/motion and ordinary HUD town views pending; GPU reserved for exact43CI",
+    "10744source-triangle reduction alone does not establish Low plaza85k submitted limit or frame-time acceptance",
+    "No High model change, Low runtime policy/pool/cache integration or asset activation"
+  ],
+  "ownedProcesses": "All CPU command handles terminal; temporary test outputs removed by afterAll; no browser/static-server/accounts started",
+  "goalStatus": "Full original goal remains active; no art/performance/beta/release acceptance",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-ilyra-low-checks-20261012",
+  "evidenceInventory": "inventory.json",
+  "evidenceFiles": 28,
+  "inventorySHA256": "3ec38dc83bc1cd399c90e3cd21bd94960207d9ae96b7d21ea1afdc68dac2d38e",
+  "qualificationNext": "Once own43CI and acceptance releases the GPU, review native gallery/motion/ordinary town before deciding whether to integrate a Low-only path and separate quality pool. No activation based on counts."
+}
