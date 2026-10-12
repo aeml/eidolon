@@ -167,7 +167,7 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
             const architecture = createDarkDistrictArchitectureGeometry(recipe, quality);
             for (const [key, geometry] of Object.entries(architecture)) {
                 geometry.rotateY(-side * Math.PI / 2);
-                append({ stone, bronze, shadow, glow, roof }[key], geometry, [px, 0, pz], key === 'stone' ? `skyline-${recipe}` : null);
+                append({ stone, bronze, shadow, glow, roof }[key], geometry, [px, 0, pz], key === 'stone' ? `skyline-${recipe}` : 'district-architecture');
             }
             root.userData.landmarks.push({ kind: ['camp', 'shore', 'archive', 'foundry', 'city'][index],
                 x: px + origin.x, z: pz + origin.z });
@@ -183,9 +183,14 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
             material.userData.darkRealmShelterCanvas ? 'expedition-canvas-shelter' : 'dark-realm-scenery-batch';
         mesh.castShadow = true; mesh.receiveShadow = true;
         if (district) mesh.userData.sceneryDistrict = district;
+        // Only the tall skyline masonry and its complete roof/trim can hide the
+        // hero. Floors, paths, work areas and their shared material batches
+        // retain their ordinary opaque presentation.
+        if (district?.startsWith('skyline-') || district === 'district-architecture') mesh.userData.sceneryOccluderPart = true;
         root.add(mesh);
         geometries.forEach(geometry => geometry.dispose());
     }
+    root.userData.sceneryOccluder = true;
     scene.add(root);
     return root;
 }

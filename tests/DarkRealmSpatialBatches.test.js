@@ -9,7 +9,7 @@ test.each(['high', 'low'])('%s paper, cloth and masonry use local bounds without
     try {
         root.updateMatrixWorld(true);
         const groups = root.children.filter(n => n.userData.sceneryDistrict);
-        expect(groups).toHaveLength(11);
+        expect(groups).toHaveLength(18); // Seven shared architecture material groups join the unchanged eleven local court/masonry groups.
         for (const site of DARK_REALM_COURTS) {
             const courts = groups.filter(n => n.userData.sceneryDistrict === site.id);
             expect(courts).toHaveLength(site.recipe === 'foundry' ? 1 : 2);
@@ -56,7 +56,7 @@ test.each(['high', 'low'])('%s sibling groups dispose every shared material and 
         node.geometry.addEventListener('dispose', () => geometryCounts.set(node.geometry, geometryCounts.get(node.geometry) + 1));
     });
     RenderSystem.prototype.disposeObjectResources.call({}, root);
-    expect(geometryCounts.size).toBe(49);
+    expect(geometryCounts.size).toBe(51);
     expect([...geometryCounts.values()].every(n => n === 1)).toBe(true);
     expect([...materialCounts.values()].every(n => n === 1)).toBe(true);
 });

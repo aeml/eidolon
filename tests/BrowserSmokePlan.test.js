@@ -174,4 +174,7 @@ test('hardware dungeon and additive reviews retain a mandatory native release ga
     expect(native).toContain('matted Earth thatch');
     expect(native).toContain('tests/e2e/ilyra-archmage.spec.js');
     expect(native).toContain('Ilyra is dressed');
+    expect(native).toContain('tests/e2e/dark-realm-cutaway.spec.js');
+    expect(native).toContain('Dark district high cutaway');
+    expect(native).toContain('Dark district low cutaway');
 });
