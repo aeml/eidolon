@@ -46,7 +46,7 @@
     "generatedGroups": 13,
     "nativePreparedQualityCases": 2,
     "nativeAtlasCases": 2,
-    "fullClientDiagnostic": "Still running externally. Old dialogue/marker assertions were corrected before c445446f; subsequently found an earned-raid evaluator fixture mismatch, corrected on local master and covered by498passing checks. No full-client pass claimed."
+    "fullClientDiagnostic": "Terminal134/default Node heap exhaustion after three stale assertion/reader groups were identified. All three are corrected and covered by498passing final checks. No full-client pass claimed; ordered CI remains required."
   },
   "compatibility": "Every previous milestone preserves earned level/access, paid receipts, accepted counts and Gold. New earlier chapters become optional. Unpaid oversized story quotes are reduced; zero/lower accepted promises retained. BSON/save/resource/race checks pass.",
   "priorFailures": "Retained route/forecast, stale-quote/numbering assumptions, initial null-player native fixture, flat-world-then-elevation fixture, daily overlap diagnosis and unsupported local Node18 full-client setup. Fixed causes, no payout/entry/forecast waiver.",
