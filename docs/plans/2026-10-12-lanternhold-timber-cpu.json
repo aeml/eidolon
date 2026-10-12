@@ -1,0 +1,21 @@
+{
+  "source": "d4c4aaf96fdc0574996e0015545ef16672c31c0f",
+  "recordedUTC": "2026-10-12T21:02:48.366527+00:00",
+  "status": "CPU-qualified isolated art prototype; unselected until native qualification",
+  "distinctFocusedChecks": 14,
+  "suites": 3,
+  "lint": "pass",
+  "newTestsAfterByteComparisonOptimization": 6,
+  "cpuPreservationCases": 4,
+  "meshComparisons": 24,
+  "preserved": "All original position/normal/color/index arrays, bounds, all15home instance transforms/colors, flags, colliders/rootmetadata, sixmesh ownership and four nonwood materials exact in High/Low and Instanced/Batched modes.",
+  "changed": "Only two wood materials, physical construction-piece UVs and graphics-quality propagation. One shared scene-owned three-map generatedcolor/normal/roughness set;High256/Low128; grain follows vertical boards and horizontal beams; no displacement/emissive/newgeometry/draws.",
+  "ownership": "Texture bytes deterministic; independent scene map ownership, allthree shared maps retireonce.",
+  "initialTestCost": "Initial14checkrun passed66.816s. Replaced slow Jest typedarray deep equality with exact native byte equality; same sixnewchecks pass4.537s. No threshold or assertion coverage reduction.",
+  "scope": "CPU only; no browser/GPU/server launched, no visual/image/shader/frame/GPUlifetime/constructionpeak/device/default acceptance. Current44CI/deployment remains separate; no next release selected.",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-lanternhold-timber-checks-20261012",
+    "entries": 14,
+    "inventorySHA256": "e236a55327716cbf68c9abfc0206e3ba460e0bf80df53eafa562ffd6de54ee83"
+  }
+}

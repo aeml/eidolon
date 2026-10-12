@@ -1607,3 +1607,13 @@ No native/default/whole-town acceptance; existing two pilots remain separate.
 Staged native scripts now guard current38303521959/source0d reservation; private
 network launcher prepared but not executed. OwnCI/public44acceptance and full
 original readiness goal/retained failures remain open.
+
+
+October12 Lanternhold timberd4c4aaf9 is isolated/CPU-qualified14checks/three
+suites/lint;24mesh comparisons preserve positions/normals/colors/indices/
+transforms/bounds/flags/colliders and sixbatches. Only two woodmaterials/physical
+UVs/quality propagation change; three shared sceneowned PBRmaps retireonce.
+Frozen14entry inventory`e236a55327716cbf68c9abfc0206e3ba460e0bf80df53eafa562ffd6de54ee83`.
+No native/default acceptance; currentCI nativepredeploy and bothdeployments
+pass, liveQA pending.743client suites/11027tests and349browser cases pass,
+10browser skips retained. Fulloriginal readiness goal/retained failures open.
