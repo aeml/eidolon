@@ -1157,3 +1157,20 @@ inventory98d174f08a34ea52a63c5a55cdaa0a67fa00d868d8c2adc7bb6fa0e7b4ba298f.
 CPU traversal/submission investigation is next; hold QA with future coherent
 milestone. Public40 remains accepted; full original scope stays active. No
 unchanged campaign/soak replay. See world-gpu-diagnostic-qualification.
+
+
+October12 Dark Realm floor art: qualified eebfdccc is ordinarily merged into
+local master for a future coherent world-art milestone. Larger irregularly offset
+slabs, shallow joints, physical normal/roughness maps and stationary mineral
+variation retain all42nodes/40meshes, exact geometry/UVs/flags/metadata,22colliders
+and1,084,000m²floor union.22focused checks/four suites,13generated content groups,
+scoped lint and12paired actual-floor High/Low HUD/four-class14slot views pass.
+All8real-clock ABBA120-frame arms16.7msmedian/p95; counts unchanged, two textures
+added. Two GPU retirement cycles/profile return exact baseline; far-origin whole/
+partition maxRGBA delta1. Initial fixture failure and rejected busy brick grid
+retained. Frozen71entry inventorya9969fead37ff434238c9224c4e2ba3a574442675967fd802bc621a263b76506.
+Own4224server/browser contexts closed. No new publication, network/earned campaign,
+physical-device, peak-memory, final-art or full-goal acceptance. Boxed Dark camp
+tents/sparse district composition and broader CPU submission work remain next.
+Public40 stays accepted; full original1.11–1.99/F1–F5/beta/launch/handoff active.
+See dark-realm-streets-qualification; no unchanged campaign/soak replay.
