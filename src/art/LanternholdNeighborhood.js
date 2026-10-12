@@ -62,6 +62,20 @@ export function createLanternholdNeighborhood(cx = 0, cz = 200, { perInstanceFru
         box('frame', [.85, .07, .08], [x, 2.1, 2.69]);
         box('timber', [.4, 1.3, .12], [x + (x < 0 ? -.74 : .74), 2.1, 2.57]);
     }
+    // The lanes also expose the gable walls. Shallow framed panes sit within
+    // the existing foundation overhang, clear of the central structural post.
+    for (const side of [-1, 1]) {
+        box('frame', [.16, 1.25, 1.1], [side * 3.035, 2.05, -.95]);
+        part(new THREE.PlaneGeometry(.84, 1.02), 'window', [side * 3.116, 2.05, -.95], [0, side * Math.PI / 2, 0]);
+        box('frame', [.03, 1.04, .05], [side * 3.132, 2.05, -.95]);
+        box('frame', [.03, .05, .86], [side * 3.132, 2.05, -.95]);
+    }
+    // A small stove flue, seated through the pitched roof with a flashing and
+    // rain cap, gives these permanent homes a readable inhabited silhouette.
+    // Reuse the hardware batch; add no materials, meshes, lights or particles.
+    box('iron', [.65, .07, .65], [1.9, 4.54, -1.1], [-slope, 0, 0]);
+    part(new THREE.CylinderGeometry(.14, .16, 1.1, 8, 1, true), 'iron', [1.9, 4.98, -1.1]);
+    part(new THREE.CylinderGeometry(.015, .25, .12, 8), 'iron', [1.9, 5.57, -1.1]);
     const matrix = new THREE.Matrix4();
     for (const [key, geometries] of batches) {
         const geometry = mergeGeometries(geometries, false); geometries.forEach(g => g.dispose());
