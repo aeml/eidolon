@@ -1189,3 +1189,19 @@ art held with waystones/floor for a coherent next milestone. Sparse districts/
 elemental lanterns and CPU submission remain open. Full original1.11–1.99/F1–F5/
 beta/launch/handoff goal active. No unchanged campaign/soak replay. See
 dark-camp-shelter-qualification.
+
+
+October12 lantern art: qualifiedf4de9fb8/receiptd3c01f41 ordinarily merged
+into local master8136d089. Stepped feet/tapered shafts/metal cages/rain caps and
+smaller elemental cores retain22colliders, landmarks, floorUVs and all geometry
+outside the four original lamp solids.12focused checks/3suites, scoped lint,
+actual-floor High/Low HUD/four supplied14slot-class motion views,8ABBA120-frame
+arms (16.7msmedian, p95at most16.8ms) and two exact GPU retirement cycles/profile
+pass. Draws unchanged; addedHigh2544/Low1776scene triangles. Initial nonunit
+lathe normals corrected, fixture module resolution and original box Float32
+boundary precision findings retained. Frozen49entry inventory
+fb1d7bb60e7285dff20e23303084762cae3b4ce8df858815cc691ae350877751.
+Owned4228/browser resources closed. Preparing coherentAlpha1.79.41 with held
+waystones/floor/shelters/lanterns and QA-only GPU observer; own ordered acceptance
+required before another publication. Public40 remains accepted. Full original
+1.11–1.99/F1–F5/beta/launch/handoff scope active. No unchanged campaign/soak replay.

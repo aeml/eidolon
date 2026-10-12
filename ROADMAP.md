@@ -8,6 +8,8 @@ This is the product-level roadmap and historical Alpha 1.0 closeout record. The 
 
 ## Current Snapshot
 
+- Alpha1.79.41 is being prepared as one coherent world-art milestone: Dark Realm paving, expedition shelters/caged elemental lanterns and Water/Fire/Dark waystone crowns. Qualified source is merged locally; own ordered CI/deploy/live/public acceptance remains required. Accepted40 XP/motion/admin fixes remain live. No final-art, device, pacing, F1–F5, beta or launch gate is closed.
+
 - Alpha 1.79.40 is accepted live at `5e98360a4cd7aa8c48aecebaa7bf826d6066e795`. Corrective CI38189518140 attempt1 passed all ten ordered jobs, including 733 client suites/10,925 tests, server race checks, three browser shards, native predeployment checks and live QA. Fresh 01:35:56 UTC normal-TLS checks match frontend/backend identities, ready database and all 101 served asset sizes/SHA. Ordinary quests pay 75% and dungeon story quests 125% of their content-level bar, with a two-level turn-in ceiling and 62 smaller regional chapters. Existing earned progression, paid receipts and access remain intact. Original stale QA reader failure is retained; human pacing remains owner-deferred. [Acceptance](docs/plans/2026-10-12-public40-terminal-qualification.json).
 
 - Alpha1.79.37/exact`92c7392e9be5cbc2d2a2771b17cd4f83fa012d62` is accepted live. CI38169083772attempt1 passed all10ordered jobs, with4optional stages skipped. Fresh20:29:43UTC normal-TLS checks match frontend/backend identities, readyDB and all86served asset sizes/SHA. Original fac failure remains recorded; the corrective cast/delayed-impact guard, Forge and buyback work are accepted within retained scope. [Acceptance](docs/plans/2026-10-11-public37-terminal-qualification.json).

@@ -1,5 +1,10 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+Alpha1.79.41 is being prepared from qualified Dark Realm floor/camp and elemental
+waystone art merged locally. Own ordered CI/deploy/live/public acceptance is
+pending; accepted40 XP/motion/admin fixes remain live. Full original world/art/
+performance/device/F1–F5/beta/launch/handoff requirements remain open.
+
 Corrective Alpha1.79.39/exact`a1ebc4046a294ac315b97d9e86e9057a6f13294b` is accepted live. CI38178405817attempt2 passed all10ordered jobs; four optional stages remain skipped. Fresh22:56:11UTC normal-TLS checks match frontend/backend identities, readyDB and all93served asset sizes/SHA. Original stale-audit failure and attempt1 live network/HTTP408 failure remain recorded; one failed-job-only rerun passed on unchanged source. Cold geometry, connected frame-time, memory, physical-device and final-art gates remain open. [Acceptance](2026-10-11-public39-terminal-qualification.json).
 
 Alpha1.79.37/exact`92c7392e9be5cbc2d2a2771b17cd4f83fa012d62` is accepted live. CI38169083772attempt1 passed all10ordered jobs, with4optional stages skipped. Fresh20:29:43UTC normal-TLS checks match frontend/backend identities, readyDB and all86served asset sizes/SHA. Original fac failure remains recorded; the corrective cast/delayed-impact guard, Forge and buyback work are accepted within retained scope. [Acceptance](2026-10-11-public37-terminal-qualification.json).
