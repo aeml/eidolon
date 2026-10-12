@@ -1,6 +1,6 @@
 {
   "recordedUTC": "2026-10-12T00:19:34.521204+00:00",
-  "status": "Qualified and ordinarily merged into master; release40 preparation, not public acceptance.",
+  "status": "Qualified and ordinarily merged into master; included in40/c445446f. Ordered CI/deployment/live acceptance pending; accepted39 retained.",
   "source": "faec678f494b54b715a1f106edf859d50b30ba47",
   "merge": "896ad223e604206440e927b15845eb4611d9d3c3",
   "cause": "Oversized chroniclePreparationXP bridges, including200000XP after Verdant Bastion, bypassed enemy bands.",
@@ -40,13 +40,13 @@
     "fullServerSuite": "PASS, all packages, a0ca439d source; final prose-only content update subsequently passes focused authored-content race.",
     "exhaustiveTurnInProbes": 42471,
     "previousSaveMilestones": 55,
-    "finalClientChecks": 488,
-    "finalClientSuites": 26,
+    "finalClientChecks": 498,
+    "finalClientSuites": 27,
     "fullLint": "PASS",
     "generatedGroups": 13,
     "nativePreparedQualityCases": 2,
     "nativeAtlasCases": 2,
-    "fullClientDiagnostic": "Still running externally; found two old dialogue/marker assertion groups, now corrected and included in488passing checks. No full-client pass claimed."
+    "fullClientDiagnostic": "Still running externally. Old dialogue/marker assertions were corrected before c445446f; subsequently found an earned-raid evaluator fixture mismatch, corrected on local master and covered by498passing checks. No full-client pass claimed."
   },
   "compatibility": "Every previous milestone preserves earned level/access, paid receipts, accepted counts and Gold. New earlier chapters become optional. Unpaid oversized story quotes are reduced; zero/lower accepted promises retained. BSON/save/resource/race checks pass.",
   "priorFailures": "Retained route/forecast, stale-quote/numbering assumptions, initial null-player native fixture, flat-world-then-elevation fixture, daily overlap diagnosis and unsupported local Node18 full-client setup. Fixed causes, no payout/entry/forecast waiver.",

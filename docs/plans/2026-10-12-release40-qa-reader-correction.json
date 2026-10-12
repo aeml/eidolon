@@ -1,0 +1,23 @@
+{
+  "recordedUTC": "2026-10-12T00:26:40.821681+00:00",
+  "originalRelease": "c445446feb5c566169af4dee7246d8371e763378",
+  "originalCI": 38187681206,
+  "status": "Private correction ordinarily merged locally; awaiting original terminal CI before corrective publication.",
+  "source": "3d8c22095ee4623e252e0cd57c1b106e5144f368",
+  "merge": "a4ec801679c885fdf83622f2d729e81869052f94",
+  "finding": "EarnedRaidReadiness mocked every page.evaluate as a stats object; the new optional-prerequisite query expects a boolean. Preserve completed prerequisite reads and query optional status only when needed.",
+  "correction": "QA-only helper short-circuits already-completed chapters, requires literal true for optional status, retains client/save matching checks. New returning-save case verifies unclaimed optional chapters do not revoke access or get auto-completed.",
+  "checks": {
+    "focusedClient": 498,
+    "suites": 27,
+    "targetedReaderAndRouteChecks": 19,
+    "lint": true,
+    "runtimeAssetsServerIndexVersionsNotesByteExactToOriginal40": true
+  },
+  "retainedEvidence": [
+    "/home/aeml/.local/share/eidolon-quest-client-all-node24-20261012.log",
+    "/home/aeml/.local/share/eidolon-quest-raid-continuation-correction-20261012.log",
+    "/home/aeml/.local/share/eidolon-quest-final-master-client-20261012.log"
+  ],
+  "limits": "Original CI remains active; no retry, cancellation, new deployment or full-client pass claimed. Reuse unchanged gameplay/worker/native evidence only within its exact scope."
+}

@@ -1,0 +1,27 @@
+{
+  "recordedUTC": "2026-10-12T00:22:25.215519+00:00",
+  "version": "Alpha 1.79.40",
+  "source": "c445446feb5c566169af4dee7246d8371e763378",
+  "ci": 38187681206,
+  "status": "Ordinarily pushed; own ordered CI/deployment/live and101asset normal-TLS acceptance pending. Accepted39 retained.",
+  "masterMerge": "896ad223e604206440e927b15845eb4611d9d3c3",
+  "questQualification": "2026-10-12-quest-pacing-qualification.json",
+  "campQualification": "2026-10-11-pilgrim-camp-qualification.json",
+  "focusedReleaseChecks": 434,
+  "focusedReleaseSuites": 5,
+  "freshCopiedNativeCases": 2,
+  "freshNativeFailures": 0,
+  "nativeRetries": 0,
+  "generatedGroups": 13,
+  "cumulativeNotes": 475,
+  "priorNotesPreservedByteExact": 474,
+  "versionLocations": 12,
+  "publicPins": 101,
+  "immutableWorkerSHA256": "ed74163bff6f2ccc48d8f4364cbca258858d68b95b1cc42f4b91d04304fc9203",
+  "limits": "No human campaign/pacing, physical device, original performance/art/F1-F5/beta/launch/handoff closure. No unchanged expensive campaign/soak replay.",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-release40-preparation-checks-20261012",
+    "entries": 11,
+    "inventorySHA256": "546aa3c2a8b0bc1782d6c550fc1f0fd583fe26af4c9326d5046caf09178e50fe"
+  }
+}

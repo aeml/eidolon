@@ -1,6 +1,6 @@
 # Release-readiness remaining work
 
-Current checkpoint: October 11, 2026. The full goal remains active. No feature
+Current checkpoint: October 12, 2026. The full goal remains active. No feature
 freeze, final modern-art acceptance, closed beta or launch has been declared.
 
 This register records current delivery states and next actions. The complete
@@ -386,7 +386,7 @@ acceptance is incomplete.
 
 | Requirement | Remaining work and evidence needed | Owner |
 | --- | --- | --- |
-| Next release | Exact39/a1ebc404 is accepted after all10ordered CI38178405817attempt2 jobs and fresh22:56:11UTC normal-TLS93asset/frontend/backend/readyDB checks. Four optional stages remain skipped. Retain original audit failure and diagnosed live network/HTTP408 attempt1 failure. Camp qualification is merged locally; quest-pacing rebalance remains private while route gaps are addressed. Publish only a coherent, fully qualified next milestone. [Public39acceptance](2026-10-11-public39-terminal-qualification.json). Cold geometry/connected frame failures remain open. | Implementation |
+| Next release | Exact39/a1ebc404 is accepted after all10ordered CI38178405817attempt2 jobs and fresh22:56:11UTC normal-TLS93asset/frontend/backend/readyDB checks. Four optional stages remain skipped. Retain original audit failure and diagnosed live network/HTTP408 attempt1 failure. Qualified camp and gradual quest progression are merged and published together as40/c445446f, own CI38187681206 active. An earned-raid QA reader correction is validated and merged locally; hold its same-version corrective publication until the original run is terminal. No gameplay runtime changes in that correction. [Public39acceptance](2026-10-11-public39-terminal-qualification.json). Cold geometry/connected frame failures remain open. | Implementation |
 | Modern world and atlas | Finish coherent material scale, terrain transitions, grounded architecture, roads, vegetation/rock composition, landmarks, interiors, lighting, atmosphere and readable travel/combat spaces. Moving equipped/HUD review starts Lanternhold → Earth → fight → first dungeon, then all elemental realms/borders, dungeons/raids, Dark Realm, both casino floors and PvP. Required named places, optional interactions and accurate maps remain governed by the full world contract. Repetition, sparse rooms and broad muddy patches are not final art. | Implementation; final owner review |
 | Supplied actor/equipment presentation | Finish full/mixed/cosmetic fits and material identity across all classes, weapon restrictions, dual wielding, local/remote swaps, pooling/reconnect and motion. Preserve delivered assets and approved geometry/rig constraints. | Implementation; final owner review |
 | Combat, classes and audio | Validate all twelve specialization kits, attack anticipation/contact/recovery, movement, threat readability and role feel. Finish contact/audio integration and human listening/busy-group mix; essential warnings survive Low/reduced effects/mute. Prepared mixer frames or audio API calls are insufficient for full acceptance. | Implementation and playtests |
