@@ -1,0 +1,174 @@
+{
+  "recordedUTC": "2026-10-12T01:44:57.394285+00:00",
+  "status": "Qualified opt-in QA-only world GPU diagnostic; no runtime optimization or whole-game performance acceptance.",
+  "source": "03dc9bb7b50dcda9903299c7fdba54183a56e1ad",
+  "base": "5e98360a4cd7aa8c48aecebaa7bf826d6066e795",
+  "implementation": "Exact gameplay scene AND camera,60world-call warmup/180asynchronous queries. Preserve render receiver/arguments/return/errors. Counter precision\u226530bits, ownership/context/disjoint guards, no gl.finish or busy wait. Hooks/query resources restore on success/failure/timeout. Ephemeral module route removed before observation; no product route or build change.",
+  "focused": {
+    "testsPassed": 52,
+    "suitesPassed": 2,
+    "lint": "All four changed QA paths pass scoped ESLint; git diff --check passes."
+  },
+  "native": {
+    "observedPreparedAccounts": 4,
+    "plaintextFilesScanned": 9,
+    "embeddedEntriesScanned": 2,
+    "remainingPreparedNames": 0,
+    "serverMarkers": {
+      "WARNING: DATA RACE": 0,
+      "panic:": 0,
+      "fatal error:": 0,
+      "Worker panic:": 0,
+      "Recovered from panic in Update:": 0
+    },
+    "native": {
+      "total": 2,
+      "expected": 1,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 1,
+      "ok": true
+    },
+    "maxRetry": 0
+  },
+  "goRace": {
+    "exitCode": 0,
+    "seconds": 40.855,
+    "actualFourClassFourteenSlotSaveCustodyPassed": true
+  },
+  "gpu": {
+    "label": "connected-world-gpu-high",
+    "calls": 180,
+    "warmupCalls": 60,
+    "counterBits": 64,
+    "restored": true,
+    "scope": "Separate instrumented world-render calls, matching exact gameplay scene AND camera. CPU clocks include synchronous waits. GPU elapsed queries enclose world work and its shadows, excluding later fullscreen passes; they are not isolated shader busy-time measurements and may include submission starvation. Asynchronous polling never waits for the GPU. This is not an ordinary frame-budget sample or a comparison with another population.",
+    "cpuMedianMs": 17.599999964237213,
+    "cpuP95Ms": 24.5,
+    "gpuMedianMs": 3.80424,
+    "gpuP95Ms": 4.55164,
+    "activeEntitiesMin": 28,
+    "activeEntitiesMax": 28,
+    "visibleCalls": 180
+  },
+  "ordinary": {
+    "quality": "high",
+    "label": "single-renderer-equipped-raised-party-high",
+    "frames": 180,
+    "intervalMethod": "exact-reported-decimal",
+    "restored": true,
+    "visibleFrames": 180,
+    "rawFrameMedianMs": 16.700000000000728,
+    "rawFrameP95Ms": 33.400000000001455,
+    "rawFrameP99Ms": 33.400000000001455,
+    "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+    "viewport": {
+      "width": 1280,
+      "height": 844,
+      "pixelRatio": 1
+    },
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+    "visibility": "visible",
+    "frameMedianMs": 16.7,
+    "frameP95Ms": 33.4,
+    "frameP99Ms": 33.4,
+    "framesOver33ms": 18,
+    "cpuLoopMedianMs": 19.5,
+    "cpuLoopP95Ms": 25.399999976158142,
+    "drawCallsMedian": 269,
+    "trianglesMedian": 178422,
+    "geometries": 417,
+    "textures": 371,
+    "activeEntities": 28,
+    "activeEntitiesMin": 28,
+    "activeEntitiesMax": 29,
+    "previewFramesDuringSample": 0,
+    "previewGeometries": 0,
+    "previewTextures": 0
+  },
+  "originalHighBudgets": {
+    "drawCallsMedian": {
+      "actual": 269,
+      "maximum": 350,
+      "passes": true
+    },
+    "trianglesMedian": {
+      "actual": 178422,
+      "maximum": 250000,
+      "passes": true
+    },
+    "frameMedianMs": {
+      "actual": 16.7,
+      "maximum": 20,
+      "passes": true
+    },
+    "frameP95Ms": {
+      "actual": 33.4,
+      "maximum": 33.4,
+      "passes": true
+    }
+  },
+  "geometryPending": {
+    "first": 55,
+    "last": 0
+  },
+  "interpretation": "For the same180world calls, CPU median17.6ms/p9524.5ms exceeds GPU elapsed3.80424/4.55164ms. Continue CPU traversal/submission investigation. Queries may include submission starvation and are not isolated shader busy time. Separate ordinary180frames meet original High sampled limits in this run, but no runtime change exists and population/shared-host differences preclude a gain claim. Earlier failed timing/cold triangle/memory/device gates remain open.",
+  "sourceEquivalence": {
+    "source": "03dc9bb7b50dcda9903299c7fdba54183a56e1ad",
+    "base": "5e98360a4cd7aa8c48aecebaa7bf826d6066e795",
+    "changedPaths": [
+      "tests/WorldGpuObservation.test.js",
+      "tests/e2e/helpers.js",
+      "tests/e2e/terrain-equipped-party.spec.js",
+      "tests/e2e/world-gpu-observation.js"
+    ],
+    "unchangedTrackedPaths": 6886,
+    "runtimeChanged": false,
+    "qaPatchSHA256": "f35995993693854c6f039185b25d1c3fe02998adeee8fd2bcef4b95deb0e1023",
+    "workerSHA256": "ed74163bff6f2ccc48d8f4364cbca258858d68b95b1cc42f4b91d04304fc9203"
+  },
+  "cleanup": {
+    "recordedUTC": "2026-10-12T01:44:28.225318+00:00",
+    "ownedPorts": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\n",
+    "ownedRemainingProcesses": [],
+    "syntheticAccountsSanitizedAcrossThreeAttempts": 12,
+    "performanceRuntimeChange": false,
+    "publicRelease": "5e98360a4cd7aa8c48aecebaa7bf826d6066e795",
+    "priorAttemptsRetained": [
+      "high: unchanged12m encounter proximity failed before sampling",
+      "final-high: owned browser yielded shared GPU to release CI; interrupted overlap excluded"
+    ]
+  },
+  "retainedAttempts": [
+    {
+      "folder": "high",
+      "source": "9de5f258a9543c00c9a70e57b9be9e6810be7a7b",
+      "outcome": "Failed unchanged12m encounter proximity before profiling; cause unproven; no GPU samples or native/save acceptance."
+    },
+    {
+      "folder": "final-high",
+      "source": "03dc9bb7b50dcda9903299c7fdba54183a56e1ad",
+      "outcome": "Interrupted only owned browser to yield shared GPU to release CI; overlap disqualified and retained."
+    },
+    {
+      "folder": "resumed-high",
+      "source": "03dc9bb7b50dcda9903299c7fdba54183a56e1ad",
+      "outcome": "PASS after exact40 CI terminal/root public acceptance, sole GPU use; retries0/flake0/one optional four-browser skip."
+    }
+  ],
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-connected40-world-gpu-checks-20261012",
+    "entries": 58,
+    "inventorySHA256": "98d174f08a34ea52a63c5a55cdaa0a67fa00d868d8c2adc7bb6fa0e7b4ba298f"
+  },
+  "publication": "Merge validated QA into master; hold for later coherent milestone. Public40 remains accepted; qualified future waystone art is also held locally.",
+  "limits": [
+    "Not a runtime optimization, ordinary-vs-diagnostic comparison, full campaign, full GPU lifecycle or four-browser interaction qualification.",
+    "No physical-device/human pacing/final-world/art/memory/capacity/beta/launch/handoff closure; full original goal remains active.",
+    "Do not replay unchanged campaigns/soaks, rejected foliage matrix or early color-cull variants."
+  ],
+  "primarySpecs": [
+    "https://registry.khronos.org/webgl/extensions/EXT_disjoint_timer_query_webgl2/",
+    "https://registry.khronos.org/OpenGL/extensions/EXT/EXT_disjoint_timer_query.txt"
+  ]
+}
