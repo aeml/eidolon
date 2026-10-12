@@ -98,30 +98,28 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
             storyAppearance: 'ilyra-fourfold-archmage',
             streetBatches: 6, streetCells: 12, streetSolids: 4 });
         const camp = await page.evaluate(async () => {
-            const { createLanternholdCampPlacements } = await import('/src/art/ProceduralLanternholdArchitecture.js');
+            const { LANTERNHOLD_HOMES } = await import('/src/data/lanternholdNeighborhood.js');
             const { render, hero } = window.__courtReview;
-            const placement = createLanternholdCampPlacements(0, 200)[0];
+            const placement = LANTERNHOLD_HOMES[0];
             hero.position.set(placement.x + 4, 0, placement.z + 4); hero.mesh.position.copy(hero.position);
             render.setCameraTarget(hero.position); render.updateEnvironmentLighting(hero.position, 0);
             render.render(); render.render();
-            const field = render.instanceEnvironmentGroup.getObjectByName('Lanternhold:Pilgrim Vigil Field');
+            const field = render.instanceEnvironmentGroup.getObjectByName('Lanternhold residential wards');
             return { camps: field.userData.instanceCount, batches: field.children.length };
         });
-        expect(camp).toEqual({ camps: 15, batches: 9 });
-        await page.screenshot({ path: testInfo.outputPath('town-pilgrim-camp.png'), style: '#perf-overlay { visibility: hidden !important; }' });
-        // The first camp's real rotation hides its bedroll behind the tent.
-        // Keep that view and inspect a second actual placement at the same
-        // ordinary camera/zoom; never rotate/strip the camp just for a capture.
+        expect(camp).toEqual({ camps: 15, batches: 6 });
+        await page.screenshot({ path: testInfo.outputPath('town-residential-lane.png'), style: '#perf-overlay { visibility: hidden !important; }' });
+        // Inspect a second residential lane at the same ordinary camera/zoom.
         await page.evaluate(async () => {
-            const { createLanternholdCampPlacements } = await import('/src/art/ProceduralLanternholdArchitecture.js');
+            const { LANTERNHOLD_HOMES } = await import('/src/data/lanternholdNeighborhood.js');
             const { render, hero } = window.__courtReview;
-            const placement = createLanternholdCampPlacements(0, 200)[3];
-            // Stand beside, not in front of, the bedroll under inspection.
+            const placement = LANTERNHOLD_HOMES[3];
+            // Keep the entrance in view beside the resident lane.
             hero.position.set(placement.x + 6, 0, placement.z + 2); hero.mesh.position.copy(hero.position);
             render.setCameraTarget(hero.position); render.updateEnvironmentLighting(hero.position, 0);
             render.render(); render.render();
         });
-        await page.screenshot({ path: testInfo.outputPath('town-pilgrim-bedroll.png'), style: '#perf-overlay { visibility: hidden !important; }' });
+        await page.screenshot({ path: testInfo.outputPath('town-shack-entrances.png'), style: '#perf-overlay { visibility: hidden !important; }' });
         expect(failures).toEqual([]);
     });
 }

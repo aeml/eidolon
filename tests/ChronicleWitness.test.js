@@ -97,10 +97,12 @@ test.each(DARK_REALM_WITNESSES)('$name stays in the expedition and unlocks only 
 });
 
 test.each(CHRONICLE_WITNESSES)('$name has a shared neutral identity and spoiler-gated dialogue without changing quests', witness => {
-    const server = fs.readFileSync('server/internal/game/chronicle_witnesses.go', 'utf8');
-    expect(server).toContain(`{"${witness.id}", "${witness.name}", ${witness.x}}`);
-    expect(server).toContain(`Z: ${witness.z}`);
-    expect(Math.hypot(witness.x, witness.z - 200)).toBeLessThan(50);
+    const server = JSON.parse(fs.readFileSync('server/internal/game/content/lanternhold-neighborhood.json', 'utf8'));
+    const route = server.routes.find(route => route.id === witness.id);
+    expect(route.name).toBe(witness.name);
+    expect(route.points[0]).toEqual([witness.x, witness.z]);
+    expect(Math.abs(witness.x)).toBeLessThan(85);
+    expect(witness.z).toBeGreaterThan(115); expect(witness.z).toBeLessThan(280);
     expect(getWitnessConversation(witness.id, []).topics).toHaveLength(1);
     const quests = chronicleInvestigations.filter(chapter => chapter.realm === witness.realm)
         .map(chapter => ({ id: chapter.id, accepted: true, investigationMask: (1 << chapter.sites.length) - 1 }));

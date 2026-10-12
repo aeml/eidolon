@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { EARTH_PATHS } from '../data/worldPopulation.js';
 import { conformGroundRibbon } from './GroundRibbonGeometry.js';
 import { createEarthTrailMaps } from './EarthTrailSurface.js';
+import { applyLanternholdGateRoad, extendLanternholdGatePath } from './LanternholdGateRoad.js';
 
 function pathTexture(color = [98, 88, 70], name = 'Earth') {
     const size = 128, pixels = new Uint8Array(size * size * 4);
@@ -43,7 +44,7 @@ export function createWorldPathGeometry(path, { elevation = null } = {}) {
     }
     if (points.length < 2) throw new TypeError('A world path must have nonzero length');
     const position = [], uv = [], indices = [];
-    let distance = 0;
+    let distance = (path.uvOffset || 0) * 6;
     const normal = (a, b) => {
         const dx = b[0] - a[0], dz = b[1] - a[1], length = Math.hypot(dx, dz);
         return [-dz / length, dx / length];
@@ -81,8 +82,10 @@ export function createWorldPathNetwork(paths, { name = 'World', color, elevation
     const material = new THREE.MeshStandardMaterial({ ...surfaces, roughness: 1,
         transparent: true, alphaTest: .025, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 });
     material.name = `${name} worn-path surface`;
+    if (name === 'Earth') applyLanternholdGateRoad(material, quality);
     for (const path of paths) {
-        const mesh = new THREE.Mesh(createWorldPathGeometry(path, { elevation }), material);
+        const renderedPath = name === 'Earth' ? extendLanternholdGatePath(path) : path;
+        const mesh = new THREE.Mesh(createWorldPathGeometry(renderedPath, { elevation }), material);
         mesh.name = `world-path:${path.id}`; mesh.receiveShadow = true;
         mesh.userData.worldPathId = path.id;
         group.add(mesh);

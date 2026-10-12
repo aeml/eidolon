@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { LANTERNHOLD_COURTYARDS } from '../data/worldPopulation.js';
 import { WORLD_REGIONS } from '../data/worldGeography.js';
 import { createLanternholdPavingMaps } from './LanternholdPaving.js';
-import { createLanternholdCampPlacements } from './ProceduralLanternholdArchitecture.js';
+import { LANTERNHOLD_HOMES, LANTERNHOLD_HOME_SCALE, LANTERNHOLD_RESIDENTIAL_PATHS } from '../data/lanternholdNeighborhood.js';
 
 // Surface composition, not navigation data: branches connect service courts
 // and gate approaches, bending around the casino and larger service buildings.
@@ -12,7 +12,10 @@ const ROUTES = [
     { width: 6, points: [[-40, 229], [-55, 238]] },
     { width: 6, points: [[40, 222], [55, 240]] },
     { width: 6, points: [[12, 230], [28, 235], [42, 234], [55, 240]] },
-    { width: 7, points: [[-22, 216], [-13, 202], [-9, 189], [0, 182]] }
+    { width: 7, points: [[-22, 216], [-13, 202], [-9, 189], [0, 182]] },
+    ...LANTERNHOLD_RESIDENTIAL_PATHS,
+    ...LANTERNHOLD_HOMES.map(home => ({ width: 2.4, points: [[home.x + Math.sin(home.rotation) * 3 * LANTERNHOLD_HOME_SCALE, home.z + Math.cos(home.rotation) * 3 * LANTERNHOLD_HOME_SCALE],
+        [home.x + Math.sin(home.rotation) * 12, home.z + Math.cos(home.rotation) * 12]] }))
 ];
 const COURTS = [
     { x: 0, z: 200, rx: 19, rz: 19 },
@@ -26,7 +29,7 @@ const clamp = value => Math.max(0, Math.min(1, value));
 const smooth = (lo, hi, value) => { const t = clamp((value - lo) / (hi - lo)); return t * t * (3 - 2 * t); };
 // Reuse the actual immutable town placement/rotation field. Bake into the
 // existing mask, not fifteen decals, extra textures or per-frame updates.
-const CAMPS = createLanternholdCampPlacements(0, 200).map(camp => ({
+const CAMPS = LANTERNHOLD_HOMES.map(camp => ({
     ...camp, cos: Math.cos(camp.rotation), sin: Math.sin(camp.rotation)
 }));
 
@@ -49,21 +52,12 @@ export function sampleLanternholdGround(x, z) {
     for (const camp of CAMPS) {
         const dx = x - camp.x, dz = z - camp.z;
         // Skip distant sites before rotating into their local hearth space.
-        if (Math.abs(dx) > 5 || Math.abs(dz) > 5) continue;
-        const lx = dx * camp.cos - dz * camp.sin;
-        const lz = dx * camp.sin + dz * camp.cos;
-        const distance = Math.hypot(lx - 2.35, lz - 1.9);
-        hearth = Math.max(hearth, 1 - smooth(.35, 1.8 + weather * .12, distance));
-        // Wear follows the tent entrance and the walk to its actual hearth,
-        // not a repeated circle around every prop. Bake into the existing
-        // traffic channel; preserve roads, paving, geometry and navigation.
-        // Canvas is centred at(-.55,-.45), with its opening1.47m forward.
-        const tentDistance = Math.hypot((lx + .55) / 1.7, (lz + .45) / 2.1);
-        const pathX = 2.9, pathZ = .88;
-        const t = clamp(((lx + .55) * pathX + (lz - 1.02) * pathZ) / (pathX * pathX + pathZ * pathZ));
-        const pathDistance = Math.hypot(lx + .55 - pathX * t, lz - 1.02 - pathZ * t);
-        campTraffic = Math.max(campTraffic, 1 - smooth(.68, 1.15, tentDistance),
-            1 - smooth(.3, .95 + weather * .05, pathDistance));
+        if (Math.abs(dx) > 5 * LANTERNHOLD_HOME_SCALE || Math.abs(dz) > 5 * LANTERNHOLD_HOME_SCALE) continue;
+        const lx = (dx * camp.cos - dz * camp.sin) / LANTERNHOLD_HOME_SCALE;
+        const lz = (dx * camp.sin + dz * camp.cos) / LANTERNHOLD_HOME_SCALE;
+        // Doorway wear replaces the retired tent/hearth scorch marks.
+        campTraffic = Math.max(campTraffic, (1 - smooth(.7, 1.7, Math.abs(lx))) *
+            smooth(2.2, 2.8, lz) * (1 - smooth(3.2, 5, lz)));
     }
     traffic = Math.max(traffic, campTraffic * .72);
     const damp = (1 - traffic) * (.35 + .25 * weather);

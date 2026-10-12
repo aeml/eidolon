@@ -16,9 +16,6 @@ import {
 import { computeFoliageCellBounds, getFoliageRenderBatches } from '../art/FoliageRenderBatches.js';
 import { createEarthUnderstory } from '../art/EarthUnderstory.js';
 import {
-    LANTERNHOLD_STRUCTURE_DEFINITIONS,
-    createLanternholdCampPlacements,
-    createProceduralLanternholdCampField,
     createProceduralLanternholdStructure
 } from '../art/ProceduralLanternholdArchitecture.js';
 import {
@@ -40,6 +37,7 @@ import { WATER_PATHS, FIRE_PATHS, AIR_PATHS } from '../data/elementalPopulation.
 import { createLanternholdCourtyards } from '../art/ProceduralLanternholdCourtyards.js';
 import { createLanternholdStreetFurniture } from '../art/LanternholdStreetFurniture.js';
 import { createLanternholdRoadCart } from '../art/LanternholdRoadCart.js';
+import { createLanternholdNeighborhood } from '../art/LanternholdNeighborhood.js';
 import { createLanternholdPerimeter } from '../art/LanternholdPerimeter.js';
 import {
     CRYSTAL_SANCTUM_DEFINITIONS,
@@ -302,22 +300,21 @@ export class WorldGenerator {
 
         // Trading House is now an Entity (loaded in MeshFactory) to handle interaction/collision better
 
-        const campPlacements = createLanternholdCampPlacements(cx, cz);
-        const campField = createProceduralLanternholdCampField(campPlacements, { perInstanceFrustum: this.campInstanceFrustum });
-        campField.traverse((part) => {
+        const neighborhood = createLanternholdNeighborhood(cx, cz, { perInstanceFrustum: this.campInstanceFrustum });
+        neighborhood.traverse((part) => {
             if (part.isMesh) {
                 MeshFactory.configureShadowCastingForObject(part, { stableFrontShadows: true });
             }
         });
         if (!shouldAttach()) return false;
-        this.scene.add(campField);
-        const campHeight = LANTERNHOLD_STRUCTURE_DEFINITIONS.camp.bounds[1];
-        for (const placement of campPlacements) {
-            const collider = new THREE.Box3().setFromCenterAndSize(
-                new THREE.Vector3(placement.x, .005 + campHeight / 2, placement.z),
-                new THREE.Vector3(2, 10, 2)
-            );
-            this.collisionManager.addCollider(collider);
+        this.scene.add(neighborhood);
+        for (const home of neighborhood.userData.walkFootprints) {
+            const matrix = new THREE.Matrix4().makeRotationY(home.rotation).setPosition(home.x, .025, home.z);
+            this.collisionManager.addOrientedCollider({
+                box: new THREE.Box3(new THREE.Vector3(-home.width / 2, -2, -home.depth / 2),
+                    new THREE.Vector3(home.width / 2, home.height, home.depth / 2)),
+                matrix, inverse: matrix.clone().invert()
+            });
         }
         const streets = createLanternholdStreetFurniture({ quality: this.graphicsQuality, cx, cz });
         streets.traverse(part => {

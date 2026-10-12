@@ -174,16 +174,18 @@ type Entity struct {
 	LifestealBonus     float64 `json:"-"`
 	AllResistBonus     float64 `json:"-"`
 
-	TargetX         float64 `json:"-"`
-	TargetZ         float64 `json:"-"`
-	TargetID        string  `json:"-"`
-	rockRoute       []rockPoint
-	rockRouteGoal   rockPoint
-	rockRouteRadius float64
-	rockRouteRetry  time.Time
-	SpawnX          float64 `json:"-"`
-	SpawnZ          float64 `json:"-"`
-	State           string  `json:"state"` // IDLE, MOVING, ATTACKING, DEAD
+	TargetX           float64 `json:"-"`
+	TargetZ           float64 `json:"-"`
+	TargetID          string  `json:"-"`
+	rockRoute         []rockPoint
+	townResidentClock float64
+	townResidentLeg   int
+	rockRouteGoal     rockPoint
+	rockRouteRadius   float64
+	rockRouteRetry    time.Time
+	SpawnX            float64 `json:"-"`
+	SpawnZ            float64 `json:"-"`
+	State             string  `json:"state"` // IDLE, MOVING, ATTACKING, DEAD
 	// LastMoveSequence acknowledges the newest ordered client movement sample
 	// processed by the server, including speed/discontinuity rejections. Returning
 	// the unchanged position with that acknowledgement corrects denied predictions

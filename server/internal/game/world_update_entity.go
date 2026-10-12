@@ -8,6 +8,9 @@ import (
 )
 
 func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred *deferredActions, frameTimes ...time.Time) {
+	if w.updateTownResident(e, dt, players) {
+		return
+	}
 	// --- Loot Cleanup ---
 	if e.Type == TypeLoot {
 		e.Mu.Lock()

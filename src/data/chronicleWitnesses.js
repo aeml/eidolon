@@ -1,4 +1,5 @@
 import { DARK_REALM_WITNESSES } from './darkRealmWitnesses.js';
+import { LANTERNHOLD_RESIDENT_ROUTES } from './lanternholdNeighborhood.js';
 
 export function findChronicleWitness(id) {
     return CHRONICLE_WITNESSES.find(witness => witness.id === id)
@@ -48,4 +49,7 @@ export const CHRONICLE_WITNESSES = [
             { id: 'interval', restored: true, question: 'What belongs on the next weather chart?', answer: '“A space for whoever keeps it after me. I want them to know which measurements I trusted and which I could not explain.\n\n“The Skyglass has an interval between its notes. We once treated that pause as time wasted waiting for the next sound. Listen again. It is where someone else can join. A good chart ought to leave that kind of room.”' }
         ]
     }
-];
+].map(witness => {
+    const route = LANTERNHOLD_RESIDENT_ROUTES.find(route => route.id === witness.id);
+    return { ...witness, x: route.points[0][0], z: route.points[0][1] };
+});

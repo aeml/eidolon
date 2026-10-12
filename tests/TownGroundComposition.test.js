@@ -1,36 +1,17 @@
 import * as THREE from 'three';
 import { createTownCompositionMask, sampleLanternholdGround } from '../src/art/TownGroundComposition.js';
 import { createProceduralTerrainMaterial } from '../src/art/ProceduralRealmTerrain.js';
-import { createLanternholdCampPlacements } from '../src/art/ProceduralLanternholdArchitecture.js';
+import { LANTERNHOLD_HOMES, LANTERNHOLD_HOME_SCALE } from '../src/data/lanternholdNeighborhood.js';
 
-test('compacted camp ground follows tent entrances and their real rotated hearth paths', () => {
-    for (const camp of createLanternholdCampPlacements(0, 200)) {
-        const point = (x, z) => [camp.x + Math.cos(camp.rotation) * x + Math.sin(camp.rotation) * z,
-            camp.z - Math.sin(camp.rotation) * x + Math.cos(camp.rotation) * z];
-        for (const local of [[-.55, -.45], [-.55, 1.02], [.9, 1.46], [2.35, 1.9]]) {
-            const sample = sampleLanternholdGround(...point(...local));
-            expect(sample.campTraffic).toBe(1);
-            expect(sample.traffic).toBeGreaterThanOrEqual(.72);
-            expect(sample.damp).toBeLessThanOrEqual(.28 * .6);
-        }
-        expect(sampleLanternholdGround(...point(-3.5, -3.5)).campTraffic).toBe(0);
-        expect(sampleLanternholdGround(...point(4.35, 1.9)).campTraffic).toBe(0);
+test('doorway wear follows every rotated home and retired hearth scorch is removed', () => {
+    for (const home of LANTERNHOLD_HOMES) {
+        const point = (x, z) => [home.x + (Math.cos(home.rotation) * x + Math.sin(home.rotation) * z) * LANTERNHOLD_HOME_SCALE,
+            home.z + (-Math.sin(home.rotation) * x + Math.cos(home.rotation) * z) * LANTERNHOLD_HOME_SCALE];
+        const entrance = sampleLanternholdGround(...point(0, 3));
+        expect(entrance.campTraffic).toBe(1); expect(entrance.traffic).toBeGreaterThanOrEqual(.72);
+        expect(sampleLanternholdGround(...point(0, -3)).campTraffic).toBe(0);
+        expect(entrance.hearth).toBe(0);
     }
-    for (const [x, z] of [[0, 200], [-28, 210], [0, 182], [23, 166]])
-        expect(sampleLanternholdGround(x, z).campTraffic).toBe(0);
-});
-
-test('charcoal wear follows every actual rotated camp hearth and leaves service paths unchanged', () => {
-    const camps = createLanternholdCampPlacements(0, 200);
-    for (const camp of camps) {
-        const point = (x, z) => [camp.x + Math.cos(camp.rotation) * x + Math.sin(camp.rotation) * z,
-            camp.z - Math.sin(camp.rotation) * x + Math.cos(camp.rotation) * z];
-        expect(sampleLanternholdGround(...point(2.35, 1.9)).hearth).toBe(1);
-        expect(sampleLanternholdGround(...point(-.55, -.45)).hearth).toBe(0);
-        expect(sampleLanternholdGround(...point(4.35, 1.9)).hearth).toBe(0);
-    }
-    for (const [x, z] of [[0, 200], [-28, 210], [0, 182], [23, 166]])
-        expect(sampleLanternholdGround(x, z).hearth).toBe(0);
 });
 
 test('connected town surfaces retain paved service courts and gates, with unpaved quiet edges', () => {
@@ -38,7 +19,7 @@ test('connected town surfaces retain paved service courts and gates, with unpave
         [-28, 210], [0, 182], [-55, 238], [55, 240], [40, 222], [-40, 229]]) {
         expect(sampleLanternholdGround(x, z).paving).toBeGreaterThan(.85);
     }
-    for (const [x, z] of [[-80, 120], [80, 280], [-80, 280], [70, 150]]) {
+    for (const [x, z] of [[-90, 120], [90, 280], [-90, 280], [85, 150]]) {
         expect(sampleLanternholdGround(x, z).paving).toBeLessThan(.05);
     }
     // The north route goes around, not through, the casino shell.
