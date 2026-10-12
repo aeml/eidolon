@@ -8,6 +8,7 @@ import { createWorldPathNetwork } from './ProceduralWorldPaths.js';
 import { createDarkRealmStreetMaterial } from './DarkRealmStreetSurface.js';
 import { createDarkCampShelterGeometry } from './DarkCampShelterGeometry.js';
 import { createDarkCampLanternGeometry } from './DarkCampLanternGeometry.js';
+import { createDarkCourtWorkbenchGeometry, createDarkCourtStandardGeometry } from './DarkCourtFurnitureGeometry.js';
 
 const CAMP_LANTERNS = [[-24, -24], [24, -24], [24, 24], [-24, 24]];
 const CAMP_SHELTERS = [[-22, 12], [22, 12]];
@@ -92,8 +93,10 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
     root.userData.landmarks = [];
     // Inhabited-scale spaces within the real districts. These complement, not
     // replace, the distant skyline and the original discovery models.
-    const paper = new THREE.MeshStandardMaterial({ color: 0xa69b89, roughness: 1 });
-    const cloth = new THREE.MeshStandardMaterial({ color: 0x71687e, roughness: 1 });
+    const paper = new THREE.MeshStandardMaterial({ color: 0xa69b89, roughness: 1, vertexColors: true });
+    const cloth = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x71687e, roughness: 1, vertexColors: true }), 'canvas');
+    const timber = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x695344, roughness: .92 }), 'timber');
+    const courtMaterials = { stone, bronze, shadow, paper, cloth, timber };
     for (const site of DARK_REALM_COURTS) {
         const x = site.x - origin.x, z = site.z - origin.z;
         // Broken paving inlays stay below ankle height; not extra walk floors.
@@ -105,35 +108,9 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
     }
     for (const solid of DARK_REALM_COURT_SOLIDS) {
         const x = solid.x - origin.x, z = solid.z - origin.z;
-        if (solid.kind === 'standard') {
-            block(stone, [2, .8, 2], [x, .4, z]);
-            block(bronze, [.25, 5, .25], [x, 3, z]);
-            block(cloth, [1.3, 2.2, .08], [x, 4.7, z]);
-            for (const side of [-1, 1]) block(bronze, [.08, 2.3, .1], [x + side * .68, 4.7, z]);
-            continue;
-        }
-        block(stone, [4, .3, 2.5], [x, 1.2, z]);
-        for (const side of [-1, 1]) block(stone, [.45, 1.2, 2.1], [x + side * 1.6, .6, z]);
-        if (solid.recipe === 'shore') {
-            for (let i = 0; i < 4; i++) {
-                block(paper, [.65, .07, 1.25], [x - 1.35 + i * .9, 1.4, z]);
-                block(bronze, [.5, .45, .5], [x - 1.35 + i * .9, 1.65, z + .7]);
-            }
-        } else if (solid.recipe === 'archive') {
-            for (let i = 0; i < 4; i++) {
-                block(cloth, [.7, .4 + i % 2 * .2, 1.5], [x - 1.35 + i * .9, 1.6, z]);
-                block(paper, [.72, .08, 1.3], [x - 1.35 + i * .9, 1.85, z]);
-            }
-        } else if (solid.recipe === 'foundry') {
-            block(bronze, [1.7, .7, 1], [x - .7, 1.7, z]);
-            for (let i = 0; i < 3; i++) {
-                block(shadow, [.2, .2, 1.7], [x + .4 + i * .5, 1.5, z]);
-                block(bronze, [.4, .3, .4], [x + .4 + i * .5, 1.6, z - .6]);
-            }
-        } else {
-            for (const side of [-1, 1]) block(bronze, [4, .15, .12], [x, 1.8, z + side]);
-            for (let i = 0; i < 4; i++) block(paper, [.65, .4, 1.3], [x - 1.35 + i * .9, 1.55, z]);
-        }
+        const parts = solid.kind === 'standard' ? createDarkCourtStandardGeometry(solid.recipe, quality) :
+            createDarkCourtWorkbenchGeometry(solid.recipe, quality);
+        for (const [key, geometry] of Object.entries(parts)) append(courtMaterials[key], geometry, [x, 0, z]);
     }
     for (const [index, room] of layout.rooms.entries()) {
         const x = room.x - origin.x, z = room.z - origin.z;
