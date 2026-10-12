@@ -1,0 +1,32 @@
+{
+  "recordedUTC": "2026-10-12T20:45:06.712192+00:00",
+  "source": "097449f8a78691eb0424eddcb7c0db5385d70466",
+  "offlineIndexSource": "62de1f7c3f3e941ebea0cea4f57a26c3068b4751",
+  "status": "Actual-loaded CPU shadow adapter qualification only, isolated/unselected",
+  "profiles": [
+    "high",
+    "low"
+  ],
+  "matchedOriginalPrimitives": 20,
+  "registeredOpaquePrimitives": 18,
+  "morphEnabledPrimitives": 1,
+  "originalColorTriangles": 27737,
+  "candidateShadowTriangles": 10317,
+  "posesPerProfile": 3,
+  "protectedGoldFaces": 2504,
+  "protectedWoodCrystalFaces": 68,
+  "proof": "Unique exact original index/position/material matching for all20primitives. Existing ActorShadowGeometry copies original live skin and morph data, sourcegeometry/material/skeleton/allbufferbytes remain exact, secondNPC unaffected, original27,737 restored, all20ownedcandidate geometries dispose exactly once. CPU shadow calls only, WebGLdisabled.",
+  "initialFailure": "Initial stub retained mesh references then counted geometry after pass restoration, seeing original27,737. Corrected harness captures triangle count during stubshadowpass; source/runtime unchanged. Initial source/log/retirement retained.",
+  "limits": "No native image/depth/silhouette/motion/GPUlifetime/frame/fulltown/device/default or release selection. Existing opaque batching owner cannot combine morph geometry; separate existing ActorShadowGeometry supports it. Do not combine both pilots before explicit compatibility qualification.",
+  "retirement": {
+    "browserClosed": true,
+    "serverClosed": true,
+    "port": 4249,
+    "gpuLaunch": false
+  },
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-ilyra-shadow-live-cpu-checks-20261012",
+    "entries": 34,
+    "inventorySHA256": "6f3de873a9f760cc3b05af9a089af1791db53c39c323ad83039c131794ca978c"
+  }
+}

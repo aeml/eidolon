@@ -1594,3 +1594,16 @@ Frozen53entry inventory`1c660d8d051739aefbe26b3dca4ebbb811f517cb5df15ab6834d3b01
 Both prototypes remain detached/unselected; no GPU/server/browser launched.
 Readiness register current-publication row reconciled to0d32/ownCI38303521959;
 public43 lastaccepted, full original goal/retained failures remain open.
+
+
+October12 actual-loaded Ilyra CPU adapter matches all20original primitives in
+bothprofiles by unique exact index/position/material hashes. Existing isolated
+ActorShadowGeometry supports original morph data:18opaque registrations/10317
+shadowtriangles with full27737color source/alllivebuffers and independentNPC
+unchanged. ThreeCPUposes/profile and exactonceowned retirement/source restore
+pass with WebGLdisabled. Initial post-restoration stubcount failure retained.
+Frozen34entry inventory`6f3de873a9f760cc3b05af9a089af1791db53c39c323ad83039c131794ca978c`.
+No native/default/whole-town acceptance; existing two pilots remain separate.
+Staged native scripts now guard current38303521959/source0d reservation; private
+network launcher prepared but not executed. OwnCI/public44acceptance and full
+original readiness goal/retained failures remain open.
