@@ -1,0 +1,107 @@
+{
+  "source": "3204f539e1391f87d1eb1483aa5bdd699c5381f7",
+  "version": "Alpha 1.79.46",
+  "status": "Pushed exact source; ownCI38321752740 pending. Public45 last accepted; no46acceptance yet.",
+  "recordedUTC": "2026-10-12T23:21:46.266767+00:00",
+  "qualificationReceipts": [
+    "2026-10-12-lanternhold-facades-qualification.json",
+    "2026-10-12-shadow-validation-native-qualification.json",
+    "2026-10-12-shadow-default-integration-qualification.json"
+  ],
+  "preparation": {
+    "source": "3204f539e1391f87d1eb1483aa5bdd699c5381f7",
+    "version": "Alpha 1.79.46",
+    "clientPassed": 468,
+    "clientSuites": 6,
+    "contentGroups": 14,
+    "versionFiles": 12,
+    "notes": 481,
+    "priorNotesByteExact": 480,
+    "publicPins": 133,
+    "bundledModules": 479,
+    "copiedNativeProfiles": [
+      "high",
+      "low"
+    ],
+    "copiedNativeViews": 4,
+    "defaultHighSavedSubmissions": 32,
+    "defaultLowEntries": 0,
+    "retries": 0,
+    "limits": "Scoped qualified facade details and full-geometry opaque shadows; original crowded-town/device/combat/live-network/full-goal findings remain open."
+  },
+  "build": {
+    "source": "3204f539e1391f87d1eb1483aa5bdd699c5381f7",
+    "pins": 133,
+    "copyFiles": 3675,
+    "copyBytes": 449572038,
+    "build": {
+      "worker": {
+        "output": "src/core/ActorGameplayGeometryWorker.ed74163bff6f2ccc.js",
+        "sha256": "ed74163bff6f2ccc48d8f4364cbca258858d68b95b1cc42f4b91d04304fc9203",
+        "bytes": 173395,
+        "modules": 15,
+        "imports": [],
+        "precomputed": {
+          "path": "assets/gameplay-geometry/indices.6aa8c7e199c910b5.bin",
+          "sha256": "6aa8c7e199c910b5fbf0f78dfae873b64e79aa0045e39b5775ff9ac7d7e93346",
+          "bytes": 777321,
+          "entries": 133
+        }
+      },
+      "bundledModules": 479,
+      "bytes": 3772982,
+      "sharedLoginModules": 22,
+      "vendorModules": [
+        "vendor/three/examples/jsm/geometries/RoundedBoxGeometry.js",
+        "vendor/three/examples/jsm/loaders/GLTFLoader.js",
+        "vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+        "vendor/three/examples/jsm/postprocessing/MaskPass.js",
+        "vendor/three/examples/jsm/postprocessing/OutputPass.js",
+        "vendor/three/examples/jsm/postprocessing/Pass.js",
+        "vendor/three/examples/jsm/postprocessing/RenderPass.js",
+        "vendor/three/examples/jsm/postprocessing/ShaderPass.js",
+        "vendor/three/examples/jsm/postprocessing/UnrealBloomPass.js",
+        "vendor/three/examples/jsm/shaders/CopyShader.js",
+        "vendor/three/examples/jsm/shaders/FXAAShader.js",
+        "vendor/three/examples/jsm/shaders/LuminosityHighPassShader.js",
+        "vendor/three/examples/jsm/shaders/OutputShader.js",
+        "vendor/three/examples/jsm/utils/BufferGeometryUtils.js",
+        "vendor/three/examples/jsm/utils/SkeletonUtils.js"
+      ],
+      "externalImports": [
+        "../assets/ServiceWorkerBoot.js",
+        "../data/worldGeography.js",
+        "../ui/EmailRecoveryUI.js",
+        "../ui/OwnedEvents.js",
+        "../ui/PasswordChangeUI.js",
+        "../ui/ReportUI.js",
+        "../ui/reportTypes.js",
+        "./CredentialToken.js",
+        "./GraphicsStartup.js",
+        "three"
+      ]
+    },
+    "versioning": {
+      "root": "/home/aeml/.local/share/eidolon-master-20261011/.qa-release46/publication-copy",
+      "release": "3204f539e1391f87d1eb1483aa5bdd699c5381f7",
+      "scannedFiles": 950,
+      "changedFiles": 428,
+      "bundledStyles": true
+    }
+  },
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-release46-town-shadow-preparation-checks-20261012",
+    "entries": 30,
+    "inventorySHA256": "a964de4cd74ad0983776fd6238fd9958fc564924aa464354122d17cbea76bea7"
+  },
+  "required": "Own exact-source orderedCI/deploy/live and fresh normal-TLS133pinnedassets/frontend/backend/readyDB before acceptance or another publication.",
+  "pushedUTC": "2026-10-12T23:22:44.789387+00:00",
+  "ownCI": {
+    "conclusion": "",
+    "createdAt": "2026-10-12T23:22:04Z",
+    "databaseId": 38321752740,
+    "headSha": "3204f539e1391f87d1eb1483aa5bdd699c5381f7",
+    "status": "in_progress",
+    "url": "https://github.com/aeml/eidolon/actions/runs/38321752740"
+  }
+}
