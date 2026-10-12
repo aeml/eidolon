@@ -43,13 +43,14 @@ const stockBatchShadow = object => object.isBatchedMesh &&
 // inserted after color projection, only for a stock directional shadow viewport.
 // Every source triangle remains; originals return before the color pass.
 export class OpaqueSkinnedShadowBatches {
-    constructor(renderer, scene) {
+    constructor(renderer, scene, { prepare = null } = {}) {
         if (typeof renderer.shadowMap?.render !== 'function' || typeof renderer.render !== 'function') throw new Error('Stock renderer shadow boundary required');
         this.renderer = renderer; this.scene = scene; this.shadowMap = renderer.shadowMap;
         this.originalShadow = this.shadowMap.render; this.originalRender = renderer.render;
         this.entries = new Set(); this.claimed = new Map(); this.active = [];
         this.depth = 0; this.suspended = 0; this.enabled = true; this.disposed = false;
         this.lastBatches = 0; this.lastSavedSubmissions = 0;
+        this.prepare = prepare;
         this.shadowWrapper = (...args) => this.renderShadows(args);
         this.renderWrapper = (...args) => this.depth
             ? this.withOriginals(() => this.originalRender.apply(renderer, args))
@@ -159,6 +160,9 @@ export class OpaqueSkinnedShadowBatches {
                  object.onAfterShadow !== THREE.Object3D.prototype.onAfterShadow) && !stockBatchShadow(object)) customHook = true;
         });
         if (customHook) return this.originalShadow.apply(shadowMap, args);
+        // The color-geometry owner has already selected this frame's buffers.
+        // Prepare outside the shadow recursion so nested renders use originals.
+        this.prepare?.();
         const hooks = [];
         this.depth++;
         try {
