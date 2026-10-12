@@ -1579,3 +1579,18 @@ reused. Onlymaster locally/origin, original465dirty paths untouched. Sparse
 monitor follows newownCI and existing41soak; native GPU reserved until terminal.
 Require ordered gates/deploy/live/fresh126asset/source/readyDB before acceptance
 or next publication. Full original goal/retained failures remain open.
+
+
+October12 independent CPU continuation while ownCI38303521959 reserves GPU:
+Ilyra color partition screens7e22f994 reject20099/18811tri against unchanged
+18029.05target; originalattributes/rig/goldpreserved, no native/selection.
+Frozen18entry inventory`e9ba6f5adeee3b98d29d11262b7457e29e3b760f53d9f4d64ece95632c7da1b8`.
+Protected depth-only offline prototype62de1f7c passes16checks/two suites/lint,
+preserving original27737tri color model/all281accessorarrays and every20primitive.
+10317depth estimate/18031with current morph fallback; all2504gold+68wood/crystal
+faces keep exact indices/winding/multiplicity. No renderer/default changes;
+native depth/color/motion/silhouette/GPUlifetime/town/device gates open.
+Frozen53entry inventory`1c660d8d051739aefbe26b3dca4ebbb811f517cb5df15ab6834d3b01baab901e`.
+Both prototypes remain detached/unselected; no GPU/server/browser launched.
+Readiness register current-publication row reconciled to0d32/ownCI38303521959;
+public43 lastaccepted, full original goal/retained failures remain open.

@@ -1,0 +1,30 @@
+{
+  "source": "7e22f9943372f0cd7ab0a9d456c1b02bfb0718ee",
+  "status": "Both new CPU index partition screens fail unchanged target; no native work or selection. Original accepted source/runtime untouched.",
+  "originalTriangles": 27737,
+  "unchanged65PercentTarget": 18029.05,
+  "connected": {
+    "triangles": 20099,
+    "sha256": "b8b39ed73175ac27020be1f8554c70dddabb0a5c4c571ae5b6f6dac1c8332b80",
+    "decision": "Reject:1080skin topology components create excessive boundaries, target worsens"
+  },
+  "fixedSurfaceFirst": {
+    "triangles": 18811,
+    "sha256": "2f4b648bb91f80540c89594747a4c8ca7c301a1fc5541ce1c33cba3fe4c72160",
+    "decision": "Reject:only2triangles better than18813, still above originaltarget"
+  },
+  "preservation": "Both derivations verify original53joint hierarchy/bind/Idle/material/image identities and every supplied non-index attribute after binary reread, zeroGLB structural errors. Complete head/hand-bound gold and protected seam/morph triangles retained by recipe. No native quality/performance acceptance.",
+  "goldCensus": "27connected components; real hem/sash/neck binding, cuffs/mantle edges, full circlet/wings and six staff bindings/four crown prongs. Existing gold locks cover5308of5392triangles; do not relax to reach target.",
+  "shadowCountOnly": {
+    "originalColorTriangles": 27737,
+    "depthCandidateTriangles": 7879,
+    "limits": "Unselected readonly count lacks full gold preservation/native depth/color/motion/lifetime qualification. No renderer/default change."
+  },
+  "retirement": "No browsers/GPU/servers started; nativeGPU reserved for candidate44 CI38303521959",
+  "recordedUTC": "2026-10-12T20:29:36.997798+00:00",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-ilyra-low-partition-checks-20261012",
+    "entries": 18,
+    "inventorySHA256": "e9ba6f5adeee3b98d29d11262b7457e29e3b760f53d9f4d64ece95632c7da1b8"
+  }
+}
