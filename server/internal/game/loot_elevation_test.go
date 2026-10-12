@@ -146,7 +146,10 @@ func TestElevatedDeathLootPublication(t *testing.T) {
 }
 
 func TestElevatedStaticWorldAnchorsRetainFlatFoundations(t *testing.T) {
-	w, _ := elevationMovementWorld(t)
+	w, err := NewWorldWithElevationCandidate(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
 	t.Cleanup(w.StopBackground)
 	count := 0
 	for _, e := range w.Entities {
@@ -156,7 +159,14 @@ func TestElevatedStaticWorldAnchorsRetainFlatFoundations(t *testing.T) {
 		switch e.Type {
 		case TypeNPC, TypeFence, TypeStash, TypeForge, TypeTradingHouse:
 			count++
-			if ground := w.terrainElevation.sample(e.X, e.Z, ""); ground != 0 {
+			ground := w.terrainElevation.sample(e.X, e.Z, "")
+			if e.SubType == "ChronicleSite" {
+				if e.Y != ground {
+					t.Errorf("discovery %s floats or is buried: y=%f ground=%f", e.ID, e.Y, ground)
+				}
+				continue
+			}
+			if ground != 0 {
 				t.Errorf("static anchor %s (%s) is buried by %f", e.ID, e.SubType, ground)
 			}
 		}

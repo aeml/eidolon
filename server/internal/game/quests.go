@@ -38,10 +38,10 @@ type ChronicleAdvanceEvent struct {
 }
 
 func chronicleQuestCatalog() []Quest {
-	quests := expandDarkRealmChronicle(expandChronicleHunts(expandChronicleInvestigations(classicChronicleQuestCatalog())))
+	quests := expandDarkRealmChronicle(expandChronicleExpeditions(expandChronicleHunts(expandChronicleInvestigations(classicChronicleQuestCatalog()))))
 	for i := range quests {
-		if xp, ok := chroniclePreparationXP[quests[i].ID]; ok {
-			quests[i].RewardXP = xp
+		if level, percent, ok := chronicleRewardTerms(quests[i].ID); ok {
+			quests[i].RewardXP = contentExperiencePercent(level, percent)
 		}
 		quests[i].RewardXPQuoted, quests[i].RewardGoldQuoted = true, true
 	}
@@ -231,10 +231,15 @@ func isDailyQuest(q Quest) bool {
 
 func copyQuestDefinition(progress Quest, definition Quest) Quest {
 	if progress.Accepted || progress.Completed {
-		// A rollback/catalog refresh must honor existing contracts, including
-		// explicitly quoted zeroes. Only genuinely absent fields get defaults.
+		// Preserve paid receipts and smaller/zero promises. Unpaid story quotes
+		// are subject to the current proportional reward ceiling.
 		if progress.RewardXPQuoted || progress.RewardXP != 0 {
 			definition.RewardXP = progress.RewardXP
+			if _, _, balanced := chronicleRewardTerms(definition.ID); balanced && !progress.Completed {
+				// Retire explosive unpaid preparation quotes, while retaining
+				// smaller/zero promises and every already-paid receipt.
+				definition.RewardXP = min(definition.RewardXP, contentExperiencePercentForQuest(definition.ID))
+			}
 		}
 		if progress.RewardGoldQuoted || progress.RewardGold != 0 {
 			definition.RewardGold = progress.RewardGold
@@ -290,6 +295,7 @@ func ensureChronicleLocked(player *Entity) bool {
 	catalog := chronicleQuestCatalog()
 	byID := make(map[string]Quest, len(catalog))
 	for _, definition := range catalog {
+		boundQuestExperience(player, &definition)
 		byID[definition.ID] = definition
 	}
 	changed := false
@@ -301,6 +307,7 @@ func ensureChronicleLocked(player *Entity) bool {
 		}
 		existing := player.Quests[i]
 		repaired := copyQuestDefinition(existing, definition)
+		boundQuestExperience(player, &repaired)
 		if existing != repaired {
 			player.Quests[i] = repaired
 			changed = true
@@ -324,6 +331,7 @@ func ensureChronicleLocked(player *Entity) bool {
 		if _, exists := indices[definition.ID]; exists {
 			continue
 		}
+		boundQuestExperience(player, &definition)
 		definition.LegacyOptional = true
 		definition = withChronicleCatchupDescription(definition)
 		indices[definition.ID] = len(player.Quests)
@@ -341,7 +349,13 @@ func ensureChronicleLocked(player *Entity) bool {
 	if nextIndex < len(catalog) {
 		definition := catalog[nextIndex]
 		if _, exists := indices[definition.ID]; !exists {
+			boundQuestExperience(player, &definition)
 			player.Quests = append(player.Quests, definition)
+			changed = true
+		}
+	}
+	for i := range player.Quests {
+		if player.Quests[i].Category == QuestCategoryChronicle && boundQuestExperience(player, &player.Quests[i]) {
 			changed = true
 		}
 	}
@@ -418,6 +432,7 @@ func (w *World) PerformAcceptQuest(playerID, questID string) (*Entity, bool) {
 			if q.Accepted || q.Completed || !w.canDiscussQuestLocked(player, *q) {
 				return nil, false
 			}
+			rebalanceUnpaidQuestExperience(player, q)
 			q.Accepted = true
 			q.RewardXPQuoted, q.RewardGoldQuoted = true, true
 			return player, true
@@ -470,6 +485,7 @@ func (w *World) PerformCompleteQuestDeferred(playerID, questID string) (*Entity,
 				}
 				consumeInventoryItemLocked(player, q.Target, q.MaxCount)
 			}
+			rebalanceUnpaidQuestExperience(player, q)
 			w.awardQuestRewardsLocked(player, q)
 			if q.Category == QuestCategoryChronicle {
 				event := w.advanceChronicleLocked(player, i)

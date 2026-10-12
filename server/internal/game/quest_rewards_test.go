@@ -91,6 +91,12 @@ func TestQuestCatalogGoldMigrationPreservesProgressAndReceipts(t *testing.T) {
 		if quest.Category == QuestCategoryChronicle && (quest.Type == "INVESTIGATE" || quest.Type == "COLLECT") {
 			minimum = 1
 		}
+		if chapter, ok := chronicleExpeditionByID(quest.ID); ok {
+			minimum = 10
+			if quest.RewardGold != chapter.RewardGold || quest.RewardGold > 100 {
+				t.Fatal("expedition income exceeds its small authored purse", quest.ID)
+			}
+		}
 		if quest.RewardGold < minimum || quest.RewardGold > 50_000 {
 			t.Fatalf("invalid gold tier: %+v", quest)
 		}

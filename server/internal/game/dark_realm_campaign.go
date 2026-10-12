@@ -87,7 +87,7 @@ func darkRealmInvestigations() []ChronicleInvestigation {
 // Keep the original regional catalog stable for its source generator. Runtime
 // discovery/placement also includes the separately authored expedition content.
 func allChronicleInvestigations() []ChronicleInvestigation {
-	return append(ChronicleInvestigationCatalog(), darkRealmInvestigations()...)
+	return append(append(ChronicleInvestigationCatalog(), expeditionInvestigations()...), darkRealmInvestigations()...)
 }
 
 func expandDarkRealmChronicle(catalog []Quest) []Quest {

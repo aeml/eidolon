@@ -1,3 +1,4 @@
+import { chronicleExpeditions } from '../data/chronicleExpeditions.generated.js';
 import { getChronicleInvestigation, getCurrentChronicleQuest } from '../core/ChronicleInvestigation.js';
 import { chronicleHunts } from '../data/chronicleHunts.generated.js';
 import { darkRealmChaptersById } from '../data/chronicleCatalog.js';
@@ -5,7 +6,7 @@ import { CHRONICLE_AFTERMATH, hasCompletedDarkKing } from '../data/chronicleAfte
 import { PORTAL_DIRECTIONS } from '../data/worldLocations.js';
 
 const huntsById = new Map(chronicleHunts.map(hunt => [hunt.id, hunt]));
-const huntHandoffs = new Map(chronicleHunts.map(hunt => [hunt.previousQuestId, hunt.handoff]));
+const huntHandoffs = new Map([...chronicleHunts, ...chronicleExpeditions].map(hunt => [hunt.previousQuestId, hunt.handoff]));
 
 export const ILYRA_REPLIES = [
     'Listen—the bell has lost a note. These echoes bear Malachar’s binding, a signature I hoped never to hear again. I once called him a fellow keeper. He learned the roads between the sanctums from our own maps. We will begin where his wound runs deepest: the Rootheart.',

@@ -7,7 +7,7 @@ import (
 )
 
 func TestDarkRealmCampaignCatalogAndPopulation(t *testing.T) {
-	if len(darkRealmChapters) != 24 || len(darkRealmInvestigations()) != 12 || len(chronicleQuestCatalog()) != 55 {
+	if len(darkRealmChapters) != 24 || len(darkRealmInvestigations()) != 12 || len(chronicleQuestCatalog()) != 117 {
 		t.Fatal("campaign chapter budget changed")
 	}
 	w := newTestWorld()

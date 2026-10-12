@@ -1,43 +1,41 @@
 import { jest } from '@jest/globals';
 import fs from 'node:fs';
 import { earthReadinessChapters } from './storyReadinessPolicy.js';
-import { earnEarthHuntsBefore } from './earthFunctionalPrerequisites.js';
+import { earnEarthPrerequisitesBefore } from './earthFunctionalPrerequisites.js';
 
-test('all three required Earth hunts are dispatched in authored order with actual eligibility', async () => {
+test('all required Earth additions are dispatched in the complete authored order', async () => {
     const earn = jest.fn();
     for (const next of ['chronicle_02_seeds_first_grove', 'chronicle_earth_returning_scar', 'chronicle_03_roots_remember']) {
-        await earnEarthHuntsBefore(next, earn);
+        await earnEarthPrerequisitesBefore(next, earn);
     }
-    const hunts = earn.mock.calls.map(([hunt]) => hunt);
-    expect(hunts.map(hunt => hunt.id)).toEqual(earthReadinessChapters.filter(id =>
-        ['chronicle_earth_kept_watch', 'chronicle_earth_walking_ink', 'chronicle_earth_borrowed_oath'].includes(id)));
-    expect(hunts.map(({ enemy, minEnemyLevel, count, huntingRealm }) => ({ enemy, minEnemyLevel, count, huntingRealm })))
-        .toEqual([
-            { enemy: 'Skeleton', minEnemyLevel: 3, count: 40, huntingRealm: 'earth' },
-            { enemy: 'Imp', minEnemyLevel: 20, count: 60, huntingRealm: 'earth' },
-            { enemy: 'DemonOrc', minEnemyLevel: 30, count: 50, huntingRealm: 'earth' }
-        ]);
+    const chapters = earn.mock.calls.map(([chapter]) => chapter);
+    expect(chapters.map(q => q.id)).toEqual(earthReadinessChapters.filter(id =>
+        !['chronicle_01_bell_below','chronicle_earth_keepers_house','chronicle_02_seeds_first_grove','chronicle_earth_returning_scar'].includes(id)));
+    expect(chapters).toHaveLength(27);
+    expect(chapters.filter(q => q.type === 'INVESTIGATE')).toHaveLength(18);
+    expect(chapters.filter(q => ['chronicle_earth_kept_watch','chronicle_earth_walking_ink','chronicle_earth_borrowed_oath'].includes(q.id))
+        .map(q => q.count)).toEqual([18,18,18]);
 });
 
 test('a failed actual hunt cannot be treated as a completed prerequisite', async () => {
-    await expect(earnEarthHuntsBefore('chronicle_02_seeds_first_grove', async () => {
+    await expect(earnEarthPrerequisitesBefore('chronicle_02_seeds_first_grove', async () => {
         throw new Error('qualifying kills missing');
     })).rejects.toThrow('qualifying kills missing');
 });
 
 test('unrelated and non-Earth chapters do not launch Earth hunts', async () => {
     const earn = jest.fn();
-    await earnEarthHuntsBefore('chronicle_04_tears_sea', earn);
-    await earnEarthHuntsBefore('unrelated', earn);
+    await earnEarthPrerequisitesBefore('chronicle_04_tears_sea', earn);
+    await earnEarthPrerequisitesBefore('unrelated', earn);
     expect(earn).not.toHaveBeenCalled();
 });
 
 test('the actual functional route invokes each prerequisite before its formerly skipped next chapter', () => {
     const source = fs.readFileSync('tests/e2e/chronicle-earth-route.js', 'utf8');
     for (const [prerequisite, next] of [
-        ['await earnRequiredHunts(page, SEED_CHAPTER)', 'await acceptOfferedChapter(page, SEED_CHAPTER)'],
-        ["await earnRequiredHunts(page, 'chronicle_earth_returning_scar')", "await earnEarthInvestigation(page, 'chronicle_earth_returning_scar', openIlyra)"],
-        ['await earnRequiredHunts(page, EARTH_DUNGEON_CHAPTER)', 'await acceptOfferedChapter(page, EARTH_DUNGEON_CHAPTER)']
+        ['await earnRequiredChapters(page, SEED_CHAPTER)', 'await acceptOfferedChapter(page, SEED_CHAPTER)'],
+        ["await earnRequiredChapters(page, 'chronicle_earth_returning_scar')", "await earnEarthInvestigation(page, 'chronicle_earth_returning_scar', openIlyra)"],
+        ['await earnRequiredChapters(page, EARTH_DUNGEON_CHAPTER)', 'await acceptOfferedChapter(page, EARTH_DUNGEON_CHAPTER)']
     ]) {
         expect(source.indexOf(prerequisite)).toBeGreaterThan(-1);
         expect(source.indexOf(prerequisite)).toBeLessThan(source.indexOf(next));

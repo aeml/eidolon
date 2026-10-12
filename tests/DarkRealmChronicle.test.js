@@ -14,7 +14,7 @@ import { darkRealmFixture } from './darkRealmFixture.js';
 test('the client uses the exact authored campaign and checks generated content in CI', () => {
     const source = JSON.parse(fs.readFileSync('server/internal/game/content/dark-realm-chronicle.json', 'utf8'));
     expect(darkRealmChapters).toHaveLength(24);
-    expect(chronicleInvestigations).toHaveLength(20);
+    expect(chronicleInvestigations).toHaveLength(59);
     for (const [index, chapter] of source.entries()) {
         expect(darkRealmChapters[index]).toMatchObject(chapter);
         expect(getIlyraCompletionReply({ id: chapter.id })).toBe(chapter.completion);

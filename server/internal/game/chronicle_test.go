@@ -69,8 +69,8 @@ func completedChronicleThrough(player *Entity, chapter int) {
 
 func TestChronicleCatalogIsDeepOrderedAndOfferedByWizard(t *testing.T) {
 	catalog := chronicleQuestCatalog()
-	if len(catalog) != 55 {
-		t.Fatalf("expected 55 Chronicle chapters, got %d", len(catalog))
+	if len(catalog) != 117 {
+		t.Fatalf("expected 117 Chronicle chapters, got %d", len(catalog))
 	}
 	for i, quest := range catalog {
 		if quest.Category != QuestCategoryChronicle || quest.Chapter != i+1 {
@@ -152,6 +152,7 @@ func TestChronicleRequiresManualTurnInForKillAndCollectionChapters(t *testing.T)
 		t.Fatal("could not turn in the diary")
 	}
 	hunt := ChronicleHuntCatalog()[0]
+	completeAddedEarthChaptersBefore(t, w, player, hunt.ID)
 	if _, ok := w.PerformAcceptQuest(player.ID, hunt.ID); !ok {
 		t.Fatal("could not accept required watch expedition")
 	}
@@ -164,6 +165,7 @@ func TestChronicleRequiresManualTurnInForKillAndCollectionChapters(t *testing.T)
 	if _, ok := w.PerformCompleteQuest(player.ID, hunt.ID); !ok {
 		t.Fatal("could not manually turn in the watch expedition")
 	}
+	completeAddedEarthChaptersBefore(t, w, player, "chronicle_02_seeds_first_grove")
 	collection := questByID(t, player, "chronicle_02_seeds_first_grove")
 	if collection.Accepted || collection.Completed {
 		t.Fatalf("second chapter was accepted without asking: %+v", collection)
@@ -191,7 +193,7 @@ func TestChronicleRequiresManualTurnInForKillAndCollectionChapters(t *testing.T)
 	if _, ok := w.PerformCompleteQuest(player.ID, "chronicle_02_seeds_first_grove"); !ok {
 		t.Fatal("collection turn-in failed")
 	}
-	if next := questByID(t, player, "chronicle_earth_walking_ink"); next.Accepted {
+	if next := questByID(t, player, "chronicle_earth_unowned_seed"); next.Accepted {
 		t.Fatalf("Earth expedition was auto-accepted: %+v", next)
 	}
 	for _, item := range player.Inventory {
@@ -199,12 +201,12 @@ func TestChronicleRequiresManualTurnInForKillAndCollectionChapters(t *testing.T)
 			t.Fatal("Ilyra did not take the collected repair materials")
 		}
 	}
-	if len(events) != 4 || events[3].NextID != "chronicle_earth_walking_ink" {
-		t.Fatalf("expected four manual advances leading to Walking Ink, got %+v", events)
+	if len(events) != 12 || events[11].NextID != "chronicle_earth_unowned_seed" {
+		t.Fatalf("expected twelve manual advances leading to the next grove investigation, got %+v", events)
 	}
 }
 
-func TestChronicleCanAdvanceAcrossAllFiftyFiveChaptersInOrder(t *testing.T) {
+func TestChronicleCanAdvanceAcrossAllChaptersInOrder(t *testing.T) {
 	w := NewWorld(nil)
 	w.spawnChronicleInvestigationSites()
 	player := &Entity{
@@ -326,8 +328,8 @@ func TestChronicleCanAdvanceAcrossAllFiftyFiveChaptersInOrder(t *testing.T) {
 		}
 	}
 
-	if len(advances) != 55 || !advances[len(advances)-1].Finale {
-		t.Fatalf("expected fifty-five ordered advances ending in the finale, got %+v", advances)
+	if len(advances) != 117 || !advances[len(advances)-1].Finale {
+		t.Fatalf("expected 117 ordered advances ending in the finale, got %+v", advances)
 	}
 	for index, event := range advances {
 		if event.CompletedID != chronicleQuestCatalog()[index].ID {
@@ -622,4 +624,51 @@ func TestDarkKingFourPhasesApplyEidolonAid(t *testing.T) {
 	if damage != 80 {
 		t.Fatalf("Orun phase should reduce Dark King damage to 80, got %d", damage)
 	}
+}
+
+// Objective fixture for the isolated manual-turn-in regression. The continuous
+// regional audit separately checks earned XP and enemy feasibility at each step.
+func completeAddedEarthChaptersBefore(t *testing.T, w *World, p *Entity, nextID string) {
+	t.Helper()
+	for step := 0; step < len(chronicleExpeditions); step++ {
+		var active Quest
+		for _, q := range p.Quests {
+			if q.Category == QuestCategoryChronicle && !q.Completed && !q.LegacyOptional {
+				active = q
+				break
+			}
+		}
+		if active.ID == nextID {
+			return
+		}
+		if _, ok := chronicleExpeditionByID(active.ID); !ok {
+			t.Fatal("unexpected fixture prerequisite", active.ID)
+		}
+		p.X, p.Z = 20, 215
+		if _, ok := w.PerformAcceptQuest(p.ID, active.ID); !ok {
+			t.Fatal("fixture accept", active.ID)
+		}
+		if active.Type == "INVESTIGATE" {
+			for _, chapter := range expeditionInvestigations() {
+				if chapter.ID != active.ID {
+					continue
+				}
+				for _, site := range chapter.Sites {
+					p.X, p.Z = site.X, site.Z
+					if _, err := w.InspectChronicleSite(p.ID, site.EntityID); err != nil {
+						t.Fatal(err)
+					}
+				}
+			}
+		} else {
+			for i := 0; i < active.MaxCount; i++ {
+				w.UpdateQuestProgress(p, active.Target)
+			}
+		}
+		p.X, p.Z = 20, 215
+		if _, ok := w.PerformCompleteQuest(p.ID, active.ID); !ok {
+			t.Fatal("fixture turnin", active.ID)
+		}
+	}
+	t.Fatal("fixture did not reach", nextID)
 }

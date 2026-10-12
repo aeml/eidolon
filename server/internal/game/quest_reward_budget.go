@@ -1,35 +1,90 @@
 package game
 
-// Coordinated content budgets. Quotes belong to content, never the
-// recipient's level. Gold is deliberate purchasing income, not XP divided by a
-// magic constant. Accepted saves retain their original quotes in quests.go.
+// Coordinated content budgets use authored levels, with a safety ceiling for
+// under-level turn-ins. Gold is deliberate purchasing income, not XP divided by a
+// magic constant. Paid receipts are never rewritten by a balance refresh.
 type questRewardBudget struct{ XP, Gold int }
 
-// One-time preparation budgets for NEW offers. These are applied after the
-// narrative expansions split their original budgets; saved accepted/completed
-// contracts retain their quoted rewards through copyQuestDefinition.
-// Earth supports its ~170 objective kills plus investigations in 2–3 hours.
-// Subsequent steps prepare characters for the next realm's actual enemy bands,
-// rather than sending level-30 characters straight into level-50 hunts.
-var chroniclePreparationXP = map[string]int{
-	"chronicle_earth_kept_watch":         8_000,
-	"chronicle_02_seeds_first_grove":     25_000,
-	"chronicle_earth_walking_ink":        55_000,
-	"chronicle_earth_returning_scar":     32_000,
-	"chronicle_earth_borrowed_oath":      80_000,
-	ChronicleEarthDungeonID:              270_000,
-	"chronicle_water_missing_ferry":      200_000,
-	"chronicle_water_flood_shelter":      270_000,
-	"chronicle_water_snow_debts":         240_000,
-	"chronicle_04_pearls_without_tides":  180_000,
-	"chronicle_water_false_reflection":   150_000,
-	"chronicle_water_unmastered_current": 180_000,
-	ChronicleWaterDungeonID:              500_000,
-	"chronicle_fire_cold_kiln":           400_000,
-	"chronicle_fire_unending_war":        150_000,
-	"chronicle_06_ash_refuses_cool":      150_000,
-	"chronicle_fire_obedient_ember":      150_000,
-	"chronicle_air_weatherkeeper":        150_000,
+// Story rewards use the same share of the XP bar at the authored content
+// level. Dungeon chapters pay more, without using turn-ins to bridge entire
+// enemy bands. These terms also cap unpaid pre-balance saved quotes.
+func chronicleRewardTerms(id string) (level, percent int, found bool) {
+	if chapter, ok := chronicleExpeditionByID(id); ok {
+		return chapter.ContentLevel, 75, true
+	}
+	if hunt, ok := chronicleHuntByID(id); ok {
+		return hunt.ContentLevel, 75, true
+	}
+	if _, ok := darkRealmChapterByID(id); ok {
+		return 100, 75, true
+	}
+	percent = 75
+	switch id {
+	case "chronicle_01_bell_below":
+		return 1, 100, true // The three-kill introduction teaches the first level-up.
+	case "chronicle_earth_keepers_house":
+		level = 3
+	case "chronicle_02_seeds_first_grove":
+		level = 12
+	case "chronicle_earth_returning_scar":
+		level = 25
+	case "chronicle_water_flood_shelter":
+		level = 45
+	case "chronicle_04_pearls_without_tides":
+		level = 50
+	case "chronicle_water_false_reflection":
+		level = 55
+	case "chronicle_fire_cold_kiln", "chronicle_06_ash_refuses_cool", "chronicle_air_weatherkeeper", "chronicle_08_feathers_thunder":
+		level = 70
+	case "chronicle_fire_obedient_ember":
+		level = 75
+	case "chronicle_air_stolen_horizon":
+		level = 80
+	case ChronicleEarthDungeonID, ChronicleEarthRestoredID:
+		level, percent = 30, 125
+	case ChronicleWaterDungeonID, ChronicleWaterRestoredID:
+		level, percent = 60, 125
+	case ChronicleFireDungeonID, ChronicleAirDungeonID, ChronicleFireRestoredID, ChronicleAirRestoredID:
+		level, percent = 70, 125
+	case ChronicleGateOpenedID:
+		level, percent = 100, 125
+	case ChronicleDarkKingID:
+		level, percent = 100, 175
+	default:
+		return 0, 0, false
+	}
+	return level, percent, true
+}
+
+func rebalanceUnpaidQuestExperience(player *Entity, quest *Quest) {
+	if quest.Completed {
+		return
+	}
+	if level, percent, known := chronicleRewardTerms(quest.ID); known {
+		quest.RewardXP = min(quest.RewardXP, contentExperiencePercent(level, percent))
+	}
+	boundQuestExperience(player, quest)
+}
+
+// An under-level party member or optional catch-up chapter must never skip
+// more than two levels. Store the bounded quote before acceptance/turn-in so
+// the displayed reward and completion receipt agree. Completed receipts and
+// level-cap Resonance payouts are historical and remain untouched.
+func boundQuestExperience(player *Entity, quest *Quest) bool {
+	if quest.Completed || player.Level < 1 || player.Level >= MaxPlayerLevel {
+		return false
+	}
+	ceiling := experienceRequiredForLevel(player.Level) + experienceRequiredForLevel(player.Level+1)
+	if quest.RewardXP <= ceiling {
+		return false
+	}
+	quest.RewardXP = ceiling
+	return true
+}
+
+func contentExperiencePercentForQuest(id string) int {
+	level, percent, _ := chronicleRewardTerms(id)
+	return contentExperiencePercent(level, percent)
 }
 
 func contentExperiencePercent(level, percent int) int {
@@ -80,12 +135,10 @@ func dailyRewardBudget(target string, count int) questRewardBudget {
 		return questRewardBudget{}
 	}
 	if level, found := dailyHuntContentLevels[target]; found {
-		// Keep the optional daily bonus at 20% of that content's ordinary solo
-		// kill budget, rather than retaining the old two-percent-per-kill quote
-		// after ordinary XP is reduced. Story and accepted quotes are unchanged.
-		// New contracts add roughly a 20% Gold bonus to the leaner ordinary
-		// kill purse. Accepted contracts retain their already-displayed quote.
-		return questRewardBudget{combatExperienceBudget(level, 0, false, false) * count / 5, max(100, level*count/5)}
+		// Fresh ordinary contracts use the same fraction of their authored
+		// level as ordinary story work. Accepted saved quotes stay bounded at
+		// turn-in; the larger, independent Gold purse is unchanged.
+		return questRewardBudget{contentExperiencePercent(level, 75), max(100, level*count/5)}
 	}
 	level, multiplier := 0, 1
 	switch target {
@@ -103,7 +156,8 @@ func dailyRewardBudget(target string, count int) questRewardBudget {
 	if level == 0 {
 		return questRewardBudget{}
 	}
-	// Generic, regional AND difficulty dailies can overlap. Each pays a tenth
-	// of the actual boss budget, so stacking them cannot bypass its pacing.
+	// Repeatable generic, regional and difficulty contracts overlap on the
+	// same bosses. Keep their combined bonus within the existing run budget;
+	// the separately earned story dungeon chapter pays 125% of its level bar.
 	return questRewardBudget{combatExperienceBudget(level, level, true, false) * count * multiplier / 10, level * count * 4 * multiplier}
 }

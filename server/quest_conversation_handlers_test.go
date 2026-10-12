@@ -73,6 +73,7 @@ func questConversationFixture(t *testing.T, story bool) (*Client, *game.Entity, 
 	client := newLevelCommandClient()
 	player := newLevelCommandPlayer(client.playerID)
 	player.Name, player.Gold, player.EP = client.username, 731, 19
+	player.Level, player.MaxExperience = 30, game.ExperienceRequiredForLevel(30)
 	player.X, player.Z, player.LastDailyQuest = -20, 200, time.Now()
 	player.Quests = []game.Quest{{ID: "daily_skeleton", Type: "COLLECT", Target: "Verdant Memory Seed", Accepted: true,
 		Count: 2, MaxCount: 2, RewardXP: 1234, RewardGold: 321, RewardXPQuoted: true, RewardGoldQuoted: true}}
@@ -82,7 +83,7 @@ func questConversationFixture(t *testing.T, story bool) (*Client, *game.Entity, 
 		player.X, player.Z = 20, 215
 		player.Quests = []game.Quest{{ID: "chronicle_01_bell_below", Category: game.QuestCategoryChronicle,
 			Type: "KILL", Target: "Skeleton", Accepted: true, Count: 3, MaxCount: 3,
-			RewardXP: 1234, RewardGold: 321, RewardXPQuoted: true, RewardGoldQuoted: true}}
+			RewardXP: 100, RewardGold: 321, RewardXPQuoted: true, RewardGoldQuoted: true}}
 	}
 	world.AddEntity(player)
 	store := &tradeRecoveryStore{characters: map[string]*database.Character{client.username: cloneTradeRecoveryCharacter(characterSnapshotForSave(client.username, world.GetEntityCopy(player.ID)))}, writes: map[string]int{}}
@@ -118,7 +119,11 @@ func TestQuestConversationSaveBarrierAndColdReceiptRecovery(t *testing.T) {
 						t.Fatal("conversation changed unrelated wallet or lost acceptance", err)
 					}
 					if action == MsgCompleteQuest {
-						if !planned.Quests[0].Completed || planned.Quests[0].GrantedGold != 321 || planned.Quests[0].GrantedXP != 1234 || planned.Gold != 1052 {
+						wantXP := 1234
+						if story {
+							wantXP = 100
+						}
+						if !planned.Quests[0].Completed || planned.Quests[0].GrantedGold != 321 || planned.Quests[0].GrantedXP != wantXP || planned.Gold != 1052 {
 							t.Fatal("recovery image lost the earned quote and exact reward", planned.Quests[0])
 						}
 						if !story && (planned.Inventory[0].Stack != 1 || planned.Inventory[1].Potency != 4) {

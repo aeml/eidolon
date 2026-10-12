@@ -10,8 +10,8 @@ import (
 
 func TestChronicleHuntsOrderAndBudgets(t *testing.T) {
 	catalog := chronicleQuestCatalog()
-	if len(catalog) != 55 || len(ChronicleHuntCatalog()) != 8 {
-		t.Fatal("expected 55 chapters including eight regional preparation hunts")
+	if len(catalog) != 117 || len(ChronicleHuntCatalog()) != 31 {
+		t.Fatal("expected 117 chapters including 31 regional hunts")
 	}
 	indices := map[string]int{}
 	for i, q := range catalog {
@@ -27,10 +27,11 @@ func TestChronicleHuntsOrderAndBudgets(t *testing.T) {
 		}
 		q := catalog[i]
 		xp := contentExperiencePercent(hunt.ContentLevel, 75)
-		if preparation, ok := chroniclePreparationXP[hunt.ID]; ok {
-			xp = preparation
+		gold := hunt.ContentLevel * 10
+		if expedition, ok := chronicleExpeditionByID(hunt.ID); ok {
+			gold = expedition.RewardGold
 		}
-		if q.MaxCount != hunt.Count || q.RewardXP != xp || q.RewardGold != hunt.ContentLevel*10 || q.Accepted || q.Completed || q.LegacyOptional {
+		if q.MaxCount != hunt.Count || q.RewardXP != xp || q.RewardGold != gold || q.Accepted || q.Completed || q.LegacyOptional {
 			t.Fatalf("incorrect hunt offer: %+v", q)
 		}
 		if hunt.Acceptance == "" || hunt.Completion == "" || hunt.Handoff == "" || hunt.Lore == "" || hunt.CatchupAcceptance == "" || hunt.CatchupCompletion == "" {
@@ -44,8 +45,8 @@ func TestChronicleHuntsOrderAndBudgets(t *testing.T) {
 
 func TestFirstChronicleHuntAcceptsEarlyRoadWardens(t *testing.T) {
 	hunt, ok := chronicleHuntByID("chronicle_earth_kept_watch")
-	if !ok || hunt.MinEnemyLevel != 3 || hunt.Count != 40 || hunt.ContentLevel != 10 {
-		t.Fatal("first expedition must admit level-three road wardens without changing its count or reward budget")
+	if !ok || hunt.MinEnemyLevel != 3 || hunt.Count != 18 || hunt.ContentLevel != 10 {
+		t.Fatal("first expedition must admit level-three road wardens with a paced fresh objective and its proportional reward budget")
 	}
 	for _, level := range []int{3, 4, 8, 10} {
 		if !huntKillMatches(hunt, "Skeleton", level, "", 300, 200) {
@@ -62,6 +63,7 @@ func TestChronicleHuntsMigrateAllPriorExpandedMilestones(t *testing.T) {
 	for milestone, active := range oldCatalog {
 		t.Run(active.ID, func(t *testing.T) {
 			p := newTestPlayer("hunt-migration", "Wizard")
+			p.Level = 100
 			for i := 0; i <= milestone; i++ {
 				q := oldCatalog[i]
 				q.Accepted, q.Completed = true, i < milestone

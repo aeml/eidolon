@@ -84,6 +84,7 @@ func TestChronicleExpansionMigratesEveryLegacyMilestoneWithoutRevokingProgress(t
 	for milestone, active := range classic {
 		t.Run(active.ID, func(t *testing.T) {
 			p := newTestPlayer("legacy-reader", "Wizard")
+			p.Level = 100
 			for index := 0; index <= milestone; index++ {
 				q := classic[index]
 				q.Accepted = true
@@ -124,9 +125,11 @@ func TestChronicleExpansionMigratesEveryLegacyMilestoneWithoutRevokingProgress(t
 				}
 				optional++
 			}
-			wantOptional := min(milestone, 8)
-			if active.ID == ChronicleGateOpenedID || active.ID == ChronicleDarkKingID {
-				wantOptional += 12 // New expedition investigations precede these saved contracts.
+			wantOptional := 0
+			for _, definition := range chronicleQuestCatalog() {
+				if definition.Chapter < activeChapter && definition.Type == "INVESTIGATE" {
+					wantOptional++
+				}
 			}
 			if optional != wantOptional {
 				t.Fatalf("catch-up chapters=%d want=%d", optional, wantOptional)

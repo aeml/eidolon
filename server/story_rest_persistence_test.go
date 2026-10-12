@@ -55,6 +55,11 @@ func TestExpandedStoryMigrationRetainsRestResourcesAndAcceptedTerms(t *testing.T
 					return result
 				}
 				originalTerms, originalStats := terms(saved.Quests), saved.Stats
+				// Unpaid oversized story quotes are deliberately reduced. Earned
+				// receipts, all other accepted terms and character resources stay intact.
+				seedTerms := originalTerms["chronicle_02_seeds_first_grove"]
+				seedTerms[2] = 2343 // 75% of the authored level-twelve bar.
+				originalTerms["chronicle_02_seeds_first_grove"] = seedTerms
 				journal, err := database.OpenCharacterSaveJournal(t.TempDir())
 				if err != nil {
 					t.Fatal(err)

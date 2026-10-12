@@ -29,10 +29,27 @@ type ChronicleHunt struct {
 //go:embed content/chronicle-hunts.json
 var chronicleHuntContent []byte
 
-var chronicleHunts = func() []ChronicleHunt {
+var primaryChronicleHunts = func() []ChronicleHunt {
 	var hunts []ChronicleHunt
 	if err := json.Unmarshal(chronicleHuntContent, &hunts); err != nil {
 		panic(err)
+	}
+	return hunts
+}()
+
+var chronicleHunts = func() []ChronicleHunt {
+	hunts := append([]ChronicleHunt(nil), primaryChronicleHunts...)
+	for i := range hunts {
+		for _, chapter := range chronicleExpeditions {
+			if chapter.PreviousQuestID == hunts[i].ID {
+				hunts[i].BeforeQuestID = chapter.ID
+			}
+		}
+	}
+	for _, chapter := range chronicleExpeditions {
+		if chapter.Type == "KILL" {
+			hunts = append(hunts, chapter.ChronicleHunt)
+		}
 	}
 	return hunts
 }()
@@ -55,9 +72,9 @@ func isOptionalChronicleAddition(q Quest) bool {
 }
 
 func expandChronicleHunts(quests []Quest) []Quest {
-	result := make([]Quest, 0, len(quests)+len(chronicleHunts))
+	result := make([]Quest, 0, len(quests)+len(primaryChronicleHunts))
 	for _, q := range quests {
-		for _, hunt := range chronicleHunts {
+		for _, hunt := range primaryChronicleHunts {
 			if hunt.BeforeQuestID != q.ID {
 				continue
 			}

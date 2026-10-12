@@ -55,8 +55,9 @@ func TestChronicleEarthReadinessBudgetAudit(t *testing.T) {
 							stageKillXP += amount
 						}
 						quote := definition
+						boundQuestExperience(p, &quote)
 						w.awardQuestRewardsLocked(p, &quote)
-						if quote.GrantedXP != definition.RewardXP || quote.GrantedGold != definition.RewardGold {
+						if quote.GrantedXP != quote.RewardXP || quote.GrantedGold != definition.RewardGold {
 							t.Fatal("quest diagnostic did not preserve the catalog quote")
 						}
 						killXP += stageKillXP
@@ -66,7 +67,7 @@ func TestChronicleEarthReadinessBudgetAudit(t *testing.T) {
 						t.Logf("EARTH_STAGE quest=%s kills=%d kill_xp=%d quest_xp=%d end_level=%d xp=%d next=%d",
 							definition.ID, count, stageKillXP, quote.GrantedXP, p.Level, p.Experience, p.MaxExperience)
 					}
-					if chapters != 7 || kills != 153+collectionKills {
+					if chapters != 31 || kills != 93+collectionKills {
 						t.Fatalf("incomplete modeled Earth route: chapters=%d kills=%d", chapters, kills)
 					}
 					entry := DungeonEntryLevels()["verdant_bastion_catacombs"]
