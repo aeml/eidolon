@@ -19,7 +19,7 @@ export class SceneryVisibility {
             if (!part.isMesh || !(part.userData.proceduralDungeonEntrancePart || part.userData.sceneryOccluderPart)) return;
             parts.push({ mesh: part, material: part.material, castShadow: part.castShadow });
         });
-        return { root, parts, meshes: parts.map(part => part.mesh), clones: new Map(),
+        return { root, parts, masked: root.userData.sceneryOccluderMasked === true, meshes: parts.map(part => part.mesh), clones: new Map(),
             bounds: new THREE.Box3(), matrix: new THREE.Matrix4().makeScale(0, 0, 0),
             uniforms: { focus: { value: new THREE.Vector3() }, reveal: { value: 0 } },
             opacity: 1, lastBlocked: -Infinity };
@@ -44,7 +44,9 @@ export class SceneryVisibility {
             this.raycaster.near = 0; this.raycaster.far = distance - 0.1;
             const hit = this.raycaster.ray.intersectBox(entry.bounds, this.boxHit);
             if (!hit || hit.distanceTo(this.raycaster.ray.origin) > this.raycaster.far) continue;
-            if (this.raycaster.intersectObjects(entry.meshes, false).length) return true;
+            const hits = this.raycaster.intersectObjects(entry.meshes, false);
+            if (hits.some(hit => !entry.masked ||
+                hit.object.geometry.getAttribute('sceneryOccluderMask').getX(hit.face.a) === 1)) return true;
         }
         return false;
     }
@@ -70,16 +72,21 @@ export class SceneryVisibility {
                     original.onBeforeCompile.call(clone, shader, renderer);
                     shader.uniforms.uSceneryFocusView = entry.uniforms.focus;
                     shader.uniforms.uSceneryReveal = entry.uniforms.reveal;
+                    if (entry.masked) {
+                        shader.vertexShader = 'attribute float sceneryOccluderMask;\nvarying float vSceneryOccluderMask;\n' +
+                            shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\nvSceneryOccluderMask = sceneryOccluderMask;');
+                        shader.fragmentShader = 'varying float vSceneryOccluderMask;\n' + shader.fragmentShader;
+                    }
                     shader.fragmentShader = 'uniform vec3 uSceneryFocusView;\nuniform float uSceneryReveal;\n' +
                         shader.fragmentShader.replace('#include <opaque_fragment>', `#include <opaque_fragment>
                         float sceneryDistance = length(vViewPosition.xy - uSceneryFocusView.xy);
                         float sceneryWindow = 1.0 - smoothstep(3.2, 4.5, sceneryDistance);
                         float sceneryForeground = 1.0 - step(uSceneryFocusView.z + 1.5, vViewPosition.z);
-                        float sceneryCoverage = 1.0 - uSceneryReveal * sceneryWindow * sceneryForeground;
+                        float sceneryCoverage = 1.0 - uSceneryReveal * sceneryWindow * sceneryForeground${entry.masked ? ' * vSceneryOccluderMask' : ''};
                         float sceneryDither = fract(sin(dot(floor(gl_FragCoord.xy), vec2(12.9898, 78.233))) * 43758.5453);
                         if (sceneryCoverage < sceneryDither) discard;`);
                 };
-                clone.customProgramCacheKey = () => `${original.customProgramCacheKey()}:hero-cutaway-v2`;
+                clone.customProgramCacheKey = () => `${original.customProgramCacheKey()}:hero-cutaway-${entry.masked ? 'v3-masked' : 'v2'}`;
                 entry.clones.set(original, clone);
             }
             return clone;

@@ -69,8 +69,12 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
     const roof = createDarkDistrictRoofMaterial(quality);
     const palettes = [0x9bd5d2, 0x8aafc1, 0xc2a6db, 0xe8a475, 0x9c8fce];
     const batches = new Map(), spatialBatches = new Map();
-    const append = (material, geometry, position, district = null) => {
+    const append = (material, geometry, position, district = null, occluder = false) => {
         geometry.translate(...position);
+        // Preserve the original shared batches: only building vertices reveal,
+        // even where bronze/shadow also belong to paving or work surfaces.
+        geometry.setAttribute('sceneryOccluderMask', new THREE.Uint8BufferAttribute(
+            new Uint8Array(geometry.getAttribute('position').count).fill(occluder ? 1 : 0), 1));
         let owner = batches;
         if (district) {
             if (!spatialBatches.has(district)) spatialBatches.set(district, new Map());
@@ -167,7 +171,7 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
             const architecture = createDarkDistrictArchitectureGeometry(recipe, quality);
             for (const [key, geometry] of Object.entries(architecture)) {
                 geometry.rotateY(-side * Math.PI / 2);
-                append({ stone, bronze, shadow, glow, roof }[key], geometry, [px, 0, pz], key === 'stone' ? `skyline-${recipe}` : 'district-architecture');
+                append({ stone, bronze, shadow, glow, roof }[key], geometry, [px, 0, pz], key === 'stone' ? `skyline-${recipe}` : null, true);
             }
             root.userData.landmarks.push({ kind: ['camp', 'shore', 'archive', 'foundry', 'city'][index],
                 x: px + origin.x, z: pz + origin.z });
@@ -183,14 +187,16 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
             material.userData.darkRealmShelterCanvas ? 'expedition-canvas-shelter' : 'dark-realm-scenery-batch';
         mesh.castShadow = true; mesh.receiveShadow = true;
         if (district) mesh.userData.sceneryDistrict = district;
-        // Only the tall skyline masonry and its complete roof/trim can hide the
-        // hero. Floors, paths, work areas and their shared material batches
-        // retain their ordinary opaque presentation.
-        if (district?.startsWith('skyline-') || district === 'district-architecture') mesh.userData.sceneryOccluderPart = true;
+        // A shared batch may contain both buildings and ordinary opaque work
+        // surfaces. The shader and focus ray both respect their vertex mask.
+        if (mesh.geometry.getAttribute('sceneryOccluderMask').array.some(value => value === 1)) {
+            mesh.userData.sceneryOccluderPart = true;
+        }
         root.add(mesh);
         geometries.forEach(geometry => geometry.dispose());
     }
     root.userData.sceneryOccluder = true;
+    root.userData.sceneryOccluderMasked = true;
     scene.add(root);
     return root;
 }

@@ -69,7 +69,7 @@ test.each(['high', 'low'])('%s districts retain all placements, shared materials
     const root = createDarkRealmScene(new THREE.Group(), darkRealmFixture(), collision, { quality });
     try {
         const meshes = []; root.traverse(n => { if (n.isMesh) meshes.push(n); });
-        expect(meshes).toHaveLength(51); // Roof plus separate architecture trim/shadow batches keep floor materials outside the hero cutaway.
+        expect(meshes).toHaveLength(49); // Vertex masks preserve the original shared building/work-surface batches.
         for (const recipe of recipes) expect(root.userData.landmarks.filter(p => p.kind === recipe)).toHaveLength(8);
         expect(collision.colliders).toEqual([...getDarkRealmCampColliders(), ...getDarkRealmCourtColliders()]);
     } finally { RenderSystem.prototype.disposeObjectResources.call({}, root); }
