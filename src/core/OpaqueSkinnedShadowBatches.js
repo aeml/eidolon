@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { hasOwnedActorBatchSort } from '../art/ActorInstanceMultiDraw.js';
 import { groupOpaqueSkinnedShadowMeshes, createOpaqueSkinnedShadowGeometry,
     haveCompatibleOpaqueSkinnedShadowState } from './OpaqueSkinnedShadowGeometry.js';
 
@@ -32,6 +33,11 @@ const connectedTo = (mesh, scene) => {
     for (let node = mesh; node; node = node.parent) if (node === scene) return true;
     return false;
 };
+const stockBatchShadow = object => object.isBatchedMesh &&
+    object.onBeforeShadow === THREE.BatchedMesh.prototype.onBeforeShadow &&
+    object.onBeforeRender === THREE.BatchedMesh.prototype.onBeforeRender &&
+    object.onAfterShadow === THREE.Object3D.prototype.onAfterShadow &&
+    (object.customSort === null || hasOwnedActorBatchSort(object));
 
 // Explicit pilot only: RenderSystem never constructs this owner. Each proxy is
 // inserted after color projection, only for a stock directional shadow viewport.
@@ -132,6 +138,8 @@ export class OpaqueSkinnedShadowBatches {
     }
 
     renderShadows(args) {
+        // Composer fullscreen scenes must not erase the last world result.
+        if (args[1] !== this.scene) return this.originalShadow.apply(this.shadowMap, args);
         if (this.depth) return this.withOriginals(() => this.originalShadow.apply(this.shadowMap, args));
         this.lastBatches = 0; this.lastSavedSubmissions = 0;
         const [lights, scene, camera] = args, shadowMap = this.shadowMap;
@@ -148,7 +156,7 @@ export class OpaqueSkinnedShadowBatches {
         scene.traverseVisible(object => {
             if (object.castShadow && (object.isMesh || object.isLine || object.isPoints) &&
                 (object.onBeforeShadow !== THREE.Object3D.prototype.onBeforeShadow ||
-                 object.onAfterShadow !== THREE.Object3D.prototype.onAfterShadow)) customHook = true;
+                 object.onAfterShadow !== THREE.Object3D.prototype.onAfterShadow) && !stockBatchShadow(object)) customHook = true;
         });
         if (customHook) return this.originalShadow.apply(shadowMap, args);
         const hooks = [];

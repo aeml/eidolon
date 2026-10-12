@@ -147,6 +147,27 @@ test('source disposal and repeated owner disposal release each owned resource on
     expect(f.renderer.render).toBe(f.owner.originalRender); expect(f.shadowMap.render).toBe(f.owner.originalShadow);
 });
 
+test.each(['stock', 'foreign-sort', 'before-render', 'before-shadow', 'after-shadow'])('unrelated BatchedMesh %s callback qualification', mode => {
+    const f = fixture(), batch = new THREE.BatchedMesh(1, 3, 3, new THREE.MeshStandardMaterial());
+    batch.castShadow = true; f.scene.add(batch);
+    if (mode === 'foreign-sort') batch.setCustomSort(() => {});
+    if (mode === 'before-render') batch.onBeforeRender = () => {};
+    if (mode === 'before-shadow') batch.onBeforeShadow = () => {};
+    if (mode === 'after-shadow') batch.onAfterShadow = () => {};
+    f.renderer.render();
+    expect(f.owner.lastSavedSubmissions).toBe(mode === 'stock' ? 1 : 0);
+    expect(f.meshes.every(mesh => mesh.castShadow)).toBe(true);
+    f.owner.dispose(); batch.dispose(); batch.material.dispose();
+});
+
+test('fullscreen composer passes preserve the last world submission count', () => {
+    const f = fixture(); f.renderer.render();
+    expect(f.owner.lastSavedSubmissions).toBe(1);
+    f.shadowMap.render([], new THREE.Scene(), f.camera);
+    expect(f.owner.lastSavedSubmissions).toBe(1);
+    expect(f.owner.lastBatches).toBe(1); f.owner.dispose();
+});
+
 test('duplicate roots cannot claim sources twice and later wrappers survive disposal', () => {
     const f = fixture(); expect(f.owner.register(f.root)).toBe(0);
     const render = () => {}, shadow = () => {}; f.renderer.render = render; f.shadowMap.render = shadow;
