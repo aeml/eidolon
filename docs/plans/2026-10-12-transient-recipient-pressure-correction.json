@@ -1,0 +1,33 @@
+{
+  "source": "0b73a41c621e72e9819d3d6553e629d87f022c0e",
+  "status": "Qualified and selected for ordinary master merge; publication remains pending.",
+  "observedRun": 38200870030,
+  "observedSource": "defdb64e3f9292201df7e5f90b4defc32c5d1bb9",
+  "observation": "Four live soak priorityOverflow closures; all other closure causes zero in the retained fifty-sample prefix. The soak remains running. Message kind causing those four closures was not recorded.",
+  "reproduction": "Five real WebSocket regressions, one per transient combat visual type, fail on unchanged source by closing a healthy transport when its priority queue fills.",
+  "correction": "Route ability/attack/damage/heal/projectileImpact presentations through the existing bounded state/visual recipient lane. Retain priority for durable/private receipts and essential telegraphs. Retain state history invalidation/full protobuf recovery after recipient pressure.",
+  "checks": {
+    "focusedRace": "PASS, 2.816s",
+    "fullServerRootRace": "PASS, 191.747s",
+    "referenceBurst": "five expected failures, retained"
+  },
+  "unchanged": [
+    "global queue capacities",
+    "per-client queue capacities",
+    "single WebSocket writer",
+    "keepalive policy",
+    "audience/scene/actor footprint filtering",
+    "gameplay and reward authority"
+  ],
+  "metric": "broadcast.visualRecipientDropped counts bounded recipient presentation rejections, fixed field without account data",
+  "limitations": [
+    "No replacement 24h soak launched or capacity pass claimed.",
+    "The current closure category does not establish the cause of historical Alpha29 closures.",
+    "A deterministic flaw is corrected; no claim that the exact unrecorded four triggering message kinds are proven."
+  ],
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-soak41-priority-overflow-checks-20261012",
+    "entries": 12,
+    "inventorySHA256": "9771fa4c8961380540777103be0f0ce258bcbbd16e952b3399dad9691fe77570"
+  }
+}

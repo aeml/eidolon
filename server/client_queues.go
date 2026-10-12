@@ -30,8 +30,9 @@ func (c *Client) closeSendQueues() {
 	}
 }
 
-// State and time traffic can be dropped under pressure; critical traffic uses
-// sendSafe's independent priority lane. Neither path blocks the shared hub.
+// State, time and transient combat visuals can be dropped under pressure;
+// critical traffic uses sendSafe's independent priority lane. A rejected state
+// snapshot forces a full resync through broadcastState. Neither path blocks the hub.
 func (c *Client) sendState(data []byte) bool {
 	c.sendMu.RLock()
 	defer c.sendMu.RUnlock()

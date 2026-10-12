@@ -66,6 +66,19 @@ func broadcastMatchesInstance(message BroadcastMessage, instanceID string) bool 
 	return !broadcastRequiresScene(message) || message.InstanceID == instanceID
 }
 
+// These visuals already use a bounded, lossy hub queue. Preserve that policy
+// at each recipient instead of filling the lossless control lane and retiring
+// a healthy peer during a combat burst. Encounter warnings, phase/repair notices,
+// chat and private reward/inventory/quest replies keep their priority delivery.
+func broadcastUsesVisualLane(message BroadcastMessage) bool {
+	switch message.Type {
+	case MsgAbility, MsgAttack, MsgDamage, MsgHeal, MsgProjectileImpact:
+		return true
+	default:
+		return false
+	}
+}
+
 // Called only by the hub (and isolated synchronous delivery tests), preserving
 // ownership of its clients map and the existing send/retirement policy.
 func deliverBroadcast(message BroadcastMessage) {
@@ -89,6 +102,10 @@ func deliverBroadcast(message BroadcastMessage) {
 
 		if message.Type == MsgState || message.Type == "time" || message.Type == "public_event" {
 			client.sendState(message.Data)
+		} else if broadcastUsesVisualLane(message) {
+			if !client.sendState(message.Data) {
+				visualRecipientDropped.Add(1)
+			}
 		} else if !client.sendSafe(message.Data) {
 			client.markTransportClosed()
 			scheduleClientCleanup(client)
