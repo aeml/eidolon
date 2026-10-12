@@ -1,0 +1,35 @@
+{
+  "version": "Alpha1.79.44",
+  "status": "Corrective source CPU preparation complete; exact copied production build/native and ownCI/public acceptance required.",
+  "runtimeSource": "99c197e6dedd75a524cbdb398c465d8cacbbaa0e",
+  "qualification": "2026-10-12-dark-cutaway-shared-batch-qualification.json",
+  "initial44Failure": "2026-10-12-release44-publication.json",
+  "focusedReleaseChecks": 468,
+  "suites": 6,
+  "generatedContentGroups": 14,
+  "scopedLint": "pass",
+  "sourceVerification": {
+    "version": "Alpha1.79.44",
+    "synchronizedFiles": [
+      "package.json",
+      "package-lock.json",
+      "release.json",
+      "server/main.go",
+      "server/docker-compose.yml",
+      "server/Dockerfile",
+      "server/deploy/deploy_linux.sh",
+      ".github/workflows/ci.yml",
+      "scripts/run-isolated-character-qa.sh",
+      "README.md",
+      "index.html",
+      "tests/VersionPresentation.test.js"
+    ],
+    "cumulativeNotes": 479,
+    "priorNotesByteExact": 478,
+    "initial44NotesByteExact": 479,
+    "pages": 47
+  },
+  "versionDecision": "Initial44 never deployed; retain synchronized44version and all479cumulative notes byte-exact. No45version bump, duplicate notes, unchanged retry or relaxed scene/performance limits.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-release44-corrective-preparation-checks-20261012",
+  "acceptance": "Public43 remains exact accepted source as of19:05:43UTC. Corrective own CI/deploy/live and fresh126asset/frontend/backend/readyDB proof required; full original goal remains open."
+}
