@@ -192,5 +192,11 @@
   },
   "retirement": "Two GPUcycles/profile return exact baseline; all8temporary clones dispose once/cycle and all3shared roof maps dispose once at scene retirement. Owned servers and browsers closed.",
   "review": "High/Low ordinary native images and recorded natural4m/s approach/return inspected;100transition frames/profile, focuserror0, opacity1\u21920\u21921. Existing scenery fade/shader remains unchanged.",
-  "CI": "Both native profile cases enrolled in required predeploy selection without removing prior cases."
+  "CI": "Both native profile cases enrolled in required predeploy selection without removing prior cases.",
+  "subsequentSceneBudgetFailure": {
+    "source": "a9f59da7",
+    "ci": 38291884874,
+    "failure": "51scene meshes exceeds unchanged<50ceiling. Earlier scoped CPU/native proofs remain retained but do not qualify the full budget.",
+    "correction": "Detached99c197e6 restores49meshes with exact building/work-surface vertex masks;76focused checks and all original geometry/PBR/collider/ownership comparisons pass. Native qualification pending."
+  }
 }

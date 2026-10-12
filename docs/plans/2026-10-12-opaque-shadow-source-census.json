@@ -1,0 +1,137 @@
+{
+  "source": "2659c5b0d51e7ec3cc1db8ccee8ff1eb67323d5b",
+  "runtimeMatchesInitial44": "a9f59da7a192479ff7b5b25d2a36c595c8b158e9",
+  "recordedUTC": "2026-10-12T18:59:10.899752+00:00",
+  "GPUdisabled": true,
+  "rows": 10,
+  "sourceAssetPins": 117,
+  "failures": [],
+  "census": [
+    {
+      "type": "Fighter",
+      "quality": "high",
+      "shadowMeshes": 20,
+      "eligibleGroups": 2,
+      "potentialSavedSubmissionsPerShadowPass": 8,
+      "excluded": {
+        "morph": 1,
+        "material": 1,
+        "rigid": 9
+      }
+    },
+    {
+      "type": "Rogue",
+      "quality": "high",
+      "shadowMeshes": 18,
+      "eligibleGroups": 2,
+      "potentialSavedSubmissionsPerShadowPass": 8,
+      "excluded": {
+        "morph": 1,
+        "material": 1,
+        "rigid": 7
+      }
+    },
+    {
+      "type": "Cleric",
+      "quality": "high",
+      "shadowMeshes": 21,
+      "eligibleGroups": 2,
+      "potentialSavedSubmissionsPerShadowPass": 8,
+      "excluded": {
+        "morph": 1,
+        "material": 1,
+        "rigid": 10
+      }
+    },
+    {
+      "type": "Wizard",
+      "quality": "high",
+      "shadowMeshes": 21,
+      "eligibleGroups": 2,
+      "potentialSavedSubmissionsPerShadowPass": 8,
+      "excluded": {
+        "morph": 1,
+        "material": 1,
+        "rigid": 10
+      }
+    },
+    {
+      "type": "Ilyra",
+      "quality": "high",
+      "shadowMeshes": 20,
+      "eligibleGroups": 1,
+      "potentialSavedSubmissionsPerShadowPass": 16,
+      "excluded": {
+        "morph": 1,
+        "material": 2
+      }
+    },
+    {
+      "type": "Fighter",
+      "quality": "low",
+      "shadowMeshes": 20,
+      "eligibleGroups": 2,
+      "potentialSavedSubmissionsPerShadowPass": 8,
+      "excluded": {
+        "morph": 1,
+        "material": 1,
+        "rigid": 9
+      }
+    },
+    {
+      "type": "Rogue",
+      "quality": "low",
+      "shadowMeshes": 18,
+      "eligibleGroups": 2,
+      "potentialSavedSubmissionsPerShadowPass": 8,
+      "excluded": {
+        "morph": 1,
+        "material": 1,
+        "rigid": 7
+      }
+    },
+    {
+      "type": "Cleric",
+      "quality": "low",
+      "shadowMeshes": 21,
+      "eligibleGroups": 2,
+      "potentialSavedSubmissionsPerShadowPass": 8,
+      "excluded": {
+        "morph": 1,
+        "material": 1,
+        "rigid": 10
+      }
+    },
+    {
+      "type": "Wizard",
+      "quality": "low",
+      "shadowMeshes": 21,
+      "eligibleGroups": 2,
+      "potentialSavedSubmissionsPerShadowPass": 8,
+      "excluded": {
+        "morph": 1,
+        "material": 1,
+        "rigid": 10
+      }
+    },
+    {
+      "type": "Ilyra",
+      "quality": "low",
+      "shadowMeshes": 20,
+      "eligibleGroups": 1,
+      "potentialSavedSubmissionsPerShadowPass": 16,
+      "excluded": {
+        "morph": 1,
+        "material": 2
+      }
+    }
+  ],
+  "retainedHistory": "Initial normalized/interleaved exclusions over-conservative; corrected census preserves exact resulting raw attribute formats, normalized weights, bones, bind/world transforms, layers and depth sides. Six eye parts per class were interleaved, not normalized equipment.",
+  "scope": "CPU-only source eligibility/census. No runtime, renderer, shadow geometry owner, default, catalog or source asset mutation. No GPU depth equality, frame gain, lifetime or crowded-town acceptance.",
+  "next": "Strict independent owned depth-only batching prototype preserving all triangles/positions/skin values, palette/bind/world identities and material shadow state. Morph/alpha/custom and unknown paths retain originals. Native nested/error restoration, complete depth/color controls, moving equipped HUD scene and resource qualification required before selection.",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-opaque-shadow-census-checks-20261012",
+    "entries": 13,
+    "inventorySHA256": "f330d19e1556a7f11cf64cbebbe0757a6bc027e33a3908cfbb6fa6f1549bc031"
+  }
+}
