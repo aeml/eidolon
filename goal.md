@@ -1293,3 +1293,16 @@ Owned4232/browser resources closed; all six merged source/test snapshots match
 native copies. Next is coherent district publication. Full original world/art/
 connected performance/device/capacity/F1-F5/beta/launch/handoff goal remains open.
 See dark-district-art-qualification.
+
+
+October12 owner-reported world-map search focus is corrected for coherent42.
+Opening now focuses the canvas after visibility; M closes without entering text,
+and clicking search retains text entry. Existing desktop1280x800/phone390x844
+atlas workflows pass2cases/retries0, including destination/waypoint/navigation
+and explicit M checks. Initial assertion mistakenly queried a hidden role;
+moved the assertion after reopening and retained original logs/captures.
+438focused checks/six suites,13content groups and scoped lint pass;477notes
+preserve all476prior entries byte-exact across47archive pages. Version42
+preparation includes already-qualified district art. Exact copied-production
+native verification and own ordered publication acceptance remain required.
+Full original goal active. See world-map-focus-correction.

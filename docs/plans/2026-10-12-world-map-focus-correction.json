@@ -1,0 +1,31 @@
+{
+  "recordedUTC": "2026-10-12T04:17:50.141616+00:00",
+  "scope": "World map opening focus correction",
+  "behavior": "Opening focuses the map canvas after visibility, leaving M available to close; search typing starts on explicit field selection. Focus restoration and keyboard navigation retained.",
+  "regression": "Desktop1280x800/phone390x844 existing atlas workflow now checks M closes without entering text, reopen remains unfocused search, clicking and typing M keeps map open.",
+  "initialVerificationFinding": "Initial updated assertion used a role locator while the map was hidden; Playwright excludes hidden controls by default. M had correctly closed map. Moved empty-value assertion after reopening; original failure logs/captures retained.",
+  "localEvidenceRoot": "/home/aeml/.local/share/eidolon-release42-preparation-checks-20261012",
+  "release": "Alpha1.79.42",
+  "status": "Validated in source; selected for coherent42 publication.",
+  "browserChecks": {
+    "cases": 2,
+    "passed": 2,
+    "retries": 0,
+    "viewportSizes": [
+      [
+        1280,
+        800
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "log": "atlas-browser-corrected.log"
+  },
+  "focusedChecks": {
+    "suites": 6,
+    "passed": 438
+  },
+  "contentGroups": 13
+}
