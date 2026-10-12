@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { DARK_DISTRICT_ROOF_SPAN } from './DarkDistrictRoofMaterial.js';
 
 // Decorative districts remain beyond the authoritative walking union. Local
 // +Z faces the street; construction fits the former skyline's full envelope.
@@ -20,13 +21,26 @@ function hipRoof(width, depth, eave, ridge) {
     const w = width / 2, d = depth / 2;
     const points = [[-w, eave, -d], [w, eave, -d], [w, eave, d], [-w, eave, d],
         [-w + 6, ridge, 0], [w - 6, ridge, 0]];
-    const positions = [];
+    const positions = [], uvs = [];
     for (const face of [[0, 4, 5], [0, 5, 1], [1, 5, 2], [2, 5, 4], [2, 4, 3], [3, 4, 0], [0, 1, 2], [0, 2, 3]]) {
         positions.push(...face.flatMap(i => points[i]));
+        const [a, b, c] = face.map(i => new THREE.Vector3(...points[i]));
+        const normal = b.sub(a).cross(c.sub(a)).normalize();
+        const end = Math.abs(normal.x) > Math.abs(normal.z);
+        const scale = Math.hypot(1, (ridge - eave) / (end ? 6 : d));
+        for (const i of face) {
+            const [x, , z] = points[i];
+            // Local slope distance gives every hip the same physical slate
+            // scale. Tangents follow the outward face, with courses descending
+            // from the ridge; side roofs never stretch a top-down projection.
+            const u = normal.y < 0 ? x : end ? z * Math.sign(normal.x) : -x * Math.sign(normal.z);
+            const v = normal.y < 0 ? z : (end ? Math.abs(x) - (w - 6) : Math.abs(z)) * scale;
+            uvs.push(u / DARK_DISTRICT_ROOF_SPAN, v / DARK_DISTRICT_ROOF_SPAN);
+        }
     }
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    geometry.setAttribute('uv', new THREE.Float32BufferAttribute(positions.length / 3 * 2, 2));
+    geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
     geometry.computeVertexNormals();
     return geometry;
 }
@@ -71,7 +85,7 @@ export function createDarkDistrictArchitectureGeometry(recipe, quality = 'high')
     const eave = height - 2, ridge = height + .25;
     // The closed roof sits directly on the wall top. A ridge replaces the
     // floating flat cap; its silhouette never exceeds the former roof bounds.
-    add('shadow', hipRoof(32, 28, eave, ridge));
+    add('roof', hipRoof(32, 28, eave, ridge));
     box('bronze', [26.5, .35, 22.5], [0, height - 2.2, 0]);
     for (const x of [-7, 7]) {
         const windowHeight = recipe === 'archive' ? 5 : 7;

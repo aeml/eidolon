@@ -28,7 +28,8 @@ test.each(variants)('%s %s architecture is bounded, finite and uses nondegenerat
         expect(new THREE.Box3(new THREE.Vector3(-16, -2, -14), new THREE.Vector3(16, ceiling, 14)).containsBox(bounds)).toBe(true);
         expect(bounds.min.y).toBe(-2); expect(valid).toBe(true); expect(minimumArea).toBeGreaterThan(.001);
         expect(triangles).toBeLessThan(quality === 'low' ? 350 : 500);
-        expect(Object.keys(parts).sort()).toEqual(['bronze', 'glow', 'shadow', 'stone']);
+        expect(Object.keys(parts).sort()).toEqual(['bronze', 'glow', 'roof',
+            ...(['shore', 'foundry'].includes(recipe) ? ['shadow'] : []), 'stone']);
     } finally { Object.values(parts).forEach(g => g.dispose()); }
 });
 
@@ -49,13 +50,13 @@ test.each(variants)('%s %s windows have real frame openings and recessed opaque 
 test.each(['high', 'low'])('%s archive roof is closed and its slopes face the sky', quality => {
     const parts = createDarkDistrictArchitectureGeometry('archive', quality), material = new THREE.MeshBasicMaterial();
     try {
-        const p = parts.shadow.attributes.position, edges = new Map();
+        const p = parts.roof.attributes.position, edges = new Map();
         const vertex = i => [p.getX(i), p.getY(i), p.getZ(i)].map(v => Math.round(v * 1e6)).join(',');
         for (let i = 0; i < p.count; i += 3) for (const [a, b] of [[0, 1], [1, 2], [2, 0]]) {
             const key = [vertex(i + a), vertex(i + b)].sort().join('|'); edges.set(key, (edges.get(key) || 0) + 1);
         }
         expect([...edges.values()].every(count => count === 2)).toBe(true);
-        const mesh = new THREE.Mesh(parts.shadow, material);
+        const mesh = new THREE.Mesh(parts.roof, material);
         for (const [x, z] of [[0, 5], [0, -5], [14, 0], [-14, 0]]) {
             const hit = new THREE.Raycaster(new THREE.Vector3(x, 25, z), new THREE.Vector3(0, -1, 0)).intersectObject(mesh)[0];
             expect(hit).toBeDefined(); expect(hit.face.normal.y).toBeGreaterThan(.8);
@@ -68,7 +69,7 @@ test.each(['high', 'low'])('%s districts retain all placements, shared materials
     const root = createDarkRealmScene(new THREE.Group(), darkRealmFixture(), collision, { quality });
     try {
         const meshes = []; root.traverse(n => { if (n.isMesh) meshes.push(n); });
-        expect(meshes).toHaveLength(48); // Shared court timber plus bounded paper/cloth/masonry groups.
+        expect(meshes).toHaveLength(49); // One shared slate roof batch; bounded paper/cloth/masonry groups retained.
         for (const recipe of recipes) expect(root.userData.landmarks.filter(p => p.kind === recipe)).toHaveLength(8);
         expect(collision.colliders).toEqual([...getDarkRealmCampColliders(), ...getDarkRealmCourtColliders()]);
     } finally { RenderSystem.prototype.disposeObjectResources.call({}, root); }

@@ -1,0 +1,78 @@
+{
+  "recordedUTC": "2026-10-12T04:30:32.883114+00:00",
+  "source": "c0b1a6d9968f3a9e89519ad06d9b0afc6f023889",
+  "status": "Detached CPU-only roof material stage. Not selected, merged, deployed or visually/performance-qualified.",
+  "change": "All32closed district roofs borrow a shared matte slate PBR map set; roof-face UVs use exact physical slope distance with outward tangents and half-metre staggered courses. Spars/flues retain previous dark material.",
+  "focused": {
+    "passed": 38,
+    "suites": 4,
+    "seconds": 28.774,
+    "lint": "pass"
+  },
+  "invariants": {
+    "baseline": "1c1191f9 (runtime exact6f9895ac)",
+    "scope": "Complete scene triangles; no spatial/triangle exclusion. Only256roofs triangles change UVs/material, all world positions/normals exact. CPU evidence, not rendered/performance acceptance.",
+    "results": [
+      {
+        "quality": "high",
+        "triangles": 38462,
+        "allPositionNormalsExactSHA256": "2a9aae384cb3c400fefd31a75397981890ef363e8b44972c3751802419e8e7d0",
+        "roofTrianglesWithOnlyMaterialUVChanges": 256,
+        "nonroofTrianglesExact": 38206,
+        "nonroofFullAttributesMaterialRenderFlagsSHA256": "4efcb40c25d8c4c7204027dd0d583800ee57caf7a97170a31241facca5ba26ea",
+        "collidersExact": 22,
+        "landmarksExact": true,
+        "before": {
+          "meshes": 48,
+          "materials": 17,
+          "textures": 4
+        },
+        "after": {
+          "meshes": 49,
+          "materials": 18,
+          "textures": 7
+        }
+      },
+      {
+        "quality": "low",
+        "triangles": 29406,
+        "allPositionNormalsExactSHA256": "0b580fe145a9110e5460d964dc2e181aa03a3df7991d320f51d37e7c3ac87145",
+        "roofTrianglesWithOnlyMaterialUVChanges": 256,
+        "nonroofTrianglesExact": 29150,
+        "nonroofFullAttributesMaterialRenderFlagsSHA256": "795d919146a96bc00c2d934ac884cf7a95671c2ae6ed14109923dbcaa80e013d",
+        "collidersExact": 22,
+        "landmarksExact": true,
+        "before": {
+          "meshes": 48,
+          "materials": 17,
+          "textures": 4
+        },
+        "after": {
+          "meshes": 49,
+          "materials": 18,
+          "textures": 7
+        }
+      }
+    ]
+  },
+  "maps": {
+    "qualitySizes": {
+      "high": 256,
+      "low": 128
+    },
+    "mapsPerScene": 3,
+    "sceneOwned": true,
+    "nonemissive": true,
+    "displacement": false,
+    "shaderTimeOrPerFrameWork": false,
+    "physicalRepeatMetres": 8
+  },
+  "preview": "CPU-generated color/normal/roughness swatch inspected; does not establish scene appearance or mipmap/motion quality.",
+  "retainedFinding": "First standalone swatch import assumed sharp/lib/index.js, absent in installed0.35.5. Package resolution via createRequire fixed the artifact utility; runtime unchanged.",
+  "qualificationRequired": "After exact42all-ten CI terminal and shared GPU release, paired reference/candidate High1280/Low390 moving four-class14-slot HUD ordinary district/roof-edge views, measured draw/triangle/frame budgets and two GPU retirement cycles per profile. Also inspect decorative roof close views without treating them as gameplay-budget samples. No final modern-world/device acceptance inferred.",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-dark-roof-materials-checks-20261012",
+    "entries": 15,
+    "inventorySHA256": "f9130a65b5dff5b30d70cf1142dfc607854a5d3c040ecb9b3a00dba8b27e2695"
+  }
+}

@@ -56,7 +56,7 @@ test.each(['high', 'low'])('%s sibling groups dispose every shared material and 
         node.geometry.addEventListener('dispose', () => geometryCounts.set(node.geometry, geometryCounts.get(node.geometry) + 1));
     });
     RenderSystem.prototype.disposeObjectResources.call({}, root);
-    expect(geometryCounts.size).toBe(48);
+    expect(geometryCounts.size).toBe(49);
     expect([...geometryCounts.values()].every(n => n === 1)).toBe(true);
     expect([...materialCounts.values()].every(n => n === 1)).toBe(true);
 });
