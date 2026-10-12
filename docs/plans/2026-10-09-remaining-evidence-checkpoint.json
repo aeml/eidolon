@@ -3369,5 +3369,39 @@
     "metadataFailureRetained": "Initial local reader expected JSON from versioning CLI plain text. Manifest/retirement checks aborted. Exact anchored CLI count/release parsing repaired metadata; copied identity and all93pins verified before cleanup. No production/runtime effects.",
     "acceptanceRequired": "Exact ordered CI/deploy/live success, then fresh normal-TLS identities/readyDB/all93asset lengths and SHA before another source publication.",
     "limits": "Original full readiness scope stays active. Cold triangles, connected frame-time, first application frame, peak memory, physical devices, art, campaign, capacity, F1-F5/beta/launch/handoff remain open. Only master exists locally/on origin."
+  },
+  "darkCourtFurnitureCPUStage20261012": {
+    "recordedUTC": "2026-10-12T02:59:00.225673+00:00",
+    "source": "5e37a7473012bc24baf9b1a0497a90fd4eba5a2a",
+    "base": "9483b89b",
+    "worktree": "/home/aeml/.local/share/eidolon-dark-courts-20261012",
+    "status": "Staged detached CPU-only candidate; not merged or selected. Shared GPU reserved for release41 CI.",
+    "change": "Supported plank workbenches with ferry cups/passenger list, bound archive books, anvil/tongs/hammer and counted loaves/ledger; stone-plinth folded closed standards.",
+    "checks": {
+      "tests": 24,
+      "suites": 2,
+      "seconds": 9.318,
+      "scopedLint": "PASS",
+      "diffCheck": "PASS",
+      "highAddedTriangles": 17304,
+      "lowAddedTriangles": 13496,
+      "sceneMeshesBefore": 38,
+      "sceneMeshesAfter": 39,
+      "all22CollidersExact": true,
+      "floorUVGeometryLandmarksExact": true,
+      "allTrianglesOutside16CourtSolidsExact": true,
+      "comparisonExpansionMeters": 0
+    },
+    "pending": [
+      "Actual native High/Low gameplay zoom and close workbench/standard visual review with supplied equipped characters/HUD",
+      "Paired real-clock performance within original draw/triangle/frame budgets",
+      "GPU resource retirement cycles"
+    ],
+    "custody": {
+      "root": "/home/aeml/.local/share/eidolon-dark-courts-checks-20261012",
+      "entries": 11,
+      "inventorySHA256": "40375ca37f625fa8c305b0716e9284b6664782ae3e06226ffd717fa030413ee2"
+    },
+    "limits": "No native attempt, gameplay/server/account change, merge, publication, final-art/performance acceptance or original-goal closure. Exact41 still requires its own ordered CI/deploy/live/public acceptance. Accepted40 quest fix retained."
   }
 }

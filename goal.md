@@ -1222,3 +1222,14 @@ normal-TLS109asset/frontend/backend/readyDB acceptance before next publication.
 Only master active, original465dirtypaths preserved. Sparse district composition,
 CPU submission and full original1.11–1.99/F1–F5/beta/launch/handoff remain open.
 No unchanged campaign/soak replay. See release41-publication.
+
+
+October12 court furniture CPU stage: detached5e37a747 adds supported occupation
+workbenches and closed folded standards.24focused checks/two suites, scoped lint
+and exact22collider/floorUV/landmark/outside16solid geometry census pass. Scene
+adds one timber batch,High17304/Low13496triangles; native moving equipped/HUD
+visual, real-clock performance and GPU lifecycle checks remain required before
+selection/merge. No native attempt while release41CI owns sharedGPU. Frozen11entry
+inventory40375ca37f625fa8c305b0716e9284b6664782ae3e06226ffd717fa030413ee2.
+Accepted40quest fix and live frontend/backend/readyDB rechecked; no unchanged
+campaign/soak rerun. Full original scope active. See dark-court-furnishings-staged.
