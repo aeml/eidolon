@@ -1,0 +1,42 @@
+{
+  "recordedUTC": "2026-10-12T03:49:35.236368+00:00",
+  "status": "FAIL; no capacity acceptance, retry or cancellation.",
+  "source": "12e5e3c41a3b4e897138973a7514fc8da7881bcb",
+  "run": 38109009521,
+  "attempt": 1,
+  "wallSeconds": 86427,
+  "common100clientStateCoverageMs": 2444342,
+  "requiredPerClientFrames": 432000,
+  "observedMinimumPerClientFrames": 70390,
+  "requiredPerClientActiveMs": 77760000,
+  "observedMinimumPerClientActiveMs": 2453949,
+  "readErrors": 4,
+  "writeErrors": 0,
+  "decodeErrors": 0,
+  "readFailureCategories": {
+    "timeout": 0,
+    "policy": 0,
+    "abnormal_websocket_close": 3,
+    "going_away": 0,
+    "normal_websocket_close": 0,
+    "protocol": 0,
+    "too_big": 0,
+    "server": 0,
+    "eof": 0,
+    "unknown": 1
+  },
+  "nextAction": "Diagnose abnormal/unknown reader endings against transport and saturation evidence. Current source includes newer closure diagnostics absent from this29source; no blind long retry.",
+  "limits": "Isolated disposable server/database on exact29source, not the live public service. Wall time is not continuous100client coverage. Full original world/art/gameplay/device/performance/operations/F1-F5/beta/launch/handoff remains open.",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-soak29-terminal-checks-20261012",
+    "entries": 4,
+    "inventorySHA256": "c6da7b21f253fe0e776915f4e241168da88be94406d00df7899dca0ddc79751a"
+  },
+  "rawEvidence": "/home/aeml/.local/share/eidolon-soak-failure-inspection-20261012/retrieved",
+  "nextExistingRun": {
+    "id": 38200870030,
+    "source": "defdb64e3f9292201df7e5f90b4defc32c5d1bb9",
+    "event": "schedule",
+    "status": "Authoritatively in_progress at03:49:48UTC, multiplayer-soak step; existing Luna monitors sparsely, root did not launch/retry/cancel it."
+  }
+}

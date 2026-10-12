@@ -44,7 +44,7 @@ Original
 uncommitted user changes are preserved. Historical High frame-time failures,
 broader world/art/combat/audio, whole-game performance/devices/operations/
 F1–F5/beta/launch/handoff requirements stay open. Existing100-clientsoak
-38109009521 is active onpublic29, not capacity acceptance. Owner-deferred
+38109009521 on isolated29source endedFAIL: four read errors and only40m44.342s common100client state coverage across24hwall. Already-scheduled exact41run38200870030 is active, not capacity acceptance. Owner-deferred
 uninterrupted campaign/pacing and physical-phone review remain for playtests.
 See the [remaining register](2026-10-09-release-readiness-remaining.md).
 The dated checkpoints below retain historical evidence and superseded queues.

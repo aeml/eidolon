@@ -1265,3 +1265,16 @@ cases pass. Frozen16entry CPU inventory845ec8606bf6c78224ee70b19d49aa5592a31ffae
 Native combined-art review now running on owned4232 after own release terminal;
 visual/ABBA/GPU lifetime required before selecting source. Full original goal
 remains open; no unchanged campaign/soak replay. See public41-terminal-qualification.
+
+
+October12 previous29soak38109009521attempt1 is terminalFAIL on exact12e5e3c4:
+24h00m27s wall time but only40m44.342s common100client own-state coverage;
+four read errors (three abnormal closures/one unknown), zero write/decode errors.
+Observed min70390frames/2453949ms fall below432000frames/77760000ms policy.
+No capacity acceptance/retry/cancel. Frozen4entry sanitized terminal inventory
+c6da7b21f253fe0e776915f4e241168da88be94406d00df7899dca0ddc79751a;
+private original report/log hashes retained. Already-scheduled next41run38200870030
+was independently verified live at03:49:48UTC; root did not launch it. Existing
+Luna watches its exact handle sparsely. Reader/transport saturation diagnosis and
+actual sustained capacity remain open; entire original goal remains active.
+See soak29-terminal-failure.
