@@ -430,8 +430,8 @@ export class WorldMap {
             this.opener = document.activeElement;
             this.gameEngine.inputManager?.clearInputState?.();
             this.navigation.refresh(true);
-            // Focus after the existing window manager makes the map visible.
-            queueMicrotask(() => { if (this.isVisible()) this.navigation.search.focus(); });
+            // Keep map shortcuts active without starting text entry on open.
+            queueMicrotask(() => { if (this.isVisible()) this.canvas.focus({ preventScroll: true }); });
         } else this.opener?.focus?.();
         if (this.gameEngine?.uiManager?.windowLayouts) {
             const opened = this.gameEngine.uiManager.toggleManagedWindow('map');
