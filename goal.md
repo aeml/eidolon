@@ -1144,12 +1144,16 @@ server, data, version or note changes. No further push before exact40acceptance;
 full original scope remains active. See chronicle-waystone-qualification.
 
 
-Separate QA-only GPU diagnostic03dc9bb7 remains unfinished in detached owned
-worktree eidolon-gpu-observer-20261012.52focused checks/two suites and scoped lint
-pass. Initial connected waypoint failed unchanged12m proximity before sampling;
-later precision-guard attempt stopped only its owned browser when shared-host
-native CI began. Overlap is disqualified. Eight synthetic identities sanitized;
-owned APIs/databases/browser processes closed. No GPU timing/native/save/performance
-acceptance or merge/publication claimed. Exact40 is now accepted; next bounded
-diagnostic may resume with sole GPU use, preserving both attempts. No unchanged
-campaign/soak replay or full-goal closure. See world-gpu-diagnostic-draft.
+Separate QA-only GPU diagnostic03dc9bb7 is now qualified and merged locally
+into master after52focused checks/two suites, scoped lint and actual Go-race
+four-class14-slot save custody/native1pass/1optional skip/retry0. Same180world
+calls measure CPU17.6/24.5msmedian/p95 and GPU3.80424/4.55164ms;64counter bits,
+all visible and hooks restored. Separate ordinary180frames269draw/178422tri/
+16.7msmedian/33.4p95 meet original High sampled limits in this run. No runtime
+change or gain claim; prior timing/cold geometry/device failures remain valid.
+Initial unchanged12m encounter failure and later shared-GPU yield retained;
+all12synthetic identities sanitized, owned processes/ports closed. Frozen58entry
+inventory98d174f08a34ea52a63c5a55cdaa0a67fa00d868d8c2adc7bb6fa0e7b4ba298f.
+CPU traversal/submission investigation is next; hold QA with future coherent
+milestone. Public40 remains accepted; full original scope stays active. No
+unchanged campaign/soak replay. See world-gpu-diagnostic-qualification.

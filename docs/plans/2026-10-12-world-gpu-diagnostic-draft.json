@@ -13,13 +13,14 @@
   "focusedTests": 52,
   "suites": 2,
   "nativeQualification": "PENDING: initial live encounter waypoint missed unchanged12m proximity gate; retained terminal failure, no GPU samples. Precision guard and richer failure context added; final attempt yielded owned browser immediately when shared GPU CI predeploy began. Interrupted overlap disqualified. No runtime/performance/save/native acceptance claimed. All synthetic identities sanitized; own browser/API/database terminated.",
-  "heldDetached": true,
+  "heldDetached": false,
   "primarySpecs": [
     "https://registry.khronos.org/webgl/extensions/EXT_disjoint_timer_query_webgl2/",
     "https://registry.khronos.org/OpenGL/extensions/EXT/EXT_disjoint_timer_query.txt"
   ],
   "worktree": "/home/aeml/.local/share/eidolon-gpu-observer-20261012",
   "evidenceRoot": "/home/aeml/.local/share/eidolon-connected40-world-gpu-checks-20261012",
-  "status": "Unfinished detached QA-only GPU diagnostic;52focused checks pass, connected native qualification pending. Not merged or published. Resume only with sole GPU use; preserve both retained incomplete attempts.",
-  "currentPublicAcceptance": "2026-10-12-public40-terminal-qualification.json"
+  "status": "Historical pending checkpoint, superseded by native qualification and ordinary integration into master. Prior failure/interruption remain retained.",
+  "currentPublicAcceptance": "2026-10-12-public40-terminal-qualification.json",
+  "supersededBy": "2026-10-12-world-gpu-diagnostic-qualification.json"
 }
