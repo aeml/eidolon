@@ -1,0 +1,135 @@
+{
+  "recordedUTC": "2026-10-12T21:17:44.417476+00:00",
+  "source": "0d32ab60ee8c4b5999e408f731f8ade60c43f8b1",
+  "version": "Alpha1.79.44",
+  "status": "Accepted exact0d32ab60/Alpha1.79.44: ownCI38303521959attempt1 all ten ordered jobs success, both deployments/liveQA and fresh post-terminal normal-TLS126assets/frontend/backend/readyDB/analytics match.",
+  "ci": {
+    "id": 38303521959,
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "success",
+    "updatedUTC": "2026-10-12T21:13:25Z"
+  },
+  "orderedJobs": [
+    {
+      "name": "Client Tests (Jest)",
+      "startedAt": "2026-10-12T20:20:05Z",
+      "completedAt": "2026-10-12T20:35:39Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Server Tests (Go)",
+      "startedAt": "2026-10-12T20:20:05Z",
+      "completedAt": "2026-10-12T20:37:39Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Browser Smoke (Playwright 2/3)",
+      "startedAt": "2026-10-12T20:20:05Z",
+      "completedAt": "2026-10-12T20:48:31Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Browser Smoke (Playwright 1/3)",
+      "startedAt": "2026-10-12T20:20:05Z",
+      "completedAt": "2026-10-12T20:39:10Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Browser Smoke (Playwright 3/3)",
+      "startedAt": "2026-10-12T20:20:05Z",
+      "completedAt": "2026-10-12T20:33:06Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Predeploy Character QA (System Chrome)",
+      "startedAt": "2026-10-12T20:48:33Z",
+      "completedAt": "2026-10-12T21:00:57Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Validate Production QA Inputs",
+      "startedAt": "2026-10-12T21:01:00Z",
+      "completedAt": "2026-10-12T21:01:03Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Deploy to GitHub Pages",
+      "startedAt": "2026-10-12T21:01:07Z",
+      "completedAt": "2026-10-12T21:02:53Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Deploy Server (SSH)",
+      "startedAt": "2026-10-12T21:01:06Z",
+      "completedAt": "2026-10-12T21:02:26Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Live Release and Character QA",
+      "startedAt": "2026-10-12T21:02:55Z",
+      "completedAt": "2026-10-12T21:13:24Z",
+      "conclusion": "success"
+    }
+  ],
+  "optionalSkippedSteps": [
+    {
+      "job": "Predeploy Character QA (System Chrome)",
+      "step": "Run deterministic High/Low animation gallery"
+    },
+    {
+      "job": "Predeploy Character QA (System Chrome)",
+      "step": "Run required Well Rested rendering and GPU lifecycle QA"
+    },
+    {
+      "job": "Predeploy Character QA (System Chrome)",
+      "step": "Run disposable full-character gameplay"
+    },
+    {
+      "job": "Live Release and Character QA",
+      "step": "Run live four-class and remote-animation QA"
+    }
+  ],
+  "public": {
+    "recordedUTC": "2026-10-12T21:15:34.675243+00:00",
+    "matchedAssets": 126,
+    "identitiesMatch": true,
+    "database": "ready",
+    "analyticsJavaScript": true
+  },
+  "fullClient": {
+    "suites": 743,
+    "tests": 11027
+  },
+  "browser": {
+    "passed": 349,
+    "skipped": 10
+  },
+  "native": {
+    "regionalPassed": 7,
+    "dungeonPassed": 43,
+    "celebrationPassed": 1,
+    "authoredEquipmentPassed": 2,
+    "releaseSmokePassed": 4,
+    "releaseSmokeSkipped": 1
+  },
+  "live": {
+    "characterPassed": 8,
+    "characterSkipped": 1,
+    "recoveryPassed": 2,
+    "wellRestedPassed": 1
+  },
+  "serverVulnerabilityScope": {
+    "reachable": 0,
+    "importedPackage": 0,
+    "uncalledRequiredModule": 1
+  },
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-release44-network-terminal-checks-20261012",
+    "entries": 34,
+    "inventorySHA256": "2e89bb5bf9234e85e889bf51c0dc3e4276b8eebb1b55096936a88657df280c62"
+  },
+  "publication": "2026-10-12-release44-network-publication.json",
+  "limits": "Scoped public44 acceptance only. Retained crowded-town performance, full art/device/gameplay/owner/F1-F5/beta/launch/handoff requirements remain open; old41soak still running. Initial receipt acquisition invalid-field error retained. No retries/cancellations/waivers.",
+  "continuedWork": "Isolated lossless shadow owner native qualification and Lanternhold timber material qualification; neither selected. Existing old41soak remains running without restart."
+}

@@ -1,7 +1,7 @@
 {
   "source": "0d32ab60ee8c4b5999e408f731f8ade60c43f8b1",
   "version": "Alpha1.79.44",
-  "status": "Initial five jobs and nativepredeploy/QAinputs/server/Pages deployments succeeded; ownCI38303521959attempt1 liveQA still running. Deployed44 not publicly accepted yet.",
+  "status": "Accepted exact0d32ab60/Alpha1.79.44: ownCI38303521959attempt1 all ten ordered jobs success, both deployments/liveQA and fresh post-terminal normal-TLS126assets/frontend/backend/readyDB/analytics match.",
   "qualification": "2026-10-12-native-visual-network-isolation.json;424focused5suites+3unchangednativecases+recordingprobe; frozen120entries",
   "versions": 12,
   "notes": 479,
@@ -72,9 +72,8 @@
   },
   "nativeRuntimeEvidenceReused": "/home/aeml/.local/share/eidolon-release44-corrective-preparation-checks-20261012/inventory.json",
   "copiedNativeScope": "Previously qualified e7 runtime/bundle unchanged; metadata exact. New namespace copied fixture immutable-worker/offline test passes. No redundant full native replay.",
-  "public43": "fresh normalTLS identity/readyDB with reused20:08:41all121assets; candidate44 not public",
-  "limits": "Own ordered CI/deploy/live/fresh126asset custody pending. Full original goal/retained failures remain open.",
-  "recordedUTC": "2026-10-12T21:09:31.253681+00:00",
+  "limits": "Scoped public44 acceptance only. Retained crowded-town performance, full art/device/gameplay/owner/F1-F5/beta/launch/handoff requirements remain open; old41soak still running. Initial receipt acquisition invalid-field error retained. No retries/cancellations/waivers.",
+  "recordedUTC": "2026-10-12T21:17:44.417476+00:00",
   "ci": {
     "id": 38303521959,
     "attempt": 1,
@@ -101,33 +100,78 @@
   "deploymentJobs": [
     {
       "name": "Predeploy Character QA (System Chrome)",
-      "status": "completed",
-      "conclusion": "success",
-      "completedAt": "2026-10-12T21:00:57Z"
+      "startedAt": "2026-10-12T20:48:33Z",
+      "completedAt": "2026-10-12T21:00:57Z",
+      "conclusion": "success"
     },
     {
       "name": "Validate Production QA Inputs",
-      "status": "completed",
-      "conclusion": "success",
-      "completedAt": "2026-10-12T21:01:03Z"
+      "startedAt": "2026-10-12T21:01:00Z",
+      "completedAt": "2026-10-12T21:01:03Z",
+      "conclusion": "success"
     },
     {
       "name": "Deploy to GitHub Pages",
-      "status": "completed",
-      "conclusion": "success",
-      "completedAt": "2026-10-12T21:02:53Z"
+      "startedAt": "2026-10-12T21:01:07Z",
+      "completedAt": "2026-10-12T21:02:53Z",
+      "conclusion": "success"
     },
     {
       "name": "Deploy Server (SSH)",
-      "status": "completed",
-      "conclusion": "success",
-      "completedAt": "2026-10-12T21:02:26Z"
+      "startedAt": "2026-10-12T21:01:06Z",
+      "completedAt": "2026-10-12T21:02:26Z",
+      "conclusion": "success"
     },
     {
       "name": "Live Release and Character QA",
-      "status": "in_progress",
-      "conclusion": "",
-      "completedAt": "0001-01-01T00:00:00Z"
+      "startedAt": "2026-10-12T21:02:55Z",
+      "completedAt": "2026-10-12T21:13:24Z",
+      "conclusion": "success"
     }
-  ]
+  ],
+  "previousPublic43": "fresh normalTLS identity/readyDB with reused20:08:41all121assets; candidate44 not public",
+  "terminalCustody": {
+    "root": "/home/aeml/.local/share/eidolon-release44-network-terminal-checks-20261012",
+    "entries": 34,
+    "inventorySHA256": "2e89bb5bf9234e85e889bf51c0dc3e4276b8eebb1b55096936a88657df280c62"
+  },
+  "publicAcceptance": {
+    "recordedUTC": "2026-10-12T21:15:34.675243+00:00",
+    "matchedAssets": 126,
+    "identitiesMatch": true,
+    "database": "ready",
+    "analyticsJavaScript": true
+  },
+  "optionalSkippedSteps": [
+    {
+      "job": "Predeploy Character QA (System Chrome)",
+      "step": "Run deterministic High/Low animation gallery"
+    },
+    {
+      "job": "Predeploy Character QA (System Chrome)",
+      "step": "Run required Well Rested rendering and GPU lifecycle QA"
+    },
+    {
+      "job": "Predeploy Character QA (System Chrome)",
+      "step": "Run disposable full-character gameplay"
+    },
+    {
+      "job": "Live Release and Character QA",
+      "step": "Run live four-class and remote-animation QA"
+    }
+  ],
+  "native": {
+    "regionalPassed": 7,
+    "dungeonPassed": 43,
+    "celebrationPassed": 1,
+    "authoredEquipmentPassed": 2,
+    "releaseSmokePassed": 4,
+    "releaseSmokeSkipped": 1
+  },
+  "live": {
+    "characterPassed": 8,
+    "characterSkipped": 1,
+    "recoveryPassed": 2,
+    "wellRestedPassed": 1
+  }
 }

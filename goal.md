@@ -1617,3 +1617,16 @@ Frozen14entry inventory`e236a55327716cbf68c9abfc0206e3ba460e0bf80df53eafa562ffd6
 No native/default acceptance; currentCI nativepredeploy and bothdeployments
 pass, liveQA pending.743client suites/11027tests and349browser cases pass,
 10browser skips retained. Fulloriginal readiness goal/retained failures open.
+
+
+October12 exact44/0d32ab60 accepted: ownCI38303521959attempt1 all ten ordered
+jobs success21:13:25UTC, both deployments/liveQA pass.743client suites/11027tests,
+349browser passes/10skips, native regional7/dungeon43/celebration1/equipment2/
+smoke4pass+1skip, live character8pass+1skip/recovery2/WellRested1pass. Four optional
+stages remain skipped. Fresh21:15:34UTC normal-TLS126asset sizes/SHA, frontend/
+backend source/version, readyDB and analyticsJS match. Frozen34entry terminal
+inventory`2e89bb5bf9234e85e889bf51c0dc3e4276b8eebb1b55096936a88657df280c62`.
+Original-model palette/Dark roofs/shared49meshcutaway deployed within scope;
+preceding failures retained, no retries/waivers. GPU now free for isolated
+qualification; full original readiness goal/crowded-town/art/device/gameplay/
+owner/F1–F5/beta/launch/handoff requirements remain open. Existing41soak continues.
