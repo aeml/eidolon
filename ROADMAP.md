@@ -1,6 +1,6 @@
 # Eidolon Roadmap
 
-Alpha1.79.43 is being prepared with qualified Lanternhold homes, strolling residents, gate-road transitions and the transient combat-delivery correction, carrying the merged map focus/district art.468focused release checks/six suites,14content groups and12synchronized versions pass;478notes preserve all477prior byte-exact. Native copied publication review and own ordered CI/deploy/live acceptance remain required. Release42failed before deployment; accepted41 remains live. Crowded-town and broader High performance/final-art/beta gates remain open. [Town qualification](docs/plans/2026-10-12-lanternhold-neighborhood-qualification.json).
+Alpha1.79.43/exact`d7de00d8` is ordinarily pushed with Lanternhold homes, strolling residents, blended gate roads, combat recipient resilience and previously qualified map focus/district work. Own CI38208653308attempt1 is in progress; ordered CI/deploy/live and fresh121asset/frontend/backend/readyDB acceptance are pending.468focused release checks/six suites,14content groups,12versions,478notes/all477prior byte-exact, two native residential rendering cases and eight exact copied town views/two map focus cases pass within scope. Crowded-town/High frame failures remain open. Accepted41 remains live; full original goal active. [Publication](docs/plans/2026-10-12-release43-publication.json).
 
 > Project by [Robert Mendola](https://mendola.tech)
 >

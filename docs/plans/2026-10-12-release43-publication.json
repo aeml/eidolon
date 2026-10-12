@@ -1,0 +1,114 @@
+{
+  "version": "Alpha 1.79.43",
+  "source": "d7de00d88dc50116d595a52070a0f66d31400f55",
+  "status": "Ordinary-pushed exact source; own ordered CI/deployment/live and fresh public121asset/frontend/backend/readyDB acceptance pending",
+  "previousAccepted": "Alpha1.79.41 defdb64e;42failed required native Earth timing before deployment",
+  "includedQualifications": [
+    "2026-10-12-lanternhold-neighborhood-qualification.json",
+    "2026-10-12-transient-recipient-pressure-correction.json",
+    "2026-10-12-dark-district-art-qualification.json",
+    "2026-10-12-world-map-focus-correction.json"
+  ],
+  "releaseChecks": {
+    "focusedChecks": 468,
+    "suites": 6,
+    "contentGroups": 14,
+    "versions": 12,
+    "notes": 478,
+    "priorNotesByteExact": 477,
+    "archivePages": 47,
+    "lint": "pass",
+    "mergedServerRace": "serverroot1.190s/game6.756s targeted pass; earlier full transport server-root191.747s retained",
+    "initialTestDiscoveryFailure": "Mistyped PublishedGameEngineBundle filename;433actual checks passed, corrected GameEngineBundle15checks pass, BrowserSmokePlan20pass."
+  },
+  "native": {
+    "publishedResidentialCasesPassed": 2,
+    "publishedResidentialRetries": 0,
+    "rgbaControls": "three views/eight moving poses per profile exact RGB/reference-again;6batches cleanup checked",
+    "exactProductionBundleProfiles": 2,
+    "exactProductionBundleViews": 8,
+    "mapManagedFocusCases": 2,
+    "mapBehavior": "Opening focuses canvas; M closes. Clicked search types m; Escape closes.",
+    "fixtureFailuresRetained": [
+      "Initial copied runner did not route test-only interval helper; fixed fixture routing only",
+      "Initial copied services imported source MeshFactory outside bundle, duplicating shader ownership. Replaced fixture construction with actual bundled engine entities; prior inflated draw observations retained."
+    ],
+    "scope": "Prepared full scene/services/residents, four supplied14slot Run classes/HUD, Go snapshots through actual bundled sync/interpolation. Narrow phone framing does not keep every actor visible in every view. No connected campaign/physical-device/capacity/final-art acceptance.",
+    "retirement": "browsers/game actors/services/static servers closed;3527copy files rehashed then generated copy removed",
+    "performance": "NOT a global performance pass. Corrected copied High plaza429draw/278023tri/33.3median50p95 and Low107747tri fail original budgets; other High frame failures persist. Earlier source reference/candidate and failed42 evidence remain valid; no target relaxation."
+  },
+  "build": {
+    "source": "d7de00d88dc50116d595a52070a0f66d31400f55",
+    "pins": 121,
+    "copyFiles": 3527,
+    "copyBytes": 447184834,
+    "build": {
+      "worker": {
+        "output": "src/core/ActorGameplayGeometryWorker.ed74163bff6f2ccc.js",
+        "sha256": "ed74163bff6f2ccc48d8f4364cbca258858d68b95b1cc42f4b91d04304fc9203",
+        "bytes": 173395,
+        "modules": 15,
+        "imports": [],
+        "precomputed": {
+          "path": "assets/gameplay-geometry/indices.6aa8c7e199c910b5.bin",
+          "sha256": "6aa8c7e199c910b5fbf0f78dfae873b64e79aa0045e39b5775ff9ac7d7e93346",
+          "bytes": 777321,
+          "entries": 133
+        }
+      },
+      "bundledModules": 473,
+      "bytes": 3740165,
+      "sharedLoginModules": 22,
+      "vendorModules": [
+        "vendor/three/examples/jsm/geometries/RoundedBoxGeometry.js",
+        "vendor/three/examples/jsm/loaders/GLTFLoader.js",
+        "vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+        "vendor/three/examples/jsm/postprocessing/MaskPass.js",
+        "vendor/three/examples/jsm/postprocessing/OutputPass.js",
+        "vendor/three/examples/jsm/postprocessing/Pass.js",
+        "vendor/three/examples/jsm/postprocessing/RenderPass.js",
+        "vendor/three/examples/jsm/postprocessing/ShaderPass.js",
+        "vendor/three/examples/jsm/postprocessing/UnrealBloomPass.js",
+        "vendor/three/examples/jsm/shaders/CopyShader.js",
+        "vendor/three/examples/jsm/shaders/FXAAShader.js",
+        "vendor/three/examples/jsm/shaders/LuminosityHighPassShader.js",
+        "vendor/three/examples/jsm/shaders/OutputShader.js",
+        "vendor/three/examples/jsm/utils/BufferGeometryUtils.js",
+        "vendor/three/examples/jsm/utils/SkeletonUtils.js"
+      ],
+      "externalImports": [
+        "../assets/ServiceWorkerBoot.js",
+        "../data/worldGeography.js",
+        "../ui/EmailRecoveryUI.js",
+        "../ui/OwnedEvents.js",
+        "../ui/PasswordChangeUI.js",
+        "../ui/ReportUI.js",
+        "../ui/reportTypes.js",
+        "./CredentialToken.js",
+        "./GraphicsStartup.js",
+        "three"
+      ]
+    },
+    "versioning": {
+      "root": "/home/aeml/.local/share/eidolon-release43-publication-copy-20261012",
+      "release": "d7de00d88dc50116d595a52070a0f66d31400f55",
+      "scannedFiles": 944,
+      "changedFiles": 424,
+      "bundledStyles": true
+    }
+  },
+  "publicManifest": "/home/aeml/.local/share/eidolon-release43-preparation-checks-20261012/expected-public43-assets.json",
+  "publicChecker": "/home/aeml/.local/share/eidolon-release43-preparation-checks-20261012/check-public.py",
+  "scope": "Coherent owner-requested town/map milestone plus qualified combat recipient correction. Full original goal active, no unchanged campaign/long-soak replay.",
+  "recordedUTC": "2026-10-12T05:37:48.981916+00:00",
+  "ci": {
+    "id": 38208653308,
+    "attempt": 1,
+    "url": "https://github.com/aeml/eidolon/actions/runs/38208653308"
+  },
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-release43-preparation-checks-20261012",
+    "entries": 60,
+    "inventorySHA256": "eefa453503991b65242fb87e8699be11d608afcd54b51bc2e480c4d29668a2bb"
+  }
+}

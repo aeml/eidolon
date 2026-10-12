@@ -1372,3 +1372,20 @@ matrix propagation and frustum projection. Historical CI cause stays unknown.
 Frozen13entry inventoryc78d37f748ac8389b9ad5c159ba5f19af231308b60c043de276b8c0778687ce0.
 No runtime optimization, timing acceptance or42rerun. Copy/native/ordered43CI
 and fresh public proof remain required. Full goal active; no newlongsoak/campaign.
+
+
+October12 coherent43/exactd7de00d88dc50116d595a52070a0f66d31400f55 ordinarily
+pushed; own CI38208653308attempt1 in progress.468focused release checks/six
+suites,14content groups,12versions,478notes/all477prior byte-exact; two native
+residential rendering cases and eight exact copied production town views/two
+managed map focus cases pass within scope. Initial copied missing test-module
+and mixed source/bundle fixture ownership issues retained and corrected without
+product changes. Corrected copied High plaza429draw/278023tri/33.3median50p95,
+Low107747tri still fail original limits; no overall performance/final-art claim.
+3527copy files rehashed then retired;473bundled modules/121public pins,worker
+unchanged. Frozen60entry preparation inventoryeefa453503991b65242fb87e8699be11d608afcd54b51bc2e480c4d29668a2bb.
+Existing sparse monitor follows43and41soak; no retries/cancels/newlongsoak.
+GPU stays reserved for release CI. Require own ordered terminal acceptance
+and fresh normal-TLS121assets/frontend/backend/readyDB proof before another
+publication. Only master active, dirty original preserved. Full goal remains
+active; roof materials still CPU-only staged/not selected. See release43-publication.
