@@ -1,0 +1,197 @@
+{
+  "recordedUTC": "2026-10-12T04:01:42.936057+00:00",
+  "source": "6f8b64cb5538a5365235cb3944ceef0eb040630c",
+  "status": "Qualified bounded district artwork and spatial grouping for ordinary master merge. Not published; full original goal remains active.",
+  "stages": {
+    "architecture": "542c869f",
+    "courts": "5e37a7473012bc24baf9b1a0497a90fd4eba5a2a",
+    "combined": "c5bc0f1c4474952fa9c08587e79c146da21e7cd3",
+    "spatial": "6f8b64cb5538a5365235cb3944ceef0eb040630c"
+  },
+  "change": "32constructed district skylines with chamfered masonry/pitched roofs/framed pointed windows, mooring spars/archive belts/hollow foundry flues/supported city crowns; occupation workbenches with cups/books/tools/scored bread and closed folded standards. Paper/cloth7court groups and4masonry groups keep local frustum bounds without changing any triangle.",
+  "invariants": {
+    "collidersExact": 22,
+    "floorUVGeometryMetadataLandmarksExact": true,
+    "artEnvelopeChangesOnly": 48,
+    "partitionExcludedTriangles": 0,
+    "partitionAllVerticesAttributesMaterialsRenderFlagsExact": true,
+    "sceneMeshes": 48,
+    "previousSceneMeshes": 38,
+    "additionalSceneTrianglesHigh": 27768,
+    "additionalSceneTrianglesLow": 20376,
+    "newMaterialBatches": "One shared timber material; existing maps/lights/actor assets retained. Spatial grouping adds nine mesh batches compared with combined39mesh stage; final48 remains below existing50mesh cap."
+  },
+  "focused": {
+    "distinctPassed": 50,
+    "suites": 4,
+    "singleCombined50PassRun": false,
+    "evidence": "44geometry cases in frozen combinedCPU run plus six new spatial/frustum/disposal cases in frozen partitionCPU run; no unchanged44rerun merely to recount. Scoped lint passes.",
+    "priorVerificationFailuresRetained": true
+  },
+  "native": {
+    "gpu": "Native AMD hardware, no software renderer",
+    "preparedClasses": 4,
+    "equipmentSlotsPerClass": 14,
+    "animation": "Run90frames/view",
+    "qualities": [
+      "High1280x844",
+      "Low390x844"
+    ],
+    "pairedVisualViewsPerQuality": 28,
+    "ordinaryViewsPerQuality": 12,
+    "closePropAndStandardViewsPerQuality": 8,
+    "decorativeArchitectureViewsPerQuality": 8,
+    "browserFailures": 0,
+    "visual": {
+      "baseline-high": {
+        "views": 28,
+        "ordinaryViews": 12,
+        "normalMaxDraws": 207,
+        "normalMaxTriangles": 144287
+      },
+      "candidate-high": {
+        "views": 28,
+        "ordinaryViews": 12,
+        "normalMaxDraws": 211,
+        "normalMaxTriangles": 183851
+      },
+      "baseline-low": {
+        "views": 28,
+        "ordinaryViews": 12,
+        "normalMaxDraws": 104,
+        "normalMaxTriangles": 65914
+      },
+      "candidate-low": {
+        "views": 28,
+        "ordinaryViews": 12,
+        "normalMaxDraws": 107,
+        "normalMaxTriangles": 81064
+      }
+    },
+    "partitionRGBA": {
+      "high": {
+        "pairs": 28,
+        "maximumRGBADelta": 0,
+        "maximumRepeatedDelta": 0,
+        "minimumNonBlackPixels": 290409
+      },
+      "low": {
+        "pairs": 28,
+        "maximumRGBADelta": 0,
+        "maximumRepeatedDelta": 0,
+        "minimumNonBlackPixels": 170166
+      }
+    },
+    "performance": {
+      "high": {
+        "arms": 32,
+        "framesPerArm": 120,
+        "views": 8,
+        "maximumFrameMedianMs": 16.7,
+        "maximumFrameP95Ms": 16.8,
+        "maximumFinalDraws": 211,
+        "maximumFinalTriangles": 183851
+      },
+      "low": {
+        "arms": 32,
+        "framesPerArm": 120,
+        "views": 8,
+        "maximumFrameMedianMs": 16.7,
+        "maximumFrameP95Ms": 16.8,
+        "maximumFinalDraws": 107,
+        "maximumFinalTriangles": 81064
+      }
+    },
+    "lifetime": {
+      "high": {
+        "baseline": {
+          "geometries": 104,
+          "textures": 72
+        },
+        "cycles": [
+          {
+            "resident": {
+              "geometries": 122,
+              "textures": 76
+            },
+            "retired": {
+              "geometries": 104,
+              "textures": 72
+            }
+          },
+          {
+            "resident": {
+              "geometries": 122,
+              "textures": 76
+            },
+            "retired": {
+              "geometries": 104,
+              "textures": 72
+            }
+          }
+        ]
+      },
+      "low": {
+        "baseline": {
+          "geometries": 105,
+          "textures": 58
+        },
+        "cycles": [
+          {
+            "resident": {
+              "geometries": 123,
+              "textures": 62
+            },
+            "retired": {
+              "geometries": 105,
+              "textures": 58
+            }
+          },
+          {
+            "resident": {
+              "geometries": 123,
+              "textures": 62
+            },
+            "retired": {
+              "geometries": 105,
+              "textures": 58
+            }
+          }
+        ]
+      }
+    },
+    "resourcesRetired": true,
+    "actualProductionInstanceEntry": true,
+    "networkAccess": "WebSocket blocked; no accounts/server mutations."
+  },
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-dark-districts-checks-20261012",
+    "entries": 227,
+    "inventorySHA256": "f75123bfe246efda024a512d6b8824fba387efeed0e604226935d85e96652cc5"
+  },
+  "cpuCustody": [
+    {
+      "root": "/home/aeml/.local/share/eidolon-dark-courts-checks-20261012",
+      "entries": 11,
+      "inventorySHA256": "40375ca37f625fa8c305b0716e9284b6664782ae3e06226ffd717fa030413ee2"
+    },
+    {
+      "root": "/home/aeml/.local/share/eidolon-dark-skyline-checks-20261012",
+      "entries": 13,
+      "inventorySHA256": "d70ace40715de9651cd93d8c0623a2536b1993d21701e2460bcaebc8e8fffdf6"
+    },
+    {
+      "root": "/home/aeml/.local/share/eidolon-dark-districts-cpu-checks-20261012",
+      "entries": 14,
+      "inventorySHA256": "b20e5fa761e0c47fe14488159ac36c4de521f5f1893fc23364d25dae7a7d2f61"
+    },
+    {
+      "root": "/home/aeml/.local/share/eidolon-dark-district-partition-checks-20261012",
+      "entries": 16,
+      "inventorySHA256": "845ec8606bf6c78224ee70b19d49aa5592a31ffae468503d395f11a75a4403e3"
+    }
+  ],
+  "failureCustody": "Initial reference close-inspection budget scope error, candidate pre-render module-fetch failure, missing ephemeral Node cache, incorrect supplemental room-center/height targets and earlier CPU test assumptions/comparator insertion ordering are retained. Runtime budgets, quality, full outfits, content and pixel invariance targets not relaxed. See frozen visual-review.json and CPU stage records.",
+  "limits": "Prepared scene art/cost correctness only. Full world remains sparse/repetitive in places; connected gameplay/performance, cold/peak memory, physical-device/human pacing/final modern-art, capacity, operations/F1-F5/beta/launch/handoff remain open. No ordinary gameplay speedup claim; no unchanged campaign/soak replay.",
+  "publicationBaseline": "Accepted41defdb64e with own ordered live/public proof. Newart requires its own coherent release preparation and ordered publication acceptance."
+}
