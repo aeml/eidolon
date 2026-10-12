@@ -61,9 +61,13 @@ export function groupOpaqueSkinnedShadowMeshes(root) {
     return groups.filter(parts => parts.length > 1);
 }
 
+export function haveCompatibleOpaqueSkinnedShadowState(meshes) {
+    return meshes.length > 1 && new Set(meshes).size === meshes.length &&
+        meshes.every(mesh => isOpaqueSkinnedShadowMesh(mesh) && compatible(meshes[0], mesh));
+}
+
 export function createOpaqueSkinnedShadowGeometry(meshes) {
-    if (meshes.length < 2 || new Set(meshes).size !== meshes.length ||
-        meshes.some(mesh => !isOpaqueSkinnedShadowMesh(mesh) || !compatible(meshes[0], mesh))) {
+    if (!haveCompatibleOpaqueSkinnedShadowState(meshes)) {
         throw new Error('Opaque shadow batch requires distinct meshes with exact skin, bind, transform and depth state');
     }
     const geometry = new THREE.BufferGeometry();
