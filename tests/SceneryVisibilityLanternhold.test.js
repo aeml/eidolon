@@ -3,6 +3,21 @@ import * as THREE from 'three';
 import { createLanternholdNeighborhood } from '../src/art/LanternholdNeighborhood.js';
 import { SceneryVisibility } from '../src/core/SceneryVisibility.js';
 import { RenderSystem } from '../src/core/RenderSystem.js';
+import { WorldGenerator } from '../src/world/WorldGenerator.js';
+import { CollisionManager } from '../src/core/CollisionManager.js';
+
+test('exterior walking cutaway controls stay clear of actual world collisions', async () => {
+    const group = new THREE.Group(), collision = new CollisionManager();
+    try {
+        await new WorldGenerator(group, collision).loadBuildings(0, 200);
+        for (const [x, z] of [[-26, 269], [-82, 147], [66, 147], [-48, 114]]) {
+            expect(collision.checkCollision(new THREE.Vector3(x, 0, z), 1.3)).toBeNull();
+        }
+        for (let i = 0; i <= 40; i++) {
+            expect(collision.checkCollision(new THREE.Vector3(-34 + 8 * i / 40, 0, 260 + 9 * i / 40), 1.3)).toBeNull();
+        }
+    } finally { RenderSystem.prototype.disposeObjectResources.call({}, group); }
+});
 
 test.each([['high', false], ['high', true], ['low', false], ['low', true]])('%s homes mode %s reveal the hero and restore all original materials', (quality, perInstanceFrustum) => {
     const root = createLanternholdNeighborhood(0, 200, { quality, perInstanceFrustum }), group = new THREE.Group(); group.add(root);
