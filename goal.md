@@ -1389,3 +1389,16 @@ GPU stays reserved for release CI. Require own ordered terminal acceptance
 and fresh normal-TLS121assets/frontend/backend/readyDB proof before another
 publication. Only master active, dirty original preserved. Full goal remains
 active; roof materials still CPU-only staged/not selected. See release43-publication.
+
+
+October12 independent CPU stage while43CI owns the GPU: detached26f95172
+produces an unselected Ilyra index derivative,27737→16993source triangles,
+1483760bytes/SHA629e4076335bd9c4a18a1ff1b4d3b4a17335150150cbfaffc16c99796fa3863d.
+Three actual derivation/preservation/reproducibility checks and lint pass.
+Original raw hierarchy/53joint rig/Idle/material/image metadata, all attribute/
+morph arrays and protected triangles remain exact; earlier exporter near-identity
+normalization and protected-alias failures are retained and corrected. Frozen28
+entry inventory3ec38dc83bc1cd399c90e3cd21bd94960207d9ae96b7d21ea1afdc68dac2d38e.
+No runtime/catalog/model activation, native fit/motion/town/resource acceptance
+or Low plaza budget pass. Await43terminal before native work; onlymaster remains
+active and full original goal stays open. See ilyra-low-cpu-staging receipt.
