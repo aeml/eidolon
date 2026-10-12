@@ -24,6 +24,7 @@ import { captureActualSceneRenderDiagnosis } from './actual-scene-render-diagnos
 import { captureEarthMovingRoute } from './earth-moving-route.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { profileGameplayScene } from './scene-performance.js';
+import { profileWorldGpuTime } from './world-gpu-observation.js';
 import { summarizePartyCPUProfile } from './party-cpu-summary.js';
 import { captureUnderstoryPreparation } from './understory-preparation-diagnosis.js';
 import { captureUnderstoryDetailComparison } from './understory-detail-comparison.js';
@@ -756,6 +757,13 @@ test('single native renderer observes three live equipped party socket peers on 
                 scope: 'Same connected normal four-class/three-peer scene; exact original fitted surfaces versus qualified attribute submissions. Full outfits preserved and live actors/AI/game clocks retained. No physical-device or busy-battle certificate.'
             }, null, 2), contentType: 'application/json' });
             console.log('[paired-fitted-surface-profile]', JSON.stringify(phases));
+        }
+        if (process.env.EIDOLON_TERRAIN_PARTY_WORLD_GPU_PROFILE === '1') {
+            const diagnostic = await profileWorldGpuTime(page, `connected-world-gpu-${quality}`);
+            await testInfo.attach('diagnostic-world-gpu', { body: JSON.stringify(diagnostic, null, 2), contentType: 'application/json' });
+            expect(diagnostic.calls).toBe(180); expect(diagnostic.restored).toBe(true);
+            expect(diagnostic.samples.every(row => row.visibility === 'visible')).toBe(true);
+            console.log('[diagnostic-world-gpu]', JSON.stringify(diagnostic));
         }
         if (process.env.EIDOLON_TERRAIN_PARTY_PHASE_PROFILE === '1') {
             const diagnostic = await profileGameplayScene(page, `connected-phase-diagnostic-${quality}`, { phases: true });

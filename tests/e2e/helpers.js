@@ -1476,7 +1476,13 @@ export async function useEncounterQAWaypoint(page) {
             .some((element) => element.textContent?.includes('near a live overworld encounter')),
         activeHostiles: (window.game?.activeEntitiesCache || []).filter((entity) =>
             entity?.isActive && entity.state !== 'DEAD' && window.game?.isHostileActorTarget?.(entity)
-        ).length
+        ).length,
+        playerY: window.game?.player?.position?.y ?? null,
+        nearestHostiles: (window.game?.activeEntitiesCache || []).filter(entity =>
+            entity?.isActive && entity.state !== 'DEAD' && window.game?.isHostileActorTarget?.(entity) && entity.position
+        ).map(entity => ({ id: entity.id, type: entity.type, x: entity.position.x, y: entity.position.y, z: entity.position.z,
+            distance: window.game?.player?.position?.distanceTo(entity.position) ?? null }))
+            .sort((a, b) => a.distance - b.distance).slice(0, 3)
     }));
     throw new Error(`The QA encounter waypoint did not settle near a live hostile: ${JSON.stringify(diagnostic)}`, {
         cause: lastError
