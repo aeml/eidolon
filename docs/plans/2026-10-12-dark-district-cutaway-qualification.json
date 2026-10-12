@@ -1,0 +1,196 @@
+{
+  "source": "6301a2e3b17b07e72b1f02deb461be2fb59c7b7b",
+  "recordedUTC": "2026-10-12T18:27:34.684837+00:00",
+  "CPU": {
+    "distinctPassed": 71,
+    "suites": 6,
+    "scope": "15 existing SceneryVisibility +2 actual DarkRealm +20 architecture +8 roof +6 spatial +20 browser-plan checks; reuse earlier passing exact-source cases, corrected stale group-count expectations."
+  },
+  "native": {
+    "requiredCasesPassed": 2,
+    "retries": 0,
+    "districtControls": 8,
+    "restoredRGBA": "all bytes exact, immediate repeats exact",
+    "ambient": "140 High particles alive before freezing motion for exact comparisons; normal drift retained in moving qualification"
+  },
+  "timing": [
+    {
+      "quality": "high",
+      "arms": 16,
+      "framesPerArm": 120,
+      "warmupPerArm": 60,
+      "maxMedian": 16.7,
+      "maxP95": 16.8,
+      "maxCalls": 212,
+      "maxTriangles": 177809,
+      "baseline": {
+        "geometries": 109,
+        "textures": 73
+      },
+      "cycles": [
+        {
+          "cycle": 0,
+          "resident": {
+            "geometries": 123,
+            "textures": 80
+          },
+          "retired": {
+            "geometries": 109,
+            "textures": 73
+          },
+          "opacity": 2.518039807371083e-08,
+          "cloneCounts": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "roofMapDisposeCounts": [
+            1,
+            1,
+            1
+          ],
+          "entries": 0
+        },
+        {
+          "cycle": 1,
+          "resident": {
+            "geometries": 123,
+            "textures": 80
+          },
+          "retired": {
+            "geometries": 109,
+            "textures": 73
+          },
+          "opacity": 2.4416663680933603e-08,
+          "cloneCounts": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "roofMapDisposeCounts": [
+            1,
+            1,
+            1
+          ],
+          "entries": 0
+        }
+      ]
+    },
+    {
+      "quality": "low",
+      "arms": 16,
+      "framesPerArm": 120,
+      "warmupPerArm": 60,
+      "maxMedian": 16.7,
+      "maxP95": 16.8,
+      "maxCalls": 106,
+      "maxTriangles": 78740,
+      "baseline": {
+        "geometries": 117,
+        "textures": 59
+      },
+      "cycles": [
+        {
+          "cycle": 0,
+          "resident": {
+            "geometries": 131,
+            "textures": 66
+          },
+          "retired": {
+            "geometries": 117,
+            "textures": 59
+          },
+          "opacity": 1.2828647344427464e-07,
+          "cloneCounts": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "roofMapDisposeCounts": [
+            1,
+            1,
+            1
+          ],
+          "entries": 0
+        },
+        {
+          "cycle": 1,
+          "resident": {
+            "geometries": 131,
+            "textures": 66
+          },
+          "retired": {
+            "geometries": 117,
+            "textures": 59
+          },
+          "opacity": 1.2954986135196254e-07,
+          "cloneCounts": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "roofMapDisposeCounts": [
+            1,
+            1,
+            1
+          ],
+          "entries": 0
+        }
+      ]
+    }
+  ],
+  "naturalMotion": {
+    "high": {
+      "open": 1,
+      "occluded": 6.777005882447652e-58,
+      "restored": 1,
+      "transitionFrames": 100,
+      "maxFocusError": 0
+    },
+    "low": {
+      "open": 1,
+      "occluded": 2.271749637428087e-57,
+      "restored": 1,
+      "transitionFrames": 100,
+      "maxFocusError": 0
+    }
+  },
+  "failuresRetained": [
+    "Initial CPU focus sat outside lower roofs; corrected to reachable occluded edge.",
+    "Initial five-part cutaway left bronze ledge covering hero; all eleven architectural parts now tagged, floors remain opaque.",
+    "Old spatial mesh/group expectations corrected for two additional architecture-only batches.",
+    "High exact restore controls differed solely because fixture advanced ambient particles; zero-dt static controls corrected, High particles warmed/live before freezing. First zero-alpha static fixture passes retained but superseded by visible-particle controls."
+  ],
+  "limits": "Prepared actual production entry/GameEngine.render/four supplied14slot actors/HUD, native AMD GPU. No connected campaign, physical phone, crowded-town/global performance, final-art, beta or full-goal acceptance.",
+  "status": "Qualified and ordinarily merged into master; coherent publication pending.",
+  "masterMerge": "6a98fc87a657caa9c18a988c71fc536331b2b529",
+  "geometry": "Complete triangle/vertex attributes, transforms, PBR inputs/shadow flags and22colliders match pre-cutaway roof scene exactly: High38462triangles,Low29406. Only two additional architecture-only batches;51scene meshes. All11occluding parts use8owned material clones. Floors/paths/work surfaces stay opaque.",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-dark-cutaway-checks-20261012",
+    "entries": 102,
+    "inventorySHA256": "77dd77d79e87209482fda1c669a7da58a760340dc6574a8bf08bb90b37e0e736"
+  },
+  "retirement": "Two GPUcycles/profile return exact baseline; all8temporary clones dispose once/cycle and all3shared roof maps dispose once at scene retirement. Owned servers and browsers closed.",
+  "review": "High/Low ordinary native images and recorded natural4m/s approach/return inspected;100transition frames/profile, focuserror0, opacity1\u21920\u21921. Existing scenery fade/shader remains unchanged.",
+  "CI": "Both native profile cases enrolled in required predeploy selection without removing prior cases."
+}

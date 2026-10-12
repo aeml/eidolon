@@ -1,7 +1,7 @@
 {
   "source": "a58f7e894d0e125f9ff9b921c30eaa43a0f8b812",
   "stage": "c0b1a6d9968f3a9e89519ad06d9b0afc6f023889",
-  "status": "Qualified roof material scope; ready for ordinary master merge, not deployed.",
+  "status": "Qualified roof material scope; ordinarily merged into master e222547e, coherent publication pending.",
   "CPU": "Reuse38checks/four suites/lint and exact complete-geometry/collision invariance; all six integrated source/test files byte-exact to qualified CPU stage.",
   "views": {
     "pairedImages": 48,
@@ -9,7 +9,7 @@
     "firstScreen": "32paired ordinary front-wall/decorative images; first ordinary views crop most roof detail.",
     "visibleFollowup": "16paired ordinary right-edge roof-visible images at unchanged normal zoom15; shore/city extremes get16additionalABBAarms.",
     "artReview": "Matte staggered mineral slate replaces plain roof faces; closed geometry, physical scale and roof slopes preserved. Eight decorative close views/profile are not performance samples.",
-    "remainingFinding": "Tall foreground city buildings hide supplied characters in both original and candidate scene. This existing cutaway gap is not waived by roof-material qualification and is next."
+    "remainingFinding": "Foreground visibility finding subsequently addressed by separately qualified6301a2e3; see2026-10-12-dark-district-cutaway-qualification.json. This does not declare final art."
   },
   "timing": [
     {

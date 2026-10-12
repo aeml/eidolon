@@ -1443,3 +1443,18 @@ All32roofs/positions/normals/22colliders/landmarks/floor union retained.
 Only scoped material acceptance, no final-art/whole-world performance/device/
 campaign/full-goal closure. Original-model palette already mergedf33e6fa7;
 roof ordinary master merge next, coherent publication pending.
+
+
+October12 Dark district hero cutaway6301a2e3 qualified and ordinarily merged
+into master6a98fc87.71distinct CPUchecks/six suites, two required native cases/
+eight exact completeRGBArestores,32movingABBAarms and two GPUcycles/profile
+pass. Both profiles max16.7median/16.8p95; High212draw/177809tri,Low106/78740.
+Natural4m/s city approach/return opacity1→0→1, focuserror0; videos retained.
+Full original geometry/22colliders/shadows/floors preserved; only two additional
+architecture-only batches. Frozen102entry inventory
+77dd77d79e87209482fda1c669a7da58a760340dc6574a8bf08bb90b37e0e736.
+Initial incomplete-architecture and drifting-particle fixture failures retained.
+Roof materials already merged e222547e; coherent44preparation is next with
+original-model palettes.43remains accepted live; crowded-town performance,
+final-art/device/gameplay/owner/F1–F5/beta/launch/handoff remain open.
+No unchanged campaign/long-soak replay; existing41soak remains running.
