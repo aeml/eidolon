@@ -300,7 +300,7 @@ export class WorldGenerator {
 
         // Trading House is now an Entity (loaded in MeshFactory) to handle interaction/collision better
 
-        const neighborhood = createLanternholdNeighborhood(cx, cz, { perInstanceFrustum: this.campInstanceFrustum });
+        const neighborhood = createLanternholdNeighborhood(cx, cz, { perInstanceFrustum: this.campInstanceFrustum, quality: this.graphicsQuality });
         neighborhood.traverse((part) => {
             if (part.isMesh) {
                 MeshFactory.configureShadowCastingForObject(part, { stableFrontShadows: true });
