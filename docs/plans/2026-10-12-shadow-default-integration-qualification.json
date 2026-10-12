@@ -1,0 +1,42 @@
+{
+  "atUTC": "2026-10-12T23:17:25.281905+00:00",
+  "source": "43c15ae0f63ab85a430033470875911fdc7cab02",
+  "merge": "9acc85d9aaf1597f72b5b79cacfd275d58b7f15b",
+  "status": "Default renderer integration qualified and ordinarily merged into local master; unpublished, original crowded-town/device/combat gates open",
+  "CPU": {
+    "tests": 176,
+    "suites": 10,
+    "lint": "pass",
+    "newActualStackCases": 5
+  },
+  "native": {
+    "profiles": [
+      "high",
+      "low"
+    ],
+    "automaticStartup": true,
+    "exactWholeRGBAControls": 2,
+    "exactHighPackedDepthControls": 1,
+    "highLowHighCycles": 2,
+    "geometryOwnerTogglePerProfile": true,
+    "sceneClearAndRearrivalPerProfile": true,
+    "shutdownPerProfile": true,
+    "highSavedSubmissions": 48,
+    "lowEntries": 0,
+    "sourceGeometryMaterialsAndCasterFlagsExact": true,
+    "allObservedOwnedGeometryMaterialsRetireExactlyOnce": true,
+    "browserFailures": 0,
+    "pendingDeliveryAtShutdown": 0
+  },
+  "counterevidence": "Initial fixture read nonexistent runtime.originalRender/.wrapper rather than runtime.pass.original/.wrapper. Both false assertions and original source/log/result retained. Corrected only property paths and repeated affected lifecycle harness; no product source changes. Prior slower optional candidate remains rejected. Initial evidence-freeze command used master cwd rather than isolated stage and failed before copying; corrected explicit source path, no existing evidence overwritten.",
+  "limits": "Functional default integration reuses changed opt-in exact-image/census/16movingABBAarms/fourGPUcycles qualification; no new default FPS/device/combat or overall budget acceptance. Existing High381draw/279283tri and Low107747tri failures retained.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-shadow-default-native-checks-20261012",
+    "entries": 24,
+    "inventorySHA256": "5c7ee3c086132c4cfb41032174d1a8a0fd837782ae51d373ce705e1c0d3c7708"
+  },
+  "dependencies": [
+    "2026-10-12-shadow-validation-native-qualification.json",
+    "2026-10-12-shadow-validation-cpu.json"
+  ]
+}
