@@ -529,7 +529,8 @@ identities, ready database and all78served asset hashes/byte counts match at
 12versions align35;470cumulative notes preserve all469prior entries byte-exact.
   [Publication](docs/plans/2026-10-11-release35-publication.json).
 - Alpha 1.79.40 is accepted live at `5e98360a4cd7aa8c48aecebaa7bf826d6066e795`. Corrective CI38189518140 attempt1 passed all ten ordered jobs, including 733 client suites/10,925 tests, server race checks, three browser shards, native predeployment checks and live QA. Fresh 01:35:56 UTC normal-TLS checks match frontend/backend identities, ready database and all 101 served asset sizes/SHA. Ordinary quests pay 75% and dungeon story quests 125% of their content-level bar, with a two-level turn-in ceiling and 62 smaller regional chapters. Existing earned progression, paid receipts and access remain intact. Original stale QA reader failure is retained; human pacing remains owner-deferred. [Acceptance](docs/plans/2026-10-12-public40-terminal-qualification.json).
-- Current source version: `Alpha 1.79.40`, gradual regional quests and bounded XP rewards;
+- Current source version: `Alpha 1.79.41`, prepared Dark Realm streets, expedition camp and elemental waystones;
+  own ordered publication acceptance remains pending; gradual regional quests and bounded XP rewards remain live in40;
   retains precomputed supplied-character geometry and richer Pilgrim Rest camp details;
   retains Forge and merchant keyboard controls
   with visible prices and stable focus. Retains Earth ground materials, distinct
