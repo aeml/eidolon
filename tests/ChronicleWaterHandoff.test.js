@@ -1,21 +1,21 @@
 import { jest } from '@jest/globals';
 import { readFileSync } from 'node:fs';
-import { chronicleHunts } from '../src/data/chronicleHunts.generated.js';
+import { chronicleExpeditions } from '../src/data/chronicleExpeditions.generated.js';
 
 const poll = jest.fn(read => ({ toEqual: async expected => expect(await read()).toEqual(expected) }));
 jest.unstable_mockModule('@playwright/test', () => ({ expect: Object.assign(
     (...args) => expect(...args), { poll }) }));
 const { verifyFreshWaterHandoff } = await import('./e2e/chronicle-water-handoff.js');
-const ferry = () => ({ id: 'chronicle_water_missing_ferry', accepted: false, completed: false, count: 0 });
+const firstStep = () => ({ id: 'chronicle_water_road_open_hands', accepted: false, completed: false, count: 0 });
 const page = { evaluate: (fn, argument) => fn(argument) };
 afterEach(() => { delete window.game; jest.clearAllMocks(); });
 
-test('fresh Earth completion offers the authored ferry hunt before the flood shelter', async () => {
-    expect(chronicleHunts.find(hunt => hunt.id === ferry().id)).toMatchObject({
-        previousQuestId: 'chronicle_03_roots_remember', beforeQuestId: 'chronicle_water_flood_shelter', realm: 'water'
+test('fresh Earth completion offers the first road investigation before the ferry hunt', async () => {
+    expect(chronicleExpeditions.find(hunt => hunt.id === firstStep().id)).toMatchObject({
+        previousQuestId: 'chronicle_03_roots_remember', beforeQuestId: 'chronicle_water_road_bread_carriers', realm: 'earth'
     });
     const quests = Object.freeze([Object.freeze({ id: 'chronicle_03_roots_remember', completed: true }),
-        Object.freeze(ferry()), Object.freeze({ id: 'daily_skeletons', accepted: false })]);
+        Object.freeze(firstStep()), Object.freeze({ id: 'daily_skeletons', accepted: false })]);
     window.game = { player: { quests } };
     await verifyFreshWaterHandoff(page);
     expect(window.game.player.quests).toBe(quests);
@@ -23,9 +23,9 @@ test('fresh Earth completion offers the authored ferry hunt before the flood she
 });
 
 test.each([
-    [], [{ id: 'chronicle_water_flood_shelter', accepted: false, completed: false, count: 0 }],
-    [{ ...ferry(), accepted: true }], [{ ...ferry(), completed: true }], [{ ...ferry(), count: 1 }],
-    [ferry(), { id: 'chronicle_water_flood_shelter', accepted: false, completed: false, count: 0 }]
+    [], [{ id: 'chronicle_water_road_bread_carriers', accepted: false, completed: false, count: 0 }],
+    [{ ...firstStep(), accepted: true }], [{ ...firstStep(), completed: true }], [{ ...firstStep(), count: 1 }],
+    [firstStep(), { id: 'chronicle_water_road_bread_carriers', accepted: false, completed: false, count: 0 }]
 ].map(quests => ({ quests })))('missing, auto-accepted or skipped Water progress fails verification: %j', async ({ quests }) => {
     window.game = { player: { quests } };
     await expect(verifyFreshWaterHandoff(page)).rejects.toThrow();

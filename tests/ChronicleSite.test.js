@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import * as THREE from 'three';
-import { chronicleInvestigations } from '../src/data/chronicleInvestigations.generated.js';
+import { chronicleInvestigations } from '../src/data/chronicleCatalog.js';
 import { createChronicleSiteModel, getChronicleSiteColliders } from '../src/art/ChronicleSiteModels.js';
 import { ChronicleSite } from '../src/entities/ChronicleSite.js';
 import { Actor } from '../src/entities/Actor.js';

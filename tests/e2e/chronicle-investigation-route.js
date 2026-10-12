@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { chronicleInvestigations } from '../../src/data/chronicleInvestigations.generated.js';
+import { chronicleInvestigations } from '../../src/data/chronicleCatalog.js';
 import { getIlyraCompletionReply } from '../../src/ui/QuestConversation.js';
 import { moveByGroundClick, readPlayerState, returnToTown } from './helpers.js';
 import { approachInvestigationReading, investigationReadingOpen, resumeInvestigationReading } from './investigation-reading-state.js';

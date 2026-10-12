@@ -1,10 +1,11 @@
+import { earthPrerequisitesBefore } from './earthFunctionalPrerequisites.js';
 import { DUNGEON_UNLOCK_LEVEL } from '../src/data/dungeonProgression.js';
 
 export const earthReadinessChapters = Object.freeze([
     'chronicle_01_bell_below', 'chronicle_earth_keepers_house',
-    'chronicle_earth_kept_watch', 'chronicle_02_seeds_first_grove',
-    'chronicle_earth_walking_ink', 'chronicle_earth_returning_scar',
-    'chronicle_earth_borrowed_oath'
+    ...earthPrerequisitesBefore('chronicle_02_seeds_first_grove').map(q => q.id), 'chronicle_02_seeds_first_grove',
+    ...earthPrerequisitesBefore('chronicle_earth_returning_scar').map(q => q.id), 'chronicle_earth_returning_scar',
+    ...earthPrerequisitesBefore('chronicle_03_roots_remember').map(q => q.id)
 ]);
 export const earthReadinessDungeon = 'chronicle_03_roots_remember';
 

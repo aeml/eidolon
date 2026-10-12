@@ -9,6 +9,9 @@ type questRewardBudget struct{ XP, Gold int }
 // level. Dungeon chapters pay more, without using turn-ins to bridge entire
 // enemy bands. These terms also cap unpaid pre-balance saved quotes.
 func chronicleRewardTerms(id string) (level, percent int, found bool) {
+	if chapter, ok := chronicleExpeditionByID(id); ok {
+		return chapter.ContentLevel, 75, true
+	}
 	if hunt, ok := chronicleHuntByID(id); ok {
 		return hunt.ContentLevel, 75, true
 	}
@@ -132,12 +135,10 @@ func dailyRewardBudget(target string, count int) questRewardBudget {
 		return questRewardBudget{}
 	}
 	if level, found := dailyHuntContentLevels[target]; found {
-		// Keep the optional daily bonus at 20% of that content's ordinary solo
-		// kill budget, rather than retaining the old two-percent-per-kill quote
-		// after ordinary XP is reduced. Story and accepted quotes are unchanged.
-		// New contracts add roughly a 20% Gold bonus to the leaner ordinary
-		// kill purse. Accepted contracts retain their already-displayed quote.
-		return questRewardBudget{combatExperienceBudget(level, 0, false, false) * count / 5, max(100, level*count/5)}
+		// Fresh ordinary contracts use the same fraction of their authored
+		// level as ordinary story work. Accepted saved quotes stay bounded at
+		// turn-in; the larger, independent Gold purse is unchanged.
+		return questRewardBudget{contentExperiencePercent(level, 75), max(100, level*count/5)}
 	}
 	level, multiplier := 0, 1
 	switch target {
@@ -155,7 +156,8 @@ func dailyRewardBudget(target string, count int) questRewardBudget {
 	if level == 0 {
 		return questRewardBudget{}
 	}
-	// Generic, regional AND difficulty dailies can overlap. Each pays a tenth
-	// of the actual boss budget, so stacking them cannot bypass its pacing.
+	// Repeatable generic, regional and difficulty contracts overlap on the
+	// same bosses. Keep their combined bonus within the existing run budget;
+	// the separately earned story dungeon chapter pays 125% of its level bar.
 	return questRewardBudget{combatExperienceBudget(level, level, true, false) * count * multiplier / 10, level * count * 4 * multiplier}
 }

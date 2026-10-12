@@ -106,3 +106,21 @@ func TestQuestExperienceSafetyPreservesPaidAndCappedRecords(t *testing.T) {
 		}
 	}
 }
+
+func TestFreshDailyContractsUseProportionalFieldRewardsAndBoundedDungeonBonuses(t *testing.T) {
+	dungeons := map[string]int{"DungeonBoss": 30, "VerdantBastionBoss": 30, "AbyssalWellBoss": 60, "MoltenCoreBoss": 70, "TempestSpireBoss": 70, "DungeonBossHeroic": 100, "DungeonBossMythic": 100}
+	for _, q := range dailyQuestCatalog() {
+		if level, ordinary := dailyHuntContentLevels[q.Target]; ordinary {
+			if q.RewardXP != contentExperiencePercent(level, 75) {
+				t.Fatalf("disproportionate field contract %s: %+v", q.ID, q)
+			}
+			continue
+		}
+		// Overlapping boss contracts are supplementary bonuses. Their actual
+		// combined payout is covered by the four-boss production receipt audit.
+		level := dungeons[q.Target]
+		if level == 0 || q.RewardXP <= 0 || q.RewardXP > contentExperiencePercent(level, 125) {
+			t.Fatalf("unbounded dungeon bonus %s: %+v", q.ID, q)
+		}
+	}
+}

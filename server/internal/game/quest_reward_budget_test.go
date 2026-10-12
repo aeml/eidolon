@@ -30,7 +30,7 @@ func TestCoordinatedQuestBudgetsUseContentLevelAndIndependentGold(t *testing.T) 
 		target          string
 		count, xp, gold int
 	}{
-		{"Skeleton", 100, 520, 200}, {"Imp", 100, 900, 400}, {"AquaGolem", 100, 3040, 1100},
+		{"Skeleton", 100, 1593, 200}, {"Imp", 100, 6843, 400}, {"AquaGolem", 100, 54750, 1100},
 		{"VerdantBastionBoss", 4, 208, 480}, {"AbyssalWellBoss", 5, 680, 1200},
 		{"MoltenCoreBoss", 5, 840, 1400}, {"TempestSpireBoss", 5, 840, 1400},
 		{"DungeonBossHeroic", 4, 2432, 3200}, {"DungeonBossMythic", 4, 4864, 6400},
@@ -77,7 +77,7 @@ func TestCampaignBalanceHonorsAcceptedDailyQuotes(t *testing.T) {
 	if refreshed.RewardXP != 4250 || refreshed.RewardGold != 200 || refreshed.Count != 37 || !refreshed.Accepted || refreshed.Completed {
 		t.Fatal("balance rewrote accepted daily", refreshed)
 	}
-	if daily.RewardXP != 520 || daily.RewardGold != 200 {
+	if daily.RewardXP != 1593 || daily.RewardGold != 200 {
 		t.Fatal("fresh daily does not use new independent XP/Gold budgets")
 	}
 	if p.Level != 30 || p.Experience != 1234 || p.MaxExperience != 21125 || p.Gold != 5678 {

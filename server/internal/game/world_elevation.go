@@ -91,9 +91,10 @@ func (w *World) addProjectileLocked(e *Entity) {
 
 // Caller owns the entity lock (or the entity has not yet been published).
 // Projectiles, static NPC offsets and instance-owned floors have separate
-// placement contracts. Do not silently reinterpret their Y values here.
+// placement contracts. Chronicle markers rest on the local floor; other
+// static NPC offsets remain authored.
 func (w *World) groundActorLocked(e *Entity) {
-	if (e.Type != TypePlayer && e.Type != TypeEnemy && !(e.Type == TypeNPC && e.SubType == "AvengingSeraph")) || e.State == "JUMPING" {
+	if (e.Type != TypePlayer && e.Type != TypeEnemy && !(e.Type == TypeNPC && (e.SubType == "AvengingSeraph" || e.SubType == "ChronicleSite"))) || e.State == "JUMPING" {
 		return
 	}
 	if height, ok := w.overworldGroundHeight(e.InstanceID, e.X, e.Z); ok {

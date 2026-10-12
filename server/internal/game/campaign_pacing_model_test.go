@@ -87,7 +87,7 @@ func campaignPacingForecast(size int, speed, restUptime float64) (float64, [5]fl
 				encounterXP = averageKill(combatExperienceBudget(gate, gate, true, false), true)
 			default:
 				found := false
-				for _, chapter := range ChronicleInvestigationCatalog() {
+				for _, chapter := range allChronicleInvestigations() {
 					if chapter.ID == q.ID && chapter.Realm != "dark" {
 						duration, found = float64(len(chapter.Sites))*4/60, true
 						break
@@ -99,9 +99,17 @@ func campaignPacingForecast(size int, speed, restUptime float64) (float64, [5]fl
 				}
 			}
 		}
+		quotedXP := q.RewardXP
+		if level < MaxPlayerLevel {
+			quotedXP = min(quotedXP, experienceRequiredForLevel(level)+experienceRequiredForLevel(level+1))
+		}
 		prepare(gate)
 		elapse((duration + kills/(90*groupRate)) / speed)
-		award(kills*averageKill(combatExperienceBudget(enemyLevel, 0, false, false), false) + encounterXP + float64(q.RewardXP))
+		award(kills*averageKill(combatExperienceBudget(enemyLevel, 0, false, false), false) + encounterXP)
+		if level < MaxPlayerLevel {
+			quotedXP = min(quotedXP, experienceRequiredForLevel(level)+experienceRequiredForLevel(level+1))
+		}
+		award(float64(quotedXP))
 		chapters++
 	}
 	prepare(100)
@@ -114,7 +122,7 @@ func TestCampaignPacingForecastUsesActualSourcesAndExplicitAssumptions(t *testin
 			for _, rested := range []float64{0, .5, 1} {
 				t.Run(fmt.Sprintf("party%d/rate%.2f/rest%.1f", size, speed, rested), func(t *testing.T) {
 					hours, bands, chapters := campaignPacingForecast(size, speed, rested)
-					if chapters != 29 || hours <= 0 || math.IsNaN(hours) || math.IsInf(hours, 0) {
+					if chapters != 91 || hours <= 0 || math.IsNaN(hours) || math.IsInf(hours, 0) {
 						t.Fatalf("invalid forecast: hours=%v chapters=%d", hours, chapters)
 					}
 					if speed == 1 && rested == .5 && (hours < 85 || hours > 120) {

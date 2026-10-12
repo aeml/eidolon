@@ -38,7 +38,7 @@ type ChronicleAdvanceEvent struct {
 }
 
 func chronicleQuestCatalog() []Quest {
-	quests := expandDarkRealmChronicle(expandChronicleHunts(expandChronicleInvestigations(classicChronicleQuestCatalog())))
+	quests := expandDarkRealmChronicle(expandChronicleExpeditions(expandChronicleHunts(expandChronicleInvestigations(classicChronicleQuestCatalog()))))
 	for i := range quests {
 		if level, percent, ok := chronicleRewardTerms(quests[i].ID); ok {
 			quests[i].RewardXP = contentExperiencePercent(level, percent)

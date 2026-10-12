@@ -47,17 +47,40 @@ func TestCollectionTurnInDispatchRefreshesBagBeforeQuestCompletion(t *testing.T)
 			if _, ok := world.PerformCompleteQuest(player.ID, diary.ID); !ok {
 				t.Fatal("diary manual turn-in failed")
 			}
-			// Prepared objective credit keeps this a bag-receipt dispatch test;
-			// real qualifying enemy deaths are covered by the hunt pipeline test.
-			hunt := game.ChronicleHuntCatalog()[0]
-			if _, ok := world.PerformAcceptQuest(player.ID, hunt.ID); !ok {
-				t.Fatal("watch acceptance failed")
-			}
-			for i := 0; i < hunt.Count; i++ {
-				world.UpdateQuestProgress(player, "ChronicleHunt:"+hunt.ID)
-			}
-			if _, ok := world.PerformCompleteQuest(player.ID, hunt.ID); !ok {
-				t.Fatal("watch manual turn-in failed")
+			// This isolated bag-receipt fixture prepares the added objectives;
+			// game tests exercise actual distinct site and qualifying kill APIs.
+			// Still require ordinary acceptance and manual turn-in at every step.
+			for step := 0; step < 30; step++ {
+				var active game.Quest
+				for _, q := range player.Quests {
+					if q.Category == game.QuestCategoryChronicle && !q.Completed && !q.LegacyOptional {
+						active = q
+						break
+					}
+				}
+				if active.ID == collection {
+					break
+				}
+				if active.ID == "" {
+					t.Fatal("missing collection prerequisite")
+				}
+				if _, ok := world.PerformAcceptQuest(player.ID, active.ID); !ok {
+					t.Fatal("prerequisite acceptance failed", active.ID)
+				}
+				player.Mu.Lock()
+				for i := range player.Quests {
+					q := &player.Quests[i]
+					if q.ID == active.ID {
+						q.Count = q.MaxCount
+						if q.Type == "INVESTIGATE" {
+							q.InvestigationMask = (1 << q.MaxCount) - 1
+						}
+					}
+				}
+				player.Mu.Unlock()
+				if _, ok := world.PerformCompleteQuest(player.ID, active.ID); !ok {
+					t.Fatal("prerequisite manual turn-in failed", active.ID)
+				}
 			}
 			world.PerformAcceptQuest(player.ID, collection)
 			required := 0

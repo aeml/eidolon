@@ -5,7 +5,7 @@ import { openDungeonGuide, settledGuideApproach } from './dungeon-guide.js';
 import { approachStoryWizard } from '../guideApproach.js';
 import { earnEarthInvestigation } from './chronicle-investigation-route.js';
 import { findExpeditionTarget } from './earned-expedition-target.js';
-import { earnEarthHuntsBefore } from '../earthFunctionalPrerequisites.js';
+import { earnEarthPrerequisitesBefore } from '../earthFunctionalPrerequisites.js';
 import { maintainEarnedInventory } from './earned-inventory-management.js';
 import { leaveEarnedCombatSafety } from './earned-safe-zone-combat.js';
 import { approachEarnedDrop } from '../earnedDropApproach.js';
@@ -153,8 +153,12 @@ async function earnObjective(page, id, hunt = null) {
     throw new Error(`No complete objective after ${maxEncounters} normal Earth encounters: ${JSON.stringify(final)}`);
 }
 
-async function earnRequiredHunts(page, nextChapter) {
-    await earnEarthHuntsBefore(nextChapter, async hunt => {
+async function earnRequiredChapters(page, nextChapter) {
+    await earnEarthPrerequisitesBefore(nextChapter, async hunt => {
+        if (hunt.type === 'INVESTIGATE') {
+            await earnEarthInvestigation(page, hunt.id, openIlyra);
+            return;
+        }
         expect((await readChronicleChapter(page, hunt.previousQuestId))?.completed,
             `${hunt.title} requires its actual preceding chapter`).toBe(true);
         await openIlyra(page);
@@ -178,7 +182,7 @@ export async function earnEarthCollectionThroughPlay(page) {
     await claimChapterAndContinue(page, FIRST_CHAPTER);
     await page.locator('#btn-close-quest').click();
     await earnEarthInvestigation(page, 'chronicle_earth_keepers_house', openIlyra);
-    await earnRequiredHunts(page, SEED_CHAPTER);
+    await earnRequiredChapters(page, SEED_CHAPTER);
     await openIlyra(page); await acceptOfferedChapter(page, SEED_CHAPTER);
     await earnObjective(page, SEED_CHAPTER);
     const required = (await readChronicleChapter(page, SEED_CHAPTER)).maxCount;
@@ -194,14 +198,14 @@ export async function earnEarthCollectionThroughPlay(page) {
     expect(await seedsInBag()).toBe(seedsBeforeTurnIn - required);
     await page.locator('#btn-close-quest').click();
     await setAutoLootThroughSettings(page, previousAutoLoot);
-    console.log('[chronicle-earth] opening, diary, 40 Skeletons and 8 natural Seeds manually turned in');
+    console.log('[chronicle-earth] opening, Earth expedition steps and 8 natural Seeds manually turned in');
 }
 
 export async function earnEarthImpAndScarThroughPlay(page) {
     expect((await readChronicleChapter(page, SEED_CHAPTER))?.completed,
         'The same character must have earned and turned in the Seed chapter').toBe(true);
     const previousAutoLoot = await page.evaluate(() => window.game.uiManager.getAutoLootEnabled());
-    await earnRequiredHunts(page, 'chronicle_earth_returning_scar');
+    await earnRequiredChapters(page, 'chronicle_earth_returning_scar');
     await earnEarthInvestigation(page, 'chronicle_earth_returning_scar', openIlyra);
     await setAutoLootThroughSettings(page, previousAutoLoot);
     console.log('[chronicle-earth] 60 qualifying Imps and all scar investigations manually turned in');
@@ -211,7 +215,7 @@ export async function prepareEarthDungeonOfferThroughPlay(page) {
     expect((await readChronicleChapter(page, 'chronicle_earth_returning_scar'))?.completed,
         'The same character must have earned and turned in the scar chapter').toBe(true);
     const previousAutoLoot = await page.evaluate(() => window.game.uiManager.getAutoLootEnabled());
-    await earnRequiredHunts(page, EARTH_DUNGEON_CHAPTER);
+    await earnRequiredChapters(page, EARTH_DUNGEON_CHAPTER);
     await openIlyra(page);
     await acceptOfferedChapter(page, EARTH_DUNGEON_CHAPTER);
     await setAutoLootThroughSettings(page, previousAutoLoot);

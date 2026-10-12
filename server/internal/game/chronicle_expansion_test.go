@@ -125,9 +125,11 @@ func TestChronicleExpansionMigratesEveryLegacyMilestoneWithoutRevokingProgress(t
 				}
 				optional++
 			}
-			wantOptional := min(milestone, 8)
-			if active.ID == ChronicleGateOpenedID || active.ID == ChronicleDarkKingID {
-				wantOptional += 12 // New expedition investigations precede these saved contracts.
+			wantOptional := 0
+			for _, definition := range chronicleQuestCatalog() {
+				if definition.Chapter < activeChapter && definition.Type == "INVESTIGATE" {
+					wantOptional++
+				}
 			}
 			if optional != wantOptional {
 				t.Fatalf("catch-up chapters=%d want=%d", optional, wantOptional)
