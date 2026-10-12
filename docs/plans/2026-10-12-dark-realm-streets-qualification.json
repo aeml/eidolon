@@ -1,0 +1,371 @@
+{
+  "recordedUTC": "2026-10-12T02:02:35.578114+00:00",
+  "source": "eebfdcccc247a871b0d75ddd7729f90b377c2366",
+  "base": "4a276799",
+  "status": "Qualified bounded Dark Realm street surface; merge into local master for future coherent world-art milestone. Public40 unchanged.",
+  "change": "Replace oversized uniform color-only paving with3x2m irregularly offset worn slabs, shallow physical joints, mineral albedo and independent tangent-normal/roughness maps. Large stationary patina crosses UV repeats/union partitions through existing shader owner. Original authoring, access, floors/UVs, paths, colliders and landmarks retained.",
+  "ownership": "One scene-owned material and three maps shared by every union floor. High256/Low128; normal production instance entry passes saved graphics quality. No per-room textures, persistent global cache, frame generation, extra geometry/light/render pass or displacement.",
+  "cost": {
+    "totalRawMapPixelsKiB": {
+      "high": 768,
+      "low": 192
+    },
+    "previousRawMapPixelsKiB": 64,
+    "addedMapCount": 2,
+    "estimatedFullRGBA8MipChainsKiB": {
+      "high": 1024,
+      "low": 256
+    },
+    "limits": "Map-pixel estimate only; transient sampled JavaScript objects, driver overhead, construction latency and peak memory not qualified. Existing broader performance/memory gates remain open."
+  },
+  "focused": {
+    "testsPassed": 22,
+    "suitesPassed": 4,
+    "seconds": 33.477,
+    "scopedLintPassed": true,
+    "generatedContentGroupsPassed": 13
+  },
+  "geometry": {
+    "rows": [
+      {
+        "quality": "high",
+        "baseline": {
+          "nodes": 42,
+          "meshes": 40,
+          "sha256": "e27dace8eb28339c8350b952d0da2d08fed5745f33f2ab716a7c08374fb348ab"
+        },
+        "final": {
+          "nodes": 42,
+          "meshes": 40,
+          "sha256": "e27dace8eb28339c8350b952d0da2d08fed5745f33f2ab716a7c08374fb348ab"
+        }
+      },
+      {
+        "quality": "low",
+        "baseline": {
+          "nodes": 42,
+          "meshes": 40,
+          "sha256": "e27dace8eb28339c8350b952d0da2d08fed5745f33f2ab716a7c08374fb348ab"
+        },
+        "final": {
+          "nodes": 42,
+          "meshes": 40,
+          "sha256": "e27dace8eb28339c8350b952d0da2d08fed5745f33f2ab716a7c08374fb348ab"
+        }
+      }
+    ],
+    "colliderCount": 22,
+    "geometryTransformsFlagsLandmarksUVsExact": true,
+    "scope": "Exact all-root typed vertex/index/normal/UV/color buffers, transforms, flags, layers, names and metadata against retained baseline source; floor material intentionally differs."
+  },
+  "native": {
+    "high": {
+      "views": [
+        {
+          "name": "camp",
+          "calls": 212,
+          "triangles": 138143,
+          "texturesAdded": 2
+        },
+        {
+          "name": "shore",
+          "calls": 204,
+          "triangles": 138527,
+          "texturesAdded": 2
+        },
+        {
+          "name": "archive",
+          "calls": 203,
+          "triangles": 138527,
+          "texturesAdded": 2
+        },
+        {
+          "name": "foundry",
+          "calls": 204,
+          "triangles": 138719,
+          "texturesAdded": 2
+        },
+        {
+          "name": "city",
+          "calls": 203,
+          "triangles": 138523,
+          "texturesAdded": 2
+        },
+        {
+          "name": "names-stone",
+          "calls": 218,
+          "triangles": 138759,
+          "texturesAdded": 2
+        }
+      ],
+      "cost": {
+        "quality": "high",
+        "arms": [
+          {
+            "label": "reference",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "renderMedianMs": 3.300000011920929,
+            "renderP95Ms": 5.800000011920929,
+            "callsMedian": 218,
+            "trianglesMedian": 138759,
+            "visible": true
+          },
+          {
+            "label": "final",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "renderMedianMs": 3.800000011920929,
+            "renderP95Ms": 5.899999976158142,
+            "callsMedian": 218,
+            "trianglesMedian": 138759,
+            "visible": true
+          },
+          {
+            "label": "final",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "renderMedianMs": 3.400000035762787,
+            "renderP95Ms": 5.400000035762787,
+            "callsMedian": 218,
+            "trianglesMedian": 138759,
+            "visible": true
+          },
+          {
+            "label": "reference",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "renderMedianMs": 3.600000023841858,
+            "renderP95Ms": 5.199999988079071,
+            "callsMedian": 218,
+            "trianglesMedian": 138759,
+            "visible": true
+          }
+        ],
+        "maximumPartitionDelta": 1,
+        "baseline": {
+          "geometries": 113,
+          "textures": 72
+        },
+        "cycles": [
+          {
+            "resident": {
+              "geometries": 126,
+              "textures": 76
+            },
+            "retired": {
+              "geometries": 113,
+              "textures": 72
+            }
+          },
+          {
+            "resident": {
+              "geometries": 126,
+              "textures": 76
+            },
+            "retired": {
+              "geometries": 113,
+              "textures": 72
+            }
+          }
+        ],
+        "floorMaps": [
+          {
+            "key": "map",
+            "size": 256,
+            "colorSpace": "srgb"
+          },
+          {
+            "key": "normalMap",
+            "size": 256,
+            "colorSpace": ""
+          },
+          {
+            "key": "roughnessMap",
+            "size": 256,
+            "colorSpace": ""
+          }
+        ],
+        "scope": "Prepared production Dark Realm geometry, normal supplied four-class14slot Run animation/HUD, real-clock ABBA60warmup/120frames per arm. Same fixed population, exact floor/UVs. Separate far-origin partition readback and two environment retirement cycles. No gameplay/network, campaign, physical-device, memory-peak, whole-world performance or final-art acceptance."
+      }
+    },
+    "low": {
+      "views": [
+        {
+          "name": "camp",
+          "calls": 105,
+          "triangles": 63884,
+          "texturesAdded": 2
+        },
+        {
+          "name": "shore",
+          "calls": 102,
+          "triangles": 63872,
+          "texturesAdded": 2
+        },
+        {
+          "name": "archive",
+          "calls": 101,
+          "triangles": 63872,
+          "texturesAdded": 2
+        },
+        {
+          "name": "foundry",
+          "calls": 102,
+          "triangles": 63968,
+          "texturesAdded": 2
+        },
+        {
+          "name": "city",
+          "calls": 102,
+          "triangles": 63882,
+          "texturesAdded": 2
+        },
+        {
+          "name": "names-stone",
+          "calls": 110,
+          "triangles": 64008,
+          "texturesAdded": 2
+        }
+      ],
+      "cost": {
+        "quality": "low",
+        "arms": [
+          {
+            "label": "reference",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "renderMedianMs": 2.200000047683716,
+            "renderP95Ms": 4.099999964237213,
+            "callsMedian": 110,
+            "trianglesMedian": 64008,
+            "visible": true
+          },
+          {
+            "label": "final",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "renderMedianMs": 2.199999988079071,
+            "renderP95Ms": 4.100000023841858,
+            "callsMedian": 110,
+            "trianglesMedian": 64008,
+            "visible": true
+          },
+          {
+            "label": "final",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "renderMedianMs": 2.100000023841858,
+            "renderP95Ms": 3.5,
+            "callsMedian": 110,
+            "trianglesMedian": 64008,
+            "visible": true
+          },
+          {
+            "label": "reference",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "renderMedianMs": 2.300000011920929,
+            "renderP95Ms": 4.199999988079071,
+            "callsMedian": 110,
+            "trianglesMedian": 64008,
+            "visible": true
+          }
+        ],
+        "maximumPartitionDelta": 1,
+        "baseline": {
+          "geometries": 114,
+          "textures": 58
+        },
+        "cycles": [
+          {
+            "resident": {
+              "geometries": 128,
+              "textures": 62
+            },
+            "retired": {
+              "geometries": 114,
+              "textures": 58
+            }
+          },
+          {
+            "resident": {
+              "geometries": 128,
+              "textures": 62
+            },
+            "retired": {
+              "geometries": 114,
+              "textures": 58
+            }
+          }
+        ],
+        "floorMaps": [
+          {
+            "key": "map",
+            "size": 128,
+            "colorSpace": "srgb"
+          },
+          {
+            "key": "normalMap",
+            "size": 128,
+            "colorSpace": ""
+          },
+          {
+            "key": "roughnessMap",
+            "size": 128,
+            "colorSpace": ""
+          }
+        ],
+        "scope": "Prepared production Dark Realm geometry, normal supplied four-class14slot Run animation/HUD, real-clock ABBA60warmup/120frames per arm. Same fixed population, exact floor/UVs. Separate far-origin partition readback and two environment retirement cycles. No gameplay/network, campaign, physical-device, memory-peak, whole-world performance or final-art acceptance."
+      }
+    }
+  },
+  "visualReview": "Compared reference/candidate/final ordinary gameplay views across camp/four districts/names-stone at High1280x844 andLow390x844 with actual HUD/four supplied14slot outfits/90Run updates each. Initial busy brick grid rejected; final larger worn slabs/subdued joints selected. Dark marker now reviewed on actual production floor at far-origin coordinates, beyond its earlier flat preview. Sparse composition, boxed tents and distant monumental scenery still need broader art refinement; no final modern-ARPG or owner approval.",
+  "retainedFindings": {
+    "initialSetup": "Missing prepared player before ensureMesh; before any view, retained baseline-setup-failure.log and initial-setup.js. Corrected setup supplies reader before production instance entry.",
+    "rejectedCandidate": {
+      "selected": false,
+      "reason": "Initial16x24 paving at1.5x1m and dark broad joints creates a busy uniform brick grid at ordinary gameplay zoom. Retain captures/source. Final8x12 courses use3x2m irregularly offset slabs, narrow joints and subdued contrast; must visually qualify."
+    }
+  },
+  "interpretation": "All12reference/final views retain exact draw/triangle counts; only two added floor textures. Same-population real-clock ABBA60warmup/120frames per arm: all8frame median/p9516.7ms, High218draw/138759tri,Low110draw/64008tri. CPU render timing varies; no speedup claimed. Far-origin whole/4partition RGBA maxdelta1 per profile. Two scene retirement cycles/profile return exact GPU resource counts to baseline. Prepared sample budgets pass within this scope only.",
+  "custody": {
+    "source": "eebfdcccc247a871b0d75ddd7729f90b377c2366",
+    "base": "4a276799",
+    "changedPaths": [
+      "src/art/DarkRealmStreetSurface.js",
+      "src/art/ElementalFloorPatina.js",
+      "src/art/ProceduralDarkRealm.js",
+      "src/core/GameEngineNetworkMessages.js",
+      "tests/DarkRealmStreetSurface.test.js"
+    ],
+    "patchSHA256": "16b4986714eb80378204650ae8d18920d0b0f62d5c13cd840be24736e4904d81",
+    "workerSHA256": "ed74163bff6f2ccc48d8f4364cbca258858d68b95b1cc42f4b91d04304fc9203",
+    "workingTreeClean": true,
+    "serverAssetsDataUnchanged": true
+  },
+  "retirement": {
+    "recordedUTC": "2026-10-12T02:00:27.015736+00:00",
+    "pid": 3735997,
+    "cwd": "/home/aeml/.local/share/eidolon-dark-streets-20261012",
+    "command": "/home/aeml/.npm/_npx/17533ff5f2b7389f/node_modules/node/bin/node scripts/serve-static.mjs ",
+    "action": "SIGTERM owned static server after all native browser contexts closed",
+    "afterPortCheck": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\n",
+    "browserContextsClosedByFinally": true
+  },
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-dark-streets-checks-20261012",
+    "entries": 71,
+    "inventorySHA256": "a9969fead37ff434238c9224c4e2ba3a574442675967fd802bc621a263b76506"
+  },
+  "scopeLimits": "No accounts/server/database/earned route. Four supplied14slot prepared outfits, actual production Dark Realm entry/geometry, High desktop/Low emulated phone, ordinary HUD/motion. Previous connected/cold performance and physical-device/final-art/rights/owner gates remain open. Original1.11\u20131.99/F1\u2013F5/beta/launch/handoff scope remains active. No unchanged campaign/soak replay or deployment/access/version changes.",
+  "nextAction": "Merge this qualified art into master. Continue Dark Realm camp/streets/composition and broader CPU submission investigation from current GPU evidence; no further foliage arithmetic-cache or early-color-cull variant. Batch completed world work before publication; exact future candidate needs own ordered CI/live/public acceptance."
+}
