@@ -41,7 +41,8 @@ test.each([['high', 256, false], ['low', 128, true]])('%s homes retain six batch
     const timber = a.children.find(m => m.name === 'residential-shacks:timber').material, frame = a.children.find(m => m.name === 'residential-shacks:frame').material;
     expect(a.children).toHaveLength(6); expect(a.userData.walkFootprints).toHaveLength(15);
     const counts = [];
-    for (const [i, key] of ['map', 'normalMap', 'roughnessMap'].entries()) {
+    expect(timber.map).toBeNull(); expect(frame.map).toBeNull();
+    for (const [i, key] of ['lanternholdColorMap', 'normalMap', 'roughnessMap'].entries()) {
         const map = timber[key]; expect(frame[key]).toBe(map);
         expect(map.image.width).toBe(size); expect(map.image.height).toBe(size);
         expect(map.colorSpace).toBe(i === 0 ? THREE.SRGBColorSpace : THREE.NoColorSpace);

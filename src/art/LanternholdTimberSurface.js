@@ -79,7 +79,22 @@ export function createLanternholdTimberMaterials(quality = 'high') {
         return texture;
     });
     const material = color => {
-        const m = new THREE.MeshStandardMaterial({ color, map: maps[0], normalMap: maps[1], roughnessMap: maps[2], roughness: 1 });
+        const m = new THREE.MeshStandardMaterial({ color, normalMap: maps[1], roughnessMap: maps[2], roughness: 1 });
+        // Opaque wood needs no color sampler in its depth pass. Three's shared
+        // stock depth material can retain and re-upload a retired color map.
+        // Keep this sampler in the color shader alone, with ordinary texture
+        // ownership visible to RenderSystem.disposeObjectResources.
+        m.lanternholdColorMap = maps[0];
+        m.onBeforeCompile = shader => {
+            shader.uniforms.lanternholdTimberColor = { value: m.lanternholdColorMap };
+            shader.vertexShader = shader.vertexShader
+                .replace('#include <uv_pars_vertex>', '#include <uv_pars_vertex>\nvarying vec2 vLanternholdTimberUv;')
+                .replace('#include <uv_vertex>', '#include <uv_vertex>\nvLanternholdTimberUv = uv;');
+            shader.fragmentShader = shader.fragmentShader
+                .replace('#include <map_pars_fragment>', '#include <map_pars_fragment>\nuniform sampler2D lanternholdTimberColor;\nvarying vec2 vLanternholdTimberUv;')
+                .replace('#include <map_fragment>', 'diffuseColor *= texture2D(lanternholdTimberColor, vLanternholdTimberUv);');
+        };
+        m.customProgramCacheKey = () => 'lanternhold-timber-color-v1';
         m.userData.lanternholdTimberSurface = true;
         return m;
     };
