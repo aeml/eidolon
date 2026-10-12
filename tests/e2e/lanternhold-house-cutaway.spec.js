@@ -17,7 +17,7 @@ for (const quality of ['high', 'low']) {
         const controls = [];
         for (let index = 0; index < 2; index++) {
             const result = await page.evaluate(async index => {
-                const r = window.__lanternholdCutaway, view = r.views[index], source = r.root.children.map(mesh => ({ mesh, geometry: mesh.geometry, material: mesh.material, castShadow: mesh.castShadow }));
+                const r = window.__lanternholdCutaway, view = r.views[index], source = [];
                 const renderer = r.render.renderer, gl = renderer.getContext();
                 const capture = () => {
                     r.game.render(1); const pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
@@ -28,6 +28,7 @@ for (const quality of ['high', 'low']) {
                 };
                 const changed = (a, b) => a ? a.reduce((sum, value, i) => sum + Number(value !== b[i]), 0) : 0;
                 r.root.userData.sceneryOccluder = false; for (let i = 0; i < 60; i++) await r.frame(view);
+                source.push(...r.root.children.map(mesh => ({ mesh, geometry: mesh.geometry, material: mesh.material, castShadow: mesh.castShadow })));
                 const reference = capture(); r.game.player.mesh.visible = false; const referenceHidden = capture(); r.game.player.mesh.visible = true;
                 r.root.userData.sceneryOccluder = true; for (let i = 0; i < 75; i++) await r.frame(view);
                 const candidate = capture(), entry = r.render.sceneryVisibility.entries.get(r.root);
