@@ -1278,3 +1278,18 @@ was independently verified live at03:49:48UTC; root did not launch it. Existing
 Luna watches its exact handle sparsely. Reader/transport saturation diagnosis and
 actual sustained capacity remain open; entire original goal remains active.
 See soak29-terminal-failure.
+
+
+October12 District art6f8b64cb qualified and ordinarily merged into local master55d18e7b
+(receipt4ce0e923).50distinct focused checks/four suites and scoped lint pass;
+28paired native actual-floor equipped/HUD views per profile,56complete nonblank
+RGBA controls(maxdelta0) and64actual-clockABBA120framearms pass. Eight ordinary
+views/profile have max16.7msmedian/16.8p95; High211draw/183851tri, Low107draw/81064tri.
+Two GPUretirement cycles/profile return exactbaseline. Partition vertices/
+attributes/material/renderflags,22colliders/floorUV/landmarks stay exact.
+Original CPU/fixture/transport/camera findings retained; budgets unchanged.
+Frozen227entry native inventoryf75123bfe246efda024a512d6b8824fba387efeed0e604226935d85e96652cc5.
+Owned4232/browser resources closed; all six merged source/test snapshots match
+native copies. Next is coherent district publication. Full original world/art/
+connected performance/device/capacity/F1-F5/beta/launch/handoff goal remains open.
+See dark-district-art-qualification.

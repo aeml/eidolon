@@ -6,7 +6,7 @@
     "furniture": "5e37a747",
     "isolatedMerge": "31c3c755"
   },
-  "status": "Detached6f8b64cb combines district architecture/court art with CPU-qualified bounded groups. Own41nativeCI completed before local browser review began. Native candidate visual/performance/lifetime qualification in progress; no selection/master merge.",
+  "status": "Historical CPU staging; native-qualified source6f8b64cb ordinarily merged into local master. Not published.",
   "focused": {
     "tests": 44,
     "suites": 3,
@@ -171,5 +171,7 @@
       "entries": 16,
       "inventorySHA256": "845ec8606bf6c78224ee70b19d49aa5592a31ffae468503d395f11a75a4403e3"
     }
-  }
+  },
+  "qualification": "2026-10-12-dark-district-art-qualification.json",
+  "masterMerge": "55d18e7b3c4613da38bf95b1a1429609792f1652"
 }

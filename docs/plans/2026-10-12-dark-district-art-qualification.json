@@ -1,7 +1,7 @@
 {
   "recordedUTC": "2026-10-12T04:01:42.936057+00:00",
   "source": "6f8b64cb5538a5365235cb3944ceef0eb040630c",
-  "status": "Qualified bounded district artwork and spatial grouping for ordinary master merge. Not published; full original goal remains active.",
+  "status": "Qualified and ordinarily merged into local master; not published. Full original goal remains active.",
   "stages": {
     "architecture": "542c869f",
     "courts": "5e37a7473012bc24baf9b1a0497a90fd4eba5a2a",
@@ -193,5 +193,7 @@
   ],
   "failureCustody": "Initial reference close-inspection budget scope error, candidate pre-render module-fetch failure, missing ephemeral Node cache, incorrect supplemental room-center/height targets and earlier CPU test assumptions/comparator insertion ordering are retained. Runtime budgets, quality, full outfits, content and pixel invariance targets not relaxed. See frozen visual-review.json and CPU stage records.",
   "limits": "Prepared scene art/cost correctness only. Full world remains sparse/repetitive in places; connected gameplay/performance, cold/peak memory, physical-device/human pacing/final modern-art, capacity, operations/F1-F5/beta/launch/handoff remain open. No ordinary gameplay speedup claim; no unchanged campaign/soak replay.",
-  "publicationBaseline": "Accepted41defdb64e with own ordered live/public proof. Newart requires its own coherent release preparation and ordered publication acceptance."
+  "publicationBaseline": "Accepted41defdb64e with own ordered live/public proof. Newart requires its own coherent release preparation and ordered publication acceptance.",
+  "masterMerge": "55d18e7b3c4613da38bf95b1a1429609792f1652",
+  "postMergeSourceSnapshotsMatch": 6
 }
