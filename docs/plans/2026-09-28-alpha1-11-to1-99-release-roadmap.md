@@ -1,5 +1,7 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+Alpha1.79.42/exact`6f9895ac` is ordinarily pushed with qualified district art and the owner-requested world-map focus correction. CI38203447428attempt1 is in progress; own ordered CI/deploy/live and fresh112asset/frontend/backend/readyDB acceptance are pending.438focused checks/six suites, two source atlas cases and16copied native district views with two managed map focus cases pass.477notes preserve all476prior entries byte-exact. Accepted41 remains the live baseline; full original readiness requirements remain open. [Publication](2026-10-12-release42-publication.json).
+
 Alpha1.79.41/exact`defdb64e` is accepted live. CI38196589643attempt1 passed
 all ten ordered jobs, including737client suites/10965tests and native predeploy/
 live characterQA; four optional stages remain skipped. Fresh03:35:51UTC

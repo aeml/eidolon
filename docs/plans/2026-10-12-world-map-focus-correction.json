@@ -6,7 +6,7 @@
   "initialVerificationFinding": "Initial updated assertion used a role locator while the map was hidden; Playwright excludes hidden controls by default. M had correctly closed map. Moved empty-value assertion after reopening; original failure logs/captures retained.",
   "localEvidenceRoot": "/home/aeml/.local/share/eidolon-release42-preparation-checks-20261012",
   "release": "Alpha1.79.42",
-  "status": "Validated in source; selected for coherent42 publication.",
+  "status": "Validated, ordinarily merged and published with exact Alpha1.79.42; deployment acceptance pending.",
   "browserChecks": {
     "cases": 2,
     "passed": 2,
@@ -27,5 +27,20 @@
     "suites": 6,
     "passed": 438
   },
-  "contentGroups": 13
+  "contentGroups": 13,
+  "source": "6f9895ac4bb3525861e75209211aaa7f5d0852a9",
+  "publication": "2026-10-12-release42-publication.json",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-release42-preparation-checks-20261012",
+    "entries": 70,
+    "inventorySHA256": "a3af269b04336a6e998e483e215e364548d8bed271b440fefd189e0849be7ba0"
+  },
+  "copiedProductionManagedMapCases": {
+    "passed": 2,
+    "profiles": [
+      "high1280x844",
+      "low390x844"
+    ],
+    "behavior": "Real bundled GameEngine managed window opens with canvas focus; M closes; reopen/click/search typing M keeps map visible; Escape closes."
+  }
 }

@@ -1,0 +1,43 @@
+{
+  "recordedUTC": "2026-10-12T04:22:26.549116+00:00",
+  "version": "Alpha 1.79.42",
+  "source": "6f9895ac4bb3525861e75209211aaa7f5d0852a9",
+  "status": "Ordinary-pushed to master; own exact CI38203447428attempt1 is in progress. Own ordered CI/deployment/live and fresh public112asset/frontend/backend/readyDB acceptance remain pending.",
+  "priorAccepted": "Alpha1.79.41 defdb64e CI38196589643attempt1 all ten passed; normal-TLS109asset identity/readyDB proof retained.",
+  "includedQualifications": [
+    "2026-10-12-dark-district-art-qualification.json",
+    "2026-10-12-world-map-focus-correction.json"
+  ],
+  "focusedChecks": 438,
+  "focusedSuites": 6,
+  "generatedGroups": 13,
+  "versionFiles": 12,
+  "cumulativeNotes": 477,
+  "priorNotesByteExact": 476,
+  "pages": 47,
+  "browserAtlasCasesPassed": 2,
+  "browserAtlasRetries": 0,
+  "initialAtlasAssertionFailureRetained": true,
+  "copiedNativeProfiles": 2,
+  "copiedNativeViews": 16,
+  "copiedNativeManagedMapFocusCases": 2,
+  "nativeFailures": 0,
+  "nativeRetries": 0,
+  "publicPins": 112,
+  "bundledModules": 470,
+  "copiedFiles": 3477,
+  "workerSHA256": "ed74163bff6f2ccc48d8f4364cbca258858d68b95b1cc42f4b91d04304fc9203",
+  "scope": "Bounded district art and owner-requested map focus correction. Full world/art/performance/device/human pacing/capacity/F1-F5/beta/launch/handoff goal remains open; no unchanged campaign/soak replay.",
+  "expectedManifest": "/home/aeml/.local/share/eidolon-release42-preparation-checks-20261012/expected-public42-assets.json",
+  "publicChecker": "/home/aeml/.local/share/eidolon-release42-preparation-checks-20261012/check-public.py",
+  "ci": {
+    "id": 38203447428,
+    "attempt": 1,
+    "url": "https://github.com/aeml/eidolon/actions/runs/38203447428"
+  },
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-release42-preparation-checks-20261012",
+    "entries": 70,
+    "inventorySHA256": "a3af269b04336a6e998e483e215e364548d8bed271b440fefd189e0849be7ba0"
+  }
+}

@@ -1306,3 +1306,19 @@ preserve all476prior entries byte-exact across47archive pages. Version42
 preparation includes already-qualified district art. Exact copied-production
 native verification and own ordered publication acceptance remain required.
 Full original goal active. See world-map-focus-correction.
+
+
+October12 coherent42/exact6f9895ac ordinarily pushed; master and origin aligned.
+Owner map-opening focus fix passes source desktop/phone and exact copied bundle
+real managed-window checks in both native profiles. Six publication suites/
+438checks,13content groups,12versions,477notes/all476prior byte-exact and16native
+district views pass with four supplied14slot Run actors/HUD; no native retries.
+470bundlemodules/3477copied files,112public pins; worker hash unchanged. Copy
+all3477files rehashed then retired; owned4234/browser contexts closed. Frozen70
+preparation inventorya3af269b04336a6e998e483e215e364548d8bed271b440fefd189e0849be7ba0.
+CI38203447428attempt1 now in progress on exact head; existing sparse monitor
+follows this and scheduled41soak38200870030. No retry/cancel/newlongsoak.
+Root must own all-ten ordered terminal CI/deploy/live and fresh normal-TLS112asset/
+frontend/backend/readyDB acceptance before next publication. Shared GPU reserved
+for release CI. Only master active; original465dirty paths preserved.
+Full original goal open. See release42-publication.

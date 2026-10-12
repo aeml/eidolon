@@ -1,5 +1,7 @@
 # Eidolon Engineering Roadmap
 
+Alpha1.79.42/exact`6f9895ac` is ordinarily pushed with qualified district art and the owner-requested world-map focus correction. CI38203447428attempt1 is in progress; own ordered CI/deploy/live and fresh112asset/frontend/backend/readyDB acceptance are pending.438focused checks/six suites, two source atlas cases and16copied native district views with two managed map focus cases pass.477notes preserve all476prior entries byte-exact. Accepted41 remains the live baseline; full original readiness requirements remain open. [Publication](plans/2026-10-12-release42-publication.json).
+
 Last refreshed: October 12, 2026
 
 Alpha1.79.41/exact`defdb64e` is accepted live: all ten ordered CI38196589643 attempt1 jobs passed; fresh03:35:51UTC normal-TLS checks match109asset hashes/bytes, frontend/backend identity and readyDB. Four optional steps remain skipped. Qualified district art and world-map focus correction are being prepared as coherent Alpha1.79.42; full original readiness requirements remain open. [Acceptance](plans/2026-10-12-public41-terminal-qualification.json).
