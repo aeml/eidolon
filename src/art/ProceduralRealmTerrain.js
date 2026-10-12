@@ -247,7 +247,7 @@ export function createProceduralTerrainTexture(key, { quality = 'high' } = {}) {
 // Surface shape is independent of albedo: a dark stain is not a hole and a
 // bright magical mark is not a raised bump. Evaluate one periodic canonical
 // field so Low and High retain the same stone/soil footprint and normal strength.
-function createTerrainSurfaceMaps(key, quality) {
+export function createTerrainSurfaceMaps(key, quality) {
     // Earth's composition owns registered soil, moss and stone relief. A
     // second unrelated noise normal/roughness field would distort those layers.
     if (!['town', 'water', 'fire', 'air'].includes(key)) return null;

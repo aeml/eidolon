@@ -467,13 +467,13 @@ describe('WorldGenerator shadow setup', () => {
         const streets = generator.scene.add.mock.calls[7][0];
         expect(streets.name).toBe('Lanternhold planted street edges');
         expect(streets.userData.walkFootprints).toHaveLength(4);
-        expect(generator.collisionManager.addCollider).toHaveBeenCalledTimes(22 + worldSolids + 13 + 4);
+        expect(generator.collisionManager.addCollider).toHaveBeenCalledTimes(7 + worldSolids + 13 + 4);
         const doorCollider = generator.collisionManager.addCollider.mock.calls[worldSolids][0];
         expect(doorCollider.getCenter(new THREE.Vector3()).toArray()).toEqual([0, 2.4, -21.65]);
         expect(doorCollider.getSize(new THREE.Vector3()).toArray()).toEqual([5, 4.8, 0.5]);
         expect(doorCollider.containsPoint(new THREE.Vector3(0, 1, -21.65))).toBe(true);
         expect(doorCollider.containsPoint(new THREE.Vector3(0, 1, -19))).toBe(false);
-        expect(generator.collisionManager.addOrientedCollider).toHaveBeenCalledTimes(1);
+        expect(generator.collisionManager.addOrientedCollider).toHaveBeenCalledTimes(16);
         const smithy = generator.collisionManager.addOrientedCollider.mock.calls[0][0];
         expect(smithy.box.getSize(new THREE.Vector3()).toArray()).toEqual([11.8, 32, 10.2]);
         expect(new THREE.Vector3().setFromMatrixPosition(smithy.matrix).toArray()).toEqual([-30, -0.5, 0]);
@@ -484,10 +484,8 @@ describe('WorldGenerator shadow setup', () => {
             'blacksmith'
         ]);
         expect(structures[3].userData).toEqual(expect.objectContaining({
-            proceduralTownCampField: true,
             instanceCount: 15,
-            sourceMeshCount: 255,
-            drawMeshCount: 9
+            drawMeshCount: 6
         }));
         expect(structures.slice(0, 3).reduce(
             (total, structure) => total + structure.userData.drawMeshCount,

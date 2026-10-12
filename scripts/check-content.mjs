@@ -6,7 +6,7 @@ import path from 'node:path';
 // installation and CI must not hide a stale committed client/server catalog.
 if (process.argv.length !== 2) throw new Error('Usage: npm run check:content');
 const root = fileURLToPath(new URL('../', import.meta.url));
-const checks = ['world-geography', 'world-locations', 'world-elevation',
+const checks = ['world-geography', 'world-locations', 'world-elevation', 'town-neighborhood',
     'chronicle-investigations', 'chronicle-expeditions', 'chronicle-hunts', 'dark-realm-chronicle',
     'earth-outcrops', 'world-population', 'cosmetics', 'authored-equipment', 'animation-coverage', 'gameplay-geometry-precomputed'];
 for (const name of checks) {

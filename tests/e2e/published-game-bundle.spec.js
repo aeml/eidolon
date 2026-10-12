@@ -74,7 +74,7 @@ for (const [quality, section, viewRange] of [
     await testInfo.attach('published-engine-identity', { body: JSON.stringify(metadata, null, 2), contentType: 'application/json' });
 });
 
-for (const quality of ['high', 'low']) test(`copied published ${quality} camp clipping preserves equipped town views and cleanup`, async ({ page }, testInfo) => {
+for (const quality of ['high', 'low']) test(`copied published ${quality} residential clipping preserves equipped town views and cleanup`, async ({ page }, testInfo) => {
     // Hosted software checks every view and ownership path. Native review also
     // advances eight walking poses per view; this fixture measures no FPS.
     const framesPerView = requiresHardwareWebGL() ? 8 : 1;
@@ -94,7 +94,7 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} camp cl
             const supported = render.renderer.extensions.has('WEBGL_multi_draw');
             if (world.campInstanceFrustum !== supported) throw Error('Published world owner did not select actual camp capability');
             await world.createTownBase(0, 200, 100); await world.loadBuildings(0, 200);
-            const field = render.instanceEnvironmentGroup.getObjectByName('Lanternhold:Pilgrim Vigil Field');
+            const field = render.instanceEnvironmentGroup.getObjectByName('Lanternhold residential wards');
             const hero = game.createRemotePlayer('Player', 'camp-equipped-fighter', 'Fighter');
             window.__publishedCampReview.hero = hero; hero.gameEngine = game;
             await hero.ensureMesh();
@@ -108,7 +108,11 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} camp cl
             if (supported) for (const batch of field.children) {
                 const mesh = new THREE.InstancedMesh(batch.geometry, batch.material, 15);
                 mesh.castShadow = batch.castShadow; mesh.receiveShadow = batch.receiveShadow;
-                for (let i = 0; i < 15; i++) mesh.setMatrixAt(i, batch.getMatrixAt(i, new THREE.Matrix4()));
+                for (let i = 0; i < 15; i++) {
+                    mesh.setMatrixAt(i, batch.getMatrixAt(i, new THREE.Matrix4()));
+                    if (batch.name.endsWith(':timber') || batch.name.endsWith(':roof'))
+                        mesh.setColorAt(i, batch.getColorAt(i, new THREE.Color()));
+                }
                 mesh.instanceMatrix.needsUpdate = true; mesh.computeBoundingBox(); mesh.computeBoundingSphere(); reference.add(mesh);
             }
             render.instanceEnvironmentGroup.add(reference);
@@ -176,7 +180,7 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} camp cl
         });
         await testInfo.attach('published-camp-clipping', { body: JSON.stringify({ ...result, cleanup, engineSHA256: metadata.engineSHA256,
             scope: `Current copied engine world owner, supplied fourteen-slot Fighter and real HUD. Three prepared town/camp views with ${3 * framesPerView} mixer updates per quality and same-pose whole-field reference. No server fight, continuous cadence, physical device or global performance acceptance.` }), contentType: 'application/json' });
-        expect(result).toMatchObject({ parts: 9, camps: 15, batchParts: result.supported ? 9 : 0, ownerEnabled: result.supported,
+        expect(result).toMatchObject({ parts: 6, camps: 15, batchParts: result.supported ? 6 : 0, ownerEnabled: result.supported,
             hero: { quality, items: 14, missing: 0, fallback: 0 } });
         expect(result.framesPerView).toBe(framesPerView);
         expect(result.rows).toHaveLength(3 * framesPerView);
@@ -185,7 +189,7 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} camp cl
             expect(row.selected.calls).toBeLessThanOrEqual(row.reference.calls);
             expect(row.selected.triangles).toBeLessThanOrEqual(row.reference.triangles);
         }
-        expect(cleanup).toEqual(result.supported ? { batches: 9, geometry: 9, matrices: 9, indirection: 9 } : { batches: 0, geometry: 0, matrices: 0, indirection: 0 });
+        expect(cleanup).toEqual(result.supported ? { batches: 6, geometry: 6, matrices: 6, indirection: 6 } : { batches: 0, geometry: 0, matrices: 0, indirection: 0 });
         if (requiresHardwareWebGL()) { expect(result.supported).toBe(true); expect(result.gpu).not.toMatch(/SwiftShader|llvmpipe|software/i); }
         expect(failures, failures.join('\n')).toEqual([]);
     } finally {
