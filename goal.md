@@ -1684,3 +1684,36 @@ High/Low controls pass.127public pins prepared; frozen29entry inventory
 Onlymaster locally/origin; original dirty checkout preserved. OwnCI reserves
 GPU until terminal; ordered deployments/live/fresh public127asset/source/readyDB
 required. Public44lastaccepted; fulloriginal goal/crowdedtown failures open.
+
+
+October12 isolated geometry-synchronized shadow runtimef1f9105e/integrationf868
+passes99distinctCPUchecks/three suites and lint. One live variant/actor; steady
+frames reuse buffers after actual gameplay selection. Source/derivative zoom,
+equipment/skin generations, hidden/alpha recovery, streaming/pool/disposal and
+exceptions preserve source color ownership. Frozen19entry inventory
+`24328f7dbdc41e9e4ff1e6585e74e910dc682d6de2b09e71776d2cdc4429b6db`.
+Actualcurrenttown fullRGBA/depth/16movingABBAarms/fourGPUcycles prepared only;
+exactown45CI guard prevents GPU/browser launch until terminal. No default
+installation/native current-runtime/town/device/globalperformance acceptance.
+Current-publication table reconciled to45pending/44accepted. Fullgoal open.
+
+
+October12 isolated townfacades53db3f7a adds shallow side panes and modest seated
+stoveflues.15CPUchecks/three suites/lint;24mesh prefix comparisons retain original
+geometry/UVs/flags/transforms/walksolids. Sixbatches/fivecutawayparts unchanged;
+2040tri across15homes added,29160total below original30000ceiling. Frozen14entry
+inventory`82abf60976b732f436221a08b3db7dc8e446a49bcf0f83f35bdf7312b1b0564c`.
+No native or merge acceptance; actual ordinarycamera/silhouette/fade/cadence/
+GPUlifetime pending own45CI terminal. Read-only NPCspawn audit confirms four
+nonservice conversational residents are the server-owned dispersed walkers;
+vendors/questgivers/respec/dungeon services retain anchors. No NPCscope repair
+needed. Public44accepted/45pending; fullgoal/budget failures remain open.
+
+
+October12 facade CPU follow-up bef34168 seats folded flashing edges into the actual slate at twelve ray samples. Four changed housing checks pass, fifteen distinct checks with valid reuse;24mesh prefixes/ground footprints/transforms exact.2160added/29280total housing triangles preserve the30000ceiling. Frozen12entry inventory c87afea6f0ea601663ddbdd15d106cd34ac350d9f2fb2de738708452bea1a58c; initial14entry evidence retained. Candidate remains detached/unmerged; native silhouette, fade, resources and cadence await own45CI terminal. Primary roadmap current-state precedence now reconciles pending45/accepted44 and preserves historical paragraphs. Full original goal and crowded-town failures remain open.
+
+
+October12 exact31defee90/Alpha1.79.45 accepted within timber/foreground-home scope: ownCI38313813464attempt1 all ten ordered jobs success22:44:14UTC;745client suites/11038tests,349browser passes/10skips and requirednative7/45/1/2/4passes+1skip. Live6first-attempt+2configured-retry passes+1skip, recovery2/rested-party1 pass. Fresh22:45:16UTC normal-TLS127asset hashes/bytes, both identities, readyDB and analyticsJS match. Original ERR_ABORTED precomputed-index and ERR_NETWORK_CHANGED engine/core module failures retained; no manual rerun/waiver or clean-first-pass claim. Frozen42entry inventory53fba7c1c91a099df001782054e98cfd4c9b1bddb3c6b15fbe932ace76e25f4e. Current roadmap pointers reconciled; source/shadow/facade candidates stay isolated until qualified. NativeGPU now reserved for geometry-synchronized shadow town proof. Original crowded-town budgets and full goal remain open.
+
+
+October12 facades bef34168 native-qualified and ordinarily mergedbb493b15:15distinctCPUchecks/24prefix comparisons/12roof seating samples,6pairedHighLowviews/12images/exactRGBA+shadow restoration,24ABBAarms with16.7msmedians,2requiredhome cases45.3s/retry0 and4GPUcycles/all53resources once/exactbaselines. Frozen58entry3111608b42cd7d83c397c18b365cb0213c4eb01fc306acc7fe256ab73e7631e4. InitialQA.mjsMIMEfailure retained/corrected; source/assertions unchanged. No publication until next coherent milestone; public45accepted. Shadow runtime f1/f868 functionally preserves sixfullRGBA/threepackeddepth controls andfourGPUcycles,48Highdraws saved, but westpairedmedian16.7→33.3ms/p95plazaworse. Rejected performance selection; frozen42entryba6c918eaad6c60eb6967d1220038c1df583910e536c43dc3c8fdf96b534ab04. NextCPUvalidation profiling; crowded-town and full original goal remain open.

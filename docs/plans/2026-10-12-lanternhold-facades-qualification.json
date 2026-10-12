@@ -1,0 +1,428 @@
+{
+  "atUTC": "2026-10-12T22:54:53.661373+00:00",
+  "source": "bef34168b33f55b349e86ed3bdac4b5a9fa06f96",
+  "baseline": "533bd864",
+  "status": "Scoped native facade qualification passed and ordinarily merged into master; not yet published",
+  "CPU": {
+    "distinctChecks": 15,
+    "suites": 3,
+    "correctedHousingChecks": 4,
+    "validUnchangedReuse": 11,
+    "meshComparisons": 24,
+    "seatingSamples": 12,
+    "addedTrianglesAcross15Homes": 2160,
+    "totalHousingTriangles": 29280,
+    "ceiling": 30000
+  },
+  "native": {
+    "profiles": 2,
+    "pairedViews": 6,
+    "images": 12,
+    "completeRGBArestorations": 6,
+    "HighPackedDepthRestorations": 3,
+    "movingABBAArms": 24,
+    "nativeHomeCases": 2,
+    "nativeHomeDurationMs": 45299.568999999996,
+    "nativeHomeRetries": 0,
+    "GPUCycles": 4,
+    "ownedResourcesPerCycle": 53,
+    "allResourcesDisposeOnce": true,
+    "allMemoryReturnsExact": true
+  },
+  "visualReview": "High1280 and Low390 west-homes candidate PNG inspected at ordinary zoom with actual HUD, four provided fourteen-slot Run actors and walking resident. Warm side panes break blank gable walls; small capped flues seat on slate with folded edges. Separate required hero-cutaway cases preserve equipped leader visibility/materials/foundations/fullRGBA/shadows. Scoped improvement, not final modern-art approval.",
+  "cadence": {
+    "highMaxMedianMs": 16.7,
+    "highMaxP95Ms": 33.4,
+    "lowMaxMedianMs": 16.7,
+    "lowMaxP95Ms": 16.8,
+    "limits": "Paired static draw counts exact. All median/p95 samples within original frame limits. Moving Low west population changes125\u2192139calls in later arms, including laterreference; no causal draw claim. Highplaza429calls/279283tri and Lowplaza107747tri retain original global budget failures; no target relaxation."
+  },
+  "initialFailure": "QA server served reference.mjs with application/octet-stream; corrected only QA MIME map. Initial source/log/retirement/diagnosis retained, no controls/timing accepted from failed setup. No runtime/assertion change or manual CI retry.",
+  "limits": "No connected/device/globalperformance/final-art/fullgoal acceptance. Current public45 remains exact31defee90. Roof decoration raises silhouette; original fifteen ground footprints/transforms/material/batch counts remain exact.",
+  "profiles": {
+    "high": {
+      "controls": [
+        {
+          "view": "service-plaza",
+          "bytes": 4321280,
+          "color": {
+            "changedBytes": 0,
+            "maxChannel": 0
+          },
+          "repeat": {
+            "changedBytes": 0,
+            "maxChannel": 0
+          },
+          "shadowDepth": {
+            "changedBytes": 33974,
+            "maxChannel": 255
+          },
+          "shadowRepeat": {
+            "changedBytes": 0,
+            "maxChannel": 0
+          },
+          "reference": {
+            "calls": 429,
+            "triangles": 278023
+          },
+          "candidate": {
+            "calls": 429,
+            "triangles": 279283
+          }
+        },
+        {
+          "view": "west-homes",
+          "bytes": 4321280,
+          "color": {
+            "changedBytes": 12722,
+            "maxChannel": 134
+          },
+          "repeat": {
+            "changedBytes": 0,
+            "maxChannel": 0
+          },
+          "shadowDepth": {
+            "changedBytes": 44010,
+            "maxChannel": 255
+          },
+          "shadowRepeat": {
+            "changedBytes": 0,
+            "maxChannel": 0
+          },
+          "reference": {
+            "calls": 337,
+            "triangles": 245506
+          },
+          "candidate": {
+            "calls": 337,
+            "triangles": 247270
+          }
+        },
+        {
+          "view": "south-homes",
+          "bytes": 4321280,
+          "color": {
+            "changedBytes": 26012,
+            "maxChannel": 155
+          },
+          "repeat": {
+            "changedBytes": 0,
+            "maxChannel": 0
+          },
+          "shadowDepth": {
+            "changedBytes": 29944,
+            "maxChannel": 255
+          },
+          "shadowRepeat": {
+            "changedBytes": 0,
+            "maxChannel": 0
+          },
+          "reference": {
+            "calls": 299,
+            "triangles": 217581
+          },
+          "candidate": {
+            "calls": 299,
+            "triangles": 218913
+          }
+        }
+      ],
+      "arms": [
+        {
+          "view": "service-plaza",
+          "label": "reference",
+          "median": 16.7,
+          "p95": 33.4,
+          "calls": 429,
+          "triangles": 278023,
+          "budgetPass": false
+        },
+        {
+          "view": "service-plaza",
+          "label": "candidate",
+          "median": 16.7,
+          "p95": 33.4,
+          "calls": 429,
+          "triangles": 279283,
+          "budgetPass": false
+        },
+        {
+          "view": "service-plaza",
+          "label": "candidate",
+          "median": 16.7,
+          "p95": 33.4,
+          "calls": 429,
+          "triangles": 279283,
+          "budgetPass": false
+        },
+        {
+          "view": "service-plaza",
+          "label": "reference",
+          "median": 16.7,
+          "p95": 33.4,
+          "calls": 429,
+          "triangles": 278023,
+          "budgetPass": false
+        },
+        {
+          "view": "west-homes",
+          "label": "reference",
+          "median": 16.7,
+          "p95": 33.3,
+          "calls": 337,
+          "triangles": 245506,
+          "budgetPass": true
+        },
+        {
+          "view": "west-homes",
+          "label": "candidate",
+          "median": 16.7,
+          "p95": 33.4,
+          "calls": 337,
+          "triangles": 247270,
+          "budgetPass": true
+        },
+        {
+          "view": "west-homes",
+          "label": "candidate",
+          "median": 16.7,
+          "p95": 33.3,
+          "calls": 337,
+          "triangles": 247270,
+          "budgetPass": true
+        },
+        {
+          "view": "west-homes",
+          "label": "reference",
+          "median": 16.7,
+          "p95": 33.4,
+          "calls": 337,
+          "triangles": 245506,
+          "budgetPass": true
+        },
+        {
+          "view": "south-homes",
+          "label": "reference",
+          "median": 16.7,
+          "p95": 33.3,
+          "calls": 299,
+          "triangles": 217581,
+          "budgetPass": true
+        },
+        {
+          "view": "south-homes",
+          "label": "candidate",
+          "median": 16.7,
+          "p95": 33.3,
+          "calls": 299,
+          "triangles": 218913,
+          "budgetPass": true
+        },
+        {
+          "view": "south-homes",
+          "label": "candidate",
+          "median": 16.7,
+          "p95": 33.3,
+          "calls": 299,
+          "triangles": 218913,
+          "budgetPass": true
+        },
+        {
+          "view": "south-homes",
+          "label": "reference",
+          "median": 16.7,
+          "p95": 33.4,
+          "calls": 299,
+          "triangles": 217581,
+          "budgetPass": true
+        }
+      ]
+    },
+    "low": {
+      "controls": [
+        {
+          "view": "service-plaza",
+          "bytes": 1316640,
+          "color": {
+            "changedBytes": 0,
+            "maxChannel": 0
+          },
+          "repeat": {
+            "changedBytes": 0,
+            "maxChannel": 0
+          },
+          "shadowDepth": null,
+          "shadowRepeat": null,
+          "reference": {
+            "calls": 191,
+            "triangles": 107747
+          },
+          "candidate": {
+            "calls": 191,
+            "triangles": 107747
+          }
+        },
+        {
+          "view": "west-homes",
+          "bytes": 1316640,
+          "color": {
+            "changedBytes": 3250,
+            "maxChannel": 143
+          },
+          "repeat": {
+            "changedBytes": 0,
+            "maxChannel": 0
+          },
+          "shadowDepth": null,
+          "shadowRepeat": null,
+          "reference": {
+            "calls": 125,
+            "triangles": 78113
+          },
+          "candidate": {
+            "calls": 125,
+            "triangles": 78437
+          }
+        },
+        {
+          "view": "south-homes",
+          "bytes": 1316640,
+          "color": {
+            "changedBytes": 3534,
+            "maxChannel": 153
+          },
+          "repeat": {
+            "changedBytes": 0,
+            "maxChannel": 0
+          },
+          "shadowDepth": null,
+          "shadowRepeat": null,
+          "reference": {
+            "calls": 109,
+            "triangles": 64998
+          },
+          "candidate": {
+            "calls": 109,
+            "triangles": 65214
+          }
+        }
+      ],
+      "arms": [
+        {
+          "view": "service-plaza",
+          "label": "reference",
+          "median": 16.7,
+          "p95": 16.7,
+          "calls": 191,
+          "triangles": 107747,
+          "budgetPass": false
+        },
+        {
+          "view": "service-plaza",
+          "label": "candidate",
+          "median": 16.7,
+          "p95": 16.7,
+          "calls": 191,
+          "triangles": 107747,
+          "budgetPass": false
+        },
+        {
+          "view": "service-plaza",
+          "label": "candidate",
+          "median": 16.7,
+          "p95": 16.7,
+          "calls": 191,
+          "triangles": 107747,
+          "budgetPass": false
+        },
+        {
+          "view": "service-plaza",
+          "label": "reference",
+          "median": 16.7,
+          "p95": 16.7,
+          "calls": 191,
+          "triangles": 107747,
+          "budgetPass": false
+        },
+        {
+          "view": "west-homes",
+          "label": "reference",
+          "median": 16.7,
+          "p95": 16.8,
+          "calls": 125,
+          "triangles": 78113,
+          "budgetPass": true
+        },
+        {
+          "view": "west-homes",
+          "label": "candidate",
+          "median": 16.7,
+          "p95": 16.7,
+          "calls": 139,
+          "triangles": 79589,
+          "budgetPass": true
+        },
+        {
+          "view": "west-homes",
+          "label": "candidate",
+          "median": 16.7,
+          "p95": 16.7,
+          "calls": 139,
+          "triangles": 79589,
+          "budgetPass": true
+        },
+        {
+          "view": "west-homes",
+          "label": "reference",
+          "median": 16.7,
+          "p95": 16.7,
+          "calls": 139,
+          "triangles": 79265,
+          "budgetPass": true
+        },
+        {
+          "view": "south-homes",
+          "label": "reference",
+          "median": 16.7,
+          "p95": 16.8,
+          "calls": 109,
+          "triangles": 64998,
+          "budgetPass": true
+        },
+        {
+          "view": "south-homes",
+          "label": "candidate",
+          "median": 16.7,
+          "p95": 16.7,
+          "calls": 109,
+          "triangles": 65214,
+          "budgetPass": true
+        },
+        {
+          "view": "south-homes",
+          "label": "candidate",
+          "median": 16.7,
+          "p95": 16.7,
+          "calls": 109,
+          "triangles": 65214,
+          "budgetPass": true
+        },
+        {
+          "view": "south-homes",
+          "label": "reference",
+          "median": 16.7,
+          "p95": 16.8,
+          "calls": 109,
+          "triangles": 64998,
+          "budgetPass": true
+        }
+      ]
+    }
+  },
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-lanternhold-facades-native-checks-20261012",
+    "entries": 58,
+    "inventorySHA256": "3111608b42cd7d83c397c18b365cb0213c4eb01fc306acc7fe256ab73e7631e4"
+  },
+  "merge": "bb493b1596e9bd8d197a7bb114793576da401cd2"
+}

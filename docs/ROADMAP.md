@@ -1,10 +1,6 @@
 # Eidolon Engineering Roadmap
 
-October12 checkpoint: public43 is accepted. Qualified original-model Ilyra
-palettes, slate roof materials and smooth Dark district hero cutaway are merged
-locally for coherent44preparation; publication remains pending. Whole-game
-performance, final art and all original release gates remain open. See the
-[current evidence register](plans/2026-10-09-release-readiness-remaining.md).
+October12 current checkpoint: Alpha1.79.45/exact`31defee90` is accepted live within its town-material/foreground-home scope. All ten ordered CI38313813464attempt1 jobs succeeded; fresh22:45:16UTC normal-TLS checks match127asset hashes/bytes, frontend/backend identities, readyDB and analyticsJS. Live tests include6first-attempt passes,2configured-retry passes and1skip; original ERR_ABORTED/ERR_NETWORK_CHANGED asset failures remain open reliability findings. Full original readiness and crowded-town budgets remain open. [Acceptance](plans/2026-10-12-public45-terminal-qualification.json). Historical release checkpoints below retain their original evidence. See the [current remaining-work register](plans/2026-10-09-release-readiness-remaining.md).
 
 Alpha1.79.43/exact`d7de00d8` is accepted live with Lanternhold homes, strolling residents, blended gate roads, combat recipient resilience and qualified map-focus/district work. All ten ordered CI38208653308attempt1 jobs passed, including741client suites/11014tests, both deployments and liveQA. Fresh15:39:35UTC normal-TLS checks match all121assets, frontend/backend identities and readyDB. Four optional QA steps remain skipped. Crowded-town/High frame and Low plaza triangle failures remain open; full original goal active. [Acceptance](plans/2026-10-12-public43-terminal-qualification.json).
 

@@ -1,0 +1,43 @@
+{
+  "atUTC": "2026-10-12T22:49:56.186908+00:00",
+  "runtime": "f1f9105e",
+  "integration": "f868be5875adb511ca9bacf9c7a48263758744d5",
+  "status": "Functional town/native lifetime controls pass, performance rejected; candidate remains unselected/default absent",
+  "controls": {
+    "wholeRGBA": 6,
+    "HighPackedDepth": 3,
+    "restorations": 6,
+    "submissionCensuses": 6,
+    "movingABBAArms": 16,
+    "GPUCycles": 4,
+    "nativeFailures": 0
+  },
+  "gain": "High three views save exactly48shadow submissions with unchanged fullRGBA/packeddepth/triangles/source identities. Low shadows disabled:0entries/0saved and no owned allocations.",
+  "counterevidence": "High west reference16.7ms median in both outerA arms; bothB candidate33.3ms despite337\u2192289calls. High plaza remains33.3median and p95worsens33.4\u219250/49.9. Plaza381calls/278023tri still fails350/250000; Low107747tri still fails85000. Do not select based only on draw savings.",
+  "LowPopulationLimit": "West Low later candidate/reference share139calls/79265tri versus earlier125/78113 from moving residents. No causal Low draw/triangle claim.",
+  "resources": {
+    "high": {
+      "baseline": {
+        "geometries": 243,
+        "textures": 164,
+        "programs": 78
+      },
+      "cycles": 2
+    },
+    "low": {
+      "baseline": {
+        "geometries": 199,
+        "textures": 130,
+        "programs": 46
+      },
+      "cycles": 2
+    }
+  },
+  "next": "Profile CPU validation/synchronization cost using current native census as geometry provenance before another changed-candidate native timing check. No unchanged replay or target relaxation.",
+  "limits": "No default integration, whole-performance/art/device/connected/fullgoal acceptance. Own45accepted public source unchanged. Prior CPUpreflight hashed-worker filename mistake retained/corrected without runtime or browser mutation.",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-opaque-shadow-runtime-native-checks-20261012",
+    "entries": 42,
+    "inventorySHA256": "ba6c918eaad6c60eb6967d1220038c1df583910e536c43dc3c8fdf96b534ab04"
+  }
+}

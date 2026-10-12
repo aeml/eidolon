@@ -1,0 +1,25 @@
+{
+  "source": "bef34168b33f55b349e86ed3bdac4b5a9fa06f96",
+  "previousCandidate": "53db3f7ab125dd91c1d6b10604996163503f97fb",
+  "status": "Isolated CPU correction; native pending, unmerged",
+  "observedProblem": "Previous thin flashing underside sat above slate by 0.0117\u20130.0839 local units at eight sampled points. Original source retained; no native defect claim.",
+  "change": "Four folded flashing edges overlap actual slates at twelve CPU ray samples; existing six batches/materials, fifteen transforms and walking footprints preserved.",
+  "checks": {
+    "changedNeighborhoodPassed": 4,
+    "geometryComparisons": 24,
+    "seatingSamples": 12,
+    "lint": "pass",
+    "addedTrianglesAcross15Homes": 2160,
+    "totalHousingTriangles": 29280,
+    "unchangedCeiling": 30000
+  },
+  "reuse": "Earlier 11 unchanged timber/scenery checks retained; 15 distinct current checks, not 19. Prior 2040-added/29160-total counts are superseded.",
+  "limits": "No native art/fade/resource/cadence/device acceptance. Own45CI38313813464/source31defee90 still reserves GPU. Full goal and crowded-town budgets remain open.",
+  "atUTC": "2026-10-12T22:29:14.433653+00:00",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-lanternhold-flashing-cpu-checks-20261012",
+    "entries": 12,
+    "inventorySHA256": "c87afea6f0ea601663ddbdd15d106cd34ac350d9f2fb2de738708452bea1a58c"
+  },
+  "priorQualification": "2026-10-12-lanternhold-facades-cpu.json"
+}
