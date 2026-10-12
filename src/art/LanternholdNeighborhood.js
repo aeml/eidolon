@@ -3,24 +3,25 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { LANTERNHOLD_HOMES, LANTERNHOLD_HOME_SCALE } from '../data/lanternholdNeighborhood.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createLappedSlateRoof, createRoofEndInfill } from './LanternholdRoofGeometry.js';
+import { createLanternholdTimberMaterials, mapLanternholdTimberUV } from './LanternholdTimberSurface.js';
 
 // A single shared construction, material-batched across the residential wards.
 // Wall collisions follow the closed cabin, independently of its roof/doorstep.
-export function createLanternholdNeighborhood(cx = 0, cz = 200, { perInstanceFrustum = false } = {}) {
+export function createLanternholdNeighborhood(cx = 0, cz = 200, { perInstanceFrustum = false, quality = 'high' } = {}) {
     const root = new THREE.Group(); root.name = 'Lanternhold residential wards';
     root.userData.walkFootprints = [];
     root.userData.instanceCount = LANTERNHOLD_HOMES.length;
     root.userData.drawMeshCount = 6;
     const materials = {
         stone: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x6c6658, roughness: .96 }), 'weathered-masonry'),
-        timber: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x50402f, roughness: .93 }), 'timber'),
-        frame: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x2c231d, roughness: .96 }), 'timber'),
+        ...createLanternholdTimberMaterials(quality),
         roof: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x424a50, roughness: .9, vertexColors: true }), 'fieldstone'),
         iron: new THREE.MeshStandardMaterial({ color: 0x3b3d3c, metalness: .65, roughness: .6 }),
         window: new THREE.MeshStandardMaterial({ color: 0xc49b63, emissive: 0xc0843f, emissiveIntensity: .45, roughness: .65 })
     };
     const batches = new Map();
     const part = (geometry, key, position, rotation = [0, 0, 0]) => {
+        if (key === 'timber' || key === 'frame') mapLanternholdTimberUV(geometry, LANTERNHOLD_HOME_SCALE, position);
         const baked = geometry.index ? geometry.toNonIndexed() : geometry.clone(); geometry.dispose();
         baked.applyMatrix4(new THREE.Matrix4().compose(new THREE.Vector3(...position),
             new THREE.Quaternion().setFromEuler(new THREE.Euler(...rotation)), new THREE.Vector3(1, 1, 1)));
