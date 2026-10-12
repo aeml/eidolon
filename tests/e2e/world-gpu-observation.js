@@ -11,7 +11,7 @@ export function observeWorldGpuTime(game, label) {
         if (observers.has(renderer)) { reject(new Error('Renderer already has a GPU observer')); return; }
         const original = renderer.render, descriptor = Object.getOwnPropertyDescriptor(renderer, 'render');
         const queries = new Set(), pending = [], samples = [];
-        let gl, extension, active = null, warmup = 60, issued = 0, closed = false, installed = false;
+        let gl, extension, counterBits, active = null, warmup = 60, issued = 0, closed = false, installed = false;
         let deadline, polling;
         const current = () => gl.getQuery(extension.TIME_ELAPSED_EXT, gl.CURRENT_QUERY);
         function finish(error) {
@@ -38,8 +38,8 @@ export function observeWorldGpuTime(game, label) {
             queries.clear();
             if (error) { reject(error); return; }
             const percentile = (key, fraction) => samples.map(row => row[key]).sort((a, b) => a - b)[Math.floor((samples.length - 1) * fraction)];
-            resolve({ label, calls: samples.length, warmupCalls: 60, restored: true,
-                scope: 'Separate instrumented world-render calls, matching exact gameplay scene AND camera. CPU clocks include synchronous waits; GPU queries measure elapsed device time for submitted world work, including its shadows, excluding later fullscreen passes. Asynchronous polling never waits for the GPU. This is not an ordinary frame-budget sample or a comparison with another population.',
+            resolve({ label, calls: samples.length, warmupCalls: 60, counterBits, restored: true,
+                scope: 'Separate instrumented world-render calls, matching exact gameplay scene AND camera. CPU clocks include synchronous waits. GPU elapsed queries enclose world work and its shadows, excluding later fullscreen passes; they are not isolated shader busy-time measurements and may include submission starvation. Asynchronous polling never waits for the GPU. This is not an ordinary frame-budget sample or a comparison with another population.',
                 cpuMedianMs: percentile('cpuMs', .5), cpuP95Ms: percentile('cpuMs', .95),
                 gpuMedianMs: percentile('gpuMs', .5), gpuP95Ms: percentile('gpuMs', .95), samples });
         }
@@ -107,6 +107,8 @@ export function observeWorldGpuTime(game, label) {
         try {
             gl = renderer.getContext(); extension = gl.getExtension('EXT_disjoint_timer_query_webgl2');
             if (!extension || typeof gl.createQuery !== 'function') throw new Error('WebGL2 GPU elapsed queries are unavailable');
+            counterBits = gl.getQuery(extension.TIME_ELAPSED_EXT, extension.QUERY_COUNTER_BITS_EXT);
+            if (!Number.isInteger(counterBits) || counterBits < 30) throw new Error('GPU elapsed counter has no supported precision');
             if (gl.isContextLost() || gl.getParameter(extension.GPU_DISJOINT_EXT)) throw new Error('GPU elapsed clock is unavailable');
             if (current()) throw new Error('GPU observation conflicts with an active elapsed query');
             observers.add(renderer);

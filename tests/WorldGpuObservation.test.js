@@ -2,13 +2,13 @@ import { jest } from '@jest/globals';
 import { observeWorldGpuTime } from './e2e/world-gpu-observation.js';
 
 function fixture() {
-    const extension = { TIME_ELAPSED_EXT: 1, GPU_DISJOINT_EXT: 2 };
+    const extension = { TIME_ELAPSED_EXT: 1, GPU_DISJOINT_EXT: 2, QUERY_COUNTER_BITS_EXT: 6 };
     let active = null, sequence = 0;
     const gl = {
         CURRENT_QUERY: 3, QUERY_RESULT_AVAILABLE: 4, QUERY_RESULT: 5,
-        lost: false, disjoint: false, available: true,
+        lost: false, disjoint: false, available: true, counterBits: 64,
         getExtension: jest.fn(() => extension), isContextLost: () => gl.lost,
-        getParameter: () => gl.disjoint, getQuery: () => active,
+        getParameter: () => gl.disjoint, getQuery: (target, parameter) => parameter === extension.QUERY_COUNTER_BITS_EXT ? gl.counterBits : active,
         createQuery: jest.fn(() => ({ id: sequence++ })),
         beginQuery: jest.fn((target, query) => { expect(target).toBe(extension.TIME_ELAPSED_EXT); expect(active).toBeNull(); active = query; }),
         endQuery: jest.fn(() => { active = null; }), deleteQuery: jest.fn(),
@@ -39,7 +39,7 @@ test('world queries are asynchronous, bounded, ordered and cleaned after all180r
     expect(gl.beginQuery).toHaveBeenCalledTimes(180); expect(gl.endQuery).toHaveBeenCalledTimes(180);
     expect(gl.deleteQuery).toHaveBeenCalledTimes(180); expect(new Set(gl.deleteQuery.mock.calls.map(([q]) => q)).size).toBe(180);
     expect(original).toHaveBeenCalledTimes(245); expect(renderer.render).toBe(original); expect(Object.hasOwn(renderer, 'render')).toBe(false);
-    expect(jest.getTimerCount()).toBe(0); expect(report.restored).toBe(true);
+    expect(jest.getTimerCount()).toBe(0); expect(report.restored).toBe(true); expect(report.counterBits).toBe(64);
 });
 
 test('only exact scene AND camera advance warmup and queries; other calls preserve arguments and returns', async () => {
@@ -160,4 +160,10 @@ test('no world draws time out and release the observer for a later attempt', asy
     const { game, renderer, original, draw } = fixture(); const promise = observeWorldGpuTime(game, 'inactive');
     const rejection = expect(promise).rejects.toThrow('0 calls'); jest.advanceTimersByTime(45_000); await rejection;
     expect(renderer.render).toBe(original); const next = observeWorldGpuTime(game, 'active'); drive(draw); jest.advanceTimersByTime(16); await next;
+});
+
+test.each([0, 29, NaN])('unsupported counter precision %s rejects before allocating a query', async bits => {
+    const { game, renderer, gl, original } = fixture(); gl.counterBits = bits;
+    await expect(observeWorldGpuTime(game, 'precision')).rejects.toThrow('precision');
+    expect(renderer.render).toBe(original); expect(gl.createQuery).not.toHaveBeenCalled(); expect(jest.getTimerCount()).toBe(0);
 });
