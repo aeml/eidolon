@@ -128,7 +128,7 @@ class GameEngineNetworkMessageMethods {
         if (type === 'casino') {
             createCasinoInterior(this.getInstanceEnvironmentGroup(), this.collisionManager);
         } else if (type === 'dark_realm') {
-            createDarkRealmScene(this.getInstanceEnvironmentGroup(), layout, this.collisionManager);
+            createDarkRealmScene(this.getInstanceEnvironmentGroup(), layout, this.collisionManager, { quality: this.renderSystem.graphicsQuality });
         } else if (type === 'pvp_arena') {
             worldGen.createPvPArena(layout);
         } else if (type === 'crypt') {

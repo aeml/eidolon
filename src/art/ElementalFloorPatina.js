@@ -2,6 +2,7 @@
 // partition. Existing maps provide the stone joints; this adds no texture,
 // displacement, emissive hazard, animation clock or extra render pass.
 const profiles = {
+    dark_realm: { frequency: [.023, .017, -.019, .031], phase: 1.9, roughness: [.005, .015] },
     molten_core: { frequency: [.043, .031, -.019, .057], phase: .4, roughness: [.03, .035] },
     tempest_spire: { frequency: [.029, .061, -.047, .023], phase: 1.2, roughness: [.015, .025] },
     abyssal_well: { frequency: [.023, .037, -.051, .017], phase: 2.1, roughness: [-.03, .035] },

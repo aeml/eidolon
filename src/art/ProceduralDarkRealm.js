@@ -5,6 +5,7 @@ import { DUNGEON_FLOOR_TEXTURE_SPAN } from './ProceduralDungeonInteriors.js';
 import { DARK_REALM_COURTS, DARK_REALM_COURT_SOLIDS, DARK_REALM_PATHS } from '../data/darkRealmPopulation.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createWorldPathNetwork } from './ProceduralWorldPaths.js';
+import { createDarkRealmStreetMaterial } from './DarkRealmStreetSurface.js';
 
 const CAMP_LANTERNS = [[-24, -24], [24, -24], [24, 24], [-24, 24]];
 const CAMP_SHELTERS = [[-22, 12], [22, 12]];
@@ -25,33 +26,9 @@ export function getDarkRealmCourtColliders() {
         new THREE.Vector3(s.x + s.width / 2, s.height, s.z + s.depth / 2)));
 }
 
-// Streets should support readable actors and discoveries, not repeat the
-// Nexus's luminous fracture pattern across an entire outdoor district.
-function expeditionStoneTexture() {
-    const size = 128, pixels = new Uint8Array(size * size * 4);
-    for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
-        const row = Math.floor(y / 16), shifted = (x + (row % 2) * 16) % size;
-        const column = Math.floor(shifted / 32), u = shifted % 32, v = y % 16;
-        const joint = u < 1 || v < 1;
-        const edge = u === 1 || v === 1;
-        const grain = ((x * 17 + y * 29 + x * y * 3) % 7) - 3;
-        const shade = joint ? -14 : (edge ? 5 : 0) + ((row * 13 + column * 7) % 11) - 5 + grain;
-        const index = (y * size + x) * 4;
-        pixels.set([77 + shade, 74 + shade, 87 + shade, 255], index);
-    }
-    const texture = new THREE.DataTexture(pixels, size, size, THREE.RGBAFormat);
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    texture.magFilter = THREE.LinearFilter;
-    texture.minFilter = THREE.LinearMipmapLinearFilter;
-    texture.generateMipmaps = true;
-    texture.needsUpdate = true;
-    return texture;
-}
-
 // An open-air expedition, not another sequence of enclosed boss rooms. District
 // silhouettes stay outside the floors; camp solids have shared walk colliders.
-export function createDarkRealmScene(scene, layout, collisionManager = null) {
+export function createDarkRealmScene(scene, layout, collisionManager = null, { quality = 'high' } = {}) {
     if (!layout?.rooms?.length || !layout?.walkRects?.length) throw new Error('Dark Realm requires authoritative geography');
     const root = new THREE.Group();
     root.name = 'dark-realm-expedition';
@@ -62,7 +39,7 @@ export function createDarkRealmScene(scene, layout, collisionManager = null) {
     root.add(paths);
     getDarkRealmCampColliders(origin).forEach(box => collisionManager?.addCollider(box));
     getDarkRealmCourtColliders().forEach(box => collisionManager?.addCollider(box));
-    const floorMaterial = new THREE.MeshStandardMaterial({ map: expeditionStoneTexture(), roughness: .96 });
+    const floorMaterial = createDarkRealmStreetMaterial(quality);
     const { floors, walls } = buildDungeonSurfaceUnion(layout.walkRects);
     for (const rect of floors) {
         const x = (rect.left + rect.right) / 2 - origin.x;
