@@ -1,0 +1,25 @@
+{
+  "recordedUTC": "2026-10-12T01:17:50.358735+00:00",
+  "source": "03dc9bb7b50dcda9903299c7fdba54183a56e1ad",
+  "base": "5e98360a4cd7aa8c48aecebaa7bf826d6066e795",
+  "changedPaths": [
+    "tests/WorldGpuObservation.test.js",
+    "tests/e2e/helpers.js",
+    "tests/e2e/terrain-equipped-party.spec.js",
+    "tests/e2e/world-gpu-observation.js"
+  ],
+  "runtimeChanges": 0,
+  "workerSHA256": "ed74163bff6f2ccc48d8f4364cbca258858d68b95b1cc42f4b91d04304fc9203",
+  "focusedTests": 52,
+  "suites": 2,
+  "nativeQualification": "PENDING: initial live encounter waypoint missed unchanged12m proximity gate; retained terminal failure, no GPU samples. Precision guard and richer failure context added; final attempt yielded owned browser immediately when shared GPU CI predeploy began. Interrupted overlap disqualified. No runtime/performance/save/native acceptance claimed. All synthetic identities sanitized; own browser/API/database terminated.",
+  "heldDetached": true,
+  "primarySpecs": [
+    "https://registry.khronos.org/webgl/extensions/EXT_disjoint_timer_query_webgl2/",
+    "https://registry.khronos.org/OpenGL/extensions/EXT/EXT_disjoint_timer_query.txt"
+  ],
+  "worktree": "/home/aeml/.local/share/eidolon-gpu-observer-20261012",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-connected40-world-gpu-checks-20261012",
+  "status": "Unfinished detached QA-only GPU diagnostic;52focused checks pass, connected native qualification pending. Not merged or published. Resume only with sole GPU use; preserve both retained incomplete attempts.",
+  "currentPublicAcceptance": "2026-10-12-public40-terminal-qualification.json"
+}

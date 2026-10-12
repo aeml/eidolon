@@ -2,7 +2,7 @@
   "recordedUTC": "2026-10-12T00:50:40.313434+00:00",
   "version": "Alpha 1.79.40",
   "source": "5e98360a4cd7aa8c48aecebaa7bf826d6066e795",
-  "status": "Same-version QA-only corrective publication ordinarily pushed after original terminal failure; own ordered CI/deploy/live and fresh public acceptance pending. Accepted39 remains current.",
+  "status": "Accepted in exact corrective40/5e98360a after own ordered CI/deploy/live and fresh normal-TLS101asset/frontend/backend/readyDB checks; retained scopes and full original goal remain open.",
   "ci": {
     "id": 38189518140,
     "attempt": 1,
@@ -51,7 +51,7 @@
     "reuse": "Exact unchanged runtime/native/reward/save evidence; QA reader only."
   },
   "sourceIntegration": "Fresh fetch and ordinary merge already up to date; clean master ordinary-pushed c445446f to5e98360a. Only master active locally and on origin.",
-  "acceptanceRequired": "Own exact ordered CI/deployment/live success, then fresh normal-TLS frontend/backend source/version, readyDB and all101asset lengths/SHA into a separate acceptance root.",
+  "acceptanceRequired": "Resolved by2026-10-12-public40-terminal-qualification.json: own ordered ten-job CI/deploy/live success, then fresh normal-TLS frontend/backend source/version, readyDB and101asset lengths/SHA.",
   "previousAccepted": "2026-10-11-public39-terminal-qualification.json",
   "limits": "Runtime, assets, worker, server, all12versions and475cumulative notes unchanged from qualified original40. Corrected498focused checks/27suites and scoped lint pass; original gameplay/save/native/atlas evidence reused within exact scope. No human campaign, physical device, whole-game performance, final-art, capacity, F1-F5/beta/launch/handoff closure; full original goal remains active.",
   "custody": {
@@ -60,5 +60,6 @@
     "inventorySHA256": "eb167fa98d45995d65cd1887f0c8326191961ace19252715d5dd8c49abc4f559"
   },
   "expectedManifest": "/home/aeml/.local/share/eidolon-release40-corrective-publication-checks-20261012/expected-public40-assets.json",
-  "publicChecker": "/home/aeml/.local/share/eidolon-release40-corrective-publication-checks-20261012/check-public.py"
+  "publicChecker": "/home/aeml/.local/share/eidolon-release40-corrective-publication-checks-20261012/check-public.py",
+  "terminalAcceptance": "2026-10-12-public40-terminal-qualification.json"
 }

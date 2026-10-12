@@ -1118,11 +1118,13 @@ c445446f/CI38187681206attempt1 terminally failed only one stale earned-raid test
 fixture:732client suites/10920tests pass,4fixture assertions fail. Server/all
 three browser shards pass;5downstream jobs skipped, no deployment. Qualified
 QA-only correction5e98360a was ordinary-pushed after fresh fetch+merge; own
-CI38189518140attempt1 is active. Runtime/assets/server/12versions/475notes are
+CI38189518140attempt1 passed all10ordered jobs, with733client suites/10925tests.
+Fresh01:35:56UTC normal-TLS101asset/frontend/backend/readyDB checks accept exact40.
+Runtime/assets/server/12versions/475notes are
 byte-exact to original40, aside from prepared release source identity. Frozen
 14entry corrective inventoryeb167fa98d45995d65cd1887f0c8326191961ace19252715d5dd8c49abc4f559.
-Require own ordered CI/deploy/live and fresh normal-TLS101asset/frontend/backend/
-readyDB before next milestone; accepted39 remains current. No retries/cancels,
+Exact40 acceptance is retained in public40-terminal-qualification. Optional stages
+remain skips; this does not close human pacing, final-world or full release gates. No retries/cancels,
 unchanged campaigns/soaks or final original1.11–1.99/F1–F5/beta/launch/handoff
 closure. Existing100clientsoak38109009521 remains active, not capacity proof.
 See quest-pacing-qualification and release40-guard-corrective-publication.
@@ -1140,3 +1142,14 @@ Prepared flat-terrain views are not actual Dark floor/connected performance,
 human motion approval, physical device or final-world acceptance. No reward,
 server, data, version or note changes. No further push before exact40acceptance;
 full original scope remains active. See chronicle-waystone-qualification.
+
+
+Separate QA-only GPU diagnostic03dc9bb7 remains unfinished in detached owned
+worktree eidolon-gpu-observer-20261012.52focused checks/two suites and scoped lint
+pass. Initial connected waypoint failed unchanged12m proximity before sampling;
+later precision-guard attempt stopped only its owned browser when shared-host
+native CI began. Overlap is disqualified. Eight synthetic identities sanitized;
+owned APIs/databases/browser processes closed. No GPU timing/native/save/performance
+acceptance or merge/publication claimed. Exact40 is now accepted; next bounded
+diagnostic may resume with sole GPU use, preserving both attempts. No unchanged
+campaign/soak replay or full-goal closure. See world-gpu-diagnostic-draft.

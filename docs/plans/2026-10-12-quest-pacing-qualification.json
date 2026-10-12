@@ -1,6 +1,6 @@
 {
   "recordedUTC": "2026-10-12T00:19:34.521204+00:00",
-  "status": "Qualified and ordinarily merged into master; included in40/c445446f. Ordered CI/deployment/live acceptance pending; accepted39 retained.",
+  "status": "Accepted in exact corrective40/5e98360a after own ordered CI/deploy/live and fresh normal-TLS101asset/frontend/backend/readyDB checks; retained scopes and full original goal remain open.",
   "source": "faec678f494b54b715a1f106edf859d50b30ba47",
   "merge": "896ad223e604206440e927b15845eb4611d9d3c3",
   "cause": "Oversized chroniclePreparationXP bridges, including200000XP after Verdant Bastion, bypassed enemy bands.",
@@ -34,7 +34,8 @@
     "designForecastSoloHours": 91.4,
     "designForecastParty4Hours": 86.0,
     "designForecastFirstDungeonHours": 2.7222,
-    "humanPacingValidated": false
+    "humanPacingValidated": false,
+    "lateProgressionLimit": "The no-daily mixed-combat forecast carries about77hours in80-100. This numerical model is not human acceptance; full progression review remains open."
   },
   "validation": {
     "fullServerSuite": "PASS, all packages, a0ca439d source; final prose-only content update subsequently passes focused authored-content race.",
@@ -46,7 +47,14 @@
     "generatedGroups": 13,
     "nativePreparedQualityCases": 2,
     "nativeAtlasCases": 2,
-    "fullClientDiagnostic": "Terminal134/default Node heap exhaustion after three stale assertion/reader groups were identified. All three are corrected and covered by498passing final checks. No full-client pass claimed; ordered CI remains required."
+    "fullClientDiagnostic": "Historical local full-suite diagnostic exited134/default Node heap exhaustion after three stale assertion/reader groups were identified. All three are corrected; subsequent exact corrective40 CI passes733suites/10925tests. Original diagnostic retained; no local full-suite pass claimed.",
+    "fullClientCI": {
+      "run": 38189518140,
+      "attempt": 1,
+      "suites": 733,
+      "tests": 10925,
+      "conclusion": "success"
+    }
   },
   "compatibility": "Every previous milestone preserves earned level/access, paid receipts, accepted counts and Gold. New earlier chapters become optional. Unpaid oversized story quotes are reduced; zero/lower accepted promises retained. BSON/save/resource/race checks pass.",
   "priorFailures": "Retained route/forecast, stale-quote/numbering assumptions, initial null-player native fixture, flat-world-then-elevation fixture, daily overlap diagnosis and unsupported local Node18 full-client setup. Fixed causes, no payout/entry/forecast waiver.",
@@ -55,5 +63,6 @@
     "entries": 88,
     "inventorySHA256": "59efa679cac629b6beac421711900f5ea9d8c5bd72d92e41def6274a18d59cc6"
   },
-  "limits": "Route and playtime diagnostics are mathematical/action checks, not earned campaign or human pacing acceptance. Original full world/art/gameplay/device/performance/operations/F1-F5/beta/launch/handoff requirements remain active. Owner-deferred campaign/phone feedback unchanged; no expensive campaign/soak rerun."
+  "limits": "Route and playtime diagnostics are mathematical/action checks, not earned campaign or human pacing acceptance. Original full world/art/gameplay/device/performance/operations/F1-F5/beta/launch/handoff requirements remain active. Owner-deferred campaign/phone feedback unchanged; no expensive campaign/soak rerun.",
+  "terminalAcceptance": "2026-10-12-public40-terminal-qualification.json"
 }
