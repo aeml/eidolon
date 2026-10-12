@@ -1630,3 +1630,17 @@ Original-model palette/Dark roofs/shared49meshcutaway deployed within scope;
 preceding failures retained, no retries/waivers. GPU now free for isolated
 qualification; full original readiness goal/crowded-town/art/device/gameplay/
 owner/F1–F5/beta/launch/handoff requirements remain open. Existing41soak continues.
+
+
+October12 final timberb7ed06d2 qualified and ordinarily merged into master.
+Physical board/frame grain improves normalzoom15homes without changing six
+batches/fullgeometry/colliders/roof silhouettes. Initial14CPUchecks reused,
+corrected6material checks/six exactcachedmap controls pass. Native twoGPUcycles/
+profile exactbaseline/all53resourcesonce; six shadercolor controls exact.
+ActualHigh/Low12townimages/sixRGBArestores/threeHighdepth controls/24ABBAarms
+retain moving suppliedfour14slotclasses/HUD/Go residents. Initial stale stock
+depth sampler texturefailure retained and corrected; private960KiBrecipes bound
+returning construction. Frozen72entry inventory
+`e1cd12df3cc5ae8ea841a4f00891ca19a2cb88a26129b5d8ece3f3d0d5d8d3d1`.
+Crowdedplaza originalbudget failures persist. Foreground-house player occlusion
+remains next before coherent publication. Public44accepted; fullgoal remains open.
