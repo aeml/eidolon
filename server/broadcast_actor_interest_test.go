@@ -75,7 +75,7 @@ func TestBroadcastActorInterestUsesActualQueuedSnapshotsAndRetiresRemovedActors(
 			if client.playerID == "far" || client.playerID == "other-scene" {
 				want = 0
 			}
-			if got := len(drainSentMessages(client.prioritySend)); got != want {
+			if got := len(drainSentMessages(client.send)); got != want {
 				t.Fatalf("%s delivered%d to%s, want%d", kind, got, client.playerID, want)
 			}
 		}
@@ -85,12 +85,12 @@ func TestBroadcastActorInterestUsesActualQueuedSnapshotsAndRetiresRemovedActors(
 	world.RemoveEntity("caster")
 	message := BroadcastMessage{Type: MsgAttack, ActorID: "caster", Data: createMessage(MsgAttack, []byte(`{}`))}
 	deliverBroadcast(message)
-	if got := len(drainSentMessages(activeSessions["observer"].prioritySend)); got != 1 {
+	if got := len(drainSentMessages(activeSessions["observer"].send)); got != 1 {
 		t.Fatal("already-queued actor view lost its final visual")
 	}
 	delete(activeSessions, "caster")
 	for client := range clients {
-		drainSentMessages(client.prioritySend)
+		drainSentMessages(client.send)
 	}
 	// The removed caster's transport is no longer a joined recipient, so avoid
 	// demanding a new self snapshot from it in this synthetic delivery fixture.
@@ -102,7 +102,7 @@ func TestBroadcastActorInterestUsesActualQueuedSnapshotsAndRetiresRemovedActors(
 	flushSnapshot()
 	deliverBroadcast(message)
 	for client := range clients {
-		if len(drainSentMessages(client.prioritySend)) != 0 {
+		if len(drainSentMessages(client.send)) != 0 {
 			t.Fatal("removed actor retained a presentation audience")
 		}
 	}

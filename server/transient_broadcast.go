@@ -15,22 +15,24 @@ const (
 var transientBroadcastDropped atomic.Uint64
 var encounterBroadcastDropped atomic.Uint64
 var invalidBroadcastDropped atomic.Uint64
+var visualRecipientDropped atomic.Uint64
 
 type broadcastQueueMetrics struct {
-	Queued            int    `json:"queued"`
-	Capacity          int    `json:"capacity"`
-	EncounterQueued   int    `json:"encounterQueued"`
-	EncounterCapacity int    `json:"encounterCapacity"`
-	Dropped           uint64 `json:"dropped"`
-	EncounterDropped  uint64 `json:"encounterDropped"`
-	InvalidDropped    uint64 `json:"invalidDropped"`
+	Queued                 int    `json:"queued"`
+	Capacity               int    `json:"capacity"`
+	EncounterQueued        int    `json:"encounterQueued"`
+	EncounterCapacity      int    `json:"encounterCapacity"`
+	Dropped                uint64 `json:"dropped"`
+	EncounterDropped       uint64 `json:"encounterDropped"`
+	InvalidDropped         uint64 `json:"invalidDropped"`
+	VisualRecipientDropped uint64 `json:"visualRecipientDropped"`
 }
 
 func transientBroadcastMetrics() broadcastQueueMetrics {
 	return broadcastQueueMetrics{Queued: len(broadcast), Capacity: cap(broadcast),
 		EncounterQueued: len(encounterBroadcast), EncounterCapacity: cap(encounterBroadcast),
 		Dropped: transientBroadcastDropped.Load(), EncounterDropped: encounterBroadcastDropped.Load(),
-		InvalidDropped: invalidBroadcastDropped.Load()}
+		InvalidDropped: invalidBroadcastDropped.Load(), VisualRecipientDropped: visualRecipientDropped.Load()}
 }
 
 // Only lossy world presentation belongs here. Money, inventory, quest/reward
