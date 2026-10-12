@@ -18,10 +18,12 @@ async function restoreEarnedEncounterReadiness(page, credentials, route) {
         await returnToTown(page, { allowRespawn: false });
     }
     const chapter = route.dungeon, prior = route.prior;
-    for (const id of prior) expect(await page.evaluate(id => {
-        const q = window.game.player.quests.find(q => q.id === id);
-        return q?.completed || q?.legacyOptional === true;
-    }, id), id).toBe(true);
+    for (const id of prior) {
+        const q = await readChronicleChapter(page, id);
+        const retainedOptional = q?.completed !== true && await page.evaluate(id =>
+            window.game.player.quests.find(q => q.id === id)?.legacyOptional === true, id);
+        expect(q?.completed === true || retainedOptional === true, id).toBe(true);
+    }
     const offered = await readChronicleChapter(page, chapter);
     expect(offered).toMatchObject({ completed: false, count: 0 });
     if (offered.accepted === false) {
