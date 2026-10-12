@@ -529,7 +529,7 @@ identities, ready database and all78served asset hashes/byte counts match at
 12versions align35;470cumulative notes preserve all469prior entries byte-exact.
   [Publication](docs/plans/2026-10-11-release35-publication.json).
 - Alpha 1.79.40 is accepted live at `5e98360a4cd7aa8c48aecebaa7bf826d6066e795`. Corrective CI38189518140 attempt1 passed all ten ordered jobs, including 733 client suites/10,925 tests, server race checks, three browser shards, native predeployment checks and live QA. Fresh 01:35:56 UTC normal-TLS checks match frontend/backend identities, ready database and all 101 served asset sizes/SHA. Ordinary quests pay 75% and dungeon story quests 125% of their content-level bar, with a two-level turn-in ceiling and 62 smaller regional chapters. Existing earned progression, paid receipts and access remain intact. Original stale QA reader failure is retained; human pacing remains owner-deferred. [Acceptance](docs/plans/2026-10-12-public40-terminal-qualification.json).
-- Current source version: `Alpha 1.79.45`, Dark district hero visibility, mineral slate roofs and shared original-model Ilyra animation palettes;
+- Current source version: `Alpha 1.79.46`, Lanternhold side windows and stove flues, smooth foreground-home visibility and exact full-geometry opaque shadow batching;
   initial44 client gate failed on the unchanged scene mesh budget; qualified 49-mesh correction is merged; exact copied build/native checks pass and corrective CI 38296738287 acceptance remains pending; accepted43 retains Lanternhold neighborhoods, gradual regional quests and bounded XP rewards;
   retains precomputed supplied-character geometry and richer Pilgrim Rest camp details;
   retains Forge and merchant keyboard controls
