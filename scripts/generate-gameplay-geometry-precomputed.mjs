@@ -117,6 +117,7 @@ self.addEventListener('message',async ({data:{id,kind,source}})=>{
     if (JSON.stringify(provenance) !== JSON.stringify(await geometryProvenance(repository))) throw Error('Geometry sources changed during generation');
     const artifact = buildGeometryArtifact([...rows.values()], provenance), asset = path.join(repository, artifact.catalog.url.slice(6));
     await mkdir(path.dirname(asset), { recursive: true }); await writeFile(asset, artifact.bytes);
+    for (const [index, shard] of artifact.catalog.shards.entries()) await writeFile(path.join(repository, shard.url.slice(6)), artifact.shards[index]);
     await writeFile(path.join(repository, CATALOG_PATH), serializeCatalog(artifact.catalog));
     console.log(JSON.stringify({ ...await checkGeometryArtifact(repository), counts }));
 }
