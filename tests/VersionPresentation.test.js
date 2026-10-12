@@ -673,7 +673,7 @@ test('1.58.1 records presentation polish without claiming unavailable model swap
         'follows your character', 'golden filigree', 'drawing-buffer size', 'reduced motion',
         'after three seconds', 'power and duration', 'does not include new Rogue, Cleric or Wizard models',
         'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
-    expect(fs.readFileSync('.github/workflows/ci.yml', 'utf8')).toContain("sg render -c 'npm run test:e2e:celebration -- --output=native-visual-evidence/celebration/results'");
+    expect(fs.readFileSync('.github/workflows/ci.yml', 'utf8')).toContain("sg render -c 'bash scripts/run-native-visual-qa.sh npm run test:e2e:celebration -- --output=native-visual-evidence/celebration/results'");
 });
 
 test('1.58.0 records optional endgame direction without new reward grants or EP power', () => {
