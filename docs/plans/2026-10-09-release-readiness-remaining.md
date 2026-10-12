@@ -314,10 +314,7 @@ identities, ready database and all78served asset hashes/byte counts match at
   timing benefit overlaps parity. Keep its runtime separate from master. The
   larger float-copy improvement remains selected and merged.
   [Disposition](2026-10-11-unsigned-geometry-copy-disposition.json).
-- **Existing 100-client soak:** run 38109009521 remains active on accepted public
-  29 `12e5e3c4`. It is not a completed capacity gate or a test of release 31 or 32.
-  The prior failed soak remains open; no retry/cancellation or unchanged campaign
-  replay has been performed.
+- **100-client soak terminal evidence:** exact29source`12e5e3c4` run38109009521 endedFAIL after24hwall, four read errors and only40m44.342s common100client state coverage. Neither wall duration nor readyhealth establish sustained capacity. Already-scheduled current41run38200870030 is independently verified active; it has no terminal acceptance. Earlier transport and coverage failures remain open. No agent-launched retry/cancel or unchanged campaign replay. [Failure](2026-10-12-soak29-terminal-failure.json).
 
 - **Guild calendar/recruitment integration:** selected `4238a1eb`, historical
   integration join `db108b1b`, qualified `b5d073c4`, ordinarily merged `4308ba85`.
