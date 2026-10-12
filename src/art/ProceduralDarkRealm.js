@@ -7,6 +7,7 @@ import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createWorldPathNetwork } from './ProceduralWorldPaths.js';
 import { createDarkRealmStreetMaterial } from './DarkRealmStreetSurface.js';
 import { createDarkCampShelterGeometry } from './DarkCampShelterGeometry.js';
+import { createDarkCampLanternGeometry } from './DarkCampLanternGeometry.js';
 
 const CAMP_LANTERNS = [[-24, -24], [24, -24], [24, 24], [-24, 24]];
 const CAMP_SHELTERS = [[-22, 12], [22, 12]];
@@ -144,10 +145,12 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
             for (const [i, offset] of CAMP_LANTERNS.entries()) {
                 const px = x + offset[0], pz = z + offset[1];
                 const elemental = new THREE.MeshStandardMaterial({ color: [0x8bb96b, 0x70bcd8, 0xe99663, 0xb9a9ed][i],
-                    emissive: [0x8bb96b, 0x70bcd8, 0xe99663, 0xb9a9ed][i], emissiveIntensity: .9 });
-                block(stone, [2.2, 1.2, 2.2], [px, .6, pz]);
-                block(bronze, [.4, 3.4, .4], [px, 2.9, pz]);
-                block(elemental, [1.2, 1.6, 1.2], [px, 5, pz], Math.PI / 4);
+                    emissive: [0x8bb96b, 0x70bcd8, 0xe99663, 0xb9a9ed][i], emissiveIntensity: .55, roughness: .42 });
+                elemental.userData.darkRealmLanternCore = true;
+                const lantern = createDarkCampLanternGeometry(quality);
+                append(stone, lantern.stone, [px, 0, pz]);
+                append(bronze, lantern.metal, [px, 0, pz]);
+                append(elemental, lantern.core, [px, 0, pz]);
                 root.userData.landmarks.push({ kind: 'resonance-lantern', x: px + origin.x, z: pz + origin.z });
             }
             const canvas = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({
@@ -199,7 +202,8 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
     }
     for (const [material, geometries] of batches) {
         const mesh = new THREE.Mesh(mergeGeometries(geometries, false), material);
-        mesh.name = material.userData.darkRealmShelterCanvas ? 'expedition-canvas-shelter' : 'dark-realm-scenery-batch';
+        mesh.name = material.userData.darkRealmLanternCore ? 'dark-realm-resonance-core' :
+            material.userData.darkRealmShelterCanvas ? 'expedition-canvas-shelter' : 'dark-realm-scenery-batch';
         mesh.castShadow = true; mesh.receiveShadow = true;
         root.add(mesh);
         geometries.forEach(geometry => geometry.dispose());

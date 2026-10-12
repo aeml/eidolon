@@ -1,0 +1,319 @@
+{
+  "recordedUTC": "2026-10-12T02:32:08.384159+00:00",
+  "source": "f4de9fb80aa680a1e0864a874b6c48a37b5144e4",
+  "status": "Qualified bounded lantern construction; ordinarily merge into master for coherent world-art milestone. Public40 remains accepted.",
+  "change": "Four existing glowing boxes become stepped stone feet, tapered shafts, metal bowls/cages/rain caps and smaller opaque elemental cores. Original colors/positions/landmarks retained. Existing stone/bronze/four-core material batches; no lights, maps, render passes or clock hooks added.",
+  "focused": {
+    "tests": 12,
+    "suites": 3,
+    "seconds": 6.678,
+    "scopedLint": true,
+    "diffCheck": true
+  },
+  "geometry": {
+    "rows": [
+      {
+        "quality": "high",
+        "before": {
+          "meshes": 38,
+          "triangles": 8150,
+          "excludedLanternTriangles": 144,
+          "outsideLanternTriangles": 8006,
+          "outsideLanternSHA256": "140bfee8a86ca54681cd830804d46146dc43c08c83bb286b7092ab1c0c32ec79"
+        },
+        "after": {
+          "meshes": 38,
+          "triangles": 10694,
+          "excludedLanternTriangles": 2688,
+          "outsideLanternTriangles": 8006,
+          "outsideLanternSHA256": "140bfee8a86ca54681cd830804d46146dc43c08c83bb286b7092ab1c0c32ec79"
+        },
+        "addedTriangles": 2544,
+        "floorUVGeometryAndLandmarksExact": true
+      },
+      {
+        "quality": "low",
+        "before": {
+          "meshes": 38,
+          "triangles": 7254,
+          "excludedLanternTriangles": 144,
+          "outsideLanternTriangles": 7110,
+          "outsideLanternSHA256": "923b915894725a52c079c18c6d4414e164f0214cbaa90e12c6f5aee62501d158"
+        },
+        "after": {
+          "meshes": 38,
+          "triangles": 9030,
+          "excludedLanternTriangles": 1920,
+          "outsideLanternTriangles": 7110,
+          "outsideLanternSHA256": "923b915894725a52c079c18c6d4414e164f0214cbaa90e12c6f5aee62501d158"
+        },
+        "addedTriangles": 1776,
+        "floorUVGeometryAndLandmarksExact": true
+      }
+    ],
+    "colliders": [
+      {
+        "min": [
+          39974.9,
+          -1,
+          40774.9
+        ],
+        "max": [
+          39977.1,
+          6,
+          40777.1
+        ]
+      },
+      {
+        "min": [
+          40022.9,
+          -1,
+          40774.9
+        ],
+        "max": [
+          40025.1,
+          6,
+          40777.1
+        ]
+      },
+      {
+        "min": [
+          40022.9,
+          -1,
+          40822.9
+        ],
+        "max": [
+          40025.1,
+          6,
+          40825.1
+        ]
+      },
+      {
+        "min": [
+          39974.9,
+          -1,
+          40822.9
+        ],
+        "max": [
+          39977.1,
+          6,
+          40825.1
+        ]
+      },
+      {
+        "min": [
+          39974.6,
+          -1,
+          40808.6
+        ],
+        "max": [
+          39981.4,
+          5,
+          40815.4
+        ]
+      },
+      {
+        "min": [
+          40018.6,
+          -1,
+          40808.6
+        ],
+        "max": [
+          40025.4,
+          5,
+          40815.4
+        ]
+      }
+    ],
+    "colliderCount": 22,
+    "scope": "All triangles outside the four existing camp lantern solids with1e-5m Float32 comparison tolerance retain sorted world positions/attributes/material/flags; floor geometry/UV/metadata and landmarks exact. Only lantern construction changes. Collider equality checked against retained baseline source."
+  },
+  "native": {
+    "high": {
+      "quality": "high",
+      "arms": [
+        {
+          "label": "reference",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.7,
+          "renderMedianMs": 6,
+          "renderP95Ms": 9.199999988079071,
+          "callsMedian": 207,
+          "trianglesMedian": 141331,
+          "visible": true
+        },
+        {
+          "label": "final",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.7,
+          "renderMedianMs": 6.199999988079071,
+          "renderP95Ms": 10,
+          "callsMedian": 207,
+          "trianglesMedian": 146211,
+          "visible": true
+        },
+        {
+          "label": "final",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.7,
+          "renderMedianMs": 6.800000011920929,
+          "renderP95Ms": 11.100000023841858,
+          "callsMedian": 207,
+          "trianglesMedian": 146211,
+          "visible": true
+        },
+        {
+          "label": "reference",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.8,
+          "renderMedianMs": 9.5,
+          "renderP95Ms": 15.699999988079071,
+          "callsMedian": 207,
+          "trianglesMedian": 141331,
+          "visible": true
+        }
+      ],
+      "baseline": {
+        "geometries": 105,
+        "textures": 72
+      },
+      "cycles": [
+        {
+          "resident": {
+            "geometries": 121,
+            "textures": 76
+          },
+          "retired": {
+            "geometries": 105,
+            "textures": 72
+          }
+        },
+        {
+          "resident": {
+            "geometries": 121,
+            "textures": 76
+          },
+          "retired": {
+            "geometries": 105,
+            "textures": 72
+          }
+        }
+      ],
+      "scope": "Prepared production Dark Realm baseline/final roots attached one at a time, same four supplied14slot outfits/Run/HUD and normal clock. ABBA60warmup/120frames per arm and two scene retirement cycles. No network/earned route/physical-device/peak-memory/whole-world performance/final-art acceptance."
+    },
+    "low": {
+      "quality": "low",
+      "arms": [
+        {
+          "label": "reference",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.7,
+          "renderMedianMs": 3.900000035762787,
+          "renderP95Ms": 7.5,
+          "callsMedian": 103,
+          "trianglesMedian": 64584,
+          "visible": true
+        },
+        {
+          "label": "final",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.7,
+          "renderMedianMs": 3.700000047683716,
+          "renderP95Ms": 7,
+          "callsMedian": 103,
+          "trianglesMedian": 66204,
+          "visible": true
+        },
+        {
+          "label": "final",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.7,
+          "renderMedianMs": 4.099999964237213,
+          "renderP95Ms": 6.400000035762787,
+          "callsMedian": 103,
+          "trianglesMedian": 66204,
+          "visible": true
+        },
+        {
+          "label": "reference",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.7,
+          "renderMedianMs": 4.200000047683716,
+          "renderP95Ms": 7.699999988079071,
+          "callsMedian": 103,
+          "trianglesMedian": 64584,
+          "visible": true
+        }
+      ],
+      "baseline": {
+        "geometries": 101,
+        "textures": 58
+      },
+      "cycles": [
+        {
+          "resident": {
+            "geometries": 115,
+            "textures": 62
+          },
+          "retired": {
+            "geometries": 101,
+            "textures": 58
+          }
+        },
+        {
+          "resident": {
+            "geometries": 115,
+            "textures": 62
+          },
+          "retired": {
+            "geometries": 101,
+            "textures": 58
+          }
+        }
+      ],
+      "scope": "Prepared production Dark Realm baseline/final roots attached one at a time, same four supplied14slot outfits/Run/HUD and normal clock. ABBA60warmup/120frames per arm and two scene retirement cycles. No network/earned route/physical-device/peak-memory/whole-world performance/final-art acceptance."
+    }
+  },
+  "visualReview": "Baseline/candidate/final three actual-floor views each at High1280x844/Low390x844, actual HUD/four supplied14slot classes/90Run frames. Inspected southeast and northwest final views and Low southeast. Supported lamps are readable at normal game scale; sparse composition/final modern-art acceptance remains open.",
+  "retainedFindings": {
+    "normalCorrection": "First focused run: two geometry cases failed because Three LatheGeometry leaves last profile normals at segment length (.73/.66/.25) rather than unit length. Normalize generated lathe normals before merge; same face normals and geometry, no test waiver. First native candidate retained; final source re-reviewed.",
+    "censusSetup": "First census could not resolve bare three import from evidence directory; baseline node module now resolves exact worktree module paths.",
+    "censusBoundary": "Second census excluded96of144old lantern triangles because original2.2m box vertices translated in Float32 lie0.0000003815m outside exact collider boundary. Use1e-5m solely for geometry comparison exclusion on both source versions. Collider equality remains exact; new lantern radius1.06m fits1.1m collider without expansion. Original failure retained."
+  },
+  "custody": {
+    "source": "f4de9fb80aa680a1e0864a874b6c48a37b5144e4",
+    "base": "5da4ed243a2ca0200462e8d6c0effe17177ce4a3",
+    "patchSHA256": "ad1e3405113f7d16bf37617728b70ea21e997e255cedcc92adf20a93b02ecb49",
+    "changedPaths": [
+      "src/art/DarkCampLanternGeometry.js",
+      "src/art/ProceduralDarkRealm.js",
+      "tests/DarkCampLanternGeometry.test.js"
+    ],
+    "workingTreeClean": true
+  },
+  "retirement": {
+    "recordedUTC": "2026-10-12T02:31:41.133820+00:00",
+    "pid": 3991074,
+    "cwd": "/home/aeml/.local/share/eidolon-dark-lanterns-20261012",
+    "command": "/home/aeml/.npm/_npx/17533ff5f2b7389f/node_modules/node/bin/node scripts/serve-static.mjs ",
+    "action": "SIGTERM owned static server after browser contexts closed",
+    "browserContextsClosedByFinally": true,
+    "afterPortCheck": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\n"
+  },
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-dark-lantern-checks-20261012",
+    "entries": 49,
+    "inventorySHA256": "fb1d7bb60e7285dff20e23303084762cae3b4ce8df858815cc691ae350877751"
+  },
+  "interpretation": "All8ABBA120-frame arms16.7msmedian, p95at most16.8ms. FinalHigh207draw146211tri,Low103draw66204tri; counts within original scoped budgets. Draw calls unchanged; triangles added. Two GPU retirement cycles/profile return exact baseline. No speedup claim.",
+  "limits": "Prepared actual Dark Realm geometry/entry, four full supplied outfits/HUD/motion. No server, accounts, earned campaign, physical device, peak-memory, whole-world performance or owner/final-art acceptance.22colliders exact; comparison-only1e-5m boundary tolerance handles original Float32 box foot error. Full original1.11\u20131.99/F1\u2013F5/beta/launch/handoff remains active. No unchanged campaign/soak replay.",
+  "nextAction": "Merge and batch with held waystones/floor/shelters into next coherent milestone, synchronize versions/cumulative notes and require exact ordered CI/deploy/live/public acceptance."
+}
