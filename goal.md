@@ -1696,3 +1696,15 @@ Actualcurrenttown fullRGBA/depth/16movingABBAarms/fourGPUcycles prepared only;
 exactown45CI guard prevents GPU/browser launch until terminal. No default
 installation/native current-runtime/town/device/globalperformance acceptance.
 Current-publication table reconciled to45pending/44accepted. Fullgoal open.
+
+
+October12 isolated townfacades53db3f7a adds shallow side panes and modest seated
+stoveflues.15CPUchecks/three suites/lint;24mesh prefix comparisons retain original
+geometry/UVs/flags/transforms/walksolids. Sixbatches/fivecutawayparts unchanged;
+2040tri across15homes added,29160total below original30000ceiling. Frozen14entry
+inventory`82abf60976b732f436221a08b3db7dc8e446a49bcf0f83f35bdf7312b1b0564c`.
+No native or merge acceptance; actual ordinarycamera/silhouette/fade/cadence/
+GPUlifetime pending own45CI terminal. Read-only NPCspawn audit confirms four
+nonservice conversational residents are the server-owned dispersed walkers;
+vendors/questgivers/respec/dungeon services retain anchors. No NPCscope repair
+needed. Public44accepted/45pending; fullgoal/budget failures remain open.
