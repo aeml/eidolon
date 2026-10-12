@@ -11,13 +11,15 @@ test.each(['water', 'fire', 'air'])('%s continuation matches the authored invest
     expect(chronicleInvestigations.find(q => q.id === route.investigation))
         .toMatchObject({ realm, beforeQuestId: route.collection });
     expect(chronicleHunts.find(q => q.id === route.hunt))
-        .toMatchObject({ realm, beforeQuestId: route.collection, previousQuestId: route.investigation });
+        .toMatchObject({ realm });
+    expect(route.steps.indexOf(route.hunt)).toBeGreaterThan(route.steps.indexOf(route.investigation));
     expect(quests).toContain(`ID: "${route.collection}", Type: "COLLECT", Target: "${route.item}", MaxCount: 8`);
     expect(chronicleInvestigations.find(q => q.id === route.reflection))
         .toMatchObject({ realm, beforeQuestId: route.dungeon });
     expect(DUNGEON_PLAYTHROUGHS[route.dungeonType].level).toBe(route.level);
     if (route.finalHunt) expect(chronicleHunts.find(q => q.id === route.finalHunt))
-        .toMatchObject({ realm, beforeQuestId: route.dungeon, previousQuestId: route.reflection });
+        .toMatchObject({ realm });
+    if (route.finalHunt) expect(route.steps.indexOf(route.finalHunt)).toBeGreaterThan(route.steps.indexOf(route.reflection));
 });
 
 test('later regions require the preceding dungeon, not a manufactured story handoff', () => {
@@ -29,7 +31,7 @@ test('later dungeon entry requires every earlier regional chapter, not only the 
     const water = earnedRegionalDungeonRoute('abyssal_well');
     const fire = earnedRegionalDungeonRoute('molten_core');
     const air = earnedRegionalDungeonRoute('tempest_spire');
-    expect(water.prior).toHaveLength(7);
+    expect(water.prior).toHaveLength(36);
     expect(water.prior).not.toContain(water.dungeon);
     expect(fire.prior).toEqual(expect.arrayContaining([...water.prior, water.dungeon,
         'chronicle_fire_cold_kiln', 'chronicle_fire_unending_war', 'chronicle_06_ash_refuses_cool',

@@ -17,7 +17,7 @@ export function airQuestSearch(quest, hunt) {
         ? 'Begin with Storm Harpies beyond Earth’s eastern passage into Air. Stormglass Pinions are chance drops from Air creatures: pick up the dropped quest item; not every kill yields one.'
         : enemy === 'ThunderRoc'
             ? 'Travel east beyond the Harpy and Cloud Elemental grounds to the Thunder Roc sector. Stay in the overworld for this hunt; Tempest Spire is farther east.'
-            : 'Search the marked Air sector east of Earth. Stronger creatures live farther east.';
+            : 'Search the marked Air sector east of Earth. Stronger creatures live farther east. Stay in the overworld for this hunt; Tempest Spire is farther east.';
     return {
         x: (sector[0] + sector[1]) / 2, z: 200,
         area: { ...WORLD_REGIONS.air, minX: sector[0], maxX: sector[1], minZ: -595, maxZ: 995 },

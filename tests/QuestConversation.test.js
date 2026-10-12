@@ -3,6 +3,7 @@ import { QuestUI } from '../src/ui/QuestUI.js';
 import { questMarkerState } from '../src/entities/QuestNPC.js';
 import { ILYRA_REPLIES, getIlyraCompletionReply } from '../src/ui/QuestConversation.js';
 import { chronicleInvestigations } from '../src/data/chronicleInvestigations.generated.js';
+import { chronicleExpeditions } from '../src/data/chronicleExpeditions.generated.js';
 import { chronicleHunts } from '../src/data/chronicleHunts.generated.js';
 
 const story = (overrides = {}) => ({ id: 'chronicle_01_bell_below', category: 'chronicle', chapter: 1, title: 'The Bell That Rang Below', description: 'I need your help to save Eidolon.', lore: 'The covenant of the four spirits.', type: 'KILL', target: 'Skeleton', count: 0, maxCount: 3, rewardXP: 500, accepted: false, completed: false, ...overrides });
@@ -87,11 +88,11 @@ test.each([
     ['chronicle_water_flood_shelter', 'Moon-Tide Pearls', 'chronicle_04_pearls_without_tides', 'A Reflection Out of Time'],
     ['chronicle_fire_cold_kiln', 'Cinderheart Ore', 'chronicle_06_ash_refuses_cool', 'An Ember That Obeys'],
     ['chronicle_air_weatherkeeper', 'Stormglass Pinions', 'chronicle_08_feathers_thunder', 'The Stolen Horizon']
-])('fresh %s dialogue directs collection before its linked investigation', (diaryId, material, collectionId, nextTitle) => {
+])('fresh %s dialogue directs the next authored step before its linked collection', (diaryId, material, collectionId, nextTitle) => {
     const diary = chronicleInvestigations.find(chapter => chapter.id === diaryId);
     expect(diary.beforeQuestId).toBe(collectionId);
-    const diaryHunt = chronicleHunts.find(hunt => hunt.previousQuestId === diaryId);
-    const collectionHunt = chronicleHunts.find(hunt => hunt.previousQuestId === collectionId);
+    const diaryHunt = [...chronicleHunts, ...chronicleExpeditions].find(hunt => hunt.previousQuestId === diaryId);
+    const collectionHunt = [...chronicleHunts, ...chronicleExpeditions].find(hunt => hunt.previousQuestId === collectionId);
     if (diaryHunt) expect(getIlyraCompletionReply({ id: diaryId })).toBe(diaryHunt.handoff);
     else expect(getIlyraCompletionReply({ id: diaryId })).toContain(material);
     if (collectionHunt) expect(getIlyraCompletionReply({ id: collectionId })).toBe(collectionHunt.handoff);
@@ -105,7 +106,7 @@ test('completion dialogue follows stable quest identity after chapters are inser
     expect(getIlyraCompletionReply(story({ chapter: 23 }))).toBe(ILYRA_REPLIES[0]);
     expect(getIlyraCompletionReply({ id: 'chronicle_15_dark_king', chapter: 23 })).toBe(ILYRA_REPLIES[14]);
     for (const investigation of chronicleInvestigations) {
-        const nextHunt = chronicleHunts.find(hunt => hunt.previousQuestId === investigation.id);
+        const nextHunt = [...chronicleHunts, ...chronicleExpeditions].find(hunt => hunt.previousQuestId === investigation.id);
         expect(getIlyraCompletionReply({ id: investigation.id, chapter: 2 })).toBe(nextHunt?.handoff || investigation.completion);
     }
     expect(getIlyraCompletionReply({ id: 'unknown', chapter: 1 })).not.toBe(ILYRA_REPLIES[0]);
@@ -119,7 +120,8 @@ test('investigation turn-in keeps its authored paragraphs and manual continuatio
     ui.completedDialogue = quest;
     ui.updateQuestWindow([quest]);
     const paragraphs = [...document.querySelectorAll('.quest-dialogue__speech')].map(element => element.textContent);
-    expect(paragraphs).toEqual(chronicleHunts[0].handoff.split(/\n\s*\n/));
+    const next = [...chronicleHunts, ...chronicleExpeditions].find(q => q.previousQuestId === investigation.id);
+    expect(paragraphs).toEqual(next.handoff.split(/\n\s*\n/));
     expect(document.querySelector('#quest-list button').textContent).toBe('Continue conversation');
     expect(ui.completedDialogue).toBe(quest);
 });
@@ -191,7 +193,7 @@ test.each(chronicleInvestigations)('$id has deliberate retrospective catch-up di
     ui.updateQuestWindow([quest]);
     expect(document.querySelector('.quest-dialogue__speech').textContent).toBe(chapter.catchupAcceptance);
     expect(getIlyraCompletionReply(quest)).toBe(chapter.catchupCompletion);
-    const nextHunt = chronicleHunts.find(hunt => hunt.previousQuestId === chapter.id);
+    const nextHunt = [...chronicleHunts, ...chronicleExpeditions].find(hunt => hunt.previousQuestId === chapter.id);
     expect(getIlyraCompletionReply({ ...quest, legacyOptional: false })).toBe(nextHunt?.handoff || chapter.completion);
     expect(quest.accepted).toBe(false);
     expect(quest.completed).toBe(false);

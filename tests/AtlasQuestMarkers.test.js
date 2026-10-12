@@ -137,7 +137,8 @@ test('Earth search sectors match authored spawns and never send an active hunt t
         expect(marker.x).toBeLessThanOrEqual(EARTH_HUNT_SECTORS[hunt.enemy][1]);
         expect(marker.purpose).toContain(`level ${hunt.minEnemyLevel} or higher`);
         expect(marker.purpose).toContain('not a specific spawn');
-        if (hunt.enemy === 'Skeleton') expect(marker).toMatchObject({ x: 175, z: 200 });
+        if (hunt.enemy === 'Skeleton') expect(marker).toMatchObject(hunt.minEnemyLevel < 10
+            ? { x: 175, z: 200 } : { x: 125, z: -150 });
         quest.count = quest.maxCount;
         expect(getAtlasQuestLocations(game([quest]))[0].symbol).toBe('?');
         const wizard = TOWN_SERVICE_POINTS.find(p => p.id === 'story-wizard');

@@ -304,7 +304,7 @@ export const chronicleHunts = [
     "lore": "The bank guards were bound to prevent the river from changing course. Their echoes still remember opening channels after a flood, before preservation was twisted into confinement. The water’s movement was once part of their duty.",
     "catchupAcceptance": "Your journey has already passed “Banks That Refuse the River”. Break the Troll bindings guarding the old watercourse. Their command treats a river’s banks as walls rather than the shape of a shared passage. This earlier account is optional research; your earned dungeon, raid and story access will not wait for it.",
     "catchupCompletion": "I have added this surviving account to the Chronicle. The bank guards were bound to prevent the river from changing course. Their echoes still remember opening channels after a flood, before preservation was twisted into confinement. The water’s movement was once part of their duty.",
-    "handoff": "The ferry’s surviving records leave another question for us. Speak to me to accept “Banks That Refuse the River”. Break the Troll bindings guarding the old watercourse. Their command treats a river’s banks as walls rather than the shape of a shared passage."
+    "handoff": "“The true memory was untidy. People spoke over one another. Someone was afraid, and someone else helped. That is what the false charter cannot allow: a promise made freely, with no certainty that the world will obey it.\n\nThe ferry’s surviving records leave another question for us. Speak to me to accept “Banks That Refuse the River”. Break the Troll bindings guarding the old watercourse. Their command treats a river’s banks as walls rather than the shape of a shared passage."
   },
   {
     "id": "chronicle_water_aqueduct_sluice_keepers",

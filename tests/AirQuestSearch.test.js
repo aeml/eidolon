@@ -22,11 +22,11 @@ test('Air search sectors agree with authoritative spawnAirArea bands', () => {
     }
 });
 
-test('the Thunder Roc hunt keeps its actual sector and distinguishes Tempest admission', () => {
+test('the Cloud Elemental hunt keeps its actual sector and distinguishes Tempest admission', () => {
     const hunt = chronicleHunts.find(q => q.id === 'chronicle_air_unstolen_hours');
-    expect(hunt).toMatchObject({ enemy: 'ThunderRoc', minEnemyLevel: 80 });
+    expect(hunt).toMatchObject({ enemy: 'CloudElemental', minEnemyLevel: 75 });
     const point = airQuestSearch({ target: `ChronicleHunt:${hunt.id}` }, hunt);
-    expect(point).toMatchObject({ x: 2000, z: 200 });
+    expect(point).toMatchObject({ x: 1600, z: 200 });
     expect(point.directions).toContain('Stay in the overworld');
     expect(point.directions).toContain('Tempest Spire is farther east');
 });
@@ -44,8 +44,8 @@ test('Pinion collection starts with nearer Harpies and explains chance drops and
 
 test('runtime atlas preserves Air hunt levels, personal turn-ins and separate dungeon/raid destinations', () => {
     const quest = active('chronicle_air_unstolen_hours', 'ChronicleHunt:chronicle_air_unstolen_hours');
-    expect(marker(quest)).toMatchObject({ x: 2000, z: 200 });
-    expect(marker(quest).purpose).toContain('Thunder Roc enemies of level 80 or higher');
+    expect(marker(quest)).toMatchObject({ x: 1600, z: 200 });
+    expect(marker(quest).purpose).toContain('Cloud Elemental enemies of level 75 or higher');
     expect(marker(quest).purpose).toContain('not a specific spawn');
     quest.count = quest.maxCount;
     const wizard = TOWN_SERVICE_POINTS.find(p => p.id === 'story-wizard');

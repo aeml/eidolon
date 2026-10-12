@@ -39,8 +39,8 @@ test.each([null, { huntingRealm: 'water', enemy: 'Construct' }, { huntingRealm: 
     });
 
 test.each([
-    ['chronicle_fire_unending_war', 'MagmaGolem', -1600, -1795, -1405],
-    ['chronicle_air_unstolen_hours', 'ThunderRoc', 2000, 1805, 2195]
+    ['chronicle_fire_unending_war', 'SandstormDjinn', -1200, -1395, -1005],
+    ['chronicle_air_unstolen_hours', 'CloudElemental', 1600, 1405, 1795]
 ])('%s searches its authored horizontal spawn band without changing the hunt', (id, enemy, x, low, high) => {
     const hunt = chronicleHunts.find(hunt => hunt.id === id);
     const before = JSON.stringify(hunt);

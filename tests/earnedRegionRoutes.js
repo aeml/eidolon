@@ -1,3 +1,5 @@
+import { chronicleExpeditions } from '../src/data/chronicleExpeditions.generated.js';
+
 // QA route selections only; objectives/rewards still come from the server and
 // are earned through the existing normal-input helpers.
 const regions = {
@@ -24,23 +26,37 @@ const regions = {
     }
 };
 
+const baseOrder = ['chronicle_03_roots_remember', regions.water.previous];
+for (const route of Object.values(regions)) {
+    baseOrder.push(route.investigation, route.hunt, route.collection, route.reflection);
+    if (route.finalHunt) baseOrder.push(route.finalHunt);
+    baseOrder.push(route.dungeon);
+}
+baseOrder.push('chronicle_10_rootheart_raid', 'chronicle_11_tidestar_raid',
+    'chronicle_12_ember_crown_raid', 'chronicle_13_skyglass_raid', 'chronicle_14_resonance_gate');
+const before = new Map(chronicleExpeditions.map(q => [q.beforeQuestId, q.id]));
+const order = [];
+function insert(id) {
+    if (before.has(id)) insert(before.get(id));
+    order.push(id);
+}
+order.push(baseOrder[0]); // The saved Earth dungeon is this continuation's starting milestone.
+baseOrder.slice(1).forEach(insert);
+
 export function earnedRegionRoute(realm) {
     if (!Object.hasOwn(regions, realm)) throw new Error('Unknown earned story region');
-    return { ...regions[realm] };
+    const route = regions[realm];
+    return { ...route, steps: order.slice(order.indexOf(route.previous) + 1, order.indexOf(route.dungeon)) };
 }
 
 export function earnedRegionalDungeonRoute(dungeonType) {
-    const prior = ['chronicle_03_roots_remember'];
     for (const [realm, route] of Object.entries(regions)) {
-        prior.push(route.previous, route.investigation, route.hunt, route.collection, route.reflection);
-        if (route.finalHunt) prior.push(route.finalHunt);
-        if (route.dungeonType === dungeonType) return { ...route, realm, prior: [...new Set(prior)] };
-        prior.push(route.dungeon);
+        if (route.dungeonType === dungeonType) return { ...earnedRegionRoute(realm), realm,
+            prior: order.slice(0, order.indexOf(route.dungeon)) };
     }
     if (dungeonType === 'umbral_nexus') return {
         realm: 'dark', dungeonType, level: 100, dungeon: 'chronicle_14_resonance_gate',
-        prior: [...new Set([...prior, 'chronicle_10_rootheart_raid', 'chronicle_11_tidestar_raid',
-            'chronicle_12_ember_crown_raid', 'chronicle_13_skyglass_raid'])]
+        prior: order.slice(0, order.indexOf('chronicle_14_resonance_gate'))
     };
     throw new Error('Unknown earned regional dungeon');
 }

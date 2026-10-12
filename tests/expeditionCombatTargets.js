@@ -1,3 +1,7 @@
+import { WATER_HUNT_SECTORS } from '../src/data/waterQuestSearch.js';
+import { FIRE_HUNT_SECTORS } from '../src/data/fireQuestSearch.js';
+import { AIR_HUNT_SECTORS } from '../src/data/airQuestSearch.js';
+
 // Earned QA strategy, not quest eligibility: close pursuers may need to be
 // defeated before the requested expedition target can be fought safely. Their
 // deaths never count unless the ordinary server quest rules award credit.
@@ -15,16 +19,12 @@ export function earthExpeditionSearchAnchor(hunt) {
 
 export function expeditionSearchAnchor(hunt) {
     if (hunt?.huntingRealm === 'earth') return earthExpeditionSearchAnchor(hunt);
-    // Authored spawnSnowWorld bands: Trolls Z -1000..-600, Golems
-    // Z -1400..-1000. Chapter realm is not necessarily the hunting realm.
-    if (hunt?.huntingRealm === 'water') {
-        if (hunt.enemy === 'MountainTroll') return { x: 0, z: -800 };
-        if (hunt.enemy === 'AquaGolem') return { x: 0, z: -1200 };
-    }
-    // Authored spawnFireWorld/spawnAirWorld bands. Callers first traverse
-    // the real realm gate; this is a local search anchor, never a teleport.
-    if (hunt?.huntingRealm === 'fire' && hunt.enemy === 'MagmaGolem') return { x: -1600, z: 200 };
-    if (hunt?.huntingRealm === 'air' && hunt.enemy === 'ThunderRoc') return { x: 2000, z: 200 };
+    // Use the authored spawn bands for every added hunt, never an enemy grant.
+    const sectors = { water: WATER_HUNT_SECTORS, fire: FIRE_HUNT_SECTORS, air: AIR_HUNT_SECTORS };
+    const band = sectors[hunt?.huntingRealm]?.[hunt?.enemy];
+    if (band) return hunt.huntingRealm === 'water'
+        ? { x: 0, z: (band[0] + band[1]) / 2 }
+        : { x: (band[0] + band[1]) / 2, z: 200 };
     throw new Error(`Unsupported expedition search: ${hunt?.huntingRealm}/${hunt?.enemy}`);
 }
 
