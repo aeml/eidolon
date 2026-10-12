@@ -74,6 +74,15 @@ export function createLanternholdNeighborhood(cx = 0, cz = 200, { perInstanceFru
     // rain cap, gives these permanent homes a readable inhabited silhouette.
     // Reuse the hardware batch; add no materials, meshes, lights or particles.
     box('iron', [.65, .07, .65], [1.9, 4.54, -1.1], [-slope, 0, 0]);
+    // Fold the flashing edges down into the uneven slate courses, so its
+    // shallow pitched cover cannot appear to float above their overlaps.
+    const flashingEdge = (x, z, turn) => part(new THREE.PlaneGeometry(.65, .16), 'iron',
+        [1.9 + x, 4.54 - .115 * Math.cos(slope) + z * Math.sin(slope),
+            -1.1 + .115 * Math.sin(slope) + z * Math.cos(slope)], [-slope, turn, 0]);
+    for (const side of [-1, 1]) {
+        flashingEdge(side * .325, 0, side * Math.PI / 2);
+        flashingEdge(0, side * .325, side < 0 ? Math.PI : 0);
+    }
     part(new THREE.CylinderGeometry(.14, .16, 1.1, 8, 1, true), 'iron', [1.9, 4.98, -1.1]);
     part(new THREE.CylinderGeometry(.015, .25, .12, 8), 'iron', [1.9, 5.57, -1.1]);
     const matrix = new THREE.Matrix4();
