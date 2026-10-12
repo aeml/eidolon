@@ -1517,3 +1517,21 @@ Native GPU is reserved for own corrective CI. Require terminal ordered gates
 and fresh 126-asset/frontend/backend/ready-DB proof before another publication.
 Full original goal and retained world/art/performance/device/gameplay/owner/
 F1-F5/beta/launch/handoff requirements remain open; continue independent CPU work.
+
+
+October12 isolated opaque shadow owner097449f8 passes98CPUchecks/three suites,
+scoped lint and ten actual High/Low four-class fourteen-slot/Ilyra cases with
+WebGL disabled. All117original asset pins, raw attributes, triangle ownership,
+source geometry/material/skeleton/bind/world/visibility state remain exact.
+Stubbed stock-directional passes save8submissions/class and16/Ilyra without
+removing triangles; nested/error/per-light frustum/owned-resource checks pass.
+Frozen21entry CPU inventory
+`ea84a25277143ddfcd2a09d18854c6abbe918554aac1a4404fd1c0c0e37dbe35`.
+Detached prototype remains unselected; native full color/depth, meaningful moving
+actual-renderer/HUD performance and GPU lifetime gates remain open. Native GPU
+reserved for corrective44 CI38296738287, whose743suites/11026tests, Go and all
+three browser shards passed; native predeploy remains running. Public44 still
+requires deployment/live/fresh126asset identity/readyDB custody before any next
+publication. Original465dirty paths untouched, onlymaster active locally/origin.
+Full original readiness goal and all retained world/performance/art/device/
+gameplay/owner/F1-F5/beta/launch/handoff requirements remain open.

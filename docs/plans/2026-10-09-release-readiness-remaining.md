@@ -457,6 +457,17 @@ Bounded current-source Earth renderer census now separates cold and settled equi
 
 CPU-only opaque shadow census preserves all117source asset pins and constructs ten actual High/Low equipped actors/NPCs with WebGL disabled. Exact attribute/palette/bind/world/material-depth grouping suggests up to8fewer submissions per class and16per Ilyra per shadow pass. These are theoretical counts; no runtime, depth/pixel, timing, resource or crowded-town acceptance. Frozen13entry inventory`f330d19e1556a7f11cf64cbebbe0757a6bc027e33a3908cfbb6fa6f1549bc031`. [Source census/next prototype constraints](2026-10-12-opaque-shadow-source-census.json).
 
+The isolated opaque shadow geometry and directional-pass owner now pass
+98 focused CPU checks across three suites and ten real supplied High/Low
+actor/NPC cases with WebGL disabled. All 117 asset pins match the frozen
+census; every triangle/raw skin value and original source state is retained.
+Stubbed directional submissions save eight per equipped class and sixteen per
+Ilyra, with identical triangle counts. The detached owner is unselected; complete
+native color/depth equality, meaningful moving equipped/HUD frame gain and GPU
+resource lifetime remain required. CPU counts establish no whole-town or device
+acceptance. [Geometry custody](2026-10-12-opaque-shadow-geometry-cpu.json) and
+[owner custody](2026-10-12-opaque-shadow-owner-cpu.json).
+
 Original sampled targets remain High 350 calls/250,000 triangles/20ms median/
 33.4ms p95 and Low 200 calls/85,000 triangles/33.4ms median/50ms p95.
 Each fixture retains its original specific limits; these summary values do not
