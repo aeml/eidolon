@@ -377,6 +377,19 @@ Component receipts and exact failure/ownership/image scopes remain in the
 and linked qualification files. Passing a scoped component check does not close
 its parent presentation, gameplay, device or release gate.
 
+Qualified command-stone art is ordinarily merged locally for a future milestone:
+Water rounded crowns, Fire fractured crowns and Dark chamfered crowns replace
+plain blocks while preserving original body bounds, picking, inscriptions and
+walking volumes.119focused checks/3suites, native High/Low prepared equipped/HUD
+comparisons and2GPU retirement cycles per profile pass. Draw calls match; added
+Low triangles32–72per visible marker. Original crown-bevel bound failure is
+retained and corrected. This does not clear final-world, connected frame-time
+or physical-device gates.52entry frozen inventory
+e0537445f86353d2530cb75e64f6a9737f59fa9e50b9b476cd81d11fbe7716e2.
+Current public40candidate remains exact5e98360a/CI38189518140; no next publication
+before its own ordered/live/normal-TLS acceptance.
+[Waystone qualification](2026-10-12-chronicle-waystone-qualification.json).
+
 ## Outstanding requirements and next evidence
 
 All rows below are open at the full requirement's scope, even where substantial

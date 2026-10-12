@@ -1126,3 +1126,17 @@ readyDB before next milestone; accepted39 remains current. No retries/cancels,
 unchanged campaigns/soaks or final original1.11–1.99/F1–F5/beta/launch/handoff
 closure. Existing100clientsoak38109009521 remains active, not capacity proof.
 See quest-pacing-qualification and release40-guard-corrective-publication.
+
+
+While corrective40CI runs, bounded command-stone artf5e1b728 is qualified and
+ordinarily merged locally for a future coherent milestone.119focused checks/
+3suites, native prepared High/Low HUD/four supplied14slot-class views and2GPU
+retirement cycles/profile pass. Water/Fire/Dark crowns and mineral surfaces
+retain original bounds, wall volumes and draw counts; Low adds32–72rendered
+triangles/visible marker. Initial bevel envelope failure is corrected/retained.
+52entry frozen inventorye0537445f86353d2530cb75e64f6a9737f59fa9e50b9b476cd81d11fbe7716e2.
+Owned4222server stopped after PID/cwd verification; browser contexts closed.
+Prepared flat-terrain views are not actual Dark floor/connected performance,
+human motion approval, physical device or final-world acceptance. No reward,
+server, data, version or note changes. No further push before exact40acceptance;
+full original scope remains active. See chronicle-waystone-qualification.
