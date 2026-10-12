@@ -16,7 +16,7 @@ const sameState = (mesh, saved) => mesh.geometry === saved.geometry && mesh.mate
     mesh.layers.mask === saved.layers && isOpaqueSkinnedShadowMesh(mesh) === saved.eligible &&
     mesh.material?.side === saved.side && mesh.material?.shadowSide === saved.shadowSide;
 
-// Explicit pilot only. Synchronize at the ordinary shadow boundary, after the
+// Synchronize at the ordinary shadow boundary, after the
 // existing gameplay geometry owner selects its source or derivative. One live
 // variant per actor bounds memory; steady frames never reconstruct buffers.
 export class OpaqueSkinnedShadowRuntime {
@@ -80,6 +80,10 @@ export class OpaqueSkinnedShadowRuntime {
             this.owner.register(root);
             for (const entry of this.owner.entries) if (!previous.has(entry)) record.entries.add(entry);
         }
+    }
+
+    reset() {
+        for (const record of this.roots.values()) { this.release(record); record.dirty = true; }
     }
 
     clear() { for (const root of this.roots.keys()) this.untrack(root); }

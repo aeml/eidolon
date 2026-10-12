@@ -39,7 +39,7 @@ const stockBatchShadow = object => object.isBatchedMesh &&
     object.onAfterShadow === THREE.Object3D.prototype.onAfterShadow &&
     (object.customSort === null || hasOwnedActorBatchSort(object));
 
-// Explicit pilot only: RenderSystem never constructs this owner. Each proxy is
+// RenderSystem owns the runtime that registers these proxies. Each proxy is
 // inserted after color projection, only for a stock directional shadow viewport.
 // Every source triangle remains; originals return before the color pass.
 export class OpaqueSkinnedShadowBatches {
