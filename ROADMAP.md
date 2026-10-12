@@ -8,7 +8,7 @@ This is the product-level roadmap and historical Alpha 1.0 closeout record. The 
 
 ## Current Snapshot
 
-- Alpha 1.79.40 is prepared on master with proportional quest XP, a two-level turn-in ceiling, 62 smaller regional chapters and qualified Pilgrim Rest details. Existing earned progression and access are retained. Local reward/save/route checks, desktop/phone discovery and atlas checks pass; human pacing remains owner-deferred. Publication and ordered live acceptance are pending; accepted39 remains current. [Qualification](docs/plans/2026-10-12-quest-pacing-qualification.json).
+- Alpha 1.79.40 is pushed from master at`5e98360a4cd7aa8c48aecebaa7bf826d6066e795`, with proportional quest XP, a two-level turn-in ceiling, 62 smaller regional chapters and qualified Pilgrim Rest details. Existing earned progression and access are retained. Original CI38187681206 passed server/all three browser shards but failed one stale earned-raid test fixture; the QA-only correction passes498focused checks. Own corrective CI38189518140 and ordered live acceptance are pending; accepted39 remains current. Human pacing remains owner-deferred. [Qualification](docs/plans/2026-10-12-quest-pacing-qualification.json).
 
 - Alpha1.79.37/exact`92c7392e9be5cbc2d2a2771b17cd4f83fa012d62` is accepted live. CI38169083772attempt1 passed all10ordered jobs, with4optional stages skipped. Fresh20:29:43UTC normal-TLS checks match frontend/backend identities, readyDB and all86served asset sizes/SHA. Original fac failure remains recorded; the corrective cast/delayed-impact guard, Forge and buyback work are accepted within retained scope. [Acceptance](docs/plans/2026-10-11-public37-terminal-qualification.json).
 

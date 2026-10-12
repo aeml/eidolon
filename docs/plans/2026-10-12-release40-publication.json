@@ -3,7 +3,7 @@
   "version": "Alpha 1.79.40",
   "source": "c445446feb5c566169af4dee7246d8371e763378",
   "ci": 38187681206,
-  "status": "Ordinarily pushed; own ordered CI/deployment/live and101asset normal-TLS acceptance pending. Accepted39 retained.",
+  "status": "Original CI terminal failure: only earned-raid QA fixture failed; server/all three browser shards passed, five downstream jobs skipped, no deployment. Same-version QA-only corrective5e98360a ordinarily pushed; own CI38189518140 acceptance pending.",
   "masterMerge": "896ad223e604206440e927b15845eb4611d9d3c3",
   "questQualification": "2026-10-12-quest-pacing-qualification.json",
   "campQualification": "2026-10-11-pilgrim-camp-qualification.json",
@@ -23,5 +23,6 @@
     "root": "/home/aeml/.local/share/eidolon-release40-preparation-checks-20261012",
     "entries": 11,
     "inventorySHA256": "546aa3c2a8b0bc1782d6c550fc1f0fd583fe26af4c9326d5046caf09178e50fe"
-  }
+  },
+  "correctivePublication": "2026-10-12-release40-guard-corrective-publication.json"
 }

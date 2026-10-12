@@ -2,7 +2,7 @@
   "recordedUTC": "2026-10-12T00:26:40.821681+00:00",
   "originalRelease": "c445446feb5c566169af4dee7246d8371e763378",
   "originalCI": 38187681206,
-  "status": "Private correction ordinarily merged locally; awaiting original terminal CI before corrective publication.",
+  "status": "Qualified QA-only correction ordinarily pushed on master5e98360a after original terminal CI. Own corrective CI38189518140 acceptance pending.",
   "source": "3d8c22095ee4623e252e0cd57c1b106e5144f368",
   "merge": "a4ec801679c885fdf83622f2d729e81869052f94",
   "finding": "EarnedRaidReadiness mocked every page.evaluate as a stats object; the new optional-prerequisite query expects a boolean. Preserve completed prerequisite reads and query optional status only when needed.",
@@ -19,11 +19,12 @@
     "/home/aeml/.local/share/eidolon-quest-raid-continuation-correction-20261012.log",
     "/home/aeml/.local/share/eidolon-quest-final-master-client-20261012.log"
   ],
-  "limits": "Original CI remains active; no retry, cancellation, new deployment or full-client pass claimed. Reuse unchanged gameplay/worker/native evidence only within its exact scope.",
+  "limits": "Original CI terminal failure is retained:732suites/10920tests passed; four known reader-fixture assertions failed. Server/all three browser shards passed, downstream deployment skipped. Corrective own CI/deploy/live and fresh public acceptance pending. Reuse unchanged gameplay/worker/native evidence only within its exact scope.",
   "fullDiagnostic": "Terminal exit134/default Node heap exhaustion after three diagnosed stale assertion/reader groups. Three groups now covered by498passing current checks. Not a full-client pass or gameplay memory test; no unchanged in-band rerun.",
   "custody": {
     "root": "/home/aeml/.local/share/eidolon-release40-reader-correction-checks-20261012",
     "entries": 5,
     "inventorySHA256": "17106d05221be01545336208801e4aa5fd0dc6db654671b93b64e736a6fcd25e"
-  }
+  },
+  "correctivePublication": "2026-10-12-release40-guard-corrective-publication.json"
 }

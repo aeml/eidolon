@@ -1,0 +1,64 @@
+{
+  "recordedUTC": "2026-10-12T00:50:40.313434+00:00",
+  "version": "Alpha 1.79.40",
+  "source": "5e98360a4cd7aa8c48aecebaa7bf826d6066e795",
+  "status": "Same-version QA-only corrective publication ordinarily pushed after original terminal failure; own ordered CI/deploy/live and fresh public acceptance pending. Accepted39 remains current.",
+  "ci": {
+    "id": 38189518140,
+    "attempt": 1,
+    "url": "https://github.com/aeml/eidolon/actions/runs/38189518140",
+    "createdUTC": "2026-10-12T00:50:00Z",
+    "initialStatus": "in_progress"
+  },
+  "originalCI": {
+    "observedUTC": "2026-10-12T00:49:43.217534+00:00",
+    "source": "c445446feb5c566169af4dee7246d8371e763378",
+    "run": 38187681206,
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "failure",
+    "terminalUpdatedUTC": "2026-10-12T00:48:51Z",
+    "failed": [
+      "Client Tests (Jest)"
+    ],
+    "passed": [
+      "Server Tests (Go)",
+      "Browser Smoke (Playwright 3/3)",
+      "Browser Smoke (Playwright 2/3)",
+      "Browser Smoke (Playwright 1/3)"
+    ],
+    "skipped": [
+      "Predeploy Character QA (System Chrome)",
+      "Validate Production QA Inputs",
+      "Deploy to GitHub Pages",
+      "Live Release and Character QA",
+      "Deploy Server (SSH)"
+    ],
+    "deploymentOccurred": false,
+    "noRetryOrCancellation": true
+  },
+  "correction": "2026-10-12-release40-qa-reader-correction.json",
+  "qualification": "2026-10-12-quest-pacing-qualification.json",
+  "publicationProof": {
+    "source": "5e98360a4cd7aa8c48aecebaa7bf826d6066e795",
+    "reference": "c445446feb5c566169af4dee7246d8371e763378",
+    "pins": 101,
+    "allCopiedFilesIdenticalAfterReleaseIdReplacement": 3377,
+    "bundledModules": 464,
+    "workerSHA256": "ed74163bff6f2ccc48d8f4364cbca258858d68b95b1cc42f4b91d04304fc9203",
+    "versions": 12,
+    "notes": 475,
+    "reuse": "Exact unchanged runtime/native/reward/save evidence; QA reader only."
+  },
+  "sourceIntegration": "Fresh fetch and ordinary merge already up to date; clean master ordinary-pushed c445446f to5e98360a. Only master active locally and on origin.",
+  "acceptanceRequired": "Own exact ordered CI/deployment/live success, then fresh normal-TLS frontend/backend source/version, readyDB and all101asset lengths/SHA into a separate acceptance root.",
+  "previousAccepted": "2026-10-11-public39-terminal-qualification.json",
+  "limits": "Runtime, assets, worker, server, all12versions and475cumulative notes unchanged from qualified original40. Corrected498focused checks/27suites and scoped lint pass; original gameplay/save/native/atlas evidence reused within exact scope. No human campaign, physical device, whole-game performance, final-art, capacity, F1-F5/beta/launch/handoff closure; full original goal remains active.",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-release40-corrective-publication-checks-20261012",
+    "entries": 14,
+    "inventorySHA256": "eb167fa98d45995d65cd1887f0c8326191961ace19252715d5dd8c49abc4f559"
+  },
+  "expectedManifest": "/home/aeml/.local/share/eidolon-release40-corrective-publication-checks-20261012/expected-public40-assets.json",
+  "publicChecker": "/home/aeml/.local/share/eidolon-release40-corrective-publication-checks-20261012/check-public.py"
+}

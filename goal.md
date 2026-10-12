@@ -1099,3 +1099,30 @@ See release39-live-network-recovery. Full original scope remains active.
 2026-10-11 scoped acceptance and owner progression steering: corrective39/a1ebc404 is now accepted after exact CI38178405817attempt2(all10ordered jobs,4optional skips) and fresh22:56:11UTC normal-TLS93asset/frontend/backend/readyDB checks. Original failures are retained; one failed-job-only recovery used unchanged source. Campcdc68ada is qualified within prepared native scope:26focused checks/3suites,12content groups, all941source pins, High/Low gameplay/HUD/equipped-class views, scoped ABBA timing and2GPU retirement cycles per mode. Eighty-eight-entry frozen inventory4826a8eacbcbc4adb8dbe7082a348e81fd59db623c44174cfe14203d8104c567; no connected-performance/final-world closure. Owner reports a post-Bastion30→45quest burst and requests consistent proportional quest XP with dungeon turn-ins at most1–2levels. Private detached quest-pacing work removes oversized preparation overrides, normalizes story percentages and checks legacy unpaid quotes/two-level limits. Initial numerical route/forecast failures are retained and must be resolved before integration/publication; merely lowering XP exposes unacceptable grinding gaps. Existing earned levels/paid receipts remain historical. Owner preference between more quests and more combat XP is pending; independent correction/audit continues. Full original goal remains active.
 
 2026-10-11 quest-pacing private checkpoint: detached owned worktree`/home/aeml/.local/share/eidolon-quest-pacing-20261011` preserves draft6ddecc7d. The focused game reward/migration checks and quest conversation/persistence checks pass under the race detector, including eight BSON pre-balance post-Bastion correction/claim/reload cases across four classes. Exhaustive55story+26daily reward probes cover levels1–99 and empty/half/nearly-full bars. Current proportional catalog assertion also passes. Full source remains unqualified: retiring lump-sum bridges exposes Earth/readiness/regional gaps and204.2hsolo/197.8hparty forecasts versus prior100h envelope (first dungeon30.44h). Preserve these failures; do not waive gates or merge this unfinished draft. More meaningful quest steps are the recommended follow-up, with optional owner preference still pending; no more expensive unchanged campaign or soak replay. Qualified camp is now ordinarily merged into mastere40ab455 and its receipt updated. Owned4218server stopped, browsers closed; no active root test/server process remains. Full goal remains active.
+
+
+## October12 gradual quest progression and corrective40 publication
+
+The owner-reported post-Bastion30→45burst is repaired across the authored quest
+catalog: normal story75%, dungeon125%, tutorial100%, finale175% and a two-level
+turn-in ceiling. Sixty-two mixed chapters replace oversized preparation bridges;
+42,471award probes and12regional route cases pass, retaining earned progression,
+paid receipts and returning-save access. Full Go, final498focused client checks,
+desktop/phone atlas and scoped native equipped/HUD discovery checks pass. Design
+forecast91.4hours solo/86.0party and2.72first dungeon is numerical, not human
+acceptance; late80–100still models about77hours of mixed combat. Human campaign/
+physical-phone feedback remains owner-deferred and full progression review open.
+
+Camp and quest work are merged into master and published asAlpha1.79.40. Original
+c445446f/CI38187681206attempt1 terminally failed only one stale earned-raid test
+fixture:732client suites/10920tests pass,4fixture assertions fail. Server/all
+three browser shards pass;5downstream jobs skipped, no deployment. Qualified
+QA-only correction5e98360a was ordinary-pushed after fresh fetch+merge; own
+CI38189518140attempt1 is active. Runtime/assets/server/12versions/475notes are
+byte-exact to original40, aside from prepared release source identity. Frozen
+14entry corrective inventoryeb167fa98d45995d65cd1887f0c8326191961ace19252715d5dd8c49abc4f559.
+Require own ordered CI/deploy/live and fresh normal-TLS101asset/frontend/backend/
+readyDB before next milestone; accepted39 remains current. No retries/cancels,
+unchanged campaigns/soaks or final original1.11–1.99/F1–F5/beta/launch/handoff
+closure. Existing100clientsoak38109009521 remains active, not capacity proof.
+See quest-pacing-qualification and release40-guard-corrective-publication.
