@@ -1,6 +1,6 @@
 # Eidolon Roadmap
 
-Alpha1.79.42/exact`6f9895ac` failed CI38203447428attempt1 before deployment: required High Earth thatch reference/candidate frame timing exceeded20ms median/33.4ms p95. Five prerequisite jobs passed; downstream deployments/live checks skipped. No retry or waiver. Fresh04:58:26UTC normal-TLS checks retain accepted41/exact`defdb64e`,109asset hashes/bytes, source/version and readyDB. District art/map focus remain merged but undeployed; town coherence is being implemented in isolation. Full goal stays open. [Failure evidence](docs/plans/2026-10-12-public42-terminal-failure.json).
+Alpha1.79.42/exact`6f9895ac` failed required native Earth timing before deployment; accepted41 remains live, freshly verified04:58:26UTC. Town homes/resident walking/gate transitions and the transient combat-delivery correction are qualified and merged locally, awaiting a coherent release. Crowded-town and High Earth performance failures remain open; no retry, budget waiver, final-art or beta declaration. [Town qualification](docs/plans/2026-10-12-lanternhold-neighborhood-qualification.json).
 
 > Project by [Robert Mendola](https://mendola.tech)
 >

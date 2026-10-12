@@ -1342,3 +1342,19 @@ blend town/Earth road surfaces. Isolated town staging has15homes/four routes/
 residential lanes/32m gate blend; server checks pass, client/native qualification
 and coherent publication pending. Roofmaterialc0b1a6d9 remains CPU-only staged,
 not selected. No new campaign/long-soak replay; full original goal remains open.
+
+
+October12 town implementation e77529f1 ordinarily merged into master6b9886a3.
+Fifteen human-scale timber/slate homes replace town tents; four conversational
+residents walk server-owned eased loops and pause near listeners; connected
+residential lanes and32m town/Earth gate-material fades improve town coherence.
+Final35focused checks/three overlapping suites, broader60/four suites, server
+race10.111s,14content groups and lint pass. Native72before/after/final views,
+six completeRGBA controls(maxdelta0), and two exact GPUretirement cycles/profile
+qualify this scoped change. Initial undersized doors/service rings corrected;
+fixture failures retained. Frozen141entry inventoryf4bda89658508d6f58a16ed7225bce1d42aae6388ebe968523a1d56cf0a8eb2e.
+High plaza419draw/277953tri/33.3median and Low107703tri fail original limits;
+original plaza also failed, and other High frame failures persist. No overall
+performance/final-art/device acceptance. Publication pending; next diagnose
+retained42Earth timing and crowded-town performance, then coherent release.
+Full original goal remains active. See lanternhold-neighborhood-qualification.

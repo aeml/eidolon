@@ -1,0 +1,290 @@
+{
+  "status": "qualified scoped town implementation ordinarily merged into local master; unpublished; overall performance still open",
+  "runtimeCommit": "e77529f1cc93c16fabdb45261dd2aea02be710bb",
+  "mergeCommit": "6b9886a3806ccc6e75ad541168db61ec81e801f1",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-town-cohesion-checks-20261012",
+  "inventoryEntries": 141,
+  "inventorySHA256": "f4bda89658508d6f58a16ed7225bce1d42aae6388ebe968523a1d56cf0a8eb2e",
+  "sourceSnapshotParity": "all24 merged paths byte-exact",
+  "qualification": {
+    "status": "scoped implementation and visual/resource qualification; full performance remains failed/open; unpublished",
+    "runtimeCommit": "e77529f1cc93c16fabdb45261dd2aea02be710bb",
+    "createdAt": "2026-10-12T05:20:26.566483+00:00",
+    "changes": [
+      "15 human-scale timber/slate dwellings replace production town tents",
+      "4 existing conversational residents spread across connected residential lanes, server-owned eased routes pause near listeners",
+      "Timestamped client movement interpolation and distance-driven gait; vendor rings removed from ordinary witnesses",
+      "Four town gates feather stone/normal/roughness into Earth trails across32m; original outdoor UV registration preserved"
+    ],
+    "cpu": {
+      "broaderCorrected": "60 pass across4 suites",
+      "finalScaleAndMarkers": "35 pass across3 overlapping suites",
+      "otherInitialScope": "8 suites pass/1 obsolete literal-coordinate fixture failed; retained, corrected and requalified affected scope",
+      "serverFinalRace": "10.111s pass: bounded4min per resident, collision/spatial/service anchors/listener pause checks",
+      "contentGroups": 14,
+      "lint": "pass",
+      "countsOverlap": true
+    },
+    "native": {
+      "initialBeforeAfterViews": 48,
+      "finalViews": 24,
+      "framesPerView": 150,
+      "measuredIntervalsPerView": 120,
+      "gpu": "native AMD RADV RENOIR",
+      "outfits": "Fighter/Rogue/Cleric/Wizard supplied models,14slots each/missing0/fallback0,Run/HUD. Narrow-phone framing does not keep all four actors visible in every view.",
+      "movement": "Actual Go simulation snapshots replayed through actual engine synchronization/interpolation; not a connected-server or physical-device test.",
+      "finalProfiles": {
+        "high": {
+          "views": 12,
+          "originalBudgets": {
+            "calls": 350,
+            "triangles": 250000,
+            "median": 20,
+            "p95": 33.4
+          },
+          "failedViews": [
+            {
+              "name": "service-plaza",
+              "exceeded": {
+                "calls": {
+                  "observed": 419,
+                  "limit": 350
+                },
+                "triangles": {
+                  "observed": 277953,
+                  "limit": 250000
+                },
+                "median": {
+                  "observed": 33.3,
+                  "limit": 20
+                }
+              }
+            },
+            {
+              "name": "west-homes",
+              "exceeded": {
+                "median": {
+                  "observed": 33.2,
+                  "limit": 20
+                }
+              }
+            },
+            {
+              "name": "mara-walk",
+              "exceeded": {
+                "median": {
+                  "observed": 33.3,
+                  "limit": 20
+                }
+              }
+            },
+            {
+              "name": "dain-walk",
+              "exceeded": {
+                "median": {
+                  "observed": 33.3,
+                  "limit": 20
+                },
+                "p95": {
+                  "observed": 50,
+                  "limit": 33.4
+                }
+              }
+            },
+            {
+              "name": "hessa-walk",
+              "exceeded": {
+                "median": {
+                  "observed": 33.3,
+                  "limit": 20
+                }
+              }
+            },
+            {
+              "name": "selen-walk",
+              "exceeded": {
+                "median": {
+                  "observed": 33.3,
+                  "limit": 20
+                },
+                "p95": {
+                  "observed": 33.5,
+                  "limit": 33.4
+                }
+              }
+            }
+          ]
+        },
+        "low": {
+          "views": 12,
+          "originalBudgets": {
+            "calls": 200,
+            "triangles": 85000,
+            "median": 33.4,
+            "p95": 50
+          },
+          "failedViews": [
+            {
+              "name": "service-plaza",
+              "exceeded": {
+                "triangles": {
+                  "observed": 107703,
+                  "limit": 85000
+                }
+              }
+            }
+          ]
+        }
+      },
+      "resources": "Two cycles/profile return exact GPU baseline;50 tracked resources disposed once per cycle. Three complete RGBA rendering controls/profile: changed0/unstable0; same shadows/material colors.",
+      "visualReview": [
+        "Human-scale door corrected after initial undersized review",
+        "Resident service rings removed after initial review",
+        "Final west homes/Hessa/north gate/Low south homes inspected; coherent road fade observed"
+      ],
+      "failuresRetained": [
+        "obsolete client coordinate assertion",
+        "initial guessed Go fixture methods",
+        "initial guessed native update method",
+        "resource fixture expected BatchedMesh dispose event; real dispose releases subresources without event. Method-call observation corrected; runtime unchanged.",
+        "High crowded plaza exceeds draw/triangle/frame limits in original and candidate; Low plaza triangle limit fails in both",
+        "High frame failures elsewhere remain open; increased home geometry is reported, no content hidden or budget changed"
+      ]
+    },
+    "limitations": [
+      "Not final modern world art acceptance",
+      "No overall performance pass or cadence gain claimed",
+      "No human campaign/physical-phone feedback/capacity acceptance",
+      "No deployment; public remains accepted41",
+      "Release42 required-native Earth ABBA failure remains under diagnosis"
+    ],
+    "sources": [
+      {
+        "path": "scripts/check-content.mjs",
+        "bytes": 1119,
+        "sha256": "a1025769217ad037bdfaef603fef3fa2381b96f1bcb9adb329ea6960c3fb23df"
+      },
+      {
+        "path": "scripts/generate-town-neighborhood.mjs",
+        "bytes": 597,
+        "sha256": "1826ae055c5d8ae18c114a99c5b7389f89c95a7ebb5d8967be818f60a2657de2"
+      },
+      {
+        "path": "server/internal/game/chronicle_witnesses.go",
+        "bytes": 2989,
+        "sha256": "06c9a9a3cd97ae42eddfca0d74947efc1cb8d567d8f197304964f3bdf4a3ba99"
+      },
+      {
+        "path": "server/internal/game/chronicle_witnesses_test.go",
+        "bytes": 4547,
+        "sha256": "5e46819ea44545df85ea1418b4b3feda5a1cd2a43af63a38cfb811abe4a21903"
+      },
+      {
+        "path": "server/internal/game/content/admin-landing-colliders.json",
+        "bytes": 35145,
+        "sha256": "9bc2f2d6ba20679d543cca51aee0c451a18cfc964f7e45e6303cf23a4fb22248"
+      },
+      {
+        "path": "server/internal/game/content/lanternhold-neighborhood.json",
+        "bytes": 2509,
+        "sha256": "77c5c3a24ccf561693d5bf6358eed4987a5cf8bfbc098cd117f28a3818c2a45b"
+      },
+      {
+        "path": "server/internal/game/entity.go",
+        "bytes": 53605,
+        "sha256": "377ab1ee7d18fa4a910bf6f2fadc72c359fa2bc493ed24bca92ffa4b0a07e34f"
+      },
+      {
+        "path": "server/internal/game/world_update_entity.go",
+        "bytes": 64699,
+        "sha256": "50861f86cded43bd4a1556b9549a402ab76d179f2d3fe5d3f49b4319f4aec9ec"
+      },
+      {
+        "path": "src/art/LanternholdGateRoad.js",
+        "bytes": 3638,
+        "sha256": "8ee1a27f208e011d92372c230fd9def30d8fcfc6d126daf11867681b91063ae7"
+      },
+      {
+        "path": "src/art/LanternholdNeighborhood.js",
+        "bytes": 5753,
+        "sha256": "32c390fd3fc3569a67894ddfe01d9272813d18e8554071ed6f4a810d1b0b0673"
+      },
+      {
+        "path": "src/art/ProceduralRealmTerrain.js",
+        "bytes": 17708,
+        "sha256": "c96cf3fb93984a6cdc44bbde03b7eeda83eea38ddd5ce138a8275ff8f8c50e67"
+      },
+      {
+        "path": "src/art/ProceduralWorldPaths.js",
+        "bytes": 5661,
+        "sha256": "3aa9002df3112a8e04717a2aa7da7957f438c714ff2bc20453fa3baa9265b175"
+      },
+      {
+        "path": "src/art/TownGroundComposition.js",
+        "bytes": 8389,
+        "sha256": "73b0beafae2cee65379c90413f189de5f2154f5e6a5d04ac0c8caf89efb1b523"
+      },
+      {
+        "path": "src/data/chronicleWitnesses.js",
+        "bytes": 9703,
+        "sha256": "9527e1af147373561b3cab19166303e937081cc5a0bc0bbd4017a52104c6939a"
+      },
+      {
+        "path": "src/data/lanternholdNeighborhood.js",
+        "bytes": 1493,
+        "sha256": "f8ef402f4d75832c4178d6458fab908b1b06bce419085fb763b25ac9d8d6ed7a"
+      },
+      {
+        "path": "src/entities/ChronicleWitness.js",
+        "bytes": 4091,
+        "sha256": "86a461182b844d767a0815edb4b895d06f0bbf89cc391bfbbf7b34d9bf4a637d"
+      },
+      {
+        "path": "src/world/WorldGenerator.js",
+        "bytes": 53593,
+        "sha256": "d573e63a91348439d635c0fd7bad78d66cadc5f7db87df956ab3c6799fa28a70"
+      },
+      {
+        "path": "tests/ChronicleWitness.test.js",
+        "bytes": 9385,
+        "sha256": "e727e10769b8a42332ec8b33b0e11d7364eba1e1f4cafc878e7e40f25eb4d851"
+      },
+      {
+        "path": "tests/LanternholdCampFrustum.test.js",
+        "bytes": 5800,
+        "sha256": "f8b19e5d36ec37c09cf92438454454c1200504699acd40e69031f551ce450277"
+      },
+      {
+        "path": "tests/LanternholdNeighborhood.test.js",
+        "bytes": 6205,
+        "sha256": "f867a233abd597dffa5e29f7a6bc8a9dc581b8dd868bd1a0ce4bb35e6e641d36"
+      },
+      {
+        "path": "tests/TownGroundComposition.test.js",
+        "bytes": 4234,
+        "sha256": "172a36e49ea9815bae142abb91d3d9a8febd42f3ffb8cf62e8a9bdb76f1fc1eb"
+      },
+      {
+        "path": "tests/WorldGeneratorCanonicalGeometry.test.js",
+        "bytes": 25926,
+        "sha256": "ff42651306909043e9cee41fa9d0a668154f7cc3ccbe422ecf991a2cdc0ba1fa"
+      },
+      {
+        "path": "tests/e2e/published-game-bundle.spec.js",
+        "bytes": 80050,
+        "sha256": "1cf36bb7da2a6edeccfcd87039bfb45669378fe36feb5ea70ef29074085bfe1b"
+      },
+      {
+        "path": "tests/e2e/town-court-presentation.spec.js",
+        "bytes": 9078,
+        "sha256": "6613fd5090a87f0b4a5f335accb30c1bae147385f046f2a473d413722fb0130c"
+      }
+    ],
+    "retirement": {
+      "finalGameDestroyed": true,
+      "browsersAndOwnedStaticServersClosed": true,
+      "port": 4236
+    }
+  },
+  "next": "Diagnose retained42native Earth frame failure and crowded-town performance. Prepare coherent synchronized milestone and require own ordered CI plus fresh public asset/identity/readyDB proof. Public remains accepted41."
+}
