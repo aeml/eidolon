@@ -1,12 +1,14 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
-Alpha1.79.41/exact`defdb64e` is ordinary-pushed with qualified Dark Realm floor/
-camp and elemental waystone art. CI38196589643attempt1 is in progress; own ordered
-CI/deploy/live/public109asset acceptance is pending.428focused/five suites,
-13generated groups,12versions,476notes/all475prior byte-exact and eight copied
-native High/Low views pass. Accepted40 remains the public baseline. Full original
-world/art/performance/device/F1–F5/beta/launch/handoff requirements remain open.
-[Publication](2026-10-12-release41-publication.json).
+Alpha1.79.41/exact`defdb64e` is accepted live. CI38196589643attempt1 passed
+all ten ordered jobs, including737client suites/10965tests and native predeploy/
+live characterQA; four optional stages remain skipped. Fresh03:35:51UTC
+normal-TLS checks match all109asset bytes/SHA, frontend/backend identity and
+readyDB. Qualified waystones/Dark paving/shelters/lanterns and QA-only GPU
+observer are shipped; detached district architecture/court art6f8b64cb is still
+under native qualification. Full original world/art/performance/device/F1–F5/
+beta/launch/handoff requirements remain open.
+[Acceptance](2026-10-12-public41-terminal-qualification.json).
 
 Corrective Alpha1.79.39/exact`a1ebc4046a294ac315b97d9e86e9057a6f13294b` is accepted live. CI38178405817attempt2 passed all10ordered jobs; four optional stages remain skipped. Fresh22:56:11UTC normal-TLS checks match frontend/backend identities, readyDB and all93served asset sizes/SHA. Original stale-audit failure and attempt1 live network/HTTP408 failure remain recorded; one failed-job-only rerun passed on unchanged source. Cold geometry, connected frame-time, memory, physical-device and final-art gates remain open. [Acceptance](2026-10-11-public39-terminal-qualification.json).
 

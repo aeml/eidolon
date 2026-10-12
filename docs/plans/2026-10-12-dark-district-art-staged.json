@@ -6,7 +6,7 @@
     "furniture": "5e37a747",
     "isolatedMerge": "31c3c755"
   },
-  "status": "Combined CPU-only detached candidate. Not merged into master or published. Native visual/performance/lifecycle pending until release41 finishes.",
+  "status": "Detached6f8b64cb combines district architecture/court art with CPU-qualified bounded groups. Own41nativeCI completed before local browser review began. Native candidate visual/performance/lifetime qualification in progress; no selection/master merge.",
   "focused": {
     "tests": 44,
     "suites": 3,
@@ -141,9 +141,10 @@
       "Low390x844"
     ],
     "preparedBrowserAssets": true,
-    "noBrowserOrServerStarted": true,
+    "noBrowserOrServerStarted": false,
     "notFrozen": true,
-    "scope": "12court views plus4ordinary street-edge views and4decorative architecture inspection focuses; four supplied14slot classes/Run/HUD. Prepared isolated scene, not connected campaign or physical device."
+    "scope": "12court views plus4ordinary street-edge views and4decorative architecture inspection focuses; four supplied14slot classes/Run/HUD. Prepared isolated scene, not connected campaign or physical device.",
+    "status": "Owned4232 native reference/candidate review started only after exact41terminal success. Initial reference close-up budget scope error retained; ordinaryzoom15budget unchanged. Initial candidate module-fetch interruption retained; local transport now persistentHTTP/1.1with128requestbacklog and owned exactNode24.18.0runtime."
   },
   "pending": [
     "Native before/after visual review, including readable court props and district construction",
@@ -155,5 +156,20 @@
     "root": "/home/aeml/.local/share/eidolon-dark-districts-cpu-checks-20261012",
     "entries": 14,
     "inventorySHA256": "b20e5fa761e0c47fe14488159ac36c4de521f5f1893fc23364d25dae7a7d2f61"
+  },
+  "partitionStage": {
+    "source": "6f8b64cb5538a5365235cb3944ceef0eb040630c",
+    "unpartitioned": "c5bc0f1c4474952fa9c08587e79c146da21e7cd3",
+    "exactAllTriangles": true,
+    "excludedTriangles": 0,
+    "meshesBefore": 39,
+    "meshesAfter": 48,
+    "focusedNewCasesPassed": 6,
+    "existing44ChecksReused": true,
+    "custody": {
+      "root": "/home/aeml/.local/share/eidolon-dark-district-partition-checks-20261012",
+      "entries": 16,
+      "inventorySHA256": "845ec8606bf6c78224ee70b19d49aa5592a31ffae468503d395f11a75a4403e3"
+    }
   }
 }
