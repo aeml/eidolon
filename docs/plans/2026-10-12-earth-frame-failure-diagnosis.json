@@ -1,0 +1,225 @@
+{
+  "status": "bounded diagnosis; no runtime change or CI rerun; historical failure remains unresolved",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-earth-frame-diagnosis-20261012",
+  "inventoryEntries": 13,
+  "inventorySHA256": "c78d37f748ac8389b9ad5c159ba5f19af231308b60c043de276b8c0778687ce0",
+  "result": {
+    "initial": {
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "calls": 200,
+      "triangles": 183748,
+      "shadowEnabled": true,
+      "shadowTargetError": 0.026203921611325662,
+      "outfits": [
+        {
+          "count": 14,
+          "missing": [],
+          "fallback": []
+        },
+        {
+          "count": 14,
+          "missing": [],
+          "fallback": []
+        },
+        {
+          "count": 14,
+          "missing": [],
+          "fallback": []
+        },
+        {
+          "count": 14,
+          "missing": [],
+          "fallback": []
+        }
+      ]
+    },
+    "rows": [
+      {
+        "label": "release42-sheltered-grove-baseline",
+        "calls": 180,
+        "warmupCalls": 60,
+        "counterBits": 64,
+        "restored": true,
+        "scope": "Separate instrumented world-render calls, matching exact gameplay scene AND camera. CPU clocks include synchronous waits. GPU elapsed queries enclose world work and its shadows, excluding later fullscreen passes; they are not isolated shader busy-time measurements and may include submission starvation. Asynchronous polling never waits for the GPU. This is not an ordinary frame-budget sample or a comparison with another population.",
+        "cpuMedianMs": 13.5,
+        "cpuP95Ms": 17.30000001192093,
+        "gpuMedianMs": 3.40281,
+        "gpuP95Ms": 3.84068
+      },
+      {
+        "label": "release42-sheltered-grove-candidate",
+        "calls": 180,
+        "warmupCalls": 60,
+        "counterBits": 64,
+        "restored": true,
+        "scope": "Separate instrumented world-render calls, matching exact gameplay scene AND camera. CPU clocks include synchronous waits. GPU elapsed queries enclose world work and its shadows, excluding later fullscreen passes; they are not isolated shader busy-time measurements and may include submission starvation. Asynchronous polling never waits for the GPU. This is not an ordinary frame-budget sample or a comparison with another population.",
+        "cpuMedianMs": 13.199999988079071,
+        "cpuP95Ms": 16.600000023841858,
+        "gpuMedianMs": 3.32828,
+        "gpuP95Ms": 3.80784
+      }
+    ],
+    "failures": [],
+    "retired": true,
+    "scope": "Exact release42 source and retained required Earth fixture sheltered-grove scene, same four outfits/shadows/HUD. Separate instrumented GPU queries and later CDP CPU sample, no ordinary cadence acceptance or retry of failed CI. Clock restored for diagnostic CPU measurement; no connected server or capacity claim."
+  },
+  "cpuSummary": {
+    "source": "6f9895ac4bb3525861e75209211aaa7f5d0852a9",
+    "sampleDurationMs": 3415.227,
+    "samples": 2379,
+    "topSelfElapsedSamples": [
+      {
+        "function": "(program)",
+        "url": "",
+        "line": 0,
+        "sampledMs": 404.39
+      },
+      {
+        "function": "multiplyMatrices",
+        "url": "/vendor/three/build/three.core.js",
+        "line": 11917,
+        "sampledMs": 304.744
+      },
+      {
+        "function": "FoliageShadowInfluence.visit",
+        "url": "/src/core/FoliageShadowInfluence.js",
+        "line": 105,
+        "sampledMs": 278.605
+      },
+      {
+        "function": "(idle)",
+        "url": "",
+        "line": 0,
+        "sampledMs": 273.769
+      },
+      {
+        "function": "intersectsObject",
+        "url": "/vendor/three/build/three.core.js",
+        "line": 26581,
+        "sampledMs": 226.636
+      },
+      {
+        "function": "updateMatrixWorld",
+        "url": "/vendor/three/build/three.core.js",
+        "line": 14354,
+        "sampledMs": 213.442
+      },
+      {
+        "function": "projectObject",
+        "url": "/vendor/three/build/three.module.js",
+        "line": 16814,
+        "sampledMs": 169.536
+      },
+      {
+        "function": "renderObject",
+        "url": "/vendor/three/build/three.module.js",
+        "line": 8914,
+        "sampledMs": 131.19
+      },
+      {
+        "function": "traverseVisible",
+        "url": "/vendor/three/build/three.core.js",
+        "line": 14294,
+        "sampledMs": 109.436
+      },
+      {
+        "function": "beginFrame",
+        "url": "/src/core/FoliageShadowInfluence.js",
+        "line": 175,
+        "sampledMs": 102.361
+      },
+      {
+        "function": "updateMatrix",
+        "url": "/vendor/three/build/three.core.js",
+        "line": 14335,
+        "sampledMs": 69.828
+      },
+      {
+        "function": "WebGLRenderer.renderBufferDirect",
+        "url": "/vendor/three/build/three.module.js",
+        "line": 16193,
+        "sampledMs": 53.33
+      },
+      {
+        "function": "unchanged",
+        "url": "/src/core/ActorGameplayGeometry.js",
+        "line": 22,
+        "sampledMs": 49.64
+      },
+      {
+        "function": "setProgram",
+        "url": "/vendor/three/build/three.module.js",
+        "line": 17279,
+        "sampledMs": 46.898
+      },
+      {
+        "function": "getParameters",
+        "url": "/vendor/three/build/three.module.js",
+        "line": 7009,
+        "sampledMs": 46.571
+      },
+      {
+        "function": "refreshUniformsCommon",
+        "url": "/vendor/three/build/three.module.js",
+        "line": 14224,
+        "sampledMs": 43.094
+      },
+      {
+        "function": "getProgram",
+        "url": "/vendor/three/build/three.module.js",
+        "line": 17132,
+        "sampledMs": 40.018
+      },
+      {
+        "function": "applyMatrix4",
+        "url": "/vendor/three/build/three.core.js",
+        "line": 10571,
+        "sampledMs": 38.058
+      },
+      {
+        "function": "bindVertexArray",
+        "url": "",
+        "line": 0,
+        "sampledMs": 37.752
+      },
+      {
+        "function": "bindTexture",
+        "url": "",
+        "line": 0,
+        "sampledMs": 31.463
+      },
+      {
+        "function": "current",
+        "url": "/src/core/ActorGameplayGeometry.js",
+        "line": 111,
+        "sampledMs": 26.005
+      },
+      {
+        "function": "update",
+        "url": "/vendor/three/build/three.module.js",
+        "line": 241,
+        "sampledMs": 25.642
+      },
+      {
+        "function": "update",
+        "url": "/vendor/three/build/three.core.js",
+        "line": 25444,
+        "sampledMs": 25.119
+      },
+      {
+        "function": "setup",
+        "url": "/vendor/three/build/three.module.js",
+        "line": 1600,
+        "sampledMs": 23.763
+      },
+      {
+        "function": "upload",
+        "url": "/vendor/three/build/three.module.js",
+        "line": 5719,
+        "sampledMs": 21.675
+      }
+    ],
+    "interpretation": "Exact200draw/183748tri/shadowTargetError0.026203921611325662 match failed42 scene. Both material arms use180world GPUqueries/60warmup, restored ownership. Baseline CPU13.5/17.3ms versus GPU3.40281/3.84068ms; candidate CPU13.2/16.6 versus GPU3.32828/3.80784. This separate instrumented run suggests CPU traversal/submission investigation; it does not establish cause of historical CI timing, ordinary cadence acceptance, or a material speedup. CPU samples name foliage shadow visit/beginFrame, matrix propagation and frustum projection as significant costs. No product/runtime/target changes or CI rerun."
+  },
+  "next": "Continue CPU traversal/submission investigation. A separate coherent town milestone must satisfy unchanged required CI gates; this diagnostic does not turn42failure into a pass."
+}
