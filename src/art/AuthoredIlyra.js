@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
+import { shareClonedSkeletons } from './ClonedSkeletonSharing.js';
 
 // Dedicated, permanently dressed NPC; never route through player equipment.
 export const ILYRA_MODEL_PATH = './assets/npcs/ilyra/ilyra-archmage.glb';
@@ -18,6 +19,7 @@ export function createAuthoredIlyraInstance(gltf) {
     });
     if (!skinCount) throw new Error('Ilyra has no skinned costume');
     const scene = cloneSkeleton(gltf.scene), skeletons = new Set();
+    shareClonedSkeletons(scene);
     scene.traverse(part => {
         if (!part.isMesh) return;
         part.castShadow = true; part.receiveShadow = true;

@@ -94,3 +94,19 @@ test('factory recovers from a dressed fallback and resets pooled NPC poses', asy
         expect(load).toHaveBeenCalledTimes(2);
     } finally { MeshFactory.pool = pool; load.mockRestore(); warn.mockRestore(); }
 });
+
+test('sharing matching cloned palettes preserves per-mesh binds and differing inverse rigs', () => {
+    const source = fixture(), costume = source.scene.getObjectByName('Ilyra_FourfoldCostume');
+    const head = source.scene.getObjectByName('Ilyra_HeadAndHands');
+    head.bindMatrix.makeTranslation(.2, 0, 0); head.bindMatrixInverse.copy(head.bindMatrix).invert();
+    const actor = createAuthoredIlyraInstance(source), a = actor.getObjectByName('Ilyra_FourfoldCostume'), b = actor.getObjectByName('Ilyra_HeadAndHands');
+    expect(a.skeleton).toBe(b.skeleton); expect(b.bindMatrix.equals(head.bindMatrix)).toBe(true);
+    expect(b.bindMatrixInverse.equals(head.bindMatrixInverse)).toBe(true);
+    const dispose = jest.spyOn(a.skeleton, 'dispose'); actor.userData.disposeInstance(); actor.userData.disposeInstance();
+    expect(dispose).toHaveBeenCalledTimes(1);
+    head.skeleton.boneInverses = head.skeleton.boneInverses.map(matrix => matrix.clone());
+    head.skeleton.boneInverses[0].makeTranslation(.1, 0, 0);
+    const distinct = createAuthoredIlyraInstance(source);
+    expect(distinct.getObjectByName('Ilyra_FourfoldCostume').skeleton).not.toBe(distinct.getObjectByName('Ilyra_HeadAndHands').skeleton);
+    expect(costume.skeleton).not.toBe(a.skeleton);
+});
