@@ -80,3 +80,16 @@ test.each([{ completed: true }, { count: 1 }])('refuses an already-earned object
     Object.assign(quests.at(-1), change);
     await expect(restoreEarnedRaidReadiness(page, credentials, raid, 70)).rejects.toThrow();
 });
+
+
+test('retains earned raid access when an earlier added chapter is optional in both client and save', async () => {
+    quests[1].completed = saved.quests[1].completed = false;
+    quests[1].legacyOptional = saved.quests[1].legacy_optional = true;
+    page.evaluate.mockImplementation(async (_body, id) => id
+        ? quests.find(q => q.id === id)?.legacyOptional === true
+        : { level: 70, xp: 42, gold: 321 });
+    await restoreEarnedRaidReadiness(page, credentials, raid, 70);
+    expect(acceptOfferedChapter).not.toHaveBeenCalled();
+    expect(quests[1].completed).toBe(false);
+    expect(saved.quests[1].completed).toBe(false);
+});
