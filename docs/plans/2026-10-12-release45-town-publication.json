@@ -1,7 +1,7 @@
 {
   "source": "31defee90a7debd0312d396bbae604345f1ee9e4",
   "version": "Alpha 1.79.45",
-  "status": "Pushed coherent town timber and foreground-home visibility milestone; own CI running. Public44 remains last accepted release.",
+  "status": "Accepted scoped45 town release: orderedCI success and fresh127assets/identities/readyDB/analytics match. Two configured live retries retained as open reliability findings, not clean first-pass acceptance.",
   "recordedUTC": "2026-10-12T21:57:58.753097+00:00",
   "qualificationReceipts": [
     "2026-10-12-lanternhold-timber-qualification.json",
@@ -98,6 +98,12 @@
     "url": "https://github.com/aeml/eidolon/actions/runs/38313813464",
     "createdUTC": "2026-10-12T21:57:21Z"
   },
-  "acceptanceRequired": "Ordered ownCI prerequisites, native checks, both deployments, liveQA and fresh normal-TLS127assets/frontend/backend/readyDB/analytics required before acceptance or another publication.",
-  "limits": "Original crowded-town draw/triangle/frame budget failures persist; full original art/device/gameplay/owner/F1\u2013F5/beta/launch/handoff goal remains open. No retry or assertion waiver. Only master active locally/origin; original dirty detached user checkout preserved."
+  "acceptanceRequired": "Satisfied within scoped town release; original2network-related live flakes retained as open reliability findings. Full goal unchanged.",
+  "limits": "Original crowded-town draw/triangle/frame budget failures persist; full original art/device/gameplay/owner/F1\u2013F5/beta/launch/handoff goal remains open. No retry or assertion waiver. Only master active locally/origin; original dirty detached user checkout preserved.",
+  "terminalCustody": {
+    "root": "/home/aeml/.local/share/eidolon-release45-town-terminal-checks-20261012",
+    "entries": 42,
+    "inventorySHA256": "53fba7c1c91a099df001782054e98cfd4c9b1bddb3c6b15fbe932ace76e25f4e"
+  },
+  "terminalQualification": "2026-10-12-public45-terminal-qualification.json"
 }
