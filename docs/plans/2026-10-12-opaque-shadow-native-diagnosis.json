@@ -1,0 +1,67 @@
+{
+  "recordedUTC": "2026-10-12T21:41:00.193291+00:00",
+  "gallerySource": "097449f8a78691eb0424eddcb7c0db5385d70466",
+  "compositionSource": "e1b875086ae50b78d5557d7cf9a103f7366b2c80",
+  "status": "Gallery qualified; actual town initial gain test fails. Corrective native diagnostic establishes scoped gain only; optional owner remains isolated/unselected.",
+  "gallery": {
+    "actualActors": 10,
+    "wholeRGBAControls": 30,
+    "packedDepthControls": 30,
+    "repeatColorControls": 30,
+    "repeatDepthControls": 30,
+    "GPUCycles": 20,
+    "classOutfits": 14,
+    "sourceTrianglesExact": true,
+    "originalResourcesRestored": true,
+    "savedShadowCallsPerClass": 8,
+    "savedShadowCallsIlyra": 16
+  },
+  "initialFailures": [
+    "Hardcoded Chrome host symlink absent inside namespace, failed before browser launch; harness now consumes qualified wrapper executable path.",
+    "Initial town missing ignored geometry worker; 404 retained. Byte-exact qualified173395byte worker copied; no editable/runtime change.",
+    "Initial actual town saves0calls: all stock BatchedMesh shadow methods trigger conservative unknown-hook fallback; existing ActorGameplayGeometry substitutions also invalidate pre-render source bindings. Neither initial lifetime nor performance gate accepted."
+  ],
+  "correctiveCPU": "98focusedchecks/three suites plus lint pass: recognize exact stockBatchedMesh hooks with default sorting or unchanged identity-owned ActorInstanceMultiDraw sorter; replaced/foreign hooks/sorters keep fallback. Composer passes preserve last world statistics.",
+  "correctiveDiagnostic": {
+    "High": {
+      "plazaDraws": [
+        429,
+        381
+      ],
+      "westDraws": [
+        337,
+        289
+      ],
+      "savedShadowCalls": 48,
+      "batches": 9,
+      "trianglesUnchanged": [
+        278023,
+        245506
+      ],
+      "wholeRGBAAndRepeatsExact": true
+    },
+    "Low": {
+      "plazaDraws": [
+        191,
+        191
+      ],
+      "westDraws": [
+        125,
+        125
+      ],
+      "shadowDisabledFallback": true,
+      "trianglesUnchanged": [
+        107747,
+        78113
+      ],
+      "wholeRGBAAndRepeatsExact": true
+    },
+    "driver": "Explicit isolated scene-onBeforeRender synchronization after ordinary geometry substitutions; original owner source097 gallery and sourcee1 diagnostic are separate scopes."
+  },
+  "limits": "No runtime/default installation; driver actual lifetime, native town packed-depth, ABBA moving cadence and supported-device acceptance remain open. High381draw/278023tri and Low107747tri still fail unchanged overall budgets. Gallery30controls do not clear actual-town integration requirements.",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-opaque-shadow-gallery-checks-20261012",
+    "entries": 116,
+    "inventorySHA256": "0aec803b87007356083086cbda78d717bab98c0473c5ad89aa8941d70168b485"
+  }
+}

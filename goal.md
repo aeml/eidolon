@@ -1644,3 +1644,20 @@ returning construction. Frozen72entry inventory
 `e1cd12df3cc5ae8ea841a4f00891ca19a2cb88a26129b5d8ece3f3d0d5d8d3d1`.
 Crowdedplaza originalbudget failures persist. Foreground-house player occlusion
 remains next before coherent publication. Public44accepted; fullgoal remains open.
+
+
+October12 isolated native shadow work:097owner tenactualgallery cases retain
+30RGBA/packeddepth/repeats exact and20GPUcycles;8shadowcalls/class16Ilyra saved.
+InitialChrome-path/missingworker and actualtownzero-gain failures retained.
+Correctivee1b87508/98CPUchecks qualifies exactstockBatchedMesh/owned-sort hooks;
+explicit geometry-composition diagnostic saves48Highcalls (429→381plaza,
+337→289west) with fullRGBA/triangles exact; Low disabled-shadows unchanged.
+Frozen116entry inventory`0aec803b87007356083086cbda78d717bab98c0473c5ad89aa8941d70168b485`.
+Separate Ilyra reducedshadow pilot sixexactdepth/color/sixreducedcounts/12
+unshadowed/repeat/fourGPUcycles pass;17420shadowtris saved, allcolor/rig/morph
+retained. Lossyshadow quality/town integration not accepted. Frozen47entries
+`fe983f189e58a0de804936f42be4cb279add24c3e627600081ef77fd54c9bb85`.
+Both prototypes remain isolated/unselected; crowded-town budgets still fail.
+Town foreground-home cutaway stage2adab8ea passes23CPUchecks/three suites/lint;
+actualnative underway after retaining omitted-focus fixture failure. Public44
+accepted, qualifiedtimber merged but nextcoherentpublication pending. Fullgoal open.
