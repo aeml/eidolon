@@ -1415,3 +1415,17 @@ triangle failures persist. Ilyra derivative/palette integration and Dark roof
 material stage remain outside43; native qualification resumes after terminalCI.
 Scheduled41soak continues, no restart. Full original goal remains active; no
 unchanged campaign/device replay. See public43-terminal-qualification.
+
+
+October12 Ilyra Low native review rejects thinning gold detail despite two
+functional gallery passes/eight exact paletteRGBAcontrols. Repaira8c3831a
+retains complete head/hand gold but18813tris fails unchanged65percent target;
+2preservation/reproducibility checks pass,1target fails. Both models remain
+unselected; all original assets and plaza budgets retained. Independent original-
+model palette238851a8 qualifies39CPUchecks/three suites, one native/four exact
+RGBAcontrols, two GPUretirement cycles and12prepared town views.20to1owned
+palette per NPC; sourcegeometry/animation unchanged. High crowded-town and Low
+plaza failures persist; no FPS claim. Frozen46entry inventory
+393e59abccd823b3af9a8bfe1f019bc0429be73ad3de8218ed8db562dd5b291c.
+Qualified palette change ordinary merge into master next, publication pending.
+Roofmaterial native qualification remains next; full original goal active.

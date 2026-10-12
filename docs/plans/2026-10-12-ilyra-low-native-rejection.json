@@ -1,0 +1,49 @@
+{
+  "recordedUTC": "2026-10-12T15:49:50.416287+00:00",
+  "status": "Unselected Low derivative. No runtime/model/catalog activation or merge. Original source and targets retained.",
+  "earlierStage": "2026-10-12-ilyra-low-cpu-staging.json",
+  "integrationCPU": {
+    "source": "8eb4af598ae4ca4a5878fbb1e9e1b303d44652c0",
+    "distinctChecks": 180,
+    "suites": 7,
+    "result": "pass after retained initial allowlist fixture failure",
+    "scope": "Low loader/pool/recovery and exact palette prototype only; CPU checks do not qualify visual source."
+  },
+  "native": {
+    "source": "8eb4af598ae4ca4a5878fbb1e9e1b303d44652c0",
+    "galleryCases": 2,
+    "result": "Functional/rendering controls pass; visual review rejects16993triangle Low model",
+    "RGBAControls": 8,
+    "maximumDelta": 0,
+    "detailFailure": "Gold staff prongs/rings and circlet thinned in close side/back/front views. Native functional passes do not waive this art failure.",
+    "townFixtureFailure": "Reference Low geometry asserted27737 but loaded16993; failed before Low comparisons. Partial High reference observations retained; no candidate town conclusion."
+  },
+  "repair": {
+    "source": "a8c3831a",
+    "sha256": "d57985ba18a7579c66bd9cda394332e321fb9078027e341e8328005345905e31",
+    "bytes": 1494680,
+    "triangles": 18813,
+    "validationErrors": 0,
+    "tests": {
+      "pass": 2,
+      "fail": 1,
+      "failedTarget": "18813 is not less than original27737*.65=18029.05"
+    },
+    "state": "Complete head/hand-bound gold details retained; repaired native art not qualified; original65percent target and85k town budget unchanged."
+  },
+  "custody": [
+    {
+      "root": "/home/aeml/.local/share/eidolon-ilyra-low-integration-checks-20261012",
+      "source": "8eb4af598ae4ca4a5878fbb1e9e1b303d44652c0",
+      "entries": 31,
+      "inventorySHA256": "931783c6eeaf7eff05935acd36f5a6d12159dfe978d49a04e63c230bf5c3e4a0"
+    },
+    {
+      "root": "/home/aeml/.local/share/eidolon-ilyra-low-native-checks-20261012",
+      "source": "a8c3831a",
+      "entries": 43,
+      "inventorySHA256": "9f0ee26bede7a6127f968780375dba5244fad13886289a492812152abc12316e"
+    }
+  ],
+  "selectedFollowup": "Independent palette-only implementation238851a8 uses original27737triangle Ilyra in both qualities; separately qualified before merge. No claim of Low plaza closure."
+}

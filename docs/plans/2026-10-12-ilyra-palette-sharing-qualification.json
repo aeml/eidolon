@@ -1,0 +1,154 @@
+{
+  "source": "238851a85018b96c832bbd9ddddfe2b2443d7c15",
+  "cpuDistinct": 39,
+  "cpuSuites": 3,
+  "lint": "pass",
+  "nativeGallery": {
+    "pass": 1,
+    "retry": 0,
+    "skips": 0,
+    "RGBAControls": 4,
+    "maximumDelta": 0,
+    "twoOwnedGPUCycles": true,
+    "nativeGPU": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+  },
+  "townProfiles": 6,
+  "townViews": 12,
+  "metrics": [
+    {
+      "mode": "reference",
+      "quality": "high",
+      "views": [
+        {
+          "name": "service-plaza",
+          "calls": 429,
+          "triangles": 278023,
+          "median": 33.3,
+          "p95": 50
+        },
+        {
+          "name": "west-homes",
+          "calls": 337,
+          "triangles": 245506,
+          "median": 33.3,
+          "p95": 33.4
+        }
+      ]
+    },
+    {
+      "mode": "reference",
+      "quality": "low",
+      "views": [
+        {
+          "name": "service-plaza",
+          "calls": 191,
+          "triangles": 107747,
+          "median": 16.7,
+          "p95": 16.8
+        },
+        {
+          "name": "west-homes",
+          "calls": 125,
+          "triangles": 78113,
+          "median": 16.7,
+          "p95": 16.8
+        }
+      ]
+    },
+    {
+      "mode": "candidate",
+      "quality": "high",
+      "views": [
+        {
+          "name": "service-plaza",
+          "calls": 429,
+          "triangles": 278023,
+          "median": 33.3,
+          "p95": 33.4
+        },
+        {
+          "name": "west-homes",
+          "calls": 337,
+          "triangles": 245506,
+          "median": 16.8,
+          "p95": 33.5
+        }
+      ]
+    },
+    {
+      "mode": "candidate",
+      "quality": "low",
+      "views": [
+        {
+          "name": "service-plaza",
+          "calls": 191,
+          "triangles": 107747,
+          "median": 16.7,
+          "p95": 16.8
+        },
+        {
+          "name": "west-homes",
+          "calls": 125,
+          "triangles": 78113,
+          "median": 16.7,
+          "p95": 33.4
+        }
+      ]
+    },
+    {
+      "mode": "reference-again",
+      "quality": "high",
+      "views": [
+        {
+          "name": "service-plaza",
+          "calls": 429,
+          "triangles": 278023,
+          "median": 33.3,
+          "p95": 50.1
+        },
+        {
+          "name": "west-homes",
+          "calls": 337,
+          "triangles": 245506,
+          "median": 33.3,
+          "p95": 49.9
+        }
+      ]
+    },
+    {
+      "mode": "reference-again",
+      "quality": "low",
+      "views": [
+        {
+          "name": "service-plaza",
+          "calls": 191,
+          "triangles": 107747,
+          "median": 16.7,
+          "p95": 33.3
+        },
+        {
+          "name": "west-homes",
+          "calls": 125,
+          "triangles": 78113,
+          "median": 16.7,
+          "p95": 33.3
+        }
+      ]
+    }
+  ],
+  "scope": "Original27737triangle Ilyra remains selected in both profiles. Only exact NPC skeleton palette sharing changes,20to1 per NPC. Player helper body unchanged. Prepared source GameEngine/HUD/four14slotRun classes/actualGo resident snapshots. No connected/full-art/device/FPS or original plaza budget pass.",
+  "retirement": {
+    "browserClosed": true,
+    "ownedStaticServerClosed": true,
+    "port": 4240,
+    "completedProfiles": 6
+  },
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-ilyra-palettes-checks-20261012",
+    "entries": 46,
+    "inventorySHA256": "393e59abccd823b3af9a8bfe1f019bc0429be73ad3de8218ed8db562dd5b291c"
+  },
+  "recordedUTC": "2026-10-12T15:51:23.848826+00:00",
+  "status": "Qualified within original-model rendering/resource scope; ordinary merge into master next, publication pending.",
+  "rejectedLowDerivative": "2026-10-12-ilyra-low-native-rejection.json"
+}
