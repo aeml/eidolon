@@ -1,0 +1,21 @@
+{
+  "atUTC": "2026-10-12T23:00:48.681965+00:00",
+  "runtime": "1614ed8fd5d73912133e31829910dfca0abccdea",
+  "integration": "b972b26b4c385f588548d314616d878b7c4cd524",
+  "publicCandidate": "31defee90a7debd0312d396bbae604345f1ee9e4",
+  "ci": 38313813464,
+  "townBaseline": "499b2fc3 includes qualified unpublished facades",
+  "changedScope": "Shared skeleton finite/inverse/format validation only; native geometry/proxy behavior unchanged.",
+  "status": "CPU-qualified changed validator candidate, native pending, not selected/default integrated",
+  "checks": 100,
+  "suites": 3,
+  "lint": "pass",
+  "CPUdiagnostic": "Actual original accessor/skin/node bytes from four supplied rigs +Ilyra,53bones each; texture descriptions removed, no equipment, gameplay derivatives, animation or real renderer/GPU. Before median3.36/3.01ms; changed1.084/.966ms, p951.344/1.258. Separate-process descriptive improvement, not native FPS acceptance. Phase totals overlap.",
+  "behavior": "Per-synchronous-call finite skeleton cache; exact same-palette identity comparison avoids comparing matrices to themselves; source snapshots shared by original palette and each current palette compared once per valid call. All per-mesh geometry/bind/depth guards and live per-frame inverse checks remain. New nonfinite inverse/recovery semantic case passes.",
+  "next": "Changed actual-town native6RGBA/3Highdepth/restoration controls,16ABBAarms/fourGPUcycles against current qualified facade source. Preserve original crowd budgets/counterexamples; prior slower native variant remains rejected.",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-shadow-validation-cpu-checks-20261012",
+    "entries": 15,
+    "inventorySHA256": "379d627fd7a3c1fac6bb960e7e617d6d3e33e4aa1b8a55fbd4cc3e467490f891"
+  }
+}
