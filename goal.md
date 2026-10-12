@@ -1233,3 +1233,21 @@ selection/merge. No native attempt while release41CI owns sharedGPU. Frozen11ent
 inventory40375ca37f625fa8c305b0716e9284b6664782ae3e06226ffd717fa030413ee2.
 Accepted40quest fix and live frontend/backend/readyDB rechecked; no unchanged
 campaign/soak rerun. Full original scope active. See dark-court-furnishings-staged.
+
+
+October12 district architecture CPU stage:32former skyline blocks become
+constructed masonry/pointed windows/pitched roofs, mooring spars, hollow flues
+and supported crowns. Detached542c869f independently passes24focused/two suites
+and exact outside32envelope census; frozen13entry inventory
+d70ace40715de9651cd93d8c0623a2536b1993d21701e2460bcaebc8e8fffdf6.
+Combined with court5e37a747 privately at31c3c755, then QA-only c5bc0f1c scene-count
+reconciliation.44focused/3suites and scoped lint pass;22colliders/floorUV/landmarks
+and outside48envelope geometry remain exact. AddedHigh27768/Low20376triangles
+require combined native budget checks; no visual/performance acceptance or merge.
+Twenty-view High/Low equipped/HUD review and ABBA/GPU lifecycle harness prepared;
+no browser/static server started while exact41nativeCI remains active. Frozen14entry
+CPU inventoryb20e5fa761e0c47fe14488159ac36c4de521f5f1893fc23364d25dae7a7d2f61.
+Original scene-count fixture failures retained/corrected; render budgets unchanged.
+Exact41allfiveprerequisites passed, predeployment nativeQA inprogress; existing
+soak remains active, neither is terminal acceptance. Full original goal active,
+no unchanged campaign/soak replay. See dark-district-art-staged.

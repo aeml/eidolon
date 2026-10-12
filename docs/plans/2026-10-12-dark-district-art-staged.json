@@ -1,0 +1,159 @@
+{
+  "recordedUTC": "2026-10-12T03:17:01.802329+00:00",
+  "source": "c5bc0f1c4474952fa9c08587e79c146da21e7cd3",
+  "parents": {
+    "skyline": "542c869f",
+    "furniture": "5e37a747",
+    "isolatedMerge": "31c3c755"
+  },
+  "status": "Combined CPU-only detached candidate. Not merged into master or published. Native visual/performance/lifecycle pending until release41 finishes.",
+  "focused": {
+    "tests": 44,
+    "suites": 3,
+    "seconds": 14.691
+  },
+  "lint": true,
+  "diffCheck": true,
+  "retainedFailure": "Combined source initially retained skyline-only expected38meshes; court material adds one,39actual. Updated combined scene assertion; no runtime changes or relaxed render budgets.",
+  "geometry": {
+    "rows": [
+      {
+        "quality": "high",
+        "before": {
+          "meshes": 38,
+          "triangles": 10694,
+          "excludedChangedTriangles": 3960,
+          "outsideChangedTriangles": 6734,
+          "outsideChangedSHA256": "1f233f559455fc94f6e50f47e0fd5ea629fec1665aacf19a8078bc50512e0159"
+        },
+        "after": {
+          "meshes": 39,
+          "triangles": 38462,
+          "excludedChangedTriangles": 31728,
+          "outsideChangedTriangles": 6734,
+          "outsideChangedSHA256": "1f233f559455fc94f6e50f47e0fd5ea629fec1665aacf19a8078bc50512e0159"
+        },
+        "addedTriangles": 27768,
+        "floorUVGeometryAndLandmarksExact": true
+      },
+      {
+        "quality": "low",
+        "before": {
+          "meshes": 38,
+          "triangles": 9030,
+          "excludedChangedTriangles": 3960,
+          "outsideChangedTriangles": 5070,
+          "outsideChangedSHA256": "14d3cc9f6227d3b959b7d65c6c925aae6460003125ed7df85e6e7807a2edd7ec"
+        },
+        "after": {
+          "meshes": 39,
+          "triangles": 29406,
+          "excludedChangedTriangles": 24336,
+          "outsideChangedTriangles": 5070,
+          "outsideChangedSHA256": "14d3cc9f6227d3b959b7d65c6c925aae6460003125ed7df85e6e7807a2edd7ec"
+        },
+        "addedTriangles": 20376,
+        "floorUVGeometryAndLandmarksExact": true
+      }
+    ],
+    "colliders": [
+      {
+        "min": [
+          39974.9,
+          -1,
+          40774.9
+        ],
+        "max": [
+          39977.1,
+          6,
+          40777.1
+        ]
+      },
+      {
+        "min": [
+          40022.9,
+          -1,
+          40774.9
+        ],
+        "max": [
+          40025.1,
+          6,
+          40777.1
+        ]
+      },
+      {
+        "min": [
+          40022.9,
+          -1,
+          40822.9
+        ],
+        "max": [
+          40025.1,
+          6,
+          40825.1
+        ]
+      },
+      {
+        "min": [
+          39974.9,
+          -1,
+          40822.9
+        ],
+        "max": [
+          39977.1,
+          6,
+          40825.1
+        ]
+      },
+      {
+        "min": [
+          39974.6,
+          -1,
+          40808.6
+        ],
+        "max": [
+          39981.4,
+          5,
+          40815.4
+        ]
+      },
+      {
+        "min": [
+          40018.6,
+          -1,
+          40808.6
+        ],
+        "max": [
+          40025.4,
+          5,
+          40815.4
+        ]
+      }
+    ],
+    "colliderCount": 22,
+    "scope": "All triangles outside the 32 former skyline envelopes and16court solids without expansion retain sorted world positions/attributes/material/flags; floor geometry/UV/metadata and landmarks exact. District skyline architecture and court furniture change. Collider equality checked against retained baseline source."
+  },
+  "nativePreparation": {
+    "root": "/home/aeml/.local/share/eidolon-dark-districts-checks-20261012",
+    "views": 20,
+    "qualities": [
+      "High1280x844",
+      "Low390x844"
+    ],
+    "preparedBrowserAssets": true,
+    "noBrowserOrServerStarted": true,
+    "notFrozen": true,
+    "scope": "12court views plus4ordinary street-edge views and4decorative architecture inspection focuses; four supplied14slot classes/Run/HUD. Prepared isolated scene, not connected campaign or physical device."
+  },
+  "pending": [
+    "Native before/after visual review, including readable court props and district construction",
+    "Real-clock ABBA timing/draw/triangle budget checks for combined cost",
+    "Two GPU retirement cycles per profile"
+  ],
+  "fullGoal": "Original1.11\u20131.99 world/art/gameplay/device/performance/operations/F1-F5/beta/launch/handoff remains active.",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-dark-districts-cpu-checks-20261012",
+    "entries": 14,
+    "inventorySHA256": "b20e5fa761e0c47fe14488159ac36c4de521f5f1893fc23364d25dae7a7d2f61"
+  }
+}
