@@ -1174,3 +1174,18 @@ physical-device, peak-memory, final-art or full-goal acceptance. Boxed Dark camp
 tents/sparse district composition and broader CPU submission work remain next.
 Public40 stays accepted; full original1.11–1.99/F1–F5/beta/launch/handoff active.
 See dark-realm-streets-qualification; no unchanged campaign/soak replay.
+
+
+October12 Dark Realm camp shelters: qualified2eb211db/receipt402c31a4 now
+ordinarily merged locally. Closed tensioned canvas, hipped ridges, supports and
+tie-downs retain original22colliders/floorUVs/landmarks and exact geometry outside
+the two shelter solids.12focused checks/3suites plus scoped lint pass. Actual-floor
+High/Low HUD/four supplied14slot-class views,8ABBA120-frame arms (16.7msmedian,
+p95at most16.8ms) and two exact GPU retirement cycles/profile pass within prepared
+scope. No speedup/connected/device/final-art acceptance. Frozen48entry inventory
+ff96b92bd2d1b8311644cdb9d128baec42a800adbeafded5fb43725468c2f8ce.
+Owned4226/browser resources closed. Public40 XP fix remains accepted; shelter
+art held with waystones/floor for a coherent next milestone. Sparse districts/
+elemental lanterns and CPU submission remain open. Full original1.11–1.99/F1–F5/
+beta/launch/handoff goal active. No unchanged campaign/soak replay. See
+dark-camp-shelter-qualification.

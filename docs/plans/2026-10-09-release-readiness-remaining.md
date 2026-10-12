@@ -403,7 +403,7 @@ acceptance is incomplete.
 
 | Requirement | Remaining work and evidence needed | Owner |
 | --- | --- | --- |
-| Next release | Alpha1.79.40/exact`5e98360a` is accepted after all10ordered CI38189518140attempt1 jobs and fresh01:35:56UTC normal-TLS101asset/frontend/backend/readyDB checks. Original stale earned-raid QA failure is retained. Qualified waystone crowns, QA-only GPU observer and Dark Realm street surfaces are merged locally for a future coherent world-art milestone. Do not publish tiny standalone QA/art changes; synchronize all versions/cumulative notes and require the next candidate’s own ordered CI/deploy/live/public acceptance. [Public40acceptance](2026-10-12-public40-terminal-qualification.json). Cold geometry/connected timing/device/final-art gates remain open. | Implementation |
+| Next release | Alpha1.79.40/exact`5e98360a` is accepted after all10ordered CI38189518140attempt1 jobs and fresh01:35:56UTC normal-TLS101asset/frontend/backend/readyDB checks. Original stale earned-raid QA failure is retained. Qualified waystone crowns, QA-only GPU observer, Dark Realm street surfaces and camp shelters are merged locally for a future coherent world-art milestone. Do not publish tiny standalone QA/art changes; synchronize all versions/cumulative notes and require the next candidate’s own ordered CI/deploy/live/public acceptance. [Public40acceptance](2026-10-12-public40-terminal-qualification.json). Cold geometry/connected timing/device/final-art gates remain open. | Implementation |
 | Modern world and atlas | Finish coherent material scale, terrain transitions, grounded architecture, roads, vegetation/rock composition, landmarks, interiors, lighting, atmosphere and readable travel/combat spaces. Moving equipped/HUD review starts Lanternhold → Earth → fight → first dungeon, then all elemental realms/borders, dungeons/raids, Dark Realm, both casino floors and PvP. Required named places, optional interactions and accurate maps remain governed by the full world contract. Repetition, sparse rooms and broad muddy patches are not final art. | Implementation; final owner review |
 | Supplied actor/equipment presentation | Finish full/mixed/cosmetic fits and material identity across all classes, weapon restrictions, dual wielding, local/remote swaps, pooling/reconnect and motion. Preserve delivered assets and approved geometry/rig constraints. | Implementation; final owner review |
 | Combat, classes and audio | Validate all twelve specialization kits, attack anticipation/contact/recovery, movement, threat readability and role feel. Finish contact/audio integration and human listening/busy-group mix; essential warnings survive Low/reduced effects/mute. Prepared mixer frames or audio API calls are insufficient for full acceptance. | Implementation and playtests |
@@ -481,3 +481,19 @@ play, human pacing, physical-device or sustained performance evidence. Do not
 repeat unchanged campaigns/soaks or ask again for already-deferred decisions.
 Continue available implementation work while individual owner decisions remain
 pending. The entire original goal stays active.
+
+
+October12 camp shelter checkpoint: qualified `2eb211db` and receipt `402c31a4`
+are ordinarily merged into local master. Closed tensioned canvas, hipped ridges,
+frames and tie-downs replace the two box/pyramid shelters, within exact existing
+solids. Outside-shelter geometry/material/flags, floor UVs, landmarks and22colliders
+are unchanged.12focused checks/3suites and scoped lint pass. Baseline/candidate/final
+actual-floor High/Low HUD/four-class14slot views retained; all8ABBA120-frame arms
+16.7msmedian, p95at most16.8ms. FinalHigh208draw141343tri,Low103draw64584tri;
+two GPU retirement cycles/profile return exact baseline. No speedup or full-world
+acceptance claimed. Frozen48entry inventory
+`ff96b92bd2d1b8311644cdb9d128baec42a800adbeafded5fb43725468c2f8ce`.
+Owned4226server stopped after PID/cwd/command proof; browser contexts closed.
+Public40/quest-pacing acceptance remains unchanged. Hold with waystones/floor for
+a coherent world-art milestone; sparse districts/lanterns and CPU submission
+remain open. [Shelter qualification](2026-10-12-dark-camp-shelter-qualification.json).
