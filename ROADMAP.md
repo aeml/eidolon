@@ -1,6 +1,6 @@
 # Eidolon Roadmap
 
-Alpha1.79.42/exact`6f9895ac` failed required native Earth timing before deployment; accepted41 remains live, freshly verified04:58:26UTC. Town homes/resident walking/gate transitions and the transient combat-delivery correction are qualified and merged locally, awaiting a coherent release. Crowded-town and High Earth performance failures remain open; no retry, budget waiver, final-art or beta declaration. [Town qualification](docs/plans/2026-10-12-lanternhold-neighborhood-qualification.json).
+Alpha1.79.43 is being prepared with qualified Lanternhold homes, strolling residents, gate-road transitions and the transient combat-delivery correction, carrying the merged map focus/district art.468focused release checks/six suites,14content groups and12synchronized versions pass;478notes preserve all477prior byte-exact. Native copied publication review and own ordered CI/deploy/live acceptance remain required. Release42failed before deployment; accepted41 remains live. Crowded-town and broader High performance/final-art/beta gates remain open. [Town qualification](docs/plans/2026-10-12-lanternhold-neighborhood-qualification.json).
 
 > Project by [Robert Mendola](https://mendola.tech)
 >

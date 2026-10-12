@@ -1358,3 +1358,17 @@ original plaza also failed, and other High frame failures persist. No overall
 performance/final-art/device acceptance. Publication pending; next diagnose
 retained42Earth timing and crowded-town performance, then coherent release.
 Full original goal remains active. See lanternhold-neighborhood-qualification.
+
+
+October12 coherent43 preparation includes merged town/transport and held42
+map-focus/district work.468publication checks/six suites,14generated groups,
+12versions and478notes/all477prior byte-exact pass. The generated-content
+fixture includes town-neighborhood; required native grep retains both original
+camp and new residential clipping cases. Mistyped bundle-test path retained;
+actual GameEngineBundle15checks pass. Exact42scene diagnostic matches200draw/
+183748tri/shadowtarget, with180queries/60warmup per material: GPU3.3–3.4ms
+versus CPU13.2–13.5msmedian; separate CPU samples name foliage-shadow traversal,
+matrix propagation and frustum projection. Historical CI cause stays unknown.
+Frozen13entry inventoryc78d37f748ac8389b9ad5c159ba5f19af231308b60c043de276b8c0778687ce0.
+No runtime optimization, timing acceptance or42rerun. Copy/native/ordered43CI
+and fresh public proof remain required. Full goal active; no newlongsoak/campaign.
