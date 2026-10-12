@@ -8,6 +8,7 @@ import { createWorldPathNetwork } from './ProceduralWorldPaths.js';
 import { createDarkRealmStreetMaterial } from './DarkRealmStreetSurface.js';
 import { createDarkCampShelterGeometry } from './DarkCampShelterGeometry.js';
 import { createDarkCampLanternGeometry } from './DarkCampLanternGeometry.js';
+import { createDarkDistrictArchitectureGeometry } from './DarkDistrictArchitectureGeometry.js';
 
 const CAMP_LANTERNS = [[-24, -24], [24, -24], [24, 24], [-24, 24]];
 const CAMP_SHELTERS = [[-22, 12], [22, 12]];
@@ -177,24 +178,11 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
         // space for authored investigation sites and real encounter actors.
         for (const side of [-1, 1]) for (const offset of [-160, -80, 80, 160]) {
             const px = x + side * (room.width / 2 + 22), pz = z + offset;
-            const height = index === 4 ? 42 : index === 3 ? 28 : 20;
-            block(stone, [24, height, 28], [px, height / 2 - 2, pz]);
-            block(shadow, [28, 3, 32], [px, height - 1, pz]);
-            for (const windowZ of [-7, 7]) block(glow, [1, 7, 4], [px - side * 12.1, height * .65, pz + windowZ]);
-            if (index === 1) {
-                // Broken mooring spars on the nameless shore.
-                block(bronze, [2, 28, 2], [px, 23, pz], .2);
-                block(shadow, [16, 2, 3], [px, 30, pz]);
-            } else if (index === 2) {
-                // Archive stacks: gilt bindings on monumental sealed volumes.
-                for (let tier = 0; tier < 3; tier++) block(bronze, [26, 1, 30], [px, 5 + tier * 6, pz]);
-            } else if (index === 3) {
-                // Foundry exhaust and glowing resonance conduits.
-                block(shadow, [8, 30, 8], [px + side * 5, 35, pz]);
-                block(glow, [4, 1, 26], [px, 28, pz]);
-            } else {
-                // The king's crown repeats across a city frozen in one morning.
-                for (const tooth of [-8, 0, 8]) block(bronze, [3, 8, 3], [px + tooth, height + 5, pz]);
+            const recipe = ['camp', 'shore', 'archive', 'foundry', 'city'][index];
+            const architecture = createDarkDistrictArchitectureGeometry(recipe, quality);
+            for (const [key, geometry] of Object.entries(architecture)) {
+                geometry.rotateY(-side * Math.PI / 2);
+                append({ stone, bronze, shadow, glow }[key], geometry, [px, 0, pz]);
             }
             root.userData.landmarks.push({ kind: ['camp', 'shore', 'archive', 'foundry', 'city'][index],
                 x: px + origin.x, z: pz + origin.z });
