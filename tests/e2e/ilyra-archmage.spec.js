@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 import { collectBrowserFailures } from './helpers.js';
+import { requiresHardwareWebGL } from './browserLaunchPolicy.js';
 
 test('Ilyra is dressed, independently animated and keeps his story quest marker', async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
@@ -50,8 +51,10 @@ test('Ilyra is dressed, independently animated and keeps his story quest marker'
         const source = await MeshFactory.loadModel(ILYRA_MODEL_PATH);
         const sourceNames = []; source.scene.traverse(part => { if (part.isMesh) sourceNames.push(part.name); });
         const gl = renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
-        window.ilyraPreview = { actors, renderPose };
+        window.ilyraPreview = { actors, renderPose, renderer, scene, camera, source };
         return { appearance: actors.map(actor => actor.mesh.userData.npcAppearance),
+            fallback: actors.map(actor => Boolean(actor.mesh.userData.assetFallback)),
+            palettes: actors.map(actor => { const palettes = new Set(); actor.mesh.traverse(part => { if (part.isSkinnedMesh) palettes.add(part.skeleton); }); return palettes.size; }),
             independent: aSkin.skeleton.bones.every((bone, i) => bone !== bSkin.skeleton.bones[i]),
             bounds: { min: bounds.min.toArray(), max: bounds.max.toArray() },
             emptyEquipment: actors.map(actor => actor.syncEquipmentVisuals({})),
@@ -60,15 +63,75 @@ test('Ilyra is dressed, independently animated and keeps his story quest marker'
             renderer: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : 'not exposed' };
     });
     expect(intake.appearance).toEqual(['ilyra-fourfold-archmage', 'ilyra-fourfold-archmage']);
+    expect(intake.fallback).toEqual([false, false]);
+    expect(intake.palettes).toEqual([1, 1]);
+    if (requiresHardwareWebGL()) { expect(intake.renderer).toBeTruthy(); expect(intake.renderer).not.toMatch(/software|swiftshader|llvmpipe|not exposed/i); }
     expect(intake.independent).toBe(true); expect(intake.emptyEquipment).toEqual([false, false]);
     expect(intake.idleMotion).toBeGreaterThan(.00001);
     expect(intake.bounds.min[1]).toBeGreaterThan(-.25);
     expect(intake.bounds.max[1]).toBeLessThan(5.4);
     for (const marker of intake.marker) { expect(marker.symbol).toBe('!'); expect(marker.kind).toBe('story'); expect(marker.height).toBeGreaterThan(intake.bounds.max[1]); }
+    const paletteControls = await page.evaluate(async () => {
+        const { actors, renderPose, renderer } = window.ilyraPreview, gl = renderer.getContext();
+        const baseline = { ...renderer.info.memory }, skins = [];
+        for (const actor of actors) actor.mesh.traverse(mesh => {
+            if (mesh.isSkinnedMesh) skins.push({ mesh, shared: mesh.skeleton, independent: mesh.skeleton.clone() });
+        });
+        const read = () => {
+            const pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
+            gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+            return pixels;
+        };
+        const controls = [];
+        for (const [yaw, time] of [[0, .4], [Math.PI / 2, .8], [Math.PI, 1.2], [-.65, 1.8]]) {
+            skins.forEach(row => { row.mesh.skeleton = row.independent; }); renderPose(yaw, time); const reference = read();
+            skins.forEach(row => { row.mesh.skeleton = row.shared; }); renderPose(yaw, time); const candidate = read();
+            skins.forEach(row => { row.mesh.skeleton = row.independent; }); renderPose(yaw, time); const again = read();
+            let changed = 0, unstable = 0, maximumDelta = 0, nonblank = 0;
+            for (let index = 0; index < reference.length; index++) {
+                changed += Number(reference[index] !== candidate[index]); unstable += Number(reference[index] !== again[index]);
+                maximumDelta = Math.max(maximumDelta, Math.abs(reference[index] - candidate[index]));
+                if (index % 4 !== 3 && reference[index] > 8) nonblank++;
+            }
+            controls.push({ yaw, time, bytes: reference.length, changed, unstable, maximumDelta, nonblank });
+        }
+        skins.forEach(row => { row.mesh.skeleton = row.shared; row.independent.dispose(); });
+        renderPose(0, .4);
+        const sharedBaseline = { ...renderer.info.memory }, cycles = [], pixelsBefore = read();
+        const THREE = await import('three');
+        const { createAuthoredIlyraInstance } = await import('/src/art/AuthoredIlyra.js');
+        for (let cycle = 0; cycle < 2; cycle++) {
+            const { scene, camera, source } = window.ilyraPreview;
+            const temporary = createAuthoredIlyraInstance(source), mixer = new THREE.AnimationMixer(temporary);
+            mixer.clipAction(temporary.userData.animations[0]).play(); mixer.update(.6);
+            scene.add(temporary); renderer.render(scene, camera);
+            const allocated = { ...renderer.info.memory };
+            scene.remove(temporary); mixer.stopAllAction(); mixer.uncacheRoot(temporary);
+            temporary.userData.disposeInstance(); temporary.userData.disposeInstance();
+            renderPose(0, .4);
+            const retired = { ...renderer.info.memory }, pixelsAfter = read();
+            let changed = 0;
+            for (let index = 0; index < pixelsBefore.length; index++) changed += Number(pixelsBefore[index] !== pixelsAfter[index]);
+            cycles.push({ cycle, allocated, retired, changed });
+        }
+        return { controls, independentPalettes: skins.length, sharedPalettes: new Set(skins.map(row => row.shared)).size,
+            baseline, sharedBaseline, cycles, retired: { ...renderer.info.memory }, scope: 'Exact full-RGBA control against previous independent per-submesh palettes and two owned instance retirement cycles; no frame-time claim.' };
+    });
+    expect(paletteControls.independentPalettes).toBeGreaterThan(paletteControls.sharedPalettes);
+    expect(paletteControls.sharedPalettes).toBe(2);
+    expect(paletteControls.retired).toEqual(paletteControls.baseline);
+    for (const cycle of paletteControls.cycles) {
+        expect(cycle.allocated.textures).toBe(paletteControls.sharedBaseline.textures + 1);
+        expect(cycle.retired).toEqual(paletteControls.sharedBaseline); expect(cycle.changed).toBe(0);
+    }
+    for (const row of paletteControls.controls) {
+        expect(row.bytes).toBe(1280 * 900 * 4); expect(row.nonblank).toBeGreaterThan(100000);
+        expect(row.changed).toBe(0); expect(row.unstable).toBe(0); expect(row.maximumDelta).toBe(0);
+    }
     for (const [name, yaw, time] of [['front', 0, .4], ['side', Math.PI / 2, .8], ['back', Math.PI, 1.2], ['isometric', -.65, 1.8]]) {
         await page.evaluate(({ yaw, time }) => window.ilyraPreview.renderPose(yaw, time), { yaw, time });
         await page.locator('#ilyra-preview').screenshot({ path: testInfo.outputPath(`${name}.png`) });
     }
-    await writeFile(testInfo.outputPath('intake.json'), JSON.stringify(intake, null, 2));
+    await writeFile(testInfo.outputPath('intake.json'), JSON.stringify({ ...intake, paletteControls }, null, 2));
     expect(failures).toEqual([]);
 });

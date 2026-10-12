@@ -172,4 +172,6 @@ test('hardware dungeon and additive reviews retain a mandatory native release ga
     expect(native).toContain('shared understory geometry survives');
     expect(native).toContain('tests/e2e/earth-thatch-composition.spec.js');
     expect(native).toContain('matted Earth thatch');
+    expect(native).toContain('tests/e2e/ilyra-archmage.spec.js');
+    expect(native).toContain('Ilyra is dressed');
 });
