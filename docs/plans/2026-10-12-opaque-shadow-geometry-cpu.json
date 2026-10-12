@@ -1,0 +1,109 @@
+{
+  "source": "cc70399f9c837ef5a5385ced8caee8e3d18608e8",
+  "recordedUTC": "2026-10-12T19:37:05.386776+00:00",
+  "status": "CPU geometry construction qualified; renderer owner unselected and native qualification missing",
+  "cpu": {
+    "tests": 37,
+    "suites": 1,
+    "failed": 0,
+    "lint": "pass"
+  },
+  "realSourceCases": 10,
+  "assetPins": 117,
+  "pinsExactlyMatchFrozenCensus": true,
+  "rows": [
+    {
+      "type": "Fighter",
+      "quality": "high",
+      "groups": 2,
+      "sourceIdentitiesAndAllAttributeBytesExact": true,
+      "allTrianglesAndRawSkinValuesExact": true,
+      "potentialSavedSubmissionsPerShadowPass": 8
+    },
+    {
+      "type": "Rogue",
+      "quality": "high",
+      "groups": 2,
+      "sourceIdentitiesAndAllAttributeBytesExact": true,
+      "allTrianglesAndRawSkinValuesExact": true,
+      "potentialSavedSubmissionsPerShadowPass": 8
+    },
+    {
+      "type": "Cleric",
+      "quality": "high",
+      "groups": 2,
+      "sourceIdentitiesAndAllAttributeBytesExact": true,
+      "allTrianglesAndRawSkinValuesExact": true,
+      "potentialSavedSubmissionsPerShadowPass": 8
+    },
+    {
+      "type": "Wizard",
+      "quality": "high",
+      "groups": 2,
+      "sourceIdentitiesAndAllAttributeBytesExact": true,
+      "allTrianglesAndRawSkinValuesExact": true,
+      "potentialSavedSubmissionsPerShadowPass": 8
+    },
+    {
+      "type": "Ilyra",
+      "quality": "high",
+      "groups": 1,
+      "sourceIdentitiesAndAllAttributeBytesExact": true,
+      "allTrianglesAndRawSkinValuesExact": true,
+      "potentialSavedSubmissionsPerShadowPass": 16
+    },
+    {
+      "type": "Fighter",
+      "quality": "low",
+      "groups": 2,
+      "sourceIdentitiesAndAllAttributeBytesExact": true,
+      "allTrianglesAndRawSkinValuesExact": true,
+      "potentialSavedSubmissionsPerShadowPass": 8
+    },
+    {
+      "type": "Rogue",
+      "quality": "low",
+      "groups": 2,
+      "sourceIdentitiesAndAllAttributeBytesExact": true,
+      "allTrianglesAndRawSkinValuesExact": true,
+      "potentialSavedSubmissionsPerShadowPass": 8
+    },
+    {
+      "type": "Cleric",
+      "quality": "low",
+      "groups": 2,
+      "sourceIdentitiesAndAllAttributeBytesExact": true,
+      "allTrianglesAndRawSkinValuesExact": true,
+      "potentialSavedSubmissionsPerShadowPass": 8
+    },
+    {
+      "type": "Wizard",
+      "quality": "low",
+      "groups": 2,
+      "sourceIdentitiesAndAllAttributeBytesExact": true,
+      "allTrianglesAndRawSkinValuesExact": true,
+      "potentialSavedSubmissionsPerShadowPass": 8
+    },
+    {
+      "type": "Ilyra",
+      "quality": "low",
+      "groups": 1,
+      "sourceIdentitiesAndAllAttributeBytesExact": true,
+      "allTrianglesAndRawSkinValuesExact": true,
+      "potentialSavedSubmissionsPerShadowPass": 16
+    }
+  ],
+  "scope": "CPU-only real supplied actors/NPCs with WebGL disabled. Independent combined geometry preserves every raw vertex/skin value, normalized flag, triangle index ownership/order and all original geometry/attribute/material/skeleton/bind/world/visibility state. Exact source asset pins retained. Submission counts remain theoretical; no renderer/default/catalog change or native depth/color/timing/lifetime qualification.",
+  "retirement": {
+    "browserClosed": true,
+    "ownedServerClosed": true,
+    "port": 4247
+  },
+  "retainedEarlierChecks": "Initial36-pass run and pre-final-guard source probe retained; final37-pass run adds invalid-source-joint guard.",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-opaque-shadow-geometry-checks-20261012",
+    "entries": 15,
+    "inventorySHA256": "7c0c048f4f076655619845686e190199c225914afccec9189c46c8dd7e1f61a7"
+  },
+  "selection": "Detached prototype only; no master runtime/default/catalog change. Exact native depth/color, submission/frame gain, nested/error restoration and resource lifetime qualification remain required before selection."
+}
