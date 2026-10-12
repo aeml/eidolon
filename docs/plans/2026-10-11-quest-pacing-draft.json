@@ -1,5 +1,5 @@
 {
-  "status": "PRIVATE DRAFT. Burst-correction checks pass; full route/readiness/forecast gates fail. Do not merge or publish until the journey is reworked.",
+  "status": "Historical rejected draft; its route gaps are corrected by the separately qualified mixed expeditions. Original failures retained below.",
   "base": "5571c5593e0de38be273e300f3b2061c36e8d889",
   "findings": {
     "cause": "chroniclePreparationXP overrides normal proportional rewards with8000\u2013500000XP bridges; accepted saves retain these quotes.",
@@ -24,5 +24,6 @@
     "earthBudgetLevelAfterOriginalSevenChapters": 18,
     "waterFireRegionalRoutes": "Substantial handoff XP shortfalls after retiring lump-sum bridges."
   },
-  "next": "Fill the leveling journey with additional meaningful quest steps (recommended preference asked asynchronously), or increase steady combat XP if owner prefers. Preserve original timing/entry/content gates; do not waive tests or restore enormous turn-in awards. No new campaign/soak replay is justified for this unfinished draft."
+  "next": "Fill the leveling journey with additional meaningful quest steps (recommended preference asked asynchronously), or increase steady combat XP if owner prefers. Preserve original timing/entry/content gates; do not waive tests or restore enormous turn-in awards. No new campaign/soak replay is justified for this unfinished draft.",
+  "supersededBy": "2026-10-12-quest-pacing-qualification.json"
 }

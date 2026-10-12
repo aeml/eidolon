@@ -1,0 +1,59 @@
+{
+  "recordedUTC": "2026-10-12T00:19:34.521204+00:00",
+  "status": "Qualified and ordinarily merged into master; release40 preparation, not public acceptance.",
+  "source": "faec678f494b54b715a1f106edf859d50b30ba47",
+  "merge": "896ad223e604206440e927b15845eb4611d9d3c3",
+  "cause": "Oversized chroniclePreparationXP bridges, including200000XP after Verdant Bastion, bypassed enemy bands.",
+  "rewards": {
+    "ordinaryStoryPercent": 75,
+    "dungeonStoryPercent": 125,
+    "finalePercent": 175,
+    "tutorialPercent": 100,
+    "freshFieldDailyPercent": 75,
+    "repeatableDungeonBonuses": "Retained existing overlapping-boss total\u226425% actual boss receipts; separate story chapter gets125%.",
+    "maximumActualLevelsPerClaim": 2,
+    "paidReceiptsAndEarnedLevelsRetained": true
+  },
+  "journey": {
+    "chapters": 117,
+    "added": 62,
+    "addedInvestigations": 39,
+    "addedHunts": 23,
+    "addedByRegion": {
+      "earth": 24,
+      "water": 29,
+      "fire": 9
+    },
+    "soloAndPartySizes": [
+      1,
+      4,
+      5
+    ],
+    "continuousEntryChecks": 12,
+    "noDailyPreparationOrIncidentalXP": true,
+    "designForecastSoloHours": 91.4,
+    "designForecastParty4Hours": 86.0,
+    "designForecastFirstDungeonHours": 2.7222,
+    "humanPacingValidated": false
+  },
+  "validation": {
+    "fullServerSuite": "PASS, all packages, a0ca439d source; final prose-only content update subsequently passes focused authored-content race.",
+    "exhaustiveTurnInProbes": 42471,
+    "previousSaveMilestones": 55,
+    "finalClientChecks": 488,
+    "finalClientSuites": 26,
+    "fullLint": "PASS",
+    "generatedGroups": 13,
+    "nativePreparedQualityCases": 2,
+    "nativeAtlasCases": 2,
+    "fullClientDiagnostic": "Still running externally; found two old dialogue/marker assertion groups, now corrected and included in488passing checks. No full-client pass claimed."
+  },
+  "compatibility": "Every previous milestone preserves earned level/access, paid receipts, accepted counts and Gold. New earlier chapters become optional. Unpaid oversized story quotes are reduced; zero/lower accepted promises retained. BSON/save/resource/race checks pass.",
+  "priorFailures": "Retained route/forecast, stale-quote/numbering assumptions, initial null-player native fixture, flat-world-then-elevation fixture, daily overlap diagnosis and unsupported local Node18 full-client setup. Fixed causes, no payout/entry/forecast waiver.",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-quest-pacing-qualification-checks-20261012",
+    "entries": 88,
+    "inventorySHA256": "59efa679cac629b6beac421711900f5ea9d8c5bd72d92e41def6274a18d59cc6"
+  },
+  "limits": "Route and playtime diagnostics are mathematical/action checks, not earned campaign or human pacing acceptance. Original full world/art/gameplay/device/performance/operations/F1-F5/beta/launch/handoff requirements remain active. Owner-deferred campaign/phone feedback unchanged; no expensive campaign/soak rerun."
+}

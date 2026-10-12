@@ -528,7 +528,9 @@ identities, ready database and all78served asset hashes/byte counts match at
 728distinct focused checks/17suites and two native publication cases pass;
 12versions align35;470cumulative notes preserve all469prior entries byte-exact.
   [Publication](docs/plans/2026-10-11-release35-publication.json).
-- Current source version: `Alpha 1.79.39`, precomputed supplied-character geometry;
+- Alpha 1.79.40 is prepared on master with proportional quest XP, a two-level turn-in ceiling, 62 smaller regional chapters and qualified Pilgrim Rest details. Existing earned progression and access are retained. Local reward/save/route checks, desktop/phone discovery and atlas checks pass; human pacing remains owner-deferred. Publication and ordered live acceptance are pending; accepted39 remains current. [Qualification](docs/plans/2026-10-12-quest-pacing-qualification.json).
+- Current source version: `Alpha 1.79.40`, gradual regional quests and bounded XP rewards;
+  retains precomputed supplied-character geometry and richer Pilgrim Rest camp details;
   retains Forge and merchant keyboard controls
   with visible prices and stable focus. Retains Earth ground materials, distinct
   Chronicle item icons and read-only content validation.
