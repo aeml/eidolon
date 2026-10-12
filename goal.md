@@ -1472,3 +1472,14 @@ frontend/backend/readyDB proof before another publication. Existing sparse
 monitor follows44and41soak without retries/cancels/newruns. Native GPU remains
 reserved for own44CI. Full original goal and retained crowded-town failures
 remain open; continue bounded independent CPU implementation during CI.
+
+
+October12 initial44 client gate failed before deployment: one unchanged<50mesh
+check receives51;742suites/11024tests pass, one suite/test fails. Other jobs
+continue without retry/cancel. Detached correction restores49shared meshes via
+per-vertex building masks;76focused checks and full sorted geometry/PBR/22
+collider/landmark/mask ownership comparisons pass High/Low. Native changed-source
+qualification remains required after CI GPU reservation clears. Fresh18:52:56UTC
+normal-TLS121asset/frontend/backend/readyDB/analytics checks retain public43.
+Original preparation/component proofs remain frozen and the original mesh ceiling
+is not relaxed. Full original goal stays open.

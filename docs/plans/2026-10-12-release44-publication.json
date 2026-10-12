@@ -1,7 +1,7 @@
 {
   "version": "Alpha 1.79.44",
   "source": "a9f59da7a192479ff7b5b25d2a36c595c8b158e9",
-  "status": "Ordinarily pushed; own ordered CI/deployment/live and fresh normal-TLS126asset proof pending.",
+  "status": "Initial candidate client gate failed before deployment; other prerequisites still running. Corrective runtime is isolated and native qualification pending.",
   "previousAccepted": "Alpha1.79.43 exact d7de00d88dc50116d595a52070a0f66d31400f55, own CI38208653308attempt1 accepted.",
   "includedQualifications": [
     "2026-10-12-ilyra-palette-sharing-qualification.json",
@@ -102,5 +102,20 @@
     "inventorySHA256": "24071dc3be17c24bf5dbd4d9bb5cf71c7640e3f777eca048e9e77d2fc63b726a"
   },
   "limits": "Scoped prepared native qualification only. Whole-game crowded-town/performance, modern-world/final art, supported devices, owner-deferred campaign, F1\u2013F5/beta/launch/handoff remain open. Existing41soak continues; no new/restarted soak or automatic retry.",
-  "recordedUTC": "2026-10-12T18:36:10.774439+00:00"
+  "recordedUTC": "2026-10-12T18:36:10.774439+00:00",
+  "initialClientFailure": {
+    "job": 114953679752,
+    "suites": {
+      "passed": 742,
+      "failed": 1
+    },
+    "tests": {
+      "passed": 11024,
+      "failed": 1
+    },
+    "failure": "tests/ProceduralDarkRealm.test.js:45 requires fewer than50scene meshes; architecture-only cutaway splits produce51. Original ceiling retained.",
+    "correction": "Restore original49mesh shared batches with per-vertex building reveal masks. Original geometry/PBR/landmarks/22colliders and mask ownership match exactly in High/Low;76focused checks pass. New native qualification and own corrective CI required.",
+    "evidence": "/home/aeml/.local/share/eidolon-release44-terminal-checks-20261012/client-job.log",
+    "public43Recheck": "2026-10-12T18:52:56.739858+00:00 normalTLS121assets/frontend/backend/readyDB and analyticsJS match d7de00d8; no44deployment."
+  }
 }
