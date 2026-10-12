@@ -1,5 +1,11 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+## Current release state — October 12, 22:30 UTC
+
+Alpha1.79.45/exact`31defee90a7debd0312d396bbae604345f1ee9e4` is published with qualified Lanternhold timber and smooth foreground-home visibility. Its own CI38313813464 has passed client/server and all three browser shards; required native predeploy validation remains active. Both deployments, live QA and fresh127asset/frontend/backend/readyDB acceptance are still required before acceptance or another publication. Alpha1.79.44/exact`0d32ab60` remains last accepted: all ten ordered jobs and126public asset hashes passed. [Pending45](2026-10-12-release45-town-publication.json), [accepted44](2026-10-12-public44-terminal-qualification.json).
+
+The owner's jump, aura, admin-account filtering, quest XP, map focus and master-only requirements are reconciled in [the promise register](2026-09-28-1-11-gap-register.md). Side windows/stove flues and synchronized shadow batches remain isolated candidates awaiting native qualification; crowded-town budgets and all original art/gameplay/device/owner/F1–F5/beta/launch/handoff gates remain open. [Current remaining work](2026-10-09-release-readiness-remaining.md). The dated paragraphs below retain historical publication states and do not supersede this checkpoint.
+
 Alpha1.79.42/exact`6f9895ac` is ordinarily pushed with qualified district art and the owner-requested world-map focus correction. CI38203447428attempt1 is in progress; own ordered CI/deploy/live and fresh112asset/frontend/backend/readyDB acceptance are pending.438focused checks/six suites, two source atlas cases and16copied native district views with two managed map focus cases pass.477notes preserve all476prior entries byte-exact. Accepted41 remains the live baseline; full original readiness requirements remain open. [Publication](2026-10-12-release42-publication.json).
 
 Alpha1.79.41/exact`defdb64e` is accepted live. CI38196589643attempt1 passed

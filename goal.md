@@ -1708,3 +1708,6 @@ GPUlifetime pending own45CI terminal. Read-only NPCspawn audit confirms four
 nonservice conversational residents are the server-owned dispersed walkers;
 vendors/questgivers/respec/dungeon services retain anchors. No NPCscope repair
 needed. Public44accepted/45pending; fullgoal/budget failures remain open.
+
+
+October12 facade CPU follow-up bef34168 seats folded flashing edges into the actual slate at twelve ray samples. Four changed housing checks pass, fifteen distinct checks with valid reuse;24mesh prefixes/ground footprints/transforms exact.2160added/29280total housing triangles preserve the30000ceiling. Frozen12entry inventory c87afea6f0ea601663ddbdd15d106cd34ac350d9f2fb2de738708452bea1a58c; initial14entry evidence retained. Candidate remains detached/unmerged; native silhouette, fade, resources and cadence await own45CI terminal. Primary roadmap current-state precedence now reconciles pending45/accepted44 and preserves historical paragraphs. Full original goal and crowded-town failures remain open.
