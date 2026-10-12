@@ -1,0 +1,100 @@
+{
+  "recordedUTC": "2026-10-12T00:59:21.109066+00:00",
+  "source": "f5e1b7281b77ec057aa38682e76cf3b70792d8b6",
+  "base": "5e98360a4cd7aa8c48aecebaa7bf826d6066e795",
+  "status": "Qualified bounded source art improvement; held for ordinary master integration and a future coherent milestone after40acceptance.",
+  "change": "Weathered mineral surfaces and rounded Water, fractured Fire and chamfered Dark command-stone crowns. Existing inscriptions, foundations, colliders, picking identity, beacon logic and saved progression retained. Earth clues and Air horizon markers unchanged.",
+  "checks": {
+    "focusedTests": 119,
+    "focusedSuites": 3,
+    "scopedLint": true,
+    "bodyEnvelopeMetres": {
+      "x": [
+        -0.55,
+        0.55
+      ],
+      "y": [
+        0,
+        2.2
+      ],
+      "z": [
+        -0.35,
+        0.35
+      ]
+    },
+    "nativeProfiles": [
+      "High1280x844",
+      "Low390x844"
+    ],
+    "preparedMovingClasses": 4,
+    "equipmentSlotsPerClass": 14,
+    "sitesPerProfile": 3,
+    "animationFramesPerView": 90,
+    "resourceRetirementCyclesPerProfile": 2,
+    "gpu": "AMD RADV RENOIR; software rendering refused",
+    "viewComparisons": [
+      {
+        "quality": "high",
+        "realm": "water",
+        "site": "water_shelter_first_arrival",
+        "calls": 205,
+        "referenceTriangles": 127809,
+        "finalTriangles": 127953,
+        "addedTriangles": 144
+      },
+      {
+        "quality": "high",
+        "realm": "fire",
+        "site": "fire_workers_choice",
+        "calls": 220,
+        "referenceTriangles": 158183,
+        "finalTriangles": 158263,
+        "addedTriangles": 80
+      },
+      {
+        "quality": "high",
+        "realm": "dark",
+        "site": "dark_names_stone",
+        "calls": 200,
+        "referenceTriangles": 127697,
+        "finalTriangles": 127761,
+        "addedTriangles": 64
+      },
+      {
+        "quality": "low",
+        "realm": "water",
+        "site": "water_shelter_first_arrival",
+        "calls": 102,
+        "referenceTriangles": 58510,
+        "finalTriangles": 58582,
+        "addedTriangles": 72
+      },
+      {
+        "quality": "low",
+        "realm": "fire",
+        "site": "fire_workers_choice",
+        "calls": 109,
+        "referenceTriangles": 64926,
+        "finalTriangles": 64966,
+        "addedTriangles": 40
+      },
+      {
+        "quality": "low",
+        "realm": "dark",
+        "site": "dark_names_stone",
+        "calls": 97,
+        "referenceTriangles": 58398,
+        "finalTriangles": 58430,
+        "addedTriangles": 32
+      }
+    ]
+  },
+  "retainedFinding": "Initial outward crown bevel exceeded the original2.2m body height: Water2.20022,Fire2.21779. Normalize the crown to its original upper bound; final bounds,119checks and native views/lifetime pass. Original source/bounds/captures retained.",
+  "limits": "Prepared flat-terrain/HUD art views, not earned progression, actual Dark Realm floor composition, physical-device, human motion approval, whole-game performance or final modern-art acceptance. Draw counts match these paired prepared views; no timing/gain claim. Original cold and connected performance failures remain open. No server/data/reward/version/note changes. Current public40CI is a separate exact5e98360a source and remains pending; full goal stays active.",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-chronicle-stones-review-20261012",
+    "entries": 52,
+    "inventorySHA256": "e0537445f86353d2530cb75e64f6a9737f59fa9e50b9b476cd81d11fbe7716e2"
+  },
+  "resourceRetirement": "Owned4222static server stopped after PID/cwd/command verification; all browser contexts closed. Dependencies/shared node_modules target preserved."
+}
