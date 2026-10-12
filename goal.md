@@ -1499,3 +1499,21 @@ Initial44/a9 terminal1failure4success5skip, no deployment/native/live run; froze
 Fresh19:05:43UTC normal-TLS121assets/frontend/backend/readyDB/analytics retains43.
 Next exact corrective44 preparation/copied-bundle native/new own CI; keep44
 version and479cumulative notes. Full original goal/retained failures remain open.
+
+
+October 12 corrective44 / e7c679b752e080c9edb98da457cf2b3cb130120a
+ordinarily pushed on master. Own CI 38296738287 attempt 1 is running.
+468 release checks / six suites, 14 generated groups, 12 versions and all
+479 initial44 notes byte-exact pass. Exact copied 475-module production
+bundle passes High/Low, eight complete restoration controls and the actual
+bundled mixed-mask shader (work pixels unchanged, building 5928 changed,
+restore exact). Original Ilyra remains 27737 triangles / one palette per NPC
+with independent bones. All 3576 copied files rehashed then copy retired.
+Frozen 29-entry preparation inventory:
+6fd7f6aef13dac48d50b6d750169a54fbb37d8c2c75527d404895da389b69bb3.
+Only master active; original 465 dirty paths remain untouched. Sparse monitor
+follows corrective44 and existing41 soak without retries/cancels/new runs.
+Native GPU is reserved for own corrective CI. Require terminal ordered gates
+and fresh 126-asset/frontend/backend/ready-DB proof before another publication.
+Full original goal and retained world/art/performance/device/gameplay/owner/
+F1-F5/beta/launch/handoff requirements remain open; continue independent CPU work.
