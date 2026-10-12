@@ -1,0 +1,221 @@
+{
+  "source": "097449f8a78691eb0424eddcb7c0db5385d70466",
+  "recordedUTC": "2026-10-12T19:45:11.907978+00:00",
+  "status": "Isolated owner CPU-qualified; native GPU qualification and selection outstanding",
+  "cpu": {
+    "suites": 3,
+    "tests": 98,
+    "failures": 0,
+    "lint": "pass"
+  },
+  "realSourceCases": 10,
+  "assets": 117,
+  "assetPinsMatchFrozenCensus": true,
+  "rows": [
+    {
+      "type": "Fighter",
+      "quality": "high",
+      "cpuOwner": {
+        "registered": 2,
+        "originalSubmissions": 20,
+        "batchedSubmissions": 12,
+        "savedSubmissions": 8,
+        "originalTriangles": 54984,
+        "batchedTriangles": 54984,
+        "sourceFlagsRestored": true,
+        "lightHookRestored": true
+      },
+      "sourceIdentitiesAndAllAttributeBytesExact": true,
+      "allTrianglesAndRawSkinValuesExact": true
+    },
+    {
+      "type": "Rogue",
+      "quality": "high",
+      "cpuOwner": {
+        "registered": 2,
+        "originalSubmissions": 18,
+        "batchedSubmissions": 10,
+        "savedSubmissions": 8,
+        "originalTriangles": 47736,
+        "batchedTriangles": 47736,
+        "sourceFlagsRestored": true,
+        "lightHookRestored": true
+      },
+      "sourceIdentitiesAndAllAttributeBytesExact": true,
+      "allTrianglesAndRawSkinValuesExact": true
+    },
+    {
+      "type": "Cleric",
+      "quality": "high",
+      "cpuOwner": {
+        "registered": 2,
+        "originalSubmissions": 21,
+        "batchedSubmissions": 13,
+        "savedSubmissions": 8,
+        "originalTriangles": 44226,
+        "batchedTriangles": 44226,
+        "sourceFlagsRestored": true,
+        "lightHookRestored": true
+      },
+      "sourceIdentitiesAndAllAttributeBytesExact": true,
+      "allTrianglesAndRawSkinValuesExact": true
+    },
+    {
+      "type": "Wizard",
+      "quality": "high",
+      "cpuOwner": {
+        "registered": 2,
+        "originalSubmissions": 21,
+        "batchedSubmissions": 13,
+        "savedSubmissions": 8,
+        "originalTriangles": 46723,
+        "batchedTriangles": 46723,
+        "sourceFlagsRestored": true,
+        "lightHookRestored": true
+      },
+      "sourceIdentitiesAndAllAttributeBytesExact": true,
+      "allTrianglesAndRawSkinValuesExact": true
+    },
+    {
+      "type": "Ilyra",
+      "quality": "high",
+      "cpuOwner": {
+        "registered": 1,
+        "originalSubmissions": 20,
+        "batchedSubmissions": 4,
+        "savedSubmissions": 16,
+        "originalTriangles": 27737,
+        "batchedTriangles": 27737,
+        "sourceFlagsRestored": true,
+        "lightHookRestored": true
+      },
+      "sourceIdentitiesAndAllAttributeBytesExact": true,
+      "allTrianglesAndRawSkinValuesExact": true
+    },
+    {
+      "type": "Fighter",
+      "quality": "low",
+      "cpuOwner": {
+        "registered": 2,
+        "originalSubmissions": 20,
+        "batchedSubmissions": 12,
+        "savedSubmissions": 8,
+        "originalTriangles": 32813,
+        "batchedTriangles": 32813,
+        "sourceFlagsRestored": true,
+        "lightHookRestored": true
+      },
+      "sourceIdentitiesAndAllAttributeBytesExact": true,
+      "allTrianglesAndRawSkinValuesExact": true
+    },
+    {
+      "type": "Rogue",
+      "quality": "low",
+      "cpuOwner": {
+        "registered": 2,
+        "originalSubmissions": 18,
+        "batchedSubmissions": 10,
+        "savedSubmissions": 8,
+        "originalTriangles": 28279,
+        "batchedTriangles": 28279,
+        "sourceFlagsRestored": true,
+        "lightHookRestored": true
+      },
+      "sourceIdentitiesAndAllAttributeBytesExact": true,
+      "allTrianglesAndRawSkinValuesExact": true
+    },
+    {
+      "type": "Cleric",
+      "quality": "low",
+      "cpuOwner": {
+        "registered": 2,
+        "originalSubmissions": 21,
+        "batchedSubmissions": 13,
+        "savedSubmissions": 8,
+        "originalTriangles": 28480,
+        "batchedTriangles": 28480,
+        "sourceFlagsRestored": true,
+        "lightHookRestored": true
+      },
+      "sourceIdentitiesAndAllAttributeBytesExact": true,
+      "allTrianglesAndRawSkinValuesExact": true
+    },
+    {
+      "type": "Wizard",
+      "quality": "low",
+      "cpuOwner": {
+        "registered": 2,
+        "originalSubmissions": 21,
+        "batchedSubmissions": 13,
+        "savedSubmissions": 8,
+        "originalTriangles": 32136,
+        "batchedTriangles": 32136,
+        "sourceFlagsRestored": true,
+        "lightHookRestored": true
+      },
+      "sourceIdentitiesAndAllAttributeBytesExact": true,
+      "allTrianglesAndRawSkinValuesExact": true
+    },
+    {
+      "type": "Ilyra",
+      "quality": "low",
+      "cpuOwner": {
+        "registered": 1,
+        "originalSubmissions": 20,
+        "batchedSubmissions": 4,
+        "savedSubmissions": 16,
+        "originalTriangles": 27737,
+        "batchedTriangles": 27737,
+        "sourceFlagsRestored": true,
+        "lightHookRestored": true
+      },
+      "sourceIdentitiesAndAllAttributeBytesExact": true,
+      "allTrianglesAndRawSkinValuesExact": true
+    }
+  ],
+  "sourcePins": [
+    {
+      "path": "src/core/OpaqueSkinnedShadowGeometry.js",
+      "bytes": 6692,
+      "sha256": "cf8e3ddc4664b284fd2ec78f0dce70fd3bedd3dd7a406a97041b02f920e1d5d2"
+    },
+    {
+      "path": "src/core/OpaqueSkinnedShadowBatches.js",
+      "bytes": 11293,
+      "sha256": "1e3e7ed28fce1179061bdd4073a482a7bb9beb91bfa36f4be370be335cb2c0b7"
+    },
+    {
+      "path": "tests/OpaqueSkinnedShadowGeometry.test.js",
+      "bytes": 7744,
+      "sha256": "ef4d09947b3e49083de8c629123f2f222c09c73a85a9c8f29deacaf81f842e3b"
+    },
+    {
+      "path": "tests/OpaqueSkinnedShadowBatches.test.js",
+      "bytes": 11975,
+      "sha256": "6c55318c48636f6937d525f8d3a92dc243fa94fef232191d50a551dae430602c"
+    },
+    {
+      "path": "src/core/ActorShadowGeometry.js",
+      "bytes": 11795,
+      "sha256": "94c5879637981c611834ccee3cff79706a4f4d533281ec4b4863e5490c6ef1b0"
+    },
+    {
+      "path": "tests/ActorShadowGeometry.test.js",
+      "bytes": 8793,
+      "sha256": "96acf93dd193d7b07329ab3ad07914dab8f69fe92890c78da919b7c43560e6bf"
+    }
+  ],
+  "retainedSetupFailures": "Initial source-state probe compared Ilyra attached bind inverses before ordinary Scene.updateMatrixWorld. Diagnostic retained exact differing inverse elements. Corrected harness performs ordinary matrix update before taking the baseline; runtime code unchanged by that correction. Final ten cases preserve all source identities/attribute bytes/state. Initial95-pass test run retained; final98 adds foreign-resource ownership and nested retirement guards.",
+  "retirement": {
+    "browserClosed": true,
+    "ownedServerClosed": true,
+    "port": 4247
+  },
+  "scope": "CPU only, WebGL explicitly disabled. Stock directional shadow update boundary, per-light original frustum membership, all triangles/raw skin formats, color-source restoration, nested/error handling and owned-only retirement exercised. No native depth/color equivalence, timing/gain, GPU lifetime, full-town performance or default/catalog/runtime selection.",
+  "next": "Wait for corrective44 GPU reservation to clear, then qualify exact native depth/color, moving original equipped/HUD scenes, meaningful frame/draw gain and resource lifetime without lowering unchanged limits.",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-opaque-shadow-owner-checks-20261012",
+    "entries": 21,
+    "inventorySHA256": "ea84a25277143ddfcd2a09d18854c6abbe918554aac1a4404fd1c0c0e37dbe35"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "recordedUTC": "2026-10-12T21:40:27.157813+00:00",
+  "runtimeSource": "097449f8a78691eb0424eddcb7c0db5385d70466",
+  "indexSource": "62de1f7c3f3e941ebea0cea4f57a26c3068b4751",
+  "status": "Functional native pilot only; reduced shadow quality/town integration remain unselected.",
+  "profiles": 2,
+  "posesPerProfile": 3,
+  "exactIndexColorAndDepthControls": 6,
+  "reducedIndexControls": 6,
+  "unshadowedColorControls": 12,
+  "restorationControls": 12,
+  "GPUCyclesPerProfile": 2,
+  "images": 24,
+  "shadowTriangleSavings": 17420,
+  "originalColorTriangles": 27737,
+  "candidateShadowTriangles": 10317,
+  "triangleOwnership": "Full protected gold/wood/crystal index custody retained in prior frozen53entries; original live source attributes/rig/morph and complete source color geometry unchanged.",
+  "review": "Front source/candidate images inspected; reduced-shadow wholeRGBA differences4613/3101/5017bytes, maxchannel76/16/32 across poses, are descriptive and need broader motion/town/silhouette review. Screenshots alone are not acceptance.",
+  "limits": "PCF shadows manually enabled for both input profiles in isolated gallery; productionLow has shadows disabled. No default, actual town, frame, device, finalart or fullgoal acceptance.",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-ilyra-shadow-native-checks-20261012",
+    "entries": 47,
+    "inventorySHA256": "fe983f189e58a0de804936f42be4cb279add24c3e627600081ef77fd54c9bb85"
+  }
+}

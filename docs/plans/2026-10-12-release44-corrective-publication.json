@@ -88,12 +88,20 @@
   },
   "nativeCopied": "Both profiles use exact475module production bundle;8completeRGBArestoration/repeat controls exact, mixed work pixels0changed/buildings5928changed/restore0, original27737triangle20skin Ilyra onepalette/NPC with independent bones. Nativecontexts andowned4246serverclosed.",
   "copyRetirement": "All3576files rehashed/identical before owned generated copy retired.",
-  "limits": "Prepared source/bundle scopes only. Own corrective CI/deploy/live/fresh126asset frontend/backend/readyDB acceptance pending; public43 remains last accepted. Full original goal and crowded-town/device/art/gameplay/beta/launch/handoff gates remain open.",
-  "status": "Corrective candidate ordinarily pushed to master; own ordered CI, deployment, live QA and fresh public proof remain pending.",
+  "limits": "Own e7 candidate never deployed; its full126asset/live acceptance is absent. Public43 remains accepted after fresh20:08:41UTC normal-TLS121asset/frontend/backend/readyDB proof. Full original readiness goal remains open.",
+  "status": "Terminal failure before deployment: 5 jobs passed, native predeploy failed on two ERR_NETWORK_CHANGED asset interruptions, 4 downstream jobs skipped.",
   "ci": {
     "id": 38296738287,
     "attempt": 1,
-    "url": "https://github.com/aeml/eidolon/actions/runs/38296738287"
+    "url": "https://github.com/aeml/eidolon/actions/runs/38296738287",
+    "conclusion": "failure",
+    "terminalUTC": "2026-10-12T19:53:52Z",
+    "clientSuites": 743,
+    "clientTests": 11026,
+    "nativeRegionalPassed": 7,
+    "nativeDungeonOutfitsPassed": 41,
+    "nativeDungeonOutfitsFailed": 2,
+    "downstreamSkipped": 4
   },
   "custody": {
     "root": "/home/aeml/.local/share/eidolon-release44-corrective-preparation-checks-20261012",
@@ -104,6 +112,12 @@
   "initialRejectedCandidate": "2026-10-12-release44-publication.json",
   "publicChecker": "/home/aeml/.local/share/eidolon-release44-corrective-preparation-checks-20261012/check-public.py",
   "publicManifest": "/home/aeml/.local/share/eidolon-release44-corrective-preparation-checks-20261012/expected-public44-assets.json",
-  "recordedUTC": "2026-10-12T19:19:16.479182+00:00",
-  "branchAndWorkspace": "Only master active locally/on origin. Original dirty checkout retains all 203 modified and 262 untracked paths untouched. Native contexts/owned servers and generated publication copy retired before CI reservation."
+  "recordedUTC": "2026-10-12T20:13:10.113280+00:00",
+  "branchAndWorkspace": "Only master active locally/on origin. Original dirty checkout retains all 203 modified and 262 untracked paths untouched. Native contexts/owned servers and generated publication copy retired before CI reservation.",
+  "terminalCustody": {
+    "root": "/home/aeml/.local/share/eidolon-release44-corrective-terminal-checks-20261012",
+    "entries": 35,
+    "inventorySHA256": "84a13917297f4a0ea1a44dc1dd6c8ed4416c5663afa9f438f35a8fd5bb0953a2"
+  },
+  "next": "Qualify detached private-network native visual infrastructure with unchanged assertions and recordings before preparing any changed-source CI candidate; do not rerun old CI blindly."
 }

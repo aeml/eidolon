@@ -57,3 +57,12 @@ test('native dungeon and outfit assertions block release independently of hosted
     expect(body).toContain('grounded entry wards|floor weathering|geometry scheduling|immutable worker|elemental floor materials');
     expect(body).toContain('|additive status, cast and contact');
 });
+
+test('local visual stages isolate their HTTP server and native browser while backend routes retain connectivity', () => {
+    for (const folder of ['animation-gallery', 'regional-quality', 'dungeon-outfits', 'celebration', 'authored-equipment']) {
+        expect(evidenceStep(folder)).toContain("sg render -c 'bash scripts/run-native-visual-qa.sh ");
+    }
+    for (const name of ['Run required Well Rested rendering and GPU lifecycle QA', 'Run disposable full-character gameplay', 'Run focused disposable release smoke']) {
+        expect(step(name)).not.toContain('run-native-visual-qa.sh');
+    }
+});

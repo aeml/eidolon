@@ -1,0 +1,51 @@
+{
+  "recordedUTC": "2026-10-12T21:34:41.750673+00:00",
+  "source": "b7ed06d2fd9e94a13034e115b902709ff2d2fdc1",
+  "nativeTownSource": "d283b5ef409348bf0f06177f525d10d5dea17d20",
+  "baseline": "0d32ab60ee8c4b5999e408f731f8ade60c43f8b1",
+  "status": "Scoped timber materials qualified and ordinarily merged into master; coherent publication pending foreground-house cutaway work.",
+  "profiles": {
+    "high": {
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "views": 3,
+      "pairedImages": 6,
+      "restorationControls": 3,
+      "depthControls": 3,
+      "ABBAArms": 12,
+      "failedOriginalBudgetArms": 4,
+      "resourceCycles": 2,
+      "exactMemoryBaseline": {
+        "geometries": 9,
+        "textures": 18
+      },
+      "resourcesDisposedOncePerCycle": 53
+    },
+    "low": {
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "views": 3,
+      "pairedImages": 6,
+      "restorationControls": 3,
+      "depthControls": 0,
+      "ABBAArms": 12,
+      "failedOriginalBudgetArms": 4,
+      "resourceCycles": 2,
+      "exactMemoryBaseline": {
+        "geometries": 8,
+        "textures": 4
+      },
+      "resourcesDisposedOncePerCycle": 53
+    }
+  },
+  "CPU": "Initial14checks/3suites reused for geometry/layout; corrected6material checks pass; six cached/uncached maps byte-exact with independent mutation-isolated owner buffers; 24original mesh comparisons reused unchanged.",
+  "cache": "Private High+Low CPU recipes bounded to983040bytes; new independent texture buffers per scene; no per-frame generation.",
+  "construction": "Bounded Node ABBA Highfirst246.16ms/return26.04ms; Lowfirst70.99ms/return15.40ms. Not browser startup/device acceptance. First-load peak retained in exact CPU receipt.",
+  "visualReview": "Inspected High west/south and Low390west homes at normal15zoom with original supplied four14slot movingRun classes/HUD. Long muted wood fibres improve previously flat boards and frame. Roof silhouettes, paths, ground and source models retained.",
+  "initialFailures": "Initial resource exactbaseline18vs19textures fails. Attribution identifies stock shared depth material re-uploading retired warm timber color texture; color-only sampler correction restores exactbaseline. Initial output+diagnostic source/log retained. The second owner-attribution JSON used a shared filename and was overwritten by subsequent corrected run; its full raw JSON unavailable, tool-output attribution only retained in note. No baseline target waiver.",
+  "harnessMessageCorrection": "color-equivalence execution copied a resource console string claiming exact GPU returns; this scoped harness asserts color only and intentionally loads the retired prior sampler. Do not use that message as lifetime evidence. Final unchanged resource-control enforces exact lifetime independently.",
+  "limits": "Highplaza429draw/278023tri and Lowplaza107747tri remain failed, same original/candidate. No FPS/globalperformance/finalart/device/campaign acceptance. Review also exposes foreground-house player visibility gap; separate cutaway work remains next.",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-lanternhold-timber-native-checks-20261012",
+    "entries": 72,
+    "inventorySHA256": "e1cd12df3cc5ae8ea841a4f00891ca19a2cb88a26129b5d8ece3f3d0d5d8d3d1"
+  }
+}

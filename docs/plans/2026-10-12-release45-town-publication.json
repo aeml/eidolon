@@ -1,0 +1,103 @@
+{
+  "source": "31defee90a7debd0312d396bbae604345f1ee9e4",
+  "version": "Alpha 1.79.45",
+  "status": "Pushed coherent town timber and foreground-home visibility milestone; own CI running. Public44 remains last accepted release.",
+  "recordedUTC": "2026-10-12T21:57:58.753097+00:00",
+  "qualificationReceipts": [
+    "2026-10-12-lanternhold-timber-qualification.json",
+    "2026-10-12-lanternhold-house-cutaway-qualification.json"
+  ],
+  "preparation": {
+    "source": "31defee90a7debd0312d396bbae604345f1ee9e4",
+    "version": "Alpha 1.79.45",
+    "clientPassed": 468,
+    "clientSuites": 6,
+    "contentGroups": 14,
+    "versionFiles": 12,
+    "notes": 480,
+    "priorNotesByteExact": 479,
+    "publicPins": 127,
+    "copiedNativeProfiles": [
+      "high",
+      "low"
+    ],
+    "copiedNativeViews": 4,
+    "retries": 0,
+    "originalFailuresRetainedInScopedQualification": true,
+    "limits": "Scoped town material and foreground-home visibility only; crowded-town budgets and full original release-readiness goal remain open."
+  },
+  "build": {
+    "source": "31defee90a7debd0312d396bbae604345f1ee9e4",
+    "pins": 127,
+    "copyFiles": 3624,
+    "copyBytes": 448748171,
+    "build": {
+      "worker": {
+        "output": "src/core/ActorGameplayGeometryWorker.ed74163bff6f2ccc.js",
+        "sha256": "ed74163bff6f2ccc48d8f4364cbca258858d68b95b1cc42f4b91d04304fc9203",
+        "bytes": 173395,
+        "modules": 15,
+        "imports": [],
+        "precomputed": {
+          "path": "assets/gameplay-geometry/indices.6aa8c7e199c910b5.bin",
+          "sha256": "6aa8c7e199c910b5fbf0f78dfae873b64e79aa0045e39b5775ff9ac7d7e93346",
+          "bytes": 777321,
+          "entries": 133
+        }
+      },
+      "bundledModules": 476,
+      "bytes": 3749984,
+      "sharedLoginModules": 22,
+      "vendorModules": [
+        "vendor/three/examples/jsm/geometries/RoundedBoxGeometry.js",
+        "vendor/three/examples/jsm/loaders/GLTFLoader.js",
+        "vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+        "vendor/three/examples/jsm/postprocessing/MaskPass.js",
+        "vendor/three/examples/jsm/postprocessing/OutputPass.js",
+        "vendor/three/examples/jsm/postprocessing/Pass.js",
+        "vendor/three/examples/jsm/postprocessing/RenderPass.js",
+        "vendor/three/examples/jsm/postprocessing/ShaderPass.js",
+        "vendor/three/examples/jsm/postprocessing/UnrealBloomPass.js",
+        "vendor/three/examples/jsm/shaders/CopyShader.js",
+        "vendor/three/examples/jsm/shaders/FXAAShader.js",
+        "vendor/three/examples/jsm/shaders/LuminosityHighPassShader.js",
+        "vendor/three/examples/jsm/shaders/OutputShader.js",
+        "vendor/three/examples/jsm/utils/BufferGeometryUtils.js",
+        "vendor/three/examples/jsm/utils/SkeletonUtils.js"
+      ],
+      "externalImports": [
+        "../assets/ServiceWorkerBoot.js",
+        "../data/worldGeography.js",
+        "../ui/EmailRecoveryUI.js",
+        "../ui/OwnedEvents.js",
+        "../ui/PasswordChangeUI.js",
+        "../ui/ReportUI.js",
+        "../ui/reportTypes.js",
+        "./CredentialToken.js",
+        "./GraphicsStartup.js",
+        "three"
+      ]
+    },
+    "versioning": {
+      "root": "/home/aeml/.local/share/eidolon-master-20261011/.qa-release45/publication-copy",
+      "release": "31defee90a7debd0312d396bbae604345f1ee9e4",
+      "scannedFiles": 947,
+      "changedFiles": 426,
+      "bundledStyles": true
+    }
+  },
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-release45-town-preparation-checks-20261012",
+    "entries": 29,
+    "inventorySHA256": "24ddfc234efc5a082a1d2563ea7096adcfe5ef40b6305ec7d4d0d90e59fee626"
+  },
+  "copiedNative": "Four ordinary High/Low house views use actual copied 476-module production bundle, native AMD hardware, four provided14-slot classes and HUD. Equipped hero gains visibility; fullRGBA/shadow restoration exact; geometry/foundation/material identities and draws/triangles unchanged. Both profiles retire owned browser/server; every3624copied file size/SHA exact before own-copy retirement.",
+  "ci": {
+    "id": 38313813464,
+    "attempt": 1,
+    "url": "https://github.com/aeml/eidolon/actions/runs/38313813464",
+    "createdUTC": "2026-10-12T21:57:21Z"
+  },
+  "acceptanceRequired": "Ordered ownCI prerequisites, native checks, both deployments, liveQA and fresh normal-TLS127assets/frontend/backend/readyDB/analytics required before acceptance or another publication.",
+  "limits": "Original crowded-town draw/triangle/frame budget failures persist; full original art/device/gameplay/owner/F1\u2013F5/beta/launch/handoff goal remains open. No retry or assertion waiver. Only master active locally/origin; original dirty detached user checkout preserved."
+}

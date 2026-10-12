@@ -299,23 +299,23 @@ jobs:
         env:
           EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
           PLAYWRIGHT_HTML_OUTPUT_DIR: native-visual-evidence/animation-gallery/report
-        run: sg render -c 'npm run test:e2e:animations -- --output=native-visual-evidence/animation-gallery/results'
+        run: sg render -c 'bash scripts/run-native-visual-qa.sh npm run test:e2e:animations -- --output=native-visual-evidence/animation-gallery/results'
 
       - name: Run required native High regional quality-switch coverage
         env:
           EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
           EIDOLON_E2E_NATIVE_COVERAGE_PENDING: 'false'
           PLAYWRIGHT_HTML_OUTPUT_DIR: native-visual-evidence/regional-quality/report
-        # All six original cases, original warm-up/twelve phases and resource
+        # All original cases, original warm-up/twelve phases and resource
         # assertions. This step is mandatory and blocks both deploy jobs.
-        run: sg render -c 'node node_modules/@playwright/test/cli.js test tests/e2e/populated-earth-world.spec.js --grep "high at 1280px quality switches" --workers=1 --retries=0 --reporter=line,html --output=native-visual-evidence/regional-quality/results'
+        run: sg render -c 'bash scripts/run-native-visual-qa.sh node node_modules/@playwright/test/cli.js test tests/e2e/populated-earth-world.spec.js --grep "high at 1280px quality switches" --workers=1 --retries=0 --reporter=line,html --output=native-visual-evidence/regional-quality/results'
 
       - name: Run required native dungeon materials, prepared outfits and additive surfaces
         env:
           EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
           EIDOLON_E2E_REQUIRE_NATIVE_GPU: '1'
           PLAYWRIGHT_HTML_OUTPUT_DIR: native-visual-evidence/dungeon-outfits/report
-        run: sg render -c 'node node_modules/@playwright/test/cli.js test tests/e2e/dungeon-entry-ward.spec.js tests/e2e/dungeon-floor-material.spec.js tests/e2e/published-game-bundle.spec.js tests/e2e/additive-effects-render.spec.js tests/e2e/camp-instance-frustum.spec.js tests/e2e/demon-orc-rigid-delivery.spec.js tests/e2e/singleton-actor-delivery.spec.js tests/e2e/earth-rock-shelf-review.spec.js tests/e2e/understory-shared-geometry.spec.js tests/e2e/earth-thatch-composition.spec.js tests/e2e/ilyra-archmage.spec.js tests/e2e/dark-realm-cutaway.spec.js --grep "grounded entry wards|floor weathering|geometry scheduling|immutable worker|elemental floor materials|additive status, cast and contact|camp clipping preserves|residential clipping preserves|DemonOrc preserves|DemonOrc defaults|singleton reviewed actors|singleton actors follow|Earth rock shelves retain|shared understory geometry survives|matted Earth thatch|Ilyra is dressed|Dark district high cutaway|Dark district low cutaway" --workers=1 --retries=0 --reporter=line,html --output=native-visual-evidence/dungeon-outfits/results'
+        run: sg render -c 'bash scripts/run-native-visual-qa.sh node node_modules/@playwright/test/cli.js test tests/e2e/dungeon-entry-ward.spec.js tests/e2e/dungeon-floor-material.spec.js tests/e2e/published-game-bundle.spec.js tests/e2e/additive-effects-render.spec.js tests/e2e/camp-instance-frustum.spec.js tests/e2e/demon-orc-rigid-delivery.spec.js tests/e2e/singleton-actor-delivery.spec.js tests/e2e/earth-rock-shelf-review.spec.js tests/e2e/understory-shared-geometry.spec.js tests/e2e/earth-thatch-composition.spec.js tests/e2e/ilyra-archmage.spec.js tests/e2e/dark-realm-cutaway.spec.js tests/e2e/lanternhold-house-cutaway.spec.js --grep "grounded entry wards|floor weathering|geometry scheduling|immutable worker|elemental floor materials|additive status, cast and contact|camp clipping preserves|residential clipping preserves|DemonOrc preserves|DemonOrc defaults|singleton reviewed actors|singleton actors follow|Earth rock shelves retain|shared understory geometry survives|matted Earth thatch|Ilyra is dressed|Dark district high cutaway|Dark district low cutaway|Lanternhold high homes reveal|Lanternhold low homes reveal" --workers=1 --retries=0 --reporter=line,html --output=native-visual-evidence/dungeon-outfits/results'
 
       - name: Run required Well Rested rendering and GPU lifecycle QA
         if: inputs.full_stabilization == true || vars.EIDOLON_FULL_STABILIZATION == 'true'
@@ -327,13 +327,13 @@ jobs:
         env:
           EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
           PLAYWRIGHT_HTML_OUTPUT_DIR: native-visual-evidence/celebration/report
-        run: sg render -c 'npm run test:e2e:celebration -- --output=native-visual-evidence/celebration/results'
+        run: sg render -c 'bash scripts/run-native-visual-qa.sh npm run test:e2e:celebration -- --output=native-visual-evidence/celebration/results'
 
       - name: Verify delivered class bodies and fitted equipment
         env:
           EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
           PLAYWRIGHT_HTML_OUTPUT_DIR: native-visual-evidence/authored-equipment/report
-        run: sg render -c 'npm run test:e2e:authored-equipment -- --output=native-visual-evidence/authored-equipment/results'
+        run: sg render -c 'bash scripts/run-native-visual-qa.sh npm run test:e2e:authored-equipment -- --output=native-visual-evidence/authored-equipment/results'
 
       - name: Run disposable full-character gameplay
         if: inputs.full_stabilization == true || vars.EIDOLON_FULL_STABILIZATION == 'true'
@@ -654,7 +654,7 @@ jobs:
           chmod --reference=.env "${qa_env_tmp}"
           mv "${qa_env_tmp}" .env
           trap - EXIT
-          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.79.44" bash ./deploy/deploy_linux.sh
+          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.79.45" bash ./deploy/deploy_linux.sh
           EOF
 
   post-deploy-browser:

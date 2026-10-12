@@ -1502,7 +1502,7 @@ version and479cumulative notes. Full original goal/retained failures remain open
 
 
 October 12 corrective44 / e7c679b752e080c9edb98da457cf2b3cb130120a
-ordinarily pushed on master. Own CI 38296738287 attempt 1 is running.
+ordinarily pushed on master. Own CI 38296738287 attempt 1 reached terminal failure before deployment at19:53:52UTC.
 468 release checks / six suites, 14 generated groups, 12 versions and all
 479 initial44 notes byte-exact pass. Exact copied 475-module production
 bundle passes High/Low, eight complete restoration controls and the actual
@@ -1512,8 +1512,175 @@ with independent bones. All 3576 copied files rehashed then copy retired.
 Frozen 29-entry preparation inventory:
 6fd7f6aef13dac48d50b6d750169a54fbb37d8c2c75527d404895da389b69bb3.
 Only master active; original 465 dirty paths remain untouched. Sparse monitor
-follows corrective44 and existing41 soak without retries/cancels/new runs.
-Native GPU is reserved for own corrective CI. Require terminal ordered gates
+retains corrective44 terminal failure and follows existing41 soak without retries/cancels/new runs.
+Native GPU is free after terminal CI for isolated QA qualification. Require terminal ordered gates
 and fresh 126-asset/frontend/backend/ready-DB proof before another publication.
 Full original goal and retained world/art/performance/device/gameplay/owner/
 F1-F5/beta/launch/handoff requirements remain open; continue independent CPU work.
+
+
+October12 isolated opaque shadow owner097449f8 passes98CPUchecks/three suites,
+scoped lint and ten actual High/Low four-class fourteen-slot/Ilyra cases with
+WebGL disabled. All117original asset pins, raw attributes, triangle ownership,
+source geometry/material/skeleton/bind/world/visibility state remain exact.
+Stubbed stock-directional passes save8submissions/class and16/Ilyra without
+removing triangles; nested/error/per-light frustum/owned-resource checks pass.
+Frozen21entry CPU inventory
+`ea84a25277143ddfcd2a09d18854c6abbe918554aac1a4404fd1c0c0e37dbe35`.
+Detached prototype remains unselected; native full color/depth, meaningful moving
+actual-renderer/HUD performance and GPU lifetime gates remain open. Native GPU
+released after corrective44 CI38296738287 terminated:743suites/11026tests, Go and all
+three browser shards passed; native predeploy failed on two asset network interruptions. Public44 still
+requires deployment/live/fresh126asset identity/readyDB custody before any next
+publication. Original465dirty paths untouched, onlymaster active locally/origin.
+Full original readiness goal and all retained world/performance/art/device/
+gameplay/owner/F1-F5/beta/launch/handoff requirements remain open.
+
+
+October12 corrective44 exacte7 terminal evidence is frozen35entries, inventory
+`84a13917297f4a0ea1a44dc1dd6c8ed4416c5663afa9f438f35a8fd5bb0953a2`.
+Five prerequisite jobs pass; native regional7pass, dungeon/outfit41pass/2fail
+with retries0. Changed High/Low Dark cutaway cases pass. ActorInstanceView.js
+and phone-community.css requests fail with ERR_NETWORK_CHANGED, correlated
+with unrelated host bridge/veth changes; no sole-cause proof or unrelated
+service mutation. Four downstream jobs skip, e7 never deployed, later native
+stages never run. Fresh20:08:41UTC normal-TLS all121assets/frontend/backend/
+readyDB retain public43. Initial fresh checker HTTP408 is retained separately.
+Detached local native namespace qualification is in progress; original visual
+assertions/error recording remain required. No blind CI retry/new publication.
+Full original readiness goal and retained failures remain open.
+
+
+October12 native visual network isolation7469ed4b qualified and ordinarily merged.
+424focused checks/five suites, lint/shellcheck/bash syntax pass. Original Highcamp,
+TempestHighfloor and copied-bundle immutable worker/offline cases pass with retries0;
+synthetic native recording retains video88289B, trace and screenshots. Same host
+Chrome153/Node24/AMD Vulkan/ffmpeg, loopback-only private network; real CSS/module
+loads survive owned host veth churn. Host baseline also passed, so original CI
+network error is not reproduced. Fake credentials/Docker endpoint omitted; no
+Docker socket; inner failure propagates exactly. Five local visual stages use
+wrapper; backend/WellRested/full-character/release-smoke connectivity preserved.
+No game runtime/assets/versions/479notes changed frome7; initial local setup/
+filter/vendor/recorder/command-contract failures retained. Frozen120entry inventory
+`0e83cc38a56be8bdeaa2406f72620109956ba9e720f8361582eb434ad0d0afec`.
+Next changed-source copied preparation/ownorderedCI/publiccustody; keep44version.
+Full original readiness goal and retained failures remain open.
+
+
+October12 exact44 network-corrected candidate0d32ab60 ordinarily pushed20:20:02UTC;
+own CI38303521959attempt1 running, no deployment/public acceptance yet.
+All12versions/479initial44notes/478prior43notes exact;14contentgroups pass.
+475module/126pin production copied build metadata exacte7, worker unchanged;
+all3576copyfiles rehash exact before owned copy retirement. No src/assets/server/
+index/package/release/sw runtime file changes frome7. Frozen14entry preparation
+inventory`c1bf0f526d856eb08ee5e59b4599a0dfd78dee6cb07bdf6d146f6fe9cbf082a6`.
+Fresh prepush normal-TLS identities/readyDB retain43; full121asset20:08:41proof
+reused. Onlymaster locally/origin, original465dirty paths untouched. Sparse
+monitor follows newownCI and existing41soak; native GPU reserved until terminal.
+Require ordered gates/deploy/live/fresh126asset/source/readyDB before acceptance
+or next publication. Full original goal/retained failures remain open.
+
+
+October12 independent CPU continuation while ownCI38303521959 reserves GPU:
+Ilyra color partition screens7e22f994 reject20099/18811tri against unchanged
+18029.05target; originalattributes/rig/goldpreserved, no native/selection.
+Frozen18entry inventory`e9ba6f5adeee3b98d29d11262b7457e29e3b760f53d9f4d64ece95632c7da1b8`.
+Protected depth-only offline prototype62de1f7c passes16checks/two suites/lint,
+preserving original27737tri color model/all281accessorarrays and every20primitive.
+10317depth estimate/18031with current morph fallback; all2504gold+68wood/crystal
+faces keep exact indices/winding/multiplicity. No renderer/default changes;
+native depth/color/motion/silhouette/GPUlifetime/town/device gates open.
+Frozen53entry inventory`1c660d8d051739aefbe26b3dca4ebbb811f517cb5df15ab6834d3b01baab901e`.
+Both prototypes remain detached/unselected; no GPU/server/browser launched.
+Readiness register current-publication row reconciled to0d32/ownCI38303521959;
+public43 lastaccepted, full original goal/retained failures remain open.
+
+
+October12 actual-loaded Ilyra CPU adapter matches all20original primitives in
+bothprofiles by unique exact index/position/material hashes. Existing isolated
+ActorShadowGeometry supports original morph data:18opaque registrations/10317
+shadowtriangles with full27737color source/alllivebuffers and independentNPC
+unchanged. ThreeCPUposes/profile and exactonceowned retirement/source restore
+pass with WebGLdisabled. Initial post-restoration stubcount failure retained.
+Frozen34entry inventory`6f3de873a9f760cc3b05af9a089af1791db53c39c323ad83039c131794ca978c`.
+No native/default/whole-town acceptance; existing two pilots remain separate.
+Staged native scripts now guard current38303521959/source0d reservation; private
+network launcher prepared but not executed. OwnCI/public44acceptance and full
+original readiness goal/retained failures remain open.
+
+
+October12 Lanternhold timberd4c4aaf9 is isolated/CPU-qualified14checks/three
+suites/lint;24mesh comparisons preserve positions/normals/colors/indices/
+transforms/bounds/flags/colliders and sixbatches. Only two woodmaterials/physical
+UVs/quality propagation change; three shared sceneowned PBRmaps retireonce.
+Frozen14entry inventory`e236a55327716cbf68c9abfc0206e3ba460e0bf80df53eafa562ffd6de54ee83`.
+No native/default acceptance; currentCI nativepredeploy and bothdeployments
+pass, liveQA pending.743client suites/11027tests and349browser cases pass,
+10browser skips retained. Fulloriginal readiness goal/retained failures open.
+
+
+October12 exact44/0d32ab60 accepted: ownCI38303521959attempt1 all ten ordered
+jobs success21:13:25UTC, both deployments/liveQA pass.743client suites/11027tests,
+349browser passes/10skips, native regional7/dungeon43/celebration1/equipment2/
+smoke4pass+1skip, live character8pass+1skip/recovery2/WellRested1pass. Four optional
+stages remain skipped. Fresh21:15:34UTC normal-TLS126asset sizes/SHA, frontend/
+backend source/version, readyDB and analyticsJS match. Frozen34entry terminal
+inventory`2e89bb5bf9234e85e889bf51c0dc3e4276b8eebb1b55096936a88657df280c62`.
+Original-model palette/Dark roofs/shared49meshcutaway deployed within scope;
+preceding failures retained, no retries/waivers. GPU now free for isolated
+qualification; full original readiness goal/crowded-town/art/device/gameplay/
+owner/F1–F5/beta/launch/handoff requirements remain open. Existing41soak continues.
+
+
+October12 final timberb7ed06d2 qualified and ordinarily merged into master.
+Physical board/frame grain improves normalzoom15homes without changing six
+batches/fullgeometry/colliders/roof silhouettes. Initial14CPUchecks reused,
+corrected6material checks/six exactcachedmap controls pass. Native twoGPUcycles/
+profile exactbaseline/all53resourcesonce; six shadercolor controls exact.
+ActualHigh/Low12townimages/sixRGBArestores/threeHighdepth controls/24ABBAarms
+retain moving suppliedfour14slotclasses/HUD/Go residents. Initial stale stock
+depth sampler texturefailure retained and corrected; private960KiBrecipes bound
+returning construction. Frozen72entry inventory
+`e1cd12df3cc5ae8ea841a4f00891ca19a2cb88a26129b5d8ece3f3d0d5d8d3d1`.
+Crowdedplaza originalbudget failures persist. Foreground-house player occlusion
+remains next before coherent publication. Public44accepted; fullgoal remains open.
+
+
+October12 isolated native shadow work:097owner tenactualgallery cases retain
+30RGBA/packeddepth/repeats exact and20GPUcycles;8shadowcalls/class16Ilyra saved.
+InitialChrome-path/missingworker and actualtownzero-gain failures retained.
+Correctivee1b87508/98CPUchecks qualifies exactstockBatchedMesh/owned-sort hooks;
+explicit geometry-composition diagnostic saves48Highcalls (429→381plaza,
+337→289west) with fullRGBA/triangles exact; Low disabled-shadows unchanged.
+Frozen116entry inventory`0aec803b87007356083086cbda78d717bab98c0473c5ad89aa8941d70168b485`.
+Separate Ilyra reducedshadow pilot sixexactdepth/color/sixreducedcounts/12
+unshadowed/repeat/fourGPUcycles pass;17420shadowtris saved, allcolor/rig/morph
+retained. Lossyshadow quality/town integration not accepted. Frozen47entries
+`fe983f189e58a0de804936f42be4cb279add24c3e627600081ef77fd54c9bb85`.
+Both prototypes remain isolated/unselected; crowded-town budgets still fail.
+Town foreground-home cutaway stage2adab8ea passes23CPUchecks/three suites/lint;
+actualnative underway after retaining omitted-focus fixture failure. Public44
+accepted, qualifiedtimber merged but nextcoherentpublication pending. Fullgoal open.
+
+
+October12 Lanternhold housecutaway2adab8ea/finalf7f9434e qualified and ordinarily
+merged2c6fcbfe:44CPUchecks/four suites/lint, requirednative2cases52.1s/retries0
+with visible equippedhero gain and exactsurface/depth/material restoration.
+Broader16High/Lowimages/eightRGBArestores/fourHighdepthcontrols/16ABBAarms,
+twoexactGPUcycles/profile and actual4m/s walk reveal/return focuserror0 qualify
+within scope. All15homes/sixbatches/foundation/geometry/collision/shadows retained.
+Initial omittedfocus/crossviewlifetime/fadedsnapshot fixture failures retained;
+only affectedHighlifetime repeated, exactassertions unchanged. Frozen94entry
+inventory`fba810064cda92a4b6406787b8aa7d27c81000a964337473d7edf3853592cdb8`.
+Coherent45town timber+foregroundvisibility publication preparing; accepted44
+remains public. Crowded-town budgets/fulloriginal readiness goal remain open.
+
+
+October12 coherent45town timber+foregroundvisibility pushed exact31defee90;
+ownCI38313813464attempt1 running from21:57:21UTC.468client/six suites,14content
+groups,12versions,480notes/479prior byte-exact and four copied476module native
+High/Low controls pass.127public pins prepared; frozen29entry inventory
+`24ddfc234efc5a082a1d2563ea7096adcfe5ef40b6305ec7d4d0d90e59fee626`.
+Onlymaster locally/origin; original dirty checkout preserved. OwnCI reserves
+GPU until terminal; ordered deployments/live/fresh public127asset/source/readyDB
+required. Public44lastaccepted; fulloriginal goal/crowdedtown failures open.

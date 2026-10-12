@@ -1,0 +1,28 @@
+{
+  "source": "62de1f7c3f3e941ebea0cea4f57a26c3068b4751",
+  "status": "CPU-qualified offline prototype, isolated/unselected; no renderer/default/runtime/asset changes or GPU work.",
+  "focusedChecks": 16,
+  "suites": 2,
+  "lint": "pass",
+  "originalSourceSHA256": "010301379aaa92a3bac6e54e9f7d7bf94cc8a2be20e9c1ebe883eeae6e87e8b7",
+  "sourceColorTriangles": 27737,
+  "depthOnlyEstimatedTriangles": 10317,
+  "estimateWithCurrentMorphFallback": 18031,
+  "protectedGoldTriangles": 2504,
+  "protectedWoodCrystalTriangles": 68,
+  "unchangedSourceAccessorArrays": 281,
+  "maximumEstimatedError": 0.006,
+  "all20PrimitivesRetained": true,
+  "unsupported": "Original alpha hair/brows retained exactly; morph body needs separate runtime support and stays original in18031estimate.",
+  "proof": "Source file/all accessor arrays unchanged; all2572original circlet/staff/gold/wood/crystal faces retain exact indices/winding/multiplicity; source-index membership, over32bone partitions, protected boundaries, fully protected/empty fallback, invalid masks, byte reproducibility and overwrite refusal pass.",
+  "initialGoldOnly": "10281candidate/17995withmorphfallback retained; complete wood/crystal protection adds36triangles intentionally.",
+  "runtimeChangedFiles": [],
+  "limits": "No native depth/color/posed silhouette/motion/GPUlifetime/whole-town/frame/device/art acceptance. Existing opaque shadow owner097449f8 remains separately CPU-only/unselected and needs native qualification. No next release selected.",
+  "retirement": "No browser/GPU/static server started; ownCI38303521959 retains nativeGPU reservation; originaldirty checkout untouched/onlymaster active.",
+  "recordedUTC": "2026-10-12T20:35:51.376095+00:00",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-ilyra-shadow-indices-checks-20261012",
+    "entries": 53,
+    "inventorySHA256": "1c660d8d051739aefbe26b3dca4ebbb811f517cb5df15ab6834d3b01baab901e"
+  }
+}
