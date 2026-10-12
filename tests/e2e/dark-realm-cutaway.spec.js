@@ -15,6 +15,43 @@ for (const quality of ['high', 'low']) {
         expect(initial.pendingGeometry).toBe(0);
         if (quality === 'high') expect(initial.ambientParticles).toBeGreaterThan(0);
         for (const outfit of initial.outfits) { expect(outfit.count).toBe(14); expect(outfit.missing).toEqual([]); expect(outfit.fallback).toEqual([]); }
+        // Exercise the real shared material on one mixed batch. The left
+        // work surface must remain byte-exact while right building vertices
+        // reveal, then the entire target must restore exactly.
+        const maskedSurface = await page.evaluate(async () => {
+            const { THREE, root, render } = window.__darkCutaway;
+            const { mergeGeometries } = await import('three/addons/utils/BufferGeometryUtils.js');
+            const { SceneryVisibility } = await import('/src/core/SceneryVisibility.js');
+            const source = render.sceneryVisibility.entries.get(root).parts.find(part =>
+                part.mesh.geometry.getAttribute('sceneryOccluderMask').array.includes(0) && part.material.metalness === .55);
+            const halves = [-.8, .8].map((x, index) => {
+                const geometry = new THREE.PlaneGeometry(1.4, 1.4).toNonIndexed(); geometry.translate(x, 0, 0);
+                geometry.setAttribute('sceneryOccluderMask', new THREE.Uint8BufferAttribute(
+                    new Uint8Array(geometry.attributes.position.count).fill(index), 1)); return geometry;
+            });
+            const geometry = mergeGeometries(halves); halves.forEach(part => part.dispose());
+            const mesh = new THREE.Mesh(geometry, source.material); mesh.userData.sceneryOccluderPart = true;
+            const batch = new THREE.Group(); batch.userData.sceneryOccluderMasked = true; batch.add(mesh);
+            const scene = new THREE.Scene(); scene.background = new THREE.Color(0x101020); scene.add(batch, new THREE.AmbientLight(0xffffff, 3));
+            const camera = new THREE.OrthographicCamera(-2, 2, 2, -2, .1, 20); camera.position.z = 10; camera.lookAt(0, 0, 0);
+            const target = new THREE.WebGLRenderTarget(128, 128), renderer = render.renderer, previousTarget = renderer.getRenderTarget();
+            const controller = new SceneryVisibility(), entry = controller.createEntry(batch);
+            const capture = () => { renderer.setRenderTarget(target); renderer.render(scene, camera);
+                const pixels = new Uint8Array(128 * 128 * 4); renderer.readRenderTargetPixels(target, 0, 0, 128, 128, pixels); return pixels; };
+            try {
+                const original = capture(); entry.uniforms.focus.value.set(0, 0, 10); entry.opacity = 0; controller.applyOpacity(entry);
+                const revealed = capture(); let workChanged = 0, buildingChanged = 0;
+                for (let i = 0; i < original.length; i++) {
+                    if (original[i] === revealed[i]) continue;
+                    if (Math.floor(i / 4) % 128 < 64) workChanged++; else buildingChanged++;
+                }
+                controller.release(entry); const restored = capture();
+                return { workChanged, buildingChanged, restoredChanged: original.reduce((count, value, index) => count + Number(value !== restored[index]), 0) };
+            } finally { controller.release(entry); renderer.setRenderTarget(previousTarget); target.dispose(); geometry.dispose(); }
+        });
+        await writeFile(testInfo.outputPath('masked-work-surface.json'), JSON.stringify(maskedSurface, null, 2));
+        expect(maskedSurface.workChanged).toBe(0); expect(maskedSurface.buildingChanged).toBeGreaterThan(100);
+        expect(maskedSurface.restoredChanged).toBe(0);
         const views = [];
         for (let index = 1; index <= 4; index++) {
             const controls = await page.evaluate(async index => {
