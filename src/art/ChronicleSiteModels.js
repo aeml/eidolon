@@ -4,6 +4,7 @@ import { createKilnFurnaceGeometry } from './KilnWorkshopGeometry.js';
 import { createKeeperCottage } from './KeeperCottage.js';
 import { createReturningScarClue } from './ReturningScar.js';
 import { createChronicleBookGeometry } from './ChronicleBookGeometry.js';
+import { createInscribedWaystoneGeometry } from './InscribedWaystoneGeometry.js';
 
 const PALETTES = {
     earth: { stone: 0x696b50, wood: 0x54402e, glow: 0x95d994 },
@@ -35,6 +36,8 @@ export function createChronicleSiteModel(site, realm) {
     if (site.model === 'cold_kiln') {
         applyWorldSurfaceDetail(stone, 'stone');
         applyWorldSurfaceDetail(wood, 'timber');
+    } else if (realm !== 'earth' && site.model === 'command_stone') {
+        applyWorldSurfaceDetail(stone, 'fieldstone');
     }
     const brass = material(0xb59a62, { metalness: 0.55, roughness: 0.4 });
     const glow = material(colors.glow, { emissive: colors.glow, emissiveIntensity: 0.65 });
@@ -137,7 +140,8 @@ export function createChronicleSiteModel(site, realm) {
             break;
         case 'command_stone':
         case 'horizon_marker':
-            box(1.1, 2.2, 0.7, stone);
+            if (site.model === 'command_stone') mesh(createInscribedWaystoneGeometry(realm), stone);
+            else box(1.1, 2.2, 0.7, stone);
             for (let i = 0; i < 4; i++) box(0.6 - i * 0.09, 0.06, 0.03, glow, 0, 0.65 + i * 0.35, 0.365);
             if (site.model === 'horizon_marker') ring(1.05, brass, 2.4, 0);
             break;
