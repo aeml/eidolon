@@ -71,9 +71,14 @@ export class OpaqueSkinnedShadowBatches {
             const proxy = new THREE.SkinnedMesh(geometry, material);
             proxy.name = 'OpaqueSkinnedShadowBatch'; proxy.castShadow = true;
             proxy.frustumCulled = false; proxy.matrixAutoUpdate = false; proxy.matrixWorldAutoUpdate = false;
+            const palettes = new Map();
+            const palette = skeleton => {
+                if (!palettes.has(skeleton)) palettes.set(skeleton, { skeleton, bones: skeleton.bones.slice(),
+                    inverses: skeleton.boneInverses.map(matrix => matrix.elements.slice()) });
+                return palettes.get(skeleton);
+            };
             const entry = { meshes, proxy, geometry, material, candidate: geometryState(geometry), sources: meshes.map(mesh => ({
-                mesh, ...geometryState(mesh.geometry), skeleton: mesh.skeleton, bones: mesh.skeleton.bones.slice(),
-                inverses: mesh.skeleton.boneInverses.map(matrix => matrix.elements.slice()),
+                mesh, ...geometryState(mesh.geometry), ...palette(mesh.skeleton),
                 bindMode: mesh.bindMode, bind: mesh.bindMatrix.elements.slice()
             })) };
             entry.retire = () => this.unregister(entry);
@@ -85,12 +90,17 @@ export class OpaqueSkinnedShadowBatches {
     }
 
     valid(entry) {
+        // Captured palette snapshots are shared by sources with the same
+        // skeleton. Validate each live palette once per synchronous call.
+        const palettes = new Set();
         return this.entries.has(entry) && entry.proxy.material === entry.material && sameGeometry(entry.proxy.geometry, entry.candidate) &&
             entry.sources.every(source => {
                 const { mesh, skeleton } = source;
-                return connectedTo(mesh, this.scene) && sameGeometry(mesh.geometry, source) && mesh.skeleton === skeleton &&
-                    mesh.bindMode === source.bindMode && equal(mesh.bindMatrix.elements, source.bind) &&
-                    equal(skeleton.bones, source.bones) && skeleton.boneInverses.length === source.inverses.length &&
+                if (!connectedTo(mesh, this.scene) || !sameGeometry(mesh.geometry, source) || mesh.skeleton !== skeleton ||
+                    mesh.bindMode !== source.bindMode || !equal(mesh.bindMatrix.elements, source.bind)) return false;
+                if (palettes.has(skeleton)) return true;
+                palettes.add(skeleton);
+                return equal(skeleton.bones, source.bones) && skeleton.boneInverses.length === source.inverses.length &&
                     skeleton.boneInverses.every((matrix, i) => equal(matrix.elements, source.inverses[i]));
             });
     }

@@ -104,3 +104,15 @@ test('invalid source joints retain the original path rather than indexing an unk
     const { meshes } = fixture(); meshes[1].geometry.attributes.skinIndex.array[0] = 4;
     expect(() => createOpaqueSkinnedShadowGeometry(meshes)).toThrow(/outside original skeleton/);
 });
+
+
+test('shared live palettes reject non-finite inverses and recover on a later check', () => {
+    const { root, meshes, skeleton } = fixture();
+    expect(groupOpaqueSkinnedShadowMeshes(root)).toEqual([meshes]);
+    skeleton.boneInverses[0].elements[0] = NaN;
+    expect(groupOpaqueSkinnedShadowMeshes(root)).toEqual([]);
+    expect(() => createOpaqueSkinnedShadowGeometry(meshes)).toThrow(/distinct/);
+    skeleton.boneInverses[0].identity();
+    expect(groupOpaqueSkinnedShadowMeshes(root)).toEqual([meshes]);
+    const geometry = createOpaqueSkinnedShadowGeometry(meshes);expect(geometry.index.count).toBe(6);geometry.dispose();
+});

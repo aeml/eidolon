@@ -5,15 +5,22 @@ const storage = attribute => attribute.isInterleavedBufferAttribute
     ? { array: attribute.data.array, stride: attribute.data.stride, offset: attribute.offset }
     : { array: attribute.array, stride: attribute.itemSize, offset: 0 };
 const equalValues = (a, b) => a.length === b.length && a.every((value, i) => Object.is(value, b[i]));
-const format = attribute => [storage(attribute).array.constructor.name, attribute.itemSize,
-    attribute.normalized, attribute.gpuType ?? THREE.FloatType];
+const sameFormat = (a, b) => storage(a).array.constructor.name === storage(b).array.constructor.name &&
+    Object.is(a.itemSize, b.itemSize) && Object.is(a.normalized, b.normalized) &&
+    Object.is(a.gpuType ?? THREE.FloatType, b.gpuType ?? THREE.FloatType);
+const finiteSkeleton = (skeleton, cache) => {
+    if (!skeleton?.bones.length || skeleton.boneInverses.length !== skeleton.bones.length) return false;
+    if (cache?.has(skeleton)) return cache.get(skeleton);
+    const valid = skeleton.boneInverses.every(matrix => matrix.elements.every(Number.isFinite));
+    cache?.set(skeleton, valid); return valid;
+};
 const validAttribute = (attribute, itemSize, count) => attribute && attribute.itemSize === itemSize &&
     attribute.count === count && !attribute.isGLBufferAttribute &&
     (attribute.gpuType ?? THREE.FloatType) === THREE.FloatType;
 
 // Geometry construction only. No renderer hook, scene proxy, registration or
 // default activation: native depth/color/lifetime qualification is still needed.
-export function isOpaqueSkinnedShadowMesh(mesh) {
+export function isOpaqueSkinnedShadowMesh(mesh, skeletonCache = null) {
     const g = mesh.geometry, m = mesh.material, skeleton = mesh.skeleton;
     return Boolean(mesh.isSkinnedMesh && !mesh.isInstancedMesh && !mesh.isBatchedMesh && mesh.castShadow &&
         !Array.isArray(m) && (m?.isMeshStandardMaterial || m?.isMeshPhysicalMaterial) && m.visible &&
@@ -32,29 +39,29 @@ export function isOpaqueSkinnedShadowMesh(mesh) {
         g.attributes.position.count > 0 &&
         validAttribute(g.attributes.skinIndex, 4, g.attributes.position.count) && !g.attributes.skinIndex.normalized &&
         validAttribute(g.attributes.skinWeight, 4, g.attributes.position.count) &&
-        skeleton?.bones.length > 0 && skeleton.boneInverses.length === skeleton.bones.length &&
-        skeleton.boneInverses.every(matrix => matrix.elements.every(Number.isFinite)) &&
+        finiteSkeleton(skeleton, skeletonCache) &&
         mesh.matrixWorld.elements.every(Number.isFinite) && mesh.bindMatrix.elements.every(Number.isFinite) &&
         mesh.bindMatrixInverse.elements.every(Number.isFinite));
 }
 
 function compatible(a, b) {
+    if (a === b) return true;
     return a.bindMode === b.bindMode && a.layers.mask === b.layers.mask &&
         a.material.side === b.material.side && a.material.shadowSide === b.material.shadowSide &&
         equalValues(a.matrixWorld.elements, b.matrixWorld.elements) &&
         equalValues(a.bindMatrix.elements, b.bindMatrix.elements) &&
         equalValues(a.bindMatrixInverse.elements, b.bindMatrixInverse.elements) &&
-        a.skeleton.bones.length === b.skeleton.bones.length &&
-        a.skeleton.bones.every((bone, i) => bone === b.skeleton.bones[i]) &&
-        a.skeleton.boneInverses.every((matrix, i) => equalValues(matrix.elements, b.skeleton.boneInverses[i].elements)) &&
-        attributes.every(name => equalValues(format(a.geometry.attributes[name]), format(b.geometry.attributes[name])));
+        (a.skeleton === b.skeleton || a.skeleton.bones.length === b.skeleton.bones.length &&
+            a.skeleton.bones.every((bone, i) => bone === b.skeleton.bones[i]) &&
+            a.skeleton.boneInverses.every((matrix, i) => equalValues(matrix.elements, b.skeleton.boneInverses[i].elements))) &&
+        attributes.every(name => sameFormat(a.geometry.attributes[name], b.geometry.attributes[name]));
 }
 
 export function groupOpaqueSkinnedShadowMeshes(root) {
     root.updateWorldMatrix(true, true);
-    const groups = [];
+    const groups = [], skeletonCache = new WeakMap();
     root.traverseVisible(mesh => {
-        if (!isOpaqueSkinnedShadowMesh(mesh)) return;
+        if (!isOpaqueSkinnedShadowMesh(mesh, skeletonCache)) return;
         const group = groups.find(parts => compatible(parts[0], mesh));
         if (group) group.push(mesh); else groups.push([mesh]);
     });
@@ -62,8 +69,11 @@ export function groupOpaqueSkinnedShadowMeshes(root) {
 }
 
 export function haveCompatibleOpaqueSkinnedShadowState(meshes) {
+    // Scope this cache to one synchronous check. Every subsequent frame still
+    // validates live inverse values; meshes sharing one skeleton share the work.
+    const skeletonCache = new WeakMap();
     return meshes.length > 1 && new Set(meshes).size === meshes.length &&
-        meshes.every(mesh => isOpaqueSkinnedShadowMesh(mesh) && compatible(meshes[0], mesh));
+        meshes.every(mesh => isOpaqueSkinnedShadowMesh(mesh, skeletonCache) && compatible(meshes[0], mesh));
 }
 
 export function createOpaqueSkinnedShadowGeometry(meshes) {
