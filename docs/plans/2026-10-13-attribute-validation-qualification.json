@@ -2,7 +2,7 @@
   "recordedUTC": "2026-10-13T16:56:49.398087+00:00",
   "base": "c993923b7e40aadfbe067f030917bb35d5ae704b",
   "runtimeBase": "8e5f888a66b65e6a69e26c62499b4113549b40c0",
-  "status": "Qualified within allocation-free attribute validation scope; ready ordinary master merge, unpublished.",
+  "status": "Qualified and ordinarily merged into local master; unpublished pending coherent next milestone.",
   "change": "Shadow and color owners compare every captured attribute identity, storage/layout/version/normalization/GPU field directly, retaining Object.is semantics. Shadow interleaved-buffer ownership check remains. No fresh attribute snapshots/Object.entries tuples in the live validator; no skipped validation or render/geometry/material/animation policy changes.",
   "focused": {
     "distinctPassed": 142,
@@ -2086,5 +2086,7 @@
     "entries": 26,
     "inventorySHA256": "63a53891634c4d72bac956847c9d07905539454f6db440d810eb52756885a805"
   },
-  "limits": "High prepared town remains33.3msmedian and279283triangles (original20ms/250000limits fail); Low107747triangles remains above85000. ABBA synchronous CPU medians improve roughly0.6\u20132ms but frame intervals remain similar; no whole-game FPS or causal comparison with older differing populations. Connected current baseline33.4/50.1ms remains failed. Native source/prototype contrast only, not copied/public release acceptance, devices, art, campaign, capacity, F1\u2013F5/beta/launch/handoff completion. Full original goal active."
+  "limits": "High prepared town remains33.3msmedian and279283triangles (original20ms/250000limits fail); Low107747triangles remains above85000. ABBA synchronous CPU medians improve roughly0.6\u20132ms but frame intervals remain similar; no whole-game FPS or causal comparison with older differing populations. Connected current baseline33.4/50.1ms remains failed. Native source/prototype contrast only, not copied/public release acceptance, devices, art, campaign, capacity, F1\u2013F5/beta/launch/handoff completion. Full original goal active.",
+  "source": "c7949d68",
+  "masterMerge": "df05e2e40be15d892d486f2b37696b785262e040"
 }
