@@ -1,0 +1,361 @@
+{
+  "recordedUTC": "2026-10-13T20:48:14.122974+00:00",
+  "source": "1549f7cd4d4428de04aa61332ee1ff9c38edd96f",
+  "base": "00dc8315",
+  "status": "Qualified exact format validation cleanup; ready ordinary master merge, unpublished.",
+  "change": "Compare own attribute-name membership with equal key counts instead of sorting both dictionaries. Read existing packed/interleaved array constructors directly rather than allocating unused storage tuples. Constructor-name vs constructor-identity policies remain as originally authored for shadow/color respectively. No cached validation, skipped guard, shader, source mesh, material, rig, animation, geometry quality or renderer lifetime change.",
+  "focused": {
+    "passed": 184,
+    "suites": 4,
+    "newRegressions": 3,
+    "coverage": "Own-name matching with reordered dictionaries, inherited-name substitution, dictionary-method attribute names; retained signedzero/interleaved/normalized/integerGPU/material/callback/finitepalette/late source mutation guard and original construction/ownership cases.",
+    "lint": "pass"
+  },
+  "cpuBenchmark": {
+    "scope": "CPU-only real owner.valid methods, four synthetic53-bone/six-mesh actor fixtures. A exact local master00dc8315 geometry comparators/B direct arrays and own-key membership candidate. Owner classes identical. All source/candidate/palette/layout checks run; no WebGL or supplied-asset/native/game-frame acceptance.",
+    "records": [
+      {
+        "shadow": true,
+        "order": "ABBA",
+        "arm": "A",
+        "elapsedMs": 309.18715800000007,
+        "valid": 16000
+      },
+      {
+        "shadow": true,
+        "order": "ABBA",
+        "arm": "B",
+        "elapsedMs": 322.49875299999997,
+        "valid": 16000
+      },
+      {
+        "shadow": true,
+        "order": "ABBA",
+        "arm": "B",
+        "elapsedMs": 340.08329600000013,
+        "valid": 16000
+      },
+      {
+        "shadow": true,
+        "order": "ABBA",
+        "arm": "A",
+        "elapsedMs": 322.91677400000003,
+        "valid": 16000
+      },
+      {
+        "shadow": true,
+        "order": "BAAB",
+        "arm": "B",
+        "elapsedMs": 323.3047690000001,
+        "valid": 16000
+      },
+      {
+        "shadow": true,
+        "order": "BAAB",
+        "arm": "A",
+        "elapsedMs": 297.39901599999985,
+        "valid": 16000
+      },
+      {
+        "shadow": true,
+        "order": "BAAB",
+        "arm": "A",
+        "elapsedMs": 297.2342249999997,
+        "valid": 16000
+      },
+      {
+        "shadow": true,
+        "order": "BAAB",
+        "arm": "B",
+        "elapsedMs": 304.2960600000001,
+        "valid": 16000
+      },
+      {
+        "shadow": false,
+        "order": "ABBA",
+        "arm": "A",
+        "elapsedMs": 243.75456200000008,
+        "valid": 16000
+      },
+      {
+        "shadow": false,
+        "order": "ABBA",
+        "arm": "B",
+        "elapsedMs": 176.73530299999993,
+        "valid": 16000
+      },
+      {
+        "shadow": false,
+        "order": "ABBA",
+        "arm": "B",
+        "elapsedMs": 178.76292000000012,
+        "valid": 16000
+      },
+      {
+        "shadow": false,
+        "order": "ABBA",
+        "arm": "A",
+        "elapsedMs": 236.2512800000004,
+        "valid": 16000
+      },
+      {
+        "shadow": false,
+        "order": "BAAB",
+        "arm": "B",
+        "elapsedMs": 174.13096300000007,
+        "valid": 16000
+      },
+      {
+        "shadow": false,
+        "order": "BAAB",
+        "arm": "A",
+        "elapsedMs": 216.41607699999986,
+        "valid": 16000
+      },
+      {
+        "shadow": false,
+        "order": "BAAB",
+        "arm": "A",
+        "elapsedMs": 230.36115100000006,
+        "valid": 16000
+      },
+      {
+        "shadow": false,
+        "order": "BAAB",
+        "arm": "B",
+        "elapsedMs": 200.40387999999984,
+        "valid": 16000
+      }
+    ]
+  },
+  "native": {
+    "profiles": {
+      "high": {
+        "quality": "high",
+        "controls": [
+          {
+            "view": "service-plaza",
+            "color": 0,
+            "depth": 0,
+            "restoredColor": 0,
+            "restoredDepth": 0,
+            "reference": {
+              "calls": 318,
+              "triangles": 279283
+            },
+            "candidate": {
+              "calls": 318,
+              "triangles": 279283
+            },
+            "sourceExact": true
+          },
+          {
+            "view": "west-homes",
+            "color": 0,
+            "depth": 0,
+            "restoredColor": 0,
+            "restoredDepth": 0,
+            "reference": {
+              "calls": 229,
+              "triangles": 247270
+            },
+            "candidate": {
+              "calls": 229,
+              "triangles": 247270
+            },
+            "sourceExact": true
+          },
+          {
+            "view": "south-homes",
+            "color": 0,
+            "depth": 0,
+            "restoredColor": 0,
+            "restoredDepth": 0,
+            "reference": {
+              "calls": 203,
+              "triangles": 218913
+            },
+            "candidate": {
+              "calls": 203,
+              "triangles": 218913
+            },
+            "sourceExact": true
+          }
+        ],
+        "arms": [
+          {
+            "mode": "reference",
+            "frames": 119,
+            "frameMedianMs": 33.3,
+            "frameP95Ms": 50,
+            "synchronousFrameCpuMedianMs": 29.69999998807907,
+            "callsMedian": 318,
+            "trianglesMedian": 279283,
+            "sourceExact": true
+          },
+          {
+            "mode": "candidate",
+            "frames": 119,
+            "frameMedianMs": 33.3,
+            "frameP95Ms": 33.4,
+            "synchronousFrameCpuMedianMs": 28.100000023841858,
+            "callsMedian": 318,
+            "trianglesMedian": 279283,
+            "sourceExact": true
+          },
+          {
+            "mode": "candidate",
+            "frames": 119,
+            "frameMedianMs": 33.3,
+            "frameP95Ms": 33.4,
+            "synchronousFrameCpuMedianMs": 28.69999998807907,
+            "callsMedian": 318,
+            "trianglesMedian": 279283,
+            "sourceExact": true
+          },
+          {
+            "mode": "reference",
+            "frames": 119,
+            "frameMedianMs": 33.3,
+            "frameP95Ms": 50,
+            "synchronousFrameCpuMedianMs": 29.19999998807907,
+            "callsMedian": 318,
+            "trianglesMedian": 279283,
+            "sourceExact": true
+          }
+        ],
+        "restored": true,
+        "pending": 0,
+        "shutdown": {
+          "shadowEntries": 0,
+          "colorEntries": 0,
+          "shadowDisposed": true,
+          "colorDisposed": true
+        }
+      },
+      "low": {
+        "quality": "low",
+        "controls": [
+          {
+            "view": "service-plaza",
+            "color": 0,
+            "depth": null,
+            "restoredColor": 0,
+            "restoredDepth": null,
+            "reference": {
+              "calls": 176,
+              "triangles": 107747
+            },
+            "candidate": {
+              "calls": 176,
+              "triangles": 107747
+            },
+            "sourceExact": true
+          },
+          {
+            "view": "west-homes",
+            "color": 0,
+            "depth": null,
+            "restoredColor": 0,
+            "restoredDepth": null,
+            "reference": {
+              "calls": 112,
+              "triangles": 78422
+            },
+            "candidate": {
+              "calls": 112,
+              "triangles": 78422
+            },
+            "sourceExact": true
+          },
+          {
+            "view": "south-homes",
+            "color": 0,
+            "depth": null,
+            "restoredColor": 0,
+            "restoredDepth": null,
+            "reference": {
+              "calls": 97,
+              "triangles": 65214
+            },
+            "candidate": {
+              "calls": 97,
+              "triangles": 65214
+            },
+            "sourceExact": true
+          }
+        ],
+        "arms": [
+          {
+            "mode": "reference",
+            "frames": 119,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "synchronousFrameCpuMedianMs": 13.700000047683716,
+            "callsMedian": 176,
+            "trianglesMedian": 107747,
+            "sourceExact": true
+          },
+          {
+            "mode": "candidate",
+            "frames": 119,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "synchronousFrameCpuMedianMs": 14.300000011920929,
+            "callsMedian": 176,
+            "trianglesMedian": 107747,
+            "sourceExact": true
+          },
+          {
+            "mode": "candidate",
+            "frames": 119,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "synchronousFrameCpuMedianMs": 12.900000035762787,
+            "callsMedian": 176,
+            "trianglesMedian": 107747,
+            "sourceExact": true
+          },
+          {
+            "mode": "reference",
+            "frames": 119,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "synchronousFrameCpuMedianMs": 13.699999988079071,
+            "callsMedian": 176,
+            "trianglesMedian": 107747,
+            "sourceExact": true
+          }
+        ],
+        "restored": true,
+        "pending": 0,
+        "shutdown": {
+          "shadowEntries": 0,
+          "colorEntries": 0,
+          "shadowDisposed": true,
+          "colorDisposed": true
+        }
+      }
+    },
+    "exitCode": 0,
+    "wholeRGBAControls": 6,
+    "packedHighDepthControls": 3,
+    "movingABBAArms": 8,
+    "intervalsEach": 119,
+    "allReferenceCandidateDrawsTrianglesEqual": true,
+    "sourceAttributeGeometryMaterialIdentitiesPreserved": true,
+    "allMethodsAndPerformanceClockRestored": true,
+    "ownedServerAndBrowserClosed": true,
+    "lifetimeScope": "Existing owner entries0/disposed at shutdown; no new resource owner introduced. Reuse prior unchanged owner quality/realm lifetime evidence; repeated GPU resource cycles not claimed for this sample.",
+    "setupCorrections": [
+      "Initial reference-class relative module URL produced import failure before controls; retained and rewritten to explicit QA/source URLs.",
+      "Next fixture omitted the ignored geometry-worker bundle:404 and original fallback539991Hightriangles; retained, not reused as prepared acceptance. Exact unchanged179507byte bundle SHA28b738eaf5aa3a9ba5df513fbd8c400f3d82a5f0f2624d529731c57b80a95f03 copied into owned checkout; corrected required fixture passes both profiles. No runtime/retry/deadline/assertion weakening."
+    ]
+  },
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-color-layout-checks-20261013",
+    "entries": 33,
+    "inventorySHA256": "8c84943a650d1b0f9cec0fc0849257b0fc8c5d1b0b9d3c97df8e86a40e6c8018"
+  },
+  "limits": "CPU real owner.valid synthetic four53bone/sixmesh fixtures show color candidate174.1\u2013200.4ms/reference216.4\u2013243.8ms per16000checks. Unchanged shadow.valid control overlaps/slower candidate and is not an improvement claim. Native High candidateCPU28.1/28.7ms vs reference29.7/29.2ms; Low12.9/14.3 vs13.7/13.7 overlap. Whole High frames33.3ms and279283triangles still fail original20ms/250000 limits; Low107747triangles still fails85000. No whole-game FPS, physical-device, final-art, capacity or readiness acceptance. Public49 stays accepted, no50publication."
+}

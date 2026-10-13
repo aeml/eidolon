@@ -4,6 +4,7 @@ import { groupOpaqueSkinnedShadowMeshes, haveCompatibleOpaqueSkinnedShadowState 
 const storage = attribute => attribute.isInterleavedBufferAttribute
     ? { array: attribute.data.array, stride: attribute.data.stride, offset: attribute.offset }
     : { array: attribute.array, stride: attribute.itemSize, offset: 0 };
+const attributeArray = attribute => attribute.isInterleavedBufferAttribute ? attribute.data.array : attribute.array;
 const visible = mesh => { for (let node = mesh; node; node = node.parent) if (!node.visible) return false; return true; };
 const stockColor = mesh => {
     const material = mesh.material;
@@ -20,13 +21,13 @@ const stockColor = mesh => {
             Number.isInteger(attribute.itemSize) && attribute.itemSize > 0 && attribute.itemSize <= 4);
 };
 const sameColorState = (first, mesh) => {
-    const names = Object.keys(first.geometry.attributes).sort(), other = Object.keys(mesh.geometry.attributes).sort();
+    const names = Object.keys(first.geometry.attributes), other = Object.keys(mesh.geometry.attributes);
     return first.parent === mesh.parent && first.material === mesh.material &&
         first.renderOrder === mesh.renderOrder && first.receiveShadow === mesh.receiveShadow &&
-        first.castShadow === mesh.castShadow && names.length === other.length && names.every((name, i) => {
-            if (name !== other[i]) return false;
+        first.castShadow === mesh.castShadow && names.length === other.length && names.every(name => {
+            if (!Object.hasOwn(mesh.geometry.attributes, name)) return false;
             const a = first.geometry.attributes[name], b = mesh.geometry.attributes[name];
-            return storage(a).array.constructor === storage(b).array.constructor &&
+            return attributeArray(a).constructor === attributeArray(b).constructor &&
                 Object.is(a.itemSize, b.itemSize) && Object.is(a.normalized, b.normalized) &&
                 Object.is(a.gpuType ?? THREE.FloatType, b.gpuType ?? THREE.FloatType);
         });

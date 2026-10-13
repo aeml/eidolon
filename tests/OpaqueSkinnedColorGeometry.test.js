@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { createOpaqueSkinnedColorGeometry, groupOpaqueSkinnedColorMeshes } from '../src/core/OpaqueSkinnedColorGeometry.js';
+import { createOpaqueSkinnedColorGeometry, groupOpaqueSkinnedColorMeshes, haveCompatibleOpaqueSkinnedColorState } from '../src/core/OpaqueSkinnedColorGeometry.js';
 
 function fixture() {
     const root = new THREE.Group(), bone = new THREE.Bone(), material = new THREE.MeshStandardMaterial();
@@ -107,4 +107,30 @@ test('transmissive physical surfaces retain their original renderer pass', () =>
     for (const mesh of meshes) mesh.material = material;
     expect(groupOpaqueSkinnedColorMeshes(root)).toEqual([]);
     expect(() => createOpaqueSkinnedColorGeometry(meshes)).toThrow(/exact/);
+});
+
+
+test('attribute names match by own membership regardless of insertion order', () => {
+    const { root, meshes } = fixture(), other = meshes[1].geometry;
+    other.attributes = Object.fromEntries(Object.entries(other.attributes).reverse());
+    expect(haveCompatibleOpaqueSkinnedColorState(meshes)).toBe(true);
+    expect(groupOpaqueSkinnedColorMeshes(root)).toEqual([meshes]);
+    const geometry = createOpaqueSkinnedColorGeometry(meshes);
+    for (const name of Object.keys(geometry.attributes)) expect([...geometry.attributes[name].array]).toEqual(meshes.flatMap(m=>[...m.geometry.attributes[name].array]));
+    geometry.dispose();
+});
+
+test('equal attribute counts cannot substitute an inherited name for a missing original channel', () => {
+    const { meshes } = fixture(), attributes = meshes[1].geometry.attributes, uv = attributes.uv;
+    delete attributes.uv; attributes.unrelated = uv;
+    Object.setPrototypeOf(attributes, { uv });
+    expect(haveCompatibleOpaqueSkinnedColorState(meshes)).toBe(false);
+    expect(()=>createOpaqueSkinnedColorGeometry(meshes)).toThrow(/exact/);
+});
+
+test('custom own attribute names do not depend on dictionary methods', () => {
+    const { meshes } = fixture();
+    for (const mesh of meshes) mesh.geometry.setAttribute('hasOwnProperty', new THREE.Float32BufferAttribute([1,2,3],1));
+    expect(haveCompatibleOpaqueSkinnedColorState(meshes)).toBe(true);
+    const geometry = createOpaqueSkinnedColorGeometry(meshes);expect([...geometry.attributes.hasOwnProperty.array]).toEqual([1,2,3,1,2,3]);geometry.dispose();
 });
