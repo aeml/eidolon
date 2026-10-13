@@ -4,6 +4,7 @@ import { LANTERNHOLD_HOMES, LANTERNHOLD_HOME_SCALE } from '../data/lanternholdNe
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createLappedSlateRoof, createRoofEndInfill } from './LanternholdRoofGeometry.js';
 import { createLanternholdTimberMaterials, mapLanternholdTimberUV } from './LanternholdTimberSurface.js';
+import { applyLanternholdWindowSurface } from './LanternholdWindowSurface.js';
 
 // A single shared construction, material-batched across the residential wards.
 // Wall collisions follow the closed cabin, independently of its roof/doorstep.
@@ -18,7 +19,7 @@ export function createLanternholdNeighborhood(cx = 0, cz = 200, { perInstanceFru
         ...createLanternholdTimberMaterials(quality),
         roof: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x424a50, roughness: .9, vertexColors: true }), 'fieldstone'),
         iron: new THREE.MeshStandardMaterial({ color: 0x3b3d3c, metalness: .65, roughness: .6 }),
-        window: new THREE.MeshStandardMaterial({ color: 0xc49b63, emissive: 0xc0843f, emissiveIntensity: .45, roughness: .65 })
+        window: applyLanternholdWindowSurface(new THREE.MeshStandardMaterial({ color: 0xc49b63, emissive: 0xc0843f, emissiveIntensity: .45, roughness: .65 }))
     };
     const batches = new Map();
     const part = (geometry, key, position, rotation = [0, 0, 0]) => {
