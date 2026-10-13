@@ -1,7 +1,7 @@
 {
   "source": "13f541755f2217cd429c3c9d782ccd0966e3f379",
   "version": "Alpha 1.79.47",
-  "status": "Pushed; exact own47orderedCI/deploy/live/public checks pending. Last accepted public version46.",
+  "status": "Accepted scoped47 after own ordered CI/deploy/live and fresh152asset verification; initial post-terminal HTTP408 retained",
   "recordedUTC": "2026-10-13T00:42:56.462706+00:00",
   "qualificationReceipts": [
     "2026-10-13-static-shadow-runtime-native-qualification.json",
@@ -579,5 +579,6 @@
     "status": "in_progress",
     "updatedAt": "2026-10-13T00:43:13Z",
     "url": "https://github.com/aeml/eidolon/actions/runs/38328616361"
-  }
+  },
+  "acceptanceReceipt": "2026-10-13-public47-terminal-qualification.json"
 }
