@@ -1,0 +1,159 @@
+{
+  "recordedUTC": "2026-10-13T22:49:03.055621+00:00",
+  "runtimeSource": "84c277fbb6a455a0773d2e82fc3ac93e345cf0ba",
+  "source": "b60063c3517c26be87b82f5c7a5dff95bb4aa25a",
+  "base": "5a27d942",
+  "status": "Private precision-Wizard component stage. Full Wizard and twelve-specialization redesign unfinished; runtime unselected and unpublished. This record does not qualify balance, fun, connected/native combat or release readiness.",
+  "scope": {
+    "newOptionalRunes": 12,
+    "specializationSkillsNewlyCovered": 4,
+    "wizardRuneDefinitions": 27,
+    "wizardLearnedSkillsCoveredByRunes": 9,
+    "wizardLearnedSkills": 13,
+    "allClassesRuneDefinitions": 72,
+    "initialUnlockLevels": [
+      50,
+      70,
+      90
+    ],
+    "remainingWizardSkillsWithoutRunes": [
+      "Flame Whip",
+      "Flame Tornado",
+      "Inferno Cataclysm",
+      "Time Warp"
+    ]
+  },
+  "changes": [
+    "Focus stores a paid rune/training snapshot: split bonus across two damaging casts, trade burst for doubled ward, or trade the ward for more burst. Utility/rejected casts do not spend charges.",
+    "spell_focus_charges field128 appended to protobuf; authoritative copies, delta/wire, legacy activation, expiry/PvP reset and visible next-spell/two-spell text updated. Private captured rune ID is not replicated.",
+    "Beam choices trade reach/damage/control; missile choices trade count/damage/combo efficiency or homing/aim/speed; Lance choices trade width/damage, pierce/group usefulness or cooldown/mana efficiency.",
+    "Offline Lance now follows authoritative single-target default; Broadside explicitly pierces once per enemy. Paid travel is bounded by displayed range. Both runtimes sweep legal segments, order non-piercing hits by first contact and publish one terminal impact on slow frames.",
+    "Stable old skill/rune IDs, owned branch skills, equipment, field mana rules, saved choices and existing progression retained. No automatic new rune selection or cross-branch grants."
+  ],
+  "focusedClient": {
+    "passed": 315,
+    "suites": 12,
+    "source": "84c277fbb6a455a0773d2e82fc3ac93e345cf0ba"
+  },
+  "race": {
+    "passedCases": 145,
+    "failedCases": 0,
+    "packages": [
+      {
+        "name": "eidolon-server",
+        "elapsedSeconds": 2.39
+      },
+      {
+        "name": "eidolon-server/internal/game",
+        "elapsedSeconds": 17.908
+      }
+    ]
+  },
+  "fullGo": {
+    "passedCases": 9370,
+    "skippedCases": 254,
+    "failedCases": 0,
+    "exit": 0,
+    "skipsRemainSkips": true
+  },
+  "fullClientBeforeInventoryCorrection": {
+    "status": "Interrupted after the stale generated animation inventory failure; not a completed full-client result.",
+    "exit": 130,
+    "knownFailure": "GeneratedContentChecks.test.js animation inventory check. Original log retained. Full client qualification remains required before class selection."
+  },
+  "inventoryCorrectionClient": {
+    "success": true,
+    "numPassedTests": 339,
+    "numFailedTests": 0,
+    "numPassedTestSuites": 13,
+    "numFailedTestSuites": 0
+  },
+  "preparedUI": {
+    "runtimeSource": "84c277fbb6a455a0773d2e82fc3ac93e345cf0ba",
+    "passed": 2,
+    "skipped": 0,
+    "retries": 0,
+    "flakes": 0,
+    "durationMs": 25390.583000000002,
+    "profiles": [
+      "1280x844 desktop",
+      "390x844 phone"
+    ],
+    "actualRuneChoiceInputs": 24,
+    "acknowledgements": "Simulated, not live backend/save qualification. Twelve choices per viewport remain unchanged until acknowledgement; visible equip/removal state and no horizontal overflow checked. Two screenshots manually inspected."
+  },
+  "limits": [
+    {
+      "runes": [
+        "fireball_magma",
+        "fireball_chain",
+        "fireball_empowered"
+      ],
+      "observation": "Wizard offline Fireball creation does not capture/evaluate these runes, and Projectile.js lacks these consumers. Server Fireball and projectile impact paths implement them. Repair and actual parity tests remain part of the full Wizard pass."
+    },
+    {
+      "runes": [
+        "meteor_apocalypse"
+      ],
+      "observation": "Client rune literal currently appears only in the legacy impact-radius fallback. Offline Meteor Drop has no continuing-meteor scheduler equivalent to the server path. Actual cadence, cancellation and instance ownership need qualification."
+    },
+    {
+      "runes": [
+        "arcaneshield_reflective",
+        "arcaneshield_explosive"
+      ],
+      "observation": "Offline shield training handles extended capacity/duration, but reflection and absorbed-damage explosion have no local rune consumers. Server paths already exist. Preserve real defense/death/recursive-hit ownership while bringing runtimes into agreement."
+    },
+    {
+      "skills": [
+        "Flame Whip",
+        "Flame Tornado",
+        "Inferno Cataclysm",
+        "Time Warp"
+      ],
+      "observation": "Four learned Wizard specialization skills still have no runes. Coherent Wizard class release remains held."
+    },
+    {
+      "systems": [
+        "combo descriptions",
+        "hotbar/loadout restoration",
+        "learned-level resource/pressure pacing",
+        "connected/native combat feedback",
+        "boss and party roles"
+      ],
+      "observation": "Current stage proves components and prepared UI. Update Arcane Barrage wording to describe two extra missiles so all new rune counts remain accurate; qualify actual saved-character gameplay and resource pacing in the full class pass."
+    },
+    {
+      "systems": [
+        "Lance visual footprint metadata"
+      ],
+      "observation": "Existing procedural DragonfireLance baseGameplayRadius is1.5 while authoritative base collision radius is1. The prototype explicitly sets collision1/.5/2.5 and scales the mesh. Align captured visual footprint metadata and inspect native connected shots before class selection; prepared UI screenshots do not qualify combat footprint/VFX."
+    },
+    {
+      "systems": [
+        "early-level branch identity and resource loop"
+      ],
+      "observation": "New optional runes unlock at50/70/90; they do not constitute a redesign of the base10/20/30/40 learned journey. Evaluate ordinary unmodified characters with finite field mana, actual equipment, solo pressure and party/boss roles before a coherent class release. The10000-mana contract fixtures isolate paid effects rather than proving encounter pacing."
+    },
+    {
+      "systems": [
+        "missile volley cadence and replicated presentation"
+      ],
+      "observation": "Offline missiles are scheduled over0\u2013800ms; authoritative missiles currently all enter the world at payment. Both component contracts prove count, captured damage, speed, homing choice and one Focus charge per volley, not timing equivalence. Qualify consistent visible launch cadence/cancellation/owner-instance lifecycle in actual connected play before selecting the class pass."
+    }
+  ],
+  "retainedFailures": [
+    "Expanded Focus test expected fractional missile damage but canonical casts truncate to integers; visual inventory test assumed60 runes. Both corrected without weakening actual cast assertions.",
+    "Intermediate catalog insertion assertion left authoritative/client catalogs temporarily mismatched; nonexistent test path selections also failed. Original logs retained; corrected precise test lists/catalog parity pass.",
+    "New selection save fixture originally serialized the live entity instead of the real save path detached world copy; corrected to actual custody boundary, all12 selection/level/owned-skill/save-format cases pass under race detector.",
+    "First prepared-phone selector searched the scrolling content for the fixed Runes navigation tab and timed out; corrected navigation scope. Original failed screenshot/trace retained; fixed-source desktop/phone both pass first-attempt.",
+    "Earlier broad client run was interrupted when source edits overlapped it. No acceptance claimed. Fixed-source broad run was then interrupted after its known generated-inventory failure and substantial cumulative memory growth; its exit130/log are retained, not treated as a completed full-suite result. Generated inventory was regenerated through its canonical producer and scoped content/combat checks; full client qualification remains required."
+  ],
+  "baselineResourceAudit": "wizard-early-resource-baseline.json: constructor/recalculated no-gear/no-talent finite mana at10/20/30/40. Diagnostic only, not ordinary earned gameplay or pressure acceptance.",
+  "custody": {
+    "directory": "/home/aeml/.local/share/eidolon-wizard-precision-stage-checks-20261013",
+    "files": 69,
+    "inventorySHA256": "38fc7fc9dda0bb8bbe642af7356551250084015d53900fab8e1f6e88bcd5c3ce"
+  },
+  "selection": "Do not merge this runtime as a completed Wizard rework. Finish class-wide mechanics, older rune parity, base learned journey, saved-loadout/connected combat/presentation and tuning qualification first. Only master remains an active branch; unfinished runtime stays in its owned detached worktree."
+}
