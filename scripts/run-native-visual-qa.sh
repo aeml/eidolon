@@ -90,8 +90,9 @@ if [ "$qa_has_recorder" != true ]; then
     exit 1
 fi
 
-# The narrow allowlist carries QA configuration, never account credentials,
-# Docker access, the host network or arbitrary caller environment variables.
+# Visual stages carry only QA configuration. The guarded connected smoke adds
+# its fresh synthetic credentials below; neither path exposes Docker access,
+# the host network or arbitrary caller environment variables.
 for qa_variable in CI EIDOLON_E2E_WEB_PORT EIDOLON_E2E_NATIVE_COVERAGE_PENDING PLAYWRIGHT_HTML_OUTPUT_DIR; do
     if [ "${!qa_variable+x}" = x ]; then qa_args+=(--env "$qa_variable=${!qa_variable}"); fi
 done
