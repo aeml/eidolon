@@ -1,0 +1,24 @@
+{
+  "recordedUTC": "2026-10-13T17:42:19.761701+00:00",
+  "source": "17f77969",
+  "status": "CPU-only static foliage eligibility/matrix/ownership screen; no product code selected.",
+  "sourceObjectsPerQuality": 3146,
+  "perDescriptorCandidateObjectsPerQuality": 34,
+  "placements": 901,
+  "qualities": [
+    "high",
+    "low"
+  ],
+  "exactOriginalAttributeAndIndexHashes": true,
+  "exactAllFloat32PlacementMatrices": true,
+  "ownedBatchedGeometryDisposalsOnce": 68,
+  "initialStrictScreen": "Three single-material BoxGeometry descriptors have group metadata ignored by the existing scalar-material InstancedMesh draw path. Initial62/68descriptors satisfy no-groups screen; corrected CPU screen preserves source groups and verifies68/68Batched copies. No geometry or material change.",
+  "sourcePolicy": "Earth source cells are8m, many singleton: birch137/139cells, pine135/135, willow115/115. Other realms64m cells. Current original whole-cell bounds/order/shadow relevance must be preserved or conservatively proven in native before activation. Existing woodland surface/wind shaders already include USE_BATCHING support; no wind/quality/GPU acceptance is inferred from that fact.",
+  "next": "Private constructor-owned delivery pilot: immutable source buffers, exact instance matrices, borrowed materials and original-cell camera/light culling/order. Preserve original roots/colliders/counts and resource ownership; unknown/changed inputs keep original route. No matrix-cache variant, arbitrary LoD or plant removal.",
+  "limits": "Object census and matrix/resource checks only. No native pixels/depth/motion/quality/lifetime or actual performance/default/public acceptance. Original connected High33.4/66.6ms and townHigh279283/Low107747triangle failures remain. Full original goal active.",
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-foliage-delivery-cpu-screen-checks-20261013",
+    "entries": 6,
+    "inventorySHA256": "ed0a32fbddce06f48b1a63c1c42141ab56c34b81f0ea20dc8901d6e64827de8c"
+  }
+}
