@@ -1,0 +1,95 @@
+{
+  "atUTC": "2026-10-13T02:42:49.502301+00:00",
+  "source": "fcb8f95c6f9468b9cab1e1641cdf9bdc4fe7f137",
+  "baselineDefaultNativeSource": "fc8c3655",
+  "status": "Default opaque color runtime qualified for ordinary master merge; publication not prepared yet",
+  "distinctCPUChecks": 373,
+  "suites": 18,
+  "reuse": "Initial broad run371passes/onefailure; changed two suites13passes include one added regression. Seventeen unchanged passing suites reused, no duplicate full campaign.",
+  "lintPassed": true,
+  "profiles": {
+    "high": {
+      "initialControl": {
+        "color": 0,
+        "depth": 0,
+        "saved": 15,
+        "ownerSaved": 15,
+        "trianglesEqual": true,
+        "sourceExact": true
+      },
+      "equipmentChanges": 4,
+      "qualityRoundTrips": 2,
+      "ownedDefaultGeometryDisposalsOnce": 189,
+      "ownedInstanceReplacementGeometryDisposalsOnce": 45,
+      "borrowedMaterialDisposals": 0,
+      "colorRetirement": {
+        "disposed": true,
+        "roots": 0,
+        "entries": 0,
+        "outerRestored": true,
+        "directRestored": true,
+        "beforeRestored": true
+      },
+      "shutdown": {
+        "shadowDisposed": true,
+        "geometryDisposed": true,
+        "renderRestored": true,
+        "shadowRestored": true,
+        "colorNull": true,
+        "connected": false,
+        "pending": 0
+      }
+    },
+    "low": {
+      "initialControl": {
+        "color": 0,
+        "depth": null,
+        "saved": 15,
+        "ownerSaved": 15,
+        "trianglesEqual": true,
+        "sourceExact": true
+      },
+      "equipmentChanges": 4,
+      "qualityRoundTrips": 2,
+      "ownedDefaultGeometryDisposalsOnce": 189,
+      "ownedInstanceReplacementGeometryDisposalsOnce": 45,
+      "borrowedMaterialDisposals": 0,
+      "colorRetirement": {
+        "disposed": true,
+        "roots": 0,
+        "entries": 0,
+        "outerRestored": true,
+        "directRestored": true,
+        "beforeRestored": true
+      },
+      "shutdown": {
+        "shadowDisposed": true,
+        "geometryDisposed": true,
+        "renderRestored": true,
+        "shadowRestored": true,
+        "colorNull": true,
+        "connected": false,
+        "pending": 0
+      }
+    }
+  },
+  "scope": "Default geometry -> shadow -> color ownership in actual High1280/Low390 town, four supplied14slotRunclasses/originalIdleIlyra/actualHUD/Go residenttrace. All original triangles, palettes/materials/casters retained.",
+  "retainedFailure": {
+    "log": "default-cpu-instance-failure.log",
+    "cause": "New outer color scene hook prevented rigid-instance owner disposal from restoring its predecessor. Setter now retires/reinstalls color before changing rigid ownership. Existing expectation follows composed hook and also removes color to assert exact predecessor; new full-stack regression and changed actual native both profiles pass.",
+    "affectedNativeReuse": "Initial native default equipment/quality/geometry/shadow/group/realm/shutdown body atfc8c3655 passed both profiles. Changed rigid-instance replacement alone repeated atfcb8f95c; unchanged source, assertions and lifecycle cases reused."
+  },
+  "priorNativeReceipt": "2026-10-13-opaque-color-owner-native-qualification.json",
+  "nativeProcessRetired": true,
+  "limits": [
+    "No measured FPS gain; opt-in16moving arms all16.7msmedian with originalHigh/Lowp95 limits retained.",
+    "High279283/Low107747plaza triangles still exceed original250000/85000targets.",
+    "Original slower prototype rejected; original public45network causes remain open.",
+    "Full original game/art/device/ops/owner/F1\u2013F5/beta/launch/handoff goal remains open."
+  ],
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-opaque-color-default-native-checks-20261013",
+    "entries": 65,
+    "inventorySHA256": "b955346fe3febcc0e6af61fcab5264fbeb5074e46be962f4885f26484929e91b"
+  }
+}

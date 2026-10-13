@@ -1,0 +1,287 @@
+{
+  "atUTC": "2026-10-13T02:35:55.845772+00:00",
+  "source": "ed1e069b",
+  "status": "Explicit automatic actor color runtime native opt-in qualified; default integration/lifecycle pending, no master selection",
+  "cpuReceipt": "2026-10-13-opaque-color-owner-cpu-qualification.json",
+  "profiles": {
+    "high": {
+      "controls": [
+        {
+          "view": "service-plaza",
+          "before": {
+            "calls": 333,
+            "triangles": 279283
+          },
+          "after": {
+            "calls": 318,
+            "triangles": 279283,
+            "colorChangedBytes": 0,
+            "depthChangedBytes": 0
+          }
+        },
+        {
+          "view": "west-homes",
+          "before": {
+            "calls": 241,
+            "triangles": 247270
+          },
+          "after": {
+            "calls": 229,
+            "triangles": 247270,
+            "colorChangedBytes": 0,
+            "depthChangedBytes": 0
+          }
+        },
+        {
+          "view": "south-homes",
+          "before": {
+            "calls": 215,
+            "triangles": 218913
+          },
+          "after": {
+            "calls": 203,
+            "triangles": 218913,
+            "colorChangedBytes": 0,
+            "depthChangedBytes": 0
+          }
+        }
+      ],
+      "movingArms": [
+        {
+          "view": "service-plaza",
+          "label": "reference",
+          "median": 16.7,
+          "p95": 33.4,
+          "calls": 333,
+          "triangles": 279283,
+          "budgetPass": false
+        },
+        {
+          "view": "service-plaza",
+          "label": "candidate",
+          "median": 16.7,
+          "p95": 33.4,
+          "calls": 318,
+          "triangles": 279283,
+          "budgetPass": false
+        },
+        {
+          "view": "service-plaza",
+          "label": "candidate",
+          "median": 16.7,
+          "p95": 33.4,
+          "calls": 318,
+          "triangles": 279283,
+          "budgetPass": false
+        },
+        {
+          "view": "service-plaza",
+          "label": "reference",
+          "median": 16.7,
+          "p95": 33.4,
+          "calls": 333,
+          "triangles": 279283,
+          "budgetPass": false
+        },
+        {
+          "view": "west-homes",
+          "label": "reference",
+          "median": 16.7,
+          "p95": 33.4,
+          "calls": 241,
+          "triangles": 247270,
+          "budgetPass": true
+        },
+        {
+          "view": "west-homes",
+          "label": "candidate",
+          "median": 16.7,
+          "p95": 33.4,
+          "calls": 229,
+          "triangles": 247270,
+          "budgetPass": true
+        },
+        {
+          "view": "west-homes",
+          "label": "candidate",
+          "median": 16.7,
+          "p95": 33.4,
+          "calls": 229,
+          "triangles": 247270,
+          "budgetPass": true
+        },
+        {
+          "view": "west-homes",
+          "label": "reference",
+          "median": 16.7,
+          "p95": 33.4,
+          "calls": 241,
+          "triangles": 247270,
+          "budgetPass": true
+        }
+      ],
+      "memoryBaseline": {
+        "geometries": 266,
+        "textures": 162,
+        "programs": 78
+      },
+      "exactRetirementCycles": 2,
+      "observedGeometryDisposeEvents": 45,
+      "sharedMaterialDisposeEvents": 0,
+      "originalHooksRestored": true
+    },
+    "low": {
+      "controls": [
+        {
+          "view": "service-plaza",
+          "before": {
+            "calls": 191,
+            "triangles": 107747
+          },
+          "after": {
+            "calls": 176,
+            "triangles": 107747,
+            "colorChangedBytes": 0,
+            "depthChangedBytes": null
+          }
+        },
+        {
+          "view": "west-homes",
+          "before": {
+            "calls": 125,
+            "triangles": 78437
+          },
+          "after": {
+            "calls": 113,
+            "triangles": 78437,
+            "colorChangedBytes": 0,
+            "depthChangedBytes": null
+          }
+        },
+        {
+          "view": "south-homes",
+          "before": {
+            "calls": 109,
+            "triangles": 65214
+          },
+          "after": {
+            "calls": 97,
+            "triangles": 65214,
+            "colorChangedBytes": 0,
+            "depthChangedBytes": null
+          }
+        }
+      ],
+      "movingArms": [
+        {
+          "view": "service-plaza",
+          "label": "reference",
+          "median": 16.7,
+          "p95": 16.7,
+          "calls": 191,
+          "triangles": 107747,
+          "budgetPass": false
+        },
+        {
+          "view": "service-plaza",
+          "label": "candidate",
+          "median": 16.7,
+          "p95": 16.7,
+          "calls": 176,
+          "triangles": 107747,
+          "budgetPass": false
+        },
+        {
+          "view": "service-plaza",
+          "label": "candidate",
+          "median": 16.7,
+          "p95": 16.7,
+          "calls": 176,
+          "triangles": 107747,
+          "budgetPass": false
+        },
+        {
+          "view": "service-plaza",
+          "label": "reference",
+          "median": 16.7,
+          "p95": 16.7,
+          "calls": 191,
+          "triangles": 107747,
+          "budgetPass": false
+        },
+        {
+          "view": "west-homes",
+          "label": "reference",
+          "median": 16.7,
+          "p95": 16.7,
+          "calls": 125,
+          "triangles": 78437,
+          "budgetPass": true
+        },
+        {
+          "view": "west-homes",
+          "label": "candidate",
+          "median": 16.7,
+          "p95": 16.8,
+          "calls": 127,
+          "triangles": 79589,
+          "budgetPass": true
+        },
+        {
+          "view": "west-homes",
+          "label": "candidate",
+          "median": 16.7,
+          "p95": 16.8,
+          "calls": 127,
+          "triangles": 79589,
+          "budgetPass": true
+        },
+        {
+          "view": "west-homes",
+          "label": "reference",
+          "median": 16.7,
+          "p95": 16.7,
+          "calls": 139,
+          "triangles": 79589,
+          "budgetPass": true
+        }
+      ],
+      "memoryBaseline": {
+        "geometries": 231,
+        "textures": 130,
+        "programs": 46
+      },
+      "exactRetirementCycles": 2,
+      "observedGeometryDisposeEvents": 45,
+      "sharedMaterialDisposeEvents": 0,
+      "originalHooksRestored": true
+    }
+  },
+  "native": {
+    "wholeRGBAExactPairs": 6,
+    "HighPackedDepthExactPairs": 3,
+    "wholeRGBAExactRestores": 6,
+    "movingABBAArms": 16,
+    "allMedianMs": 16.7,
+    "fourGPUCyclesReturnExactBaseline": true,
+    "sourceGeometryMaterialCasterVisibilityExact": true,
+    "stockHooksRestored": true,
+    "sharedMaterialDisposals": 0,
+    "browserFailures": [],
+    "browserServerRetired": true
+  },
+  "scope": "Actual class OpaqueSkinnedColorRuntime and owned batches activated on real High1280/Low390 town, suppliedfour14slotRunclasses/originalIdleIlyra/actualHUD/Go residenttrace. Default geometry/skinned+static shadow runtimes remain active. Every triangle and original borrowed material/skin/caster retained.",
+  "priorManualReceipt": "2026-10-13-opaque-color-cached-native-prototype.json",
+  "limits": [
+    "Default RenderSystem integration and dynamic equipment/quality/geometry-owner/shadow-owner/realm/shutdown not yet qualified.",
+    "Highplaza279283tri andLow107747tri retain original budget failures.",
+    "MovingLowwest residents vary; static paired controls establish exact12call saving, no direct sequential arm-count/FPS gain claim.",
+    "Original slower manual prototype remains rejected.",
+    "Original full game/art/performance/device/ops/owner/beta/handoff goal remains open."
+  ],
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-opaque-color-owner-native-checks-20261013",
+    "entries": 42,
+    "inventorySHA256": "4a6fc26511a2c74b5c52ccbca2c0834cb84a5badd9b1bf2644e85211896f3548"
+  }
+}
