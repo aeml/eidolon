@@ -4,6 +4,7 @@ import path from 'node:path';
 import { GAMEPLAY_GEOMETRY_ALGORITHM } from '../../src/core/GameplayGeometryFingerprint.js';
 import { decodeIndices, encodeIndices } from '../../src/core/GameplayGeometryIndexCodec.js';
 
+export const GEOMETRY_SHARD_BYTES = 64 * 1024;
 export const CATALOG_PATH = 'src/data/gameplayGeometryPrecomputed.js';
 export const PROVENANCE_PATHS = ['src/core/GameplayGeometryFingerprint.js', 'src/core/GameplayGeometryPreparation.js',
     'src/core/GameplayGeometryIndexCodec.js', 'src/art/GameplayBodyIndices.js', 'src/art/GameplayColorIndices.js',
@@ -33,7 +34,8 @@ export async function geometryProvenance(root, toolsRoot = root) {
     return { files, meshoptimizer: { version: meshoptimizer.version, integrity: meshoptimizer.integrity } };
 }
 export function buildGeometryArtifact(rows, provenance) {
-    const entries = {}, chunks = [];
+    const entries = {}, chunks = [], shardChunks = [[]];
+    let shardOffset = 0;
     let offset = 0;
     if (!Array.isArray(rows) || !rows.length || rows.length > 256) throw Error('Bounded nonempty geometry rows required');
     for (const row of [...rows].sort((a, b) => a.key.localeCompare(b.key))) {
@@ -45,34 +47,53 @@ export function buildGeometryArtifact(rows, provenance) {
         const decoded = decodeIndices(bytes, row.indices.length, row.vertices);
         const sha256 = hashBytes(new Uint8Array(row.indices.buffer, row.indices.byteOffset, row.indices.byteLength));
         if (hashBytes(new Uint8Array(decoded.buffer)) !== sha256) throw Error('Lossless geometry round trip failed');
-        entries[row.key] = { kind: row.kind, offset, length: bytes.length, count: row.indices.length,
+        if (bytes.length > GEOMETRY_SHARD_BYTES) throw Error('Geometry row exceeds transport shard bound');
+        if (shardOffset + bytes.length > GEOMETRY_SHARD_BYTES) { shardChunks.push([]); shardOffset = 0; }
+        entries[row.key] = { kind: row.kind, offset, shard: shardChunks.length - 1, shardOffset, length: bytes.length, count: row.indices.length,
             vertices: row.vertices, sourceIndexCount: row.sourceIndexCount, sha256, fallback: row.fallback };
-        chunks.push(bytes); offset += bytes.length;
+        chunks.push(bytes); offset += bytes.length; shardChunks.at(-1).push(bytes); shardOffset += bytes.length;
     }
     if (offset > 2 * 1024 * 1024) throw Error('Encoded geometry artifact exceeds bound');
+    if (shardChunks.length > 64) throw Error('Too many geometry transport shards');
+    const shards = shardChunks.map(chunks => Buffer.concat(chunks));
+    const descriptors = shards.map(bytes => { const sha256 = hashBytes(bytes); return { bytes: bytes.length, sha256,
+        url: `../../assets/gameplay-geometry/indices.${sha256.slice(0, 16)}.bin` }; });
     const bytes = Buffer.concat(chunks), sha256 = hashBytes(bytes);
-    return { bytes, catalog: { schemaVersion: 1, version: GAMEPLAY_GEOMETRY_ALGORITHM, provenance,
-        bytes: bytes.length, sha256, url: `../../assets/gameplay-geometry/indices.${sha256.slice(0, 16)}.bin`, entries } };
+    return { bytes, shards, catalog: { schemaVersion: 2, version: GAMEPLAY_GEOMETRY_ALGORITHM, provenance,
+        bytes: bytes.length, sha256, url: `../../assets/gameplay-geometry/indices.${sha256.slice(0, 16)}.bin`, shards: descriptors, entries } };
 }
 export async function checkGeometryArtifact(root, toolsRoot = root) {
     root = await realpath(root);
     const catalog = parseCatalog((await copiedFile(root, CATALOG_PATH)).toString('utf8'));
-    if (catalog.schemaVersion !== 1 || catalog.version !== GAMEPLAY_GEOMETRY_ALGORITHM ||
+    if (catalog.schemaVersion !== 2 || catalog.version !== GAMEPLAY_GEOMETRY_ALGORITHM ||
         JSON.stringify(catalog.provenance) !== JSON.stringify(await geometryProvenance(root, toolsRoot))) throw Error('Stale geometry algorithm/generator provenance; regenerate the artifact');
     if (!Number.isSafeInteger(catalog.bytes) || catalog.bytes < 1 || catalog.bytes > 2 * 1024 * 1024 ||
         !/^[a-f0-9]{64}$/.test(catalog.sha256) || catalog.url !== `../../assets/gameplay-geometry/indices.${catalog.sha256.slice(0, 16)}.bin`)
         throw Error('Invalid immutable geometry artifact identity');
     const artifactPath = catalog.url.slice(6), bytes = await copiedFile(root, artifactPath);
     if (bytes.length !== catalog.bytes || hashBytes(bytes) !== catalog.sha256) throw Error('Geometry artifact byte identity mismatch');
+    if (!Array.isArray(catalog.shards) || !catalog.shards.length || catalog.shards.length > 64) throw Error('Invalid geometry transport shards');
+    const shards = [];
+    for (const shard of catalog.shards) {
+        if (!Number.isSafeInteger(shard.bytes) || shard.bytes < 1 || shard.bytes > GEOMETRY_SHARD_BYTES ||
+            !/^[a-f0-9]{64}$/.test(shard.sha256) || shard.url !== `../../assets/gameplay-geometry/indices.${shard.sha256.slice(0, 16)}.bin`) throw Error('Invalid geometry shard identity');
+        const chunk = await copiedFile(root, shard.url.slice(6));
+        if (chunk.length !== shard.bytes || hashBytes(chunk) !== shard.sha256) throw Error('Geometry shard byte identity mismatch');
+        shards.push(chunk);
+    }
+    if (!Buffer.concat(shards).equals(bytes)) throw Error('Geometry shards differ from canonical artifact');
     const rows = [];
     for (const [key, row] of Object.entries(catalog.entries)) {
         if (!Number.isSafeInteger(row.offset) || !Number.isSafeInteger(row.length) || row.offset < 0 || row.length < 1 ||
-            row.offset + row.length > bytes.length) throw Error('Invalid geometry artifact row bounds');
+            row.offset + row.length > bytes.length || !Number.isSafeInteger(row.shard) || !shards[row.shard] ||
+            !Number.isSafeInteger(row.shardOffset) || row.shardOffset < 0 || row.shardOffset + row.length > shards[row.shard].length) throw Error('Invalid geometry artifact row bounds');
+        if (!bytes.subarray(row.offset, row.offset + row.length).equals(shards[row.shard].subarray(row.shardOffset, row.shardOffset + row.length))) throw Error('Geometry shard row mismatch');
         const indices = decodeIndices(bytes.subarray(row.offset, row.offset + row.length), row.count, row.vertices);
         if (hashBytes(new Uint8Array(indices.buffer)) !== row.sha256) throw Error('Geometry output identity mismatch');
         rows.push({ key, kind: row.kind, vertices: row.vertices, sourceIndexCount: row.sourceIndexCount, fallback: row.fallback, indices });
     }
     const rebuilt = buildGeometryArtifact(rows, catalog.provenance);
     if (serializeCatalog(rebuilt.catalog) !== serializeCatalog(catalog) || !rebuilt.bytes.equals(bytes)) throw Error('Noncanonical or overlapping geometry artifact rows');
-    return { path: artifactPath, sha256: catalog.sha256, bytes: bytes.length, entries: rows.length };
+    return { path: artifactPath, sha256: catalog.sha256, bytes: bytes.length, entries: rows.length,
+        shards: catalog.shards.map(shard => ({ path: shard.url.slice(6), bytes: shard.bytes, sha256: shard.sha256 })) };
 }

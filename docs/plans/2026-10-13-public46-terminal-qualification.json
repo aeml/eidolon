@@ -1,0 +1,193 @@
+{
+  "recordedUTC": "2026-10-13T00:09:26.518052+00:00",
+  "source": "3204f539e1391f87d1eb1483aa5bdd699c5381f7",
+  "version": "Alpha1.79.46",
+  "ci": {
+    "id": 38321752740,
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "success",
+    "updatedUTC": "2026-10-13T00:08:16Z"
+  },
+  "orderedJobs": [
+    {
+      "name": "Client Tests (Jest)",
+      "startedAt": "2026-10-12T23:22:07Z",
+      "completedAt": "2026-10-12T23:34:42Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Browser Smoke (Playwright 3/3)",
+      "startedAt": "2026-10-12T23:22:08Z",
+      "completedAt": "2026-10-12T23:43:52Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Server Tests (Go)",
+      "startedAt": "2026-10-12T23:22:07Z",
+      "completedAt": "2026-10-12T23:43:13Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Browser Smoke (Playwright 2/3)",
+      "startedAt": "2026-10-12T23:22:08Z",
+      "completedAt": "2026-10-12T23:46:20Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Browser Smoke (Playwright 1/3)",
+      "startedAt": "2026-10-12T23:22:08Z",
+      "completedAt": "2026-10-12T23:34:32Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Predeploy Character QA (System Chrome)",
+      "startedAt": "2026-10-12T23:46:22Z",
+      "completedAt": "2026-10-12T23:57:28Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Validate Production QA Inputs",
+      "startedAt": "2026-10-12T23:57:31Z",
+      "completedAt": "2026-10-12T23:57:35Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Deploy Server (SSH)",
+      "startedAt": "2026-10-12T23:57:38Z",
+      "completedAt": "2026-10-12T23:58:27Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Deploy to GitHub Pages",
+      "startedAt": "2026-10-12T23:57:39Z",
+      "completedAt": "2026-10-12T23:58:55Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Live Release and Character QA",
+      "startedAt": "2026-10-12T23:58:57Z",
+      "completedAt": "2026-10-13T00:08:16Z",
+      "conclusion": "success"
+    }
+  ],
+  "optionalSkippedSteps": [
+    {
+      "job": "Predeploy Character QA (System Chrome)",
+      "step": "Run deterministic High/Low animation gallery"
+    },
+    {
+      "job": "Predeploy Character QA (System Chrome)",
+      "step": "Run required Well Rested rendering and GPU lifecycle QA"
+    },
+    {
+      "job": "Predeploy Character QA (System Chrome)",
+      "step": "Run disposable full-character gameplay"
+    },
+    {
+      "job": "Live Release and Character QA",
+      "step": "Run live four-class and remote-animation QA"
+    }
+  ],
+  "counts": {
+    "client": [
+      "2026-10-12T23:34:36.7512446Z Test Suites: 749 passed, 749 total",
+      "2026-10-12T23:34:36.7512892Z Tests:       11144 passed, 11144 total"
+    ],
+    "browser3": [
+      "2026-10-12T23:25:27.6792735Z   28 passed (2.6m)",
+      "2026-10-12T23:29:34.2713535Z   4 passed (4.1m)",
+      "2026-10-12T23:31:43.5122419Z   3 passed (2.1m)",
+      "2026-10-12T23:31:51.8217736Z   4 passed (7.8s)",
+      "2026-10-12T23:43:43.6175549Z   7 skipped",
+      "2026-10-12T23:43:43.6175768Z   52 passed (11.9m)"
+    ],
+    "server": [
+      "2026-10-12T23:23:01.5623851Z No vulnerabilities found.",
+      "2026-10-12T23:23:01.5624236Z Your code is affected by 0 vulnerabilities.",
+      "2026-10-12T23:23:01.5624777Z This scan also found 0 vulnerabilities in packages you import and 1"
+    ],
+    "browser2": [
+      "2026-10-12T23:24:50.7344412Z   3 skipped",
+      "2026-10-12T23:24:50.7345047Z   46 passed (2.0m)",
+      "2026-10-12T23:26:03.5970891Z   3 passed (1.2m)",
+      "2026-10-12T23:28:48.8644256Z   3 passed (2.7m)",
+      "2026-10-12T23:30:13.3215279Z   10 passed (1.4m)",
+      "2026-10-12T23:46:13.6441779Z   85 passed (16.0m)"
+    ],
+    "browser1": [
+      "2026-10-12T23:26:11.0945631Z   47 passed (3.3m)",
+      "2026-10-12T23:27:48.8016086Z   3 passed (1.6m)",
+      "2026-10-12T23:28:34.3873861Z   2 passed (45.2s)",
+      "2026-10-12T23:29:14.6326349Z   6 passed (39.9s)",
+      "2026-10-12T23:29:19.6516941Z   3 passed (4.6s)",
+      "2026-10-12T23:34:25.4366786Z   50 passed (5.1m)"
+    ],
+    "native": [
+      "2026-10-12T23:48:01.7033212Z   7 passed (1.4m)",
+      "2026-10-12T23:54:51.7891808Z   45 passed (6.8m)",
+      "2026-10-12T23:54:59.1254666Z   1 passed (5.3s)",
+      "2026-10-12T23:55:16.3780801Z   2 passed (15.8s)",
+      "2026-10-12T23:57:16.7002953Z   1 skipped",
+      "2026-10-12T23:57:16.7003362Z   4 passed (1.5m)"
+    ],
+    "qa-inputs": [],
+    "server-deploy": [],
+    "pages": [],
+    "live": [
+      "2026-10-13T00:05:52.2133634Z   1 skipped",
+      "2026-10-13T00:05:52.2134379Z   8 passed (6.7m)",
+      "2026-10-13T00:07:21.2083858Z   2 passed (1.5m)",
+      "2026-10-13T00:08:09.2769246Z   1 passed (47.2s)"
+    ]
+  },
+  "archives": [
+    {
+      "name": "predeploy-character-evidence-3204f539e1391f87d1eb1483aa5bdd699c5381f7",
+      "id": 11780785438,
+      "bytes": 168194340,
+      "sha256": "5b02adfada754fb2e6d68603a6460f60da4b6736d45f46bccf59586c9cc09674",
+      "entries": 443,
+      "allCRCsMatch": true
+    },
+    {
+      "name": "live-browser-evidence-3204f539e1391f87d1eb1483aa5bdd699c5381f7",
+      "id": 11780946696,
+      "bytes": 12444597,
+      "sha256": "da5bc61eacfe89811c3ee1abb9ab19275158d9e5c877fab8578c2516e64d93c8",
+      "entries": 27,
+      "allCRCsMatch": true
+    }
+  ],
+  "publicAcceptance": {
+    "normalTLS": true,
+    "observedUTC": "2026-10-13T00:09:05.049010+00:00",
+    "assets": 133,
+    "allAssetsMatch": true,
+    "frontendBackendSourceMatch": true,
+    "databaseReady": true,
+    "analyticsModuleJavaScript": true
+  },
+  "limits": "Scoped46 facades/full-geometry shadow batching only. Original High381draw/279283tri andLow107747tri failures, complete original art/gameplay/device/owner/F1\u2013F5/beta/launch/handoff remain open.",
+  "status": "Accepted scoped Alpha1.79.46 facades/exact full-geometry opaque shadows after own ordered CI/deploy/live and fresh public verification.",
+  "distinctCounts": {
+    "clientSuites": 749,
+    "clientTests": 11144,
+    "browserPassed": 349,
+    "browserSkipped": 10,
+    "nativePassed": 59,
+    "nativeSkipped": 1,
+    "liveInitialPassed": 8,
+    "liveInitialSkipped": 1,
+    "liveInitialFlaky": 0,
+    "liveRecoveryPassed": 2,
+    "liveRestPartyPassed": 1,
+    "optionalStagesSkipped": 4
+  },
+  "priorNetworkFindings": "Public45 original index ERR_ABORTED and engine/core ERR_NETWORK_CHANGED remain retained/open; one clean46first-attempt live run does not establish their cause or close reliability.",
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-release46-town-shadow-terminal-checks-20261013",
+    "entries": 44,
+    "inventorySHA256": "51e12a551dc515944c7a86d4a058a44e80d55eb4a2034ab48d1a457490b7a665"
+  }
+}

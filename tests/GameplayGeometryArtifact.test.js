@@ -15,7 +15,7 @@ const roots = [];
 async function fixture() {
     const root = await mkdtemp(path.join(tmpdir(), 'eidolon-precomputed-check-')); roots.push(root);
     const catalog = parseCatalog(await readFile(CATALOG_PATH, 'utf8'));
-    for (const filename of [...PROVENANCE_PATHS, 'package-lock.json', CATALOG_PATH, catalog.url.slice(6)]) {
+    for (const filename of [...PROVENANCE_PATHS, 'package-lock.json', CATALOG_PATH, catalog.url.slice(6), ...catalog.shards.map(shard => shard.url.slice(6))]) {
         await mkdir(path.dirname(path.join(root, filename)), { recursive: true });
         await cp(filename, path.join(root, filename));
     }
@@ -25,7 +25,8 @@ afterEach(async () => { for (const root of roots.splice(0)) await rm(root, { rec
 
 test('committed artifact decodes every bounded row and matches source provenance without rewriting', async () => {
     const f = await fixture(), before = await readFile(path.join(f.root, CATALOG_PATH));
-    expect(await checkGeometryArtifact(f.root)).toEqual({ path: f.catalog.url.slice(6), sha256: f.catalog.sha256, bytes: 777321, entries: 133 });
+    expect(await checkGeometryArtifact(f.root)).toEqual({ path: f.catalog.url.slice(6), sha256: f.catalog.sha256, bytes: 777321, entries: 133,
+        shards: f.catalog.shards.map(shard => ({ path: shard.url.slice(6), bytes: shard.bytes, sha256: shard.sha256 })) });
     expect(await readFile(path.join(f.root, CATALOG_PATH))).toEqual(before);
 });
 
@@ -68,4 +69,27 @@ test.each(['duplicate-key', 'source-count', 'vertices', 'kind'])('generator refu
     if (mode === 'vertices') row.vertices = 2;
     if (mode === 'kind') row.kind = 'unsupported';
     expect(() => buildGeometryArtifact(mode === 'duplicate-key' ? [row, row] : [row], {})).toThrow();
+});
+
+
+test('transport shards bound each download and retain the original canonical byte sequence', async () => {
+    const f = await fixture();
+    expect(f.catalog.schemaVersion).toBe(2); expect(f.catalog.shards.length).toBeGreaterThan(1);
+    expect(f.catalog.shards.length).toBeLessThanOrEqual(64);
+    expect(f.catalog.shards.every(shard => shard.bytes > 0 && shard.bytes <= 65536)).toBe(true);
+    const shards = await Promise.all(f.catalog.shards.map(shard => readFile(path.join(f.root, shard.url.slice(6)))));
+    expect(Buffer.concat(shards)).toEqual(await readFile(path.join(f.root, f.catalog.url.slice(6))));
+});
+
+test.each(['bytes', 'row', 'order'])('rejects corrupt shard %s without rewriting the catalog', async mode => {
+    const f = await fixture(), filename = path.join(f.root, f.catalog.shards[0].url.slice(6));
+    if (mode === 'bytes') { const bytes = await readFile(filename); bytes[0] ^= 1; await writeFile(filename, bytes); }
+    if (mode === 'row') Object.values(f.catalog.entries)[0].shardOffset++;
+    if (mode === 'order') f.catalog.shards.reverse();
+    await f.save(); await expect(checkGeometryArtifact(f.root)).rejects.toThrow(/shard/i);
+});
+
+test('generator refuses a source row that cannot fit a bounded transport shard', () => {
+    const indices = new Uint32Array(90000); for (let i = 0; i < indices.length; i++) indices[i] = i % 3;
+    expect(() => buildGeometryArtifact([{ key: 'a'.repeat(64), kind: 'body', sourceIndexCount: indices.length, vertices: 3, fallback: null, indices }], {})).toThrow('shard bound');
 });
