@@ -1,7 +1,7 @@
 {
   "source": "3204f539e1391f87d1eb1483aa5bdd699c5381f7",
   "version": "Alpha 1.79.46",
-  "status": "Pushed exact source; ownCI38321752740 pending. Public45 last accepted; no46acceptance yet.",
+  "status": "Accepted scoped Alpha1.79.46 facades/exact full-geometry opaque shadows after own ordered CI/deploy/live and fresh public verification.",
   "recordedUTC": "2026-10-12T23:21:46.266767+00:00",
   "qualificationReceipts": [
     "2026-10-12-lanternhold-facades-qualification.json",
@@ -97,11 +97,14 @@
   "required": "Own exact-source orderedCI/deploy/live and fresh normal-TLS133pinnedassets/frontend/backend/readyDB before acceptance or another publication.",
   "pushedUTC": "2026-10-12T23:22:44.789387+00:00",
   "ownCI": {
-    "conclusion": "",
+    "conclusion": "success",
     "createdAt": "2026-10-12T23:22:04Z",
     "databaseId": 38321752740,
     "headSha": "3204f539e1391f87d1eb1483aa5bdd699c5381f7",
-    "status": "in_progress",
-    "url": "https://github.com/aeml/eidolon/actions/runs/38321752740"
-  }
+    "status": "completed",
+    "url": "https://github.com/aeml/eidolon/actions/runs/38321752740",
+    "updatedAt": "2026-10-13T00:08:16Z"
+  },
+  "terminalAcceptance": "2026-10-13-public46-terminal-qualification.json",
+  "acceptedUTC": "2026-10-13T00:12:42.102448+00:00"
 }
