@@ -1,0 +1,52 @@
+{
+  "atUTC": "2026-10-13T01:39:50.230704+00:00",
+  "source": "86650efdf0e1a17f37b9c19825b9008fba06596a",
+  "status": "Scoped merchant/forge service paving CPU/native qualified; ready ordinary master merge",
+  "scope": "Two additive composition-mask aprons at authoritative merchant22.5,200 andforge-28,218 plus Menders\u2019Yard description matching permanent homes",
+  "cpuReceipt": "2026-10-13-town-service-aprons-cpu-qualification.json",
+  "cpu": {
+    "checks": 40,
+    "suites": 4,
+    "lintPassed": true,
+    "contentGroups": 14,
+    "outsideMaskChanges": 0,
+    "decreasedPaving": 0,
+    "unrelatedChannels": 0
+  },
+  "native": {
+    "profiles": [
+      "High1280",
+      "Low390"
+    ],
+    "actualOutfits": "four supplied classes \u00d714 slots, no missing/fallback",
+    "pairedViews": 6,
+    "images": 12,
+    "wholeColorRestoresExact": 6,
+    "HighPackedDepthControlsExact": 3,
+    "geometryMaterialCasterSourceExact": true,
+    "drawsAndTrianglesUnchanged": true,
+    "movingABBAArms": 16,
+    "allMedianMs": 16.7,
+    "HighMaxP95Ms": 33.3,
+    "LowMaxP95Ms": 16.8,
+    "materialRetirementCycles": 4,
+    "allSevenOwnedResourcesDisposedOnce": true,
+    "sharedAlbedoDisposed": false,
+    "exactMemoryBaselines": true,
+    "browserFailures": [],
+    "browserAndServerRetired": true
+  },
+  "artReview": "Inspected paired High merchant and Low forge, plus High forge/Low merchant candidate at ordinary zoom with actual equipped party/HUD. Paving meets service standing areas and joins existing courts; feathered earth remains outside routes. This is a local cohesion improvement, not final modern-art approval.",
+  "retainedFailures": [
+    "Initial CPU merchant route gap remained below unchanged>.85guard; widened merchant apronrx8\u21929.",
+    "Initial High lifecycle165\u2192166\u2192167textures from fixture allocating new caller-owned albedo each cycle. Corrected fixture supplies original shared albedo; repeated affected High lifetime only, reused valid High color/depth/cadence, then ran previously unreached Low coverage. Runtime ownership unchanged.",
+    "High merchant266419tri>250000; Low merchant113117tri>85000 and forge204draw>200. Same source counts before/after; original crowded-plaza279283High/107747Lowtri failures remain.",
+    "One High forge candidate p95=33.3ms against references16.8, within unchanged33.4limit; no speedup or global performance claim. Moving Low populations change15tri/1call across sequential arms, not a paving gain."
+  ],
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-town-service-aprons-native-checks-20261013",
+    "entries": 60,
+    "inventorySHA256": "6614c731370f19c60110cbdc4970902eebbeca95269f974a09069f8e3a68ce60"
+  },
+  "limits": "Only additive ground mask and matching town description selected. Full original world/art/combat/device/performance/ops/owner/F1\u2013F5/beta/launch/handoff goal remains open."
+}

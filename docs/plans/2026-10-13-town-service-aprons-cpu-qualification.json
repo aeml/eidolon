@@ -1,0 +1,52 @@
+{
+  "atUTC": "2026-10-13T01:09:04.730707+00:00",
+  "source": "86650efdf0e1a17f37b9c19825b9008fba06596a",
+  "status": "CPU-qualified isolated town service aprons; native actual town art/depth/lifetime/cadence qualification pending own47terminal",
+  "checks": {
+    "passed": 40,
+    "suites": 4,
+    "lintPassed": true,
+    "generatedContentGroups": 14
+  },
+  "mask": {
+    "atUTC": "2026-10-13T01:03:20.231Z",
+    "reference": "13f541755f2217cd429c3c9d782ccd0966e3f379",
+    "rows": [
+      {
+        "quality": "high",
+        "size": 256,
+        "bytes": 262144,
+        "changed": 537,
+        "outside": 0,
+        "decreased": 0,
+        "unrelatedChannels": 0,
+        "referenceSHA256": "77f877cd1e71d056f44020b1b99b9f0e0f253fbe55d09d1dabd1e2311ab241a7",
+        "candidateSHA256": "88b981ef9dd0e8de4f1b9008d004a51fecf5648b91d08b5b9437075533caf629"
+      },
+      {
+        "quality": "low",
+        "size": 128,
+        "bytes": 65536,
+        "changed": 133,
+        "outside": 0,
+        "decreased": 0,
+        "unrelatedChannels": 0,
+        "referenceSHA256": "6cf91604db598d51897191bb233a94672da2fae6ad3337c3010355c618f81752",
+        "candidateSHA256": "cd4d615e02a9f5bdd84134893594d9d20b9545f2cb230b0c30a9e64278fee243"
+      }
+    ],
+    "scope": "CPU-only bounded material-mask changes; no native/art/performance/public acceptance"
+  },
+  "retainedFailure": "Initial merchant-to-square continuity gate measured0.8368/0.818 against unchanged>0.85. Apron widened from8 to9m; unchanged gate passes. Initial candidate shifting stash ellipse was changed to additive forge pad to preserve all prior paving. Initial failure log retained.",
+  "scope": [
+    "Actual authoritative merchant22.5,200 and forge-28,218 service aprons. Existing stash approach retained.",
+    "Only existing baked composition mask; no added geometry/material/texture/draw/collider or navigation authority.",
+    "Menders\u2019Yard description now matches permanent residential lanes.",
+    "No global performance/device/final-art acceptance; original town budget failures remain open."
+  ],
+  "frozen": {
+    "path": "/home/aeml/.local/share/eidolon-town-service-aprons-cpu-checks-20261013",
+    "entries": 16,
+    "inventorySHA256": "ebbe2b9ee445aaa4a9c143c8fb3e69b73963d68c38cc13bd6a41078b4be55e74"
+  }
+}
