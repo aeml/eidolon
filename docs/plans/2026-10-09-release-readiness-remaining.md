@@ -23,6 +23,23 @@ Every explicit requirement in those sources remains part of the completion audit
 
 The owner requests a major rework of abilities, runes and related systems so every specialization is unique, useful and fun. [Canonical baseline](2026-10-13-specialization-rework-baseline.json) verifies12branches/52learned skills and exact client/server rune/tree parity; only16of48branch abilities have runes, and FighterC/WizardB/ClericC have none for their own branch skills. Full consumer/design/balance review remains. Begin a coherent Wizard class pass with distinct Pyromancer, precision and control loops, then Fighter/Rogue/Cleric; preserve saves and original single-branch/resource/target rules. New work is pending, not qualified by historical1.33 kit checks. Root goal and promiseN18 preserve the explicit renewed scope.
 
+
+A [private precision Wizard prototype](2026-10-13-wizard-precision-private-stage.json)
+now adds twelve optional rune choices across Beam, Missiles, Focus and Lance.
+Runtime `84c277fb` and inventory correction `b60063c3` remain unselected in the
+owned detached Wizard worktree; master receives this evidence record only.
+339 focused client checks, 145 race-detector cases, full Go checks and two
+prepared desktop/phone UI cases pass within their recorded scopes. The broad
+client run was interrupted after a stale generated animation inventory failure;
+the canonical regeneration and scoped content checks pass, but no completed
+full-client gate is claimed. Frozen69-file inventory
+`38fc7fc9dda0bb8bbe642af7356551250084015d53900fab8e1f6e88bcd5c3ce` preserves
+results and failed trials. Finish the remaining four Wizard rune-less skills,
+older rune server/offline gaps, learned-level pacing, saved-loadout/connected
+combat and visible launch/footprint consistency before selecting a coherent
+Wizard class update. Full twelve-branch design, tuning and deferred feel review
+remain open.
+
 ## Release and source custody
 
 - **Alpha1.79.49 accepted live:** Alpha1.79.49/exact`8e5f888a` is accepted live within qualified town aprons, exact character color batching, Dark Realm masonry, private disposable smoke and active-cutaway shutdown scope. OwnCI38346406878attempt1 all ten ordered jobs succeeded05:15:55UTC:756client suites/11343tests,351browser passes/10skips,59required native passes/1skip; live8first-attempt passes/1skip/0flakes plus recovery2/rested-party1. Four optional stages remain skips. Fresh15:10:30UTC normal-TLS157asset hashes/bytes, frontend/backend identities, readyDB and analyticsJS match. Original crowded-town performance, earlier network failures, failed41soak and full readiness gates remain open. Frozen43entry terminal inventory`72e2d2c870f148e6f495cd6b9d9d06e9a11edf09afc360ab9be567d315f95664`. [Acceptance](2026-10-13-public49-terminal-qualification.json), [publication](2026-10-13-release49-masonry-publication.json).

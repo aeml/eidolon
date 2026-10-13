@@ -1793,3 +1793,20 @@ choices in coherent class-sized updates. Preserve existing characters, earned
 progress, valuable custody and authoritative combat. Verify supported loadouts,
 solo/party roles, readability and balance; technical checks do not substitute for
 owner-deferred playtesting or establish final fun/balance acceptance.
+
+
+October13 private precision Wizard prototype `84c277fb` adds twelve optional
+runes across its four specialization skills, paid Focus counters and consistent
+bounded Lance collision. Inventory correction `b60063c3` and private checkpoint
+`aad32850` retain339 focused client passes,145 race-detector cases, full Go
+9370passes/254skips and two prepared native desktop/phone UI passes. Frozen69
+inventory `38fc7fc9dda0bb8bbe642af7356551250084015d53900fab8e1f6e88bcd5c3ce`
+retains evidence, including interrupted broad client testing and the corrected
+generated inventory failure. This is a private component stage, not completed
+Wizard/class balance or a full client gate. Four Wizard skills still lack runes;
+older offline rune consumers, early learned journey, loadouts, connected combat,
+launch timing and visual footprints require the coherent class pass. Runtime
+stays unselected in its owned detached worktree; only the completed progress
+record enters master. See `docs/plans/2026-10-13-wizard-precision-private-stage.json`.
+Public49 remains the last accepted delivery, and the full original goal remains
+active.
