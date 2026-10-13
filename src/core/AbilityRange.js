@@ -1,4 +1,5 @@
 import { CONSTANTS } from './Constants.js';
+import { getWizardPrecisionPlan } from '../skills/wizardPrecisionRunes.js';
 
 export function getAbilityRange(player, skillName, baseRange) {
     const className = player?.meshType || player?.subType || player?.constructor?.name;
@@ -10,7 +11,8 @@ export function getAbilityRange(player, skillName, baseRange) {
         const rank = Number.isFinite(raw) ? Math.max(0, Math.min(talent.maxRank, Math.floor(raw))) : 0;
         bonus += effect.range * rank;
     }
-    return baseRange * Math.max(0, 1 + bonus);
+    const runeRange = className === 'Wizard' ? getWizardPrecisionPlan(skillName, player?.skillRunes?.[skillName]).range : 1;
+    return baseRange * runeRange * Math.max(0, 1 + bonus);
 }
 
 export function getTeleportCastRange(player) {

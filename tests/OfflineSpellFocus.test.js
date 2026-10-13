@@ -15,6 +15,59 @@ function fixture() {
         dispose: () => { for (const [entity] of engine.addEntity.mock.calls) entity.dispose?.(); wizard.dispose(); } };
 }
 
+test.each([[0, 1.75], [5, 2]])('Reservoir rank%s stores two bounded casts at multiplier%s', (rank, multiplier) => {
+    const f = fixture();
+    try {
+        f.wizard.skillRunes = { 'Spell Focus': 'spellfocus_reservoir' }; f.wizard.talentRanks = { WIZ_15: rank };
+        f.cast(); const end = f.wizard.spellFocusTimer;
+        expect(f.wizard.spellFocusCharges).toBe(2); expect(f.wizard.spellFocusMultiplier).toBe(multiplier);
+        f.cast('Teleport'); expect(f.wizard.spellFocusCharges).toBe(2);expect(f.wizard.spellFocusTimer).toBe(end);
+        const base = 20 + f.wizard.stats.intelligence * 2;
+        f.wizard.talentRanks = {}; f.wizard.skillRunes['Spell Focus'] = 'spellfocus_overchannel';
+        for (let i = 0; i < 3; i++) {
+            f.wizard.cooldowns.Fireball = 0; f.cast('Fireball');
+            expect(f.engine.addEntity.mock.calls.at(-1)[0].damage).toBeCloseTo(base * (i < 2 ? multiplier : 1));
+            if (i === 0) { expect(f.wizard.spellFocusActive).toBe(true); expect(f.wizard.spellFocusCharges).toBe(1); }
+        }
+        expect(f.wizard.spellFocusActive).toBe(false);expect(f.wizard.spellFocusCharges).toBe(0);
+    } finally { f.dispose(); }
+});
+
+test('Reservoir rejection and expiry preserve and then retire the paid counter', () => {
+    const f = fixture();
+    try {
+        f.wizard.skillRunes = { 'Spell Focus': 'spellfocus_reservoir' }; f.cast();
+        const end = f.wizard.spellFocusTimer;f.wizard.stats.mana = 0;f.cast('Fireball');
+        expect(f.wizard.spellFocusCharges).toBe(2);expect(f.wizard.spellFocusTimer).toBe(end);
+        Actor.prototype.update.call(f.wizard, end + 1, null, null, []);
+        expect(f.wizard.spellFocusActive).toBe(false);expect(f.wizard.spellFocusCharges).toBe(0);expect(f.wizard.spellFocusRuneId).toBe('');
+    } finally { f.dispose(); }
+});
+
+test('a delayed missile volley spends one stored charge and retains its paid power after rune changes', () => {
+    jest.useFakeTimers();const f = fixture();
+    try {
+        f.wizard.skillRunes = { 'Spell Focus': 'spellfocus_reservoir' };f.wizard.unlockedSkills.push('Arcane Missiles');f.cast();
+        const base = 15 + f.wizard.stats.intelligence;f.cast('Arcane Missiles');
+        expect(f.wizard.spellFocusCharges).toBe(1);
+        f.wizard.spellFocusMultiplier = 1;f.wizard.skillRunes = {};
+        jest.advanceTimersByTime(650);
+        expect(f.engine.addEntity).toHaveBeenCalledTimes(3);
+        for (const [projectile] of f.engine.addEntity.mock.calls) expect(projectile.damage).toBe(Math.trunc(base * 1.75));
+    } finally { f.dispose();jest.useRealTimers(); }
+});
+
+test.each([['spellfocus_aegis', 1.9, 2], ['spellfocus_overchannel', 2.875, 0]])('%s has an explicit ward/burst tradeoff', (rune, multiplier, wardScale) => {
+    const f = fixture();
+    try {
+        f.wizard.skillRunes = { 'Spell Focus': rune };const ward = (40 + 2 * f.wizard.stats.intelligence) * wardScale;
+        f.cast();expect(f.wizard.spellFocusMultiplier).toBe(multiplier);expect(f.wizard.shieldHP || 0).toBe(ward);
+        f.wizard.arcaneShieldActive = true;f.wizard.shieldHP = 333;f.wizard.arcaneShieldTimer = 12;
+        f.wizard.cooldowns['Spell Focus'] = 0;f.cast();
+        expect(f.wizard.shieldHP).toBe(333);expect(f.wizard.arcaneShieldTimer).toBe(12);
+    } finally { f.dispose(); }
+});
+
 test.each([[0, 2.5], [1, 2.6], [5, 3], [99, 3], [-1, 2.5], [Infinity, 2.5]])(
     'Focus Mastery rank %s snapshots its multiplier %s for exactly one paid spell', (rank, multiplier) => {
         const f = fixture();

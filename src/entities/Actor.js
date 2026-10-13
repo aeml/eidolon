@@ -1159,6 +1159,7 @@ export class Actor extends Entity {
                 if (!this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) {
                     this.spellFocusActive = false;
                     this.spellFocusMultiplier = 1;
+                    this.spellFocusCharges = 0; this.spellFocusRuneId = '';
                 }
             }
         }

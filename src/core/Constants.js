@@ -185,9 +185,9 @@ export const CONSTANTS = {
             BranchB: {
                 name: "Single-Target Caster",
                 Tier2: { name: "Scorch Beam", desc: "Line strike that melts armor and slows susceptible enemies by 30% for 3s base. Existing slows are preserved. Follow with Arcane Missiles within 3s for a five-missile volley." },
-                Tier3: { name: "Arcane Missiles", desc: "Homing projectiles." },
+                Tier3: { name: "Arcane Missiles", desc: "Three homing missiles; follow Scorch Beam within 3s for five. Runes alter volley count or trade homing for aimed shots." },
                 Tier4: { name: "Spell Focus", desc: "Empower your next damaging spell and gain a brief ward (40 + twice Intelligence; 6s base). Does not stack with an active shield." },
-                Tier5: { name: "Dragonfire Lance", desc: "Huge single-target spike damage." }
+                Tier5: { name: "Dragonfire Lance", desc: "Heavy single-target projectile that stops at the first enemy. Broadside trades damage for a wider piercing shot." }
             },
             BranchC: {
                 name: "Control & Utility Mage",
@@ -617,6 +617,19 @@ export const CONSTANTS = {
             { id: "gravitywell_expanded", name: "Expanded", skill: "Gravity Well", unlockLevel: 50, description: "+50% radius" },
             { id: "gravitywell_crushing", name: "Crushing", skill: "Gravity Well", unlockLevel: 70, description: "+100% damage" },
             { id: "gravitywell_blackhole", name: "Black Hole", skill: "Gravity Well", unlockLevel: 90, description: "Enemies cannot escape while active" },
+            // Precision caster: distribute a paid charge, defend, or commit to burst.
+            { id: "spellfocus_reservoir", name: "Reservoir", skill: "Spell Focus", unlockLevel: 50, description: "Split Focus's trained bonus damage between your next two paid damaging spells. Utility and rejected casts keep both charges." },
+            { id: "spellfocus_aegis", name: "Aegis", skill: "Spell Focus", unlockLevel: 70, description: "Double Focus's ward capacity, but retain only 60% of its bonus damage. Does not replace an active ward." },
+            { id: "spellfocus_overchannel", name: "Overchannel", skill: "Spell Focus", unlockLevel: 90, description: "Increase Focus's bonus damage by 25%, but gain no Focus ward. Existing shields remain." },
+            { id: "scorchbeam_longshot", name: "Longshot", skill: "Scorch Beam", unlockLevel: 50, description: "Reach 50% farther, but deal 20% less damage. Retains armor melt and the brief slow." },
+            { id: "scorchbeam_incision", name: "Incision", skill: "Scorch Beam", unlockLevel: 70, description: "Deal 25% more damage, but lose the beam slow. Armor melt remains." },
+            { id: "scorchbeam_snare", name: "Snare", skill: "Scorch Beam", unlockLevel: 90, description: "Slow susceptible enemies by 50% for 5s base, but deal 25% less damage. Preserves existing slows; immune enemies still take damage." },
+            { id: "arcanemissiles_salvo", name: "Salvo", skill: "Arcane Missiles", unlockLevel: 50, description: "Fire two extra missiles at 60% damage each: five normally, seven after Scorch Beam. Spends one Focus charge for the entire volley." },
+            { id: "arcanemissiles_compression", name: "Compression", skill: "Arcane Missiles", unlockLevel: 70, description: "Fire one fewer missile at 140% damage each: two normally, four after Scorch Beam. Trades ordinary volley damage for stronger prepared volleys." },
+            { id: "arcanemissiles_convergence", name: "Convergence", skill: "Arcane Missiles", unlockLevel: 90, description: "Missiles fly straight toward your aim at 40 speed and deal 20% more damage, but no longer home onto moving targets." },
+            { id: "dragonfire_needle", name: "Needle", skill: "Dragonfire Lance", unlockLevel: 50, description: "Deal 25% more damage with half the projectile width. Stops at the first enemy hit." },
+            { id: "dragonfire_broadside", name: "Broadside", skill: "Dragonfire Lance", unlockLevel: 70, description: "Pierce enemies with 2.5 times the projectile width, but deal 25% less damage to each. Each enemy can be hit once." },
+            { id: "dragonfire_quickfire", name: "Quickfire", skill: "Dragonfire Lance", unlockLevel: 90, description: "Reduce base cooldown from 20s to 12s and projectile speed rises from 40 to 60, but deal 35% less damage. Mana cost remains 50 before discounts." },
         ],
         Cleric: [
             // Spirit Guardians Runes

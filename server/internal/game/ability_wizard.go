@@ -20,14 +20,16 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			player.SpellFocusActive = true
 			training := snapshotCombatAttackerLocked(player)
 			training.NormalizeTalentRanks()
-			player.SpellFocusMultiplier = 2.5 * (1 + training.GetSkillBonus(skillName).SkillDamage)
+			plan := planSpellFocus(player.GetRuneForSkill(skillName), 2.5*(1+training.GetSkillBonus(skillName).SkillDamage))
+			player.SpellFocusMultiplier = plan.multiplier
+			player.SpellFocusCharges, player.SpellFocusRuneID = plan.charges, plan.runeID
 			player.SpellFocusEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 15*time.Second))
 			// Focus is also this branch's deliberate defensive window. Do not
 			// stack, refresh or replace a still-active shield from another source.
 			now := time.Now()
-			if !player.ArcaneShieldActive || player.ArcaneShieldHP <= 0 || !now.Before(player.ArcaneShieldEndTime) {
+			if plan.wardScale > 0 && (!player.ArcaneShieldActive || player.ArcaneShieldHP <= 0 || !now.Before(player.ArcaneShieldEndTime)) {
 				player.ArcaneShieldActive = true
-				player.ArcaneShieldHP = max(0, 40+2*player.Stats.Intelligence)
+				player.ArcaneShieldHP = int(float64(max(0, 40+2*player.Stats.Intelligence)) * plan.wardScale)
 				player.ArcaneShieldEndTime = now.Add(resolveAbilityEffectDuration(player, skillName, 6*time.Second))
 				player.ArcaneShieldRuneID = ""
 				player.ArcaneShieldAbsorbed = 0
@@ -593,6 +595,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 		}
 	} else if skillName == "Scorch Beam" {
+		plan := planWizardPrecision(skillName, player.GetRuneForSkill(skillName), player.ActiveCombo == "arcane_missile_barrage")
 		// Scorch Beam (Line Damage)
 		cost := resolveAbilityManaCost(player, skillName, 40)
 		if player.Mana >= cost {
@@ -601,7 +604,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 			rangeDist := effectiveAbilityRange(player, skillName, 18.0)
 			width := 1.0
-			damage := int(float64(25+(player.Stats.Intelligence*2)) * player.GetSkillDamageMultiplier("Scorch Beam"))
+			damage := int(float64(25+(player.Stats.Intelligence*2)) * (player.GetSkillDamageMultiplier("Scorch Beam") * plan.damage))
 
 			// Line Check
 			// Vector from player to target
@@ -659,9 +662,9 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 						// Early precision-caster breathing room. Preserve an existing
 						// slow rather than downgrading or extending another effect.
 						now := time.Now()
-						if target.Health > 0 && !target.CCImmune && (!target.Slowed || !now.Before(target.SlowEndTime)) {
-							target.Slowed, target.SlowFactor = true, 0.30
-							target.SlowEndTime = now.Add(resolveAbilityEffectDuration(player, skillName, 3*time.Second))
+						if plan.slow > 0 && target.Health > 0 && !target.CCImmune && (!target.Slowed || !now.Before(target.SlowEndTime)) {
+							target.Slowed, target.SlowFactor = true, plan.slow
+							target.SlowEndTime = now.Add(resolveAbilityEffectDuration(player, skillName, time.Duration(plan.slowSeconds*float64(time.Second))))
 						}
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
@@ -682,12 +685,13 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 		}
 	} else if skillName == "Dragonfire Lance" {
+		plan := planWizardPrecision(skillName, player.GetRuneForSkill(skillName), player.ActiveCombo == "arcane_missile_barrage")
 		// Dragonfire Lance (Single Target Nuke)
 		cost := resolveAbilityManaCost(player, skillName, 50)
 		if player.Mana >= cost {
 			player.Mana -= cost
 
-			damage := int(float64(100+(player.Stats.Intelligence*5)) * player.GetSkillDamageMultiplier("Dragonfire Lance"))
+			damage := int(float64(100+(player.Stats.Intelligence*5)) * (player.GetSkillDamageMultiplier("Dragonfire Lance") * plan.damage))
 
 			// Projectile
 			dx := targetX - player.X
@@ -696,26 +700,29 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			if dist == 0 {
 				dist = 1
 			}
-			velX := (dx / dist) * 40.0
-			velZ := (dz / dist) * 40.0
+			velX := (dx / dist) * plan.speed
+			velZ := (dz / dist) * plan.speed
 
 			proj := &Entity{
-				ID:              fmt.Sprintf("proj-lance-%d", time.Now().UnixNano()),
-				InstanceID:      player.InstanceID,
-				Type:            TypeProjectile,
-				SubType:         "DragonfireLance",
-				X:               player.X,
-				Y:               1.5,
-				Z:               player.Z,
-				VelX:            velX,
-				VelZ:            velZ,
-				Radius:          1.0,
-				Damage:          damage,
-				OwnerID:         player.ID,
-				Rotation:        math.Atan2(velX, velZ),
-				CreatedAt:       time.Now(),
-				Scale:           1.0,
-				ProjectileSkill: "Dragonfire Lance",
+				ID:                    fmt.Sprintf("proj-lance-%d", time.Now().UnixNano()),
+				InstanceID:            player.InstanceID,
+				Type:                  TypeProjectile,
+				SubType:               "DragonfireLance",
+				X:                     player.X,
+				Y:                     1.5,
+				Z:                     player.Z,
+				VelX:                  velX,
+				VelZ:                  velZ,
+				Radius:                plan.radius,
+				Damage:                damage,
+				OwnerID:               player.ID,
+				Rotation:              math.Atan2(velX, velZ),
+				CreatedAt:             time.Now(),
+				Scale:                 plan.radius,
+				ProjectilePierce:      plan.pierce,
+				ProjectileRuneID:      player.GetRuneForSkill(skillName),
+				ProjectileSkill:       "Dragonfire Lance",
+				ProjectileTravelLimit: effectiveAbilityRange(player, skillName, 18),
 			}
 			w.addProjectileLocked(proj)
 
@@ -772,6 +779,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 		}
 	} else if skillName == "Arcane Missiles" {
+		plan := planWizardPrecision(skillName, player.GetRuneForSkill(skillName), player.ActiveCombo == "arcane_missile_barrage")
 		// Arcane Missiles
 		cost := resolveAbilityManaCost(player, skillName, 30)
 		if player.Mana >= cost {
@@ -814,17 +822,22 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			}
 
 			baseAngle := math.Atan2(dz, dx)
-			angles := []float64{baseAngle - 0.2, baseAngle, baseAngle + 0.2}
+			angles := make([]float64, plan.missiles)
+			for i := range angles {
+				angles[i] = baseAngle + (float64(i)-float64(plan.missiles-1)/2)*.2
+			}
 			if player.ActiveCombo == "arcane_missile_barrage" {
-				angles = []float64{baseAngle - 0.4, baseAngle - 0.2, baseAngle, baseAngle + 0.2, baseAngle + 0.4}
 				player.ActiveCombo = ""
+			}
+			if !plan.homing {
+				targetID = ""
 			}
 
 			for i, angle := range angles {
-				velX := math.Cos(angle) * 25.0
-				velZ := math.Sin(angle) * 25.0
+				velX := math.Cos(angle) * plan.speed
+				velZ := math.Sin(angle) * plan.speed
 
-				damage := int(float64(15+player.Stats.Intelligence) * player.GetSkillDamageMultiplier("Arcane Missiles"))
+				damage := int(float64(15+player.Stats.Intelligence) * (player.GetSkillDamageMultiplier("Arcane Missiles") * plan.damage))
 
 				proj := &Entity{
 					ID:              fmt.Sprintf("proj-%s-%d-%d", player.ID, time.Now().UnixNano(), i),

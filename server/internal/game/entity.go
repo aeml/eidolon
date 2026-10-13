@@ -296,6 +296,8 @@ type Entity struct {
 	SpellFocusActive          bool      `json:"spellFocusActive,omitempty"`
 	SpellFocusEndTime         time.Time `json:"-"`
 	SpellFocusMultiplier      float64   `json:"-"`
+	SpellFocusCharges         int       `json:"spellFocusCharges,omitempty"`
+	SpellFocusRuneID          string    `json:"-"`
 	ArcaneShieldActive        bool      `json:"arcaneShieldActive,omitempty"`
 	ArcaneShieldHP            int       `json:"arcaneShieldHP,omitempty"`
 	ArcaneShieldEndTime       time.Time `json:"-"`
@@ -1015,6 +1017,8 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		SpellFocusActive:         e.SpellFocusActive,
 		SpellFocusEndTime:        e.SpellFocusEndTime,
 		SpellFocusMultiplier:     e.SpellFocusMultiplier,
+		SpellFocusCharges:        e.SpellFocusCharges,
+		SpellFocusRuneID:         e.SpellFocusRuneID,
 		BerserkerModeActive:      e.BerserkerModeActive,
 		BerserkerModeEndTime:     e.BerserkerModeEndTime,
 		BerserkerModeMultiplier:  e.BerserkerModeMultiplier,
@@ -1245,6 +1249,8 @@ func (w *World) copyEntity(v *Entity) *Entity {
 		SpellFocusActive:          v.SpellFocusActive,
 		SpellFocusEndTime:         v.SpellFocusEndTime,
 		SpellFocusMultiplier:      v.SpellFocusMultiplier,
+		SpellFocusCharges:         v.SpellFocusCharges,
+		SpellFocusRuneID:          v.SpellFocusRuneID,
 		ArcaneShieldActive:        v.ArcaneShieldActive,
 		ArcaneShieldHP:            v.ArcaneShieldHP,
 		ArcaneShieldEndTime:       v.ArcaneShieldEndTime,

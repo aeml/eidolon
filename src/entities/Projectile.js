@@ -15,6 +15,7 @@ import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
 import { getRogueEffectDuration } from '../skills/rogueEffectDuration.js';
 import { getOverworldGroundHeight } from '../core/WorldGrounding.js';
 import { GroundedProjectileVisual } from '../art/GroundedProjectileVisual.js';
+import { lanceContactFraction, orderLanceTargets } from '../skills/lanceFlight.js';
 
 // =====================================================
 // Particle Pool Manager - Centralized for performance
@@ -419,7 +420,9 @@ export class Projectile extends Entity {
             return;
         }
         if (chunkManager && locallySimulated) {
-            const activeEntities = chunkManager.getActiveEntities();
+            const stopsAtFirst = boundedFlight && this.type === 'DragonfireLance' && !this.projectilePierce;
+            const candidates = chunkManager.getActiveEntities();
+            const activeEntities = stopsAtFirst ? orderLanceTargets(candidates, flightStart, this.position, this.radius + .5) : candidates;
             const hitRadius = this.radius || 1.0; // Use projectile's radius
 
             for (const entity of activeEntities) {
@@ -448,8 +451,15 @@ export class Projectile extends Entity {
                 }
                 if (dist < hitRadius + (boundedFlight ? .5 : (entity.radius || 0.5))) {
                     // HIT!
+                    const impactPosition = boundedFlight && this.type === 'DragonfireLance'
+                        ? flightStart.clone().lerp(this.position, lanceContactFraction(flightStart, this.position, entity.position, this.radius + .5))
+                        : this.position;
+                    if (stopsAtFirst) {
+                        this.position.copy(impactPosition);
+                        this.mesh?.position.copy(this.position);
+                    }
                     
-                    if (this.type === 'Dagger' || this.type === 'DragonfireLance' || this.type === 'FlameTornado') {
+                    if (this.type === 'Dagger' || (this.type === 'DragonfireLance' && this.projectilePierce) || this.type === 'FlameTornado') {
                         // Pierce Logic: Hit and continue
                         this.hitEntities.add(entity.id);
                         
@@ -516,12 +526,12 @@ export class Projectile extends Entity {
                             }
                         }
 
-                        spawnProjectileImpact(gameEngine, this, this.position, {
+                        spawnProjectileImpact(gameEngine, this, impactPosition, {
                             targetId: entity.id,
                             terminal: false
                         });
 
-                    } else if (this.type === 'ArcaneMissile' || this.type === 'PhantomArrow') {
+                    } else if (this.type === 'ArcaneMissile' || this.type === 'PhantomArrow' || this.type === 'DragonfireLance') {
                         const pierces = this.type === 'PhantomArrow' && this.projectilePierce;
                         this.hitEntities.add(entity.id);
                         if (!pierces) {
@@ -533,7 +543,7 @@ export class Projectile extends Entity {
                             applyOfflineAbilityHit(this.owner, entity, this.damage, this.skillName, floatingTextManager, '#aa00ff');
                         }
                         
-                        spawnProjectileImpact(gameEngine, this, this.position, {
+                        spawnProjectileImpact(gameEngine, this, impactPosition, {
                             targetId: entity.id,
                             terminal: !pierces
                         });
@@ -597,7 +607,7 @@ export class Projectile extends Entity {
                 }
             }
         }
-        if (boundedFlight && flightEnded) {
+        if (boundedFlight && flightEnded && this.isActive) {
             this.isActive = false;
             if (this.mesh) this.mesh.visible = false;
             spawnProjectileImpact(gameEngine, this, this.position, { terminal: true });

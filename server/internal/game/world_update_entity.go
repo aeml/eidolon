@@ -461,6 +461,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		// Snapshot for collision check
 		projX, projY, projZ, radius, damage, ownerID, subType := e.X, e.Y, e.Z, e.Radius, e.Damage, e.OwnerID, e.SubType
 		projVelX, projVelZ, projSkillName := e.VelX, e.VelZ, e.ProjectileSkill
+		lanceStops := boundedFlight && subType == "DragonfireLance" && !e.ProjectilePierce
+		terminalCollision := false
 		hitIDs := make(map[string]bool, len(e.HitList)+1)
 		for id, hit := range e.HitList {
 			if hit {
@@ -478,11 +480,15 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			queryRadius += math.Hypot(projX-oldX, projZ-oldZ) / 2
 		}
 		nearbyEnemies := w.Grid.Nearby(queryX, queryZ, queryRadius, projectileInstanceID)
+		if lanceStops {
+			nearbyEnemies = orderLanceTargets(nearbyEnemies, oldX, oldZ, projX, projZ, radius+.5)
+		}
 		for _, target := range nearbyEnemies {
 			if target.InstanceID != projectileInstanceID {
 				continue
 			}
 			// Read Target State
+			contactFraction := 0.0
 			target.Mu.RLock()
 			if !w.CanDamage(ownerCombat, target) || target.State == "DEAD" {
 				target.Mu.RUnlock()
@@ -503,6 +509,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					t = math.Max(0, math.Min(1, ((target.X-oldX)*vx+(target.Z-oldZ)*vz)/lengthSquared))
 				}
 				dx, dz = oldX+t*vx-target.X, oldZ+t*vz-target.Z
+				if subType == "DragonfireLance" {
+					contactFraction = lanceContactFraction(oldX, oldZ, projX, projZ, target.X, target.Z, radius+.5)
+				}
 				_, _, blocked := firstDungeonWalkRectWallHit(flightWalkRects, oldX, oldZ, target.X, target.Z)
 				if blocked {
 					target.Mu.RUnlock()
@@ -851,15 +860,20 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				} else if subType == "ExplosiveTrap" {
 					impactRadius = 6.0
 				}
+				impactX, impactZ := projX, projZ
+				if boundedFlight && subType == "DragonfireLance" {
+					impactX, impactZ = oldX+(projX-oldX)*contactFraction, oldZ+(projZ-oldZ)*contactFraction
+				}
 				w.fireProjectileImpactEvent(ProjectileImpactEvent{
 					ProjectileID: e.ID, ProjectileType: subType,
 					SourceID: ownerID, TargetID: target.ID, InstanceID: projectileInstanceID,
-					SkillName: projSkillName, X: projX, Y: projY, Z: projZ,
+					SkillName: projSkillName, X: impactX, Y: projY, Z: impactZ,
 					DirectionX: projVelX, DirectionZ: projVelZ,
 					Radius: impactRadius, Terminal: !shouldPierce,
 				})
 
 				if !shouldPierce {
+					terminalCollision = true
 					deferred.addRemoval(e.ID)
 					break
 				}
@@ -877,7 +891,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			}
 		}
 		e.Mu.Unlock()
-		if boundedFlight && (rangeEnded || wallHit) {
+		if boundedFlight && (rangeEnded || wallHit) && !terminalCollision {
 			w.fireProjectileImpactEvent(ProjectileImpactEvent{ProjectileID: e.ID, ProjectileType: subType,
 				SourceID: ownerID, InstanceID: projectileInstanceID, SkillName: projSkillName,
 				X: projX, Y: projY, Z: projZ, DirectionX: projVelX, DirectionZ: projVelZ, Terminal: true})
@@ -1182,9 +1196,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			}
 			expireArcaneShieldLocked(e, now)
 			if e.SpellFocusActive && now.After(e.SpellFocusEndTime) {
-				e.SpellFocusActive = false
-				e.SpellFocusEndTime = time.Time{}
-				e.SpellFocusMultiplier = 0
+				e.clearSpellFocus()
 			}
 			if e.SwiftActive && now.After(e.SwiftEndTime) {
 				e.SwiftActive = false

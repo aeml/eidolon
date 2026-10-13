@@ -113,6 +113,18 @@ var wizardRunes = []SkillRuneDef{
 	{ID: "gravitywell_expanded", Name: "Expanded", Skill: "Gravity Well", UnlockLevel: 50, Description: "+50% radius"},
 	{ID: "gravitywell_crushing", Name: "Crushing", Skill: "Gravity Well", UnlockLevel: 70, Description: "+100% damage"},
 	{ID: "gravitywell_blackhole", Name: "Black Hole", Skill: "Gravity Well", UnlockLevel: 90, Description: "Enemies cannot escape while active"},
+	{ID: "spellfocus_reservoir", Name: "Reservoir", Skill: "Spell Focus", UnlockLevel: 50, Description: "Split Focus's trained bonus damage between your next two paid damaging spells. Utility and rejected casts keep both charges."},
+	{ID: "spellfocus_aegis", Name: "Aegis", Skill: "Spell Focus", UnlockLevel: 70, Description: "Double Focus's ward capacity, but retain only 60% of its bonus damage. Does not replace an active ward."},
+	{ID: "spellfocus_overchannel", Name: "Overchannel", Skill: "Spell Focus", UnlockLevel: 90, Description: "Increase Focus's bonus damage by 25%, but gain no Focus ward. Existing shields remain."},
+	{ID: "scorchbeam_longshot", Name: "Longshot", Skill: "Scorch Beam", UnlockLevel: 50, Description: "Reach 50% farther, but deal 20% less damage. Retains armor melt and the brief slow."},
+	{ID: "scorchbeam_incision", Name: "Incision", Skill: "Scorch Beam", UnlockLevel: 70, Description: "Deal 25% more damage, but lose the beam slow. Armor melt remains."},
+	{ID: "scorchbeam_snare", Name: "Snare", Skill: "Scorch Beam", UnlockLevel: 90, Description: "Slow susceptible enemies by 50% for 5s base, but deal 25% less damage. Preserves existing slows; immune enemies still take damage."},
+	{ID: "arcanemissiles_salvo", Name: "Salvo", Skill: "Arcane Missiles", UnlockLevel: 50, Description: "Fire two extra missiles at 60% damage each: five normally, seven after Scorch Beam. Spends one Focus charge for the entire volley."},
+	{ID: "arcanemissiles_compression", Name: "Compression", Skill: "Arcane Missiles", UnlockLevel: 70, Description: "Fire one fewer missile at 140% damage each: two normally, four after Scorch Beam. Trades ordinary volley damage for stronger prepared volleys."},
+	{ID: "arcanemissiles_convergence", Name: "Convergence", Skill: "Arcane Missiles", UnlockLevel: 90, Description: "Missiles fly straight toward your aim at 40 speed and deal 20% more damage, but no longer home onto moving targets."},
+	{ID: "dragonfire_needle", Name: "Needle", Skill: "Dragonfire Lance", UnlockLevel: 50, Description: "Deal 25% more damage with half the projectile width. Stops at the first enemy hit."},
+	{ID: "dragonfire_broadside", Name: "Broadside", Skill: "Dragonfire Lance", UnlockLevel: 70, Description: "Pierce enemies with 2.5 times the projectile width, but deal 25% less damage to each. Each enemy can be hit once."},
+	{ID: "dragonfire_quickfire", Name: "Quickfire", Skill: "Dragonfire Lance", UnlockLevel: 90, Description: "Reduce base cooldown from 20s to 12s and projectile speed rises from 40 to 60, but deal 35% less damage. Mana cost remains 50 before discounts."},
 }
 
 var clericRunes = []SkillRuneDef{

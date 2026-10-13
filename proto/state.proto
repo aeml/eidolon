@@ -267,6 +267,8 @@ message Entity {
   float mark_weakness_factor = 126;
   // Cosmetic choices are separate from equipped items and their combat stats.
   map<string, EquipmentAppearance> appearances = 127;
+  // Remaining paid Focus casts, including Reservoir's split bonus.
+  int32 spell_focus_charges = 128;
 
   // Authoritative jump replication
   float jump_start_x = 81;

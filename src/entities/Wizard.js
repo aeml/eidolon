@@ -14,9 +14,10 @@ import { getArcaneShieldTraining } from '../core/ArcaneShieldTraining.js';
 import { applyOfflineTimeWarp, getWizardEffectDuration } from './WizardSupportAbilities.js';
 import { applyOfflineTeleportWarp, snapshotOfflineTeleportWarp } from '../skills/offlineTeleportWarp.js';
 import { commitOfflineTeleportCharge } from '../skills/offlineTeleportCharges.js';
-import { getSpellFocusCastMultiplier } from '../skills/spellFocusTraining.js';
+import { getSpellFocusCastPlan, consumeOfflineSpellFocus } from '../skills/spellFocusTraining.js';
 import { getWizardAbilityDamageMultiplier, resolveWizardSpellDamage, WIZARD_DAMAGE_SKILLS } from '../skills/wizardAbilityDamage.js';
 import { applyOfflineArmorMelt } from '../core/OfflineArmor.js';
+import { getWizardPrecisionPlan } from '../skills/wizardPrecisionRunes.js';
 
 
 export class Wizard extends Actor {
@@ -57,6 +58,8 @@ export class Wizard extends Actor {
         
         // State for Spell Focus
         this.spellFocusActive = false;
+        this.spellFocusCharges = 0;
+        this.spellFocusRuneId = '';
         this.spellFocusMultiplier = 1.0;
     }
 
@@ -111,12 +114,11 @@ export class Wizard extends Actor {
         let damageMultiplier = getWizardAbilityDamageMultiplier(this, skill);
         if (this.spellFocusActive && this.spellFocusTimer > 0 && WIZARD_DAMAGE_SKILLS.has(skill)) {
             damageMultiplier *= this.spellFocusMultiplier;
-            this.spellFocusActive = false; // Consume it
-            this.spellFocusTimer = 0;
-            this.spellFocusMultiplier = 1.0;
+            consumeOfflineSpellFocus(this);
             gameEngine.floatingTextManager.spawn("FOCUSED!", this.position, '#8800ff');
         }
-        const spellDamage = resolveWizardSpellDamage(this, skill, damageMultiplier);
+        const precision = getWizardPrecisionPlan(skill, this.skillRunes?.[skill], arcaneBarrage);
+        const spellDamage = resolveWizardSpellDamage(this, skill, damageMultiplier * precision.damage);
 
         // --- Pyromancer Branch Skills ---
 
@@ -353,9 +355,9 @@ export class Wizard extends Actor {
                     const dist = Math.hypot(closestPoint.x - entity.position.x, closestPoint.z - entity.position.z);
                     if (dist < width + targetRadius && !clipDungeonEffectSegment(walkRects, this.position, entity.position).blocked) {
                          applyOfflineAbilityHit(this, entity, damage, skill, gameEngine.floatingTextManager, '#ffaa00');
-                         if (entity.stats.hp > 0 && !entity.ccImmune && !(entity.slowTimer > 0)) {
-                             entity.slowFactor = .30;
-                             entity.slowTimer = getWizardEffectDuration(this, skill, 3);
+                         if (precision.slow > 0 && entity.stats.hp > 0 && !entity.ccImmune && !(entity.slowTimer > 0)) {
+                             entity.slowFactor = precision.slow;
+                             entity.slowTimer = getWizardEffectDuration(this, skill, precision.slowDuration);
                              gameEngine.floatingTextManager.spawn('SLOWED', entity.position, '#ffaa00');
                          }
                          if (applyOfflineArmorMelt(entity, getWizardEffectDuration(this, skill, 5))) {
@@ -389,26 +391,27 @@ export class Wizard extends Actor {
                     startPos.z += Math.cos(offsetAngle) * 0.5;
                     
                     // Initial direction: Up and out, then home
-                    const launchDirection = target
+                    const launchDirection = target && precision.homing
                         ? new THREE.Vector3(Math.sin(offsetAngle), 1, Math.cos(offsetAngle))
                         : new THREE.Vector3(Math.cos(cursorAngle + offsetAngle * .1), 0, Math.sin(cursorAngle + offsetAngle * .1));
                     const initialTarget = startPos.clone().add(launchDirection.multiplyScalar(5));
                     
                     const missile = new Projectile(null, this, 'ArcaneMissile', startPos, initialTarget);
                     missile.damage = spellDamage;
-                    missile.homingTarget = target;
+                    missile.homingTarget = precision.homing ? target : null;
+                    missile.speed = precision.speed;
+                    missile.velocity.normalize().multiplyScalar(precision.speed);
                     missile.homingTurnRate = 8.0; // High turn rate
                     
                     gameEngine.addEntity(missile);
                 }, delay);
             };
             
-            spawnMissile(0, 0);
-            spawnMissile(200, 2.0);
-            spawnMissile(400, -2.0);
+            const offsets = [0, 2, -2, 3, -3, 4, -4];
+            for (let i = 0; i < precision.missiles; i++) {
+                spawnMissile(i < 3 ? i * 200 : 400 + (i - 2) * 100, offsets[i]);
+            }
             if (arcaneBarrage) {
-                spawnMissile(500, 3.0);
-                spawnMissile(600, -3.0);
                 gameEngine.floatingTextManager.spawn('ARCANE BARRAGE!', this.position, '#c66bff');
             }
             
@@ -424,9 +427,11 @@ export class Wizard extends Actor {
             
             this.spellFocusActive = true;
             this.spellFocusTimer = getWizardEffectDuration(this, skill, 15);
-            this.spellFocusMultiplier = getSpellFocusCastMultiplier(this);
-            if (!this.arcaneShieldActive || this.shieldHP <= 0 || this.arcaneShieldTimer <= 0) {
-                this.shieldHP = Math.max(0, 40 + 2 * this.stats.intelligence);
+            const plan = getSpellFocusCastPlan(this);
+            this.spellFocusMultiplier = plan.multiplier;
+            this.spellFocusCharges = plan.charges; this.spellFocusRuneId = plan.runeId;
+            if (plan.wardScale > 0 && (!this.arcaneShieldActive || this.shieldHP <= 0 || this.arcaneShieldTimer <= 0)) {
+                this.shieldHP = Math.floor(Math.max(0, 40 + 2 * this.stats.intelligence) * plan.wardScale);
                 this.arcaneShieldActive = true;
                 this.arcaneShieldTimer = getWizardEffectDuration(this, skill, 6);
                 gameEngine.floatingTextManager.spawn(`WARD +${this.shieldHP}`, this.position, '#a449ff');
@@ -451,14 +456,13 @@ export class Wizard extends Actor {
             const lance = new Projectile(null, this, 'DragonfireLance', startPos, adjustedTarget);
             lance.damage = spellDamage;
             
-            // Pierce everything
-            lance.hitEntities = new Set(); // Reset just in case, though new instance
-            // We need to modify Projectile to support piercing or just let it hit once?
-            // "Huge single-target spike damage" implies single target usually, but "Lance" might pierce.
-            // Let's make it pierce.
-            // Projectile.js logic destroys on first hit unless we change it.
-            // Let's assume it's single target for now based on description "Single-Target Caster".
-            
+            lance.maxTravelDistance = getAbilityRange(this, skill, CONSTANTS.ABILITY_CONFIG.Wizard.skills[skill].range);
+            lance.radius = precision.radius;
+            lance.projectilePierce = precision.pierce;
+            lance.speed = precision.speed;
+            lance.velocity.normalize().multiplyScalar(precision.speed);
+            lance.setScale(precision.radius);
+
             gameEngine.addEntity(lance);
             return;
         }
@@ -626,6 +630,7 @@ export class Wizard extends Actor {
         this.spellFocusActive = false;
         this.spellFocusTimer = 0;
         this.spellFocusMultiplier = 1;
+        this.spellFocusCharges = 0; this.spellFocusRuneId = '';
         this.arcaneShieldActive = false;
         this.arcaneShieldTimer = 0;
         this.shieldHP = 0;

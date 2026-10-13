@@ -223,16 +223,22 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
         durationKey: 'spellFocusDuration',
         timerProperty: 'spellFocusTimer',
         fallbackDuration: 8,
-        extraPayloadKeys: ['spellFocusMultiplier'],
+        extraPayloadKeys: ['spellFocusMultiplier', 'spellFocusCharges'],
         onActivate: (entity, payload) => {
+            const count = Number(payload.spellFocusCharges);
+            const newCounter = Number.isInteger(count) && count >= 1 && count <= 2;
+            if (payload.spellFocusCharges !== undefined) entity.spellFocusCharges = newCounter ? count : 1;
+            else if (payload.spellFocusActive === true) entity.spellFocusCharges = 1;
+            else if (![1, 2].includes(entity.spellFocusCharges)) entity.spellFocusCharges = 1;
             if (payload.spellFocusMultiplier !== undefined) {
                 const value = Number(payload.spellFocusMultiplier);
-                entity.spellFocusMultiplier = Number.isFinite(value) && value >= 2.5 && value <= 3 ? value : 2.5;
+                const minimum = newCounter ? 1.75 : 2.5, maximum = newCounter ? 3.5 : 3;
+                entity.spellFocusMultiplier = Number.isFinite(value) && value >= minimum && value <= maximum ? value : 2.5;
             } else if (!Number.isFinite(entity.spellFocusMultiplier) || entity.spellFocusMultiplier <= 1) {
                 entity.spellFocusMultiplier = 2.5;
             }
         },
-        onDeactivate: (entity) => { entity.spellFocusMultiplier = 1; }
+        onDeactivate: (entity) => { entity.spellFocusMultiplier = 1; entity.spellFocusCharges = 0; entity.spellFocusRuneId = ''; }
     }),
     swift: createTimedRemoteEffectConfig({
         payloadKey: 'swiftActive',
