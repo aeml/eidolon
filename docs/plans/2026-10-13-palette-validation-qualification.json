@@ -2,7 +2,7 @@
   "recordedUTC": "2026-10-13T17:18:42.331463+00:00",
   "source": "78d71790dfd5e5c7dde5ef900426b27a5202f1da",
   "base": "2fbe3e41",
-  "status": "Qualified within scan-local finite palette reuse and opt-in QA comparison; ready ordinary master merge, unpublished.",
+  "status": "Qualified and ordinarily merged into local master; unpublished pending a coherent next milestone.",
   "change": "OpaqueSkinnedShadowRuntime shares the existing finite-skeleton check only within one synchronous scan via a fresh WeakMap. Exact owner.valid still rechecks every live inverse/bind/attribute/identity. No persistent palette result or skipped ownership validation. Capture/rebuild eligibility remains uncached.",
   "focused": {
     "passed": 122,
@@ -445,5 +445,6 @@
     "entries": 46,
     "inventorySHA256": "47b69db25055999cff76286dc575e9f7584e4a6bf443a70fb8290155b85f86e0"
   },
-  "limits": "Combined connected candidate CPU medians30.3/31.4ms versus reference33.7/32.0ms are descriptive; live draw/triangle/population changes prevent a strict whole-frame speedup claim. All arms still exceed original20/33.4ms High timing targets. Main candidate33.4/66.6ms failure retained. Original town triangles, prior network/soak findings, full art/device/campaign/capacity/F1\u2013F5/beta/launch/handoff remain open. Public49 remains accepted; no50publication or full-goal completion."
+  "limits": "Combined connected candidate CPU medians30.3/31.4ms versus reference33.7/32.0ms are descriptive; live draw/triangle/population changes prevent a strict whole-frame speedup claim. All arms still exceed original20/33.4ms High timing targets. Main candidate33.4/66.6ms failure retained. Original town triangles, prior network/soak findings, full art/device/campaign/capacity/F1\u2013F5/beta/launch/handoff remain open. Public49 remains accepted; no50publication or full-goal completion.",
+  "masterMerge": "f18384ac45ccca5469960a87d5947b754a4f809d"
 }
