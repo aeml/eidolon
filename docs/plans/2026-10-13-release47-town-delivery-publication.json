@@ -1,0 +1,583 @@
+{
+  "source": "13f541755f2217cd429c3c9d782ccd0966e3f379",
+  "version": "Alpha 1.79.47",
+  "status": "Pushed; exact own47orderedCI/deploy/live/public checks pending. Last accepted public version46.",
+  "recordedUTC": "2026-10-13T00:42:56.462706+00:00",
+  "qualificationReceipts": [
+    "2026-10-13-static-shadow-runtime-native-qualification.json",
+    "2026-10-13-geometry-download-shards-native-qualification.json"
+  ],
+  "preparation": {
+    "source": "13f541755f2217cd429c3c9d782ccd0966e3f379",
+    "version": "Alpha 1.79.47",
+    "clientPassed": 469,
+    "clientSuites": 6,
+    "contentGroups": 14,
+    "versionFiles": 12,
+    "notes": 482,
+    "priorNotesByteExact": 481,
+    "publicPins": 152,
+    "bundledModules": 481,
+    "copiedNativeProfiles": [
+      "high",
+      "low"
+    ],
+    "copiedNativeControls": 2,
+    "defaultHighSavedSubmissions": 96,
+    "additionalStaticHighSavedSubmissions": 48,
+    "defaultLowEntries": 0,
+    "retries": 0,
+    "limits": "Exact town static shadow and bounded geometry download milestone; original High/Low triangle budgets, old network-cause findings, modern art/device/operations/fullgoal remain open."
+  },
+  "build": {
+    "source": "13f541755f2217cd429c3c9d782ccd0966e3f379",
+    "pins": 152,
+    "copyFiles": 3739,
+    "copyBytes": 451167815,
+    "build": {
+      "worker": {
+        "output": "src/core/ActorGameplayGeometryWorker.28b738eaf5aa3a9b.js",
+        "sha256": "28b738eaf5aa3a9ba5df513fbd8c400f3d82a5f0f2624d529731c57b80a95f03",
+        "bytes": 179507,
+        "modules": 15,
+        "imports": [],
+        "precomputed": {
+          "path": "assets/gameplay-geometry/indices.6aa8c7e199c910b5.bin",
+          "sha256": "6aa8c7e199c910b5fbf0f78dfae873b64e79aa0045e39b5775ff9ac7d7e93346",
+          "bytes": 777321,
+          "entries": 133,
+          "shards": [
+            {
+              "path": "assets/gameplay-geometry/indices.62dceb9abec13cb0.bin",
+              "bytes": 64411,
+              "sha256": "62dceb9abec13cb09ab25fe730382241a5fbcf1817b839941e9995f9843e4697"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.492b64fcc6657fc5.bin",
+              "bytes": 62475,
+              "sha256": "492b64fcc6657fc54d829dd4c7766e9d02b3b953fc71fae2095af66298ea91f5"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.a8e4573b9f020cff.bin",
+              "bytes": 65216,
+              "sha256": "a8e4573b9f020cff14f66422c28aa0e53e4917701deade51f6dd2980fdb9dd5f"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.71f4b276ae9218f5.bin",
+              "bytes": 54754,
+              "sha256": "71f4b276ae9218f5378733f29f1bde7f23dfcd10457fc74de5c2663fee476de2"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.796064b1159706c0.bin",
+              "bytes": 43601,
+              "sha256": "796064b1159706c0c57e425bd02cf9de251a34a1cddc03f5dd270d4cf6a3d178"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.590ea8d42219fe53.bin",
+              "bytes": 58638,
+              "sha256": "590ea8d42219fe530050b5ba2886c8c6e7bf4233017b7f0c497d11b5c72470d6"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.927fa72b1036cdc4.bin",
+              "bytes": 60257,
+              "sha256": "927fa72b1036cdc4fa62f98fdf7e9194be5f46e1471226dbd74235a91de17fdb"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.fa8c332b1b158f42.bin",
+              "bytes": 59698,
+              "sha256": "fa8c332b1b158f42e03cea80cf2cf82690f7786b39d440f4357488dc52a55c98"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.5d09cf75404d7d80.bin",
+              "bytes": 55905,
+              "sha256": "5d09cf75404d7d807e7a93df3b990cf31ced511d466e592aa387d0d8c5c69bff"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.8005a3dfbb147be0.bin",
+              "bytes": 37007,
+              "sha256": "8005a3dfbb147be0eda039e856a45c7bac9b495cea65fbfe8cdc2a9bc78fc501"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.b92aae6f7fe78a87.bin",
+              "bytes": 34450,
+              "sha256": "b92aae6f7fe78a87d26d1868d2bc91ce196901d7d4a51030aead970a178901e1"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.51e1054c0867a1e5.bin",
+              "bytes": 62385,
+              "sha256": "51e1054c0867a1e5a1890b69226847966210eff4fbec4f8260c491683a2da35b"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.f4d836ae9209700e.bin",
+              "bytes": 62002,
+              "sha256": "f4d836ae9209700e9babeb3483f3479434c2c652c58950feed98400b849e4777"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.637f0a8ba2de3e76.bin",
+              "bytes": 56522,
+              "sha256": "637f0a8ba2de3e76e3a09f3c95627d5967df8747fb61f49d1b830d05a9fc1470"
+            }
+          ]
+        }
+      },
+      "bundledModules": 481,
+      "bytes": 3782954,
+      "sharedLoginModules": 22,
+      "vendorModules": [
+        "vendor/three/examples/jsm/geometries/RoundedBoxGeometry.js",
+        "vendor/three/examples/jsm/loaders/GLTFLoader.js",
+        "vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+        "vendor/three/examples/jsm/postprocessing/MaskPass.js",
+        "vendor/three/examples/jsm/postprocessing/OutputPass.js",
+        "vendor/three/examples/jsm/postprocessing/Pass.js",
+        "vendor/three/examples/jsm/postprocessing/RenderPass.js",
+        "vendor/three/examples/jsm/postprocessing/ShaderPass.js",
+        "vendor/three/examples/jsm/postprocessing/UnrealBloomPass.js",
+        "vendor/three/examples/jsm/shaders/CopyShader.js",
+        "vendor/three/examples/jsm/shaders/FXAAShader.js",
+        "vendor/three/examples/jsm/shaders/LuminosityHighPassShader.js",
+        "vendor/three/examples/jsm/shaders/OutputShader.js",
+        "vendor/three/examples/jsm/utils/BufferGeometryUtils.js",
+        "vendor/three/examples/jsm/utils/SkeletonUtils.js"
+      ],
+      "externalImports": [
+        "../assets/ServiceWorkerBoot.js",
+        "../data/worldGeography.js",
+        "../ui/EmailRecoveryUI.js",
+        "../ui/OwnedEvents.js",
+        "../ui/PasswordChangeUI.js",
+        "../ui/ReportUI.js",
+        "../ui/reportTypes.js",
+        "./CredentialToken.js",
+        "./GraphicsStartup.js",
+        "three"
+      ]
+    },
+    "versioning": {
+      "root": "/home/aeml/.local/share/eidolon-master-20261011/.qa-release47/publication-copy",
+      "release": "13f541755f2217cd429c3c9d782ccd0966e3f379",
+      "scannedFiles": 952,
+      "changedFiles": 429,
+      "bundledStyles": true
+    }
+  },
+  "retainedPreparationFailures": [
+    "Initial build helper referenced wrong frozen46 manifest filename; corrected before native launch. Exact owned partial copy inventoried and retired.",
+    "Initial copied harness used one-too-deep module imports and failed before browser launch; corrected helper imports, actual public/runtime source and assertions unchanged."
+  ],
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-release47-town-delivery-preparation-checks-20261013",
+    "entries": 32,
+    "inventorySHA256": "114ec10f734fc3a559aa5ccf8b327451d11d78445f301368d04068430bdee8ed"
+  },
+  "required": "Own exact-source orderedCI/deploy/live and fresh normal-TLS152pinnedassets/frontend/backend/readyDB before acceptance or another publication.",
+  "pushedUTC": "2026-10-13T00:43:24.052462+00:00",
+  "ownCI": {
+    "conclusion": "",
+    "createdAt": "2026-10-13T00:43:02Z",
+    "databaseId": 38328616361,
+    "headSha": "13f541755f2217cd429c3c9d782ccd0966e3f379",
+    "jobs": [
+      {
+        "completedAt": "0001-01-01T00:00:00Z",
+        "conclusion": "",
+        "databaseId": 115072995168,
+        "name": "Browser Smoke (Playwright 3/3)",
+        "startedAt": "2026-10-13T00:43:05Z",
+        "status": "in_progress",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Checkout",
+            "number": 2,
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Setup Node.js",
+            "number": 3,
+            "status": "completed"
+          },
+          {
+            "conclusion": "",
+            "name": "Install dependencies and browser",
+            "number": 4,
+            "status": "in_progress"
+          },
+          {
+            "conclusion": "",
+            "name": "Run anonymous real-browser smoke",
+            "number": 5,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Upload browser failure evidence",
+            "number": 6,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Post Setup Node.js",
+            "number": 11,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Post Checkout",
+            "number": 12,
+            "status": "pending"
+          }
+        ],
+        "url": "https://github.com/aeml/eidolon/actions/runs/38328616361/job/115072995168"
+      },
+      {
+        "completedAt": "0001-01-01T00:00:00Z",
+        "conclusion": "",
+        "databaseId": 115072995355,
+        "name": "Browser Smoke (Playwright 1/3)",
+        "startedAt": "2026-10-13T00:43:05Z",
+        "status": "in_progress",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Checkout",
+            "number": 2,
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Setup Node.js",
+            "number": 3,
+            "status": "completed"
+          },
+          {
+            "conclusion": "",
+            "name": "Install dependencies and browser",
+            "number": 4,
+            "status": "in_progress"
+          },
+          {
+            "conclusion": "",
+            "name": "Run anonymous real-browser smoke",
+            "number": 5,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Upload browser failure evidence",
+            "number": 6,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Post Setup Node.js",
+            "number": 11,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Post Checkout",
+            "number": 12,
+            "status": "pending"
+          }
+        ],
+        "url": "https://github.com/aeml/eidolon/actions/runs/38328616361/job/115072995355"
+      },
+      {
+        "completedAt": "0001-01-01T00:00:00Z",
+        "conclusion": "",
+        "databaseId": 115072995415,
+        "name": "Client Tests (Jest)",
+        "startedAt": "2026-10-13T00:43:05Z",
+        "status": "in_progress",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Checkout",
+            "number": 2,
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Setup Node.js",
+            "number": 3,
+            "status": "completed"
+          },
+          {
+            "conclusion": "",
+            "name": "Install dependencies",
+            "number": 4,
+            "status": "in_progress"
+          },
+          {
+            "conclusion": "",
+            "name": "Verify committed content without regeneration",
+            "number": 5,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Run lint",
+            "number": 6,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Audit production and development dependencies",
+            "number": 7,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Run tests with coverage",
+            "number": 8,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Run client hot-path benchmark",
+            "number": 9,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Upload client coverage artifact",
+            "number": 10,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Post Setup Node.js",
+            "number": 19,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Post Checkout",
+            "number": 20,
+            "status": "pending"
+          }
+        ],
+        "url": "https://github.com/aeml/eidolon/actions/runs/38328616361/job/115072995415"
+      },
+      {
+        "completedAt": "0001-01-01T00:00:00Z",
+        "conclusion": "",
+        "databaseId": 115072995470,
+        "name": "Server Tests (Go)",
+        "startedAt": "2026-10-13T00:43:05Z",
+        "status": "in_progress",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "status": "completed"
+          },
+          {
+            "conclusion": "",
+            "name": "Initialize containers",
+            "number": 2,
+            "status": "in_progress"
+          },
+          {
+            "conclusion": "",
+            "name": "Checkout",
+            "number": 3,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Setup Go",
+            "number": 4,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Verify Go modules and reachable vulnerabilities",
+            "number": 5,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Verify card-table timeout ownership and saved payouts",
+            "number": 6,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Verify ordinary item, social, duel and administration sockets",
+            "number": 7,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Verify disposable guild bank settlement and recovery",
+            "number": 8,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Verify disposable ground-item custody and repository reopen",
+            "number": 9,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Verify paged market and slot recovery with casino wallet checkpoints",
+            "number": 10,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Verify disposable room-reward cohorts and repository reopen",
+            "number": 11,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Verify disposable report review resolution and retry",
+            "number": 12,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Verify disposable account-bound character journal replay",
+            "number": 13,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Run Go tests with coverage",
+            "number": 14,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Run Go race detector",
+            "number": 15,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Verify disposable upgrade backup and restore",
+            "number": 16,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Run server hot-path benchmarks",
+            "number": 17,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Build server",
+            "number": 18,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Convert Go coverage to LCOV",
+            "number": 19,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Upload server coverage artifact",
+            "number": 20,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Stop containers",
+            "number": 40,
+            "status": "pending"
+          }
+        ],
+        "url": "https://github.com/aeml/eidolon/actions/runs/38328616361/job/115072995470"
+      },
+      {
+        "completedAt": "0001-01-01T00:00:00Z",
+        "conclusion": "",
+        "databaseId": 115072995480,
+        "name": "Browser Smoke (Playwright 2/3)",
+        "startedAt": "2026-10-13T00:43:05Z",
+        "status": "in_progress",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Checkout",
+            "number": 2,
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Setup Node.js",
+            "number": 3,
+            "status": "completed"
+          },
+          {
+            "conclusion": "",
+            "name": "Install dependencies and browser",
+            "number": 4,
+            "status": "in_progress"
+          },
+          {
+            "conclusion": "",
+            "name": "Run anonymous real-browser smoke",
+            "number": 5,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Upload browser failure evidence",
+            "number": 6,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Post Setup Node.js",
+            "number": 11,
+            "status": "pending"
+          },
+          {
+            "conclusion": "",
+            "name": "Post Checkout",
+            "number": 12,
+            "status": "pending"
+          }
+        ],
+        "url": "https://github.com/aeml/eidolon/actions/runs/38328616361/job/115072995480"
+      }
+    ],
+    "status": "in_progress",
+    "updatedAt": "2026-10-13T00:43:13Z",
+    "url": "https://github.com/aeml/eidolon/actions/runs/38328616361"
+  }
+}
