@@ -82,3 +82,19 @@ test('a stock shadow failure restores actor geometry and caster flags through th
     expect(f.a.meshes.every(m => m.castShadow)).toBe(true); expect(f.render.actorShadowBatches.owner.active).toEqual([]);
     f.draw(); expect(f.render.actorShadowBatches.owner.lastSavedSubmissions).toBe(1); f.render.dispose();
 });
+
+test('actual RenderSystem streams static town roots alongside actors across quality, geometry, scene and session lifetimes', () => {
+    const f = fixture(), root = new THREE.Group(); root.userData.opaqueStaticShadowRoot = true;
+    for (let i = 0; i < 2; i++) {
+        const mesh = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshStandardMaterial()); mesh.castShadow = true; root.add(mesh);
+    }
+    f.render.addToEnvironment(root); f.draw(); const runtime = f.render.actorShadowBatches;
+    expect(runtime.static.roots.size).toBe(1); expect(runtime.owner.entries.size).toBe(2);
+    const old = [...runtime.owner.entries].find(e => e.isStatic), geometry = jest.spyOn(old.geometry, 'dispose');
+    f.render.setGraphicsQuality('low'); expect(runtime.owner.entries.size).toBe(0); f.draw(); expect(runtime.owner.entries.size).toBe(0);
+    f.render.setGraphicsQuality('high'); f.draw(); expect(runtime.owner.entries.size).toBe(2);
+    f.render.setActorGameplayGeometryEnabled(false); expect(runtime.disposed).toBe(true);
+    f.draw(); expect(f.render.actorShadowBatches.static.roots.size).toBe(1); expect(f.render.actorShadowBatches.owner.entries.size).toBe(2);
+    f.render.clearInstanceScene(); expect(f.render.actorShadowBatches.static.roots.size).toBe(0);
+    expect(f.render.actorShadowBatches.owner.entries.size).toBe(0); f.render.dispose(); expect(geometry).toHaveBeenCalledTimes(1);
+});

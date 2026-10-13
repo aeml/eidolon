@@ -1,0 +1,24 @@
+{
+  "atUTC": "2026-10-13T00:22:10.762423+00:00",
+  "base": "b017e9d273643c3d05b816bce1aaa980296c61c0",
+  "status": "Isolated opt-in shared directional shadow boundary; no default static registration, native parity, GPU lifecycle or performance qualification.",
+  "checks": {
+    "passed": 111,
+    "suites": 3,
+    "lintPassed": true
+  },
+  "behavior": [
+    "Static and existing skinned proxies share the single owned stock shadow boundary. includeStatic defaults false.",
+    "Exact raw static positions and ordered source triangles; original material/geometry identities and caster flags restored before color rendering.",
+    "Source storage/version/disconnection retirement, nonindexed sources, frustum fallback, nested rendering and exception restoration covered."
+  ],
+  "limits": [
+    "Actual camera/pixel/depth/cadence/GPU-resource gates remain pending.",
+    "Production Low disables shadows; no Low benefit claimed. Full triangle budgets and original goal remain open."
+  ],
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-static-shadow-shared-owner-cpu-checks-20261013",
+    "entries": 11,
+    "inventorySHA256": "7e87d67779215a660bd4bd17559c7a6ad3760460d57280ea08473593b444bfa5"
+  }
+}

@@ -759,6 +759,7 @@ export function createProceduralLanternholdStructure(structureId, { optimized = 
             );
         });
         root.userData.renderBatched = true;
+        root.userData.opaqueStaticShadowRoot = ['blacksmith', 'trading_post', 'trading_house', 'forge', 'stash'].includes(structureId);
         root.userData.sourceMeshCount = optimizedParts.sourceMeshCount;
         root.userData.drawMeshCount = optimizedParts.parts.length;
     } else {

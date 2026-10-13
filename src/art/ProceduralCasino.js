@@ -138,6 +138,7 @@ export function createCasinoShell(x = 0, z = 170) {
     // Keep the exterior separate for its own bounds and isolated door picking.
     facade.removeFromParent();
     root.userData.structureId = 'casino';
+    root.userData.opaqueStaticShadowRoot = true;
     root.userData.drawMeshCount = batchMeshes(root) + batchMeshes(facade);
     root.add(facade);
     const door = box(root, 'casino-town-door', m.wood, [4.8, 4.8, .3], [0, 2.4, 8.35]);

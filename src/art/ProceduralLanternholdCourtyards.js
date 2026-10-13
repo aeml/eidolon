@@ -8,6 +8,7 @@ import { createLanternholdBenchPlank, createLanternholdWellBucket } from './Lant
 
 export function createLanternholdCourtyards({ quality = 'high' } = {}) {
     const group = new THREE.Group(); group.name = 'Lanternhold communal courtyards';
+    group.userData.opaqueStaticShadowRoot = true;
     const materials = {
         stone: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0xaaa28c, vertexColors: true, roughness: .91 }), 'weathered-masonry'),
         wood: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x66533c, roughness: .95 }), 'timber'),
