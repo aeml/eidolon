@@ -510,6 +510,18 @@ and unchanged High279283/Low107747plaza triangle failures remain. The initial
 slower prototype remains [rejected](2026-10-13-opaque-color-native-prototype-rejected.json).
 Full game/art/device/ops/owner/beta/handoff scope stays open.
 
+Dark Realm masonry candidate`4eef68d7`/receipt`0c8d9d6e` remains isolated,
+unselected.53distinctCPUchecks/six suites/lint and eight original/candidate
+constructor comparisons retain every nonUV buffer, bound, part and triangle.
+Only skyline stone UVs and one shared material change; face-aligned8m repeats
+carry2m basalt blocks/1m courses with separate albedo/normal/roughness maps.
+All49meshes/placements/colliders/occluder masks remain; new three static maps
+own768KiBHigh/192KiBLow rawCPU storage. Initial direct-child/all-mesh fixture
+count error retained/corrected. Frozen30entry inventory
+`388ab3a415c2f9653ff2fec51ce6d176c4fe9474ef44b7ec48f5f2c49a140889`.
+Actual gameplay/motion/cutaway/shadow/cadence/GPUlifetime pending own48terminal;
+2Dswatches are not art acceptance. [CPU qualification](2026-10-13-dark-masonry-cpu-qualification.json).
+
 ## Retained performance failures and rejected work
 
 CPU-only opaque shadow census preserves all117source asset pins and constructs ten actual High/Low equipped actors/NPCs with WebGL disabled. Exact attribute/palette/bind/world/material-depth grouping suggests up to8fewer submissions per class and16per Ilyra per shadow pass. These are theoretical counts; no runtime, depth/pixel, timing, resource or crowded-town acceptance. Frozen13entry inventory`f330d19e1556a7f11cf64cbebbe0757a6bc027e33a3908cfbb6fa6f1549bc031`. [Source census/next prototype constraints](2026-10-12-opaque-shadow-source-census.json).
