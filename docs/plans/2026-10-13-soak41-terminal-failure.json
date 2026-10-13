@@ -1,0 +1,174 @@
+{
+  "status": "FAIL; no capacity acceptance/retry/cancellation.",
+  "run": 38200870030,
+  "attempt": 1,
+  "source": "defdb64e3f9292201df7e5f90b4defc32c5d1bb9",
+  "terminalUTC": "2026-10-13T03:44:54Z",
+  "load": {
+    "connected": 100,
+    "joined": 100,
+    "state_frames": 232601376,
+    "read_errors": 7,
+    "write_errors": 0,
+    "decode_errors": 0
+  },
+  "stateCoverage": {
+    "clients": 100,
+    "min_frames": 26073,
+    "min_active_ms": 978349,
+    "max_gap_ms": 800,
+    "wire_bytes": 3081467996187
+  },
+  "ownStateCoverage": {
+    "clients": 100,
+    "min_updates": 26073
+  },
+  "cohortCoverage": {
+    "clients": 100,
+    "latest_first_ms": 1791776662598,
+    "earliest_last_ms": 1791777633262,
+    "common_active_ms": 970664
+  },
+  "admission": {
+    "authenticated": 100,
+    "failed": 0,
+    "max_registration_ms": 172,
+    "max_login_ms": 152,
+    "max_join_ms": 118
+  },
+  "readFailureCategories": {
+    "timeout": 0,
+    "policy": 0,
+    "abnormal": 6,
+    "going_away": 0,
+    "normal": 0,
+    "protocol": 0,
+    "too_big": 0,
+    "server": 0,
+    "eof": 0,
+    "unknown": 1
+  },
+  "recovery": {
+    "clients": 100,
+    "requested": 2896,
+    "completed": 2896,
+    "pending": 0,
+    "failed": 0
+  },
+  "requiredPolicy": {
+    "durationSeconds": 86400,
+    "minimumClientStateRate": 5,
+    "requiredPerClientFrames": 432000,
+    "requiredPerClientActiveMs": 77760000,
+    "sourcePolicySHA256": "0bb68e40253eaa31896c0cc6f5b19e5d4de364333eecfd7a954cc704b8031959",
+    "currentPolicyByteExactToSoakSource": true
+  },
+  "runtime": {
+    "samples": 1440,
+    "allReadySameSource": true,
+    "maxGoroutines": 339,
+    "maxHeapAllocBytes": 151053672,
+    "heapGrowthBytes": 69739536,
+    "lastWebsocketClosures": {
+      "accessDenied": 0,
+      "accountRecovery": 0,
+      "adminAdmission": 0,
+      "adminStorage": 0,
+      "hubShutdown": 0,
+      "inboundLimit": 0,
+      "peerAbnormal": 93,
+      "peerGoingAway": 0,
+      "peerNormal": 0,
+      "peerPolicy": 0,
+      "peerProtocol": 0,
+      "peerServer": 0,
+      "priorityOverflow": 7,
+      "qaDisconnect": 0,
+      "queuesClosed": 0,
+      "readNetwork": 0,
+      "readOther": 0,
+      "readTimeout": 0,
+      "sessionReplaced": 0,
+      "writeNetwork": 0,
+      "writeOther": 0,
+      "writeTimeout": 0
+    },
+    "priorityOverflowChanges": [
+      {
+        "sampleIndex": 0,
+        "priorityOverflow": 0
+      },
+      {
+        "sampleIndex": 17,
+        "priorityOverflow": 1
+      },
+      {
+        "sampleIndex": 18,
+        "priorityOverflow": 2
+      },
+      {
+        "sampleIndex": 32,
+        "priorityOverflow": 3
+      },
+      {
+        "sampleIndex": 36,
+        "priorityOverflow": 4
+      },
+      {
+        "sampleIndex": 71,
+        "priorityOverflow": 5
+      },
+      {
+        "sampleIndex": 193,
+        "priorityOverflow": 6
+      },
+      {
+        "sampleIndex": 240,
+        "priorityOverflow": 7
+      }
+    ],
+    "maxRealtimeUpdateMicros": 130986,
+    "maxStateBroadcastMicros": 291416,
+    "sampledBroadcastDrops": 0,
+    "sampledEncounterDrops": 0,
+    "sampledWriteTimeouts": 0
+  },
+  "finding": "Seven reader errors and failed per-client24h coverage; only16m10.664s common100client interval. PriorityOverflow rises to7 in samples17,18,32,36,71,193,240; sampled writeTimeout/readTimeout stay0. These matching aggregates identify priority-lane saturation for bounded diagnosis, not individual causal attribution. Ready health and aggregate232Mframes do not establish100client24h capacity.",
+  "nextAction": "Trace priority enqueue ownership, reliable-message producer rates and reader completion against a bounded disposable workload; preserve queue limits/coverage policy and distinguish expected harness shutdown from early priority overflow. No blind long soak rerun.",
+  "recordedUTC": "2026-10-13T04:04:08.532405+00:00",
+  "artifact": {
+    "artifactId": 11786954661,
+    "bytes": 1278054,
+    "sha256": "a10981887b0419460bb16233e697e22a8192c7080c3bb18a04430ac139f3afcd",
+    "allCRCsMatch": true,
+    "privateRawEvidence": "/home/aeml/.local/share/eidolon-master-20261011/.qa-soak41-terminal",
+    "files": [
+      {
+        "path": "soak-process.log",
+        "bytes": 0
+      },
+      {
+        "path": "soak-runtime.jsonl",
+        "bytes": 2751547
+      },
+      {
+        "path": "soak-client.log",
+        "bytes": 11193
+      },
+      {
+        "path": "soak-server.log",
+        "bytes": 20621741
+      },
+      {
+        "path": "soak-suspicious.log",
+        "bytes": 0
+      }
+    ]
+  },
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-soak41-terminal-checks-20261013",
+    "entries": 4,
+    "inventorySHA256": "1b236ff35f8d856da387f7877aedcdfb69e0b2062b87585a989701323adc7c50"
+  },
+  "limits": "Isolated disposable exact41server/database; no production mutation or retry. Full original art/gameplay/device/performance/operations/owner/F1-F5/beta/handoff goal remains open."
+}
