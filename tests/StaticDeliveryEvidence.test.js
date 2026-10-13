@@ -81,6 +81,8 @@ test('bounded request history retains early failures and pending failures withou
         const req = request(); page.emit('request', req); page.emit('requestfailed', req);
     }
     expect(evidence.snapshot().failures).toHaveLength(32);
+    expect(evidence.snapshot().failureCount).toBe(41);
+    expect(evidence.snapshot().droppedFailures).toBe(9);
 });
 
 test('qualified geometry worker lifetimes share the request clock and release listeners', () => {
@@ -94,6 +96,7 @@ test('qualified geometry worker lifetimes share the request clock and release li
         const instance = new EventEmitter(); instance.url = worker.url; page.emit('worker', instance); live.push(instance);
     }
     expect(evidence.snapshot().workers).toHaveLength(32); expect(evidence.snapshot().workerCount).toBe(41);
+    expect(evidence.snapshot().droppedWorkers).toBe(9);
     expect(live.reduce((sum, instance) => sum + instance.listenerCount('close'), 0)).toBe(16);
     expect(evidence.snapshot().workers.at(-1).closeUnobserved).toBe(true);
     page.emit('close'); evidence.dispose();
@@ -110,4 +113,21 @@ test('unknown and foreign workers never enter diagnostics or acquire listeners',
         expect(instance.listenerCount('close')).toBe(0);
     }
     expect(evidence.snapshot().workers).toEqual([]);
+});
+
+test('page closure freezes the observation clock and makes pending lifetime limits explicit', () => {
+    const { page, evidence, tick, frame } = fixture(), req = request(), worker = new EventEmitter();
+    worker.url = () => origin + workerPath;
+    page.emit('request', req); page.emit('worker', worker);
+    for (let i = 0; i < 40; i++) page.emit('framenavigated', frame);
+    tick(30); page.emit('close'); tick(100);
+    worker.emit('close'); page.emit('requestfailed', req);
+    const result = evidence.snapshot();
+    expect(result.elapsedMs).toBe(30); expect(result.observationEnded).toEqual({ atMs: 30, reason: 'page-close' });
+    expect(result.active).toBe(1); expect(result.requests[0].outcome).toBe('pending');
+    expect(result.workers[0]).toEqual({ id: 1, path: workerPath, openedMs: 0, closeUnobserved: true });
+    expect(result.navigationCount).toBe(40); expect(result.droppedNavigations).toBe(8);
+    expect(result.navigations).toHaveLength(32);
+    result.observationEnded.reason = 'private'; evidence.dispose();
+    expect(evidence.snapshot().observationEnded.reason).toBe('page-close');
 });

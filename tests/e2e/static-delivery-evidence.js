@@ -17,7 +17,7 @@ function knownAssets() {
 export function observeStaticDelivery(page, baseURL, { allowed = knownAssets(), now = () => performance.now() } = {}) {
     const origin = new URL(baseURL).origin, startedAt = now(), requests = new WeakMap(), recordedFailures = new WeakSet();
     const recent = [], failures = [], workers = [], navigations = [], listeners = new Map();
-    let observed = 0, active = 0, workerCount = 0, navigationCount = 0, disposed = false;
+    let observed = 0, active = 0, workerCount = 0, navigationCount = 0, failureCount = 0, ended = null;
     const time = () => Math.max(0, Math.round((now() - startedAt) * 10) / 10);
     const pathOf = raw => {
         try {
@@ -29,7 +29,7 @@ export function observeStaticDelivery(page, baseURL, { allowed = knownAssets(), 
     const bounded = (rows, value, limit) => { rows.push(value); if (rows.length > limit) rows.shift(); };
     const recordFailure = row => {
         if (recordedFailures.has(row)) return;
-        recordedFailures.add(row); bounded(failures, row, 32);
+        recordedFailures.add(row); failureCount++; bounded(failures, row, 32);
     };
     const started = request => {
         if (request.method() !== 'GET' || !['script', 'fetch'].includes(request.resourceType())) return;
@@ -63,30 +63,36 @@ export function observeStaticDelivery(page, baseURL, { allowed = knownAssets(), 
         bounded(workers, row, 32);
         if (listeners.size >= 16) { row.closeUnobserved = true; return; }
         const close = () => { row.closedMs = time(); instance.removeListener('close', close); listeners.delete(instance); };
-        listeners.set(instance, close); instance.once('close', close);
+        listeners.set(instance, { close, row }); instance.once('close', close);
     };
     const navigated = frame => {
         if (frame !== page.mainFrame()) return;
         bounded(navigations, { id: ++navigationCount, atMs: time() }, 32);
     };
     const handlers = { request: started, response, requestfinished: finished, requestfailed: failed, worker, framenavigated: navigated };
-    const dispose = () => {
-        if (disposed) return;
-        disposed = true;
+    const end = reason => {
+        if (ended) return;
+        ended = { atMs: time(), reason };
         for (const [event, handler] of Object.entries(handlers)) page.removeListener(event, handler);
-        page.removeListener('close', dispose);
-        for (const [instance, close] of listeners) instance.removeListener('close', close);
+        page.removeListener('close', closed);
+        for (const [instance, { close, row }] of listeners) {
+            instance.removeListener('close', close);
+            row.closeUnobserved = true;
+        }
         listeners.clear();
     };
+    const closed = () => end('page-close');
     for (const [event, handler] of Object.entries(handlers)) page.on(event, handler);
-    page.once('close', dispose);
+    page.once('close', closed);
     return {
         snapshot() {
-            return { schema: 1, elapsedMs: time(), observed, active, dropped: Math.max(0, observed - recent.length),
+            return { schema: 1, elapsedMs: ended?.atMs ?? time(), observationEnded: ended ? { ...ended } : null,
+                observed, active, dropped: Math.max(0, observed - recent.length),
                 requests: recent.map(row => ({ ...row })), failures: failures.map(row => ({ ...row })),
-                workerCount, workers: workers.map(row => ({ ...row })),
-                navigationCount, navigations: navigations.map(row => ({ ...row })) };
+                failureCount, droppedFailures: Math.max(0, failureCount - failures.length),
+                workerCount, droppedWorkers: Math.max(0, workerCount - workers.length), workers: workers.map(row => ({ ...row })),
+                navigationCount, droppedNavigations: Math.max(0, navigationCount - navigations.length), navigations: navigations.map(row => ({ ...row })) };
         },
-        dispose
+        dispose() { end('manual'); }
     };
 }
