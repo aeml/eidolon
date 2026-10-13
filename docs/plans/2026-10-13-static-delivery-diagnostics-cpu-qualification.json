@@ -1,0 +1,33 @@
+{
+  "atUTC": "2026-10-13T01:11:57.340800+00:00",
+  "source": "3b7e8fb91824a3aa51f7c64092881c155bf5fd10",
+  "scope": "QA-only page-observable static delivery diagnostics; native integration pending current release47 terminal",
+  "tests": {
+    "chunk_id": "5f51e7",
+    "wall_time_seconds": 1.4528e-05,
+    "exit_code": 0,
+    "original_token_count": 110,
+    "output": "(node:1832378) ExperimentalWarning: VM Modules is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n\nTest Suites: 3 passed, 3 total\nTests:       53 passed, 53 total\nSnapshots:   0 total\nTime:        6.911 s\nRan all test suites within paths \"tests/StaticDeliveryEvidence.test.js\", \"tests/StartupModuleEvidence.test.js\", \"tests/PlaywrightArtifactPrivacy.test.js\".\n"
+  },
+  "lint": "All final changed JavaScript files lint passed; required browser-smoke plan20checks passed with the new anonymous integration fixture selected.",
+  "discovery": "One native dedicated-worker HTTP integration fixture discovered; not run while own47 CI reserves native browser/GPU",
+  "runtimeChanges": false,
+  "limitations": [
+    "Original public45 abort/network-change cause remains unproven.",
+    "No account API/headers/bodies/query strings retained.",
+    "Bounded recent history256, failure history32, worker history32, active worker close listeners16, main-frame navigation history32.",
+    "Does not change failure collection, retries, navigation budgets or product worker deadlines."
+  ],
+  "checks": {
+    "passed": 73,
+    "suites": 4,
+    "lintPassed": true,
+    "browserFixtureDiscovered": 1,
+    "browserFixtureExecuted": false
+  },
+  "frozen": {
+    "path": "/home/aeml/.local/share/eidolon-static-delivery-diagnostics-cpu-checks-20261013",
+    "entries": 10,
+    "inventorySHA256": "ac4dd90a130a07a97faec167d89a6748ece529d0bb09794485ee38c9cba23ef5"
+  }
+}
