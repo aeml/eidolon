@@ -2,7 +2,7 @@
   "recordedUTC": "2026-10-13T20:48:14.122974+00:00",
   "source": "1549f7cd4d4428de04aa61332ee1ff9c38edd96f",
   "base": "00dc8315",
-  "status": "Qualified exact format validation cleanup; ready ordinary master merge, unpublished.",
+  "status": "Qualified exact format validation cleanup, ordinarily merged into local master, unpublished.",
   "change": "Compare own attribute-name membership with equal key counts instead of sorting both dictionaries. Read existing packed/interleaved array constructors directly rather than allocating unused storage tuples. Constructor-name vs constructor-identity policies remain as originally authored for shadow/color respectively. No cached validation, skipped guard, shader, source mesh, material, rig, animation, geometry quality or renderer lifetime change.",
   "focused": {
     "passed": 184,
@@ -357,5 +357,6 @@
     "entries": 33,
     "inventorySHA256": "8c84943a650d1b0f9cec0fc0849257b0fc8c5d1b0b9d3c97df8e86a40e6c8018"
   },
-  "limits": "CPU real owner.valid synthetic four53bone/sixmesh fixtures show color candidate174.1\u2013200.4ms/reference216.4\u2013243.8ms per16000checks. Unchanged shadow.valid control overlaps/slower candidate and is not an improvement claim. Native High candidateCPU28.1/28.7ms vs reference29.7/29.2ms; Low12.9/14.3 vs13.7/13.7 overlap. Whole High frames33.3ms and279283triangles still fail original20ms/250000 limits; Low107747triangles still fails85000. No whole-game FPS, physical-device, final-art, capacity or readiness acceptance. Public49 stays accepted, no50publication."
+  "limits": "CPU real owner.valid synthetic four53bone/sixmesh fixtures show color candidate174.1\u2013200.4ms/reference216.4\u2013243.8ms per16000checks. Unchanged shadow.valid control overlaps/slower candidate and is not an improvement claim. Native High candidateCPU28.1/28.7ms vs reference29.7/29.2ms; Low12.9/14.3 vs13.7/13.7 overlap. Whole High frames33.3ms and279283triangles still fail original20ms/250000 limits; Low107747triangles still fails85000. No whole-game FPS, physical-device, final-art, capacity or readiness acceptance. Public49 stays accepted, no50publication.",
+  "masterMerge": "d6cc0e01aaf5a4f4fc0f98c4e05b45db255018c8"
 }
