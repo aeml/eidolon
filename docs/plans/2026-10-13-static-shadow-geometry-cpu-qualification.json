@@ -1,0 +1,26 @@
+{
+  "atUTC": "2026-10-13T00:07:58.798921+00:00",
+  "base": "874d14d4a0d50b5b1d23e275d95e2bd97850d40c",
+  "status": "Isolated geometry-only prototype; no renderer hook, owner, default selection or native/GPU/performance acceptance.",
+  "checks": {
+    "focusedPassed": 38,
+    "suites": 1,
+    "lintPassed": true,
+    "actualConstructorRows": 56,
+    "exactGeometryComparisons": 80,
+    "CPUMotionSamples": 4
+  },
+  "hypothesis": "Concatenate original raw positions and ordered indices only when world matrices/depth sides/layers match exactly; full triangles/color sources stay unchanged. No transform baking and no custom shader required.",
+  "limits": [
+    "Native actual per-camera culling/order/fullRGBA/packeddepth/resource/cadence gates pending.",
+    "Allocation bounded to1000000vertices/3000000indices. Incompatible/morph/alpha/instanced/custom-shadow sources stay original.",
+    "Census51potential submissions is theoretical; Low production disables shadows and no benefit claimed.",
+    "Every triangle stays: original High/Low triangle budget failures/full original goal remain open."
+  ],
+  "sourceCensus": "2026-10-13-static-shadow-source-census.json",
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-static-shadow-geometry-cpu-checks-20261013",
+    "entries": 10,
+    "inventorySHA256": "d51435ffb11dc156d8d264b7ac33f311d175082816ff4164f3b5c116d6c920b3"
+  }
+}
