@@ -1,0 +1,195 @@
+{
+  "source": "8e5f888a66b65e6a69e26c62499b4113549b40c0",
+  "version": "Alpha 1.79.49",
+  "status": "Pushed exact corrected49 to master; own ordered CI/deploy/live and fresh157asset/source/readyDB acceptance pending. Public47 remains accepted.",
+  "qualificationReceipts": [
+    "2026-10-13-dark-masonry-native-qualification.json",
+    "2026-10-13-scenery-shutdown-qualification.json",
+    "2026-10-13-private-release-smoke-qualification.json",
+    "2026-10-13-opaque-color-default-integration-qualification.json",
+    "2026-10-13-town-service-aprons-native-qualification.json"
+  ],
+  "preparation": {
+    "atUTC": "2026-10-13T04:25:53.714432+00:00",
+    "source": "8e5f888a66b65e6a69e26c62499b4113549b40c0",
+    "version": "Alpha 1.79.49",
+    "clientPassed": 469,
+    "clientSuites": 6,
+    "changedReleaseChecksPassed": 22,
+    "unchangedReleaseChecksReused": 447,
+    "contentGroups": 14,
+    "versionFiles": 12,
+    "notes": 484,
+    "priorNotesByteExact": 483,
+    "publicPins": 157,
+    "bundledModules": 485,
+    "copiedTownProfiles": [
+      "high",
+      "low"
+    ],
+    "copiedDarkProfiles": [
+      "high",
+      "low"
+    ],
+    "copiedDarkAll49MeshBuffersAndSixMapsExact": true,
+    "copiedActiveCutawayTerminalResourcesOnce": 24,
+    "defaultColorSavedSubmissionsPerProfile": 15,
+    "defaultHighShadowSavedSubmissions": 96,
+    "defaultLowShadowEntries": 0,
+    "retries": 0,
+    "retainedFinding": "Initial unpublished591copy Low active-cutaway game.destroy original material disposal0/maps1. CPU regression2failed, four-line RenderSystem shutdown correction qualified53CPU/five suites and both actual native active-fade profiles. Changed8e copy rebuilt; both town/dark HighLow controls and all original+temporary resources pass. Initialcopy source/bundle/images/log/inventory retained; exact3839files verified before retiring rejectedcopy. Earlier missing local gate file before browser also retained.",
+    "priorPublicCheckUTC": "2026-10-13T04:23:38.674140+00:00",
+    "limits": "No own49 CI/deploy/live/public acceptance yet. Original crowded-town triangle failures, older network causes,16shortSWshard abort findings, failed100client soak coverage, final-art/device/owner/F1-F5/beta/handoff/full original goal remain open."
+  },
+  "build": {
+    "source": "8e5f888a66b65e6a69e26c62499b4113549b40c0",
+    "pins": 157,
+    "copyFiles": 3839,
+    "copyBytes": 452772556,
+    "build": {
+      "worker": {
+        "output": "src/core/ActorGameplayGeometryWorker.28b738eaf5aa3a9b.js",
+        "sha256": "28b738eaf5aa3a9ba5df513fbd8c400f3d82a5f0f2624d529731c57b80a95f03",
+        "bytes": 179507,
+        "modules": 15,
+        "imports": [],
+        "precomputed": {
+          "path": "assets/gameplay-geometry/indices.6aa8c7e199c910b5.bin",
+          "sha256": "6aa8c7e199c910b5fbf0f78dfae873b64e79aa0045e39b5775ff9ac7d7e93346",
+          "bytes": 777321,
+          "entries": 133,
+          "shards": [
+            {
+              "path": "assets/gameplay-geometry/indices.62dceb9abec13cb0.bin",
+              "bytes": 64411,
+              "sha256": "62dceb9abec13cb09ab25fe730382241a5fbcf1817b839941e9995f9843e4697"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.492b64fcc6657fc5.bin",
+              "bytes": 62475,
+              "sha256": "492b64fcc6657fc54d829dd4c7766e9d02b3b953fc71fae2095af66298ea91f5"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.a8e4573b9f020cff.bin",
+              "bytes": 65216,
+              "sha256": "a8e4573b9f020cff14f66422c28aa0e53e4917701deade51f6dd2980fdb9dd5f"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.71f4b276ae9218f5.bin",
+              "bytes": 54754,
+              "sha256": "71f4b276ae9218f5378733f29f1bde7f23dfcd10457fc74de5c2663fee476de2"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.796064b1159706c0.bin",
+              "bytes": 43601,
+              "sha256": "796064b1159706c0c57e425bd02cf9de251a34a1cddc03f5dd270d4cf6a3d178"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.590ea8d42219fe53.bin",
+              "bytes": 58638,
+              "sha256": "590ea8d42219fe530050b5ba2886c8c6e7bf4233017b7f0c497d11b5c72470d6"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.927fa72b1036cdc4.bin",
+              "bytes": 60257,
+              "sha256": "927fa72b1036cdc4fa62f98fdf7e9194be5f46e1471226dbd74235a91de17fdb"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.fa8c332b1b158f42.bin",
+              "bytes": 59698,
+              "sha256": "fa8c332b1b158f42e03cea80cf2cf82690f7786b39d440f4357488dc52a55c98"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.5d09cf75404d7d80.bin",
+              "bytes": 55905,
+              "sha256": "5d09cf75404d7d807e7a93df3b990cf31ced511d466e592aa387d0d8c5c69bff"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.8005a3dfbb147be0.bin",
+              "bytes": 37007,
+              "sha256": "8005a3dfbb147be0eda039e856a45c7bac9b495cea65fbfe8cdc2a9bc78fc501"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.b92aae6f7fe78a87.bin",
+              "bytes": 34450,
+              "sha256": "b92aae6f7fe78a87d26d1868d2bc91ce196901d7d4a51030aead970a178901e1"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.51e1054c0867a1e5.bin",
+              "bytes": 62385,
+              "sha256": "51e1054c0867a1e5a1890b69226847966210eff4fbec4f8260c491683a2da35b"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.f4d836ae9209700e.bin",
+              "bytes": 62002,
+              "sha256": "f4d836ae9209700e9babeb3483f3479434c2c652c58950feed98400b849e4777"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.637f0a8ba2de3e76.bin",
+              "bytes": 56522,
+              "sha256": "637f0a8ba2de3e76e3a09f3c95627d5967df8747fb61f49d1b830d05a9fc1470"
+            }
+          ]
+        }
+      },
+      "bundledModules": 485,
+      "bytes": 3806754,
+      "sharedLoginModules": 22,
+      "vendorModules": [
+        "vendor/three/examples/jsm/geometries/RoundedBoxGeometry.js",
+        "vendor/three/examples/jsm/loaders/GLTFLoader.js",
+        "vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+        "vendor/three/examples/jsm/postprocessing/MaskPass.js",
+        "vendor/three/examples/jsm/postprocessing/OutputPass.js",
+        "vendor/three/examples/jsm/postprocessing/Pass.js",
+        "vendor/three/examples/jsm/postprocessing/RenderPass.js",
+        "vendor/three/examples/jsm/postprocessing/ShaderPass.js",
+        "vendor/three/examples/jsm/postprocessing/UnrealBloomPass.js",
+        "vendor/three/examples/jsm/shaders/CopyShader.js",
+        "vendor/three/examples/jsm/shaders/FXAAShader.js",
+        "vendor/three/examples/jsm/shaders/LuminosityHighPassShader.js",
+        "vendor/three/examples/jsm/shaders/OutputShader.js",
+        "vendor/three/examples/jsm/utils/BufferGeometryUtils.js",
+        "vendor/three/examples/jsm/utils/SkeletonUtils.js"
+      ],
+      "externalImports": [
+        "../assets/ServiceWorkerBoot.js",
+        "../data/worldGeography.js",
+        "../ui/EmailRecoveryUI.js",
+        "../ui/OwnedEvents.js",
+        "../ui/PasswordChangeUI.js",
+        "../ui/ReportUI.js",
+        "../ui/reportTypes.js",
+        "./CredentialToken.js",
+        "./GraphicsStartup.js",
+        "three"
+      ]
+    },
+    "versioning": {
+      "root": "/home/aeml/.local/share/eidolon-master-20261011/.qa-release49/publication-copy",
+      "release": "8e5f888a66b65e6a69e26c62499b4113549b40c0",
+      "scannedFiles": 956,
+      "changedFiles": 432,
+      "bundledStyles": true
+    }
+  },
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-release49-masonry-preparation-checks-20261013",
+    "entries": 74,
+    "inventorySHA256": "718df3615cb7901b269fed2c270a299adf3cf2b2d859fdc43fdc1f372f0545f1"
+  },
+  "priorPublic": {
+    "source": "13f541755f2217cd429c3c9d782ccd0966e3f379",
+    "freshCheckUTC": "2026-10-13T04:23:38.674140+00:00",
+    "all152pinsIdentitiesReadyDBMatch": true
+  },
+  "limits": "No own49 CI/deploy/live/public acceptance yet. Original crowded-town triangle failures, older network causes,16shortSWshard abort findings, failed100client soak coverage, final-art/device/owner/F1-F5/beta/handoff/full original goal remain open.",
+  "ownCI": {
+    "conclusion": "",
+    "createdAt": "2026-10-13T04:25:58Z",
+    "databaseId": 38346406878,
+    "headSha": "8e5f888a66b65e6a69e26c62499b4113549b40c0",
+    "status": "in_progress"
+  },
+  "recordedUTC": "2026-10-13T04:27:45.685649+00:00"
+}
