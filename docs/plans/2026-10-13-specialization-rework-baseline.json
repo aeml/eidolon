@@ -1,0 +1,2336 @@
+{
+  "recordedUTC": "2026-10-13T21:17:02.285Z",
+  "source": "48a0bdb03a96984f8fbb4d4ee1b74fd4ffbe12f4",
+  "scope": "Read-only current canonical learned-branch/client-server rune inventory and implementation direction. No game/save/production changes or actual combat/playtest acceptance.",
+  "ownerRequest": "Rework abilities, runes and related systems so every specialization is unique, useful and fun to play.",
+  "summary": {
+    "classes": 4,
+    "specializations": 12,
+    "uniqueLearnedSkills": 52,
+    "specializationSkills": 48,
+    "specializationSkillsWithRunes": 16,
+    "runeDefinitions": 60,
+    "branchesWithNoSpecializationRunes": [
+      {
+        "classType": "Fighter",
+        "branch": "C",
+        "existingLabel": "Damage Tank / Offense-Tank Hybrid"
+      },
+      {
+        "classType": "Wizard",
+        "branch": "B",
+        "existingLabel": "Single-Target Caster"
+      },
+      {
+        "classType": "Cleric",
+        "branch": "C",
+        "existingLabel": "Buff/Debuff Support"
+      }
+    ],
+    "clientServerRuneDefinitionsExact": true,
+    "clientServerBranchSkillListsExact": true
+  },
+  "sources": [
+    {
+      "path": "src/core/Constants.js",
+      "bytes": 47094,
+      "sha256": "8e01b17917453867fa17d73485c8dd5b56171dbcf824dd37021d9d1ed84711ad"
+    },
+    {
+      "path": "server/internal/game/skills.go",
+      "bytes": 5051,
+      "sha256": "4042f59006d120065a1ad16ed8a10ed182e1d833a309182f6f7f0a5069f8c63a"
+    },
+    {
+      "path": "server/internal/game/runes.go",
+      "bytes": 9843,
+      "sha256": "208f13d60bf6092979fa57a001b89baf0edac4b14c15930c9d12f1c6be49c5d0"
+    },
+    {
+      "path": "server/internal/game/talents.go",
+      "bytes": 25926,
+      "sha256": "ea91dbf24db564b08a820661d821e03dc6b9f0f35154e88b8804125a977e6b1f"
+    },
+    {
+      "path": "server/internal/game/ability_config.go",
+      "bytes": 6850,
+      "sha256": "441e935ac4be86f270bf2ab50ad0aa71e0668f76e035898c69fa7ae77235523a"
+    },
+    {
+      "path": "server/internal/game/ability_wizard.go",
+      "bytes": 35237,
+      "sha256": "69197b51a6b9853f86ac794af802d99f04f8bf7ee9e476dd09e71d3fd46f2f10"
+    },
+    {
+      "path": "src/entities/Wizard.js",
+      "bytes": 31952,
+      "sha256": "c02b83f7cd8dcfd5172df78fc5a421412c5c75d141908a6b0e3efb5dcdd643cd"
+    },
+    {
+      "path": "docs/plans/2026-09-28-class-kit-rework.md",
+      "bytes": 8462,
+      "sha256": "7364adb469c9a6f65800645aea5fc9b82214ae663bf4f1c5de51e7d9f3033b20"
+    }
+  ],
+  "principles": [
+    "Give each branch a distinct repeatable loop, meaningful moment-to-moment decisions, appropriate pressure response and useful solo/party/boss role.",
+    "Reach the full kit from that branch plus its shared starter at ordinary progression breakpoints; no cross-branch grants.",
+    "Cover every learned skill with real rune choices in coherent class updates, retaining stable existing IDs and current50/70/90 unlock cadence initially. Options should remain useful by situation rather than making the latest unlock universally best.",
+    "Review talents, combos, resource/cooldown pacing, authoritative effects, offline equivalents, target boundaries, UI/status/aim, animations/VFX and audio together. Do not certify rework from labels, damage inflation, catalog counts or dummy grants.",
+    "Preserve characters, earned points, selected branch, learned skills, equipped runes, hotbars/loadouts and valuable custody. Explicitly migrate only when identifiers truly must change.",
+    "Retain field-resource/town-recovery rules, ordinary equipment and control-immunity boundaries; demonstrate real learned casts with focused tests and device-readable feedback.",
+    "Begin with a complete Wizard class pass, prioritizing its rune-empty precision branch while retaining separate Pyromancer and control identities; then Fighter, Rogue and Cleric.",
+    "Fun and final balance remain actual playtest judgments; owner-deferred campaign/phone/listening feedback is not replaced by exhaustive automated campaigns."
+  ],
+  "records": [
+    {
+      "classType": "Fighter",
+      "branch": "A",
+      "existingLabel": "Shield & Mitigation",
+      "sharedStarter": "Charge",
+      "skills": [
+        {
+          "name": "Whirlwind",
+          "unlockLevel": 10,
+          "description": "Spin around dealing damage to all nearby enemies.",
+          "baseMana": 30,
+          "baseCooldownSeconds": 8,
+          "baseRange": 5,
+          "runes": [
+            {
+              "id": "whirlwind_extended",
+              "name": "Extended",
+              "skill": "Whirlwind",
+              "unlockLevel": 50,
+              "description": "+100% duration, -50% damage per pulse"
+            },
+            {
+              "id": "whirlwind_bladestorm",
+              "name": "Bladestorm",
+              "skill": "Whirlwind",
+              "unlockLevel": 70,
+              "description": "Pulls enemies toward you"
+            },
+            {
+              "id": "whirlwind_bloodwhirl",
+              "name": "Bloodwhirl",
+              "skill": "Whirlwind",
+              "unlockLevel": 90,
+              "description": "Heals 2% HP per enemy hit"
+            }
+          ],
+          "talents": [
+            {
+              "id": "FTR_03",
+              "name": "Whirlwind - Mastery",
+              "desc": "+4% Whirlwind damage per rank (20% max).",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Whirlwind",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "FTR_04",
+              "name": "Whirlwind - Technique",
+              "desc": "+3% Whirlwind CDR, +2% range/AoE per rank.",
+              "maxRank": 5,
+              "abilityArea": {
+                "skill": "Whirlwind",
+                "radius": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Whirlwind",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Shield Slam",
+          "unlockLevel": 20,
+          "description": "Cone strike generating 2× normal threat from damage dealt; briefly stuns non-immune enemies.",
+          "baseMana": 25,
+          "baseCooldownSeconds": 6,
+          "baseRange": 4,
+          "runes": [
+            {
+              "id": "shieldslam_concussion",
+              "name": "Concussion",
+              "skill": "Shield Slam",
+              "unlockLevel": 50,
+              "description": "Stun duration +1s"
+            },
+            {
+              "id": "shieldslam_reverberation",
+              "name": "Reverberation",
+              "skill": "Shield Slam",
+              "unlockLevel": 70,
+              "description": "Hits twice"
+            },
+            {
+              "id": "shieldslam_fortify",
+              "name": "Fortify",
+              "skill": "Shield Slam",
+              "unlockLevel": 90,
+              "description": "Grants shield equal to damage dealt"
+            }
+          ],
+          "talents": [
+            {
+              "id": "FTR_05",
+              "name": "Shield Slam - Mastery",
+              "desc": "+4% Shield Slam damage per rank (20% max).",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Shield Slam",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "FTR_06",
+              "name": "Shield Slam - Technique",
+              "desc": "+3% Shield Slam CDR, +2% range/AoE per rank.",
+              "maxRank": 5,
+              "abilityArea": {
+                "skill": "Shield Slam",
+                "radius": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Shield Slam",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Iron Fortress",
+          "unlockLevel": 30,
+          "description": "Refresh Shield Slam and brace for 30 seconds: take 20% less damage and gain 50% armor, at the cost of 20% movement speed. Follow with Shield Slam for a stronger counter. Mastery extends duration.",
+          "baseMana": 40,
+          "baseCooldownSeconds": 60,
+          "baseRange": 0,
+          "runes": [
+            {
+              "id": "ironfortress_extended",
+              "name": "Extended",
+              "skill": "Iron Fortress",
+              "unlockLevel": 50,
+              "description": "+50% duration"
+            },
+            {
+              "id": "ironfortress_thorns",
+              "name": "Thorns",
+              "skill": "Iron Fortress",
+              "unlockLevel": 70,
+              "description": "Reflect 20% damage while active"
+            },
+            {
+              "id": "ironfortress_immovable",
+              "name": "Immovable",
+              "skill": "Iron Fortress",
+              "unlockLevel": 90,
+              "description": "Cannot be knocked back or pulled"
+            }
+          ],
+          "talents": [
+            {
+              "id": "FTR_07",
+              "name": "Iron Fortress - Mastery",
+              "desc": "+4% Iron Fortress duration per rank (20% max). Does not increase protection or reflection strength.",
+              "maxRank": 5,
+              "abilityDuration": {
+                "skill": "Iron Fortress",
+                "duration": 0.04
+              }
+            },
+            {
+              "id": "FTR_08",
+              "name": "Iron Fortress - Technique",
+              "desc": "+3% Iron Fortress CDR, +2% range/AoE per rank.",
+              "maxRank": 5,
+              "abilityEconomy": {
+                "skill": "Iron Fortress",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Guardian Roar",
+          "unlockLevel": 40,
+          "description": "Large-radius taunt + 30% group damage reduction (10s base duration).",
+          "baseMana": 35,
+          "baseCooldownSeconds": 30,
+          "baseRange": 15,
+          "runes": [],
+          "talents": [
+            {
+              "id": "FTR_09",
+              "name": "Guardian Roar - Mastery",
+              "desc": "+4% Guardian Roar buff duration per rank (20% max). Nearby allies inherit your duration; protection strength and taunt threat are unchanged.",
+              "maxRank": 5,
+              "abilityDuration": {
+                "skill": "Guardian Roar",
+                "duration": 0.04
+              }
+            },
+            {
+              "id": "FTR_10",
+              "name": "Guardian Roar - Technique",
+              "desc": "+3% Guardian Roar CDR, +2% range/AoE per rank.",
+              "maxRank": 5,
+              "abilityArea": {
+                "skill": "Guardian Roar",
+                "radius": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Guardian Roar",
+                "cdr": 0.03
+              }
+            }
+          ]
+        }
+      ],
+      "specializationSkillsWithRunes": 3,
+      "specializationSkillsWithoutRunes": [
+        "Guardian Roar"
+      ],
+      "reachableClientCombos": [
+        {
+          "id": "fortress_counter",
+          "name": "Fortress Counter",
+          "firstSkill": "Iron Fortress",
+          "secondSkill": "Shield Slam",
+          "description": "Shield Slam deals 50% more damage. Normal mana and global cooldown apply."
+        },
+        {
+          "id": "momentum_strike",
+          "name": "Momentum Strike",
+          "firstSkill": "Charge",
+          "secondSkill": "Whirlwind",
+          "description": "+50% Whirlwind damage"
+        },
+        {
+          "id": "guardian_combo",
+          "name": "Guardian Combo",
+          "firstSkill": "Shield Slam",
+          "secondSkill": "Guardian Roar",
+          "description": "Guardian Roar protection lasts 50% longer; taunt is still a one-time threat boost."
+        }
+      ],
+      "direction": "Active shield defense, reliable threat and deliberate counterattacks; protect allies without permanent mitigation upkeep.",
+      "status": "Rework pending; existing learned kit/catalog enumerated, actual consumer and balance audit remains."
+    },
+    {
+      "classType": "Fighter",
+      "branch": "B",
+      "existingLabel": "Control & Crowd Management",
+      "sharedStarter": "Charge",
+      "skills": [
+        {
+          "name": "Sweeping Strike",
+          "unlockLevel": 10,
+          "description": "Small AoE cleave that increases threat.",
+          "baseMana": 30,
+          "baseCooldownSeconds": 4,
+          "baseRange": 5,
+          "runes": [],
+          "talents": [
+            {
+              "id": "FTR_11",
+              "name": "Sweeping Strike - Mastery",
+              "desc": "+4% Sweeping Strike damage per rank (20% max).",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Sweeping Strike",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "FTR_12",
+              "name": "Sweeping Strike - Technique",
+              "desc": "+3% Sweeping Strike CDR, +2% range/AoE per rank.",
+              "maxRank": 5,
+              "abilityArea": {
+                "skill": "Sweeping Strike",
+                "radius": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Sweeping Strike",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Earthshaker",
+          "unlockLevel": 20,
+          "description": "Ground smash that knocks down nearby enemies.",
+          "baseMana": 40,
+          "baseCooldownSeconds": 12,
+          "baseRange": 6,
+          "runes": [
+            {
+              "id": "earthshaker_fissure",
+              "name": "Fissure",
+              "skill": "Earthshaker",
+              "unlockLevel": 50,
+              "description": "Creates line AoE instead of circle"
+            },
+            {
+              "id": "earthshaker_aftershock",
+              "name": "Aftershock",
+              "skill": "Earthshaker",
+              "unlockLevel": 70,
+              "description": "Second smaller quake after 1s"
+            },
+            {
+              "id": "earthshaker_seismic",
+              "name": "Seismic",
+              "skill": "Earthshaker",
+              "unlockLevel": 90,
+              "description": "+100% knockdown duration"
+            }
+          ],
+          "talents": [
+            {
+              "id": "FTR_13",
+              "name": "Earthshaker - Mastery",
+              "desc": "+4% Earthshaker damage per rank (20% max).",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Earthshaker",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "FTR_14",
+              "name": "Earthshaker - Technique",
+              "desc": "+3% Earthshaker CDR, +2% range/AoE per rank.",
+              "maxRank": 5,
+              "abilityArea": {
+                "skill": "Earthshaker",
+                "radius": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Earthshaker",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Unbreakable Grip",
+          "unlockLevel": 30,
+          "description": "Strike and pull one enemy into melee range, briefly rooting it. Generates double damage threat; control-immune enemies take the hit without being moved or rooted.",
+          "baseMana": 35,
+          "baseCooldownSeconds": 15,
+          "baseRange": 10,
+          "runes": [],
+          "talents": [
+            {
+              "id": "FTR_15",
+              "name": "Unbreakable Grip - Mastery",
+              "desc": "+4% Unbreakable Grip root duration per rank (20% max). Pull distance is unchanged; immune targets still resist control.",
+              "maxRank": 5,
+              "abilityDuration": {
+                "skill": "Unbreakable Grip",
+                "duration": 0.04
+              }
+            },
+            {
+              "id": "FTR_16",
+              "name": "Unbreakable Grip - Technique",
+              "desc": "+3% Unbreakable Grip cooldown reduction and +2% targeting range per rank. Does not enlarge the cursor selection tolerance.",
+              "maxRank": 5,
+              "abilityRange": {
+                "skill": "Unbreakable Grip",
+                "range": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Unbreakable Grip",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Juggernaut Charge",
+          "unlockLevel": 40,
+          "description": "Charge up to 10 units, then unleash a damaging shockwave that slows susceptible enemies by 60% for 5 seconds.",
+          "baseMana": 30,
+          "baseCooldownSeconds": 20,
+          "baseRange": 10,
+          "runes": [],
+          "talents": [
+            {
+              "id": "FTR_17",
+              "name": "Juggernaut Charge - Mastery",
+              "desc": "+4% Juggernaut Charge damage per rank (20% max).",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Juggernaut Charge",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "FTR_18",
+              "name": "Juggernaut Charge - Technique",
+              "desc": "+3% Juggernaut Charge CDR, +2% range/AoE per rank.",
+              "maxRank": 5,
+              "abilityArea": {
+                "skill": "Juggernaut Charge",
+                "radius": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Juggernaut Charge",
+                "cdr": 0.03
+              }
+            }
+          ]
+        }
+      ],
+      "specializationSkillsWithRunes": 1,
+      "specializationSkillsWithoutRunes": [
+        "Sweeping Strike",
+        "Unbreakable Grip",
+        "Juggernaut Charge"
+      ],
+      "reachableClientCombos": [
+        {
+          "id": "tremor_rush",
+          "name": "Tremor Rush",
+          "firstSkill": "Earthshaker",
+          "secondSkill": "Charge",
+          "description": "+2s knockdown on Charge"
+        }
+      ],
+      "direction": "Engage, gather and disrupt packs; positioning and cleaves remain useful on control-immune bosses.",
+      "status": "Rework pending; existing learned kit/catalog enumerated, actual consumer and balance audit remains."
+    },
+    {
+      "classType": "Fighter",
+      "branch": "C",
+      "existingLabel": "Damage Tank / Offense-Tank Hybrid",
+      "sharedStarter": "Charge",
+      "skills": [
+        {
+          "name": "Berserker Edge",
+          "unlockLevel": 10,
+          "description": "For 15 seconds, you and nearby party members gain +50% Damage stat at the cost of 20% defense. Mastery strengthens the damage multiplier.",
+          "baseMana": 0,
+          "baseCooldownSeconds": 45,
+          "baseRange": 0,
+          "runes": [],
+          "talents": [
+            {
+              "id": "FTR_19",
+              "name": "Berserker Edge - Mastery",
+              "desc": "+4% Berserker Edge damage multiplier per rank (20% max): 1.5× to 1.8× Damage stat. Nearby party members inherit your strength; defense cost stays 20%.",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Berserker Edge",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "FTR_20",
+              "name": "Berserker Edge - Technique",
+              "desc": "+3% Berserker Edge CDR, +2% range/AoE per rank.",
+              "maxRank": 5,
+              "abilityEconomy": {
+                "skill": "Berserker Edge",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Shattering Charge",
+          "unlockLevel": 20,
+          "description": "Charge applies armor reduction to all hit.",
+          "baseMana": 30,
+          "baseCooldownSeconds": 12,
+          "baseRange": 14,
+          "runes": [],
+          "talents": [
+            {
+              "id": "FTR_21",
+              "name": "Shattering Charge - Mastery",
+              "desc": "+4% Shattering Charge damage per rank (20% max).",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Shattering Charge",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "FTR_22",
+              "name": "Shattering Charge - Technique",
+              "desc": "+3% Shattering Charge CDR, +2% range/AoE per rank.",
+              "maxRank": 5,
+              "abilityArea": {
+                "skill": "Shattering Charge",
+                "radius": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Shattering Charge",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Executioner Spin",
+          "unlockLevel": 30,
+          "description": "AoE spin that deals higher damage to marked or taunted enemies.",
+          "baseMana": 40,
+          "baseCooldownSeconds": 15,
+          "baseRange": 6,
+          "runes": [],
+          "talents": [
+            {
+              "id": "FTR_23",
+              "name": "Executioner Spin - Mastery",
+              "desc": "+4% Executioner Spin damage per rank (20% max).",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Executioner Spin",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "FTR_24",
+              "name": "Executioner Spin - Technique",
+              "desc": "+3% Executioner Spin CDR, +2% range/AoE per rank.",
+              "maxRank": 5,
+              "abilityArea": {
+                "skill": "Executioner Spin",
+                "radius": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Executioner Spin",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Last Stand Rampage",
+          "unlockLevel": 40,
+          "description": "Gain +100% Damage stat for 10 seconds, or +200% when activated below 30% health. Mastery strengthens the damage multiplier.",
+          "baseMana": 0,
+          "baseCooldownSeconds": 120,
+          "baseRange": 0,
+          "runes": [],
+          "talents": [
+            {
+              "id": "FTR_25",
+              "name": "Last Stand Rampage - Mastery",
+              "desc": "+4% Last Stand Rampage damage multiplier per rank (20% max): 2× to 2.4× Damage stat, or 3× to 3.6× when activated below 30% health.",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Last Stand Rampage",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "FTR_26",
+              "name": "Last Stand Rampage - Technique",
+              "desc": "+3% Last Stand Rampage CDR, +2% range/AoE per rank.",
+              "maxRank": 5,
+              "abilityEconomy": {
+                "skill": "Last Stand Rampage",
+                "cdr": 0.03
+              }
+            }
+          ]
+        }
+      ],
+      "specializationSkillsWithRunes": 0,
+      "specializationSkillsWithoutRunes": [
+        "Berserker Edge",
+        "Shattering Charge",
+        "Executioner Spin",
+        "Last Stand Rampage"
+      ],
+      "reachableClientCombos": [
+        {
+          "id": "iron_will",
+          "name": "Iron Will",
+          "firstSkill": "Berserker Edge",
+          "secondSkill": "Last Stand Rampage",
+          "description": "Gain an absorb ward equal to 20% of maximum health for Rampage's duration. Does not replace or stack with an active ward."
+        }
+      ],
+      "direction": "Aggressive frontline pressure with a readable survival tradeoff and payoff at ordinary health.",
+      "status": "Rework pending; existing learned kit/catalog enumerated, actual consumer and balance audit remains."
+    },
+    {
+      "classType": "Rogue",
+      "branch": "A",
+      "existingLabel": "Assassin Burst Path",
+      "sharedStarter": "Piercing Throw",
+      "skills": [
+        {
+          "name": "Backstab",
+          "unlockLevel": 10,
+          "description": "Bonus damage from behind.",
+          "baseMana": 20,
+          "baseCooldownSeconds": 6,
+          "baseRange": 2.5,
+          "runes": [
+            {
+              "id": "backstab_ambush",
+              "name": "Ambush",
+              "skill": "Backstab",
+              "unlockLevel": 50,
+              "description": "+50% crit chance"
+            },
+            {
+              "id": "backstab_eviscerate",
+              "name": "Eviscerate",
+              "skill": "Backstab",
+              "unlockLevel": 70,
+              "description": "Ignores 50% armor"
+            },
+            {
+              "id": "backstab_shadowstep",
+              "name": "Shadowstep",
+              "skill": "Backstab",
+              "unlockLevel": 90,
+              "description": "Teleport behind target before striking"
+            }
+          ],
+          "talents": [
+            {
+              "id": "ROG_03",
+              "name": "Backstab - Mastery",
+              "desc": "+4% Backstab damage per rank (20% max).",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Backstab",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "ROG_04",
+              "name": "Backstab - Technique",
+              "desc": "+3% Backstab CDR and +2% critical chance per rank (15% / 10% max).",
+              "maxRank": 5,
+              "criticalChance": {
+                "skill": "Backstab",
+                "chance": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Backstab",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Weak Point Mark",
+          "unlockLevel": 20,
+          "description": "Marked enemies take more damage from Piercing Throw.",
+          "baseMana": 25,
+          "baseCooldownSeconds": 12,
+          "baseRange": 10,
+          "runes": [],
+          "talents": [
+            {
+              "id": "ROG_05",
+              "name": "Weak Point Mark - Mastery",
+              "desc": "+4% Weak Point Mark effect duration per rank (20% max).",
+              "maxRank": 5,
+              "abilityDuration": {
+                "skill": "Weak Point Mark",
+                "duration": 0.04
+              }
+            },
+            {
+              "id": "ROG_06",
+              "name": "Weak Point Mark - Technique",
+              "desc": "+3% Weak Point Mark CDR and -2% mana cost per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityEconomy": {
+                "skill": "Weak Point Mark",
+                "cdr": 0.03,
+                "manaReduction": 0.02
+              }
+            }
+          ]
+        },
+        {
+          "name": "Shadow Lunge",
+          "unlockLevel": 30,
+          "description": "Teleport behind target → apply bleed.",
+          "baseMana": 25,
+          "baseCooldownSeconds": 10,
+          "baseRange": 10,
+          "runes": [
+            {
+              "id": "shadowlunge_extended",
+              "name": "Extended",
+              "skill": "Shadow Lunge",
+              "unlockLevel": 50,
+              "description": "+50% range"
+            },
+            {
+              "id": "shadowlunge_cripple",
+              "name": "Cripple",
+              "skill": "Shadow Lunge",
+              "unlockLevel": 70,
+              "description": "Slows target by 50% for 3s"
+            },
+            {
+              "id": "shadowlunge_shadow",
+              "name": "Shadow Clone",
+              "skill": "Shadow Lunge",
+              "unlockLevel": 90,
+              "description": "Creates illusion that attacks once"
+            }
+          ],
+          "talents": [
+            {
+              "id": "ROG_07",
+              "name": "Shadow Lunge - Mastery",
+              "desc": "+4% Shadow Lunge damage per rank (20% max).",
+              "maxRank": 5,
+              "statusTraining": {
+                "skill": "Shadow Lunge",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "ROG_08",
+              "name": "Shadow Lunge - Technique",
+              "desc": "+3% Shadow Lunge CDR and +2% critical chance per rank (15% / 10% max).",
+              "maxRank": 5,
+              "criticalChance": {
+                "skill": "Shadow Lunge",
+                "chance": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Shadow Lunge",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Death Spiral",
+          "unlockLevel": 40,
+          "description": "Finisher that deals heavy damage per bleed stack.",
+          "baseMana": 35,
+          "baseCooldownSeconds": 20,
+          "baseRange": 4,
+          "runes": [],
+          "talents": [
+            {
+              "id": "ROG_09",
+              "name": "Death Spiral - Mastery",
+              "desc": "+4% Death Spiral damage per rank (20% max).",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Death Spiral",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "ROG_10",
+              "name": "Death Spiral - Technique",
+              "desc": "+3% Death Spiral CDR and +2% critical chance per rank (15% / 10% max).",
+              "maxRank": 5,
+              "criticalChance": {
+                "skill": "Death Spiral",
+                "chance": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Death Spiral",
+                "cdr": 0.03
+              }
+            }
+          ]
+        }
+      ],
+      "specializationSkillsWithRunes": 2,
+      "specializationSkillsWithoutRunes": [
+        "Weak Point Mark",
+        "Death Spiral"
+      ],
+      "reachableClientCombos": [
+        {
+          "id": "ambush",
+          "name": "Ambush",
+          "firstSkill": "Weak Point Mark",
+          "secondSkill": "Backstab",
+          "description": "Guaranteed critical hit"
+        }
+      ],
+      "direction": "Position and mark priority targets, then finish prepared targets; self-contained setup and an avoidance response.",
+      "status": "Rework pending; existing learned kit/catalog enumerated, actual consumer and balance audit remains."
+    },
+    {
+      "classType": "Rogue",
+      "branch": "B",
+      "existingLabel": "Throwing Specialist Path",
+      "sharedStarter": "Piercing Throw",
+      "skills": [
+        {
+          "name": "Fan of Knives",
+          "unlockLevel": 10,
+          "description": "Throw daggers in all directions around you.",
+          "baseMana": 25,
+          "baseCooldownSeconds": 6,
+          "baseRange": 5,
+          "runes": [
+            {
+              "id": "fanofknives_weighted",
+              "name": "Weighted",
+              "skill": "Fan of Knives",
+              "unlockLevel": 50,
+              "description": "Slows enemies hit by 30% for 3s"
+            },
+            {
+              "id": "fanofknives_poisoned",
+              "name": "Poisoned",
+              "skill": "Fan of Knives",
+              "unlockLevel": 70,
+              "description": "Applies poison DoT"
+            },
+            {
+              "id": "fanofknives_fury",
+              "name": "Bladed Fury",
+              "skill": "Fan of Knives",
+              "unlockLevel": 90,
+              "description": "Double the number of knives"
+            }
+          ],
+          "talents": [
+            {
+              "id": "ROG_11",
+              "name": "Fan of Knives - Mastery",
+              "desc": "+4% Fan of Knives damage per rank (20% max).",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Fan of Knives",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "ROG_12",
+              "name": "Fan of Knives - Technique",
+              "desc": "+3% Fan of Knives CDR and +2% critical chance per rank (15% / 10% max).",
+              "maxRank": 5,
+              "criticalChance": {
+                "skill": "Fan of Knives",
+                "chance": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Fan of Knives",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Serrated Edges",
+          "unlockLevel": 20,
+          "description": "Piercing hits apply bleed. While active, Fan of Knives also slows susceptible enemies by 20% for 2 seconds without replacing existing slows.",
+          "baseMana": 30,
+          "baseCooldownSeconds": 20,
+          "baseRange": 0,
+          "runes": [],
+          "talents": [
+            {
+              "id": "ROG_13",
+              "name": "Serrated Edges - Mastery",
+              "desc": "+4% Serrated Edges damage per rank (20% max).",
+              "maxRank": 5,
+              "statusTraining": {
+                "skill": "Serrated Edges",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "ROG_14",
+              "name": "Serrated Edges - Technique",
+              "desc": "+3% Serrated Edges CDR and -2% mana cost per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityEconomy": {
+                "skill": "Serrated Edges",
+                "cdr": 0.03,
+                "manaReduction": 0.02
+              }
+            }
+          ]
+        },
+        {
+          "name": "Blade Storm",
+          "unlockLevel": 30,
+          "description": "Throw a fan of 5 daggers in a cone.",
+          "baseMana": 30,
+          "baseCooldownSeconds": 15,
+          "baseRange": 10,
+          "runes": [],
+          "talents": [
+            {
+              "id": "ROG_15",
+              "name": "Blade Storm - Mastery",
+              "desc": "+4% Blade Storm damage per rank (20% max).",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Blade Storm",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "ROG_16",
+              "name": "Blade Storm - Technique",
+              "desc": "+3% Blade Storm CDR and +2% critical chance per rank (15% / 10% max).",
+              "maxRank": 5,
+              "criticalChance": {
+                "skill": "Blade Storm",
+                "chance": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Blade Storm",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Phantom Volley",
+          "unlockLevel": 40,
+          "description": "Fire three rapid shots. Follow Fan of Knives within 3s to make the volley pierce enemies.",
+          "baseMana": 40,
+          "baseCooldownSeconds": 18,
+          "baseRange": 12,
+          "runes": [],
+          "talents": [
+            {
+              "id": "ROG_17",
+              "name": "Phantom Volley - Mastery",
+              "desc": "+4% Phantom Volley damage per rank (20% max).",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Phantom Volley",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "ROG_18",
+              "name": "Phantom Volley - Technique",
+              "desc": "+3% Phantom Volley CDR and +2% critical chance per rank (15% / 10% max).",
+              "maxRank": 5,
+              "criticalChance": {
+                "skill": "Phantom Volley",
+                "chance": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Phantom Volley",
+                "cdr": 0.03
+              }
+            }
+          ]
+        }
+      ],
+      "specializationSkillsWithRunes": 1,
+      "specializationSkillsWithoutRunes": [
+        "Serrated Edges",
+        "Blade Storm",
+        "Phantom Volley"
+      ],
+      "reachableClientCombos": [
+        {
+          "id": "blade_tornado",
+          "name": "Blade Tornado",
+          "firstSkill": "Fan of Knives",
+          "secondSkill": "Phantom Volley",
+          "description": "Volley pierces all targets"
+        }
+      ],
+      "direction": "Mobile ranged blades with distinct line, surrounding and cone decisions; sustained pressure and deliberate burst.",
+      "status": "Rework pending; existing learned kit/catalog enumerated, actual consumer and balance audit remains."
+    },
+    {
+      "classType": "Rogue",
+      "branch": "C",
+      "existingLabel": "Utility / Debuff Path",
+      "sharedStarter": "Piercing Throw",
+      "skills": [
+        {
+          "name": "Smoke Bomb",
+          "unlockLevel": 10,
+          "description": "AoE slow + reduces enemy accuracy.",
+          "baseMana": 35,
+          "baseCooldownSeconds": 20,
+          "baseRange": 5,
+          "runes": [],
+          "talents": [
+            {
+              "id": "ROG_19",
+              "name": "Smoke Bomb - Mastery",
+              "desc": "+4% Smoke Bomb effect duration per rank (20% max).",
+              "maxRank": 5,
+              "abilityDuration": {
+                "skill": "Smoke Bomb",
+                "duration": 0.04
+              }
+            },
+            {
+              "id": "ROG_20",
+              "name": "Smoke Bomb - Technique",
+              "desc": "+3% Smoke Bomb CDR and -2% mana cost per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityEconomy": {
+                "skill": "Smoke Bomb",
+                "cdr": 0.03,
+                "manaReduction": 0.02
+              }
+            }
+          ]
+        },
+        {
+          "name": "Poison Coating",
+          "unlockLevel": 20,
+          "description": "Small DoT + healing reduction.",
+          "baseMana": 30,
+          "baseCooldownSeconds": 30,
+          "baseRange": 0,
+          "runes": [],
+          "talents": [
+            {
+              "id": "ROG_21",
+              "name": "Poison Coating - Mastery",
+              "desc": "+4% Poison Coating damage per rank (20% max).",
+              "maxRank": 5,
+              "statusTraining": {
+                "skill": "Poison Coating",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "ROG_22",
+              "name": "Poison Coating - Technique",
+              "desc": "+3% Poison Coating CDR and +2% critical chance per rank (15% / 10% max).",
+              "maxRank": 5,
+              "criticalChance": {
+                "skill": "Poison Coating",
+                "chance": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Poison Coating",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tripwire",
+          "unlockLevel": 30,
+          "description": "Place a trap within 6 units on reachable ground. It damages and roots the first enemy touched; immune enemies still take damage.",
+          "baseMana": 25,
+          "baseCooldownSeconds": 15,
+          "baseRange": 6,
+          "runes": [],
+          "talents": [
+            {
+              "id": "ROG_23",
+              "name": "Tripwire - Mastery",
+              "desc": "+4% Tripwire damage per rank (20% max).",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Tripwire",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "ROG_24",
+              "name": "Tripwire - Technique",
+              "desc": "+3% Tripwire CDR and +2% critical chance per rank (15% / 10% max).",
+              "maxRank": 5,
+              "criticalChance": {
+                "skill": "Tripwire",
+                "chance": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Tripwire",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cloak & Vanish",
+          "unlockLevel": 40,
+          "description": "Instant invisibility + massive movement speed burst.",
+          "baseMana": 30,
+          "baseCooldownSeconds": 30,
+          "baseRange": 0,
+          "runes": [
+            {
+              "id": "cloak_swift",
+              "name": "Swift",
+              "skill": "Cloak & Vanish",
+              "unlockLevel": 50,
+              "description": "+30% movement speed while invisible"
+            },
+            {
+              "id": "cloak_longer",
+              "name": "Lasting Shadow",
+              "skill": "Cloak & Vanish",
+              "unlockLevel": 70,
+              "description": "+100% invisibility duration"
+            },
+            {
+              "id": "cloak_ambush",
+              "name": "Prepared Ambush",
+              "skill": "Cloak & Vanish",
+              "unlockLevel": 90,
+              "description": "Next attack deals +100% damage"
+            }
+          ],
+          "talents": [
+            {
+              "id": "ROG_25",
+              "name": "Cloak & Vanish - Mastery",
+              "desc": "+4% Cloak & Vanish effect duration per rank (20% max).",
+              "maxRank": 5,
+              "abilityDuration": {
+                "skill": "Cloak & Vanish",
+                "duration": 0.04
+              }
+            },
+            {
+              "id": "ROG_26",
+              "name": "Cloak & Vanish - Technique",
+              "desc": "+3% Cloak & Vanish CDR and -2% mana cost per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityEconomy": {
+                "skill": "Cloak & Vanish",
+                "cdr": 0.03,
+                "manaReduction": 0.02
+              }
+            }
+          ]
+        }
+      ],
+      "specializationSkillsWithRunes": 1,
+      "specializationSkillsWithoutRunes": [
+        "Smoke Bomb",
+        "Poison Coating",
+        "Tripwire"
+      ],
+      "reachableClientCombos": [
+        {
+          "id": "venom_burst",
+          "name": "Venom Burst",
+          "firstSkill": "Poison Coating",
+          "secondSkill": "Tripwire",
+          "description": "Tripwire deals 100% more impact damage."
+        },
+        {
+          "id": "shadow_dance",
+          "name": "Shadow Dance",
+          "firstSkill": "Cloak & Vanish",
+          "secondSkill": "Smoke Bomb",
+          "description": "Smoke Bomb refreshes Tripwire. Normal mana and cooldowns apply."
+        }
+      ],
+      "direction": "Traps, poison and concealment create active damage/control setups with solo and party value.",
+      "status": "Rework pending; existing learned kit/catalog enumerated, actual consumer and balance audit remains."
+    },
+    {
+      "classType": "Wizard",
+      "branch": "A",
+      "existingLabel": "Pyromancer",
+      "sharedStarter": "Fireball",
+      "skills": [
+        {
+          "name": "Flame Whip",
+          "unlockLevel": 10,
+          "description": "Cone attack that stuns enemies for 3 seconds.",
+          "baseMana": 35,
+          "baseCooldownSeconds": 10,
+          "baseRange": 12,
+          "runes": [],
+          "talents": [
+            {
+              "id": "WIZ_03",
+              "name": "Flame Whip - Mastery",
+              "desc": "+4% Flame Whip damage per rank (20% max).",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Flame Whip",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "WIZ_04",
+              "name": "Flame Whip - Technique",
+              "desc": "+3% Flame Whip CDR and -2% mana cost per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityEconomy": {
+                "skill": "Flame Whip",
+                "cdr": 0.03,
+                "manaReduction": 0.02
+              }
+            }
+          ]
+        },
+        {
+          "name": "Flame Tornado",
+          "unlockLevel": 20,
+          "description": "Spawns a moving tornado that damages enemies.",
+          "baseMana": 50,
+          "baseCooldownSeconds": 8,
+          "baseRange": 15,
+          "runes": [],
+          "talents": [
+            {
+              "id": "WIZ_05",
+              "name": "Flame Tornado - Mastery",
+              "desc": "+4% Flame Tornado damage per rank (20% max).",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Flame Tornado",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "WIZ_06",
+              "name": "Flame Tornado - Technique",
+              "desc": "+3% Flame Tornado CDR and -2% mana cost per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityEconomy": {
+                "skill": "Flame Tornado",
+                "cdr": 0.03,
+                "manaReduction": 0.02
+              }
+            }
+          ]
+        },
+        {
+          "name": "Meteor Drop",
+          "unlockLevel": 30,
+          "description": "Large AoE with a delay.",
+          "baseMana": 60,
+          "baseCooldownSeconds": 15,
+          "baseRange": 20,
+          "runes": [
+            {
+              "id": "meteor_cluster",
+              "name": "Cluster",
+              "skill": "Meteor Drop",
+              "unlockLevel": 50,
+              "description": "3 smaller meteors instead of 1"
+            },
+            {
+              "id": "meteor_extinction",
+              "name": "Extinction",
+              "skill": "Meteor Drop",
+              "unlockLevel": 70,
+              "description": "+50% explosion radius"
+            },
+            {
+              "id": "meteor_apocalypse",
+              "name": "Apocalypse",
+              "skill": "Meteor Drop",
+              "unlockLevel": 90,
+              "description": "Meteors continue for 5s after cast"
+            }
+          ],
+          "talents": [
+            {
+              "id": "WIZ_07",
+              "name": "Meteor Drop - Mastery",
+              "desc": "+4% Meteor Drop damage per rank (20% max).",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Meteor Drop",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "WIZ_08",
+              "name": "Meteor Drop - Technique",
+              "desc": "+3% Meteor Drop CDR and -2% mana cost per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityEconomy": {
+                "skill": "Meteor Drop",
+                "cdr": 0.03,
+                "manaReduction": 0.02
+              }
+            }
+          ]
+        },
+        {
+          "name": "Inferno Cataclysm",
+          "unlockLevel": 40,
+          "description": "Massive ultimate AoE covering a large region.",
+          "baseMana": 60,
+          "baseCooldownSeconds": 60,
+          "baseRange": 20,
+          "runes": [],
+          "talents": [
+            {
+              "id": "WIZ_09",
+              "name": "Inferno Cataclysm - Mastery",
+              "desc": "+4% Inferno Cataclysm damage per rank (20% max).",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Inferno Cataclysm",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "WIZ_10",
+              "name": "Inferno Cataclysm - Technique",
+              "desc": "+3% Inferno Cataclysm CDR and -2% mana cost per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityEconomy": {
+                "skill": "Inferno Cataclysm",
+                "cdr": 0.03,
+                "manaReduction": 0.02
+              }
+            }
+          ]
+        }
+      ],
+      "specializationSkillsWithRunes": 1,
+      "specializationSkillsWithoutRunes": [
+        "Flame Whip",
+        "Flame Tornado",
+        "Inferno Cataclysm"
+      ],
+      "reachableClientCombos": [
+        {
+          "id": "time_burn",
+          "name": "Time Burn",
+          "firstSkill": "Flame Tornado",
+          "secondSkill": "Inferno Cataclysm",
+          "description": "Cataclysm ticks twice as fast"
+        },
+        {
+          "id": "nova_cascade",
+          "name": "Nova Cascade",
+          "firstSkill": "Fireball",
+          "secondSkill": "Flame Whip",
+          "description": "360° Flame Whip"
+        }
+      ],
+      "direction": "Burning area pressure, hazard placement and timed fire detonations; preserve the existing enjoyable core while adding real choices.",
+      "status": "Rework pending; existing learned kit/catalog enumerated, actual consumer and balance audit remains."
+    },
+    {
+      "classType": "Wizard",
+      "branch": "B",
+      "existingLabel": "Single-Target Caster",
+      "sharedStarter": "Fireball",
+      "skills": [
+        {
+          "name": "Scorch Beam",
+          "unlockLevel": 10,
+          "description": "Line strike that melts armor and slows susceptible enemies by 30% for 3s base. Existing slows are preserved. Follow with Arcane Missiles within 3s for a five-missile volley.",
+          "baseMana": 40,
+          "baseCooldownSeconds": 8,
+          "baseRange": 18,
+          "runes": [],
+          "talents": [
+            {
+              "id": "WIZ_11",
+              "name": "Scorch Beam - Mastery",
+              "desc": "+4% Scorch Beam damage per rank (20% max).",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Scorch Beam",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "WIZ_12",
+              "name": "Scorch Beam - Technique",
+              "desc": "+3% Scorch Beam CDR and -2% mana cost per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityEconomy": {
+                "skill": "Scorch Beam",
+                "cdr": 0.03,
+                "manaReduction": 0.02
+              }
+            }
+          ]
+        },
+        {
+          "name": "Arcane Missiles",
+          "unlockLevel": 20,
+          "description": "Homing projectiles.",
+          "baseMana": 30,
+          "baseCooldownSeconds": 4,
+          "baseRange": 18,
+          "runes": [],
+          "talents": [
+            {
+              "id": "WIZ_13",
+              "name": "Arcane Missiles - Mastery",
+              "desc": "+4% Arcane Missiles damage per rank (20% max).",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Arcane Missiles",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "WIZ_14",
+              "name": "Arcane Missiles - Technique",
+              "desc": "+3% Arcane Missiles CDR and -2% mana cost per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityEconomy": {
+                "skill": "Arcane Missiles",
+                "cdr": 0.03,
+                "manaReduction": 0.02
+              }
+            }
+          ]
+        },
+        {
+          "name": "Spell Focus",
+          "unlockLevel": 30,
+          "description": "Empower your next damaging spell and gain a brief ward (40 + twice Intelligence; 6s base). Does not stack with an active shield.",
+          "baseMana": 30,
+          "baseCooldownSeconds": 45,
+          "baseRange": 0,
+          "runes": [],
+          "talents": [
+            {
+              "id": "WIZ_15",
+              "name": "Spell Focus - Mastery",
+              "desc": "+4% focused-spell damage per rank (20% max). Snapshotted when Spell Focus is cast.",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Spell Focus",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "WIZ_16",
+              "name": "Spell Focus - Technique",
+              "desc": "+3% Spell Focus CDR and -2% mana cost per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityEconomy": {
+                "skill": "Spell Focus",
+                "cdr": 0.03,
+                "manaReduction": 0.02
+              }
+            }
+          ]
+        },
+        {
+          "name": "Dragonfire Lance",
+          "unlockLevel": 40,
+          "description": "Huge single-target spike damage.",
+          "baseMana": 50,
+          "baseCooldownSeconds": 20,
+          "baseRange": 18,
+          "runes": [],
+          "talents": [
+            {
+              "id": "WIZ_17",
+              "name": "Dragonfire Lance - Mastery",
+              "desc": "+4% Dragonfire Lance damage per rank (20% max).",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Dragonfire Lance",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "WIZ_18",
+              "name": "Dragonfire Lance - Technique",
+              "desc": "+3% Dragonfire Lance CDR and -2% mana cost per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityEconomy": {
+                "skill": "Dragonfire Lance",
+                "cdr": 0.03,
+                "manaReduction": 0.02
+              }
+            }
+          ]
+        }
+      ],
+      "specializationSkillsWithRunes": 0,
+      "specializationSkillsWithoutRunes": [
+        "Scorch Beam",
+        "Arcane Missiles",
+        "Spell Focus",
+        "Dragonfire Lance"
+      ],
+      "reachableClientCombos": [
+        {
+          "id": "arcane_barrage",
+          "name": "Arcane Barrage",
+          "firstSkill": "Scorch Beam",
+          "secondSkill": "Arcane Missiles",
+          "description": "Arcane Missiles launches five missiles instead of three. Normal mana and cooldown apply."
+        }
+      ],
+      "direction": "Precision burst and purposeful spell preparation; accurate beams, missiles and lance must interact, with real specialization rune choices.",
+      "status": "Rework pending; existing learned kit/catalog enumerated, actual consumer and balance audit remains."
+    },
+    {
+      "classType": "Wizard",
+      "branch": "C",
+      "existingLabel": "Control & Utility Mage",
+      "sharedStarter": "Fireball",
+      "skills": [
+        {
+          "name": "Teleport",
+          "unlockLevel": 10,
+          "description": "Instantly teleport to a target location.",
+          "baseMana": 40,
+          "baseCooldownSeconds": 12,
+          "baseRange": 15,
+          "runes": [
+            {
+              "id": "teleport_blink",
+              "name": "Blink",
+              "skill": "Teleport",
+              "unlockLevel": 50,
+              "description": "+50% range"
+            },
+            {
+              "id": "teleport_phase",
+              "name": "Phase",
+              "skill": "Teleport",
+              "unlockLevel": 70,
+              "description": "Invulnerable for 1s after teleport"
+            },
+            {
+              "id": "teleport_warp",
+              "name": "Warp",
+              "skill": "Teleport",
+              "unlockLevel": 90,
+              "description": "Damages enemies at start and end location"
+            }
+          ],
+          "talents": [
+            {
+              "id": "WIZ_19",
+              "name": "Teleport - Mastery",
+              "desc": "+4% Teleport damage per rank (20% max).",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Teleport",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "WIZ_20",
+              "name": "Teleport - Technique",
+              "desc": "+3% Teleport CDR and -2% mana cost per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityEconomy": {
+                "skill": "Teleport",
+                "cdr": 0.03,
+                "manaReduction": 0.02
+              }
+            },
+            {
+              "id": "WIZ_30",
+              "name": "Leyline Recall",
+              "desc": "-5% Teleport cooldown per rank (25% max).",
+              "maxRank": 5,
+              "abilityEconomy": {
+                "skill": "Teleport",
+                "cdr": 0.05
+              }
+            }
+          ]
+        },
+        {
+          "name": "Arcane Shield",
+          "unlockLevel": 20,
+          "description": "Absorbs damage.",
+          "baseMana": 40,
+          "baseCooldownSeconds": 30,
+          "baseRange": 0,
+          "runes": [
+            {
+              "id": "arcaneshield_extended",
+              "name": "Extended",
+              "skill": "Arcane Shield",
+              "unlockLevel": 50,
+              "description": "+50% duration"
+            },
+            {
+              "id": "arcaneshield_reflective",
+              "name": "Reflective",
+              "skill": "Arcane Shield",
+              "unlockLevel": 70,
+              "description": "Reflects 30% of absorbed damage"
+            },
+            {
+              "id": "arcaneshield_explosive",
+              "name": "Explosive",
+              "skill": "Arcane Shield",
+              "unlockLevel": 90,
+              "description": "Explodes when broken dealing absorbed amount"
+            }
+          ],
+          "talents": [
+            {
+              "id": "WIZ_22",
+              "name": "Arcane Shield - Technique",
+              "desc": "+3% Arcane Shield CDR and -2% mana cost per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityEconomy": {
+                "skill": "Arcane Shield",
+                "cdr": 0.03,
+                "manaReduction": 0.02
+              }
+            },
+            {
+              "id": "WIZ_32",
+              "name": "Arcane Stability",
+              "desc": "+5% Arcane Shield duration per rank (25% max).",
+              "maxRank": 5,
+              "shieldTraining": {
+                "duration": 0.05
+              },
+              "abilityDuration": {
+                "skill": "Arcane Shield",
+                "duration": 0.05
+              }
+            }
+          ]
+        },
+        {
+          "name": "Gravity Well",
+          "unlockLevel": 30,
+          "description": "Pulls enemies together for combos with Fireball.",
+          "baseMana": 60,
+          "baseCooldownSeconds": 20,
+          "baseRange": 18,
+          "runes": [
+            {
+              "id": "gravitywell_expanded",
+              "name": "Expanded",
+              "skill": "Gravity Well",
+              "unlockLevel": 50,
+              "description": "+50% radius"
+            },
+            {
+              "id": "gravitywell_crushing",
+              "name": "Crushing",
+              "skill": "Gravity Well",
+              "unlockLevel": 70,
+              "description": "+100% damage"
+            },
+            {
+              "id": "gravitywell_blackhole",
+              "name": "Black Hole",
+              "skill": "Gravity Well",
+              "unlockLevel": 90,
+              "description": "Enemies cannot escape while active"
+            }
+          ],
+          "talents": [
+            {
+              "id": "WIZ_23",
+              "name": "Gravity Well - Mastery",
+              "desc": "+4% Gravity Well damage per rank (20% max).",
+              "maxRank": 5,
+              "abilityDamage": {
+                "skill": "Gravity Well",
+                "damage": 0.04
+              }
+            },
+            {
+              "id": "WIZ_24",
+              "name": "Gravity Well - Technique",
+              "desc": "+3% Gravity Well CDR and -2% mana cost per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityEconomy": {
+                "skill": "Gravity Well",
+                "cdr": 0.03,
+                "manaReduction": 0.02
+              }
+            }
+          ]
+        },
+        {
+          "name": "Time Warp",
+          "unlockLevel": 40,
+          "description": "Party haste + cooldown reduction. Immediately refreshes your own Teleport and Gravity Well; mana and the global cooldown still apply. Does not reset allies' skills or itself.",
+          "baseMana": 50,
+          "baseCooldownSeconds": 60,
+          "baseRange": 15,
+          "runes": [],
+          "talents": [
+            {
+              "id": "WIZ_25",
+              "name": "Time Warp - Mastery",
+              "desc": "+4% Time Warp duration per rank (20% max). Extends the caster and allies; does not increase haste strength.",
+              "maxRank": 5,
+              "abilityDuration": {
+                "skill": "Time Warp",
+                "duration": 0.04
+              }
+            },
+            {
+              "id": "WIZ_26",
+              "name": "Time Warp - Technique",
+              "desc": "+3% Time Warp CDR and -2% mana cost per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityEconomy": {
+                "skill": "Time Warp",
+                "cdr": 0.03,
+                "manaReduction": 0.02
+              }
+            }
+          ]
+        }
+      ],
+      "specializationSkillsWithRunes": 3,
+      "specializationSkillsWithoutRunes": [
+        "Time Warp"
+      ],
+      "reachableClientCombos": [
+        {
+          "id": "implosion",
+          "name": "Implosion",
+          "firstSkill": "Gravity Well",
+          "secondSkill": "Fireball",
+          "description": "This Fireball deals +100% damage to slowed or control-immune targets. Does not bypass control immunity."
+        }
+      ],
+      "direction": "Space and tempo control through repositioning, grouping and resets; meaningful damage on immune bosses and active decisions between utility cooldowns.",
+      "status": "Rework pending; existing learned kit/catalog enumerated, actual consumer and balance audit remains."
+    },
+    {
+      "classType": "Cleric",
+      "branch": "A",
+      "existingLabel": "Pure Healer Path",
+      "sharedStarter": "Spirit Guardians",
+      "skills": [
+        {
+          "name": "Healing Light",
+          "unlockLevel": 10,
+          "description": "Restores health to yourself or a target.",
+          "baseMana": 25,
+          "baseCooldownSeconds": 8,
+          "baseRange": 15,
+          "runes": [
+            {
+              "id": "healinglight_beacon",
+              "name": "Beacon",
+              "skill": "Healing Light",
+              "unlockLevel": 50,
+              "description": "Heals in AoE around target (5 unit radius)"
+            },
+            {
+              "id": "healinglight_renewal",
+              "name": "Renewal",
+              "skill": "Healing Light",
+              "unlockLevel": 70,
+              "description": "Adds HoT for 5s (20% of initial heal)"
+            },
+            {
+              "id": "healinglight_divine",
+              "name": "Divine",
+              "skill": "Healing Light",
+              "unlockLevel": 90,
+              "description": "Also cleanses 1 debuff"
+            }
+          ],
+          "talents": [
+            {
+              "id": "CLR_03",
+              "name": "Healing Light - Mastery",
+              "desc": "+4% Healing Light healing per rank (20% max).",
+              "maxRank": 5,
+              "abilityHealing": {
+                "skill": "Healing Light",
+                "healing": 0.04
+              }
+            },
+            {
+              "id": "CLR_04",
+              "name": "Healing Light - Technique",
+              "desc": "+3% Healing Light CDR and +2% timed-effect duration per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityDuration": {
+                "skill": "Healing Light",
+                "duration": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Healing Light",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Guardian Embrace",
+          "unlockLevel": 20,
+          "description": "AoE heal over time around the cleric.",
+          "baseMana": 40,
+          "baseCooldownSeconds": 30,
+          "baseRange": 6,
+          "runes": [],
+          "talents": [
+            {
+              "id": "CLR_05",
+              "name": "Guardian Embrace - Mastery",
+              "desc": "+4% Guardian Embrace healing per rank (20% max).",
+              "maxRank": 5,
+              "abilityHealing": {
+                "skill": "Guardian Embrace",
+                "healing": 0.04
+              }
+            },
+            {
+              "id": "CLR_06",
+              "name": "Guardian Embrace - Technique",
+              "desc": "+3% Guardian Embrace CDR and +2% timed-effect duration per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityDuration": {
+                "skill": "Guardian Embrace",
+                "duration": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Guardian Embrace",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Purifying Wave",
+          "unlockLevel": 30,
+          "description": "Cleanse nearby allies. A holy pulse damages nearby enemies and slows susceptible targets by 30% for 2s base; existing slows are preserved.",
+          "baseMana": 30,
+          "baseCooldownSeconds": 12,
+          "baseRange": 8,
+          "runes": [],
+          "talents": [
+            {
+              "id": "CLR_07",
+              "name": "Purifying Wave - Mastery",
+              "desc": "+4% Purifying Wave radius per rank (20% max).",
+              "maxRank": 5,
+              "abilityArea": {
+                "skill": "Purifying Wave",
+                "radius": 0.04
+              }
+            },
+            {
+              "id": "CLR_08",
+              "name": "Purifying Wave - Technique",
+              "desc": "+3% Purifying Wave CDR and +2% timed-effect duration per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityDuration": {
+                "skill": "Purifying Wave",
+                "duration": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Purifying Wave",
+                "cdr": 0.03
+              }
+            },
+            {
+              "id": "CLR_32",
+              "name": "Cleanse Discipline",
+              "desc": "-5% Purifying Wave cooldown per rank (25% max).",
+              "maxRank": 5,
+              "abilityEconomy": {
+                "skill": "Purifying Wave",
+                "cdr": 0.05
+              }
+            }
+          ]
+        },
+        {
+          "name": "Divine Intervention",
+          "unlockLevel": 40,
+          "description": "Save an ally from death once every X minutes.",
+          "baseMana": 60,
+          "baseCooldownSeconds": 120,
+          "baseRange": 15,
+          "runes": [
+            {
+              "id": "divineintervention_quick",
+              "name": "Quick Save",
+              "skill": "Divine Intervention",
+              "unlockLevel": 50,
+              "description": "Cooldown reduced by 50%"
+            },
+            {
+              "id": "divineintervention_guardian",
+              "name": "Guardian Angel",
+              "skill": "Divine Intervention",
+              "unlockLevel": 70,
+              "description": "Target gains 50% damage reduction for 5s"
+            },
+            {
+              "id": "divineintervention_miracle",
+              "name": "Miracle",
+              "skill": "Divine Intervention",
+              "unlockLevel": 90,
+              "description": "Can affect 2 targets"
+            }
+          ],
+          "talents": [
+            {
+              "id": "CLR_09",
+              "name": "Divine Intervention - Mastery",
+              "desc": "+4% Divine Intervention healing per rank (20% max).",
+              "maxRank": 5,
+              "abilityHealing": {
+                "skill": "Divine Intervention",
+                "healing": 0.04
+              }
+            },
+            {
+              "id": "CLR_10",
+              "name": "Divine Intervention - Technique",
+              "desc": "+3% Divine Intervention CDR and +2% timed-effect duration per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityDuration": {
+                "skill": "Divine Intervention",
+                "duration": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Divine Intervention",
+                "cdr": 0.03
+              }
+            }
+          ]
+        }
+      ],
+      "specializationSkillsWithRunes": 2,
+      "specializationSkillsWithoutRunes": [
+        "Guardian Embrace",
+        "Purifying Wave"
+      ],
+      "reachableClientCombos": [
+        {
+          "id": "sanctuary_combo",
+          "name": "Sanctuary",
+          "firstSkill": "Healing Light",
+          "secondSkill": "Guardian Embrace",
+          "description": "Guardian Embrace also protects the caster from damage for 3s base. Does not make allies immune."
+        },
+        {
+          "id": "mass_revival",
+          "name": "Mass Revival",
+          "firstSkill": "Divine Intervention",
+          "secondSkill": "Healing Light",
+          "description": "Healing Light heals living nearby allies around you (base 20-unit radius). Does not resurrect."
+        }
+      ],
+      "direction": "Responsive triage, cleanse and protection with credible solo offense; healing choices respond to real incoming pressure.",
+      "status": "Rework pending; existing learned kit/catalog enumerated, actual consumer and balance audit remains."
+    },
+    {
+      "classType": "Cleric",
+      "branch": "B",
+      "existingLabel": "Battle Cleric",
+      "sharedStarter": "Spirit Guardians",
+      "skills": [
+        {
+          "name": "Radiant Strike",
+          "unlockLevel": 10,
+          "description": "Melee hit deals extra radiant damage.",
+          "baseMana": 20,
+          "baseCooldownSeconds": 4,
+          "baseRange": 3,
+          "runes": [
+            {
+              "id": "radiantstrike_smite",
+              "name": "Smite",
+              "skill": "Radiant Strike",
+              "unlockLevel": 50,
+              "description": "+50% damage"
+            },
+            {
+              "id": "radiantstrike_chains",
+              "name": "Chains of Light",
+              "skill": "Radiant Strike",
+              "unlockLevel": 70,
+              "description": "Roots target for 2s"
+            },
+            {
+              "id": "radiantstrike_purge",
+              "name": "Purge",
+              "skill": "Radiant Strike",
+              "unlockLevel": 90,
+              "description": "Removes 1 buff from target"
+            }
+          ],
+          "talents": [
+            {
+              "id": "CLR_12",
+              "name": "Radiant Strike - Technique",
+              "desc": "+3% Radiant Strike CDR and +2% timed-effect duration per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityDuration": {
+                "skill": "Radiant Strike",
+                "duration": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Radiant Strike",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consecrated Ground",
+          "unlockLevel": 20,
+          "description": "Standing in it heals allies and harms enemies.",
+          "baseMana": 40,
+          "baseCooldownSeconds": 12,
+          "baseRange": 5,
+          "runes": [
+            {
+              "id": "consecratedground_expanded",
+              "name": "Expanded",
+              "skill": "Consecrated Ground",
+              "unlockLevel": 50,
+              "description": "+50% radius"
+            },
+            {
+              "id": "consecratedground_lingering",
+              "name": "Lingering",
+              "skill": "Consecrated Ground",
+              "unlockLevel": 70,
+              "description": "+100% duration"
+            },
+            {
+              "id": "consecratedground_sanctuary",
+              "name": "Holy Ground",
+              "skill": "Consecrated Ground",
+              "unlockLevel": 90,
+              "description": "Allies in area take 30% less damage"
+            }
+          ],
+          "talents": [
+            {
+              "id": "CLR_14",
+              "name": "Consecrated Ground - Technique",
+              "desc": "+3% Consecrated Ground CDR and +2% timed-effect duration per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityDuration": {
+                "skill": "Consecrated Ground",
+                "duration": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Consecrated Ground",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Spirit Guardians Boost",
+          "unlockLevel": 30,
+          "description": "Spirit Guardians radius + damage + slow.",
+          "baseMana": 40,
+          "baseCooldownSeconds": 20,
+          "baseRange": 6,
+          "runes": [],
+          "talents": [
+            {
+              "id": "CLR_16",
+              "name": "Spirit Guardians Boost - Technique",
+              "desc": "+3% Spirit Guardians Boost CDR and +2% timed-effect duration per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityDuration": {
+                "skill": "Spirit Guardians Boost",
+                "duration": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Spirit Guardians Boost",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Avenging Seraph",
+          "unlockLevel": 40,
+          "description": "Summons a temporary celestial ally.",
+          "baseMana": 60,
+          "baseCooldownSeconds": 45,
+          "baseRange": 12,
+          "runes": [],
+          "talents": [
+            {
+              "id": "CLR_18",
+              "name": "Avenging Seraph - Technique",
+              "desc": "+3% Avenging Seraph CDR and +2% summon duration per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityDuration": {
+                "skill": "Avenging Seraph",
+                "duration": 0.02
+              },
+              "summonTraining": {
+                "duration": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Avenging Seraph",
+                "cdr": 0.03
+              }
+            }
+          ]
+        }
+      ],
+      "specializationSkillsWithRunes": 2,
+      "specializationSkillsWithoutRunes": [
+        "Spirit Guardians Boost",
+        "Avenging Seraph"
+      ],
+      "reachableClientCombos": [
+        {
+          "id": "holy_fury",
+          "name": "Holy Fury",
+          "firstSkill": "Consecrated Ground",
+          "secondSkill": "Radiant Strike",
+          "description": "Radiant Strike deals 100% more damage. No enemy mark required."
+        }
+      ],
+      "direction": "Close-range holy combat, ground positioning and guardian/summon payoffs; offensive decisions drive sustain.",
+      "status": "Rework pending; existing learned kit/catalog enumerated, actual consumer and balance audit remains."
+    },
+    {
+      "classType": "Cleric",
+      "branch": "C",
+      "existingLabel": "Buff/Debuff Support",
+      "sharedStarter": "Spirit Guardians",
+      "skills": [
+        {
+          "name": "Blessing of Resolve",
+          "unlockLevel": 10,
+          "description": "Party defense buff.",
+          "baseMana": 35,
+          "baseCooldownSeconds": 45,
+          "baseRange": 10,
+          "runes": [],
+          "talents": [
+            {
+              "id": "CLR_20",
+              "name": "Blessing of Resolve - Technique",
+              "desc": "+3% Blessing of Resolve CDR and +2% timed-effect duration per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityDuration": {
+                "skill": "Blessing of Resolve",
+                "duration": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Blessing of Resolve",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Blessing of Zeal",
+          "unlockLevel": 20,
+          "description": "Party attack and movement speed buff. Refreshes your own Spirit Guardians; follow with it within 3s for boosted damage and radius. Normal mana and global cooldown apply.",
+          "baseMana": 35,
+          "baseCooldownSeconds": 25,
+          "baseRange": 10,
+          "runes": [],
+          "talents": [
+            {
+              "id": "CLR_22",
+              "name": "Blessing of Zeal - Technique",
+              "desc": "+3% Blessing of Zeal CDR and +2% timed-effect duration per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityDuration": {
+                "skill": "Blessing of Zeal",
+                "duration": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Blessing of Zeal",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mark of Weakness",
+          "unlockLevel": 30,
+          "description": "Enemies take more damage from all sources.",
+          "baseMana": 30,
+          "baseCooldownSeconds": 20,
+          "baseRange": 15,
+          "runes": [],
+          "talents": [
+            {
+              "id": "CLR_24",
+              "name": "Mark of Weakness - Technique",
+              "desc": "+3% Mark of Weakness CDR and +2% timed-effect duration per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityDuration": {
+                "skill": "Mark of Weakness",
+                "duration": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Mark of Weakness",
+                "cdr": 0.03
+              }
+            }
+          ]
+        },
+        {
+          "name": "Heaven's Trumpet",
+          "unlockLevel": 40,
+          "description": "Massive AoE stun + damage taken buff on enemies.",
+          "baseMana": 50,
+          "baseCooldownSeconds": 60,
+          "baseRange": 12,
+          "runes": [],
+          "talents": [
+            {
+              "id": "CLR_26",
+              "name": "Heaven's Trumpet - Technique",
+              "desc": "+3% Heaven's Trumpet CDR and +2% timed-effect duration per rank (15% / 10% max).",
+              "maxRank": 5,
+              "abilityDuration": {
+                "skill": "Heaven's Trumpet",
+                "duration": 0.02
+              },
+              "abilityEconomy": {
+                "skill": "Heaven's Trumpet",
+                "cdr": 0.03
+              }
+            }
+          ]
+        }
+      ],
+      "specializationSkillsWithRunes": 0,
+      "specializationSkillsWithoutRunes": [
+        "Blessing of Resolve",
+        "Blessing of Zeal",
+        "Mark of Weakness",
+        "Heaven's Trumpet"
+      ],
+      "reachableClientCombos": [
+        {
+          "id": "divine_storm",
+          "name": "Divine Storm",
+          "firstSkill": "Blessing of Zeal",
+          "secondSkill": "Spirit Guardians",
+          "description": "Activates boosted Spirit Guardians damage and radius."
+        }
+      ],
+      "direction": "Active support through blessing timing, focus debuffs and holy payoffs; useful alone and in groups without making upkeep the rotation.",
+      "status": "Rework pending; existing learned kit/catalog enumerated, actual consumer and balance audit remains."
+    }
+  ]
+}

@@ -3,7 +3,7 @@
   "source": "a5f417e47d7cc2391e82e168273d8b1db129d0b2",
   "runtimeSource": "77b19d92",
   "base": "a5efc9c2",
-  "status": "Qualified household glazing within retained visual/native scope; ready ordinary master merge, unpublished.",
+  "status": "Qualified household glazing within retained visual/native scope, ordinarily merged into local master, unpublished.",
   "change": "Existing fifteen household panes gain small lead diamonds, restrained varying warm interior light, glass roughness and shallow physical normal relief. Physical world coordinates preserve front/gable scale under instancing/batching. Derivative filtering resolves distant lead to average coverage. No new geometry/material batches/texture samplers/lights/particles/alpha/transmission/collision/placement change; sealed homes remain decoration. Existing service amber lamps/tokens/ward rings unchanged.",
   "cpu": {
     "passed": 27,
@@ -457,5 +457,6 @@
     "entries": 63,
     "inventorySHA256": "c819b2497b13075a1fb7ffee8851bbefe038002ef90ed1a24b511e33ea92d2b9"
   },
-  "limits": "Qualified household material appearance/foreground composition/source identity, not final town/world art approval. Native High west remains33.2\u201333.3ms median/33.4p95 and247270triangles: original20ms High timing fails. Candidate/reference CPU arms overlap; Low dynamic resident submissions vary113\u2013127calls/78437\u201379589triangles, preventing a strict whole-frame speedup claim. Original crowded plaza279283High/107747Low triangle failures, connected performance, physical devices, real combat/listening/campaign/capacity/operations/F1\u2013F5/beta/launch/handoff remain open. Public49 unchanged; no50publication."
+  "limits": "Qualified household material appearance/foreground composition/source identity, not final town/world art approval. Native High west remains33.2\u201333.3ms median/33.4p95 and247270triangles: original20ms High timing fails. Candidate/reference CPU arms overlap; Low dynamic resident submissions vary113\u2013127calls/78437\u201379589triangles, preventing a strict whole-frame speedup claim. Original crowded plaza279283High/107747Low triangle failures, connected performance, physical devices, real combat/listening/campaign/capacity/operations/F1\u2013F5/beta/launch/handoff remain open. Public49 unchanged; no50publication.",
+  "masterMerge": "48a0bdb03a96984f8fbb4d4ee1b74fd4ffbe12f4"
 }

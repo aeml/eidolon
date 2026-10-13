@@ -1781,3 +1781,15 @@ October13 post49 continuation qualifies/ordinarily merges allocation-free attrib
 
 
 October13 scan-local finite-palette reuse78d71790 and opt-in connected validation comparison are qualified/ordinarily mergedf18384ac.122focusedCPUchecks/three suites (179distinct/five suites combined with earlier attribute guards), nativeHighLow six exactRGBA/threeHighdepth/eightmovingABBAarms and actual equipment/quality/owner/group/realm/shutdown coverage pass. Fresh actualGoRace four-class14slot session/native1pass1optional skip/zero retries preserves all saves; connected reference49/candidate/candidate/reference49 arms keep0pending geometry and restore all methods. ObservedCPUmedians33.7/32.0reference versus30.3/31.4candidate are descriptive amid live draw/population variation; original20/33.4frame targets stillfail in allarms and main33.4/66.6ms failure is retained. Frozen46entry palette evidence47b69db25055999cff76286dc575e9f7584e4a6bf443a70fb8290155b85f86e0. Local only, no50publication/fullFPSclaim. Public49 remains accepted and fullgoal active. Next independent CPU screen concerns static foliage delivery, not previously rejected matrix algebra/cached-plane/early-color variants.
+
+## October13 owner priority — specialization and rune redesign
+
+The owner explicitly requests reworking abilities, runes and related systems so
+each class specialization is unique, useful and fun to play. Treat this as a
+major gameplay workstream within the full release-readiness goal. Audit all
+twelve specialization kits and actual server/client ability, rune, talent and
+equipment interactions; implement distinct combat loops and meaningful build
+choices in coherent class-sized updates. Preserve existing characters, earned
+progress, valuable custody and authoritative combat. Verify supported loadouts,
+solo/party roles, readability and balance; technical checks do not substitute for
+owner-deferred playtesting or establish final fun/balance acceptance.
