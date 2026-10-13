@@ -1,0 +1,728 @@
+{
+  "recordedUTC": "2026-10-13T15:10:45.449268+00:00",
+  "source": "8e5f888a66b65e6a69e26c62499b4113549b40c0",
+  "version": "Alpha1.79.49",
+  "ci": {
+    "id": 38346406878,
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "success",
+    "updatedUTC": "2026-10-13T05:15:55Z"
+  },
+  "orderedJobs": [
+    {
+      "name": "Server Tests (Go)",
+      "startedAt": "2026-10-13T04:26:02Z",
+      "completedAt": "2026-10-13T04:47:05Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Client Tests (Jest)",
+      "startedAt": "2026-10-13T04:26:02Z",
+      "completedAt": "2026-10-13T04:42:40Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Browser Smoke (Playwright 2/3)",
+      "startedAt": "2026-10-13T04:26:02Z",
+      "completedAt": "2026-10-13T04:54:08Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Browser Smoke (Playwright 3/3)",
+      "startedAt": "2026-10-13T04:26:02Z",
+      "completedAt": "2026-10-13T04:48:46Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Browser Smoke (Playwright 1/3)",
+      "startedAt": "2026-10-13T04:26:02Z",
+      "completedAt": "2026-10-13T04:37:37Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Predeploy Character QA (System Chrome)",
+      "startedAt": "2026-10-13T04:54:10Z",
+      "completedAt": "2026-10-13T05:06:22Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Validate Production QA Inputs",
+      "startedAt": "2026-10-13T05:06:25Z",
+      "completedAt": "2026-10-13T05:06:28Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Deploy Server (SSH)",
+      "startedAt": "2026-10-13T05:06:30Z",
+      "completedAt": "2026-10-13T05:07:20Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Deploy to GitHub Pages",
+      "startedAt": "2026-10-13T05:06:32Z",
+      "completedAt": "2026-10-13T05:07:55Z",
+      "conclusion": "success"
+    },
+    {
+      "name": "Live Release and Character QA",
+      "startedAt": "2026-10-13T05:07:57Z",
+      "completedAt": "2026-10-13T05:15:54Z",
+      "conclusion": "success"
+    }
+  ],
+  "optionalSkippedSteps": [
+    {
+      "job": "Predeploy Character QA (System Chrome)",
+      "step": "Run deterministic High/Low animation gallery"
+    },
+    {
+      "job": "Predeploy Character QA (System Chrome)",
+      "step": "Run required Well Rested rendering and GPU lifecycle QA"
+    },
+    {
+      "job": "Predeploy Character QA (System Chrome)",
+      "step": "Run disposable full-character gameplay"
+    },
+    {
+      "job": "Live Release and Character QA",
+      "step": "Run live four-class and remote-animation QA"
+    }
+  ],
+  "counts": {
+    "server": [
+      "2026-10-13T04:26:58.5529949Z No vulnerabilities found.",
+      "2026-10-13T04:26:58.5530473Z Your code is affected by 0 vulnerabilities.",
+      "2026-10-13T04:26:58.5531190Z This scan also found 0 vulnerabilities in packages you import and 1"
+    ],
+    "client": [
+      "2026-10-13T04:42:35.1045146Z Test Suites: 756 passed, 756 total",
+      "2026-10-13T04:42:35.1045605Z Tests:       11343 passed, 11343 total"
+    ],
+    "browser2": [
+      "2026-10-13T04:29:07.2535623Z   3 skipped",
+      "2026-10-13T04:29:07.2537168Z   46 passed (2.3m)",
+      "2026-10-13T04:30:37.1336507Z   3 passed (1.5m)",
+      "2026-10-13T04:33:46.9733791Z   3 passed (3.2m)",
+      "2026-10-13T04:35:24.1059318Z   10 passed (1.6m)",
+      "2026-10-13T04:54:02.9162158Z   85 passed (18.6m)"
+    ],
+    "browser3": [
+      "2026-10-13T04:29:39.0334951Z   30 passed (2.8m)",
+      "2026-10-13T04:34:05.5300458Z   4 passed (4.4m)",
+      "2026-10-13T04:36:20.6430601Z   3 passed (2.2m)",
+      "2026-10-13T04:36:28.6784373Z   4 passed (7.5s)",
+      "2026-10-13T04:48:37.3126230Z   7 skipped",
+      "2026-10-13T04:48:37.3126460Z   52 passed (12.1m)"
+    ],
+    "browser1": [
+      "2026-10-13T04:29:48.3623188Z   47 passed (3.0m)",
+      "2026-10-13T04:31:17.8629594Z   3 passed (1.5m)",
+      "2026-10-13T04:31:59.2054272Z   2 passed (41.0s)",
+      "2026-10-13T04:32:35.1684335Z   6 passed (35.7s)",
+      "2026-10-13T04:32:39.3411201Z   3 passed (3.8s)",
+      "2026-10-13T04:37:28.9716965Z   50 passed (4.8m)"
+    ],
+    "native": [
+      "2026-10-13T04:55:58.6492350Z   7 passed (1.6m)",
+      "2026-10-13T05:03:18.8588874Z   45 passed (7.3m)",
+      "2026-10-13T05:03:26.9080505Z   1 passed (6.1s)",
+      "2026-10-13T05:03:47.4410208Z   2 passed (19.0s)",
+      "2026-10-13T05:06:08.1865362Z   1 skipped",
+      "2026-10-13T05:06:08.1865696Z   4 passed (1.8m)"
+    ],
+    "qa-inputs": [],
+    "server-deploy": [],
+    "pages": [],
+    "live": [
+      "2026-10-13T05:13:33.6884269Z   1 skipped",
+      "2026-10-13T05:13:33.6891593Z   8 passed (5.4m)",
+      "2026-10-13T05:14:57.1399513Z   2 passed (1.4m)",
+      "2026-10-13T05:15:48.2469552Z   1 passed (50.3s)"
+    ]
+  },
+  "archives": [
+    {
+      "name": "predeploy-character-evidence-8e5f888a66b65e6a69e26c62499b4113549b40c0",
+      "id": 11790291783,
+      "bytes": 168273798,
+      "sha256": "93464056abdeb2fda0c12c60ab6d448c027c2152b4a3e0cccf447700c79bdb79",
+      "entries": 443,
+      "allCRCsMatch": true
+    },
+    {
+      "name": "live-browser-evidence-8e5f888a66b65e6a69e26c62499b4113549b40c0",
+      "id": 11789959610,
+      "bytes": 12383705,
+      "sha256": "b83ea1500d98057ac73fea7573084f7503073b30f174f7ecd77d9e9825c3b3bd",
+      "entries": 27,
+      "allCRCsMatch": true
+    }
+  ],
+  "publicAcceptance": {
+    "normalTLS": true,
+    "observedUTC": "2026-10-13T15:10:30.738622+00:00",
+    "assets": 157,
+    "allAssetsMatch": true,
+    "frontendBackendSourceMatch": true,
+    "databaseReady": true,
+    "analyticsModuleJavaScript": true
+  },
+  "limits": "Scoped49 masonry, active-cutaway cleanup, private smoke, town aprons and opaque skinned color submission improvements only. Original crowded-town budgets, full original goal, art/device/human/owner/F1\u2013F5/beta/launch/handoff remain open.",
+  "distinctCounts": {
+    "clientSuites": 756,
+    "clientTests": 11343,
+    "browserPassed": 351,
+    "browserSkipped": 10,
+    "nativePassed": 59,
+    "nativeSkipped": 1,
+    "liveInitialPassed": 8,
+    "liveInitialSkipped": 1,
+    "liveInitialFlaky": 0,
+    "liveRecoveryPassed": 2,
+    "liveRestPartyPassed": 1,
+    "optionalStagesSkipped": 4
+  },
+  "deliveredStaticObserver": {
+    "attachments": 9,
+    "observedRequests": 352,
+    "observedFailures": 0,
+    "limits": "Only bounded allowlisted page metadata; no causal closure of preceding network failures."
+  },
+  "nativeControlReview": {
+    "controlFiles": [
+      {
+        "path": "native-selected/native-visual-evidence/dungeon-outfits/results/dark-realm-cutaway-Dark-di-28af6-stores-its-original-surface/controls.json",
+        "sha256": "506a314c26e4a19aad9d3ceed519dadea9538f4c46881b9e0f4ca1cb820f2af3",
+        "controls": {
+          "initial": {
+            "ambientParticles": 140,
+            "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "outfits": [
+              {
+                "count": 14,
+                "missing": [],
+                "fallback": []
+              },
+              {
+                "count": 14,
+                "missing": [],
+                "fallback": []
+              },
+              {
+                "count": 14,
+                "missing": [],
+                "fallback": []
+              },
+              {
+                "count": 14,
+                "missing": [],
+                "fallback": []
+              }
+            ],
+            "pendingGeometry": 0
+          },
+          "views": [
+            {
+              "index": 1,
+              "bytes": 4321280,
+              "opacity": 3.099531371065971e-10,
+              "parts": 11,
+              "focusError": 0,
+              "referenceRepeat": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "referenceHero": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "candidateHero": {
+                "changed": 84996,
+                "maximumDelta": 162
+              },
+              "window": {
+                "changed": 145482,
+                "maximumDelta": 191
+              },
+              "geometryExact": true,
+              "unrelatedMaterialsExact": true,
+              "shadowFlagsExact": true,
+              "restored": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "restoredRepeat": {
+                "changed": 0,
+                "maximumDelta": 0
+              }
+            },
+            {
+              "index": 2,
+              "bytes": 4321280,
+              "opacity": 4.4355469313646756e-10,
+              "parts": 11,
+              "focusError": 0,
+              "referenceRepeat": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "referenceHero": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "candidateHero": {
+                "changed": 72229,
+                "maximumDelta": 157
+              },
+              "window": {
+                "changed": 130855,
+                "maximumDelta": 130
+              },
+              "geometryExact": true,
+              "unrelatedMaterialsExact": true,
+              "shadowFlagsExact": true,
+              "restored": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "restoredRepeat": {
+                "changed": 0,
+                "maximumDelta": 0
+              }
+            },
+            {
+              "index": 3,
+              "bytes": 4321280,
+              "opacity": 4.349456653716065e-10,
+              "parts": 11,
+              "focusError": 0,
+              "referenceRepeat": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "referenceHero": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "candidateHero": {
+                "changed": 100151,
+                "maximumDelta": 160
+              },
+              "window": {
+                "changed": 163156,
+                "maximumDelta": 236
+              },
+              "geometryExact": true,
+              "unrelatedMaterialsExact": true,
+              "shadowFlagsExact": true,
+              "restored": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "restoredRepeat": {
+                "changed": 0,
+                "maximumDelta": 0
+              }
+            },
+            {
+              "index": 4,
+              "bytes": 4321280,
+              "opacity": 4.64527665363734e-10,
+              "parts": 11,
+              "focusError": 0,
+              "referenceRepeat": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "referenceHero": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "candidateHero": {
+                "changed": 85435,
+                "maximumDelta": 150
+              },
+              "window": {
+                "changed": 154735,
+                "maximumDelta": 183
+              },
+              "geometryExact": true,
+              "unrelatedMaterialsExact": true,
+              "shadowFlagsExact": true,
+              "restored": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "restoredRepeat": {
+                "changed": 0,
+                "maximumDelta": 0
+              }
+            }
+          ]
+        }
+      },
+      {
+        "path": "native-selected/native-visual-evidence/dungeon-outfits/results/dark-realm-cutaway-Dark-di-bae1c-stores-its-original-surface/controls.json",
+        "sha256": "f3a0c3161d12f7c2ec15e027ff06de2c09682d663bcd5d7b1524ed310a7d0088",
+        "controls": {
+          "initial": {
+            "ambientParticles": 0,
+            "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "outfits": [
+              {
+                "count": 14,
+                "missing": [],
+                "fallback": []
+              },
+              {
+                "count": 14,
+                "missing": [],
+                "fallback": []
+              },
+              {
+                "count": 14,
+                "missing": [],
+                "fallback": []
+              },
+              {
+                "count": 14,
+                "missing": [],
+                "fallback": []
+              }
+            ],
+            "pendingGeometry": 0
+          },
+          "views": [
+            {
+              "index": 1,
+              "bytes": 1316640,
+              "opacity": 6.798152810558027e-10,
+              "parts": 11,
+              "focusError": 0,
+              "referenceRepeat": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "referenceHero": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "candidateHero": {
+                "changed": 3851,
+                "maximumDelta": 178
+              },
+              "window": {
+                "changed": 36410,
+                "maximumDelta": 215
+              },
+              "geometryExact": true,
+              "unrelatedMaterialsExact": true,
+              "shadowFlagsExact": true,
+              "restored": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "restoredRepeat": {
+                "changed": 0,
+                "maximumDelta": 0
+              }
+            },
+            {
+              "index": 2,
+              "bytes": 1316640,
+              "opacity": 6.482141473708803e-10,
+              "parts": 11,
+              "focusError": 0,
+              "referenceRepeat": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "referenceHero": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "candidateHero": {
+                "changed": 3865,
+                "maximumDelta": 168
+              },
+              "window": {
+                "changed": 35401,
+                "maximumDelta": 171
+              },
+              "geometryExact": true,
+              "unrelatedMaterialsExact": true,
+              "shadowFlagsExact": true,
+              "restored": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "restoredRepeat": {
+                "changed": 0,
+                "maximumDelta": 0
+              }
+            },
+            {
+              "index": 3,
+              "bytes": 1316640,
+              "opacity": 6.893996288815238e-10,
+              "parts": 11,
+              "focusError": 0,
+              "referenceRepeat": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "referenceHero": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "candidateHero": {
+                "changed": 3839,
+                "maximumDelta": 180
+              },
+              "window": {
+                "changed": 36311,
+                "maximumDelta": 230
+              },
+              "geometryExact": true,
+              "unrelatedMaterialsExact": true,
+              "shadowFlagsExact": true,
+              "restored": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "restoredRepeat": {
+                "changed": 0,
+                "maximumDelta": 0
+              }
+            },
+            {
+              "index": 4,
+              "bytes": 1316640,
+              "opacity": 6.610444708724106e-10,
+              "parts": 11,
+              "focusError": 0,
+              "referenceRepeat": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "referenceHero": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "candidateHero": {
+                "changed": 3862,
+                "maximumDelta": 174
+              },
+              "window": {
+                "changed": 36792,
+                "maximumDelta": 214
+              },
+              "geometryExact": true,
+              "unrelatedMaterialsExact": true,
+              "shadowFlagsExact": true,
+              "restored": {
+                "changed": 0,
+                "maximumDelta": 0
+              },
+              "restoredRepeat": {
+                "changed": 0,
+                "maximumDelta": 0
+              }
+            }
+          ]
+        }
+      },
+      {
+        "path": "native-selected/native-visual-evidence/dungeon-outfits/results/lanternhold-house-cutaway--0c9c4-ore-their-original-surfaces/controls.json",
+        "sha256": "0fecd063d30c442858b2373befbbd247e4acc258a01bdb1b23256e35f4911342",
+        "controls": {
+          "initial": {
+            "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "outfits": [
+              {
+                "count": 14,
+                "missing": [],
+                "fallback": []
+              },
+              {
+                "count": 14,
+                "missing": [],
+                "fallback": []
+              },
+              {
+                "count": 14,
+                "missing": [],
+                "fallback": []
+              },
+              {
+                "count": 14,
+                "missing": [],
+                "fallback": []
+              }
+            ],
+            "pendingGeometry": 0
+          },
+          "controls": [
+            {
+              "view": "south-home",
+              "opacity": 1.7254376779014955e-08,
+              "parts": 5,
+              "focusError": 0,
+              "referenceHero": 1738,
+              "candidateHero": 2889,
+              "changedColor": 19350,
+              "changedShadow": 0,
+              "geometryExact": true,
+              "shadowFlagsExact": true,
+              "foundationExact": true,
+              "reference": {
+                "calls": 97,
+                "triangles": 65702
+              },
+              "candidate": {
+                "calls": 97,
+                "triangles": 65702
+              },
+              "changedRestored": 0,
+              "changedRestoredShadow": 0,
+              "materialsRestored": true
+            },
+            {
+              "view": "west-home",
+              "opacity": 1.6178219081532137e-08,
+              "parts": 5,
+              "focusError": 0,
+              "referenceHero": 1306,
+              "candidateHero": 2880,
+              "changedColor": 19976,
+              "changedShadow": 0,
+              "geometryExact": true,
+              "shadowFlagsExact": true,
+              "foundationExact": true,
+              "reference": {
+                "calls": 95,
+                "triangles": 68808
+              },
+              "candidate": {
+                "calls": 95,
+                "triangles": 68808
+              },
+              "changedRestored": 0,
+              "changedRestoredShadow": 0,
+              "materialsRestored": true
+            }
+          ]
+        }
+      },
+      {
+        "path": "native-selected/native-visual-evidence/dungeon-outfits/results/lanternhold-house-cutaway--1ae0f-ore-their-original-surfaces/controls.json",
+        "sha256": "8929f9138dce9137f67e9a672e13b058de78a3f212d02c48d2b2762eda22c00b",
+        "controls": {
+          "initial": {
+            "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "outfits": [
+              {
+                "count": 14,
+                "missing": [],
+                "fallback": []
+              },
+              {
+                "count": 14,
+                "missing": [],
+                "fallback": []
+              },
+              {
+                "count": 14,
+                "missing": [],
+                "fallback": []
+              },
+              {
+                "count": 14,
+                "missing": [],
+                "fallback": []
+              }
+            ],
+            "pendingGeometry": 0
+          },
+          "controls": [
+            {
+              "view": "south-home",
+              "opacity": 3.9639302624939434e-11,
+              "parts": 5,
+              "focusError": 0,
+              "referenceHero": 6659,
+              "candidateHero": 18716,
+              "changedColor": 65163,
+              "changedShadow": 0,
+              "geometryExact": true,
+              "shadowFlagsExact": true,
+              "foundationExact": true,
+              "reference": {
+                "calls": 196,
+                "triangles": 181127
+              },
+              "candidate": {
+                "calls": 196,
+                "triangles": 181127
+              },
+              "changedRestored": 0,
+              "changedRestoredShadow": 0,
+              "materialsRestored": true
+            },
+            {
+              "view": "west-home",
+              "opacity": 3.685609907993251e-11,
+              "parts": 5,
+              "focusError": 0,
+              "referenceHero": 4874,
+              "candidateHero": 18604,
+              "changedColor": 66180,
+              "changedShadow": 0,
+              "geometryExact": true,
+              "shadowFlagsExact": true,
+              "foundationExact": true,
+              "reference": {
+                "calls": 193,
+                "triangles": 193545
+              },
+              "candidate": {
+                "calls": 193,
+                "triangles": 193545
+              },
+              "changedRestored": 0,
+              "changedRestoredShadow": 0,
+              "materialsRestored": true
+            }
+          ]
+        }
+      }
+    ],
+    "manuallyViewed": [
+      {
+        "path": "native-selected/native-visual-evidence/dungeon-outfits/results/dark-realm-cutaway-Dark-di-28af6-stores-its-original-surface/district-2.png",
+        "sha256": "6e981a7eb0a21dbaa419b293c96d99a6394b42c4e636f000136cb0ea6739e002"
+      },
+      {
+        "path": "native-selected/native-visual-evidence/dungeon-outfits/results/dark-realm-cutaway-Dark-di-bae1c-stores-its-original-surface/district-2.png",
+        "sha256": "2c0f014cbe840a06e93ca1196739cdd153fbad4158e0e1a0fa421bde5f4bbf3c"
+      },
+      {
+        "path": "native-selected/native-visual-evidence/dungeon-outfits/results/lanternhold-house-cutaway--0c9c4-ore-their-original-surfaces/west-home.png",
+        "sha256": "982ba2e7e12776a405bd9d13e42d847c7c80ad1a50e92ada5e951759bb614cf3"
+      },
+      {
+        "path": "native-selected/native-visual-evidence/dungeon-outfits/results/lanternhold-house-cutaway--1ae0f-ore-their-original-surfaces/west-home.png",
+        "sha256": "7433c9b02235e4decfa50750c2c0be13df222e762bc96c6eeadaba191f5fd3e9"
+      }
+    ],
+    "judgment": "Actual High/Low town homes and Dark district foreground cutaway retain equipped local-hero visibility and exact restored surfaces. This is scoped visual control review, not final modern-art, world/population or physical-device acceptance."
+  },
+  "status": "Accepted scoped Alpha1.79.49 after own ordered CI/native/QA-inputs/deploy/live and fresh public asset/identity/readyDB verification.",
+  "retainedFindings": "Failed48 predeploy module ERR_NETWORK_CHANGED, rejected initial49 Low active-cutaway original-material disposal0, earlier45 network causes, short shard abort records, crowded-town triangle/connected frame failures and failed41 capacity soak remain retained. Private stream probes and foliage CPU screen are separate investigations, not release gates or causal closure.",
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-release49-masonry-terminal-checks-20261013",
+    "entries": 43,
+    "inventorySHA256": "72e2d2c870f148e6f495cd6b9d9d06e9a11edf09afc360ab9be567d315f95664"
+  }
+}

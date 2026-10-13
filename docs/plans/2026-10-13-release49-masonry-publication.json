@@ -1,7 +1,7 @@
 {
   "source": "8e5f888a66b65e6a69e26c62499b4113549b40c0",
   "version": "Alpha 1.79.49",
-  "status": "Pushed exact corrected49 to master; own ordered CI/deploy/live and fresh157asset/source/readyDB acceptance pending. Public47 remains accepted.",
+  "status": "Accepted scoped49 after own ordered CI/native/QA-inputs/deploy/live and fresh157asset verification",
   "qualificationReceipts": [
     "2026-10-13-dark-masonry-native-qualification.json",
     "2026-10-13-scenery-shutdown-qualification.json",
@@ -191,5 +191,8 @@
     "headSha": "8e5f888a66b65e6a69e26c62499b4113549b40c0",
     "status": "in_progress"
   },
-  "recordedUTC": "2026-10-13T04:27:45.685649+00:00"
+  "recordedUTC": "2026-10-13T04:27:45.685649+00:00",
+  "acceptanceReceipt": "2026-10-13-public49-terminal-qualification.json",
+  "ciTerminalUTC": "2026-10-13T05:15:55Z",
+  "freshPublicVerificationUTC": "2026-10-13T15:10:30.738622+00:00"
 }

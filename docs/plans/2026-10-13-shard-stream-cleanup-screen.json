@@ -1,0 +1,79 @@
+{
+  "recordedUTC": "2026-10-13T15:16:43.791705+00:00",
+  "source": "8e5f888a66b65e6a69e26c62499b4113549b40c0",
+  "selected": false,
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-stream-probe-checks-20261013",
+    "entries": 5,
+    "inventorySHA256": "3050ca5e593a03cee374c00c85fc6cd7045587fd938e626c95c2d78f69e0d56e"
+  },
+  "status": "Cleanup hypothesis not supported; production lookup, worker, service worker and deadlines unchanged.",
+  "scope": "Private served QA variants of exact current lookup and production service worker; synthetic metadata arrays exercise all catalog outputs. No game/server/accounts, no original45 causal closure.",
+  "contrast": "Exact production lookup versus QA-only cancel-on-incomplete/releaseLock-on-EOF variant. Original API1500ms timeout, one FIFO/no retries and all133 immutable decoded output identity checks retained.",
+  "native": {
+    "contexts": 6,
+    "workerOwners": 12,
+    "decodedOutputs": 1596,
+    "shardsPerOwner": 14,
+    "namespace": "network-none private loopback",
+    "browser": "System Chrome153 / Node24.18.0",
+    "results": [
+      {
+        "cache": "blocked",
+        "mode": "original",
+        "outputs": 266,
+        "unavailable": 0,
+        "observedFailures": 7,
+        "networkShards": 28
+      },
+      {
+        "cache": "blocked",
+        "mode": "release-after-eof",
+        "outputs": 266,
+        "unavailable": 0,
+        "observedFailures": 6,
+        "networkShards": 28
+      },
+      {
+        "cache": "controlled",
+        "mode": "original",
+        "outputs": 266,
+        "unavailable": 0,
+        "observedFailures": 13,
+        "networkShards": 14
+      },
+      {
+        "cache": "controlled",
+        "mode": "release-after-eof",
+        "outputs": 266,
+        "unavailable": 0,
+        "observedFailures": 14,
+        "networkShards": 14
+      },
+      {
+        "cache": "controlled",
+        "mode": "release-after-eof",
+        "outputs": 266,
+        "unavailable": 0,
+        "observedFailures": 14,
+        "networkShards": 14
+      },
+      {
+        "cache": "controlled",
+        "mode": "original",
+        "outputs": 266,
+        "unavailable": 0,
+        "observedFailures": 16,
+        "networkShards": 14
+      }
+    ]
+  },
+  "conclusion": "Short status200 ERR_ABORTED metadata occurs with successful hash-verified outputs in both cleanup modes, including contexts where service workers are blocked. Current reader.cancel after EOF and service-worker presence are not necessary conditions for these observed shard records. Do not infer a universal browser cause, waive startup/module failures or alter error recording.",
+  "limits": "QA-only provider/worker probe, not game/network/capacity/device acceptance or causal closure of original45/48 startup failures. Response-reader instrumentation is identical across contrasts; no runtime selection.",
+  "retirement": {
+    "ownedServerClosed": true,
+    "browserClosed": true,
+    "completedArms": 6,
+    "port": 4252
+  }
+}

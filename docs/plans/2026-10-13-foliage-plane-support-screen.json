@@ -1,0 +1,145 @@
+{
+  "recordedUTC": "2026-10-13T15:16:43.794572+00:00",
+  "source": "8e5f888a66b65e6a69e26c62499b4113549b40c0",
+  "selected": false,
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-plane-screen-checks-20261013",
+    "entries": 3,
+    "inventorySHA256": "d3d92890d587760ca078b4777a82c2916d7c9877021134dc2e63fc964a6ae3e4"
+  },
+  "status": "Reject private plane-support cache: slower than current direct predicates. No runtime selection or native repetition.",
+  "scope": "QA-only synthetic3146-box CPU screen; exact current Three/color and current swept-shadow predicate references. No actual-game/native/frame/device/performance acceptance or runtime selection.",
+  "comparisons": 2340624,
+  "records": [
+    {
+      "shadow": false,
+      "order": "ABBA",
+      "arm": "A",
+      "elapsedMs": 35.34861799999999,
+      "visible": 12111,
+      "rebuilds": 0
+    },
+    {
+      "shadow": false,
+      "order": "ABBA",
+      "arm": "B",
+      "elapsedMs": 152.044579,
+      "visible": 12111,
+      "rebuilds": 607178
+    },
+    {
+      "shadow": false,
+      "order": "ABBA",
+      "arm": "B",
+      "elapsedMs": 181.93390899999997,
+      "visible": 12111,
+      "rebuilds": 607178
+    },
+    {
+      "shadow": false,
+      "order": "ABBA",
+      "arm": "A",
+      "elapsedMs": 19.857073000000014,
+      "visible": 12111,
+      "rebuilds": 0
+    },
+    {
+      "shadow": false,
+      "order": "BAAB",
+      "arm": "B",
+      "elapsedMs": 226.30634700000007,
+      "visible": 12111,
+      "rebuilds": 607178
+    },
+    {
+      "shadow": false,
+      "order": "BAAB",
+      "arm": "A",
+      "elapsedMs": 25.26317999999992,
+      "visible": 12111,
+      "rebuilds": 0
+    },
+    {
+      "shadow": false,
+      "order": "BAAB",
+      "arm": "A",
+      "elapsedMs": 24.482903999999962,
+      "visible": 12111,
+      "rebuilds": 0
+    },
+    {
+      "shadow": false,
+      "order": "BAAB",
+      "arm": "B",
+      "elapsedMs": 89.26258499999994,
+      "visible": 12111,
+      "rebuilds": 607178
+    },
+    {
+      "shadow": true,
+      "order": "ABBA",
+      "arm": "A",
+      "elapsedMs": 83.10226200000011,
+      "visible": 13202,
+      "rebuilds": 0
+    },
+    {
+      "shadow": true,
+      "order": "ABBA",
+      "arm": "B",
+      "elapsedMs": 103.33885299999997,
+      "visible": 13202,
+      "rebuilds": 607178
+    },
+    {
+      "shadow": true,
+      "order": "ABBA",
+      "arm": "B",
+      "elapsedMs": 95.63132300000007,
+      "visible": 13202,
+      "rebuilds": 607178
+    },
+    {
+      "shadow": true,
+      "order": "ABBA",
+      "arm": "A",
+      "elapsedMs": 41.82104199999981,
+      "visible": 13202,
+      "rebuilds": 0
+    },
+    {
+      "shadow": true,
+      "order": "BAAB",
+      "arm": "B",
+      "elapsedMs": 95.80911900000001,
+      "visible": 13202,
+      "rebuilds": 607178
+    },
+    {
+      "shadow": true,
+      "order": "BAAB",
+      "arm": "A",
+      "elapsedMs": 42.7507999999998,
+      "visible": 13202,
+      "rebuilds": 0
+    },
+    {
+      "shadow": true,
+      "order": "BAAB",
+      "arm": "A",
+      "elapsedMs": 42.68531699999994,
+      "visible": 13202,
+      "rebuilds": 0
+    },
+    {
+      "shadow": true,
+      "order": "BAAB",
+      "arm": "B",
+      "elapsedMs": 97.14334400000007,
+      "visible": 13202,
+      "rebuilds": 607178
+    }
+  ],
+  "conclusion": "Exact normal comparisons invalidate607178 cached boxes across the moving-camera sweep; translation also changes some normalized planes by floating-point rounding. Color reference19.9\u201335.3ms versus candidate89.3\u2013226.3ms; swept-shadow reference41.8\u201383.1ms versus candidate95.6\u2013103.3ms. Original precision and budgets remain; no approximate normal matching introduced.",
+  "limits": "Synthetic3146-box CPU screen only. No browser/GPU, full-scene FPS or final performance acceptance."
+}
