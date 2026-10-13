@@ -1070,12 +1070,18 @@ export class RenderSystem {
     }
 
     setActorInstancesEnabled(enabled) {
-        if (this._disposed) return;
-        if (enabled && !this.actorInstances) {
-            this.actorInstances = new ActorInstanceBatches(this.scene, [this.scene, this.entityGroup], { shadowInfluence: true, multiDraw: true, instanceFrustum: true, batchSingletons: this.graphicsQuality === 'high' });
-        } else if (!enabled && this.actorInstances) {
-            this.actorInstances.dispose(); this.actorInstances = null;
-        }
+        if (this._disposed || Boolean(enabled) === Boolean(this.actorInstances)) return;
+        // Color wraps the scene's actor-instance callback as well as render;
+        // retire it first so the old instance hook can restore its predecessor.
+        const restoreColors = Boolean(this.actorColorBatches);
+        if (restoreColors) this.setActorColorBatchesEnabled(false);
+        try {
+            if (enabled) {
+                this.actorInstances = new ActorInstanceBatches(this.scene, [this.scene, this.entityGroup], { shadowInfluence: true, multiDraw: true, instanceFrustum: true, batchSingletons: this.graphicsQuality === 'high' });
+            } else {
+                this.actorInstances.dispose(); this.actorInstances = null;
+            }
+        } finally { if (restoreColors) this.setActorColorBatchesEnabled(true); }
     }
 
     setActorGameplayGeometryEnabled(enabled, options = {}) {

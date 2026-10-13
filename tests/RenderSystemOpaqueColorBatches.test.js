@@ -87,3 +87,12 @@ test('failed frames and realm clear leave no proxy children or stale wrappers', 
     f.render.add(f.a.root);expect(f.draw()).toHaveLength(1);expect(runtime.roots.size).toBe(1);f.render.dispose();expect(disposed).toHaveBeenCalledTimes(1);
     expect(f.renderer.render).toBe(f.originalRender);expect(f.renderer.renderBufferDirect).toBe(f.originalDirect);
 });
+
+test('rigid-instance owner replacement releases the previous scene hook beneath the outer color wrapper', () => {
+    const f=fixture();f.draw();const previous=f.render.actorColorBatches,instances=f.render.actorInstances,predecessor=instances.before;
+    f.render.setActorInstancesEnabled(false);expect(previous.disposed).toBe(true);expect(f.render.actorInstances).toBeNull();
+    expect(f.render.actorColorBatches.owner.originalBefore).toBe(predecessor);expect(f.draw()).toHaveLength(1);
+    f.render.setActorInstancesEnabled(true);expect(f.render.actorInstances).not.toBe(instances);expect(f.draw()).toHaveLength(1);
+    expect(f.render.actorColorBatches.owner.originalBefore).toBe(f.render.actorInstances.beforeHook);
+    f.render.dispose();expect(f.renderer.render).toBe(f.originalRender);expect(f.renderer.renderBufferDirect).toBe(f.originalDirect);
+});

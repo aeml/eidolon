@@ -73,7 +73,12 @@ test('disabling removes only owned hooks and streaming listeners', () => {
         const helper = f.render.actorInstances, before = helper.before, after = helper.after;
         f.begin(); f.render.setActorInstancesEnabled(false); f.render.setActorInstancesEnabled(false);
         expect(f.render.actorInstances).toBeNull(); expect(helper.roots.size).toBe(0); expect(helper.batches.size).toBe(0);
-        expect(helper.group.parent).toBeNull(); expect(f.render.scene.onBeforeRender).toBe(before);
+        expect(helper.group.parent).toBeNull();
+        expect(f.render.scene.onBeforeRender).toBe(f.render.actorColorBatches.owner.beforeWrapper);
+        expect(f.render.actorColorBatches.owner.originalBefore).toBe(before);
+        // Removing the outer wrapper must expose exactly the predecessor, never
+        // the callback of the retired rigid-instance owner.
+        f.render.setActorColorBatchesEnabled(false); expect(f.render.scene.onBeforeRender).toBe(before);
         expect(f.render.scene.onAfterRender).toBe(after);
         f.roots[1].removeFromParent(); f.render.add(f.roots[1]); expect(helper.roots.size).toBe(0);
         f.roots.forEach(root => expect(root.children[0].visible).toBe(true));
