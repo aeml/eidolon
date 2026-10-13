@@ -271,7 +271,7 @@ api_created=true
 isolated_api_ready() {
   if [[ "${QA_NETWORK_MODE}" == private-smoke ]]; then
     docker exec "${MONGO_CONTAINER}" mongosh --nodb --quiet --eval \
-      "const r=await fetch('http://127.0.0.1:${QA_PORT}/healthz'); print(r.ok && (await r.json()).database==='ready' ? 'ready' : 'waiting')" 2>/dev/null | grep -Eq '^ready$'
+      "(async()=>{const r=await fetch('http://127.0.0.1:${QA_PORT}/healthz'); print(r.ok && (await r.json()).database==='ready' ? 'ready' : 'waiting')})()" 2>/dev/null | grep -Eq '^ready$'
   else
     curl -fsS "http://127.0.0.1:${QA_PORT}/healthz" 2>/dev/null | grep -Fq '"database":"ready"'
   fi
