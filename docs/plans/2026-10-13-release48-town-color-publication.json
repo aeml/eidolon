@@ -1,0 +1,187 @@
+{
+  "source": "9b536c1cf6655e7e138567e1678497c626870d6b",
+  "version": "Alpha 1.79.48",
+  "status": "Pushed to master; own ordered CI/deploy/live and fresh public identity/assets/readyDB pending. Accepted public remains47.",
+  "recordedUTC": "2026-10-13T02:50:21.722579+00:00",
+  "qualificationReceipts": [
+    "2026-10-13-opaque-color-default-integration-qualification.json",
+    "2026-10-13-town-service-aprons-native-qualification.json",
+    "2026-10-13-static-delivery-live-fixture-qualification.json"
+  ],
+  "preparation": {
+    "atUTC": "2026-10-13T02:49:14.929887+00:00",
+    "source": "9b536c1cf6655e7e138567e1678497c626870d6b",
+    "version": "Alpha 1.79.48",
+    "clientPassed": 469,
+    "clientSuites": 6,
+    "contentGroups": 14,
+    "versionFiles": 12,
+    "notes": 483,
+    "priorNotesByteExact": 482,
+    "publicPins": 156,
+    "bundledModules": 484,
+    "copiedNativeProfiles": [
+      "high",
+      "low"
+    ],
+    "copiedNativeControls": 4,
+    "defaultColorSavedSubmissionsPerProfile": 15,
+    "defaultHighShadowSavedSubmissions": 96,
+    "defaultLowShadowEntries": 0,
+    "retries": 0,
+    "retainedFixtureFailure": "First build manifest path mechanically referenced expected-public48 inside frozen47 root. Corrected only prior manifest path; copied source fully overwritten/rebuilt, same committed9b source and unchanged assertions. Initial failure retained.",
+    "limits": "Exact color ownership, connected merchant/forge paving and QA-only bounded transport observations. Original crowded-town triangle budgets, public45 network causes, global art/performance/device/ops/owner/beta/handoff remain open."
+  },
+  "build": {
+    "source": "9b536c1cf6655e7e138567e1678497c626870d6b",
+    "pins": 156,
+    "copyFiles": 3790,
+    "copyBytes": 451986557,
+    "build": {
+      "worker": {
+        "output": "src/core/ActorGameplayGeometryWorker.28b738eaf5aa3a9b.js",
+        "sha256": "28b738eaf5aa3a9ba5df513fbd8c400f3d82a5f0f2624d529731c57b80a95f03",
+        "bytes": 179507,
+        "modules": 15,
+        "imports": [],
+        "precomputed": {
+          "path": "assets/gameplay-geometry/indices.6aa8c7e199c910b5.bin",
+          "sha256": "6aa8c7e199c910b5fbf0f78dfae873b64e79aa0045e39b5775ff9ac7d7e93346",
+          "bytes": 777321,
+          "entries": 133,
+          "shards": [
+            {
+              "path": "assets/gameplay-geometry/indices.62dceb9abec13cb0.bin",
+              "bytes": 64411,
+              "sha256": "62dceb9abec13cb09ab25fe730382241a5fbcf1817b839941e9995f9843e4697"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.492b64fcc6657fc5.bin",
+              "bytes": 62475,
+              "sha256": "492b64fcc6657fc54d829dd4c7766e9d02b3b953fc71fae2095af66298ea91f5"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.a8e4573b9f020cff.bin",
+              "bytes": 65216,
+              "sha256": "a8e4573b9f020cff14f66422c28aa0e53e4917701deade51f6dd2980fdb9dd5f"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.71f4b276ae9218f5.bin",
+              "bytes": 54754,
+              "sha256": "71f4b276ae9218f5378733f29f1bde7f23dfcd10457fc74de5c2663fee476de2"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.796064b1159706c0.bin",
+              "bytes": 43601,
+              "sha256": "796064b1159706c0c57e425bd02cf9de251a34a1cddc03f5dd270d4cf6a3d178"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.590ea8d42219fe53.bin",
+              "bytes": 58638,
+              "sha256": "590ea8d42219fe530050b5ba2886c8c6e7bf4233017b7f0c497d11b5c72470d6"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.927fa72b1036cdc4.bin",
+              "bytes": 60257,
+              "sha256": "927fa72b1036cdc4fa62f98fdf7e9194be5f46e1471226dbd74235a91de17fdb"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.fa8c332b1b158f42.bin",
+              "bytes": 59698,
+              "sha256": "fa8c332b1b158f42e03cea80cf2cf82690f7786b39d440f4357488dc52a55c98"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.5d09cf75404d7d80.bin",
+              "bytes": 55905,
+              "sha256": "5d09cf75404d7d807e7a93df3b990cf31ced511d466e592aa387d0d8c5c69bff"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.8005a3dfbb147be0.bin",
+              "bytes": 37007,
+              "sha256": "8005a3dfbb147be0eda039e856a45c7bac9b495cea65fbfe8cdc2a9bc78fc501"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.b92aae6f7fe78a87.bin",
+              "bytes": 34450,
+              "sha256": "b92aae6f7fe78a87d26d1868d2bc91ce196901d7d4a51030aead970a178901e1"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.51e1054c0867a1e5.bin",
+              "bytes": 62385,
+              "sha256": "51e1054c0867a1e5a1890b69226847966210eff4fbec4f8260c491683a2da35b"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.f4d836ae9209700e.bin",
+              "bytes": 62002,
+              "sha256": "f4d836ae9209700e9babeb3483f3479434c2c652c58950feed98400b849e4777"
+            },
+            {
+              "path": "assets/gameplay-geometry/indices.637f0a8ba2de3e76.bin",
+              "bytes": 56522,
+              "sha256": "637f0a8ba2de3e76e3a09f3c95627d5967df8747fb61f49d1b830d05a9fc1470"
+            }
+          ]
+        }
+      },
+      "bundledModules": 484,
+      "bytes": 3802448,
+      "sharedLoginModules": 22,
+      "vendorModules": [
+        "vendor/three/examples/jsm/geometries/RoundedBoxGeometry.js",
+        "vendor/three/examples/jsm/loaders/GLTFLoader.js",
+        "vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+        "vendor/three/examples/jsm/postprocessing/MaskPass.js",
+        "vendor/three/examples/jsm/postprocessing/OutputPass.js",
+        "vendor/three/examples/jsm/postprocessing/Pass.js",
+        "vendor/three/examples/jsm/postprocessing/RenderPass.js",
+        "vendor/three/examples/jsm/postprocessing/ShaderPass.js",
+        "vendor/three/examples/jsm/postprocessing/UnrealBloomPass.js",
+        "vendor/three/examples/jsm/shaders/CopyShader.js",
+        "vendor/three/examples/jsm/shaders/FXAAShader.js",
+        "vendor/three/examples/jsm/shaders/LuminosityHighPassShader.js",
+        "vendor/three/examples/jsm/shaders/OutputShader.js",
+        "vendor/three/examples/jsm/utils/BufferGeometryUtils.js",
+        "vendor/three/examples/jsm/utils/SkeletonUtils.js"
+      ],
+      "externalImports": [
+        "../assets/ServiceWorkerBoot.js",
+        "../data/worldGeography.js",
+        "../ui/EmailRecoveryUI.js",
+        "../ui/OwnedEvents.js",
+        "../ui/PasswordChangeUI.js",
+        "../ui/ReportUI.js",
+        "../ui/reportTypes.js",
+        "./CredentialToken.js",
+        "./GraphicsStartup.js",
+        "three"
+      ]
+    },
+    "versioning": {
+      "root": "/home/aeml/.local/share/eidolon-master-20261011/.qa-release48/publication-copy",
+      "release": "9b536c1cf6655e7e138567e1678497c626870d6b",
+      "scannedFiles": 955,
+      "changedFiles": 432,
+      "bundledStyles": true
+    }
+  },
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-release48-town-color-preparation-checks-20261013",
+    "entries": 50,
+    "inventorySHA256": "b5b9ef70a81164ea4de28d1935dc9f76fe2bdb251b097d0471cff8b1a6a05a3d"
+  },
+  "priorPublic": {
+    "source": "13f541755f2217cd429c3c9d782ccd0966e3f379",
+    "ci": 38328616361,
+    "freshCheckUTC": "2026-10-13T02:45:38.809023+00:00",
+    "all152pinsIdentitiesReadyDBMatch": true
+  },
+  "ownCI": {
+    "conclusion": "",
+    "createdAt": "2026-10-13T02:49:20Z",
+    "databaseId": 38338720250,
+    "headSha": "9b536c1cf6655e7e138567e1678497c626870d6b",
+    "name": "CI",
+    "status": "in_progress"
+  },
+  "limits": "No own48 acceptance or final-art/performance/beta claim. Original High/Low triangle and network-cause findings/full original goal remain open."
+}
