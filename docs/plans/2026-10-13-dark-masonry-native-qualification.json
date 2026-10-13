@@ -1,0 +1,144 @@
+{
+  "recordedUTC": "2026-10-13T04:02:18.054636+00:00",
+  "source": "f7114692ff2277656707a07db8747f393a609fa7",
+  "runtimeSource": "a0854313",
+  "status": "Native/CPU scoped masonry qualified; ordinary master merge next, coherent corrected publication pending.",
+  "CPU": "55distinct checks/six suites/lint with valid reuse; six cached maps byte-exact for first/returning owners; eight constructors and both49mesh scenes preserve all non-wall-UV buffers/colliders/materials/maps.",
+  "profiles": [
+    {
+      "quality": "high",
+      "views": 8,
+      "pairedImages": 16,
+      "exactRGBARestores": 8,
+      "exactPackedDepthPairs": 8,
+      "actualLocalHeroFocusError": 0,
+      "movingABBAArms": 8,
+      "maximumMedianMs": 16.7,
+      "maximumP95Ms": 16.8,
+      "maximumDrawCalls": 168,
+      "maximumTriangles": 179727,
+      "gpuLifetime": {
+        "baseline": {
+          "geometries": 128,
+          "textures": 72,
+          "programs": 40
+        },
+        "cycles": [
+          {
+            "active": {
+              "geometries": 144,
+              "textures": 82,
+              "programs": 46
+            },
+            "retired": {
+              "geometries": 128,
+              "textures": 72,
+              "programs": 40
+            },
+            "counts": [
+              1,
+              1,
+              1,
+              1
+            ]
+          },
+          {
+            "active": {
+              "geometries": 144,
+              "textures": 82,
+              "programs": 46
+            },
+            "retired": {
+              "geometries": 128,
+              "textures": 72,
+              "programs": 40
+            },
+            "counts": [
+              1,
+              1,
+              1,
+              1
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "quality": "low",
+      "views": 8,
+      "pairedImages": 16,
+      "exactRGBARestores": 8,
+      "exactPackedDepthPairs": 0,
+      "actualLocalHeroFocusError": 0,
+      "movingABBAArms": 8,
+      "maximumMedianMs": 16.7,
+      "maximumP95Ms": 16.8,
+      "maximumDrawCalls": 94,
+      "maximumTriangles": 80402,
+      "gpuLifetime": {
+        "baseline": {
+          "geometries": 133,
+          "textures": 58,
+          "programs": 17
+        },
+        "cycles": [
+          {
+            "active": {
+              "geometries": 150,
+              "textures": 68,
+              "programs": 23
+            },
+            "retired": {
+              "geometries": 133,
+              "textures": 58,
+              "programs": 17
+            },
+            "counts": [
+              1,
+              1,
+              1,
+              1
+            ]
+          },
+          {
+            "active": {
+              "geometries": 150,
+              "textures": 68,
+              "programs": 23
+            },
+            "retired": {
+              "geometries": 133,
+              "textures": 58,
+              "programs": 17
+            },
+            "counts": [
+              1,
+              1,
+              1,
+              1
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "resourceOwnership": "One scene-owned material and three maps shared by four existing skyline wall batches/all32buildings. All16observed new material/map resources dispose once across fourGPUcycles; exact renderer baselines. Private two-profile raw recipes bounded960KiB; scene texture storage independent.",
+  "artReview": {
+    "viewsInspected": [
+      "high-shore-foreground-wall",
+      "high-city-far-wall",
+      "high-archive-foreground-wall",
+      "high-foundry-far-wall",
+      "low-shore-far-wall",
+      "low-city-far-wall"
+    ],
+    "finding": "Matte staggered basalt courses remain readable at ordinary zoom15, with restrained mineral variation and grout relief; original windows, roofs, district trim and player-focus cutaway retained. Actual supplied four14-slot Run characters and HUD visible. Sparse/void-boundary composition and final-world acceptance remain open."
+  },
+  "retainedSetupFinding": "First native helper tried git inside minimal private namespace, before browser/server startup. Source now read from host-written exact40hex source.txt; initial failure retained, no runtime/assertion/timeout change.",
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-dark-masonry-native-checks-20261013",
+    "entries": 55,
+    "inventorySHA256": "80e035f4b40cb363a0565980734165c24f30e6ed54d04b37907eba1aa88752f9"
+  },
+  "limits": "Prepared actual production GameEngine entry/render with visible equipped local hero/other three supplied14-slot Run actors/HUD, High1280/Low390. No connected campaign, physical phone, cold-browser peak, whole-world/crowded-town performance, final-art, beta or full-goal acceptance. Own48CI failed separately; public47 remains current."
+}
