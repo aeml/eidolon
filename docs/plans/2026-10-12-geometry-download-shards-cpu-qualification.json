@@ -1,6 +1,6 @@
 {
   "atUTC": "2026-10-12T23:55:44.337700+00:00",
-  "status": "CPU-qualified isolated candidate; native worker streaming and published ownership/offline gates pending. No master runtime merge or public publication.",
+  "status": "CPU-qualified detached candidate; native real-worker transfer and copied published owner/cache/offline gates pending own46 terminal. No master runtime merge/publication.",
   "base": "011108ca9e84ae02cd73e090e61aa4dc38e77619",
   "cpuPassed": 132,
   "suites": 6,
@@ -109,5 +109,6 @@
     "root": "/home/aeml/.local/share/eidolon-geometry-download-shards-cpu-checks-20261012",
     "entries": 51,
     "inventorySHA256": "2ad85c3915bf78a07b56a02de4b8e6e8958e5a172a1c204010de0e63f818b85d"
-  }
+  },
+  "isolatedSource": "8f8dd735"
 }
