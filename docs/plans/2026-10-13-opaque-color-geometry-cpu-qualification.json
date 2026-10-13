@@ -1,0 +1,34 @@
+{
+  "atUTC": "2026-10-13T01:58:31.878103+00:00",
+  "source": "add12462a49461e840ac6062e4977f3abd395913",
+  "status": "Isolated exact full-attribute skinned color geometry CPU qualification only; no renderer/default activation or master selection",
+  "cpuChecks": 73,
+  "suites": 2,
+  "lintPassed": true,
+  "loadedCases": 40,
+  "profiles": [
+    "High",
+    "Low"
+  ],
+  "actors": "four supplied14slot classes and original supplied Idle Ilyra, four motion samples each",
+  "originalAssetPinsExact": 117,
+  "constructedGroups": 120,
+  "allRawAttributesAndIndicesExact": true,
+  "independentStorage": true,
+  "potentialColorSubmissionsSavedPerActor": 3,
+  "strictEligibility": "Same material identity and parent, stock Standard/Physical color callbacks/program, exact live ordered bones/inverses/bind/world/layers, all raw attribute formats, no morph/alpha/custom/partial geometry. Shared shadow eligibility guard stays conservative.",
+  "retainedFailures": [
+    "Initial hidden-source manual constructor test failed; added full ancestor visibility and FloatType attribute guards. Unchanged test plus three new negative cases pass.",
+    "Initial loaded-construction qualification expected3groups but onlyFighter2/others0: implementation allowed Standard only while real source also uses stockPhysical. Added same-identity stockPhysical support and positivePhysical/negativeBasic coverage; repeated affectedCPU and loaded construction, nowall40samples/120groups exact. No runtime selected."
+  ],
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-opaque-color-geometry-cpu-checks-20261013",
+    "entries": 25,
+    "inventorySHA256": "26c74e837eedd7f671d54937ca6eea7cecc6fb38c0036d32f08d0e8544ec8184"
+  },
+  "limits": [
+    "GPU/WebGL disabled; counts alone are not native color/depth/timing/frustum/sort/lifecycle/runtime proof.",
+    "Every triangle remains; this cannot alone repair original triangle budgets.",
+    "Source indices, materials, rigs, motion banks and equipment remain exact; full original goal open."
+  ]
+}

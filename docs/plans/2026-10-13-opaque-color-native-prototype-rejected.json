@@ -1,0 +1,66 @@
+{
+  "atUTC": "2026-10-13T02:06:18.539619+00:00",
+  "source": "61353f88",
+  "status": "Initial full-color prototype rejected for moving High cadence; no master selection or runtime/default change",
+  "cpuReceipt": "2026-10-13-opaque-color-geometry-cpu-qualification.json",
+  "nativeFunctional": {
+    "pairedViews": 6,
+    "images": 12,
+    "fullRGBAExact": 6,
+    "HighPackedDepthExact": 3,
+    "fullColorRestoresExact": 6,
+    "sourceGeometryMaterialCasterVisibilityExact": true,
+    "plazaHighCalls": [
+      333,
+      318
+    ],
+    "plazaLowCalls": [
+      191,
+      176
+    ],
+    "westHighCalls": [
+      241,
+      229
+    ],
+    "southHighCalls": [
+      215,
+      203
+    ],
+    "allTrianglesUnchanged": true,
+    "initialManualOwnedGeometryMethodCounts": [
+      15,
+      15
+    ],
+    "initialHooksRestored": true
+  },
+  "movingFailure": {
+    "HighABBAArms": 8,
+    "plazaReferenceMedians": [
+      16.8,
+      16.8
+    ],
+    "plazaCandidateMedians": [
+      16.7,
+      33.3
+    ],
+    "plazaP95Ms": 33.4,
+    "unchangedHighMedianTargetMs": 20,
+    "assertion": "Candidate moving median regressed",
+    "LowMovingReached": false,
+    "GPUCyclesReached": false,
+    "limits": "Fewer draw calls do not establish faster frames. No attribution to shared host/GPU without evidence; no retry or relaxed target."
+  },
+  "retirement": {
+    "browserClosed": true,
+    "serverClosed": true,
+    "port": 4271,
+    "completed": []
+  },
+  "nextHypothesis": "Repeated group discovery traverses complete actor hierarchies and recomputes world matrices inside every color frame. Screen a fixed registered-group prototype with unchanged live compatibility/frustum checks; retain fallback for invalid sources. It must pass changed native parity/cadence/lifetime before selection.",
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-opaque-color-native-rejected-checks-20261013",
+    "entries": 72,
+    "inventorySHA256": "b4b00824000a569cbc10d1be6f3094e37a4a965f8445dd6df3eda5b2b4b9bf61"
+  },
+  "limits": "Native pixel equality is functional evidence only. Original triangle budgets, broader performance/art/device/gameplay/ops/owner/F1\u2013F5/beta/launch/handoff remain open."
+}

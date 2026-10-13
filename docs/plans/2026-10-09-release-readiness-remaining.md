@@ -491,6 +491,23 @@ acceptance is incomplete.
 
 Bounded current-source Earth renderer census now separates cold and settled equipment preparation in the same native High1280/Low390 fixtures. High gate301626→147466tri and road305035→189499tri; Low gate106063→65649tri and road102486→79386tri. Draw calls stay220/274High and110/141Low. The existing preparation queue reaches0; source/runtime/visibility unchanged. All12observations have exact before/observed/restored submission totals and complete attribution. These untimed prepared views isolate startup preparation; they do not clear retained cold budgets, connected frame-time failures, real phones or final art. [Census](2026-10-11-earth-cold-settled-triangle-census.json).
 
+## Isolated current performance work
+
+Full-attribute opaque color geometry`add12462`/receipt`61353f88` is isolated,
+unselected.73CPUchecks/two suites/lint and40actual loaded High/Low motion samples
+retain117asset pins and120same-material paired constructions, every raw attribute
+and index exact. Native first prototype has6wholeRGBA/3packeddepth/restoration
+controls exact and saves15colorcalls in plaza (High333→318,Low191→176), with
+all triangles unchanged. Eight High movingABBAarms reject selection: plaza
+reference medians16.8/16.8 versus candidate16.7/33.3ms, unchanged20ms target.
+Low motion and GPU cycles were not reached; process/browser/server retired.
+Frozen72entry rejection inventory`b4b00824000a569cbc10d1be6f3094e37a4a965f8445dd6df3eda5b2b4b9bf61`.
+Next fixed registered-group prototype removes repeated hierarchy/world-matrix
+discovery while retaining live compatibility/frustum checks; changed native
+qualification remains required. No master runtime/renderer selection or source
+asset change. [CPU geometry](2026-10-13-opaque-color-geometry-cpu-qualification.json),
+[rejected native](2026-10-13-opaque-color-native-prototype-rejected.json).
+
 ## Retained performance failures and rejected work
 
 CPU-only opaque shadow census preserves all117source asset pins and constructs ten actual High/Low equipped actors/NPCs with WebGL disabled. Exact attribute/palette/bind/world/material-depth grouping suggests up to8fewer submissions per class and16per Ilyra per shadow pass. These are theoretical counts; no runtime, depth/pixel, timing, resource or crowded-town acceptance. Frozen13entry inventory`f330d19e1556a7f11cf64cbebbe0757a6bc027e33a3908cfbb6fa6f1549bc031`. [Source census/next prototype constraints](2026-10-12-opaque-shadow-source-census.json).
