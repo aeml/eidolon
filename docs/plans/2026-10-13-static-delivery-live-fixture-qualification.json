@@ -1,0 +1,45 @@
+{
+  "recordedUTC": "2026-10-13T01:45:58.029110+00:00",
+  "source": "d5fdbf40e1eb4b1959b4ad1360c1010830935112",
+  "nativeExecutedSource": "d2726bcd",
+  "status": "Qualified automatic QA-only observer across all ten live-route files; ready ordinary master merge",
+  "scope": "Automatic bounded static delivery diagnostics begin with each page and freeze/attach on success, route failure or prior page closure. All five initial live route files, three rest/recovery files and two optional animation/remote files use the fixture.",
+  "cpu": {
+    "checks": 77,
+    "suites": 4,
+    "lintPassed": true,
+    "teardownCases": [
+      "success",
+      "original route failure preserved",
+      "closed page"
+    ],
+    "liveDiscoveryTests": 14,
+    "liveDiscoveryFiles": 10,
+    "liveDiscoveryIsExecution": false
+  },
+  "native": {
+    "passed": 2,
+    "retries": 0,
+    "unexpected": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "durationMs": 2559.243,
+    "actualWorkerCancellationCoverageRetained": true,
+    "actualFirstPartyModuleObserved": true,
+    "automaticAttachmentObservationEnd": "manual",
+    "browserAndDisposableServerRetired": true
+  },
+  "retainedFailure": "Initial discovery failed because new fixture omitted Playwright devices export used by rested-party spec. Added the unchanged official devices re-export; final all10file discovery passes. Native two-case runtime and lifecycle implementation unchanged, evidence valid. No product/gameplay assertions or failure collector relaxed.",
+  "runtimeChanges": false,
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-static-delivery-live-fixture-checks-20261013",
+    "entries": 25,
+    "inventorySHA256": "637bbc22f27337294e167206228329b98a80396eb048fd0444ab69697fcbe0f0"
+  },
+  "limits": [
+    "No account identifiers, API traffic, headers, bodies or query strings retained. Authenticated traces/screenshots/video restrictions unchanged.",
+    "No automatic retries, request deadlines, navigation limits, strict failure collection or past-cause inference changes.",
+    "First production use will be next own CI/live, not claimed by local anonymous coverage.",
+    "Original art/performance/device/gameplay/operations/owner/F1\u2013F5/beta/launch/handoff goal remains open."
+  ]
+}

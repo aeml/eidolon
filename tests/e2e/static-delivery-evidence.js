@@ -96,3 +96,16 @@ export function observeStaticDelivery(page, baseURL, { allowed = knownAssets(), 
         dispose() { end('manual'); }
     };
 }
+
+// Automatic test fixture teardown freezes observation before attachment, even
+// when the route fails or has already closed its page.
+export async function recordStaticDelivery({ page, baseURL }, use, testInfo) {
+    const evidence = observeStaticDelivery(page, baseURL);
+    try { await use(evidence); }
+    finally {
+        evidence.dispose();
+        await testInfo.attach('static-delivery-evidence', {
+            body: JSON.stringify(evidence.snapshot()), contentType: 'application/json'
+        });
+    }
+}

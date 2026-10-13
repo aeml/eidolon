@@ -1,4 +1,4 @@
-import { devices, expect, test } from '@playwright/test';
+import { devices, expect, test } from './static-delivery-test.js';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld } from './helpers.js';
 import { backendOriginBrowserArgs, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { profileGameplayScene } from './scene-performance.js';

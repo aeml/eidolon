@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './static-delivery-test.js';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
 import { prepareDungeonWizard } from './prepared-dungeon-wizard.js';

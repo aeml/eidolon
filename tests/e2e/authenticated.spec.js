@@ -1,7 +1,6 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './static-delivery-test.js';
 import { profileGameplayScene } from './scene-performance.js';
 import { storePersistentQALootSpare } from './persistent-qa-stash.js';
-import { observeStaticDelivery } from './static-delivery-evidence.js';
 import {
     collectBrowserFailures,
     credentialsFromEnvironment,
@@ -26,20 +25,6 @@ test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 
 test.describe('dedicated QA character', () => {
     test.skip(!hasCredentials, 'Set EIDOLON_E2E_USERNAME and EIDOLON_E2E_PASSWORD for character QA');
-
-    const staticDelivery = new WeakMap();
-    test.beforeEach(async ({ page, baseURL }) => {
-        staticDelivery.set(page, observeStaticDelivery(page, baseURL));
-    });
-    test.afterEach(async ({ page }, testInfo) => {
-        const evidence = staticDelivery.get(page);
-        if (!evidence) return;
-        evidence.dispose();
-        await testInfo.attach('static-delivery-evidence', {
-            body: JSON.stringify(evidence.snapshot()), contentType: 'application/json'
-        });
-        staticDelivery.delete(page);
-    });
 
     test('long Ctrl-click jump completes in about 1.5 seconds total', async ({ page, baseURL }, testInfo) => {
         test.skip(process.env.EIDOLON_E2E_JUMP_TIMING !== '1', 'Explicit fresh live jump acceptance');

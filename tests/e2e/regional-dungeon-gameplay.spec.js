@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './static-delivery-test.js';
 import {
     collectBrowserFailures, credentialsFromEnvironment, ensureDungeonReadyLevel,
     exerciseReconnect, loginAndEnterWorld, projectGroundOffset,

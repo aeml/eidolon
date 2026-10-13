@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './static-delivery-test.js';
 import { CONSTANTS } from '../../src/core/Constants.js';
 import { readAnimationCastState, readAnimationPresentation } from '../animationPresentationRecord.js';
 import { clearPreparedRune } from './prepared-rune-input.js';

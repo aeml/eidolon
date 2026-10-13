@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './static-delivery-test.js';
 import { createServer } from 'node:http';
 import { observeStaticDelivery } from './static-delivery-evidence.js';
 
@@ -73,4 +73,15 @@ test('static delivery evidence sees actual dedicated-worker fetch cancellation a
         server.closeAllConnections();
         await new Promise(resolve => server.close(resolve));
     }
+});
+
+test('automatic static delivery fixture records an actual first-party module', async ({ page, baseURL, staticDeliveryEvidence }) => {
+    await page.route('**/fixture-auto', route => route.fulfill({
+        contentType: 'text/html', body: '<!doctype html><title>Anonymous observer fixture</title>'
+    }));
+    await page.goto(`${baseURL}/fixture-auto`);
+    await page.evaluate(() => import('/src/data/worldPopulation.js'));
+    await expect.poll(() => staticDeliveryEvidence.snapshot().requests.some(row =>
+        row.path === '/src/data/worldPopulation.js' && row.outcome === 'finished')).toBe(true);
+    expect(staticDeliveryEvidence.snapshot().failures).toEqual([]);
 });
