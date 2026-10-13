@@ -1,7 +1,7 @@
 import { execFile } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { promisify } from 'node:util';
-import { cp, mkdtemp, mkdir, readFile, rm, symlink, writeFile } from 'node:fs/promises';
+import { cp, mkdtemp, mkdir, readFile, realpath, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -13,6 +13,12 @@ async function bundleGameEngine(root) {
     return JSON.parse(stdout);
 }
 const fixtures = [];
+async function copyVendor(root, source = 'vendor') {
+    // Owned workspaces may share vendor through a directory link. Resolve only
+    // that root so destructive negative fixtures always edit an independent copy.
+    // Nested links remain intact for the publication guard to reject.
+    await cp(await realpath(source), path.join(root, 'vendor'), { recursive: true });
+}
 async function fixture() {
     const root = await mkdtemp(path.join(tmpdir(), 'eidolon-engine-bundle-'));
     fixtures.push(root);
@@ -29,6 +35,7 @@ async function fixture() {
     const assetPath = catalog.url.slice(6);
     await mkdir(path.dirname(path.join(root, assetPath)), { recursive: true });
     await cp(assetPath, path.join(root, assetPath));
+    for (const shard of catalog.shards) await cp(shard.url.slice(6), path.join(root, shard.url.slice(6)));
     await writeFile(path.join(root, 'package.json'), '{"type":"module"}');
     await writeFile(path.join(root, 'release.json'), '{"version":"Alpha 1.79.11"}');
     await writeFile(path.join(root, 'src/main.js'), "import {setToken} from './core/CredentialToken.js'; export {setToken}; export const enter=()=>import('./core/GameEngine.js'); export const retry=()=>import('./core/GameEngine.js?startupRetry=1');");
@@ -38,6 +45,17 @@ async function fixture() {
     return root;
 }
 afterEach(async () => { for (const root of fixtures.splice(0)) await rm(root, { recursive: true, force: true }); });
+
+test('negative fixture vendor edits stay isolated when its source directory is linked', async () => {
+    const source = await mkdtemp(path.join(tmpdir(), 'eidolon-vendor-source-')); fixtures.push(source);
+    const root = await mkdtemp(path.join(tmpdir(), 'eidolon-vendor-copy-')); fixtures.push(root);
+    await mkdir(path.join(source, 'original'));
+    await writeFile(path.join(source, 'original/manifest.json'), '{"three":"0.181.2"}');
+    await symlink(path.join(source, 'original'), path.join(source, 'linked'));
+    await copyVendor(root, path.join(source, 'linked'));
+    await writeFile(path.join(root, 'vendor/manifest.json'), '{"three":"0.0.0"}');
+    expect(await readFile(path.join(source, 'original/manifest.json'), 'utf8')).toBe('{"three":"0.181.2"}');
+});
 
 test('published lazy engine preserves shared credential identity, asset paths and release metadata', async () => {
     const root = await fixture();
@@ -107,7 +125,7 @@ test('unexpected import.meta.url depth fails before publishing altered main', as
 test('actual game graph compiles while login state and Three remain external', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'eidolon-engine-actual-')); fixtures.push(root);
     await cp('src', path.join(root, 'src'), { recursive: true });
-    await cp('vendor', path.join(root, 'vendor'), { recursive: true });
+    await copyVendor(root);
     await cp('assets/gameplay-geometry', path.join(root, 'assets/gameplay-geometry'), { recursive: true });
     const originalMain = await readFile('src/main.js', 'utf8');
     const result = await bundleGameEngine(root);
@@ -143,7 +161,7 @@ test.each(['missing', 'duplicate', 'unsupported'])('publication rejects %s recov
 
 test('bundled copied add-ons retain the shared Three identity and exact license', async () => {
     const root = await fixture();
-    await cp('vendor', path.join(root, 'vendor'), { recursive: true });
+    await copyVendor(root);
     await symlink(path.join(process.cwd(), 'node_modules'), path.join(root, 'node_modules'));
     await writeFile(path.join(root, 'src/main.js'),
         "export {BoxGeometry} from 'three'; export const enter=()=>import('./core/GameEngine.js'); export const retry=()=>import('./core/GameEngine.js?startupRetry=1');");
@@ -165,7 +183,7 @@ test('bundled copied add-ons retain the shared Three identity and exact license'
 
 test.each(['version', 'entry-link', 'nested-link', 'escape'])('unsafe %s add-on input cannot alter the publication entry', async kind => {
     const root = await fixture();
-    await cp('vendor', path.join(root, 'vendor'), { recursive: true });
+    await copyVendor(root);
     const addon = 'three/addons/geometries/RoundedBoxGeometry.js';
     await writeFile(path.join(root, 'src/core/GameEngine.js'),
         `import {RoundedBoxGeometry} from '${kind === 'escape' ? 'three/addons/../../../../src/core/GameEngine.js' : addon}'; export class GameEngine {geometry(){return new RoundedBoxGeometry()}}`);

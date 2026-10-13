@@ -1,0 +1,62 @@
+{
+  "atUTC": "2026-10-13T00:13:54.665780+00:00",
+  "source": "8f8dd7354ba6ef08169a870eb822fc394126e131",
+  "status": "Scoped geometry transport/worker ownership/cache/offline qualified; ready for ordinary local master merge. No public successor yet.",
+  "cpu": {
+    "passed": 132,
+    "suites": 6,
+    "receipt": "2026-10-12-geometry-download-shards-cpu-qualification.json"
+  },
+  "realWorkerTransfer": {
+    "scope": "Real native Chrome module-worker lookup API/HTTP stream. Synthetic source dimensions validate transport; actual source fingerprints/owner/offline paths remain a separate published-bundle gate.",
+    "rows": 133,
+    "shardRequests": 14,
+    "largestBytes": 65216,
+    "modernMs": 12710.300000011921,
+    "legacyMs": 1500.699999988079,
+    "longestShardMs": 1006.8720749999993,
+    "unchangedDeadlineMs": 1500,
+    "retries": 0,
+    "sourceAlgorithmsChanged": false
+  },
+  "copiedPublishedWorker": {
+    "passed": 1,
+    "seconds": 6.9255770000000005,
+    "retry": 0,
+    "skipped": 0,
+    "flaky": 0,
+    "requestedShards": 7,
+    "monolithRequested": false,
+    "cacheHitsAfterReturn": 10,
+    "rootJobEntryCountsAfterDisposal": [
+      0,
+      0,
+      0
+    ],
+    "offlineKinds": [
+      "color",
+      "rigid",
+      "supplied-body"
+    ],
+    "offlineSuppliedBodySHA256": "e704b9dfcedd35f1a260c5f5d04c6c1f2bd95a2b4b1b5c823c4b390cf47ebdbb",
+    "offlineSuppliedBodyPrecomputed": true,
+    "workerSHA256": "28b738eaf5aa3a9ba5df513fbd8c400f3d82a5f0f2624d529731c57b80a95f03"
+  },
+  "ownership": "No public requests/account writes; private loopback module worker and copied published fixture. All owned browser/server containers retired. Original dirty repository preserved.",
+  "retainedFailures": [
+    "Initial browser CLI beginning-anchor selected no tests; corrected exact phrase only, no source/assertion changes/retry0.",
+    "CPU JSDOM fixture/independent vendor setup failures remain in frozen CPU inventory."
+  ],
+  "limits": [
+    "All133canonical outputs/777321full bytes unchanged; algorithms/rigs/materials/source attributes retained.",
+    "1500ms active-fetch/30s delivery deadlines unchanged; no provider retries.",
+    "Real64KiB/s worker test uses synthetic source dimensions for lookup API transport; copied runtime test separately uses actual supplied Fighter body/equipment fingerprint.",
+    "Public45ERR_ABORTED sole cause unproven;ERR_NETWORK_CHANGED separate retained reliability finding. No whole-network/device/fullgoal acceptance.",
+    "Full original crowded-town and whole-game readiness requirements remain open."
+  ],
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-geometry-download-shards-native-checks-20261013",
+    "entries": 17,
+    "inventorySHA256": "14b9b529c8d6d19fec47b301f665c394b0c15cac0b580b74b7afb0ea4786ca91"
+  }
+}

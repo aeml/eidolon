@@ -572,8 +572,9 @@ for (const quality of ['high', 'low']) test(`published ${quality} ${type === 'Sk
 
 test('published geometry owner loads its immutable worker, retires streamed roots and reuses the exact cached worker offline', async ({ page, context }, testInfo) => {
     test.setTimeout(180_000);
-    const failures = collectBrowserFailures(page, origin), workers = [];
+    const failures = collectBrowserFailures(page, origin), workers = [], indexRequests = new Set();
     page.on('worker', worker => workers.push(worker.url()));
+    page.on('request', request => { if (new URL(request.url()).pathname.startsWith('/assets/gameplay-geometry/indices.')) indexRequests.add(request.url()); });
     await page.goto(origin, { waitUntil: 'networkidle' });
     await page.evaluate(() => navigator.serviceWorker.ready);
     await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
@@ -612,11 +613,18 @@ test('published geometry owner loads its immutable worker, retires streamed root
         for (const key of await caches.keys()) if (await (await caches.open(key)).match(workerURL)) return true;
         return false;
     }, workerURL)).toBe(true);
-    const indexURL = `${origin}/${metadata.worker.precomputed.path}`;
-    await expect.poll(() => page.evaluate(async indexURL => {
-        for (const name of await caches.keys()) if (await (await caches.open(name)).match(indexURL)) return true;
-        return false;
-    }, indexURL)).toBe(true);
+    const indexURLs = [...indexRequests], allowedShards = new Set(metadata.worker.precomputed.shards.map(shard => `${origin}/${shard.path}`));
+    expect(indexURLs.length).toBeGreaterThan(0);
+    expect(indexURLs.every(url => allowedShards.has(url))).toBe(true);
+    expect(indexURLs).not.toContain(`${origin}/${metadata.worker.precomputed.path}`);
+    await expect.poll(() => page.evaluate(async indexURLs => {
+        const stores = await Promise.all((await caches.keys()).map(name => caches.open(name)));
+        for (const url of indexURLs) {
+            let found = false; for (const store of stores) if (await store.match(url)) { found = true; break; }
+            if (!found) return false;
+        }
+        return true;
+    }, indexURLs)).toBe(true);
     await page.evaluate(() => window.__restorePublishedWorker());
     const lifecycle = await page.evaluate(() => {
         const { game, actor, owner } = window.__publishedGeometry;
@@ -676,7 +684,7 @@ test('published geometry owner loads its immutable worker, retires streamed root
     const body = offline.find(row => row.kind === 'supplied-body');
     expect(body.precomputed).toBe(true); expect(body.sha256).toBe(precomputedCatalog.entries[body.key]?.sha256);
     await testInfo.attach('published-geometry-worker', { body: JSON.stringify({ startup, worker: metadata.worker,
-        workerURL, lifecycle, offline }, null, 2), contentType: 'application/json' });
+        workerURL, indexURLs, lifecycle, offline }, null, 2), contentType: 'application/json' });
     expect(failures, failures.join('\n')).toEqual([]);
 });
 
