@@ -194,3 +194,73 @@ test('nested source retirement cannot reinstall a stale proxy', () => {
     });
     f.renderer.render(); expect(f.owner.entries.size).toBe(0); f.owner.dispose();
 });
+
+function addStatic(f, { indexed = true } = {}) {
+    const root = new THREE.Group(); f.scene.add(root);
+    const meshes = [0, 1].map(() => {
+        const original = new THREE.BoxGeometry(.5, .5, .5);
+        const geometry = indexed ? original : original.toNonIndexed();
+        const mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial());
+        mesh.castShadow = true; root.add(mesh); return mesh;
+    });
+    f.scene.updateMatrixWorld(true); return { root, meshes };
+}
+
+test('static batching stays explicitly opt-in and shares the existing skin shadow boundary', () => {
+    const f = fixture(), staticActor = addStatic(f);
+    expect(f.owner.register(staticActor.root)).toBe(0); expect(f.owner.entries.size).toBe(1);
+    f.owner.includeStatic = true; expect(f.owner.register(staticActor.root)).toBe(1); f.renderer.render();
+    expect(f.projected[0]).toEqual([...f.meshes, ...staticActor.meshes]);
+    expect(f.colored[0]).toEqual([...f.meshes, ...staticActor.meshes]); expect(f.depth[0]).toHaveLength(2);
+    expect(f.depth[0].filter(mesh => mesh.isSkinnedMesh)).toHaveLength(1);
+    const proxy = f.depth[0].find(mesh => !mesh.isSkinnedMesh);
+    expect(Object.keys(proxy.geometry.attributes)).toEqual(['position']); expect(proxy.geometry.index.count).toBe(72);
+    expect(f.owner.lastSavedSubmissions).toBe(2); expect(proxy.parent).toBeNull(); f.owner.dispose();
+});
+
+test('non-indexed static sources retain complete triangles and recover moving shared transforms', () => {
+    const f = fixture(), source = addStatic(f, { indexed: false });
+    f.owner.includeStatic = true; expect(f.owner.register(source.root)).toBe(1);
+    source.root.position.x = 1; source.root.updateWorldMatrix(true, true); f.renderer.render();
+    const entry = [...f.owner.entries].find(entry => entry.isStatic);
+    expect(entry.proxy.geometry.index.count).toBe(72); expect(entry.proxy.matrixWorld.elements).toEqual(source.meshes[0].matrixWorld.elements);
+    expect(source.meshes.every(mesh => mesh.castShadow)).toBe(true); expect(f.owner.lastSavedSubmissions).toBe(2); f.owner.dispose();
+});
+
+test.each(['source-geometry', 'position-version', 'index-version', 'storage', 'detach', 'candidate-version'])(
+    'static %s retires only its owned resources and retains skin batching', mode => {
+        const f = fixture(), source = addStatic(f); f.owner.includeStatic = true; f.owner.register(source.root);
+        const entry = [...f.owner.entries].find(entry => entry.isStatic), ownedGeometry = jest.fn(), ownedMaterial = jest.fn(), untouched = jest.fn();
+        entry.geometry.addEventListener('dispose', ownedGeometry); entry.material.addEventListener('dispose', ownedMaterial);
+        source.meshes[0].geometry.addEventListener('dispose', untouched);
+        if (mode === 'source-geometry') source.meshes[0].geometry = source.meshes[0].geometry.clone();
+        if (mode === 'position-version') source.meshes[0].geometry.attributes.position.needsUpdate = true;
+        if (mode === 'index-version') source.meshes[0].geometry.index.needsUpdate = true;
+        if (mode === 'storage') source.meshes[0].geometry.attributes.position.array = source.meshes[0].geometry.attributes.position.array.slice();
+        if (mode === 'detach') source.meshes[0].removeFromParent();
+        if (mode === 'candidate-version') entry.geometry.attributes.position.needsUpdate = true;
+        f.renderer.render(); expect(f.owner.entries.has(entry)).toBe(false); expect(f.owner.lastSavedSubmissions).toBe(1);
+        expect(ownedGeometry).toHaveBeenCalledTimes(1); expect(ownedMaterial).toHaveBeenCalledTimes(1); expect(untouched).not.toHaveBeenCalled();
+        f.owner.dispose(); expect(ownedGeometry).toHaveBeenCalledTimes(1);
+    });
+
+test('partially culled static groups retain original casters while skin batching still runs', () => {
+    const f = fixture(), source = addStatic(f); f.owner.includeStatic = true; f.owner.register(source.root);
+    source.meshes[1].boundingSphere = new THREE.Sphere(new THREE.Vector3(1000, 0, 0), .5); f.renderer.render();
+    expect(f.owner.lastSavedSubmissions).toBe(1); expect(f.depth[0]).toEqual([...source.meshes, expect.objectContaining({ isSkinnedMesh: true })]);
+    expect(source.meshes.every(mesh => mesh.castShadow)).toBe(true); f.owner.dispose();
+});
+
+test.each(['nested-render', 'throw'])('static %s restores both source groups and exact stock light hooks', mode => {
+    const f = fixture(), source = addStatic(f); f.owner.includeStatic = true; f.owner.register(source.root); let nested = false;
+    f.owner.originalShadow.mockImplementation(() => {
+        f.light.shadow.updateMatrices(f.light, 0);
+        if (nested) { expect(source.meshes.every(mesh => mesh.castShadow)).toBe(true); return; }
+        expect(source.meshes.every(mesh => !mesh.castShadow)).toBe(true);
+        if (mode === 'throw') throw Error('static shadow failure');
+        nested = true; f.renderer.render(); expect(source.meshes.every(mesh => !mesh.castShadow)).toBe(true);
+    });
+    if (mode === 'throw') expect(() => f.renderer.render()).toThrow('static shadow failure'); else f.renderer.render();
+    expect(source.meshes.every(mesh => mesh.castShadow)).toBe(true); expect(f.meshes.every(mesh => mesh.castShadow)).toBe(true);
+    expect(f.owner.active).toHaveLength(0); expect(Object.hasOwn(f.light.shadow, 'updateMatrices')).toBe(false); f.owner.dispose();
+});
