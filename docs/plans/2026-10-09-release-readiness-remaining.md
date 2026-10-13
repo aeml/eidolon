@@ -502,10 +502,7 @@ all triangles unchanged. Eight High movingABBAarms reject selection: plaza
 reference medians16.8/16.8 versus candidate16.7/33.3ms, unchanged20ms target.
 Low motion and GPU cycles were not reached; process/browser/server retired.
 Frozen72entry rejection inventory`b4b00824000a569cbc10d1be6f3094e37a4a965f8445dd6df3eda5b2b4b9bf61`.
-Next fixed registered-group prototype removes repeated hierarchy/world-matrix
-discovery while retaining live compatibility/frustum checks; changed native
-qualification remains required. No master runtime/renderer selection or source
-asset change. [CPU geometry](2026-10-13-opaque-color-geometry-cpu-qualification.json),
+Cached fixed registered-group successor14397d1b now passes6wholeRGBA/3Highpackeddepth/restores,16movingABBAarms all16.7median and4exactGPUcycles; Highp95≤33.4/Low≤16.8.39owned geometry disposal events/profile, sharedmaterial0, originalhooks/source state restored. Frozen80entry inventory`54861180cb44a91d674728e65d02daa1699c4728279b8fbdff40928ea3579a59`. Equal medians establish no FPS gain; movingLowwest population differences retained. Automatic actor/equipment/quality/realm/replacement/shutdown owner integration is still unimplemented/unselected. No master runtime/renderer selection or source asset change. [Cached prototype](2026-10-13-opaque-color-cached-native-prototype.json). [CPU geometry](2026-10-13-opaque-color-geometry-cpu-qualification.json),
 [rejected native](2026-10-13-opaque-color-native-prototype-rejected.json).
 
 ## Retained performance failures and rejected work
