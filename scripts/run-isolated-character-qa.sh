@@ -677,7 +677,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   release-smoke)
     if [[ "${QA_NETWORK_MODE}" == private-smoke ]]; then
       EIDOLON_NATIVE_QA_NETWORK_CONTAINER="${MONGO_CONTAINER}" \
-        bash scripts/run-native-visual-qa.sh npx --no-install playwright test --retries=0 tests/e2e/authenticated.spec.js tests/e2e/inventory-quality-of-life.spec.js
+        bash scripts/run-native-visual-qa.sh node node_modules/@playwright/test/cli.js test --retries=0 tests/e2e/authenticated.spec.js tests/e2e/inventory-quality-of-life.spec.js
     else
       EIDOLON_E2E_FULL_GAMEPLAY=1 EIDOLON_E2E_PORTAL_ONLY=1 npx playwright test --retries=0 tests/e2e/authenticated.spec.js tests/e2e/inventory-quality-of-life.spec.js
     fi
