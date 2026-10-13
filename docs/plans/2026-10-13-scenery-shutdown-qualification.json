@@ -1,7 +1,7 @@
 {
   "recordedUTC": "2026-10-13T04:19:43.707661+00:00",
   "source": "f34bc8b76f0474d17d561dfb02c9a26e8bb8d10e",
-  "status": "Terminal scenery-cutaway cleanup qualified; ordinary master merge and corrected49 copied publication rebuild next.",
+  "status": "Qualified and ordinarily merged into master; corrected49 copied build/native checks pending on changed source.",
   "problem": "Actual copied49Low game.destroy while the masonry cutaway was active disposed its three maps but never disposed the original material; SceneryVisibility entries retained the detached root/original materials. Two targeted High/Low CPU regressions reproduced retained entries before correction.",
   "change": "RenderSystem.dispose clears scenery cutaways and focus before retiring render owners/traversing scene resources. This restores originals and disposes temporary clones before shared texture retirement; existing idempotent shutdown guard remains.",
   "CPU": {
