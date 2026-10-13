@@ -7,7 +7,7 @@ const storage = attribute => attribute.isInterleavedBufferAttribute
 const visible = mesh => { for (let node = mesh; node; node = node.parent) if (!node.visible) return false; return true; };
 const stockColor = mesh => {
     const material = mesh.material;
-    return visible(mesh) && mesh.parent && material?.type === 'MeshStandardMaterial' &&
+    return visible(mesh) && mesh.parent && ['MeshStandardMaterial', 'MeshPhysicalMaterial'].includes(material?.type) &&
         material.onBeforeCompile === THREE.Material.prototype.onBeforeCompile &&
         material.customProgramCacheKey === THREE.Material.prototype.customProgramCacheKey &&
         material.onBeforeRender === THREE.Material.prototype.onBeforeRender &&

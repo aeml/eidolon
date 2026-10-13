@@ -86,3 +86,18 @@ test('duplicate sources, corrupt normals, unknown joints and out-of-range indice
     meshes[1].geometry.attributes.skinIndex.array[0] = 0;meshes[1].geometry.index.array[0] = 9;
     expect(() => createOpaqueSkinnedColorGeometry(meshes)).toThrow(/index/);
 });
+
+test('stock physical materials share only the same original material identity', () => {
+    const { root, meshes } = fixture(), material = new THREE.MeshPhysicalMaterial({ clearcoat: .5, roughness: .3 });
+    for (const mesh of meshes) mesh.material = material;
+    expect(groupOpaqueSkinnedColorMeshes(root)).toEqual([meshes]);
+    const geometry = createOpaqueSkinnedColorGeometry(meshes);expect(geometry.index.count).toBe(6);geometry.dispose();
+    meshes[1].material = material.clone();expect(groupOpaqueSkinnedColorMeshes(root)).toEqual([]);
+});
+
+test('other stock material families stay on their original route', () => {
+    const { root, meshes } = fixture(), material = new THREE.MeshBasicMaterial();
+    for (const mesh of meshes) mesh.material = material;
+    expect(groupOpaqueSkinnedColorMeshes(root)).toEqual([]);
+    expect(() => createOpaqueSkinnedColorGeometry(meshes)).toThrow(/exact/);
+});
