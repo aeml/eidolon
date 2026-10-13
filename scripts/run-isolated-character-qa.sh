@@ -115,8 +115,12 @@ if ss -ltn | grep -Eq ":${QA_PORT}[[:space:]]"; then
 fi
 trap cleanup_isolated_qa EXIT INT TERM
 
-if [[ "${QA_NETWORK_MODE}" != bridge && "${QA_NETWORK_MODE}" != host ]]; then
-  echo "EIDOLON_ISOLATED_QA_NETWORK_MODE must be bridge or host." >&2
+if [[ "${QA_NETWORK_MODE}" != bridge && "${QA_NETWORK_MODE}" != host && "${QA_NETWORK_MODE}" != private-smoke ]]; then
+  echo "EIDOLON_ISOLATED_QA_NETWORK_MODE must be bridge, host or private-smoke." >&2
+  exit 1
+fi
+if [[ "${QA_NETWORK_MODE}" == private-smoke && "${EIDOLON_ISOLATED_QA_ROUTE:-all}" != release-smoke ]]; then
+  echo 'Private smoke networking is bounded to the release-smoke route.' >&2
   exit 1
 fi
 mongo_port=27017
@@ -136,6 +140,18 @@ if [[ "${QA_NETWORK_MODE}" == host ]]; then
   mongo_host=127.0.0.1
   mongo_network_args=(--network host)
   api_network_args=(--network host)
+  api_addr="127.0.0.1:${QA_PORT}"
+  mongo_bind=--bind_ip=127.0.0.1
+fi
+if [[ "${QA_NETWORK_MODE}" == private-smoke ]]; then
+  mongo_port=$((10#${QA_PORT} + 1))
+  if [[ "${mongo_port}" -gt 65535 ]]; then
+    echo 'Private Mongo port is invalid.' >&2
+    exit 1
+  fi
+  mongo_host=127.0.0.1
+  mongo_network_args=(--network none)
+  api_network_args=(--network "container:${MONGO_CONTAINER}")
   api_addr="127.0.0.1:${QA_PORT}"
   mongo_bind=--bind_ip=127.0.0.1
 fi
@@ -252,8 +268,16 @@ docker run -d --name "${API_CONTAINER}" "${api_network_args[@]}" "${SERVER_IMAGE
   --log-file= --log-stdout=false --suspicious-log-file= --suspicious-stdout=false >/dev/null
 api_created=true
 
+isolated_api_ready() {
+  if [[ "${QA_NETWORK_MODE}" == private-smoke ]]; then
+    docker exec "${MONGO_CONTAINER}" mongosh --nodb --quiet --eval \
+      "const r=await fetch('http://127.0.0.1:${QA_PORT}/healthz'); print(r.ok && (await r.json()).database==='ready' ? 'ready' : 'waiting')" 2>/dev/null | grep -Eq '^ready$'
+  else
+    curl -fsS "http://127.0.0.1:${QA_PORT}/healthz" 2>/dev/null | grep -Fq '"database":"ready"'
+  fi
+}
 for attempt in $(seq 1 60); do
-  if curl -fsS "http://127.0.0.1:${QA_PORT}/healthz" 2>/dev/null | grep -Fq '"database":"ready"'; then
+  if isolated_api_ready; then
     break
   fi
   if [ "${attempt}" -eq 60 ]; then
@@ -651,7 +675,12 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     EIDOLON_E2E_JUMP_TIMING=1 npx playwright test --retries=0 tests/e2e/authenticated.spec.js --grep "long Ctrl-click jump"
     ;;
   release-smoke)
-    EIDOLON_E2E_FULL_GAMEPLAY=1 EIDOLON_E2E_PORTAL_ONLY=1 npx playwright test --retries=0 tests/e2e/authenticated.spec.js tests/e2e/inventory-quality-of-life.spec.js
+    if [[ "${QA_NETWORK_MODE}" == private-smoke ]]; then
+      EIDOLON_NATIVE_QA_NETWORK_CONTAINER="${MONGO_CONTAINER}" \
+        bash scripts/run-native-visual-qa.sh npx --no-install playwright test --retries=0 tests/e2e/authenticated.spec.js tests/e2e/inventory-quality-of-life.spec.js
+    else
+      EIDOLON_E2E_FULL_GAMEPLAY=1 EIDOLON_E2E_PORTAL_ONLY=1 npx playwright test --retries=0 tests/e2e/authenticated.spec.js tests/e2e/inventory-quality-of-life.spec.js
+    fi
     ;;
   presentation-route|desktop-presentation)
     # One connected ordinary town-to-fight slice, not a campaign/raid soak.
