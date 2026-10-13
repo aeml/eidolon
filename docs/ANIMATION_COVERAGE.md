@@ -49,10 +49,10 @@ True passive talents do not create a cast action and are intentionally excluded 
 | Wizard | Flame Tornado | projectile-area | cast | spin@target | none | class-handler | explicit | none |
 | Wizard | Meteor Drop | delayed-area | heavy-cast | telegraph@target, ring@target | none | class-handler | explicit | Cluster (meteor_cluster)<br>Extinction (meteor_extinction)<br>Apocalypse (meteor_apocalypse) |
 | Wizard | Inferno Cataclysm | persistent-area | heavy-cast | ring@target, burst@target | inferno_cataclysm | class-handler | explicit | none |
-| Wizard | Scorch Beam | beam | channel | beam@target | none | class-handler | explicit | none |
-| Wizard | Arcane Missiles | projectile | volley | burst@source | none | class-handler | explicit | none |
-| Wizard | Spell Focus | buff | channel | buff@source, sphere@source | spell_focus | class-handler | explicit | none |
-| Wizard | Dragonfire Lance | projectile | heavy-cast | beam@target, impact@target | none | class-handler | explicit | none |
+| Wizard | Scorch Beam | beam | channel | beam@target | none | class-handler | explicit | Longshot (scorchbeam_longshot)<br>Incision (scorchbeam_incision)<br>Snare (scorchbeam_snare) |
+| Wizard | Arcane Missiles | projectile | volley | burst@source | none | class-handler | explicit | Salvo (arcanemissiles_salvo)<br>Compression (arcanemissiles_compression)<br>Convergence (arcanemissiles_convergence) |
+| Wizard | Spell Focus | buff | channel | buff@source, sphere@source | spell_focus | class-handler | explicit | Reservoir (spellfocus_reservoir)<br>Aegis (spellfocus_aegis)<br>Overchannel (spellfocus_overchannel) |
+| Wizard | Dragonfire Lance | projectile | heavy-cast | beam@target, impact@target | none | class-handler | explicit | Needle (dragonfire_needle)<br>Broadside (dragonfire_broadside)<br>Quickfire (dragonfire_quickfire) |
 | Wizard | Teleport | movement | teleport | smoke@source, burst@target, ring@source, ring@target | none | class-handler | explicit | Blink (teleport_blink)<br>Phase (teleport_phase)<br>Warp (teleport_warp) |
 | Wizard | Arcane Shield | buff | buff | sphere@source, buff@source | arcane_shield | class-handler | explicit | Extended (arcaneshield_extended)<br>Reflective (arcaneshield_reflective)<br>Explosive (arcaneshield_explosive) |
 | Wizard | Gravity Well | persistent-area | heavy-cast | ring@target, sphere@target | gravity_well | class-handler | explicit | Expanded (gravitywell_expanded)<br>Crushing (gravitywell_crushing)<br>Black Hole (gravitywell_blackhole) |
