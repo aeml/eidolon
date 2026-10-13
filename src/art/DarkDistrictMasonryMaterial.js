@@ -56,8 +56,12 @@ export function applyDarkDistrictMasonryUV(geometry) {
     return geometry;
 }
 
-export function createDarkDistrictMasonryMaterial(quality = 'high') {
-    const size = quality === 'low' ? 128 : 256;
+// Two private immutable recipes, bounded to960KiB. Each scene receives its own
+// texture storage; disposal or mutation cannot affect the recipes or another
+// scene. Returning to a district does not regenerate all mineral samples.
+const pixelsBySize = new Map();
+function masonryPixels(size) {
+    if (pixelsBySize.has(size)) return pixelsBySize.get(size);
     const samples = Array.from({ length: size * size }, (_, i) =>
         sampleDarkDistrictMasonry((i % size + .5) / size, (Math.floor(i / size) + .5) / size));
     const arrays = Array.from({ length: 3 }, () => new Uint8Array(size * size * 4));
@@ -74,8 +78,14 @@ export function createDarkDistrictMasonryMaterial(quality = 'high') {
         const roughness = byte(sample.roughness * 255);
         arrays[2].set([roughness, roughness, roughness, 255], i);
     }
-    const maps = arrays.map((data, i) => {
-        const texture = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
+    pixelsBySize.set(size, arrays);
+    return arrays;
+}
+
+export function createDarkDistrictMasonryMaterial(quality = 'high') {
+    const size = quality === 'low' ? 128 : 256;
+    const maps = masonryPixels(size).map((data, i) => {
+        const texture = new THREE.DataTexture(new Uint8Array(data), size, size, THREE.RGBAFormat);
         texture.name = `dark-district-masonry-${['color', 'normal', 'roughness'][i]}`;
         texture.colorSpace = i === 0 ? THREE.SRGBColorSpace : THREE.NoColorSpace;
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
@@ -84,7 +94,7 @@ export function createDarkDistrictMasonryMaterial(quality = 'high') {
         return texture;
     });
     // One scene-owned map set for all32buildings. Ordinary resource retirement
-    // owns these maps; no global cache, time uniform or per-frame update.
+    // owns these maps; no shared GPU textures, time uniform or per-frame update.
     const material = new THREE.MeshStandardMaterial({ map: maps[0], normalMap: maps[1],
         roughnessMap: maps[2], roughness: 1, metalness: 0 });
     material.name = 'Dark Realm dressed basalt masonry';

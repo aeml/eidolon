@@ -53,3 +53,14 @@ test('independent owners receive deterministic maps without sharing disposal own
     try{for(const key of ['map','normalMap','roughnessMap']){expect(a[key]).not.toBe(b[key]);expect(a[key].image.data).toEqual(b[key].image.data);}}
     finally{for(const m of [a,b]){for(const key of ['map','normalMap','roughnessMap'])m[key].dispose();m.dispose();}}
 });
+
+test.each(['high','low'])('%s retained recipes survive scene texture mutation, disposal and profile changes',quality=>{
+    const keys=['map','normalMap','roughnessMap'],first=createDarkDistrictMasonryMaterial(quality);
+    const expected=keys.map(key=>new Uint8Array(first[key].image.data));
+    for(const key of keys){first[key].image.data.fill(0);first[key].dispose();}first.dispose();
+    const other=createDarkDistrictMasonryMaterial(quality==='high'?'low':'high');
+    for(const key of keys)other[key].dispose();other.dispose();
+    const returning=createDarkDistrictMasonryMaterial(quality);
+    try{for(const [i,key]of keys.entries())expect(returning[key].image.data).toEqual(expected[i]);}
+    finally{for(const key of keys)returning[key].dispose();returning.dispose();}
+});
