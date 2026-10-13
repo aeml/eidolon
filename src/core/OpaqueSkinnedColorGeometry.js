@@ -14,7 +14,7 @@ const stockColor = mesh => {
         mesh.onBeforeRender === THREE.Object3D.prototype.onBeforeRender &&
         mesh.onAfterRender === THREE.Object3D.prototype.onAfterRender &&
         material.blending === THREE.NormalBlending && material.depthTest && material.depthWrite &&
-        material.colorWrite && !material.polygonOffset && !material.stencilWrite &&
+        material.colorWrite && !material.transmission && !material.polygonOffset && !material.stencilWrite &&
         Object.values(mesh.geometry.attributes).every(attribute => !attribute.isInstancedBufferAttribute &&
             !attribute.isGLBufferAttribute && (attribute.gpuType ?? THREE.FloatType) === THREE.FloatType && attribute.count === mesh.geometry.attributes.position.count &&
             Number.isInteger(attribute.itemSize) && attribute.itemSize > 0 && attribute.itemSize <= 4);

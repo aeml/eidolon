@@ -101,3 +101,10 @@ test('other stock material families stay on their original route', () => {
     expect(groupOpaqueSkinnedColorMeshes(root)).toEqual([]);
     expect(() => createOpaqueSkinnedColorGeometry(meshes)).toThrow(/exact/);
 });
+
+test('transmissive physical surfaces retain their original renderer pass', () => {
+    const { root, meshes } = fixture(), material = new THREE.MeshPhysicalMaterial({ transmission: .5 });
+    for (const mesh of meshes) mesh.material = material;
+    expect(groupOpaqueSkinnedColorMeshes(root)).toEqual([]);
+    expect(() => createOpaqueSkinnedColorGeometry(meshes)).toThrow(/exact/);
+});
