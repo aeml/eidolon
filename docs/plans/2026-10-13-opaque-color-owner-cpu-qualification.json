@@ -1,0 +1,27 @@
+{
+  "atUTC": "2026-10-13T02:32:56.922944+00:00",
+  "source": "ed1e069b6e0d1399b3ca0865e5e312ac27c0ba05",
+  "status": "Isolated explicit color owner and actor runtime CPU-qualified only; native changed-runtime/default integration not qualified or selected",
+  "checks": 111,
+  "suites": 3,
+  "lintPassed": true,
+  "scope": [
+    "Exact source full-attribute geometry and opaque Standard/Physical material only; transmissive material stays original pass.",
+    "Bounded current generation per registered group; borrowed original materials/palettes/casters; owned geometry retires once.",
+    "Live current geometry/index/attribute format and versions, ordered bones, world/bind state, callbacks and proxy tampering fail closed.",
+    "Nested renders/exceptions and disposal after projection preserve original draws; exact hook descriptors restored without clobbering other owners.",
+    "Appearance revision, quality, child replacement, root/group detach and re-arrival retire bounded resources/listeners."
+  ],
+  "nativePending": [
+    "Whole color/depth/triangle parity with actual High/Low town and existing geometry/shadow owners.",
+    "Moving cadence, actual GPU lifetime and dynamic character/quality/owner replacement/scene/shutdown.",
+    "Default RenderSystem integration not implemented."
+  ],
+  "priorManualReceipt": "2026-10-13-opaque-color-cached-native-prototype.json",
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-opaque-color-owner-cpu-checks-20261013",
+    "entries": 13,
+    "inventorySHA256": "f792d12065402d3bdbc1c48c7590692ad2a7204c329e866764121740af8126e3"
+  },
+  "limits": "No FPS/global performance/art/beta/release completion claim; original crowded-town triangle failures and full goal stay open."
+}
