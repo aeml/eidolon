@@ -1,0 +1,26 @@
+{
+  "atUTC": "2026-10-13T00:03:32.107468+00:00",
+  "source": "06e0d6a9edaab0132f0154a8a6b55ad6b49ab8f1",
+  "status": "Read-only hypothesis screen; no selected renderer or native/performance acceptance",
+  "profiles": {
+    "high": 51,
+    "low": 51
+  },
+  "sources": {
+    "high": 84,
+    "low": 84
+  },
+  "limits": [
+    "Theoretical shared-matrix caster groups only; actual per-shadow-camera visibility/ordering/material policy must qualify in native runtime.",
+    "ProductionLow disables shadows: no Low performance benefit claimed.",
+    "Raw positions/indices can concatenate with exact shared world matrices, avoiding source transform baking. Every triangle stays, so original triangle budget failures remain.",
+    "Four constructor motion samples do not establish full animation or camera safety.",
+    "Casino no-op CPU canvas builds real sign geometry/map definition; no rendered text or GPU pixels.",
+    "Initial wrong vendor structure ID/unoptimized/no-world-shadow-policy screens retained and superseded."
+  ],
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-static-shadow-source-census-checks-20261013",
+    "entries": 15,
+    "inventorySHA256": "0d8947861d49e049e7af6264b233cae8cb3f6e2cb8de3bcb83f56ce7017aba89"
+  }
+}
