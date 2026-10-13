@@ -15,8 +15,18 @@ const attributeState = attribute => attribute ? ({ attribute, array: attribute.i
     count: attribute.count, normalized: attribute.normalized, gpuType: attribute.gpuType }) : null;
 const sameAttribute = (attribute, saved) => {
     if (!attribute || !saved) return !attribute && !saved;
-    const current = attributeState(attribute);
-    return Object.entries(saved).every(([key, value]) => Object.is(current[key], value));
+    // These checks run for every live source and proxy. Read the same fields
+    // without allocating a snapshot and entry tuples on each validation.
+    const array = attribute.isInterleavedBufferAttribute ? attribute.data.array : attribute.array;
+    const buffer = attribute.isInterleavedBufferAttribute ? attribute.data : attribute;
+    const version = attribute.isInterleavedBufferAttribute ? attribute.data.version : attribute.version;
+    const offset = attribute.offset, stride = attribute.data?.stride, itemSize = attribute.itemSize;
+    const count = attribute.count, normalized = attribute.normalized, gpuType = attribute.gpuType;
+    return Object.is(attribute, saved.attribute) && Object.is(array, saved.array) &&
+        Object.is(buffer, saved.buffer) && Object.is(version, saved.version) &&
+        Object.is(offset, saved.offset) && Object.is(stride, saved.stride) &&
+        Object.is(itemSize, saved.itemSize) && Object.is(count, saved.count) &&
+        Object.is(normalized, saved.normalized) && Object.is(gpuType, saved.gpuType);
 };
 const geometryState = (geometry, attributes = names, ignoreGroups = false) => ({ geometry, names: attributes, ignoreGroups,
     index: attributeState(geometry.index), attributes: attributes.map(name => attributeState(geometry.attributes[name])) });

@@ -1,0 +1,2090 @@
+{
+  "recordedUTC": "2026-10-13T16:56:49.398087+00:00",
+  "base": "c993923b7e40aadfbe067f030917bb35d5ae704b",
+  "runtimeBase": "8e5f888a66b65e6a69e26c62499b4113549b40c0",
+  "status": "Qualified within allocation-free attribute validation scope; ready ordinary master merge, unpublished.",
+  "change": "Shadow and color owners compare every captured attribute identity, storage/layout/version/normalization/GPU field directly, retaining Object.is semantics. Shadow interleaved-buffer ownership check remains. No fresh attribute snapshots/Object.entries tuples in the live validator; no skipped validation or render/geometry/material/animation policy changes.",
+  "focused": {
+    "distinctPassed": 142,
+    "suites": 4,
+    "newCases": 15,
+    "reusedUnchangedPassingOtherCases": 79,
+    "correctedShadowCases": 63,
+    "lint": "Four changed code/test files and git diff --check pass.",
+    "retainedInitial": "New interleaved fixture incorrectly called nonexistent owner.clear:141pass/1fail. Corrected fixture uses actual unregister API; all63shadow cases pass, unchanged79other passes reused. Product files unchanged between those two runs."
+  },
+  "cpuOwnerBenchmark": {
+    "scope": "CPU-only real owner.valid methods, four synthetic53-bone/six-mesh actor fixtures. A exact accepted49 class/B allocation-free candidate. All source/candidate/palette/layout checks run; no WebGL or supplied-asset/native/game-frame acceptance.",
+    "records": [
+      {
+        "shadow": true,
+        "order": "ABBA",
+        "arm": "A",
+        "elapsedMs": 791.251508,
+        "valid": 16000
+      },
+      {
+        "shadow": true,
+        "order": "ABBA",
+        "arm": "B",
+        "elapsedMs": 302.98812999999996,
+        "valid": 16000
+      },
+      {
+        "shadow": true,
+        "order": "ABBA",
+        "arm": "B",
+        "elapsedMs": 292.672601,
+        "valid": 16000
+      },
+      {
+        "shadow": true,
+        "order": "ABBA",
+        "arm": "A",
+        "elapsedMs": 769.1588450000002,
+        "valid": 16000
+      },
+      {
+        "shadow": true,
+        "order": "BAAB",
+        "arm": "B",
+        "elapsedMs": 299.0492360000003,
+        "valid": 16000
+      },
+      {
+        "shadow": true,
+        "order": "BAAB",
+        "arm": "A",
+        "elapsedMs": 764.4252280000001,
+        "valid": 16000
+      },
+      {
+        "shadow": true,
+        "order": "BAAB",
+        "arm": "A",
+        "elapsedMs": 731.075296,
+        "valid": 16000
+      },
+      {
+        "shadow": true,
+        "order": "BAAB",
+        "arm": "B",
+        "elapsedMs": 283.99424100000033,
+        "valid": 16000
+      },
+      {
+        "shadow": false,
+        "order": "ABBA",
+        "arm": "A",
+        "elapsedMs": 845.985052,
+        "valid": 16000
+      },
+      {
+        "shadow": false,
+        "order": "ABBA",
+        "arm": "B",
+        "elapsedMs": 211.04969800000072,
+        "valid": 16000
+      },
+      {
+        "shadow": false,
+        "order": "ABBA",
+        "arm": "B",
+        "elapsedMs": 209.33361100000002,
+        "valid": 16000
+      },
+      {
+        "shadow": false,
+        "order": "ABBA",
+        "arm": "A",
+        "elapsedMs": 782.9991229999996,
+        "valid": 16000
+      },
+      {
+        "shadow": false,
+        "order": "BAAB",
+        "arm": "B",
+        "elapsedMs": 199.58593700000074,
+        "valid": 16000
+      },
+      {
+        "shadow": false,
+        "order": "BAAB",
+        "arm": "A",
+        "elapsedMs": 801.5766249999997,
+        "valid": 16000
+      },
+      {
+        "shadow": false,
+        "order": "BAAB",
+        "arm": "A",
+        "elapsedMs": 764.3222139999998,
+        "valid": 16000
+      },
+      {
+        "shadow": false,
+        "order": "BAAB",
+        "arm": "B",
+        "elapsedMs": 194.69624499999918,
+        "valid": 16000
+      }
+    ]
+  },
+  "native": {
+    "profiles": [
+      "High1280",
+      "Low390"
+    ],
+    "equippedClasses": 4,
+    "slotsPerClass": 14,
+    "pairedViews": 6,
+    "exactRestoredViews": 6,
+    "exactHighShadowMapViews": 3,
+    "movingABBAArms": 8,
+    "intervalsPerArm": 119,
+    "result": "Zero whole-color and High packed-depth differences against exact public49 valid methods on actual current owners. Calls/triangles/source geometry/attributes/materials exact; installed methods restored. Actual default equipment removal/replacement for every class, two quality cycles, geometry/shadow toggles, group detach/rejoin, entity clear/arrival and shutdown all pass in both profiles. All observed color geometry disposals once; borrowed material disposals0 before terminal scene teardown.",
+    "records": {
+      "high": {
+        "quality": "high",
+        "controls": [
+          {
+            "view": "service-plaza",
+            "color": 0,
+            "depth": 0,
+            "restoredColor": 0,
+            "restoredDepth": 0,
+            "reference": {
+              "calls": 318,
+              "triangles": 279283
+            },
+            "candidate": {
+              "calls": 318,
+              "triangles": 279283
+            },
+            "sourceExact": true
+          },
+          {
+            "view": "west-homes",
+            "color": 0,
+            "depth": 0,
+            "restoredColor": 0,
+            "restoredDepth": 0,
+            "reference": {
+              "calls": 229,
+              "triangles": 247270
+            },
+            "candidate": {
+              "calls": 229,
+              "triangles": 247270
+            },
+            "sourceExact": true
+          },
+          {
+            "view": "south-homes",
+            "color": 0,
+            "depth": 0,
+            "restoredColor": 0,
+            "restoredDepth": 0,
+            "reference": {
+              "calls": 203,
+              "triangles": 218913
+            },
+            "candidate": {
+              "calls": 203,
+              "triangles": 218913
+            },
+            "sourceExact": true
+          }
+        ],
+        "arms": [
+          {
+            "mode": "reference",
+            "frames": 119,
+            "frameMedianMs": 33.3,
+            "frameP95Ms": 33.4,
+            "synchronousFrameCpuMedianMs": 28.600000023841858,
+            "callsMedian": 318,
+            "trianglesMedian": 279283,
+            "sourceExact": true
+          },
+          {
+            "mode": "candidate",
+            "frames": 119,
+            "frameMedianMs": 33.3,
+            "frameP95Ms": 33.4,
+            "synchronousFrameCpuMedianMs": 28,
+            "callsMedian": 318,
+            "trianglesMedian": 279283,
+            "sourceExact": true
+          },
+          {
+            "mode": "candidate",
+            "frames": 119,
+            "frameMedianMs": 33.3,
+            "frameP95Ms": 33.4,
+            "synchronousFrameCpuMedianMs": 27.19999998807907,
+            "callsMedian": 318,
+            "trianglesMedian": 279283,
+            "sourceExact": true
+          },
+          {
+            "mode": "reference",
+            "frames": 119,
+            "frameMedianMs": 33.3,
+            "frameP95Ms": 33.5,
+            "synchronousFrameCpuMedianMs": 29.19999998807907,
+            "callsMedian": 318,
+            "trianglesMedian": 279283,
+            "sourceExact": true
+          }
+        ],
+        "restored": true,
+        "pending": 0,
+        "shutdown": {
+          "shadowEntries": 0,
+          "colorEntries": 0,
+          "shadowDisposed": true,
+          "colorDisposed": true
+        }
+      },
+      "low": {
+        "quality": "low",
+        "controls": [
+          {
+            "view": "service-plaza",
+            "color": 0,
+            "depth": null,
+            "restoredColor": 0,
+            "restoredDepth": null,
+            "reference": {
+              "calls": 176,
+              "triangles": 107747
+            },
+            "candidate": {
+              "calls": 176,
+              "triangles": 107747
+            },
+            "sourceExact": true
+          },
+          {
+            "view": "west-homes",
+            "color": 0,
+            "depth": null,
+            "restoredColor": 0,
+            "restoredDepth": null,
+            "reference": {
+              "calls": 112,
+              "triangles": 78422
+            },
+            "candidate": {
+              "calls": 112,
+              "triangles": 78422
+            },
+            "sourceExact": true
+          },
+          {
+            "view": "south-homes",
+            "color": 0,
+            "depth": null,
+            "restoredColor": 0,
+            "restoredDepth": null,
+            "reference": {
+              "calls": 97,
+              "triangles": 65214
+            },
+            "candidate": {
+              "calls": 97,
+              "triangles": 65214
+            },
+            "sourceExact": true
+          }
+        ],
+        "arms": [
+          {
+            "mode": "reference",
+            "frames": 119,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "synchronousFrameCpuMedianMs": 15.800000011920929,
+            "callsMedian": 176,
+            "trianglesMedian": 107747,
+            "sourceExact": true
+          },
+          {
+            "mode": "candidate",
+            "frames": 119,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "synchronousFrameCpuMedianMs": 14.100000023841858,
+            "callsMedian": 176,
+            "trianglesMedian": 107747,
+            "sourceExact": true
+          },
+          {
+            "mode": "candidate",
+            "frames": 119,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "synchronousFrameCpuMedianMs": 15.100000023841858,
+            "callsMedian": 176,
+            "trianglesMedian": 107747,
+            "sourceExact": true
+          },
+          {
+            "mode": "reference",
+            "frames": 119,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 33.3,
+            "synchronousFrameCpuMedianMs": 16,
+            "callsMedian": 176,
+            "trianglesMedian": 107747,
+            "sourceExact": true
+          }
+        ],
+        "restored": true,
+        "pending": 0,
+        "shutdown": {
+          "shadowEntries": 0,
+          "colorEntries": 0,
+          "shadowDisposed": true,
+          "colorDisposed": true
+        }
+      }
+    },
+    "defaultRecords": {
+      "high": {
+        "initial": {
+          "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "outfits": [
+            {
+              "authoredClass": "Fighter",
+              "count": 14,
+              "missing": [],
+              "fallback": []
+            },
+            {
+              "authoredClass": "Rogue",
+              "count": 14,
+              "missing": [],
+              "fallback": []
+            },
+            {
+              "authoredClass": "Cleric",
+              "count": 14,
+              "missing": [],
+              "fallback": []
+            },
+            {
+              "authoredClass": "Wizard",
+              "count": 14,
+              "missing": [],
+              "fallback": []
+            }
+          ],
+          "views": [
+            {
+              "name": "service-plaza",
+              "x": 0,
+              "z": 211,
+              "zoom": 15
+            },
+            {
+              "name": "west-homes",
+              "x": -62,
+              "z": 157,
+              "zoom": 15
+            },
+            {
+              "name": "south-homes",
+              "x": -22,
+              "z": 266,
+              "zoom": 15
+            }
+          ]
+        },
+        "result": {
+          "initialControl": {
+            "color": 0,
+            "depth": 0,
+            "saved": 15,
+            "ownerSaved": 15,
+            "trianglesEqual": true,
+            "sourceExact": true
+          },
+          "initialRoots": 5,
+          "equipment": [
+            {
+              "before": 2,
+              "after": 4,
+              "removed": {
+                "color": 0,
+                "depth": 0,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "restored": {
+                "color": 0,
+                "depth": 0,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "count": 14,
+              "missing": [],
+              "fallback": []
+            },
+            {
+              "before": 2,
+              "after": 4,
+              "removed": {
+                "color": 0,
+                "depth": 0,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "restored": {
+                "color": 0,
+                "depth": 0,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "count": 14,
+              "missing": [],
+              "fallback": []
+            },
+            {
+              "before": 2,
+              "after": 4,
+              "removed": {
+                "color": 0,
+                "depth": 0,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "restored": {
+                "color": 0,
+                "depth": 0,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "count": 14,
+              "missing": [],
+              "fallback": []
+            },
+            {
+              "before": 2,
+              "after": 4,
+              "removed": {
+                "color": 0,
+                "depth": 0,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "restored": {
+                "color": 0,
+                "depth": 0,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "count": 14,
+              "missing": [],
+              "fallback": []
+            }
+          ],
+          "qualityCycles": [
+            {
+              "alternate": {
+                "color": 0,
+                "depth": null,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "restored": {
+                "color": 0,
+                "depth": 0,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "roots": 5
+            },
+            {
+              "alternate": {
+                "color": 0,
+                "depth": null,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "restored": {
+                "color": 0,
+                "depth": 0,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "roots": 5
+            }
+          ],
+          "disabled": {
+            "geometryDisposed": true,
+            "shadowDisposed": true,
+            "colorDisposed": true,
+            "colorRoots": 0,
+            "colorEntries": 0,
+            "control": {
+              "color": 0,
+              "depth": 0,
+              "saved": 15,
+              "ownerSaved": 15,
+              "trianglesEqual": true,
+              "sourceExact": true
+            }
+          },
+          "recovery": {
+            "oldDisposed": true,
+            "control": {
+              "color": 0,
+              "depth": 0,
+              "saved": 15,
+              "ownerSaved": 15,
+              "trianglesEqual": true,
+              "sourceExact": true
+            },
+            "outerColor": true,
+            "innerShadow": true
+          },
+          "shadowDisabled": {
+            "oldColorDisposed": true,
+            "control": {
+              "color": 0,
+              "depth": 0,
+              "saved": 15,
+              "ownerSaved": 15,
+              "trianglesEqual": true,
+              "sourceExact": true
+            }
+          },
+          "shadowRecovery": {
+            "color": 0,
+            "depth": 0,
+            "saved": 15,
+            "ownerSaved": 15,
+            "trianglesEqual": true,
+            "sourceExact": true
+          },
+          "groupDetached": {
+            "roots": 0,
+            "entries": 0
+          },
+          "groupArrival": {
+            "roots": 5,
+            "control": {
+              "color": 0,
+              "depth": 0,
+              "saved": 15,
+              "ownerSaved": 15,
+              "trianglesEqual": true,
+              "sourceExact": true
+            }
+          },
+          "cleared": {
+            "roots": 0,
+            "entries": 0
+          },
+          "arrival": {
+            "roots": 5,
+            "control": {
+              "color": 0,
+              "depth": 0,
+              "saved": 15,
+              "ownerSaved": 15,
+              "trianglesEqual": true,
+              "sourceExact": true
+            }
+          },
+          "colorRetirement": {
+            "disposed": true,
+            "roots": 0,
+            "entries": 0,
+            "outerRestored": true,
+            "directRestored": true,
+            "beforeRestored": true
+          },
+          "shutdown": {
+            "shadowDisposed": true,
+            "geometryDisposed": true,
+            "renderRestored": true,
+            "shadowRestored": true,
+            "colorNull": true,
+            "connected": false,
+            "pending": 0
+          },
+          "resources": [
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            }
+          ],
+          "borrowedBeforeShutdown": 0
+        },
+        "failures": []
+      },
+      "low": {
+        "initial": {
+          "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "outfits": [
+            {
+              "authoredClass": "Fighter",
+              "count": 14,
+              "missing": [],
+              "fallback": []
+            },
+            {
+              "authoredClass": "Rogue",
+              "count": 14,
+              "missing": [],
+              "fallback": []
+            },
+            {
+              "authoredClass": "Cleric",
+              "count": 14,
+              "missing": [],
+              "fallback": []
+            },
+            {
+              "authoredClass": "Wizard",
+              "count": 14,
+              "missing": [],
+              "fallback": []
+            }
+          ],
+          "views": [
+            {
+              "name": "service-plaza",
+              "x": 0,
+              "z": 211,
+              "zoom": 15
+            },
+            {
+              "name": "west-homes",
+              "x": -62,
+              "z": 157,
+              "zoom": 15
+            },
+            {
+              "name": "south-homes",
+              "x": -22,
+              "z": 266,
+              "zoom": 15
+            }
+          ]
+        },
+        "result": {
+          "initialControl": {
+            "color": 0,
+            "depth": null,
+            "saved": 15,
+            "ownerSaved": 15,
+            "trianglesEqual": true,
+            "sourceExact": true
+          },
+          "initialRoots": 5,
+          "equipment": [
+            {
+              "before": 2,
+              "after": 4,
+              "removed": {
+                "color": 0,
+                "depth": null,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "restored": {
+                "color": 0,
+                "depth": null,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "count": 14,
+              "missing": [],
+              "fallback": []
+            },
+            {
+              "before": 2,
+              "after": 4,
+              "removed": {
+                "color": 0,
+                "depth": null,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "restored": {
+                "color": 0,
+                "depth": null,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "count": 14,
+              "missing": [],
+              "fallback": []
+            },
+            {
+              "before": 2,
+              "after": 4,
+              "removed": {
+                "color": 0,
+                "depth": null,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "restored": {
+                "color": 0,
+                "depth": null,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "count": 14,
+              "missing": [],
+              "fallback": []
+            },
+            {
+              "before": 2,
+              "after": 4,
+              "removed": {
+                "color": 0,
+                "depth": null,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "restored": {
+                "color": 0,
+                "depth": null,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "count": 14,
+              "missing": [],
+              "fallback": []
+            }
+          ],
+          "qualityCycles": [
+            {
+              "alternate": {
+                "color": 0,
+                "depth": null,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "restored": {
+                "color": 0,
+                "depth": null,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "roots": 5
+            },
+            {
+              "alternate": {
+                "color": 0,
+                "depth": null,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "restored": {
+                "color": 0,
+                "depth": null,
+                "saved": 15,
+                "ownerSaved": 15,
+                "trianglesEqual": true,
+                "sourceExact": true
+              },
+              "roots": 5
+            }
+          ],
+          "disabled": {
+            "geometryDisposed": true,
+            "shadowDisposed": true,
+            "colorDisposed": true,
+            "colorRoots": 0,
+            "colorEntries": 0,
+            "control": {
+              "color": 0,
+              "depth": null,
+              "saved": 15,
+              "ownerSaved": 15,
+              "trianglesEqual": true,
+              "sourceExact": true
+            }
+          },
+          "recovery": {
+            "oldDisposed": true,
+            "control": {
+              "color": 0,
+              "depth": null,
+              "saved": 15,
+              "ownerSaved": 15,
+              "trianglesEqual": true,
+              "sourceExact": true
+            },
+            "outerColor": true,
+            "innerShadow": true
+          },
+          "shadowDisabled": {
+            "oldColorDisposed": true,
+            "control": {
+              "color": 0,
+              "depth": null,
+              "saved": 15,
+              "ownerSaved": 15,
+              "trianglesEqual": true,
+              "sourceExact": true
+            }
+          },
+          "shadowRecovery": {
+            "color": 0,
+            "depth": null,
+            "saved": 15,
+            "ownerSaved": 15,
+            "trianglesEqual": true,
+            "sourceExact": true
+          },
+          "groupDetached": {
+            "roots": 0,
+            "entries": 0
+          },
+          "groupArrival": {
+            "roots": 5,
+            "control": {
+              "color": 0,
+              "depth": null,
+              "saved": 15,
+              "ownerSaved": 15,
+              "trianglesEqual": true,
+              "sourceExact": true
+            }
+          },
+          "cleared": {
+            "roots": 0,
+            "entries": 0
+          },
+          "arrival": {
+            "roots": 5,
+            "control": {
+              "color": 0,
+              "depth": null,
+              "saved": 15,
+              "ownerSaved": 15,
+              "trianglesEqual": true,
+              "sourceExact": true
+            }
+          },
+          "colorRetirement": {
+            "disposed": true,
+            "roots": 0,
+            "entries": 0,
+            "outerRestored": true,
+            "directRestored": true,
+            "beforeRestored": true
+          },
+          "shutdown": {
+            "shadowDisposed": true,
+            "geometryDisposed": true,
+            "renderRestored": true,
+            "shadowRestored": true,
+            "colorNull": true,
+            "connected": false,
+            "pending": 0
+          },
+          "resources": [
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            },
+            {
+              "geometry": 1
+            }
+          ],
+          "borrowedBeforeShutdown": 0
+        },
+        "failures": []
+      }
+    }
+  },
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-attribute-validation-checks-20261013",
+    "entries": 34,
+    "inventorySHA256": "b43ee42769c956204b65860ccb704f2a013db95da522d1748fd700c184c0182f"
+  },
+  "baselineEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-connected49-cpu-baseline-checks-20261013",
+    "entries": 26,
+    "inventorySHA256": "63a53891634c4d72bac956847c9d07905539454f6db440d810eb52756885a805"
+  },
+  "limits": "High prepared town remains33.3msmedian and279283triangles (original20ms/250000limits fail); Low107747triangles remains above85000. ABBA synchronous CPU medians improve roughly0.6\u20132ms but frame intervals remain similar; no whole-game FPS or causal comparison with older differing populations. Connected current baseline33.4/50.1ms remains failed. Native source/prototype contrast only, not copied/public release acceptance, devices, art, campaign, capacity, F1\u2013F5/beta/launch/handoff completion. Full original goal active."
+}
