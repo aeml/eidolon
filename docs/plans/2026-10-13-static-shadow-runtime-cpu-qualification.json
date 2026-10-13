@@ -1,0 +1,25 @@
+{
+  "atUTC": "2026-10-13T00:30:08.338780+00:00",
+  "base": "cfbc6fda0458794a92edaf231bf6cb6e5dd3df78",
+  "status": "Isolated automatic town registration/lifecycle CPU qualified; native actual default parity/cadence/resources still pending.",
+  "checks": {
+    "passed": 163,
+    "suites": 8,
+    "lintPassed": true
+  },
+  "behavior": [
+    "Only explicit qualified town constructors opt in: optimized smithy/market/trading-house/forge/stash, communal courtyards and casino exterior.",
+    "Shares default directional shadow owner with supplied characters. Sources, full triangles, color passes and footprint/interaction geometry retained.",
+    "Prepare runs only at eligible enabled shadow boundary; production Low never allocates. No steady-frame scenery traversal; nested topology/material/geometry/source disposal and streamed roots recover through bounded per-root ownership.",
+    "Reset, geometry owner replacement, scene clear, reentry and shutdown release only owned geometry/material/listeners."
+  ],
+  "limits": [
+    "Native default current town wholeRGBA/packeddepth/restoration, moving ABBA and GPU/lifecycle qualification pending.",
+    "Original High/Low triangle budgets, all other full original roadmap/final art/device gates remain open."
+  ],
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-static-shadow-runtime-cpu-checks-20261013",
+    "entries": 12,
+    "inventorySHA256": "b226265a5a5c3f617c8620100604e0c1f44c4779a29d2164e6a3116c45d35669"
+  }
+}

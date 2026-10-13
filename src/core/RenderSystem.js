@@ -1090,7 +1090,8 @@ export class RenderSystem {
     setActorShadowBatchesEnabled(enabled) {
         if (this._disposed) return;
         if (enabled && !this.actorShadowBatches && typeof this.renderer.shadowMap?.render === 'function') {
-            this.actorShadowBatches = new OpaqueSkinnedShadowRuntime(this.renderer, this.scene, [this.scene, this.entityGroup]);
+            this.actorShadowBatches = new OpaqueSkinnedShadowRuntime(this.renderer, this.scene, [this.scene, this.entityGroup],
+                { staticGroups: [this.instanceEnvironmentGroup, this.entityGroup] });
         } else if (!enabled && this.actorShadowBatches) {
             this.actorShadowBatches.dispose(); this.actorShadowBatches = null;
         }

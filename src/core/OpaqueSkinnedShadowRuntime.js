@@ -1,5 +1,6 @@
 import { OpaqueSkinnedShadowBatches } from './OpaqueSkinnedShadowBatches.js';
 import { isOpaqueSkinnedShadowMesh } from './OpaqueSkinnedShadowGeometry.js';
+import { OpaqueStaticShadowRuntime } from './OpaqueStaticShadowRuntime.js';
 
 const classes = new Set(['Fighter', 'Rogue', 'Wizard', 'Cleric']);
 const under = (node, ancestor) => {
@@ -20,10 +21,13 @@ const sameState = (mesh, saved) => mesh.geometry === saved.geometry && mesh.mate
 // existing gameplay geometry owner selects its source or derivative. One live
 // variant per actor bounds memory; steady frames never reconstruct buffers.
 export class OpaqueSkinnedShadowRuntime {
-    constructor(renderer, scene, groups = [scene]) {
+    constructor(renderer, scene, groups = [scene], { staticGroups = [] } = {}) {
         this.scene = scene; this.groups = [...new Set(groups.filter(Boolean))];
         this.roots = new Map(); this.retired = new WeakSet(); this.disposed = false;
-        this.owner = new OpaqueSkinnedShadowBatches(renderer, scene, { prepare: () => this.synchronize() });
+        this.owner = new OpaqueSkinnedShadowBatches(renderer, scene, { prepare: () => {
+            this.synchronize(); this.static.synchronize();
+        } });
+        this.static = new OpaqueStaticShadowRuntime(this.owner, scene, staticGroups);
         this.added = event => this.track(event.child);
         this.removed = event => this.untrack(event.child);
         this.groupAdded = event => this.scan(event.target);
@@ -83,10 +87,11 @@ export class OpaqueSkinnedShadowRuntime {
     }
 
     reset() {
+        this.static.reset();
         for (const record of this.roots.values()) { this.release(record); record.dirty = true; }
     }
 
-    clear() { for (const root of this.roots.keys()) this.untrack(root); }
+    clear() { this.static.clear(); for (const root of this.roots.keys()) this.untrack(root); }
 
     dispose() {
         if (this.disposed) return; this.disposed = true;
@@ -94,6 +99,6 @@ export class OpaqueSkinnedShadowRuntime {
             group.removeEventListener('childadded', this.added); group.removeEventListener('childremoved', this.removed);
             group.removeEventListener('added', this.groupAdded); group.removeEventListener('removed', this.groupRemoved);
         }
-        this.groups.length = 0; this.clear(); this.owner.dispose();
+        this.groups.length = 0; this.clear(); this.static.dispose(); this.owner.dispose();
     }
 }

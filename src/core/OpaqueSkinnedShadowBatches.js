@@ -63,12 +63,12 @@ export class OpaqueSkinnedShadowBatches {
         this.shadowMap.render = this.shadowWrapper; renderer.render = this.renderWrapper;
     }
 
-    register(root) {
+    register(root, { staticOnly = false } = {}) {
         if (this.depth) throw new Error('Register shadow batches between renderer passes');
         if (this.disposed || !connectedTo(root, this.scene)) return 0;
         let count = 0;
-        const groups = groupOpaqueSkinnedShadowMeshes(root).map(meshes => ({ meshes, isStatic: false }));
-        if (this.includeStatic) groups.push(...groupOpaqueStaticShadowMeshes(root).map(meshes => ({ meshes, isStatic: true })));
+        const groups = staticOnly ? [] : groupOpaqueSkinnedShadowMeshes(root).map(meshes => ({ meshes, isStatic: false }));
+        if (staticOnly || this.includeStatic) groups.push(...groupOpaqueStaticShadowMeshes(root).map(meshes => ({ meshes, isStatic: true })));
         for (const { meshes, isStatic } of groups) {
             if (meshes.some(mesh => this.claimed.has(mesh))) continue;
             let geometry;
