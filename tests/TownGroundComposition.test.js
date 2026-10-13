@@ -27,6 +27,17 @@ test('connected town surfaces retain paved service courts and gates, with unpave
     expect(sampleLanternholdGround(23, 166).paving).toBeGreaterThan(.9);
 });
 
+test('merchant and forge approaches connect to their neighboring paved courts', () => {
+    // Actual authoritative merchant/stash/forge anchors, with three metres of
+    // standing room in front of their west/east-facing service facades.
+    for (const [x, z] of [[22.5, 200], [19.5, 200], [-28, 218], [-25, 218], [-28, 210]]) {
+        expect(sampleLanternholdGround(x, z).paving).toBeGreaterThan(.9);
+    }
+    for (let x = 0; x <= 22.5; x += .5) expect(sampleLanternholdGround(x, 200).paving).toBeGreaterThan(.85);
+    for (let z = 200; z <= 218; z += .5) expect(sampleLanternholdGround(-25, z).paving).toBeGreaterThan(.85);
+    for (let z = 200; z <= 212; z += .5) expect(sampleLanternholdGround(24, z).paving).toBeGreaterThan(.85);
+});
+
 test('mask is deterministic, linear and registered between qualities', () => {
     const high = createTownCompositionMask(), duplicate = createTownCompositionMask(), low = createTownCompositionMask('low');
     expect(high.image.data).toEqual(duplicate.image.data);

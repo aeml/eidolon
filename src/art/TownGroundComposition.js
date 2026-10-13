@@ -20,7 +20,12 @@ const ROUTES = [
 const COURTS = [
     { x: 0, z: 200, rx: 19, rz: 19 },
     { x: -19, z: 198, rx: 13, rz: 17 },
-    { x: -28, z: 210, rx: 8, rz: 8 }, // Relocated smithy–stash–forge service court.
+    { x: -28, z: 210, rx: 8, rz: 8 }, // Existing stash approach remains intact.
+    // Overlap its working apron with the actual forge at (-28, 218).
+    { x: -28, z: 218, rx: 8, rz: 8 },
+    // Meet the west-facing trading-post door and merchant at (22.5, 200),
+    // joining the main square to the eastern service court without a soil gap.
+    { x: 24, z: 200, rx: 9, rz: 8 },
     { x: 26, z: 212, rx: 13, rz: 10 },
     { x: 28, z: 235, rx: 13, rz: 12 },
     ...LANTERNHOLD_COURTYARDS.map(site => ({ x: site.x, z: site.z, rx: 12, rz: 12 }))

@@ -76,7 +76,7 @@ export const LANTERNHOLD_COURTYARDS = freeze([
         arrivalOffset: [-5, 0], purpose: 'A communal wash and gathering court. Recovery and Well Rested work throughout town; the well is not a required healing interaction.' },
     { id: 'lanternhold-menders-yard', name: 'The Menders’ Yard', region: 'town',
         recipe: 'menders-yard', x: -55, z: 238, radius: 11, visibility: 'public', role: 'courtyard',
-        arrivalOffset: [0, 3.5], purpose: 'Shared workbenches and drying cloth beside the refugee camps. For equipment repairs, visit Vendor / Repair; this is town scenery, not a second service.' }
+        arrivalOffset: [0, 3.5], purpose: 'Shared workbenches and drying cloth beside the residential lanes. For equipment repairs, visit Vendor / Repair; this is town scenery, not a second service.' }
 ]);
 
 // These are authored ground-surface centerlines, shared with cartography when
