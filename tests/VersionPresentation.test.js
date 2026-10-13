@@ -4,7 +4,7 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.79.47';
+const currentVersion = '1.79.48';
 
 test('1.79.22 records scoped actor normal correctness without claiming final art or speedup', () => {
     const html = readIndexWithPatchHistory();

@@ -463,7 +463,7 @@ acceptance is incomplete.
 | Requirement | Remaining work and evidence needed | Owner |
 | --- | --- | --- |
 | Current publication | Alpha1.79.47/exact`13f54175` is accepted live within exact town static-shadow batching and bounded geometry delivery. OwnCI38328616361attempt1 all ten ordered jobs succeeded01:33:43UTC;751client suites/11228tests,349browser passes/10skips and59requirednative passes/1skip. Live8first-attempt passes/1skip/0flakes, recovery2/rested-party1pass; four optional stages remain skips. Fresh01:35:33UTC normal-TLS152asset hashes/bytes, both release identities, readyDB and analyticsJS match. Initial post-terminal asset-check HTTP408 is retained; original45network findings, crowded-town budgets and full readiness gates remain open. [Acceptance](2026-10-13-public47-terminal-qualification.json). | Implementation |
-| Pending publication | Alpha1.79.47 preparation combines qualified bounded geometry shards and automatic exact town static shadows, ordinarily merged into local master.163focused static CPU checks/eight suites plus16native moving arms,6exact color/3depth pairs,4GPU cycles and default High/Low quality/geometry/scene/shutdown lifetimes pass. High plaza381→333calls;279283tri and Low107747tri still fail unchanged limits. Copied milestone/build and exact orderedCI/live/public verification remain pending. Public46 remains current accepted version. [Static qualification](2026-10-13-static-shadow-runtime-native-qualification.json). | Implementation |
+| Pending publication | Coherent48 preparation combines qualified merchant/forge paved aprons, default exact opaque character color batching and bounded static-delivery diagnostics. All ordinarily merged into master; copied build/native and exact ordered CI/deploy/live/public checks pending. Public47 remains accepted. [Color integration](2026-10-13-opaque-color-default-integration-qualification.json), [paving](2026-10-13-town-service-aprons-native-qualification.json). | Implementation |
 | Modern world and atlas | Finish coherent material scale, terrain transitions, grounded architecture, roads, vegetation/rock composition, landmarks, interiors, lighting, atmosphere and readable travel/combat spaces. Moving equipped/HUD review starts Lanternhold → Earth → fight → first dungeon, then all elemental realms/borders, dungeons/raids, Dark Realm, both casino floors and PvP. Required named places, optional interactions and accurate maps remain governed by the full world contract. Repetition, sparse rooms and broad muddy patches are not final art. | Implementation; final owner review |
 | Supplied actor/equipment presentation | Finish full/mixed/cosmetic fits and material identity across all classes, weapon restrictions, dual wielding, local/remote swaps, pooling/reconnect and motion. Preserve delivered assets and approved geometry/rig constraints. | Implementation; final owner review |
 | Combat, classes and audio | Validate all twelve specialization kits, attack anticipation/contact/recovery, movement, threat readability and role feel. Finish contact/audio integration and human listening/busy-group mix; essential warnings survive Low/reduced effects/mute. Prepared mixer frames or audio API calls are insufficient for full acceptance. | Implementation and playtests |
@@ -475,7 +475,7 @@ acceptance is incomplete.
 | Casino and cosmetics | Preserve two equally sized 46-station floors, shared physical seats/countdowns, all five games, stakes/natural payouts/settlement, Gold/EP isolation, monthly/admin allowance and cosmetic-only utility. Finish remaining final integration/readability/policy findings; no EP-to-power or unapproved real-money branch. | Implementation; policy owner |
 | Administration and account ownership | Retain real-player/automation separation, role/audit/moderation/report/recovery controls; finish outstanding operational workflows and policy assignment. Buttons or tests alone do not establish staffed support. | Implementation and owner |
 | Browser, phone and accessibility | Finish declared supported browsers/viewports, actual touch/keyboard/non-color/reduced-motion/settings review, returning-session usability and sustained device/resource budgets. Physical-phone party/dungeon feedback is deferred to owner playtests, not passed. | Implementation and owner/cohort |
-| Geometry delivery reliability | Qualified delivery merged into local master at `f8ebfbec`:14immutable shards≤64KiB (largest65216B), all133canonical outputs/777321bytes exact, one active request with unchanged1500ms deadline/30s retirement.132CPU checks/six suites, lint/build pass. Real native worker at64KiB/s completes all14shards/133outputs without retries (longest1006.872ms); unchanged monolith control aborts1500.7ms. Copied published actual Fighter ownership/cache/offline case passes once,7shards cached/10rearrival hits/zero remaining jobs or roots. Original fixture failures and independent vendor restoration retained. This controlled transport proof does not establish the original public45ERR_ABORTED cause or resolve separate ERR_NETWORK_CHANGED. Awaiting coherent publication. [Native qualification](2026-10-13-geometry-download-shards-native-qualification.json). | Implementation |
+| Geometry delivery reliability | Qualified delivery merged into local master at `f8ebfbec`:14immutable shards≤64KiB (largest65216B), all133canonical outputs/777321bytes exact, one active request with unchanged1500ms deadline/30s retirement.132CPU checks/six suites, lint/build pass. Real native worker at64KiB/s completes all14shards/133outputs without retries (longest1006.872ms); unchanged monolith control aborts1500.7ms. Copied published actual Fighter ownership/cache/offline case passes once,7shards cached/10rearrival hits/zero remaining jobs or roots. Original fixture failures and independent vendor restoration retained. This controlled transport proof does not establish the original public45ERR_ABORTED cause or resolve separate ERR_NETWORK_CHANGED. Included and accepted in47 within this retained scope. [Native qualification](2026-10-13-geometry-download-shards-native-qualification.json). | Implementation |
 | Whole-game performance | Meet original scene/frame limits under representative dynamic populations, equipped combat/parties, all declared profiles and supported devices. Historical failures below remain. Do not hide scenery, reduce plant populations, relax budgets or substitute isolated component samples. | Implementation |
 | Capacity and transport | Observe existing 100-client soak to terminal, investigate concrete closure evidence and qualify named workload/headroom. Earlier transport failure and per-client duration/frame shortfall remain failures. A ready health endpoint is not 24-hour or general 100-player capacity acceptance. | Implementation; service decisions owner |
 | Persistence and compatibility | Finish current fresh/returning saves, journal/value custody, migrations/old clients, reconnect and recovery/rollback evidence for the final candidate; preserve production accounts, characters and earned receipts. | Implementation |
@@ -491,19 +491,24 @@ acceptance is incomplete.
 
 Bounded current-source Earth renderer census now separates cold and settled equipment preparation in the same native High1280/Low390 fixtures. High gate301626→147466tri and road305035→189499tri; Low gate106063→65649tri and road102486→79386tri. Draw calls stay220/274High and110/141Low. The existing preparation queue reaches0; source/runtime/visibility unchanged. All12observations have exact before/observed/restored submission totals and complete attribution. These untimed prepared views isolate startup preparation; they do not clear retained cold budgets, connected frame-time failures, real phones or final art. [Census](2026-10-11-earth-cold-settled-triangle-census.json).
 
-## Isolated current performance work
+## Current performance implementation
 
-Full-attribute opaque color geometry`add12462`/receipt`61353f88` is isolated,
-unselected.73CPUchecks/two suites/lint and40actual loaded High/Low motion samples
-retain117asset pins and120same-material paired constructions, every raw attribute
-and index exact. Native first prototype has6wholeRGBA/3packeddepth/restoration
-controls exact and saves15colorcalls in plaza (High333→318,Low191→176), with
-all triangles unchanged. Eight High movingABBAarms reject selection: plaza
-reference medians16.8/16.8 versus candidate16.7/33.3ms, unchanged20ms target.
-Low motion and GPU cycles were not reached; process/browser/server retired.
-Frozen72entry rejection inventory`b4b00824000a569cbc10d1be6f3094e37a4a965f8445dd6df3eda5b2b4b9bf61`.
-Cached fixed registered-group successor14397d1b now passes6wholeRGBA/3Highpackeddepth/restores,16movingABBAarms all16.7median and4exactGPUcycles; Highp95≤33.4/Low≤16.8.39owned geometry disposal events/profile, sharedmaterial0, originalhooks/source state restored. Frozen80entry inventory`54861180cb44a91d674728e65d02daa1699c4728279b8fbdff40928ea3579a59`. Equal medians establish no FPS gain; movingLowwest population differences retained. Automatic actor/equipment/quality/realm/replacement/shutdown owner integration is still unimplemented/unselected. No master runtime/renderer selection or source asset change. [Cached prototype](2026-10-13-opaque-color-cached-native-prototype.json). [CPU geometry](2026-10-13-opaque-color-geometry-cpu-qualification.json),
-[rejected native](2026-10-13-opaque-color-native-prototype-rejected.json).
+Default opaque character color batching is qualified and ordinarily merged at
+`e6e195ca`; publication is held for coherent48.373distinct focused checks across
+18suites and lint pass with valid reuse after a rigid-instance callback correction.
+Six exact wholeRGBA/threeHighpackeddepth/restoration controls retain every
+triangle; Highplaza333→318calls andLow191→176.16movingABBAarms all16.7msmedian,
+Highp95≤33.4/Low≤16.8, four exactGPUcycles. Actual default four-class equipment
+swaps, quality round trips, geometry/shadow/rigid-instance owner replacement,
+group/realm detach and re-arrival, and shutdown pass in both profiles;468observed
+owned geometries retire once, borrowed materials0. Frozen65entry inventory
+`b955346fe3febcc0e6af61fcab5264fbeb5074e46be962f4885f26484929e91b`.
+[Default qualification](2026-10-13-opaque-color-default-integration-qualification.json),
+[actual runtime native](2026-10-13-opaque-color-owner-native-qualification.json).
+Equal medians do not establish FPS gain; movingLowwest population differences
+and unchanged High279283/Low107747plaza triangle failures remain. The initial
+slower prototype remains [rejected](2026-10-13-opaque-color-native-prototype-rejected.json).
+Full game/art/device/ops/owner/beta/handoff scope stays open.
 
 ## Retained performance failures and rejected work
 

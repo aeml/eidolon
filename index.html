@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.79.47</span>
+                    <span class="start-version-row__label">Alpha 1.79.48</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
                 <p id="game-startup-status" class="game-startup-status" role="alert" tabindex="-1" hidden></p>
@@ -843,7 +843,17 @@
                 </span>
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
-            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.47" data-notes-pages="48" data-notes-total="482">
+            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.48" data-notes-pages="48" data-notes-total="483">
+                <div class="patch-note-entry" data-version="1.79.48">
+                    <h3>Alpha 1.79.48 (Connected town services and character rendering)</h3>
+                    <ul>
+                        <li>Lanternhold's merchant and forge gain paved standing areas connected to their nearby lanes, making service stops feel part of the town.</li>
+                        <li>Compatible character parts share rendering submissions while retaining their exact appearance, full geometry, equipment, animations and shadows on High and Low quality.</li>
+                        <li>Character rendering follows equipment changes, graphics settings and realm transitions, retiring old buffers as their owners change.</li>
+                        <li>Retains roughly 1.5-second smooth jumps, Well Rested aura tracking, gradual quest rewards, click-to-type map search and separate test-account reporting.</li>
+                        <li>World art and crowded-town performance work continues. Full prior patch history remains available through Load more notes.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.79.47">
                     <h3>Alpha 1.79.47 (Town shadows and steadier geometry downloads)</h3>
                     <ul>
@@ -929,14 +939,6 @@
                     <ul class="patch-note-entry__list">
                         <li>Supplied characters and supported outfits load exact prepared geometry in the background, reducing repeated model preparation while preserving their appearance and animation.</li>
                         <li>Changed outfits and unavailable preparation data retain the existing model preparation path. Prepared data remains available for cached offline sessions.</li>
-                        <li>Retains approximately 1.5-second jump arrival, smooth takeoff and landing, Well Rested aura tracking and separate automation-account population reporting.</li>
-                        <li>Existing characters, items and Gold remain intact. Full prior patch history remains available through Load more notes.</li>
-                    </ul>
-                </div>
-                <div class="patch-note-entry" data-version="1.79.38">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.38 (Character preparation)</h3>
-                    <ul class="patch-note-entry__list">
-                        <li>Improved background preparation of equipped characters while preserving their model detail, material boundaries and animation data.</li>
                         <li>Retains approximately 1.5-second jump arrival, smooth takeoff and landing, Well Rested aura tracking and separate automation-account population reporting.</li>
                         <li>Existing characters, items and Gold remain intact. Full prior patch history remains available through Load more notes.</li>
                     </ul>
