@@ -1760,3 +1760,6 @@ October13 coherent48 pushed exact9b536c1cf6655e7e138567e1678497c626870d6b at02:4
 
 
 October13 independent Dark Realm masonry4eef68d7/0c8d9d6e remains detached/unselected after53distinctCPUchecks/six suites/lint and eight exactnonUV constructor controls.49mesh scene/geometry/colliders unchanged; physicalwallUVs plus one shared3map material only. Frozen30entry inventory388ab3a415c2f9653ff2fec51ce6d176c4fe9474ef44b7ec48f5f2c49a140889. Initial direct-child/allmesh fixture failure corrected/reused unaffected tests; actualgameplay/motion/shadows/cadence/GPUlifetime awaitown48terminal. Own3790file451986557B publicationcopy48 verifiedagainst frozenfullinventory and retiredafter native proof; source/userfiles untouched. Fullgoal stays active.
+
+
+October13 Alpha1.79.48/exact`9b536c1c` ownCI38338720250attempt1 failed predeploy disposable inventory/Journal reload:144engine-module ERR_NETWORK_CHANGED failures prevent engine startup. All five initial jobs and55preceding native cases passed; smoke3passed/1skipped/1failed. Production validation/both deployments/liveQA skipped; accepted47 stays public. Original failure/artifact retained, no retry/waiver; private-network smoke qualification next, exact interface cause unproven. [Failure](docs/plans/2026-10-13-release48-predeploy-network-failure.json). Full original goal remains active.

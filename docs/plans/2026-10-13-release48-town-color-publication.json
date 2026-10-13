@@ -1,7 +1,7 @@
 {
   "source": "9b536c1cf6655e7e138567e1678497c626870d6b",
   "version": "Alpha 1.79.48",
-  "status": "Pushed to master; own ordered CI/deploy/live and fresh public identity/assets/readyDB pending. Accepted public remains47.",
+  "status": "Own48 CI failed predeploy; production validation, deployments and live QA skipped. Public47 remains accepted.",
   "recordedUTC": "2026-10-13T02:50:21.722579+00:00",
   "qualificationReceipts": [
     "2026-10-13-opaque-color-default-integration-qualification.json",
@@ -176,12 +176,12 @@
     "all152pinsIdentitiesReadyDBMatch": true
   },
   "ownCI": {
-    "conclusion": "",
-    "createdAt": "2026-10-13T02:49:20Z",
-    "databaseId": 38338720250,
-    "headSha": "9b536c1cf6655e7e138567e1678497c626870d6b",
-    "name": "CI",
-    "status": "in_progress"
+    "id": 38338720250,
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "failure",
+    "updatedUTC": "2026-10-13T03:30:46Z"
   },
-  "limits": "No own48 acceptance or final-art/performance/beta claim. Original High/Low triangle and network-cause findings/full original goal remain open."
+  "limits": "No own48 acceptance or final-art/performance/beta claim. Original High/Low triangle and network-cause findings/full original goal remain open.",
+  "failureReceipt": "2026-10-13-release48-predeploy-network-failure.json"
 }

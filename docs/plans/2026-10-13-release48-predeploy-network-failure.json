@@ -1,0 +1,629 @@
+{
+  "recordedUTC": "2026-10-13T03:39:55.132116+00:00",
+  "source": "9b536c1cf6655e7e138567e1678497c626870d6b",
+  "version": "Alpha1.79.48",
+  "status": "Own48 CI failed predeploy; production validation, deployments and live QA skipped. Public47 remains accepted.",
+  "ci": {
+    "id": 38338720250,
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "failure",
+    "updatedUTC": "2026-10-13T03:30:46Z"
+  },
+  "jobs": [
+    {
+      "completedAt": "2026-10-13T02:59:28Z",
+      "conclusion": "success",
+      "databaseId": 115104648915,
+      "name": "Client Tests (Jest)",
+      "startedAt": "2026-10-13T02:49:23Z",
+      "status": "completed",
+      "steps": [
+        {
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Checkout",
+          "number": 2,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Setup Node.js",
+          "number": 3,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Install dependencies",
+          "number": 4,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Verify committed content without regeneration",
+          "number": 5,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run lint",
+          "number": 6,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Audit production and development dependencies",
+          "number": 7,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run tests with coverage",
+          "number": 8,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run client hot-path benchmark",
+          "number": 9,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Upload client coverage artifact",
+          "number": 10,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Setup Node.js",
+          "number": 19,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Checkout",
+          "number": 20,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 21,
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/aeml/eidolon/actions/runs/38338720250/job/115104648915"
+    },
+    {
+      "completedAt": "2026-10-13T03:10:10Z",
+      "conclusion": "success",
+      "databaseId": 115104649203,
+      "name": "Server Tests (Go)",
+      "startedAt": "2026-10-13T02:49:23Z",
+      "status": "completed",
+      "steps": [
+        {
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Initialize containers",
+          "number": 2,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Checkout",
+          "number": 3,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Setup Go",
+          "number": 4,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Verify Go modules and reachable vulnerabilities",
+          "number": 5,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Verify card-table timeout ownership and saved payouts",
+          "number": 6,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Verify ordinary item, social, duel and administration sockets",
+          "number": 7,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Verify disposable guild bank settlement and recovery",
+          "number": 8,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Verify disposable ground-item custody and repository reopen",
+          "number": 9,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Verify paged market and slot recovery with casino wallet checkpoints",
+          "number": 10,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Verify disposable room-reward cohorts and repository reopen",
+          "number": 11,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Verify disposable report review resolution and retry",
+          "number": 12,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Verify disposable account-bound character journal replay",
+          "number": 13,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run Go tests with coverage",
+          "number": 14,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run Go race detector",
+          "number": 15,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Verify disposable upgrade backup and restore",
+          "number": 16,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run server hot-path benchmarks",
+          "number": 17,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Build server",
+          "number": 18,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Convert Go coverage to LCOV",
+          "number": 19,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Upload server coverage artifact",
+          "number": 20,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Setup Go",
+          "number": 38,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Checkout",
+          "number": 39,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Stop containers",
+          "number": 40,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 41,
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/aeml/eidolon/actions/runs/38338720250/job/115104649203"
+    },
+    {
+      "completedAt": "2026-10-13T03:08:19Z",
+      "conclusion": "success",
+      "databaseId": 115104649216,
+      "name": "Browser Smoke (Playwright 1/3)",
+      "startedAt": "2026-10-13T02:49:23Z",
+      "status": "completed",
+      "steps": [
+        {
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Checkout",
+          "number": 2,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Setup Node.js",
+          "number": 3,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Install dependencies and browser",
+          "number": 4,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run anonymous real-browser smoke",
+          "number": 5,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Upload browser failure evidence",
+          "number": 6,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Setup Node.js",
+          "number": 11,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Checkout",
+          "number": 12,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 13,
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/aeml/eidolon/actions/runs/38338720250/job/115104649216"
+    },
+    {
+      "completedAt": "2026-10-13T03:02:41Z",
+      "conclusion": "success",
+      "databaseId": 115104649236,
+      "name": "Browser Smoke (Playwright 3/3)",
+      "startedAt": "2026-10-13T02:49:23Z",
+      "status": "completed",
+      "steps": [
+        {
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Checkout",
+          "number": 2,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Setup Node.js",
+          "number": 3,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Install dependencies and browser",
+          "number": 4,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run anonymous real-browser smoke",
+          "number": 5,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Upload browser failure evidence",
+          "number": 6,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Setup Node.js",
+          "number": 11,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Checkout",
+          "number": 12,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 13,
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/aeml/eidolon/actions/runs/38338720250/job/115104649236"
+    },
+    {
+      "completedAt": "2026-10-13T03:18:27Z",
+      "conclusion": "success",
+      "databaseId": 115104649247,
+      "name": "Browser Smoke (Playwright 2/3)",
+      "startedAt": "2026-10-13T02:49:23Z",
+      "status": "completed",
+      "steps": [
+        {
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Checkout",
+          "number": 2,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Setup Node.js",
+          "number": 3,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Install dependencies and browser",
+          "number": 4,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run anonymous real-browser smoke",
+          "number": 5,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Upload browser failure evidence",
+          "number": 6,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Setup Node.js",
+          "number": 11,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Checkout",
+          "number": 12,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 13,
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/aeml/eidolon/actions/runs/38338720250/job/115104649247"
+    },
+    {
+      "completedAt": "2026-10-13T03:30:45Z",
+      "conclusion": "failure",
+      "databaseId": 115111969070,
+      "name": "Predeploy Character QA (System Chrome)",
+      "startedAt": "2026-10-13T03:18:29Z",
+      "status": "completed",
+      "steps": [
+        {
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Checkout",
+          "number": 2,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Setup Node.js",
+          "number": 3,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Install dependencies and verify system Chrome",
+          "number": 4,
+          "status": "completed"
+        },
+        {
+          "conclusion": "skipped",
+          "name": "Run deterministic High/Low animation gallery",
+          "number": 5,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run required native High regional quality-switch coverage",
+          "number": 6,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run required native dungeon materials, prepared outfits and additive surfaces",
+          "number": 7,
+          "status": "completed"
+        },
+        {
+          "conclusion": "skipped",
+          "name": "Run required Well Rested rendering and GPU lifecycle QA",
+          "number": 8,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run focused level-up and sanctuary presentation",
+          "number": 9,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Verify delivered class bodies and fitted equipment",
+          "number": 10,
+          "status": "completed"
+        },
+        {
+          "conclusion": "skipped",
+          "name": "Run disposable full-character gameplay",
+          "number": 11,
+          "status": "completed"
+        },
+        {
+          "conclusion": "failure",
+          "name": "Run focused disposable release smoke",
+          "number": 12,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Sanitize retained native visual evidence",
+          "number": 13,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Upload predeploy character evidence",
+          "number": 14,
+          "status": "completed"
+        },
+        {
+          "conclusion": "skipped",
+          "name": "Post Setup Node.js",
+          "number": 27,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Checkout",
+          "number": 28,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 29,
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/aeml/eidolon/actions/runs/38338720250/job/115111969070"
+    },
+    {
+      "completedAt": "2026-10-13T03:30:46Z",
+      "conclusion": "skipped",
+      "databaseId": 115115023083,
+      "name": "Validate Production QA Inputs",
+      "startedAt": "2026-10-13T03:30:46Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/aeml/eidolon/actions/runs/38338720250/job/115115023083"
+    },
+    {
+      "completedAt": "2026-10-13T03:30:46Z",
+      "conclusion": "skipped",
+      "databaseId": 115115023583,
+      "name": "Deploy to GitHub Pages",
+      "startedAt": "2026-10-13T03:30:46Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/aeml/eidolon/actions/runs/38338720250/job/115115023583"
+    },
+    {
+      "completedAt": "2026-10-13T03:30:46Z",
+      "conclusion": "skipped",
+      "databaseId": 115115024227,
+      "name": "Deploy Server (SSH)",
+      "startedAt": "2026-10-13T03:30:46Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/aeml/eidolon/actions/runs/38338720250/job/115115024227"
+    },
+    {
+      "completedAt": "2026-10-13T03:30:46Z",
+      "conclusion": "skipped",
+      "databaseId": 115115024248,
+      "name": "Live Release and Character QA",
+      "startedAt": "2026-10-13T03:30:46Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/aeml/eidolon/actions/runs/38338720250/job/115115024248"
+    }
+  ],
+  "nativeBeforeFailure": {
+    "passed": 55,
+    "releaseSmokePassed": 3,
+    "releaseSmokeSkipped": 1,
+    "releaseSmokeFailed": 1
+  },
+  "finding": "Inventory drag-out/Journal reload test reached its second login, then 144 engine source modules failed with net::ERR_NETWORK_CHANGED. Engine absent; startup module-download failure visible; authoritative-state wait failed at unchanged30s. Initial failure retained, no retry or waiver.",
+  "causality": "Host-network exposure is a concrete boundary to isolate. Exact original interface-change cause remains unproven; an empty retained Docker-events query does not explain the failure. No gameplay/rendering regression is inferred or dismissed solely from the network code.",
+  "artifact": {
+    "id": 11786484804,
+    "bytes": 168174327,
+    "sha256": "c2ed9e29241586fa88974004970a75441764f7fb09b7571f7dcf69a9224049a0",
+    "entries": 445,
+    "allCRCsMatch": true
+  },
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-release48-predeploy-failure-checks-20261013",
+    "entries": 6,
+    "inventorySHA256": "413ae60f9eeb2c4fb0e37f582a67fc50c3bcfcb2f5949a5b3cb5717bc022a909"
+  },
+  "next": "Qualify a private-network disposable release-smoke fixture with unchanged tests/deadlines/retries, then ordinary-merge the completed correction and publish a coherent corrected milestone after fresh accepted47 verification. Masonry remains isolated pending native qualification.",
+  "limits": "No own48 acceptance or full art/performance/beta/full-goal completion."
+}
