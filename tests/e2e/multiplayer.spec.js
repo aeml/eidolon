@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './static-delivery-test.js';
 import { CONSTANTS } from '../../src/core/Constants.js';
 import { captureGameplayVisual } from './gameplay-visual-capture.js';
 import { exercisePartyDungeonResume } from './party-dungeon-route.js';

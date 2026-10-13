@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './static-delivery-test.js';
 import { movementFrameBudget } from '../movementFrameBudget.js';
 import { projectMovementGroundOffset } from '../movementGroundProjection.js';
 import { holdGroundOffsetAndSample, movePointerAndReadHoveredEntity, waitForArrival } from './movement-input-observation.js';

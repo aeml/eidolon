@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './static-delivery-test.js';
 import { readSanctuaryHoverEvidence } from './sanctuary-hover-observation.js';
 import { observeCollectionCombatReceipts, readFreshCollectionCombat,
     selectCollectionTargetThroughInput } from './fresh-collection-combat.js';
