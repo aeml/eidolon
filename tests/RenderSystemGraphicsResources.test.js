@@ -126,3 +126,26 @@ test('terminal disposal releases the owned context once after renderer cleanup',
     expect(render.renderer.forceContextLoss).toHaveBeenCalledTimes(1);
     expect(render.renderer.forceContextLoss.mock.invocationCallOrder[0]).toBeGreaterThan(dispose.mock.invocationCallOrder[0]);
 });
+
+test.each(['high', 'low'])('%s terminal disposal retires active cutaways and their original shared materials once', quality => {
+    localStorage.setItem('eidolon.graphicsQuality', quality);
+    const render = new RenderSystem(false), root = new THREE.Group();
+    const maps = Array.from({ length: 3 }, () => new THREE.DataTexture(new Uint8Array(4), 1, 1));
+    const material = new THREE.MeshStandardMaterial({ map: maps[0], normalMap: maps[1], roughnessMap: maps[2] });
+    const geometry = new THREE.BoxGeometry();
+    for (let i = 0; i < 2; i++) {
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.userData.sceneryOccluderPart = true; root.add(mesh);
+    }
+    render.instanceEnvironmentGroup.add(root);
+    const controller = render.sceneryVisibility, entry = controller.createEntry(root);
+    controller.entries.set(root, entry); entry.opacity = .2; controller.applyOpacity(entry);
+    render.sceneryFocus = new THREE.Vector3(1, 0, 2);
+    const clone = entry.clones.get(material), releases = [material, clone, geometry, ...maps].map(resource => jest.spyOn(resource, 'dispose'));
+    expect(root.children.every(mesh => mesh.material === clone)).toBe(true);
+    render.dispose(); render.dispose();
+    expect(controller.entries.size).toBe(0); expect(entry.clones.size).toBe(0);
+    expect(render.sceneryFocus).toBeNull();
+    expect(root.children.every(mesh => mesh.material === material)).toBe(true);
+    for (const release of releases) expect(release).toHaveBeenCalledTimes(1);
+});

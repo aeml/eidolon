@@ -1339,6 +1339,10 @@ export class RenderSystem {
         if (this._disposed) return;
         this._disposed = true;
         this._initialViewPreparation?.finish(false);
+        // Restore originals before traversing scene resources: active cutaways
+        // temporarily substitute owned clones that share the original maps.
+        this.sceneryVisibility?.clear();
+        this.sceneryFocus = null;
         this.actorColorBatches?.dispose(); this.actorColorBatches = null;
         this.actorShadowBatches?.dispose(); this.actorShadowBatches = null;
         this.actorGameplayGeometry?.dispose(); this.actorGameplayGeometry = null;
