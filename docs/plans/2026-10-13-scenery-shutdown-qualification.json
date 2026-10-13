@@ -1,0 +1,71 @@
+{
+  "recordedUTC": "2026-10-13T04:19:43.707661+00:00",
+  "source": "f34bc8b76f0474d17d561dfb02c9a26e8bb8d10e",
+  "status": "Terminal scenery-cutaway cleanup qualified; ordinary master merge and corrected49 copied publication rebuild next.",
+  "problem": "Actual copied49Low game.destroy while the masonry cutaway was active disposed its three maps but never disposed the original material; SceneryVisibility entries retained the detached root/original materials. Two targeted High/Low CPU regressions reproduced retained entries before correction.",
+  "change": "RenderSystem.dispose clears scenery cutaways and focus before retiring render owners/traversing scene resources. This restores originals and disposes temporary clones before shared texture retirement; existing idempotent shutdown guard remains.",
+  "CPU": {
+    "passed": 53,
+    "suites": 5,
+    "lint": "pass",
+    "initialRegressionFailed": 2
+  },
+  "native": [
+    {
+      "quality": "high",
+      "cutawayOpacity": 1.8881515618279887e-18,
+      "resourceDisposals": {
+        "resources": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "clones": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "entries": 0,
+        "focus": null
+      },
+      "all49SceneGeometryAndMapsExact": true
+    },
+    {
+      "quality": "low",
+      "cutawayOpacity": 1.1794439059392073e-15,
+      "resourceDisposals": {
+        "resources": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "clones": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "entries": 0,
+        "focus": null
+      },
+      "all49SceneGeometryAndMapsExact": true
+    }
+  ],
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-scenery-shutdown-checks-20261013",
+    "entries": 18,
+    "inventorySHA256": "b60b4b2a464b56d62006d998e426352de19aefe64ba98dd09cc677abc756e02e"
+  },
+  "limits": "Native prepared production GameEngine destroy with suppliedfour14-slot classes/HUD and genuinely active(<.005) masonry fade, High1280/Low390. Existing art/cadence/geometry evidence reused; no unchanged full gallery replay. Copied release must rebuild for this changed source; no public49/whole-game/final-art/capacity acceptance."
+}
