@@ -1,0 +1,43 @@
+{
+  "recordedUTC": "2026-10-13T01:36:05.350880+00:00",
+  "source": "15f7e6eb4cdc7ea13a0d1adbee1b563eda77dc79",
+  "status": "CPU and actual anonymous dedicated-worker observer coverage qualified; ready ordinary master merge",
+  "scope": "QA-only static-file request, worker and navigation timing; authenticated failure evidence attachment; anonymous smoke coverage",
+  "cpu": {
+    "checks": 74,
+    "suites": 4,
+    "lintPassed": true,
+    "receipt": "2026-10-13-static-delivery-diagnostics-cpu-qualification.json"
+  },
+  "native": {
+    "passed": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0,
+    "retries": 0,
+    "durationMs": 2403.386,
+    "Chrome": "153.0.8010.36",
+    "Node": "24.18.0",
+    "privateLoopback": true,
+    "observedRequests": 4,
+    "finished": 3,
+    "expectedAbort": 1,
+    "activeAfterWorkerRetirement": 0,
+    "failureEndedMs": 216.8,
+    "workerClosedMs": 230.8,
+    "privacyAssertionsPassed": true,
+    "browserAndDisposableServerRetired": true
+  },
+  "runtimeChanges": false,
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-static-delivery-diagnostics-native-checks-20261013",
+    "entries": 11,
+    "inventorySHA256": "523fe3ffd62753d87e7eeab2c02cacf5c1e3e6bac3988ad19a97e21b9a8fb18e"
+  },
+  "limits": [
+    "This proves observable actual dedicated-worker fetch and cancellation timing, not causal ownership or the cause of original public45 network failures.",
+    "No retries, product deadlines, navigation budgets or strict failure collectors changed.",
+    "Bounded histories and overflow/unobserved counters retained; no account APIs, request headers/bodies, frame URLs or query strings recorded.",
+    "Original whole-game art/performance/device/gameplay/readiness goal remains open."
+  ]
+}

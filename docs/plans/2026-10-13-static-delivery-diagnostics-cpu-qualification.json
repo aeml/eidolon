@@ -1,0 +1,39 @@
+{
+  "atUTC": "2026-10-13T01:21:28.707558+00:00",
+  "source": "15f7e6eb4cdc7ea13a0d1adbee1b563eda77dc79",
+  "scope": "QA-only page-observable static delivery diagnostics; native integration pending current release47 terminal",
+  "tests": {
+    "command": "npm test -- --runInBand --runTestsByPath tests/StaticDeliveryEvidence.test.js tests/StartupModuleEvidence.test.js tests/PlaywrightArtifactPrivacy.test.js tests/BrowserSmokePlan.test.js",
+    "exitCode": 0,
+    "output": "\n> eidolon-tests@1.79.47 test\n> node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --runTestsByPath tests/StaticDeliveryEvidence.test.js tests/StartupModuleEvidence.test.js tests/PlaywrightArtifactPrivacy.test.js tests/BrowserSmokePlan.test.js\n\n(node:2036790) ExperimentalWarning: VM Modules is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n\nTest Suites: 4 passed, 4 total\nTests:       74 passed, 74 total\nSnapshots:   0 total\nTime:        8.056 s\nRan all test suites within paths \"tests/StaticDeliveryEvidence.test.js\", \"tests/StartupModuleEvidence.test.js\", \"tests/PlaywrightArtifactPrivacy.test.js\", \"tests/BrowserSmokePlan.test.js\".\n"
+  },
+  "lint": "All final changed JavaScript files lint passed.",
+  "discovery": "One native dedicated-worker HTTP integration fixture discovered; not run while own47 CI reserves native browser/GPU",
+  "runtimeChanges": false,
+  "limitations": [
+    "Original public45 abort/network-change cause remains unproven.",
+    "No account API/headers/bodies/query strings retained.",
+    "Bounded recent history256, failure history32, worker history32, active worker close listeners16, main-frame navigation history32.",
+    "Does not change failure collection, retries, navigation budgets or product worker deadlines.",
+    "Dropped failure/worker/navigation rows are explicitly counted; page-close/manual observation end is timed and still-open worker close intervals marked unobserved.",
+    "Page-observable request/worker timing correlation alone does not establish causal request ownership or explain original production failures."
+  ],
+  "checks": {
+    "passed": 74,
+    "suites": 4,
+    "lintPassed": true,
+    "browserFixtureDiscovered": 1,
+    "browserFixtureExecuted": false
+  },
+  "frozen": {
+    "path": "/home/aeml/.local/share/eidolon-static-delivery-diagnostics-final-cpu-checks-20261013",
+    "entries": 10,
+    "inventorySHA256": "f5213a636f5681b76bd5ad8c77212048604d79745b504df7f23c4fa0bbf0d157"
+  },
+  "priorCPUReceipt": {
+    "source": "3b7e8fb91824a3aa51f7c64092881c155bf5fd10",
+    "checks": 73,
+    "frozen": "/home/aeml/.local/share/eidolon-static-delivery-diagnostics-cpu-checks-20261013",
+    "inventorySHA256": "ac4dd90a130a07a97faec167d89a6748ece529d0bb09794485ee38c9cba23ef5"
+  }
+}

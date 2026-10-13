@@ -14,7 +14,7 @@ const networkCodes = new Set([
     'net::ERR_INSUFFICIENT_RESOURCES', 'net::ERR_BLOCKED_BY_CLIENT', 'net::ERR_BLOCKED_BY_RESPONSE',
     'net::ERR_ACCESS_DENIED'
 ]);
-function knownModules() {
+export function knownModules() {
     if (repositoryModules) return repositoryModules;
     repositoryModules = new Set(['/src/core/GameEngine.bundle.js']);
     for (const folder of ['src', 'vendor']) {
@@ -30,6 +30,8 @@ function knownModules() {
     }
     return repositoryModules;
 }
+
+export const safeNetworkCode = raw => networkCodes.has(raw) ? raw : 'unknown';
 
 // Node-side QA evidence only. Keep known static module paths and fixed browser
 // error codes; never retain query strings, headers, bodies or arbitrary text.
@@ -55,7 +57,7 @@ export function observeStartupModules(page, baseURL, allowed = knownModules()) {
         const module = modulePath(request);
         if (!module) return;
         const raw = request.failure()?.errorText;
-        record({ module, kind: 'request', code: networkCodes.has(raw) ? raw : 'unknown' });
+        record({ module, kind: 'request', code: safeNetworkCode(raw) });
     };
     const response = result => {
         const module = modulePath(result.request()), status = result.status();
