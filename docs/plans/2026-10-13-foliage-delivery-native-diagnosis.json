@@ -1,0 +1,712 @@
+{
+  "recordedUTC": "2026-10-13T20:37:00.621095+00:00",
+  "source": "504b44ef4fb6c783a22ba7f75e8aa57433e77520",
+  "base": "11f7c2946a6df2efc7eccc2ff619a3cba955dd00",
+  "status": "Performance rejected; private prototype remains unselected and unmerged. Evidence only recorded on master.",
+  "change": "Private static procedural foliage constructor, original whole-cell camera spheres, unchanged 901 placements and float32 transforms, borrowed source geometry/materials, owned copied geometry and matrix/indirection textures. No WorldGenerator/default activation.",
+  "cpu": {
+    "focusedPassed": 128,
+    "suites": 4,
+    "lint": "pass",
+    "actualConstruction": {
+      "scope": "CPU-only actual WorldGenerator.loadTrees High/Low scene ownership/copy/matrix screen; no active renderer, culling/ordering/native/performance/default/public acceptance.",
+      "records": [
+        {
+          "quality": "high",
+          "colliders": 391,
+          "groups": [
+            {
+              "id": "ossuary_birch",
+              "sourceObjects": 695,
+              "batchObjects": 4,
+              "instances": 705,
+              "geometryBytes": 171368,
+              "rawMatricesSHA256": "7c966c664b9a6be1557abc7a0f7e1dcbc57353fdb50b3ef0a07baf637a84ebea"
+            },
+            {
+              "id": "grave_pine",
+              "sourceObjects": 675,
+              "batchObjects": 3,
+              "instances": 675,
+              "geometryBytes": 221404,
+              "rawMatricesSHA256": "9cdf3327f2ebd74bc3368fa877d372369537e8698645f227af0ab1fd899e6a41"
+            },
+            {
+              "id": "mourning_willow",
+              "sourceObjects": 690,
+              "batchObjects": 3,
+              "instances": 690,
+              "geometryBytes": 580608,
+              "rawMatricesSHA256": "7dc8061cb66a0e71273769ded0c32a7ee7035938b2638019ec1ef997bdcabe9a"
+            },
+            {
+              "id": "rime_pine",
+              "sourceObjects": 256,
+              "batchObjects": 4,
+              "instances": 400,
+              "geometryBytes": 82664,
+              "rawMatricesSHA256": "db1b73c1032e3821c34bf263031413eaed5f39c924b03acaf779e1a70901f4e0"
+            },
+            {
+              "id": "drowned_willow",
+              "sourceObjects": 162,
+              "batchObjects": 3,
+              "instances": 240,
+              "geometryBytes": 108288,
+              "rawMatricesSHA256": "1aa8408ebed36e3d47bf02099cdd2d11f35fa370c089dd9e5ff55bbd9db9650e"
+            },
+            {
+              "id": "ember_snag",
+              "sourceObjects": 122,
+              "batchObjects": 2,
+              "instances": 180,
+              "geometryBytes": 21888,
+              "rawMatricesSHA256": "9bf1c872f0f0feb9e2cc2aa0de39045c52858ab7c65b23bb2ff8c99c0f41106d"
+            },
+            {
+              "id": "basalt_briar",
+              "sourceObjects": 162,
+              "batchObjects": 3,
+              "instances": 225,
+              "geometryBytes": 13056,
+              "rawMatricesSHA256": "5b3d9ab2420d39f623e9faadc778cdf67063bd598ffc76f0f5826602b447d34e"
+            },
+            {
+              "id": "gale_cypress",
+              "sourceObjects": 195,
+              "batchObjects": 3,
+              "instances": 270,
+              "geometryBytes": 78528,
+              "rawMatricesSHA256": "b0e4bdd8ece146618f383ff1038c60999ea850a2882a553f4fb98956ef14f7b5"
+            },
+            {
+              "id": "storm_crystal",
+              "sourceObjects": 189,
+              "batchObjects": 3,
+              "instances": 225,
+              "geometryBytes": 13056,
+              "rawMatricesSHA256": "29cab3f8891854395b9623e076ee6f2b623a03905d764071d740e4fdec6153af"
+            }
+          ],
+          "sourceObjects": 3146,
+          "batchObjects": 28
+        },
+        {
+          "quality": "low",
+          "colliders": 391,
+          "groups": [
+            {
+              "id": "ossuary_birch",
+              "sourceObjects": 695,
+              "batchObjects": 4,
+              "instances": 705,
+              "geometryBytes": 103784,
+              "rawMatricesSHA256": "7c966c664b9a6be1557abc7a0f7e1dcbc57353fdb50b3ef0a07baf637a84ebea"
+            },
+            {
+              "id": "grave_pine",
+              "sourceObjects": 675,
+              "batchObjects": 3,
+              "instances": 675,
+              "geometryBytes": 130684,
+              "rawMatricesSHA256": "9cdf3327f2ebd74bc3368fa877d372369537e8698645f227af0ab1fd899e6a41"
+            },
+            {
+              "id": "mourning_willow",
+              "sourceObjects": 690,
+              "batchObjects": 3,
+              "instances": 690,
+              "geometryBytes": 310272,
+              "rawMatricesSHA256": "7dc8061cb66a0e71273769ded0c32a7ee7035938b2638019ec1ef997bdcabe9a"
+            },
+            {
+              "id": "rime_pine",
+              "sourceObjects": 256,
+              "batchObjects": 4,
+              "instances": 400,
+              "geometryBytes": 43784,
+              "rawMatricesSHA256": "db1b73c1032e3821c34bf263031413eaed5f39c924b03acaf779e1a70901f4e0"
+            },
+            {
+              "id": "drowned_willow",
+              "sourceObjects": 162,
+              "batchObjects": 3,
+              "instances": 240,
+              "geometryBytes": 74496,
+              "rawMatricesSHA256": "1aa8408ebed36e3d47bf02099cdd2d11f35fa370c089dd9e5ff55bbd9db9650e"
+            },
+            {
+              "id": "ember_snag",
+              "sourceObjects": 122,
+              "batchObjects": 2,
+              "instances": 180,
+              "geometryBytes": 21888,
+              "rawMatricesSHA256": "9bf1c872f0f0feb9e2cc2aa0de39045c52858ab7c65b23bb2ff8c99c0f41106d"
+            },
+            {
+              "id": "basalt_briar",
+              "sourceObjects": 162,
+              "batchObjects": 3,
+              "instances": 225,
+              "geometryBytes": 13056,
+              "rawMatricesSHA256": "5b3d9ab2420d39f623e9faadc778cdf67063bd598ffc76f0f5826602b447d34e"
+            },
+            {
+              "id": "gale_cypress",
+              "sourceObjects": 195,
+              "batchObjects": 3,
+              "instances": 270,
+              "geometryBytes": 52608,
+              "rawMatricesSHA256": "b0e4bdd8ece146618f383ff1038c60999ea850a2882a553f4fb98956ef14f7b5"
+            },
+            {
+              "id": "storm_crystal",
+              "sourceObjects": 189,
+              "batchObjects": 3,
+              "instances": 225,
+              "geometryBytes": 13056,
+              "rawMatricesSHA256": "29cab3f8891854395b9623e076ee6f2b623a03905d764071d740e4fdec6153af"
+            }
+          ],
+          "sourceObjects": 3146,
+          "batchObjects": 28
+        }
+      ]
+    }
+  },
+  "native": {
+    "payloadControls": 16,
+    "wholeColorAndRestorationDifferingBytes": 0,
+    "movingABBAArms": 16,
+    "intervalsEach": 119,
+    "profiles": {
+      "native": {
+        "high": {
+          "quality": "high",
+          "roots": 9,
+          "sourceObjects": 3146,
+          "batchObjects": 28,
+          "controls": [
+            {
+              "view": "service-plaza",
+              "color": 0,
+              "depth": 0,
+              "restoredColor": 0,
+              "restoredDepth": 0,
+              "reference": {
+                "calls": 318,
+                "triangles": 279283
+              },
+              "candidate": {
+                "calls": 318,
+                "triangles": 279283
+              },
+              "sourceExact": true
+            },
+            {
+              "view": "west-homes",
+              "color": 0,
+              "depth": 0,
+              "restoredColor": 0,
+              "restoredDepth": 0,
+              "reference": {
+                "calls": 229,
+                "triangles": 247270
+              },
+              "candidate": {
+                "calls": 229,
+                "triangles": 247270
+              },
+              "sourceExact": true
+            },
+            {
+              "view": "south-homes",
+              "color": 0,
+              "depth": 0,
+              "restoredColor": 0,
+              "restoredDepth": 0,
+              "reference": {
+                "calls": 203,
+                "triangles": 218913
+              },
+              "candidate": {
+                "calls": 203,
+                "triangles": 218913
+              },
+              "sourceExact": true
+            },
+            {
+              "view": "earth-road",
+              "color": 0,
+              "depth": 205022,
+              "restoredColor": 0,
+              "restoredDepth": 0,
+              "reference": {
+                "calls": 182,
+                "triangles": 161608
+              },
+              "candidate": {
+                "calls": 188,
+                "triangles": 174368
+              },
+              "sourceExact": true
+            },
+            {
+              "view": "earth-grove",
+              "color": 0,
+              "depth": 438693,
+              "restoredColor": 0,
+              "restoredDepth": 0,
+              "reference": {
+                "calls": 170,
+                "triangles": 143281
+              },
+              "candidate": {
+                "calls": 177,
+                "triangles": 170143
+              },
+              "sourceExact": true
+            }
+          ],
+          "arms": [
+            {
+              "mode": "reference",
+              "frames": 119,
+              "frameMedianMs": 33.3,
+              "frameP95Ms": 50,
+              "synchronousFrameCpuMedianMs": 28.399999976158142,
+              "callsMedian": 318,
+              "trianglesMedian": 279283,
+              "sourceExact": true
+            },
+            {
+              "mode": "candidate",
+              "frames": 119,
+              "frameMedianMs": 33.3,
+              "frameP95Ms": 33.4,
+              "synchronousFrameCpuMedianMs": 28.100000023841858,
+              "callsMedian": 318,
+              "trianglesMedian": 279283,
+              "sourceExact": true
+            },
+            {
+              "mode": "candidate",
+              "frames": 119,
+              "frameMedianMs": 33.3,
+              "frameP95Ms": 33.4,
+              "synchronousFrameCpuMedianMs": 28.900000035762787,
+              "callsMedian": 318,
+              "trianglesMedian": 279283,
+              "sourceExact": true
+            },
+            {
+              "mode": "reference",
+              "frames": 119,
+              "frameMedianMs": 33.3,
+              "frameP95Ms": 33.4,
+              "synchronousFrameCpuMedianMs": 26,
+              "callsMedian": 318,
+              "trianglesMedian": 279283,
+              "sourceExact": true
+            }
+          ],
+          "final": {
+            "valid": true,
+            "sourceExact": true,
+            "originalParents": true,
+            "methodRestored": true,
+            "ownedResources": 84,
+            "ownedDisposedOnce": true,
+            "borrowedResources": 54,
+            "borrowedDisposalsBeforeSceneShutdown": 0
+          }
+        },
+        "low": {
+          "quality": "low",
+          "roots": 9,
+          "sourceObjects": 3146,
+          "batchObjects": 28,
+          "controls": [
+            {
+              "view": "service-plaza",
+              "color": 0,
+              "depth": null,
+              "restoredColor": 0,
+              "restoredDepth": null,
+              "reference": {
+                "calls": 176,
+                "triangles": 107747
+              },
+              "candidate": {
+                "calls": 176,
+                "triangles": 107747
+              },
+              "sourceExact": true
+            },
+            {
+              "view": "west-homes",
+              "color": 0,
+              "depth": null,
+              "restoredColor": 0,
+              "restoredDepth": null,
+              "reference": {
+                "calls": 113,
+                "triangles": 78437
+              },
+              "candidate": {
+                "calls": 113,
+                "triangles": 78437
+              },
+              "sourceExact": true
+            },
+            {
+              "view": "south-homes",
+              "color": 0,
+              "depth": null,
+              "restoredColor": 0,
+              "restoredDepth": null,
+              "reference": {
+                "calls": 97,
+                "triangles": 65214
+              },
+              "candidate": {
+                "calls": 97,
+                "triangles": 65214
+              },
+              "sourceExact": true
+            },
+            {
+              "view": "earth-road",
+              "color": 0,
+              "depth": null,
+              "restoredColor": 0,
+              "restoredDepth": null,
+              "reference": {
+                "calls": 95,
+                "triangles": 66297
+              },
+              "candidate": {
+                "calls": 95,
+                "triangles": 66297
+              },
+              "sourceExact": true
+            },
+            {
+              "view": "earth-grove",
+              "color": 0,
+              "depth": null,
+              "restoredColor": 0,
+              "restoredDepth": null,
+              "reference": {
+                "calls": 96,
+                "triangles": 65094
+              },
+              "candidate": {
+                "calls": 96,
+                "triangles": 65094
+              },
+              "sourceExact": true
+            }
+          ],
+          "arms": [
+            {
+              "mode": "reference",
+              "frames": 119,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 16.8,
+              "synchronousFrameCpuMedianMs": 14.399999976158142,
+              "callsMedian": 176,
+              "trianglesMedian": 107747,
+              "sourceExact": true
+            },
+            {
+              "mode": "candidate",
+              "frames": 119,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 33.3,
+              "synchronousFrameCpuMedianMs": 16.19999998807907,
+              "callsMedian": 176,
+              "trianglesMedian": 107747,
+              "sourceExact": true
+            },
+            {
+              "mode": "candidate",
+              "frames": 119,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 16.8,
+              "synchronousFrameCpuMedianMs": 16,
+              "callsMedian": 176,
+              "trianglesMedian": 107747,
+              "sourceExact": true
+            },
+            {
+              "mode": "reference",
+              "frames": 119,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 16.7,
+              "synchronousFrameCpuMedianMs": 14.699999988079071,
+              "callsMedian": 176,
+              "trianglesMedian": 107747,
+              "sourceExact": true
+            }
+          ],
+          "final": {
+            "valid": true,
+            "sourceExact": true,
+            "originalParents": true,
+            "methodRestored": true,
+            "ownedResources": 84,
+            "ownedDisposedOnce": true,
+            "borrowedResources": 54,
+            "borrowedDisposalsBeforeSceneShutdown": 0
+          }
+        }
+      },
+      "woodland": {
+        "high": {
+          "quality": "high",
+          "roots": 9,
+          "sourceObjects": 3146,
+          "batchObjects": 28,
+          "controls": [
+            {
+              "view": "first-grove",
+              "color": 0,
+              "depth": 484175,
+              "restoredColor": 0,
+              "restoredDepth": 0,
+              "reference": {
+                "calls": 290,
+                "triangles": 244793
+              },
+              "candidate": {
+                "calls": 176,
+                "triangles": 282189
+              },
+              "sourceExact": true
+            },
+            {
+              "view": "bastion-stands",
+              "color": 0,
+              "depth": 1229890,
+              "restoredColor": 0,
+              "restoredDepth": 0,
+              "reference": {
+                "calls": 267,
+                "triangles": 234415
+              },
+              "candidate": {
+                "calls": 173,
+                "triangles": 325413
+              },
+              "sourceExact": true
+            },
+            {
+              "view": "deep-woodland",
+              "color": 0,
+              "depth": 628698,
+              "restoredColor": 0,
+              "restoredDepth": 0,
+              "reference": {
+                "calls": 293,
+                "triangles": 240403
+              },
+              "candidate": {
+                "calls": 171,
+                "triangles": 275193
+              },
+              "sourceExact": true
+            }
+          ],
+          "arms": [
+            {
+              "mode": "reference",
+              "frames": 119,
+              "frameMedianMs": 33.3,
+              "frameP95Ms": 33.4,
+              "synchronousFrameCpuMedianMs": 25.799999952316284,
+              "callsMedian": 290,
+              "trianglesMedian": 244793,
+              "sourceExact": true
+            },
+            {
+              "mode": "candidate",
+              "frames": 119,
+              "frameMedianMs": 33.3,
+              "frameP95Ms": 33.4,
+              "synchronousFrameCpuMedianMs": 27.899999976158142,
+              "callsMedian": 176,
+              "trianglesMedian": 282189,
+              "sourceExact": true
+            },
+            {
+              "mode": "candidate",
+              "frames": 119,
+              "frameMedianMs": 33.3,
+              "frameP95Ms": 33.4,
+              "synchronousFrameCpuMedianMs": 27.799999952316284,
+              "callsMedian": 176,
+              "trianglesMedian": 282189,
+              "sourceExact": true
+            },
+            {
+              "mode": "reference",
+              "frames": 119,
+              "frameMedianMs": 33.2,
+              "frameP95Ms": 33.4,
+              "synchronousFrameCpuMedianMs": 24.600000023841858,
+              "callsMedian": 290,
+              "trianglesMedian": 244793,
+              "sourceExact": true
+            }
+          ],
+          "final": {
+            "valid": true,
+            "sourceExact": true,
+            "originalParents": true,
+            "methodRestored": true,
+            "ownedResources": 84,
+            "ownedDisposedOnce": true,
+            "borrowedResources": 54,
+            "borrowedDisposalsBeforeSceneShutdown": 0
+          }
+        },
+        "low": {
+          "quality": "low",
+          "roots": 9,
+          "sourceObjects": 3146,
+          "batchObjects": 28,
+          "controls": [
+            {
+              "view": "first-grove",
+              "color": 0,
+              "depth": null,
+              "restoredColor": 0,
+              "restoredDepth": null,
+              "reference": {
+                "calls": 137,
+                "triangles": 83228
+              },
+              "candidate": {
+                "calls": 104,
+                "triangles": 83228
+              },
+              "sourceExact": true
+            },
+            {
+              "view": "bastion-stands",
+              "color": 0,
+              "depth": null,
+              "restoredColor": 0,
+              "restoredDepth": null,
+              "reference": {
+                "calls": 150,
+                "triangles": 93804
+              },
+              "candidate": {
+                "calls": 103,
+                "triangles": 93804
+              },
+              "sourceExact": true
+            },
+            {
+              "view": "deep-woodland",
+              "color": 0,
+              "depth": null,
+              "restoredColor": 0,
+              "restoredDepth": null,
+              "reference": {
+                "calls": 144,
+                "triangles": 88017
+              },
+              "candidate": {
+                "calls": 100,
+                "triangles": 88017
+              },
+              "sourceExact": true
+            }
+          ],
+          "arms": [
+            {
+              "mode": "reference",
+              "frames": 119,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 16.8,
+              "synchronousFrameCpuMedianMs": 13.900000035762787,
+              "callsMedian": 137,
+              "trianglesMedian": 83228,
+              "sourceExact": true
+            },
+            {
+              "mode": "candidate",
+              "frames": 119,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 16.8,
+              "synchronousFrameCpuMedianMs": 15.5,
+              "callsMedian": 104,
+              "trianglesMedian": 83228,
+              "sourceExact": true
+            },
+            {
+              "mode": "candidate",
+              "frames": 119,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 33.3,
+              "synchronousFrameCpuMedianMs": 16.5,
+              "callsMedian": 104,
+              "trianglesMedian": 83228,
+              "sourceExact": true
+            },
+            {
+              "mode": "reference",
+              "frames": 119,
+              "frameMedianMs": 16.7,
+              "frameP95Ms": 16.7,
+              "synchronousFrameCpuMedianMs": 13.800000011920929,
+              "callsMedian": 137,
+              "trianglesMedian": 83228,
+              "sourceExact": true
+            }
+          ],
+          "final": {
+            "valid": true,
+            "sourceExact": true,
+            "originalParents": true,
+            "methodRestored": true,
+            "ownedResources": 84,
+            "ownedDisposedOnce": true,
+            "borrowedResources": 54,
+            "borrowedDisposalsBeforeSceneShutdown": 0
+          }
+        }
+      }
+    },
+    "processResults": {
+      "nativeTownAndEarth": {
+        "exitCode": 0
+      },
+      "woodland": {
+        "exitCode": 143,
+        "note": "All High/Low structured controls, timing arms, resource assertions and completed retirement payloads were written, but the overall owned wrapper returned143. Cause is unproven; no overall woodland execution pass is claimed. No unchanged replay."
+      }
+    },
+    "imagesInspected": [
+      "native-high-service-plaza-candidate.png",
+      "native-high-earth-road-candidate.png",
+      "woodland-high-first-grove-hud.png"
+    ],
+    "leaseScope": "Each profile observes84 captured owned resources dispose exactly once,54 borrowed resources dispose0 before ordinary scene shutdown, original parent indices/methods/source buffers restored. This does not establish repeated quality/realm lifecycle or exact renderer-memory baseline.",
+    "depthScope": "Town three High views exact. Two Earth and all three woodland High maps differ because this prototype keeps additional off-view shadow casters. Visible full RGBA remains exact in the16 payload controls; whole packed-depth equality is not claimed."
+  },
+  "decision": {
+    "selected": false,
+    "reason": "Draw reductions do not improve application CPU/frame timing. Woodland High source290calls244793tri becomes176calls282189tri; reference CPU25.8/24.6ms versus candidate27.9/27.8ms. Low source137calls83228tri becomes104calls83228tri but CPU13.9/13.8ms versus15.5/16.5ms. Town Low also slower14.4/14.7ms versus16.2/16.0ms. High retained triangle and timing limits still fail; extra unused shadow triangles are not an acceptable performance tradeoff.",
+    "next": "Do not repeat this unchanged path or enable based on draw counts. Future delivery work must preserve original receiver-influence culling and demonstrate total CPU benefit, including validation and batch preparation."
+  },
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-foliage-delivery-native-checks-20261013",
+    "entries": 78,
+    "inventorySHA256": "d25bc9dc8df7ded21a5a7e88b63a23374f075e845b03568e42c74b410ea0a7f0"
+  },
+  "limits": "Public49 remains accepted. No50publication, full art/performance/device/capacity/operations/F1\u2013F5/beta/launch/handoff completion. No source scenery/actor reduction, performance-target relaxation or unknown failure waiver."
+}

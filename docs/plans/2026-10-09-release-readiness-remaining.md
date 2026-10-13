@@ -503,6 +503,8 @@ Bounded current-source Earth renderer census now separates cold and settled equi
 
 ## Current performance implementation
 
+Static foliage batching pilot `504b44ef` is **performance rejected and unselected**. The private constructor preserves all901placements/float32 matrices and reduces3146objects to28batches;128CPUchecks/four suites/lint and16native structured whole-RGBA/restoration controls pass. Actual woodland High saves290→176draws but adds244793→282189triangles and CPU rises25.8/24.6→27.9/27.8ms; Low saves137→104draws with83228triangles unchanged but CPU rises13.9/13.8→15.5/16.5ms. No whole-frame gain. Additional off-view shadow casters change five High maps; no whole-depth equality. Woodland payload assertions/retirement completed, but its wrapper returned143; cause unproven and overall execution pass is not claimed. Original routing remains selected, and no unchanged replay is planned. Frozen78entry inventory`d25bc9dc8df7ded21a5a7e88b63a23374f075e845b03568e42c74b410ea0a7f0`. [Diagnosis](2026-10-13-foliage-delivery-native-diagnosis.json).
+
 Default opaque character color batching is qualified and ordinarily merged at
 `e6e195ca`; publication is held for coherent48.373distinct focused checks across
 18suites and lint pass with valid reuse after a rigid-instance callback correction.
