@@ -33,7 +33,11 @@ for (const quality of ['high', 'low']) {
                 r.root.userData.sceneryOccluder = true; for (let i = 0; i < 75; i++) await r.frame(view);
                 const candidate = capture(), entry = r.render.sceneryVisibility.entries.get(r.root);
                 r.game.player.mesh.visible = false; const candidateHidden = capture(); r.game.player.mesh.visible = true;
+                const glass = source.find(s => s.mesh.name === 'residential-shacks:window').material.userData.lanternholdWindowSurface.amount;
+                glass.value = 0; const plainGlass = capture(); glass.value = 1; const restoredGlass = capture();
                 const result = { view: view.name, opacity: entry.opacity, parts: entry.parts.length, focusError: r.render.sceneryFocus.distanceTo(r.game.player.mesh.position),
+                    changedGlass: changed(candidate.pixels, plainGlass.pixels), restoredGlass: changed(candidate.pixels, restoredGlass.pixels),
+                    glassShadow: changed(candidate.shadow, plainGlass.shadow),
                     referenceHero: changed(reference.pixels, referenceHidden.pixels), candidateHero: changed(candidate.pixels, candidateHidden.pixels), changedColor: changed(reference.pixels, candidate.pixels),
                     changedShadow: changed(reference.shadow, candidate.shadow), geometryExact: source.every(s => s.mesh.geometry === s.geometry), shadowFlagsExact: source.every(s => s.mesh.castShadow === s.castShadow),
                     foundationExact: source.filter(s => !s.mesh.userData.sceneryOccluderPart).every(s => s.mesh.material === s.material), reference: { calls: reference.calls, triangles: reference.triangles }, candidate: { calls: candidate.calls, triangles: candidate.triangles } };
@@ -48,9 +52,26 @@ for (const quality of ['high', 'low']) {
             expect(result.opacity).toBeLessThan(.005); expect(result.parts).toBe(5); expect(result.focusError).toBe(0);
             expect(result.changedColor).toBeGreaterThan(1000); expect(result.candidateHero).toBeGreaterThan(result.referenceHero + 100);
             expect(result.changedShadow).toBe(0); expect(result.changedRestored).toBe(0); expect(result.changedRestoredShadow).toBe(0);
+            expect(result.restoredGlass).toBe(0); expect(result.glassShadow).toBe(0);
             expect(result.geometryExact && result.shadowFlagsExact && result.foundationExact && result.materialsRestored).toBe(true);
             expect(result.candidate).toEqual(result.reference);
         }
+        expect(controls.some(control => control.changedGlass > 0)).toBe(true);
+        const movement = [];
+        for (let section = 0; section < 3; section++) {
+            movement.push(await page.evaluate(async section => {
+                const r = window.__lanternholdCutaway;
+                for (let i = section * 40; i < (section + 1) * 40; i++) {
+                    await r.frame({ x: -62 + i * .035, z: 157 + Math.sin(i / 60) }, true);
+                }
+                const entry = r.render.sceneryVisibility.entries.get(r.root);
+                return { section, zoom: r.render.currentZoom, focusError: r.render.sceneryFocus.distanceTo(r.game.player.mesh.position),
+                    glassEnabled: entry.parts.find(part => part.mesh.name === 'residential-shacks:window').material.userData.lanternholdWindowSurface.amount.value };
+            }, section));
+            await page.screenshot({ path: testInfo.outputPath(`home-glass-motion-${section}.png`) });
+        }
+        await writeFile(testInfo.outputPath('glazing-motion.json'), JSON.stringify({ movement }, null, 2));
+        for (const sample of movement) { expect(sample.zoom).toBe(15); expect(sample.focusError).toBe(0); expect(sample.glassEnabled).toBe(1); }
         await page.evaluate(() => { const r = window.__lanternholdCutaway; for (const actor of r.actors) if (actor !== r.game.player) actor.dispose(); r.game.destroy(); });
         expect(failures).toEqual([]);
     });
