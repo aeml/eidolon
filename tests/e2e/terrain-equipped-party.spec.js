@@ -811,6 +811,20 @@ test('single native renderer observes three live equipped party socket peers on 
             }
             await testInfo.attach('geometry-real-frame-abba', { body: JSON.stringify(comparison, null, 2), contentType: 'application/json' });
         }
+        if (process.env.EIDOLON_TERRAIN_PARTY_RENDER_VALIDATION_COMPARE === '1') {
+            const { compareRenderValidationFrames } = await import('./render-validation-frame-comparison.js');
+            const comparison = await compareRenderValidationFrames(page, baseURL);
+            expect(comparison.restored).toBe(true);
+            expect(comparison.initial.pendingGeometry).toBe(0);
+            for (const { profile, after } of comparison.phases) {
+                expect(profile.frames).toBe(180); expect(profile.visibleFrames).toBe(180);
+                expect(profile.restored).toBe(true); expect(after.frameRestored).toBe(true);
+                expect(after.pendingGeometry).toBe(0);
+            }
+            await testInfo.attach('render-validation-real-frame-abba', {
+                body: JSON.stringify(comparison, null, 2), contentType: 'application/json'
+            });
+        }
         if (process.env.EIDOLON_TERRAIN_PARTY_MATRIX_OWNERS === '1') {
             const matrixOwners = await measurePartyMatrixOwners(page);
             expect(matrixOwners.restored).toBe(true);

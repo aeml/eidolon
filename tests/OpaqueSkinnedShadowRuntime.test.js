@@ -95,6 +95,26 @@ test('geometry and skin generation changes rebuild only their actor', () => {
     expect(runtime.owner.entries.has(before)).toBe(false); expect(runtime.owner.entries.has(stable)).toBe(true); runtime.dispose();
 });
 
+test.each([NaN, Infinity, -Infinity])('shared-palette checks reject a late %s inverse and recover on the next scan', value => {
+    const f = fixture(), a = actor(), b = actor();
+    const skeleton = a.meshes[0].skeleton;
+    for (let i = 1; i < 53; i++) {
+        const bone = new THREE.Bone(); a.root.add(bone);
+        skeleton.bones.push(bone); skeleton.boneInverses.push(new THREE.Matrix4());
+    }
+    f.group.add(a.root, b.root);
+    const runtime = new OpaqueSkinnedShadowRuntime(f.renderer, f.scene, [f.group]);
+    f.renderer.render(f.scene, f.camera);
+    expect(runtime.owner.entries.size).toBe(2);
+    const stable = [...runtime.owner.entries].find(entry => entry.meshes.includes(b.meshes[0]));
+    const inverse = skeleton.boneInverses[52].elements, original = inverse[12];
+    inverse[12] = value; f.renderer.render(f.scene, f.camera);
+    expect(runtime.owner.entries.size).toBe(1); expect(runtime.owner.entries.has(stable)).toBe(true);
+    inverse[12] = original; f.renderer.render(f.scene, f.camera);
+    expect(runtime.owner.entries.size).toBe(2); expect(runtime.owner.entries.has(stable)).toBe(true);
+    runtime.dispose();
+});
+
 test('streaming actor arrivals, pool reuse and detached ownership groups retire exact owned resources', () => {
     const f = fixture(), runtime = new OpaqueSkinnedShadowRuntime(f.renderer, f.scene, [f.scene, f.group, f.group]);
     const a = actor(); f.group.add(a.root); f.renderer.render(f.scene, f.camera);

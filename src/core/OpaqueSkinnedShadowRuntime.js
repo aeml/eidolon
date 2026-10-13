@@ -12,9 +12,9 @@ const visible = node => { for (; node; node = node.parent) if (!node.visible) re
 const state = mesh => ({ geometry: mesh.geometry, material: mesh.material, skeleton: mesh.skeleton,
     visible: visible(mesh), castShadow: mesh.castShadow, layers: mesh.layers.mask,
     eligible: isOpaqueSkinnedShadowMesh(mesh), side: mesh.material?.side, shadowSide: mesh.material?.shadowSide });
-const sameState = (mesh, saved) => mesh.geometry === saved.geometry && mesh.material === saved.material &&
+const sameState = (mesh, saved, skeletonCache) => mesh.geometry === saved.geometry && mesh.material === saved.material &&
     mesh.skeleton === saved.skeleton && visible(mesh) === saved.visible && mesh.castShadow === saved.castShadow &&
-    mesh.layers.mask === saved.layers && isOpaqueSkinnedShadowMesh(mesh) === saved.eligible &&
+    mesh.layers.mask === saved.layers && isOpaqueSkinnedShadowMesh(mesh, skeletonCache) === saved.eligible &&
     mesh.material?.side === saved.side && mesh.material?.shadowSide === saved.shadowSide;
 
 // Synchronize at the ordinary shadow boundary, after the
@@ -66,11 +66,15 @@ export class OpaqueSkinnedShadowRuntime {
 
     synchronize() {
         if (this.disposed) return;
+        // Shared skins use the same palette. Reuse only its finite-value check
+        // within this synchronous scan; source snapshots and owner.valid still
+        // check every live identity, inverse, binding and attribute generation.
+        const skeletonCache = new WeakMap();
         for (const [root, record] of this.roots) {
             if (!under(root, this.scene)) { this.untrack(root); continue; }
             const revision = root.userData.equipmentVisualRevision, quality = root.userData.authoredQuality;
             if (!record.dirty && record.revision === revision && record.quality === quality &&
-                [...record.sources].every(([mesh, saved]) => sameState(mesh, saved) && under(mesh, root)) &&
+                [...record.sources].every(([mesh, saved]) => sameState(mesh, saved, skeletonCache) && under(mesh, root)) &&
                 [...record.entries].every(entry => this.owner.valid(entry))) continue;
             this.release(record); record.revision = revision; record.quality = quality; record.dirty = false;
             root.traverse(mesh => { if (mesh.isSkinnedMesh && mesh.geometry) record.sources.set(mesh, state(mesh)); });
