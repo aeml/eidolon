@@ -1,0 +1,461 @@
+{
+  "recordedUTC": "2026-10-13T21:04:45.135406+00:00",
+  "source": "a5f417e47d7cc2391e82e168273d8b1db129d0b2",
+  "runtimeSource": "77b19d92",
+  "base": "a5efc9c2",
+  "status": "Qualified household glazing within retained visual/native scope; ready ordinary master merge, unpublished.",
+  "change": "Existing fifteen household panes gain small lead diamonds, restrained varying warm interior light, glass roughness and shallow physical normal relief. Physical world coordinates preserve front/gable scale under instancing/batching. Derivative filtering resolves distant lead to average coverage. No new geometry/material batches/texture samplers/lights/particles/alpha/transmission/collision/placement change; sealed homes remain decoration. Existing service amber lamps/tokens/ward rings unchanged.",
+  "cpu": {
+    "passed": 27,
+    "suites": 4,
+    "lint": "Runtime/unit/native fixture pass; git diff --check pass.",
+    "scope": "Independent per-scene glass controls, opaque panes/unchanged six-batch/fifteen-home construction, foreign shader owner refusal/idempotence, original road/neighborhood/timber resource and cutaway guards."
+  },
+  "native": {
+    "profiles": {
+      "high": {
+        "quality": "high",
+        "plainControl": {
+          "color": 0,
+          "depth": 0,
+          "original": {
+            "calls": 229,
+            "triangles": 247270
+          },
+          "disabled": {
+            "calls": 229,
+            "triangles": 247270
+          }
+        },
+        "controls": [
+          {
+            "view": "west-front",
+            "color": 11227,
+            "depth": 0,
+            "restoredColor": 0,
+            "restoredDepth": 0,
+            "reference": {
+              "calls": 229,
+              "triangles": 247270
+            },
+            "candidate": {
+              "calls": 229,
+              "triangles": 247270
+            },
+            "sourceExact": true,
+            "opacity": 1
+          },
+          {
+            "view": "north-front",
+            "color": 12798,
+            "depth": 0,
+            "restoredColor": 0,
+            "restoredDepth": 0,
+            "reference": {
+              "calls": 195,
+              "triangles": 235730
+            },
+            "candidate": {
+              "calls": 195,
+              "triangles": 235730
+            },
+            "sourceExact": true,
+            "opacity": 1
+          },
+          {
+            "view": "east-gable",
+            "color": 3710,
+            "depth": 0,
+            "restoredColor": 0,
+            "restoredDepth": 0,
+            "reference": {
+              "calls": 201,
+              "triangles": 188725
+            },
+            "candidate": {
+              "calls": 201,
+              "triangles": 188725
+            },
+            "sourceExact": true,
+            "opacity": 1
+          }
+        ],
+        "arms": [
+          {
+            "mode": 0,
+            "frames": 119,
+            "frameMedianMs": 33.3,
+            "frameP95Ms": 33.4,
+            "synchronousFrameCpuMedianMs": 24.80000001192093,
+            "callsMedian": 229,
+            "trianglesMedian": 247270,
+            "sourceExact": true
+          },
+          {
+            "mode": 1,
+            "frames": 119,
+            "frameMedianMs": 33.2,
+            "frameP95Ms": 33.4,
+            "synchronousFrameCpuMedianMs": 24.399999976158142,
+            "callsMedian": 229,
+            "trianglesMedian": 247270,
+            "sourceExact": true
+          },
+          {
+            "mode": 1,
+            "frames": 119,
+            "frameMedianMs": 33.3,
+            "frameP95Ms": 33.4,
+            "synchronousFrameCpuMedianMs": 27,
+            "callsMedian": 229,
+            "trianglesMedian": 247270,
+            "sourceExact": true
+          },
+          {
+            "mode": 0,
+            "frames": 119,
+            "frameMedianMs": 33.3,
+            "frameP95Ms": 33.4,
+            "synchronousFrameCpuMedianMs": 26.30000001192093,
+            "callsMedian": 229,
+            "trianglesMedian": 247270,
+            "sourceExact": true
+          }
+        ],
+        "shutdown": {
+          "activeOpacity": 7.541771782735654e-23,
+          "sourceExact": true,
+          "pending": 0,
+          "focusError": 0
+        },
+        "materialDisposed": 1,
+        "visibilityEntries": 0,
+        "focus": null
+      },
+      "low": {
+        "quality": "low",
+        "plainControl": {
+          "color": 0,
+          "depth": null,
+          "original": {
+            "calls": 124,
+            "triangles": 79453
+          },
+          "disabled": {
+            "calls": 124,
+            "triangles": 79453
+          }
+        },
+        "controls": [
+          {
+            "view": "west-front",
+            "color": 3552,
+            "depth": null,
+            "restoredColor": 0,
+            "restoredDepth": null,
+            "reference": {
+              "calls": 127,
+              "triangles": 79589
+            },
+            "candidate": {
+              "calls": 127,
+              "triangles": 79589
+            },
+            "sourceExact": true,
+            "opacity": 1
+          },
+          {
+            "view": "north-front",
+            "color": 2619,
+            "depth": null,
+            "restoredColor": 0,
+            "restoredDepth": null,
+            "reference": {
+              "calls": 102,
+              "triangles": 70808
+            },
+            "candidate": {
+              "calls": 102,
+              "triangles": 70808
+            },
+            "sourceExact": true,
+            "opacity": 1
+          },
+          {
+            "view": "east-gable",
+            "color": 957,
+            "depth": null,
+            "restoredColor": 0,
+            "restoredDepth": null,
+            "reference": {
+              "calls": 108,
+              "triangles": 65073
+            },
+            "candidate": {
+              "calls": 108,
+              "triangles": 65073
+            },
+            "sourceExact": true,
+            "opacity": 1
+          }
+        ],
+        "arms": [
+          {
+            "mode": 0,
+            "frames": 119,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "synchronousFrameCpuMedianMs": 13.600000023841858,
+            "callsMedian": 113,
+            "trianglesMedian": 78437,
+            "sourceExact": true
+          },
+          {
+            "mode": 1,
+            "frames": 119,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "synchronousFrameCpuMedianMs": 14,
+            "callsMedian": 117,
+            "trianglesMedian": 78845,
+            "sourceExact": true
+          },
+          {
+            "mode": 1,
+            "frames": 119,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "synchronousFrameCpuMedianMs": 12.599999964237213,
+            "callsMedian": 127,
+            "trianglesMedian": 79589,
+            "sourceExact": true
+          },
+          {
+            "mode": 0,
+            "frames": 119,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "synchronousFrameCpuMedianMs": 13.200000047683716,
+            "callsMedian": 127,
+            "trianglesMedian": 79589,
+            "sourceExact": true
+          }
+        ],
+        "shutdown": {
+          "activeOpacity": 1.602542294439559e-14,
+          "sourceExact": true,
+          "pending": 0,
+          "focusError": 0
+        },
+        "materialDisposed": 1,
+        "visibilityEntries": 0,
+        "focus": null
+      }
+    },
+    "exitCode": 0,
+    "stockFormerMaterialControls": 2,
+    "windowContrastControls": 6,
+    "foregroundContrastControls": 4,
+    "exactHighPackedDepthSets": 6,
+    "allRestorationsExact": true,
+    "sourceGeometryAndSubmissionCountsExact": true,
+    "timingABBAArms": 8,
+    "intervalsPerArm": 119,
+    "foregroundRequiredCases": {
+      "passed": 2,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0,
+      "maxRetry": 0,
+      "controls": [
+        {
+          "path": "required-cutaway-results/lanternhold-house-cutaway--0c9c4-ore-their-original-surfaces/controls.json",
+          "controls": [
+            {
+              "view": "south-home",
+              "opacity": 5.263866524676541e-09,
+              "parts": 5,
+              "focusError": 0,
+              "changedGlass": 891,
+              "restoredGlass": 0,
+              "glassShadow": 0,
+              "referenceHero": 1738,
+              "candidateHero": 2889,
+              "changedColor": 19350,
+              "changedShadow": 0,
+              "geometryExact": true,
+              "shadowFlagsExact": true,
+              "foundationExact": true,
+              "reference": {
+                "calls": 97,
+                "triangles": 65702
+              },
+              "candidate": {
+                "calls": 97,
+                "triangles": 65702
+              },
+              "changedRestored": 0,
+              "changedRestoredShadow": 0,
+              "materialsRestored": true
+            },
+            {
+              "view": "west-home",
+              "opacity": 1.967307461943975e-09,
+              "parts": 5,
+              "focusError": 0,
+              "changedGlass": 2676,
+              "restoredGlass": 0,
+              "glassShadow": 0,
+              "referenceHero": 1306,
+              "candidateHero": 2880,
+              "changedColor": 19976,
+              "changedShadow": 0,
+              "geometryExact": true,
+              "shadowFlagsExact": true,
+              "foundationExact": true,
+              "reference": {
+                "calls": 95,
+                "triangles": 68808
+              },
+              "candidate": {
+                "calls": 95,
+                "triangles": 68808
+              },
+              "changedRestored": 0,
+              "changedRestoredShadow": 0,
+              "materialsRestored": true
+            }
+          ]
+        },
+        {
+          "path": "required-cutaway-results/lanternhold-house-cutaway--1ae0f-ore-their-original-surfaces/controls.json",
+          "controls": [
+            {
+              "view": "south-home",
+              "opacity": 1.0845298564583274e-17,
+              "parts": 5,
+              "focusError": 0,
+              "changedGlass": 6976,
+              "restoredGlass": 0,
+              "glassShadow": 0,
+              "referenceHero": 6664,
+              "candidateHero": 18721,
+              "changedColor": 65164,
+              "changedShadow": 0,
+              "geometryExact": true,
+              "shadowFlagsExact": true,
+              "foundationExact": true,
+              "reference": {
+                "calls": 196,
+                "triangles": 181127
+              },
+              "candidate": {
+                "calls": 196,
+                "triangles": 181127
+              },
+              "changedRestored": 0,
+              "changedRestoredShadow": 0,
+              "materialsRestored": true
+            },
+            {
+              "view": "west-home",
+              "opacity": 5.281085552017317e-18,
+              "parts": 5,
+              "focusError": 0,
+              "changedGlass": 17002,
+              "restoredGlass": 0,
+              "glassShadow": 0,
+              "referenceHero": 4874,
+              "candidateHero": 18604,
+              "changedColor": 66180,
+              "changedShadow": 0,
+              "geometryExact": true,
+              "shadowFlagsExact": true,
+              "foundationExact": true,
+              "reference": {
+                "calls": 193,
+                "triangles": 193545
+              },
+              "candidate": {
+                "calls": 193,
+                "triangles": 193545
+              },
+              "changedRestored": 0,
+              "changedRestoredShadow": 0,
+              "materialsRestored": true
+            }
+          ]
+        }
+      ]
+    },
+    "cameraMovement": {
+      "framesPerProfile": 120,
+      "quality": [
+        "high",
+        "low"
+      ],
+      "samples": [
+        {
+          "path": "required-cutaway-results/lanternhold-house-cutaway--0c9c4-ore-their-original-surfaces/glazing-motion.json",
+          "movement": [
+            {
+              "section": 0,
+              "zoom": 15,
+              "focusError": 0,
+              "glassEnabled": 1
+            },
+            {
+              "section": 1,
+              "zoom": 15,
+              "focusError": 0,
+              "glassEnabled": 1
+            },
+            {
+              "section": 2,
+              "zoom": 15,
+              "focusError": 0,
+              "glassEnabled": 1
+            }
+          ]
+        },
+        {
+          "path": "required-cutaway-results/lanternhold-house-cutaway--1ae0f-ore-their-original-surfaces/glazing-motion.json",
+          "movement": [
+            {
+              "section": 0,
+              "zoom": 15,
+              "focusError": 0,
+              "glassEnabled": 1
+            },
+            {
+              "section": 1,
+              "zoom": 15,
+              "focusError": 0,
+              "glassEnabled": 1
+            },
+            {
+              "section": 2,
+              "zoom": 15,
+              "focusError": 0,
+              "glassEnabled": 1
+            }
+          ]
+        }
+      ],
+      "scope": "Continuous residential camera/player translation with equipped four-class Run mixers and actual HUD, normal zoom15; three retained keyframe images/profile. This is bounded prepared motion coverage, not physical-phone or whole temporal aliasing acceptance."
+    },
+    "shutdown": "Both source profile sessions terminate with actual home cutaway opacity<.005, original window material disposal exactly once, visibility entries0/focusnull and geometry work0. Shader owns no texture/material/geometry cache.",
+    "imagesInspected": [
+      "high-north-front-hud.png",
+      "low-west-front-hud.png",
+      "required-cutaway-results/lanternhold-house-cutaway--1ae0f-ore-their-original-surfaces/home-glass-motion-2.png",
+      "required-cutaway-results/lanternhold-house-cutaway--0c9c4-ore-their-original-surfaces/home-glass-motion-2.png"
+    ]
+  },
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-home-glazing-checks-20261013",
+    "entries": 63,
+    "inventorySHA256": "c819b2497b13075a1fb7ffee8851bbefe038002ef90ed1a24b511e33ea92d2b9"
+  },
+  "limits": "Qualified household material appearance/foreground composition/source identity, not final town/world art approval. Native High west remains33.2\u201333.3ms median/33.4p95 and247270triangles: original20ms High timing fails. Candidate/reference CPU arms overlap; Low dynamic resident submissions vary113\u2013127calls/78437\u201379589triangles, preventing a strict whole-frame speedup claim. Original crowded plaza279283High/107747Low triangle failures, connected performance, physical devices, real combat/listening/campaign/capacity/operations/F1\u2013F5/beta/launch/handoff remain open. Public49 unchanged; no50publication."
+}
