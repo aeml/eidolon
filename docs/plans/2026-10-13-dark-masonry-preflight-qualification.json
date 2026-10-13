@@ -1,0 +1,39 @@
+{
+  "recordedUTC": "2026-10-13T03:16:35.357563+00:00",
+  "runtimeSource": "4eef68d7",
+  "stageHead": "0c8d9d6e41efbedf694e198de5b5a65063029a79",
+  "status": "Supplemental CPU full-scene audit and native-harness preflight only; candidate remains detached and unselected.",
+  "audit": {
+    "scope": "CPU full-scene comparison only; native graphics, motion and GPU lifetime still pending",
+    "rows": [
+      {
+        "quality": "high",
+        "nodes": 51,
+        "meshes": 49,
+        "triangles": 38462,
+        "colliders": 22,
+        "changedWallBatches": 4,
+        "changedUVComponents": 16896,
+        "allOtherBuffersTransformsFlagsMetadataMaterialsAndMapsExact": true
+      },
+      {
+        "quality": "low",
+        "nodes": 51,
+        "meshes": 49,
+        "triangles": 29406,
+        "colliders": 22,
+        "changedWallBatches": 4,
+        "changedUVComponents": 16896,
+        "allOtherBuffersTransformsFlagsMetadataMaterialsAndMapsExact": true
+      }
+    ]
+  },
+  "retainedFixtureFinding": "First comparison included Quaternion callback function identity; corrected the QA comparison to numeric toArray transforms and exact layer mask. Runtime unchanged. Original failure retained.",
+  "nativePreflight": "Prepared only, syntax checked; not executed. Paired actual-cutaway opacity/time held constant across material comparisons; actual fade remains active in motion. Clear owned cutaway clones before full-scene resource retirement. Own48 exact-source terminal guard remains closed while CI runs.",
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-dark-masonry-preflight-checks-20261013",
+    "entries": 15,
+    "inventorySHA256": "bfe19f9beb171246e37bef0833cb6f1fa0e4dae4681a46a4d7cafb099d47a25c"
+  },
+  "limits": "No native/material/art/cadence/GPU/cold-peak qualification or master runtime merge. Own48 release and full original readiness goal remain open."
+}

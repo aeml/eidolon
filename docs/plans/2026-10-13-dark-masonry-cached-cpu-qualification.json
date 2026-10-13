@@ -1,0 +1,27 @@
+{
+  "recordedUTC": "2026-10-13T03:44:21.395246+00:00",
+  "runtimeSource": "a08543130548f19c2783498fceea60c012521060",
+  "status": "Cached masonry CPU-qualified only; remains detached/unselected. Native graphics pending private smoke proof.",
+  "CPU": {
+    "changedTests": 14,
+    "reusedUnaffectedTests": 41,
+    "distinctTests": 55,
+    "suites": 6,
+    "lint": "pass",
+    "mapControls": "All six complete DataTextures match original uncached bytes/SHA exactly for first and returning owners.",
+    "invariance": "Prior eight architecture and two complete-scene comparisons reused for unchanged geometry/scene; only cache storage strategy changed."
+  },
+  "cache": "Exactly two private raw pixel recipes,256 and128, total960KiB. Every scene copies independent three-map storage, mutation/disposal cannot poison future recipes; no shared GPU textures.",
+  "diagnostic": "Eight uncached and eight changed-cache fresh-process full-scene ABBA arms retained. Previous returning candidate constructors consistently add mineral sampling work; caching removes that repeated work. Changed returning costs overlap reference ranges with retained outliers. Cold first-use work and browser peak/startup/frame-time remain unqualified. Node CPU/RSS observations are not native graphics or browser performance acceptance.",
+  "nativePreflight": "Local Fighter now uses actual visible game.player at exact focus; other three supplied14-slot Run actors retained. Paired cutaway opacity/clock held constant only for synchronous image controls; natural fade enabled in motion. One player disposal at game.destroy. Prepared, not executed.",
+  "previousReceipts": [
+    "2026-10-13-dark-masonry-cpu-qualification.json",
+    "2026-10-13-dark-masonry-preflight-qualification.json"
+  ],
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-dark-masonry-cached-cpu-checks-20261013",
+    "entries": 35,
+    "inventorySHA256": "85e395152dca5a63044fee5053d572da53a6014f47e6004e0d34cc4240136489"
+  },
+  "limits": "No native images/cadence/GPU-lifetime/master runtime merge/publication/final-art/full-goal acceptance."
+}

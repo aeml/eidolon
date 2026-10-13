@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { DARK_DISTRICT_ROOF_SPAN } from './DarkDistrictRoofMaterial.js';
+import { applyDarkDistrictMasonryUV } from './DarkDistrictMasonryMaterial.js';
 
 // Decorative districts remain beyond the authoritative walking union. Local
 // +Z faces the street; construction fits the former skyline's full envelope.
@@ -72,6 +73,7 @@ export function createDarkDistrictArchitectureGeometry(recipe, quality = 'high')
         source.translate(...position); source.normalizeNormals();
         const geometry = source.index ? source.toNonIndexed() : source.clone(); source.dispose();
         if (!geometry.attributes.uv) geometry.setAttribute('uv', new THREE.Float32BufferAttribute(geometry.attributes.position.count * 2, 2));
+        if (key === 'stone') applyDarkDistrictMasonryUV(geometry);
         const parts = batches.get(key) || []; parts.push(geometry); batches.set(key, parts);
     };
     const box = (key, size, position) => add(key, new THREE.BoxGeometry(...size), position);

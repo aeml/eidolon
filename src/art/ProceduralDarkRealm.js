@@ -10,6 +10,7 @@ import { createDarkCampShelterGeometry } from './DarkCampShelterGeometry.js';
 import { createDarkCampLanternGeometry } from './DarkCampLanternGeometry.js';
 import { createDarkDistrictArchitectureGeometry } from './DarkDistrictArchitectureGeometry.js';
 import { createDarkDistrictRoofMaterial } from './DarkDistrictRoofMaterial.js';
+import { createDarkDistrictMasonryMaterial } from './DarkDistrictMasonryMaterial.js';
 import { createDarkCourtWorkbenchGeometry, createDarkCourtStandardGeometry } from './DarkCourtFurnitureGeometry.js';
 
 const CAMP_LANTERNS = [[-24, -24], [24, -24], [24, 24], [-24, 24]];
@@ -67,6 +68,7 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
     const bronze = new THREE.MeshStandardMaterial({ color: 0x84755c, metalness: .55, roughness: .6 });
     const shadow = new THREE.MeshStandardMaterial({ color: 0x171925, roughness: .9 });
     const roof = createDarkDistrictRoofMaterial(quality);
+    const masonry = createDarkDistrictMasonryMaterial(quality);
     const palettes = [0x9bd5d2, 0x8aafc1, 0xc2a6db, 0xe8a475, 0x9c8fce];
     const batches = new Map(), spatialBatches = new Map();
     const append = (material, geometry, position, district = null, occluder = false) => {
@@ -171,7 +173,7 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
             const architecture = createDarkDistrictArchitectureGeometry(recipe, quality);
             for (const [key, geometry] of Object.entries(architecture)) {
                 geometry.rotateY(-side * Math.PI / 2);
-                append({ stone, bronze, shadow, glow, roof }[key], geometry, [px, 0, pz], key === 'stone' ? `skyline-${recipe}` : null, true);
+                append({ stone: masonry, bronze, shadow, glow, roof }[key], geometry, [px, 0, pz], key === 'stone' ? `skyline-${recipe}` : null, true);
             }
             root.userData.landmarks.push({ kind: ['camp', 'shore', 'archive', 'foundry', 'city'][index],
                 x: px + origin.x, z: pz + origin.z });
