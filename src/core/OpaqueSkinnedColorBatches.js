@@ -10,8 +10,17 @@ const attributeState = attribute => ({ attribute, array: attribute.isInterleaved
     itemSize: attribute.itemSize, normalized: attribute.normalized, gpuType: attribute.gpuType });
 const sameAttribute = (attribute, saved) => {
     if (!attribute) return false;
-    const current = attributeState(attribute);
-    return Object.entries(saved).every(([key, value]) => Object.is(current[key], value));
+    // Preserve every live layout/storage/version check without constructing
+    // temporary snapshots and entry tuples for each source draw.
+    const array = attribute.isInterleavedBufferAttribute ? attribute.data.array : attribute.array;
+    const version = attribute.isInterleavedBufferAttribute ? attribute.data.version : attribute.version;
+    const offset = attribute.offset, stride = attribute.data?.stride, count = attribute.count;
+    const itemSize = attribute.itemSize, normalized = attribute.normalized, gpuType = attribute.gpuType;
+    return Object.is(attribute, saved.attribute) && Object.is(array, saved.array) &&
+        Object.is(version, saved.version) && Object.is(offset, saved.offset) &&
+        Object.is(stride, saved.stride) && Object.is(count, saved.count) &&
+        Object.is(itemSize, saved.itemSize) && Object.is(normalized, saved.normalized) &&
+        Object.is(gpuType, saved.gpuType);
 };
 const geometryState = geometry => ({ geometry, index: attributeState(geometry.index),
     attributes: Object.entries(geometry.attributes).map(([name, attribute]) => [name, attributeState(attribute)]) });

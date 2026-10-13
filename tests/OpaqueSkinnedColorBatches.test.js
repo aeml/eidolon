@@ -37,6 +37,26 @@ function fixture({ runtime = false } = {}) {
     return { scene,group,root,meshes,material,skeleton,camera,renderer,originals,owner,manager,frame };
 }
 
+test.each(['attribute', 'offset', 'stride', 'itemSize', 'count', 'normalized', 'gpuType'])(
+    'live %s attribute metadata invalidates the color copy and recovers exactly', field => {
+        const f = fixture(); f.frame();
+        const entry = [...f.owner.entries.values()][0], geometry = f.meshes[0].geometry;
+        const attribute = geometry.attributes.position, descriptors = Object.getOwnPropertyDescriptors(attribute);
+        expect(f.owner.valid(entry)).toBe(true);
+        if (field === 'attribute') geometry.attributes.position = attribute.clone();
+        if (field === 'offset') attribute.offset = 0;
+        if (field === 'stride') attribute.data = { stride: 4 };
+        if (field === 'itemSize') attribute.itemSize = 2;
+        if (field === 'count') attribute.count++;
+        if (field === 'normalized') attribute.normalized = true;
+        if (field === 'gpuType') attribute.gpuType = THREE.IntType;
+        expect(f.owner.valid(entry)).toBe(false);
+        geometry.attributes.position = attribute;
+        for (const key of Object.keys(attribute)) if (!Object.hasOwn(descriptors, key)) delete attribute[key];
+        Object.defineProperties(attribute, descriptors);
+        expect(f.owner.valid(entry)).toBe(true); f.owner.dispose();
+    });
+
 test('color draws combine while all original casters, source identities and borrowed ownership stay exact', () => {
     const f=fixture(),source=f.meshes.map(mesh=>mesh.geometry);expect(f.frame()).toHaveLength(1);
     const entry=[...f.owner.entries.values()][0];expect(f.renderer.calls[0].object).toBe(entry.proxy);

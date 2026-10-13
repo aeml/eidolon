@@ -1,0 +1,1304 @@
+{
+  "recordedUTC": "2026-10-13T16:42:58.143691+00:00",
+  "source": "c993923b7e40aadfbe067f030917bb35d5ae704b",
+  "runtimeExactAcceptedPublic": "8e5f888a66b65e6a69e26c62499b4113549b40c0",
+  "status": "Current49 connected High performance failure retained; no runtime optimization or whole-performance acceptance.",
+  "scope": "Actual Go-race disposable four-class14slot saved party; one native renderer and three socket peers. Existing60warmup/180frame sample, additional separate phase sample and three-second CPU diagnostic. Diagnostic mode does not invoke startup-budget assertions; evaluate exact original High350draws/250000triangles/20msmedian/33.4p95 independently and retain failures. No performance waiver, capacity pass, campaign or soak replay.",
+  "sample": {
+    "label": "single-renderer-equipped-raised-party-high",
+    "frames": 180,
+    "intervalMethod": "exact-reported-decimal",
+    "restored": true,
+    "visibleFrames": 180,
+    "rawFrameMedianMs": 33.400000000001455,
+    "rawFrameP95Ms": 50.099999999998545,
+    "rawFrameP99Ms": 66.69999999999709,
+    "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+    "viewport": {
+      "width": 1280,
+      "height": 844,
+      "pixelRatio": 1
+    },
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+    "visibility": "visible",
+    "frameMedianMs": 33.4,
+    "frameP95Ms": 50.1,
+    "frameP99Ms": 66.7,
+    "framesOver33ms": 100,
+    "cpuLoopMedianMs": 35.80000001192093,
+    "cpuLoopP95Ms": 46.5,
+    "drawCallsMedian": 221,
+    "trianglesMedian": 168639,
+    "geometries": 404,
+    "textures": 356,
+    "activeEntities": 22,
+    "activeEntitiesMin": 22,
+    "activeEntitiesMax": 22,
+    "previewFramesDuringSample": 0,
+    "previewGeometries": 0,
+    "previewTextures": 0,
+    "scope": "One actual GPU renderer, three live normal authenticated socket peers; standing/movement snapshot, not peer input or a battle frame-budget certificate."
+  },
+  "budgets": {
+    "drawCallsMedian": {
+      "observed": 221,
+      "limit": 350,
+      "passes": true
+    },
+    "trianglesMedian": {
+      "observed": 168639,
+      "limit": 250000,
+      "passes": true
+    },
+    "frameMedianMs": {
+      "observed": 33.4,
+      "limit": 20,
+      "passes": false
+    },
+    "frameP95Ms": {
+      "observed": 50.1,
+      "limit": 33.4,
+      "passes": false
+    }
+  },
+  "phaseSummary": {
+    "scope": "Opt-in inclusive synchronous CPU clocks; renderer includes Three.js traversal/submission, not GPU elapsed time. rendererWorld matches the exact gameplay scene AND camera; rendererOther is every other call, including fullscreen composer passes. Exclusive components subtract nested clocks. Instrumentation overhead is included; this separate diagnostic does not replace the ordinary budget sample.",
+    "components": {
+      "update": {
+        "medianMs": 2.699999988079071,
+        "p95Ms": 7.099999964237213
+      },
+      "presentation": {
+        "medianMs": 32.19999998807907,
+        "p95Ms": 45.69999998807907
+      },
+      "renderSystem": {
+        "medianMs": 31.599999964237213,
+        "p95Ms": 44.299999952316284
+      },
+      "renderer": {
+        "medianMs": 31.399999976158142,
+        "p95Ms": 44
+      },
+      "rendererWorld": {
+        "medianMs": 30.900000035762787,
+        "p95Ms": 43.60000002384186
+      },
+      "rendererOther": {
+        "medianMs": 0.30000001192092896,
+        "p95Ms": 1.5999999642372131
+      },
+      "presentationOutsideRenderSystem": {
+        "medianMs": 0.40000003576278687,
+        "p95Ms": 1.4000000357627869
+      },
+      "renderSystemOutsideRenderer": {
+        "medianMs": 0.19999998807907104,
+        "p95Ms": 1.199999988079071
+      },
+      "loopOutsideUpdateAndPresentation": {
+        "medianMs": 0.10000002384185791,
+        "p95Ms": 0.30000001192092896
+      }
+    },
+    "calls": {
+      "update": {
+        "min": 1,
+        "max": 2
+      },
+      "presentation": {
+        "min": 1,
+        "max": 1
+      },
+      "renderSystem": {
+        "min": 1,
+        "max": 1
+      },
+      "renderer": {
+        "min": 16,
+        "max": 16
+      },
+      "rendererWorld": {
+        "min": 1,
+        "max": 1
+      },
+      "rendererOther": {
+        "min": 15,
+        "max": 15
+      }
+    }
+  },
+  "cpu": {
+    "scope": "Three-second opt-in CPU function sample with foliage revision/visit counters; probe/profiling overhead excluded from the preceding frame report.",
+    "summary": [
+      {
+        "source": "",
+        "name": "(program)",
+        "line": 0,
+        "samples": 108,
+        "selfMicros": 795968
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "updateMatrixWorld",
+        "line": 14354,
+        "samples": 113,
+        "selfMicros": 165845
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "multiplyMatrices",
+        "line": 11917,
+        "samples": 101,
+        "selfMicros": 132382
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "traverseVisible",
+        "line": 14294,
+        "samples": 95,
+        "selfMicros": 123642
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "projectObject",
+        "line": 16814,
+        "samples": 67,
+        "selfMicros": 93333
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "intersectsObject",
+        "line": 26581,
+        "samples": 68,
+        "selfMicros": 91327
+      },
+      {
+        "source": "/src/core/OpaqueSkinnedShadowGeometry.js",
+        "name": "isOpaqueSkinnedShadowMesh",
+        "line": 23,
+        "samples": 52,
+        "selfMicros": 80624
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "renderObject",
+        "line": 8914,
+        "samples": 56,
+        "selfMicros": 72059
+      },
+      {
+        "source": "/src/core/OpaqueSkinnedShadowBatches.js",
+        "name": "valid",
+        "line": 101,
+        "samples": 56,
+        "selfMicros": 71604
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "getParameters",
+        "line": 7009,
+        "samples": 39,
+        "selfMicros": 59468
+      },
+      {
+        "source": "/src/art/ActorInstanceBatches.js",
+        "name": "beginFrame",
+        "line": 117,
+        "samples": 39,
+        "selfMicros": 58754
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "getProgram",
+        "line": 17132,
+        "samples": 39,
+        "selfMicros": 50903
+      },
+      {
+        "source": "/src/core/OpaqueSkinnedColorBatches.js",
+        "name": "sameGeometry",
+        "line": 18,
+        "samples": 39,
+        "selfMicros": 47335
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "updateMatrix",
+        "line": 14335,
+        "samples": 39,
+        "selfMicros": 46363
+      },
+      {
+        "source": "",
+        "name": "(idle)",
+        "line": 0,
+        "samples": 20,
+        "selfMicros": 46142
+      },
+      {
+        "source": "",
+        "name": "texSubImage2D",
+        "line": 0,
+        "samples": 30,
+        "selfMicros": 43250
+      },
+      {
+        "source": "/src/core/FoliageShadowInfluence.js",
+        "name": "FoliageShadowInfluence.visit",
+        "line": 105,
+        "samples": 37,
+        "selfMicros": 42601
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "setProgram",
+        "line": 17279,
+        "samples": 30,
+        "selfMicros": 41569
+      },
+      {
+        "source": "/src/core/ActorGameplayGeometry.js",
+        "name": "unchanged",
+        "line": 22,
+        "samples": 23,
+        "selfMicros": 40233
+      },
+      {
+        "source": "/src/entities/Actor.js",
+        "name": "syncAttachedStatusEffects",
+        "line": 310,
+        "samples": 23,
+        "selfMicros": 37217
+      },
+      {
+        "source": "",
+        "name": "bindTexture",
+        "line": 0,
+        "samples": 22,
+        "selfMicros": 36855
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "WebGLRenderer.renderBufferDirect",
+        "line": 16193,
+        "samples": 21,
+        "selfMicros": 35697
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "equals",
+        "line": 5635,
+        "samples": 30,
+        "selfMicros": 32408
+      },
+      {
+        "source": "",
+        "name": "activeTexture",
+        "line": 0,
+        "samples": 21,
+        "selfMicros": 27449
+      }
+    ],
+    "callerChains": [
+      {
+        "stack": [
+          {
+            "source": "",
+            "name": "(program)",
+            "line": 0
+          },
+          {
+            "source": "",
+            "name": "(root)",
+            "line": 0
+          }
+        ],
+        "samples": 108,
+        "selfMicros": 795968
+      },
+      {
+        "stack": [
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "updateMatrixWorld",
+            "line": 14354
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "ActorGameplayGeometry.wrapper",
+            "line": 67
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedShadowBatches.js",
+            "name": "OpaqueSkinnedShadowBatches.renderWrapper",
+            "line": 60
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "render",
+            "line": 169
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "OpaqueSkinnedColorBatches.renderWrapper",
+            "line": 51
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "render",
+            "line": 1262
+          },
+          {
+            "source": "",
+            "name": "game.renderSystem.render",
+            "line": 30
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "render",
+            "line": 933
+          }
+        ],
+        "samples": 112,
+        "selfMicros": 165649
+      },
+      {
+        "stack": [
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "multiplyMatrices",
+            "line": 11917
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "updateMatrixWorld",
+            "line": 14354
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "ActorGameplayGeometry.wrapper",
+            "line": 67
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedShadowBatches.js",
+            "name": "OpaqueSkinnedShadowBatches.renderWrapper",
+            "line": 60
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "render",
+            "line": 169
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "OpaqueSkinnedColorBatches.renderWrapper",
+            "line": 51
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "render",
+            "line": 1262
+          },
+          {
+            "source": "",
+            "name": "game.renderSystem.render",
+            "line": 30
+          }
+        ],
+        "samples": 75,
+        "selfMicros": 95368
+      },
+      {
+        "stack": [
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "projectObject",
+            "line": 16814
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "ActorGameplayGeometry.wrapper",
+            "line": 67
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedShadowBatches.js",
+            "name": "OpaqueSkinnedShadowBatches.renderWrapper",
+            "line": 60
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "render",
+            "line": 169
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "OpaqueSkinnedColorBatches.renderWrapper",
+            "line": 51
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "render",
+            "line": 1262
+          },
+          {
+            "source": "",
+            "name": "game.renderSystem.render",
+            "line": 30
+          },
+          {
+            "source": "/src/core/GameEngineRuntime.js",
+            "name": "render",
+            "line": 933
+          }
+        ],
+        "samples": 67,
+        "selfMicros": 93333
+      },
+      {
+        "stack": [
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "renderObject",
+            "line": 8914
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLShadowMap.render",
+            "line": 8644
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedShadowBatches.js",
+            "name": "renderShadows",
+            "line": 164
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "ActorGameplayGeometry.wrapper",
+            "line": 67
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedShadowBatches.js",
+            "name": "OpaqueSkinnedShadowBatches.renderWrapper",
+            "line": 60
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "render",
+            "line": 169
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "OpaqueSkinnedColorBatches.renderWrapper",
+            "line": 51
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "render",
+            "line": 1262
+          }
+        ],
+        "samples": 56,
+        "selfMicros": 72059
+      },
+      {
+        "stack": [
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "traverseVisible",
+            "line": 14294
+          },
+          {
+            "source": "/src/art/ActorInstanceView.js",
+            "name": "beginFrame",
+            "line": 20
+          },
+          {
+            "source": "/src/art/ActorShadowInfluence.js",
+            "name": "beginFrame",
+            "line": 87
+          },
+          {
+            "source": "/src/art/ActorInstanceBatches.js",
+            "name": "beginFrame",
+            "line": 117
+          },
+          {
+            "source": "/src/art/ActorInstanceBatches.js",
+            "name": "ActorInstanceBatches.beforeHook",
+            "line": 79
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "OpaqueSkinnedColorBatches.beforeWrapper",
+            "line": 45
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "ActorGameplayGeometry.wrapper",
+            "line": 67
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedShadowBatches.js",
+            "name": "OpaqueSkinnedShadowBatches.renderWrapper",
+            "line": 60
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "render",
+            "line": 169
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "OpaqueSkinnedColorBatches.renderWrapper",
+            "line": 51
+          }
+        ],
+        "samples": 47,
+        "selfMicros": 60164
+      },
+      {
+        "stack": [
+          {
+            "source": "/src/art/ActorInstanceBatches.js",
+            "name": "beginFrame",
+            "line": 117
+          },
+          {
+            "source": "/src/art/ActorInstanceBatches.js",
+            "name": "ActorInstanceBatches.beforeHook",
+            "line": 79
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "OpaqueSkinnedColorBatches.beforeWrapper",
+            "line": 45
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "ActorGameplayGeometry.wrapper",
+            "line": 67
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedShadowBatches.js",
+            "name": "OpaqueSkinnedShadowBatches.renderWrapper",
+            "line": 60
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "render",
+            "line": 169
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "OpaqueSkinnedColorBatches.renderWrapper",
+            "line": 51
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "render",
+            "line": 1262
+          }
+        ],
+        "samples": 39,
+        "selfMicros": 58754
+      },
+      {
+        "stack": [
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "traverseVisible",
+            "line": 14294
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedShadowBatches.js",
+            "name": "renderShadows",
+            "line": 164
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "ActorGameplayGeometry.wrapper",
+            "line": 67
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedShadowBatches.js",
+            "name": "OpaqueSkinnedShadowBatches.renderWrapper",
+            "line": 60
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "render",
+            "line": 169
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "OpaqueSkinnedColorBatches.renderWrapper",
+            "line": 51
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "render",
+            "line": 1262
+          },
+          {
+            "source": "",
+            "name": "game.renderSystem.render",
+            "line": 30
+          }
+        ],
+        "samples": 41,
+        "selfMicros": 51056
+      },
+      {
+        "stack": [
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "intersectsObject",
+            "line": 26581
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "projectObject",
+            "line": 16814
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "ActorGameplayGeometry.wrapper",
+            "line": 67
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedShadowBatches.js",
+            "name": "OpaqueSkinnedShadowBatches.renderWrapper",
+            "line": 60
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "render",
+            "line": 169
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "OpaqueSkinnedColorBatches.renderWrapper",
+            "line": 51
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "render",
+            "line": 1262
+          },
+          {
+            "source": "",
+            "name": "game.renderSystem.render",
+            "line": 30
+          }
+        ],
+        "samples": 40,
+        "selfMicros": 48359
+      },
+      {
+        "stack": [
+          {
+            "source": "",
+            "name": "(idle)",
+            "line": 0
+          },
+          {
+            "source": "",
+            "name": "(root)",
+            "line": 0
+          }
+        ],
+        "samples": 20,
+        "selfMicros": 46142
+      },
+      {
+        "stack": [
+          {
+            "source": "/src/core/OpaqueSkinnedShadowGeometry.js",
+            "name": "isOpaqueSkinnedShadowMesh",
+            "line": 23
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedShadowRuntime.js",
+            "name": "synchronize",
+            "line": 67
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedShadowRuntime.js",
+            "name": "prepare",
+            "line": 27
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedShadowBatches.js",
+            "name": "renderShadows",
+            "line": 164
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "ActorGameplayGeometry.wrapper",
+            "line": 67
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedShadowBatches.js",
+            "name": "OpaqueSkinnedShadowBatches.renderWrapper",
+            "line": 60
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "render",
+            "line": 169
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "OpaqueSkinnedColorBatches.renderWrapper",
+            "line": 51
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          }
+        ],
+        "samples": 28,
+        "selfMicros": 44113
+      },
+      {
+        "stack": [
+          {
+            "source": "/src/core/OpaqueSkinnedShadowBatches.js",
+            "name": "valid",
+            "line": 101
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedShadowRuntime.js",
+            "name": "synchronize",
+            "line": 67
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedShadowRuntime.js",
+            "name": "prepare",
+            "line": 27
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedShadowBatches.js",
+            "name": "renderShadows",
+            "line": 164
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "ActorGameplayGeometry.wrapper",
+            "line": 67
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedShadowBatches.js",
+            "name": "OpaqueSkinnedShadowBatches.renderWrapper",
+            "line": 60
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "render",
+            "line": 169
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "OpaqueSkinnedColorBatches.renderWrapper",
+            "line": 51
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          }
+        ],
+        "samples": 32,
+        "selfMicros": 42728
+      },
+      {
+        "stack": [
+          {
+            "source": "/src/core/FoliageShadowInfluence.js",
+            "name": "FoliageShadowInfluence.visit",
+            "line": 105
+          },
+          {
+            "source": "",
+            "name": "visit",
+            "line": 22
+          },
+          {
+            "source": "/src/core/FoliageShadowInfluence.js",
+            "name": "beginFrame",
+            "line": 175
+          },
+          {
+            "source": "",
+            "name": "begin",
+            "line": 13
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "RenderSystem.scene.onBeforeRender",
+            "line": 153
+          },
+          {
+            "source": "/src/art/ActorInstanceBatches.js",
+            "name": "ActorInstanceBatches.beforeHook",
+            "line": 79
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "OpaqueSkinnedColorBatches.beforeWrapper",
+            "line": 45
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "ActorGameplayGeometry.wrapper",
+            "line": 67
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedShadowBatches.js",
+            "name": "OpaqueSkinnedShadowBatches.renderWrapper",
+            "line": 60
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "render",
+            "line": 169
+          }
+        ],
+        "samples": 37,
+        "selfMicros": 42601
+      },
+      {
+        "stack": [
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "setProgram",
+            "line": 17279
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.renderBufferDirect",
+            "line": 16193
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "renderDirect",
+            "line": 151
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "OpaqueSkinnedColorBatches.directWrapper",
+            "line": 50
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "renderObject",
+            "line": 17101
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "renderObjects",
+            "line": 17074
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "renderScene",
+            "line": 16928
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "ActorGameplayGeometry.wrapper",
+            "line": 67
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedShadowBatches.js",
+            "name": "OpaqueSkinnedShadowBatches.renderWrapper",
+            "line": 60
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "render",
+            "line": 169
+          }
+        ],
+        "samples": 29,
+        "selfMicros": 40500
+      },
+      {
+        "stack": [
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "updateMatrix",
+            "line": 14335
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "updateMatrixWorld",
+            "line": 14354
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "ActorGameplayGeometry.wrapper",
+            "line": 67
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedShadowBatches.js",
+            "name": "OpaqueSkinnedShadowBatches.renderWrapper",
+            "line": 60
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "render",
+            "line": 169
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "OpaqueSkinnedColorBatches.renderWrapper",
+            "line": 51
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+            "name": "render",
+            "line": 111
+          },
+          {
+            "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+            "name": "render",
+            "line": 214
+          },
+          {
+            "source": "/src/core/RenderSystem.js",
+            "name": "render",
+            "line": 1262
+          },
+          {
+            "source": "",
+            "name": "game.renderSystem.render",
+            "line": 30
+          }
+        ],
+        "samples": 33,
+        "selfMicros": 40223
+      },
+      {
+        "stack": [
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "getParameters",
+            "line": 7009
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "getProgram",
+            "line": 17132
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "setProgram",
+            "line": 17279
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.renderBufferDirect",
+            "line": 16193
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "renderDirect",
+            "line": 151
+          },
+          {
+            "source": "/src/core/OpaqueSkinnedColorBatches.js",
+            "name": "OpaqueSkinnedColorBatches.directWrapper",
+            "line": 50
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "renderObject",
+            "line": 17101
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "renderObjects",
+            "line": 17074
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "renderScene",
+            "line": 16928
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.render",
+            "line": 16628
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "render",
+            "line": 143
+          },
+          {
+            "source": "/src/core/ActorGameplayGeometry.js",
+            "name": "ActorGameplayGeometry.wrapper",
+            "line": 67
+          }
+        ],
+        "samples": 26,
+        "selfMicros": 40161
+      }
+    ],
+    "foliage": {
+      "frames": 70,
+      "visits": 167020,
+      "viewChanges": 0,
+      "shadowChanges": 0,
+      "initialRoots": 10
+    }
+  },
+  "sanitized": {
+    "observedPreparedAccounts": 4,
+    "plaintextFilesScanned": 9,
+    "embeddedEntriesScanned": 2,
+    "remainingPreparedNames": 0,
+    "serverMarkers": {
+      "WARNING: DATA RACE": 0,
+      "panic:": 0,
+      "fatal error:": 0,
+      "Worker panic:": 0,
+      "Recovered from panic in Update:": 0
+    },
+    "native": {
+      "total": 2,
+      "expected": 1,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 1,
+      "ok": true
+    },
+    "maxRetry": 0
+  },
+  "cleanup": {
+    "ownedMongoContainerAbsent": true,
+    "container": "eidolon-terrain-save-qa-4e6b46774612",
+    "browserAndServerRunnerTerminal": true,
+    "originalResourcesTouched": false
+  },
+  "next": "Screen allocation-free attribute-state validation against exact existing shadow/color checks. Preserve every source/candidate/palette/material/callback/buffer mutation guard and prove pixel/depth/resource behavior before selection. Do not assume faster whole-game frames.",
+  "limits": "22active entities in current sample versus37\u201340in previous39; not a paired speedup claim. One renderer/three actual socket peers, prepared gear/saves on disposable raised Earth, no four-browser input/combat/phone/capacity/campaign/F1\u2013F5/beta/handoff acceptance. Full original goal stays active.",
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-connected49-cpu-baseline-checks-20261013",
+    "entries": 26,
+    "inventorySHA256": "63a53891634c4d72bac956847c9d07905539454f6db440d810eb52756885a805"
+  }
+}

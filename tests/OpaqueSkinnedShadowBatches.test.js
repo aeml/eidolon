@@ -38,6 +38,42 @@ function fixture() {
     return { scene, root, bone, skeleton, meshes, camera, light, lights, depth, projected, colored, renderer, shadowMap, owner };
 }
 
+test.each(['attribute', 'offset', 'stride', 'itemSize', 'count', 'normalized', 'gpuType'])(
+    'live %s attribute metadata invalidates the shadow copy and recovers exactly', field => {
+        const f = fixture(), entry = [...f.owner.entries][0], geometry = f.meshes[0].geometry;
+        const attribute = geometry.attributes.position, descriptors = Object.getOwnPropertyDescriptors(attribute);
+        expect(f.owner.valid(entry)).toBe(true);
+        if (field === 'attribute') geometry.attributes.position = attribute.clone();
+        if (field === 'offset') attribute.offset = 0;
+        if (field === 'stride') attribute.data = { stride: 4 };
+        if (field === 'itemSize') attribute.itemSize = 2;
+        if (field === 'count') attribute.count++;
+        if (field === 'normalized') attribute.normalized = true;
+        if (field === 'gpuType') attribute.gpuType = THREE.IntType;
+        expect(f.owner.valid(entry)).toBe(false);
+        geometry.attributes.position = attribute;
+        for (const key of Object.keys(attribute)) if (!Object.hasOwn(descriptors, key)) delete attribute[key];
+        Object.defineProperties(attribute, descriptors);
+        expect(f.owner.valid(entry)).toBe(true); f.owner.dispose();
+    });
+
+test('an interleaved buffer replacement invalidates shadow ownership even with identical storage and layout', () => {
+    const f = fixture();
+    for (const entry of [...f.owner.entries]) f.owner.unregister(entry);
+    for (const mesh of f.meshes) {
+        const source = mesh.geometry.attributes.position;
+        mesh.geometry.setAttribute('position', new THREE.InterleavedBufferAttribute(
+            new THREE.InterleavedBuffer(source.array.slice(), 3), 3, 0));
+    }
+    expect(f.owner.register(f.root)).toBe(1);
+    const entry = [...f.owner.entries][0], attribute = f.meshes[0].geometry.attributes.position, original = attribute.data;
+    expect(f.owner.valid(entry)).toBe(true);
+    attribute.data = new THREE.InterleavedBuffer(original.array, original.stride);
+    expect(attribute.data.version).toBe(original.version);
+    expect(f.owner.valid(entry)).toBe(false);
+    attribute.data = original; expect(f.owner.valid(entry)).toBe(true); f.owner.dispose();
+});
+
 test('projection and color retain originals; stock shadow viewport uses one independent mapless skin', () => {
     const f = fixture(), original = f.light.shadow.updateMatrices;
     expect(Object.hasOwn(f.light.shadow, 'updateMatrices')).toBe(false);
