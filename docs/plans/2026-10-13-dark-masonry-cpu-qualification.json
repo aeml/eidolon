@@ -1,0 +1,86 @@
+{
+  "atUTC": "2026-10-13T02:58:36.592576+00:00",
+  "source": "4eef68d7fc2289389c7880ce6117e2eaa0df81d2",
+  "status": "Isolated Dark Realm masonry CPU-qualified only; native art/motion/resources/cadence pending; no master selection",
+  "distinctCPUChecks": 53,
+  "suites": 6,
+  "reuse": "Initial existing four suites33passes; material run roof8passes and masonry10passes/twofixturefailures. Corrected affected masonry12checks pass; unchanged roof8 and existing33 reused.",
+  "lintPassed": true,
+  "constructorControls": [
+    {
+      "quality": "high",
+      "recipe": "shore",
+      "triangles": 396,
+      "changedUVComponents": 528,
+      "allOtherBuffersAndBoundsExact": true
+    },
+    {
+      "quality": "high",
+      "recipe": "archive",
+      "triangles": 352,
+      "changedUVComponents": 528,
+      "allOtherBuffersAndBoundsExact": true
+    },
+    {
+      "quality": "high",
+      "recipe": "foundry",
+      "triangles": 448,
+      "changedUVComponents": 528,
+      "allOtherBuffersAndBoundsExact": true
+    },
+    {
+      "quality": "high",
+      "recipe": "city",
+      "triangles": 424,
+      "changedUVComponents": 528,
+      "allOtherBuffersAndBoundsExact": true
+    },
+    {
+      "quality": "low",
+      "recipe": "shore",
+      "triangles": 268,
+      "changedUVComponents": 528,
+      "allOtherBuffersAndBoundsExact": true
+    },
+    {
+      "quality": "low",
+      "recipe": "archive",
+      "triangles": 256,
+      "changedUVComponents": 528,
+      "allOtherBuffersAndBoundsExact": true
+    },
+    {
+      "quality": "low",
+      "recipe": "foundry",
+      "triangles": 320,
+      "changedUVComponents": 528,
+      "allOtherBuffersAndBoundsExact": true
+    },
+    {
+      "quality": "low",
+      "recipe": "city",
+      "triangles": 328,
+      "changedUVComponents": 528,
+      "allOtherBuffersAndBoundsExact": true
+    }
+  ],
+  "scope": [
+    "Only skyline stone UVs and one shared district masonry material change. All nonUV attributes, positions/normals/parts/bounds/triangles exact in eight High/Low constructors.",
+    "Physical8m repeats,2m blocks/1m courses; face-aligned outward UV tangents retain metric scale on every facade, cap and clipped corner.",
+    "Three static registered albedo/normal/roughness maps atHigh256/Low128, one material shared by four existing skyline batches. All49scene meshes, placements/walk authority and occluder masks retained.",
+    "Scene retirement observes every owned map/material once; independent owners receive deterministic separate storage. No time uniform, displacement, extra geometry or draw batch."
+  ],
+  "retainedFixtureFailure": "New test mistakenly counted49allmeshes using root.children;39direct children plus10nested path meshes are49 total. Corrected traversal to original hierarchy semantics, source/count/assertions retained. Initial failure log retained.",
+  "nativePending": [
+    "Ordinary actual-floor gameplay/HUD/equipped four-class moving review in both profiles; existingbuilding cutaway/shadows and restoration.",
+    "Moving frame cadence under unchanged original budgets and actual GPU retirement cycles.",
+    "New3maps add768KiBHigh/192KiBLow rawCPU map storage; resource/peak/construction timing not native-qualified.",
+    "Public48 ownCI38338720250 reserves GPU until terminal; no local GPU work during that reservation."
+  ],
+  "limits": "2D material swatches inspected only; no final-world art or modernARPG acceptance. Original full game/performance/device/ops/owner/F1\u2013F5/beta/handoff remains open.",
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-dark-masonry-cpu-checks-20261013",
+    "entries": 30,
+    "inventorySHA256": "388ab3a415c2f9653ff2fec51ce6d176c4fe9474ef44b7ec48f5f2c49a140889"
+  }
+}
