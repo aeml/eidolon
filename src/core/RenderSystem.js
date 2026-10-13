@@ -13,6 +13,7 @@ import { ActorContactShadows } from './ActorContactShadows.js';
 import { ActorInstanceBatches } from '../art/ActorInstanceBatches.js';
 import { ActorGameplayGeometryRuntime } from './ActorGameplayGeometryRuntime.js';
 import { OpaqueSkinnedShadowRuntime } from './OpaqueSkinnedShadowRuntime.js';
+import { OpaqueSkinnedColorRuntime } from './OpaqueSkinnedColorRuntime.js';
 import { updateFoliageRenderQuality } from '../art/FoliageRenderBatches.js';
 import { updateElementalGroundCoverQuality } from '../art/ElementalGroundCover.js';
 import { getShadowViewBounds } from './ShadowViewCoverage.js';
@@ -160,9 +161,11 @@ export class RenderSystem {
         // after an eligible actor arrives. Unsupported workers retain originals.
         this.actorGameplayGeometry = null;
         this.actorShadowBatches = null;
+        this.actorColorBatches = null;
         this.setActorInstancesEnabled(true);
         this.setActorGameplayGeometryEnabled(true);
         this.setActorShadowBatchesEnabled(true);
+        this.setActorColorBatchesEnabled(true);
         this.sceneryVisibility = new SceneryVisibility();
         this.sceneryFocus = null;
         // Cross-light the fixed isometric view: one visible face catches the
@@ -727,6 +730,7 @@ export class RenderSystem {
         const normalized = (quality === 'low' || quality === 'medium' || quality === 'high') ? quality : 'high';
         const previousQuality = this.graphicsQuality;
         this.graphicsQuality = normalized;
+        if (previousQuality !== normalized) this.actorColorBatches?.reset();
         // Low/Medium keep the original direct-singleton path; High combines
         // compatible leaves only when the frame has native multi-draw support.
         if (this.actorInstances) this.actorInstances.batchSingletons = normalized === 'high';
@@ -1076,24 +1080,41 @@ export class RenderSystem {
 
     setActorGameplayGeometryEnabled(enabled, options = {}) {
         if (this._disposed || Boolean(enabled) === Boolean(this.actorGameplayGeometry)) return;
-        // Retire the outer shadow wrapper before replacing its inner geometry
-        // owner, then reinstall in the same order for nested renderer passes.
-        const restoreShadows = Boolean(this.actorShadowBatches);
+        // Retire outer wrappers before replacing the inner geometry owner;
+        // restore geometry -> shadow -> color ordering for nested passes.
+        const restoreColors = Boolean(this.actorColorBatches), restoreShadows = Boolean(this.actorShadowBatches);
+        if (restoreColors) this.setActorColorBatchesEnabled(false);
         if (restoreShadows) this.setActorShadowBatchesEnabled(false);
         try {
             if (enabled) this.actorGameplayGeometry = new ActorGameplayGeometryRuntime(this.renderer, this.scene, this.camera,
                 [this.scene, this.entityGroup], options);
             else { this.actorGameplayGeometry.dispose(); this.actorGameplayGeometry = null; }
-        } finally { if (restoreShadows) this.setActorShadowBatchesEnabled(true); }
+        } finally {
+            if (restoreShadows) this.setActorShadowBatchesEnabled(true);
+            if (restoreColors) this.setActorColorBatchesEnabled(true);
+        }
     }
 
     setActorShadowBatchesEnabled(enabled) {
+        if (this._disposed || Boolean(enabled) === Boolean(this.actorShadowBatches)) return;
+        const restoreColors = Boolean(this.actorColorBatches);
+        if (restoreColors) this.setActorColorBatchesEnabled(false);
+        try {
+            if (enabled && typeof this.renderer.shadowMap?.render === 'function') {
+                this.actorShadowBatches = new OpaqueSkinnedShadowRuntime(this.renderer, this.scene, [this.scene, this.entityGroup],
+                    { staticGroups: [this.instanceEnvironmentGroup, this.entityGroup] });
+            } else if (!enabled && this.actorShadowBatches) {
+                this.actorShadowBatches.dispose(); this.actorShadowBatches = null;
+            }
+        } finally { if (restoreColors) this.setActorColorBatchesEnabled(true); }
+    }
+
+    setActorColorBatchesEnabled(enabled) {
         if (this._disposed) return;
-        if (enabled && !this.actorShadowBatches && typeof this.renderer.shadowMap?.render === 'function') {
-            this.actorShadowBatches = new OpaqueSkinnedShadowRuntime(this.renderer, this.scene, [this.scene, this.entityGroup],
-                { staticGroups: [this.instanceEnvironmentGroup, this.entityGroup] });
-        } else if (!enabled && this.actorShadowBatches) {
-            this.actorShadowBatches.dispose(); this.actorShadowBatches = null;
+        if (enabled && !this.actorColorBatches && typeof this.renderer.renderBufferDirect === 'function') {
+            this.actorColorBatches = new OpaqueSkinnedColorRuntime(this.renderer, this.scene, this.camera, [this.scene, this.entityGroup]);
+        } else if (!enabled && this.actorColorBatches) {
+            this.actorColorBatches.dispose(); this.actorColorBatches = null;
         }
     }
 
@@ -1126,6 +1147,7 @@ export class RenderSystem {
     }
 
     clearInstanceScene() {
+        this.actorColorBatches?.clear();
         this.actorShadowBatches?.clear();
         this.actorGameplayGeometry?.clear();
         this.actorInstances?.clear();
@@ -1311,6 +1333,7 @@ export class RenderSystem {
         if (this._disposed) return;
         this._disposed = true;
         this._initialViewPreparation?.finish(false);
+        this.actorColorBatches?.dispose(); this.actorColorBatches = null;
         this.actorShadowBatches?.dispose(); this.actorShadowBatches = null;
         this.actorGameplayGeometry?.dispose(); this.actorGameplayGeometry = null;
         this.actorInstances?.dispose(); this.actorInstances = null;
