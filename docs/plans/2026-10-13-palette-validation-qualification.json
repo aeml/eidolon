@@ -1,0 +1,449 @@
+{
+  "recordedUTC": "2026-10-13T17:18:42.331463+00:00",
+  "source": "78d71790dfd5e5c7dde5ef900426b27a5202f1da",
+  "base": "2fbe3e41",
+  "status": "Qualified within scan-local finite palette reuse and opt-in QA comparison; ready ordinary master merge, unpublished.",
+  "change": "OpaqueSkinnedShadowRuntime shares the existing finite-skeleton check only within one synchronous scan via a fresh WeakMap. Exact owner.valid still rechecks every live inverse/bind/attribute/identity. No persistent palette result or skipped ownership validation. Capture/rebuild eligibility remains uncached.",
+  "focused": {
+    "passed": 122,
+    "suites": 3,
+    "newFinitePaletteRegressions": 3,
+    "combinedWithPriorAttributeQualificationDistinct": 179,
+    "combinedSuites": 5,
+    "lint": "Changed runtime/unit/QA files and git diff --check pass."
+  },
+  "cpuBenchmark": {
+    "scope": "CPU-only actual runtime.synchronize methods, four synthetic53-bone/six-mesh actors. Baseline exact2fbe3e41 vs per-scan finite-palette reuse; original attribute and exact owner.valid guards identical for both. No native or whole-game performance acceptance.",
+    "records": [
+      {
+        "order": "ABBA",
+        "arm": "A",
+        "scans": 1000,
+        "elapsedMs": 111.02152900000002,
+        "entries": 4
+      },
+      {
+        "order": "ABBA",
+        "arm": "B",
+        "scans": 1000,
+        "elapsedMs": 85.788254,
+        "entries": 4
+      },
+      {
+        "order": "ABBA",
+        "arm": "B",
+        "scans": 1000,
+        "elapsedMs": 100.365566,
+        "entries": 4
+      },
+      {
+        "order": "ABBA",
+        "arm": "A",
+        "scans": 1000,
+        "elapsedMs": 99.160777,
+        "entries": 4
+      },
+      {
+        "order": "BAAB",
+        "arm": "B",
+        "scans": 1000,
+        "elapsedMs": 84.40934499999992,
+        "entries": 4
+      },
+      {
+        "order": "BAAB",
+        "arm": "A",
+        "scans": 1000,
+        "elapsedMs": 110.8275020000001,
+        "entries": 4
+      },
+      {
+        "order": "BAAB",
+        "arm": "A",
+        "scans": 1000,
+        "elapsedMs": 101.65366300000005,
+        "entries": 4
+      },
+      {
+        "order": "BAAB",
+        "arm": "B",
+        "scans": 1000,
+        "elapsedMs": 88.94829299999992,
+        "entries": 4
+      }
+    ]
+  },
+  "native": {
+    "profiles": {
+      "high": {
+        "quality": "high",
+        "controls": [
+          {
+            "view": "service-plaza",
+            "color": 0,
+            "depth": 0,
+            "restoredColor": 0,
+            "restoredDepth": 0,
+            "reference": {
+              "calls": 318,
+              "triangles": 279283
+            },
+            "candidate": {
+              "calls": 318,
+              "triangles": 279283
+            },
+            "sourceExact": true
+          },
+          {
+            "view": "west-homes",
+            "color": 0,
+            "depth": 0,
+            "restoredColor": 0,
+            "restoredDepth": 0,
+            "reference": {
+              "calls": 229,
+              "triangles": 247270
+            },
+            "candidate": {
+              "calls": 229,
+              "triangles": 247270
+            },
+            "sourceExact": true
+          },
+          {
+            "view": "south-homes",
+            "color": 0,
+            "depth": 0,
+            "restoredColor": 0,
+            "restoredDepth": 0,
+            "reference": {
+              "calls": 203,
+              "triangles": 218913
+            },
+            "candidate": {
+              "calls": 203,
+              "triangles": 218913
+            },
+            "sourceExact": true
+          }
+        ],
+        "arms": [
+          {
+            "mode": "reference",
+            "frames": 119,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 33.4,
+            "synchronousFrameCpuMedianMs": 19.900000035762787,
+            "callsMedian": 318,
+            "trianglesMedian": 279283,
+            "sourceExact": true
+          },
+          {
+            "mode": "candidate",
+            "frames": 119,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 33.4,
+            "synchronousFrameCpuMedianMs": 22.400000035762787,
+            "callsMedian": 318,
+            "trianglesMedian": 279283,
+            "sourceExact": true
+          },
+          {
+            "mode": "candidate",
+            "frames": 119,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 33.3,
+            "synchronousFrameCpuMedianMs": 19.200000047683716,
+            "callsMedian": 318,
+            "trianglesMedian": 279283,
+            "sourceExact": true
+          },
+          {
+            "mode": "reference",
+            "frames": 119,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 33.4,
+            "synchronousFrameCpuMedianMs": 19.200000047683716,
+            "callsMedian": 318,
+            "trianglesMedian": 279283,
+            "sourceExact": true
+          }
+        ],
+        "restored": true,
+        "pending": 0,
+        "shutdown": {
+          "shadowEntries": 0,
+          "shadowDisposed": true
+        }
+      },
+      "low": {
+        "quality": "low",
+        "controls": [
+          {
+            "view": "service-plaza",
+            "color": 0,
+            "depth": null,
+            "restoredColor": 0,
+            "restoredDepth": null,
+            "reference": {
+              "calls": 176,
+              "triangles": 107747
+            },
+            "candidate": {
+              "calls": 176,
+              "triangles": 107747
+            },
+            "sourceExact": true
+          },
+          {
+            "view": "west-homes",
+            "color": 0,
+            "depth": null,
+            "restoredColor": 0,
+            "restoredDepth": null,
+            "reference": {
+              "calls": 112,
+              "triangles": 78422
+            },
+            "candidate": {
+              "calls": 112,
+              "triangles": 78422
+            },
+            "sourceExact": true
+          },
+          {
+            "view": "south-homes",
+            "color": 0,
+            "depth": null,
+            "restoredColor": 0,
+            "restoredDepth": null,
+            "reference": {
+              "calls": 97,
+              "triangles": 65214
+            },
+            "candidate": {
+              "calls": 97,
+              "triangles": 65214
+            },
+            "sourceExact": true
+          }
+        ],
+        "arms": [
+          {
+            "mode": "reference",
+            "frames": 119,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "synchronousFrameCpuMedianMs": 12.299999952316284,
+            "callsMedian": 176,
+            "trianglesMedian": 107747,
+            "sourceExact": true
+          },
+          {
+            "mode": "candidate",
+            "frames": 119,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "synchronousFrameCpuMedianMs": 12.600000023841858,
+            "callsMedian": 176,
+            "trianglesMedian": 107747,
+            "sourceExact": true
+          },
+          {
+            "mode": "candidate",
+            "frames": 119,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "synchronousFrameCpuMedianMs": 10.700000047683716,
+            "callsMedian": 176,
+            "trianglesMedian": 107747,
+            "sourceExact": true
+          },
+          {
+            "mode": "reference",
+            "frames": 119,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "synchronousFrameCpuMedianMs": 11.400000035762787,
+            "callsMedian": 176,
+            "trianglesMedian": 107747,
+            "sourceExact": true
+          }
+        ],
+        "restored": true,
+        "pending": 0,
+        "shutdown": {
+          "shadowEntries": 0,
+          "shadowDisposed": true
+        }
+      }
+    },
+    "defaultLifecycle": "Both profiles pass actual four-class equipment removal/replacement, repeated quality changes, geometry/shadow toggles, entity-group detach/arrival, realm/entity clear and terminal shutdown. Each observed color geometry disposes once; borrowed materials0 before terminal scene teardown. Native owners/source-buffer/shadow-map identity and method restoration controls pass.",
+    "limits": "Native per-scan contrast CPU medians overlap and include a slower first High candidate arm22.4ms versus19.9ms reference; no reliable application-level gain attributed to palette reuse alone."
+  },
+  "connected": {
+    "terminal": {
+      "recordedUTC": "2026-10-13T17:15:00.182353+00:00",
+      "exitCode": 0,
+      "seconds": 98.99347235698951,
+      "source": "78d71790dfd5e5c7dde5ef900426b27a5202f1da",
+      "runtimeChanged": true,
+      "retriesRequested": 0,
+      "scope": "Actual Go-race disposable four-class14slot saved party; one native renderer/three live socket peers. Main untouched60warmup/180frame sample followed by validation-method reference49/candidate/candidate/reference49 ABBA, each unchanged60warmup/180frames. Exact original High350draws/250000triangles/20msmedian/33.4p95 evaluated separately; no gate waiver, campaign, capacity or soak replay."
+    },
+    "sanitization": {
+      "observedPreparedAccounts": 4,
+      "plaintextFilesScanned": 9,
+      "embeddedEntriesScanned": 2,
+      "remainingPreparedNames": 0,
+      "serverMarkers": {
+        "WARNING: DATA RACE": 0,
+        "panic:": 0,
+        "fatal error:": 0,
+        "Worker panic:": 0,
+        "Recovered from panic in Update:": 0
+      },
+      "native": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "maxRetry": 0
+    },
+    "referenceCommit": "8e5f888a66b65e6a69e26c62499b4113549b40c0",
+    "sourcePins": [
+      {
+        "path": "src/core/OpaqueSkinnedShadowBatches.js",
+        "sha256": "825a86a0b83c3a81b04f6c48689332bd463c527d815f777f4d5c3d67b3acf390"
+      },
+      {
+        "path": "src/core/OpaqueSkinnedColorBatches.js",
+        "sha256": "8b72da9957ca5f7f21b04a87c582b66a062a3b6940685934304f24ce35a45550"
+      },
+      {
+        "path": "src/core/OpaqueSkinnedShadowRuntime.js",
+        "sha256": "360842d554c0ac015ed7865fa176eb266d4ca0c438c4c100c06d6d13945c9de7"
+      }
+    ],
+    "mainSample": {
+      "frameMedianMs": 33.4,
+      "frameP95Ms": 66.6,
+      "cpuLoopMedianMs": 37.40000003576279,
+      "drawCallsMedian": 251,
+      "trianglesMedian": 169328,
+      "activeEntitiesMin": 23,
+      "activeEntitiesMax": 24
+    },
+    "mainOriginalHighBudgets": {
+      "frameMedianMs": {
+        "observed": 33.4,
+        "limit": 20,
+        "passes": false
+      },
+      "frameP95Ms": {
+        "observed": 66.6,
+        "limit": 33.4,
+        "passes": false
+      },
+      "drawCallsMedian": {
+        "observed": 251,
+        "limit": 350,
+        "passes": true
+      },
+      "trianglesMedian": {
+        "observed": 169328,
+        "limit": 250000,
+        "passes": true
+      }
+    },
+    "ABBA": [
+      {
+        "reference": true,
+        "profile": {
+          "frameMedianMs": 33.4,
+          "frameP95Ms": 50.1,
+          "cpuLoopMedianMs": 33.69999998807907,
+          "drawCallsMedian": 222,
+          "trianglesMedian": 170292,
+          "activeEntitiesMin": 22,
+          "activeEntitiesMax": 22
+        },
+        "after": {
+          "pendingGeometry": 0,
+          "colorEntries": 12,
+          "shadowEntries": 16,
+          "frameRestored": true
+        }
+      },
+      {
+        "reference": false,
+        "profile": {
+          "frameMedianMs": 33.3,
+          "frameP95Ms": 50,
+          "cpuLoopMedianMs": 30.30000001192093,
+          "drawCallsMedian": 235,
+          "trianglesMedian": 172103,
+          "activeEntitiesMin": 22,
+          "activeEntitiesMax": 22
+        },
+        "after": {
+          "pendingGeometry": 0,
+          "colorEntries": 12,
+          "shadowEntries": 16,
+          "frameRestored": true
+        }
+      },
+      {
+        "reference": false,
+        "profile": {
+          "frameMedianMs": 33.3,
+          "frameP95Ms": 50,
+          "cpuLoopMedianMs": 31.399999976158142,
+          "drawCallsMedian": 235,
+          "trianglesMedian": 172949,
+          "activeEntitiesMin": 22,
+          "activeEntitiesMax": 22
+        },
+        "after": {
+          "pendingGeometry": 0,
+          "colorEntries": 12,
+          "shadowEntries": 16,
+          "frameRestored": true
+        }
+      },
+      {
+        "reference": true,
+        "profile": {
+          "frameMedianMs": 33.3,
+          "frameP95Ms": 50,
+          "cpuLoopMedianMs": 32,
+          "drawCallsMedian": 220,
+          "trianglesMedian": 170170,
+          "activeEntitiesMin": 21,
+          "activeEntitiesMax": 22
+        },
+        "after": {
+          "pendingGeometry": 0,
+          "colorEntries": 12,
+          "shadowEntries": 16,
+          "frameRestored": true
+        }
+      }
+    ],
+    "methodRestored": true,
+    "allFourClassFourteenSlotFreshSavesPass": true,
+    "raceAndPanicMarkers": 0,
+    "ownedMongoAbsent": true,
+    "ownedContainer": "eidolon-terrain-save-qa-703be69bc3e3",
+    "limits": "One running disposable game: exact public49 validation methods/candidate/candidate/public49 ABBA. Each unchanged60warmup/180real frames. Existing live world/network/population evolution retained. All ownership, render, shader, gameplay and source geometry policies otherwise identical. No four-browser/battle/device/capacity/final-performance acceptance."
+  },
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-palette-validation-checks-20261013",
+    "entries": 46,
+    "inventorySHA256": "47b69db25055999cff76286dc575e9f7584e4a6bf443a70fb8290155b85f86e0"
+  },
+  "limits": "Combined connected candidate CPU medians30.3/31.4ms versus reference33.7/32.0ms are descriptive; live draw/triangle/population changes prevent a strict whole-frame speedup claim. All arms still exceed original20/33.4ms High timing targets. Main candidate33.4/66.6ms failure retained. Original town triangles, prior network/soak findings, full art/device/campaign/capacity/F1\u2013F5/beta/launch/handoff remain open. Public49 remains accepted; no50publication or full-goal completion."
+}
