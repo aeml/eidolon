@@ -348,6 +348,7 @@ jobs:
         env:
           EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
           EIDOLON_ISOLATED_QA_ROUTE: release-smoke
+          EIDOLON_ISOLATED_QA_NETWORK_MODE: private-smoke
         run: sg render -c 'npm run test:e2e:isolated'
 
       # Default Playwright output/report folders are cleared by subsequent

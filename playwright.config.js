@@ -66,7 +66,7 @@ export default defineConfig({
         video: hasCredentialedRoute ? 'off' : 'retain-on-failure'
     },
     webServer: useLocalServer ? {
-        command: 'npm run serve',
+        command: 'node scripts/serve-static.mjs',
         env: {
             ...process.env,
             PORT: String(localServerPort),

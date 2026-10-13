@@ -29,7 +29,24 @@ if [ "$qa_chrome" = /opt/google/chrome/google-chrome ]; then
     qa_chrome=/opt/google/chrome/chrome
 fi
 
-qa_args=(run --rm --init --network none --user "$(id -u):$(id -g)"
+qa_network=none
+if [[ -n "${EIDOLON_NATIVE_QA_NETWORK_CONTAINER:-}" ]]; then
+    # Only the disposable smoke fixture may join its own loopback namespace.
+    # It carries fresh synthetic credentials and has no host/external network.
+    if ! [[ "${EIDOLON_NATIVE_QA_NETWORK_CONTAINER}" =~ ^eidolon-isolated-qa-mongo-[a-z0-9][a-z0-9_.-]{0,30}$ ]] ||
+       ! [[ "${EIDOLON_E2E_USERNAME:-}" =~ ^codexqa[a-f0-9]{12}$ ]] ||
+       ! [[ "${EIDOLON_E2E_PASSWORD:-}" =~ ^[a-f0-9]{48}$ ]] ||
+       ! [[ "${EIDOLON_E2E_WS_URL:-}" =~ ^ws://127\.0\.0\.1:[0-9]+/ws$ ]] ||
+       [[ "${EIDOLON_E2E_REGISTER:-}" != 1 ]] ||
+       [[ -n "${EIDOLON_E2E_USERNAME_SECONDARY:-}${EIDOLON_E2E_PASSWORD_SECONDARY:-}${EIDOLON_E2E_BASE_URL:-}" ]] ||
+       [[ "$(docker inspect --format '{{.HostConfig.NetworkMode}} {{.State.Running}}' "${EIDOLON_NATIVE_QA_NETWORK_CONTAINER}")" != 'none true' ]]; then
+        echo 'Private native smoke requires its running network-none Mongo fixture and fresh synthetic loopback credentials.' >&2
+        exit 1
+    fi
+    qa_network="container:${EIDOLON_NATIVE_QA_NETWORK_CONTAINER}"
+fi
+
+qa_args=(run --rm --init --network "$qa_network" --user "$(id -u):$(id -g)"
     --group-add "$(stat -c '%g' /dev/dri/renderD128)" --device /dev/dri
     --workdir "$qa_root"
     --mount "type=bind,src=$qa_root,dst=$qa_root"
@@ -73,11 +90,17 @@ if [ "$qa_has_recorder" != true ]; then
     exit 1
 fi
 
-# The narrow allowlist carries QA configuration, never account credentials,
-# Docker access, the host network or arbitrary caller environment variables.
+# Visual stages carry only QA configuration. The guarded connected smoke adds
+# its fresh synthetic credentials below; neither path exposes Docker access,
+# the host network or arbitrary caller environment variables.
 for qa_variable in CI EIDOLON_E2E_WEB_PORT EIDOLON_E2E_NATIVE_COVERAGE_PENDING PLAYWRIGHT_HTML_OUTPUT_DIR; do
     if [ "${!qa_variable+x}" = x ]; then qa_args+=(--env "$qa_variable=${!qa_variable}"); fi
 done
+if [[ "$qa_network" != none ]]; then
+    for qa_variable in EIDOLON_E2E_WS_URL EIDOLON_E2E_USERNAME EIDOLON_E2E_PASSWORD EIDOLON_E2E_CLASS EIDOLON_E2E_FULL_GAMEPLAY EIDOLON_E2E_PORTAL_ONLY EIDOLON_E2E_REGISTER EIDOLON_E2E_SOURCE_COMMIT EIDOLON_E2E_SOURCE_DIRTY; do
+        if [[ "${!qa_variable+x}" = x ]]; then qa_args+=(--env "$qa_variable"); fi
+    done
+fi
 
 echo "Local native visual network: private loopback; Node $($qa_node --version); Chrome $($qa_chrome --version)"
 exec docker "${qa_args[@]}" "$qa_image" bash -c 'mkdir -p "$HOME"; exec "$@"' native-visual "$@"

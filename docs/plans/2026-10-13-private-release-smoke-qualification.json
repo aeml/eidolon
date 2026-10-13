@@ -1,0 +1,76 @@
+{
+  "recordedUTC": "2026-10-13T03:56:59.920985+00:00",
+  "source": "3748abea0c4c9a57746613e53494f301e587432c",
+  "status": "Private-network disposable release smoke qualified locally; ordinary master merge next. Public47 remains accepted; own48 deployment skipped.",
+  "CPU": {
+    "distinctChecks": 87,
+    "suites": 6,
+    "actualBoundaryRejections": 3,
+    "shellSyntax": "pass",
+    "changedFileLint": "pass"
+  },
+  "native": {
+    "passed": 4,
+    "skipped": 1,
+    "retries": 0,
+    "seconds": 96,
+    "sourceIdentity": "Final3748 source frontend and API build3748-dirty; untracked owned QA evidence marks dirty, tracked implementation clean. Earlier95-dirty first pass was diagnostic only after the direct-Node server command correction; final exact3748 repeats the changed startup configuration.",
+    "coverage": [
+      "login/movement/UI/reconnect",
+      "combat/loot/dungeon/persistence",
+      "allowlisted waypoint entry/exit",
+      "inventory drag-out/Journal reload/persistence"
+    ],
+    "optionalSkip": "Opt-in connected Ctrl-click jump not selected. Prior public43 scoped timing remains accepted."
+  },
+  "networkBoundary": {
+    "hostNamespace": "net:[4026531840]",
+    "privateInterfaces": [
+      "lo"
+    ],
+    "containers": [
+      {
+        "id": "6de84e618925f12eac103090eef4b22b01d9017c2023d72a2e61cbeedd1592c4",
+        "name": "/relaxed_grothendieck",
+        "mode": "container:9928aefe9f851343af1e7c3b89a4f9550ce7d29ca1cceb2a0bfa43216f07fabb",
+        "networkNamespace": "net:[4026536366]"
+      },
+      {
+        "id": "00b7d24934247006892e4bce318df59cccacc0423ee5a0b43a8f210bb94adb07",
+        "name": "/eidolon-isolated-qa-api-private-smoke-final-20261013",
+        "mode": "container:9928aefe9f851343af1e7c3b89a4f9550ce7d29ca1cceb2a0bfa43216f07fabb"
+      },
+      {
+        "id": "9928aefe9f851343af1e7c3b89a4f9550ce7d29ca1cceb2a0bfa43216f07fabb",
+        "name": "/eidolon-isolated-qa-mongo-private-smoke-final-20261013",
+        "mode": "none",
+        "networkNamespace": "net:[4026536366]"
+      }
+    ],
+    "allThreeSharePrivateNamespaceByDockerConfiguration": true,
+    "mongoAndBrowserNamespacesObservedEqual": true,
+    "hostNamespaceIsDifferent": true,
+    "apiDirectNamespaceRead": "Distroless API has no readlink tool; Docker container-network target is exact same Mongo ID."
+  },
+  "observer": {
+    "attachments": 5,
+    "executedTests": 4,
+    "skippedTests": 1,
+    "observedRequests": 3636,
+    "observedFailures": 16,
+    "finding": "16very-short(<20ms) ERR_ABORTED geometry-shard events from ServiceWorker responses retained. No ERR_NETWORK_CHANGED observed. No all-static-success or original45cause claim; bounded observer does not attribute deadline/worker/navigation cause.",
+    "privacy": "All request paths allowlisted, fixed codes/fields and array bounds checked; report credentials sanitized. Existing credentialed trace/video/automatic screenshot restrictions retained."
+  },
+  "failuresRetained": [
+    "Initial mongosh top-level-await readiness syntax failed before browser; async IIFE correction retained same60s readiness bound.",
+    "Initial local private CLI npx path failed before browser; direct installed Node/Playwright CLI and static-server command qualify on final source.",
+    "Supplemental namespace auditor tried readlink inside distroless API, which has no shell utilities. Corrected evidence uses exact Docker namespace target plus equal observed Mongo/browser namespace IDs and loopback-only interfaces.",
+    "Artifact checker skipped-fixture/external-path assumptions corrected against existing report; no native rerun for metadata review."
+  ],
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-private-release-smoke-checks-20261013",
+    "entries": 26,
+    "inventorySHA256": "f120539583ee87e5f1eaf363c039f28edcde7c627ce30ec0f33b7c60f515ad49"
+  },
+  "limits": "No public deployment, original48interface-cause closure, broad transport/capacity/final-art/performance/full-goal acceptance. Only release-smoke uses private mode; other connected/disposable routes preserve their existing behavior. No production credentials, host network, Docker daemon or arbitrary environment passed to browser container."
+}

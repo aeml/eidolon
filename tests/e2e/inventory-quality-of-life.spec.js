@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './static-delivery-test.js';
 import { collectBrowserFailures, credentialsFromEnvironment, exerciseCombatAndLoot, loginAndEnterWorld, projectEntity, returnToTown, setAutoLootThroughSettings } from './helpers.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
