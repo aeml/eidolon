@@ -5,7 +5,8 @@ const storage = attribute => attribute.isInterleavedBufferAttribute
     ? { array: attribute.data.array, stride: attribute.data.stride, offset: attribute.offset }
     : { array: attribute.array, stride: attribute.itemSize, offset: 0 };
 const equalValues = (a, b) => a.length === b.length && a.every((value, i) => Object.is(value, b[i]));
-const sameFormat = (a, b) => storage(a).array.constructor.name === storage(b).array.constructor.name &&
+const attributeArray = attribute => attribute.isInterleavedBufferAttribute ? attribute.data.array : attribute.array;
+const sameFormat = (a, b) => attributeArray(a).constructor.name === attributeArray(b).constructor.name &&
     Object.is(a.itemSize, b.itemSize) && Object.is(a.normalized, b.normalized) &&
     Object.is(a.gpuType ?? THREE.FloatType, b.gpuType ?? THREE.FloatType);
 const finiteSkeleton = (skeleton, cache) => {
