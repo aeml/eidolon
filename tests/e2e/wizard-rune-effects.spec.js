@@ -4,6 +4,7 @@ import { requiresHardwareWebGL } from './browserLaunchPolicy.js';
 
 test.use({ video: 'on' });
 for (const quality of ['high', 'low']) test(`prepared ${quality} paid Wizard rune effects render and retire`, async ({ page, baseURL }, testInfo) => {
+    test.setTimeout(requiresHardwareWebGL() ? 120_000 : 180_000);
     const failures = collectBrowserFailures(page, baseURL);
     await page.setViewportSize({ width: quality === 'low' ? 390 : 1280, height: 844 });
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
@@ -90,7 +91,18 @@ for (const quality of ['high', 'low']) test(`prepared ${quality} paid Wizard run
     }
     await expect.poll(() => page.evaluate(() => window.__wizardEffects.spawned.filter(r => r.entity.type === 'Meteor').length), { timeout: 10000 }).toBe(6);
     await page.screenshot({ path: testInfo.outputPath(`wizard-runes-${quality}.png`) });
-    await expect.poll(() => page.evaluate(() => window.__wizardEffects.spawned.filter(r => ['Meteor', 'FlameTornado', 'AreaOfEffect'].includes(r.entity.type)).every(r => r.retiredAt !== undefined)), { timeout: 20000 }).toBe(true);
+    try {
+        // Software WebGL can advance less than one game second per wall second.
+        // Keep exact simulated lifetime assertions below and the native deadline.
+        await expect.poll(() => page.evaluate(() => window.__wizardEffects.spawned.filter(r => ['Meteor', 'FlameTornado', 'AreaOfEffect'].includes(r.entity.type)).every(r => r.retiredAt !== undefined)), { timeout: requiresHardwareWebGL() ? 20000 : 90000 }).toBe(true);
+    } catch (error) {
+        const retirement = await page.evaluate(() => {
+            const q = window.__wizardEffects;
+            return { elapsed: q.elapsed, effects: q.spawned.filter(r => ['Meteor', 'FlameTornado', 'AreaOfEffect'].includes(r.entity.type)).map(r => ({ type: r.entity.type, at: r.at, retiredAt: r.retiredAt, active: r.entity.isActive, life: r.entity.life, duration: r.entity.duration })) };
+        });
+        await testInfo.attach('retirement-timeout', { body: JSON.stringify({ initial, retirement }), contentType: 'application/json' });
+        throw error;
+    }
     const result = await page.evaluate(() => {
         const q = window.__wizardEffects;
         return { manaSpent: q.beforeMana - q.owner.stats.mana, hits: q.hits,

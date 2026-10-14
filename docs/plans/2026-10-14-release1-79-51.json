@@ -1,6 +1,6 @@
 {
   "version": "Alpha 1.79.51",
-  "status": "Pushed release candidate; first CI38511451197 found stale shared combo-description fixture before deployment. Corrected fixture candidate awaits its own gates.",
+  "status": "Corrected1.79.51 candidate; first run38511451197 failed before deployments. Superseded queued7a6b run was automatically replaced; incompletebb9 run cancelled after software-rendering diagnosis to avoid redundant known-failing CI.",
   "preparedAtUTC": "2026-10-14T03:57:21.415931+00:00",
   "scope": [
     "Wizard rune coverage for every learned skill",
@@ -39,6 +39,8 @@
     "validation": "62 client checks across3 suites and focused Go race5.017s pass; actual paid precision rune/earned barrage cases included.",
     "fullClient": "First run765suites:762pass/3fail,11612pass/3fail. Shared combo copy plus two prior reflection fixtures failed; runtime unchanged by corrections.",
     "reflectionFixtures": "Whirlwind target now has the same GameEngine room ownership as production addEntity, preserving the strict foreign-instance guard and lethal reflection/death assertion. Phase expectation now asserts caster attribution and reflection context rather than the old null-attacker call.",
-    "additionalValidation": "137 checks across Whirlwind, Phase, Arcane Shield, Fortress and combo suites pass2.556s. Earlier62precision/combo and Go race checks remain valid."
+    "additionalValidation": "137 checks across Whirlwind, Phase, Arcane Shield, Fortress and combo suites pass2.556s. Earlier62precision/combo and Go race checks remain valid.",
+    "browser": "Hosted browser shard2 failed High effect retirement at20s wall. Local SwiftShader reproduces:14 supplied items loaded, no pending geometry; game elapsed12.29386s but Inferno cast at5.99386s, so its12s field had aged only6.3s. Other effects already retired. Low and native checks pass.",
+    "browserCorrection": "Software WebGL receives90s wall wait/180s case budget; native20s retirement deadline and exact11.8\u201312.2 game-second Inferno lifetime stay unchanged. Diagnostic attachment retained on failure. Corrected actual SwiftShader High case passes1.7m with normal paid casts, retirement, meshes and empty pending jobs."
   }
 }
