@@ -1,6 +1,6 @@
 # Release-readiness remaining work
 
-Current checkpoint: October 13, 2026. The full goal remains active. No feature
+Current checkpoint: October 14, 2026. The full goal remains active. No feature
 freeze, final modern-art acceptance, closed beta or launch has been declared.
 
 This register records current delivery states and next actions. The complete
@@ -21,9 +21,22 @@ Every explicit requirement in those sources remains part of the completion audit
 
 ## October14 implementation continuation
 
-Alpha1.79.50 is being prepared with the qualified elite publication lock and
-previously qualified local renderer/glazing work. Own CI, deployment and fresh
-public verification remain required. Private Wizard work stays unselected.
+Alpha1.79.50 is pushed at `b2c246c76`; CI38506856076 is active.
+The initial lint failure and calendar-expired VIP fixture are corrected; current
+full client CI is green. Deployment and fresh public verification remain pending.
+Soak scheduling is disabled by owner request until features are nearly complete.
+
+A coherent Wizard candidate is prepared privately as1.79.51: all13learned skills
+have three optional runes; precision, Fireball, Shield and Meteor consumers plus
+Whip/Tornado/Inferno/Warp choices are implemented. Six rune UI, three disposable
+connected cast/save and two new native effect cases pass, with retained earlier
+component evidence. Focused client/race, learned breakpoints and loadouts pass;
+local full in-band Jest reached its4GiB heap limit, so no full local pass is
+claimed. Full release CI remains required. Qualified Fortress rune/Gravity
+boundary repair is included. [Wizard evidence](2026-10-14-wizard-class-completion.json).
+Fighter's new rune expansion remains isolated while qualification proceeds;
+Rogue, Cleric, human tuning and original world/art/device/operations gates remain.
+No new release is published until50has been verified.
 
 The scheduled48 soak38342666778 is now terminal **failed**, superseding all
 running labels below: the owned server crashed with concurrent map read/write.

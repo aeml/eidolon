@@ -1852,3 +1852,17 @@ capacity limits. Continue focused tests, race regressions and ordinary release
 checks without per-version stress tests.
 
 October14: prepared coherent Alpha1.79.50 with qualified elite entity-map publication locking, prior validated renderer allocation reductions and household glazing. Focused race/client/content/lint checks pass with supported Node24; initial unsupported-Node18 archive failure retained. Wizard remains private. Own ordered CI/deployment/public acceptance required before successor publication.
+
+October14 continued implementation:50is pushed atb2c246c76, CI38506856076active;
+initial lint and fixed-date VIP fixture failures corrected. Full client CI green,
+remaining ordered gates/live verification pending. Soak scheduling remains off
+per owner direction. Private51now integrates Wizard39runes/13skills, Meteor and
+missile parity, inherited Fireball/Shield/Focus work and qualified Fortress rune
+reflection/immovability repair. Six rune UI, three connected saved-choice/cast and
+two High/Low native effect cases pass. Full local in-band Jest stopped at4GiB heap;
+retain failure and use worker-based releaseCI instead of repeating that command.
+Versions/486cumulative notes are prepared;418version/archive/wallet/catalog checks,
+whole lint and14content groups pass. Hold publication until50terminal acceptance.
+Fighter24new rune choices are isolated and being qualified;328focused client,
+new paid-cast race/learned/loadout and six rune UI cases pass. No new soak, human
+balance/physical-device/whole-game readiness claim. Remaining work continues.

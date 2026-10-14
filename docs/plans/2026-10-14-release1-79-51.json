@@ -1,0 +1,33 @@
+{
+  "version": "Alpha 1.79.51",
+  "status": "Prepared privately; publication held until1.79.50 terminal deployment verification",
+  "preparedAtUTC": "2026-10-14T03:57:21.415931+00:00",
+  "scope": [
+    "Wizard rune coverage for every learned skill",
+    "Paid precision/Focus, Fireball/Magma, Shield and Meteor behavior consistency",
+    "Fighter Iron Fortress rune and Gravity immovability repair"
+  ],
+  "sourceReceipts": [
+    "2026-10-14-wizard-class-completion.json",
+    "2026-10-14-wizard-fireball-private-stage.json",
+    "2026-10-14-wizard-shield-private-stage.json",
+    "2026-10-13-wizard-precision-private-stage.json",
+    "2026-10-14-fortress-rune-parity.json"
+  ],
+  "checks": {
+    "releaseClient": {
+      "passed": 418,
+      "suites": 4
+    },
+    "contentGroups": 14,
+    "lint": "whole source passes",
+    "patchNotes": 486,
+    "historyPages": 48
+  },
+  "limits": [
+    "Full candidate CI and deployed exact identity/assets/account smoke remain required.",
+    "Full local in-band Jest aborted at4GiB heap; VIP fixture corrected independently with21passes.",
+    "Prepared/connected checks do not certify human balance, pacing, real phones, capacity or final art.",
+    "Remaining Fighter/Rogue/Cleric and original roadmap work remains open."
+  ]
+}
