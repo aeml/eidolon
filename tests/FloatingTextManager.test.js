@@ -83,3 +83,23 @@ test('structured actor text is literal text, never executable markup', () => {
     expect(t.el.querySelector('img')).toBeNull();
     expect(t.el.querySelector('[data-floating-source]').textContent).toBe('<img src=x onerror=alert(1)>');
 });
+
+test('plain skill messages wrap within the viewport and release their layout on numeric reuse', () => {
+    manager.spawn('SERAPH SUMMONED!', new THREE.Vector3());
+    const t = manager.texts[0];
+    expect(t.bounded).toBe(true);
+    expect(t.el.style.whiteSpace).toBe('normal');
+    expect(parseFloat(t.el.style.maxWidth) * t.popScale).toBeCloseTo(366);
+    viewport(844, 390); manager.update(.1);
+    expect(parseFloat(t.el.style.maxWidth) * t.popScale).toBeCloseTo(820);
+    t.position.x = 1000; manager.update(.1);
+    expect(t.el.style.visibility).toBe('hidden');
+    manager.update(2); manager.spawn('1287', new THREE.Vector3());
+    const damage = manager.texts[0];
+    expect(damage.el).toBe(t.el);
+    expect(damage.bounded).toBe(false);
+    expect(damage.el.style.maxWidth).toBe('');
+    expect(damage.el.style.overflowWrap).toBe('');
+    expect(damage.el.style.visibility).toBe('visible');
+    expect(damage.popScale).toBe(1.5);
+});
