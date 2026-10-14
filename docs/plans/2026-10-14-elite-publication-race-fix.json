@@ -1,0 +1,168 @@
+{
+  "recordedUTC": "2026-10-14T02:56:19.312917+00:00",
+  "source": "99cfd7a2a14ac8a60a137a96b7b9a56ab52da6fc",
+  "status": "Qualified local entity-map publication fix. Merge into master; publication and fresh capacity acceptance remain pending.",
+  "problem": "GetPlayerViewPosition already holds the world read lock. Runtime five-minute spawnEliteInRect published to Entities without any world write lock, despite an update-loop comment claiming it locked internally.",
+  "changes": "Recover elite entry before publication; lock the world across entity-map insertion and spatial membership, then unlock before elite_spawn listeners. Initialization and periodic spawns share this owner. No content/count/cadence/visibility/queue/threshold changes.",
+  "regression": {
+    "before": "Original source reproduces race-detector writes at spawnEliteInRect against GetPlayerViewPosition/map snapshots and a fatal map iteration/write. Original failure retained.",
+    "after": "37 race cases pass:25 game/12 root. Four readers overlap200 actual elite publications, callbacks reenter view lookup and all201 map/spatial members remain. Root delivery remains live through64 forced real periodic spawn boundaries/1000 warnings, with no healthy recipient retirement. Population/worker/static bookkeeping checks retained.",
+    "scope": "Bounded correctness/concurrency evidence, not a replacement for the failed24h100-client campaign."
+  },
+  "failedSoak": {
+    "observedAtUtc": "2026-10-14T02:26:58.050848+00:00",
+    "run": {
+      "databaseId": 38342666778,
+      "attempt": 1,
+      "headSha": "9b536c1cf6655e7e138567e1678497c626870d6b",
+      "conclusion": "failure",
+      "job": "100-client authoritative-state soak",
+      "jobId": 115118465046,
+      "failedStep": "Run multiplayer soak",
+      "failure": "AssertionError: Owned soak server exited during load",
+      "jobStartedAt": "2026-10-13T03:44:56Z",
+      "jobCompletedAt": "2026-10-14T01:50:54Z",
+      "wallDurationSeconds": 79558.0
+    },
+    "serverFailure": {
+      "fatal": "concurrent map read and map write",
+      "stack": [
+        "internal/game.(*World).GetPlayerViewPosition",
+        "broadcast_visibility.go:91 main.deliverBroadcast",
+        "network.go:44 main.runHub"
+      ],
+      "processEvidence": "artifacts/nightly-soak-38342666778/soak-process.log"
+    },
+    "load": {
+      "connected": 100,
+      "joined": 100,
+      "stateFrames": 216544390,
+      "readErrors": 100,
+      "readErrorsPerClient": "one terminal reader error per client observation",
+      "writeErrors": 0,
+      "decodeErrors": 0,
+      "readFailureCategories": {
+        "abnormal": 80,
+        "unknown": 20,
+        "timeout": 0,
+        "policy": 0,
+        "goingAway": 0,
+        "normal": 0,
+        "protocol": 0,
+        "tooBig": 0,
+        "server": 0,
+        "eof": 0
+      },
+      "minFramesPerClient": 54170,
+      "minActiveMsPerClient": 1794514,
+      "maxStateGapMs": 848,
+      "cohortClients": 100,
+      "latestFirstMs": 1791863135501,
+      "earliestLastMs": 1791864922187,
+      "commonActiveMs": 1786686,
+      "commonActiveHuman": "29m 46.686s",
+      "ownStateClients": 100,
+      "minOwnUpdates": 54170,
+      "admission": {
+        "authenticated": 100,
+        "failed": 0,
+        "maxRegistrationMs": 62,
+        "maxLoginMs": 84,
+        "maxJoinMs": 53
+      },
+      "recoveries": {
+        "clients": 100,
+        "requested": 3488,
+        "completed": 3488,
+        "pending": 0,
+        "failed": 0
+      },
+      "thresholdAssessment": {
+        "perClientMinFramesRequired": 432000,
+        "perClientMinFramesObserved": 54170,
+        "pass": false,
+        "perClientActiveMsRequired": 77760000,
+        "perClientActiveMsObserved": 1794514,
+        "passActive": false,
+        "common100ClientIntervalObservedMs": 1786686,
+        "readErrorsRequired": 0,
+        "readErrorsObserved": 100,
+        "readErrorsPass": false,
+        "writeErrorsRequired": 0,
+        "writeErrorsObserved": 0,
+        "decodeErrorsRequired": 0,
+        "decodeErrorsObserved": 0,
+        "note": "The run failed earlier at the owned-server liveness assertion, before validateSoakEvidence completed; these are the unchanged validator thresholds applied to the recorded client summary."
+      }
+    },
+    "policyAtHead": {
+      "durationDefault": "24h",
+      "jobTimeoutMinutes": 1500,
+      "minimumClientStateRateDefaultPerSecond": 5,
+      "minFramesPerClient": 432000,
+      "minActiveMsPerClient": 77760000,
+      "minimumCoverageFraction": 0.9,
+      "maxReadErrors": 0,
+      "maxWriteErrors": 0,
+      "maxDecodeErrors": 0,
+      "requiredConnectedAndJoined": 100,
+      "requiredAuthenticated": 100,
+      "recoveryFailuresAllowed": 0,
+      "source": "scripts/run-nightly-soak.mjs and scripts/lib/soak-policy.mjs at head SHA"
+    },
+    "healthSamples": {
+      "count": 1324,
+      "allStatusOk": true,
+      "allDatabaseReady": true,
+      "allExpectedCommit": true,
+      "maxWebsocketClosureCounters": {
+        "accessDenied": 0,
+        "accountRecovery": 0,
+        "adminAdmission": 0,
+        "adminStorage": 0,
+        "hubShutdown": 0,
+        "inboundLimit": 0,
+        "peerAbnormal": 0,
+        "peerGoingAway": 0,
+        "peerNormal": 0,
+        "peerPolicy": 0,
+        "peerProtocol": 0,
+        "peerServer": 0,
+        "priorityOverflow": 3,
+        "qaDisconnect": 0,
+        "queuesClosed": 0,
+        "readNetwork": 0,
+        "readOther": 0,
+        "readTimeout": 0,
+        "sessionReplaced": 0,
+        "writeNetwork": 0,
+        "writeOther": 0,
+        "writeTimeout": 0
+      },
+      "maxBroadcastCounters": {
+        "queued": 3,
+        "dropped": 0,
+        "encounterQueued": 0,
+        "encounterDropped": 0,
+        "invalidDropped": 0,
+        "visualRecipientDropped": 0
+      }
+    },
+    "artifact": {
+      "id": 11864701921,
+      "name": "nightly-soak-38342666778",
+      "apiSha256": "4d748e2ad3aecdd97017297f1a9ecf44c8ae90ae2479117738023a0b06631bca",
+      "zipPath": "nightly-soak-38342666778.zip"
+    }
+  },
+  "causalLimit": "The soak captured only the fatal reader stack. The independent regression proves this unlocked writer can race that exact reader; it does not identify the unique writer executing at the original crash or certify all concurrency paths.",
+  "custody": {
+    "directory": "/home/aeml/.local/share/eidolon-elite-map-race-checks-20261014",
+    "files": 8,
+    "inventorySHA256": "7f3f1f73e7cec7d1f2b071c7707a49ff605a7d0f44f06d725b7826059bf999f9",
+    "terminalDirectory": "/home/aeml/.local/share/eidolon-master-20261011/.qa-soak48-terminal",
+    "terminalFiles": 10,
+    "terminalInventorySHA256": "9bcacd0647b09a82cf107caa141ed015b871c1560dde722462439a754d110e79"
+  },
+  "remaining": "No soak retry/cancel/new launch.100-client24h gate, original priorityOverflow observations, public release verification, all world/art/device/beta/launch/handoff requirements remain open. Private Wizard rework stays unselected."
+}
