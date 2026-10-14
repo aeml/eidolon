@@ -1,3 +1,4 @@
+import { getWizardBranchPlan } from '../skills/wizardBranchRunes.js';
 import { Actor } from './Actor.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
@@ -19,13 +20,19 @@ const friendlyClasses = new Set(['Wizard', 'Cleric', 'Fighter', 'Rogue', 'Avengi
 
 export function applyOfflineTimeWarp(source, engine) {
     if (source.isRemote || source.isMultiplayer || engine?.isMultiplayer || source.gameEngine?.isMultiplayer) return;
-    source.cooldowns.Teleport = 0;
-    source.cooldowns['Gravity Well'] = 0;
-    source.offlineTeleportCharges = 0;
-    source.offlineTeleportChargeTimer = 0;
-    if (['Teleport', 'Gravity Well'].includes(source.abilityName)) source.abilityCooldown = 0;
+    const plan = getWizardBranchPlan('Time Warp', source.skillRunes?.['Time Warp']);
+    if (plan.resetTeleport) {
+        source.cooldowns.Teleport = 0;
+        source.offlineTeleportCharges = 0;
+        source.offlineTeleportChargeTimer = 0;
+        if (source.abilityName === 'Teleport') source.abilityCooldown = 0;
+    }
+    if (plan.resetGravity) {
+        source.cooldowns['Gravity Well'] = 0;
+        if (source.abilityName === 'Gravity Well') source.abilityCooldown = 0;
+    }
     const radius = getAbilityAoeRadius('Wizard', 'Time Warp', source);
-    const duration = getWizardEffectDuration(source, 'Time Warp', 8);
+    const duration = getWizardEffectDuration(source, 'Time Warp', plan.duration);
     // Snapshot before recalculation; the actual equipped set owns this effect.
     const zoneWide = Object.values(source.activeSetBonuses || {}).some(set => set.specials?.timeWarpZone > 0);
     for (const target of new Set([source, ...(engine?.chunkManager?.getActiveEntities() || [])])) {

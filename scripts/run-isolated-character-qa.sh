@@ -666,6 +666,9 @@ run_well_rested() {
 
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
+  wizard-runes)
+    EIDOLON_E2E_CLASS=Wizard npx playwright test --retries=0 --output=test-results/wizard-runes tests/e2e/wizard-runes-gameplay.spec.js
+    ;;
   terrain-profile)
     # Test the public startup selection, not the legacy QA elevation switch.
     EIDOLON_E2E_TERRAIN_PROFILE="${EIDOLON_ISOLATED_QA_TERRAIN_PROFILE:-flat-v1}" \

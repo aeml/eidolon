@@ -1,10 +1,14 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
-const skills = ['Scorch Beam', 'Arcane Missiles', 'Spell Focus', 'Dragonfire Lance'];
+const branches = [
+    { branch: 'A', skills: ['Flame Whip', 'Flame Tornado', 'Meteor Drop', 'Inferno Cataclysm'] },
+    { branch: 'B', skills: ['Scorch Beam', 'Arcane Missiles', 'Spell Focus', 'Dragonfire Lance'] },
+    { branch: 'C', skills: ['Arcane Shield', 'Teleport', 'Gravity Well', 'Time Warp'] }
+];
 
-for (const phone of [false, true]) {
-    test.describe(phone ? 'phone precision rune choices' : 'desktop precision rune choices', () => {
+for (const { branch, skills } of branches) for (const phone of [false, true]) {
+    test.describe(`${branch} ${phone ? 'phone' : 'desktop'} rune choices`, () => {
         test.use({ viewport: phone ? { width: 390, height: 844 } : { width: 1280, height: 844 },
             hasTouch: phone, isMobile: phone, actionTimeout: 12_000 });
         test('all twelve choices are readable and wait for acknowledgement in prepared UI', async ({ page, baseURL }, testInfo) => {
@@ -12,18 +16,18 @@ for (const phone of [false, true]) {
             await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
             await page.goto('/', { waitUntil: 'networkidle' });
             // Real browser inputs and UI; simulated server acknowledgements.
-            await page.evaluate(async phone => {
+            await page.evaluate(async ({ phone, branch, skills }) => {
                 const { UIManager } = await import('/src/ui/UIManager.js');
                 const { CONSTANTS } = await import('/src/core/Constants.js');
                 document.getElementById('start-screen').style.display = 'none';
                 if (phone) document.body.classList.add('mobile-mode');
                 const ui = new UIManager(phone), calls = [];
-                const player = { id: 'prepared-precision-ui', subType: 'Wizard', level: 100, selectedBranch: 'B',
-                    talentRanks: {}, skillRunes: {}, unlockedSkills: ['Fireball', 'Scorch Beam', 'Arcane Missiles', 'Spell Focus', 'Dragonfire Lance'] };
+                const player = { id: 'prepared-precision-ui', subType: 'Wizard', level: 100, selectedBranch: branch,
+                    talentRanks: {}, skillRunes: {}, unlockedSkills: ['Fireball', ...skills] };
                 ui.lastPlayerRef = player;ui.showHUD();ui.skillTree.toggle();
                 ui.skillTree.onSelectRune = (skill, id, requestId) => calls.push({ skill, id, requestId });
                 window.__precisionRunes = { ui, player, calls, catalog: CONSTANTS.SKILL_RUNES.Wizard };
-            }, phone);
+            }, { phone, branch, skills });
             const content = page.locator('#skill-tree-content');
             await (phone ? page.locator('.phone-build-tabs') : content).getByRole('button', { name: 'Runes', exact: true }).click();
             const choices = await page.evaluate(skills => window.__precisionRunes.catalog.filter(rune => skills.includes(rune.skill)), skills);

@@ -45,10 +45,10 @@ True passive talents do not create a cast action and are intentionally excluded 
 | Rogue | Tripwire | trap | place | impact@target | tripwire | class-handler | explicit | none |
 | Rogue | Cloak & Vanish | buff | vanish | smoke@source, ring@source | stealth | class-handler | explicit | Swift (cloak_swift)<br>Lasting Shadow (cloak_longer)<br>Prepared Ambush (cloak_ambush) |
 | Wizard | Fireball | projectile | cast | burst@source | none | class-handler | explicit | Magma Orb (fireball_magma)<br>Chain Reaction (fireball_chain)<br>Empowered (fireball_empowered) |
-| Wizard | Flame Whip | cone | sweep | cone_large@source | none | class-handler | explicit | none |
-| Wizard | Flame Tornado | projectile-area | cast | spin@target | none | class-handler | explicit | none |
+| Wizard | Flame Whip | cone | sweep | cone_large@source | none | class-handler | explicit | Reach (flamewhip_reach)<br>Binding Flame (flamewhip_binding)<br>Flash Lash (flamewhip_flash) |
+| Wizard | Flame Tornado | projectile-area | cast | spin@target | none | class-handler | explicit | Firefront (flametornado_broad)<br>Firestorm (flametornado_swift)<br>Fire Needle (flametornado_focused) |
 | Wizard | Meteor Drop | delayed-area | heavy-cast | telegraph@target, ring@target | none | class-handler | explicit | Cluster (meteor_cluster)<br>Extinction (meteor_extinction)<br>Apocalypse (meteor_apocalypse) |
-| Wizard | Inferno Cataclysm | persistent-area | heavy-cast | ring@target, burst@target | inferno_cataclysm | class-handler | explicit | none |
+| Wizard | Inferno Cataclysm | persistent-area | heavy-cast | ring@target, burst@target | inferno_cataclysm | class-handler | explicit | Lingering Embers (inferno_lingering)<br>Crucible (inferno_concentrated)<br>Flashburn (inferno_flashburn) |
 | Wizard | Scorch Beam | beam | channel | beam@target | none | class-handler | explicit | Longshot (scorchbeam_longshot)<br>Incision (scorchbeam_incision)<br>Snare (scorchbeam_snare) |
 | Wizard | Arcane Missiles | projectile | volley | burst@source | none | class-handler | explicit | Salvo (arcanemissiles_salvo)<br>Compression (arcanemissiles_compression)<br>Convergence (arcanemissiles_convergence) |
 | Wizard | Spell Focus | buff | channel | buff@source, sphere@source | spell_focus | class-handler | explicit | Reservoir (spellfocus_reservoir)<br>Aegis (spellfocus_aegis)<br>Overchannel (spellfocus_overchannel) |
@@ -56,7 +56,7 @@ True passive talents do not create a cast action and are intentionally excluded 
 | Wizard | Teleport | movement | teleport | smoke@source, burst@target, ring@source, ring@target | none | class-handler | explicit | Blink (teleport_blink)<br>Phase (teleport_phase)<br>Warp (teleport_warp) |
 | Wizard | Arcane Shield | buff | buff | sphere@source, buff@source | arcane_shield | class-handler | explicit | Extended (arcaneshield_extended)<br>Reflective (arcaneshield_reflective)<br>Explosive (arcaneshield_explosive) |
 | Wizard | Gravity Well | persistent-area | heavy-cast | ring@target, sphere@target | gravity_well | class-handler | explicit | Expanded (gravitywell_expanded)<br>Crushing (gravitywell_crushing)<br>Black Hole (gravitywell_blackhole) |
-| Wizard | Time Warp | buff-area | channel | ring@source, buff@source | time_warp | class-handler | explicit | none |
+| Wizard | Time Warp | buff-area | channel | ring@source, buff@source | time_warp | class-handler | explicit | Communion (timewarp_communion)<br>Enduring Time (timewarp_lingering)<br>Quickening (timewarp_quickening) |
 | Cleric | Spirit Guardians | persistent-aura | summon | buff@source, ring@source | spirit_guardians | class-handler | explicit | Expanded (spirits_expanded)<br>Vengeful (spirits_vengeful)<br>Sanctuary (spirits_sanctuary) |
 | Cleric | Healing Light | heal | cast | pillar@target, burst@target, ring@target | none | class-handler | explicit | Beacon (healinglight_beacon)<br>Renewal (healinglight_renewal)<br>Divine (healinglight_divine) |
 | Cleric | Guardian Embrace | persistent-aura | channel | ring@source, buff@source | guardian_embrace | class-handler | explicit | none |

@@ -9,6 +9,7 @@ import {
 } from '../src/art/ProceduralProjectileImpacts.js';
 import { createTransientEffect } from '../src/core/TransientEffects.js';
 import { Projectile } from '../src/entities/Projectile.js';
+import { Imp } from '../src/entities/Imp.js';
 import { getProjectileImpactRadius } from '../src/skills/abilityRadii.js';
 
 const TYPES = Object.freeze([
@@ -193,15 +194,9 @@ describe('procedural projectile impacts', () => {
         const projectile = new Projectile(`local-${type}`, owner(), type,
             new THREE.Vector3(), new THREE.Vector3(0, 0, 1));
         projectile.velocity.set(0, 0, 0);
-        const target = {
-            id: `target-${type}`,
-            isActive: true,
-            state: 'IDLE',
-            radius: 0.5,
-            position: new THREE.Vector3(),
-            takeDamage: jest.fn(),
-            constructor: { name: 'Enemy' }
-        };
+        const target = new Imp(`target-${type}`);
+        target.position.set(0, 0, 0); target.radius = .5;
+        target.stats.hp = target.stats.maxHp = 10000;
         const spawnTransientEffect = jest.fn(() => true);
         projectile.update(0.016, null, null, { getActiveEntities: () => [target] }, null, {
             spawnTransientEffect,
@@ -213,6 +208,7 @@ describe('procedural projectile impacts', () => {
             0xffffff,
             expect.objectContaining({ projectileType: type, targetId: target.id })
         );
+        projectile.dispose(); target.dispose();
     });
 
     test('server-authoritative projectiles never predict duplicate client collision impacts', () => {

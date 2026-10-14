@@ -7,7 +7,7 @@ func TestRuneCatalogHasCanonicalClassCoverage(t *testing.T) {
 		runes := GetAllRunesForClass(classType)
 		want := 15
 		if classType == "Wizard" {
-			want = 27
+			want = 39
 		}
 		if len(runes) != want {
 			t.Fatalf("%s has %d runes, want %d", classType, len(runes), want)
@@ -53,13 +53,13 @@ func TestRuneFilteringHonorsSkillAndUnlockLevel(t *testing.T) {
 	if got := len(GetUnlockedRunes("Wizard", 49)); got != 0 {
 		t.Fatalf("level 49 unlocked %d runes, want 0", got)
 	}
-	if got := len(GetUnlockedRunes("Wizard", 50)); got != 9 {
-		t.Fatalf("level 50 unlocked %d runes, want 9", got)
+	if got := len(GetUnlockedRunes("Wizard", 50)); got != 13 {
+		t.Fatalf("level 50 unlocked %d runes, want 13", got)
 	}
-	if got := len(GetUnlockedRunes("Wizard", 70)); got != 18 {
-		t.Fatalf("level 70 unlocked %d runes, want 18", got)
+	if got := len(GetUnlockedRunes("Wizard", 70)); got != 26 {
+		t.Fatalf("level 70 unlocked %d runes, want 26", got)
 	}
-	if got := len(GetUnlockedRunes("Wizard", 90)); got != 27 {
-		t.Fatalf("level 90 unlocked %d runes, want 27", got)
+	if got := len(GetUnlockedRunes("Wizard", 90)); got != 39 {
+		t.Fatalf("level 90 unlocked %d runes, want 39", got)
 	}
 }

@@ -111,7 +111,7 @@ func effectiveAbilityCooldown(player *Entity, skillName string, base time.Durati
 	skill := math.Max(0, math.Min(1, player.GetSkillCdrBonus(skillName)))
 	runeCooldown := 1.0
 	if player.SubType == "Wizard" {
-		runeCooldown = planWizardPrecision(skillName, player.GetRuneForSkill(skillName), false).cooldown
+		runeCooldown = planWizardPrecision(skillName, player.GetRuneForSkill(skillName), false).cooldown * planWizardBranch(skillName, player.GetRuneForSkill(skillName)).cooldown
 	}
 	return time.Duration(float64(base) * runeCooldown * (1 - global) * (1 - skill))
 }

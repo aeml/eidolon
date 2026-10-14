@@ -615,7 +615,7 @@ export class Actor extends Entity {
         return true;
     }
 
-    spawnAbilityPresentation(gameEngine, skillName, targetVector) {
+    spawnAbilityPresentation(gameEngine, skillName, targetVector, options = {}) {
         if (skillName === 'Earthshaker') {
             const spawned = spawnEarthshakerPresentation(gameEngine, this, targetVector);
             if (spawned) playLocalAbilityCue(gameEngine, this, skillName);
@@ -640,7 +640,7 @@ export class Actor extends Entity {
             ?? getAbilityAoeArc(className, presentation.canonicalName, this);
         let spawned = false;
         const activeLayers = presentation.layers.filter((entry) =>
-            isAbilityVisualLayerEnabled(entry, this, presentation.canonicalName)
+            isAbilityVisualLayerEnabled(entry, this, presentation.canonicalName) && !(options.skipTelegraph && entry.type === 'telegraph')
         );
         activeLayers.forEach((entry, index) => {
             const position = entry.anchor === 'target' ? targetPosition : sourcePosition;
@@ -978,7 +978,13 @@ export class Actor extends Entity {
         // Wizard resolves it below; multiplayer waits for the accepted event.
         const offlineCharge = className === 'Fighter' && skillName === 'Charge' &&
             !this.isRemote && !this.isMultiplayer && !gameEngine?.isMultiplayer;
-        if (skillName !== 'Teleport' && skillName !== 'Juggernaut Charge' && !offlineCharge) this.spawnAbilityPresentation(gameEngine, skillName, targetVector);
+        const offlineMeteor = className === 'Wizard' && skillName === 'Meteor Drop' &&
+            !this.isRemote && !this.isMultiplayer && !gameEngine?.isMultiplayer;
+        // Offline Meteor owns one exact warning per falling projectile,
+        // including Cluster staggering and Apocalypse's delayed launches.
+        if (skillName !== 'Teleport' && skillName !== 'Juggernaut Charge' && !offlineCharge) {
+            this.spawnAbilityPresentation(gameEngine, skillName, targetVector, { skipTelegraph: offlineMeteor });
+        }
 
         // Subclasses implement actual logic
         return true;

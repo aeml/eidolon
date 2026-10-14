@@ -1,0 +1,6 @@
+[
+  {"name":"baseline-rounding","rune":"","ranks":{},"intelligence":1,"damage":53,"radius":26.4,"count":1,"scale":1},
+  {"name":"cluster-rounding","rune":"meteor_cluster","ranks":{},"intelligence":1,"damage":35,"radius":15.84,"count":3,"scale":0.7},
+  {"name":"extinction-area","rune":"meteor_extinction","ranks":{"WIZ_38":5},"intelligence":1,"damage":53,"radius":43.56,"count":1,"scale":1},
+  {"name":"apocalypse-rounded-snapshots","rune":"meteor_apocalypse","ranks":{"WIZ_07":1,"WIZ_38":5},"intelligence":1,"damage":55,"radius":29.04,"count":6,"scale":1}
+]

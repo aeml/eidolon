@@ -1,4 +1,5 @@
 import { CONSTANTS } from './Constants.js';
+import { getWizardBranchPlan } from '../skills/wizardBranchRunes.js';
 import { getWizardPrecisionPlan } from '../skills/wizardPrecisionRunes.js';
 
 export function getAbilityRange(player, skillName, baseRange) {
@@ -21,7 +22,7 @@ export function getTeleportCastRange(player) {
 }
 
 export function getFlameWhipRadius(player) {
-    return getWizardAbilityAreaRadius(player, getAbilityRange(player, 'Flame Whip', 12));
+    return getWizardAbilityAreaRadius(player, getAbilityRange(player, 'Flame Whip', 12) * getWizardBranchPlan('Flame Whip', player?.skillRunes?.['Flame Whip']).radius);
 }
 
 export function getWizardAbilityAreaRadius(player, base) {

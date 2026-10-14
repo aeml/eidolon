@@ -17,6 +17,7 @@ import { getOverworldGroundHeight } from '../core/WorldGrounding.js';
 import { GroundedProjectileVisual } from '../art/GroundedProjectileVisual.js';
 import { lanceContactFraction, orderLanceTargets } from '../skills/lanceFlight.js';
 import { isOfflineFireballTarget, resolveOfflineFireballImpact } from '../skills/offlineFireballImpact.js';
+import { applyOfflineMeteorImpact } from '../skills/offlineMeteor.js';
 
 // =====================================================
 // Particle Pool Manager - Centralized for performance
@@ -407,18 +408,7 @@ export class Projectile extends Entity {
                 this.hasExploded = true;
                 this.isActive = false;
                 if (this.mesh) this.mesh.visible = false;
-                const rects = gameEngine?.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
-                    ? gameEngine.currentDungeonLayout?.walkRects : null;
-                for (const target of chunkManager?.getActiveEntities() || []) {
-                    if (!(target instanceof Actor) || target === this.owner || !target.isActive || target.state === 'DEAD') continue;
-                    const hostile = typeof gameEngine?.isHostileActorTarget === 'function' ? gameEngine.isHostileActorTarget(target)
-                        : !target.isInvulnerable && !['Wizard', 'Cleric', 'Fighter', 'Rogue', 'AvengingSeraph'].includes(target.constructor.name);
-                    if (!hostile || Math.hypot(target.position.x - this.position.x, target.position.z - this.position.z) > this.explosionRadius + (target.radius || 0) ||
-                        clipDungeonEffectSegment(rects, this.position, target.position).blocked) continue;
-                    if (!this.owner.isMultiplayer && !this.owner.isRemote) {
-                        applyOfflineAbilityHit(this.owner, target, this.damage, this.skillName, floatingTextManager, '#ff4500');
-                    }
-                }
+                applyOfflineMeteorImpact(this, gameEngine, chunkManager, floatingTextManager);
                 spawnProjectileImpact(gameEngine, this, this.position, { radius: this.explosionRadius, terminal: true });
             }
             return;

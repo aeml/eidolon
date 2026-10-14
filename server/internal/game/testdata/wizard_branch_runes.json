@@ -1,0 +1,18 @@
+[
+ {"skill":"Flame Whip","rune":"","mana":35,"cooldown":10,"damage":105,"radius":12,"stun":3},
+ {"skill":"Flame Whip","rune":"flamewhip_reach","mana":35,"cooldown":10,"damage":78,"radius":18,"stun":3},
+ {"skill":"Flame Whip","rune":"flamewhip_binding","mana":35,"cooldown":10,"damage":68,"radius":12,"stun":5},
+ {"skill":"Flame Whip","rune":"flamewhip_flash","mana":35,"cooldown":6,"damage":84,"radius":12,"stun":1},
+ {"skill":"Flame Tornado","rune":"","mana":50,"cooldown":8,"damage":150,"radius":3,"speed":10},
+ {"skill":"Flame Tornado","rune":"flametornado_broad","mana":50,"cooldown":8,"damage":112,"radius":4.5,"speed":6},
+ {"skill":"Flame Tornado","rune":"flametornado_swift","mana":50,"cooldown":8,"damage":150,"radius":2,"speed":18},
+ {"skill":"Flame Tornado","rune":"flametornado_focused","mana":50,"cooldown":8,"damage":210,"radius":1.5,"speed":10},
+ {"skill":"Inferno Cataclysm","rune":"","mana":60,"cooldown":60,"damage":70,"radius":12,"duration":8},
+ {"skill":"Inferno Cataclysm","rune":"inferno_lingering","mana":60,"cooldown":60,"damage":45,"radius":12,"duration":12},
+ {"skill":"Inferno Cataclysm","rune":"inferno_concentrated","mana":60,"cooldown":60,"damage":98,"radius":7.8,"duration":8},
+ {"skill":"Inferno Cataclysm","rune":"inferno_flashburn","mana":60,"cooldown":40,"damage":105,"radius":12,"duration":4},
+ {"skill":"Time Warp","rune":"","mana":50,"cooldown":60,"radius":15,"duration":8,"resetTeleport":true,"resetGravity":true},
+ {"skill":"Time Warp","rune":"timewarp_communion","mana":50,"cooldown":60,"radius":24,"duration":6,"resetTeleport":true,"resetGravity":true},
+ {"skill":"Time Warp","rune":"timewarp_lingering","mana":50,"cooldown":60,"radius":15,"duration":12,"resetTeleport":false,"resetGravity":false},
+ {"skill":"Time Warp","rune":"timewarp_quickening","mana":50,"cooldown":40,"radius":15,"duration":5,"resetTeleport":true,"resetGravity":false}
+]

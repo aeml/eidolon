@@ -10,6 +10,7 @@ import (
 // performWizardAbility handles all Wizard class ability logic.
 // Extracted from the "Wizard" case in PerformAbility (world.go).
 func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, targetID, skillName string, setCooldown func(time.Duration), contexts ...*abilityImpactContext) {
+	branch := planWizardBranch(skillName, player.GetRuneForSkill(skillName))
 	impacts, finishImpacts := w.worldLockedAbilityImpacts(contexts)
 	defer finishImpacts()
 	if skillName == "Spell Focus" {
@@ -72,14 +73,18 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			// Time Warp should not reduce its own cooldown; commit before the
 			// party-wide CDR buff is applied.
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 60*time.Second))
-			endTime := time.Now().Add(resolveAbilityEffectDuration(player, skillName, 8*time.Second))
+			endTime := time.Now().Add(resolveAbilityEffectDuration(player, skillName, time.Duration(branch.duration*float64(time.Second))))
 			// Reprise the caster's own movement/control loop, never party
 			// cooldowns or Time Warp itself. GCD and mana still gate the next cast.
-			delete(player.Cooldowns, "Teleport")
-			delete(player.Cooldowns, "Gravity Well")
-			player.TeleportCharges = 0
-			player.TeleportChargeReadyAt = time.Time{}
-			radius := effectiveAbilityAreaRadius(player, skillName, 15.0)
+			if branch.resetTeleport {
+				delete(player.Cooldowns, "Teleport")
+				player.TeleportCharges = 0
+				player.TeleportChargeReadyAt = time.Time{}
+			}
+			if branch.resetGravity {
+				delete(player.Cooldowns, "Gravity Well")
+			}
+			radius := effectiveAbilityAreaRadius(player, skillName, 15.0*branch.radius)
 			targets := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
 			if player.HasAnySetBonus("timeWarpZone") {
 				targets = make([]*Entity, 0, len(w.Entities))
@@ -295,13 +300,13 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 			// Cone reach and AoE radius are independent talent categories; each
 			// category sums its ranks before applying its multiplier once.
-			rangeDist := effectiveAbilityAreaRadius(player, skillName, effectiveAbilityRange(player, skillName, 12.0))
+			rangeDist := effectiveAbilityAreaRadius(player, skillName, effectiveAbilityRange(player, skillName, 12.0)*branch.radius)
 			arc := math.Pi / 2
 			if novaCascadeActive {
 				arc = 2 * math.Pi
 			}
 			angleThreshold := math.Pi / 4 // 45 degrees
-			damage := int(float64(25+(player.Stats.Intelligence*2)) * player.GetSkillDamageMultiplier("Flame Whip"))
+			damage := int(float64(25+(player.Stats.Intelligence*2)) * (player.GetSkillDamageMultiplier("Flame Whip") * branch.damage))
 
 			pDirX, pDirZ := fighterFacing(player, targetX, targetZ)
 
@@ -337,7 +342,10 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 						addThreatLocked(target, player.ID, float64(finalDamage))
 						if !target.CCImmune {
 							target.Stunned = true
-							target.StunEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 3*time.Second))
+							stunEnd := time.Now().Add(resolveAbilityEffectDuration(player, skillName, time.Duration(branch.stun*float64(time.Second))))
+							if stunEnd.After(target.StunEndTime) {
+								target.StunEndTime = stunEnd
+							}
 						}
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
@@ -371,10 +379,10 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				dist = 1
 			}
 
-			velX := (dx / dist) * 10.0 // Slow speed
-			velZ := (dz / dist) * 10.0
+			velX := (dx / dist) * branch.speed // Slow speed
+			velZ := (dz / dist) * branch.speed
 
-			damage := int(float64(30+(player.Stats.Intelligence*3)) * player.GetSkillDamageMultiplier("Flame Tornado"))
+			damage := int(float64(30+(player.Stats.Intelligence*3)) * (player.GetSkillDamageMultiplier("Flame Tornado") * branch.damage))
 
 			proj := &Entity{
 				ID:              fmt.Sprintf("proj-%d", time.Now().UnixNano()),
@@ -386,13 +394,13 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				Z:               player.Z,
 				VelX:            velX,
 				VelZ:            velZ,
-				Radius:          3.0, // Large radius
+				Radius:          3.0 * branch.radius, // Large radius
 				Damage:          damage,
 				OwnerID:         player.ID,
 				Rotation:        math.Atan2(velX, velZ),
 				CreatedAt:       time.Now(),
 				HitList:         make(map[string]bool), // Initialize HitList
-				Scale:           1.0,
+				Scale:           branch.radius,
 				ProjectileSkill: "Flame Tornado",
 			}
 			w.addProjectileLocked(proj)
@@ -506,7 +514,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 								return
 							}
 							owner.Mu.RLock()
-							ownerValid := owner.State != "DEAD" && owner.InstanceID == instanceID
+							ownerValid := owner == player && owner.State != "DEAD" && owner.Health > 0 && !owner.Disconnected && owner.InstanceID == instanceID
 							owner.Mu.RUnlock()
 							if !ownerValid {
 								w.Mu.Unlock()
@@ -569,7 +577,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			}
 
 			// Snapshot the actual radius once for ticks and replicated zone scale.
-			radius := effectiveAbilityAreaRadius(player, skillName, 12.0)
+			radius := effectiveAbilityAreaRadius(player, skillName, 12.0*branch.radius)
 			// Spawn Zone
 			zone := &Entity{
 				ID:              fmt.Sprintf("zone-inferno-%d", time.Now().UnixNano()),
@@ -580,9 +588,10 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				Y:               0.1,
 				Z:               targetZ,
 				Radius:          radius,
-				Damage:          int(float64(30+player.Stats.Intelligence) * player.GetSkillDamageMultiplier("Inferno Cataclysm")),
+				Damage:          int(float64(30+player.Stats.Intelligence) * (player.GetSkillDamageMultiplier("Inferno Cataclysm") * branch.damage)),
 				OwnerID:         player.ID,
 				CreatedAt:       time.Now(),
+				ZoneEndTime:     time.Now().Add(time.Duration(branch.duration * float64(time.Second))),
 				Scale:           radius / 5.0,     // Encode radius for client rendering (base geometry is 5.0)
 				ZoneDoubleTick:  doubleTickActive, // Combo: Time Burn
 				ProjectileSkill: "Inferno Cataclysm",

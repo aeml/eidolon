@@ -18,8 +18,10 @@ import { commitOfflineTeleportCharge } from '../skills/offlineTeleportCharges.js
 import { getSpellFocusCastPlan, consumeOfflineSpellFocus } from '../skills/spellFocusTraining.js';
 import { getWizardAbilityDamageMultiplier, resolveWizardSpellDamage, WIZARD_DAMAGE_SKILLS } from '../skills/wizardAbilityDamage.js';
 import { applyOfflineArmorMelt } from '../core/OfflineArmor.js';
+import { getWizardBranchPlan } from '../skills/wizardBranchRunes.js';
 import { getWizardPrecisionPlan } from '../skills/wizardPrecisionRunes.js';
 import { getFireballRunePlan } from '../skills/fireballRunes.js';
+import { castOfflineMeteor, cancelOfflineMeteorCasts } from '../skills/offlineMeteor.js';
 
 
 export class Wizard extends Actor {
@@ -120,7 +122,8 @@ export class Wizard extends Actor {
             gameEngine.floatingTextManager.spawn("FOCUSED!", this.position, '#8800ff');
         }
         const precision = getWizardPrecisionPlan(skill, this.skillRunes?.[skill], arcaneBarrage);
-        const spellDamage = resolveWizardSpellDamage(this, skill, damageMultiplier * precision.damage);
+        const branch = getWizardBranchPlan(skill, this.skillRunes?.[skill]);
+        const spellDamage = resolveWizardSpellDamage(this, skill, damageMultiplier * precision.damage * branch.damage);
 
         // --- Pyromancer Branch Skills ---
 
@@ -168,7 +171,7 @@ export class Wizard extends Actor {
                                 
                                 // Stun 3s
                                 if (entity.stunTimer !== undefined && !entity.ccImmune) {
-                                    entity.stunTimer = 3.0;
+                                    entity.stunTimer = Math.max(entity.stunTimer, getWizardEffectDuration(this, skill, branch.stun));
                                     gameEngine.floatingTextManager.spawn("STUNNED!", entity.position, '#ffffff');
                                 }
                             }
@@ -194,6 +197,11 @@ export class Wizard extends Actor {
             const tornado = new Projectile(null, this, 'FlameTornado', startPos, adjustedTarget);
             // Damage is set in Projectile.js but we can override or apply multiplier
             tornado.damage = spellDamage;
+            tornado.radius = 3 * branch.radius;
+            tornado.speed = branch.speed;
+            tornado.lifeTime = 5;
+            tornado.velocity.normalize().multiplyScalar(branch.speed);
+            tornado.setScale(branch.radius);
             this.lastOfflineFlameTornadoAt = Date.now();
             
             gameEngine.addEntity(tornado);
@@ -204,63 +212,7 @@ export class Wizard extends Actor {
             if (!this.unlockedSkills.includes("Meteor Drop")) return;
             console.log("Wizard used Meteor Drop!");
 
-            const meteorRuneId = this.skillRunes?.["Meteor Drop"] || null;
-            // The authoritative Meteor hit helper uses the same 1.65x footprint
-            // as its telegraph. Snapshot that resolved radius for each impact.
-            const meteorRadius = getAbilityAoeRadius('Wizard', skill, this);
-            const isClusterMeteor = meteorRuneId === 'meteor_cluster';
-            
-
-            const spawnMeteorTelegraph = (impactPos, radius) => {
-                if (gameEngine.isMultiplayer) {
-                    return;
-                }
-                if (typeof gameEngine.spawnTransientEffect === 'function') {
-                    gameEngine.spawnTransientEffect('telegraph', impactPos, 0xff2200, {
-                        radius,
-                        telegraphDuration: 1.5
-                    });
-                } else {
-                    this.spawnVisualEffect(gameEngine, impactPos, 0xff0000, "ring");
-                }
-            };
-
-            const spawnMeteor = (impactPos, radius, damage, index = 0) => {
-                const startPos = impactPos.clone();
-                startPos.y += 30.0 + index * 4;
-
-                const meteor = new Projectile(null, this, 'Meteor', startPos, impactPos);
-                meteor.damage = damage;
-                meteor.explosionRadius = radius;
-                meteor.speed = 20.0;
-                meteor.velocity.set(0, -20, 0);
-                meteor.groundImpactPosition = impactPos.clone();
-                gameEngine.addEntity(meteor);
-                spawnMeteorTelegraph(impactPos, radius);
-            };
-
-            const baseDamage = spellDamage;
-            if (isClusterMeteor) {
-                const clusterRadius = meteorRadius;
-                const clusterDamage = baseDamage * (2 / 3);
-                const offsets = [
-                    new THREE.Vector3(0, 0, 0),
-                    new THREE.Vector3(-3, 0, -2),
-                    new THREE.Vector3(3, 0, -2)
-                ];
-
-                offsets.forEach((offset, index) => {
-                    const impactPos = targetVector.clone().add(offset);
-                    const rects = gameEngine.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
-                        ? gameEngine.currentDungeonLayout?.walkRects : null;
-                    const clipped = clipDungeonEffectSegment(rects, targetVector, impactPos);
-                    impactPos.x = clipped.x;
-                    impactPos.z = clipped.z;
-                    spawnMeteor(impactPos, clusterRadius, clusterDamage, index);
-                });
-            } else {
-                spawnMeteor(targetVector.clone(), meteorRadius, baseDamage);
-            }
+            castOfflineMeteor(this, gameEngine, targetVector, spellDamage);
             return;
         }
 
@@ -273,7 +225,7 @@ export class Wizard extends Actor {
             const damage = spellDamage;
             const config = {
                 radius: getAbilityAoeRadius('Wizard', 'Inferno Cataclysm', this) || 12,
-                duration: 8.0,
+                duration: branch.duration,
                 damage: damage,
                 damageInterval: timeBurn ? .5 : 1.0,
                 effectType: 'InfernoCataclysm',
@@ -380,38 +332,21 @@ export class Wizard extends Actor {
                 range: getAbilityRange(this, skill, CONSTANTS.ABILITY_CONFIG.Wizard.skills[skill].range),
                 cursorRadius: 4, padCursor: true
             });
-            const cursorAngle = Math.atan2(targetVector.z - this.position.z, targetVector.x - this.position.x);
-            
-            // Spawn 3 missiles
-            const spawnMissile = (delay, offsetAngle) => {
-                this.scheduleTask(() => {
-                    const startPos = this.position.clone();
-                    startPos.y += 2.0;
-                    
-                    // Spread start pos slightly
-                    startPos.x += Math.sin(offsetAngle) * 0.5;
-                    startPos.z += Math.cos(offsetAngle) * 0.5;
-                    
-                    // Initial direction: Up and out, then home
-                    const launchDirection = target && precision.homing
-                        ? new THREE.Vector3(Math.sin(offsetAngle), 1, Math.cos(offsetAngle))
-                        : new THREE.Vector3(Math.cos(cursorAngle + offsetAngle * .1), 0, Math.sin(cursorAngle + offsetAngle * .1));
-                    const initialTarget = startPos.clone().add(launchDirection.multiplyScalar(5));
-                    
-                    const missile = new Projectile(null, this, 'ArcaneMissile', startPos, initialTarget);
-                    missile.damage = spellDamage;
-                    missile.homingTarget = precision.homing ? target : null;
-                    missile.speed = precision.speed;
-                    missile.velocity.normalize().multiplyScalar(precision.speed);
-                    missile.homingTurnRate = 8.0; // High turn rate
-                    
-                    gameEngine.addEntity(missile);
-                }, delay);
-            };
-            
-            const offsets = [0, 2, -2, 3, -3, 4, -4];
+            // Match the authoritative paid volley: all missiles launch together
+            // in the same horizontal fan. No delayed casts can outlive this owner.
+            const aim = target?.position || targetVector;
+            const angle = Math.atan2(aim.z - this.position.z, aim.x - this.position.x);
             for (let i = 0; i < precision.missiles; i++) {
-                spawnMissile(i < 3 ? i * 200 : 400 + (i - 2) * 100, offsets[i]);
+                const heading = angle + (i - (precision.missiles - 1) / 2) * .2;
+                const start = this.position.clone(); start.y += 1.5;
+                const endpoint = start.clone().add(new THREE.Vector3(Math.cos(heading), 0, Math.sin(heading)));
+                const missile = new Projectile(null, this, 'ArcaneMissile', start, endpoint);
+                missile.damage = spellDamage;
+                missile.homingTarget = precision.homing ? target : null;
+                missile.speed = precision.speed;
+                missile.velocity.normalize().multiplyScalar(precision.speed);
+                missile.homingTurnRate = 8;
+                gameEngine.addEntity(missile);
             }
             if (arcaneBarrage) {
                 gameEngine.floatingTextManager.spawn('ARCANE BARRAGE!', this.position, '#c66bff');
@@ -628,6 +563,7 @@ export class Wizard extends Actor {
     }
 
     cancelAbilities() {
+        cancelOfflineMeteorCasts(this);
         this.lastOfflineScorchBeamAt = null;
         this.lastOfflineGravityWellAt = null;
         this.lastOfflineFireballAt = null;
