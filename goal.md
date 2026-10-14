@@ -1873,3 +1873,10 @@ pass, including real Grip damage;60expanded branch client checks and server race
 body-edge checks pass. Failed test assumptions are retained in the evidence.
 Publication remains ordered behind50verification. Rogue/Cleric and human tuning
 remain open, with no soak/stress testing resumed.
+
+October14: Alpha1.79.50 accepted at b2c246c76 after all ten CI38506856076 jobs
+succeeded, including live account/recovery checks. Exact normal-TLS frontend and
+backend identity, ready database and158public asset pins match. Proceed with
+the qualified Wizard/Fighter51milestone; its own CI/deployment remain required.
+Rogue is qualified separately at84b3d767c; Cleric is being implemented privately.
+No soak/stress testing resumed and no human readiness gate is waived.

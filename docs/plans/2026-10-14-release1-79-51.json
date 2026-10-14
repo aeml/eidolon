@@ -1,6 +1,6 @@
 {
   "version": "Alpha 1.79.51",
-  "status": "Prepared privately; publication held until1.79.50 terminal deployment verification",
+  "status": "Qualified Wizard/Fighter candidate ready for publication after accepted1.79.50; own release CI and deployment required.",
   "preparedAtUTC": "2026-10-14T03:57:21.415931+00:00",
   "scope": [
     "Wizard rune coverage for every learned skill",
