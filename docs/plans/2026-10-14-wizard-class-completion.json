@@ -12,10 +12,10 @@
     "focusedClient": "802 checks across37 suites qualified by801 initial passes plus corrected actual Actor impact fixture33/33. Meteor35/35; branch/support/combo74/74. Counts overlap, do not sum.",
     "focusedRace": "Meteor and Wizard branch/precision/Time Warp suites pass under Go race detector; saved loadout roundtrips and ordinary learned skill breakpoints pass.",
     "runeUI": "6 real browser cases: three branches at desktop and phone viewport; all12 choices per branch accessible and acknowledged. Prepared UI uses simulated acknowledgement.",
-    "connected": "3 disposable server/database/native-browser characters. Each branch equips four runes through UI, reconnects and verifies saved choices, then receives four accepted paid server casts. One prepared level100 and resource refill per character; no per-cast resets. No encounter pacing claim.",
+    "connected": "3 disposable server/database/real-browser characters. Each branch equips four runes through UI, reconnects and verifies saved choices, then receives four accepted paid server casts. One prepared level100 and resource refill per character; no per-cast resets. No encounter pacing claim.",
     "native": "Two actual native GPU High/Low prepared scenes,14 supplied equipment slots without fallback. Six Apocalypse projectiles and broad Tornado render/retire; lingering field lasts12s, all effects detach and no pending meteor tasks or geometry jobs remain. Captured images/video; component presentation, not final world art.",
-    "fullClient": "Local --runInBand suite stopped at default4GiB V8 heap after26.8minutes; no complete-suite result. Its observed VIP test failure is corrected on merged master b2c246c76 and all21 wallet cases pass. Do not repeat this unchanged memory-heavy local command; full release CI uses workers.",
-    "content": "14 committed content groups verify; generated animation inventory updated. All changed JS including final native/connected QA files passes lint; shell syntax and whitespace checks pass."
+    "fullClient": "Local full in-band attempt aborted at default 4GiB V8 heap after 26.8 minutes; no full local pass. Calendar-expired VIP fixture corrected on master b2c246c76 and its 21 checks pass. Worker-based full release CI remains required.",
+    "content": "14 content groups and whole-source lint pass."
   },
   "retainedFailures": [
     "Initial shared-harness actor impact used a fake plain object; fixture now uses a real Imp, no runtime boundary weakened.",
@@ -24,9 +24,9 @@
     "Unchanged old VIP status fixture had passed until its fixed end date arrived; runtime expiry behavior was correct."
   ],
   "remaining": [
-    "Complete final regression and integrate onto current master.",
+    "Complete combined candidate release CI and deployed verification.",
     "Wait for Alpha1.79.50 terminal CI/deployment before publishing the coherent Wizard milestone.",
-    "Retain human tuning/feel, physical-phone and whole-game performance/art/operations gates. Continue Fighter, Rogue and Cleric passes.",
+    "Retain human tuning/feel, physical-phone and whole-game performance/art/operations gates. Continue Rogue and Cleric passes; Fighter implementation is now qualified in the combined candidate.",
     "No soak or stress run; owner deferred capacity work until features nearly complete."
   ],
   "sources": [

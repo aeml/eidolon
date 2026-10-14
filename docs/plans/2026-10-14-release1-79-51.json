@@ -1,9 +1,10 @@
 {
   "version": "Alpha 1.79.51",
-  "status": "Prepared privately; publication held until1.79.50 terminal deployment verification",
+  "status": "Qualified Wizard/Fighter candidate ready for publication after accepted1.79.50; own release CI and deployment required.",
   "preparedAtUTC": "2026-10-14T03:57:21.415931+00:00",
   "scope": [
     "Wizard rune coverage for every learned skill",
+    "Fighter rune coverage for every learned skill, matched paid effects and captured charge plans",
     "Paid precision/Focus, Fireball/Magma, Shield and Meteor behavior consistency",
     "Fighter Iron Fortress rune and Gravity immovability repair"
   ],
@@ -12,7 +13,8 @@
     "2026-10-14-wizard-fireball-private-stage.json",
     "2026-10-14-wizard-shield-private-stage.json",
     "2026-10-13-wizard-precision-private-stage.json",
-    "2026-10-14-fortress-rune-parity.json"
+    "2026-10-14-fortress-rune-parity.json",
+    "2026-10-14-fighter-class-completion.json"
   ],
   "checks": {
     "releaseClient": {
@@ -22,12 +24,13 @@
     "contentGroups": 14,
     "lint": "whole source passes",
     "patchNotes": 486,
-    "historyPages": 48
+    "historyPages": 48,
+    "integration": "Combined candidate: 508 checks across 6 client suites pass, whole-source lint and 14 content groups pass."
   },
   "limits": [
     "Full candidate CI and deployed exact identity/assets/account smoke remain required.",
     "Full local in-band Jest aborted at4GiB heap; VIP fixture corrected independently with21passes.",
     "Prepared/connected checks do not certify human balance, pacing, real phones, capacity or final art.",
-    "Remaining Fighter/Rogue/Cleric and original roadmap work remains open."
+    "Rogue/Cleric implementation review, human class tuning and original roadmap work remain open."
   ]
 }

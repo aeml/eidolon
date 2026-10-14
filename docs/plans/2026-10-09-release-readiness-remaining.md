@@ -21,12 +21,13 @@ Every explicit requirement in those sources remains part of the completion audit
 
 ## October14 implementation continuation
 
-Alpha1.79.50 is pushed at `b2c246c76`; CI38506856076 is active.
-The initial lint failure and calendar-expired VIP fixture are corrected; current
-full client CI is green. Deployment and fresh public verification remain pending.
-Soak scheduling is disabled by owner request until features are nearly complete.
+Alpha1.79.50 at `b2c246c76` is accepted: all ten CI38506856076 jobs succeeded,
+including live account/recovery checks. Normal TLS verification confirms exact
+frontend/backend identity, ready database and all158pinned public assets.
+[Acceptance receipt](2026-10-14-release1-79-50-acceptance.json).
+Soak scheduling remains disabled by owner until features are nearly complete.
 
-A coherent Wizard candidate is prepared privately as1.79.51: all13learned skills
+A coherent Wizard and Fighter candidate is prepared privately as1.79.51: all13learned Wizard skills
 have three optional runes; precision, Fireball, Shield and Meteor consumers plus
 Whip/Tornado/Inferno/Warp choices are implemented. Six rune UI, three disposable
 connected cast/save and two new native effect cases pass, with retained earlier
@@ -34,9 +35,11 @@ component evidence. Focused client/race, learned breakpoints and loadouts pass;
 local full in-band Jest reached its4GiB heap limit, so no full local pass is
 claimed. Full release CI remains required. Qualified Fortress rune/Gravity
 boundary repair is included. [Wizard evidence](2026-10-14-wizard-class-completion.json).
-Fighter's new rune expansion remains isolated while qualification proceeds;
+Fighter's24new choices also complete39runes across13skills, with328focused client
+checks,60expanded branch checks, race/boundary/loadout checks, six UI cases and
+three connected branches passing. [Fighter evidence](2026-10-14-fighter-class-completion.json).
 Rogue, Cleric, human tuning and original world/art/device/operations gates remain.
-No new release is published until50has been verified.
+50 is verified; the combined51candidate may now proceed through its own release gates.
 
 The scheduled48 soak38342666778 is now terminal **failed**, superseding all
 running labels below: the owned server crashed with concurrent map read/write.

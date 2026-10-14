@@ -1,0 +1,160 @@
+{
+  "acceptedAtUTC": "2026-10-14T04:26:36.204872+00:00",
+  "version": "Alpha 1.79.50",
+  "source": "b2c246c76891754e826d319af07940b23961c6af",
+  "status": "Accepted: all ten CI jobs succeeded and exact deployed frontend/backend identity plus pinned public assets verified.",
+  "ciRun": 38506856076,
+  "checks": {
+    "allCIJobs": "success",
+    "frontend": {
+      "status": 200,
+      "identity": {
+        "commit": "b2c246c76891754e826d319af07940b23961c6af",
+        "version": "Alpha 1.79.50"
+      }
+    },
+    "backend": {
+      "status": 200,
+      "identity": {
+        "status": "ok",
+        "database": "ready",
+        "commit": "b2c246c76891754e826d319af07940b23961c6af",
+        "version": "Alpha 1.79.50",
+        "terrainProfile": "flat-v1",
+        "goroutines": 40,
+        "heapAllocBytes": 80077296,
+        "heapObjects": 86325,
+        "broadcastQueues": {
+          "queued": 0,
+          "capacity": 1024,
+          "encounterQueued": 0,
+          "encounterCapacity": 128,
+          "dropped": 0,
+          "encounterDropped": 0,
+          "invalidDropped": 0,
+          "visualRecipientDropped": 0
+        },
+        "websocketClosures": {
+          "accessDenied": 0,
+          "accountRecovery": 0,
+          "adminAdmission": 0,
+          "adminStorage": 0,
+          "hubShutdown": 0,
+          "inboundLimit": 0,
+          "peerAbnormal": 0,
+          "peerGoingAway": 0,
+          "peerNormal": 1,
+          "peerPolicy": 0,
+          "peerProtocol": 0,
+          "peerServer": 0,
+          "priorityOverflow": 0,
+          "qaDisconnect": 0,
+          "queuesClosed": 0,
+          "readNetwork": 0,
+          "readOther": 0,
+          "readTimeout": 0,
+          "sessionReplaced": 0,
+          "writeNetwork": 0,
+          "writeOther": 0,
+          "writeTimeout": 0
+        },
+        "operational": {
+          "characterJournal": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 0,
+            "failed": 0,
+            "timedSamples": 0,
+            "totalMicros": 0,
+            "maxMicros": 0
+          },
+          "characterCommit": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 0,
+            "failed": 0,
+            "timedSamples": 0,
+            "totalMicros": 0,
+            "maxMicros": 0
+          },
+          "characterCleanup": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 0,
+            "failed": 0,
+            "timedSamples": 0,
+            "totalMicros": 0,
+            "maxMicros": 0
+          },
+          "characterRecovery": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 1,
+            "failed": 0,
+            "timedSamples": 1,
+            "totalMicros": 158,
+            "maxMicros": 158
+          },
+          "casinoGold": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 0,
+            "failed": 0,
+            "timedSamples": 0,
+            "totalMicros": 0,
+            "maxMicros": 0
+          },
+          "casinoEP": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 0,
+            "failed": 0,
+            "timedSamples": 0,
+            "totalMicros": 0,
+            "maxMicros": 0
+          },
+          "realtimeUpdate": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 1668,
+            "failed": 0,
+            "timedSamples": 1668,
+            "totalMicros": 7522242,
+            "maxMicros": 14035
+          },
+          "stateBroadcast": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 1668,
+            "failed": 0,
+            "timedSamples": 1668,
+            "totalMicros": 7070,
+            "maxMicros": 514
+          }
+        }
+      }
+    },
+    "normalTLS": true,
+    "publicAssets": 158,
+    "allAssetsMatch": true,
+    "analyticsModule": {
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "bytes": 1002,
+      "sha256": "0f58383ee0b5409e68710c3e56f8d1a8d67f5c48576fa653675af53213b18003",
+      "containsObserver": true
+    },
+    "publicObservedUTC": "2026-10-14T04:14:49.407995+00:00",
+    "cumulativeNotes": 485,
+    "historyPages": 48
+  },
+  "receipt": {
+    "path": "/home/aeml/.local/share/eidolon-completion-20261014/.qa-completion/final-public.json",
+    "sha256": "d03918c572e5db6c593ffb489c6775587b5cf29c21d4055d200dc6c424897c4e"
+  },
+  "limits": [
+    "No soak/stress test. Scheduling remains disabled at owner request.",
+    "The earlier failed soak and capacity acceptance remain open.",
+    "This release does not qualify staged class rework, final art, human balance, physical phones or beta readiness."
+  ]
+}
