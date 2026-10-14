@@ -427,7 +427,7 @@ export class Projectile extends Entity {
                 // Skip friendly fire (Player vs Player handled by server, but locally we ignore)
                 // Assuming owner is Player, ignore other Players? Or if owner is Enemy, ignore Enemies?
                 // For now, simple check: If owner is Player, ignore Player.
-                if (this.type === 'Fireball') {
+                if (this.type === 'Fireball' || this.owner?.constructor.name === 'Rogue') {
                     if (!isOfflineFireballTarget(this.owner, entity, gameEngine)) continue;
                 } else if (this.owner && this.owner.constructor.name === entity.constructor.name) continue;
                 // World props, service NPCs, loot, effects, and other
@@ -464,13 +464,15 @@ export class Projectile extends Entity {
                             this.bounces--;
                             // Find new target
                             let bestTarget = null;
-                            let minDst = 10.0;
+                            let minDst = this.rogueRune === 'piercingthrow_ricochet' ? 15 : 10;
                             for (const other of activeEntities) {
                                 if (other !== entity && other !== this.owner && other.isActive && other.state !== 'DEAD' && !this.hitEntities.has(other.id)) {
                                     if (typeof other.takeDamage !== 'function') continue;
+                                    if (this.owner?.constructor.name === 'Rogue' && (!isOfflineFireballTarget(this.owner, other, gameEngine) ||
+                                        clipDungeonEffectSegment(walkRects, this.position, other.position).blocked)) continue;
                                     if (this.owner && this.owner.constructor.name === other.constructor.name) continue;
                                     
-                                    const d = entity.position.distanceTo(other.position);
+                                    const d = Math.hypot(entity.position.x - other.position.x, entity.position.z - other.position.z);
                                     if (d < minDst) {
                                         minDst = d;
                                         bestTarget = other;
@@ -479,7 +481,7 @@ export class Projectile extends Entity {
                             }
                             
                             if (bestTarget) {
-                                const dir = new THREE.Vector3().subVectors(bestTarget.position, this.position).normalize();
+                                const dir = new THREE.Vector3(bestTarget.position.x - this.position.x, 0, bestTarget.position.z - this.position.z).normalize();
                                 this.velocity = dir.multiplyScalar(this.speed);
                                 this.lifeTime = 2.0; // Reset lifetime for bounce
                                 if (this.mesh) {
@@ -495,11 +497,12 @@ export class Projectile extends Entity {
                             let finalDamage = this.damage;
                             
                             // Weak Point Mark Bonus
-                            if (this.isPiercingThrow && entity.weakPointMarkTimer > 0) {
+                            if (this.skillName === 'Piercing Throw' && entity.weakPointMarkTimer > 0) {
                                 finalDamage *= 1.5; // 50% bonus
                                 if (floatingTextManager) floatingTextManager.spawn("CRIT!", entity.position, '#ff0000');
                             }
                             
+                            if (this.rogueRune === 'piercingthrow_executioner' && entity.stats?.maxHp > 0 && entity.stats.hp / entity.stats.maxHp < .3) finalDamage *= 2;
                             const hit = applyOfflineAbilityHit(this.owner, entity, finalDamage, this.skillName, floatingTextManager);
                             if (this.skillName === 'Fan of Knives' && hit > 0 && entity.stats?.hp > 0 && !entity.ccImmune) {
                                 const weighted = this.fanRune === 'fanofknives_weighted';
@@ -511,10 +514,13 @@ export class Projectile extends Entity {
                             // Like the server, coatings are checked at impact.
                             // The bleed inherits this hit's modifiers and crit;
                             // its own Mastery is applied once to the snapshot.
-                            if (hit > 0 && this.owner.serratedEdgesActive &&
+                            if (hit > 0 && (this.owner.serratedEdgesActive || this.rogueRune === 'piercingthrow_serrated') &&
                                 ['Piercing Throw', 'Fan of Knives'].includes(this.skillName) &&
-                                applyOfflineStatus(this.owner, entity, 'bleed', Math.max(1, Math.floor(hit/5)), 5, 'Serrated Edges', true)) {
+                                applyOfflineStatus(this.owner, entity, 'bleed', Math.max(1, Math.floor(hit/5)), 5, this.owner.serratedEdgesActive ? 'Serrated Edges' : this.skillName, true)) {
                                 floatingTextManager?.spawn('BLEED!', entity.position, '#ff0000');
+                            }
+                            if (hit > 0 && this.skillName === 'Fan of Knives' && this.fanRune === 'fanofknives_poisoned') {
+                                applyOfflineStatus(this.owner, entity, 'poison', Math.max(1, Math.floor(hit / 4)), 5, this.skillName, true);
                             }
                             if (hit > 0 && this.skillName === 'Piercing Throw' && this.owner.poisonCoatingActive &&
                                 applyOfflineStatus(this.owner, entity, 'poison', 8+Math.floor(this.owner.stats.dexterity/2), 8, 'Poison Coating')) {

@@ -131,8 +131,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		ownerFireballPierce := false
 		ownerDexterity := 0
 		ownerZoneHealAmount := 15
+		ownerCanLaunch := false
 		if owner != nil {
 			owner.Mu.RLock()
+			ownerCanLaunch = owner.Health > 0 && owner.State != "DEAD" && !owner.Disconnected && owner.InstanceID == projectileInstanceID
 			ownerCombat = snapshotCombatAttackerLocked(owner)
 			ownerCombat.PartyID = owner.PartyID
 			ownerSpreadsPoison = owner.HasAnySetBonus("poisonSpread")
@@ -405,9 +407,18 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			e.Mu.Unlock()
 			return
 		}
-		if !e.ProjectileActivationTime.IsZero() && time.Now().Before(e.ProjectileActivationTime) {
-			e.Mu.Unlock()
-			return
+		if !e.ProjectileActivationTime.IsZero() {
+			if e.ProjectileSkill == "Phantom Volley" && (!ownerCanLaunch || e.projectilePendingOwner != nil && e.projectilePendingOwner != owner) {
+				deferred.addRemoval(e.ID)
+				e.Mu.Unlock()
+				return
+			}
+			if time.Now().Before(e.ProjectileActivationTime) {
+				e.Mu.Unlock()
+				return
+			}
+			e.ProjectileActivationTime = time.Time{}
+			e.projectilePendingOwner = nil
 		}
 
 		if e.SubType == "ArcaneMissile" && e.TargetID != "" {
@@ -613,7 +624,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				// Apply Trap Effects
 				if (subType == "SnareTrap" || subType == "Tripwire") && !target.CCImmune {
 					target.Rooted = true
-					target.RootEndTime = time.Now().Add(resolveAbilityEffectDuration(ownerCombat, subType, 3*time.Second))
+					rootSeconds := planRogueBranch(subType, projRuneID).root
+					deadline := time.Now().Add(resolveAbilityEffectDuration(ownerCombat, subType, time.Duration(rootSeconds*float64(time.Second))))
+					if deadline.After(target.RootEndTime) {
+						target.RootEndTime = deadline
+					}
 				}
 
 				// Piercing Throw: Serrated rune applies bleed

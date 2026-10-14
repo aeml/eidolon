@@ -1,3 +1,4 @@
+import { getRogueBranchPlan } from '../skills/rogueBranchRunes.js';
 import * as THREE from 'three';
 import { restoreActorStealthAppearance } from './ActorStealthAppearance.js';
 import { GroundedProjectileVisual } from '../art/GroundedProjectileVisual.js';
@@ -113,7 +114,7 @@ export class Rogue extends Actor {
                             // Trigger!
                             applyOfflineAbilityHit(this, entity, trap.damage, 'Tripwire');
                             if (!entity.ccImmune && entity.state !== 'DEAD') {
-                                entity.rootTimer = getRogueEffectDuration(this, 3);
+                                entity.rootTimer = Math.max(entity.rootTimer || 0, getRogueEffectDuration(this, trap.rootDuration ?? 3));
                                 if (floatingTextManager) floatingTextManager.spawn("ROOTED!", entity.position, '#ffff00');
                             }
                             
@@ -160,6 +161,7 @@ export class Rogue extends Actor {
             // presents a cast. An invalid targeted debuff is not a free aim.
             if (!castTarget) return false;
         }
+        const branch = getRogueBranchPlan(skill, this.skillRunes?.[skill]);
         if (!super.useAbility(targetVector, gameEngine, skillNameOverride)) return;
 
         if (this.isMultiplayer || gameEngine?.isMultiplayer) return true;
@@ -223,7 +225,7 @@ export class Rogue extends Actor {
             const target = castTarget;
 
             if (target) {
-                target.weakPointMarkTimer = getRogueEffectDuration(this, 10, skill);
+                target.weakPointMarkTimer = getRogueEffectDuration(this, 10 * branch.duration, skill);
                 gameEngine.floatingTextManager.spawn("WEAK POINT!", target.position, '#ff0000');
                 this.spawnVisualEffect(gameEngine, target.position, 0xff0000, "mark");
             }
@@ -246,6 +248,9 @@ export class Rogue extends Actor {
                 
                 // Apply Bleed
                 applyOfflineStatus(this, target, 'bleed', 10+Math.floor(this.stats.dexterity/2), 10, skill);
+                if (this.skillRunes?.[skill] === 'shadowlunge_shadow') {
+                    applyOfflineAbilityHit(this, target, this.stats.damage, skill, gameEngine.floatingTextManager, '#aa88ff');
+                }
                 if (this.skillRunes?.[skill] === 'shadowlunge_cripple' && !target.ccImmune) {
                     target.slowTimer = getRogueEffectDuration(this, 3);
                     target.slowFactor = .5;
@@ -270,7 +275,11 @@ export class Rogue extends Actor {
             
 
             this.serratedEdgesActive = true;
-            this.serratedEdgesTimer = getRogueEffectDuration(this, 10);
+            this.serratedEdgesTimer = getRogueEffectDuration(this, 10 * branch.duration);
+            if (branch.resetFan) {
+                this.cooldowns['Fan of Knives'] = 0;
+                if (this.abilityName === 'Fan of Knives') this.abilityCooldown = 0;
+            }
             
             gameEngine.floatingTextManager.spawn("SERRATED BLADES!", this.position, '#ff0000');
             this.spawnVisualEffect(gameEngine, this.position, 0xff0000, "buff");
@@ -279,7 +288,7 @@ export class Rogue extends Actor {
 
         if (skill === "Blade Storm") {
             console.log("Rogue used Blade Storm!");
-            const radius = getAbilityAreaRadius(this, 'Rogue', 10, skill);
+            const radius = getAbilityAreaRadius(this, 'Rogue', 10 * branch.radius, skill);
             
 
             // Cone of daggers
@@ -289,7 +298,7 @@ export class Rogue extends Actor {
             const dx = targetVector.x - this.position.x;
             const dz = targetVector.z - this.position.z;
             const baseAngle = Math.atan2(dx, dz);
-            const angleStep = Math.PI / 8;
+            const angleStep = Math.PI / 8 * branch.spread;
 
             for (let i = -2; i <= 2; i++) {
                 const angle = baseAngle + (i * angleStep);
@@ -307,7 +316,7 @@ export class Rogue extends Actor {
                 dagger.maxTravelDistance = radius;
                 dagger.travelDistance = 0;
                 dagger.radius = 1; // Match the authoritative Blade Storm capsule.
-                dagger.damage = resolveRogueAbilityDamage(this, skill);
+                dagger.damage = Math.floor(resolveRogueAbilityDamage(this, skill) * branch.damage);
                 gameEngine.addEntity(dagger);
             }
             return;
@@ -322,7 +331,7 @@ export class Rogue extends Actor {
             
 
             // Snapshot every shot at this paid cast, not the delayed emission.
-            const volleyDamage = resolveRogueAbilityDamage(this, skill);
+            const volleyDamage = Math.floor(resolveRogueAbilityDamage(this, skill) * branch.damage);
             // Rapid Fire 3 shots
             const startPos = this.position.clone();
             startPos.y += 1.0;
@@ -336,22 +345,24 @@ export class Rogue extends Actor {
             const scene = gameEngine.currentInstanceId || '';
             const instance = this.instanceId || '';
             const generation = this.volleyGeneration || 0;
+            const controlled = gameEngine.player === this;
 
-            for (let i = 0; i < 3; i++) {
+            const count = branch.count * (Object.values(this.activeSetBonuses || {}).some(set => set.specials?.phantomVolleyDouble) ? 2 : 1);
+            for (let i = 0; i < count; i++) {
                 this.scheduleTask(() => {
-                    if ((this.volleyGeneration || 0) !== generation || this.state === 'DEAD' || this.isActive === false ||
+                    if ((controlled && gameEngine.player !== this) || (this.volleyGeneration || 0) !== generation || this.state === 'DEAD' || this.isActive === false ||
                         this.stats.hp <= 0 || this.isRemote || this.isMultiplayer || gameEngine.isMultiplayer ||
                         (gameEngine.currentInstanceId || '') !== scene || (this.instanceId || '') !== instance) return;
                     // Use 'PhantomArrow' for the purple visual
                     const arrow = new Projectile(null, this, 'PhantomArrow', startPos, targetPos);
                     arrow.skillName = skill;
                     arrow.damage = volleyDamage;
-                    arrow.projectilePierce = bladeTornado;
+                    arrow.projectilePierce = bladeTornado || branch.pierce;
                     gameEngine.addEntity(arrow);
                     
                     // Small burst for each shot
                     this.spawnVisualEffect(gameEngine, this.position, 0x8800ff, "burst");
-                }, i * 150); // 150ms delay between shots
+                }, i * branch.spacing * 1000);
             }
             
             return;
@@ -366,7 +377,7 @@ export class Rogue extends Actor {
             const startPos = this.position.clone();
             startPos.y += 1.0;
             
-            const projectileCount = 12;
+            const projectileCount = this.skillRunes?.[skill] === 'fanofknives_fury' ? 24 : 12;
             const angleStep = (Math.PI * 2) / projectileCount;
             
             for (let i = 0; i < projectileCount; i++) {
@@ -376,7 +387,7 @@ export class Rogue extends Actor {
                 
                 const dagger = new Projectile(null, this, 'Dagger', startPos, target);
                 dagger.skillName = skill;
-                dagger.damage = resolveRogueAbilityDamage(this, skill);
+                dagger.damage = Math.floor(resolveRogueAbilityDamage(this, skill) * branch.damage);
                 dagger.fanRune = this.skillRunes?.[skill] || '';
                 dagger.isPiercingThrow = true;
                 if (this.serratedEdgesActive) dagger.applyBleed = true;
@@ -403,7 +414,11 @@ export class Rogue extends Actor {
             
 
             this.poisonCoatingActive = true;
-            this.poisonCoatingTimer = getRogueEffectDuration(this, 15);
+            this.poisonCoatingTimer = getRogueEffectDuration(this, 15 * branch.duration);
+            if (branch.resetTripwire) {
+                this.cooldowns.Tripwire = 0;
+                if (this.abilityName === 'Tripwire') this.abilityCooldown = 0;
+            }
             
             gameEngine.floatingTextManager.spawn("POISON READY!", this.position, '#00ff00');
             this.spawnVisualEffect(gameEngine, this.position, 0x00ff00, "buff");
@@ -443,7 +458,8 @@ export class Rogue extends Actor {
             this.traps.push({
                 position: trapPos,
                 instanceId: this.instanceId || gameEngine.currentInstanceId || '',
-                damage: resolveRogueAbilityDamage(this, skill) * (venomBurst ? 2 : 1),
+                damage: Math.floor(resolveRogueAbilityDamage(this, skill) * branch.damage) * (venomBurst ? 2 : 1),
+                rootDuration: branch.root,
                 radius: PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS.Tripwire.gameplayRadius,
                 mesh,
                 groundPresentation,
@@ -460,15 +476,10 @@ export class Rogue extends Actor {
 
             this.stealthTimer = getRogueEffectDuration(this, this.skillRunes?.[skill] === 'cloak_longer' ? 10 : 5, skill);
             
-            // Speed Burst (handled in Actor update or just modify stats temporarily?)
-            // Let's use a buff timer for speed if we had one, or just hack it here.
-            // Actually, Actor.js doesn't have a generic speed buff timer.
-            // I'll add a temporary speed boost logic or just rely on stealth.
-            // The prompt says "massive movement speed burst".
-            // I'll add `speedBoostTimer` to Actor later if needed, but for now let's just rely on stealth.
-            // Or I can modify `this.stats.speed` and reset it later? No, stats are recalculated from base.
-            // I'll add `speedBoostTimer` to Actor.js in a moment.
-            
+            // Capture the chosen rune; later loadout changes cannot rewrite it.
+            this.cloakSwift = this.skillRunes?.[skill] === 'cloak_swift';
+            this.cloakNextAttackBonus = this.skillRunes?.[skill] === 'cloak_ambush' ? 1 : 0;
+
             this.speedBoostTimer = getRogueEffectDuration(this, 3, skill);
             this.speedBoostFactor = 1.0; // +100% speed
             
@@ -492,6 +503,8 @@ export class Rogue extends Actor {
         const damage = resolveRogueAbilityDamage(this, skill);
         
         dagger.isPiercingThrow = true;
+        dagger.rogueRune = this.skillRunes?.[skill] || '';
+        dagger.bounces = dagger.rogueRune === 'piercingthrow_ricochet' ? 2 : 0;
         dagger.damage = damage;
         
         // Apply Serrated Edges if active
@@ -526,6 +539,8 @@ export class Rogue extends Actor {
         this.poisonCoatingActive = false;
         this.poisonCoatingTimer = 0;
         this.stealthTimer = 0;
+        this.cloakSwift = false;
+        this.cloakNextAttackBonus = 0;
         this.speedBoostTimer = 0;
         this.speedBoostFactor = 0;
         this.traps.forEach((trap) => {

@@ -548,6 +548,7 @@ export class Actor extends Entity {
         if (this.slowTimer > 0 && !this.isMultiplayer && !this.isRemote) {
             effectiveSpeed *= Math.max(0, 1 - (this.slowFactor || 0));
         }
+        if (this.cloakSwift && this.stealthTimer > 0 && !this.isMultiplayer && !this.isRemote) effectiveSpeed *= 1.3;
         if (this.speedBoostTimer > 0) effectiveSpeed *= 1 + Math.max(0, this.speedBoostFactor || 0);
         const authoredSpeed = this.isRunning ? 6.0 : 3.0;
         return Math.max(0.35, Math.min(2.5, effectiveSpeed / authoredSpeed));
@@ -1445,6 +1446,8 @@ export class Actor extends Entity {
                     currentSpeed *= (1 - this.slowFactor);
                 }
 
+                if (this.cloakSwift && this.stealthTimer > 0 && !this.isMultiplayer && !this.isRemote) currentSpeed *= 1.3;
+
                 // Apply Speed Boost
                 if (this.speedBoostTimer > 0) {
                     currentSpeed *= (1 + this.speedBoostFactor);
@@ -1750,7 +1753,14 @@ export class Actor extends Entity {
             if (this.state === 'DEAD') return;
 
             if (target && target.stats.hp > 0) {
-                const baseDmg = Math.max(1, this.stats.damage - getOfflineBasicAttackArmor(this, target));
+                let baseDmg = Math.max(1, this.stats.damage - getOfflineBasicAttackArmor(this, target));
+                if (this.cloakNextAttackBonus > 0 && !this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) {
+                    baseDmg = Math.floor(baseDmg * (1 + this.cloakNextAttackBonus));
+                    this.cloakNextAttackBonus = 0;
+                    this.stealthTimer = 0;
+                    this.cloakSwift = false;
+                    restoreActorStealthAppearance(this);
+                }
                 const variance = (Math.random() * 0.4) + 0.8;
                 let finalDmg = Math.max(1, Math.floor(baseDmg * variance));
                 

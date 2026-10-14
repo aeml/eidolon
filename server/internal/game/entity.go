@@ -243,6 +243,7 @@ type Entity struct {
 	ProjectileBounces        int       `json:"-"` // Remaining bounces for ricochet-type runes
 	ProjectileSkill          string    `json:"-"` // Skill that created this projectile
 	ProjectileActivationTime time.Time `json:"-"`
+	projectilePendingOwner   *Entity   // Only retained until a paid delayed volley arrow launches.
 	ProjectilePierce         bool      `json:"-"` // Whether projectile pierces through enemies (combo effect)
 	FireballWellBoost        bool      `json:"-"` // Combo: Implosion - Fireball does +100% damage to slowed targets
 	MeteorShieldExplode      bool      `json:"-"` // Combo: Arcane Barrage - Meteor explodes shield on impact

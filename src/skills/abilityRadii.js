@@ -1,3 +1,4 @@
+import { getRogueBranchPlan } from './rogueBranchRunes.js';
 import { getFighterBranchPlan } from './fighterBranchRunes.js';
 import { getWizardBranchPlan } from './wizardBranchRunes.js';
 import { getAbilityAreaRadius, getFlameWhipRadius, getWizardAbilityAreaRadius, WIZARD_GROUND_ABILITIES } from '../core/AbilityRange.js';
@@ -89,9 +90,9 @@ export const AOE_BOUNDARY_VISUAL_TYPES = Object.freeze(new Set([
 ]));
 
 export function getAbilityAoeRadius(className, canonicalSkillName, source = null) {
-    if (className === 'Rogue' && canonicalSkillName === 'Blade Storm') return getAbilityAreaRadius(source, className, 10, canonicalSkillName);
-    if (className === 'Rogue' && canonicalSkillName === 'Smoke Bomb') return getAbilityAreaRadius(source, className, 5, canonicalSkillName);
-    if (className === 'Rogue' && canonicalSkillName === 'Death Spiral') return getAbilityAreaRadius(source, className, 4, canonicalSkillName);
+    if (className === 'Rogue' && canonicalSkillName === 'Blade Storm') return getAbilityAreaRadius(source, className, 10 * getRogueBranchPlan(canonicalSkillName, source?.skillRunes?.[canonicalSkillName]).radius, canonicalSkillName);
+    if (className === 'Rogue' && canonicalSkillName === 'Smoke Bomb') return getAbilityAreaRadius(source, className, 5 * getRogueBranchPlan(canonicalSkillName, source?.skillRunes?.[canonicalSkillName]).radius, canonicalSkillName);
+    if (className === 'Rogue' && canonicalSkillName === 'Death Spiral') return getAbilityAreaRadius(source, className, 4 * getRogueBranchPlan(canonicalSkillName, source?.skillRunes?.[canonicalSkillName]).radius, canonicalSkillName);
     if (className === 'Wizard' && canonicalSkillName === 'Teleport') {
         return source?.skillRunes?.Teleport === 'teleport_warp' ? getWizardAbilityAreaRadius(source, 4) : null;
     }
@@ -118,6 +119,7 @@ export function getAbilityAoeRadius(className, canonicalSkillName, source = null
 }
 
 export function getAbilityAoeArc(className, canonicalSkillName, source = null) {
+    if (className === 'Rogue' && canonicalSkillName === 'Blade Storm') return Math.PI / 2 * getRogueBranchPlan(canonicalSkillName, source?.skillRunes?.[canonicalSkillName]).spread;
     if (className === 'Rogue' && canonicalSkillName === 'Smoke Bomb') return 2 * Math.PI;
     if (className === 'Rogue' && canonicalSkillName === 'Death Spiral') return 2 * Math.PI;
     if (className === 'Wizard' && canonicalSkillName === 'Teleport' && getAbilityAoeRadius(className, canonicalSkillName, source)) return 2 * Math.PI;

@@ -1,0 +1,74 @@
+{
+  "recordedUTC": "2026-10-14T04:20:48.070215+00:00",
+  "status": "Qualified private Rogue implementation candidate; release integration, full candidate CI and deployment remain required.",
+  "changes": [
+    "Twenty-four optional rune choices cover Weak Point Mark, Death Spiral, Serrated Edges, Blade Storm, Phantom Volley, Poison Coating, Smoke Bomb and Tripwire. Every thirteen learned Rogue skills has three level 50/70/90 choices. Existing saves and rune identifiers remain stable.",
+    "Matched range, damage, duration, cooldown, projectile spread/count/cadence/pierce, smoke control and personal reset tradeoffs. Delayed arrows and traps capture their chosen rune. Failed casts spend and reset nothing.",
+    "Offline Bladed Fury emits twenty-four knives; Poisoned applies its inherited wound; Piercing Throw implements Ricochet, Serrated and strict below-30-percent Executioner. Mark bonus applies only to Piercing Throw. Shadow Clone applies its one hit. Cloak Swift and one-use Prepared Ambush work offline.",
+    "Death Spiral consumes one refreshed bleed for the normal finisher, matching the server, and its existing set consumes remaining wound ticks. Pending Phantom arrows cancel for a dead, disconnected, replaced or departed owner; launched arrows release the pending owner reference."
+  ],
+  "validation": {
+    "client": "275 checks across 15 suites pass, including actual paid casts, rejection, body edges, rune effects, wound consumption and controlled owner replacement.",
+    "server": "Focused Go race suite passes (20.032s): new rune consumers/rejections, every-skill unlocks, earned-state loadout roundtrips, learned breakpoints, existing duration/mastery/combo suites and pending arrows. Tightened replacement test uses an otherwise valid replacement owner and passes separately (2.377s).",
+    "runeUI": "Six real browser cases pass: three branches at desktop and phone viewport, all twelve choices per branch. Prepared simulated acknowledgement.",
+    "connected": "Three disposable database/server/browser characters pass rune selection, saved reconnect and four ordinary accepted paid casts per branch; Assassin includes observed Backstab damage. One level/resource setup per character, no per-cast resource or cooldown resets. Bounded waypoint/movement assistance recorded in the test. Built server predates final delayed-owner guard, which is covered by the later Go race tests; final candidate CI remains required.",
+    "native": "Two native GPU High/Low cases pass (27.8s). Four accepted prepared actions spend125mana. Twenty-nine daggers and five Barrage arrows render, hit and retire with detached meshes and no geometry jobs. Fourteen supplied fitted gear slots have no missing/fallback items. Images inspected: functional component floor, not final environment art.",
+    "content": "Fourteen groups pass; animation inventory regenerated; whole-source lint and isolated runner syntax pass.",
+    "cleanup": "Disposable browser artifacts pass credential scan and services/data are removed."
+  },
+  "retainedFailures": [
+    "Initial new Go rejection fixture assumed a world contains only its two actors, ignoring generated hazards. Corrected to compare pre-cast entity count; runtime unchanged.",
+    "Initial native UI wrapper command used npx, unavailable inside the mounted minimal Node runtime. Corrected invocation uses node and the installed Playwright CLI directly."
+  ],
+  "limits": [
+    "Full candidate CI and exact deployed frontend/backend identity and assets remain required.",
+    "Human balance, pacing, final world art, physical-device and whole-game readiness are unaccepted.",
+    "No soak or stress testing; owner deferred capacity qualification until features are nearly complete."
+  ],
+  "sources": [
+    {
+      "path": "src/skills/rogueBranchRunes.js",
+      "sha256": "81896063fd23bf634f584139d5c58d7dd3ca591211fa9fed404d5041f5a6b41f"
+    },
+    {
+      "path": "src/entities/Rogue.js",
+      "sha256": "843135d670283efc0770496d2f466db114418dbb08e13ce6785215319282585a"
+    },
+    {
+      "path": "src/entities/Projectile.js",
+      "sha256": "7a7e17d4c6f3f3e83abcc7dce24109584465bd57ba582c0b13557b07e9b13ff8"
+    },
+    {
+      "path": "src/skills/offlineDeathSpiral.js",
+      "sha256": "601560ae45d3f599ea75baa6dbb33d828f652346636e7367fe6a9feef26dc341"
+    },
+    {
+      "path": "server/internal/game/rogue_branch_runes.go",
+      "sha256": "e7203fab75989b189dfe997e851709fa0c9638d9b82fc8df02433699b5d4c654"
+    },
+    {
+      "path": "server/internal/game/ability_rogue.go",
+      "sha256": "32c93d3e09dcd02a83ab5f8bb1a6a72f4cb44fc9ce80cf9ae843373cef5661bb"
+    },
+    {
+      "path": "server/internal/game/world_update_entity.go",
+      "sha256": "152234eae0bccfcde80af4874bae1214c49c87a8ebdcecf53cf9a3b3eb7d1bb4"
+    },
+    {
+      "path": "tests/RogueBranchRunes.test.js",
+      "sha256": "ab21199ebaa4b218854f3ea02e418335d37765c035925a63b2786e554952b789"
+    },
+    {
+      "path": "tests/RogueExistingRunes.test.js",
+      "sha256": "325e09468c96f3b1cb51e47fe52e73fb278fc45f4051336c6f021a0a43e65580"
+    },
+    {
+      "path": "tests/e2e/rogue-runes-gameplay.spec.js",
+      "sha256": "7399cbf04d1e441a5ce3dc9e466e759aad28f80db627f974fc156176fa7ebf44"
+    },
+    {
+      "path": "tests/e2e/rogue-rune-effects.spec.js",
+      "sha256": "60898eed7d22b504fc760d932422bbb5783d4c75649e9c5239627aead1b53617"
+    }
+  ]
+}

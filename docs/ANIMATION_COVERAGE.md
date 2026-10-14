@@ -33,16 +33,16 @@ True passive talents do not create a cast action and are intentionally excluded 
 | Fighter | Last Stand Rampage | buff | shout | buff@source, ring@source | last_stand | class-handler | explicit | Enduring Rampage (rampage_endurance)<br>Measured Rampage (rampage_burst)<br>Breach Reprise (rampage_reprise) |
 | Rogue | Piercing Throw | projectile | throw | burst@source | none | class-handler | explicit | Ricochet (piercingthrow_ricochet)<br>Serrated (piercingthrow_serrated)<br>Executioner (piercingthrow_executioner) |
 | Rogue | Backstab | melee | quick | blood@target | none | class-handler | explicit | Ambush (backstab_ambush)<br>Eviscerate (backstab_eviscerate)<br>Shadowstep (backstab_shadowstep) |
-| Rogue | Weak Point Mark | debuff | mark | mark@target | weak_point_mark | class-handler | explicit | none |
+| Rogue | Weak Point Mark | debuff | mark | mark@target | weak_point_mark | class-handler | explicit | Lasting Mark (weakpoint_lasting)<br>Distant Mark (weakpoint_distant)<br>Fleeting Mark (weakpoint_fleeting) |
 | Rogue | Shadow Lunge | movement | lunge | smoke@source, blood@target | none | class-handler | explicit | Extended (shadowlunge_extended)<br>Cripple (shadowlunge_cripple)<br>Shadow Clone (shadowlunge_shadow) |
-| Rogue | Death Spiral | area | spin | spin@source, blood@target | none | class-handler | explicit | none |
+| Rogue | Death Spiral | area | spin | spin@source, blood@target | none | class-handler | explicit | Wide Spiral (deathspiral_wide)<br>Ruthless Spiral (deathspiral_ruthless)<br>Quick Spiral (deathspiral_quick) |
 | Rogue | Fan of Knives | projectile-area | spin | spin@source, burst@source | none | class-handler | explicit | Weighted (fanofknives_weighted)<br>Poisoned (fanofknives_poisoned)<br>Bladed Fury (fanofknives_fury) |
-| Rogue | Serrated Edges | buff | buff | buff@source | serrated_edges | class-handler | explicit | none |
-| Rogue | Blade Storm | projectile-area | throw | cone@source, burst@target | none | class-handler | explicit | none |
-| Rogue | Phantom Volley | projectile | volley | burst@source, impact@target | none | class-handler | explicit | none |
-| Rogue | Smoke Bomb | ground | throw | smoke_cloud@source | smoke_bomb | class-handler | explicit | none |
-| Rogue | Poison Coating | buff | buff | buff@source | poison_coating | class-handler | explicit | none |
-| Rogue | Tripwire | trap | place | impact@target | tripwire | class-handler | explicit | none |
+| Rogue | Serrated Edges | buff | buff | buff@source | serrated_edges | class-handler | explicit | Lasting Edge (serratededges_lasting)<br>Rapid Edge (serratededges_rapid)<br>Blade Reprise (serratededges_reprise) |
+| Rogue | Blade Storm | projectile-area | throw | cone@source, burst@target | none | class-handler | explicit | Focused Blades (bladestorm_focused)<br>Broad Blades (bladestorm_broad)<br>Far Blades (bladestorm_long) |
+| Rogue | Phantom Volley | projectile | volley | burst@source, impact@target | none | class-handler | explicit | Barrage (phantomvolley_barrage)<br>Burst Volley (phantomvolley_burst)<br>Piercing Volley (phantomvolley_piercing) |
+| Rogue | Smoke Bomb | ground | throw | smoke_cloud@source | smoke_bomb | class-handler | explicit | Wide Smoke (smokebomb_wide)<br>Choking Smoke (smokebomb_choking)<br>Dense Smoke (smokebomb_dense) |
+| Rogue | Poison Coating | buff | buff | buff@source | poison_coating | class-handler | explicit | Lasting Venom (poisoncoating_lasting)<br>Rapid Venom (poisoncoating_rapid)<br>Venom Rearm (poisoncoating_rearm) |
+| Rogue | Tripwire | trap | place | impact@target | tripwire | class-handler | explicit | Distant Wire (tripwire_distant)<br>Grasping Wire (tripwire_grasp)<br>Quick Wire (tripwire_quick) |
 | Rogue | Cloak & Vanish | buff | vanish | smoke@source, ring@source | stealth | class-handler | explicit | Swift (cloak_swift)<br>Lasting Shadow (cloak_longer)<br>Prepared Ambush (cloak_ambush) |
 | Wizard | Fireball | projectile | cast | burst@source | none | class-handler | explicit | Magma Orb (fireball_magma)<br>Chain Reaction (fireball_chain)<br>Empowered (fireball_empowered) |
 | Wizard | Flame Whip | cone | sweep | cone_large@source | none | class-handler | explicit | Reach (flamewhip_reach)<br>Binding Flame (flamewhip_binding)<br>Flash Lash (flamewhip_flash) |

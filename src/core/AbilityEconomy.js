@@ -1,3 +1,4 @@
+import { getRogueBranchPlan } from '../skills/rogueBranchRunes.js';
 import { getFighterBranchPlan } from '../skills/fighterBranchRunes.js';
 import { CONSTANTS } from './Constants.js';
 import { getWizardPrecisionPlan } from '../skills/wizardPrecisionRunes.js';
@@ -28,7 +29,7 @@ export function getAbilityCooldown(player, skillName, baseCooldown) {
     const global = Math.max(0, Math.min(1, player.stats?.cooldownReduction || 0));
     const { cdr } = getAbilityEconomyBonus(player, skillName);
     const className = player?.meshType || player?.subType || player?.constructor?.name;
-    const runeCooldown = className === 'Wizard' ? getWizardPrecisionPlan(skillName, player?.skillRunes?.[skillName]).cooldown * getWizardBranchPlan(skillName, player?.skillRunes?.[skillName]).cooldown : className === 'Fighter' ? getFighterBranchPlan(skillName, player?.skillRunes?.[skillName]).cooldown : 1;
+    const runeCooldown = className === 'Wizard' ? getWizardPrecisionPlan(skillName, player?.skillRunes?.[skillName]).cooldown * getWizardBranchPlan(skillName, player?.skillRunes?.[skillName]).cooldown : className === 'Fighter' ? getFighterBranchPlan(skillName, player?.skillRunes?.[skillName]).cooldown : className === 'Rogue' ? getRogueBranchPlan(skillName, player?.skillRunes?.[skillName]).cooldown : 1;
     const extra = className === 'Wizard' && skillName === 'Fireball' ? getFireballRunePlan(player?.skillRunes?.Fireball).extraCooldown : 0;
     return (baseCooldown + extra) * runeCooldown * (1 - global) * Math.max(0, 1 - cdr);
 }

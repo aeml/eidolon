@@ -1,3 +1,4 @@
+import { getRogueBranchPlan } from './rogueBranchRunes.js';
 import { Actor } from '../entities/Actor.js';
 import { getAbilityAoeRadius } from './abilityRadii.js';
 import { getRogueEffectDuration } from './rogueEffectDuration.js';
@@ -6,7 +7,8 @@ import { clipDungeonEffectSegment } from './dungeonEffectGeometry.js';
 export function applyOfflineSmokeBomb(source, engine) {
     if (source.isRemote || source.isMultiplayer || engine.isMultiplayer || source.gameEngine?.isMultiplayer) return;
     const radius = getAbilityAoeRadius('Rogue', 'Smoke Bomb', source);
-    const duration = getRogueEffectDuration(source, 5, 'Smoke Bomb');
+    const plan = getRogueBranchPlan('Smoke Bomb', source.skillRunes?.['Smoke Bomb']);
+    const duration = getRogueEffectDuration(source, 5 * plan.duration, 'Smoke Bomb');
     const rects = engine.currentInstanceId && engine.currentInstanceType !== 'overworld'
         ? engine.currentDungeonLayout?.walkRects : null;
     for (const target of new Set(engine.chunkManager.getActiveEntities())) {
@@ -21,10 +23,10 @@ export function applyOfflineSmokeBomb(source, engine) {
             clipDungeonEffectSegment(rects, source.position, target.position).blocked) continue;
         if (!target.ccImmune) {
             target.slowTimer = duration;
-            target.slowFactor = .5;
+            target.slowFactor = plan.slow;
         }
         target.accuracyReductionTimer = duration;
-        target.accuracyReductionFactor = .3;
+        target.accuracyReductionFactor = plan.accuracy;
         engine.floatingTextManager?.spawn('BLIND!', target.position, '#aaaaaa');
     }
 }

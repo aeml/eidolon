@@ -10,6 +10,7 @@ import (
 // performRogueAbility handles all Rogue class ability logic.
 // Extracted from the "Rogue" case in PerformAbility (world.go).
 func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, targetID, skillName string, setCooldown func(time.Duration), contexts ...*abilityImpactContext) {
+	branch := planRogueBranch(skillName, player.GetRuneForSkill(skillName))
 	impacts, finishImpacts := w.worldLockedAbilityImpacts(contexts)
 	defer finishImpacts()
 	if skillName == "Stealth" {
@@ -142,7 +143,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			bestTarget.Mu.Lock()
 			targetID, targetX, targetZ = bestTarget.ID, bestTarget.X, bestTarget.Z
 			bestTarget.WeakPointMarked = true
-			bestTarget.WeakPointEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 10*time.Second))
+			bestTarget.WeakPointEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, time.Duration(10*branch.duration*float64(time.Second))))
 			bestTarget.Mu.Unlock()
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 12*time.Second))
@@ -194,7 +195,10 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 		if player.Mana >= cost {
 			player.Mana -= cost
 			player.PoisonCoatingActive = true
-			player.PoisonCoatingEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 15*time.Second))
+			player.PoisonCoatingEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, time.Duration(15*branch.duration*float64(time.Second))))
+			if branch.resetTripwire {
+				delete(player.Cooldowns, "Tripwire")
+			}
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 30*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 		}
@@ -644,12 +648,12 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 		cost := resolveAbilityManaCost(player, skillName, 30)
 		if player.Mana >= cost {
 			player.Mana -= cost
-			radius := effectiveAbilityAreaRadius(player, skillName, 10)
+			radius := effectiveAbilityAreaRadius(player, skillName, 10*branch.radius)
 
 			dx := targetX - player.X
 			dz := targetZ - player.Z
 			baseAngle := math.Atan2(dx, dz)
-			angleStep := math.Pi / 8
+			angleStep := math.Pi / 8 * branch.spread
 
 			for i := -2; i <= 2; i++ {
 				angle := baseAngle + float64(i)*angleStep
@@ -657,6 +661,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				velZ := math.Cos(angle) * 35.0
 
 				damage := int(float64(10+player.Stats.Dexterity) * player.GetSkillDamageMultiplier("Blade Storm"))
+				damage = int(math.Floor(float64(damage) * branch.damage))
 
 				proj := &Entity{
 					ID:                    fmt.Sprintf("proj-%s-%d-%d", player.ID, time.Now().UnixNano(), i),
@@ -681,14 +686,17 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			}
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 15*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ, AbilityShape{Radius: radius, Arc: math.Pi / 2})
+			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ, AbilityShape{Radius: radius, Arc: math.Pi / 2 * branch.spread})
 		}
 	} else if skillName == "Serrated Edges" {
 		cost := resolveAbilityManaCost(player, skillName, 30)
 		if player.Mana >= cost {
 			player.Mana -= cost
 			player.SerratedEdgesActive = true
-			player.SerratedEdgesEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 10*time.Second))
+			player.SerratedEdgesEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, time.Duration(10*branch.duration*float64(time.Second))))
+			if branch.resetFan {
+				delete(player.Cooldowns, "Fan of Knives")
+			}
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 		}
@@ -699,9 +707,10 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			player.Mana -= cost
 			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 
-			radius := effectiveAbilityAreaRadius(player, skillName, 4)
+			radius := effectiveAbilityAreaRadius(player, skillName, 4*branch.radius)
 			effectiveRadius := expandedAbilityRadius(skillName, radius)
 			damage := int(float64(player.Damage*2) * player.GetSkillDamageMultiplier("Death Spiral"))
+			damage = int(math.Floor(float64(damage) * branch.damage))
 
 			nearby := w.Grid.Nearby(player.X, player.Z, effectiveRadius, player.InstanceID)
 			for _, target := range nearby {
@@ -806,7 +815,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			player.Mana -= cost
 			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 
-			radius := effectiveAbilityAreaRadius(player, skillName, 5.0)
+			radius := effectiveAbilityAreaRadius(player, skillName, 5.0*branch.radius)
 			effectiveRadius := expandedAbilityRadius(skillName, radius)
 			nearby := w.Grid.Nearby(player.X, player.Z, effectiveRadius, player.InstanceID)
 			for _, target := range nearby {
@@ -814,12 +823,12 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				if w.CanDamage(player, target) && target.State != "DEAD" && w.withinWorldAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
 					if !target.CCImmune {
 						target.Slowed = true
-						target.SlowFactor = 0.5
-						target.SlowEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 5*time.Second))
+						target.SlowFactor = branch.slow
+						target.SlowEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, time.Duration(5*branch.duration*float64(time.Second))))
 						target.RecalculateStats()
 					}
-					target.AccuracyReduction = 0.30
-					target.AccuracyReductionEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 5*time.Second))
+					target.AccuracyReduction = branch.accuracy
+					target.AccuracyReductionEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, time.Duration(5*branch.duration*float64(time.Second))))
 				}
 				target.Mu.Unlock()
 			}
@@ -845,25 +854,27 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			}
 			x, z, _ = w.clipRockSegment(player.InstanceID, player.X, player.Z, x, z)
 			damage := int(float64(20+player.Stats.Dexterity) * player.GetSkillDamageMultiplier(skillName))
+			damage = int(math.Floor(float64(damage) * branch.damage))
 			if player.ActiveCombo == "tripwire_damage_boost" {
 				damage *= 2
 				player.ActiveCombo = ""
 			}
 
 			trap := &Entity{
-				ID:              fmt.Sprintf("trap-trip-%d", time.Now().UnixNano()),
-				InstanceID:      player.InstanceID,
-				Type:            TypeProjectile,
-				SubType:         "Tripwire",
-				X:               x,
-				Y:               0.1,
-				Z:               z,
-				Radius:          1.5,
-				Damage:          damage,
-				ProjectileSkill: skillName,
-				OwnerID:         player.ID,
-				CreatedAt:       time.Now(),
-				Scale:           1.0,
+				ID:               fmt.Sprintf("trap-trip-%d", time.Now().UnixNano()),
+				InstanceID:       player.InstanceID,
+				Type:             TypeProjectile,
+				SubType:          "Tripwire",
+				X:                x,
+				Y:                0.1,
+				Z:                z,
+				Radius:           1.5,
+				Damage:           damage,
+				ProjectileSkill:  skillName,
+				ProjectileRuneID: player.GetRuneForSkill(skillName),
+				OwnerID:          player.ID,
+				CreatedAt:        time.Now(),
+				Scale:            1.0,
 			}
 			w.addProjectileLocked(trap)
 
@@ -892,9 +903,9 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			dirZ := dz / dist
 
 			// Fire 3 projectiles in a line with spacing to simulate rapid fire.
-			projectileCount := 3
+			projectileCount := branch.count
 			if player.HasAnySetBonus("phantomVolleyDouble") {
-				projectileCount = 6
+				projectileCount *= 2
 			}
 			for i := 0; i < projectileCount; i++ {
 				proj := &Entity{
@@ -908,14 +919,15 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					VelX:                     dirX * 35.0,
 					VelZ:                     dirZ * 35.0,
 					Radius:                   0.5,
-					Damage:                   int(float64(25+(player.Stats.Dexterity*2)) * player.GetSkillDamageMultiplier("Phantom Volley")),
+					Damage:                   int(math.Floor(float64(int(float64(25+(player.Stats.Dexterity*2))*player.GetSkillDamageMultiplier("Phantom Volley"))) * branch.damage)),
 					OwnerID:                  player.ID,
 					Rotation:                 math.Atan2(dirX, dirZ),
 					CreatedAt:                time.Now(),
 					Scale:                    1.0,
 					ProjectileSkill:          "Phantom Volley",
-					ProjectileActivationTime: time.Now().Add(time.Duration(i) * 150 * time.Millisecond),
-					ProjectilePierce:         shouldPierce, // Blade Tornado combo effect
+					projectilePendingOwner:   player,
+					ProjectileActivationTime: time.Now().Add(time.Duration(float64(i) * branch.spacing * float64(time.Second))),
+					ProjectilePierce:         shouldPierce || branch.pierce, // Blade Tornado combo effect
 				}
 				w.addProjectileLocked(proj)
 			}
