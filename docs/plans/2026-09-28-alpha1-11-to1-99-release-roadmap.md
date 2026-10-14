@@ -1,6 +1,22 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
-## Current release state — October 13, 15:10 UTC
+## Current release state — October 14
+
+Alpha 1.79.51 at `e2880b4ee` is deployed and verified. All ten jobs in
+CI38517044265 passed, including both deployments and live recovery; normal-TLS
+reads match both identities, ready database and all 199 pinned public assets.
+All52learned skills now have three rune choices across all four classes.
+[Acceptance and retained limits](2026-10-14-release1-79-51-acceptance.md),
+[current work register](2026-10-09-release-readiness-remaining.md) and
+[class review](2026-09-28-class-kit-rework.md#october-14-implementation-checkpoint).
+
+Soak/stress qualification is deferred at the owner's request until features are
+nearly complete. Automatic scheduling is disabled; prior failures and capacity
+limits remain. Focused checks and ordered release verification continue.
+The full original art, gameplay, performance, device, owner-decision, F1–F5,
+closed-beta and release/handoff requirements remain open.
+
+## Historical release checkpoint — October 13, 15:10 UTC
 
 Alpha1.79.49/exact`8e5f888a` is accepted live within qualified town aprons, exact character color batching, Dark Realm masonry, private disposable smoke and active-cutaway shutdown scope. OwnCI38346406878attempt1 all ten ordered jobs succeeded05:15:55UTC:756client suites/11343tests,351browser passes/10skips,59required native passes/1skip; live8first-attempt passes/1skip/0flakes plus recovery2/rested-party1. Four optional stages remain skips. Fresh15:10:30UTC normal-TLS157asset hashes/bytes, frontend/backend identities, readyDB and analyticsJS match. Original crowded-town performance, earlier network failures, failed41soak and full readiness gates remain open. [Acceptance](2026-10-13-public49-terminal-qualification.json).
 

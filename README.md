@@ -52,7 +52,7 @@ This project demonstrates backend and systems engineering work in a realtime int
 - Browser-side asset caching through a service worker.
 - Client and server test coverage in CI, with coverage reports published to GitHub Pages.
 
-These are implemented systems, not a claim that every campaign or raid route has completed final integration QA. See the [current delivery and remaining acceptance record](docs/plans/2026-09-14-final-integration-audit.md) for verified-live releases, outstanding encounter checks, and the deferred actual-phone party/dungeon check. Versioned player-facing patch notes are available from the login screen.
+These are implemented systems, not a claim that every campaign or raid route has completed final integration QA. See the [current delivery and remaining acceptance record](docs/plans/2026-10-09-release-readiness-remaining.md) for verified-live releases, outstanding encounter checks, and the deferred actual-phone party/dungeon check. Versioned player-facing patch notes are available from the login screen.
 
 ## Architecture
 
@@ -98,7 +98,7 @@ The most backend-relevant pattern in the repo is the split between client intent
 | Client | Vanilla JavaScript ES modules, Three.js `0.181.2` |
 | Networking | WebSockets |
 | State Protocol | JSON command messages, protobuf `StateEnvelope` replication with `EDPB` framing |
-| Server | Go `1.24.5`, Gorilla WebSocket, protobuf |
+| Server | Go `1.27.2`, Gorilla WebSocket, protobuf |
 | Persistence | MongoDB |
 | Asset Delivery | Static client files, service worker caching |
 | Deployment | Docker, Docker Compose, Nginx, Certbot TLS scripts |
@@ -110,7 +110,7 @@ The most backend-relevant pattern in the repo is the split between client intent
 ### Prerequisites
 
 - Node.js `24` (the supported release line) and npm `9+`
-- Go `1.24.5`
+- Go `1.27.2`
 - MongoDB
 
 ### Run The Server
@@ -495,6 +495,49 @@ Notes:
 
 ## Project Status
 
+**Alpha 1.79.51 is deployed and verified**, at runtime source `e2880b4ee`.
+All ten CI jobs passed, including native graphics, both deployments and live
+character/recovery checks. Independent normal-TLS reads match both release
+identities, the ready database and all 199 pinned public assets.
+[Acceptance record](docs/plans/2026-10-14-release1-79-51-acceptance.md).
+The [current work register](docs/plans/2026-10-09-release-readiness-remaining.md)
+retains the full outstanding scope and earlier failures.
+
+The class pass implements three optional runes for each of 52 learned skills
+(156 choices across twelve specializations). It repairs paid casts, delayed
+impacts, offline effects, support auras, saved builds and phone skill messages.
+The [class review](docs/plans/2026-09-28-class-kit-rework.md#october-14-implementation-checkpoint)
+describes each branch and the limits of its implementation evidence.
+
+The game remains in open alpha. Feature freeze, closed beta and full release
+have not been declared. Outstanding work includes:
+
+- Cohesive world, terrain, actor/equipment, effects and audio presentation,
+  reviewed in moving gameplay with the equipped characters and HUD.
+- Representative gameplay performance within the original scene/frame budgets;
+  crowded-town and connected-frame failures remain open. Raised terrain is
+  still disabled in production.
+- Human class balance, solo/party roles, campaign pacing and finale feedback,
+  plus the owner-deferred physical-phone party/dungeon playtest.
+- Final cross-system integration, returning-save/recovery and security review,
+  supported device/population policy, rights/notices and operational ownership.
+- The original F1–F5, closed-beta and release/handoff gates, including the owner's
+  decisions about access, support, backup objectives and release approval.
+
+**Soak and stress tests are deferred until features are nearly complete**, at
+the owner's request for the shared host. Automatic soak scheduling is disabled;
+prior failures remain recorded and capacity is not certified. Focused tests,
+race checks and ordinary release verification continue.
+
+The [full roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md),
+[promise register](docs/plans/2026-09-28-1-11-gap-register.md),
+[modern-art contract](docs/art/2026-09-28-modern-arpg-closed-beta.md) and
+[world/atlas contract](docs/plans/2026-09-28-world-population-and-atlas.md)
+retain the complete scope. Existing accounts, characters, progression and public
+access are preserved. Prior dated checkpoints remain in their linked receipts
+and [the preceding README](https://github.com/aeml/eidolon/blob/2f5b4ad71d4cbd5709a199d51bc4529b8d28228a/README.md#project-status);
+historical acceptance does not establish current whole-game readiness.
+
 Patch notes show the latest ten entries at startup. Older ten-entry pages load
 only through **Load more notes**. To add a release, insert its note at the top
 of the history in `index.html`, synchronize versions, and run
@@ -503,323 +546,6 @@ The import map must appear before any module or module preload (including
 analytics); the private recovery-link scrub must still run before analytics.
 Login registers the cache worker without importing the 3D asset catalog.
 For local Firefox QA, use port4173 or4192, not its restricted port4190.
-
-- Alpha1.79.37/exact`92c7392e9be5cbc2d2a2771b17cd4f83fa012d62` is accepted live. CI38169083772attempt1 passed all10ordered jobs, with4optional stages skipped. Fresh20:29:43UTC normal-TLS checks match frontend/backend identities, readyDB and all86served asset sizes/SHA. Original fac failure remains recorded; the corrective cast/delayed-impact guard, Forge and buyback work are accepted within retained scope. [Acceptance](docs/plans/2026-10-11-public37-terminal-qualification.json).
-
-- Corrective Alpha1.79.39/exact`a1ebc4046a294ac315b97d9e86e9057a6f13294b` is accepted live. CI38178405817attempt2 passed all10ordered jobs; four optional stages remain skipped. Fresh22:56:11UTC normal-TLS checks match frontend/backend identities, readyDB and all93served asset sizes/SHA. Original stale-audit failure and attempt1 live network/HTTP408 failure remain recorded; one failed-job-only rerun passed on unchanged source. Cold geometry, connected frame-time, memory, physical-device and final-art gates remain open. [Acceptance](docs/plans/2026-10-11-public39-terminal-qualification.json).
-
-- Alpha1.79.38/exact`91ee3ec85ed13a643025c047bbaba5eba14528d7` is accepted live. CI38172700682attempt1 passed all10ordered jobs, with4optional stages skipped. Fresh21:28:05UTC normal-TLS checks match frontend/backend identities, readyDB and all86served asset sizes/SHA. Per-job geometry signature reuse and the master-only branch consolidation are accepted within retained scope. [Acceptance](docs/plans/2026-10-11-public38-terminal-qualification.json).
-
-- Alpha1.79.36/exact`aee9c3dba85da6f11555439a3ad4476597aaada3` is accepted live. CI38161891123 attempt1 passed all ten jobs. Fresh normal-TLS checks at18:52:03UTC match frontend/backend identities, ready database and all82served asset hashes/byte counts. Four optional stages remain skips.448distinct prepublication focused checks/six suites and four native publication cases pass, retries/skips0;12versions align and471notes preserve all470prior entries byte-exact. [Publication](docs/plans/2026-10-11-release36-publication.json). [Acceptance](docs/plans/2026-10-11-public36-terminal-qualification.json).
-
-- Forge gem keyboard choices and identity/focus continuity are qualified and merged locally as`eeade50f` for a later coherent milestone.68distinct focused checks/seven suites and four distinct Chrome desktop/phone cases pass; one reproduced reorder-visibility failure and original fixture correction are retained. Included and accepted in corrective37, within its retained scope. [Qualification](docs/plans/2026-10-11-forge-gem-keyboard-qualification.json).
-
-- Merchant buyback keyboard and price controls are qualified and merged locally as`49b50d7b`. Native item buttons show quantities and exact total Gold prices, preserve focus/scroll across refresh and reordering, and refuse obsolete, ambiguous or invalid choices.65focused checks/five suites and two Chrome desktop/phone cases pass;359mandatory browser cases are discovered exactly once. Included and accepted in corrective37, within its retained scope. [Qualification](docs/plans/2026-10-11-buyback-keyboard-qualification.json).
-
-- Owner-requested branch cleanup is complete: only `master` remains locally/on origin.653old local and50remote branch names are retired; all old tips are ancestors of local master and preserved remotely by `archive/branch-consolidation-20261011`.129working trees retain identical HEAD/index/status/changed-file hashes, including465dirty original paths. All old tips are now ancestors of published origin/master91ee3ec8. [Archive and preservation](docs/plans/2026-10-11-master-only-branch-consolidation.json).
-
-- Previous accepted public release: Alpha1.79.35, exact
-`ade204b800faa2cba8eacf1da71b100590e88d87`, CI38154778403 attempt1.
-All ten ordered jobs succeed. Fresh post-terminal normal-TLS frontend/backend
-identities, ready database and all78served asset hashes/byte counts match at
-17:02:13UTC. Four optional stages remain skips.
-  [Acceptance](docs/plans/2026-10-11-public35-terminal-qualification.json).
-- Coherent35 combines qualified guild/venue/build-menu/direct-trade work.
-728distinct focused checks/17suites and two native publication cases pass;
-12versions align35;470cumulative notes preserve all469prior entries byte-exact.
-  [Publication](docs/plans/2026-10-11-release35-publication.json).
-- Alpha 1.79.40 is accepted live at `5e98360a4cd7aa8c48aecebaa7bf826d6066e795`. Corrective CI38189518140 attempt1 passed all ten ordered jobs, including 733 client suites/10,925 tests, server race checks, three browser shards, native predeployment checks and live QA. Fresh 01:35:56 UTC normal-TLS checks match frontend/backend identities, ready database and all 101 served asset sizes/SHA. Ordinary quests pay 75% and dungeon story quests 125% of their content-level bar, with a two-level turn-in ceiling and 62 smaller regional chapters. Existing earned progression, paid receipts and access remain intact. Original stale QA reader failure is retained; human pacing remains owner-deferred. [Acceptance](docs/plans/2026-10-12-public40-terminal-qualification.json).
-- Current source version: `Alpha 1.79.51`, complete rune choices for all four classes, Rogue projectile/stealth parity and Cleric guardian support; retains town and Dark Realm presentation improvements;
-  initial44 client gate failed on the unchanged scene mesh budget; qualified 49-mesh correction is merged; exact copied build/native checks pass and corrective CI 38296738287 acceptance remains pending; accepted43 retains Lanternhold neighborhoods, gradual regional quests and bounded XP rewards;
-  retains precomputed supplied-character geometry and richer Pilgrim Rest camp details;
-  retains Forge and merchant keyboard controls
-  with visible prices and stable focus. Retains Earth ground materials, distinct
-  Chronicle item icons and read-only content validation.
-  Retains reliable trade drafts and confirmations,
-  keyboard build choices with stable focus and reading position, current guild
-  calendar actions and a clearer venue dialog. Retains steady dungeon radar context, independent
-  mixed-weapon Rogue grips and faster character geometry preparation, alongside
-  private account/progress help, expanded
-  Player Guide, readable lore dialogs, coordinated recovery checks and connected
-  birch crowns, alongside fitted town roof ends and edge boards,
-  shared ground-cover geometry memory and directional raised-profile rock faces,
-  retaining smoother Earth rock and woodland shading,
-  varied pine growth and registered ground material response,
-  display-space edge filtering, supported camp/monster/rigid-actor submission
-  improvements, and the cumulative grounded dungeon materials and masonry,
-  equipped skill motion, contact audio, status symbols and prepared outfit geometry.
-  Retains smooth jumps and rested auras, automation population filtering, exact earned-room Gold
-  accounting in release checks and bounded engine-download recovery. Long jumps use
-  1.3 seconds of elapsed-time flight to target approximately 1.5 seconds from click
-  to landing, including ordinary network/render delay. Connected qualification measured
-  1.50 seconds at normal cadence and 1.46 seconds at 15 FPS; latency still varies.
-- Previous maintenance: `Alpha 1.79.24`, reliable manual scene transforms.
-  Normal world updates are retained while unchanged local composition stays cached.
-- Previous maintenance: `Alpha 1.79.23`, jump travel capped at 1.5 seconds.
-  Frame/network stalls can delay displayed landing.
-- Previous milestone: `Alpha 1.79.22`, actor lighting correctness:
-  stretched procedural animation hierarchies retain the original normal-matrix
-  renderer when instancing cannot preserve their lighting. Ordinary rotations
-  and nonuniform scale still batch; supplied rigged models remain unchanged.
-  Native High/Low comparisons retain original pixel, triangle and visibility
-  limits. Unsupported poses keep original draw counts, not a claimed speedup.
-  Retains working town details:
-  an open bucket, winding drum and crank make the communal well readable as
-  working equipment; courtyard benches have separated beveled timber slats.
-  Market casks, chest and stacked crates meet their actual supporting surfaces.
-  Existing material batches, walking space, services and saved progress remain.
-  The town review uses delivered dressed Ilyra, not a bare Wizard stand-in.
-  Retains grounded camps and worn town streets:
-  folded bedrolls meet the ground, hearth stones and stacked firewood make
-  physical contact, and charcoal and compacted footpaths follow all fifteen
-  actual rotated camps. Ground wear reuses the existing texture mask; no decals,
-  extra draws, textures or per-frame work. Earlier regional qualification is
-  retained, not a claim of complete world art or equipped-party performance.
-  Town roads use irregular human-scale flagstones with shared periodic color,
-  relief and roughness. Their footprint stays registered on High and Low,
-  including joint texels; no extra surface maps, geometry or shader samples.
-  Retains combined town and regional refinement:
-  grounded folded tents, filtered cloth, finer soil, varied growth habits,
-  worn basalt supports, quieter Fire ground and curved lore books. Reuse
-  frame-local foliage restoration arrays without dropping scenery. Original
-  limits pass in bounded native High/Low views, not final art/party/device approval.
-  Retains visual-only broken Air passage heath,
-  scree and retained-population gale cypress road framing. High/Low placement
-  subsets and existing path/site/hazard/portal clearances remain required.
-  Supplied actors/equipment/animations and gameplay stay unchanged. Raised
-  terrain remains disabled by default; experimental rock-shader changes excluded.
-  Also retains a curved First Grove vault with
-  carved stone lips and worn bonded pier courses at the Grove and Bastion.
-  Original walking clearances and scenery budgets stay unchanged; this is
-  incremental landmark work, not final modern-world or beta qualification.
-  Inherited exact unchanged-container matrix and
-  foliage-bound caching, with live actor/bone animation, transforms, wind and
-  camera/light invalidation. Geometry, shadow margins and scene budgets stay
-  unchanged. Also retains selected supplied-equipment surface
-  detail and robe layering, registered quality-specific wearable copies with
-  original fallbacks, shared filmic output, constructed dungeon props, varied
-  flagstones and compact room markers. Full modern-art and raised-world/party/
-  device gates remain open. Also retains optional
-  public login/release/API
-  monitoring with paired default-empty settings and managed preflight. Existing
-  installed monitoring remains local-only; public activation, staggered-release
-  qualification and off-machine coverage remain open. Also retains reviewed,
-  audited public
-  maintenance/incident/recovery notices in Administration. Server authority and
-  acknowledged activity storage gate each send; uncertain replies never resend.
-  No service-stop, email, data or retention changes. Locally prepared, not live;
-  operator tabletop, ownership and complete freeze/operations gates remain open.
-  Inherited Go1.27.2 security correction with unchanged vulnerability gates
-  and dependencies, regional needle boughs, hanging
-  Water willow foliage, connected Fire snags, rooted mineral formations and
-  retained-population travel stands. Air landmarks gain visual-only leafy
-  heath; regional tree/groundcover detail now switches without a reload.
-  Original scene limits and walking clearances remain required.
-  Raised-preview rocks are refined but public raised terrain remains disabled;
-  wearable detail variants are included; broader renderer work remains staged. Future hosted
-  browser installations have a 15-minute failure deadline without skipping gates.
-  Publication/public acceptance are pending; 1.80 freeze and full
-  1.87 modern-art/raised-world gates remain open. See the
-  [scoped qualification](docs/plans/2026-10-08-release1-79-10-checks.json).
-  Four-class actual saved-session proof and
-  narrow connected movement/Fireball/resume checks retain their exact limits in
-  the [save receipt](docs/plans/2026-10-08-terrain-saved-session-checks.json) and
-  [connected receipt](docs/plans/2026-10-08-connected-terrain-checks.json).
-  Current accepted live release is `Alpha 1.79.8`, atbf145bda: corrected-source
-  CI37783791245 succeeds through all ten required jobs. Root verifies public
-  identity/healthy DB, clean production and four actual published file bytes.
-  See [public verification](docs/plans/2026-10-08-release1-79-8-public-checks.json).
-  The surface refinement and prior party healing/admin passage are live;
-  Earlier surface1.79.7 verification and its bounded failed-Live-QA retry remain
-  in the [prior receipt](docs/plans/2026-10-08-release1-79-7-public-checks.json).
-  Administrator Dark Realm passage bypasses
-  story requirements only: level100, normal travel and Nexus/raid gates remain.
-  Prior1.79.3 fallback and its SSH failure remain in the
-  [historical public receipt](docs/plans/2026-10-08-release1-79-3-public-checks.json).
-  Raised terrain stays disabled, saves and public alpha access remain unchanged.
-  Current identified API/driver qualification passed representative
-  100 mixed/raid/event/town clients,112958ms common activity and100 independent
-  fresh saves. Original server phase means total18.8475ms against33ms; all
-  member combat, paid casino, raid repair/checkpoint and event-wave gates pass.
-  Earlier failed experiments and source-specific limits remain recorded.
-  Exact actor/equipment skeleton
-  sharing and reduced seated matrix work retain all authored art and pass the
-  original controlled casino High/Low targets with40 fully equipped characters.
-  Shared-host server timing and limited headroom remain recorded limitations,
-  not100-player launch-capacity certification.1.80 freeze reconciliation remains open.
-  See [current capacity evidence](docs/plans/2026-10-06-release1-79-current-capacity-checks.json).
-  Predecessor1.78 was accepted live atc7c2c526/CI37543824180, with exact public
-  identity/readiness and independent monitor metadata checked. Owner-approved
-  alerts use existing hosting/admin Postmark recipients; the separate test email
-  reached its inbox. No repeat mail or production outage was fabricated.
-  See [current operations evidence](docs/plans/2026-10-06-release1-78-current-operations-checks.json).
-  Predecessor1.77 is accepted live at4ed7a3dd with CI37507575802 and independently
-  checked public identities/readiness and publisher-transformed runtime bytes.
-  The owner's named certificate-renewal simulation passed for both hosts
-  on October6. Public IPv6 remains deferred/unverified.
-  See [current hosting evidence](docs/plans/2026-10-06-release1-77-current-hosting-checks.json).
-  Inherited selected and first-character queries retain trusted account
-  identity; journal lock shards, compact ground/casino checkpoints and paged
-  market/slot startup preserve existing receipts and balances. Schema24/25
-  follow the account-bound marker23; old writers refuse the newer schema.
-  Lightweight live frame reads also preserve scene/Resonance synchronization
-  without repeatedly cloning owned items and receipts; full saves stay intact.
-  Focused race, actual Mongo growth/recovery, native session and whole-account
-  upgrade checks pass. See [current persistence evidence](docs/plans/2026-10-06-release1-76-current-persistence-checks.json).
-  Predecessor1.76 is accepted live at69cc97d9 with CI37406964398 and exact public
-  checks, including persistent-character and town recovery/Well Rested QA.
-  Skipped art/full-character scopes are not passes. These persistence checks are
-  inherited evidence, not capacity certification or whole-campaign acceptance.
-  The1.75 private account-help export/removal
-  requests, separate reversible staff export approval and nineteen bounded
-  current-owner sections with manual proof/Save/paging are included. Coverage
-  manifests explicitly distinguish sections from a complete account archive.
-  Removal remains reviewed requests/read-only dependency observations, not an
-  enabled erasure action; existing retention and provider settings are unchanged.
-  Character journals and authenticated sessions now preserve the original account
-  identity. Marker-only schema23 fences old writers; upgrade keeps consistent
-  backups and checks drained journals before startup, restarting an unchanged
-  previously running server on rejection. No account wipe or payment feature.
-  Source preparation is not deployment acceptance; this candidate still needs
-  its own CI and exact live checks. See the [privacy workflow](docs/plans/2026-10-05-release1-75-privacy-handling.md).
-  Prior1.74.7 is accepted live at7af0b279 after CI37264989129; town layout,
-  bounded jumps and durable retained activity remain included.
-  Prior1.74.6 is accepted live at1c47e16a after CI37256836401 all ten jobs and
-  exact independent public identity/readiness/login/notes/runtime checks pass.
-  Narrow persistent table ordering prevents
-  delayed lobbies or previous hands from replacing newer ready blackjack,
-  Hold'em, roulette and baccarat views. Exact decimal-string table versions
-  retain ordering beyond JavaScript's precise integer range; shared occupants,
-  changed ownership and saving/unavailable feedback still update normally.
-  Wager authority, payouts, timers, currencies and schema22 are unchanged.
-  Alpha1.74.5 is independently accepted live after CI37253104723 all ten jobs
-  succeeded and exact public identity/readiness/login/notes/runtime checks passed.
-  Full milestone/capacity acceptance remains separate from maintenance.
-  The included earlier connection maintenance fix
-  serves already-due keepalives before queued control traffic can defer them.
-  A single writer retains control-before-state ordering and existing ping/idle,
-  frame and access guards. Client loot requests are single-flight per pile until
-  authoritative inventory confirmation or the existing pending deadline; repeated
-  clicks cannot resend consumed loot while inventory delivery is in flight.
-  Pickup also waits for an own, current-scene in-range movement acknowledgement;
-  normal movement is flushed before pickup without relaxing server distance checks.
-  Existing card-table ordering, casino performance,
-  real-player administration, selling/error fixes, accounts,
-  currencies, permissions, retention and schema22 remain unchanged. Later
-  schema23–24/privacy/operations/capacity candidates and load-test driver changes
-  are excluded. Login version and cumulative notes are assembled; exact-source
-  CI/public proof remain required. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json)
-  distinguish synthetic connected proof from actual inbox delivery. Broader
-  owner/commercial and human gates remain open; no capacity, payment launch or
-  closed-beta transition is implied.
-- Last independently verified live release: `Alpha 1.74.4`, exact
-  9560ac60cc48a6daf6b65b57c0d23b092d18b3f0, successful CI37246677139 (all ten jobs).
-  Public IPv4 frontend/backend identities/database readiness/login/notes agree.
-  [Card-table acceptance](docs/plans/2026-10-05-release1-74-4-card-view-checks.json)
-  includes matching publisher-rewritten public runtime bytes and explicitly
-  skipped CI scopes. No prepared future-code or100-player capacity approval.
-  Prior1.74.2 proof also retains its original scope:
-  Post-terminal public IPv4 frontend/backend identities and database readiness
-  agree; public AdminUI matches the exact source after publisher import rewriting.
-  This verifies the requested real/test filters and recorded-session UI deployment,
-  not private real-player history, active-play measurement or fresh animation QA.
-  Earlier release/recovery,1.70.2 maintenance and Forge receipts retain their scopes.
-  Earlier runtime/model receipts retain their scopes; DNS/IPv6, commercial
-  decisions and final art/device/pacing approval remain separate.
-- Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.
-- Active delivery line: `Alpha 1.58.2` integrates four-class bodies, fitted gear
-  and weapon motions; accepted `1.58.3` improves batching and body-detail settings,
-  and accepted `1.58.4` adds equipment types and class warnings. Accepted `1.58.5`
-  gives Ilyra his own permanent Blender-authored outfit without changing player
-  gear. [Ilyra checks](docs/plans/2026-10-02-release1-58-5-ilyra.json) retain local
-  and public evidence. Connected 1.59 moderation through 1.70 casino closeout are
-  accepted live, including corrected 1.62.1 and 1.64.1. Failed 1.68.0 and
-  corrective accepted 1.68.1 retain their
-  [separate gate history](docs/plans/2026-10-02-release1-68-live-failure.json).
-  Accepted 1.70 adds reliable casino connection feedback and an isolated
-  QA-artifact privacy correction. Accepted1.71 provides account security and
-  Postmark recovery; accepted1.72 provides authoritative movement/living combat
-  and bounded protocol/work admission. Accepted1.73 adds durable valuable-operation
-  recovery and earned reward custody through schema22. Broader privacy and capacity work remain staged.
-  Class rules, faster dual-wield Rogue attacks, campaign rewards and open-alpha
-  access are unchanged. Modern-art approval, broader crowd performance,
-  physical-phone checks, human pacing and commercial decisions remain separate.
-- Accepted milestone: [1.56 season rules and earned medallions](docs/plans/2026-10-01-release1-56-seasons.md) is live. Settled history unlocks cosmetic-only neckwear separately from EP offers. Calendar/operator agreement remains open before organizing a new competition; publishing existing rules does not activate one.
-- Accepted milestone: [1.57 event discovery](docs/plans/2026-10-01-release1-57-events.md) is live with its own complete CI and independent public acceptance.
-- Accepted milestone: [1.58 optional endgame goals](docs/plans/2026-10-01-release1-58-endgame.md) is live at f7518623bb5924625a918c8acdfe7ad890b0363a after the outdated keyboard expectation was corrected. Its complete CI and independent public acceptance passed. The 1.58.1 visual patch is a separate candidate, not another endgame balance change.
-- Forward plan: [Alpha 1.11–1.99 — playable beta to full-release readiness](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md), with every minor milestone, completion gates, policy decisions and proportionate verification. This is planned scope, not a new deployment or a claim that beta is complete.
-- Current foundation: four classes and elemental realms; authoritative multiplayer combat; persistent characters, parties, friends, guilds, direct trade, and auctions; structured chat and moderation; duels and arenas; five dungeons; four elemental raids; Resonance progression; and the Dark Realm endgame raid
-- Main campaign: the 55-chapter Fourfold Chronicle includes elemental investigations, collection arcs and dungeon clears, four distinct raids with three-wave crystal-repair Vigils, the level-100 Dark Realm expedition, Umbral Nexus, and Malachar's four-Eidolon finale. Ilyra's manual turn-ins and the closing epilogue are part of the chain.
-- Current engineering emphasis: exact-candidate verification and beta planning around scale, live balance, operations, moderation workflow, accessibility feedback, and content cadence
-
-Accepted 1.59 connects approved reversible moderation, private appeals and
-public-name correction without changing login/save ownership or progression.
-Disposable production-binary socket and restart checks passed; the current
-[moderation record](docs/plans/2026-10-01-release1-59-moderation.md) separates those
-checks from the completed exact-source CI and public deployment acceptance. Staff boundaries and
-unchanged evidence retention are documented in [Administration](docs/ADMINISTRATION.md).
-
-The accepted [1.60 integration](docs/plans/2026-10-02-release1-60-social-integration.md)
-connects current guild events to activity recruitment without automatic consent,
-distinguishes boss progress from actual run completion, and preserves earned
-XP/Resonance receipts in reward messages. Focused client, server, real-socket and
-desktop/phone-sized browser checks passed, followed by complete CI and public acceptance;
-real-player population, pacing and physical-phone observations remain separate.
-
-Alpha 1.61 is accepted at a9792c92d8e06d4734c14a87cd323df27efdd026,
-CI36985885791. The accepted
-[1.61 casino world](docs/plans/2026-10-02-release1-61-casino-world.md) retires stale
-door actions and clearly disables non-VIP entry while preserving physical
-seating, the complete two-floor venue and server-owned access. Its local checks
-passed, followed by full CI and independent public acceptance. The prepared
-Alpha 1.62.1 is independently accepted after its new full pipeline passed;
-[public acceptance](docs/plans/2026-10-02-release1-62-1-public.json) records
-exact identities, readiness and six full-file comparisons. Failed 1.62.0 is
-not relabeled. Alpha 1.63 Hold’em is also independently accepted after its exact
-source passed all ten jobs and both changed public files matched publisher output;
-[public acceptance](docs/plans/2026-10-02-release1-63-public.json) records the scope.
-Corrected Alpha 1.64.1 house tables are independently accepted at
-35d8b52a0b38c1d785b3edeb6a90255e63f6a052 after all ten CI jobs passed and
-the four changed public runtime files matched the exact publisher output.
-[Public acceptance](docs/plans/2026-10-02-release1-64-1-public.json) also records
-the rechecked dressed Ilyra GLB. Failed 1.64.0 remains failed, not relabeled.
-Alpha 1.65.0 slots are independently accepted at
-0bd252f260a285c0c3f46b26663801c99a3d2b0a after all ten CI jobs passed and
-both changed public runtime files matched the exact publisher output.
-[Public acceptance](docs/plans/2026-10-02-release1-65-public.json) records
-matching identities/readiness and the separate byte-check time.
-Alpha 1.66.0 wallets and the isolated urgent owner-private world-state fix are
-independently accepted at aa7d00ae9191b690d1f034b4b61ef2b7776bb88a after all ten
-CI jobs passed. All three changed public runtime files match exact publisher
-output, and frontend/backend identities and database readiness agree. The
-[public receipt](docs/plans/2026-10-02-release1-66-public.json) retains the checks;
-later account/dependency/frame changes remain separate prepared work.
-
-Alpha 1.67.0 cosmetics are independently accepted at
-8cbf0c1c757260aac5d4279c58c0c841d86c45d5 after all ten CI jobs passed.
-Four changed public runtime files match exact publisher output; frontend/backend
-identities, database readiness and the dressed Ilyra GLB were rechecked.
-The [public receipt](docs/plans/2026-10-02-release1-67-public.json) retains the
-scope; earlier cosmetic fit and durable-unlock evidence is not relabeled as new.
-
-Verification state as of September 29, 2026:
-
-- The retained Alpha 1.0 foundation includes migrations and repository coverage, protocol and exploit hardening, handler admission/rate policy, load and benchmark tooling, nightly soak configuration, guild/PvP/endgame coverage, and Fourfold Chronicle regression tests.
-- Locked browser runtimes, disposable-character QA, hardware-accelerated animation/movement routes, release identity, and deployment SHA checks remain part of the release pipeline.
-- Alpha 1.10.2 passed all ten release jobs in CI36285496845, including live character/recovery QA. Independent public IPv4 checks verified matching frontend/backend identities, database readiness, login label, patch history and five exact assets. The [1.10 playtest release record](docs/plans/2026-09-23-release1-10-playtest.md) retains scoped encounter evidence and remaining campaign/playtest limitations.
-- The durable browser process and evidence requirements are retained in `docs/plans/live-browser-qa-checklist.md`.
-- The [1.40 readiness review](docs/plans/2026-09-29-1-40-readiness.md) distinguishes implemented progression contracts, retained scoped evidence and missing campaign/device/capacity observations. Targets remain level30 in2–3hours, level100 in about100hours, Dark Realm8–12hours and a well-geared five-player finale in5–10minutes. Up to100 future beta players is a plan, not demonstrated current concurrent capacity. Current public alpha access and all saves remain unchanged.
-
-Historical Alpha 1.0 decomposition measurements (physical lines, `wc -l`; not current file sizes):
-
-| File | LOC |
-|---|---:|
-| `server/internal/game/world.go` | 1,422 |
-| `server/main.go` | 938 |
-| `src/core/GameEngine.js` | 2,310 |
-| `src/ui/UIManager.js` | 1,216 |
-
-These historical measurements satisfied the Alpha 1.0 decomposition gates. New work should preserve the extracted ownership boundaries instead of rebuilding coordinator monoliths.
 
 ## Media TODO
 

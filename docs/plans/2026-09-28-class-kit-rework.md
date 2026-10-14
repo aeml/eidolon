@@ -111,3 +111,49 @@ the whole game is balanced.
 1.39 then incorporates measured cross-class balance/role outliers, 1.43 handles
 the integrated VFX/animation finish, and 1.47 retains the deferred real-phone
 session check. These later passes do not excuse nonfunctional kits in 1.33.
+
+
+## October 14 implementation checkpoint
+
+Alpha 1.79.51 at `e2880b4ee` is deployed and verified after all ten CI jobs,
+live recovery and independent public identity/199asset checks pass.
+[Acceptance](2026-10-14-release1-79-51-acceptance.md). Every one of the 52 learned
+skills has three optional runes, for156 choices, retaining level 50/70/90 unlocks,
+stable identifiers and the single-specialization rule. The privately prepared
+1.79.52 was consolidated before publication. Human balance and feel remain open.
+
+| Specialization | Implemented choices and interactions to review in play |
+| --- | --- |
+| Fighter A — Shield & Mitigation | Whirlwind, Shield Slam, Iron Fortress and Guardian Roar. Roar trades reach, duration or cadence; Fortress Thorns reflects damage and Immovable resists displacement offline as well as online. |
+| Fighter B — Control & Crowd Management | Sweeping Strike, Earthshaker, Unbreakable Grip and Juggernaut Charge. Cone, pull and charge choices trade damage, area, control or recovery; travelling charges retain their selected effects. |
+| Fighter C — Damage Tank | Berserker Edge, Shattering Charge, Executioner Spin and Last Stand Rampage. Buff windows and finishers have distinct tradeoffs; Last Stand can favor a short window that resets the caster's Shattering Charge. |
+| Rogue A — Assassin Burst | Backstab, Weak Point Mark, Shadow Lunge and Death Spiral. Marks trade reach or lifetime; Death Spiral consumes one refreshed wound consistently rather than accumulating an unsupported stack counter. |
+| Rogue B — Throwing Specialist | Fan of Knives, Serrated Edges, Blade Storm and Phantom Volley. Choose spread, reach, projectile count, cadence or piercing; wounds and ricochets reach actual offline targets. Pending arrows retire with unavailable owners. |
+| Rogue C — Utility / Debuff | Smoke Bomb, Poison Coating, Tripwire and Cloak & Vanish. Choose control area, potency, trap reach or recovery; Swift movement and one-use Prepared Ambush work offline. |
+| Wizard A — Pyromancer | Flame Whip, Flame Tornado, Meteor Drop and Inferno Cataclysm. Choose footprint, damage, control or lifetime; delayed meteors retain their paid cast budget and Magma leaves a stationary field. |
+| Wizard B — Single-Target Caster | Scorch Beam, Arcane Missiles, Spell Focus and Dragonfire Lance. Beam/missile/lance alternatives retain their tradeoffs in combos. Focus charges are consumed by accepted damaging casts; utility and rejected casts preserve them. |
+| Wizard C — Control & Utility | Teleport, Arcane Shield, Gravity Well and Time Warp. Shield reactions have finite lifetimes and cannot recursively reflect; Warp can favor party reach, lifetime or the caster's repositioning recovery. |
+| Cleric A — Pure Healer | Healing Light, Guardian Embrace, Purifying Wave and Divine Intervention. Healing aura and cleansing wave choices trade footprint, output, control, lifetime or recovery while retaining valid friendly targets. |
+| Cleric B — Battle Cleric | Radiant Strike, Consecrated Ground, Spirit Guardians Boost and Avenging Seraph. Ground/guardian protection and healing reach offline recipients; Boost can exchange slow for damage, and Seraph trades lifetime, damage or health. |
+| Cleric C — Buff/Debuff Support | Blessing of Resolve, Blessing of Zeal, Mark of Weakness and Heaven's Trumpet. Reach, duration, cadence and control choices retain existing potency bounds. Zeal resets only the caster's shared Spirit Guardians. |
+
+Focused client and Go race checks cover paid effects, rejection, body/range
+boundaries, learned-level skills and saved rune loadouts. Each class has three
+connected branch routes with saved reconnect and ordinary cast costs; prepared
+High/Low effect checks cover rendering and retirement. Long plain skill messages
+also remain within phone viewport edges and adapt after rotation. These are
+bounded implementation checks, not an earned campaign or physical-phone test.
+
+Human review still needs to judge whether each branch is enjoyable, whether
+choices compete usefully across solo/party/boss situations, whether healer and
+tank pressure are appropriate, and whether audio and simultaneous effects remain
+readable. Preserve the owner's deferred campaign and physical-device playtests;
+do not replace those judgments with synthetic damage totals. Original world
+presentation, performance and release-readiness requirements remain open.
+
+Evidence: [combined release](2026-10-14-release1-79-51.json),
+[Wizard](2026-10-14-wizard-class-completion.json),
+[Fighter](2026-10-14-fighter-class-completion.json),
+[Rogue](2026-10-14-rogue-class-completion.json),
+[Cleric](2026-10-14-cleric-class-completion.json) and
+[phone feedback](2026-10-14-floating-skill-readability.json).

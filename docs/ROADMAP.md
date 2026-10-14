@@ -1,55 +1,16 @@
 # Eidolon Engineering Roadmap
 
-October 13 current checkpoint: Alpha1.79.49/exact`8e5f888a` is accepted live within qualified town aprons, exact character color batching, Dark Realm masonry, private disposable smoke and active-cutaway shutdown scope. OwnCI38346406878attempt1 all ten ordered jobs succeeded05:15:55UTC:756client suites/11343tests,351browser passes/10skips,59required native passes/1skip; live8first-attempt passes/1skip/0flakes plus recovery2/rested-party1. Four optional stages remain skips. Fresh15:10:30UTC normal-TLS157asset hashes/bytes, frontend/backend identities, readyDB and analyticsJS match. Original crowded-town performance, earlier network failures, failed41soak and full readiness gates remain open. [Accepted49](plans/2026-10-13-public49-terminal-qualification.json). Historical checkpoints below retain their dated evidence. [Current remaining work](plans/2026-10-09-release-readiness-remaining.md).
+Current delivery and unfinished work are recorded in the
+[remaining-work register](plans/2026-10-09-release-readiness-remaining.md).
+The complete four-class Alpha 1.79.51 milestone at `e2880b4ee` is deployed and
+verified after all ten CI jobs and independent public asset/identity checks pass.
+[Acceptance](plans/2026-10-14-release1-79-51-acceptance.md). The project remains open alpha.
+Soak/stress qualification is deferred until features are nearly complete;
+automatic scheduling is disabled, and earlier failures remain open.
 
-Alpha1.79.48/exact`9b536c1c` ownCI38338720250attempt1 failed predeploy disposable inventory/Journal reload:144engine-module ERR_NETWORK_CHANGED failures prevent engine startup. All five initial jobs and55preceding native cases passed; smoke3passed/1skipped/1failed. Production validation/both deployments/liveQA skipped; accepted47 stays public. Original failure/artifact retained, no retry/waiver; private-network smoke qualification next, exact interface cause unproven. [Failure](plans/2026-10-13-release48-predeploy-network-failure.json). Full original goal remains active.
-
-The49 publication and retained initial copied-build failure are now resolved within the acceptance above. [Publication](plans/2026-10-13-release49-masonry-publication.json).
-
-Alpha1.79.43/exact`d7de00d8` is accepted live with Lanternhold homes, strolling residents, blended gate roads, combat recipient resilience and qualified map-focus/district work. All ten ordered CI38208653308attempt1 jobs passed, including741client suites/11014tests, both deployments and liveQA. Fresh15:39:35UTC normal-TLS checks match all121assets, frontend/backend identities and readyDB. Four optional QA steps remain skipped. Crowded-town/High frame and Low plaza triangle failures remain open; full original goal active. [Acceptance](plans/2026-10-12-public43-terminal-qualification.json).
-
-Last refreshed: October 12, 2026
-
-Alpha1.79.41/exact`defdb64e` is accepted live: all ten ordered CI38196589643 attempt1 jobs passed; fresh03:35:51UTC normal-TLS checks match109asset hashes/bytes, frontend/backend identity and readyDB. Four optional steps remain skipped. Alpha1.79.42 failed before deployment; its qualified district/map source is included with town/transport work in published43, now accepted within its retained scope. Full original readiness requirements remain open. [Acceptance](plans/2026-10-12-public41-terminal-qualification.json).
-
-Alpha 1.79.40 is accepted live at `5e98360a4cd7aa8c48aecebaa7bf826d6066e795`. Corrective CI38189518140 attempt1 passed all ten ordered jobs, including 733 client suites/10,925 tests, server race checks, three browser shards, native predeployment checks and live QA. Fresh 01:35:56 UTC normal-TLS checks match frontend/backend identities, ready database and all 101 served asset sizes/SHA. Ordinary quests pay 75% and dungeon story quests 125% of their content-level bar, with a two-level turn-in ceiling and 62 smaller regional chapters. Existing earned progression, paid receipts and access remain intact. Original stale QA reader failure is retained; human pacing remains owner-deferred. [Acceptance](plans/2026-10-12-public40-terminal-qualification.json).
-
-This is a short pointer to the [remaining-work register](plans/2026-10-09-release-readiness-remaining.md).
-Alpha1.79.37/exact`92c7392e9be5cbc2d2a2771b17cd4f83fa012d62` is accepted live. CI38169083772attempt1 passed all10ordered jobs, with4optional stages skipped. Fresh20:29:43UTC normal-TLS checks match frontend/backend identities, readyDB and all86served asset sizes/SHA. Original fac failure remains recorded; the corrective cast/delayed-impact guard, Forge and buyback work are accepted within retained scope. [Acceptance](plans/2026-10-11-public37-terminal-qualification.json).
-
-Corrective Alpha1.79.39/exact`a1ebc4046a294ac315b97d9e86e9057a6f13294b` is accepted live. CI38178405817attempt2 passed all10ordered jobs; four optional stages remain skipped. Fresh22:56:11UTC normal-TLS checks match frontend/backend identities, readyDB and all93served asset sizes/SHA. Original stale-audit failure and attempt1 live network/HTTP408 failure remain recorded; one failed-job-only rerun passed on unchanged source. Cold geometry, connected frame-time, memory, physical-device and final-art gates remain open. [Acceptance](plans/2026-10-11-public39-terminal-qualification.json).
-
-Alpha1.79.38/exact`91ee3ec85ed13a643025c047bbaba5eba14528d7` is accepted live. CI38172700682attempt1 passed all10ordered jobs, with4optional stages skipped. Fresh21:28:05UTC normal-TLS checks match frontend/backend identities, readyDB and all86served asset sizes/SHA. Per-job geometry signature reuse and the master-only branch consolidation are accepted within retained scope. [Acceptance](plans/2026-10-11-public38-terminal-qualification.json).
-
-Reproducible precomputed supplied-character geometry is qualified and ordinarily merged into local master`11d9b911`, included in accepted39, within the retained qualification scope.133 exact initial/equipped inputs use a777321-byte immutable artifact; all109 original outputs remain exact.142 distinct focused checks/ten suites, three native copied-publication/offline cases, all12 content groups and lint pass. Same-source generation is byte-exact; corrupt/missing/changed data retains original fallback. Peak memory, first-frame performance and existing cold-triangle/frame-time failures remain open. [Qualification](plans/2026-10-11-precomputed-geometry-qualification.json).
-
-Geometry preparation now reuses exact signatures within each job; selected source`143be329` is ordinarily merged into local master`03fa966f`, included and accepted in38 within retained scope.71focused checks/four suites pass. Six native High/Low observations preserve all152reference-job input fingerprints and complete output indices across109unique input/output pairs; candidate worker wall times improve in both qualities against both references. Cold triangle and connected frame-time failures remain open; this is preparation latency evidence, not FPS/art/device acceptance. [Qualification](plans/2026-10-11-geometry-signature-preparation-qualification.json).
-
-Alpha1.79.36/exact`aee9c3dba85da6f11555439a3ad4476597aaada3` is accepted live. CI38161891123 attempt1 passed all ten jobs. Fresh normal-TLS checks at18:52:03UTC match frontend/backend identities, ready database and all82served asset hashes/byte counts. Four optional stages remain skips.448distinct prepublication focused checks/six suites and four native publication cases pass, retries/skips0;12versions align and471notes preserve all470prior entries byte-exact. [Publication](plans/2026-10-11-release36-publication.json). [Acceptance](plans/2026-10-11-public36-terminal-qualification.json).
-
-Forge gem keyboard choices and identity/focus continuity are qualified and merged locally as`eeade50f` for a later coherent milestone.68distinct focused checks/seven suites and four distinct Chrome desktop/phone cases pass; one reproduced reorder-visibility failure and original fixture correction are retained. Included and accepted in corrective37, within its retained scope. [Qualification](plans/2026-10-11-forge-gem-keyboard-qualification.json).
-
-Merchant buyback keyboard and price controls are qualified and merged locally as`49b50d7b`. Native item buttons show quantities and exact total Gold prices, preserve focus/scroll across refresh and reordering, and refuse obsolete, ambiguous or invalid choices.65focused checks/five suites and two Chrome desktop/phone cases pass;359mandatory browser cases are discovered exactly once. Included and accepted in corrective37, within its retained scope. [Qualification](plans/2026-10-11-buyback-keyboard-qualification.json).
-
-Owner-requested master-only cleanup has consolidated all old local/remote tips into local master`4a1a4176`, retaining the selected source tree exactly.653local and50remote old branch names are removed; only master remains locally and on origin.129existing working trees retain identical HEAD/index/status/changed-file hashes, including465original dirty paths. Superseded/unselected experiments remain archived rather than enabled. The archive tag is published and verified; All old tips are now ancestors of published origin/master91ee3ec8. [Archive and preservation](plans/2026-10-11-master-only-branch-consolidation.json).
-
-Previous accepted public release: Alpha1.79.35, exact
-`ade204b800faa2cba8eacf1da71b100590e88d87`, CI38154778403 attempt1.
-All ten ordered jobs succeed. Fresh post-terminal normal-TLS frontend/backend
-identities, ready database and all78served asset hashes/byte counts match at
-17:02:13UTC. Four optional stages remain skips.
-[Acceptance](plans/2026-10-11-public35-terminal-qualification.json).
-Coherent35 combines qualified guild/venue/build-menu/direct-trade work.
-728distinct focused checks/17suites and two native publication cases pass;
-12versions align35;470cumulative notes preserve all469prior entries byte-exact.
-[Publication](plans/2026-10-11-release35-publication.json).
-[Prepublication](plans/2026-10-11-release35-menu-review-prepublication.json).
-Before the master-only cleanup above,592of653local branch names were ancestors of master;61unmerged histories still required review. Completed content-validation, environment and selected Earth ground histories
-are merged and included in the pushed36 milestone. Prior34 failures remain
-retained in its historical acceptance receipt.
-The complete world/art/gameplay/device/
-performance/operations/F1–F5/beta/launch scope and historical failures remain
-open; these scoped fixes do not establish freeze or beta readiness.
+Prior dated deployment checkpoints are retained in
+[the preceding roadmap pointer](https://github.com/aeml/eidolon/blob/2f5b4ad71d4cbd5709a199d51bc4529b8d28228a/docs/ROADMAP.md)
+and the source-scoped receipts in the register.
 
 Current forward planning and historical closeout live in these documents:
 
