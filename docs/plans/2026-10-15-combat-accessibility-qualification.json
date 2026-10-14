@@ -10,7 +10,7 @@
   ],
   "checks": {
     "focusedClient": "580 distinct checks across12suites pass across the final combined execution and corrected README version check. Whole source lint passes;14 generated content groups pass.",
-    "native": "Seven final native cases pass1.1min: ordinary Cleric High/Low, new reduced-motion Low with14supplied items/160mana/30radius/15ssummon/actual damage and zero remaining jobs, phone edge/rotation, six simultaneous mixed labels at390/1280, and live system/manual motion settings. Earlier three phone-policy and one summon-attribution cases also pass;14total native executions,10distinct cases,zero retries/skips.",
+    "native": "Seven final native cases pass1.1min: ordinary Cleric High/Low, new reduced-motion Low with14supplied items/160mana/30radius/15ssummon/actual damage and zero remaining jobs, phone edge/rotation, six simultaneous mixed labels at390/1280, and live system/manual motion settings. Earlier three phone-policy and one summon-attribution cases also pass;14selected native executions,11distinct cases,zero retries/skips. The separate failed settings fixture remains retained.",
     "castCatalog": "All52canonical casts/layers, all persistent fields and status identities checked in High/Low for frozen poses and retained lifetime/range/ownership; live guardians still follow their source and accept radius/variant updates.",
     "cumulativeNotes": "487entries/48history pages; prior486preservation independently checked before publication."
   },
