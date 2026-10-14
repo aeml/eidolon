@@ -1,6 +1,6 @@
 {
   "version": "Alpha 1.79.51",
-  "status": "Qualified Wizard/Fighter candidate ready for publication after accepted1.79.50; own release CI and deployment required.",
+  "status": "Pushed release candidate; first CI38511451197 found stale shared combo-description fixture before deployment. Corrected fixture candidate awaits its own gates.",
   "preparedAtUTC": "2026-10-14T03:57:21.415931+00:00",
   "scope": [
     "Wizard rune coverage for every learned skill",
@@ -32,5 +32,10 @@
     "Full local in-band Jest aborted at4GiB heap; VIP fixture corrected independently with21passes.",
     "Prepared/connected checks do not certify human balance, pacing, real phones, capacity or final art.",
     "Rogue/Cleric implementation review, human class tuning and original roadmap work remain open."
-  ]
+  ],
+  "retainedFailure": {
+    "run": 38511451197,
+    "finding": "Server TestComboChoiceDescriptionsMatchSharedContract expected a fixed five-missile description after client/server changed Arcane Barrage to two extra missiles respecting rune variants. Shared test fixture updated; runtime unchanged.",
+    "validation": "62 client checks across3 suites and focused Go race5.017s pass; actual paid precision rune/earned barrage cases included."
+  }
 }
