@@ -49,6 +49,8 @@ export class FloatingTextManager {
         // Pooled numeric feedback must not inherit a prior action card's layout.
         el.className = '';
         el.style.width = '';
+        el.style.maxWidth = '';
+        el.style.overflowWrap = '';
         el.style.whiteSpace = 'nowrap';
         el.style.lineHeight = '';
         el.style.textAlign = '';
@@ -56,6 +58,13 @@ export class FloatingTextManager {
         el.style.visibility = 'visible';
         el.removeAttribute('aria-label');
         const compact = options.compactActorAction;
+        const bounded = !compact && /\p{L}/u.test(String(text));
+        if (bounded) {
+            el.style.width = 'max-content';
+            el.style.whiteSpace = 'normal';
+            el.style.overflowWrap = 'anywhere';
+            el.style.textAlign = 'center';
+        }
         if (compact) {
             el.className = 'floating-text--compact-action';
             el.setAttribute('aria-label', String(text));
@@ -93,7 +102,8 @@ export class FloatingTextManager {
             velocity: 2.0 + Math.random() * 1.0, // Random float speed
             scale: 1.0,
             compact,
-            popScale: compact ? 1.12 : 1.5
+            bounded,
+            popScale: compact || bounded ? 1.12 : 1.5
         };
 
         // Initial position update
@@ -166,6 +176,24 @@ export class FloatingTextManager {
                 || Math.abs(actorScreen.z) > 1 ? 'hidden' : 'visible';
             t.el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -100%) scale(${t.scale})`;
             return;
+        }
+
+        if (t.bounded) {
+            const available = Math.max(1, (window.innerWidth - 24) / t.popScale);
+            if (t.availableWidth !== available) {
+                t.availableWidth = available;
+                t.el.style.maxWidth = `${available}px`;
+                // Cache layout at spawn/rotation; animation ticks only write transforms.
+                t.boxWidth = t.el.offsetWidth;
+                t.boxHeight = t.el.offsetHeight;
+            }
+            const halfWidth = t.boxWidth * t.popScale / 2;
+            const halfHeight = t.boxHeight * t.popScale / 2;
+            x = Math.max(12 + halfWidth, Math.min(window.innerWidth - 12 - halfWidth, x));
+            y = Math.max(12 + halfHeight, Math.min(window.innerHeight - 12 - halfHeight, y));
+            const actorScreen = t.position.clone().project(this.camera);
+            t.el.style.visibility = Math.abs(actorScreen.x) > 1 || Math.abs(actorScreen.y) > 1
+                || Math.abs(actorScreen.z) > 1 ? 'hidden' : 'visible';
         }
 
         // Use transform for everything to avoid layout thrashing

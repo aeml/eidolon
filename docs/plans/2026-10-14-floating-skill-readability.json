@@ -1,0 +1,32 @@
+{
+  "recordedUTC": "2026-10-14T04:45:58.433061+00:00",
+  "status": "Qualified private candidate for the Rogue/Cleric milestone.",
+  "finding": "Prepared phone Cleric effects showed the left side of SERAPH SUMMONED clipped outside the viewport.",
+  "change": "Plain floating messages containing letters wrap and clamp within12px viewport margins at maximum pop scale. Actor-offscreen messages hide. Measurements are cached until responsive width changes. Numeric feedback and structured attributed action cards retain their own presentation; pooled layout styles reset.",
+  "validation": {
+    "client": "12 checks across2 suites pass.",
+    "browser": "One real browser case passes phone-edge bounds, long-message wrapping, landscape rotation, offscreen hiding, numeric pool reuse and disposal.",
+    "native": "Three native GPU cases pass51.6s: High/Low paid Cleric effects and attributed Seraph action. Same skill effects spend160mana, render and retire; corrected phone image inspected.",
+    "lint": "Whole-source pass.",
+    "content": "14 groups pass."
+  },
+  "limits": [
+    "This fixes viewport clipping; simultaneous message overlap, human busy-group readability and real-phone feedback are not accepted by this component check.",
+    "Original world-art, performance and release-readiness gates remain open.",
+    "No soak or stress tests."
+  ],
+  "sources": [
+    {
+      "path": "src/ui/FloatingTextManager.js",
+      "sha256": "48ed51cfafec0de2bffc43927ba648382ad73e0375adc489fe6196f7277cbb09"
+    },
+    {
+      "path": "tests/FloatingTextManager.test.js",
+      "sha256": "51d73a01fcd6a02cf0fac9637b7a35849c71a57ea826e3be2e73a4532d5c177b"
+    },
+    {
+      "path": "tests/e2e/floating-skill-readability.spec.js",
+      "sha256": "c647c446da7a8de88807a603c7360261cea65ba7002d38836305fc1ceb0e2ba5"
+    }
+  ]
+}
