@@ -110,7 +110,7 @@ test('heavy release graphics cases transfer only to an identical trusted mandato
 
 test('the soak remains trusted-branch only and uses an isolated dynamic database port', () => {
     expect(soak).toContain("if: github.repository == 'aeml/eidolon'");
-    expect(soak).not.toMatch(/^  schedule:|cron:/m);
+    expect(soak).not.toMatch(/^ {2}schedule:|cron:/m);
     expect(soak).toContain("github.event_name == 'workflow_dispatch' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')");
     expect(soak).not.toMatch(/pull_request/);
     expect(soak).toContain('- 27017/tcp');

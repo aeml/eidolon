@@ -38,5 +38,10 @@
       "passed": 169,
       "suites": 5
     }
+  },
+  "initialCI": {
+    "run": 38504728588,
+    "blockingFailure": "New no-schedule assertion used literal double spaces; CI no-regex-spaces lint rejected it before deployment",
+    "correction": "Use equivalent explicit {2} spacing; no runtime/assertion-policy change"
   }
 }
