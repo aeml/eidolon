@@ -199,6 +199,10 @@ func TestTalentHealingSpiritSetBonus(t *testing.T) {
 				p.TalentRanks = map[string]int{"CLR_29": 5, "CLR_39": 5}
 				p.ActiveSetBonuses = map[string]map[string]int{"healing-set": {"spiritGuardiansHeal": 1}}
 				ally := newTestPlayer("spirit-target", "Wizard")
+				// Boost slows opponents and recalculates their stats. Use a real
+				// base so this injured target is not clamped to an artificial 45 HP.
+				ally.BaseStats = applyLevelGrowth(InitialPlayerStats(), ally.Level)
+				ally.RecalculateStats()
 				ally.Health = 100
 				ally.X = 1
 				w.AddEntity(ally)

@@ -1,6 +1,6 @@
 {
   "version": "Alpha 1.79.51",
-  "status": "Consolidated four-class1.79.51 milestone. Original candidate failed before deployment; corrected subsets were cancelled before deployment so the combined candidate receives one complete CI/deployment cycle. Accepted50 remains production.",
+  "status": "Corrected consolidated four-class milestone; retains both failed predeployment candidates. Full candidate CI, deployment and exact public verification remain required. Accepted50 remains production.",
   "preparedAtUTC": "2026-10-14T03:57:21.415931+00:00",
   "scope": [
     "Three rune choices for each of52learned skills across all four classes",
@@ -36,7 +36,14 @@
     "sharedReceiving": "123 across10additional suites",
     "floatingText": "12 across2suites,1phone/rotation browser,3native presentation cases",
     "softwareEffects": "Actual SwiftShader High Wizard1.7m and Cleric1.9m pass with unchanged native deadlines and explicit12sfield/15ssummon game lifetimes.",
-    "publishedHistory": "485prior published entries preserved byte-exact; one combined51entry,486total/48history pages."
+    "publishedHistory": "485prior published entries preserved byte-exact; one combined51entry,486total/48history pages.",
+    "combinedHostedClient": {
+      "source": "c5eb9b5315555ab815dd1e6f32b9a262e7be5115",
+      "run": 38514018493,
+      "suites": 769,
+      "tests": 11758,
+      "status": "passed; whole run failed the separately corrected server fixture"
+    }
   },
   "limits": [
     "Full candidate CI and deployed exact identity/assets/account smoke remain required.",
@@ -64,5 +71,12 @@
       38513708771
     ],
     "automaticallyReplacedPendingRun": 38512750905
+  },
+  "retainedCombinedFailure": {
+    "run": 38514018493,
+    "source": "c5eb9b5315555ab815dd1e6f32b9a262e7be5115",
+    "finding": "TestTalentHealingSpiritSetBonus/Spirit_Guardians_Boost/hostile=true used a target with empty BaseStats and artificial500MaxHealth. The new slow correctly recalculated a level10maximum of45 and clamped the artificial100HP target, obscuring expected22PvPdamage.",
+    "correction": "Initialize normal level-grown base stats and recalculate before injuring the target. Preserve exact13/22damage,15friendlyhealing and zero hostile heal-event expectations; runtime unchanged.",
+    "validation": "Focused talent healing and Cleric guardian/control Go race checks pass4.856s."
   }
 }
