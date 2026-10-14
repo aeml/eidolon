@@ -1,0 +1,199 @@
+{
+  "recordedUTC": "2026-10-14T01:21:13.846376+00:00",
+  "source": "9d68f130a33eb5d0ea125e7f50641e87c3a78096",
+  "base": "aad32850fbdbff61ff8ea630bc8d61ed87cfe75c",
+  "status": "Private Wizard Fireball repair/rework component stage. Runtime remains unselected and unpublished until a coherent complete Wizard class pass. Full release goal remains active.",
+  "changes": [
+    "All three stable existing Fireball rune IDs now have actual offline consumers. Empowered doubles the already rounded trained/Focused projectile and adds3s to base cooldown before discounts. Chain retains three additional half-damage direct hits, selects reachable unhit targets and refreshes its damage snapshot once per bounce frame. Paid rune/training/damage snapshots survive later loadout changes.",
+    "Magma replaces the former authoritative following-bleed approximation with its advertised stationary5-unit/3s ground field. It inherits one-sixth of the first resolved hit, applies current receiving defenses and ordinary per-recipient PvP caps once, and cannot follow departed enemies, cross cover, reroll crits/outgoing modifiers or consume another Focus charge. Fully absorbed/Phase-blocked hits create no free field.",
+    "MagmaGround is a dedicated authoritative subtype. Its production replicated projectile visual delegates to the same quality-aware BurningGround factory, animation and resource owner as offline play. Root/protobuf checks retain type/scale/owner and exclude private budget flags. Current effective renderer quality drives local and reconstructed fields.",
+    "Offline fields avoid consuming their birth chunk frame. Three-second timing is verified through ordinary chunk updates at native High and15FPS Low; retired fields detach their meshes. Received-damage observations now survive death-save heals, rather than inferring hit budgets from net HP changes. Existing ability-helper return semantics remain unchanged.",
+    "Lance visual metadata now matches captured1/.5/2.5 collision radii. Arcane Barrage text describes two extra missiles so all precision rune variants retain accurate combo guidance. No new rune IDs, saved-build resets, character replacements, asset/dependency changes or production deployment."
+  ],
+  "client": {
+    "mainPassed": 428,
+    "mainSuites": 17,
+    "criticalAPIPassed": 48,
+    "criticalAPISuites": 2,
+    "distinctPassed": 476,
+    "distinctSuites": 19
+  },
+  "race": {
+    "passedCases": 40,
+    "failedCases": 0,
+    "packages": [
+      {
+        "name": "eidolon-server",
+        "elapsedSeconds": 1.142
+      },
+      {
+        "name": "eidolon-server/internal/game",
+        "elapsedSeconds": 7.131
+      }
+    ]
+  },
+  "checks": {
+    "lint": "Changed runtime/unit/native files pass; whitespace check passes.",
+    "generatedContent": "14 groups verify without regeneration; no generated animation inventory change required for descriptions/subtype.",
+    "fullCampaigns": "No full client/server/long-soak rerun is claimed by this component stage."
+  },
+  "native": {
+    "qualifiedProfiles": [
+      {
+        "quality": "high",
+        "sourceArtifact": "native-resolved.json",
+        "jobStats": {
+          "startTime": "2026-10-14T01:06:38.522Z",
+          "duration": 18427.230000000003,
+          "expected": 1,
+          "skipped": 0,
+          "unexpected": 1,
+          "flaky": 0
+        },
+        "initial": {
+          "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "equipment": 14,
+          "fallback": [],
+          "missing": [],
+          "pendingGeometry": 0
+        },
+        "contrast": {
+          "changed": 587128,
+          "restored": 0,
+          "replicaDifference": 0,
+          "afterReplica": 0,
+          "radius": 5
+        },
+        "expiry": {
+          "elapsed": 3.0164999999999953,
+          "step": 0.016600000000000364,
+          "fieldElapsed": 3.0164999999999957,
+          "meshRetired": true
+        },
+        "manaSpent": 30,
+        "fieldHits": [
+          {
+            "id": "magma-walker-0",
+            "field": true,
+            "damage": 6,
+            "elapsed": 1.0778099999761594,
+            "x": 10,
+            "z": 0
+          },
+          {
+            "id": "magma-walker-0",
+            "field": true,
+            "damage": 6,
+            "elapsed": 2.077809999976159,
+            "x": 13.145768815012069,
+            "z": -1.1795049885187443
+          },
+          {
+            "id": "magma-walker-1",
+            "field": true,
+            "damage": 6,
+            "elapsed": 2.077809999976159,
+            "x": 12.885590913747729,
+            "z": 1.369626309406206
+          },
+          {
+            "id": "magma-walker-1",
+            "field": true,
+            "damage": 6,
+            "elapsed": 3.094309999976157,
+            "x": 8.20120000000001,
+            "z": 2
+          }
+        ],
+        "allPositionsFixed": true,
+        "pendingGeometry": 0
+      },
+      {
+        "quality": "low",
+        "sourceArtifact": "native-low-pose.json",
+        "jobStats": {
+          "startTime": "2026-10-14T01:13:12.710Z",
+          "duration": 8784.840999999999,
+          "expected": 1,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        },
+        "initial": {
+          "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "equipment": 14,
+          "fallback": [],
+          "missing": [],
+          "pendingGeometry": 0
+        },
+        "contrast": {
+          "changed": 33119,
+          "restored": 0,
+          "replicaDifference": 0,
+          "poseDifferences": [],
+          "sharedSurfaces": true,
+          "afterReplica": 0,
+          "radius": 5
+        },
+        "expiry": {
+          "elapsed": 3.0665000000000022,
+          "step": 0.08330000000000018,
+          "fieldElapsed": 3.066500000000001,
+          "meshRetired": true
+        },
+        "manaSpent": 30,
+        "fieldHits": [
+          {
+            "id": "magma-walker-0",
+            "field": true,
+            "damage": 6,
+            "elapsed": 0.9273999999523161,
+            "x": 10,
+            "z": 0
+          },
+          {
+            "id": "magma-walker-0",
+            "field": true,
+            "damage": 6,
+            "elapsed": 1.9773999999523155,
+            "x": 12.173542272164854,
+            "z": -0.8526083029967939
+          },
+          {
+            "id": "magma-walker-1",
+            "field": true,
+            "damage": 6,
+            "elapsed": 2.9939999999523175,
+            "x": 8.2,
+            "z": 2
+          }
+        ],
+        "allPositionsFixed": true,
+        "pendingGeometry": 0
+      }
+    ],
+    "scope": "Prepared offline component scene with original Wizard source model,14-slot outfit/no missing or fallback equipment, actual HUD at zoom15, actual paid handler/finite unmodified level50 resources, production chunk movement and source field factory. Replicated visual reconstruction is checked at the same recorded clock through the production projectile factory, not a connected account/gameplay session. High is reused from the successful resolved-hit run; only the affected Low pose-replay control was repeated.",
+    "manualInspection": "High/Low source HUD screenshots inspected; motion traces and videos retained. No whole-game art, performance, physical-phone or subjective fun/balance acceptance."
+  },
+  "retainedFailures": [
+    "Legacy Magma tests initially expected moving bleed wounds. Four original subcase failures retained; redesigned tests inspect real field HP damage while retaining recipient PvP and wall/doorway boundaries and confirming no bleed.",
+    "New Lance metadata assertions exposed four wrong visual-radius cases; base radius/scale encoding corrected, captured footprint checks now pass.",
+    "Initial native High/Low scenes showed no burn on the entrant. Original evidence retained; separated walking routes plus per-frame actor records produce real entry/exit damage. Original routing failure cause was not conclusively captured.",
+    "Initial three-second native observation exposed birth-frame aging (Low2.9832s relative impact). Source field now starts on the next chunk frame, with actual elapsed lifetime>=3s and<=3s+one admitted frame.",
+    "Root wire fixture incorrectly assumed subtype lived in the internal delta snapshot and failed to compile. It now checks the actual protobuf type/footprint boundary. A subsequent wrong-cwd edit command also failed without changing files; original logs retained.",
+    "Resolved-hit native High passed, while Low differed in51RGBA channels against its reconstructed replica; same-source restores remained exact. Test replay formerly recovered timesteps by subtraction. It now records actual elapsed time and supplied dt, verifies identical transforms/shared surfaces, and retains exact zero image/restoration assertions. Corrected Low pass and original failure are both retained; no tolerance was added."
+  ],
+  "remainingWizard": [
+    "Four skills still need real rune choices: Flame Whip, Flame Tornado, Inferno Cataclysm, Time Warp.",
+    "Arcane Shield reflective/explosive offline consumers and Meteor Apocalypse/cluster rounding remain.",
+    "Precision missile launch cadence, actual connected/saved-loadout gameplay, base10/20/30/40 pressure/resource loops, party/boss roles, effects/audio and balance/feel still require the coherent class pass.",
+    "Historical interrupted full client run remains incomplete. Qualify the eventual full class candidate before merging/publishing; remaining Fighter/Rogue/Cleric and full original roadmap/gates remain open."
+  ],
+  "custody": {
+    "directory": "/home/aeml/.local/share/eidolon-wizard-fireball-checks-20261014",
+    "files": 84,
+    "inventorySHA256": "34bf01b2732839b01a96c69573c64dab12a7d54aacb1b21871ae73ee34d3b519",
+    "workerBundleSHA256": "28b738eaf5aa3a9ba5df513fbd8c400f3d82a5f0f2624d529731c57b80a95f03"
+  },
+  "selection": "Only this completed progress/evidence record enters master. Runtime stays in its owned detached Wizard worktree; no new branch name or beta/readiness declaration."
+}

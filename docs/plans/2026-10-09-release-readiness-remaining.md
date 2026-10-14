@@ -40,6 +40,14 @@ combat and visible launch/footprint consistency before selecting a coherent
 Wizard class update. Full twelve-branch design, tuning and deferred feel review
 remain open.
 
+
+A [private Fireball repair](2026-10-14-wizard-fireball-private-stage.json) now
+implements the three existing offline runes and real stationary Magma ground,
+with476 client checks/19suites,40 race cases and exact native High/15FPS Low
+field reconstruction/timing. Frozen84 files retain failed trials. Runtime
+`9d68f130` is still unselected; complete Arcane Shield/Meteor parity, four
+missing rune skills and full learned/connected class qualification next.
+
 ## Release and source custody
 
 - **Alpha1.79.49 accepted live:** Alpha1.79.49/exact`8e5f888a` is accepted live within qualified town aprons, exact character color batching, Dark Realm masonry, private disposable smoke and active-cutaway shutdown scope. OwnCI38346406878attempt1 all ten ordered jobs succeeded05:15:55UTC:756client suites/11343tests,351browser passes/10skips,59required native passes/1skip; live8first-attempt passes/1skip/0flakes plus recovery2/rested-party1. Four optional stages remain skips. Fresh15:10:30UTC normal-TLS157asset hashes/bytes, frontend/backend identities, readyDB and analyticsJS match. Original crowded-town performance, earlier network failures, failed41soak and full readiness gates remain open. Frozen43entry terminal inventory`72e2d2c870f148e6f495cd6b9d9d06e9a11edf09afc360ab9be567d315f95664`. [Acceptance](2026-10-13-public49-terminal-qualification.json), [publication](2026-10-13-release49-masonry-publication.json).

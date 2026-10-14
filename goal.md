@@ -1810,3 +1810,18 @@ stays unselected in its owned detached worktree; only the completed progress
 record enters master. See `docs/plans/2026-10-13-wizard-precision-private-stage.json`.
 Public49 remains the last accepted delivery, and the full original goal remains
 active.
+
+
+October14 private Fireball checkpoint `9d68f130` repairs all three stable offline
+runes and replaces authoritative Magma bleed with stationary5-unit/3s ground.
+Actual receiving damage, death saves, cover, entry/exit and captured budgets are
+covered by476 distinct client checks/19suites and40 race cases. Native High and
+15FPS Low verify fixed grounded fields, exact reconstructed visuals and expiry;
+original failures are retained in frozen84-file inventory
+`34bf01b2732839b01a96c69573c64dab12a7d54aacb1b21871ae73ee34d3b519`.
+[Evidence](docs/plans/2026-10-14-wizard-fireball-private-stage.json) is a private
+component record, not connected/full-class or subjective balance acceptance.
+Runtime remains detached and unselected until the coherent Wizard pass; Arcane
+Shield/Meteor offline gaps, four missing rune skills, cadence, learned journey
+and connected/loadout qualification remain. Public49 remains accepted and the
+full original goal remains active.
