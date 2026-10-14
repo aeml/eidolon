@@ -4,6 +4,7 @@ import { requiresHardwareWebGL } from './browserLaunchPolicy.js';
 
 test.use({ video: 'on' });
 for (const quality of ['high', 'low']) test(`prepared ${quality} paid Cleric rune effects render and retire`, async ({ page, baseURL }, testInfo) => {
+    test.setTimeout(requiresHardwareWebGL() ? 120_000 : 180_000);
     const failures = collectBrowserFailures(page, baseURL);
     await page.setViewportSize({ width: quality === 'low' ? 390 : 1280, height: 844 });
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
@@ -99,17 +100,20 @@ for (const quality of ['high', 'low']) test(`prepared ${quality} paid Cleric run
     });
     expect(active.radius).toBe(30);expect(active.visualRadius).toBe(30);expect(active.sanctuary).toBe(true);expect(active.summonHealth).toBe(active.expectedHealth);
     await page.screenshot({ path: testInfo.outputPath(`cleric-runes-${quality}.png`) });
+    // The capped simulation clock can run slower on software WebGL.
     await expect.poll(() => page.evaluate(() => {
         const q = window.__clericEffects;return !q.owner.spiritsActive && !q.owner.consecratedZone && !q.seraph.isActive;
-    }), { timeout: 22000 }).toBe(true);
+    }), { timeout: requiresHardwareWebGL() ? 22000 : 90000 }).toBe(true);
     const result = await page.evaluate(() => {
         const q = window.__clericEffects;
         return { manaSpent: q.beforeMana - q.owner.stats.mana, hits: q.hits,
             zoneDetached: !q.zoneVisual.parent, spiritDisposed: !q.spiritVisual.isActive,
             seraphDetached: !q.seraphMesh.parent, summons: q.owner.offlineSeraphs.size,
+            seraphLifetime: (() => { const r = q.spawned.find(r => r.entity === q.seraph); return r.retiredAt - r.at; })(),
             gpuJobs: q.render.actorGameplayGeometry.delivery.jobs.size };
     });
     expect(result.manaSpent).toBe(20 + 40 + 40 + 60);
+    expect(result.seraphLifetime).toBeGreaterThanOrEqual(14.8);expect(result.seraphLifetime).toBeLessThan(15.2);
     expect(result.zoneDetached).toBe(true);expect(result.spiritDisposed).toBe(true);expect(result.seraphDetached).toBe(true);
     expect(result.hits.some(hit => hit.damage > 0)).toBe(true);expect(result.summons).toBe(0);expect(result.gpuJobs).toBe(0);
     await testInfo.attach('cleric-rune-effect-observations', { body: JSON.stringify({ initial, active, result }), contentType: 'application/json' });

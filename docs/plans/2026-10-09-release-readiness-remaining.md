@@ -27,22 +27,26 @@ frontend/backend identity, ready database and all158pinned public assets.
 [Acceptance receipt](2026-10-14-release1-79-50-acceptance.json).
 Soak scheduling remains disabled by owner until features are nearly complete.
 
-Wizard/Fighter release1.79.51 is pushed at `de2c520b5`; CI38511451197 is active.
-Its full CI, deployment and exact public asset verification remain required.
-[Wizard evidence](2026-10-14-wizard-class-completion.json) and
-[Fighter evidence](2026-10-14-fighter-class-completion.json) retain scoped checks.
+The initial Wizard/Fighter1.79.51 candidate failed CI38511451197 before deployment.
+The shared combo description and two reflection fixtures were stale; the hosted
+High effect test also waited in wall time while software rendering advanced the
+capped game clock slowly. Corrected focused client/race and actual SwiftShader
+checks pass; exact gameplay lifetime and native deadlines remain unchanged.
+The unfinished subset runs were cancelled before deployment.
 
-Rogue and Cleric are qualified privately for the next combined1.79.52milestone.
-Each now has39runes across13learned skills. Rogue projectile, wound, cloak and
-pending-owner behavior is repaired; Cleric auras, Sanctuary, support training,
-control and summon choices are matched across runtimes. Focused client/race,
-learned-breakpoint/loadout, desktop/phone UI, three connected branches per class
-and native High/Low effect cases pass. See [Rogue evidence](2026-10-14-rogue-class-completion.json)
-and [Cleric evidence](2026-10-14-cleric-class-completion.json). Full52candidate CI
-and deployment remain pending, with publication held behind51acceptance.
-All52learned skills now have three optional runes in this candidate; this closes
-the missing rune implementation coverage, not human balance or final class feel.
-The original world/art/device/operations and beta/release gates remain open.
+All four qualified class passes are now consolidated into one corrected1.79.51
+milestone. The private1.79.52 preparation was never published. All52learned skills
+have three optional runes, with actual consumers, rejected casts, saved builds,
+learned breakpoints, desktop/phone UI, connected class branches and native
+High/Low effects checked. See [release scope and retained failures](2026-10-14-release1-79-51.json),
+[Wizard](2026-10-14-wizard-class-completion.json),
+[Fighter](2026-10-14-fighter-class-completion.json),
+[Rogue](2026-10-14-rogue-class-completion.json),
+[Cleric](2026-10-14-cleric-class-completion.json) and
+[phone message repair](2026-10-14-floating-skill-readability.json).
+The combined source still requires full CI, deployment and exact public checks.
+This closes missing rune implementation coverage, not human balance, class feel,
+final world/art/device/operations or original beta/release requirements.
 
 The scheduled48 soak38342666778 is now terminal **failed**, superseding all
 running labels below: the owned server crashed with concurrent map read/write.
@@ -541,7 +545,7 @@ acceptance is incomplete.
 | Requirement | Remaining work and evidence needed | Owner |
 | --- | --- | --- |
 | Historical49 publication | Alpha1.79.49/exact`8e5f888a` is accepted live within qualified town aprons, exact character color batching, Dark Realm masonry, private disposable smoke and active-cutaway shutdown scope. OwnCI38346406878attempt1 all ten ordered jobs succeeded05:15:55UTC:756client suites/11343tests,351browser passes/10skips,59required native passes/1skip; live8first-attempt passes/1skip/0flakes plus recovery2/rested-party1. Four optional stages remain skips. Fresh15:10:30UTC normal-TLS157asset hashes/bytes, frontend/backend identities, readyDB and analyticsJS match. Original crowded-town performance, earlier network failures, failed41soak and full readiness gates remain open. [Acceptance](2026-10-13-public49-terminal-qualification.json). | Implementation |
-| Current / next publication | Accepted50; Wizard/Fighter51 pushed and CI active. Qualified private Rogue/Cleric52 is held until51exact deployment verification. Soak scheduling disabled by owner until features are nearly complete. | Implementation |
+| Current / next publication | Accepted50; initial51failed before deployment. All four qualified class passes now consolidated into corrected51, pending full CI/deployment/exact verification. Private52was never published. Soak scheduling disabled by owner until features are nearly complete. | Implementation |
 | Modern world and atlas | Finish coherent material scale, terrain transitions, grounded architecture, roads, vegetation/rock composition, landmarks, interiors, lighting, atmosphere and readable travel/combat spaces. Moving equipped/HUD review starts Lanternhold → Earth → fight → first dungeon, then all elemental realms/borders, dungeons/raids, Dark Realm, both casino floors and PvP. Required named places, optional interactions and accurate maps remain governed by the full world contract. Repetition, sparse rooms and broad muddy patches are not final art. | Implementation; final owner review |
 | Supplied actor/equipment presentation | Finish full/mixed/cosmetic fits and material identity across all classes, weapon restrictions, dual wielding, local/remote swaps, pooling/reconnect and motion. Preserve delivered assets and approved geometry/rig constraints. | Implementation; final owner review |
 | Combat, classes and audio | Validate all twelve specialization kits, attack anticipation/contact/recovery, movement, threat readability and role feel. Finish contact/audio integration and human listening/busy-group mix; essential warnings survive Low/reduced effects/mute. Prepared mixer frames or audio API calls are insufficient for full acceptance. | Implementation and playtests |

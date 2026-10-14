@@ -14,7 +14,8 @@
     "runeUI": "Six desktop/phone branch cases pass47.9s; all twelve branch choices visible/selectable with prepared acknowledgement.",
     "connected": "Three disposable connected characters pass rune selection, saved reconnect and all twelve branch paid actions1.9m. One level/resource preparation each, no per-cast reset. Mark checks actual debuff receipt. Private server/data removed; credential scan passes.",
     "native": "Two native GPU High/Low cases pass50.6s. Four paid actions spend160mana; area and spirits appear at actual rune radius30, Seraph has guardian-health bonus,14 supplied gear slots have no missing/fallback. Effects/summons retire with detached meshes and no pending geometry work. Images inspected at actual HUD: component floor, not final world art.",
-    "content": "Fourteen generated groups and whole-source lint pass; animation coverage regenerated."
+    "content": "Fourteen generated groups and whole-source lint pass; animation coverage regenerated.",
+    "software": "High SwiftShader case passes1.9m with90ssoftware-only wall wait and explicit14.8\u201315.2sSeraph game lifetime. Native22swall deadline remains unchanged; earlier native runtime/effect evidence remains valid."
   },
   "retainedFailures": [
     "Initial learned-level healing fixtures targeted an enemy; server correctly rejected. Fixtures corrected to use an injured ally.",
@@ -73,7 +74,7 @@
     },
     {
       "path": "tests/e2e/cleric-rune-effects.spec.js",
-      "sha256": "a0defced8fc44415999201c0fea574c6ed4dcf1e83353aa0d0501a13e6ab31cb"
+      "sha256": "148483740998d2baa18f5ecdd09c43489c48583ae0e68e35da9bc3eed8b73eec"
     }
   ]
 }

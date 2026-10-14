@@ -1,6 +1,6 @@
 {
   "version": "Alpha 1.79.52",
-  "status": "Qualified private candidate; publication held until1.79.51 terminal deployment verification",
+  "status": "Unpublished preparation consolidated into corrected1.79.51 before any1.79.51 deployment. No1.79.52 release was published. Retained source/check custody only.",
   "preparedAtUTC": "2026-10-14T04:40:15.781169+00:00",
   "scope": [
     "Rogue rune coverage, offline projectile/wound/stealth parity and pending volley lifecycle",
@@ -27,5 +27,6 @@
     "patchNotes": 487,
     "historyPages": 48,
     "sharedReceivers": "123 checks across10 additional suites pass5.326s: existing smoke/blade/trap consumers, stealth, periodic damage, critical/hit feedback and Fighter receiving/buff boundaries."
-  }
+  },
+  "supersededBy": "2026-10-14-release1-79-51.json"
 }

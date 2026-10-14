@@ -1889,3 +1889,11 @@ pass within their recorded scopes. Human class feel, final world/art/device,
 operations and original freeze/beta/release gates remain open. Publish52only
 after51terminal CI/deployment and exact public identity/assets are verified.
 Soak/stress testing remains owner-deferred until features are nearly complete.
+
+October14: Initial51failed CI before any deployment. Stale combo/reflection fixtures
+and software-only wall-clock retirement wait are corrected with focused evidence.
+All four qualified class passes are consolidated into corrected1.79.51; private52
+was never published. Superseded subset runs were cancelled before deployment.
+The combined candidate requires full CI and exact deployment verification.
+Human balance, final world/art/device/operations and original roadmap remain open;
+soak/stress testing remains deferred by owner.

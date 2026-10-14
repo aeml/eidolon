@@ -1,12 +1,14 @@
 {
   "version": "Alpha 1.79.51",
-  "status": "Corrected1.79.51 candidate; first run38511451197 failed before deployments. Superseded queued7a6b run was automatically replaced; incompletebb9 run cancelled after software-rendering diagnosis to avoid redundant known-failing CI.",
+  "status": "Consolidated four-class1.79.51 milestone. Original candidate failed before deployment; corrected subsets were cancelled before deployment so the combined candidate receives one complete CI/deployment cycle. Accepted50 remains production.",
   "preparedAtUTC": "2026-10-14T03:57:21.415931+00:00",
   "scope": [
-    "Wizard rune coverage for every learned skill",
-    "Fighter rune coverage for every learned skill, matched paid effects and captured charge plans",
-    "Paid precision/Focus, Fireball/Magma, Shield and Meteor behavior consistency",
-    "Fighter Iron Fortress rune and Gravity immovability repair"
+    "Three rune choices for each of52learned skills across all four classes",
+    "Wizard paid precision/Focus, Fireball/Magma, Shield and Meteor consistency",
+    "Fighter branch rune consumers, captured travelling charges and Fortress/Gravity parity",
+    "Rogue branch choices, offline projectile/wound/stealth parity and pending volley ownership",
+    "Cleric branch choices, support auras/Sanctuary/training/control and summons",
+    "Viewport-bounded floating skill messages with safe numeric pool reuse"
   ],
   "sourceReceipts": [
     "2026-10-14-wizard-class-completion.json",
@@ -14,24 +16,33 @@
     "2026-10-14-wizard-shield-private-stage.json",
     "2026-10-13-wizard-precision-private-stage.json",
     "2026-10-14-fortress-rune-parity.json",
-    "2026-10-14-fighter-class-completion.json"
+    "2026-10-14-fighter-class-completion.json",
+    "2026-10-14-rogue-class-completion.json",
+    "2026-10-14-cleric-class-completion.json",
+    "2026-10-14-floating-skill-readability.json"
   ],
   "checks": {
     "releaseClient": {
-      "passed": 418,
-      "suites": 4
+      "passed": 451,
+      "suites": 6
     },
     "contentGroups": 14,
     "lint": "whole source passes",
     "patchNotes": 486,
     "historyPages": 48,
-    "integration": "Combined candidate: 508 checks across 6 client suites pass, whole-source lint and 14 content groups pass."
+    "integration": "Combined candidate: 508 checks across 6 client suites pass, whole-source lint and 14 content groups pass.",
+    "rogueClient": "275 across15suites",
+    "clericClient": "324 across18suites",
+    "sharedReceiving": "123 across10additional suites",
+    "floatingText": "12 across2suites,1phone/rotation browser,3native presentation cases",
+    "softwareEffects": "Actual SwiftShader High Wizard1.7m and Cleric1.9m pass with unchanged native deadlines and explicit12sfield/15ssummon game lifetimes.",
+    "publishedHistory": "485prior published entries preserved byte-exact; one combined51entry,486total/48history pages."
   },
   "limits": [
     "Full candidate CI and deployed exact identity/assets/account smoke remain required.",
     "Full local in-band Jest aborted at4GiB heap; VIP fixture corrected independently with21passes.",
     "Prepared/connected checks do not certify human balance, pacing, real phones, capacity or final art.",
-    "Rogue/Cleric implementation review, human class tuning and original roadmap work remain open."
+    "Human class tuning and original world/art/device/operations/roadmap work remain open."
   ],
   "retainedFailure": {
     "run": 38511451197,
@@ -42,5 +53,16 @@
     "additionalValidation": "137 checks across Whirlwind, Phase, Arcane Shield, Fortress and combo suites pass2.556s. Earlier62precision/combo and Go race checks remain valid.",
     "browser": "Hosted browser shard2 failed High effect retirement at20s wall. Local SwiftShader reproduces:14 supplied items loaded, no pending geometry; game elapsed12.29386s but Inferno cast at5.99386s, so its12s field had aged only6.3s. Other effects already retired. Low and native checks pass.",
     "browserCorrection": "Software WebGL receives90s wall wait/180s case budget; native20s retirement deadline and exact11.8\u201312.2 game-second Inferno lifetime stay unchanged. Diagnostic attachment retained on failure. Corrected actual SwiftShader High case passes1.7m with normal paid casts, retirement, meshes and empty pending jobs."
+  },
+  "consolidation": {
+    "recordedUTC": "2026-10-14T04:55:03.532352+00:00",
+    "reason": "All four class passes are qualified privately while51was blocked before deployment. Consolidate into one coherent class milestone, retaining source history and failures without publishing a second version before acceptance.",
+    "supersededPreparedVersion": "Alpha1.79.52 (never published)",
+    "priorReleasedVersion": "Alpha1.79.50 b2c246c76",
+    "cancelledRuns": [
+      38513033121,
+      38513708771
+    ],
+    "automaticallyReplacedPendingRun": 38512750905
   }
 }
