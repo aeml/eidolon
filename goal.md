@@ -1842,3 +1842,13 @@ Runtime remains private/unselected; Meteor parity, four missing rune skills,
 missile cadence, learned/connected/loadout qualification and the coherent
 Wizard pass remain. Only progress/evidence enters master. Public49 remains
 accepted; all original release-readiness requirements stay active.
+
+
+October14 owner instruction: pause soak/stress testing on the shared host until
+features are nearly complete. GitHub Nightly Multiplayer Soak is disabled; its
+automatic schedule is removed, with trusted manual qualification retained for
+later. No running soak required cancellation. Preserve prior failures and
+capacity limits. Continue focused tests, race regressions and ordinary release
+checks without per-version stress tests.
+
+October14: prepared coherent Alpha1.79.50 with qualified elite entity-map publication locking, prior validated renderer allocation reductions and household glazing. Focused race/client/content/lint checks pass with supported Node24; initial unsupported-Node18 archive failure retained. Wizard remains private. Own ordered CI/deployment/public acceptance required before successor publication.

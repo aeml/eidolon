@@ -19,6 +19,19 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
+## October14 implementation continuation
+
+Alpha1.79.50 is being prepared with the qualified elite publication lock and
+previously qualified local renderer/glazing work. Own CI, deployment and fresh
+public verification remain required. Private Wizard work stays unselected.
+
+The scheduled48 soak38342666778 is now terminal **failed**, superseding all
+running labels below: the owned server crashed with concurrent map read/write.
+The focused elite publication regression reproduces an unsafe writer against
+the same reader; its qualified fix does not establish the unique historical
+writer or a 100-client capacity pass. See the
+[fix and retained failure](2026-10-14-elite-publication-race-fix.json).
+
 ## October13 gameplay priority
 
 The owner requests a major rework of abilities, runes and related systems so every specialization is unique, useful and fun. [Canonical baseline](2026-10-13-specialization-rework-baseline.json) verifies12branches/52learned skills and exact client/server rune/tree parity; only16of48branch abilities have runes, and FighterC/WizardB/ClericC have none for their own branch skills. Full consumer/design/balance review remains. Begin a coherent Wizard class pass with distinct Pyromancer, precision and control loops, then Fighter/Rogue/Cleric; preserve saves and original single-branch/resource/target rules. New work is pending, not qualified by historical1.33 kit checks. Root goal and promiseN18 preserve the explicit renewed scope.
@@ -650,3 +663,11 @@ October13 continuation: accepted49 closes only the scoped publication gate. A pr
 October13 current connected49 High diagnosis uses exact public49 runtime with one native renderer/three live socket peers and actual four-class14slot persisted saves:180visibleframes221draws/168639triangles pass those limits,33.4msmedian/50.1p95 fail original20/33.4. Separate phase probe attributes30.9msmedian to world renderer versus2.7ms update; CPU matrix/scene traversal and batch validation dominate.22active entities differ from old39population37–40, so no causal speedup claim. Frozen26entry baseline63a53891634c4d72bac956847c9d07905539454f6db440d810eb52756885a805. [Baseline](2026-10-13-connected49-cpu-baseline.json). Allocation-free exact attribute guardsc7949d68 ordinarily mergeddf05e2e4 after142distinctCPUchecks/four suites/lint and nativeHighLow six exactRGBApairs/threeHighdepth/eightmovingABBAarms plus full actual equipment/quality/owner/group/realm/shutdown coverage. Roughly0.6–2ms synchronous CPU savings, similar frameintervals; originalHigh town33.3ms/279283triangles andLow107747triangle failures stayopen. Frozen34entryb43ee42769c956204b65860ccb704f2a013db95da522d1748fd700c184c0182f. Source/lease/geometry policies unchanged; no public50or fullperformance acceptance. [Qualification](2026-10-13-attribute-validation-qualification.json). Full original goal active.
 
 October13 scan-local finite-palette reuse78d71790 and opt-in connected validation comparison are qualified/ordinarily mergedf18384ac.122focusedCPUchecks/three suites (179distinct/five suites combined with earlier attribute guards), nativeHighLow six exactRGBA/threeHighdepth/eightmovingABBAarms and actual equipment/quality/owner/group/realm/shutdown coverage pass. Fresh actualGoRace four-class14slot session/native1pass1optional skip/zero retries preserves all saves; connected reference49/candidate/candidate/reference49 arms keep0pending geometry and restore all methods. ObservedCPUmedians33.7/32.0reference versus30.3/31.4candidate are descriptive amid live draw/population variation; original20/33.4frame targets stillfail in allarms and main33.4/66.6ms failure is retained. Frozen46entry palette evidence47b69db25055999cff76286dc575e9f7584e4a6bf443a70fb8290155b85f86e0. Local only, no50publication/fullFPSclaim. Public49 remains accepted and fullgoal active. [Qualification](2026-10-13-palette-validation-qualification.json). Next CPU hypothesis: constructor-owned foliage currently creates thousands of nearly singleton cells; screen static per-descriptor multi-draw delivery preserving every root/matrix/geometry/wind/light/culling/quality/resource contract. Existing rejected matrix/early-color-cull variants stay rejected.
+
+
+October14 owner instruction: pause soak/stress testing on the shared host until
+features are nearly complete. GitHub Nightly Multiplayer Soak is disabled; its
+automatic schedule is removed, with trusted manual qualification retained for
+later. No running soak required cancellation. Preserve prior failures and
+capacity limits. Continue focused tests, race regressions and ordinary release
+checks without per-version stress tests.

@@ -64,7 +64,7 @@ test('actual self-hosted admission conditions reject foreign repositories, PRs a
             }
         }
     }
-    expect(nightly({ github: { repository: 'aeml/eidolon', event_name: 'schedule', ref: 'refs/heads/master' }, inputs: {} })).toBe(true);
+    expect(nightly({ github: { repository: 'aeml/eidolon', event_name: 'schedule', ref: 'refs/heads/master' }, inputs: {} })).toBe(false);
 });
 
 test('the uninterrupted soak has a queue separate from deployment GPU QA', () => {
@@ -110,7 +110,7 @@ test('heavy release graphics cases transfer only to an identical trusted mandato
 
 test('the soak remains trusted-branch only and uses an isolated dynamic database port', () => {
     expect(soak).toContain("if: github.repository == 'aeml/eidolon'");
-    expect(soak).toContain("github.event_name == 'schedule'");
+    expect(soak).not.toMatch(/^  schedule:|cron:/m);
     expect(soak).toContain("github.event_name == 'workflow_dispatch' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')");
     expect(soak).not.toMatch(/pull_request/);
     expect(soak).toContain('- 27017/tcp');

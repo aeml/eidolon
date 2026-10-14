@@ -1,8 +1,8 @@
 name: Nightly Multiplayer Soak
 
 on:
-  schedule:
-    - cron: '17 3 * * *'
+  # Owner deferred shared-host stress testing until features are nearly complete.
+  # Manual dispatch is retained for the later explicitly scheduled qualification.
   workflow_dispatch:
     inputs:
       duration:
@@ -22,7 +22,7 @@ jobs:
     name: 100-client authoritative-state soak
     # Never occupy the deployment/GPU runner for the uninterrupted 24-hour soak.
     runs-on: [self-hosted, linux, x64, eidolon-soak]
-    if: github.repository == 'aeml/eidolon' && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')))
+    if: github.repository == 'aeml/eidolon' && github.event_name == 'workflow_dispatch' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
     timeout-minutes: 1500
     env:
       SOAK_DURATION: ${{ inputs.duration || '24h' }}

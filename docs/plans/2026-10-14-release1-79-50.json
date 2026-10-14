@@ -1,0 +1,42 @@
+{
+  "version": "Alpha 1.79.50",
+  "status": "Locally verified; own ordered CI/deployment and fresh public checks pending",
+  "scope": [
+    "Qualified periodic elite map publication lock",
+    "Previously qualified allocation-free character attribute validation and scan-local finite-palette reuse",
+    "Previously qualified household glazing"
+  ],
+  "sourceReceipts": [
+    "2026-10-14-elite-publication-race-fix.json",
+    "2026-10-13-attribute-validation-qualification.json",
+    "2026-10-13-palette-validation-qualification.json",
+    "2026-10-13-color-layout-validation-qualification.json",
+    "2026-10-13-household-glazing-qualification.json"
+  ],
+  "limits": [
+    "Private Wizard prototype remains unselected",
+    "Failed 100-client soak retained; bounded race regression is not capacity acceptance",
+    "Original art/performance/device/operations/beta/launch requirements remain open"
+  ],
+  "checks": {
+    "clientInitial": {
+      "passed": 560,
+      "failed": 1,
+      "reason": "Initial shell used unsupported Node18; archive loader test failed"
+    },
+    "clientSupportedNode24": {
+      "passed": 399,
+      "suites": 3,
+      "scope": "Version, pagination and updated runner policy"
+    },
+    "contentGroups": 14,
+    "lint": "passed",
+    "goRace": "focused game and root broadcast cases passed",
+    "notes": 485,
+    "soakPolicy": "Owner deferred stress tests; remote workflow disabled, automatic cron removed; no active soak",
+    "rendererNode24": {
+      "passed": 169,
+      "suites": 5
+    }
+  }
+}

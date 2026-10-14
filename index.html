@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.79.49</span>
+                    <span class="start-version-row__label">Alpha 1.79.50</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
                 <p id="game-startup-status" class="game-startup-status" role="alert" tabindex="-1" hidden></p>
@@ -843,7 +843,17 @@
                 </span>
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
-            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.49" data-notes-pages="48" data-notes-total="484">
+            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.50" data-notes-pages="48" data-notes-total="485">
+                <div class="patch-note-entry" data-version="1.79.50">
+                    <h3>Alpha 1.79.50 (World stability and town presentation)</h3>
+                    <ul>
+                        <li>Fixes an unsafe interaction between periodic elite spawning and multiplayer world updates that could crash the server.</li>
+                        <li>Lanternhold homes gain leaded-glass detail, warm pane variation and physical surface response on their existing windows.</li>
+                        <li>Character rendering avoids repeated temporary allocations and duplicate skeleton checks while preserving equipment, animation, geometry and shadows.</li>
+                        <li>Retains quest pacing improvements, connected town paving, Dark Realm masonry, smooth jumps and steady Well Rested auras.</li>
+                        <li>Class specialization and rune redesign, crowded-scene performance and release-readiness work continue. Full prior patch history remains available through Load more notes.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.79.49">
                     <h3>Alpha 1.79.49 (Dark Realm masonry and connected town services)</h3>
                     <ul>
@@ -932,17 +942,6 @@
                         <li>Retains gradual quest XP, larger dungeon story rewards and the two-level limit on any single quest turn-in.</li>
                         <li>Retains approximately 1.5-second jump arrival, smooth takeoff and landing, Well Rested aura tracking and separate automation-account population reporting.</li>
                         <li>Existing characters, items and Gold remain intact. Full prior patch history remains available through Load more notes.</li>
-                    </ul>
-                </div>
-                <div class="patch-note-entry" data-version="1.79.40">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.40 (A steadier leveling journey)</h3>
-                    <ul class="patch-note-entry__list">
-                        <li>Quest XP now follows the quest’s intended level: ordinary story chapters award about three quarters of a level’s XP, dungeon chapters award more, and a single turn-in can never advance more than two levels.</li>
-                        <li>Added smaller investigations and hunts along the Earth, Water and Fire journeys, replacing the large XP bursts around Verdant Bastion with gradual progress toward each dungeon.</li>
-                        <li>Unpaid oversized story rewards are corrected for existing characters. Earned levels, paid rewards, Gold, quest progress and unlocked dungeon access are preserved; earlier added chapters remain optional for returning characters.</li>
-                        <li>Pilgrim Rest has pitched canopies, tied ropes, supported benches and more detailed travel supplies.</li>
-                        <li>Retains approximately 1.5-second jump arrival, smooth takeoff and landing, Well Rested aura tracking and separate automation-account population reporting.</li>
-                        <li>Full prior patch history remains available through Load more notes.</li>
                     </ul>
                 </div>
                 <div class="patch-notes-controls">
