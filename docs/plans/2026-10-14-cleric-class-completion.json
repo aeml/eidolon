@@ -1,0 +1,79 @@
+{
+  "recordedUTC": "2026-10-14T04:39:11.728576+00:00",
+  "status": "Qualified private Cleric implementation candidate; full release CI and deployment remain required.",
+  "changes": [
+    "Twenty-four optional runes complete three choices per learned Cleric skill: Guardian Embrace, Purifying Wave, Spirit Guardians Boost, Avenging Seraph, Blessing of Resolve, Blessing of Zeal, Mark of Weakness and Heaven's Trumpet. All thirteen skills now have level50/70/90 options. Existing saves and identifiers retained.",
+    "Matched footprint, duration, cooldown, damage, healing, control and summon-health tradeoffs. Resolve/Zeal/Mark potency bounds remain unchanged. Persistent effects capture their own selected rune; Boost also captures the base Spirit Guardians rune.",
+    "Offline Sanctuary and Holy Ground protect their eligible recipients and expire; overlapping fields use the stronger protection. Divine Light guardian healing and named Spirit/Consecrated/Trumpet damage training reach actual effects.",
+    "Boosted guardians now apply the described slowing pulse while preserving boss immunity and stronger existing control; Wrath exchanges slow for damage. Standalone Boost captures Sanctuary protection on the server too.",
+    "Distant Mark uses the actual client/controller/server range before payment, with body-edge acceptance and rejection checks."
+  ],
+  "validation": {
+    "client": "324 checks across18 focused suites pass, including62 new branch consumer/rejection/body/range tests and7 legacy rune parity tests.",
+    "server": "Expanded focused Go race suite passes79.895s: new consumers/rejections, all learned breakpoints, three-by-three saved rune loadouts, actual extended Mark range, trained Vengeful damage/healing and captured Sanctuary/control immunity. Includes existing Cleric/Spirit area and class rune suites.",
+    "runeUI": "Six desktop/phone branch cases pass47.9s; all twelve branch choices visible/selectable with prepared acknowledgement.",
+    "connected": "Three disposable connected characters pass rune selection, saved reconnect and all twelve branch paid actions1.9m. One level/resource preparation each, no per-cast reset. Mark checks actual debuff receipt. Private server/data removed; credential scan passes.",
+    "native": "Two native GPU High/Low cases pass50.6s. Four paid actions spend160mana; area and spirits appear at actual rune radius30, Seraph has guardian-health bonus,14 supplied gear slots have no missing/fallback. Effects/summons retire with detached meshes and no pending geometry work. Images inspected at actual HUD: component floor, not final world art.",
+    "content": "Fourteen generated groups and whole-source lint pass; animation coverage regenerated."
+  },
+  "retainedFailures": [
+    "Initial learned-level healing fixtures targeted an enemy; server correctly rejected. Fixtures corrected to use an injured ally.",
+    "Existing SpiritArea fixture assumed no Boost slow. It now verifies the intended first in-range slow, clears that receipt and checks no fresh control outside the captured radius.",
+    "New Sanctuary server assertion initially named a nonexistent field; corrected test to SanctuaryDamageReduction without runtime change."
+  ],
+  "limits": [
+    "Full exact candidate CI and deployed asset/identity/account verification remain required.",
+    "Human tuning, final art, physical-device and whole-game readiness remain open.",
+    "No soak or stress testing; owner deferred capacity tests until features are nearly complete."
+  ],
+  "sources": [
+    {
+      "path": "src/skills/clericBranchRunes.js",
+      "sha256": "6e7824ec2bb1d1bfcb58066cf55394451689d4fd9d721bfbd27c814b6f3a9dc9"
+    },
+    {
+      "path": "src/skills/clericAbilityDamage.js",
+      "sha256": "22f4679efd4f81249e7cea95cf02ed011631197fdb2b73d94ef5abc7000c4547"
+    },
+    {
+      "path": "src/entities/Cleric.js",
+      "sha256": "4eeda46e5464a99cdfa4818313465a5a79a1a06d094007b9e26159725b1273c0"
+    },
+    {
+      "path": "src/entities/Actor.js",
+      "sha256": "bf1bdf7afce682d37c715788c733cbd734d257ce54bf47dbb113834f86754a34"
+    },
+    {
+      "path": "src/entities/SeraphSummon.js",
+      "sha256": "736a5efead9849809824a80130f489554c2318e952885f67c59e4d1b713d89fe"
+    },
+    {
+      "path": "server/internal/game/cleric_branch_runes.go",
+      "sha256": "c36fa177e39cb0b3133488f1a193bbd7be740413264482595c7b9f5fdd51dd5f"
+    },
+    {
+      "path": "server/internal/game/ability_cleric.go",
+      "sha256": "86fba15ee39e8971320d13181771b77c73ff271ccecdddb4ddfa7c310366f00e"
+    },
+    {
+      "path": "server/internal/game/world_update_entity.go",
+      "sha256": "9f26cc159cd1f66f72297fec6d64a01df38c799bad96e706a66e3791de2a4c07"
+    },
+    {
+      "path": "tests/ClericBranchRunes.test.js",
+      "sha256": "1c8e3579dff89b022bacaf68085ae34f7596ec22ff3e036a584913887ae95ba5"
+    },
+    {
+      "path": "tests/ClericRuneParity.test.js",
+      "sha256": "f8dc15076bafbe54fccd6b2b9cd4fce768cd084505cdd5e6338e297c622b8427"
+    },
+    {
+      "path": "tests/e2e/cleric-runes-gameplay.spec.js",
+      "sha256": "f3282c76e536f1f3a3429b759f4f7d2e4a4d227e7c07f1f97cc54f5318c39c5e"
+    },
+    {
+      "path": "tests/e2e/cleric-rune-effects.spec.js",
+      "sha256": "a0defced8fc44415999201c0fea574c6ed4dcf1e83353aa0d0501a13e6ab31cb"
+    }
+  ]
+}

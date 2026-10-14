@@ -68,6 +68,7 @@ export class AbilityController {
         if (['Backstab', 'Shadow Lunge', 'Shadow Strike'].includes(skillName)) return getRogueMovementCastRange(player, skillName);
         if (skillName === 'Scorch Beam') return getAbilityRange(player, skillName, CONSTANTS.ABILITY_CONFIG.Wizard.skills[skillName].range);
         if (skillName === 'Arcane Missiles') return getAbilityRange(player, skillName, CONSTANTS.ABILITY_CONFIG.Wizard.skills[skillName].range);
+        if (skillName === 'Mark of Weakness') return getAbilityRange(player, skillName, CONSTANTS.ABILITY_CONFIG.Cleric.skills[skillName].range);
         if (skillName === 'Weak Point Mark') return getAbilityRange(player, skillName, CONSTANTS.ABILITY_CONFIG.Rogue.skills[skillName].range);
         if (skillName === 'Unbreakable Grip') return getAbilityRange(player, skillName, CONSTANTS.ABILITY_CONFIG.Fighter.skills[skillName].range);
         const className = player && player.constructor ? player.constructor.name : '';

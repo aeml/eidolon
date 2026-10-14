@@ -59,17 +59,17 @@ True passive talents do not create a cast action and are intentionally excluded 
 | Wizard | Time Warp | buff-area | channel | ring@source, buff@source | time_warp | class-handler | explicit | Communion (timewarp_communion)<br>Enduring Time (timewarp_lingering)<br>Quickening (timewarp_quickening) |
 | Cleric | Spirit Guardians | persistent-aura | summon | buff@source, ring@source | spirit_guardians | class-handler | explicit | Expanded (spirits_expanded)<br>Vengeful (spirits_vengeful)<br>Sanctuary (spirits_sanctuary) |
 | Cleric | Healing Light | heal | cast | pillar@target, burst@target, ring@target | none | class-handler | explicit | Beacon (healinglight_beacon)<br>Renewal (healinglight_renewal)<br>Divine (healinglight_divine) |
-| Cleric | Guardian Embrace | persistent-aura | channel | ring@source, buff@source | guardian_embrace | class-handler | explicit | none |
-| Cleric | Purifying Wave | area | cast | ring@source, burst@source | none | class-handler | explicit | none |
+| Cleric | Guardian Embrace | persistent-aura | channel | ring@source, buff@source | guardian_embrace | class-handler | explicit | Wide Embrace (embrace_wide)<br>Sheltering Embrace (embrace_shelter)<br>Quick Embrace (embrace_quick) |
+| Cleric | Purifying Wave | area | cast | ring@source, burst@source | none | class-handler | explicit | Wide Purification (purifyingwave_wide)<br>Binding Light (purifyingwave_binding)<br>Quick Purification (purifyingwave_quick) |
 | Cleric | Divine Intervention | buff | heavy-cast | pillar@target, sphere@target | divine_intervention | class-handler | explicit | Quick Save (divineintervention_quick)<br>Guardian Angel (divineintervention_guardian)<br>Miracle (divineintervention_miracle) |
 | Cleric | Radiant Strike | melee | heavy | cone@source, impact@target | none | class-handler | explicit | Smite (radiantstrike_smite)<br>Chains of Light (radiantstrike_chains)<br>Purge (radiantstrike_purge) |
 | Cleric | Consecrated Ground | persistent-area | cast | ground_circle@source, pillar@source | consecrated_ground | class-handler | explicit | Expanded (consecratedground_expanded)<br>Lingering (consecratedground_lingering)<br>Holy Ground (consecratedground_sanctuary) |
-| Cleric | Spirit Guardians Boost | persistent-aura | summon | buff@source, ring@source | spirit_guardians_boost | class-handler | explicit | none |
-| Cleric | Avenging Seraph | summon | summon | pillar@source, ring@source | avenging_seraph | class-handler | explicit | none |
-| Cleric | Blessing of Resolve | buff-area | bless | ring@source, sphere@source | blessing_resolve | class-handler | explicit | none |
-| Cleric | Blessing of Zeal | buff-area | bless | ring@source, buff@source | blessing_zeal | class-handler | explicit | none |
-| Cleric | Mark of Weakness | debuff | mark | pillar@target, mark@target | mark_weakness | class-handler | explicit | none |
-| Cleric | Heaven's Trumpet | area-control | shout | ring@source, pillar@source | heavens_trumpet | class-handler | explicit | none |
+| Cleric | Spirit Guardians Boost | persistent-aura | summon | buff@source, ring@source | spirit_guardians_boost | class-handler | explicit | Wandering Host (spiritboost_wide)<br>Wrathful Host (spiritboost_wrath)<br>Enduring Host (spiritboost_lasting) |
+| Cleric | Avenging Seraph | summon | summon | pillar@source, ring@source | avenging_seraph | class-handler | explicit | Long Vigil (seraph_vigil)<br>Brief Wrath (seraph_wrath)<br>Stalwart Seraph (seraph_guardian) |
+| Cleric | Blessing of Resolve | buff-area | bless | ring@source, sphere@source | blessing_resolve | class-handler | explicit | Resolute Rally (resolve_rally)<br>Lasting Resolve (resolve_lasting)<br>Quick Resolve (resolve_quick) |
+| Cleric | Blessing of Zeal | buff-area | bless | ring@source, buff@source | blessing_zeal | class-handler | explicit | Zealous Rally (zeal_rally)<br>Lasting Zeal (zeal_lasting)<br>Quick Zeal (zeal_quick) |
+| Cleric | Mark of Weakness | debuff | mark | pillar@target, mark@target | mark_weakness | class-handler | explicit | Distant Weakness (weakness_distant)<br>Lasting Weakness (weakness_lasting)<br>Quick Weakness (weakness_quick) |
+| Cleric | Heaven's Trumpet | area-control | shout | ring@source, pillar@source | heavens_trumpet | class-handler | explicit | Far Trumpet (trumpet_wide)<br>Binding Trumpet (trumpet_binding)<br>Quick Trumpet (trumpet_quick) |
 
 ## Compatibility aliases (20)
 

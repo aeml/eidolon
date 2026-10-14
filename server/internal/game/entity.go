@@ -254,6 +254,7 @@ type Entity struct {
 	// Abilities
 	SpiritsActive             bool      `json:"spiritsActive"`
 	SpiritsBoosted            bool      `json:"spiritsBoosted"`
+	SpiritBranchRuneID        string    `json:"-"`
 	SpiritRadius              float64   `json:"spiritRadius,omitempty"`
 	SpiritEndTime             time.Time `json:"-"`
 	LastSpiritTick            time.Time `json:"-"`
@@ -312,6 +313,7 @@ type Entity struct {
 	BlessingResolveEndTime    time.Time `json:"-"`
 	BlessingResolvePower      float64   `json:"-"`
 	GuardianEmbraceActive     bool      `json:"guardianEmbraceActive,omitempty"`
+	GuardianEmbraceRuneID     string    `json:"-"`
 	GuardianEmbraceRadius     float64   `json:"guardianEmbraceRadius,omitempty"`
 	GuardianEmbraceEndTime    time.Time `json:"-"`
 	LastGuardianEmbraceTick   time.Time `json:"-"`

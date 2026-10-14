@@ -1279,6 +1279,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				} else if time.Since(e.LastGuardianEmbraceTick) >= 1*time.Second {
 					e.LastGuardianEmbraceTick = now
 					heal := applyAbilityHealingBonus(e, "Guardian Embrace", 20+(e.Stats.Wisdom*2))
+					heal = int(math.Floor(float64(heal) * planClericBranch("Guardian Embrace", e.GuardianEmbraceRuneID).healing))
 
 					// Heal Self
 					previousHealth := e.Health
@@ -1340,6 +1341,13 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							damage = 20 + int(float64(e.Stats.Wisdom)*1.5)
 						}
 
+						spiritSkill := "Spirit Guardians"
+						if e.SpiritsBoosted {
+							spiritSkill = "Spirit Guardians Boost"
+						}
+						branch := planClericBranch("Spirit Guardians Boost", e.SpiritBranchRuneID)
+						damage = int(float64(damage) * e.GetSkillDamageMultiplier(spiritSkill))
+						damage = int(math.Floor(float64(damage) * branch.damage))
 						// Spirit Guardians Rune Effects
 						spiritRuneID := e.SpiritGuardiansRuneID
 						radius := e.SpiritAreaRadius()
@@ -1355,10 +1363,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						hasSpiritHeal := e.HasAnySetBonus("spiritGuardiansHeal")
 						spiritCombat := snapshotCombatAttackerLocked(e)
 						spiritCombat.PartyID = e.PartyID
-						spiritSkill := "Spirit Guardians"
-						if e.SpiritsBoosted {
-							spiritSkill = "Spirit Guardians Boost"
-						}
+						boosted := e.SpiritsBoosted
+						slowDuration := resolveAbilityEffectDuration(e, "Spirit Guardians Boost", time.Second)
 						spiritHealAmount := 0
 						if hasSpiritHeal {
 							skill := "Spirit Guardians"
@@ -1395,6 +1401,14 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 										continue
 									}
 									finalDamage := impacts.damage(spiritCombat, target, damage, "holy", spiritSkill)
+									if boosted && branch.slow > 0 && target.Health > 0 && !target.CCImmune && (!target.Slowed || time.Now().After(target.SlowEndTime) || target.SlowFactor <= branch.slow) {
+										target.Slowed, target.SlowFactor = true, branch.slow
+										deadline := time.Now().Add(slowDuration)
+										if deadline.After(target.SlowEndTime) {
+											target.SlowEndTime = deadline
+										}
+										target.RecalculateStats()
+									}
 									addThreatLocked(target, e.ID, float64(finalDamage))
 									isDead := target.Health <= 0
 									target.Mu.Unlock()

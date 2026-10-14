@@ -1,3 +1,4 @@
+import { getClericBranchPlan } from './clericBranchRunes.js';
 import { getRogueBranchPlan } from './rogueBranchRunes.js';
 import { getFighterBranchPlan } from './fighterBranchRunes.js';
 import { getWizardBranchPlan } from './wizardBranchRunes.js';
@@ -109,7 +110,7 @@ export function getAbilityAoeRadius(className, canonicalSkillName, source = null
     const runeId = source?.skillRunes?.[runeSkill] || null;
     const runeRadius = runeId ? definition.runes?.[runeId] : null;
     const baseRadius = Number.isFinite(runeRadius) ? runeRadius : definition.base;
-    const radius = baseRadius * (className === 'Wizard' ? getWizardBranchPlan(canonicalSkillName, runeId).radius : className === 'Fighter' ? getFighterBranchPlan(canonicalSkillName, runeId).radius : 1);
+    const radius = baseRadius * (className === 'Wizard' ? getWizardBranchPlan(canonicalSkillName, runeId).radius : className === 'Fighter' ? getFighterBranchPlan(canonicalSkillName, runeId).radius : className === 'Cleric' ? getClericBranchPlan(canonicalSkillName, source?.skillRunes?.[canonicalSkillName]).radius : 1);
     if (className === 'Fighter' && ['Earthshaker', 'Juggernaut Charge', 'Guardian Roar', 'Executioner Spin', 'Shattering Charge', 'Whirlwind', 'Shield Slam', 'Sweeping Strike'].includes(canonicalSkillName)) return getAbilityAreaRadius(source, className, radius, canonicalSkillName);
     if (className === 'Cleric' && (SELF_CENTERED_SHAPE_ABILITIES.has(canonicalSkillName) || ['Radiant Strike', 'Healing Light'].includes(canonicalSkillName))) {
         return Number.isFinite(radius) && radius > 0 ? getAbilityAreaRadius(source, className, radius, canonicalSkillName) : null;

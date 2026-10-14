@@ -5,10 +5,7 @@ import "testing"
 func TestRuneCatalogHasCanonicalClassCoverage(t *testing.T) {
 	for _, classType := range []string{"Fighter", "Rogue", "Wizard", "Cleric"} {
 		runes := GetAllRunesForClass(classType)
-		want := 15
-		if classType == "Wizard" || classType == "Fighter" || classType == "Rogue" {
-			want = 39
-		}
+		want := 39
 		if len(runes) != want {
 			t.Fatalf("%s has %d runes, want %d", classType, len(runes), want)
 		}

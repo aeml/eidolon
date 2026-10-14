@@ -1,3 +1,4 @@
+import { getClericBranchPlan } from '../skills/clericBranchRunes.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { Actor } from './Actor.js';
 import { rollOfflineCriticalDamage } from '../core/AbilityCritical.js';
@@ -20,9 +21,10 @@ export function getSeraphTraining(owner) {
         damage += rank*(bonus.damage || 0);
         duration += rank*(bonus.duration || 0);
     }
+    const plan = getClericBranchPlan('Avenging Seraph', owner.skillRunes?.['Avenging Seraph']);
     const permanent = Object.values(owner.activeSetBonuses || {}).some(set => set.specials?.permanentSeraph > 0);
-    return { damage: Math.floor((50+2*owner.stats.wisdom)*(1+damage)+1e-9),
-        duration: Math.min(300, (permanent ? 300 : 15)*(1+duration)) };
+    return { damage: Math.floor(Math.floor((50+2*owner.stats.wisdom)*(1+damage)+1e-9) * plan.damage),
+        duration: Math.min(300, (permanent ? 300 : 15)*plan.duration*(1+duration)) };
 }
 
 export function configureOfflineSeraph(seraph, owner, engine) {
@@ -36,7 +38,7 @@ export function configureOfflineSeraph(seraph, owner, engine) {
     seraph.summonDamage = training.damage;
     seraph.summonRemaining = training.duration;
     seraph.summonAttackCooldown = 0;
-    seraph.stats.hp = seraph.stats.maxHp = 500+10*owner.stats.wisdom;
+    seraph.stats.hp = seraph.stats.maxHp = Math.floor((500+10*owner.stats.wisdom) * getClericBranchPlan('Avenging Seraph', owner.skillRunes?.['Avenging Seraph']).health);
     seraph.stats.speed = 6; seraph.stats.hpRegen = 0;
     (owner.offlineSeraphs ||= new Set()).add(seraph);
     return true;

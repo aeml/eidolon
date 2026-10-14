@@ -1081,6 +1081,10 @@ export class Actor extends Entity {
             if (!this.armorReductionTimer) this.armorReduction = 0;
         }
 
+        for (const timer of ['spiritSanctuaryTimer', 'consecratedSanctuaryTimer']) {
+            if (this[timer] > 0) this[timer] = Math.max(0, this[timer] - dt);
+        }
+
         // Guardian Roar Buff Logic
         if (this.guardianRoarTimer > 0) {
             this.guardianRoarTimer -= dt;
@@ -1589,6 +1593,8 @@ export class Actor extends Entity {
             finalAmount *= (1 + this.markWeaknessFactor);
         }
         
+        const sanctuary = this.consecratedSanctuaryTimer > impactElapsed ? .3 : this.spiritSanctuaryTimer > impactElapsed ? .2 : 0;
+        if (!damageContext?.reflection && sanctuary > 0) finalAmount = Math.floor(finalAmount * (1 - sanctuary));
         if (!damageContext?.reflection && this.divineInterventionGuardianTimer > impactElapsed) finalAmount = Math.floor(finalAmount * .5);
 
         // Reactions execute only after this hit has committed. A fully absorbed
@@ -1652,6 +1658,8 @@ export class Actor extends Entity {
         this.invulnerabilityTimer = 0;
         this.invulnerableActive = false;
         this.stealthTimer = 0;
+        this.spiritSanctuaryTimer = 0;
+        this.consecratedSanctuaryTimer = 0;
         restoreActorStealthAppearance(this);
         this.state = 'DEAD';
         this.currentAbilityAnimation = null;
@@ -1845,6 +1853,8 @@ export class Actor extends Entity {
         this.invulnerabilityTimer = 0;
         this.invulnerableActive = false;
         this.stealthTimer = 0;
+        this.spiritSanctuaryTimer = 0;
+        this.consecratedSanctuaryTimer = 0;
         restoreActorStealthAppearance(this);
         const wasDead = this.state === 'DEAD' || this.stats.hp <= 0;
         if (wasDead) this.stats.mana = this.stats.maxMana;

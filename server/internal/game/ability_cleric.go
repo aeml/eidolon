@@ -9,6 +9,7 @@ import (
 // performClericAbility handles all Cleric class ability logic.
 // Extracted from the "Cleric" case in PerformAbility (world.go).
 func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, targetID, skillName string, setCooldown func(time.Duration), contexts ...*abilityImpactContext) {
+	branch := planClericBranch(skillName, player.GetRuneForSkill(skillName))
 	impacts, finishImpacts := w.worldLockedAbilityImpacts(contexts)
 	defer finishImpacts()
 	if skillName == "Divine Intervention" {
@@ -115,8 +116,9 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 		if player.Mana >= cost {
 			player.Mana -= cost
 			player.GuardianEmbraceActive = true
-			player.GuardianEmbraceRadius = effectiveAbilityAreaRadius(player, skillName, 10)
-			player.GuardianEmbraceEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 10*time.Second))
+			player.GuardianEmbraceRuneID = player.GetRuneForSkill(skillName)
+			player.GuardianEmbraceRadius = effectiveAbilityAreaRadius(player, skillName, 10*branch.radius)
+			player.GuardianEmbraceEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, time.Duration(10*branch.duration*float64(time.Second))))
 
 			// Sanctuary: Healing Light → Guardian Embrace protects the caster.
 			if player.ActiveCombo == "ground_damage_immunity" {
@@ -137,9 +139,10 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 		if player.Mana >= cost {
 			player.Mana -= cost
 
-			radius := effectiveAbilityAreaRadius(player, skillName, 8.0)
+			radius := effectiveAbilityAreaRadius(player, skillName, 8.0*branch.radius)
 			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 			damage := int(float64(20+player.Stats.Wisdom) * player.GetSkillDamageMultiplier(skillName))
+			damage = int(math.Floor(float64(damage) * branch.damage))
 			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
 			for _, target := range nearby {
 				target.Mu.Lock()
@@ -148,7 +151,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 					addThreatLocked(target, player.ID, float64(hit))
 					if target.Health > 0 && !target.CCImmune && (!target.Slowed || !time.Now().Before(target.SlowEndTime)) {
 						target.Slowed, target.SlowFactor = true, .30
-						target.SlowEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 2*time.Second))
+						target.SlowEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, time.Duration(branch.slowDuration*float64(time.Second))))
 						target.RecalculateStats()
 					}
 					if target.Health <= 0 {
@@ -195,12 +198,17 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			player.Mana -= cost
 			player.SpiritsActive = true
 			player.SpiritsBoosted = true
+			player.SpiritBranchRuneID = player.GetRuneForSkill(skillName)
 			// Boost is also a standalone activation, so capture the selected
 			// Spirit Guardians rune instead of depending on an earlier base cast.
 			player.SpiritGuardiansRuneID = player.GetRuneForSkill("Spirit Guardians")
-			player.SpiritRadius = effectiveAbilityAreaRadius(player, skillName, spiritGuardiansRadius(true, player.SpiritGuardiansRuneID))
-			player.SpiritEndTime = time.Now().Add(consumePersistentDuration(player, resolveAbilityEffectDuration(player, skillName, 10*time.Second)))
-			// Boost logic would be in updateEntity where spirits do damage
+			player.SpiritRadius = effectiveAbilityAreaRadius(player, skillName, spiritGuardiansRadius(true, player.SpiritGuardiansRuneID)*branch.radius)
+			player.SpiritEndTime = time.Now().Add(consumePersistentDuration(player, resolveAbilityEffectDuration(player, skillName, time.Duration(10*branch.duration*float64(time.Second)))))
+			// Capture Sanctuary for standalone Boost as well as the base guardian cast.
+			if player.SpiritGuardiansRuneID == "spirits_sanctuary" {
+				player.SanctuaryDamageReduction = true
+				player.SanctuaryEndTime = player.SpiritEndTime
+			}
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, player.X, player.Z, AbilityShape{Radius: player.SpiritRadius, Arc: 2 * math.Pi})
 		}
@@ -217,7 +225,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			if player.HasAnySetBonus("permanentSeraph") {
 				baseDuration = 300 * time.Second
 			}
-			duration := min(resolveAbilityEffectDuration(training, skillName, baseDuration), 300*time.Second)
+			duration := min(resolveAbilityEffectDuration(training, skillName, time.Duration(float64(baseDuration)*branch.duration)), 300*time.Second)
 			seraph := &Entity{
 				ID:             fmt.Sprintf("summon-seraph-%d", time.Now().UnixNano()),
 				InstanceID:     player.InstanceID, // Inherit instance from owner
@@ -227,9 +235,9 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				Y:              0,
 				Z:              player.Z,
 				OwnerID:        player.ID,
-				Health:         500 + (player.Stats.Wisdom * 10),
-				MaxHealth:      500 + (player.Stats.Wisdom * 10),
-				Damage:         int(math.Floor(float64(50+player.Stats.Wisdom*2)*training.GetSkillDamageMultiplier(skillName) + 1e-9)),
+				Health:         int(math.Floor(float64(500+player.Stats.Wisdom*10) * branch.health)),
+				MaxHealth:      int(math.Floor(float64(500+player.Stats.Wisdom*10) * branch.health)),
+				Damage:         int(math.Floor(float64(int(math.Floor(float64(50+player.Stats.Wisdom*2)*training.GetSkillDamageMultiplier(skillName)+1e-9))) * branch.damage)),
 				State:          "IDLE",
 				CreatedAt:      time.Now(),
 				SummonDuration: duration,
@@ -301,9 +309,9 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 		cost := resolveAbilityManaCost(player, skillName, 35)
 		if player.Mana >= cost {
 			player.Mana -= cost
-			endTime := time.Now().Add(resolveAbilityEffectDuration(player, skillName, 20*time.Second))
+			endTime := time.Now().Add(resolveAbilityEffectDuration(player, skillName, time.Duration(20*branch.duration*float64(time.Second))))
 			power := clericUtilityPowerAtCast(player, skillName)
-			radius := effectiveAbilityAreaRadius(player, skillName, 10)
+			radius := effectiveAbilityAreaRadius(player, skillName, 10*branch.radius)
 			for _, target := range w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID) {
 				target.Mu.Lock()
 				if (target.Type == TypePlayer || target.Type == TypeNPC) && w.CombatRelationship(player, target) != RelationshipHostile && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
@@ -324,6 +332,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			player.Mana -= cost
 			player.SpiritsActive = true
 			player.SpiritsBoosted = false
+			player.SpiritBranchRuneID = ""
 			player.SpiritEndTime = time.Now().Add(consumePersistentDuration(player, resolveAbilityEffectDuration(player, skillName, 8*time.Second)))
 			player.State = "ATTACKING"
 
@@ -634,9 +643,10 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			player.Mana -= cost
 			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 
-			radius := effectiveAbilityAreaRadius(player, skillName, 12)
+			radius := effectiveAbilityAreaRadius(player, skillName, 12*branch.radius)
 			effectiveRadius := expandedAbilityRadius(skillName, radius)
 			damage := int(float64(player.Stats.Wisdom*3) * player.GetSkillDamageMultiplier("Heaven's Trumpet"))
+			damage = int(math.Floor(float64(damage) * branch.damage))
 
 			nearby := w.Grid.Nearby(player.X, player.Z, effectiveRadius, player.InstanceID)
 			for _, target := range nearby {
@@ -657,11 +667,14 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 					addThreatLocked(target, player.ID, float64(finalDamage))
 					if !target.CCImmune {
 						target.Stunned = true
-						target.StunEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 3*time.Second))
+						deadline := time.Now().Add(resolveAbilityEffectDuration(player, skillName, time.Duration(branch.stun*float64(time.Second))))
+						if deadline.After(target.StunEndTime) {
+							target.StunEndTime = deadline
+						}
 					}
 					target.MarkWeakness = true
 					target.MarkWeaknessFactor = 0.50
-					target.MarkWeaknessEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 5*time.Second))
+					target.MarkWeaknessEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, time.Duration(5*branch.duration*float64(time.Second))))
 					isDead := target.Health <= 0
 					target.Mu.Unlock()
 
@@ -733,10 +746,10 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			// Enable the support branch's immediate guardian payoff without
 			// refreshing allies' skills or bypassing mana/global cooldown.
 			delete(player.Cooldowns, "Spirit Guardians")
-			endTime := time.Now().Add(resolveAbilityEffectDuration(player, skillName, 8*time.Second))
+			endTime := time.Now().Add(resolveAbilityEffectDuration(player, skillName, time.Duration(8*branch.duration*float64(time.Second))))
 			power := clericUtilityPowerAtCast(player, skillName)
 
-			radius := effectiveAbilityAreaRadius(player, skillName, 10)
+			radius := effectiveAbilityAreaRadius(player, skillName, 10*branch.radius)
 			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
 			for _, target := range nearby {
 				target.Mu.Lock()
@@ -760,7 +773,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			// Find target
 			var target *Entity
 			if targetID != "" {
-				if t, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(w, player, t, 15.0, TypeEnemy) {
+				if t, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(w, player, t, effectiveAbilityRange(player, skillName, 15), TypeEnemy) {
 					target = t
 				}
 			}
@@ -769,7 +782,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				minDist := 5.0
 				nearby := w.Grid.Nearby(targetX, targetZ, 5.0+maxAbilityTargetVisualRadius, player.InstanceID)
 				for _, t := range nearby {
-					if validDirectAbilityTarget(w, player, t, 15.0, TypeEnemy) {
+					if validDirectAbilityTarget(w, player, t, effectiveAbilityRange(player, skillName, 15), TypeEnemy) {
 						d := math.Sqrt((t.X-targetX)*(t.X-targetX) + (t.Z-targetZ)*(t.Z-targetZ))
 						if d < minDist {
 							minDist = d
@@ -787,7 +800,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			targetID, targetX, targetZ = target.ID, target.X, target.Z
 			target.MarkWeakness = true
 			target.MarkWeaknessFactor = .20 * clericUtilityPowerAtCast(player, skillName)
-			target.MarkWeaknessEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 10*time.Second))
+			target.MarkWeaknessEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, time.Duration(10*branch.duration*float64(time.Second))))
 			target.Mu.Unlock()
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))

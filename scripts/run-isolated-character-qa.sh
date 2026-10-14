@@ -666,6 +666,9 @@ run_well_rested() {
 
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
+  cleric-runes)
+    EIDOLON_E2E_CLASS=Cleric npx playwright test --retries=0 --output=test-results/cleric-runes tests/e2e/cleric-runes-gameplay.spec.js
+    ;;
   rogue-runes)
     EIDOLON_E2E_CLASS=Rogue npx playwright test --retries=0 --output=test-results/rogue-runes tests/e2e/rogue-runes-gameplay.spec.js
     ;;
