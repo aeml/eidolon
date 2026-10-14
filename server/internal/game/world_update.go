@@ -153,10 +153,8 @@ func (w *World) updateFrame(dt float64, restNow time.Time) {
 	w.processHazardDamage(dt, players)
 
 	// 5. Elite Spawning Logic (Every 5 minutes)
-	// Note: w.EliteSpawnTimer is accessed without lock here.
-	// Strictly speaking, we should lock it. But it's only used in Update loop (single threaded relative to itself).
-	// However, if we want to be safe, we can lock just for the check.
-	// But w.spawnEliteInRect locks w.Mu internally.
+	// abilityFrameMu serializes this timer across Update/UpdateRealtime calls.
+	// spawnEliteInRect owns its separate entity-map publication lock.
 
 	if time.Since(w.EliteSpawnTimer) >= 5*time.Minute {
 		w.EliteSpawnTimer = time.Now()

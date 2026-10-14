@@ -1033,9 +1033,14 @@ func (w *World) spawnEliteInRect(level int, minX, maxX, minZ, maxZ float64) {
 		AttackCooldown: profile.AttackCooldown,
 		Scale:          1.0,
 	}
-	w.Entities[elite.ID] = elite
+	// Runtime elite spawning runs after the parallel update has released w.Mu.
+	// Publish only after entry recovery, under the same lock used by broadcast
+	// view reads, membership snapshots and every other entity-map mutation.
+	w.Mu.Lock()
 	w.recoverWorldEntryLocked(elite)
+	w.Entities[elite.ID] = elite
 	w.Grid.Add(elite)
+	w.Mu.Unlock()
 
 	if w.OnEvent != nil {
 		w.OnEvent("elite_spawn", fmt.Sprintf("An Elite %s has spawned!", subType))
