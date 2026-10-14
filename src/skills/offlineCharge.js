@@ -1,3 +1,5 @@
+import { getAbilityAreaRadius } from '../core/AbilityRange.js';
+import { getFighterBranchPlan } from './fighterBranchRunes.js';
 import { Actor } from '../entities/Actor.js';
 import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
 import { getFighterEffectDuration } from './fighterEffectDuration.js';
@@ -22,14 +24,15 @@ export function cancelOfflineCharge(source) {
 export function beginOfflineCharge(source, aim, engine, tremorRush = false, skill = 'Charge') {
     const end = aim.clone(), origin = source.position.clone();
     const distance = Math.hypot(end.x - origin.x, end.z - origin.z);
-    const rune = skill === 'Charge' ? source.skillRunes?.Charge || '' : '';
-    const maxDistance = skill === 'Juggernaut Charge' ? 10 : 28;
+    const rune = source.skillRunes?.[skill] || '';
+    const branch = getFighterBranchPlan(skill, rune);
+    const maxDistance = skill === 'Juggernaut Charge' ? 10 * branch.reach : 28;
     const ratio = (distance > maxDistance ? maxDistance / distance : 1) * (rune === 'charge_momentum' ? 1.5 : 1);
     end.x = origin.x + (end.x - origin.x) * ratio;
     end.z = origin.z + (end.z - origin.z) * ratio;
     const landing = resolveDungeonMovementEndpoint(floors(engine), origin, end);
     source.chargeTarget = end.set(landing.x, origin.y, landing.z);
-    source.offlineCharge = { origin, rune, skill, instance: engine?.currentInstanceId || '', engine,
+    source.offlineCharge = { origin, rune, skill, branch, instance: engine?.currentInstanceId || '', engine,
         knockdownDuration: tremorRush ? getFighterEffectDuration(source, 2, 'Charge') : 0,
         armorDuration: getFighterEffectDuration(source, 5), priorImmunity: Boolean(source.ccImmune) };
     if (rune === 'charge_unstoppable') source.ccImmune = true;
@@ -64,8 +67,8 @@ export function advanceOfflineCharge(source, dt, engine, isFriendlyActor) {
     source.mesh?.position.copy(source.position);
     cancelOfflineCharge(source); source.playAnimation('Idle');
     if (cast.skill === 'Juggernaut Charge') {
-        source.spawnAbilityPresentation(engine, cast.skill, source.position);
-        applyOfflineJuggernaut(source, engine, isFriendlyActor, cast.armorDuration);
+        source.spawnAbilityPresentation(engine, cast.skill, source.position, { radius: getAbilityAreaRadius(source, 'Fighter', 10 * cast.branch.radius, cast.skill) });
+        applyOfflineJuggernaut(source, engine, isFriendlyActor, cast.armorDuration, cast.branch);
         return;
     }
     let damage = Math.trunc(source.stats.damage * 1.5 * 1.3 * getFighterAbilityDamageMultiplier(source, 'Charge'));

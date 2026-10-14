@@ -1,3 +1,4 @@
+import { getFighterBranchPlan } from './fighterBranchRunes.js';
 import { Actor } from '../entities/Actor.js';
 import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
 import { applyOfflineArmorMelt } from '../core/OfflineArmor.js';
@@ -20,7 +21,8 @@ export function beginOfflineShatteringCharge(source, aim, engine) {
     }
     const landing = resolveDungeonMovementEndpoint(floors(engine), source.position, end);
     source.chargeTarget = end.set(landing.x, source.position.y, landing.z);
-    source.shatteringArmorDuration = getFighterEffectDuration(source, 5);
+    source.shatteringRunePlan = getFighterBranchPlan(SKILL, source.skillRunes?.[SKILL]);
+    source.shatteringArmorDuration = getFighterEffectDuration(source, 5 * source.shatteringRunePlan.duration);
     source.shatteringInstanceId = engine?.currentInstanceId || '';
     source.isCharging = source.isShatteringCharge = true;
     source.state = 'ATTACKING';
@@ -55,12 +57,14 @@ export function advanceOfflineShatteringCharge(source, dt, engine, isFriendlyAct
     source.isCharging = source.isShatteringCharge = false;
     source.state = 'IDLE'; source.playAnimation('Idle');
     const duration = source.shatteringArmorDuration;
+    const plan = source.shatteringRunePlan || getFighterBranchPlan(SKILL);
+    source.shatteringRunePlan = null;
     source.shatteringArmorDuration = 0;
     source.shatteringInstanceId = null;
     // Damage/area use impact-time training, as on the server; only the status
     // duration is captured by the paid cast before travel begins.
     const damage = Math.trunc(source.stats.damage * 1.5 * 1.3 * getFighterAbilityDamageMultiplier(source, SKILL));
-    const radius = getAbilityAreaRadius(source, 'Fighter', 16, SKILL);
+    const radius = getAbilityAreaRadius(source, 'Fighter', 16 * plan.radius, SKILL);
     for (const target of new Set(engine?.chunkManager?.getActiveEntities?.() || [])) {
         if (target === source || !(target instanceof Actor) || !offline(target) || !target.isActive || target.state === 'DEAD') continue;
         if (engine.currentInstanceId && target.gameEngine?.currentInstanceId &&
@@ -70,7 +74,7 @@ export function advanceOfflineShatteringCharge(source, dt, engine, isFriendlyAct
         const body = Number.isFinite(target.radius) ? Math.max(0, target.radius) : 0;
         if (Math.hypot(target.position.x - landing.x, target.position.z - landing.z) > radius + body ||
             clipDungeonEffectSegment(rects, landing, target.position).blocked) continue;
-        applyOfflineAbilityHit(source, target, damage, SKILL, engine.floatingTextManager, '#ff0000');
+        applyOfflineAbilityHit(source, target, Math.floor(damage * plan.damage), SKILL, engine.floatingTextManager, '#ff0000');
         if (applyOfflineArmorMelt(target, duration)) {
             engine.floatingTextManager?.spawn?.('Armor Break!', target.position, '#ffffff');
             source.spawnVisualEffect(engine, target.position, 0xffffff, 'impact');

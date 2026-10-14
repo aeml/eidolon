@@ -1,3 +1,4 @@
+import { getFighterBranchPlan } from './fighterBranchRunes.js';
 import { getFighterEffectDuration } from './fighterEffectDuration.js';
 
 const offline = actor => actor && !actor.isRemote && !actor.isMultiplayer && !actor.gameEngine?.isMultiplayer;
@@ -15,24 +16,29 @@ export function getFighterDamageBuffMultiplier(source, skill) {
 
 export function applyOfflineFighterDamageBuff(source, skill, engine) {
     if (!offline(source) || engine?.isMultiplayer || source.state === 'DEAD') return;
+    const plan = getFighterBranchPlan(skill, source.skillRunes?.[skill]);
     const multiplier = getFighterDamageBuffMultiplier(source, skill);
     if (multiplier === 1) return;
     if (skill === 'Last Stand Rampage') {
-        source.lastStandTimer = getFighterEffectDuration(source, 10);
+        source.lastStandTimer = getFighterEffectDuration(source, 10 * plan.duration);
+        if (plan.resetShattering) {
+            source.cooldowns['Shattering Charge'] = 0;
+            if (source.abilityName === 'Shattering Charge') source.abilityCooldown = 0;
+        }
         source.lastStandMultiplier = multiplier;
         source.lastStandDamageBoost = multiplier - 1;
         source.recalculateStats();
         return;
     }
-    const duration = getFighterEffectDuration(source, 15);
+    const duration = getFighterEffectDuration(source, 15 * plan.duration);
     const recipients = new Set([source]);
-    if (source.partyId) {
+    if (source.partyId && plan.share) {
         for (const actor of engine?.chunkManager?.getActiveEntities?.() || []) {
             if (!offline(actor) || !heroes.has(actor.meshType || actor.constructor?.name) ||
                 actor.isActive === false || actor.state === 'DEAD' || actor.partyId !== source.partyId ||
                 (actor.instanceId || '') !== (source.instanceId || '')) continue;
             const radius = Number.isFinite(actor.radius) ? Math.max(0, actor.radius) : 0;
-            if (Math.hypot(actor.position.x - source.position.x, actor.position.z - source.position.z) <= 15 + radius) recipients.add(actor);
+            if (Math.hypot(actor.position.x - source.position.x, actor.position.z - source.position.z) <= 15 * plan.radius + radius) recipients.add(actor);
         }
     }
     for (const actor of recipients) {

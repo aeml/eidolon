@@ -1,3 +1,4 @@
+import { getFighterBranchPlan } from '../skills/fighterBranchRunes.js';
 import * as THREE from 'three';
 import { Actor } from './Actor.js';
 import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
@@ -81,6 +82,7 @@ export class Fighter extends Actor {
         this.gameEngine = gameEngine;
 
         const skill = skillNameOverride || this.abilityName;
+        const branch = getFighterBranchPlan(skill, this.skillRunes?.[skill]);
 
         // Multiplayer combat and movement are server-owned. The base Actor
         // already predicts mana/cooldown plus the cast presentation; running
@@ -145,7 +147,7 @@ export class Fighter extends Actor {
 
 
             const radius = getAbilityAoeRadius('Fighter', skill, this);
-            const buffDuration = getFighterEffectDuration(this, follows('Shield Slam') ? 15 : 10, skill);
+            const buffDuration = getFighterEffectDuration(this, (follows('Shield Slam') ? 15 : 10) * branch.duration, skill);
             const entities = new Set([this, ...gameEngine.chunkManager.getActiveEntities()]);
             const rects = gameEngine.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
                 ? gameEngine.currentDungeonLayout?.walkRects : null;
@@ -271,6 +273,7 @@ export class Fighter extends Actor {
         this.isWhirlwinding = false;
         this.isShatteringCharge = false;
         this.shatteringArmorDuration = 0;
+        this.shatteringRunePlan = null;
         this.shatteringInstanceId = null;
         // Iron Fortress is a buff, usually persists? Or cancel on death?
         // Actor.die() calls cancelAbilities.

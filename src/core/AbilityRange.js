@@ -1,3 +1,4 @@
+import { getFighterBranchPlan } from '../skills/fighterBranchRunes.js';
 import { CONSTANTS } from './Constants.js';
 import { getWizardBranchPlan } from '../skills/wizardBranchRunes.js';
 import { getWizardPrecisionPlan } from '../skills/wizardPrecisionRunes.js';
@@ -12,7 +13,7 @@ export function getAbilityRange(player, skillName, baseRange) {
         const rank = Number.isFinite(raw) ? Math.max(0, Math.min(talent.maxRank, Math.floor(raw))) : 0;
         bonus += effect.range * rank;
     }
-    const runeRange = className === 'Wizard' ? getWizardPrecisionPlan(skillName, player?.skillRunes?.[skillName]).range : 1;
+    const runeRange = className === 'Wizard' ? getWizardPrecisionPlan(skillName, player?.skillRunes?.[skillName]).range : className === 'Fighter' ? getFighterBranchPlan(skillName, player?.skillRunes?.[skillName]).reach : 1;
     return baseRange * runeRange * Math.max(0, 1 + bonus);
 }
 

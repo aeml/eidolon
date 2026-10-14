@@ -988,6 +988,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 				// Rune effects
 				runeID := e.ChargeRuneID
+				branch := planFighterBranch(impactSkill, runeID)
+				damage = int(math.Floor(float64(damage) * branch.damage))
 
 				// Momentum rune: damage scales with distance (up to +100% at max range)
 				if runeID == "charge_momentum" {
@@ -999,7 +1001,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				}
 
 				// Unstoppable rune: clear CC immunity, grant +20% armor for 5s
-				armorDuration := scaleAbilityEffectDuration(5*time.Second, e.ChargeEffectDurationBonus)
+				armorDuration := scaleAbilityEffectDuration(time.Duration(5*branch.duration*float64(time.Second)), e.ChargeEffectDurationBonus)
 				knockdownDuration := scaleAbilityEffectDuration(2*time.Second, e.ChargeEffectDurationBonus)
 				if runeID == "charge_unstoppable" {
 					e.CCImmune = false
@@ -1011,12 +1013,12 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				instanceID, sourceID := e.InstanceID, e.ID
 				impactRadius := 16.0
 				if impactSkill == "Shattering Charge" {
-					impactRadius = effectiveAbilityAreaRadius(e, impactSkill, impactRadius)
+					impactRadius = effectiveAbilityAreaRadius(e, impactSkill, impactRadius*branch.radius)
 				}
 				if impactSkill == "Juggernaut Charge" {
 					training := snapshotCombatAttackerLocked(e)
 					training.NormalizeTalentRanks()
-					impactRadius = effectiveAbilityAreaRadius(training, impactSkill, 10)
+					impactRadius = effectiveAbilityAreaRadius(training, impactSkill, 10*branch.radius)
 				}
 				consumeKnockdownCombo := e.ActiveCombo == "charge_extended_knockdown"
 				chargeCombat := snapshotCombatAttackerLocked(e)
@@ -1052,8 +1054,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						finalDamage := impacts.damage(chargeCombat, target, damage, "physical", impactSkill)
 						addThreatLocked(target, sourceID, float64(finalDamage))
 						isDead := target.Health <= 0
-						if impactSkill == "Juggernaut Charge" && !isDead && !target.CCImmune {
-							target.Slowed, target.SlowFactor = true, .6
+						if impactSkill == "Juggernaut Charge" && branch.slow > 0 && !isDead && !target.CCImmune {
+							target.Slowed, target.SlowFactor = true, branch.slow
 							target.SlowEndTime = time.Now().Add(armorDuration)
 							target.RecalculateStats()
 						}

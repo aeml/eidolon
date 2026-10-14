@@ -1,3 +1,4 @@
+import { getFighterBranchPlan } from './fighterBranchRunes.js';
 import * as THREE from 'three';
 import { Actor } from '../entities/Actor.js';
 import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
@@ -39,5 +40,5 @@ export function applyOfflineFighterCone(source, aim, engine, isFriendlyActor, sk
 
 export function applyOfflineSweepingStrike(source, aim, engine, isFriendlyActor) {
     const damage = getFighterAbilityDamage(source, 'Sweeping Strike', source.stats.damage + Math.floor(source.stats.strength * 1.2));
-    return applyOfflineFighterCone(source, aim, engine, isFriendlyActor, 'Sweeping Strike', damage);
+    return applyOfflineFighterCone(source, aim, engine, isFriendlyActor, 'Sweeping Strike', Math.floor(damage * getFighterBranchPlan('Sweeping Strike', source.skillRunes?.['Sweeping Strike']).damage));
 }

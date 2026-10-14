@@ -113,6 +113,9 @@ func effectiveAbilityCooldown(player *Entity, skillName string, base time.Durati
 	if player.SubType == "Wizard" {
 		runeCooldown = planWizardPrecision(skillName, player.GetRuneForSkill(skillName), false).cooldown * planWizardBranch(skillName, player.GetRuneForSkill(skillName)).cooldown
 	}
+	if player.SubType == "Fighter" {
+		runeCooldown = planFighterBranch(skillName, player.GetRuneForSkill(skillName)).cooldown
+	}
 	return time.Duration(float64(base) * runeCooldown * (1 - global) * (1 - skill))
 }
 
@@ -122,6 +125,9 @@ func effectiveAbilityRange(player *Entity, skillName string, base float64) float
 	runeRange := 1.0
 	if player.SubType == "Wizard" {
 		runeRange = planWizardPrecision(skillName, player.GetRuneForSkill(skillName), false).reach
+	}
+	if player.SubType == "Fighter" {
+		runeRange = planFighterBranch(skillName, player.GetRuneForSkill(skillName)).reach
 	}
 	return base * runeRange * math.Max(0, 1+player.GetSkillBonus(skillName).SkillRange)
 }

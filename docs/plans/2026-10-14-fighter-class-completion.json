@@ -1,0 +1,52 @@
+{
+  "recordedUTC": "2026-10-14T04:04:42.484824+00:00",
+  "status": "Qualified private Fighter implementation candidate; candidate CI and verified deployment remain required.",
+  "changes": [
+    "Twenty-four optional rune choices cover Guardian Roar, Sweeping Strike, Unbreakable Grip, Juggernaut Charge, Berserker Edge, Shattering Charge, Executioner Spin and Last Stand Rampage. Every thirteen learned Fighter skills now has three level 50/70/90 choices; existing identifiers and saves are retained.",
+    "Client and server apply matching reach, radius, damage, cooldown, duration, pull/root, party sharing and personal cooldown reset tradeoffs. Existing base buff strengths, defense penalties, admission and resource rules remain.",
+    "Travelling attacks retain the selected rune until impact, including visible Juggernaut landing radius. Grip preserves a longer existing root and respects immunity. Fortress parity is qualified separately."
+  ],
+  "validation": {
+    "focusedClient": "328 checks across 13 suites pass; expanded Fighter suite passes 60 checks including 12 new body-edge cases. Counts overlap.",
+    "focusedServer": "Go race detector passes accepted/rejected casts for all 24 new runes, saved loadouts and learned level breakpoints. Separate body-edge suite passes inside/outside checks and captures charge rune despite subsequent loadout changes.",
+    "runeUI": "Six browser cases pass: all three branches at desktop and phone viewport, twelve choices per branch. Uses prepared acknowledgement.",
+    "connected": "Three disposable character branches pass selection, saved loadout reconnect and four ordinary accepted actions each. Shield and Offense passed initial run; corrected Control-only rerun passes including positive authoritative Grip damage. Two intentionally skipped branches in rerun reuse their previous passes. One prepared level/resource setup per character; no per-cast resets.",
+    "content": "Fourteen content groups pass; generated animation coverage refreshed. Source and new QA lint pass, isolated runner shell syntax passes."
+  },
+  "retainedFailures": [
+    "Initial new Executioner test expected 8 seconds; canonical cooldown is 15 seconds. Fixture corrected, runtime unchanged.",
+    "Initial buff test fixture retained level-100 Intelligence cooldown reduction; corrected base stats before recalculation, runtime unchanged.",
+    "Initial connected Control test expected a nonexistent canvas field from projectNearestHostile. Corrected to actual hover selection and damage observation; rerun passes."
+  ],
+  "limits": [
+    "Prepared and connected checks do not establish human combat feel, balance, physical phone performance or final world art.",
+    "No soak or stress test was run; capacity qualification remains deferred by owner.",
+    "Full candidate CI and exact deployed frontend/backend identity and asset verification remain required."
+  ],
+  "sources": [
+    {
+      "path": "src/skills/fighterBranchRunes.js",
+      "sha256": "a7cf80dfb6d9b551130e64ad32b387233918daaaa03b08a77c14e7f64890919d"
+    },
+    {
+      "path": "server/internal/game/fighter_branch_runes.go",
+      "sha256": "ce0daf2833d2bcfa12a7a4aa6b18e62fffd7a4be32ff632c23f957ae404ae81f"
+    },
+    {
+      "path": "tests/FighterBranchRunes.test.js",
+      "sha256": "8e6a97a4600571de98310b1b5cbbfeea442749b4812372278e53c0a0959f8581"
+    },
+    {
+      "path": "server/internal/game/fighter_branch_runes_test.go",
+      "sha256": "7089f14bca49adcc545b2cea83a213f69888136d0ec28223e00807dded9ac97b"
+    },
+    {
+      "path": "tests/e2e/fighter-runes-gameplay.spec.js",
+      "sha256": "4a77602ba474da51dc4bcd90a70d09178d37c87d9492efd249428f7b1c6134f3"
+    },
+    {
+      "path": "tests/e2e/fighter-runes.spec.js",
+      "sha256": "12abb0e1cc5b97f1ee04ea34ccc29a94a02798daf19e3d9a299569df7602dec0"
+    }
+  ]
+}

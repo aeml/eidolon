@@ -1,15 +1,17 @@
+import { getFighterBranchPlan } from './fighterBranchRunes.js';
 import { Actor } from '../entities/Actor.js';
 import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
-import { getAbilityAoeRadius } from './abilityRadii.js';
+import { getAbilityAreaRadius } from '../core/AbilityRange.js';
 import { getFighterAbilityDamage } from './fighterAbilityDamage.js';
 import { getFighterEffectDuration } from './fighterEffectDuration.js';
 import { clipDungeonEffectSegment } from './dungeonEffectGeometry.js';
 
 // Paid offline shockwave only. Keep server-compatible planar body/wall/hostile
 // admission; authoritative multiplayer damage is never predicted here.
-export function applyOfflineJuggernaut(source, engine, isFriendlyActor, castDuration) {
+export function applyOfflineJuggernaut(source, engine, isFriendlyActor, castDuration, castPlan) {
     if (source.isRemote || source.isMultiplayer || engine.isMultiplayer || source.gameEngine?.isMultiplayer) return;
-    const skill = 'Juggernaut Charge', radius = getAbilityAoeRadius('Fighter', skill, source);
+    const skill = 'Juggernaut Charge', plan = castPlan || getFighterBranchPlan(skill, source.skillRunes?.[skill]);
+    const radius = getAbilityAreaRadius(source, 'Fighter', 10 * plan.radius, skill);
     const damage = getFighterAbilityDamage(source, skill, Math.floor(source.stats.damage + source.stats.strength));
     const duration = castDuration ?? getFighterEffectDuration(source, 5);
     const rects = engine.currentInstanceId && engine.currentInstanceType !== 'overworld' ? engine.currentDungeonLayout?.walkRects : null;
@@ -21,9 +23,9 @@ export function applyOfflineJuggernaut(source, engine, isFriendlyActor, castDura
         const body = Number.isFinite(target.radius) ? Math.max(0, target.radius) : 0;
         if (Math.hypot(target.position.x-source.position.x, target.position.z-source.position.z) > radius+body ||
             clipDungeonEffectSegment(rects, source.position, target.position).blocked) continue;
-        applyOfflineAbilityHit(source, target, damage, skill, engine.floatingTextManager, '#ffff00');
-        if (target.stats.hp > 0 && target.state !== 'DEAD' && !target.ccImmune) {
-            target.slowTimer = duration; target.slowFactor = .6;
+        applyOfflineAbilityHit(source, target, Math.floor(damage * plan.damage), skill, engine.floatingTextManager, '#ffff00');
+        if (plan.slow > 0 && target.stats.hp > 0 && target.state !== 'DEAD' && !target.ccImmune) {
+            target.slowTimer = duration; target.slowFactor = plan.slow;
             engine.floatingTextManager?.spawn('Slowed!', target.position, '#00ffff');
         }
     }

@@ -666,6 +666,9 @@ run_well_rested() {
 
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
+  fighter-runes)
+    EIDOLON_E2E_CLASS=Fighter npx playwright test --retries=0 --output=test-results/fighter-runes tests/e2e/fighter-runes-gameplay.spec.js
+    ;;
   wizard-runes)
     EIDOLON_E2E_CLASS=Wizard npx playwright test --retries=0 --output=test-results/wizard-runes tests/e2e/wizard-runes-gameplay.spec.js
     ;;
