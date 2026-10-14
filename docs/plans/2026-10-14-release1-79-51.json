@@ -43,6 +43,11 @@
       "suites": 769,
       "tests": 11758,
       "status": "passed; whole run failed the separately corrected server fixture"
+    },
+    "talentConsumerAudit": {
+      "result": "All seven retained talent-consumer diagnostic cases pass after updating the travelling Juggernaut fixture (2.172s).",
+      "retainedFailure": "The older probe expected damage/slow at cast admission. It now requires no premature impact, advances ordinary charge travel, then retains damage, slow, movement and expiry assertions. Runtime unchanged.",
+      "supersededPendingCandidate": "d255060057fd96b9fc67268620d39f7e31b1ba38 / CI38515766513 was still pending when this correction was selected."
     }
   },
   "limits": [

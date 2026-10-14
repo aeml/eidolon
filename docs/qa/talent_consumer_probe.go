@@ -37,7 +37,22 @@ func TestPendingTalentEnemyRootAndSlowLifecycle(t *testing.T) {
 				X: p.X + 8, Z: p.Z, SpawnX: p.X + 8, SpawnZ: p.Z, Scale: 1, Radius: 1.25, Speed: 8, BaseSpeed: 8}
 			w.AddEntity(e)
 			mana := p.Mana
-			result := w.PerformAbility(p.ID, e.X, e.Z, "", tc.skill)
+			aimX := e.X
+			if tc.skill == "Juggernaut Charge" {
+				// Leave pursuit distance after impact. The charge now travels;
+				// damage and control must not happen on initial admission.
+				aimX = p.X + 2
+			}
+			result := w.PerformAbility(p.ID, aimX, e.Z, "", tc.skill)
+			if tc.skill == "Juggernaut Charge" {
+				if !result.Accepted || !p.IsCharging || e.Slowed || e.Health != 10000 {
+					t.Fatal("charge did not start without premature impact")
+				}
+				w.updateEntity(p, .1, nil, &deferredActions{})
+				if p.IsCharging {
+					t.Fatal("ordinary charge travel did not reach its endpoint")
+				}
+			}
 			root := tc.skill == "Gravity Well"
 			if !result.Accepted || p.Mana >= mana || !e.Slowed || e.SlowFactor <= 0 || e.Rooted != root || e.Health >= 10000 {
 				t.Fatalf("paid damaging control failed: accepted=%v slow=%v factor=%v root=%v hp=%d", result.Accepted, e.Slowed, e.SlowFactor, e.Rooted, e.Health)
