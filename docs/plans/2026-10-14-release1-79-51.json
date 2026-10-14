@@ -36,6 +36,9 @@
   "retainedFailure": {
     "run": 38511451197,
     "finding": "Server TestComboChoiceDescriptionsMatchSharedContract expected a fixed five-missile description after client/server changed Arcane Barrage to two extra missiles respecting rune variants. Shared test fixture updated; runtime unchanged.",
-    "validation": "62 client checks across3 suites and focused Go race5.017s pass; actual paid precision rune/earned barrage cases included."
+    "validation": "62 client checks across3 suites and focused Go race5.017s pass; actual paid precision rune/earned barrage cases included.",
+    "fullClient": "First run765suites:762pass/3fail,11612pass/3fail. Shared combo copy plus two prior reflection fixtures failed; runtime unchanged by corrections.",
+    "reflectionFixtures": "Whirlwind target now has the same GameEngine room ownership as production addEntity, preserving the strict foreign-instance guard and lethal reflection/death assertion. Phase expectation now asserts caster attribution and reflection context rather than the old null-attacker call.",
+    "additionalValidation": "137 checks across Whirlwind, Phase, Arcane Shield, Fortress and combo suites pass2.556s. Earlier62precision/combo and Go race checks remain valid."
   }
 }

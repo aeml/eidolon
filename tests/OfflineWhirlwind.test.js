@@ -179,6 +179,8 @@ test.each(['locked', 'mana', 'cooldown', 'stun', 'remote', 'online'])('%s blocks
 test('lethal real Thorns reflection ends the channel without reviving the caster or emitting later pulses', () => {
     const f = fixture('whirlwind_extended');
     f.source.stats.hp = 1; f.target.hasThornsEffect = true;
+    // Match GameEngine.addEntity ownership so reflection stays in this room.
+    f.target.gameEngine = f.engine;
     cast(f);
     expect(f.source.state).toBe('DEAD');
     expect(f.source.offlineWhirlwind).toBeNull();

@@ -43,7 +43,7 @@ test('stun cannot prolong Phase and blocked damage cannot trigger reflection', (
         Actor.prototype.update.call(f.source, 1.1, null, null, []);
         expect(f.source.teleportPhaseTimer).toBe(0); expect(f.source.stunTimer).toBeGreaterThan(0);
         f.source.takeDamage(100, attacker);
-        expect(f.source.stats.hp).toBe(400); expect(attacker.takeDamage).toHaveBeenCalledWith(10, null);
+        expect(f.source.stats.hp).toBe(400); expect(attacker.takeDamage).toHaveBeenCalledWith(10, f.source, 0, { reflection: true });
     } finally { f.source.dispose(); attacker.dispose(); }
 });
 
