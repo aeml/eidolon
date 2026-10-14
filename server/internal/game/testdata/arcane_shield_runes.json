@@ -1,0 +1,8 @@
+[
+  {"name":"reflective-partial","rune":"arcaneshield_reflective","ranks":{},"hits":[31,61],"shield":58,"absorbed":92,"active":true,"ownerHP":1000,"enemyHP":973},
+  {"name":"reflective-break","rune":"arcaneshield_reflective","ranks":{},"hits":[31,61,100],"shield":0,"absorbed":0,"active":false,"ownerHP":958,"enemyHP":956},
+  {"name":"explosive-partial","rune":"arcaneshield_explosive","ranks":{},"hits":[31,61],"shield":58,"absorbed":92,"active":true,"ownerHP":1000,"enemyHP":1000},
+  {"name":"explosive-break","rune":"arcaneshield_explosive","ranks":{},"hits":[31,61,100],"shield":0,"absorbed":0,"active":false,"ownerHP":958,"enemyHP":850},
+  {"name":"trained-reflective","rune":"arcaneshield_reflective","ranks":{"WIZ_21":5},"hits":[200],"shield":0,"absorbed":0,"active":false,"ownerHP":980,"enemyHP":946},
+  {"name":"trained-explosive","rune":"arcaneshield_explosive","ranks":{"WIZ_21":5},"hits":[200],"shield":0,"absorbed":0,"active":false,"ownerHP":980,"enemyHP":820}
+]

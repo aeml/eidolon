@@ -113,7 +113,7 @@ test('focused Fireball composes its own Mastery once before actual critical shie
     try {
         f.source.talentRanks = { WIZ_01: 5, WIZ_15: 5 };
         f.source.stats.critChanceBonus = 1;
-        f.target.shieldHP = 500; f.target.arcaneShieldActive = true;
+        f.target.shieldHP = 500; f.target.arcaneShieldActive = true; f.target.arcaneShieldTimer = 20;
         f.cast('Spell Focus');
         expect(f.source.spellFocusMultiplier).toBe(3);
         f.cast('Fireball');

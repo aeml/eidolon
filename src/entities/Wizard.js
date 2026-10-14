@@ -11,6 +11,7 @@ import { getAbilityRange, getTeleportCastRange, clampWizardGroundTarget, WIZARD_
 import { clipDungeonEffectSegment, resolveDungeonBeamEndpoint, resolveDungeonMovementEndpoint } from '../skills/dungeonEffectGeometry.js';
 import { findOfflineAbilityTarget } from '../skills/offlineAbilityTargeting.js';
 import { getArcaneShieldTraining } from '../core/ArcaneShieldTraining.js';
+import { installOfflineArcaneShield, clearOfflineArcaneShield } from '../skills/offlineArcaneShield.js';
 import { applyOfflineTimeWarp, getWizardEffectDuration } from './WizardSupportAbilities.js';
 import { applyOfflineTeleportWarp, snapshotOfflineTeleportWarp } from '../skills/offlineTeleportWarp.js';
 import { commitOfflineTeleportCharge } from '../skills/offlineTeleportCharges.js';
@@ -432,9 +433,8 @@ export class Wizard extends Actor {
             this.spellFocusMultiplier = plan.multiplier;
             this.spellFocusCharges = plan.charges; this.spellFocusRuneId = plan.runeId;
             if (plan.wardScale > 0 && (!this.arcaneShieldActive || this.shieldHP <= 0 || this.arcaneShieldTimer <= 0)) {
-                this.shieldHP = Math.floor(Math.max(0, 40 + 2 * this.stats.intelligence) * plan.wardScale);
-                this.arcaneShieldActive = true;
-                this.arcaneShieldTimer = getWizardEffectDuration(this, skill, 6);
+                installOfflineArcaneShield(this, gameEngine,
+                    Math.floor(Math.max(0, 40 + 2 * this.stats.intelligence) * plan.wardScale), getWizardEffectDuration(this, skill, 6));
                 gameEngine.floatingTextManager.spawn(`WARD +${this.shieldHP}`, this.position, '#a449ff');
             }
             
@@ -479,9 +479,7 @@ export class Wizard extends Actor {
             // defensive training, not spell damage or a Spell Focus consumer.
             const training = getArcaneShieldTraining(this);
             const shieldAmount = training.capacity;
-            this.shieldHP = shieldAmount;
-            this.arcaneShieldActive = true;
-            this.arcaneShieldTimer = training.duration;
+            installOfflineArcaneShield(this, gameEngine, shieldAmount, training.duration, this.skillRunes?.[skill]);
             
             gameEngine.floatingTextManager.spawn(`SHIELD +${Math.floor(shieldAmount)}`, this.position, '#0088ff');
             
@@ -638,8 +636,6 @@ export class Wizard extends Actor {
         this.spellFocusTimer = 0;
         this.spellFocusMultiplier = 1;
         this.spellFocusCharges = 0; this.spellFocusRuneId = '';
-        this.arcaneShieldActive = false;
-        this.arcaneShieldTimer = 0;
-        this.shieldHP = 0;
+        clearOfflineArcaneShield(this);
     }
 }
