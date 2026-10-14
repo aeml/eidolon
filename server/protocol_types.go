@@ -101,6 +101,7 @@ type EntitySnapshot struct {
 	DivineInterventionDuration float64
 	SpellFocusDuration         float64
 	SpellFocusMultiplier       float64
+	SpellFocusCharges          int
 	SwiftDuration              float64
 	IronFortressDuration       float64
 	GuardianRoarDuration       float64

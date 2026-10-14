@@ -56,3 +56,33 @@ func TestSpellFocusDetachedCopyPreservesPaidCharge(t *testing.T) {
 		t.Fatal("detached copy lost paid charge")
 	}
 }
+
+func TestSpellFocusReservoirCounterSnapshotDeltaAndWire(t *testing.T) {
+	e := &game.Entity{ID: "reservoir-wire", Type: game.TypePlayer, SubType: "Wizard", State: "IDLE",
+		SpellFocusActive: true, SpellFocusEndTime: time.Now().Add(15 * time.Second), SpellFocusMultiplier: 1.75,
+		SpellFocusCharges: 2, SpellFocusRuneID: "spellfocus_reservoir"}
+	snapshot := entityToSnapshot(e)
+	if snapshot.SpellFocusCharges != 2 {
+		t.Fatal("missing first two paid casts")
+	}
+	e.SpellFocusCharges = 1
+	if !hasEntityChanged(e, snapshot) {
+		t.Fatal("counter-only change omitted from delta")
+	}
+	data, err := proto.Marshal(entityToProto(e))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var received statepb.Entity
+	if err := proto.Unmarshal(data, &received); err != nil {
+		t.Fatal(err)
+	}
+	if received.SpellFocusCharges != 1 || received.SpellFocusMultiplier != 1.75 {
+		t.Fatalf("remaining charge lost: %+v", &received)
+	}
+	e.SpellFocusActive = false
+	inactive := entityToSnapshot(e)
+	if inactive.SpellFocusCharges != 0 || entityToProto(e).SpellFocusCharges != 0 || hasEntityChanged(e, inactive) {
+		t.Fatal("inactive private counter generated public state")
+	}
+}

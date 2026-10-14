@@ -185,9 +185,9 @@ export const CONSTANTS = {
             BranchB: {
                 name: "Single-Target Caster",
                 Tier2: { name: "Scorch Beam", desc: "Line strike that melts armor and slows susceptible enemies by 30% for 3s base. Existing slows are preserved. Follow with Arcane Missiles within 3s for a five-missile volley." },
-                Tier3: { name: "Arcane Missiles", desc: "Homing projectiles." },
+                Tier3: { name: "Arcane Missiles", desc: "Three homing missiles; follow Scorch Beam within 3s for five. Runes alter volley count or trade homing for aimed shots." },
                 Tier4: { name: "Spell Focus", desc: "Empower your next damaging spell and gain a brief ward (40 + twice Intelligence; 6s base). Does not stack with an active shield." },
-                Tier5: { name: "Dragonfire Lance", desc: "Huge single-target spike damage." }
+                Tier5: { name: "Dragonfire Lance", desc: "Heavy single-target projectile that stops at the first enemy. Broadside trades damage for a wider piercing shot." }
             },
             BranchC: {
                 name: "Control & Utility Mage",
@@ -598,13 +598,13 @@ export const CONSTANTS = {
         ],
         Wizard: [
             // Fireball Runes
-            { id: "fireball_magma", name: "Magma Orb", skill: "Fireball", unlockLevel: 50, description: "Slower projectile, leaves burning ground for 3s" },
+            { id: "fireball_magma", name: "Magma Orb", skill: "Fireball", unlockLevel: 50, description: "Slower projectile; damaging hits leave a 5-unit fire field for 3s. Pulses inherit one-sixth of the first hit; leaving stops the burn." },
             { id: "fireball_chain", name: "Chain Reaction", skill: "Fireball", unlockLevel: 70, description: "Bounces to 3 additional targets at 50% damage" },
             { id: "fireball_empowered", name: "Empowered", skill: "Fireball", unlockLevel: 90, description: "+100% damage, +3s cooldown" },
             // Meteor Drop Runes
-            { id: "meteor_cluster", name: "Cluster", skill: "Meteor Drop", unlockLevel: 50, description: "3 smaller meteors instead of 1" },
+            { id: "meteor_cluster", name: "Cluster", skill: "Meteor Drop", unlockLevel: 50, description: "Three smaller meteors, each with two-thirds damage and 40% less radius." },
             { id: "meteor_extinction", name: "Extinction", skill: "Meteor Drop", unlockLevel: 70, description: "+50% explosion radius" },
-            { id: "meteor_apocalypse", name: "Apocalypse", skill: "Meteor Drop", unlockLevel: 90, description: "Meteors continue for 5s after cast" },
+            { id: "meteor_apocalypse", name: "Apocalypse", skill: "Meteor Drop", unlockLevel: 90, description: "Five extra meteors over 5s, each with half damage and 30% less radius." },
             // Teleport Runes
             { id: "teleport_blink", name: "Blink", skill: "Teleport", unlockLevel: 50, description: "+50% range" },
             { id: "teleport_phase", name: "Phase", skill: "Teleport", unlockLevel: 70, description: "Invulnerable for 1s after teleport" },
@@ -617,6 +617,31 @@ export const CONSTANTS = {
             { id: "gravitywell_expanded", name: "Expanded", skill: "Gravity Well", unlockLevel: 50, description: "+50% radius" },
             { id: "gravitywell_crushing", name: "Crushing", skill: "Gravity Well", unlockLevel: 70, description: "+100% damage" },
             { id: "gravitywell_blackhole", name: "Black Hole", skill: "Gravity Well", unlockLevel: 90, description: "Enemies cannot escape while active" },
+            // Precision caster: distribute a paid charge, defend, or commit to burst.
+        {"id": "flamewhip_reach", "name": "Reach", "skill": "Flame Whip", "unlockLevel": 50, "description": "50% greater reach, but 25% less damage. Retains the trained stun."},
+        {"id": "flamewhip_binding", "name": "Binding Flame", "skill": "Flame Whip", "unlockLevel": 70, "description": "5s base stun, but 35% less damage. Control-immune enemies still take damage."},
+        {"id": "flamewhip_flash", "name": "Flash Lash", "skill": "Flame Whip", "unlockLevel": 90, "description": "6s base cooldown and 1s base stun, but 20% less damage. Mana cost is unchanged."},
+        {"id": "flametornado_broad", "name": "Firefront", "skill": "Flame Tornado", "unlockLevel": 50, "description": "50% wider and travels at 6 instead of 10 speed, but deals 25% less damage. Each enemy is hit once."},
+        {"id": "flametornado_swift", "name": "Firestorm", "skill": "Flame Tornado", "unlockLevel": 70, "description": "Travels at 18 instead of 10 speed, but is one-third narrower. Damage is unchanged."},
+        {"id": "flametornado_focused", "name": "Fire Needle", "skill": "Flame Tornado", "unlockLevel": 90, "description": "40% more damage, but half the width. Each enemy is hit once."},
+        {"id": "inferno_lingering", "name": "Lingering Embers", "skill": "Inferno Cataclysm", "unlockLevel": 50, "description": "Burns for 12s instead of 8s, but each pulse deals 35% less damage."},
+        {"id": "inferno_concentrated", "name": "Crucible", "skill": "Inferno Cataclysm", "unlockLevel": 70, "description": "40% more damage per pulse, but 35% less radius. Duration is unchanged."},
+        {"id": "inferno_flashburn", "name": "Flashburn", "skill": "Inferno Cataclysm", "unlockLevel": 90, "description": "Burns for 4s with 50% more damage per pulse and 40s base cooldown. Mana cost is unchanged."},
+        {"id": "timewarp_communion", "name": "Communion", "skill": "Time Warp", "unlockLevel": 50, "description": "60% greater radius, but 6s base haste duration. Retains both personal cooldown resets."},
+        {"id": "timewarp_lingering", "name": "Enduring Time", "skill": "Time Warp", "unlockLevel": 70, "description": "12s base haste duration, but does not reset Teleport or Gravity Well."},
+        {"id": "timewarp_quickening", "name": "Quickening", "skill": "Time Warp", "unlockLevel": 90, "description": "40s base cooldown and 5s base haste. Resets Teleport only; Gravity Well keeps its cooldown."},
+            { id: "spellfocus_reservoir", name: "Reservoir", skill: "Spell Focus", unlockLevel: 50, description: "Split Focus's trained bonus damage between your next two paid damaging spells. Utility and rejected casts keep both charges." },
+            { id: "spellfocus_aegis", name: "Aegis", skill: "Spell Focus", unlockLevel: 70, description: "Double Focus's ward capacity, but retain only 60% of its bonus damage. Does not replace an active ward." },
+            { id: "spellfocus_overchannel", name: "Overchannel", skill: "Spell Focus", unlockLevel: 90, description: "Increase Focus's bonus damage by 25%, but gain no Focus ward. Existing shields remain." },
+            { id: "scorchbeam_longshot", name: "Longshot", skill: "Scorch Beam", unlockLevel: 50, description: "Reach 50% farther, but deal 20% less damage. Retains armor melt and the brief slow." },
+            { id: "scorchbeam_incision", name: "Incision", skill: "Scorch Beam", unlockLevel: 70, description: "Deal 25% more damage, but lose the beam slow. Armor melt remains." },
+            { id: "scorchbeam_snare", name: "Snare", skill: "Scorch Beam", unlockLevel: 90, description: "Slow susceptible enemies by 50% for 5s base, but deal 25% less damage. Preserves existing slows; immune enemies still take damage." },
+            { id: "arcanemissiles_salvo", name: "Salvo", skill: "Arcane Missiles", unlockLevel: 50, description: "Fire two extra missiles at 60% damage each: five normally, seven after Scorch Beam. Spends one Focus charge for the entire volley." },
+            { id: "arcanemissiles_compression", name: "Compression", skill: "Arcane Missiles", unlockLevel: 70, description: "Fire one fewer missile at 140% damage each: two normally, four after Scorch Beam. Trades ordinary volley damage for stronger prepared volleys." },
+            { id: "arcanemissiles_convergence", name: "Convergence", skill: "Arcane Missiles", unlockLevel: 90, description: "Missiles fly straight toward your aim at 40 speed and deal 20% more damage, but no longer home onto moving targets." },
+            { id: "dragonfire_needle", name: "Needle", skill: "Dragonfire Lance", unlockLevel: 50, description: "Deal 25% more damage with half the projectile width. Stops at the first enemy hit." },
+            { id: "dragonfire_broadside", name: "Broadside", skill: "Dragonfire Lance", unlockLevel: 70, description: "Pierce enemies with 2.5 times the projectile width, but deal 25% less damage to each. Each enemy can be hit once." },
+            { id: "dragonfire_quickfire", name: "Quickfire", skill: "Dragonfire Lance", unlockLevel: 90, description: "Reduce base cooldown from 20s to 12s and projectile speed rises from 40 to 60, but deal 35% less damage. Mana cost remains 50 before discounts." },
         ],
         Cleric: [
             // Spirit Guardians Runes
@@ -663,7 +688,7 @@ export const CONSTANTS = {
         ],
         Wizard: [
             { id: "implosion", name: "Implosion", firstSkill: "Gravity Well", secondSkill: "Fireball", description: "This Fireball deals +100% damage to slowed or control-immune targets. Does not bypass control immunity." },
-            { id: "arcane_barrage", name: "Arcane Barrage", firstSkill: "Scorch Beam", secondSkill: "Arcane Missiles", description: "Arcane Missiles launches five missiles instead of three. Normal mana and cooldown apply." },
+            { id: "arcane_barrage", name: "Arcane Barrage", firstSkill: "Scorch Beam", secondSkill: "Arcane Missiles", description: "Scorch Beam prepares two extra Arcane Missiles. Runes keep their volley and damage tradeoffs; normal mana and cooldown apply." },
             { id: "time_burn", name: "Time Burn", firstSkill: "Flame Tornado", secondSkill: "Inferno Cataclysm", description: "Cataclysm ticks twice as fast" },
             { id: "nova_cascade", name: "Nova Cascade", firstSkill: "Fireball", secondSkill: "Flame Whip", description: "360° Flame Whip" },
         ],

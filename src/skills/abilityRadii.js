@@ -1,3 +1,4 @@
+import { getWizardBranchPlan } from './wizardBranchRunes.js';
 import { getAbilityAreaRadius, getFlameWhipRadius, getWizardAbilityAreaRadius, WIZARD_GROUND_ABILITIES } from '../core/AbilityRange.js';
 
 // Only abilities whose server casts publish authoritative radius/arc are enrolled.
@@ -93,7 +94,7 @@ export function getAbilityAoeRadius(className, canonicalSkillName, source = null
     if (className === 'Wizard' && canonicalSkillName === 'Teleport') {
         return source?.skillRunes?.Teleport === 'teleport_warp' ? getWizardAbilityAreaRadius(source, 4) : null;
     }
-    if (className === 'Wizard' && canonicalSkillName === 'Time Warp') return getWizardAbilityAreaRadius(source, 15);
+    if (className === 'Wizard' && canonicalSkillName === 'Time Warp') return getWizardAbilityAreaRadius(source, 15 * getWizardBranchPlan(canonicalSkillName, source?.skillRunes?.[canonicalSkillName]).radius);
     if (className === 'Wizard' && canonicalSkillName === 'Flame Whip') return getFlameWhipRadius(source);
     if (className === 'Cleric' && canonicalSkillName === 'Healing Light' && source?.healingLightMassRevival) return getAbilityAreaRadius(source, className, 20, canonicalSkillName);
     if (className === 'Cleric' && canonicalSkillName === 'Spirit Guardians' && source?.spiritGuardiansDivineStorm) {
@@ -105,7 +106,8 @@ export function getAbilityAoeRadius(className, canonicalSkillName, source = null
     const runeSkill = definition.runeSkill || canonicalSkillName;
     const runeId = source?.skillRunes?.[runeSkill] || null;
     const runeRadius = runeId ? definition.runes?.[runeId] : null;
-    const radius = Number.isFinite(runeRadius) ? runeRadius : definition.base;
+    const baseRadius = Number.isFinite(runeRadius) ? runeRadius : definition.base;
+    const radius = baseRadius * (className === 'Wizard' ? getWizardBranchPlan(canonicalSkillName, runeId).radius : 1);
     if (className === 'Fighter' && ['Earthshaker', 'Juggernaut Charge', 'Guardian Roar', 'Executioner Spin', 'Shattering Charge', 'Whirlwind', 'Shield Slam', 'Sweeping Strike'].includes(canonicalSkillName)) return getAbilityAreaRadius(source, className, radius, canonicalSkillName);
     if (className === 'Cleric' && (SELF_CENTERED_SHAPE_ABILITIES.has(canonicalSkillName) || ['Radiant Strike', 'Healing Light'].includes(canonicalSkillName))) {
         return Number.isFinite(radius) && radius > 0 ? getAbilityAreaRadius(source, className, radius, canonicalSkillName) : null;

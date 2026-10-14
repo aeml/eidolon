@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createProceduralAreaField, updateProceduralAreaField, releaseProceduralAreaField } from './ProceduralAreaFields.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -6,7 +7,7 @@ const MATERIALS = new Map();
 export const PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS = Object.freeze({
     Fireball: Object.freeze({ family: 'wizard', role: 'projectile', artStyle: 'caged ember star', gameplayRadius: 2 }),
     ArcaneMissile: Object.freeze({ family: 'wizard', role: 'projectile', artStyle: 'violet reliquary bolt', gameplayRadius: 1.5 }),
-    DragonfireLance: Object.freeze({ family: 'wizard', role: 'projectile', artStyle: 'dragonfire war lance', gameplayRadius: 1.5 }),
+    DragonfireLance: Object.freeze({ family: 'wizard', role: 'projectile', artStyle: 'dragonfire war lance', gameplayRadius: 1, scaleEncodesRadius: true }),
     Dagger: Object.freeze({ family: 'rogue', role: 'projectile', artStyle: 'blacksteel throwing misericorde', gameplayRadius: 1.5 }),
     FlameTornado: Object.freeze({ family: 'wizard', role: 'projectile', artStyle: 'cinder helix', gameplayRadius: 1.5, upright: true }),
     Meteor: Object.freeze({ family: 'wizard', role: 'projectile', artStyle: 'crowned extinction stone', gameplayRadius: 1.5 }),
@@ -14,6 +15,7 @@ export const PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS = Object.freeze({
     Tripwire: Object.freeze({ family: 'rogue', role: 'trap', artStyle: 'blacksteel tension snare', gameplayRadius: 1.5 }),
     ExplosiveTrap: Object.freeze({ family: 'rogue', role: 'trap', artStyle: 'cinder-tooth mine', gameplayRadius: 1 }),
     SnareTrap: Object.freeze({ family: 'rogue', role: 'trap', artStyle: 'venom jaw snare', gameplayRadius: 1 }),
+    MagmaGround: Object.freeze({ family: 'wizard', role: 'zone', artStyle: 'cinder-script burn scar', gameplayRadius: 5, scaleEncodesRadius: true, upright: true }),
     ZoneDamage: Object.freeze({ family: 'wizard', role: 'zone', artStyle: 'infernal cataclysm seal', gameplayRadius: 5, scaleEncodesRadius: true }),
     ZoneHoly: Object.freeze({ family: 'cleric', role: 'zone', artStyle: 'consecrated reliquary seal', gameplayRadius: 5, scaleEncodesRadius: true }),
     Zone: Object.freeze({ family: 'cleric', role: 'zone', artStyle: 'legacy sanctified seal', gameplayRadius: 5, scaleEncodesRadius: true })
@@ -405,9 +407,17 @@ const PALETTES = Object.freeze({
     Zone: { dark: 0x1d1b18, plate: 0x746744, glow: 0xd9bb64, pale: 0xffedb0 }
 });
 
-export function createProceduralProjectileVisual(type) {
+export function createProceduralProjectileVisual(type, options = {}) {
     const definition = PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS[type];
     if (!definition) throw new Error(`Unknown procedural projectile visual: ${type}`);
+    if (type === 'MagmaGround') {
+        const root = createProceduralAreaField('BurningGround', definition.gameplayRadius, options);
+        root.name = `ProceduralProjectile:${type}`;
+        Object.assign(root.userData, { proceduralProjectile: true, projectileType: type,
+            projectileFamily: definition.family, projectileRole: definition.role,
+            baseGameplayRadius: definition.gameplayRadius, scaleEncodesRadius: true, upright: true });
+        return root;
+    }
     const materials = standardMaterials(type, PALETTES[type]);
     let root;
 
@@ -442,6 +452,7 @@ export function createProceduralProjectileVisual(type) {
 
 export function updateProceduralProjectileVisual(root, type, elapsed, dt) {
     if (!root?.userData?.proceduralProjectile) return;
+    if (root.userData.areaFieldType) { updateProceduralAreaField(root, elapsed, dt); return; }
     const time = Math.max(0, Number(elapsed) || 0);
     const delta = Math.max(0, Number(dt) || 0);
     const spin = root.getObjectByName(`${type}:Spin`);
@@ -484,6 +495,7 @@ export function applyProceduralProjectileScale(root, scale) {
 
 export function releaseProceduralProjectileVisual(root) {
     if (!root) return;
+    if (root.userData?.areaFieldType) { releaseProceduralAreaField(root); return; }
     root.parent?.remove(root);
     root.clear();
 }

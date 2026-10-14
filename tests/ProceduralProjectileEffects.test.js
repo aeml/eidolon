@@ -22,6 +22,7 @@ const TYPES = Object.freeze([
     'Tripwire',
     'ExplosiveTrap',
     'SnareTrap',
+    'MagmaGround',
     'ZoneDamage',
     'ZoneHoly',
     'Zone'
@@ -46,7 +47,7 @@ function collectMeshes(root) {
 
 function readServerProjectileSubtypes() {
     const types = new Set();
-    const files = readdirSync('server/internal/game').filter((name) => /^ability_.*\.go$/.test(name));
+    const files = readdirSync('server/internal/game').filter((name) => /^(?:ability_.*|fireball_magma)\.go$/.test(name));
     files.forEach((name) => {
         const source = readFileSync(join('server/internal/game', name), 'utf8');
         for (const match of source.matchAll(/&Entity\{([\s\S]*?)\n\s*\}/g)) {
@@ -71,7 +72,7 @@ describe('procedural projectile, trap, and persistent-zone visuals', () => {
         }
     });
 
-    test('every server-created projectile subtype has a direct visual and only the documented legacy alias is extra', () => {
+    test('every class-ability projectile subtype including Magma has a direct visual and only the documented legacy alias is extra', () => {
         const serverTypes = readServerProjectileSubtypes();
         const clientTypes = Object.keys(PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS);
         expect(serverTypes).toEqual(TYPES.filter((type) => type !== 'Zone').sort());

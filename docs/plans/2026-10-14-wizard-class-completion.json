@@ -1,0 +1,66 @@
+{
+  "recordedUTC": "2026-10-14T03:36:16.117130+00:00",
+  "status": "Private coherent Wizard implementation candidate; waiting for final regression result, master integration and verified release. Human balance/feel and whole-game readiness remain open.",
+  "base": "3f5f2272df10d48da6627a5579bb0ff80d87e2b8",
+  "changes": [
+    "Twelve new choices cover Flame Whip, Flame Tornado, Inferno Cataclysm and Time Warp. All thirteen learned Wizard skills now have three optional level50/70/90 runes, including inherited precision, Fireball and Shield repairs. Existing identifiers and saved build choices remain stable.",
+    "Whip trades reach, stun strength or cadence against damage. Tornado trades width and travel speed against damage. Inferno trades concentrated radius, sustained duration or faster recast against per-tick strength. Warp trades party reach, duration or recast against personal Teleport/Gravity reset behavior.",
+    "Offline Meteor captures paid damage and ground targets. Cluster uses three delayed impacts; Apocalypse adds five scheduled half-damage impacts. Death, disposal, changed instances, authority or owner replacement cancel pending waves. Server Apocalypse checks living, connected original owner.",
+    "Offline Arcane Missiles uses the same immediate horizontal fan as the server; no uncaptured staggered timers remain. Branch stats, damage, shapes and cooldowns agree across runtimes. Longer existing stuns are preserved."
+  ],
+  "validation": {
+    "focusedClient": "802 checks across37 suites qualified by801 initial passes plus corrected actual Actor impact fixture33/33. Meteor35/35; branch/support/combo74/74. Counts overlap, do not sum.",
+    "focusedRace": "Meteor and Wizard branch/precision/Time Warp suites pass under Go race detector; saved loadout roundtrips and ordinary learned skill breakpoints pass.",
+    "runeUI": "6 real browser cases: three branches at desktop and phone viewport; all12 choices per branch accessible and acknowledged. Prepared UI uses simulated acknowledgement.",
+    "connected": "3 disposable server/database/native-browser characters. Each branch equips four runes through UI, reconnects and verifies saved choices, then receives four accepted paid server casts. One prepared level100 and resource refill per character; no per-cast resets. No encounter pacing claim.",
+    "native": "Two actual native GPU High/Low prepared scenes,14 supplied equipment slots without fallback. Six Apocalypse projectiles and broad Tornado render/retire; lingering field lasts12s, all effects detach and no pending meteor tasks or geometry jobs remain. Captured images/video; component presentation, not final world art.",
+    "fullClient": "Running; observed existing VIP fixture expired on real2026-10-14. Isolated test corrected on master b2c246c76 with explicit server asOf;21 wallet cases pass. Final full result pending.",
+    "content": "14 committed content groups verify, generated animation inventory updated. Changed JS lint passes before final new QA files; final lint pending."
+  },
+  "retainedFailures": [
+    "Initial shared-harness actor impact used a fake plain object; fixture now uses a real Imp, no runtime boundary weakened.",
+    "New Go test fixtures initially used incorrect fields and zero initial base stats; corrected to canonical Experience, learned branch starter offset and InitialPlayerStats plus level growth.",
+    "Initial native effect expectation incorrectly totaled185mana instead of existing205 canonical costs; corrected fixture, both native cases pass. Runtime costs unchanged.",
+    "Unchanged old VIP status fixture had passed until its fixed end date arrived; runtime expiry behavior was correct."
+  ],
+  "remaining": [
+    "Complete final regression and integrate onto current master.",
+    "Wait for Alpha1.79.50 terminal CI/deployment before publishing the coherent Wizard milestone.",
+    "Retain human tuning/feel, physical-phone and whole-game performance/art/operations gates. Continue Fighter, Rogue and Cleric passes.",
+    "No soak or stress run; owner deferred capacity work until features nearly complete."
+  ],
+  "sources": [
+    {
+      "path": "src/skills/wizardBranchRunes.js",
+      "sha256": "c1c1c8e46fb4a3df551235c266ce0e07860d4b56d48354cdc1811f827b901096"
+    },
+    {
+      "path": "src/skills/offlineMeteor.js",
+      "sha256": "2eb1112192dd633b18d63ea37cd3a5c335309cbcf3ed9ccbde19b1df52af0938"
+    },
+    {
+      "path": "src/entities/Wizard.js",
+      "sha256": "e65aa66051ea221ccac36ea72bc131100964e8b451bd65760a5ca2b455478d33"
+    },
+    {
+      "path": "server/internal/game/wizard_branch_runes.go",
+      "sha256": "d4edfec159ec7b46debb49a7fabb91c0b8f73be8089277b033dbbbddfefb8938"
+    },
+    {
+      "path": "server/internal/game/ability_wizard.go",
+      "sha256": "1ab9daf766f228acf1bab32a400e601a5f91f95152511bf6e74fd3517e8a3734"
+    },
+    {
+      "path": "server/internal/game/testdata/wizard_branch_runes.json",
+      "sha256": "f9ae0fe02308ce24a823d7727310a0443bd6db21386f362ae96e430154b4b888"
+    },
+    {
+      "path": "tests/e2e/wizard-runes-gameplay.spec.js",
+      "sha256": "2704e7c242dd845ea5f32f6431025772935255c3113c55ae8244d49d9d3c7a30"
+    },
+    {
+      "path": "tests/e2e/wizard-rune-effects.spec.js",
+      "sha256": "7a8c39d7a5a22cce4479ab6009f215199e7b749a038f6b6e3fbe5243f23b7154"
+    }
+  ]
+}

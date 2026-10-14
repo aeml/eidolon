@@ -1,0 +1,14 @@
+[
+  {"skill":"Scorch Beam","rune":"","damage":105,"range":18,"slow":0.3,"slowSeconds":3,"mana":40,"cooldown":8},
+  {"skill":"Scorch Beam","rune":"scorchbeam_longshot","damage":84,"range":27,"slow":0.3,"slowSeconds":3,"mana":40,"cooldown":8},
+  {"skill":"Scorch Beam","rune":"scorchbeam_incision","damage":131,"range":18,"slow":0,"slowSeconds":0,"mana":40,"cooldown":8},
+  {"skill":"Scorch Beam","rune":"scorchbeam_snare","damage":78,"range":18,"slow":0.5,"slowSeconds":5,"mana":40,"cooldown":8},
+  {"skill":"Arcane Missiles","rune":"","damage":55,"count":3,"barrageCount":5,"speed":25,"homing":true,"mana":30,"cooldown":4},
+  {"skill":"Arcane Missiles","rune":"arcanemissiles_salvo","damage":33,"count":5,"barrageCount":7,"speed":25,"homing":true,"mana":30,"cooldown":4},
+  {"skill":"Arcane Missiles","rune":"arcanemissiles_compression","damage":77,"count":2,"barrageCount":4,"speed":25,"homing":true,"mana":30,"cooldown":4},
+  {"skill":"Arcane Missiles","rune":"arcanemissiles_convergence","damage":66,"count":3,"barrageCount":5,"speed":40,"homing":false,"mana":30,"cooldown":4},
+  {"skill":"Dragonfire Lance","rune":"","damage":300,"count":1,"radius":1,"speed":40,"pierce":false,"mana":50,"cooldown":20},
+  {"skill":"Dragonfire Lance","rune":"dragonfire_needle","damage":375,"count":1,"radius":0.5,"speed":40,"pierce":false,"mana":50,"cooldown":20},
+  {"skill":"Dragonfire Lance","rune":"dragonfire_broadside","damage":225,"count":1,"radius":2.5,"speed":40,"pierce":true,"mana":50,"cooldown":20},
+  {"skill":"Dragonfire Lance","rune":"dragonfire_quickfire","damage":195,"count":1,"radius":1,"speed":60,"pierce":false,"mana":50,"cooldown":12}
+]

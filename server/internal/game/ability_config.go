@@ -109,13 +109,21 @@ func resolveAbilityManaCost(player *Entity, skillName string, fallback int) int 
 func effectiveAbilityCooldown(player *Entity, skillName string, base time.Duration) time.Duration {
 	global := math.Max(0, math.Min(1, player.CooldownReduction))
 	skill := math.Max(0, math.Min(1, player.GetSkillCdrBonus(skillName)))
-	return time.Duration(float64(base) * (1 - global) * (1 - skill))
+	runeCooldown := 1.0
+	if player.SubType == "Wizard" {
+		runeCooldown = planWizardPrecision(skillName, player.GetRuneForSkill(skillName), false).cooldown * planWizardBranch(skillName, player.GetRuneForSkill(skillName)).cooldown
+	}
+	return time.Duration(float64(base) * runeCooldown * (1 - global) * (1 - skill))
 }
 
 // Apply additive talent ranks after the ability's rune-adjusted base range.
 // Callers retain their own collision, instance and valid-target checks.
 func effectiveAbilityRange(player *Entity, skillName string, base float64) float64 {
-	return base * math.Max(0, 1+player.GetSkillBonus(skillName).SkillRange)
+	runeRange := 1.0
+	if player.SubType == "Wizard" {
+		runeRange = planWizardPrecision(skillName, player.GetRuneForSkill(skillName), false).reach
+	}
+	return base * runeRange * math.Max(0, 1+player.GetSkillBonus(skillName).SkillRange)
 }
 
 func effectiveAbilityAreaRadius(player *Entity, skillName string, base float64) float64 {

@@ -191,9 +191,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 		return result
 	}
 	if consumeSpellFocus {
-		player.SpellFocusActive = false
-		player.SpellFocusEndTime = time.Time{}
-		player.SpellFocusMultiplier = 0
+		player.consumeSpellFocus()
 	}
 
 	// Record combo history and publish the combo only after the cast commits.

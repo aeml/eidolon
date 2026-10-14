@@ -39,6 +39,7 @@ import { equipmentWithAppearances } from '../core/EquipmentAppearance.js';
 import { ActorHitReaction } from './ActorHitReaction.js';
 import { ActorMovingCastGait } from './ActorMovingCastGait.js';
 import { getGroundAwareDistance, getGroundedActorHeight } from '../core/WorldGrounding.js';
+import { absorbOfflineArcaneShield, clearOfflineArcaneShield, expireOfflineArcaneShield, flushOfflineArcaneShieldReaction } from '../skills/offlineArcaneShield.js';
 
 // Optimization: Reusable temporary objects to avoid GC
 const TEMP_VEC = new THREE.Vector3();
@@ -188,6 +189,10 @@ export class Actor extends Entity {
         this.frozenTimer = 0; // Stun + Visual
         this.arcaneShieldTimer = 0; // Display-only authoritative shield duration
         this.shieldHP = 0; // Absorbs damage
+        this.arcaneShieldRuneId = '';
+        this.arcaneShieldAbsorbed = 0;
+        this.arcaneShieldEngine = null;
+        this.arcaneShieldInstanceId = '';
         this.hasteTimer = 0; // Speed + CDR
         this.hasteFactor = 0;
         this.spellFocusTimer = 0; // Display-only authoritative spell focus duration
@@ -610,7 +615,7 @@ export class Actor extends Entity {
         return true;
     }
 
-    spawnAbilityPresentation(gameEngine, skillName, targetVector) {
+    spawnAbilityPresentation(gameEngine, skillName, targetVector, options = {}) {
         if (skillName === 'Earthshaker') {
             const spawned = spawnEarthshakerPresentation(gameEngine, this, targetVector);
             if (spawned) playLocalAbilityCue(gameEngine, this, skillName);
@@ -635,7 +640,7 @@ export class Actor extends Entity {
             ?? getAbilityAoeArc(className, presentation.canonicalName, this);
         let spawned = false;
         const activeLayers = presentation.layers.filter((entry) =>
-            isAbilityVisualLayerEnabled(entry, this, presentation.canonicalName)
+            isAbilityVisualLayerEnabled(entry, this, presentation.canonicalName) && !(options.skipTelegraph && entry.type === 'telegraph')
         );
         activeLayers.forEach((entry, index) => {
             const position = entry.anchor === 'target' ? targetPosition : sourcePosition;
@@ -973,7 +978,13 @@ export class Actor extends Entity {
         // Wizard resolves it below; multiplayer waits for the accepted event.
         const offlineCharge = className === 'Fighter' && skillName === 'Charge' &&
             !this.isRemote && !this.isMultiplayer && !gameEngine?.isMultiplayer;
-        if (skillName !== 'Teleport' && skillName !== 'Juggernaut Charge' && !offlineCharge) this.spawnAbilityPresentation(gameEngine, skillName, targetVector);
+        const offlineMeteor = className === 'Wizard' && skillName === 'Meteor Drop' &&
+            !this.isRemote && !this.isMultiplayer && !gameEngine?.isMultiplayer;
+        // Offline Meteor owns one exact warning per falling projectile,
+        // including Cluster staggering and Apocalypse's delayed launches.
+        if (skillName !== 'Teleport' && skillName !== 'Juggernaut Charge' && !offlineCharge) {
+            this.spawnAbilityPresentation(gameEngine, skillName, targetVector, { skipTelegraph: offlineMeteor });
+        }
 
         // Subclasses implement actual logic
         return true;
@@ -1159,6 +1170,7 @@ export class Actor extends Entity {
                 if (!this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) {
                     this.spellFocusActive = false;
                     this.spellFocusMultiplier = 1;
+                    this.spellFocusCharges = 0; this.spellFocusRuneId = '';
                 }
             }
         }
@@ -1168,8 +1180,7 @@ export class Actor extends Entity {
             if (this.arcaneShieldTimer <= 0) {
                 this.arcaneShieldTimer = 0;
                 if (!this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) {
-                    this.arcaneShieldActive = false;
-                    this.shieldHP = 0;
+                    clearOfflineArcaneShield(this);
                 }
             }
         }
@@ -1553,12 +1564,13 @@ export class Actor extends Entity {
         console.log(`${this.id} was cleansed!`);
     }
 
-    takeDamage(amount, attacker = null, elapsedInFrame = 0) {
-        if (this.state === 'DEAD' || this.isMultiplayer || this.isRemote || this.gameEngine?.isMultiplayer) return;
+    takeDamage(amount, attacker = null, elapsedInFrame = 0, damageContext = null) {
+        if (this.state === 'DEAD' || this.isMultiplayer || this.isRemote || this.gameEngine?.isMultiplayer) return 0;
         // A Phase window blocks the impact before shields, death saves and
         // retaliation, just like authoritative gameplay invulnerability.
         const impactElapsed = Number.isFinite(elapsedInFrame) ? Math.max(0, elapsedInFrame) : 0;
-        if (this.teleportPhaseTimer > impactElapsed) return;
+        if (!damageContext?.reflection) expireOfflineArcaneShield(this, impactElapsed);
+        if (!damageContext?.reflection && this.teleportPhaseTimer > impactElapsed) return 0;
         
         let finalAmount = amount;
         
@@ -1568,39 +1580,35 @@ export class Actor extends Entity {
         }
 
         // Damage Increases (Debuffs)
-        if (this.markWeaknessTimer > 0) {
+        if (!damageContext?.inherited && !damageContext?.reflection && this.markWeaknessTimer > 0) {
             finalAmount *= (1 + this.markWeaknessFactor);
         }
         
-        if (this.divineInterventionGuardianTimer > 0) finalAmount = Math.floor(finalAmount*.5);
+        if (!damageContext?.reflection && this.divineInterventionGuardianTimer > impactElapsed) finalAmount = Math.floor(finalAmount * .5);
 
-        // Shield Absorption
-        if (this.shieldHP > 0) {
-            const absorbed = Math.min(this.shieldHP, finalAmount);
-            this.shieldHP -= absorbed;
-            finalAmount -= absorbed;
-            if (this.arcaneShieldActive && this.shieldHP <= 0) {
-                this.arcaneShieldActive = false;
-                this.arcaneShieldTimer = 0;
-            }
-            console.log(`${this.id} shield absorbed ${absorbed}. Remaining Shield: ${this.shieldHP}`);
-            if (finalAmount <= 0) return; // Fully absorbed
-        }
-        
+        // Reactions execute only after this hit has committed. A fully absorbed
+        // hit still reflects, and a lethal break still detonates exactly once.
+        const shield = damageContext?.reflection ? { damage: finalAmount }
+            : absorbOfflineArcaneShield(this, finalAmount, impactElapsed);
+        finalAmount = shield.damage;
+        const retaliate = () => flushOfflineArcaneShieldReaction(this, attacker, shield);
+        if (finalAmount <= 0) { retaliate();return 0; }
+
         // Divine Intervention Check
-        if (this.divineInterventionActive && (this.stats.hp - finalAmount <= 0)) {
+        if (!damageContext?.reflection && this.divineInterventionActive && (this.stats.hp - finalAmount <= 0)) {
             this.stats.hp = Math.max(1, Math.floor(this.stats.maxHp * 0.30)); // Heal to 30%
             this.divineInterventionActive = false;
             this.divineInterventionTimer = 0;
             console.log(`${this.id} was saved by Divine Intervention!`);
-            return; 
+            retaliate();
+            return finalAmount;
         }
 
         this.stats.hp -= finalAmount;
         console.log(`${this.id} took ${finalAmount} damage (was ${amount}). HP: ${this.stats.hp}`);
         
         // Thorns unique effect - reflect 10% damage back to attacker
-        if (this.hasThornsEffect && attacker && attacker.stats && attacker !== this) {
+        if (!damageContext?.reflection && this.hasThornsEffect && attacker && attacker.stats && attacker !== this) {
             const reflectDamage = Math.floor(finalAmount * 0.1);
             if (reflectDamage > 0) {
                 console.log(`${this.id} reflects ${reflectDamage} damage to ${attacker.id} (Thorns)`);
@@ -1615,6 +1623,8 @@ export class Actor extends Entity {
             }
             this.die();
         }
+        retaliate();
+        return finalAmount;
     }
     
     // Called when this entity is killed by an attacker
@@ -1640,6 +1650,7 @@ export class Actor extends Entity {
     die() {
         if (this.state === 'DEAD') return;
         clearOfflineFighterDamageBuffs(this);
+        clearOfflineArcaneShield(this);
         this.teleportPhaseTimer = 0;
         this.invulnerabilityTimer = 0;
         this.invulnerableActive = false;
@@ -2193,6 +2204,7 @@ export class Actor extends Entity {
     }
 
     dispose() {
+        clearOfflineArcaneShield(this);
         this.corpsePresentation?.dispose();
         this.corpsePresentation = null;
         this.movingCastGait?.dispose();

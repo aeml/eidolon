@@ -10,6 +10,7 @@ import (
 // performWizardAbility handles all Wizard class ability logic.
 // Extracted from the "Wizard" case in PerformAbility (world.go).
 func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, targetID, skillName string, setCooldown func(time.Duration), contexts ...*abilityImpactContext) {
+	branch := planWizardBranch(skillName, player.GetRuneForSkill(skillName))
 	impacts, finishImpacts := w.worldLockedAbilityImpacts(contexts)
 	defer finishImpacts()
 	if skillName == "Spell Focus" {
@@ -20,14 +21,16 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			player.SpellFocusActive = true
 			training := snapshotCombatAttackerLocked(player)
 			training.NormalizeTalentRanks()
-			player.SpellFocusMultiplier = 2.5 * (1 + training.GetSkillBonus(skillName).SkillDamage)
+			plan := planSpellFocus(player.GetRuneForSkill(skillName), 2.5*(1+training.GetSkillBonus(skillName).SkillDamage))
+			player.SpellFocusMultiplier = plan.multiplier
+			player.SpellFocusCharges, player.SpellFocusRuneID = plan.charges, plan.runeID
 			player.SpellFocusEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 15*time.Second))
 			// Focus is also this branch's deliberate defensive window. Do not
 			// stack, refresh or replace a still-active shield from another source.
 			now := time.Now()
-			if !player.ArcaneShieldActive || player.ArcaneShieldHP <= 0 || !now.Before(player.ArcaneShieldEndTime) {
+			if plan.wardScale > 0 && (!player.ArcaneShieldActive || player.ArcaneShieldHP <= 0 || !now.Before(player.ArcaneShieldEndTime)) {
 				player.ArcaneShieldActive = true
-				player.ArcaneShieldHP = max(0, 40+2*player.Stats.Intelligence)
+				player.ArcaneShieldHP = int(float64(max(0, 40+2*player.Stats.Intelligence)) * plan.wardScale)
 				player.ArcaneShieldEndTime = now.Add(resolveAbilityEffectDuration(player, skillName, 6*time.Second))
 				player.ArcaneShieldRuneID = ""
 				player.ArcaneShieldAbsorbed = 0
@@ -70,14 +73,18 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			// Time Warp should not reduce its own cooldown; commit before the
 			// party-wide CDR buff is applied.
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 60*time.Second))
-			endTime := time.Now().Add(resolveAbilityEffectDuration(player, skillName, 8*time.Second))
+			endTime := time.Now().Add(resolveAbilityEffectDuration(player, skillName, time.Duration(branch.duration*float64(time.Second))))
 			// Reprise the caster's own movement/control loop, never party
 			// cooldowns or Time Warp itself. GCD and mana still gate the next cast.
-			delete(player.Cooldowns, "Teleport")
-			delete(player.Cooldowns, "Gravity Well")
-			player.TeleportCharges = 0
-			player.TeleportChargeReadyAt = time.Time{}
-			radius := effectiveAbilityAreaRadius(player, skillName, 15.0)
+			if branch.resetTeleport {
+				delete(player.Cooldowns, "Teleport")
+				player.TeleportCharges = 0
+				player.TeleportChargeReadyAt = time.Time{}
+			}
+			if branch.resetGravity {
+				delete(player.Cooldowns, "Gravity Well")
+			}
+			radius := effectiveAbilityAreaRadius(player, skillName, 15.0*branch.radius)
 			targets := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
 			if player.HasAnySetBonus("timeWarpZone") {
 				targets = make([]*Entity, 0, len(w.Entities))
@@ -293,13 +300,13 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 			// Cone reach and AoE radius are independent talent categories; each
 			// category sums its ranks before applying its multiplier once.
-			rangeDist := effectiveAbilityAreaRadius(player, skillName, effectiveAbilityRange(player, skillName, 12.0))
+			rangeDist := effectiveAbilityAreaRadius(player, skillName, effectiveAbilityRange(player, skillName, 12.0)*branch.radius)
 			arc := math.Pi / 2
 			if novaCascadeActive {
 				arc = 2 * math.Pi
 			}
 			angleThreshold := math.Pi / 4 // 45 degrees
-			damage := int(float64(25+(player.Stats.Intelligence*2)) * player.GetSkillDamageMultiplier("Flame Whip"))
+			damage := int(float64(25+(player.Stats.Intelligence*2)) * (player.GetSkillDamageMultiplier("Flame Whip") * branch.damage))
 
 			pDirX, pDirZ := fighterFacing(player, targetX, targetZ)
 
@@ -335,7 +342,10 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 						addThreatLocked(target, player.ID, float64(finalDamage))
 						if !target.CCImmune {
 							target.Stunned = true
-							target.StunEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 3*time.Second))
+							stunEnd := time.Now().Add(resolveAbilityEffectDuration(player, skillName, time.Duration(branch.stun*float64(time.Second))))
+							if stunEnd.After(target.StunEndTime) {
+								target.StunEndTime = stunEnd
+							}
 						}
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
@@ -369,10 +379,10 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				dist = 1
 			}
 
-			velX := (dx / dist) * 10.0 // Slow speed
-			velZ := (dz / dist) * 10.0
+			velX := (dx / dist) * branch.speed // Slow speed
+			velZ := (dz / dist) * branch.speed
 
-			damage := int(float64(30+(player.Stats.Intelligence*3)) * player.GetSkillDamageMultiplier("Flame Tornado"))
+			damage := int(float64(30+(player.Stats.Intelligence*3)) * (player.GetSkillDamageMultiplier("Flame Tornado") * branch.damage))
 
 			proj := &Entity{
 				ID:              fmt.Sprintf("proj-%d", time.Now().UnixNano()),
@@ -384,13 +394,13 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				Z:               player.Z,
 				VelX:            velX,
 				VelZ:            velZ,
-				Radius:          3.0, // Large radius
+				Radius:          3.0 * branch.radius, // Large radius
 				Damage:          damage,
 				OwnerID:         player.ID,
 				Rotation:        math.Atan2(velX, velZ),
 				CreatedAt:       time.Now(),
 				HitList:         make(map[string]bool), // Initialize HitList
-				Scale:           1.0,
+				Scale:           branch.radius,
 				ProjectileSkill: "Flame Tornado",
 			}
 			w.addProjectileLocked(proj)
@@ -504,7 +514,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 								return
 							}
 							owner.Mu.RLock()
-							ownerValid := owner.State != "DEAD" && owner.InstanceID == instanceID
+							ownerValid := owner == player && owner.State != "DEAD" && owner.Health > 0 && !owner.Disconnected && owner.InstanceID == instanceID
 							owner.Mu.RUnlock()
 							if !ownerValid {
 								w.Mu.Unlock()
@@ -567,7 +577,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			}
 
 			// Snapshot the actual radius once for ticks and replicated zone scale.
-			radius := effectiveAbilityAreaRadius(player, skillName, 12.0)
+			radius := effectiveAbilityAreaRadius(player, skillName, 12.0*branch.radius)
 			// Spawn Zone
 			zone := &Entity{
 				ID:              fmt.Sprintf("zone-inferno-%d", time.Now().UnixNano()),
@@ -578,9 +588,10 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				Y:               0.1,
 				Z:               targetZ,
 				Radius:          radius,
-				Damage:          int(float64(30+player.Stats.Intelligence) * player.GetSkillDamageMultiplier("Inferno Cataclysm")),
+				Damage:          int(float64(30+player.Stats.Intelligence) * (player.GetSkillDamageMultiplier("Inferno Cataclysm") * branch.damage)),
 				OwnerID:         player.ID,
 				CreatedAt:       time.Now(),
+				ZoneEndTime:     time.Now().Add(time.Duration(branch.duration * float64(time.Second))),
 				Scale:           radius / 5.0,     // Encode radius for client rendering (base geometry is 5.0)
 				ZoneDoubleTick:  doubleTickActive, // Combo: Time Burn
 				ProjectileSkill: "Inferno Cataclysm",
@@ -593,6 +604,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 		}
 	} else if skillName == "Scorch Beam" {
+		plan := planWizardPrecision(skillName, player.GetRuneForSkill(skillName), player.ActiveCombo == "arcane_missile_barrage")
 		// Scorch Beam (Line Damage)
 		cost := resolveAbilityManaCost(player, skillName, 40)
 		if player.Mana >= cost {
@@ -601,7 +613,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 			rangeDist := effectiveAbilityRange(player, skillName, 18.0)
 			width := 1.0
-			damage := int(float64(25+(player.Stats.Intelligence*2)) * player.GetSkillDamageMultiplier("Scorch Beam"))
+			damage := int(float64(25+(player.Stats.Intelligence*2)) * (player.GetSkillDamageMultiplier("Scorch Beam") * plan.damage))
 
 			// Line Check
 			// Vector from player to target
@@ -659,9 +671,9 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 						// Early precision-caster breathing room. Preserve an existing
 						// slow rather than downgrading or extending another effect.
 						now := time.Now()
-						if target.Health > 0 && !target.CCImmune && (!target.Slowed || !now.Before(target.SlowEndTime)) {
-							target.Slowed, target.SlowFactor = true, 0.30
-							target.SlowEndTime = now.Add(resolveAbilityEffectDuration(player, skillName, 3*time.Second))
+						if plan.slow > 0 && target.Health > 0 && !target.CCImmune && (!target.Slowed || !now.Before(target.SlowEndTime)) {
+							target.Slowed, target.SlowFactor = true, plan.slow
+							target.SlowEndTime = now.Add(resolveAbilityEffectDuration(player, skillName, time.Duration(plan.slowSeconds*float64(time.Second))))
 						}
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
@@ -682,12 +694,13 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 		}
 	} else if skillName == "Dragonfire Lance" {
+		plan := planWizardPrecision(skillName, player.GetRuneForSkill(skillName), player.ActiveCombo == "arcane_missile_barrage")
 		// Dragonfire Lance (Single Target Nuke)
 		cost := resolveAbilityManaCost(player, skillName, 50)
 		if player.Mana >= cost {
 			player.Mana -= cost
 
-			damage := int(float64(100+(player.Stats.Intelligence*5)) * player.GetSkillDamageMultiplier("Dragonfire Lance"))
+			damage := int(float64(100+(player.Stats.Intelligence*5)) * (player.GetSkillDamageMultiplier("Dragonfire Lance") * plan.damage))
 
 			// Projectile
 			dx := targetX - player.X
@@ -696,26 +709,29 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			if dist == 0 {
 				dist = 1
 			}
-			velX := (dx / dist) * 40.0
-			velZ := (dz / dist) * 40.0
+			velX := (dx / dist) * plan.speed
+			velZ := (dz / dist) * plan.speed
 
 			proj := &Entity{
-				ID:              fmt.Sprintf("proj-lance-%d", time.Now().UnixNano()),
-				InstanceID:      player.InstanceID,
-				Type:            TypeProjectile,
-				SubType:         "DragonfireLance",
-				X:               player.X,
-				Y:               1.5,
-				Z:               player.Z,
-				VelX:            velX,
-				VelZ:            velZ,
-				Radius:          1.0,
-				Damage:          damage,
-				OwnerID:         player.ID,
-				Rotation:        math.Atan2(velX, velZ),
-				CreatedAt:       time.Now(),
-				Scale:           1.0,
-				ProjectileSkill: "Dragonfire Lance",
+				ID:                    fmt.Sprintf("proj-lance-%d", time.Now().UnixNano()),
+				InstanceID:            player.InstanceID,
+				Type:                  TypeProjectile,
+				SubType:               "DragonfireLance",
+				X:                     player.X,
+				Y:                     1.5,
+				Z:                     player.Z,
+				VelX:                  velX,
+				VelZ:                  velZ,
+				Radius:                plan.radius,
+				Damage:                damage,
+				OwnerID:               player.ID,
+				Rotation:              math.Atan2(velX, velZ),
+				CreatedAt:             time.Now(),
+				Scale:                 plan.radius,
+				ProjectilePierce:      plan.pierce,
+				ProjectileRuneID:      player.GetRuneForSkill(skillName),
+				ProjectileSkill:       "Dragonfire Lance",
+				ProjectileTravelLimit: effectiveAbilityRange(player, skillName, 18),
 			}
 			w.addProjectileLocked(proj)
 
@@ -772,6 +788,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 		}
 	} else if skillName == "Arcane Missiles" {
+		plan := planWizardPrecision(skillName, player.GetRuneForSkill(skillName), player.ActiveCombo == "arcane_missile_barrage")
 		// Arcane Missiles
 		cost := resolveAbilityManaCost(player, skillName, 30)
 		if player.Mana >= cost {
@@ -814,17 +831,22 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			}
 
 			baseAngle := math.Atan2(dz, dx)
-			angles := []float64{baseAngle - 0.2, baseAngle, baseAngle + 0.2}
+			angles := make([]float64, plan.missiles)
+			for i := range angles {
+				angles[i] = baseAngle + (float64(i)-float64(plan.missiles-1)/2)*.2
+			}
 			if player.ActiveCombo == "arcane_missile_barrage" {
-				angles = []float64{baseAngle - 0.4, baseAngle - 0.2, baseAngle, baseAngle + 0.2, baseAngle + 0.4}
 				player.ActiveCombo = ""
+			}
+			if !plan.homing {
+				targetID = ""
 			}
 
 			for i, angle := range angles {
-				velX := math.Cos(angle) * 25.0
-				velZ := math.Sin(angle) * 25.0
+				velX := math.Cos(angle) * plan.speed
+				velZ := math.Sin(angle) * plan.speed
 
-				damage := int(float64(15+player.Stats.Intelligence) * player.GetSkillDamageMultiplier("Arcane Missiles"))
+				damage := int(float64(15+player.Stats.Intelligence) * (player.GetSkillDamageMultiplier("Arcane Missiles") * plan.damage))
 
 				proj := &Entity{
 					ID:              fmt.Sprintf("proj-%s-%d-%d", player.ID, time.Now().UnixNano(), i),

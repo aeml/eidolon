@@ -4,6 +4,8 @@ import { wellRestedBuff } from './WellRested.js';
 // Lifetime bookkeeping remains owned by GameEngine's active-buff tracker.
 export function getTrackedActorBuffs(actor) {
     if (!actor) return [];
+    const focusCharges = actor.spellFocusCharges === 2 ? 2 : 1;
+    const focusBonus = Math.round((Number(actor.spellFocusMultiplier || 1) - 1) * 100);
     return [
         wellRestedBuff(actor),
         {
@@ -57,7 +59,7 @@ export function getTrackedActorBuffs(actor) {
             icon: '🔮',
             name: 'Spell Focus',
             durationSeconds: Number(actor.spellFocusTimer || 0),
-            detail: `+${Math.round((Number(actor.spellFocusMultiplier || 1) - 1) * 100)}% next spell damage`,
+            detail: focusCharges > 1 ? `${focusCharges} spells · +${focusBonus}% damage each` : `+${focusBonus}% next spell damage`,
             isDebuff: false
         },
         {

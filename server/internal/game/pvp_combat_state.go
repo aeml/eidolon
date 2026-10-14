@@ -51,6 +51,7 @@ func clearPvPCombatStateLocked(p *Entity) {
 	p.BerserkerModeMultiplier, p.LastStandMultiplier, p.ZealPower = 0, 0, 0
 	p.IronFortressActive, p.GuardianRoarActive, p.SerratedEdgesActive, p.PoisonCoatingActive = false, false, false, false
 	p.IronFortressEndTime, p.GuardianRoarEndTime, p.SerratedEdgesEndTime, p.PoisonCoatingEndTime = time.Time{}, time.Time{}, time.Time{}, time.Time{}
+	p.clearSpellFocus()
 	p.SpellFocusActive, p.ArcaneShieldActive, p.TimeWarpActive, p.DivineInterventionActive = false, false, false, false
 	p.SpellFocusEndTime, p.ArcaneShieldEndTime, p.TimeWarpEndTime, p.DivineInterventionEndTime = time.Time{}, time.Time{}, time.Time{}, time.Time{}
 	p.SpellFocusMultiplier, p.ArcaneShieldHP, p.ArcaneShieldAbsorbed = 0, 0, 0

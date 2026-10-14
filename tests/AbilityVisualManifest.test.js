@@ -103,13 +103,14 @@ describe('canonical ability visual manifest', () => {
         }
     });
 
-    test('the deterministic inventory enumerates every base ability and all 60 rune variants', () => {
+    test('the deterministic inventory enumerates every base ability and all canonical rune variants', () => {
         const variants = listPlayerAbilityPresentationVariants();
-        expect(variants).toHaveLength(112);
-        expect(variants.filter((entry) => entry.runeId)).toHaveLength(60);
+        const runeCount = PLAYER_CLASSES.reduce((count, name) => count + CONSTANTS.SKILL_RUNES[name].length, 0);
+        expect(variants).toHaveLength(52 + runeCount);
+        expect(variants.filter((entry) => entry.runeId)).toHaveLength(runeCount);
         expect(new Set(variants.map((entry) =>
             `${entry.className}:${entry.skillName}:${entry.runeId || 'base'}`
-        )).size).toBe(112);
+        )).size).toBe(52 + runeCount);
     });
 
     test.each(PLAYER_CLASSES)('%s client ability config cannot add an unclassified skill', (className) => {

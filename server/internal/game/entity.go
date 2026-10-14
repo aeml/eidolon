@@ -247,6 +247,8 @@ type Entity struct {
 	FireballWellBoost        bool      `json:"-"` // Combo: Implosion - Fireball does +100% damage to slowed targets
 	MeteorShieldExplode      bool      `json:"-"` // Combo: Arcane Barrage - Meteor explodes shield on impact
 	ZoneDoubleTick           bool      `json:"-"` // Combo: Time Burn - Zone ticks twice as fast
+	ZoneEndTime              time.Time `json:"-"` // Explicit lifetime for non-default persistent fields.
+	ZoneDamagePvPScaled      bool      `json:"-"` // Stored field damage inherited from a PvP hit.
 
 	// Abilities
 	SpiritsActive             bool      `json:"spiritsActive"`
@@ -296,6 +298,8 @@ type Entity struct {
 	SpellFocusActive          bool      `json:"spellFocusActive,omitempty"`
 	SpellFocusEndTime         time.Time `json:"-"`
 	SpellFocusMultiplier      float64   `json:"-"`
+	SpellFocusCharges         int       `json:"spellFocusCharges,omitempty"`
+	SpellFocusRuneID          string    `json:"-"`
 	ArcaneShieldActive        bool      `json:"arcaneShieldActive,omitempty"`
 	ArcaneShieldHP            int       `json:"arcaneShieldHP,omitempty"`
 	ArcaneShieldEndTime       time.Time `json:"-"`
@@ -1015,6 +1019,10 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		SpellFocusActive:         e.SpellFocusActive,
 		SpellFocusEndTime:        e.SpellFocusEndTime,
 		SpellFocusMultiplier:     e.SpellFocusMultiplier,
+		SpellFocusCharges:        e.SpellFocusCharges,
+		SpellFocusRuneID:         e.SpellFocusRuneID,
+		ZoneEndTime:              e.ZoneEndTime,
+		ZoneDamagePvPScaled:      e.ZoneDamagePvPScaled,
 		BerserkerModeActive:      e.BerserkerModeActive,
 		BerserkerModeEndTime:     e.BerserkerModeEndTime,
 		BerserkerModeMultiplier:  e.BerserkerModeMultiplier,
@@ -1245,6 +1253,10 @@ func (w *World) copyEntity(v *Entity) *Entity {
 		SpellFocusActive:          v.SpellFocusActive,
 		SpellFocusEndTime:         v.SpellFocusEndTime,
 		SpellFocusMultiplier:      v.SpellFocusMultiplier,
+		SpellFocusCharges:         v.SpellFocusCharges,
+		SpellFocusRuneID:          v.SpellFocusRuneID,
+		ZoneEndTime:               v.ZoneEndTime,
+		ZoneDamagePvPScaled:       v.ZoneDamagePvPScaled,
 		ArcaneShieldActive:        v.ArcaneShieldActive,
 		ArcaneShieldHP:            v.ArcaneShieldHP,
 		ArcaneShieldEndTime:       v.ArcaneShieldEndTime,

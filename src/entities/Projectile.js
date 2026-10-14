@@ -15,6 +15,9 @@ import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
 import { getRogueEffectDuration } from '../skills/rogueEffectDuration.js';
 import { getOverworldGroundHeight } from '../core/WorldGrounding.js';
 import { GroundedProjectileVisual } from '../art/GroundedProjectileVisual.js';
+import { lanceContactFraction, orderLanceTargets } from '../skills/lanceFlight.js';
+import { isOfflineFireballTarget, resolveOfflineFireballImpact } from '../skills/offlineFireballImpact.js';
+import { applyOfflineMeteorImpact } from '../skills/offlineMeteor.js';
 
 // =====================================================
 // Particle Pool Manager - Centralized for performance
@@ -171,9 +174,10 @@ function spawnProjectileImpact(gameEngine, projectile, position, options = {}) {
 }
 
 export class Projectile extends Entity {
-    constructor(id, owner, type, startPos, targetPos) {
+    constructor(id, owner, type, startPos, targetPos, visualOptions = {}) {
         super(id);
         this.owner = owner;
+        this.visualOptions = visualOptions;
         this.type = type; // 'Fireball', 'Dagger'
         this.skillName = ({ Dagger: 'Piercing Throw', PhantomArrow: 'Phantom Volley',
             Fireball: 'Fireball', FlameTornado: 'Flame Tornado', DragonfireLance: 'Dragonfire Lance',
@@ -243,6 +247,8 @@ export class Projectile extends Entity {
             this.damage = 10;
             this.speed = 0;
             this.velocity.set(0,0,0);
+        } else if (this.type === 'MagmaGround') {
+            this.damage = 0;this.speed = 0;this.velocity.set(0, 0, 0);
         } else if (this.type === 'ZoneDamage') {
             this.damage = 30 + (this.owner.stats.intelligence * 1);
             this.speed = 0;
@@ -258,7 +264,7 @@ export class Projectile extends Entity {
             this.velocity.set(0,0,0);
         }
 
-        this.mesh = createProceduralProjectileVisual(this.type);
+        this.mesh = createProceduralProjectileVisual(this.type, this.visualOptions);
         this.mesh.position.copy(this.position);
         this.mesh.userData.entityId = this.id; // Ensure ID is set for raycasting/identification
         
@@ -402,24 +408,15 @@ export class Projectile extends Entity {
                 this.hasExploded = true;
                 this.isActive = false;
                 if (this.mesh) this.mesh.visible = false;
-                const rects = gameEngine?.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
-                    ? gameEngine.currentDungeonLayout?.walkRects : null;
-                for (const target of chunkManager?.getActiveEntities() || []) {
-                    if (!(target instanceof Actor) || target === this.owner || !target.isActive || target.state === 'DEAD') continue;
-                    const hostile = typeof gameEngine?.isHostileActorTarget === 'function' ? gameEngine.isHostileActorTarget(target)
-                        : !target.isInvulnerable && !['Wizard', 'Cleric', 'Fighter', 'Rogue', 'AvengingSeraph'].includes(target.constructor.name);
-                    if (!hostile || Math.hypot(target.position.x - this.position.x, target.position.z - this.position.z) > this.explosionRadius + (target.radius || 0) ||
-                        clipDungeonEffectSegment(rects, this.position, target.position).blocked) continue;
-                    if (!this.owner.isMultiplayer && !this.owner.isRemote) {
-                        applyOfflineAbilityHit(this.owner, target, this.damage, this.skillName, floatingTextManager, '#ff4500');
-                    }
-                }
+                applyOfflineMeteorImpact(this, gameEngine, chunkManager, floatingTextManager);
                 spawnProjectileImpact(gameEngine, this, this.position, { radius: this.explosionRadius, terminal: true });
             }
             return;
         }
         if (chunkManager && locallySimulated) {
-            const activeEntities = chunkManager.getActiveEntities();
+            const stopsAtFirst = boundedFlight && this.type === 'DragonfireLance' && !this.projectilePierce;
+            const candidates = chunkManager.getActiveEntities();
+            const activeEntities = stopsAtFirst ? orderLanceTargets(candidates, flightStart, this.position, this.radius + .5) : candidates;
             const hitRadius = this.radius || 1.0; // Use projectile's radius
 
             for (const entity of activeEntities) {
@@ -430,7 +427,9 @@ export class Projectile extends Entity {
                 // Skip friendly fire (Player vs Player handled by server, but locally we ignore)
                 // Assuming owner is Player, ignore other Players? Or if owner is Enemy, ignore Enemies?
                 // For now, simple check: If owner is Player, ignore Player.
-                if (this.owner && this.owner.constructor.name === entity.constructor.name) continue;
+                if (this.type === 'Fireball') {
+                    if (!isOfflineFireballTarget(this.owner, entity, gameEngine)) continue;
+                } else if (this.owner && this.owner.constructor.name === entity.constructor.name) continue;
                 // World props, service NPCs, loot, effects, and other
                 // non-combat entities can share a chunk with a projectile.
                 // Only the damageable actor contract is a valid collision
@@ -448,8 +447,15 @@ export class Projectile extends Entity {
                 }
                 if (dist < hitRadius + (boundedFlight ? .5 : (entity.radius || 0.5))) {
                     // HIT!
+                    const impactPosition = boundedFlight && this.type === 'DragonfireLance'
+                        ? flightStart.clone().lerp(this.position, lanceContactFraction(flightStart, this.position, entity.position, this.radius + .5))
+                        : this.position;
+                    if (stopsAtFirst) {
+                        this.position.copy(impactPosition);
+                        this.mesh?.position.copy(this.position);
+                    }
                     
-                    if (this.type === 'Dagger' || this.type === 'DragonfireLance' || this.type === 'FlameTornado') {
+                    if (this.type === 'Dagger' || (this.type === 'DragonfireLance' && this.projectilePierce) || this.type === 'FlameTornado') {
                         // Pierce Logic: Hit and continue
                         this.hitEntities.add(entity.id);
                         
@@ -516,12 +522,12 @@ export class Projectile extends Entity {
                             }
                         }
 
-                        spawnProjectileImpact(gameEngine, this, this.position, {
+                        spawnProjectileImpact(gameEngine, this, impactPosition, {
                             targetId: entity.id,
                             terminal: false
                         });
 
-                    } else if (this.type === 'ArcaneMissile' || this.type === 'PhantomArrow') {
+                    } else if (this.type === 'ArcaneMissile' || this.type === 'PhantomArrow' || this.type === 'DragonfireLance') {
                         const pierces = this.type === 'PhantomArrow' && this.projectilePierce;
                         this.hitEntities.add(entity.id);
                         if (!pierces) {
@@ -533,13 +539,23 @@ export class Projectile extends Entity {
                             applyOfflineAbilityHit(this.owner, entity, this.damage, this.skillName, floatingTextManager, '#aa00ff');
                         }
                         
-                        spawnProjectileImpact(gameEngine, this, this.position, {
+                        spawnProjectileImpact(gameEngine, this, impactPosition, {
                             targetId: entity.id,
                             terminal: !pierces
                         });
                         if (!pierces) break;
 
-                    } else if (this.type === 'Fireball' || this.type === 'Meteor' || this.type === 'ExplosiveTrap') {
+                    } else if (this.type === 'Fireball') {
+                        const redirected = resolveOfflineFireballImpact(this, entity, activeEntities, gameEngine, floatingTextManager, walkRects);
+                        this.hasExploded = !redirected;
+                        this.isActive = redirected;
+                        if (this.mesh) {
+                            this.mesh.visible = redirected;
+                            if (redirected) { this.mesh.lookAt(this.position.clone().add(this.velocity)); this.rotation.copy(this.mesh.quaternion); }
+                        }
+                        spawnProjectileImpact(gameEngine, this, this.position, { radius: this.explosionRadius || 10, targetId: entity.id, terminal: !redirected });
+                        break;
+                    } else if (this.type === 'Meteor' || this.type === 'ExplosiveTrap') {
                         // Explode Logic: Hit, Splash, Destroy
                         this.hasExploded = true;
                         this.isActive = false; // Destroy projectile
@@ -597,7 +613,7 @@ export class Projectile extends Entity {
                 }
             }
         }
-        if (boundedFlight && flightEnded) {
+        if (boundedFlight && flightEnded && this.isActive) {
             this.isActive = false;
             if (this.mesh) this.mesh.visible = false;
             spawnProjectileImpact(gameEngine, this, this.position, { terminal: true });

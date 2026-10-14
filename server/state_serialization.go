@@ -317,6 +317,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		DivineInterventionDuration: divineInterventionDuration,
 		SpellFocusDuration:         spellFocusDuration,
 		SpellFocusMultiplier:       spellFocusMultiplier,
+		SpellFocusCharges:          e.ActiveSpellFocusCharges(),
 		BlessingResolvePower:       e.ActiveBlessingResolvePower(),
 		ZealPower:                  e.ActiveZealPower(),
 		MarkWeaknessFactor:         e.ActiveMarkWeaknessFactor(),
@@ -701,7 +702,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	if cmarkWeakness != last.MarkWeakness {
 		return true
 	}
-	if cspellFocusActive != last.SpellFocusActive || math.Abs(cspellFocusMultiplier-last.SpellFocusMultiplier) > 0.0001 {
+	if cspellFocusActive != last.SpellFocusActive || current.ActiveSpellFocusCharges() != last.SpellFocusCharges || math.Abs(cspellFocusMultiplier-last.SpellFocusMultiplier) > 0.0001 {
 		return true
 	}
 	if math.Abs(cberserkerModeMultiplier-last.BerserkerModeMultiplier) > 0.0001 || math.Abs(clastStandMultiplier-last.LastStandMultiplier) > 0.0001 {
@@ -1348,6 +1349,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		DivineInterventionDuration: divineInterventionDuration,
 		SpellFocusDuration:         spellFocusDuration,
 		SpellFocusMultiplier:       spellFocusMultiplier,
+		SpellFocusCharges:          int32(e.ActiveSpellFocusCharges()),
 		BlessingResolvePower:       float32(e.ActiveBlessingResolvePower()),
 		ZealPower:                  float32(e.ActiveZealPower()),
 		MarkWeaknessFactor:         float32(e.ActiveMarkWeaknessFactor()),

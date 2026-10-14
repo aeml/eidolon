@@ -1,4 +1,6 @@
 import { CONSTANTS } from './Constants.js';
+import { getWizardBranchPlan } from '../skills/wizardBranchRunes.js';
+import { getWizardPrecisionPlan } from '../skills/wizardPrecisionRunes.js';
 
 export function getAbilityRange(player, skillName, baseRange) {
     const className = player?.meshType || player?.subType || player?.constructor?.name;
@@ -10,7 +12,8 @@ export function getAbilityRange(player, skillName, baseRange) {
         const rank = Number.isFinite(raw) ? Math.max(0, Math.min(talent.maxRank, Math.floor(raw))) : 0;
         bonus += effect.range * rank;
     }
-    return baseRange * Math.max(0, 1 + bonus);
+    const runeRange = className === 'Wizard' ? getWizardPrecisionPlan(skillName, player?.skillRunes?.[skillName]).range : 1;
+    return baseRange * runeRange * Math.max(0, 1 + bonus);
 }
 
 export function getTeleportCastRange(player) {
@@ -19,7 +22,7 @@ export function getTeleportCastRange(player) {
 }
 
 export function getFlameWhipRadius(player) {
-    return getWizardAbilityAreaRadius(player, getAbilityRange(player, 'Flame Whip', 12));
+    return getWizardAbilityAreaRadius(player, getAbilityRange(player, 'Flame Whip', 12) * getWizardBranchPlan('Flame Whip', player?.skillRunes?.['Flame Whip']).radius);
 }
 
 export function getWizardAbilityAreaRadius(player, base) {

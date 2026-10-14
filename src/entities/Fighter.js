@@ -278,14 +278,14 @@ export class Fighter extends Actor {
         if (hadFortress && !this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) this.recalculateStats();
     }
 
-    takeDamage(amount, attacker = null, elapsedInFrame = 0) {
+    takeDamage(amount, attacker = null, elapsedInFrame = 0, damageContext = null) {
         let finalAmount = amount;
         const elapsed = Number.isFinite(elapsedInFrame) ? Math.max(0, elapsedInFrame) : 0;
         if (this.ironFortressTimer > elapsed) {
             finalAmount = Math.floor(amount * .8);
             // console.log(`Iron Fortress reduced damage from ${amount} to ${finalAmount}`);
         }
-        super.takeDamage(finalAmount, attacker, elapsedInFrame);
+        return super.takeDamage(finalAmount, attacker, elapsedInFrame, damageContext);
     }
 
     update(dt, collisionManager, player, chunkManager, floatingTextManager) {
