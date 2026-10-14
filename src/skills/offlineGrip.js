@@ -1,3 +1,4 @@
+import { getFighterBranchPlan } from './fighterBranchRunes.js';
 import { Actor } from '../entities/Actor.js';
 import { getAbilityRange } from '../core/AbilityRange.js';
 import { clipDungeonEffectSegment } from './dungeonEffectGeometry.js';
@@ -30,10 +31,11 @@ export function findOfflineGripTarget(source, aim, engine, isFriendlyActor) {
 
 export function applyOfflineGrip(source, target, engine) {
     if (!target || source.isRemote || source.isMultiplayer || engine.isMultiplayer || source.gameEngine?.isMultiplayer) return;
+    const plan = getFighterBranchPlan('Unbreakable Grip', source.skillRunes?.['Unbreakable Grip']);
     const damage = getFighterAbilityDamage(source, 'Unbreakable Grip', source.stats.damage + source.stats.strength);
-    applyOfflineAbilityHit(source, target, damage, 'Unbreakable Grip', engine.floatingTextManager, '#d2b48c');
+    applyOfflineAbilityHit(source, target, Math.floor(damage * plan.damage), 'Unbreakable Grip', engine.floatingTextManager, '#d2b48c');
     if (target.ccImmune || target.state === 'DEAD' || target.stats.hp <= 0) return;
-    if (!target.ironFortressImmovable) {
+    if (plan.pull && !target.ironFortressImmovable) {
         const dx = target.position.x-source.position.x, dz = target.position.z-source.position.z;
         const distance = Math.hypot(dx, dz);
         if (distance > 2) {
@@ -43,5 +45,5 @@ export function applyOfflineGrip(source, target, engine) {
         engine.floatingTextManager?.spawn('Pulled!', target.position, '#ffffff');
         source.spawnVisualEffect(engine, target.position, 0xffffff, 'impact');
     }
-    target.rootTimer = getFighterEffectDuration(source, 1, 'Unbreakable Grip');
+    if (plan.root > 0) target.rootTimer = Math.max(target.rootTimer || 0, getFighterEffectDuration(source, plan.root, 'Unbreakable Grip'));
 }

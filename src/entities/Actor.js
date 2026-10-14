@@ -634,7 +634,8 @@ export class Actor extends Entity {
         const direction = sourcePosition?.clone && targetPosition?.clone
             ? targetPosition.clone().sub(sourcePosition).normalize()
             : null;
-        const gameplayRadius = getAbilityAoeRadius(className, skillName, this)
+        const capturedRadius = Number.isFinite(options.radius) && options.radius > 0 ? options.radius : null;
+        const gameplayRadius = capturedRadius ?? getAbilityAoeRadius(className, skillName, this)
             ?? getAbilityAoeRadius(className, presentation.canonicalName, this);
         const gameplayArc = getAbilityAoeArc(className, skillName, this)
             ?? getAbilityAoeArc(className, presentation.canonicalName, this);

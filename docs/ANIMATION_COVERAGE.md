@@ -22,15 +22,15 @@ True passive talents do not create a cast action and are intentionally excluded 
 | Fighter | Whirlwind | area | spin | spin@source | none | class-handler | explicit | Extended (whirlwind_extended)<br>Bladestorm (whirlwind_bladestorm)<br>Bloodwhirl (whirlwind_bloodwhirl) |
 | Fighter | Shield Slam | melee | heavy | cone@source, impact@target | none | class-handler | explicit | Concussion (shieldslam_concussion)<br>Reverberation (shieldslam_reverberation)<br>Fortify (shieldslam_fortify) |
 | Fighter | Iron Fortress | buff | buff | sphere@source | iron_fortress | class-handler | explicit | Extended (ironfortress_extended)<br>Thorns (ironfortress_thorns)<br>Immovable (ironfortress_immovable) |
-| Fighter | Guardian Roar | buff | shout | ring@source | guardian_roar | class-handler | explicit | none |
-| Fighter | Sweeping Strike | melee | sweep | cone@source | none | class-handler | explicit | none |
+| Fighter | Guardian Roar | buff | shout | ring@source | guardian_roar | class-handler | explicit | Rally (guardianroar_rally)<br>Vigil (guardianroar_vigil)<br>Cadence (guardianroar_cadence) |
+| Fighter | Sweeping Strike | melee | sweep | cone@source | none | class-handler | explicit | Wide Sweep (sweepingstrike_wide)<br>Close Cut (sweepingstrike_close)<br>Quick Cut (sweepingstrike_quick) |
 | Fighter | Earthshaker | area | heavy | wave@source | none | class-handler | explicit | Fissure (earthshaker_fissure)<br>Aftershock (earthshaker_aftershock)<br>Seismic (earthshaker_seismic) |
-| Fighter | Unbreakable Grip | control | pull | beam@target, impact@target | none | class-handler | explicit | none |
-| Fighter | Juggernaut Charge | movement | charge | wave@source, impact@target | none | class-handler | explicit | none |
-| Fighter | Berserker Edge | buff | buff | buff@source, ring@source | berserker_edge | class-handler | explicit | none |
-| Fighter | Shattering Charge | movement | charge | wave@target, impact@target | none | class-handler | explicit | none |
-| Fighter | Executioner Spin | area | spin | spin@source, blood@target | none | class-handler | explicit | none |
-| Fighter | Last Stand Rampage | buff | shout | buff@source, ring@source | last_stand | class-handler | explicit | none |
+| Fighter | Unbreakable Grip | control | pull | beam@target, impact@target | none | class-handler | explicit | Harpoon (grip_harpoon)<br>Binding Grip (grip_binding)<br>Crushing Grip (grip_impact) |
+| Fighter | Juggernaut Charge | movement | charge | wave@source, impact@target | none | class-handler | explicit | Avalanche (juggernaut_avalanche)<br>Long Rush (juggernaut_rush)<br>Breach (juggernaut_breach) |
+| Fighter | Berserker Edge | buff | buff | buff@source, ring@source | berserker_edge | class-handler | explicit | War Rally (berserker_rally)<br>Solitary Fury (berserker_solitary)<br>Battle Cadence (berserker_cadence) |
+| Fighter | Shattering Charge | movement | charge | wave@target, impact@target | none | class-handler | explicit | Lasting Fracture (shattering_lasting)<br>Shattering Wave (shattering_shock)<br>Quick Breach (shattering_quick) |
+| Fighter | Executioner Spin | area | spin | spin@source, blood@target | none | class-handler | explicit | Wide Reaping (executionerspin_wide)<br>Marked for Death (executionerspin_marked)<br>Quick Reaping (executionerspin_quick) |
+| Fighter | Last Stand Rampage | buff | shout | buff@source, ring@source | last_stand | class-handler | explicit | Enduring Rampage (rampage_endurance)<br>Measured Rampage (rampage_burst)<br>Breach Reprise (rampage_reprise) |
 | Rogue | Piercing Throw | projectile | throw | burst@source | none | class-handler | explicit | Ricochet (piercingthrow_ricochet)<br>Serrated (piercingthrow_serrated)<br>Executioner (piercingthrow_executioner) |
 | Rogue | Backstab | melee | quick | blood@target | none | class-handler | explicit | Ambush (backstab_ambush)<br>Eviscerate (backstab_eviscerate)<br>Shadowstep (backstab_shadowstep) |
 | Rogue | Weak Point Mark | debuff | mark | mark@target | weak_point_mark | class-handler | explicit | none |
