@@ -4,11 +4,13 @@
   "preparedAtUTC": "2026-10-14T04:40:15.781169+00:00",
   "scope": [
     "Rogue rune coverage, offline projectile/wound/stealth parity and pending volley lifecycle",
-    "Cleric rune coverage, support auras/Sanctuary/training/control and summons"
+    "Cleric rune coverage, support auras/Sanctuary/training/control and summons",
+    "Phone floating skill messages wrap, stay on screen and reset safely on pooled numeric reuse"
   ],
   "sourceReceipts": [
     "2026-10-14-rogue-class-completion.json",
-    "2026-10-14-cleric-class-completion.json"
+    "2026-10-14-cleric-class-completion.json",
+    "2026-10-14-floating-skill-readability.json"
   ],
   "limits": [
     "Full candidate CI and deployed exact identity/assets/account smoke required.",
