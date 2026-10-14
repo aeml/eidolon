@@ -1866,3 +1866,10 @@ whole lint and14content groups pass. Hold publication until50terminal acceptance
 Fighter24new rune choices are isolated and being qualified;328focused client,
 new paid-cast race/learned/loadout and six rune UI cases pass. No new soak, human
 balance/physical-device/whole-game readiness claim. Remaining work continues.
+
+October14: Fighter implementation is qualified and integrated into the private51
+candidate with Wizard. All13Fighter skills have three choices. Connected branches
+pass, including real Grip damage;60expanded branch client checks and server race
+body-edge checks pass. Failed test assumptions are retained in the evidence.
+Publication remains ordered behind50verification. Rogue/Cleric and human tuning
+remain open, with no soak/stress testing resumed.

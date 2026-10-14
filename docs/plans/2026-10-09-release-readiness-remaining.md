@@ -26,7 +26,7 @@ The initial lint failure and calendar-expired VIP fixture are corrected; current
 full client CI is green. Deployment and fresh public verification remain pending.
 Soak scheduling is disabled by owner request until features are nearly complete.
 
-A coherent Wizard candidate is prepared privately as1.79.51: all13learned skills
+A coherent Wizard and Fighter candidate is prepared privately as1.79.51: all13learned Wizard skills
 have three optional runes; precision, Fireball, Shield and Meteor consumers plus
 Whip/Tornado/Inferno/Warp choices are implemented. Six rune UI, three disposable
 connected cast/save and two new native effect cases pass, with retained earlier
@@ -34,7 +34,9 @@ component evidence. Focused client/race, learned breakpoints and loadouts pass;
 local full in-band Jest reached its4GiB heap limit, so no full local pass is
 claimed. Full release CI remains required. Qualified Fortress rune/Gravity
 boundary repair is included. [Wizard evidence](2026-10-14-wizard-class-completion.json).
-Fighter's new rune expansion remains isolated while qualification proceeds;
+Fighter's24new choices also complete39runes across13skills, with328focused client
+checks,60expanded branch checks, race/boundary/loadout checks, six UI cases and
+three connected branches passing. [Fighter evidence](2026-10-14-fighter-class-completion.json).
 Rogue, Cleric, human tuning and original world/art/device/operations gates remain.
 No new release is published until50has been verified.
 
