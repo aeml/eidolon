@@ -1,6 +1,6 @@
 {
   "recordedUTC": "2026-10-14T03:36:16.117130+00:00",
-  "status": "Private coherent Wizard implementation candidate; waiting for final regression result, master integration and verified release. Human balance/feel and whole-game readiness remain open.",
+  "status": "Coherent Wizard implementation candidate integrated with current master in owned detached worktree. Scoped tests pass; pending release CI and deployment. Human balance/feel and whole-game readiness remain open.",
   "base": "3f5f2272df10d48da6627a5579bb0ff80d87e2b8",
   "changes": [
     "Twelve new choices cover Flame Whip, Flame Tornado, Inferno Cataclysm and Time Warp. All thirteen learned Wizard skills now have three optional level50/70/90 runes, including inherited precision, Fireball and Shield repairs. Existing identifiers and saved build choices remain stable.",
@@ -14,8 +14,8 @@
     "runeUI": "6 real browser cases: three branches at desktop and phone viewport; all12 choices per branch accessible and acknowledged. Prepared UI uses simulated acknowledgement.",
     "connected": "3 disposable server/database/native-browser characters. Each branch equips four runes through UI, reconnects and verifies saved choices, then receives four accepted paid server casts. One prepared level100 and resource refill per character; no per-cast resets. No encounter pacing claim.",
     "native": "Two actual native GPU High/Low prepared scenes,14 supplied equipment slots without fallback. Six Apocalypse projectiles and broad Tornado render/retire; lingering field lasts12s, all effects detach and no pending meteor tasks or geometry jobs remain. Captured images/video; component presentation, not final world art.",
-    "fullClient": "Running; observed existing VIP fixture expired on real2026-10-14. Isolated test corrected on master b2c246c76 with explicit server asOf;21 wallet cases pass. Final full result pending.",
-    "content": "14 committed content groups verify, generated animation inventory updated. Changed JS lint passes before final new QA files; final lint pending."
+    "fullClient": "Local --runInBand suite stopped at default4GiB V8 heap after26.8minutes; no complete-suite result. Its observed VIP test failure is corrected on merged master b2c246c76 and all21 wallet cases pass. Do not repeat this unchanged memory-heavy local command; full release CI uses workers.",
+    "content": "14 committed content groups verify; generated animation inventory updated. All changed JS including final native/connected QA files passes lint; shell syntax and whitespace checks pass."
   },
   "retainedFailures": [
     "Initial shared-harness actor impact used a fake plain object; fixture now uses a real Imp, no runtime boundary weakened.",
@@ -62,5 +62,6 @@
       "path": "tests/e2e/wizard-rune-effects.spec.js",
       "sha256": "7a8c39d7a5a22cce4479ab6009f215199e7b749a038f6b6e3fbe5243f23b7154"
     }
-  ]
+  ],
+  "integration": "Ordinary private merge4968cb36 contains current master b2c246c76 plus Wizard0de9ca927. Qualified Fortress repair c27a17375 also selected for finite receiving/Gravity boundary parity; Fighter new rune work stays in separate dirty worktree."
 }
