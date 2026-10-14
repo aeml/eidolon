@@ -1,0 +1,252 @@
+{
+  "recordedUTC": "2026-10-14T01:42:09.988533+00:00",
+  "source": "888d8714eff384ae99ff7b0fd213467bb5773e82",
+  "base": "7305ead0f",
+  "status": "Private Wizard Arcane Shield component checkpoint; runtime remains unselected and unpublished until the coherent full Wizard pass. Full release goal stays active.",
+  "changes": [
+    "Reflective and Explosive stable rune IDs now have actual paid offline consumers. Casts snapshot rune, capacity and duration; absorbed history survives later loadout/training changes. Reflective returns floor30% of each actual absorbed hit; Explosive releases the total stored absorption exactly once at radius6 on damage depletion.",
+    "Original incoming health/death-save/death commits before captured retaliation. Recasts cannot be cleared by the older blast; origin is captured at break. Fully absorbed hits still reflect; lethal breaks still explode. Expiry, malformed/exact-boundary timers, cancel, death and disposal clear history quietly.",
+    "Reflection retains Fortress/Roar reductions but bypasses phase/shields/vulnerability/death saves/recursive retaliation, matching the authoritative special path. Explosions retain current receiving defenses while avoiding new critical/Lucky/outgoing/vulnerability rolls, obey live hostility, body-padded radius, dungeon cover and negotiated overworld rock cover. Online/remote ownership and instance transitions cannot duplicate local damage.",
+    "Fresh Spell Focus wards clear old Wizard rune/history; an existing active paid shield is preserved. Generic equipment/Fighter absorption remains available without acquiring Wizard rune reactions. The existing attachment visual remains; a blue radius6 ring presents the stored blast. No rune-ID/catalog/save/model/dependency/protobuf or production changes."
+  ],
+  "client": {
+    "distinctPassed": 679,
+    "suites": 23,
+    "evidence": "Latest complete suites selected from cover-client and corrected-mastery-client; failed original suite retained. No completed broad full-client gate claimed."
+  },
+  "race": {
+    "distinctPassedCases": 46,
+    "packages": [
+      "eidolon-server/internal/game"
+    ],
+    "scope": "New six-row shared paid server/offline contract plus existing shield expiry/receiving/chain/reflection/recast/cover/Focus cases."
+  },
+  "native": {
+    "profiles": [
+      {
+        "title": "prepared high arcaneshield_reflective absorbs animated attacks and retires the broken shield",
+        "initial": {
+          "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "equipment": 14,
+          "fallback": [],
+          "missing": [],
+          "mana": 345,
+          "hp": 275
+        },
+        "partial": {
+          "changed": 154771,
+          "restored": 0,
+          "shield": 100,
+          "hp": 275,
+          "manaSpent": 40,
+          "receipt": {
+            "incoming": 50,
+            "absorbed": 50,
+            "healthDamage": 0,
+            "retaliation": 15
+          }
+        },
+        "receipts": [
+          {
+            "incoming": 50,
+            "absorbed": 50,
+            "healthDamage": 0,
+            "retaliation": 15
+          },
+          {
+            "incoming": 56,
+            "absorbed": 56,
+            "healthDamage": 0,
+            "retaliation": 16
+          },
+          {
+            "incoming": 48,
+            "absorbed": 44,
+            "healthDamage": 4,
+            "retaliation": 13
+          }
+        ],
+        "ownerHP": 271,
+        "enemyHP": 956,
+        "frames": 179,
+        "maxAttachmentError": 0,
+        "detached": true,
+        "pendingGeometry": 0
+      },
+      {
+        "title": "prepared high arcaneshield_explosive absorbs animated attacks and retires the broken shield",
+        "initial": {
+          "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "equipment": 14,
+          "fallback": [],
+          "missing": [],
+          "mana": 345,
+          "hp": 275
+        },
+        "partial": {
+          "changed": 154743,
+          "restored": 0,
+          "shield": 92,
+          "hp": 275,
+          "manaSpent": 40,
+          "receipt": {
+            "incoming": 58,
+            "absorbed": 58,
+            "healthDamage": 0,
+            "retaliation": 0
+          }
+        },
+        "receipts": [
+          {
+            "incoming": 58,
+            "absorbed": 58,
+            "healthDamage": 0,
+            "retaliation": 0
+          },
+          {
+            "incoming": 71,
+            "absorbed": 71,
+            "healthDamage": 0,
+            "retaliation": 0
+          },
+          {
+            "incoming": 56,
+            "absorbed": 21,
+            "healthDamage": 35,
+            "retaliation": 150
+          }
+        ],
+        "ownerHP": 240,
+        "enemyHP": 850,
+        "frames": 180,
+        "maxAttachmentError": 0,
+        "detached": true,
+        "pendingGeometry": 0
+      },
+      {
+        "title": "prepared low arcaneshield_reflective absorbs animated attacks and retires the broken shield",
+        "initial": {
+          "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "equipment": 14,
+          "fallback": [],
+          "missing": [],
+          "mana": 345,
+          "hp": 275
+        },
+        "partial": {
+          "changed": 2246,
+          "restored": 0,
+          "shield": 84,
+          "hp": 275,
+          "manaSpent": 40,
+          "receipt": {
+            "incoming": 66,
+            "absorbed": 66,
+            "healthDamage": 0,
+            "retaliation": 19
+          }
+        },
+        "receipts": [
+          {
+            "incoming": 66,
+            "absorbed": 66,
+            "healthDamage": 0,
+            "retaliation": 19
+          },
+          {
+            "incoming": 63,
+            "absorbed": 63,
+            "healthDamage": 0,
+            "retaliation": 18
+          },
+          {
+            "incoming": 53,
+            "absorbed": 21,
+            "healthDamage": 32,
+            "retaliation": 6
+          }
+        ],
+        "ownerHP": 243,
+        "enemyHP": 957,
+        "frames": 38,
+        "maxAttachmentError": 0,
+        "detached": true,
+        "pendingGeometry": 0
+      },
+      {
+        "title": "prepared low arcaneshield_explosive absorbs animated attacks and retires the broken shield",
+        "initial": {
+          "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "equipment": 14,
+          "fallback": [],
+          "missing": [],
+          "mana": 345,
+          "hp": 275
+        },
+        "partial": {
+          "changed": 2247,
+          "restored": 0,
+          "shield": 91,
+          "hp": 275,
+          "manaSpent": 40,
+          "receipt": {
+            "incoming": 59,
+            "absorbed": 59,
+            "healthDamage": 0,
+            "retaliation": 0
+          }
+        },
+        "receipts": [
+          {
+            "incoming": 59,
+            "absorbed": 59,
+            "healthDamage": 0,
+            "retaliation": 0
+          },
+          {
+            "incoming": 70,
+            "absorbed": 70,
+            "healthDamage": 0,
+            "retaliation": 0
+          },
+          {
+            "incoming": 56,
+            "absorbed": 21,
+            "healthDamage": 35,
+            "retaliation": 150
+          }
+        ],
+        "ownerHP": 240,
+        "enemyHP": 850,
+        "frames": 37,
+        "maxAttachmentError": 0,
+        "detached": true,
+        "pendingGeometry": 0
+      }
+    ],
+    "scope": "Four prepared component scenes, High1280x844 and Low390x844 at15FPS, both runes; original source Wizard,14visual slots/no missing/fallback, real HUD/zoom15, unmodified level50HP275/MP345, paid40mana and actual animated enemy basic impacts. No connected account/earned journey/full-game art/FPS/physical phone/fun acceptance.",
+    "reuse": "Qualified native runs predate the final two-line overworld-rock exclusion. Their dungeon behavior and all Actor/Wizard/visual/fixture paths are unchanged. Three additional CPU cover cases verify blocked/clear/dungeon boundaries; no repeated unchanged native campaign claimed.",
+    "manualInspection": "High partial and Low broken HUD images inspected; videos and per-frame traces retained."
+  },
+  "checks": {
+    "lint": "Changed runtime/unit/native files pass; git diff --check passes.",
+    "generatedContent": "14 generated groups verify without rewriting."
+  },
+  "retainedFailures": [
+    "Initial six shared offline cases assumed an undiscounted30s cooldown although the prepared source retained its default10%CDR. Fixture now explicitly uses0CDR for the shared contract; separate training tests retain discounted27s behavior.",
+    "An empty overworld instanceID was incorrectly replaced with the live new instance after transition. Captured engine presence now preserves the empty ID; transition regression passes.",
+    "Initial four native scenes omitted GameEngine.render post-pose syncPresentationTransform, producing1frame attachment drift up to~.5units. Fixture now includes the real final presentation phase; same zero-error assertion passes across all four cases. No source movement/aura weakening.",
+    "Broader Mastery test fixture marked a shield active without any expiry. It now supplies20s; original incoming/outgoing/absorption/HP assertions remain exact. Original596pass/1fail and corrected full suite are retained."
+  ],
+  "remainingWizard": [
+    "Meteor Apocalypse offline/Cluster integer rounding; four missing rune skills (Flame Whip, Flame Tornado, Inferno Cataclysm, Time Warp).",
+    "Missile cadence, learned10/20/30/40 resources/encounters, saved loadouts/connected combat, party/boss roles, effects/audio and useful distinct build tuning before class selection.",
+    "Full client qualification remains pending after the prior interrupted attempt; Fighter/Rogue/Cleric and the full original release/art/performance/device/ops/beta/handoff scope remain open."
+  ],
+  "custody": {
+    "directory": "/home/aeml/.local/share/eidolon-wizard-shield-checks-20261014",
+    "files": 70,
+    "inventorySHA256": "409b253d4c103f2a3e6393d98c8eb357498c200e4acd0759c39b5e33d18c1ca2"
+  },
+  "selection": "Only the completed evidence/progress record enters master. Runtime stays in its owned detached Wizard worktree; no branch name or release/beta/readiness declaration."
+}

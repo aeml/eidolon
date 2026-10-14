@@ -45,8 +45,15 @@ A [private Fireball repair](2026-10-14-wizard-fireball-private-stage.json) now
 implements the three existing offline runes and real stationary Magma ground,
 with476 client checks/19suites,40 race cases and exact native High/15FPS Low
 field reconstruction/timing. Frozen84 files retain failed trials. Runtime
-`9d68f130` is still unselected; complete Arcane Shield/Meteor parity, four
+`9d68f130` is still unselected; complete Meteor parity, four
 missing rune skills and full learned/connected class qualification next.
+
+A [private Arcane Shield checkpoint](2026-10-14-wizard-shield-private-stage.json)
+now closes Reflective/Explosive offline consumers and ward lifetime/reaction
+ordering.679 client checks/23suites,46 race cases and four prepared native
+High/15FPS Low cases qualify that component; failures/reuse limits are retained.
+Runtime `888d8714` remains detached/unselected. Meteor, four missing rune skills,
+launch cadence and full learned/connected class qualification remain next.
 
 ## Release and source custody
 
