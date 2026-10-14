@@ -25,6 +25,7 @@
     "contentGroups": 14,
     "lint": "whole source passes",
     "patchNotes": 487,
-    "historyPages": 48
+    "historyPages": 48,
+    "sharedReceivers": "123 checks across10 additional suites pass5.326s: existing smoke/blade/trap consumers, stealth, periodic damage, critical/hit feedback and Fighter receiving/buff boundaries."
   }
 }
