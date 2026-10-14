@@ -14,6 +14,7 @@ test.each([
     'animation-gallery',
     'regional-quality',
     'dungeon-outfits',
+    'class-rune-effects',
     'celebration',
     'authored-equipment'
 ])('%s preserves both images and report outside the rolling smoke directories', folder => {
@@ -59,10 +60,26 @@ test('native dungeon and outfit assertions block release independently of hosted
 });
 
 test('local visual stages isolate their HTTP server and native browser while backend routes retain connectivity', () => {
-    for (const folder of ['animation-gallery', 'regional-quality', 'dungeon-outfits', 'celebration', 'authored-equipment']) {
+    for (const folder of ['animation-gallery', 'regional-quality', 'dungeon-outfits', 'class-rune-effects', 'celebration', 'authored-equipment']) {
         expect(evidenceStep(folder)).toContain("sg render -c 'bash scripts/run-native-visual-qa.sh ");
     }
     for (const name of ['Run required Well Rested rendering and GPU lifecycle QA', 'Run disposable full-character gameplay', 'Run focused disposable release smoke']) {
         expect(step(name)).not.toContain('run-native-visual-qa.sh');
+    }
+});
+
+
+test('High class rune rendering is mandatory before release and only deferred on trusted hosted runs', () => {
+    const body = evidenceStep('class-rune-effects');
+    expect(body).not.toContain('if:');
+    expect(body).toContain("EIDOLON_E2E_REQUIRE_NATIVE_GPU: '1'");
+    expect(body).toContain("EIDOLON_E2E_NATIVE_COVERAGE_PENDING: 'false'");
+    expect(body).toContain('--grep "prepared high paid" --workers=1 --retries=0');
+    for (const name of ['wizard', 'rogue', 'cleric']) {
+        const path = `tests/e2e/${name}-rune-effects.spec.js`;
+        expect(body).toContain(path);
+        const source = readFileSync(path, 'utf8');
+        expect(source).toContain("test.skip(process.env.EIDOLON_E2E_NATIVE_COVERAGE_PENDING === 'true' && quality === 'high'");
+        expect(source).toContain('if (requiresHardwareWebGL())');
     }
 });

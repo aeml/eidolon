@@ -4,6 +4,10 @@ import { requiresHardwareWebGL } from './browserLaunchPolicy.js';
 
 test.use({ video: 'on' });
 for (const quality of ['high', 'low']) test(`prepared ${quality} paid Rogue rune effects render and retire`, async ({ page, baseURL }, testInfo) => {
+    // Trusted release pushes run this exact High case in the mandatory native
+    // stage. Low and non-release software coverage retain their usual route.
+    test.skip(process.env.EIDOLON_E2E_NATIVE_COVERAGE_PENDING === 'true' && quality === 'high',
+        'Required native-GPU rune effects stage blocks deployment');
     const failures = collectBrowserFailures(page, baseURL);
     await page.setViewportSize({ width: quality === 'low' ? 390 : 1280, height: 844 });
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});

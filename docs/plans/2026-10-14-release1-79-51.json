@@ -48,6 +48,13 @@
       "result": "All seven retained talent-consumer diagnostic cases pass after updating the travelling Juggernaut fixture (2.172s).",
       "retainedFailure": "The older probe expected damage/slow at cast admission. It now requires no premature impact, advances ordinary charge travel, then retains damage, slow, movement and expiry assertions. Runtime unchanged.",
       "supersededPendingCandidate": "d255060057fd96b9fc67268620d39f7e31b1ba38 / CI38515766513 was still pending when this correction was selected."
+    },
+    "nativeRuneGate": {
+      "routing": "On trusted publishing runs only, Wizard/Rogue/Cleric High effects defer to a new mandatory predeploy native stage; Low and non-release software checks retain their route. All casts, damage, game-clock lifetimes, GPU retirement assertions and original native deadlines are unchanged.",
+      "client": "31 checks across2suites pass, scoped lint passes.",
+      "native": "All three High cases pass46.6s with native GPU required, no retries/skips.",
+      "cancelledSupersededQueuedRun": 38516223093,
+      "reason": "Known Cleric software retirement failure discovered in preceding run; replace before another full CI cycle."
     }
   },
   "limits": [
@@ -82,6 +89,14 @@
     "source": "c5eb9b5315555ab815dd1e6f32b9a262e7be5115",
     "finding": "TestTalentHealingSpiritSetBonus/Spirit_Guardians_Boost/hostile=true used a target with empty BaseStats and artificial500MaxHealth. The new slow correctly recalculated a level10maximum of45 and clamped the artificial100HP target, obscuring expected22PvPdamage.",
     "correction": "Initialize normal level-grown base stats and recalculate before injuring the target. Preserve exact13/22damage,15friendlyhealing and zero hostile heal-event expectations; runtime unchanged.",
-    "validation": "Focused talent healing and Cleric guardian/control Go race checks pass4.856s."
+    "validation": "Focused talent healing and Cleric guardian/control Go race checks pass4.856s.",
+    "browser": {
+      "run": 38514018493,
+      "passed": 387,
+      "failed": 1,
+      "skipped": 10,
+      "failure": "Cleric High software-rendered retirement did not finish in 90s wall time, including configured retry. Both other shards passed. Native and earlier local SwiftShader proofs remain source-scoped; no universal runner-speed cause is claimed.",
+      "artifactSHA256": "f2071318caaa77511869c1fb8349c9b5081aa22e05d144ec23f849e5afd25b7c"
+    }
   }
 }
