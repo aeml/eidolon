@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createMotionPreference } from '../core/MotionPreference.js';
 
 export class FloatingTextManager {
     constructor(camera, containerId = 'ui-layer') {
@@ -6,6 +7,9 @@ export class FloatingTextManager {
         this.container = document.getElementById(containerId);
         this.texts = [];
         this.pool = []; // DOM Element Pool
+        this.placedLabels = [];
+        this.projectedPosition = new THREE.Vector3();
+        this.motionPreference = createMotionPreference();
     }
 
     getElement() {
@@ -110,21 +114,27 @@ export class FloatingTextManager {
         this.updatePosition(instance);
         
         // Pop in animation (Manual tween to avoid CSS transitions causing reflows/complexity with pooling)
-        instance.scale = instance.popScale;
+        instance.scale = this.motionPreference.matches ? 1 : instance.popScale;
         instance.targetScale = 1.0;
-        instance.scaleTimer = 0.2;
+        instance.scaleTimer = this.motionPreference.matches ? 0 : 0.2;
+        if (this.motionPreference.matches) el.style.opacity = '1';
 
         this.texts.push(instance);
     }
 
     update(dt) {
+        const reducedMotion = this.motionPreference.matches;
         for (let i = this.texts.length - 1; i >= 0; i--) {
             const t = this.texts[i];
             t.life -= dt;
-            t.offsetY += t.velocity * dt;
+            if (!reducedMotion) t.offsetY += t.velocity * dt;
 
             // Manual Scale Animation
-            if (t.scaleTimer > 0) {
+            if (reducedMotion) {
+                t.scaleTimer = 0;
+                t.scale = 1;
+                t.el.style.opacity = Math.max(0, Math.min(1, t.life / 0.5)).toString();
+            } else if (t.scaleTimer > 0) {
                 t.scaleTimer -= dt;
                 const progress = 1 - (t.scaleTimer / 0.2);
                 // Lerp scale
@@ -143,14 +153,15 @@ export class FloatingTextManager {
             if (t.life <= 0) {
                 this.releaseElement(t.el);
                 this.texts.splice(i, 1);
-            } else {
-                this.updatePosition(t);
             }
         }
+        // Keep arrival order stable: newer feedback yields to labels already read.
+        this.placedLabels.length = 0;
+        for (const t of this.texts) this.updatePosition(t);
     }
 
     updatePosition(t) {
-        const pos = t.position.clone();
+        const pos = this.projectedPosition.copy(t.position);
         pos.y += (t.compact?.anchorHeight || 2.5) + t.offsetY;
 
         const screenPos = pos.project(this.camera);
@@ -171,9 +182,10 @@ export class FloatingTextManager {
             const halfWidth = width * t.popScale / 2;
             x = Math.max(12 + halfWidth, Math.min(window.innerWidth - 12 - halfWidth, x));
             y = Math.max(12 + t.boxHeight * t.popScale, Math.min(window.innerHeight - 12, y));
-            const actorScreen = t.position.clone().project(this.camera);
+            const actorScreen = this.projectedPosition.copy(t.position).project(this.camera);
             t.el.style.visibility = Math.abs(actorScreen.x) > 1 || Math.abs(actorScreen.y) > 1
                 || Math.abs(actorScreen.z) > 1 ? 'hidden' : 'visible';
+            y = this.placeLabel(t, x, y - t.boxHeight * t.popScale) + t.boxHeight * t.popScale;
             t.el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -100%) scale(${t.scale})`;
             return;
         }
@@ -191,13 +203,53 @@ export class FloatingTextManager {
             const halfHeight = t.boxHeight * t.popScale / 2;
             x = Math.max(12 + halfWidth, Math.min(window.innerWidth - 12 - halfWidth, x));
             y = Math.max(12 + halfHeight, Math.min(window.innerHeight - 12 - halfHeight, y));
-            const actorScreen = t.position.clone().project(this.camera);
+            const actorScreen = this.projectedPosition.copy(t.position).project(this.camera);
             t.el.style.visibility = Math.abs(actorScreen.x) > 1 || Math.abs(actorScreen.y) > 1
                 || Math.abs(actorScreen.z) > 1 ? 'hidden' : 'visible';
+            y = this.placeLabel(t, x, y - halfHeight) + halfHeight;
         }
 
         // Use transform for everything to avoid layout thrashing
         t.el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%) scale(${t.scale})`;
+    }
+
+    placeLabel(t, x, top) {
+        if (t.el.style.visibility === 'hidden') return top;
+        const width = t.boxWidth * t.popScale, height = t.boxHeight * t.popScale;
+        const left = x - width / 2, right = x + width / 2;
+        let above = top, below = top;
+        // Reserve the largest animated footprint, not today's shrinking glyphs.
+        // Search monotonically in both directions, retaining the nearest free slot.
+        for (let i = this.placedLabels.length - 1; i >= 0; i--) {
+            const box = this.placedLabels[i];
+            if (left < box.right + 4 && right > box.left - 4 &&
+                above < box.bottom + 4 && above + height > box.top - 4) {
+                above = box.top - height - 4;
+            }
+        }
+        for (const box of this.placedLabels) {
+            if (left < box.right + 4 && right > box.left - 4 &&
+                below < box.bottom + 4 && below + height > box.top - 4) {
+                below = box.bottom + 4;
+            }
+        }
+        const aboveFits = above >= 12, belowFits = below + height <= window.innerHeight - 12;
+        if (aboveFits && (!belowFits || t.labelSide === -1 ||
+            (t.labelSide !== 1 && top - above <= below - top))) {
+            if (above !== top) t.labelSide = -1;
+            top = above;
+        } else if (belowFits) {
+            if (below !== top) t.labelSide = 1;
+            top = below;
+        }
+        // If the viewport is completely full, retain the original bounded label:
+        // feedback must not disappear or acquire a misleading offscreen anchor.
+        const box = t.layoutBox || (t.layoutBox = {});
+        box.left = left; box.right = right; box.top = top; box.bottom = top + height;
+        let index = this.placedLabels.length;
+        while (index > 0 && this.placedLabels[index - 1].top > top) index--;
+        this.placedLabels.splice(index, 0, box);
+        return top;
     }
 
     dispose() {
@@ -206,5 +258,6 @@ export class FloatingTextManager {
         for (const el of this.pool) el.remove();
         this.texts.length = 0;
         this.pool.length = 0;
+        this.placedLabels.length = 0;
     }
 }

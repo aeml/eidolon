@@ -1,0 +1,35 @@
+{
+  "recordedUTC": "2026-10-14T23:53:35.920694+00:00",
+  "version": "Alpha 1.79.52",
+  "base": "f43c1541738e05184582f760cfed146f7f421579",
+  "status": "Qualified privately; complete CI, deployment and exact public verification pending. Accepted51 remains production.",
+  "changes": [
+    "Separate simultaneous lettered skill and attributed party labels using maximum animated footprints and cached measurements, with stable arrival order, phone bounds, rotation, expiry and pool reuse. Numeric formatting/pop remains unchanged outside reduced motion.",
+    "Live system/in-game reduced motion pauses decorative class casts, four persistent field families, all status ornaments including instanced rested motes, Spirit Guardians and floating feedback. Presentation clocks are separate from actual lifetimes; normal animation resumes without catching up paused time.",
+    "Gameplay shapes, caster following, paid costs, damage, healing and cleanup preserved. No settings listeners or storage reads per frame."
+  ],
+  "checks": {
+    "focusedClient": "580 distinct checks across12suites pass across the final combined execution and corrected README version check. Whole source lint passes;14 generated content groups pass.",
+    "native": "Seven final native cases pass1.1min: ordinary Cleric High/Low, new reduced-motion Low with14supplied items/160mana/30radius/15ssummon/actual damage and zero remaining jobs, phone edge/rotation, six simultaneous mixed labels at390/1280, and live system/manual motion settings. Earlier three phone-policy and one summon-attribution cases also pass;14total native executions,10distinct cases,zero retries/skips.",
+    "castCatalog": "All52canonical casts/layers, all persistent fields and status identities checked in High/Low for frozen poses and retained lifetime/range/ownership; live guardians still follow their source and accept radius/variant updates.",
+    "cumulativeNotes": "487entries/48history pages; prior486preservation independently checked before publication."
+  },
+  "retainedFindings": [
+    "Initial unit separate-actor fixture used two190pxlabels within390px; overlap was real and expected. Corrected separate-actor control to1280px, crowded390coverage retained.",
+    "First native harness had chained dependency symlink outside its mounted tree; resolved directly to installed dependency root before browser execution.",
+    "An explicitly named nonexistent unit file and an incorrect settings-module export caused fixture failures; existing runtime tests passed. Corrected selector and used installed public settings methods.",
+    "New exact frozen-pose tests caught floating-point drift when repeatedly subtracting accumulated paused time. Clock now retains its exact presentation time while paused.",
+    "Final version check found prior documentation consolidation had removed required current-source line. Restored it with prepared52 and explicit deployment-pending state;392release/history checks pass."
+  ],
+  "limits": [
+    "When labels exceed available viewport space, preserve bounded content rather than discard feedback; arbitrary overflow may still overlap. Numeric damage is not collision-packed.",
+    "No human busy-group/class-balance or physical-phone acceptance. No final world/art, frame-budget, capacity, freeze, beta or launch acceptance.",
+    "No soak or stress run; owner deferral remains."
+  ],
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-combat-readability-20261014/.qa-readability",
+    "manifest": "evidence-inventory.json",
+    "entries": 16,
+    "sha256": "1a29fb110f83a3f80836d184672712b1b70657e4c9d829321699528383ca85a2"
+  }
+}

@@ -3,13 +3,14 @@ import { collectBrowserFailures } from './helpers.js';
 import { requiresHardwareWebGL } from './browserLaunchPolicy.js';
 
 test.use({ video: 'on' });
-for (const quality of ['high', 'low']) test(`prepared ${quality} paid Cleric rune effects render and retire`, async ({ page, baseURL }, testInfo) => {
+for (const [quality, reducedMotion] of [['high', false], ['low', false], ['low', true]]) test(`prepared ${quality}${reducedMotion ? ' reduced-motion' : ''} paid Cleric rune effects render and retire`, async ({ page, baseURL }, testInfo) => {
     test.setTimeout(requiresHardwareWebGL() ? 120_000 : 180_000);
     // Trusted release pushes run this exact High case in the mandatory native
     // stage. Low and non-release software coverage retain their usual route.
     test.skip(process.env.EIDOLON_E2E_NATIVE_COVERAGE_PENDING === 'true' && quality === 'high',
         'Required native-GPU rune effects stage blocks deployment');
     const failures = collectBrowserFailures(page, baseURL);
+    if (reducedMotion) await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.setViewportSize({ width: quality === 'low' ? 390 : 1280, height: 844 });
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.goto('/', { waitUntil: 'networkidle' });
@@ -102,6 +103,11 @@ for (const quality of ['high', 'low']) test(`prepared ${quality} paid Cleric run
             sanctuary: q.owner.spiritSanctuaryTimer > 0 && q.owner.consecratedSanctuaryTimer > 0,
             summonHealth: q.seraph.stats.maxHp, expectedHealth: Math.floor((500 + q.owner.stats.wisdom * 10) * 1.5) };
     });
+    if (reducedMotion) {
+        const motion = await page.evaluate(() => ({ time: window.__clericEffects.owner.spiritEffect.motionClock.time,
+            reduced: window.__clericEffects.owner.spiritEffect.motionClock.reduced }));
+        expect(motion).toEqual({ time: 0, reduced: true });
+    }
     expect(active.radius).toBe(30);expect(active.visualRadius).toBe(30);expect(active.sanctuary).toBe(true);expect(active.summonHealth).toBe(active.expectedHealth);
     await page.screenshot({ path: testInfo.outputPath(`cleric-runes-${quality}.png`) });
     // The capped simulation clock can run slower on software WebGL.

@@ -495,6 +495,9 @@ Notes:
 
 ## Project Status
 
+Current source version: `Alpha 1.79.52` (combat readability and reduced motion;
+release validation and deployment pending).
+
 **Alpha 1.79.51 is deployed and verified**, at runtime source `e2880b4ee`.
 All ten CI jobs passed, including native graphics, both deployments and live
 character/recovery checks. Independent normal-TLS reads match both release

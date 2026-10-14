@@ -1,4 +1,7 @@
 import * as THREE from 'three';
+import { createVisualMotionClock } from '../core/MotionPreference.js';
+
+const motionClocks = new WeakMap();
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -158,6 +161,7 @@ function addExactBoundary(root, type, materials) {
 
 function createFireField(type, materials, inferno, quality) {
     const root = new THREE.Group();
+    motionClocks.set(root, createVisualMotionClock());
     addExactBoundary(root, type, materials);
     const spin = pivot(root, `${type}:Spin`, [0, 0.07, 0]);
     addRing(spin, type, `${type}:InnerBrand`, inferno ? 0.47 : 0.38, inferno ? 0.5 : 0.42, materials.glow, 0, 48);
@@ -200,6 +204,7 @@ function createFireField(type, materials, inferno, quality) {
 
 function createGravityField(type, materials, quality) {
     const root = new THREE.Group();
+    motionClocks.set(root, createVisualMotionClock());
     addExactBoundary(root, type, materials);
     const spin = pivot(root, `${type}:Spin`, [0, 0.065, 0]);
     [0.24, 0.43, 0.65].forEach((radius, index) => {
@@ -237,6 +242,7 @@ function createGravityField(type, materials, quality) {
 
 function createSmokeField(type, materials, quality) {
     const root = new THREE.Group();
+    motionClocks.set(root, createVisualMotionClock());
     addExactBoundary(root, type, materials);
     const spin = pivot(root, `${type}:Spin`, [0, 0.06, 0]);
     addRing(spin, type, `${type}:BlackglassSeal`, 0.36, 0.4, materials.plate, 0, 40);
@@ -306,6 +312,10 @@ export function createProceduralAreaField(type, radius, options = {}) {
 
 export function updateProceduralAreaField(root, elapsed, dt) {
     if (!root?.userData?.proceduralAreaField) return;
+    let clock = motionClocks.get(root);
+    if (!clock) { clock = createVisualMotionClock(); motionClocks.set(root, clock); }
+    const motionTime = clock.update(elapsed, dt);
+    elapsed = motionTime.time; dt = motionTime.delta;
     const type = root.userData.areaFieldType;
     const time = Math.max(0, Number(elapsed) || 0);
     const delta = Math.max(0, Number(dt) || 0);

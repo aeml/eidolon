@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createVisualMotionClock } from '../core/MotionPreference.js';
 import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
 import { createCherubArt, createProceduralCherub } from '../art/ProceduralCherub.js';
 import { GroundedRingVisual } from '../art/GroundedRingVisual.js';
@@ -43,6 +44,7 @@ export class SpiritGuardiansEffect {
         this.guardians = [];
         this.resources = new Set();
         this.elapsed = 0;
+        this.motionClock = createVisualMotionClock();
         this.isActive = true;
         this.quality = options.quality === 'low' ? 'low' : 'high';
         this.boosted = false;
@@ -167,6 +169,7 @@ export class SpiritGuardiansEffect {
     update(dt) {
         if (!this.isActive) return;
         this.elapsed += Math.max(0, Number(dt) || 0);
+        const time = this.motionClock.update(this.elapsed, dt).time;
 
         if (!this.group.parent && this.scene?.add) {
             this.scene.add(this.group);
@@ -177,7 +180,7 @@ export class SpiritGuardiansEffect {
         this.group.visible = this.source.state !== 'DEAD' && this.source.mesh?.visible !== false;
 
         const speed = this.boosted ? 1.7 : 1.25;
-        const pulse = 0.5 + 0.5 * Math.sin(this.elapsed * Math.PI * 2);
+        const pulse = 0.5 + 0.5 * Math.sin(time * Math.PI * 2);
         const count = Math.max(1, this.guardians.length);
         const engine = this.source.gameEngine;
         const terrain = engine?.currentInstanceId ? null : engine?.terrainElevation;
@@ -185,8 +188,8 @@ export class SpiritGuardiansEffect {
         const ground = terrain?.sample(origin.x, origin.z);
 
         this.guardians.forEach((guardian, index) => {
-            const angle = this.elapsed * speed + (index / count) * Math.PI * 2;
-            const bob = Math.sin(this.elapsed * 3.1 + guardian.userData.phase) * 0.22;
+            const angle = time * speed + (index / count) * Math.PI * 2;
+            const bob = Math.sin(time * 3.1 + guardian.userData.phase) * 0.22;
             guardian.position.set(
                 Math.cos(angle) * this.orbitRadius,
                 1.35 + bob,
@@ -200,7 +203,7 @@ export class SpiritGuardiansEffect {
             guardian.userData.headMaterial.opacity = 0.76 + pulse * 0.2;
             guardian.userData.haloMaterial.opacity = 0.68 + pulse * 0.25;
             guardian.userData.wings.forEach((wing) => {
-                wing.rotation.y = wing.userData.side * (0.2 + Math.sin(this.elapsed * 7 + guardian.userData.phase) * 0.3);
+                wing.rotation.y = wing.userData.side * (0.2 + Math.sin(time * 7 + guardian.userData.phase) * 0.3);
             });
         });
 
@@ -209,7 +212,7 @@ export class SpiritGuardiansEffect {
             // reason to draw a changing or oversized damage boundary.
             this.pulseRing.scale.setScalar(1);
             this.pulseRing.material.opacity = .24 + pulse * (this.boosted ? .16 : .08);
-            this.pulseRing.rotation.z = this.elapsed * 0.12;
+            this.pulseRing.rotation.z = time * 0.12;
             if (terrain && !this.groundRing) this.groundRing = new GroundedRingVisual(this.pulseRing);
             this.group.updateWorldMatrix(true, false);
             this.groundRing?.update(terrain, this.group.matrixWorld.elements[13] - .12);

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createVisualMotionClock } from '../core/MotionPreference.js';
 import { getWhirlwindCastDuration, stopWhirlwindPresentation } from '../skills/whirlwindPresentation.js';
 import { createTerrainBeamGeometry } from './TerrainBeamGeometry.js';
 import { GroundedRingVisual } from './GroundedRingVisual.js';
@@ -498,6 +499,7 @@ class ProceduralAbilityCastEffect {
         this.meshes = [root];
         this.duration = Math.max(whirlwindSource ? 0.001 : 0.1, duration);
         this.elapsed = 0;
+        this.motionClock = createVisualMotionClock();
         this.isActive = true;
         this.disposed = false;
         this.whirlwindSource = whirlwindSource;
@@ -540,12 +542,13 @@ class ProceduralAbilityCastEffect {
         if (!this.isActive) return;
         const step = Math.max(0, Number(dt) || 0);
         const source = this.whirlwindSource;
+        const motion = this.motionClock.update(this.elapsed + step, step);
         if (source) {
             if (source.state === 'DEAD' || source.isActive === false) { this.dispose(); return; }
             this.root.position.copy(source.position);
             // Snapshots can extend the predicted endpoint slightly. Start each
             // frame from authored scales so an earlier fade does not accumulate.
-            this.root.traverse(child => {
+            if (!motion.reduced) this.root.traverse(child => {
                 if (child.userData?.baseScale && !child.userData.gameplayBoundary) {
                     child.scale.fromArray(child.userData.baseScale);
                 }
@@ -554,7 +557,7 @@ class ProceduralAbilityCastEffect {
         this.elapsed += step;
         if (source) source.whirlwindRemaining = Math.max(0, this.duration - this.elapsed);
         this.groundPresentation?.prepareAnimation();
-        updateRoot(this.root, this.elapsed, this.duration, step);
+        if (!motion.reduced) updateRoot(this.root, motion.time, this.duration, motion.delta);
         this.updateTerrain();
         if (this.elapsed >= this.duration) {
             this.isActive = false;

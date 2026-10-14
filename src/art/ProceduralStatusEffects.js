@@ -1,4 +1,7 @@
 import * as THREE from 'three';
+import { createVisualMotionClock } from '../core/MotionPreference.js';
+
+const motionClocks = new WeakMap();
 import { createPersistentAuraMaterial } from './PersistentAuraMaterial.js';
 import { createCrossedGlowGeometry, createSanctuaryMaterial } from './SanctuaryMaterials.js';
 
@@ -443,6 +446,7 @@ export function createProceduralStatusEffect(statusKey, options = {}) {
     if (!def) throw new Error(`Cannot create procedural status effect: ${statusKey}`);
     const quality = options.quality === 'low' ? 'low' : 'high';
     const root = new THREE.Group();
+    motionClocks.set(root, createVisualMotionClock());
     root.name = `ProceduralStatusEffect:${statusKey}`;
     Object.assign(root.userData, {
         proceduralStatusEffect: true,
@@ -485,6 +489,10 @@ export function setProceduralStatusAreaRadius(root, radius) {
 
 export function updateProceduralStatusEffect(root, elapsed, dt, terrain = null) {
     if (!root?.userData?.proceduralStatusEffect) return;
+    let clock = motionClocks.get(root);
+    if (!clock) { clock = createVisualMotionClock(); motionClocks.set(root, clock); }
+    const motionTime = clock.update(elapsed, dt);
+    elapsed = motionTime.time; dt = motionTime.delta;
     root.traverse((child) => {
         const motion = child.userData?.motion;
         if (!motion) return;
