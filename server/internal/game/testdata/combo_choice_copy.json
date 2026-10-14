@@ -8,7 +8,7 @@
   { "className": "Wizard", "id": "implosion", "first": "Gravity Well", "second": "Fireball", "description": "This Fireball deals +100% damage to slowed or control-immune targets. Does not bypass control immunity." },
   { "className": "Wizard", "id": "time_burn", "first": "Flame Tornado", "second": "Inferno Cataclysm", "description": "Cataclysm ticks twice as fast" },
   { "className": "Wizard", "id": "nova_cascade", "first": "Fireball", "second": "Flame Whip", "description": "360° Flame Whip" },
-  { "className": "Wizard", "id": "arcane_barrage", "first": "Scorch Beam", "second": "Arcane Missiles", "description": "Arcane Missiles launches five missiles instead of three. Normal mana and cooldown apply." },
+  { "className": "Wizard", "id": "arcane_barrage", "first": "Scorch Beam", "second": "Arcane Missiles", "description": "Scorch Beam prepares two extra Arcane Missiles. Runes keep their volley and damage tradeoffs; normal mana and cooldown apply." },
   { "className": "Cleric", "id": "divine_storm", "first": "Blessing of Zeal", "second": "Spirit Guardians", "description": "Activates boosted Spirit Guardians damage and radius." },
   { "className": "Cleric", "id": "sanctuary_combo", "first": "Healing Light", "second": "Guardian Embrace", "description": "Guardian Embrace also protects the caster from damage for 3s base. Does not make allies immune." },
   { "className": "Cleric", "id": "holy_fury", "first": "Consecrated Ground", "second": "Radiant Strike", "description": "Radiant Strike deals 100% more damage. No enemy mark required." },
