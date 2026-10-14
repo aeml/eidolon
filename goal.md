@@ -1880,3 +1880,12 @@ backend identity, ready database and158public asset pins match. Proceed with
 the qualified Wizard/Fighter51milestone; its own CI/deployment remain required.
 Rogue is qualified separately at84b3d767c; Cleric is being implemented privately.
 No soak/stress testing resumed and no human readiness gate is waived.
+
+October14: Wizard/Fighter51 is pushed at de2c520b5; CI38511451197 is active.
+Rogue84b3d767c and Clericd78887060 are qualified privately for coherent52.
+All52learned skills now have three optional runes. Client/race, saved builds,
+learned breakpoints, desktop/phone UI, connected paths and native effect tests
+pass within their recorded scopes. Human class feel, final world/art/device,
+operations and original freeze/beta/release gates remain open. Publish52only
+after51terminal CI/deployment and exact public identity/assets are verified.
+Soak/stress testing remains owner-deferred until features are nearly complete.

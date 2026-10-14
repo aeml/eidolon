@@ -27,19 +27,22 @@ frontend/backend identity, ready database and all158pinned public assets.
 [Acceptance receipt](2026-10-14-release1-79-50-acceptance.json).
 Soak scheduling remains disabled by owner until features are nearly complete.
 
-A coherent Wizard and Fighter candidate is prepared privately as1.79.51: all13learned Wizard skills
-have three optional runes; precision, Fireball, Shield and Meteor consumers plus
-Whip/Tornado/Inferno/Warp choices are implemented. Six rune UI, three disposable
-connected cast/save and two new native effect cases pass, with retained earlier
-component evidence. Focused client/race, learned breakpoints and loadouts pass;
-local full in-band Jest reached its4GiB heap limit, so no full local pass is
-claimed. Full release CI remains required. Qualified Fortress rune/Gravity
-boundary repair is included. [Wizard evidence](2026-10-14-wizard-class-completion.json).
-Fighter's24new choices also complete39runes across13skills, with328focused client
-checks,60expanded branch checks, race/boundary/loadout checks, six UI cases and
-three connected branches passing. [Fighter evidence](2026-10-14-fighter-class-completion.json).
-Rogue, Cleric, human tuning and original world/art/device/operations gates remain.
-50 is verified; the combined51candidate may now proceed through its own release gates.
+Wizard/Fighter release1.79.51 is pushed at `de2c520b5`; CI38511451197 is active.
+Its full CI, deployment and exact public asset verification remain required.
+[Wizard evidence](2026-10-14-wizard-class-completion.json) and
+[Fighter evidence](2026-10-14-fighter-class-completion.json) retain scoped checks.
+
+Rogue and Cleric are qualified privately for the next combined1.79.52milestone.
+Each now has39runes across13learned skills. Rogue projectile, wound, cloak and
+pending-owner behavior is repaired; Cleric auras, Sanctuary, support training,
+control and summon choices are matched across runtimes. Focused client/race,
+learned-breakpoint/loadout, desktop/phone UI, three connected branches per class
+and native High/Low effect cases pass. See [Rogue evidence](2026-10-14-rogue-class-completion.json)
+and [Cleric evidence](2026-10-14-cleric-class-completion.json). Full52candidate CI
+and deployment remain pending, with publication held behind51acceptance.
+All52learned skills now have three optional runes in this candidate; this closes
+the missing rune implementation coverage, not human balance or final class feel.
+The original world/art/device/operations and beta/release gates remain open.
 
 The scheduled48 soak38342666778 is now terminal **failed**, superseding all
 running labels below: the owned server crashed with concurrent map read/write.
@@ -152,7 +155,7 @@ launch cadence and full learned/connected class qualification remain next.
 
 - **Dark roof materials qualified:** integrateda58f7e89 preserves CPU-qualifiedc0b1a6d9 source byte-exact.38CPUchecks/four suites and48paired native images/48ABBA120framearms pass within roof-material scope. Maximum16.7median/16.8p95; original draw/triangle limits retained. Two GPUcycles/profile return exact baseline and each of three roof maps retires once. First front-wall crops retained; new ordinary roof-visible views inspected. The foreground visibility finding is addressed by separately qualified6301a2e3. Roof materials are merged into master`e222547e`; coherent publication pending. [Qualification](2026-10-12-dark-roof-materials-qualification.json).
 
-- **Previous24h100client soak failed:** run38109009521attempt1/exact`12e5e3c4` ended with four read errors and only40m44.342s common100client authoritative own-state coverage. Min70390frames/2453949ms miss432000frames/77760000ms policy. No capacity pass or retry. Frozen4entry sanitized inventory`c6da7b21f253fe0e776915f4e241168da88be94406d00df7899dca0ddc79751a`; original report/log hashes retained privately. That already-scheduled41run is now terminal failed; the current terminal receipt above supersedes its earlier running state. A separately scheduled48run38342666778 remains active and sparsely monitored. [Terminal failure](2026-10-12-soak29-terminal-failure.json).
+- **Previous24h100client soak failed:** run38109009521attempt1/exact`12e5e3c4` ended with four read errors and only40m44.342s common100client authoritative own-state coverage. Min70390frames/2453949ms miss432000frames/77760000ms policy. No capacity pass or retry. Frozen4entry sanitized inventory`c6da7b21f253fe0e776915f4e241168da88be94406d00df7899dca0ddc79751a`; original report/log hashes retained privately. That already-scheduled41run is now terminal failed; the current terminal receipt above supersedes its earlier running state. The later48run38342666778 also ended failed; current October14 custody above supersedes the old running state. [Terminal failure](2026-10-12-soak29-terminal-failure.json).
 
 - **Alpha1.79.41 accepted live:** exact`defdb64e3f9292201df7e5f90b4defc32c5d1bb9`, CI38196589643attempt1 all ten ordered jobs success,737client suites/10965tests, server/race, three browser shards, native predeploy, both deployments and liveQA. Fresh03:35:51UTC normal-TLS109asset bytes/SHA, exact frontend/backend version/source, readyDB and analyticsJS match. Four optional steps skipped. Frozen5entry terminal inventory`da88a750c3e61ac6847cdfc72c24d465ae264851446793ace39feca9a72d4e1c`. District6f8b64cb is now native-qualified and merged; coherent42 publication is being prepared with the map focus correction. Full modern-world/connected performance/device/pacing/F1-F5/beta/launch/handoff requirements remain open. [Acceptance receipt](2026-10-12-public41-terminal-qualification.json).
 
@@ -537,8 +540,8 @@ acceptance is incomplete.
 
 | Requirement | Remaining work and evidence needed | Owner |
 | --- | --- | --- |
-| Current publication | Alpha1.79.49/exact`8e5f888a` is accepted live within qualified town aprons, exact character color batching, Dark Realm masonry, private disposable smoke and active-cutaway shutdown scope. OwnCI38346406878attempt1 all ten ordered jobs succeeded05:15:55UTC:756client suites/11343tests,351browser passes/10skips,59required native passes/1skip; live8first-attempt passes/1skip/0flakes plus recovery2/rested-party1. Four optional stages remain skips. Fresh15:10:30UTC normal-TLS157asset hashes/bytes, frontend/backend identities, readyDB and analyticsJS match. Original crowded-town performance, earlier network failures, failed41soak and full readiness gates remain open. [Acceptance](2026-10-13-public49-terminal-qualification.json). | Implementation |
-| Next publication | None prepared. Reuse accepted49 proof; qualify a coherent next improvement before publishing. Capacity soak38342666778 remains independently scheduled; no restart/cancel. | Implementation |
+| Historical49 publication | Alpha1.79.49/exact`8e5f888a` is accepted live within qualified town aprons, exact character color batching, Dark Realm masonry, private disposable smoke and active-cutaway shutdown scope. OwnCI38346406878attempt1 all ten ordered jobs succeeded05:15:55UTC:756client suites/11343tests,351browser passes/10skips,59required native passes/1skip; live8first-attempt passes/1skip/0flakes plus recovery2/rested-party1. Four optional stages remain skips. Fresh15:10:30UTC normal-TLS157asset hashes/bytes, frontend/backend identities, readyDB and analyticsJS match. Original crowded-town performance, earlier network failures, failed41soak and full readiness gates remain open. [Acceptance](2026-10-13-public49-terminal-qualification.json). | Implementation |
+| Current / next publication | Accepted50; Wizard/Fighter51 pushed and CI active. Qualified private Rogue/Cleric52 is held until51exact deployment verification. Soak scheduling disabled by owner until features are nearly complete. | Implementation |
 | Modern world and atlas | Finish coherent material scale, terrain transitions, grounded architecture, roads, vegetation/rock composition, landmarks, interiors, lighting, atmosphere and readable travel/combat spaces. Moving equipped/HUD review starts Lanternhold → Earth → fight → first dungeon, then all elemental realms/borders, dungeons/raids, Dark Realm, both casino floors and PvP. Required named places, optional interactions and accurate maps remain governed by the full world contract. Repetition, sparse rooms and broad muddy patches are not final art. | Implementation; final owner review |
 | Supplied actor/equipment presentation | Finish full/mixed/cosmetic fits and material identity across all classes, weapon restrictions, dual wielding, local/remote swaps, pooling/reconnect and motion. Preserve delivered assets and approved geometry/rig constraints. | Implementation; final owner review |
 | Combat, classes and audio | Validate all twelve specialization kits, attack anticipation/contact/recovery, movement, threat readability and role feel. Finish contact/audio integration and human listening/busy-group mix; essential warnings survive Low/reduced effects/mute. Prepared mixer frames or audio API calls are insufficient for full acceptance. | Implementation and playtests |

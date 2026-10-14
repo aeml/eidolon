@@ -1,0 +1,28 @@
+{
+  "version": "Alpha 1.79.52",
+  "status": "Qualified private candidate; publication held until1.79.51 terminal deployment verification",
+  "preparedAtUTC": "2026-10-14T04:40:15.781169+00:00",
+  "scope": [
+    "Rogue rune coverage, offline projectile/wound/stealth parity and pending volley lifecycle",
+    "Cleric rune coverage, support auras/Sanctuary/training/control and summons"
+  ],
+  "sourceReceipts": [
+    "2026-10-14-rogue-class-completion.json",
+    "2026-10-14-cleric-class-completion.json"
+  ],
+  "limits": [
+    "Full candidate CI and deployed exact identity/assets/account smoke required.",
+    "Human balance, pacing, physical devices, final art and original roadmap readiness remain open.",
+    "Soak/stress tests deferred by owner."
+  ],
+  "checks": {
+    "releaseClient": {
+      "passed": 433,
+      "suites": 5
+    },
+    "contentGroups": 14,
+    "lint": "whole source passes",
+    "patchNotes": 487,
+    "historyPages": 48
+  }
+}
