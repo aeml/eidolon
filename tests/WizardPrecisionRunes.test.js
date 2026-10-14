@@ -55,6 +55,7 @@ describe.each(contract)('$skill/$rune', row => {
                     if (row.skill === 'Arcane Missiles') expect(Boolean(projectile.homingTarget)).toBe(row.homing);
                     else {
                         expect(projectile.radius).toBe(row.radius);
+                        expect(projectile.mesh.userData.gameplayRadius).toBe(row.radius);
                         expect(projectile.projectilePierce).toBe(row.pierce);
                         expect(projectile.scale).toBe(row.radius);
                     }

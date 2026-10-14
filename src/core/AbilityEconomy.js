@@ -1,5 +1,6 @@
 import { CONSTANTS } from './Constants.js';
 import { getWizardPrecisionPlan } from '../skills/wizardPrecisionRunes.js';
+import { getFireballRunePlan } from '../skills/fireballRunes.js';
 
 export function getAbilityEconomyBonus(player, skillName) {
     const className = player?.meshType || player?.subType || player?.constructor?.name;
@@ -26,5 +27,6 @@ export function getAbilityCooldown(player, skillName, baseCooldown) {
     const { cdr } = getAbilityEconomyBonus(player, skillName);
     const className = player?.meshType || player?.subType || player?.constructor?.name;
     const runeCooldown = className === 'Wizard' ? getWizardPrecisionPlan(skillName, player?.skillRunes?.[skillName]).cooldown : 1;
-    return baseCooldown * runeCooldown * (1 - global) * Math.max(0, 1 - cdr);
+    const extra = className === 'Wizard' && skillName === 'Fireball' ? getFireballRunePlan(player?.skillRunes?.Fireball).extraCooldown : 0;
+    return (baseCooldown + extra) * runeCooldown * (1 - global) * Math.max(0, 1 - cdr);
 }

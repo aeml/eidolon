@@ -315,7 +315,8 @@ class GameEngineRuntimeMethods {
                         isMultiplayer: true
                     };
 
-                    remoteEntity = new Projectile(pData.id, owner || dummyOwner, pData.subType, start, target);
+                    remoteEntity = new Projectile(pData.id, owner || dummyOwner, pData.subType, start, target,
+                        { quality: this.renderSystem?.graphicsQuality || (this.isMobile ? 'low' : 'high') });
                     const verticalVelocity = pData.subType === 'Meteor' ? -20 : 0;
                     remoteEntity.velocity.set(pData.velX || 0, verticalVelocity, pData.velZ || 0);
                     const horizontalSpeed = Math.hypot(pData.velX || 0, pData.velZ || 0);

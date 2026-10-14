@@ -16,6 +16,7 @@ import { getRogueEffectDuration } from '../skills/rogueEffectDuration.js';
 import { getOverworldGroundHeight } from '../core/WorldGrounding.js';
 import { GroundedProjectileVisual } from '../art/GroundedProjectileVisual.js';
 import { lanceContactFraction, orderLanceTargets } from '../skills/lanceFlight.js';
+import { isOfflineFireballTarget, resolveOfflineFireballImpact } from '../skills/offlineFireballImpact.js';
 
 // =====================================================
 // Particle Pool Manager - Centralized for performance
@@ -172,9 +173,10 @@ function spawnProjectileImpact(gameEngine, projectile, position, options = {}) {
 }
 
 export class Projectile extends Entity {
-    constructor(id, owner, type, startPos, targetPos) {
+    constructor(id, owner, type, startPos, targetPos, visualOptions = {}) {
         super(id);
         this.owner = owner;
+        this.visualOptions = visualOptions;
         this.type = type; // 'Fireball', 'Dagger'
         this.skillName = ({ Dagger: 'Piercing Throw', PhantomArrow: 'Phantom Volley',
             Fireball: 'Fireball', FlameTornado: 'Flame Tornado', DragonfireLance: 'Dragonfire Lance',
@@ -244,6 +246,8 @@ export class Projectile extends Entity {
             this.damage = 10;
             this.speed = 0;
             this.velocity.set(0,0,0);
+        } else if (this.type === 'MagmaGround') {
+            this.damage = 0;this.speed = 0;this.velocity.set(0, 0, 0);
         } else if (this.type === 'ZoneDamage') {
             this.damage = 30 + (this.owner.stats.intelligence * 1);
             this.speed = 0;
@@ -259,7 +263,7 @@ export class Projectile extends Entity {
             this.velocity.set(0,0,0);
         }
 
-        this.mesh = createProceduralProjectileVisual(this.type);
+        this.mesh = createProceduralProjectileVisual(this.type, this.visualOptions);
         this.mesh.position.copy(this.position);
         this.mesh.userData.entityId = this.id; // Ensure ID is set for raycasting/identification
         
@@ -433,7 +437,9 @@ export class Projectile extends Entity {
                 // Skip friendly fire (Player vs Player handled by server, but locally we ignore)
                 // Assuming owner is Player, ignore other Players? Or if owner is Enemy, ignore Enemies?
                 // For now, simple check: If owner is Player, ignore Player.
-                if (this.owner && this.owner.constructor.name === entity.constructor.name) continue;
+                if (this.type === 'Fireball') {
+                    if (!isOfflineFireballTarget(this.owner, entity, gameEngine)) continue;
+                } else if (this.owner && this.owner.constructor.name === entity.constructor.name) continue;
                 // World props, service NPCs, loot, effects, and other
                 // non-combat entities can share a chunk with a projectile.
                 // Only the damageable actor contract is a valid collision
@@ -549,7 +555,17 @@ export class Projectile extends Entity {
                         });
                         if (!pierces) break;
 
-                    } else if (this.type === 'Fireball' || this.type === 'Meteor' || this.type === 'ExplosiveTrap') {
+                    } else if (this.type === 'Fireball') {
+                        const redirected = resolveOfflineFireballImpact(this, entity, activeEntities, gameEngine, floatingTextManager, walkRects);
+                        this.hasExploded = !redirected;
+                        this.isActive = redirected;
+                        if (this.mesh) {
+                            this.mesh.visible = redirected;
+                            if (redirected) { this.mesh.lookAt(this.position.clone().add(this.velocity)); this.rotation.copy(this.mesh.quaternion); }
+                        }
+                        spawnProjectileImpact(gameEngine, this, this.position, { radius: this.explosionRadius || 10, targetId: entity.id, terminal: !redirected });
+                        break;
+                    } else if (this.type === 'Meteor' || this.type === 'ExplosiveTrap') {
                         // Explode Logic: Hit, Splash, Destroy
                         this.hasExploded = true;
                         this.isActive = false; // Destroy projectile

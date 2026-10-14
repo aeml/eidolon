@@ -1,0 +1,6 @@
+[
+ {"rune":"","damage":100,"speed":20,"cooldown":2,"bounces":0},
+ {"rune":"fireball_magma","damage":100,"speed":12,"cooldown":2,"bounces":0},
+ {"rune":"fireball_chain","damage":100,"speed":20,"cooldown":2,"bounces":3},
+ {"rune":"fireball_empowered","damage":200,"speed":20,"cooldown":5,"bounces":0}
+]

@@ -598,7 +598,7 @@ export const CONSTANTS = {
         ],
         Wizard: [
             // Fireball Runes
-            { id: "fireball_magma", name: "Magma Orb", skill: "Fireball", unlockLevel: 50, description: "Slower projectile, leaves burning ground for 3s" },
+            { id: "fireball_magma", name: "Magma Orb", skill: "Fireball", unlockLevel: 50, description: "Slower projectile; damaging hits leave a 5-unit fire field for 3s. Pulses inherit one-sixth of the first hit; leaving stops the burn." },
             { id: "fireball_chain", name: "Chain Reaction", skill: "Fireball", unlockLevel: 70, description: "Bounces to 3 additional targets at 50% damage" },
             { id: "fireball_empowered", name: "Empowered", skill: "Fireball", unlockLevel: 90, description: "+100% damage, +3s cooldown" },
             // Meteor Drop Runes
@@ -676,7 +676,7 @@ export const CONSTANTS = {
         ],
         Wizard: [
             { id: "implosion", name: "Implosion", firstSkill: "Gravity Well", secondSkill: "Fireball", description: "This Fireball deals +100% damage to slowed or control-immune targets. Does not bypass control immunity." },
-            { id: "arcane_barrage", name: "Arcane Barrage", firstSkill: "Scorch Beam", secondSkill: "Arcane Missiles", description: "Arcane Missiles launches five missiles instead of three. Normal mana and cooldown apply." },
+            { id: "arcane_barrage", name: "Arcane Barrage", firstSkill: "Scorch Beam", secondSkill: "Arcane Missiles", description: "Scorch Beam prepares two extra Arcane Missiles. Runes keep their volley and damage tradeoffs; normal mana and cooldown apply." },
             { id: "time_burn", name: "Time Burn", firstSkill: "Flame Tornado", secondSkill: "Inferno Cataclysm", description: "Cataclysm ticks twice as fast" },
             { id: "nova_cascade", name: "Nova Cascade", firstSkill: "Fireball", secondSkill: "Flame Whip", description: "360° Flame Whip" },
         ],

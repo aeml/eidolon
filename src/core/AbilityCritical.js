@@ -38,13 +38,17 @@ export function rollOfflineCriticalDamage(source, amount, skillName = '', guaran
 // Offline ability consumers keep their own base/rune/area rules. This shared
 // hit step applies one ordinary critical, preserves Lucky's independent proc,
 // and sends the resulting amount through the real recipient damage handler.
-export function applyOfflineAbilityHit(source, target, amount, skillName, feedback = null, color = '#ffffff', guaranteed = false) {
+export function applyOfflineAbilityHit(source, target, amount, skillName, feedback = null, color = '#ffffff', guaranteed = false, resolution = null) {
+    if (resolution) resolution.damage = 0;
     if (!source || source.isMultiplayer || source.isRemote || source.gameEngine?.isMultiplayer ||
         !target || target.isMultiplayer || target.isRemote || target.gameEngine?.isMultiplayer ||
         target.state === 'DEAD' || target.isActive === false || typeof target.takeDamage !== 'function' || !(amount > 0) || !Number.isFinite(amount)) return 0;
     if (source.hasLuckyEffect && Math.random() < .1) amount *= 2;
     const hit = rollOfflineCriticalDamage(source, amount, skillName, guaranteed);
-    target.takeDamage(hit.amount, source);
+    const before = resolution ? Number(target.stats?.hp) : 0;
+    const received = target.takeDamage(hit.amount, source);
+    if (resolution) resolution.damage = Number.isFinite(received) ? Math.max(0, received)
+        : Number.isFinite(before) ? Math.max(0, before - Number(target.stats?.hp)) : 0;
     feedback?.spawn(Math.floor(hit.amount), target.position, hit.critical ? '#ffd166' : color);
     if (hit.critical) feedback?.spawn('CRITICAL!', target.position, '#ffd166');
     return hit.amount;

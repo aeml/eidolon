@@ -165,7 +165,7 @@ func TestPaidPoisonedFanSpreadKeepsInheritedPvPBudget(t *testing.T) {
 	}
 }
 
-func TestPaidMagmaSpreadUsesRecipientPvPBudget(t *testing.T) {
+func TestPaidMagmaGroundUsesRecipientPvPBudget(t *testing.T) {
 	for _, primaryPvP := range []bool{false, true} {
 		t.Run(fmt.Sprint(primaryPvP), func(t *testing.T) {
 			source := newTestPlayer("magma-budget-wizard", "Wizard")
@@ -196,14 +196,17 @@ func TestPaidMagmaSpreadUsesRecipientPvPBudget(t *testing.T) {
 			if primaryPvP {
 				want = 4 //PvP hit26 /6 =4, inherited budget is not amplified for PvE.
 			}
-			if !secondary.Bleeding || secondary.BleedDamage != want {
-				t.Fatalf("Magma copied wrong recipient budget: primaryPvP=%v wound=%d want=%d", primaryPvP, secondary.BleedDamage, want)
+			field := ownedMagmaGround(t, w, source.ID)
+			before := secondary.Health
+			w.updateEntity(field, 0, nil, &deferredActions{})
+			if got := before - secondary.Health; got != want || secondary.Bleeding {
+				t.Fatalf("Magma ground copied wrong recipient budget: primaryPvP=%v pulse=%d want=%d", primaryPvP, got, want)
 			}
 		})
 	}
 }
 
-func TestPaidMagmaWoundCannotCrossDungeonWall(t *testing.T) {
+func TestPaidMagmaGroundCannotCrossDungeonWall(t *testing.T) {
 	for _, doorway := range []bool{false, true} {
 		t.Run(fmt.Sprint(doorway), func(t *testing.T) {
 			w, source, beyond := directSkillWallFixture("Wizard", doorway)
@@ -217,11 +220,14 @@ func TestPaidMagmaWoundCannotCrossDungeonWall(t *testing.T) {
 				t.Fatal("legal same-side paid Magma rejected")
 			}
 			advancePaidProjectileUntilHit(t, w, source, primary)
-			if !primary.Bleeding || primary.BleedDamage <= 0 {
-				t.Fatal("same-side Magma positive control failed")
+			field := ownedMagmaGround(t, w, source.ID)
+			primaryBefore, beyondBefore := primary.Health, beyond.Health
+			w.updateEntity(field, 0, nil, &deferredActions{})
+			if primary.Health >= primaryBefore {
+				t.Fatal("same-side Magma field positive control failed")
 			}
-			if beyond.Bleeding != doorway {
-				t.Fatalf("doorway=%v Magma crossed cover or failed to spread: bleed=%v", doorway, beyond.Bleeding)
+			if (beyond.Health < beyondBefore) != doorway || primary.Bleeding || beyond.Bleeding {
+				t.Fatalf("doorway=%v Magma crossed cover or failed to burn visible ground: damage=%d", doorway, beyondBefore-beyond.Health)
 			}
 		})
 	}

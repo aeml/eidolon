@@ -37,7 +37,7 @@ export class AreaOfEffect extends Entity {
     }
 
     createVisual() {
-        const quality = this.gameEngine?.uiManager?.getGraphicsQuality?.() || 'high';
+        const quality = this.gameEngine?.renderSystem?.graphicsQuality || this.gameEngine?.uiManager?.getGraphicsQuality?.() || 'high';
         const field = createProceduralAreaField(this.effectType, this.radius, { quality });
         field.position.copy(this.position);
         return field;

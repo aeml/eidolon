@@ -152,10 +152,12 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		e.Mu.Lock()
 
 		// Zone Logic (ZoneDamage, ZoneHoly, etc.)
-		if strings.HasPrefix(e.SubType, "Zone") {
+		if strings.HasPrefix(e.SubType, "Zone") || e.SubType == "MagmaGround" {
 			// Check zone expiration - use ConsecratedGroundEndTime if set, otherwise 8s default
 			zoneExpired := false
-			if !e.ConsecratedGroundEndTime.IsZero() {
+			if !e.ZoneEndTime.IsZero() {
+				zoneExpired = !time.Now().Before(e.ZoneEndTime)
+			} else if !e.ConsecratedGroundEndTime.IsZero() {
 				zoneExpired = time.Now().After(e.ConsecratedGroundEndTime)
 			} else {
 				zoneExpired = time.Since(e.CreatedAt) > 8*time.Second
@@ -177,7 +179,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 				radius := e.Radius
 				damage := e.Damage
-				if damage == 0 {
+				inheritedMagma := e.ProjectileRuneID == "fireball_magma" && e.ProjectileSkill == "Fireball"
+				fieldBudget := statusDamageBudget{amount: damage, pvpScaled: e.ZoneDamagePvPScaled}
+				if damage == 0 && !inheritedMagma {
 					damage = 10
 				}
 				ownerID := e.OwnerID
@@ -215,7 +219,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						case "ZonePoison":
 							damageType = "poison"
 						}
-						if zoneSkill == "Inferno Cataclysm" {
+						if zoneSkill == "Inferno Cataclysm" || inheritedMagma {
 							damageType = "fire"
 						}
 						target.Mu.Lock()
@@ -224,7 +228,12 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							target.Mu.Unlock()
 							continue
 						}
-						finalDamage := impacts.damage(ownerCombat, target, damage, damageType, zoneSkill)
+						finalDamage := 0
+						if inheritedMagma {
+							finalDamage = impacts.receiveDamageLocked(ownerID, target, fieldBudget.forTarget(ownerCombat, target), damageType, time.Now())
+						} else {
+							finalDamage = impacts.damage(ownerCombat, target, damage, damageType, zoneSkill)
+						}
 						if ownerIsPlayer {
 							addThreatLocked(target, ownerID, float64(finalDamage))
 						}
@@ -782,19 +791,20 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					// Find nearest enemy that hasn't been hit
 					var nextTarget *Entity
 					minNextDist := 15.0
-					chainNearby := w.Grid.Nearby(target.X, target.Z, minNextDist, projectileInstanceID)
+					chainNearby := w.Grid.Nearby(projX, projZ, minNextDist, projectileInstanceID)
+					chainRects := w.dungeonWalkRectsSnapshot(projectileInstanceID)
 					for _, ct := range chainNearby {
 						ct.Mu.RLock()
-						if !w.CanDamage(ownerCombat, ct) || ct.State == "DEAD" || hitIDs[ct.ID] {
+						if !w.CanDamage(ownerCombat, ct) || ct.State == "DEAD" || hitIDs[ct.ID] || !w.worldEffectReachesTarget(chainRects, projX, projZ, ct) {
 							ct.Mu.RUnlock()
 							continue
 						}
-						cdx := target.X - ct.X
-						cdz := target.Z - ct.Z
+						cdx := projX - ct.X
+						cdz := projZ - ct.Z
 						cdist := math.Sqrt(cdx*cdx + cdz*cdz)
 						ct.Mu.RUnlock()
 
-						if cdist > 0.5 && cdist < minNextDist {
+						if cdist > 0.5 && (cdist < minNextDist || cdist == minNextDist && nextTarget != nil && ct.ID < nextTarget.ID) {
 							minNextDist = cdist
 							nextTarget = ct
 						}
@@ -824,27 +834,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					}
 				}
 
-				// Magma wounds inherit the actual hit, but each spread recipient
-				// still needs its own PvP cap and canonical dungeon cover check.
+				// Magma is an actual ground field, not a wound that follows a target.
 				if projSkill == "Fireball" && projRuneID == "fireball_magma" {
-					burnRadius := 5.0
-					burnBudget := statusDamageBudget{amount: finalDamage / 6, pvpScaled: inheritedHitPvP}
-					walkRects := w.dungeonWalkRectsSnapshot(projectileInstanceID)
-					burnTargets := w.Grid.Nearby(projX, projZ, expandedAbilityRadius("Magma", burnRadius), projectileInstanceID)
-					for _, bt := range burnTargets {
-						bt.Mu.Lock()
-						if !w.CanDamage(ownerCombat, bt) || bt.State == "DEAD" || bt.Health <= 0 || bt.Disconnected ||
-							!w.withinWorldAbilityRadius(walkRects, "Magma", projX, projZ, bt, burnRadius) || burnBudget.amount <= 0 {
-							bt.Mu.Unlock()
-							continue
-						}
-						// Retain the existing attributed wound/tick representation.
-						bt.Bleeding = true
-						bt.BleedDamage = burnBudget.forTarget(ownerCombat, bt)
-						bt.BleedSourceID = ownerID
-						bt.BleedEndTime = time.Now().Add(3 * time.Second)
-						bt.Mu.Unlock()
-					}
+					w.queueMagmaGround(deferred, projectileInstanceID, ownerID, projX, projZ, finalDamage, inheritedHitPvP)
 				}
 
 				// Determine if projectile should pierce
@@ -872,6 +864,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					Radius: impactRadius, Terminal: !shouldPierce,
 				})
 
+				if projectileRedirected {
+					break // Next frame takes a fresh snapshot of the half-damage bounce.
+				}
 				if !shouldPierce {
 					terminalCollision = true
 					deferred.addRemoval(e.ID)

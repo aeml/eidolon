@@ -41,6 +41,9 @@ func advancePaidProjectileUntilHit(t *testing.T, w *World, source, defender *Ent
 			}
 			deferred := &deferredActions{}
 			w.updateEntity(projectile, .02, nil, deferred)
+			for _, added := range deferred.additions {
+				w.AddEntity(added)
+			}
 			for _, id := range deferred.removals {
 				removed[id] = true
 			}

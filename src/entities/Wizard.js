@@ -18,6 +18,7 @@ import { getSpellFocusCastPlan, consumeOfflineSpellFocus } from '../skills/spell
 import { getWizardAbilityDamageMultiplier, resolveWizardSpellDamage, WIZARD_DAMAGE_SKILLS } from '../skills/wizardAbilityDamage.js';
 import { applyOfflineArmorMelt } from '../core/OfflineArmor.js';
 import { getWizardPrecisionPlan } from '../skills/wizardPrecisionRunes.js';
+import { getFireballRunePlan } from '../skills/fireballRunes.js';
 
 
 export class Wizard extends Actor {
@@ -602,7 +603,13 @@ export class Wizard extends Actor {
         }
         
         // Damage Calculation: Base 20 + (Intelligence * 2.0)
-        fireball.damage = spellDamage;
+        const rune = getFireballRunePlan(this.skillRunes?.Fireball);
+        fireball.damage = spellDamage * rune.damage;
+        fireball.fireballRuneId = rune.runeId;
+        fireball.bounces = rune.bounces;
+        fireball.speed = rune.speed;
+        fireball.velocity.normalize().multiplyScalar(rune.speed);
+        fireball.lifeTime = 5;
         
         // Pyromancer Passives (Removed/Replaced)
         // if (this.skillLevels.pyromancer.flameSurge > 0) { ... }

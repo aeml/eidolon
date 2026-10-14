@@ -33,7 +33,7 @@ var rogueCombos = []ComboDef{
 
 var wizardCombos = []ComboDef{
 	{ID: "implosion", Name: "Implosion", Class: "Wizard", FirstSkill: "Gravity Well", SecondSkill: "Fireball", Effect: "fireball_well_boost", Description: "This Fireball deals +100% damage to slowed or control-immune targets. Does not bypass control immunity."},
-	{ID: "arcane_barrage", Name: "Arcane Barrage", Class: "Wizard", FirstSkill: "Scorch Beam", SecondSkill: "Arcane Missiles", Effect: "arcane_missile_barrage", Description: "Arcane Missiles launches five missiles instead of three. Normal mana and cooldown apply."},
+	{ID: "arcane_barrage", Name: "Arcane Barrage", Class: "Wizard", FirstSkill: "Scorch Beam", SecondSkill: "Arcane Missiles", Effect: "arcane_missile_barrage", Description: "Scorch Beam prepares two extra Arcane Missiles. Runes keep their volley and damage tradeoffs; normal mana and cooldown apply."},
 	{ID: "time_burn", Name: "Time Burn", Class: "Wizard", FirstSkill: "Flame Tornado", SecondSkill: "Inferno Cataclysm", Effect: "cataclysm_double_tick", Description: "Cataclysm ticks twice as fast"},
 	{ID: "nova_cascade", Name: "Nova Cascade", Class: "Wizard", FirstSkill: "Fireball", SecondSkill: "Flame Whip", Effect: "flame_whip_360", Description: "360° Flame Whip"},
 }

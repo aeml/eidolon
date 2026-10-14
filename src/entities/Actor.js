@@ -1554,12 +1554,12 @@ export class Actor extends Entity {
         console.log(`${this.id} was cleansed!`);
     }
 
-    takeDamage(amount, attacker = null, elapsedInFrame = 0) {
-        if (this.state === 'DEAD' || this.isMultiplayer || this.isRemote || this.gameEngine?.isMultiplayer) return;
+    takeDamage(amount, attacker = null, elapsedInFrame = 0, damageContext = null) {
+        if (this.state === 'DEAD' || this.isMultiplayer || this.isRemote || this.gameEngine?.isMultiplayer) return 0;
         // A Phase window blocks the impact before shields, death saves and
         // retaliation, just like authoritative gameplay invulnerability.
         const impactElapsed = Number.isFinite(elapsedInFrame) ? Math.max(0, elapsedInFrame) : 0;
-        if (this.teleportPhaseTimer > impactElapsed) return;
+        if (this.teleportPhaseTimer > impactElapsed) return 0;
         
         let finalAmount = amount;
         
@@ -1569,7 +1569,7 @@ export class Actor extends Entity {
         }
 
         // Damage Increases (Debuffs)
-        if (this.markWeaknessTimer > 0) {
+        if (!damageContext?.inherited && this.markWeaknessTimer > 0) {
             finalAmount *= (1 + this.markWeaknessFactor);
         }
         
@@ -1585,7 +1585,7 @@ export class Actor extends Entity {
                 this.arcaneShieldTimer = 0;
             }
             console.log(`${this.id} shield absorbed ${absorbed}. Remaining Shield: ${this.shieldHP}`);
-            if (finalAmount <= 0) return; // Fully absorbed
+            if (finalAmount <= 0) return 0; // Fully absorbed
         }
         
         // Divine Intervention Check
@@ -1594,7 +1594,7 @@ export class Actor extends Entity {
             this.divineInterventionActive = false;
             this.divineInterventionTimer = 0;
             console.log(`${this.id} was saved by Divine Intervention!`);
-            return; 
+            return finalAmount;
         }
 
         this.stats.hp -= finalAmount;
@@ -1616,6 +1616,7 @@ export class Actor extends Entity {
             }
             this.die();
         }
+        return finalAmount;
     }
     
     // Called when this entity is killed by an attacker
