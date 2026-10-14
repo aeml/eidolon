@@ -445,7 +445,7 @@ export class Wizard extends Actor {
                 if (distance > radius + (entity.radius || 0) || clipDungeonEffectSegment(rects, targetVector, entity.position).blocked) continue;
                 if (!entity.ccImmune) {
                     const strength = rune === 'gravitywell_blackhole' ? .8 : .5;
-                    if (distance > .5) {
+                    if (distance > .5 && !entity.ironFortressImmovable) {
                         entity.position.x += (targetVector.x - entity.position.x) * strength;
                         entity.position.z += (targetVector.z - entity.position.z) * strength;
                         entity.mesh?.position.copy(entity.position);

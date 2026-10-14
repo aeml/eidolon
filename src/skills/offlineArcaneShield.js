@@ -62,6 +62,18 @@ function liveRecipient(target, instanceId) {
         !authoritative(target) && instanceOf(target) === instanceId;
 }
 
+// HP-damage reflection joins absorbed reflection before the receiving actor's
+// defensive rounding. Capture before death/dispels clear the paid Fortress.
+export function addOfflineDamageReflection(owner, reaction, damage, elapsed = 0) {
+    if (!(damage > 0) || authoritative(owner)) return;
+    let amount = owner.ironFortressTimer > elapsed && owner.ironFortressThorns ? Math.floor(damage / 5) : 0;
+    if (owner.hasThornsEffect) amount += Math.floor(damage / 10);
+    if (!(amount > 0)) return;
+    reaction.reflection = (reaction.reflection || 0) + amount;
+    reaction.engine ||= owner.gameEngine;
+    reaction.instanceId ??= instanceOf(owner);
+}
+
 export function flushOfflineArcaneShieldReaction(owner, attacker, reaction) {
     const { engine, instanceId = '' } = reaction;
     if (authoritative(owner) || engine?.isMultiplayer || engine && (engine.currentInstanceId || '') !== instanceId) return;

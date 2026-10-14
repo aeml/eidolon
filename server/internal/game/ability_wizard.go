@@ -164,7 +164,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 						target.RootEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 2*time.Second))
 					}
 
-					if dist > 0.5 && !target.CCImmune {
+					if dist > 0.5 && !target.CCImmune && !target.IronFortressImmovable {
 						oldX, oldZ := target.X, target.Z
 						target.X, target.Z = w.stopRockMovement(target, target.X+dx*pullStrength, target.Z+dz*pullStrength)
 						if x, z, ok := w.constrainPvPPoint(target.InstanceID, target.X, target.Z); ok {

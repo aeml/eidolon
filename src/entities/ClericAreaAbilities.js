@@ -128,7 +128,11 @@ export function applyOfflineRadiantStrike(source,aim,engine,holyFury = false) {
                 target.berserkerEdgeMultiplier = 1;
                 target.recalculateStats?.();
             }
-            else if (target.ironFortressTimer > 0) { target.ironFortressTimer = 0; target.ironFortressReduction = 0; }
+            else if (target.ironFortressTimer > 0) {
+                target.ironFortressTimer = 0; target.ironFortressReduction = 0;
+                target.ironFortressThorns = target.ironFortressImmovable = false;
+                target.recalculateStats?.();
+            }
         }
     }
     if (Object.values(source.activeSetBonuses || {}).some(bonus=>bonus.specials?.radiantStrikeLifesteal > 0)) {

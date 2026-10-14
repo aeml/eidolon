@@ -39,7 +39,7 @@ import { equipmentWithAppearances } from '../core/EquipmentAppearance.js';
 import { ActorHitReaction } from './ActorHitReaction.js';
 import { ActorMovingCastGait } from './ActorMovingCastGait.js';
 import { getGroundAwareDistance, getGroundedActorHeight } from '../core/WorldGrounding.js';
-import { absorbOfflineArcaneShield, clearOfflineArcaneShield, expireOfflineArcaneShield, flushOfflineArcaneShieldReaction } from '../skills/offlineArcaneShield.js';
+import { absorbOfflineArcaneShield, addOfflineDamageReflection, clearOfflineArcaneShield, expireOfflineArcaneShield, flushOfflineArcaneShieldReaction } from '../skills/offlineArcaneShield.js';
 
 // Optimization: Reusable temporary objects to avoid GC
 const TEMP_VEC = new THREE.Vector3();
@@ -1142,6 +1142,7 @@ export class Actor extends Entity {
             this.ironFortressTimer = Math.max(0, this.ironFortressTimer - dt);
             if (!this.ironFortressTimer) {
                 this.ironFortressReduction = 0;
+                this.ironFortressThorns = this.ironFortressImmovable = false;
                 if (!this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) this.recalculateStats();
             }
         }
@@ -1591,6 +1592,7 @@ export class Actor extends Entity {
         const shield = damageContext?.reflection ? { damage: finalAmount }
             : absorbOfflineArcaneShield(this, finalAmount, impactElapsed);
         finalAmount = shield.damage;
+        if (!damageContext?.reflection) addOfflineDamageReflection(this, shield, finalAmount, impactElapsed);
         const retaliate = () => flushOfflineArcaneShieldReaction(this, attacker, shield);
         if (finalAmount <= 0) { retaliate();return 0; }
 
@@ -1606,15 +1608,6 @@ export class Actor extends Entity {
 
         this.stats.hp -= finalAmount;
         console.log(`${this.id} took ${finalAmount} damage (was ${amount}). HP: ${this.stats.hp}`);
-        
-        // Thorns unique effect - reflect 10% damage back to attacker
-        if (!damageContext?.reflection && this.hasThornsEffect && attacker && attacker.stats && attacker !== this) {
-            const reflectDamage = Math.floor(finalAmount * 0.1);
-            if (reflectDamage > 0) {
-                console.log(`${this.id} reflects ${reflectDamage} damage to ${attacker.id} (Thorns)`);
-                attacker.takeDamage(reflectDamage, null); // null to prevent infinite loop
-            }
-        }
         
         if (this.stats.hp <= 0) {
             // Trigger onKill effects for the attacker before dying

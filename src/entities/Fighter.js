@@ -126,6 +126,8 @@ export class Fighter extends Actor {
             // Match the authoritative receiving pipeline; Mastery changes
             // duration, never protection strength.
             this.ironFortressReduction = 0.2;
+            this.ironFortressThorns = this.skillRunes?.[skill] === 'ironfortress_thorns';
+            this.ironFortressImmovable = this.skillRunes?.[skill] === 'ironfortress_immovable';
             this.recalculateStats();
 
             console.log(`Iron Fortress active: ${(this.ironFortressReduction * 100).toFixed(1)}% reduction for ${this.ironFortressTimer}s`);
@@ -273,6 +275,8 @@ export class Fighter extends Actor {
         // Iron Fortress is a buff, usually persists? Or cancel on death?
         // Actor.die() calls cancelAbilities.
         this.ironFortressTimer = 0;
+        this.ironFortressReduction = 0;
+        this.ironFortressThorns = this.ironFortressImmovable = false;
         this.berserkerEdgeTimer = 0;
         this.berserkerEdgeActive = false;
         if (hadFortress && !this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) this.recalculateStats();

@@ -29,6 +29,8 @@ test.each(cases)('paid Iron Fortress $rune rank$rank/general$generic extends onl
         expect(actor.ironFortressTimer).toBeGreaterThan(0);
         actor.update(.02, null, null, null, null);
         expect(actor.ironFortressTimer).toBe(0);
+        expect(actor.ironFortressThorns).toBe(false);
+        expect(actor.ironFortressImmovable).toBe(false);
     } finally { actor.dispose(); }
 });
 

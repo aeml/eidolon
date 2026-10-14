@@ -1,0 +1,23 @@
+{
+  "recordedUTC": "2026-10-14T03:42:32.673147+00:00",
+  "base": "4968cb36570cef6a174f659703e1163da4a4ef9c",
+  "status": "Qualified bounded Fighter rune repair on the private Wizard integration candidate; unpublished. Full Fighter rune expansion and tuning remain open.",
+  "changes": [
+    "Paid offline Iron Fortress captures Thorns and Immovable. Expiry, cancellation/death and Radiant Strike purge clear flags; purge also rebuilds armor and movement.",
+    "Thorns reflects20% of received HP damage after protection/absorption, alongside10% equipment thorns. Captured reflection joins shield reflection before defensive rounding and cannot recurse, hit foreign/remote actors, or be absorbed by their shields. Lethal hits retain captured retaliation.",
+    "Gravity Well respects Immovable in both runtimes while retaining damage, slow and Black Hole root. Control immunity remains separate."
+  ],
+  "validation": {
+    "client": [
+      "82 passes/3suites in initial focused checks",
+      "165 passes/8suites in receiving-defense/expiry/Cleric regressions; counts overlap"
+    ],
+    "server": "Focused Go race suite for Gravity/Fortress passes5.512s",
+    "lint": "Changed JS lint and whitespace checks pass"
+  },
+  "scopeLimits": [
+    "No new rune IDs or balance tuning in this repair.",
+    "No new art, live deployment, capacity or physical-device claim.",
+    "Source remains isolated pending coherent milestone integration."
+  ]
+}
