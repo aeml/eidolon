@@ -1,0 +1,520 @@
+{
+  "date": "2026-10-15",
+  "state": "qualified locally; selected for unpublished Alpha1.79.54; deployment pending",
+  "runtimeCommit": "6c9865a2c284f8ef66e698b166cc2620ef0376fe",
+  "change": "Water, Fire and Air trail aggregate samples color, small height-derived normals and roughness in world space. Existing route geometry, alpha shoulders, collision and realm identity retained.",
+  "validation": {
+    "focusedChecks": 30,
+    "suites": 4,
+    "nativeCasesPassed": 2,
+    "nativeSeconds": 34.1,
+    "pairedViews": 12,
+    "exactReferenceRepeats": true,
+    "unchangedDrawsAndTriangles": true,
+    "outfitsPerCase": 4,
+    "equippedSlotsPerOutfit": 14,
+    "lint": "pass"
+  },
+  "observations": [
+    {
+      "quality": "low",
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "outfits": [
+        {
+          "type": "Fighter",
+          "items": 14
+        },
+        {
+          "type": "Rogue",
+          "items": 14
+        },
+        {
+          "type": "Wizard",
+          "items": 14
+        },
+        {
+          "type": "Cleric",
+          "items": 14
+        }
+      ],
+      "pairs": [
+        {
+          "realm": "Water",
+          "x": 0,
+          "z": -880,
+          "changed": 25760,
+          "unstable": 0,
+          "before": {
+            "calls": 90,
+            "triangles": 61056
+          },
+          "after": {
+            "calls": 90,
+            "triangles": 61056
+          }
+        },
+        {
+          "realm": "Water",
+          "x": 35,
+          "z": -975,
+          "changed": 21861,
+          "unstable": 0,
+          "before": {
+            "calls": 82,
+            "triangles": 58372
+          },
+          "after": {
+            "calls": 82,
+            "triangles": 58372
+          }
+        },
+        {
+          "realm": "Fire",
+          "x": -1350,
+          "z": 200,
+          "changed": 28495,
+          "unstable": 0,
+          "before": {
+            "calls": 85,
+            "triangles": 59072
+          },
+          "after": {
+            "calls": 85,
+            "triangles": 59072
+          }
+        },
+        {
+          "realm": "Fire",
+          "x": -1450,
+          "z": 200,
+          "changed": 22884,
+          "unstable": 0,
+          "before": {
+            "calls": 84,
+            "triangles": 58644
+          },
+          "after": {
+            "calls": 84,
+            "triangles": 58644
+          }
+        },
+        {
+          "realm": "Air",
+          "x": 1300,
+          "z": 200,
+          "changed": 28210,
+          "unstable": 0,
+          "before": {
+            "calls": 97,
+            "triangles": 63054
+          },
+          "after": {
+            "calls": 97,
+            "triangles": 63054
+          }
+        },
+        {
+          "realm": "Air",
+          "x": 1410,
+          "z": 200,
+          "changed": 32280,
+          "unstable": 0,
+          "before": {
+            "calls": 88,
+            "triangles": 59852
+          },
+          "after": {
+            "calls": 88,
+            "triangles": 59852
+          }
+        }
+      ],
+      "pending": 0
+    },
+    {
+      "quality": "high",
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "outfits": [
+        {
+          "type": "Fighter",
+          "items": 14
+        },
+        {
+          "type": "Rogue",
+          "items": 14
+        },
+        {
+          "type": "Wizard",
+          "items": 14
+        },
+        {
+          "type": "Cleric",
+          "items": 14
+        }
+      ],
+      "pairs": [
+        {
+          "realm": "Water",
+          "x": 0,
+          "z": -880,
+          "changed": 158378,
+          "unstable": 0,
+          "before": {
+            "calls": 183,
+            "triangles": 143939
+          },
+          "after": {
+            "calls": 183,
+            "triangles": 143939
+          }
+        },
+        {
+          "realm": "Water",
+          "x": 35,
+          "z": -975,
+          "changed": 135179,
+          "unstable": 0,
+          "before": {
+            "calls": 149,
+            "triangles": 129051
+          },
+          "after": {
+            "calls": 149,
+            "triangles": 129051
+          }
+        },
+        {
+          "realm": "Fire",
+          "x": -1350,
+          "z": 200,
+          "changed": 163438,
+          "unstable": 0,
+          "before": {
+            "calls": 154,
+            "triangles": 129173
+          },
+          "after": {
+            "calls": 154,
+            "triangles": 129173
+          }
+        },
+        {
+          "realm": "Fire",
+          "x": -1450,
+          "z": 200,
+          "changed": 135864,
+          "unstable": 0,
+          "before": {
+            "calls": 149,
+            "triangles": 128415
+          },
+          "after": {
+            "calls": 149,
+            "triangles": 128415
+          }
+        },
+        {
+          "realm": "Air",
+          "x": 1300,
+          "z": 200,
+          "changed": 163866,
+          "unstable": 0,
+          "before": {
+            "calls": 176,
+            "triangles": 148479
+          },
+          "after": {
+            "calls": 176,
+            "triangles": 148479
+          }
+        },
+        {
+          "realm": "Air",
+          "x": 1410,
+          "z": 200,
+          "changed": 194512,
+          "unstable": 0,
+          "before": {
+            "calls": 162,
+            "triangles": 139913
+          },
+          "after": {
+            "calls": 162,
+            "triangles": 139913
+          }
+        }
+      ],
+      "pending": 0
+    }
+  ],
+  "visualReview": "Reviewed High Water bend reference/candidate and High/Low Water, Fire and Air bend candidates. More granular grounded trail surface; readable route shoulders and actors, no raised ridge appearance. Terrain repetition and overall sparse world composition remain open. Retained captures isolate the WebGL canvas; they are not full HUD composition approval.",
+  "allocation": "One owned 256KiB High or64KiB Low detail texture per realm path material. Existing bounded Earth raster source; no additional geometry.",
+  "retainedFailures": [
+    {
+      "path": ".qa-elemental-trails/cpu.log",
+      "reason": "Initial invocation named nonexistent ProceduralWorldPaths.test.js. Ten actual material tests passed; corrected WorldPopulation/GroundRibbon regression invocation adds20 passes."
+    },
+    {
+      "path": ".qa-elemental-trails/native.log",
+      "reason": "Both first native fixtures failed before comparison: initial warmup referenced out-of-scope view. Fixed setup to Earth; all per-view realm lighting and original comparison thresholds unchanged."
+    }
+  ],
+  "limits": [
+    "Not final world art acceptance",
+    "Not connected party whole-frame performance acceptance",
+    "No soak or production mutation"
+  ],
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-elemental-trails-20261015",
+  "files": [
+    {
+      "path": ".qa-elemental-trails/cpu.log",
+      "bytes": 1004,
+      "sha256": "3bab29a8f64ad0b20749676ee8b7a647bf1f3e0f1c73fb8b38cfc6f576fc3908"
+    },
+    {
+      "path": ".qa-elemental-trails/elemental-trail-reference.js",
+      "bytes": 5869,
+      "sha256": "4e2ea4368e661cb48616f24467680d2dbc4a4ebfeddd615695d8fc0865b76821"
+    },
+    {
+      "path": ".qa-elemental-trails/elemental-trail-review.spec.js",
+      "bytes": 8967,
+      "sha256": "b5d7d788de7c404012e2ed021003e2725ddac73845f864fa7f3019e12e5c2954"
+    },
+    {
+      "path": ".qa-elemental-trails/final-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-elemental-trails/lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-elemental-trails/native/.last-run.json",
+      "bytes": 145,
+      "sha256": "dd7c3a2c99e05a54671808540479d678d6d9334545e1d2dccd80bde6fe8f0be1"
+    },
+    {
+      "path": ".qa-elemental-trails/native/elemental-trail-review-ele-6d557-rld-material-comparison-low/error-context.md",
+      "bytes": 1564,
+      "sha256": "074c0943042e08c81c11903c7a54f734542b612d88a93b24be3bc1002a2a6789"
+    },
+    {
+      "path": ".qa-elemental-trails/native/elemental-trail-review-ele-6d557-rld-material-comparison-low/test-failed-1.png",
+      "bytes": 166190,
+      "sha256": "3292df25c61300523974a0858b2dfbc3e1fadb057339a29c52880f8f0f7d047c"
+    },
+    {
+      "path": ".qa-elemental-trails/native/elemental-trail-review-ele-6d557-rld-material-comparison-low/trace.zip",
+      "bytes": 12418857,
+      "sha256": "dca045c02791470db64a34b1abedecb8e225d68227cb0611fbfd1ed943f89e1b"
+    },
+    {
+      "path": ".qa-elemental-trails/native/elemental-trail-review-ele-6d557-rld-material-comparison-low/video.webm",
+      "bytes": 141671,
+      "sha256": "fbdecdd311bfef77a1d59cc7d87503e90a2a4e2da295fde12c260ba610da38c9"
+    },
+    {
+      "path": ".qa-elemental-trails/native/elemental-trail-review-ele-74059-ld-material-comparison-high/error-context.md",
+      "bytes": 1441,
+      "sha256": "ae25db2483b5cbf3506ae79011c187a3182db1a5624d802d39a57a6640cfff5d"
+    },
+    {
+      "path": ".qa-elemental-trails/native/elemental-trail-review-ele-74059-ld-material-comparison-high/test-failed-1.png",
+      "bytes": 377990,
+      "sha256": "76eb07da9f13950ee4186b293e0fec5298563fb8d0e156f8175f6ecd93c0f963"
+    },
+    {
+      "path": ".qa-elemental-trails/native/elemental-trail-review-ele-74059-ld-material-comparison-high/trace.zip",
+      "bytes": 18262067,
+      "sha256": "3682b588cd273aa050946e8f56043d4a905655e0850473e69f14885075f406ef"
+    },
+    {
+      "path": ".qa-elemental-trails/native/elemental-trail-review-ele-74059-ld-material-comparison-high/video.webm",
+      "bytes": 257330,
+      "sha256": "95d90cc3759f20becb9840fb9d79cf260db791d1522d0c9388f7bdc2df54683f"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-6d557-rld-material-comparison-low/air-0-candidate.png",
+      "bytes": 502209,
+      "sha256": "f3ba93ea44705a4d2a4bcce5f15757509318327ce28b1bdc9b9cf5cc1724029f"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-6d557-rld-material-comparison-low/air-0-reference.png",
+      "bytes": 499681,
+      "sha256": "8d888223f4aca3948a191f938e85c2e074d93504673070a47dde74f230bd8312"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-6d557-rld-material-comparison-low/air-1-candidate.png",
+      "bytes": 494551,
+      "sha256": "ba65688de847d63fe24e9349b5ad4a3ae5a86c22b4c17c63f255b0baa21d5204"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-6d557-rld-material-comparison-low/air-1-reference.png",
+      "bytes": 492078,
+      "sha256": "05ae211dfde65f5258804eb8eb9c33c14d920cdc8591a0c1645618ff371af437"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-6d557-rld-material-comparison-low/fire-0-candidate.png",
+      "bytes": 479038,
+      "sha256": "7be02fc9312ed7ff4b58aa36218f051712652cbd3870fb70f0ab465da801847c"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-6d557-rld-material-comparison-low/fire-0-reference.png",
+      "bytes": 476233,
+      "sha256": "7625b339dd0d4dd7c507f36175173c0d4a38f58c4f5fc0bc2ef452cf8cd116f5"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-6d557-rld-material-comparison-low/fire-1-candidate.png",
+      "bytes": 477941,
+      "sha256": "7bfde1b65264adb2122a9a1b73208c0d2e84d1fd49d228bf0a017cee0cfacb17"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-6d557-rld-material-comparison-low/fire-1-reference.png",
+      "bytes": 476114,
+      "sha256": "81205a4aa8d0463aaba6dc188f1382941a588fdfd6be5de06cf368fb4643711a"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-6d557-rld-material-comparison-low/observation.json",
+      "bytes": 1960,
+      "sha256": "061f7bcbfe664046844eaf23cf1989b2397b1ca2fd9095f582eeea28f24dc3d7"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-6d557-rld-material-comparison-low/water-0-candidate.png",
+      "bytes": 400933,
+      "sha256": "9e2715fb7a52d7db715fc17bb23cff025da28006b79bd714a54504c45bb5676e"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-6d557-rld-material-comparison-low/water-0-reference.png",
+      "bytes": 398128,
+      "sha256": "f47f78881a325eaf415ef2d4abee41ee156e504e484caf5ac513e084b256b405"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-6d557-rld-material-comparison-low/water-1-candidate.png",
+      "bytes": 386198,
+      "sha256": "f9f47e3bf7590def66616fedbec985d02887ad262780000b36820f98bac08bd0"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-6d557-rld-material-comparison-low/water-1-reference.png",
+      "bytes": 384260,
+      "sha256": "d3b816586f9d705d77fadbdcfc6be5e4cb130b52929e2139ee777e1245ad46db"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-74059-ld-material-comparison-high/air-0-candidate.png",
+      "bytes": 1588275,
+      "sha256": "10e1358452d7f886fe1eec3450e74670fa32ba946cdbc02be4e2d0bdfc057af7"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-74059-ld-material-comparison-high/air-0-reference.png",
+      "bytes": 1579035,
+      "sha256": "ad2bad076be41b24d0ad309e1f421d555e3edddcb2a29bef11b82411aa1fbc5a"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-74059-ld-material-comparison-high/air-1-candidate.png",
+      "bytes": 1559193,
+      "sha256": "fc924e802bc5bfb86fcec41bd4d536b00a89a05f1e71aae4267271ed9199212d"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-74059-ld-material-comparison-high/air-1-reference.png",
+      "bytes": 1551367,
+      "sha256": "57ab2c89a6cfbcd804de27a04a58ca6d1da00c969a780910ba7bc7d9286e901f"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-74059-ld-material-comparison-high/fire-0-candidate.png",
+      "bytes": 1571213,
+      "sha256": "7da2ba7420eca99ffb58d92dd18e73ef1ead5cd3283d0c7f6d72156daa3acbb1"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-74059-ld-material-comparison-high/fire-0-reference.png",
+      "bytes": 1563017,
+      "sha256": "bf7a23981246cf373a25483509c788fd3220f2a07ad52c9d222924bb9fb91d8e"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-74059-ld-material-comparison-high/fire-1-candidate.png",
+      "bytes": 1559638,
+      "sha256": "994b9ad85563b0a640335faf02a2c2d7cd0ef526c1f9b1f9c696c52e3ea26e69"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-74059-ld-material-comparison-high/fire-1-reference.png",
+      "bytes": 1552623,
+      "sha256": "d6c1b851e9d8be888113751537337444fb28f488463c077a05428f39a3ae02b1"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-74059-ld-material-comparison-high/observation.json",
+      "bytes": 1991,
+      "sha256": "d0551758e0a6bbc63fbc5a03b929a6c0c969f1736e14cb556ce7c29c1bfbc345"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-74059-ld-material-comparison-high/water-0-candidate.png",
+      "bytes": 1277127,
+      "sha256": "600268eaf7b0b7ac4583ec051fafcf97af92727d7f6a32afaeef1ca203b20b52"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-74059-ld-material-comparison-high/water-0-reference.png",
+      "bytes": 1271882,
+      "sha256": "b80c30acbfbc0bc081f1f8a434ce462881b8c504e29b9eaba6cc04bc31e5c7bc"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-74059-ld-material-comparison-high/water-1-candidate.png",
+      "bytes": 1180618,
+      "sha256": "4131e6a7a4ae5947bdfa22825098700b01cdb3e0a41d3e6e29a717eea9a87547"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed/elemental-trail-review-ele-74059-ld-material-comparison-high/water-1-reference.png",
+      "bytes": 1176548,
+      "sha256": "22461626a7f120e47bf015d52bd4b37744d516c630d33aff617d91884262e7d6"
+    },
+    {
+      "path": ".qa-elemental-trails/native-setup-fixed.log",
+      "bytes": 507,
+      "sha256": "585a26f1afe3075f94feef2ee7ebe6c4011e4ab91bdf3297eca9cef15158afa4"
+    },
+    {
+      "path": ".qa-elemental-trails/native-source.json",
+      "bytes": 409,
+      "sha256": "6d0a9caf8db22e1a84400369c532ecbfa5b63e37af0c53d82e0ecf1c947b51b6"
+    },
+    {
+      "path": ".qa-elemental-trails/native.log",
+      "bytes": 5935,
+      "sha256": "8d238f013252147d7f38302a07d4ce73cea2756b307e84bb4629514bbd91b07a"
+    },
+    {
+      "path": ".qa-elemental-trails/prepare.log",
+      "bytes": 2666,
+      "sha256": "823e97a1d536dbf2bccfd058eb2cb752d6ad6e46c718e013736e46d78295a207"
+    },
+    {
+      "path": ".qa-elemental-trails/route-regressions.log",
+      "bytes": 574,
+      "sha256": "c232cdfef5a4e27845e6e8c3375d1305c81161efaa73e1cf75c1faef4fd850ac"
+    },
+    {
+      "path": ".qa-elemental-trails/setup-fixed-elemental-trail-reference.js",
+      "bytes": 5869,
+      "sha256": "4e2ea4368e661cb48616f24467680d2dbc4a4ebfeddd615695d8fc0865b76821"
+    },
+    {
+      "path": ".qa-elemental-trails/setup-fixed-elemental-trail-review.spec.js",
+      "bytes": 8951,
+      "sha256": "92524516f6c3be2df490061ee8d5519f5f3c54b4f24fbd39b9041a8a8a39cafc"
+    },
+    {
+      "path": ".qa-elemental-trails/setup-fixed-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-elemental-trails/setup-fixed-source.json",
+      "bytes": 563,
+      "sha256": "7c6020f9019c80946e172e3b8d748e16e56cb990a3e789b5399593290e4786c2"
+    }
+  ]
+}
