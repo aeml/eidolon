@@ -111,3 +111,12 @@ and16content groups pass. **Unselected and isolated**: native art, motion,
 preview and resource review is pending ordered56CI completion. No additional
 model is counted as accepted yet.
 [Preparation and retained fixture failures](2026-10-15-held-garment-preparation.json).
+
+## Qualified held garments selection — October 15
+
+Six distinct held 3D looks: sword, dagger, staff, mace, shield and tome, twelve High/Low GLBs. Existing unlock IDs, prices, ownership, real gear and actual socket transforms are preserved. Adds on-demand held-model inspection to the existing vendor preview.
+
+180 distinct focused checks across 12 suites, full lint and 16 generated-content groups pass. All twelve final GLBs have zero official validator errors or warnings. 14 distinct cases pass with no retries: two four-class High/Low full-party cases plus twelve real vendor preview/compare/inspect/rotate/apply cases. Three repeated swap/restore cycles retain exact geometry/texture counts. Each quality exercises sixteen supplied pose records and ninety continuous Run frames.
+
+Selected for the next coherent release after native visual review. Scoped implementation selection only. Final owner collection review, broader world/frame-time/device quality and complete eighteen-look collection remain open.
+[Qualification and retained evidence](2026-10-15-held-garment-qualification.json).
