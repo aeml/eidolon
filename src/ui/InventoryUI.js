@@ -1,3 +1,4 @@
+import { getProceduralItemIcon } from '../art/ProceduralIcons.js';
 import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { SLOTS, Item, BASE_ITEMS, RARITY, SET_DEFINITIONS, UNIQUE_EFFECTS, GEM_TYPES, GEM_QUALITIES } from '../core/ItemSystem.js';
 import { MobileItemDetails } from './MobileItemDetails.js';
@@ -26,6 +27,8 @@ export class InventoryUI {
         this.inventoryGrid = document.getElementById('inventory-grid');
         this.inventoryGuidance = document.getElementById('inventory-guidance');
         this.goldDisplay = document.getElementById('gold-display');
+        this.bagUsage = document.getElementById('bag-usage');
+        this.shopPurchaseStatus = document.getElementById('shop-purchase-status');
         this.btnSortInventory = document.getElementById('btn-sort-inventory');
         this.btnCloseInventory = document.getElementById('btn-close-inventory');
         this.shopScreen = document.getElementById('shop-screen');
@@ -596,10 +599,7 @@ export class InventoryUI {
             const player = this._getLastPlayer();
             if (player) {
                 this.updateInventory(player);
-                if (this.shopGambleTitle) {
-                    const cost = Math.ceil(34.68 * player.level);
-                    this.shopGambleTitle.textContent = `MYSTERY BOXES (${cost}g)`;
-                }
+                this.refreshShopOffers(player);
             }
         }
     }
@@ -846,6 +846,14 @@ export class InventoryUI {
         if (!player) return;
         this.loadouts.refreshPlayer();
         this.updateEquipmentRecovery(player);
+        if (this.bagUsage) {
+            const usage = `${player.inventory.filter(item => item?.id).length} / ${player.inventory.length}`;
+            if (this.bagUsage.textContent !== usage) {
+                this.bagUsage.textContent = usage;
+                this.bagUsage.setAttribute('aria-label', `Bag slots used: ${usage.replace(' / ', ' of ')}`);
+            }
+        }
+        if (this.isShopOpen) this.refreshShopOffers(player);
 
         if (this.goldDisplay) {
             this.goldDisplay.textContent = `GOLD: ${player.gold || 0}`;
@@ -1201,44 +1209,45 @@ export class InventoryUI {
             { name: 'Mystery Offhand', slot: SLOTS.OFF_HAND, icon: 'O' }
         ];
 
+        this.shopChoices = new Map();
         gambleOptions.forEach(opt => {
             const btn = document.createElement('button');
-            btn.className = 'shop-item';
-            btn.style.cssText = `
-                background: #222;
-                border: 1px solid #444;
-                padding: 10px;
-                cursor: pointer;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                transition: background 0.2s;
-                user-select: none;
-                -webkit-user-select: none;
-                width: 100%;
-                font-family: inherit;
-                color: inherit;
-            `;
-            btn.innerHTML = `
-                <div style="font-size: 24px; color: #ffd700; margin-bottom: 5px; pointer-events: none;">?</div>
-                <div style="font-size: 12px; font-weight: bold; pointer-events: none;">${opt.name}</div>
-                <div style="font-size: 10px; color: #aaa; pointer-events: none;">${opt.slot}</div>
-            `;
-
-            btn.onmouseover = () => {
-                btn.style.background = '#333';
-                btn.style.borderColor = '#ffd700';
-            };
-            btn.onmouseout = () => {
-                btn.style.background = '#222';
-                btn.style.borderColor = '#444';
-            };
-
+            btn.type = 'button'; btn.className = 'shop-item'; btn.dataset.mysterySlot = opt.slot;
+            const representative = BASE_ITEMS.find(item => item.slot === opt.slot);
+            const icon = document.createElement('img'); icon.className = 'shop-item__icon'; icon.alt = ''; icon.setAttribute('aria-hidden', 'true');
+            icon.src = getProceduralItemIcon({ ...representative, baseName: representative?.name, rarity: RARITY.COMMON, potency: 0 });
+            const badge = document.createElement('span'); badge.className = 'shop-item__mystery'; badge.textContent = '?'; badge.setAttribute('aria-hidden', 'true');
+            const name = document.createElement('span'); name.className = 'shop-item__name'; name.textContent = opt.name;
+            const detail = document.createElement('span'); detail.className = 'shop-item__detail'; detail.textContent = 'Random equipment';
+            const price = document.createElement('span'); price.className = 'shop-item__price';
+            btn.append(icon, badge, name, detail, price);
             btn.onclick = () => this.buyGambleItem(opt.slot);
-
-            grid.appendChild(btn);
+            this.shopChoices.set(opt.slot, { button: btn, price, name: opt.name }); grid.appendChild(btn);
         });
+        this.refreshShopOffers(this._getLastPlayer());
+    }
+
+    refreshShopOffers(player) {
+        if (!this.shopChoices) return;
+        const level = Number(player?.level);
+        const valid = Number.isInteger(level) && level >= 1 && level <= 100;
+        const cost = valid ? Math.ceil(35 * level) : null;
+        const gold = Number(player?.gold) || 0;
+        const inventory = player?.inventory;
+        const full = Array.isArray(inventory) && inventory.length > 0 && inventory.every(item => item?.id);
+        const signature = `${cost}:${gold}:${full}`;
+        if (signature === this.lastShopOfferSignature) return;
+        this.lastShopOfferSignature = signature;
+        if (this.shopGambleTitle) this.shopGambleTitle.textContent = 'Mystery equipment';
+        if (this.shopPurchaseStatus) this.shopPurchaseStatus.textContent = !valid ? 'Your character details are needed to show prices.'
+            : full ? 'Your bag is full. Free one slot before buying.'
+                : gold < cost ? `You need ${cost.toLocaleString()} Gold for a mystery item. You have ${gold.toLocaleString()}.`
+                    : `Each purchase costs ${cost.toLocaleString()} Gold. Choose a slot; its equipment type and rarity are random.`;
+        for (const { button, price, name } of this.shopChoices.values()) {
+            price.textContent = cost === null ? 'Price unavailable' : `${cost.toLocaleString()} Gold`;
+            button.disabled = !valid || full || gold < cost;
+            button.setAttribute('aria-label', cost === null ? `${name}, price unavailable` : `${name}, ${cost} Gold`);
+        }
     }
 
     buyGambleItem(slot) {

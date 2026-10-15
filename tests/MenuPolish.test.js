@@ -1594,7 +1594,8 @@ describe('menu polish regressions', () => {
         expect(html).toContain('<div id="shop-content-main" class="shop-content shop-content--main">');
         expect(html).toContain('<p id="shop-service-guidance" class="shop-guidance">');
         expect(html).toContain('<p class="shop-guidance shop-guidance--tip">');
-        expect(html).toContain('<h3 id="shop-gamble-title" class="shop-gamble-title">MYSTERY BOXES (500g)</h3>');
+        expect(html).toContain('<h3 id="shop-gamble-title" class="shop-gamble-title">Mystery equipment</h3>');
+        expect(html).toContain('<p id="shop-purchase-status" class="shop-purchase-status" role="status"></p>');
         expect(html).toContain('<div id="shop-grid" class="shop-grid">');
         expect(html).toContain('<div id="shop-content-buyback" class="shop-content shop-content--buyback" style="display: none;">');
         expect(html).toContain('<p id="shop-buyback-guidance" class="shop-guidance shop-guidance--buyback">');
@@ -1626,10 +1627,10 @@ describe('menu polish regressions', () => {
         expect(html).not.toContain('id="btn-sell-uncommon" class="menu-btn" style="background: #1a331a; color: #1eff00; border-color: #1eff00; font-size: 12px; padding: 5px 10px;"');
         expect(html).not.toContain('id="btn-sell-rare" class="menu-btn" style="background: #1a1a33; color: #0070dd; border-color: #0070dd; font-size: 12px; padding: 5px 10px;"');
 
-        expect(css).toMatch(/\.shop-sell-button\s*\{[^}]*font-size:\s*12px;[^}]*padding:\s*5px 10px;/s);
-        expect(css).toMatch(/\.shop-sell-button--common\s*\{[^}]*background:\s*#333;[^}]*color:\s*#fff;[^}]*border-color:\s*#fff;/s);
-        expect(css).toMatch(/\.shop-sell-button--uncommon\s*\{[^}]*background:\s*#1a331a;[^}]*color:\s*#1eff00;[^}]*border-color:\s*#1eff00;/s);
-        expect(css).toMatch(/\.shop-sell-button--rare\s*\{[^}]*background:\s*#1a1a33;[^}]*color:\s*#0070dd;[^}]*border-color:\s*#0070dd;/s);
+        expect(css).toMatch(/\.shop-sell-button\s*\{[^}]*font-size:\s*14px;[^}]*padding:\s*8px 10px;/s);
+        expect(css).toMatch(/\.shop-sell-button--common\s*\{[^}]*background:\s*#242d38;[^}]*color:\s*#e4e8ed;[^}]*border-color:\s*#85919c;/s);
+        expect(css).toMatch(/\.shop-sell-button--uncommon\s*\{[^}]*background:\s*#1d302a;[^}]*color:\s*#a9d8bc;[^}]*border-color:\s*#769b84;/s);
+        expect(css).toMatch(/\.shop-sell-button--rare\s*\{[^}]*background:\s*#1e2c40;[^}]*color:\s*#bad6f3;[^}]*border-color:\s*#7798ba;/s);
     });
 
     test('stash window grid and guidance use shared classes', () => {

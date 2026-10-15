@@ -1125,26 +1125,27 @@
 }
 
 .shop-sell-button {
-    font-size: 12px;
-    padding: 5px 10px;
+    font-size: 14px;
+    padding: 8px 10px;
+    min-height: 44px;
 }
 
 .shop-sell-button--common {
-    background: #333;
-    color: #fff;
-    border-color: #fff;
+    background: #242d38;
+    color: #e4e8ed;
+    border-color: #85919c;
 }
 
 .shop-sell-button--uncommon {
-    background: #1a331a;
-    color: #1eff00;
-    border-color: #1eff00;
+    background: #1d302a;
+    color: #a9d8bc;
+    border-color: #769b84;
 }
 
 .shop-sell-button--rare {
-    background: #1a1a33;
-    color: #0070dd;
-    border-color: #0070dd;
+    background: #1e2c40;
+    color: #bad6f3;
+    border-color: #7798ba;
 }
 
 .stash-window {
@@ -1578,3 +1579,37 @@
 .password-change summary, .email-recovery summary { cursor: pointer; }
 .email-recovery .support-field__row { flex-wrap: wrap; }
 .email-recovery input { font-size: 16px; }
+
+/* Equipment menus share the character sheet's restrained metal framing. */
+:is(#inventory-screen, .shop-window) {
+    background: linear-gradient(150deg, #1b222df5, #10141cf5);
+    border-color: #b99b6266;
+    box-shadow: inset 0 1px 0 #e0bd6a20, 0 18px 48px #0008;
+}
+:is(#character-sheet, #inventory-screen, .shop-window) > .window-header {
+    border-color: #b99b6233;
+    color: var(--color-gold);
+}
+.bag-usage { margin-left: auto; color: var(--color-text-muted); font-size: .8rem; letter-spacing: .04em; white-space: nowrap; }
+.shop-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; padding: 4px 0 12px; }
+.shop-item {
+    position: relative; min-width: 0; min-height: 150px; display: flex; flex-direction: column; align-items: center;
+    gap: 5px; padding: 12px 6px; font: inherit; color: #e4e6e9; cursor: pointer;
+    border: 1px solid #65717b; border-radius: 6px;
+    background: linear-gradient(145deg, #283341, #151d28);
+    box-shadow: inset 0 1px 0 #c8d2dd12;
+}
+.shop-item:hover:not(:disabled) { border-color: var(--color-gold); background: linear-gradient(145deg, #38434b, #1c2530); }
+.shop-item:disabled { cursor: default; border-color: #414c58; color: #a9b2be; }
+.shop-item:disabled .shop-item__icon { opacity: .55; }
+.shop-item__icon { width: 52px; height: 52px; object-fit: contain; pointer-events: none; }
+.shop-item__mystery { position: absolute; top: 12px; right: calc(50% - 32px); width: 18px; height: 18px; border-radius: 50%; background: #151d28; border: 1px solid #b99b62; color: #e9cf91; font-weight: bold; font-size: 12px; }
+.shop-item__name { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.shop-item__detail { color: var(--color-text-muted); font-size: 12px; }
+.shop-item__price { margin-top: auto; color: var(--color-gold); font-size: 14px; font-variant-numeric: tabular-nums; }
+.shop-purchase-status { margin: 0 0 12px; color: #d0d8df; font-size: 14px; line-height: 1.5; }
+.mobile-mode .shop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.mobile-mode .shop-item :is(.shop-item__name, .shop-item__price, .shop-item__detail),
+.mobile-mode .shop-purchase-status { font-size: 16px; }
+
+.mobile-mode .shop-sell-button { font-size: 16px; }

@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-15T06:01:08.908789+00:00",
+  "runtimeSource": "fcddb43b9ac3efe80ae782696dbfa55ca82ddf56",
+  "state": "Isolated and UNSELECTED pending native desktop/phone visual and interaction review. Not merged or deployed.",
+  "scope": "Merchant card hierarchy, existing code-native item icons with mystery badges, displayed per-slot prices, wallet/full-bag feedback, stable card nodes and unchanged authoritative purchase callback. Bag used/capacity count and shared character/inventory/merchant frame language.",
+  "correctness": "Old heading used ceil34.68*level while client purchase check and server PerformBuyGamble charge ceil35*level. New heading/cards consistently show actual35Gold per level; no server price, random-loot, economy or payment rules changed. No speculative local Gold/item mutation.",
+  "validation": {
+    "focused": "150distinct checks across9suites pass across initial27, the four unchanged passing related suites, and corrected71check menu suite. Covers12categories, levels1/7/100, exact price/action labels, cached SVG icons, wallet/full-bag disable/re-enable, stable card/focus, unchanged player money/gear and existing inventory/buyback/mobile/window/browser-plan behavior.",
+    "lint": "Full lint passes.",
+    "retainedFailure": "Existing MenuPolish markup assertion retained the inaccurate static500g placeholder. Updated to the actual Mystery equipment heading and explicit live purchase-status role; unchanged container/tab/grid assertions remain. Original result retained.",
+    "pending": "Two actual UI desktop/390px phone cases are prepared for native execution, including character/bag capture, responsive merchant layout, keyboard purchase dispatch, waiting for server money updates, affordability/full-bag recovery and close/reopen. They are unexecuted while ordered56CI runs. No final art, physical-device or full-menu usability acceptance claimed."
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-menu-polish-20261015",
+  "evidence": [
+    {
+      "path": ".qa-menu-polish/focused.log",
+      "bytes": 720,
+      "sha256": "cc067dcd81d6a29a3e4a6523cbfa3e04f63c3525039ef3c522bc9ecfdd56536b"
+    },
+    {
+      "path": ".qa-menu-polish/focused-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-menu-polish/related.log",
+      "bytes": 926898,
+      "sha256": "728ce4db7d4d3f33dfd834f29d33d3be5908ada6e9b52859796ea87ef6b7659c"
+    },
+    {
+      "path": ".qa-menu-polish/menu-contract-corrected.log",
+      "bytes": 505,
+      "sha256": "0ea12ff33949c1e15d55aba78f47c21bd87fe43ff1bf4ab95584efa8e2e43b26"
+    },
+    {
+      "path": ".qa-menu-polish/full-lint.log",
+      "bytes": 96,
+      "sha256": "0b5033e6a217fbd15dc194727ba175dfcf1a245641eab20298f084f65231cecd"
+    },
+    {
+      "path": ".qa-menu-polish/browser-fixture-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

@@ -122,3 +122,27 @@ accessible-name failure and corrected desktop/phone evidence.
 [Qualification](2026-10-15-durable-window-layout-qualification.json).
 This selection closes the implementation gap for durable registered-window
 positions/reset; broader menu polish and final usability review remain open.
+
+## Isolated equipment-menu refinement — October 15
+
+Merchant offers now use readable slot cards with code-native item icons/mystery
+badges, explicit prices and wallet/full-bag status. Cards retain their DOM/focus
+through character updates, and purchases keep the existing server callback
+without speculative Gold/item changes. The old heading's34.68Gold/level
+calculation disagreed with the actual35Gold/level purchase cost; presentation
+now matches the existing server rule. Inventory shows used/capacity counts and
+shares the character sheet's restrained metal framing with the merchant.
+
+150focused/related checks and full lint pass. **Unselected and isolated** pending
+native desktop/phone captures and interaction review; no broad menu or final
+visual acceptance is claimed.
+[Preparation and retained stale markup failure](2026-10-15-equipment-menu-preparation.json).
+
+## Qualified menu polish selection — October 15
+
+Readable merchant slot cards, actual existing Gold prices, stable focus, wallet/full-bag feedback, inventory capacity and coordinated character/bag/store framing. Readable Sell All colors and at least 44px touch targets. No server economy or speculative wallet/item mutations.
+
+151 distinct focused and related checks across nine suites pass, including the required native routing guard. Full lint and subsequent fixture lint pass. Three distinct native desktop/phone cases pass without retries. Keyboard and real virtual touch taps exercise existing callbacks, tabs and close/reopen; a CDP touch swipe scrolls offers without buying, then taps the last offhand offer. Wallet remains unchanged until authoritative updates.
+
+Selected for the next coherent release after native visual review. First selected equipment-menu slice. Stash/forge/trading presentation, final owner usability/art review and physical phone testing remain open.
+[Qualification and retained evidence](2026-10-15-equipment-menu-qualification.json).
