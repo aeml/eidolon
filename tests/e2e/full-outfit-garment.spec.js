@@ -6,6 +6,7 @@ for (const quality of ['high', 'low']) test(`complete garment fits and restores 
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.setViewportSize({ width: quality === 'low' ? 390 : 1280, height: 900 });
+    await page.exposeFunction('captureGarmentHUD', async name => page.screenshot({ path: testInfo.outputPath(`${name}-hud.png`) }));
     await page.goto('/', { waitUntil: 'networkidle' });
     const observation = await page.evaluate(async quality => {
         const THREE = await import('three');
@@ -46,8 +47,11 @@ for (const quality of ['high', 'low']) test(`complete garment fits and restores 
         game.player = actors[0].actor; game.uiManager.showHUD(); game.uiManager.updatePlayerStats(game.player);
         const focus = new THREE.Vector3(0, 0, 198); render.setZoom(18); render.setCameraTarget(focus);
         await waitForGeometryOwner(render); render.render();
-        const capture = name => { render.render(); images.push({ name, data: render.renderer.domElement.toDataURL('image/png') }); };
-        capture('original-party');
+        const capture = async name => {
+            render.render(); images.push({ name, data: render.renderer.domElement.toDataURL('image/png') });
+            if (name === 'party-Run' || name === 'close-Fighter') await window.captureGarmentHUD(name);
+        };
+        await capture('original-party');
         const apply = async enabled => {
             for (const { actor, appearances, saved } of actors) {
                 actor.appearances = enabled ? { ...appearances, outfit: look } : { ...appearances };
@@ -76,13 +80,21 @@ for (const quality of ['high', 'low']) test(`complete garment fits and restores 
                 });
                 poses.push({ type, state, samples, items: actor.mesh.userData.equipmentVisualItemCount, clip: actor.currentAction.getClip().name });
             }
-            render.setZoom(18); render.setCameraTarget(focus); capture(`party-${state}`);
+            if (state === 'Run') for (let frame = 0; frame < 90; frame++) {
+                await new Promise(requestAnimationFrame);
+                for (const { actor } of actors) actor.updateAnimationMixer(1 / 60);
+                render.render();
+            }
+            render.setZoom(18); render.setCameraTarget(focus); await capture(`party-${state}`);
         }
         for (const current of actors) {
             for (const row of actors) row.actor.mesh.visible = row === current;
-            current.actor.mesh.rotation.y = -.35; current.actor.mixer.stopAllAction(); current.actor.mesh.userData.resetRestPose(); current.actor.currentAction = null;
+            current.actor.mesh.rotation.y = Math.PI / 4; current.actor.mixer.stopAllAction(); current.actor.mesh.userData.resetRestPose(); current.actor.currentAction = null;
             current.actor.playAnimation('CombatIdle', true, true); current.actor.updateAnimationMixer(.2);
-            render.setZoom(7); render.setCameraTarget(current.actor.position); capture(`close-${current.type}`);
+            render.setCameraTarget(current.actor.position.clone().add(new THREE.Vector3(0, 2.1, 0)));
+            const aspect = innerWidth / innerHeight;
+            render.camera.top = 3; render.camera.bottom = -3; render.camera.left = -3 * aspect; render.camera.right = 3 * aspect;
+            render.camera.updateProjectionMatrix(); await capture(`close-${current.type}`);
         }
         for (const row of actors) { row.actor.mesh.visible = true; row.actor.mesh.rotation.y = 0; }
         render.setZoom(18); render.setCameraTarget(focus);
@@ -90,7 +102,7 @@ for (const quality of ['high', 'low']) test(`complete garment fits and restores 
             await apply(false); const original = { ...render.renderer.info.memory };
             await apply(true); cycles.push({ original, garment: { ...render.renderer.info.memory } });
         }
-        await apply(false); capture('restored-party');
+        await apply(false); await capture('restored-party');
         const result = { poses, cycles, images, restoredItems: actors.map(row => row.actor.mesh.userData.equipmentVisualItemCount),
             drawCalls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles };
         game.destroy(); return result;
