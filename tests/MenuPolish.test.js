@@ -1594,7 +1594,8 @@ describe('menu polish regressions', () => {
         expect(html).toContain('<div id="shop-content-main" class="shop-content shop-content--main">');
         expect(html).toContain('<p id="shop-service-guidance" class="shop-guidance">');
         expect(html).toContain('<p class="shop-guidance shop-guidance--tip">');
-        expect(html).toContain('<h3 id="shop-gamble-title" class="shop-gamble-title">MYSTERY BOXES (500g)</h3>');
+        expect(html).toContain('<h3 id="shop-gamble-title" class="shop-gamble-title">Mystery equipment</h3>');
+        expect(html).toContain('<p id="shop-purchase-status" class="shop-purchase-status" role="status"></p>');
         expect(html).toContain('<div id="shop-grid" class="shop-grid">');
         expect(html).toContain('<div id="shop-content-buyback" class="shop-content shop-content--buyback" style="display: none;">');
         expect(html).toContain('<p id="shop-buyback-guidance" class="shop-guidance shop-guidance--buyback">');

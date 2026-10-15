@@ -186,7 +186,7 @@
         </div>
 
         <div id="inventory-screen" class="window content-aware-window">
-            <div class="window-header"><span>INVENTORY</span><button id="btn-close-inventory" class="close-btn" type="button" aria-label="Close inventory">×</button></div>
+            <div class="window-header"><span>INVENTORY</span><span id="bag-usage" class="bag-usage" aria-label="Bag slots used"></span><button id="btn-close-inventory" class="close-btn" type="button" aria-label="Close inventory">×</button></div>
             <div class="inventory-grid" id="inventory-grid">
                 <!-- 25 Slots -->
                 <div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div>
@@ -987,7 +987,8 @@
                     <button id="btn-sell-rare" class="menu-btn shop-sell-button shop-sell-button--rare">Sell All Rare</button>
                 </div>
 
-                <h3 id="shop-gamble-title" class="shop-gamble-title">MYSTERY BOXES (500g)</h3>
+                <h3 id="shop-gamble-title" class="shop-gamble-title">Mystery equipment</h3>
+                <p id="shop-purchase-status" class="shop-purchase-status" role="status"></p>
                 
                 <div id="shop-grid" class="shop-grid">
                     <!-- Populated by JS -->
