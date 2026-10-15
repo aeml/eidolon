@@ -65,7 +65,7 @@ returning sessions (61 focused checks; two final native scene-lifetime cases).
 close specific usability/loading defects, not final world art, physical-device,
 whole-frame or full original readiness requirements. Soak remains deferred.
 
-## Alpha 1.79.54: published, verification in progress
+## Alpha 1.79.54: deployed and verified
 
 Earth trails now sample physical soil/pebbles in world space, correcting the
 stretched, cliff-like pattern at sharp bends while preserving route geometry,
@@ -99,12 +99,14 @@ These selected changes form Alpha1.79.54, normally pushed to origin/master at
 `fda5c6b89` after fetching/merging remote state and accepting predecessor53.
 454 final focused checks, full lint,14 content groups and the copied501-module
 publication build pass;224 exact public asset pins are prepared.489 cumulative
-notes preserve all488 previous entries. CI38674416385 is in progress: client and
-one hosted browser shard passed at03:23UTC; remaining hosted/server/native,
-deployment/live and public verification are pending. No later release is published.
+notes preserve all488 previous entries. All ten jobs in CI38674416385 passed:
+776client suites/11825tests,395hosted browser passes/13skips/no reported flakes,
+64native passes/one skip and live gameplay/recovery. Normal-TLS public verification
+at04:02:36UTC matches both54identities/source, ready database and all224pins.
+Four optional workflow steps remain skipped. [Acceptance and custody](2026-10-15-release1-79-54-acceptance.md).
 [Preparation and retained evidence](2026-10-15-release1-79-54-preparation.json).
 
-## Next quest-experience milestone: selected locally
+## Alpha 1.79.55 quest experience: prepared locally
 
 The dedicated Lore Book organizes personally earned chapters, exact discovery
 records, restoration accounts and Ilyra replies, with search/categories and
@@ -118,9 +120,21 @@ Pending/rejected/acknowledged requests preserve existing progression semantics.
 full lint and desktop/phone visual review pass. The older town fixture's stale
 tracker label was corrected with explicit27-objective/26-contract coverage.
 [Qualification and retained failures](2026-10-15-quest-book-qualification.json).
-The implementation is merged into local master and remains unpublished pending
-54 acceptance and its own release preparation/verification. Wider menu polish,
+The implementation is merged into local master and prepared as55, with synchronized
+version defaults and490cumulative notes preserving all489prior entries byte-exact.
+429release checks pass, retaining the initially missed isolated-QA version default
+and its correction.54is independently accepted.55is unpublished pending its own
+publication/build/CI/deployment/live/public verification. [Preparation](2026-10-15-release1-79-55-preparation.json).
+Wider menu polish,
 durable window preferences/reset, physical playtests and final review remain open.
+
+The full-outfit garment pipeline and first Iron Oath model remain isolated at
+`/home/aeml/.local/share/eidolon-garment-outfits-20261015`. Client/server ownership,
+preview signatures, save/protobuf custody and High/Low glTF structure have scoped
+passing checks; initial native four-class pose/swap/restore cases pass. Visual
+review found the first material too dark, and the close-view fixture needs true
+close framing/HUD captures. No garment model is counted as accepted or merged.
+The minimum18-look catalog remains open, and this prototype is not part of55.
 
 The private pine diffuse-lighting experiment144251bcd remains unselected: the
 visible change was too slight, and its Low view failed the original changed-pixel
