@@ -122,3 +122,18 @@ accessible-name failure and corrected desktop/phone evidence.
 [Qualification](2026-10-15-durable-window-layout-qualification.json).
 This selection closes the implementation gap for durable registered-window
 positions/reset; broader menu polish and final usability review remain open.
+
+## Isolated equipment-menu refinement — October 15
+
+Merchant offers now use readable slot cards with code-native item icons/mystery
+badges, explicit prices and wallet/full-bag status. Cards retain their DOM/focus
+through character updates, and purchases keep the existing server callback
+without speculative Gold/item changes. The old heading's34.68Gold/level
+calculation disagreed with the actual35Gold/level purchase cost; presentation
+now matches the existing server rule. Inventory shows used/capacity counts and
+shares the character sheet's restrained metal framing with the merchant.
+
+150focused/related checks and full lint pass. **Unselected and isolated** pending
+native desktop/phone captures and interaction review; no broad menu or final
+visual acceptance is claimed.
+[Preparation and retained stale markup failure](2026-10-15-equipment-menu-preparation.json).
