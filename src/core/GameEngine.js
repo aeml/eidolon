@@ -513,6 +513,10 @@ export class GameEngine {
         this.activeBuffs = [];
         this.worldGenerator = new WorldGenerator(this.getInstanceEnvironmentGroup(), this.collisionManager, {
             graphicsQuality: this.renderSystem.graphicsQuality, terrainElevation: this.terrainElevation, terrainProfile: this.terrainProfile,
+            // Construct static foliage draws only with native multi-draw.
+            // Emulated per-instance calls retain the ordinary cell renderer.
+            ownedFoliageDraws: this.renderSystem.renderer?.extensions?.has?.('WEBGL_multi_draw') === true
+                ? { influence: this.renderSystem.foliageShadowInfluence, camera: this.renderSystem.camera } : null,
             understorySpatialBatches: this.renderSystem.renderer?.extensions?.has?.('WEBGL_multi_draw') === true,
             campInstanceFrustum: this.renderSystem.renderer?.extensions?.has?.('WEBGL_multi_draw') === true
         });

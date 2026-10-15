@@ -121,6 +121,8 @@ class GameEngineNetworkMessageMethods {
         const worldGen = new WorldGenerator(this.getInstanceEnvironmentGroup(), this.collisionManager, {
             instanceId, instanceType: type, layout, graphicsQuality: this.renderSystem.graphicsQuality,
             terrainElevation: this.terrainElevation, terrainProfile: this.terrainProfile,
+            ownedFoliageDraws: this.renderSystem.renderer?.extensions?.has?.('WEBGL_multi_draw') === true
+                ? { influence: this.renderSystem.foliageShadowInfluence, camera: this.renderSystem.camera } : null,
             understorySpatialBatches: this.renderSystem.renderer?.extensions?.has?.('WEBGL_multi_draw') === true,
             campInstanceFrustum: this.renderSystem.renderer?.extensions?.has?.('WEBGL_multi_draw') === true
         });
