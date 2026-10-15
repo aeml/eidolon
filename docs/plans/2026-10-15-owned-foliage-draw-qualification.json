@@ -1,0 +1,1999 @@
+{
+  "date": "2026-10-15",
+  "state": "qualified locally; selected for unpublished Alpha1.79.54; deployment pending",
+  "runtimeCommit": "d219ba730a22a308e872aa1515c6b33a7715e226",
+  "change": "Construction-owned native multi-draw foliage:3146 retained source cells representing901 placements consolidated into28 draws under9 roots, retaining original cell bounds, exact matrices, source material and receiver/shadow influence decisions. No per-frame walk of detached construction objects.",
+  "activation": "Only actual WEBGL_multi_draw contexts opt in through GameEngine and overworld return. Fallback and standalone galleries retain existing source cells.",
+  "validation": {
+    "distinctFocusedChecks": 211,
+    "suites": 8,
+    "fullLint": "pass",
+    "finalPrivateNativeCases": 2,
+    "permanentNativeCases": 2,
+    "permanentSeconds": 43.0,
+    "permanentViewAndMotionPairs": 24,
+    "privateRealmViewPairs": 18,
+    "exactPixelsAndTriangles": "All synchronous reference/candidate/reference comparisons exact; draws same or lower",
+    "qualityCyclesPerFinalFixture": 8,
+    "productionWorldRebuildRetireCyclesPerFinalFixture": 6,
+    "requiredCICoverage": "owned-foliage-render.spec.js in native stage, retries0"
+  },
+  "observations": [
+    {
+      "fixture": "native-warm",
+      "observation": {
+        "quality": "low",
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "sources": 9,
+        "sourceCells": 3146,
+        "outfits": [
+          {
+            "type": "Fighter",
+            "items": 14
+          },
+          {
+            "type": "Rogue",
+            "items": 14
+          },
+          {
+            "type": "Wizard",
+            "items": 14
+          },
+          {
+            "type": "Cleric",
+            "items": 14
+          }
+        ],
+        "pairs": [
+          {
+            "x": 390,
+            "z": 173,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 178,
+              "triangles": 103692
+            },
+            "after": {
+              "calls": 148,
+              "triangles": 103692
+            }
+          },
+          {
+            "x": 405,
+            "z": 185,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 205,
+              "triangles": 115571
+            },
+            "after": {
+              "calls": 148,
+              "triangles": 115571
+            }
+          },
+          {
+            "x": 373,
+            "z": 163,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 154,
+              "triangles": 92054
+            },
+            "after": {
+              "calls": 143,
+              "triangles": 92054
+            }
+          },
+          {
+            "x": -314.28556566295237,
+            "z": -965.8956538608957,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 93,
+              "triangles": 66582
+            },
+            "after": {
+              "calls": 93,
+              "triangles": 66582
+            }
+          },
+          {
+            "x": -267.1804511797675,
+            "z": -973.8376418656974,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 89,
+              "triangles": 62100
+            },
+            "after": {
+              "calls": 89,
+              "triangles": 62100
+            }
+          },
+          {
+            "x": -1846.8856917576682,
+            "z": 258.95729874631013,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 89,
+              "triangles": 59252
+            },
+            "after": {
+              "calls": 87,
+              "triangles": 59252
+            }
+          },
+          {
+            "x": -2632.9923388542584,
+            "z": -110.26651273807569,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 90,
+              "triangles": 59414
+            },
+            "after": {
+              "calls": 87,
+              "triangles": 59414
+            }
+          },
+          {
+            "x": 1756.0375827597454,
+            "z": 377.8075660113245,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 84,
+              "triangles": 58906
+            },
+            "after": {
+              "calls": 84,
+              "triangles": 58906
+            }
+          },
+          {
+            "x": 2350.0914547159164,
+            "z": 298.8498295541471,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 87,
+              "triangles": 59474
+            },
+            "after": {
+              "calls": 86,
+              "triangles": 59474
+            }
+          }
+        ],
+        "qualityCycles": [
+          {
+            "quality": "low",
+            "qualityMS": 1.1999999284744263,
+            "sourceQualityMS": 0,
+            "changed": 0,
+            "unstable": 0,
+            "beforeTriangles": 92246,
+            "afterTriangles": 92246,
+            "memory": {
+              "geometries": 221,
+              "textures": 173
+            }
+          },
+          {
+            "quality": "high",
+            "qualityMS": 1112.5999999046326,
+            "sourceQualityMS": 139.10000002384186,
+            "changed": 0,
+            "unstable": 0,
+            "beforeTriangles": 97878,
+            "afterTriangles": 97878,
+            "memory": {
+              "geometries": 221,
+              "textures": 173
+            }
+          },
+          {
+            "quality": "low",
+            "qualityMS": 401.39999997615814,
+            "sourceQualityMS": 77.69999992847443,
+            "changed": 0,
+            "unstable": 0,
+            "beforeTriangles": 92246,
+            "afterTriangles": 92246,
+            "memory": {
+              "geometries": 221,
+              "textures": 173
+            }
+          },
+          {
+            "quality": "high",
+            "qualityMS": 1015.3000000715256,
+            "sourceQualityMS": 121.19999992847443,
+            "changed": 0,
+            "unstable": 0,
+            "beforeTriangles": 97878,
+            "afterTriangles": 97878,
+            "memory": {
+              "geometries": 221,
+              "textures": 173
+            }
+          }
+        ],
+        "referenceWarmup": {
+          "before": {
+            "geometries": 218,
+            "textures": 173
+          },
+          "phases": [
+            {
+              "quality": "high",
+              "memory": {
+                "geometries": 221,
+                "textures": 173
+              }
+            },
+            {
+              "quality": "low",
+              "memory": {
+                "geometries": 221,
+                "textures": 173
+              }
+            },
+            {
+              "quality": "low",
+              "memory": {
+                "geometries": 221,
+                "textures": 173
+              }
+            }
+          ],
+          "after": {
+            "geometries": 221,
+            "textures": 173
+          },
+          "candidateUnchanged": true
+        },
+        "beforeMemory": {
+          "geometries": 221,
+          "textures": 173
+        },
+        "afterMemory": {
+          "geometries": 193,
+          "textures": 117
+        },
+        "retired": {
+          "geometries": 154,
+          "textures": 78
+        },
+        "lifecycle": [
+          {
+            "active": {
+              "roots": 9,
+              "owned": 9,
+              "batches": 28,
+              "memory": {
+                "geometries": 183,
+                "textures": 158
+              }
+            },
+            "retired": {
+              "geometries": 154,
+              "textures": 78
+            },
+            "remainingRoots": 0
+          },
+          {
+            "active": {
+              "roots": 9,
+              "owned": 9,
+              "batches": 28,
+              "memory": {
+                "geometries": 183,
+                "textures": 158
+              }
+            },
+            "retired": {
+              "geometries": 154,
+              "textures": 78
+            },
+            "remainingRoots": 0
+          },
+          {
+            "active": {
+              "roots": 9,
+              "owned": 9,
+              "batches": 28,
+              "memory": {
+                "geometries": 183,
+                "textures": 158
+              }
+            },
+            "retired": {
+              "geometries": 154,
+              "textures": 78
+            },
+            "remainingRoots": 0
+          }
+        ],
+        "pending": 0,
+        "timingSummary": [
+          {
+            "candidate": false,
+            "medianCPU": 13.399999976158142,
+            "medianInterval": 16.69999999999891,
+            "draws": 154,
+            "triangles": 92054
+          },
+          {
+            "candidate": true,
+            "medianCPU": 10.699999988079071,
+            "medianInterval": 16.69999999999891,
+            "draws": 143,
+            "triangles": 92174
+          },
+          {
+            "candidate": true,
+            "medianCPU": 13.350000023841858,
+            "medianInterval": 16.700000000000728,
+            "draws": 143,
+            "triangles": 92174
+          },
+          {
+            "candidate": false,
+            "medianCPU": 11.600000023841858,
+            "medianInterval": 16.69999999999709,
+            "draws": 154,
+            "triangles": 92246
+          }
+        ]
+      }
+    },
+    {
+      "fixture": "native-warm",
+      "observation": {
+        "quality": "high",
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "sources": 9,
+        "sourceCells": 3146,
+        "outfits": [
+          {
+            "type": "Fighter",
+            "items": 14
+          },
+          {
+            "type": "Rogue",
+            "items": 14
+          },
+          {
+            "type": "Wizard",
+            "items": 14
+          },
+          {
+            "type": "Cleric",
+            "items": 14
+          }
+        ],
+        "pairs": [
+          {
+            "x": 390,
+            "z": 173,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 294,
+              "triangles": 242752
+            },
+            "after": {
+              "calls": 235,
+              "triangles": 242752
+            }
+          },
+          {
+            "x": 405,
+            "z": 185,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 301,
+              "triangles": 256148
+            },
+            "after": {
+              "calls": 235,
+              "triangles": 256148
+            }
+          },
+          {
+            "x": 373,
+            "z": 163,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 293,
+              "triangles": 232901
+            },
+            "after": {
+              "calls": 232,
+              "triangles": 232901
+            }
+          },
+          {
+            "x": -314.28556566295237,
+            "z": -965.8956538608957,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 167,
+              "triangles": 167969
+            },
+            "after": {
+              "calls": 165,
+              "triangles": 167969
+            }
+          },
+          {
+            "x": -267.1804511797675,
+            "z": -973.8376418656974,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 170,
+              "triangles": 143259
+            },
+            "after": {
+              "calls": 163,
+              "triangles": 143259
+            }
+          },
+          {
+            "x": -1846.8856917576682,
+            "z": 258.95729874631013,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 164,
+              "triangles": 131291
+            },
+            "after": {
+              "calls": 154,
+              "triangles": 131291
+            }
+          },
+          {
+            "x": -2632.9923388542584,
+            "z": -110.26651273807569,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 166,
+              "triangles": 131419
+            },
+            "after": {
+              "calls": 154,
+              "triangles": 131419
+            }
+          },
+          {
+            "x": 1756.0375827597454,
+            "z": 377.8075660113245,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 150,
+              "triangles": 129053
+            },
+            "after": {
+              "calls": 150,
+              "triangles": 129053
+            }
+          },
+          {
+            "x": 2350.0914547159164,
+            "z": 298.8498295541471,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 166,
+              "triangles": 133411
+            },
+            "after": {
+              "calls": 159,
+              "triangles": 133411
+            }
+          }
+        ],
+        "qualityCycles": [
+          {
+            "quality": "low",
+            "qualityMS": 430.39999997615814,
+            "sourceQualityMS": 64.40000009536743,
+            "changed": 0,
+            "unstable": 0,
+            "beforeTriangles": 106063,
+            "afterTriangles": 106063,
+            "memory": {
+              "geometries": 225,
+              "textures": 185
+            }
+          },
+          {
+            "quality": "high",
+            "qualityMS": 1047,
+            "sourceQualityMS": 142.39999997615814,
+            "changed": 0,
+            "unstable": 0,
+            "beforeTriangles": 232901,
+            "afterTriangles": 232901,
+            "memory": {
+              "geometries": 234,
+              "textures": 199
+            }
+          },
+          {
+            "quality": "low",
+            "qualityMS": 336.10000002384186,
+            "sourceQualityMS": 67.80000007152557,
+            "changed": 0,
+            "unstable": 0,
+            "beforeTriangles": 106063,
+            "afterTriangles": 106063,
+            "memory": {
+              "geometries": 225,
+              "textures": 185
+            }
+          },
+          {
+            "quality": "high",
+            "qualityMS": 1008.8999999761581,
+            "sourceQualityMS": 129.09999990463257,
+            "changed": 0,
+            "unstable": 0,
+            "beforeTriangles": 232901,
+            "afterTriangles": 232901,
+            "memory": {
+              "geometries": 234,
+              "textures": 199
+            }
+          }
+        ],
+        "referenceWarmup": {
+          "before": {
+            "geometries": 230,
+            "textures": 199
+          },
+          "phases": [
+            {
+              "quality": "high",
+              "memory": {
+                "geometries": 230,
+                "textures": 199
+              }
+            },
+            {
+              "quality": "low",
+              "memory": {
+                "geometries": 225,
+                "textures": 185
+              }
+            },
+            {
+              "quality": "high",
+              "memory": {
+                "geometries": 234,
+                "textures": 199
+              }
+            }
+          ],
+          "after": {
+            "geometries": 234,
+            "textures": 199
+          },
+          "candidateUnchanged": true
+        },
+        "beforeMemory": {
+          "geometries": 234,
+          "textures": 199
+        },
+        "afterMemory": {
+          "geometries": 206,
+          "textures": 143
+        },
+        "retired": {
+          "geometries": 156,
+          "textures": 92
+        },
+        "lifecycle": [
+          {
+            "active": {
+              "roots": 9,
+              "owned": 9,
+              "batches": 28,
+              "memory": {
+                "geometries": 185,
+                "textures": 184
+              }
+            },
+            "retired": {
+              "geometries": 156,
+              "textures": 92
+            },
+            "remainingRoots": 0
+          },
+          {
+            "active": {
+              "roots": 9,
+              "owned": 9,
+              "batches": 28,
+              "memory": {
+                "geometries": 185,
+                "textures": 184
+              }
+            },
+            "retired": {
+              "geometries": 156,
+              "textures": 92
+            },
+            "remainingRoots": 0
+          },
+          {
+            "active": {
+              "roots": 9,
+              "owned": 9,
+              "batches": 28,
+              "memory": {
+                "geometries": 185,
+                "textures": 184
+              }
+            },
+            "retired": {
+              "geometries": 156,
+              "textures": 92
+            },
+            "remainingRoots": 0
+          }
+        ],
+        "pending": 0,
+        "timingSummary": [
+          {
+            "candidate": false,
+            "medianCPU": 26.5,
+            "medianInterval": 33.29999999999927,
+            "draws": 293,
+            "triangles": 232901
+          },
+          {
+            "candidate": true,
+            "medianCPU": 23.55000001192093,
+            "medianInterval": 16.799999999999272,
+            "draws": 232,
+            "triangles": 232901
+          },
+          {
+            "candidate": true,
+            "medianCPU": 20.399999976158142,
+            "medianInterval": 16.700000000000728,
+            "draws": 232,
+            "triangles": 232901
+          },
+          {
+            "candidate": false,
+            "medianCPU": 26.55000001192093,
+            "medianInterval": 33.29999999999927,
+            "draws": 293,
+            "triangles": 232901
+          }
+        ]
+      }
+    },
+    {
+      "fixture": "native-permanent",
+      "observation": {
+        "quality": "high",
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "sources": 9,
+        "sourceCells": 3146,
+        "outfits": [
+          {
+            "type": "Fighter",
+            "items": 14
+          },
+          {
+            "type": "Rogue",
+            "items": 14
+          },
+          {
+            "type": "Wizard",
+            "items": 14
+          },
+          {
+            "type": "Cleric",
+            "items": 14
+          }
+        ],
+        "pairs": [
+          {
+            "x": 390,
+            "z": 173,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 294,
+              "triangles": 242752
+            },
+            "after": {
+              "calls": 235,
+              "triangles": 242752
+            }
+          },
+          {
+            "x": 405,
+            "z": 185,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 301,
+              "triangles": 256148
+            },
+            "after": {
+              "calls": 235,
+              "triangles": 256148
+            }
+          },
+          {
+            "x": 373,
+            "z": 163,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 293,
+              "triangles": 232901
+            },
+            "after": {
+              "calls": 232,
+              "triangles": 232901
+            }
+          },
+          {
+            "x": -314.28556566295237,
+            "z": -965.8956538608957,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 167,
+              "triangles": 167969
+            },
+            "after": {
+              "calls": 165,
+              "triangles": 167969
+            }
+          },
+          {
+            "x": -267.1804511797675,
+            "z": -973.8376418656974,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 170,
+              "triangles": 143259
+            },
+            "after": {
+              "calls": 163,
+              "triangles": 143259
+            }
+          },
+          {
+            "x": -1846.8856917576682,
+            "z": 258.95729874631013,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 164,
+              "triangles": 131291
+            },
+            "after": {
+              "calls": 154,
+              "triangles": 131291
+            }
+          },
+          {
+            "x": -2632.9923388542584,
+            "z": -110.26651273807569,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 166,
+              "triangles": 131419
+            },
+            "after": {
+              "calls": 154,
+              "triangles": 131419
+            }
+          },
+          {
+            "x": 1756.0375827597454,
+            "z": 377.8075660113245,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 150,
+              "triangles": 129053
+            },
+            "after": {
+              "calls": 150,
+              "triangles": 129053
+            }
+          },
+          {
+            "x": 2350.0914547159164,
+            "z": 298.8498295541471,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 166,
+              "triangles": 133411
+            },
+            "after": {
+              "calls": 159,
+              "triangles": 133411
+            }
+          },
+          {
+            "pose": 0.1,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 293,
+              "triangles": 232901
+            },
+            "after": {
+              "calls": 232,
+              "triangles": 232901
+            }
+          },
+          {
+            "pose": 0.3,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 293,
+              "triangles": 232901
+            },
+            "after": {
+              "calls": 232,
+              "triangles": 232901
+            }
+          },
+          {
+            "pose": 0.6,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 293,
+              "triangles": 232901
+            },
+            "after": {
+              "calls": 232,
+              "triangles": 232901
+            }
+          }
+        ],
+        "qualityCycles": [
+          {
+            "quality": "low",
+            "qualityMS": 366.60000002384186,
+            "changed": 0,
+            "unstable": 0,
+            "beforeTriangles": 106063,
+            "afterTriangles": 106063,
+            "memory": {
+              "geometries": 225,
+              "textures": 185
+            }
+          },
+          {
+            "quality": "high",
+            "qualityMS": 998.2999999523163,
+            "changed": 0,
+            "unstable": 0,
+            "beforeTriangles": 232901,
+            "afterTriangles": 232901,
+            "memory": {
+              "geometries": 234,
+              "textures": 199
+            }
+          },
+          {
+            "quality": "low",
+            "qualityMS": 334.2999999523163,
+            "changed": 0,
+            "unstable": 0,
+            "beforeTriangles": 106063,
+            "afterTriangles": 106063,
+            "memory": {
+              "geometries": 225,
+              "textures": 185
+            }
+          },
+          {
+            "quality": "high",
+            "qualityMS": 898.1000000238419,
+            "changed": 0,
+            "unstable": 0,
+            "beforeTriangles": 232901,
+            "afterTriangles": 232901,
+            "memory": {
+              "geometries": 234,
+              "textures": 199
+            }
+          }
+        ],
+        "referenceWarmup": {
+          "before": {
+            "geometries": 230,
+            "textures": 199
+          },
+          "phases": [
+            {
+              "quality": "high",
+              "memory": {
+                "geometries": 230,
+                "textures": 199
+              }
+            },
+            {
+              "quality": "low",
+              "memory": {
+                "geometries": 225,
+                "textures": 185
+              }
+            },
+            {
+              "quality": "high",
+              "memory": {
+                "geometries": 234,
+                "textures": 199
+              }
+            }
+          ],
+          "after": {
+            "geometries": 234,
+            "textures": 199
+          },
+          "candidateUnchanged": true
+        },
+        "beforeMemory": {
+          "geometries": 234,
+          "textures": 199
+        },
+        "afterMemory": {
+          "geometries": 206,
+          "textures": 143
+        },
+        "retired": {
+          "geometries": 156,
+          "textures": 92
+        },
+        "lifecycle": [
+          {
+            "active": {
+              "roots": 9,
+              "owned": 9,
+              "batches": 28,
+              "memory": {
+                "geometries": 185,
+                "textures": 184
+              }
+            },
+            "retired": {
+              "geometries": 156,
+              "textures": 92
+            },
+            "remainingRoots": 0
+          },
+          {
+            "active": {
+              "roots": 9,
+              "owned": 9,
+              "batches": 28,
+              "memory": {
+                "geometries": 185,
+                "textures": 184
+              }
+            },
+            "retired": {
+              "geometries": 156,
+              "textures": 92
+            },
+            "remainingRoots": 0
+          },
+          {
+            "active": {
+              "roots": 9,
+              "owned": 9,
+              "batches": 28,
+              "memory": {
+                "geometries": 185,
+                "textures": 184
+              }
+            },
+            "retired": {
+              "geometries": 156,
+              "textures": 92
+            },
+            "remainingRoots": 0
+          }
+        ],
+        "pending": 0
+      }
+    },
+    {
+      "fixture": "native-permanent",
+      "observation": {
+        "quality": "low",
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "sources": 9,
+        "sourceCells": 3146,
+        "outfits": [
+          {
+            "type": "Fighter",
+            "items": 14
+          },
+          {
+            "type": "Rogue",
+            "items": 14
+          },
+          {
+            "type": "Wizard",
+            "items": 14
+          },
+          {
+            "type": "Cleric",
+            "items": 14
+          }
+        ],
+        "pairs": [
+          {
+            "x": 390,
+            "z": 173,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 178,
+              "triangles": 103692
+            },
+            "after": {
+              "calls": 148,
+              "triangles": 103692
+            }
+          },
+          {
+            "x": 405,
+            "z": 185,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 205,
+              "triangles": 115571
+            },
+            "after": {
+              "calls": 148,
+              "triangles": 115571
+            }
+          },
+          {
+            "x": 373,
+            "z": 163,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 154,
+              "triangles": 92054
+            },
+            "after": {
+              "calls": 143,
+              "triangles": 92054
+            }
+          },
+          {
+            "x": -314.28556566295237,
+            "z": -965.8956538608957,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 93,
+              "triangles": 66582
+            },
+            "after": {
+              "calls": 93,
+              "triangles": 66582
+            }
+          },
+          {
+            "x": -267.1804511797675,
+            "z": -973.8376418656974,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 89,
+              "triangles": 62100
+            },
+            "after": {
+              "calls": 89,
+              "triangles": 62100
+            }
+          },
+          {
+            "x": -1846.8856917576682,
+            "z": 258.95729874631013,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 89,
+              "triangles": 59252
+            },
+            "after": {
+              "calls": 87,
+              "triangles": 59252
+            }
+          },
+          {
+            "x": -2632.9923388542584,
+            "z": -110.26651273807569,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 90,
+              "triangles": 59414
+            },
+            "after": {
+              "calls": 87,
+              "triangles": 59414
+            }
+          },
+          {
+            "x": 1756.0375827597454,
+            "z": 377.8075660113245,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 84,
+              "triangles": 58906
+            },
+            "after": {
+              "calls": 84,
+              "triangles": 58906
+            }
+          },
+          {
+            "x": 2350.0914547159164,
+            "z": 298.8498295541471,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 87,
+              "triangles": 59474
+            },
+            "after": {
+              "calls": 86,
+              "triangles": 59474
+            }
+          },
+          {
+            "pose": 0.1,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 154,
+              "triangles": 92174
+            },
+            "after": {
+              "calls": 143,
+              "triangles": 92174
+            }
+          },
+          {
+            "pose": 0.3,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 154,
+              "triangles": 92246
+            },
+            "after": {
+              "calls": 143,
+              "triangles": 92246
+            }
+          },
+          {
+            "pose": 0.6,
+            "changed": 0,
+            "unstable": 0,
+            "before": {
+              "calls": 154,
+              "triangles": 92246
+            },
+            "after": {
+              "calls": 143,
+              "triangles": 92246
+            }
+          }
+        ],
+        "qualityCycles": [
+          {
+            "quality": "low",
+            "qualityMS": 1.2000000476837158,
+            "changed": 0,
+            "unstable": 0,
+            "beforeTriangles": 92246,
+            "afterTriangles": 92246,
+            "memory": {
+              "geometries": 221,
+              "textures": 173
+            }
+          },
+          {
+            "quality": "high",
+            "qualityMS": 973.2000000476837,
+            "changed": 0,
+            "unstable": 0,
+            "beforeTriangles": 97878,
+            "afterTriangles": 97878,
+            "memory": {
+              "geometries": 221,
+              "textures": 173
+            }
+          },
+          {
+            "quality": "low",
+            "qualityMS": 317.90000009536743,
+            "changed": 0,
+            "unstable": 0,
+            "beforeTriangles": 92246,
+            "afterTriangles": 92246,
+            "memory": {
+              "geometries": 221,
+              "textures": 173
+            }
+          },
+          {
+            "quality": "high",
+            "qualityMS": 1099.5,
+            "changed": 0,
+            "unstable": 0,
+            "beforeTriangles": 97878,
+            "afterTriangles": 97878,
+            "memory": {
+              "geometries": 221,
+              "textures": 173
+            }
+          }
+        ],
+        "referenceWarmup": {
+          "before": {
+            "geometries": 218,
+            "textures": 173
+          },
+          "phases": [
+            {
+              "quality": "high",
+              "memory": {
+                "geometries": 221,
+                "textures": 173
+              }
+            },
+            {
+              "quality": "low",
+              "memory": {
+                "geometries": 221,
+                "textures": 173
+              }
+            },
+            {
+              "quality": "low",
+              "memory": {
+                "geometries": 221,
+                "textures": 173
+              }
+            }
+          ],
+          "after": {
+            "geometries": 221,
+            "textures": 173
+          },
+          "candidateUnchanged": true
+        },
+        "beforeMemory": {
+          "geometries": 221,
+          "textures": 173
+        },
+        "afterMemory": {
+          "geometries": 193,
+          "textures": 117
+        },
+        "retired": {
+          "geometries": 154,
+          "textures": 78
+        },
+        "lifecycle": [
+          {
+            "active": {
+              "roots": 9,
+              "owned": 9,
+              "batches": 28,
+              "memory": {
+                "geometries": 183,
+                "textures": 158
+              }
+            },
+            "retired": {
+              "geometries": 154,
+              "textures": 78
+            },
+            "remainingRoots": 0
+          },
+          {
+            "active": {
+              "roots": 9,
+              "owned": 9,
+              "batches": 28,
+              "memory": {
+                "geometries": 183,
+                "textures": 158
+              }
+            },
+            "retired": {
+              "geometries": 154,
+              "textures": 78
+            },
+            "remainingRoots": 0
+          },
+          {
+            "active": {
+              "roots": 9,
+              "owned": 9,
+              "batches": 28,
+              "memory": {
+                "geometries": 183,
+                "textures": 158
+              }
+            },
+            "retired": {
+              "geometries": 154,
+              "textures": 78
+            },
+            "remainingRoots": 0
+          }
+        ],
+        "pending": 0
+      }
+    }
+  ],
+  "performanceScope": {
+    "highWarmABBA": "Original26.5/26.55ms CPU medians versus candidate23.55/20.4ms;293\u2192232 draws,232901 triangles. Controlled renderer CPU benefit, not current connected full-frame acceptance.",
+    "lowWarmABBA": "Original13.4/11.6ms versus candidate10.7/13.35ms. Mixed CPU samples; no uniform Low speedup claim. Animated block triangle counts vary; synchronous comparison pairs remain exact.",
+    "qualitySwitchCost": "Synchronous full-world quality switches remain about336\u20131113ms in warm private fixture; original source geometry updates account for64\u2013142ms. Remaining work includes batching and ordinary renderer quality changes. This is not a per-frame cost or a comparative baseline of full quality-switch work.",
+    "openBudgets": "Existing High256148-triangle view and Low scenes above85000 remain open; no target reduction."
+  },
+  "retainedFailures": [
+    {
+      "path": ".qa-owned-foliage/native-expanded.log",
+      "reason": "High passed; Low failed strict repeated memory baseline because High reference geometry had never been uploaded. Original-only warmup shows218\u2192221 geometries, with candidate geometry identities unchanged. Final strict repeated equality passes after warming both reference paths; assertion unchanged."
+    }
+  ],
+  "lifetime": "Repeated production worlds retire all9owned roots and28batches with identical geometry/texture counts after each of3cycles per quality; borrowed materials and canonical geometry preserved. Quality rebuild replaces owned resources once.",
+  "limits": [
+    "Not final world art",
+    "Not whole-game frame acceptance",
+    "Not soak/capacity acceptance",
+    "Earlier prototype and rejected per-frame adapter evidence retained separately"
+  ],
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-foliage-owned-draws-20261015",
+  "files": [
+    {
+      "path": ".qa-owned-foliage/ci-fixture-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-owned-foliage/construction-cpu.log",
+      "bytes": 558,
+      "sha256": "01a32623987ba81a9a326aaa95ddcc4369ac79382db863f6c71e9c1117f8201f"
+    },
+    {
+      "path": ".qa-owned-foliage/default-integration-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-owned-foliage/expanded-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-owned-foliage/expanded-native-fixture.js",
+      "bytes": 13439,
+      "sha256": "33d4376f34cab1c61c6b212bb4abe40e59c0f3ca6e43f7bd3c2c5e342b49c2a7"
+    },
+    {
+      "path": ".qa-owned-foliage/expanded-native-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-owned-foliage/expanded-native-source.json",
+      "bytes": 407,
+      "sha256": "32d14bc85da82c2871cb16694f6639ec3b25c0e5f6ef1450ce6061ef699be891"
+    },
+    {
+      "path": ".qa-owned-foliage/final-full-lint.log",
+      "bytes": 96,
+      "sha256": "3835ec99b7b4910fc6a949311de34c4da456308fde4c98ff27e8790fdde2face"
+    },
+    {
+      "path": ".qa-owned-foliage/final-scoped-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-owned-foliage/fixture-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-owned-foliage/full-lint.log",
+      "bytes": 96,
+      "sha256": "3835ec99b7b4910fc6a949311de34c4da456308fde4c98ff27e8790fdde2face"
+    },
+    {
+      "path": ".qa-owned-foliage/integration-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-owned-foliage/lifetime-cpu.log",
+      "bytes": 664,
+      "sha256": "47f4d5bfb945c3dc5320f6d86b69038d136b17e36391c9585ca55113e230f3ff"
+    },
+    {
+      "path": ".qa-owned-foliage/lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-owned-foliage/native-case-discovery.json",
+      "bytes": 7544,
+      "sha256": "0dbbb594411fc1ee90bb3e0b4a7f60017d668b36e02ad115868096b53352d970"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/.last-run.json",
+      "bytes": 96,
+      "sha256": "1b99c926ab1aa00cc8d224a5fc71ff78abddc393c9f85d28ee62248b70d5b26f"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/error-context.md",
+      "bytes": 10003,
+      "sha256": "62b3bb9f1ed0b5f8a1d70ffd07bc86913348d09edd3c6750cbb3f12d7c3704c6"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/observation.json",
+      "bytes": 30661,
+      "sha256": "4bc6419171778243f74a250fbbc4010e3bc5db0f789bcbf34abbfa92b79536a9"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/test-failed-1.png",
+      "bytes": 133202,
+      "sha256": "212a7e14470178d4632e9dfb442a077f1ec7479d606b8719ab594e57b624bf08"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/trace.zip",
+      "bytes": 24017883,
+      "sha256": "9cd485f1aaef84adcf5cc54743163b363358092d4ce5aa412dc20649075a4edf"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/video.webm",
+      "bytes": 1046064,
+      "sha256": "9996287a30ef6064c6a55c9f2528e69f4cea731797fcc9e425a57ea0d3bf44cd"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-0-candidate.png",
+      "bytes": 641391,
+      "sha256": "6926d5f8d94cceded2b89159d8895adeadc74b6a07e166362e3d980bc6e87fed"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-0-reference.png",
+      "bytes": 641391,
+      "sha256": "6926d5f8d94cceded2b89159d8895adeadc74b6a07e166362e3d980bc6e87fed"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-1-candidate.png",
+      "bytes": 653996,
+      "sha256": "80cae0edfda2226c0496850fbc8eb1636534c12a163ccec6489631aa5cf74e5a"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-1-reference.png",
+      "bytes": 653996,
+      "sha256": "80cae0edfda2226c0496850fbc8eb1636534c12a163ccec6489631aa5cf74e5a"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-2-candidate.png",
+      "bytes": 631724,
+      "sha256": "43dfbe8b75d1cf531580f0603d408b04b52cb42d69e203d69ea0646318a340ab"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-2-reference.png",
+      "bytes": 631724,
+      "sha256": "43dfbe8b75d1cf531580f0603d408b04b52cb42d69e203d69ea0646318a340ab"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-3-candidate.png",
+      "bytes": 394652,
+      "sha256": "1fbbea4afe2d6fa0777b0c6d2dc788bdd0ddb492510d92ff8441bf8bedc75a7c"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-3-reference.png",
+      "bytes": 394652,
+      "sha256": "1fbbea4afe2d6fa0777b0c6d2dc788bdd0ddb492510d92ff8441bf8bedc75a7c"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-4-candidate.png",
+      "bytes": 389728,
+      "sha256": "5635ab506f75e27db0085eb31013aaa5fad0ff0927179df0f8ac1ca6e80bcf21"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-4-reference.png",
+      "bytes": 389728,
+      "sha256": "5635ab506f75e27db0085eb31013aaa5fad0ff0927179df0f8ac1ca6e80bcf21"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-5-candidate.png",
+      "bytes": 476843,
+      "sha256": "3083118ef717f35a7a8c48bbfeb57f70797078a541bb27276b5f9798aa9cd5ff"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-5-reference.png",
+      "bytes": 476843,
+      "sha256": "3083118ef717f35a7a8c48bbfeb57f70797078a541bb27276b5f9798aa9cd5ff"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-6-candidate.png",
+      "bytes": 476900,
+      "sha256": "1e44cbce39a3ec05bf2862bb3ca5c765a39d605548e8ef238718c583767df4ef"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-6-reference.png",
+      "bytes": 476900,
+      "sha256": "1e44cbce39a3ec05bf2862bb3ca5c765a39d605548e8ef238718c583767df4ef"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-7-candidate.png",
+      "bytes": 485897,
+      "sha256": "e89a545faa65e914e6313a3dd56e47620bb16f0a1b140a424a8247e322d29487"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-7-reference.png",
+      "bytes": 485897,
+      "sha256": "e89a545faa65e914e6313a3dd56e47620bb16f0a1b140a424a8247e322d29487"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-8-candidate.png",
+      "bytes": 488991,
+      "sha256": "0736a4a370919ff3e3216a60034653e4d9268c5f2f7dbdb460bc5624723e9621"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-8-reference.png",
+      "bytes": 488991,
+      "sha256": "0736a4a370919ff3e3216a60034653e4d9268c5f2f7dbdb460bc5624723e9621"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-a963f-liage-exact-comparison-high/observation.json",
+      "bytes": 30018,
+      "sha256": "e3d3de9051de860dd6ad9576528f967f08b16d10a9426a9d3f546b05c8402d3e"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-0-candidate.png",
+      "bytes": 2081384,
+      "sha256": "601228ad707ef140a118b759c80fdbc8c89682cb671385b4f7252af86156fc4f"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-0-reference.png",
+      "bytes": 2081384,
+      "sha256": "601228ad707ef140a118b759c80fdbc8c89682cb671385b4f7252af86156fc4f"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-1-candidate.png",
+      "bytes": 2088870,
+      "sha256": "6792b14eb1cab82c42bba03b02e6b35059348c49da12b6e8fc8f5b13084ff0f9"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-1-reference.png",
+      "bytes": 2088870,
+      "sha256": "6792b14eb1cab82c42bba03b02e6b35059348c49da12b6e8fc8f5b13084ff0f9"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-2-candidate.png",
+      "bytes": 2039412,
+      "sha256": "42437dea66f34a9dd3af976d1f1d0ccbf7bf483bce45e7cbc759a68d178bb1ba"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-2-reference.png",
+      "bytes": 2039412,
+      "sha256": "42437dea66f34a9dd3af976d1f1d0ccbf7bf483bce45e7cbc759a68d178bb1ba"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-3-candidate.png",
+      "bytes": 1165708,
+      "sha256": "55283a034e9e52d1b732933750fff4a7b4ca797100e02df89765c38695749b23"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-3-reference.png",
+      "bytes": 1165708,
+      "sha256": "55283a034e9e52d1b732933750fff4a7b4ca797100e02df89765c38695749b23"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-4-candidate.png",
+      "bytes": 1150023,
+      "sha256": "ecf0785b158dfb00eeadefd2f6581249c3b15b845e80669da65a3ce2e58ec264"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-4-reference.png",
+      "bytes": 1150023,
+      "sha256": "ecf0785b158dfb00eeadefd2f6581249c3b15b845e80669da65a3ce2e58ec264"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-5-candidate.png",
+      "bytes": 1550609,
+      "sha256": "0662ef18f2c453b0f5fe5a5c8dcde12c00261c8418bb3a4940e556b3caf5846f"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-5-reference.png",
+      "bytes": 1550609,
+      "sha256": "0662ef18f2c453b0f5fe5a5c8dcde12c00261c8418bb3a4940e556b3caf5846f"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-6-candidate.png",
+      "bytes": 1542047,
+      "sha256": "ef51d9ddebb39a116edb288ef575b32b5866bce1020e8fec20960fab228fce16"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-6-reference.png",
+      "bytes": 1542047,
+      "sha256": "ef51d9ddebb39a116edb288ef575b32b5866bce1020e8fec20960fab228fce16"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-7-candidate.png",
+      "bytes": 1463324,
+      "sha256": "651707ff5231ed4e4f9697a7f9fa8e5113e63e5c39556fa7a41ef211360334fe"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-7-reference.png",
+      "bytes": 1463324,
+      "sha256": "651707ff5231ed4e4f9697a7f9fa8e5113e63e5c39556fa7a41ef211360334fe"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-8-candidate.png",
+      "bytes": 1497087,
+      "sha256": "4e479b04bec5a5c43c79faace81258a2970d14be725663b1e6b4240d3be020e1"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-8-reference.png",
+      "bytes": 1497087,
+      "sha256": "4e479b04bec5a5c43c79faace81258a2970d14be725663b1e6b4240d3be020e1"
+    },
+    {
+      "path": ".qa-owned-foliage/native-expanded.log",
+      "bytes": 3805,
+      "sha256": "a8677b6bc792bc498370e42b17a5d93ac78db8b54ce838ea5453f94961872c84"
+    },
+    {
+      "path": ".qa-owned-foliage/native-first/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".qa-owned-foliage/native-first/owned-foliage-review-const-66998-oliage-exact-comparison-low/observation.json",
+      "bytes": 27108,
+      "sha256": "2ab3baaa36365ecd81efc78b4b69786a6fdea748ac4e0637ceb5b9ed08d4775c"
+    },
+    {
+      "path": ".qa-owned-foliage/native-first/owned-foliage-review-const-a963f-liage-exact-comparison-high/observation.json",
+      "bytes": 26906,
+      "sha256": "7d0f314c9eb54e6130b9eb117cea3b2fb3edbe9bf11c500199e63c811b4e1a80"
+    },
+    {
+      "path": ".qa-owned-foliage/native-first.log",
+      "bytes": 505,
+      "sha256": "f3885246278b8efe6b6aa45bfcab14b174b37088d4a030a203b4a0761259078d"
+    },
+    {
+      "path": ".qa-owned-foliage/native-permanent/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".qa-owned-foliage/native-permanent/owned-foliage-render-owned-9d7d1-peated-quality-changes-high/observation.json",
+      "bytes": 6188,
+      "sha256": "3c2cf0de72b6f67e918664916559019ea74b1d0b0a8660c9f113285fe8d79465"
+    },
+    {
+      "path": ".qa-owned-foliage/native-permanent/owned-foliage-render-owned-e0b5a-epeated-quality-changes-low/observation.json",
+      "bytes": 6136,
+      "sha256": "03baee9b97568068e3ba598666396199a592258f38e1ad488cea8c42651b709c"
+    },
+    {
+      "path": ".qa-owned-foliage/native-permanent.log",
+      "bytes": 537,
+      "sha256": "097d7092ab0910dde265a613f17f406d78674cd634d979be8be84e8475d355ad"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-66998-oliage-exact-comparison-low/observation.json",
+      "bytes": 31546,
+      "sha256": "e79c87e70073098dfbef5017f13631551bac8671d19e1c276077548673ca6aec"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-0-candidate.png",
+      "bytes": 641539,
+      "sha256": "3376ff49eaebe49f3f8d7ebc306441cb04a5e9f6fd8c92598f1a5b5c8b4c622a"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-0-reference.png",
+      "bytes": 641539,
+      "sha256": "3376ff49eaebe49f3f8d7ebc306441cb04a5e9f6fd8c92598f1a5b5c8b4c622a"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-1-candidate.png",
+      "bytes": 654045,
+      "sha256": "69cb354c822f05005761addb3dc9664b2682df7fc38f954c5a918537efcb9b13"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-1-reference.png",
+      "bytes": 654045,
+      "sha256": "69cb354c822f05005761addb3dc9664b2682df7fc38f954c5a918537efcb9b13"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-2-candidate.png",
+      "bytes": 631646,
+      "sha256": "ad766e4950f26b1d0d03301922886d6d185dbc148c22c74edaef7185b006c06b"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-2-reference.png",
+      "bytes": 631646,
+      "sha256": "ad766e4950f26b1d0d03301922886d6d185dbc148c22c74edaef7185b006c06b"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-3-candidate.png",
+      "bytes": 394652,
+      "sha256": "1fbbea4afe2d6fa0777b0c6d2dc788bdd0ddb492510d92ff8441bf8bedc75a7c"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-3-reference.png",
+      "bytes": 394652,
+      "sha256": "1fbbea4afe2d6fa0777b0c6d2dc788bdd0ddb492510d92ff8441bf8bedc75a7c"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-4-candidate.png",
+      "bytes": 389728,
+      "sha256": "5635ab506f75e27db0085eb31013aaa5fad0ff0927179df0f8ac1ca6e80bcf21"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-4-reference.png",
+      "bytes": 389728,
+      "sha256": "5635ab506f75e27db0085eb31013aaa5fad0ff0927179df0f8ac1ca6e80bcf21"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-5-candidate.png",
+      "bytes": 476843,
+      "sha256": "3083118ef717f35a7a8c48bbfeb57f70797078a541bb27276b5f9798aa9cd5ff"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-5-reference.png",
+      "bytes": 476843,
+      "sha256": "3083118ef717f35a7a8c48bbfeb57f70797078a541bb27276b5f9798aa9cd5ff"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-6-candidate.png",
+      "bytes": 476900,
+      "sha256": "1e44cbce39a3ec05bf2862bb3ca5c765a39d605548e8ef238718c583767df4ef"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-6-reference.png",
+      "bytes": 476900,
+      "sha256": "1e44cbce39a3ec05bf2862bb3ca5c765a39d605548e8ef238718c583767df4ef"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-7-candidate.png",
+      "bytes": 485897,
+      "sha256": "e89a545faa65e914e6313a3dd56e47620bb16f0a1b140a424a8247e322d29487"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-7-reference.png",
+      "bytes": 485897,
+      "sha256": "e89a545faa65e914e6313a3dd56e47620bb16f0a1b140a424a8247e322d29487"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-8-candidate.png",
+      "bytes": 488991,
+      "sha256": "0736a4a370919ff3e3216a60034653e4d9268c5f2f7dbdb460bc5624723e9621"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-66998-oliage-exact-comparison-low/view-8-reference.png",
+      "bytes": 488991,
+      "sha256": "0736a4a370919ff3e3216a60034653e4d9268c5f2f7dbdb460bc5624723e9621"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-a963f-liage-exact-comparison-high/observation.json",
+      "bytes": 31308,
+      "sha256": "b9a8547e3fb4978a94e605bc4bfdacdda9a84e0b5e7dbfc3aa1eca9078d4d88f"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-0-candidate.png",
+      "bytes": 2081925,
+      "sha256": "cad1fd0c11cb039ad2e4a35df7128da92314b2bdc8441f4039072eb1be64d306"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-0-reference.png",
+      "bytes": 2081925,
+      "sha256": "cad1fd0c11cb039ad2e4a35df7128da92314b2bdc8441f4039072eb1be64d306"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-1-candidate.png",
+      "bytes": 2089529,
+      "sha256": "af5ea55c0d9dedacedeb134527517e025a1bdf72a5ec6539033e8f019a9aed06"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-1-reference.png",
+      "bytes": 2089529,
+      "sha256": "af5ea55c0d9dedacedeb134527517e025a1bdf72a5ec6539033e8f019a9aed06"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-2-candidate.png",
+      "bytes": 2039176,
+      "sha256": "0c2e3df368c8948dd68b40f3eee3d4caeeeb636270d99b9def54342b6068f5d6"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-2-reference.png",
+      "bytes": 2039176,
+      "sha256": "0c2e3df368c8948dd68b40f3eee3d4caeeeb636270d99b9def54342b6068f5d6"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-3-candidate.png",
+      "bytes": 1165708,
+      "sha256": "55283a034e9e52d1b732933750fff4a7b4ca797100e02df89765c38695749b23"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-3-reference.png",
+      "bytes": 1165708,
+      "sha256": "55283a034e9e52d1b732933750fff4a7b4ca797100e02df89765c38695749b23"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-4-candidate.png",
+      "bytes": 1150023,
+      "sha256": "ecf0785b158dfb00eeadefd2f6581249c3b15b845e80669da65a3ce2e58ec264"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-4-reference.png",
+      "bytes": 1150023,
+      "sha256": "ecf0785b158dfb00eeadefd2f6581249c3b15b845e80669da65a3ce2e58ec264"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-5-candidate.png",
+      "bytes": 1550609,
+      "sha256": "0662ef18f2c453b0f5fe5a5c8dcde12c00261c8418bb3a4940e556b3caf5846f"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-5-reference.png",
+      "bytes": 1550609,
+      "sha256": "0662ef18f2c453b0f5fe5a5c8dcde12c00261c8418bb3a4940e556b3caf5846f"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-6-candidate.png",
+      "bytes": 1542047,
+      "sha256": "ef51d9ddebb39a116edb288ef575b32b5866bce1020e8fec20960fab228fce16"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-6-reference.png",
+      "bytes": 1542047,
+      "sha256": "ef51d9ddebb39a116edb288ef575b32b5866bce1020e8fec20960fab228fce16"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-7-candidate.png",
+      "bytes": 1463324,
+      "sha256": "651707ff5231ed4e4f9697a7f9fa8e5113e63e5c39556fa7a41ef211360334fe"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-7-reference.png",
+      "bytes": 1463324,
+      "sha256": "651707ff5231ed4e4f9697a7f9fa8e5113e63e5c39556fa7a41ef211360334fe"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-8-candidate.png",
+      "bytes": 1497087,
+      "sha256": "4e479b04bec5a5c43c79faace81258a2970d14be725663b1e6b4240d3be020e1"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm/owned-foliage-review-const-a963f-liage-exact-comparison-high/view-8-reference.png",
+      "bytes": 1497087,
+      "sha256": "4e479b04bec5a5c43c79faace81258a2970d14be725663b1e6b4240d3be020e1"
+    },
+    {
+      "path": ".qa-owned-foliage/native-warm.log",
+      "bytes": 504,
+      "sha256": "c6849ecaf31e645ac97c35779999702a345270647d6605929cb651ef7954fc8d"
+    },
+    {
+      "path": ".qa-owned-foliage/owned-cpu-first.log",
+      "bytes": 804,
+      "sha256": "23127427b44fdfd71b851be4609105ff985de82006f6b470ca0974be7426aecb"
+    },
+    {
+      "path": ".qa-owned-foliage/owned-foliage-render.spec.js",
+      "bytes": 13995,
+      "sha256": "399c4ac1c609b8ef998fdea95eddef7f3d3fbac89bd235b7c316a4e8a3d1e1ed"
+    },
+    {
+      "path": ".qa-owned-foliage/owned-foliage-review.spec.js",
+      "bytes": 13951,
+      "sha256": "255d8896ea33af3c2c3796ab8fc88d0a915aad0c75afbb24e0b5396898b60d43"
+    },
+    {
+      "path": ".qa-owned-foliage/prepare.log",
+      "bytes": 2666,
+      "sha256": "823e97a1d536dbf2bccfd058eb2cb752d6ad6e46c718e013736e46d78295a207"
+    },
+    {
+      "path": ".qa-owned-foliage/realm-view-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-owned-foliage/reference-warmup-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-owned-foliage/returning-world-cpu.log",
+      "bytes": 9578,
+      "sha256": "39b0db8892e81ae6a6786ffc1ae053c2f64f8bef778e3cabaf648af1d9e098f9"
+    },
+    {
+      "path": ".qa-owned-foliage/returning-world-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-owned-foliage/scene-cycle-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-owned-foliage/timing-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-owned-foliage/warm-native-source.json",
+      "bytes": 394,
+      "sha256": "4c7ef810b3d62423f4d456de18fdb00a9ba07b8243dbc3817567a60d3455d933"
+    },
+    {
+      "path": ".qa-owned-foliage/warm-owned-foliage-render.spec.js",
+      "bytes": 15148,
+      "sha256": "c6eba5a3c8e5962be1a70967641acf746e05eb6c50c5adf749c5196897a18d31"
+    },
+    {
+      "path": ".qa-owned-foliage/warm-owned-foliage-review.spec.js",
+      "bytes": 15457,
+      "sha256": "0bac0c2554393efe08145c8180a7eb80427d8ad58e0d4ebaf07393cd3e46bfd7"
+    }
+  ]
+}
