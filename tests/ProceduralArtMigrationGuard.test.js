@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { createHash } from 'node:crypto';
+import { HELD_GARMENT_MODELS, HELD_GARMENT_ASSET_VERSIONS } from '../src/assets/heldGarments.generated.js';
 import { GARMENT_MODELS, GARMENT_ASSET_VERSIONS } from '../src/assets/garments.generated.js';
 
 const repoRoot = path.resolve(process.cwd());
@@ -75,6 +76,11 @@ const auditedGarmentCopies = new Set(['Fighter', 'Rogue', 'Cleric', 'Wizard'].fl
     ['high', 'low'].map(quality => `assets/garments/iron-oath-regalia-v1/${actorClass}-${quality}.glb`)));
 const garmentModels = Object.values(GARMENT_MODELS.outfits).flatMap(outfit => Object.values(outfit.models).flatMap(models => Object.values(models)));
 const garmentSources = Object.values(GARMENT_MODELS.outfits).flatMap(outfit => outfit.provenance);
+const auditedHeldCopies = new Set(['grovekeeper-blade-v1', 'skyweaver-dagger-v1', 'hearthkeeper-staff-v1',
+    'tidekeeper-mace-v1', 'grovekeeper-shield-v1', 'skyweaver-tome-v1'].flatMap(id =>
+    ['high', 'low'].map(quality => `assets/garments/${id}/universal-${quality}.glb`)));
+const heldModels = Object.values(HELD_GARMENT_MODELS).flatMap(record => Object.values(record.models));
+const heldSources = Object.values(HELD_GARMENT_MODELS).flatMap(record => record.provenance);
 const currentLegacyReferenceFiles = new Set([
     'scripts/serve-static.mjs'
 ]);
@@ -89,6 +95,9 @@ const auditedAssetReferenceAllowlist = new Map([
     ['src/assets/garments.generated.js', [...garmentModels.map(model => model.file),
         ...garmentSources.map(source => source.path), ...Object.keys(GARMENT_ASSET_VERSIONS)]],
     ['scripts/generate-garment-models.mjs', new Set(['assets/garments/${design.id}/${actorClass}-${quality}.glb'])],
+    ['src/assets/heldGarments.generated.js', [...heldModels.map(model => model.file),
+        ...heldSources.map(source => source.reference), ...Object.keys(HELD_GARMENT_ASSET_VERSIONS)]],
+    ['scripts/generate-held-garments.mjs', new Set(['assets/garments/${offer.id}/universal-${quality}.glb'])],
     ['src/art/AuthoredFighter.js', new Set()],
     // Preserve duplicate original references for the32 unchanged variants:
     // each appearance is expected, not an unlimited token or path allowance.
@@ -128,6 +137,24 @@ function relative(filePath) {
 }
 
 describe('procedural art migration guard', () => {
+    test('only the exact six held garment designs and unchanged delivered grip references are allowed', () => {
+        const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+        expect(hash(fs.readFileSync(path.join(repoRoot, 'src/assets/heldGarments.generated.js'))))
+            .toBe('10c99690437b519307388647008356b5996cd393efce6f39c7d83794e4e33579');
+        expect(Object.values(HELD_GARMENT_MODELS)).toHaveLength(6);
+        expect(heldModels.map(model => model.file.slice(2)).sort()).toEqual([...auditedHeldCopies].sort());
+        expect(heldSources).toHaveLength(12);
+        for (const model of heldModels) {
+            const bytes = fs.readFileSync(path.join(repoRoot, model.file));
+            expect(bytes.length).toBe(model.bytes); expect(hash(bytes)).toBe(model.sha256);
+            expect(HELD_GARMENT_ASSET_VERSIONS[model.file]).toBe(model.sha256.slice(0, 16));
+        }
+        for (const source of heldSources) {
+            const file = source.reference.replace(/^\.\//, '');
+            expect(auditedWearableCopies.has(file) || stagedEquipmentExports.has(file)).toBe(true);
+            expect(hash(fs.readFileSync(path.join(repoRoot, file)))).toBe(source.sha256);
+        }
+    });
     test('only the exact qualified garment fits and their unchanged supplied sources are allowed', () => {
         const hash = bytes => createHash('sha256').update(bytes).digest('hex');
         expect(hash(fs.readFileSync(path.join(repoRoot, 'src/assets/garments.generated.js'))))
@@ -175,7 +202,8 @@ describe('procedural art migration guard', () => {
             !stagedCharacterExports.has(relative(filePath)) &&
             !stagedEquipmentExports.has(relative(filePath)) &&
             !auditedWearableCopies.has(relative(filePath)) &&
-            !auditedGarmentCopies.has(relative(filePath))
+            !auditedGarmentCopies.has(relative(filePath)) &&
+            !auditedHeldCopies.has(relative(filePath))
         ));
         const totalBytes = modelFiles.reduce((sum, filePath) => sum + fs.statSync(filePath).size, 0);
 
