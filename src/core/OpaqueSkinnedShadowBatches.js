@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { hasOwnedFoliageDrawSort } from '../art/OwnedFoliageDraws.js';
 import { hasOwnedActorBatchSort } from '../art/ActorInstanceMultiDraw.js';
 import { groupOpaqueSkinnedShadowMeshes, createOpaqueSkinnedShadowGeometry,
     haveCompatibleOpaqueSkinnedShadowState } from './OpaqueSkinnedShadowGeometry.js';
@@ -49,7 +50,7 @@ const stockBatchShadow = object => object.isBatchedMesh &&
     object.onBeforeShadow === THREE.BatchedMesh.prototype.onBeforeShadow &&
     object.onBeforeRender === THREE.BatchedMesh.prototype.onBeforeRender &&
     object.onAfterShadow === THREE.Object3D.prototype.onAfterShadow &&
-    (object.customSort === null || hasOwnedActorBatchSort(object));
+    (object.customSort === null || hasOwnedActorBatchSort(object) || hasOwnedFoliageDrawSort(object));
 
 // RenderSystem owns the runtime that registers these proxies. Each proxy is
 // inserted after color projection, only for a stock directional shadow viewport.

@@ -1,3 +1,4 @@
+import { getOwnedFoliageDraws } from './OwnedFoliageDraws.js';
 import { Box3, Matrix4, Sphere, Vector3 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { getProceduralFoliageArchetype } from './ProceduralRealmFoliage.js';
@@ -110,6 +111,11 @@ export function updateFoliageRenderQuality(root, quality) {
     root?.traverse(group => {
         if (!group.userData.proceduralFoliage || !group.userData.foliageId ||
             group.userData.foliageQuality === level) return;
+        const owned = getOwnedFoliageDraws(group);
+        if (owned) {
+            owned.rebuild(source => updateFoliageRenderQuality(source, level));
+            return;
+        }
         const parts = new Map(getFoliageRenderBatches(group.userData.foliageId, level).map(part => [part.name, part]));
         for (const mesh of group.children) {
             const part = parts.get(mesh.name);

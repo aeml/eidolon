@@ -1,3 +1,4 @@
+import { OwnedFoliageDraws } from '../art/OwnedFoliageDraws.js';
 import * as THREE from 'three';
 import { createMotionPreference } from '../core/MotionPreference.js';
 import { createEarthOutcrops } from '../art/EarthOutcrops.js';
@@ -77,6 +78,7 @@ export class WorldGenerator {
         // on those devices rather than increasing their draw-call budget.
         this.understorySpatialBatches = options.understorySpatialBatches !== false;
         this.campInstanceFrustum = options.campInstanceFrustum === true;
+        this.ownedFoliageDraws = options.ownedFoliageDraws || null;
         this.crystalSanctum = null;
         this.townCourtyards = null;
         this.reducedMotionQuery = createMotionPreference();
@@ -199,7 +201,8 @@ export class WorldGenerator {
             }
             if (!shouldAttach()) return false;
             colliders.forEach((collider) => this.collisionManager.addCollider(collider));
-            this.scene.add(group);
+            const draws = this.ownedFoliageDraws;
+            this.scene.add(draws ? new OwnedFoliageDraws(group, draws.influence, draws.camera).group : group);
         }
         if (shouldAttach()) this.scene.add(createEarthUnderstory({
             quality: this.graphicsQuality, terrainElevation: this.terrainElevation, spatialBatches: this.understorySpatialBatches
