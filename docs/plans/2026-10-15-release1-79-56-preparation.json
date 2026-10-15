@@ -15,7 +15,8 @@
     "release": "429distinct release/history/browser-plan/publication checks pass across three unchanged passing suites and corrected386-check version suite.491cumulative notes preserve all490prior entries byte-exact.",
     "retainedFailure": "Initial version checks found README current-version formatting and hidden workflow fallback still55. Corrected both while preserving unchanged assertions;386version checks pass. Component export/render budget, accessible-name and lint failures remain in their receipts.",
     "limits": "First usable garment/pipeline, not final18-look collection. Wider menu/world/art/performance/device/operations/owner/beta scope remains open. Soak deferred.",
-    "hostedFollowup": "Initial CI38687214843: client777suites/11853tests passed; two suites/three checks failed at stale palette12count and garment additions outside audited art exceptions. No deployment. Cancelled remaining tests after known failure. Corrected explicit eight-file/56source custody audit and13catalog count; original legacy zero limits unchanged.12focused checks pass. First local correction retained the ./ prefix mismatch; normalized exact paths without widening the allowed set. Corrected-source CI and public verification remain required."
+    "hostedFollowup": "Initial CI38687214843: client777suites/11853tests passed; two suites/three checks failed at stale palette12count and garment additions outside audited art exceptions. No deployment. Cancelled remaining tests after known failure. Corrected explicit eight-file/56source custody audit and13catalog count; original legacy zero limits unchanged.12focused checks pass. First local correction retained the ./ prefix mismatch; normalized exact paths without widening the allowed set. Corrected-source CI and public verification remain required.",
+    "browserFollowup": "Corrected attempt38688845514 atfaad8526b:779client suites/11857tests and server pass; three hosted browser checks fail (old12catalogue expectation twice, High full-party scene times out on hosted software renderer). Native/deployment/live steps skipped. Corrected exact13count/outfit slot fixture; moved the unchanged full-party cases into required native authored-equipment stage with workers1/retries0 and explicit no-omission gate.407release/browser-plan checks and four native High/Low party/vendor cases pass without retries (29.0s); all draw/triangle/resource/pose assertions preserved. No software frame-rate acceptance claimed. Own corrected-source CI/public verification still required."
   },
   "evidenceRoot": "/home/aeml/.local/share/eidolon-master-20261011",
   "evidence": [
@@ -58,6 +59,46 @@
       "path": ".qa-release56/guard-corrected-lint.log",
       "bytes": 0,
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-release56/attempt2-terminal-ci.json",
+      "bytes": 8678,
+      "sha256": "bb2927d1684f39093f05db2ae25af5bd030c5b31364fb26dd86fefc0b8ac2d4e"
+    },
+    {
+      "path": ".qa-release56/attempt2-client.log",
+      "bytes": 1166820,
+      "sha256": "fc50892967adde271b632597112efac88747dfc91f76397d8aae26a3104d4531"
+    },
+    {
+      "path": ".qa-release56/browser-1-initial.log",
+      "bytes": 83338,
+      "sha256": "d3ed1f7945c468853b19039a61e5d1f8ed348c0f92b57f00cea634c23d01ea11"
+    },
+    {
+      "path": ".qa-release56/browser-2-initial.log",
+      "bytes": 111921,
+      "sha256": "8fa06649199a64abf4d65b4137058c4c5d457d6b2ebc383151247c0f98574b90"
+    },
+    {
+      "path": ".qa-release56/browser-3-initial.log",
+      "bytes": 90629,
+      "sha256": "a83f6a11612d5871c67ed39231c32a66c7e8e5591ccc99880e1423e12942e9af"
+    },
+    {
+      "path": ".qa-release56/native-routing-focused.log",
+      "bytes": 591,
+      "sha256": "93ed2b7510ed4effbcbbc8269fb47b8a1fde31eb98e11c2fc8361fadead773ba"
+    },
+    {
+      "path": ".qa-release56/native-routing-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-release56/native-routing.log",
+      "bytes": 805,
+      "sha256": "0404279b686344810fc890f1dd88a9d0cf0658c1a04541ac5bb4fb2c3cd19aac"
     }
   ]
 }

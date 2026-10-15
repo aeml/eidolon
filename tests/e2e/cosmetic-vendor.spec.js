@@ -75,7 +75,7 @@ for (const width of [390, 1440]) test(`cosmetic vendor previews, confirms and ap
         const player = { id: 'vendor-preview-hero', subType: 'Fighter', level: 70, state: 'IDLE', position: { x: 12, z: 185 },
             equipment: { chest: { id: 'earned-chest', name: 'Plate Mail', rarity: 'Rare', type: 'ARMOR', slot: 'chest', stats: { defense: 99 } },
                 mainHand: { id: 'earned-sword', name: 'Iron Sword', rarity: 'Rare', type: 'WEAPON', slot: 'mainHand' } }, appearances: {} };
-        const catalogue = COSMETIC_CATALOGUE.map(offer => ({ ...offer, appearance: { baseName: offer.name, rarity: 'Common', slot: resolveEquipmentVisualDescriptor({ name: offer.base }).slot } }));
+        const catalogue = COSMETIC_CATALOGUE.map(offer => ({ ...offer, appearance: { baseName: offer.name, rarity: 'Common', slot: offer.kind === 'outfit' ? 'outfit' : resolveEquipmentVisualDescriptor({ name: offer.base }).slot } }));
         const collection = {}; let ep = 100;
         const requests = [], original = JSON.stringify(player.equipment);
         const ui = new CosmeticVendorUI({ getPlayer: () => player, send: (type, payload) => {
@@ -94,7 +94,7 @@ for (const width of [390, 1440]) test(`cosmetic vendor previews, confirms and ap
     });
     const dialog = page.getByRole('dialog', { name: 'Veyra’s cosmetic wardrobe' });
     await expect(dialog).toBeVisible();
-    await expect(dialog.locator('.cosmetic-catalogue button')).toHaveCount(12);
+    await expect(dialog.locator('.cosmetic-catalogue button')).toHaveCount(13);
     const cardBounds = await dialog.locator('.cosmetic-catalogue button').evaluateAll(cards => cards.map(card => ({
         height: card.clientHeight, content: card.scrollHeight
     })));
