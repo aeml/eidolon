@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-15",
+  "source": "f78e53a5bb6280ef23af9029d27095b7553f1636",
+  "browser": "Playwright Firefox151.0 revision1532, headless Linux, default browser preferences, HTTP loopback4192",
+  "interface": "Seven existing browser cases pass in19.6s with zero retries/skips:1280/390 account keyboard labels and zoom,1280/390 remapping/native-control protection/saved reload,interactive login/lazy history,graphics-unavailable return guidance,and four alternating phone/desktop UI owners restoring settings/navigation/build controls.",
+  "graphics": "One separate Verdant material test fails before rendering because default headless Firefox cannot create WebGL2 on this host. This agrees with the existing explicit renderer gate in patch-notes-pagination.spec.js. No material compatibility, class drawing, native performance or Firefox device certification is claimed; rendering remains open.",
+  "retainedSetup": "xvfb-run is unavailable; the attempted wrapper exited127 without a browser. An initial incorrect grep selected no tests. Both logs are retained, neither is a product result. No browser preferences/security or machine packages changed.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-browser-compatibility-20261015/.qa-firefox",
+    "inventoryEntries": 17,
+    "inventorySHA256": "af6554ee61a99c726d889f529b0f029c864779f8b51eccbdd36ab73c279864c1"
+  },
+  "change": "No runtime changes needed by these scoped interface checks. Full browser/gameplay/device requirements remain open."
+}

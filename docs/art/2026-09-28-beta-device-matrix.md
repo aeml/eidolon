@@ -16,6 +16,15 @@ linked from the [1.50 integration review](../plans/2026-09-30-release1-50-presen
 | Owner's phone Chrome/Brave | Owner reported general UI comfortable. Model/OS, actual dungeon/party controls and sustained combat performance explicitly deferred. Do not repeat the request or block unrelated code work. |
 | Firefox, Safari/iOS, tablets and controllers | Not certified by this pass. Firefox has rendering fallbacks in source, which are not test evidence. No controller support claim. |
 
+## October 15 Firefox interface check
+
+Seven focused Firefox151 Linux cases pass for keyboard access/remapping, saved
+settings, alternating phone/desktop UI owners, lazy patch history and explicit
+graphics-unavailable recovery. Default headless Firefox still cannot create
+WebGL2 on this host; the material probe failed before drawing. This adds
+interface evidence only, not renderer or device support certification.
+[Results and retained failures](../plans/2026-10-15-firefox-interface-checks.json).
+
 ## Existing quality behavior, now explained in Settings
 
 High remains the default; it enables the richest available lighting and effect
