@@ -1,11 +1,13 @@
 import { MeshCatalog } from '../utils/MeshCatalog.js';
 import { AUTHORED_ASSET_VERSIONS } from './authoredEquipment.generated.js';
+import { GARMENT_ASSET_VERSIONS } from './garments.generated.js';
 import { ILYRA_MODEL_PATH } from '../art/AuthoredIlyra.js';
 
 const DEFAULT_ASSET_VERSION = '2026-09-04-11';
 
 const ASSET_VERSION_OVERRIDES = {
     ...AUTHORED_ASSET_VERSIONS,
+    ...GARMENT_ASSET_VERSIONS,
     [ILYRA_MODEL_PATH]: '010301379aaa92a3'
 };
 

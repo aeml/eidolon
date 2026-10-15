@@ -18,49 +18,49 @@ export const GARMENT_MODELS = {
         "Fighter": {
           "high": {
             "file": "./assets/garments/iron-oath-regalia-v1/Fighter-high.glb",
-            "bytes": 1579208,
-            "sha256": "04412f56e105d242336ae36f067c7de79a784fdeb9137b501f5aca87d1e43070"
+            "bytes": 1833668,
+            "sha256": "3a183c5b787fe6d659529d6ac8718f2441b2865d48a5d9d584895737569ffb33"
           },
           "low": {
             "file": "./assets/garments/iron-oath-regalia-v1/Fighter-low.glb",
-            "bytes": 891308,
-            "sha256": "46fb4f9bc112c10af046f1230572c55d9d3999806b80804a26d9982c00421343"
+            "bytes": 1039720,
+            "sha256": "b00807fb8e7b56428b5fa1b95ecceae07e448739592144fcd4a050e36f6197c0"
           }
         },
         "Rogue": {
           "high": {
             "file": "./assets/garments/iron-oath-regalia-v1/Rogue-high.glb",
-            "bytes": 1470548,
-            "sha256": "faf8545aa66f50c092092d0c5626226b9e9dfb4fb90856afecf7101f310b48a4"
+            "bytes": 1707688,
+            "sha256": "9ed9d61c2703bb486032f05611fe5035862ae9a194c55460943498648b79405a"
           },
           "low": {
             "file": "./assets/garments/iron-oath-regalia-v1/Rogue-low.glb",
-            "bytes": 832264,
-            "sha256": "304fd96152ff34993f2eff2489fe510c0328fe3ecf6713a9f7459bad0013bf6f"
+            "bytes": 970952,
+            "sha256": "3c45259ea30f044a8d377563bc2031e6c4891e03c7eaa98c548a7f02573e42a7"
           }
         },
         "Cleric": {
           "high": {
             "file": "./assets/garments/iron-oath-regalia-v1/Cleric-high.glb",
-            "bytes": 1538852,
-            "sha256": "694d38e2b61f4af579000f093b49c06dbbc746e4135114fbad5f9d63e3736804"
+            "bytes": 1787176,
+            "sha256": "a57143f5e0d0ec92a127134a787305b2a96cdd6545668403cd2ab92800926cae"
           },
           "low": {
             "file": "./assets/garments/iron-oath-regalia-v1/Cleric-low.glb",
-            "bytes": 885732,
-            "sha256": "f53f6f5cc5a7d1e7d8babbaa8946ef79ac794f066763d36b226bcad010d8e100"
+            "bytes": 1033248,
+            "sha256": "6c96d10eec9cbf23f9428cc3facbd1e44560b1cfc76f0f10faaa8ce574a4dc8d"
           }
         },
         "Wizard": {
           "high": {
             "file": "./assets/garments/iron-oath-regalia-v1/Wizard-high.glb",
-            "bytes": 1451480,
-            "sha256": "6528ad38626f521da691cdc337d9703dd47ff75f766112402683e2f93486f924"
+            "bytes": 1685808,
+            "sha256": "1ebf6224c62a13e03a5a0347a02a1c2dd3482cbbbae8b9c5bfd07ece1f654894"
           },
           "low": {
             "file": "./assets/garments/iron-oath-regalia-v1/Wizard-low.glb",
-            "bytes": 816616,
-            "sha256": "9d7f753302bc428e3e48e1eee48c609c415b5796b9edb7b1872f43d0582fe634"
+            "bytes": 952948,
+            "sha256": "f589932767d862da28845ed514725b4d248101bad8c7965ab9dd529d421e2bd5"
           }
         }
       },
@@ -460,4 +460,14 @@ export const GARMENT_MODELS = {
       ]
     }
   }
+};
+export const GARMENT_ASSET_VERSIONS = {
+  "./assets/garments/iron-oath-regalia-v1/Fighter-high.glb": "3a183c5b787fe6d6",
+  "./assets/garments/iron-oath-regalia-v1/Fighter-low.glb": "b00807fb8e7b5642",
+  "./assets/garments/iron-oath-regalia-v1/Rogue-high.glb": "9ed9d61c2703bb48",
+  "./assets/garments/iron-oath-regalia-v1/Rogue-low.glb": "3c45259ea30f044a",
+  "./assets/garments/iron-oath-regalia-v1/Cleric-high.glb": "a57143f5e0d0ec92",
+  "./assets/garments/iron-oath-regalia-v1/Cleric-low.glb": "6c96d10eec9cbf23",
+  "./assets/garments/iron-oath-regalia-v1/Wizard-high.glb": "1ebf6224c62a13e0",
+  "./assets/garments/iron-oath-regalia-v1/Wizard-low.glb": "f589932767d862da"
 };
