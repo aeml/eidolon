@@ -111,6 +111,13 @@ for (const quality of ['high', 'low']) test(`complete garment fits and restores 
     for (const picture of observation.images) await writeFile(testInfo.outputPath(picture.name + '.png'), Buffer.from(picture.data.split(',')[1], 'base64'));
     delete observation.images;
     await writeFile(testInfo.outputPath('observation.json'), JSON.stringify({ quality, ...observation }, null, 2));
+    // Static prepared party submissions use the existing art-contract budgets.
+    // This is not a frame-time or sustained multiplayer qualification.
+    const budget = quality === 'high' ? { calls: 350, triangles: 250000 } : { calls: 200, triangles: 85000 };
+    for (const frame of observation.frames.filter(frame => frame.name.startsWith('party-'))) {
+        expect(frame.calls, frame.name).toBeLessThanOrEqual(budget.calls);
+        expect(frame.triangles, frame.name).toBeLessThanOrEqual(budget.triangles);
+    }
     expect(observation.poses).toHaveLength(16);
     expect(observation.poses.every(pose => pose.samples > 0 && pose.items === 9)).toBe(true);
     expect(observation.restoredItems).toEqual([14, 14, 14, 14]);
