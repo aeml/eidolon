@@ -1,4 +1,4 @@
-import { BatchedMesh, Group, Matrix4, Frustum, Vector4 } from 'three';
+import { BatchedMesh, Group, Matrix4, Frustum, Vector4, Object3D } from 'three';
 import { shadowInfluenceIntersectsFrustum } from '../core/FoliageShadowInfluence.js';
 
 const sorts = new WeakMap();
@@ -20,7 +20,10 @@ const layout = geometry => JSON.stringify([Boolean(geometry.index), Object.entri
 export class OwnedFoliageDraws {
     constructor(source, influence, colorCamera) {
         if (!source.userData.proceduralFoliage || source.children.some(mesh => !mesh.isInstancedMesh ||
-            mesh.children.length || !mesh.boundingBox || !mesh.boundingSphere || mesh.matrixAutoUpdate ||
+            mesh.children.length || mesh.instanceColor || mesh.customDepthMaterial || mesh.customDistanceMaterial ||
+            mesh.onBeforeRender !== Object3D.prototype.onBeforeRender || mesh.onAfterRender !== Object3D.prototype.onAfterRender ||
+            mesh.onBeforeShadow !== Object3D.prototype.onBeforeShadow || mesh.onAfterShadow !== Object3D.prototype.onAfterShadow ||
+            mesh.frustumCulled === false || !mesh.boundingBox || !mesh.boundingSphere || mesh.matrixAutoUpdate ||
             !mesh.matrix.equals(identity) || Array.isArray(mesh.material) || mesh.material.transparent || mesh.material.userData.woodlandWind)) {
             throw Error('Static constructor-owned foliage cells required');
         }

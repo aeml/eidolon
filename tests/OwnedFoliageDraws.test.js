@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
+import { RenderSystem } from '../src/core/RenderSystem.js';
 import { WorldGenerator } from '../src/world/WorldGenerator.js';
 import { OwnedFoliageDraws, getOwnedFoliageDraws, hasOwnedFoliageDrawSort } from '../src/art/OwnedFoliageDraws.js';
 import { updateFoliageRenderQuality } from '../src/art/FoliageRenderBatches.js';
@@ -116,4 +117,35 @@ test('world construction opt-in keeps every collider and source placement while 
     const count = scene.children.length;
     expect(await cancelled.loadTrees(0, 200, { shouldAttach: () => false })).toBe(false);
     expect(scene.children).toHaveLength(count);
+});
+
+function smallSource() {
+    const root = new THREE.Group(); root.userData = { proceduralFoliage: true, region: 'earth' };
+    const mesh = new THREE.InstancedMesh(new THREE.BoxGeometry(), new THREE.MeshStandardMaterial(), 2);
+    mesh.matrixAutoUpdate = false; mesh.setMatrixAt(0, new THREE.Matrix4()); mesh.setMatrixAt(1, new THREE.Matrix4().makeTranslation(2, 0, 0));
+    mesh.computeBoundingBox(); mesh.computeBoundingSphere(); root.add(mesh); return { root, mesh };
+}
+
+test.each(['callback', 'depth', 'color', 'wind', 'matrix', 'children', 'array'])('constructor refuses unsupported %s ownership instead of silently dropping it', kind => {
+    const { root, mesh } = smallSource();
+    if (kind === 'callback') mesh.onBeforeRender = () => {};
+    if (kind === 'depth') mesh.customDepthMaterial = new THREE.MeshDepthMaterial();
+    if (kind === 'color') mesh.setColorAt(0, new THREE.Color('red'));
+    if (kind === 'wind') mesh.material.userData.woodlandWind = true;
+    if (kind === 'matrix') mesh.matrix.makeTranslation(1, 0, 0);
+    if (kind === 'children') mesh.add(new THREE.Group());
+    if (kind === 'array') mesh.material = [mesh.material];
+    expect(() => new OwnedFoliageDraws(root, {}, new THREE.Camera())).toThrow('Static constructor-owned');
+});
+
+test('renderer area teardown releases batch buffers once and leaves borrowed construction geometry intact', () => {
+    const render = new RenderSystem(false), { root, mesh } = smallSource();
+    const sourceDispose = jest.spyOn(mesh.geometry, 'dispose'), materialDispose = jest.spyOn(mesh.material, 'dispose');
+    const owner = new OwnedFoliageDraws(root, render.foliageShadowInfluence, render.camera);
+    const batch = owner.entries[0].mesh, geometryDispose = jest.spyOn(batch.geometry, 'dispose');
+    render.instanceEnvironmentGroup.add(owner.group); render.clearInstanceScene();
+    expect(batch.disposed).toBe(true); expect(geometryDispose).toHaveBeenCalledTimes(1);
+    expect(sourceDispose).not.toHaveBeenCalled(); expect(materialDispose).toHaveBeenCalledTimes(1);
+    owner.dispose(); expect(geometryDispose).toHaveBeenCalledTimes(1);
+    render.dispose();
 });
