@@ -132,7 +132,7 @@ pass, retaining the initially missed isolated-QA version default and correction.
 Wider menu polish,
 durable window preferences/reset, physical playtests and final review remain open.
 
-## Alpha 1.79.56 garment and layout selection
+## Alpha 1.79.56 garment and layout milestone: deployed and verified
 
 The full-outfit pipeline and first Fighter-themed Iron Oath Regalia are selected
 and ordinarily merged into local master. One registered appearance covers all
@@ -150,8 +150,15 @@ profiles, temporary clamping that preserves the saved layout, phone-safe default
 and Settings reset.94focused checks and five distinct native cases pass. Initial
 reset accessible-name and test-format lint failures are retained with corrections.
 [Layout qualification](2026-10-15-durable-window-layout-qualification.json).
-Both selections form prepared56; own release gates remain pending. Wider menus,
-all remaining garments and the complete original goal remain open.
+Both selections are independently accepted in56at `aee456655`: all ten CI jobs
+pass, including both deployments/live checks.779client suites/11858tests,
+403hosted passes/13skips,66native predeploy passes/one skip and live8mainpasses/
+one skip plus2recovery passes qualify publication. Normal-TLS reads at
+07:18:52UTC match both identities, ready database and all246asset pins.
+The earlier two candidates' stale audits/counts and software-scene timeout remain
+retained with corrections; no original budgets or resource assertions were lowered.
+[Acceptance](2026-10-15-release1-79-56-acceptance.md).
+Wider menus, all remaining garments and the complete original goal remain open.
 
 The private pine diffuse-lighting experiment144251bcd remains unselected: the
 visible change was too slight, and its Low view failed the original changed-pixel
