@@ -59,7 +59,14 @@ work, not merely an optional way to divide a larger outsourced asset list.
 | Town/story/service NPCs | NPC material/animation integration, placement, interaction bounds, names, quest markers and dialogue presentation |
 | No requested environment asset production | Terrain, buildings/interiors, dungeon/raid rooms, props, foliage, rocks, roads, water, sky, portals, crystals and casino furniture/machines |
 | No requested environment texture/shader production | Code-generated surface textures and PBR maps, terrain blending, lighting, reflection/atmosphere, shadows, weather, VFX, UI/item icons and quality/performance controls |
-| No requested per-item armor/weapon modeling campaign | Procedural equipment families, fitted modular layers, weapons/shields/accessories, cosmetics and adaptation to approved actor rigs |
+| No external per-item modeling campaign assigned to the owner | Equipment families, fitted layers and adaptation to approved rigs; October15 also requires distinct new garment models and whole-outfit VIP collections, produced and integrated as implementation work |
+
+October15 expands cosmetic art delivery: [the garment contract](../plans/2026-10-15-garment-catalog-and-full-outfits.md)
+requires modeled VIP weapons/offhands, four class-themed full outfits and eight
+universal outfits. Palette variations alone do not satisfy that requirement.
+The [quest/menu quality pass](../plans/2026-10-15-quest-lore-and-window-quality.md)
+also requires interface presentation to match the improving world. Both remain
+open visual-quality work and preserve the existing supplied actor/rig contract.
 
 Actor geometry remains the user's creative contribution. Prefer neutral-pose
 models and keep source files; supply a rig/UVs if available. The implementation

@@ -22,6 +22,15 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
+## October 15 added owner requirements
+
+Two additional beta requirements are now explicit and remain unimplemented at
+their full scope: [whole-outfit garments and at least 18 distinct VIP looks](2026-10-15-garment-catalog-and-full-outfits.md),
+and [quest/lore UI, remembered window positions and menu polish](2026-10-15-quest-lore-and-window-quality.md).
+Existing per-slot cosmetics and Chronicle recap/tracking are foundations, not
+completion of these new requests. They are included in the full goal and must
+not be omitted from feature-freeze or beta-readiness assessment.
+
 ## October 15 implementation checkpoint
 
 **Alpha 1.79.52 combat feedback and reduced motion is deployed and verified** at
@@ -141,6 +150,8 @@ acceptance is incomplete.
 | --- | --- | --- |
 | Modern world and atlas | Finish coherent material scale, terrain transitions, grounded architecture, roads, vegetation/rock composition, landmarks, interiors, lighting, atmosphere and readable travel/combat spaces. Moving equipped/HUD review starts Lanternhold → Earth → fight → first dungeon, then all elemental realms/borders, dungeons/raids, Dark Realm, both casino floors and PvP. Required named places, optional interactions and accurate maps remain governed by the full world contract. Repetition, sparse rooms and broad muddy patches are not final art. | Implementation; final owner review |
 | Supplied actor/equipment presentation | Finish full/mixed/cosmetic fits and material identity across all classes, weapon restrictions, dual wielding, local/remote swaps, pooling/reconnect and motion. Preserve delivered assets and approved geometry/rig constraints. | Implementation; final owner review |
+| Full-outfit garments and VIP models | Implement one armor garment replacing all worn body-gear visuals, with independent hand-slot garments. Deliver distinct 3D models for every weapon/offhand family, four class-themed full outfits and eight universal full outfits; current minimum18 looks plus rig variants. Preserve old unlocks, real gear and local/remote behavior. [Scope and acceptance](2026-10-15-garment-catalog-and-full-outfits.md). | Implementation; final owner review |
+| Quest, lore and menu quality | Improve tracking, acceptance and turn-in; deliver a navigable lore book with earned story recap and current task context; remember dragged window positions on reopen and polish character, bags, stores and shared menus. Preserve progression and desktop/phone usability. [Scope and acceptance](2026-10-15-quest-lore-and-window-quality.md). | Implementation; final owner/playtest review |
 | Combat, classes and audio | Validate all twelve specialization kits, attack anticipation/contact/recovery, movement, threat readability and role feel. Finish contact/audio integration and human listening/busy-group mix; essential warnings survive Low/reduced effects/mute. Prepared mixer frames or audio API calls are insufficient for full acceptance. | Implementation and playtests |
 | Story and progression | Reconcile every inherited Chronicle chapter, legacy quest contract, manual acceptance/reward/handoff and level-band target. Repair actual findings; do not fabricate roughly 112-hour earned campaign/pacing proof. Human campaign/finale feedback remains owner-deferred. | Implementation and owner/cohort |
 | Parties, dungeons, raids and finale | Preserve personal entry eligibility, dungeon-before-raid progression, four full raids/repair Vigils, level-100 Dark Realm/Nexus/Malachar sequence, checkpoint/reconnect/15-minute expiry and credit rules. Finish unresolved class/role/party/finale findings against appropriate actual integration evidence. | Implementation and playtests |

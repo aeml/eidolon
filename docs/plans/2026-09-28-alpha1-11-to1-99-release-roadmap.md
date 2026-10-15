@@ -1,5 +1,14 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+## Owner scope additions — October 15
+
+Beta readiness also requires [whole-outfit garments and distinct VIP models](2026-10-15-garment-catalog-and-full-outfits.md)
+and the [quest, lore and window quality pass](2026-10-15-quest-lore-and-window-quality.md).
+These expand actor/cosmetic presentation, quest usability and interface quality
+within the full completion goal. They remain open even where earlier versions
+passed narrower cosmetic, Chronicle or window-layout checks. The current
+delivery state is maintained in the [remaining-work register](2026-10-09-release-readiness-remaining.md).
+
 ## Current release state — October 14
 
 Alpha 1.79.51 at `e2880b4ee` is deployed and verified. All ten jobs in
