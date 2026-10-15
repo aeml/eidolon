@@ -10,13 +10,13 @@ export const HELD_GARMENT_MODELS = {
     "models": {
       "high": {
         "file": "./assets/garments/grovekeeper-blade-v1/universal-high.glb",
-        "bytes": 96840,
-        "sha256": "aa7ea33d440f6db10100333c5408645ba2c2ecd0c4915b312372637cf79e64f3"
+        "bytes": 96844,
+        "sha256": "81a81a6dd9b68fd7e34713af5b2610c92ee8282055a0fd081d1c1c8f6e81e765"
       },
       "low": {
         "file": "./assets/garments/grovekeeper-blade-v1/universal-low.glb",
-        "bytes": 61508,
-        "sha256": "434f01556d9657724bbcb7f990be301a5bc8e9c8b4fd4213f8646e6da18fff43"
+        "bytes": 61512,
+        "sha256": "e269df7aa5aef3ff0512bf370811c540185277fc753f9bff10f00fa5e2847247"
       }
     },
     "provenance": [
@@ -44,13 +44,13 @@ export const HELD_GARMENT_MODELS = {
     "models": {
       "high": {
         "file": "./assets/garments/skyweaver-dagger-v1/universal-high.glb",
-        "bytes": 81484,
-        "sha256": "4574a82f7506e383229560b254d6327ea7321bab3a0293808026e65c2d64a391"
+        "bytes": 81480,
+        "sha256": "462627e494939c486a51e379ceefc27590ef9d1b6aa5263fe1615a833db04e98"
       },
       "low": {
         "file": "./assets/garments/skyweaver-dagger-v1/universal-low.glb",
-        "bytes": 47684,
-        "sha256": "c259d1e1686d38adff7ac783e85b0b8a7c9e67a51eef9fc1cd8b50ec5203298b"
+        "bytes": 47680,
+        "sha256": "fb6926709f7d37d0edb4765420639731514a4c948258077a8492fa79568ef83f"
       }
     },
     "provenance": [
@@ -79,12 +79,12 @@ export const HELD_GARMENT_MODELS = {
       "high": {
         "file": "./assets/garments/hearthkeeper-staff-v1/universal-high.glb",
         "bytes": 85416,
-        "sha256": "f2ba3d1a4e2472f66784a58697897ab6cbb913396f4342bf48f5e35475849e5a"
+        "sha256": "748c5e68514e8a38a14c0e84a2f8702e7c9714a7e870e73fb39d47fee489ab71"
       },
       "low": {
         "file": "./assets/garments/hearthkeeper-staff-v1/universal-low.glb",
         "bytes": 51608,
-        "sha256": "b441bccb0ee99dd46c6785d1c84b63d8320c07cabe32cdad24bdd9023c43bacd"
+        "sha256": "8516d16a2af015e7bd23bad2337f9e2994fcde8d97919021ac76eee2c2b525d4"
       }
     },
     "provenance": [
@@ -112,13 +112,13 @@ export const HELD_GARMENT_MODELS = {
     "models": {
       "high": {
         "file": "./assets/garments/tidekeeper-mace-v1/universal-high.glb",
-        "bytes": 79944,
-        "sha256": "70d0bb1dfae265f8604fd95645bb96a597223c2c152ca20143c5524bf2bb1b77"
+        "bytes": 79940,
+        "sha256": "fc314447617fcb716446762a52049c1c8ce5a6997976a1155b2aff3451be35f3"
       },
       "low": {
         "file": "./assets/garments/tidekeeper-mace-v1/universal-low.glb",
-        "bytes": 63036,
-        "sha256": "0f5d37f54062df0dc06cc9b86058a7fe5a80e55d759010e06266f5a20d34001f"
+        "bytes": 63032,
+        "sha256": "044f08f970d4a6415d1ec5c8805bce7e27421d1e7fae1639c08522cac88a982f"
       }
     },
     "provenance": [
@@ -146,13 +146,13 @@ export const HELD_GARMENT_MODELS = {
     "models": {
       "high": {
         "file": "./assets/garments/grovekeeper-shield-v1/universal-high.glb",
-        "bytes": 144556,
-        "sha256": "00e893a01b248c3ec747f5556288a28e87077784fc57c4faf7d47d66aa9da7c7"
+        "bytes": 144560,
+        "sha256": "095d2a9e76b4b91d1f6feed6ac47a765224667d2e5bacd2e68f786ed0a4fb57b"
       },
       "low": {
         "file": "./assets/garments/grovekeeper-shield-v1/universal-low.glb",
-        "bytes": 72348,
-        "sha256": "be83a314c2a26b00b9bdb3090877c4087d87c5daeb8655e3eb42d4e9b995e0a7"
+        "bytes": 72352,
+        "sha256": "f0b3414f8d6fa7f244cda43391346719f52b3d1f111b9c6eb079cf955d67737f"
       }
     },
     "provenance": [
@@ -180,13 +180,13 @@ export const HELD_GARMENT_MODELS = {
     "models": {
       "high": {
         "file": "./assets/garments/skyweaver-tome-v1/universal-high.glb",
-        "bytes": 100736,
-        "sha256": "3205474f07c124dedaca54505404e02ec13f91fd20d73121ac31c60ed327c020"
+        "bytes": 100732,
+        "sha256": "a10125079d128099594e42ed22366e9bad6911fe7605a47a3b7bc56f58b7e9c7"
       },
       "low": {
         "file": "./assets/garments/skyweaver-tome-v1/universal-low.glb",
-        "bytes": 56184,
-        "sha256": "4f3f0510f79f281d2a3994aa06e0aa1b55f540229fd6ef6486b9606c9cb8093c"
+        "bytes": 56180,
+        "sha256": "cc5abe8bc09f5024bb98bce1762211bb5fae568f872f2373cc004198db8a35ed"
       }
     },
     "provenance": [
@@ -206,16 +206,16 @@ export const HELD_GARMENT_MODELS = {
   }
 };
 export const HELD_GARMENT_ASSET_VERSIONS = {
-  "./assets/garments/grovekeeper-blade-v1/universal-high.glb": "aa7ea33d440f6db1",
-  "./assets/garments/grovekeeper-blade-v1/universal-low.glb": "434f01556d965772",
-  "./assets/garments/skyweaver-dagger-v1/universal-high.glb": "4574a82f7506e383",
-  "./assets/garments/skyweaver-dagger-v1/universal-low.glb": "c259d1e1686d38ad",
-  "./assets/garments/hearthkeeper-staff-v1/universal-high.glb": "f2ba3d1a4e2472f6",
-  "./assets/garments/hearthkeeper-staff-v1/universal-low.glb": "b441bccb0ee99dd4",
-  "./assets/garments/tidekeeper-mace-v1/universal-high.glb": "70d0bb1dfae265f8",
-  "./assets/garments/tidekeeper-mace-v1/universal-low.glb": "0f5d37f54062df0d",
-  "./assets/garments/grovekeeper-shield-v1/universal-high.glb": "00e893a01b248c3e",
-  "./assets/garments/grovekeeper-shield-v1/universal-low.glb": "be83a314c2a26b00",
-  "./assets/garments/skyweaver-tome-v1/universal-high.glb": "3205474f07c124de",
-  "./assets/garments/skyweaver-tome-v1/universal-low.glb": "4f3f0510f79f281d"
+  "./assets/garments/grovekeeper-blade-v1/universal-high.glb": "81a81a6dd9b68fd7",
+  "./assets/garments/grovekeeper-blade-v1/universal-low.glb": "e269df7aa5aef3ff",
+  "./assets/garments/skyweaver-dagger-v1/universal-high.glb": "462627e494939c48",
+  "./assets/garments/skyweaver-dagger-v1/universal-low.glb": "fb6926709f7d37d0",
+  "./assets/garments/hearthkeeper-staff-v1/universal-high.glb": "748c5e68514e8a38",
+  "./assets/garments/hearthkeeper-staff-v1/universal-low.glb": "8516d16a2af015e7",
+  "./assets/garments/tidekeeper-mace-v1/universal-high.glb": "fc314447617fcb71",
+  "./assets/garments/tidekeeper-mace-v1/universal-low.glb": "044f08f970d4a641",
+  "./assets/garments/grovekeeper-shield-v1/universal-high.glb": "095d2a9e76b4b91d",
+  "./assets/garments/grovekeeper-shield-v1/universal-low.glb": "f0b3414f8d6fa7f2",
+  "./assets/garments/skyweaver-tome-v1/universal-high.glb": "a10125079d128099",
+  "./assets/garments/skyweaver-tome-v1/universal-low.glb": "cc5abe8bc09f5024"
 };

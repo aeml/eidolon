@@ -122,7 +122,11 @@ for (const design of designs) {
         record.provenance.push({ quality, reference, sha256: digest(source), purpose: 'Delivered rigid grip-coordinate and size reference; source geometry is unchanged.' });
         const document = new Document(), buffer = document.createBuffer(), scene = document.createScene(offer.name);
         document.getRoot().setDefaultScene(scene);
-        const colors = { steel: '#b3bec7', gold: '#bfa371', leather: '#293039', wood: '#394e44', vellum: '#c8bea0', crystal: offer.secondary };
+        const crystalColors = { thornblade: 0x49bfa0, 'crescent-dagger': 0x739ddc, 'phoenix-staff': 0xf7b76c,
+            'tide-mace': 0x6acbd5, 'oak-shield': 0x49bfa0, 'astral-tome': 0x739ddc };
+        const colors = { steel: '#b3bec7', gold: design.design === 'astral-tome' ? '#b5bfd0' : '#bfa371',
+            leather: design.design === 'astral-tome' ? '#34465f' : '#293039',
+            wood: design.design === 'phoenix-staff' ? '#5b302a' : '#394e44', vellum: '#c8bea0', crystal: crystalColors[design.design] };
         const mesh = document.createMesh(offer.name);
         for (const [role, pieces] of model(design.design, quality)) {
             const geometry = mergeGeometries(pieces); assert(geometry, 'Incompatible held garment attribute streams');
@@ -130,7 +134,7 @@ for (const design of designs) {
             const material = document.createMaterial(`${role === 'gold' ? 'Antique gold settings' : role === 'steel' ? 'Forged silver' : role === 'wood' ? 'Dark ashwood' : role === 'leather' ? 'Wrapped oxblood leather' : role === 'vellum' ? 'Vellum' : 'Garment | cut crystal'}`)
                 .setBaseColorFactor([...new THREE.Color(colors[role]).toArray(), 1])
                 .setMetallicFactor(['gold', 'steel'].includes(role) ? .8 : 0).setRoughnessFactor(role === 'crystal' ? .2 : ['gold', 'steel'].includes(role) ? .4 : .82);
-            if (role === 'crystal') material.setEmissiveFactor(new THREE.Color(offer.secondary).multiplyScalar(.15).toArray());
+            if (role === 'crystal') material.setEmissiveFactor(new THREE.Color(colors.crystal).multiplyScalar(.15).toArray());
             const primitive = document.createPrimitive().setMaterial(material);
             for (const [semantic, name, type] of [['POSITION', 'position', Accessor.Type.VEC3], ['NORMAL', 'normal', Accessor.Type.VEC3], ['TEXCOORD_0', 'uv', Accessor.Type.VEC2]]) {
                 const attribute = geometry.getAttribute(name); assert(attribute?.array.every(Number.isFinite), `Invalid ${semantic}`);

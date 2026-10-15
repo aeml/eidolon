@@ -31,11 +31,18 @@ for (const model of Object.values(HELD_GARMENT_MODELS)) for (const quality of ['
         await expect.poll(selectedIDs).toEqual([model.id]);
         await dialog.locator('.character-preview-stage').scrollIntoViewIfNeeded();
         await dialog.screenshot({ path: testInfo.outputPath('held-garment-preview.png') });
+        const fullHeight = await page.evaluate(() => window.__heldPreview.ui.preview.camera.top);
+        await dialog.getByRole('button', { name: 'Inspect held look', exact: true }).click();
+        await expect(dialog.getByRole('button', { name: 'Show full character', exact: true })).toHaveAttribute('aria-pressed', 'true');
+        expect(await page.evaluate(() => window.__heldPreview.ui.preview.camera.top)).toBeLessThan(fullHeight);
+        await dialog.screenshot({ path: testInfo.outputPath('held-garment-detail.png') });
         await dialog.getByRole('button', { name: 'Show equipped look', exact: true }).click();
         await expect.poll(selectedIDs).toEqual([]);
         await dialog.getByRole('button', { name: 'Show selected cosmetic', exact: true }).click();
         await expect.poll(selectedIDs).toEqual([model.id]);
         await dialog.getByRole('button', { name: 'Rotate preview right', exact: true }).click();
+        await dialog.getByRole('button', { name: 'Show full character', exact: true }).click();
+        expect(await page.evaluate(() => window.__heldPreview.ui.preview.camera.top)).toBe(fullHeight);
         await dialog.getByRole('button', { name: 'Apply owned look', exact: true }).click();
         expect(await page.evaluate(() => window.__heldPreview.sent.at(-1))).toEqual({ type: 'select_appearance', payload: { slot: model.slot, key: `${model.name}|Common` } });
         expect(await page.evaluate(() => JSON.stringify(window.__heldPreview.player.equipment) === window.__heldPreview.original && Object.keys(window.__heldPreview.player.appearances).length === 0)).toBe(true);

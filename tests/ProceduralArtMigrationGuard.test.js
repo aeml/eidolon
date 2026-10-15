@@ -140,7 +140,7 @@ describe('procedural art migration guard', () => {
     test('only the exact six held garment designs and unchanged delivered grip references are allowed', () => {
         const hash = bytes => createHash('sha256').update(bytes).digest('hex');
         expect(hash(fs.readFileSync(path.join(repoRoot, 'src/assets/heldGarments.generated.js'))))
-            .toBe('10c99690437b519307388647008356b5996cd393efce6f39c7d83794e4e33579');
+            .toBe('6b9c53560ebe59a75b71aab5f8c97c405dafd9b4fafb5a428b836b456d28193f');
         expect(Object.values(HELD_GARMENT_MODELS)).toHaveLength(6);
         expect(heldModels.map(model => model.file.slice(2)).sort()).toEqual([...auditedHeldCopies].sort());
         expect(heldSources).toHaveLength(12);
