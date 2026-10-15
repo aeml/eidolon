@@ -50,7 +50,7 @@ returning sessions (61 focused checks; two final native scene-lifetime cases).
 close specific usability/loading defects, not final world art, physical-device,
 whole-frame or full original readiness requirements. Soak remains deferred.
 
-## Next world-surface milestone: selected locally, unpublished
+## Alpha 1.79.54: prepared locally, unpublished
 
 Earth trails now sample physical soil/pebbles in world space, correcting the
 stretched, cliff-like pattern at sharp bends while preserving route geometry,
@@ -68,8 +68,10 @@ geometry preparation. In the prepared four-class town comparison this saves
 remain exact.91 focused checks and two native motion/lifetime cases pass.
 [Scoped geometry qualification](2026-10-15-ilyra-gameplay-geometry-qualification.json).
 Whole-game frame time and other crowded-scene triangle failures remain open.
-These selected changes are held on local master for a coherent world milestone
-until corrected53 completes its own CI/deployment/public verification.
+These selected changes form Alpha1.79.54 on local master, with415 release checks
+and489 cumulative notes preserving all488 previous entries. The milestone is
+held until corrected53 completes its own CI/deployment/public verification.
+[Preparation and retained evidence](2026-10-15-release1-79-54-preparation.json).
 
 The private pine diffuse-lighting experiment144251bcd remains unselected: the
 visible change was too slight, and its Low view failed the original changed-pixel

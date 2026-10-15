@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-15",
+  "version": "Alpha 1.79.54",
+  "status": "Prepared locally; do not push until corrected Alpha1.79.53 passes its own deployment/live/public acceptance.",
+  "selected": [
+    "d45fa6a6f Earth trail physical surface",
+    "3f658db74 all dungeon floor physical scale and worn Thorncrypt joints",
+    "fbc2920e9 branch-following Thorncrypt root bark",
+    "1c07250d1 Ilyra costume gameplay geometry"
+  ],
+  "qualification": [
+    "2026-10-15-earth-trail-ground-qualification.json",
+    "2026-10-15-dungeon-floor-scale-qualification.json",
+    "2026-10-15-dungeon-root-bark-qualification.json",
+    "2026-10-15-ilyra-gameplay-geometry-qualification.json"
+  ],
+  "validation": {
+    "release": "415 checks across four release/history/browser-plan/publication suites pass; twelve version surfaces synchronized.489 cumulative notes/48 archive pages preserve all488 previous entries byte-exact.14 generated content groups verify without regeneration.",
+    "feature": "Reuse the scoped CPU/native/lifetime evidence in each qualification, including retained initial failures and limits. No repeated full campaign or soak. Seven additional Firefox interface cases pass; its renderer probe cannot create WebGL2 on this headless host and is not acceptance.",
+    "retainedSetup": "Initial npm run verify:content failed because the script is named check:content; corrected command passes14groups. No generated content changes."
+  },
+  "evidence": [
+    {
+      "path": ".qa-release54/release-unit.log",
+      "bytes": 299,
+      "sha256": "caba8c6db85fe6f57aa17e6655e7123dc32f1c88c4af390f4ceeade8850081c0"
+    },
+    {
+      "path": ".qa-release54/publication-unit.log",
+      "bytes": 297,
+      "sha256": "3d54bfe875d82af2d1d98efaa0196815d3032f5587450c5fb85116a4c54ff967"
+    },
+    {
+      "path": ".qa-release54/content.log",
+      "bytes": 237,
+      "sha256": "c375b39eb126ee805313d52fca7887f3d12ecfac50ca49c26d02a1c8e6c8a387"
+    },
+    {
+      "path": ".qa-release54/content-verified.log",
+      "bytes": 3332,
+      "sha256": "4afd7919a30a073f16c686fc38f1ea540f598de4e322df53d8b3fb1a0e9bce45"
+    },
+    {
+      "path": ".qa-release54/history-check.json",
+      "bytes": 56,
+      "sha256": "73d1b450f97a9992fcfcfc6ece9fab73ac29c922f3e1698841a92a8d6ace401e"
+    },
+    {
+      "path": ".qa-release54/pagination.log",
+      "bytes": 55,
+      "sha256": "94925ff49581bcbccf903f931f79a22317192f752c584b5fd1ca148e824b448e"
+    }
+  ],
+  "remaining": "Predecessor53 acceptance, own complete CI/deploy/live/exact public verification, whole-game performance and world/art/device/owner readiness gates. No raised-terrain activation, beta declaration or soak."
+}
