@@ -90,3 +90,19 @@ fixture failed at cleanup on the wrong disposal method; corrected cleanup passes
 with unchanged layout assertions. [Qualification](2026-10-15-window-position-qualification.json).
 This correction is selected locally, not deployed. Durable preferences, layout
 reset, full phone policy and the broader quest/lore/menu redesign remain open.
+
+## Quest experience implementation — October 15
+
+A dedicated searchable Lore Book now presents earned chapters, exact recorded
+discoveries, restoration accounts, Ilyra replies, story recap and current task.
+It links back to the current quest and map, retains in-session reading choices
+and clears old-character state. Tracked cards open the corresponding journal
+section by keyboard or touch. NPC review now leads with state/objective/reward,
+preserves paragraph breaks and keeps manual actions reachable through long
+dialogue. Pending, rejected and acknowledged transitions retain their rules.
+
+227 distinct focused checks and13 distinct native UI cases have passing evidence;
+full lint and reviewed desktop/phone captures qualify this local selection.
+[Evidence, stale fixture and invocation failures](2026-10-15-quest-book-qualification.json).
+Publication follows acceptance of54. This does not close shared-menu polish,
+durable position/reset preferences, physical playtests or final owner review.
