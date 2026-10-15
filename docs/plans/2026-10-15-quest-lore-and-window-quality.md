@@ -80,3 +80,13 @@ Inspect drag completion, reopening and session teardown before selecting a fix.
 - [ ] Publish and verify the selected milestone. Final usability/visual review
   remains distinct from unit/browser checks and from deferred physical playtests.
 
+
+## First scoped correction — October 15
+
+Automatic centering and companion pairing now preserve dragged positions across
+close/reopen in the current UI session.79 focused checks and one real-browser
+mouse/reopen/content-resize/viewport-resize case pass. The initial browser
+fixture failed at cleanup on the wrong disposal method; corrected cleanup passes
+with unchanged layout assertions. [Qualification](2026-10-15-window-position-qualification.json).
+This correction is selected locally, not deployed. Durable preferences, layout
+reset, full phone policy and the broader quest/lore/menu redesign remain open.

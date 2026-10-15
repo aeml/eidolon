@@ -1,0 +1,110 @@
+{
+  "date": "2026-10-15",
+  "state": "qualified locally; selected for next unpublished milestone; deployment pending",
+  "runtimeCommit": "7cf4c8004ec4dd2f5f9ce88a5d0b5b5c405b49cc",
+  "change": "Automatic centering and companion pairing preserve dragged panel coordinates. Existing viewport clamping still keeps controls reachable. No new save schema or server state.",
+  "validation": {
+    "focusedChecks": 79,
+    "suites": 3,
+    "lint": "pass",
+    "nativeBrowserCases": 1,
+    "browserSeconds": 7.9,
+    "flows": [
+      "Real mouse drag of character, inventory and merchant",
+      "Close/reopen each moved panel with companion visible",
+      "ResizeObserver after merchant content grows",
+      "Viewport1440x1000\u2192700x720 clamps merchant and hides bag companion",
+      "Close/reopen after viewport reduction retains clamped coordinates",
+      "Owned UI disposal"
+    ],
+    "requiredCI": "window-position-memory.spec.js added to hosted interface suite"
+  },
+  "retainedFailure": {
+    "path": ".qa-window-memory/browser.log",
+    "reason": "Initial fixture completed layout assertions then failed because it called nonexistent UIManager.destroy. Changed to actual UIManager.dispose; unchanged layout assertions pass."
+  },
+  "scope": "Remembers positions across close/reopen in the current UI session. Does not yet add browser-persistent positions, layout reset or complete phone preference policy. Broader quest tracker, lore book and menu visual redesign remain open.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-window-memory-20261015",
+  "files": [
+    {
+      "path": ".qa-window-memory/browser/.last-run.json",
+      "bytes": 96,
+      "sha256": "71e775d11993efcf80a1ca729bb05fb6bca8c609a73c69f7bf60f90b76727a2c"
+    },
+    {
+      "path": ".qa-window-memory/browser/window-position-memory-mov-1e8e3-eir-positions-when-reopened/error-context.md",
+      "bytes": 4535,
+      "sha256": "4e77a4d3a00888c184c9cb4542f3e71aa51a2a1b34773898b5e42d10b3f1dd4f"
+    },
+    {
+      "path": ".qa-window-memory/browser/window-position-memory-mov-1e8e3-eir-positions-when-reopened/remembered-store-and-bag.png",
+      "bytes": 483457,
+      "sha256": "971a3af3ea819799e7704529637e016687c46f733985a2cfb2287e6b2a1aaf80"
+    },
+    {
+      "path": ".qa-window-memory/browser/window-position-memory-mov-1e8e3-eir-positions-when-reopened/remembered-store-resized.png",
+      "bytes": 149110,
+      "sha256": "3370467ddecce84bcdf94010750e011941f86d396b94b1b2a0615acf8cceef51"
+    },
+    {
+      "path": ".qa-window-memory/browser/window-position-memory-mov-1e8e3-eir-positions-when-reopened/test-failed-1.png",
+      "bytes": 149130,
+      "sha256": "1c2cd4440f0039b9bcadcb70d7d3a66f1229ab843b0d29092786d637d721ba27"
+    },
+    {
+      "path": ".qa-window-memory/browser/window-position-memory-mov-1e8e3-eir-positions-when-reopened/trace.zip",
+      "bytes": 3551375,
+      "sha256": "dc758a27e35931c5e3b13b3a2f943f3b3505ad6b709e06f5976f8d8ce1eab74a"
+    },
+    {
+      "path": ".qa-window-memory/browser/window-position-memory-mov-1e8e3-eir-positions-when-reopened/video.webm",
+      "bytes": 280189,
+      "sha256": "b4628a4c69d810a4578eaa431a7789d330148c13f260a7a59d2cdca191af046d"
+    },
+    {
+      "path": ".qa-window-memory/browser-dispose-fixed/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".qa-window-memory/browser-dispose-fixed/window-position-memory-mov-1e8e3-eir-positions-when-reopened/remembered-store-and-bag.png",
+      "bytes": 483457,
+      "sha256": "971a3af3ea819799e7704529637e016687c46f733985a2cfb2287e6b2a1aaf80"
+    },
+    {
+      "path": ".qa-window-memory/browser-dispose-fixed/window-position-memory-mov-1e8e3-eir-positions-when-reopened/remembered-store-resized.png",
+      "bytes": 149111,
+      "sha256": "994935b8babc534fcb9626c3492c690f8177be13244fbad2cf231b6d0cbb29f8"
+    },
+    {
+      "path": ".qa-window-memory/browser-dispose-fixed.log",
+      "bytes": 420,
+      "sha256": "17f467126e29496c5e1c829dafbb8017372217ecb78a0d458993b7a526634de9"
+    },
+    {
+      "path": ".qa-window-memory/browser.log",
+      "bytes": 3344,
+      "sha256": "620cd4402140424069924aa2dbd7f237cd574272fc41e7817a65b0dffd545f1a"
+    },
+    {
+      "path": ".qa-window-memory/cpu.log",
+      "bytes": 625,
+      "sha256": "9eed9d4cbf18aebcfda78f994b28d53479a0bdd15e21e30042d779a56c6c3f17"
+    },
+    {
+      "path": ".qa-window-memory/dispose-fixture-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-window-memory/lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-window-memory/prepare.log",
+      "bytes": 2666,
+      "sha256": "823e97a1d536dbf2bccfd058eb2cb752d6ad6e46c718e013736e46d78295a207"
+    }
+  ]
+}

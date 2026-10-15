@@ -156,6 +156,10 @@ class UIManagerWindowMethods {
     }
 
     centerWindow(element) {
+        if (element?.dataset.draggedWindow) {
+            this.clampWindowToViewport(element);
+            return;
+        }
         this.prepareWindowForLayout(element);
         element.style.left = '50%';
         element.style.top = '50%';
@@ -173,12 +177,18 @@ class UIManagerWindowMethods {
         const left = Math.max(12, Math.round((window.innerWidth - totalWidth) / 2));
         const top = Math.max(12, Math.round((window.innerHeight - Math.max(primaryRect.height, companionRect.height)) / 2));
 
-        primaryElement.style.left = `${left}px`;
-        primaryElement.style.top = `${top}px`;
-        primaryElement.style.transform = 'none';
-        companionElement.style.left = `${left + primaryRect.width + gap}px`;
-        companionElement.style.top = `${top}px`;
-        companionElement.style.transform = 'none';
+        // Companion placement is a default, not permission to overwrite a
+        // player's layout when either window reopens or its contents resize.
+        if (!primaryElement.dataset.draggedWindow) {
+            primaryElement.style.left = `${left}px`;
+            primaryElement.style.top = `${top}px`;
+            primaryElement.style.transform = 'none';
+        }
+        if (!companionElement.dataset.draggedWindow) {
+            companionElement.style.left = `${left + primaryRect.width + gap}px`;
+            companionElement.style.top = `${top}px`;
+            companionElement.style.transform = 'none';
+        }
         this.clampWindowToViewport(primaryElement);
         this.clampWindowToViewport(companionElement);
     }
