@@ -75,7 +75,25 @@ integration or membership restrictions as part of this requirement.
 - [ ] Complete owner visual review of the finished collection and record scoped
   deployment evidence. Catalog counts alone do not establish visual quality.
 
-Current implementation gap: `equipmentWithAppearances` applies looks to existing
-individual slots; the twelve entries in `cosmetics.json` describe elemental
-palette variants. Neither provides the new single full-outfit selection contract.
+## First scoped implementation — October 15
 
+A server-authoritative `outfit` selection now replaces all seven body gear visuals
+as one complete model while preserving actual combat gear, independent held
+looks and the player's individual appearance choices. Clear restores those
+underlying looks. Owned selection, character saves and remote appearance updates
+use the existing acknowledgement/persistence rules. Vendor/wardrobe previews
+show the same complete model and allow armor-free appearance selection.
+
+The first Fighter-themed Iron Oath Regalia has actual crowned-helm, curved
+shoulder-fin and covenant-seal geometry, eight validated skinned GLBs for four
+class fits and High/Low, exact asset versions and source provenance. This is
+**one distinct look**, not four class-themed looks.121focused client checks,
+focused server custody checks, full lint,15content groups and four distinct
+native render/vendor cases pass. Corrected prepared party totals are236draws/
+191549tri High and124/78191Low; frame-time acceptance is not claimed. Earlier
+Low budget/export failures remain in the receipt.
+[Qualification](2026-10-15-full-outfit-garment-qualification.json).
+
+Selected locally for the next milestone. The other17minimum looks, wider motion
+coverage, final collection review and beta acceptance remain open. Existing
+12palette cosmetics still do not count as new model deliveries.
