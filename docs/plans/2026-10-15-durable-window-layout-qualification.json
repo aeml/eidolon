@@ -8,7 +8,8 @@
     "native": "Five distinct native cases pass across original3 and corrected2, without retries. Actual mouse close/reopen, content and viewport resize, reload, keyboard reset, phone saved-offset exclusion/reset, retired desktop and phone UI sessions.",
     "review": "Desktop and390px phone reset captures reviewed; action reachable, phone44px target, visible confirmation and header/close controls.",
     "failure": "Original new reset action had a label-for-button that replaced its accessible name. Desktop new case failed waiting for action name, phone case interrupted. Replaced with plain field heading; unchanged action-name checks pass in both corrected cases. Initial evidence retained.",
-    "limits": "No full shared-menu visual redesign, physical playtest or beta usability acceptance. Phone menus use existing fixed responsive layout and cannot be dragged; reset also clears saved desktop profiles on the same device. Storage denial preserves current UI state but cannot survive reload."
+    "limits": "No full shared-menu visual redesign, physical playtest or beta usability acceptance. Phone menus use existing fixed responsive layout and cannot be dragged; reset also clears saved desktop profiles on the same device. Storage denial preserves current UI state but cannot survive reload.",
+    "lint": "Full lint passes after joining the multiline parameterized Jest invocation; original lint failure retained. No assertion changes."
   },
   "evidenceRoot": "/home/aeml/.local/share/eidolon-window-quality-20261015",
   "evidence": [
@@ -76,6 +77,16 @@
       "path": ".qa-window-quality/scoped-lint.log",
       "bytes": 231,
       "sha256": "77dea477690d85c7baa128586f3df0e1e8c90b1056fb3b12154b4a6126fbd9df"
+    },
+    {
+      "path": ".qa-window-quality/final-lint.log",
+      "bytes": 327,
+      "sha256": "ea894053e262ca39e3933de352edf173bf8e09af8e7a1403c8f65d55b1bf8a53"
+    },
+    {
+      "path": ".qa-window-quality/corrected-final-lint.log",
+      "bytes": 96,
+      "sha256": "33ae01988d54baa1b38dc80f09ec63fb349ee06c2f5c3f4a3d3a8ce4a8756519"
     }
   ]
 }

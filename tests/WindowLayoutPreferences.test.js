@@ -5,8 +5,7 @@ beforeEach(() => localStorage.clear());
 afterEach(() => jest.restoreAllMocks());
 
 test.each(['{broken', 'null', '{"version":2,"wide":{"shop":{"left":30,"top":40}}}',
-    '{"version":1,"wide":{"shop":{"left":"30","top":40},"character":{"left":1e20,"top":40}}}'])
-('ignores malformed, unsupported or invalid saved coordinates: %s', input => {
+    '{"version":1,"wide":{"shop":{"left":"30","top":40},"character":{"left":1e20,"top":40}}}'])('ignores malformed, unsupported or invalid saved coordinates: %s', input => {
     localStorage.setItem('eidolon.windowLayout.v1', input);
     expect(new WindowLayoutPreferences().get('shop', 'wide')).toBeUndefined();
 });
