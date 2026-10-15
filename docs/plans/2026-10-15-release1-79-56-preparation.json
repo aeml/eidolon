@@ -14,7 +14,8 @@
     "components": "121focused garment checks/eight suites, focused server save/protobuf/ownership, four native garment render/vendor cases and15generated groups;94focused layout checks/five suites and five native layout/session cases. Full lint passing in both component trees.",
     "release": "429distinct release/history/browser-plan/publication checks pass across three unchanged passing suites and corrected386-check version suite.491cumulative notes preserve all490prior entries byte-exact.",
     "retainedFailure": "Initial version checks found README current-version formatting and hidden workflow fallback still55. Corrected both while preserving unchanged assertions;386version checks pass. Component export/render budget, accessible-name and lint failures remain in their receipts.",
-    "limits": "First usable garment/pipeline, not final18-look collection. Wider menu/world/art/performance/device/operations/owner/beta scope remains open. Soak deferred."
+    "limits": "First usable garment/pipeline, not final18-look collection. Wider menu/world/art/performance/device/operations/owner/beta scope remains open. Soak deferred.",
+    "hostedFollowup": "Initial CI38687214843: client777suites/11853tests passed; two suites/three checks failed at stale palette12count and garment additions outside audited art exceptions. No deployment. Cancelled remaining tests after known failure. Corrected explicit eight-file/56source custody audit and13catalog count; original legacy zero limits unchanged.12focused checks pass. First local correction retained the ./ prefix mismatch; normalized exact paths without widening the allowed set. Corrected-source CI and public verification remain required."
   },
   "evidenceRoot": "/home/aeml/.local/share/eidolon-master-20261011",
   "evidence": [
@@ -37,6 +38,26 @@
       "path": ".qa-release56/pagination.log",
       "bytes": 55,
       "sha256": "d3bc86a1c15fce48d88009ac9b1d3a0a0587980b378c6040a3c8bcc2c0061fd5"
+    },
+    {
+      "path": ".qa-release56/initial-client.log",
+      "bytes": 1180454,
+      "sha256": "83539c4d9c7685dd5e915337251609dec20fc122583cc56f406facfb18d1a56b"
+    },
+    {
+      "path": ".qa-release56/guard-correction.log",
+      "bytes": 1447,
+      "sha256": "5441ebd6b117fdef9a74bf575b3e399692c0206ebf729d1eb9a2c02a6a4ab202"
+    },
+    {
+      "path": ".qa-release56/guard-corrected.log",
+      "bytes": 612,
+      "sha256": "afdd11e835e61ac32b64e7fd0d963c803efa95a3bb5ca83a4bbce3df0dbc6ee6"
+    },
+    {
+      "path": ".qa-release56/guard-corrected-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
   ]
 }

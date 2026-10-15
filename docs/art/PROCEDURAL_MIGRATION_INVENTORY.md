@@ -341,3 +341,18 @@ The recalculation path is also type-correct: player-only level health and resour
 The complete fourteen-slot loadout now uses a tighter Cleric-specific helmet, shoulder, and chest fit so generated equipment follows rather than erases her silhouette. Face components and exterior hair locks remain visible around headgear while the crown, inner hair cap, and other intersecting ornaments still hide correctly. All 18 attachment regions, every equipment family, default mace and censer restoration, animation clips, grounded bounds, hitboxes, pooling, local/remote construction, and shared caches remain intact.
 
 Structural coverage forbids the removed coif, stole, and burial-cloak parts; requires the new dawnwarden anatomy, hair, armor, sash, faulds, split cape, and diadem; and verifies the exact fitted-equipment profile. Full-loadout tests preserve every facial component and both braids while all fourteen slots render. Deterministic hardware Chrome confirms finite High-quality unequipped and fully equipped silhouettes. Class statistics, abilities, movement, combat authority, network synchronization, progression, equipment data, and saves are unchanged.
+
+## October 15: owner-requested complete garment models
+
+The selected Iron Oath Regalia adds exactly eight complete fitted garment GLBs
+(four supplied class fits, High/Low), derived from56 unchanged delivered runtime
+body pieces with new modeled ornaments. The migration guard registers those
+exact eight paths, the generated manifest SHA, all model byte/SHA identities
+and56 original source hashes. Only the generated manifest and its generator
+receive exact reference-token allowances. The retired legacy payload limits
+remain zero, and every earlier actor/equipment audit remains in force.
+
+This is scoped model/pipeline delivery, with prepared scene and vendor evidence
+in the garment receipt; final18-look collection/modern-art acceptance remains
+open. Adding future garment models requires their own explicit audit and
+qualification, not a wildcard exception for the garment directory.

@@ -4,6 +4,7 @@ import { AUTHORED_ASSETS, AUTHORED_ASSET_VERSIONS } from '../src/assets/authored
 import { EQUIPMENT_VISUAL_DESCRIPTORS } from '../src/art/ProceduralEquipment.js';
 import { COSMETIC_CATALOGUE, SEASON_COSMETIC_CATALOGUE } from '../src/data/cosmetics.generated.js';
 import { resolveFittedEquipmentModel } from '../src/art/FittedEquipment.js';
+import { GARMENT_MODELS, GARMENT_ASSET_VERSIONS } from '../src/assets/garments.generated.js';
 import { fighterRuntimePath } from '../src/art/AuthoredFighter.js';
 
 test('runtime catalog covers every delivered base item and all four class qualities without source-model boot dependencies', () => {
@@ -77,8 +78,8 @@ test('each quality selects its pinned derivative and original diagnostics remain
     expect(resolveFittedEquipmentModel({ models: catalog.models }, 'standard', 'Fighter', 'low').file).toBe(catalog.models.standard.Fighter);
 });
 
-test('each cosmetic reuses delivered class-fitted artwork with explicit finite palette colors', () => {
-    expect(COSMETIC_CATALOGUE).toHaveLength(12);
+test('each cosmetic has audited artwork and explicit finite palette colors', () => {
+    expect(COSMETIC_CATALOGUE).toHaveLength(13);
     for (const look of [...COSMETIC_CATALOGUE, ...SEASON_COSMETIC_CATALOGUE]) {
         const base = AUTHORED_ASSETS.items[look.base];
         expect(base).toBeDefined();
@@ -87,6 +88,14 @@ test('each cosmetic reuses delivered class-fitted artwork with explicit finite p
         for (const color of [look.primary, look.secondary]) {
             expect(Number.isInteger(color)).toBe(true);
             expect(color).toBeGreaterThanOrEqual(0); expect(color).toBeLessThanOrEqual(0xffffff);
+        }
+        if (look.kind === 'outfit') {
+            const outfit = GARMENT_MODELS.outfits[look.name];
+            expect(outfit.id).toBe(look.id); expect(Object.keys(outfit.models).sort()).toEqual(['Cleric', 'Fighter', 'Rogue', 'Wizard']);
+            for (const models of Object.values(outfit.models)) for (const model of Object.values(models)) {
+                expect(GARMENT_ASSET_VERSIONS[model.file]).toBe(model.sha256.slice(0, 16));
+                expect(fs.existsSync(model.file)).toBe(true);
+            }
         }
         for (const fits of Object.values(base.models)) for (const file of Object.values(fits)) {
             expect(AUTHORED_ASSET_VERSIONS[file]).toBeDefined();
