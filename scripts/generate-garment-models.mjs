@@ -69,8 +69,127 @@ function addOrnament(document, scene, skin, source, geometry, anchor, name, mate
     geometry.dispose();
 }
 
+function panel(points, depth, bevel = .002) {
+    const shape = new THREE.Shape(points.map(([x, y]) => new THREE.Vector2(x, y))); shape.closePath();
+    const geometry = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelSize: bevel,
+        bevelThickness: bevel, bevelSegments: 1, steps: 1, curveSegments: 1 });
+    geometry.translate(0, 0, -depth / 2); return geometry;
+}
+function crescent(radius, depth, high) {
+    const shape = new THREE.Shape(); shape.absarc(0, 0, radius, .35 * Math.PI, 1.65 * Math.PI, false);
+    shape.quadraticCurveTo(-radius * .3, 0, Math.cos(.35 * Math.PI) * radius, Math.sin(.35 * Math.PI) * radius);
+    // Low keeps the lunar outline but omits its subpixel bevel strips and
+    // uses fewer arc samples; original robe, UV and skin streams stay intact.
+    const geometry = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: high, bevelSize: depth / 4,
+        bevelThickness: depth / 4, bevelSegments: 1, steps: 1, curveSegments: high ? 16 : 4 });
+    geometry.translate(0, 0, -depth / 2); return geometry;
+}
+function sculptClassGarment({ design, quality, sources, ornament, gold, steel, gem, helmet, shoulders, chest, scale, material }) {
+    const high = quality === 'high';
+    const place = (geometry, anchor, name, material, slot) => {
+        geometry.translate(...anchor.toArray()); ornament(geometry, anchor, name, material, slot);
+    };
+    const headAnchor = new THREE.Vector3(0, helmet.max.y - .045 * scale, helmet.max.z + .01 * scale);
+    const chestY = chest.min.y + (chest.max.y - chest.min.y) * (design.id === 'nightglass-cowl-v1' ? .6 : .82);
+    const chestAnchor = frontSurface(sources.chest, 0, chestY, chest.max.z + 1);
+    chestAnchor.z += .012 * scale;
+    if (design.id === 'nightglass-cowl-v1') {
+        const brow = panel([[-.1, .015], [-.07, .04], [0, -.035], [.07, .04], [.1, .015], [0, -.06]].map(([x, y]) => [x * scale, y * scale]), .008 * scale);
+        place(brow, headAnchor, 'Nightglass brow diadem', steel, 'head');
+        for (const sign of [-1, 1]) {
+            const anchor = new THREE.Vector3(sign * helmet.max.x * .8, helmet.max.y - .035 * scale, helmet.min.z + .04 * scale);
+            const vane = panel([[0, 0], [sign * .025, .1], [sign * .015, .18], [sign * .06, .12], [sign * .05, .02]].map(([x, y]) => [x * scale, y * scale]), .014 * scale);
+            place(vane, anchor, `Raven hood vane ${sign}`, steel, 'head');
+            for (let i = 0; i < 3; i++) {
+                const anchor = new THREE.Vector3(sign * shoulders.max.x * (.74 + i * .1), shoulders.max.y - .025 * i * scale, shoulders.min.z + .08 * scale);
+                const feather = panel([[0, 0], [sign * .11, .06], [sign * .15, .15], [sign * .04, .1], [-sign * .015, .035]].map(([x, y]) => [x * scale, y * scale]), .015 * scale);
+                feather.rotateY(-sign * .25); place(feather, anchor, `Raven shoulder vane ${sign} ${i}`, i === 1 ? gold : steel, 'shoulders');
+            }
+        }
+        const clasp = panel([[0, .07], [.06, 0], [0, -.07], [-.06, 0]].map(([x, y]) => [x * scale, y * scale]), .012 * scale);
+        place(clasp, chestAnchor, 'Nightglass crossed clasp', gold, 'chest');
+        const stone = new THREE.OctahedronGeometry(.04 * scale); stone.scale(.55, 1, .35);
+        place(stone, chestAnchor.clone().add(new THREE.Vector3(0, 0, .016 * scale)), 'Nightglass cut stone', gem, 'chest');
+    } else if (design.id === 'dawn-reliquary-v1') {
+        const anchor = new THREE.Vector3(0, helmet.max.y - .025 * scale, helmet.min.z + .025 * scale);
+        place(new THREE.TorusGeometry(.16 * scale, .009 * scale, high ? 6 : 4, high ? 32 : 20), anchor, 'Mounted solar crest', gold, 'head');
+        for (let i = 0; i < 12; i++) {
+            const angle = i * Math.PI / 6;
+            const ray = panel([[-.008, .155], [0, .21], [.008, .155]].map(([x, y]) => [x * scale, y * scale]), .008 * scale);
+            ray.rotateZ(angle); place(ray, anchor, `Solar crest ray ${i}`, gold, 'head');
+        }
+        for (const sign of [-1, 1]) {
+            const brace = panel([[sign * .025, -.08], [sign * .04, .015], [sign * .015, .08], [0, -.08]].map(([x, y]) => [x * scale, y * scale]), .012 * scale);
+            place(brace, anchor, `Solar crest support ${sign}`, steel, 'head');
+            for (let i = 0; i < 3; i++) {
+                const anchor = new THREE.Vector3(sign * shoulders.max.x * (.76 + .09 * i), shoulders.max.y - .018 * i * scale, .015 * scale);
+                const leaf = panel([[0, 0], [sign * .025, .09], [sign * .09, .12], [sign * .13, .055], [sign * .08, .035]].map(([x, y]) => [x * scale, y * scale]), .018 * scale);
+                leaf.rotateX(.3); place(leaf, anchor, `Gilded shoulder leaf ${sign} ${i}`, i === 1 ? steel : gold, 'shoulders');
+            }
+        }
+        place(new THREE.TorusGeometry(.065 * scale, .009 * scale, high ? 6 : 4, high ? 24 : 16), chestAnchor, 'Radiant reliquary bezel', gold, 'chest');
+        const sun = panel(Array.from({ length: 16 }, (_, i) => {
+            const a = i * Math.PI / 8, r = (i % 2 ? .027 : .052) * scale; return [Math.sin(a) * r, Math.cos(a) * r];
+        }), .012 * scale);
+        place(sun, chestAnchor.clone().add(new THREE.Vector3(0, 0, .014 * scale)), 'Radiant reliquary star', gem, 'chest');
+    } else if (design.id === 'astral-sovereign-v1') {
+        const crest = crescent(.115 * scale, .015 * scale, high); crest.rotateZ(-Math.PI / 2);
+        place(crest, headAnchor.clone().add(new THREE.Vector3(0, .045 * scale, -.005 * scale)), 'Sculpted lunar crown', gold, 'head');
+        const star = new THREE.OctahedronGeometry(.035 * scale); star.scale(.6, 1.2, .4);
+        place(star, headAnchor.clone().add(new THREE.Vector3(0, .08 * scale, .008 * scale)), 'Lunar crown stone', gem, 'head');
+        for (const sign of [-1, 1]) for (let i = 0; i < 2; i++) {
+            const anchor = new THREE.Vector3(sign * shoulders.max.x * (.78 + i * .11), shoulders.max.y - i * .035 * scale, .015 * scale);
+            const plate = crescent((.075 - i * .012) * scale, .014 * scale, high);
+            plate.rotateZ(sign < 0 ? Math.PI : 0); plate.rotateY(sign * .4);
+            place(plate, anchor, `Swept lunar pauldron ${sign} ${i}`, i ? steel : gold, 'shoulders');
+        }
+        const rays = panel([[0, .08], [.016, .025], [.055, 0], [.016, -.025], [0, -.08], [-.016, -.025], [-.055, 0], [-.016, .025]].map(([x, y]) => [x * scale, y * scale]), .01 * scale);
+        place(rays, chestAnchor, 'Astral eight-point setting', gold, 'chest');
+        const stone = new THREE.OctahedronGeometry(.045 * scale); stone.scale(.7, 1, .35);
+        place(stone, chestAnchor.clone().add(new THREE.Vector3(0, 0, .014 * scale)), 'Astral sapphire', gem, 'chest');
+    } else if (design.id === 'winterthorn-revel-v1') {
+        // Materials are created by the document-owned callback below, rather
+        // than borrowing or mutating any source equipment material.
+        const bark = material('Dark ashwood', 0x735640, .1, .8);
+        const holly = material('Wrapped oxblood leather', 0x3f7059, 0, .85);
+        const berries = material('Winter ruby berries', 0xc85957, .05, .4);
+        const cloth = material('Undersuit charcoal', design.secondary, 0, .95);
+        const tube = (points, radius, anchor, name) => {
+            const curve = new THREE.CatmullRomCurve3(points.map(([x, y, z]) => new THREE.Vector3(x * scale, y * scale, z * scale)));
+            const segments = high ? 16 : 8, radial = high ? 6 : 4;
+            const geometry = new THREE.TubeGeometry(curve, segments, radius * scale, radial, false), position = geometry.attributes.position;
+            for (let ring = 0; ring <= segments; ring++) {
+                const t = ring / segments, center = curve.getPointAt(t), taper = 1 - .98 * t * t;
+                for (let i = 0; i <= radial; i++) {
+                    const index = ring * (radial + 1) + i;
+                    const point = new THREE.Vector3().fromBufferAttribute(position, index).sub(center).multiplyScalar(taper).add(center);
+                    position.setXYZ(index, point.x, point.y, point.z);
+                }
+            }
+            geometry.computeVertexNormals(); place(geometry, anchor, name, bark, 'head');
+        };
+        for (const sign of [-1, 1]) {
+            const anchor = new THREE.Vector3(sign * helmet.max.x * .78, helmet.max.y - .055 * scale, helmet.min.z + .06 * scale);
+            tube([[0, 0, 0], [sign * .055, .1, -.015], [sign * .07, .24, -.035], [sign * .045, .34, -.02]], .012, anchor, `Winter stag crown ${sign}`);
+            tube([[sign * .055, .1, -.015], [sign * .125, .15, -.025], [sign * .15, .21, -.035]], .009, anchor, `Winter stag lower tine ${sign}`);
+            tube([[sign * .07, .24, -.035], [sign * .13, .28, -.05], [sign * .14, .34, -.05]], .008, anchor, `Winter stag upper tine ${sign}`);
+        }
+        const collarAnchor = new THREE.Vector3(0, chest.max.y - .045 * scale, .045 * scale);
+        const collar = new THREE.TorusGeometry(.15 * scale, .032 * scale, high ? 10 : 6, high ? 32 : 16);
+        collar.rotateX(Math.PI / 2); place(collar, collarAnchor, 'Pale winter collar', cloth, 'chest');
+        for (const [i, angle] of [-.75, .75, Math.PI].entries()) {
+            const leaf = panel([[0, 0], [-.025, .025], [-.015, .04], [-.03, .055], [0, .09], [.03, .055], [.015, .04], [.025, .025]].map(([x, y]) => [x * scale, y * scale]), .008 * scale);
+            leaf.rotateZ(angle); place(leaf, chestAnchor, `Holly seal leaf ${i}`, holly, 'chest');
+        }
+        for (let i = 0; i < 3; i++) {
+            const berry = new THREE.OctahedronGeometry(.014 * scale, high ? 1 : 0);
+            place(berry, chestAnchor.clone().add(new THREE.Vector3((i - 1) * .018 * scale, i === 1 ? .009 * scale : 0, .017 * scale)), `Holly seal berry ${i}`, berries, 'chest');
+        }
+    } else throw Error('Unregistered sculpted garment');
+}
+
 for (const design of designs) {
-    assert.equal(design.kind, 'outfit'); assert.equal(design.id, 'iron-oath-regalia-v1', 'Add a deliberate model design before extending the catalog');
+    assert.equal(design.kind, 'outfit'); assert(['iron-oath-regalia-v1', 'nightglass-cowl-v1', 'dawn-reliquary-v1', 'astral-sovereign-v1', 'winterthorn-revel-v1'].includes(design.id), 'Add a deliberate model design before extending the catalog');
     const garment = { id: design.id, name: design.name, coverage: {}, models: {}, provenance: [] };
     for (const [slot, name] of Object.entries(design.pieces)) {
         const item = AUTHORED_ASSETS.items[name]; assert.equal(item?.slot, slot);
@@ -129,6 +248,10 @@ for (const design of designs) {
             const helmet = bounds(sources.head), shoulders = bounds(sources.shoulders), chest = bounds(sources.chest);
             const size = helmet.getSize(new THREE.Vector3()), scale = size.x / .3;
             const ornament = (geometry, anchor, name, material, slot) => addOrnament(document, scene, skin, sources[slot], geometry, anchor, name, material, slot);
+            if (design.id !== 'iron-oath-regalia-v1') {
+                sculptClassGarment({ design, quality, sources, ornament, gold, steel, gem, helmet, shoulders, chest, scale,
+                    material: (name, color, metallic, roughness) => document.createMaterial(name).setBaseColorFactor(linear(color)).setMetallicFactor(metallic).setRoughnessFactor(roughness) });
+            } else {
             const crownWidth = size.x * .45, crownBase = helmet.max.y - .065 * scale;
             const crownShape = new THREE.Shape();
             crownShape.moveTo(-crownWidth / 2, 0); crownShape.lineTo(crownWidth / 2, 0);
@@ -164,6 +287,7 @@ for (const design of designs) {
             const crystal = new THREE.OctahedronGeometry(.035 * scale);
             crystal.scale(.75, 1, .4); crystal.translate(anchor.x, anchor.y, anchor.z + .018 * scale);
             ornament(crystal, anchor, 'Pale covenant stone', gem, 'chest');
+            }
             // Materials receive their shared maps at runtime; UVs are required
             // even though no texture is embedded in the model file. Separate
             // streams also preserve the existing guarded fitted batching route.
@@ -192,4 +316,4 @@ const output = `// Generated by scripts/generate-garment-models.mjs. Do not edit
 const file = 'src/assets/garments.generated.js';
 if (check) assert.equal(await readFile(file, 'utf8'), output, 'Stale garment model manifest');
 else await writeFile(file, output);
-console.log(`${check ? 'Verified' : 'Generated'} ${Object.keys(manifest.outfits).length} complete outfit model, four class fits, High/Low.`);
+console.log(`${check ? 'Verified' : 'Generated'} ${Object.keys(manifest.outfits).length} complete outfit models, four class fits each, High/Low.`);

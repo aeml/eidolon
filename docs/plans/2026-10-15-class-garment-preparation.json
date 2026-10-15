@@ -1,0 +1,63 @@
+{
+  "date": "2026-10-15T06:24:14.298972+00:00",
+  "runtimeSource": "0bd77212c1fc32a2a022206314cbb7fd8c48aa81",
+  "state": "Isolated and UNSELECTED. Native full-party/motion/preview review remains pending. Not merged or deployed.",
+  "scope": "Three distinct class-themed candidates: Nightglass Cowl/Rogue, Dawn Reliquary/Cleric, Astral Sovereign/Wizard. Each supports all four supplied rigs without new class/equipment restrictions. Existing25EP armor tier reused. Adds24real GLBs; original eight IronOath files/provenance remain byte-identical.",
+  "design": "Raven brow/hood and shoulder vanes with angular clasp; mounted solar crest, gilded shoulder leaves and radiant reliquary; sculpted lunar crown, mirrored crescent pauldrons and sapphire star. Actual geometry derives unchanged supplied seven-piece skins/rigs and owns new ornaments.",
+  "validation": {
+    "client": "186distinct checks across12suites pass, including33actual class-outfit GLTF/projection cases plus existing equipment/ownership/cache/audit/browser-plan cases.",
+    "models": "All32total outfit GLBs pass official glTF validation with zero errors/warnings; exact originalIronOath equality checked. Each has canonical53joints, seven coverage slots, finite posed sample vertices, noninterleaved position/normal/UV/joint/weight streams.",
+    "server": "Focused wardrobe/vendor and handler/save/protobuf checks pass with explicit16-entry catalogue; no live purchases.",
+    "lintAndContent": "Full lint and15generated content groups pass without rewriting.",
+    "nativePlan": "16cases across full-outfit and actual vendor preview fixtures are listed but unexecuted. Gallery extends toBlock/Jump and suppliedCast for the three non-Fighter classes;27pose records per outfit/quality expected. Native visual, motion, party-budget, clothing overlap, selection/reopen and cleanup review still required.",
+    "pending": "No new look counted accepted yet. Whole18-look catalog/final owner art/physical phones remain open. Full scene must follow required native routing from next corrected56source; shared legacy vendor fixture count must become16after merging that parent."
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-class-garments-20261015",
+  "evidence": [
+    {
+      "path": ".qa-class-garments/official-validation.json",
+      "bytes": 197259,
+      "sha256": "129e92b61d376b8046e8993ddcac451017746fa9ecb09d201e611afdfcc302d1"
+    },
+    {
+      "path": ".qa-class-garments/official-validation.log",
+      "bytes": 3453,
+      "sha256": "a734c3ba16c3efd86e377ff0b2df008eb7d01cec9dc87240c8f8242ed73dd3b4"
+    },
+    {
+      "path": ".qa-class-garments/combined-focused.log",
+      "bytes": 1272,
+      "sha256": "8893f8c41ec1c78db4ae2c9ace6fa7572f042e082623fc1730e27c12315db80e"
+    },
+    {
+      "path": ".qa-class-garments/full-lint.log",
+      "bytes": 96,
+      "sha256": "0b5033e6a217fbd15dc194727ba175dfcf1a245641eab20298f084f65231cecd"
+    },
+    {
+      "path": ".qa-class-garments/content.log",
+      "bytes": 4903,
+      "sha256": "79cc637464b8860d3e7620b1a5d1bf5fc06353227678b31aa45baea228390005"
+    },
+    {
+      "path": ".qa-class-garments/server-focused.log",
+      "bytes": 41,
+      "sha256": "d096ecef7d705823ced9b076848d95dafef30df537c7db77448dc3b8bfd88983"
+    },
+    {
+      "path": ".qa-class-garments/handler-focused.log",
+      "bytes": 27,
+      "sha256": "45ee334bcec1336746325df7f591eaafe16c26bd8ae39e4476a6777bc63cdd5f"
+    },
+    {
+      "path": ".qa-class-garments/native-plan.log",
+      "bytes": 1754,
+      "sha256": "a227f433f83e385c8f87670cf0a6214fecf137987c6ece1ee951dfcf488c79bd"
+    },
+    {
+      "path": ".qa-class-garments/scoped-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

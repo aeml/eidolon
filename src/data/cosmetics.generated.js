@@ -139,6 +139,86 @@ export const COSMETIC_CATALOGUE = [
             "shoulders": "Steel Pauldrons",
             "belt": "Plated Girdle"
         }
+    },
+    {
+        "id": "nightglass-cowl-v1",
+        "name": "Nightglass Cowl",
+        "kind": "outfit",
+        "realm": "air",
+        "base": "Leather Tunic",
+        "priceEP": 25,
+        "primary": 3687247,
+        "secondary": 10137278,
+        "description": "A shadowed hood, swept raven vanes and an angular nightglass clasp form a complete Rogue-themed outfit. Weapons and offhand keep their own looks.",
+        "pieces": {
+            "head": "Silk Hood",
+            "chest": "Leather Tunic",
+            "legs": "Leather Pants",
+            "feet": "Leather Boots",
+            "gloves": "Leather Gloves",
+            "shoulders": "Reinforced Spaulders",
+            "belt": "Studded Belt"
+        }
+    },
+    {
+        "id": "dawn-reliquary-v1",
+        "name": "Dawn Reliquary",
+        "kind": "outfit",
+        "realm": "water",
+        "base": "Robes",
+        "priceEP": 25,
+        "primary": 13683124,
+        "secondary": 12362603,
+        "description": "Ivory vestments, a mounted sun crest and layered gilded shoulder leaves surround a radiant reliquary seal. One complete Cleric-themed outfit; held looks stay independent.",
+        "pieces": {
+            "head": "Silk Hood",
+            "chest": "Robes",
+            "legs": "Leather Pants",
+            "feet": "Iron Boots",
+            "gloves": "Silk Gloves",
+            "shoulders": "Steel Pauldrons",
+            "belt": "Studded Belt"
+        }
+    },
+    {
+        "id": "astral-sovereign-v1",
+        "name": "Astral Sovereign",
+        "kind": "outfit",
+        "realm": "fire",
+        "base": "Robes",
+        "priceEP": 25,
+        "primary": 5461881,
+        "secondary": 12502749,
+        "description": "A sculpted lunar crest crowns violet robes; swept crescent shoulder plates and a sapphire star mark this complete Wizard-themed outfit. Held looks stay independent.",
+        "pieces": {
+            "head": "Silk Hood",
+            "chest": "Robes",
+            "legs": "Silk Skirt",
+            "feet": "Sandals",
+            "gloves": "Silk Gloves",
+            "shoulders": "Velvet Mantle",
+            "belt": "Silk Sash"
+        }
+    },
+    {
+        "id": "winterthorn-revel-v1",
+        "name": "Winterthorn Revel",
+        "kind": "outfit",
+        "realm": "earth",
+        "base": "Robes",
+        "priceEP": 25,
+        "primary": 7551803,
+        "secondary": 14406846,
+        "description": "Warm crimson winter robes, a pale collar, holly seals and a branching antler crown celebrate the winter festival. One complete Christmas-themed outfit for every class; held looks stay independent.",
+        "pieces": {
+            "head": "Silk Hood",
+            "chest": "Robes",
+            "legs": "Leather Pants",
+            "feet": "Leather Boots",
+            "gloves": "Silk Gloves",
+            "shoulders": "Velvet Mantle",
+            "belt": "Silk Sash"
+        }
     }
 ];
 export const SEASON_COSMETIC_CATALOGUE = [

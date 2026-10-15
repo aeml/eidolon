@@ -94,7 +94,7 @@ for (const width of [390, 1440]) test(`cosmetic vendor previews, confirms and ap
     });
     const dialog = page.getByRole('dialog', { name: 'Veyra’s cosmetic wardrobe' });
     await expect(dialog).toBeVisible();
-    await expect(dialog.locator('.cosmetic-catalogue button')).toHaveCount(13);
+    await expect(dialog.locator('.cosmetic-catalogue button')).toHaveCount(17);
     const cardBounds = await dialog.locator('.cosmetic-catalogue button').evaluateAll(cards => cards.map(card => ({
         height: card.clientHeight, content: card.scrollHeight
     })));
