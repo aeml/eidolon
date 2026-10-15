@@ -21,7 +21,8 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => {
 
 jest.unstable_mockModule('../src/world/WorldGenerator.js', () => ({
     WorldGenerator: class MockWorldGenerator {
-        constructor(scene, collisionManager) {
+        constructor(scene, collisionManager, options) {
+            this.options = options;
             this.scene = scene;
             this.collisionManager = collisionManager;
             this.createDungeon = jest.fn().mockResolvedValue();
@@ -555,4 +556,16 @@ describe('GameEngine dungeon containment wiring', () => {
         });
         expect(engine.hazards.size).toBe(0);
     });
+});
+
+
+test.each([true, false, undefined])('overworld return retains the current foliage capability and renderer owner (%s)', async native => {
+    const engine = createEngineHarness();
+    const influence = {}, camera = new THREE.PerspectiveCamera();
+    engine.renderSystem.foliageShadowInfluence = influence; engine.renderSystem.camera = camera;
+    if (native !== undefined) engine.renderSystem.renderer = { extensions: { has: name => name === 'WEBGL_multi_draw' && native } };
+    await engine.enterInstance('', 'overworld', null);
+    const world = worldGeneratorInstances.at(-1);
+    expect(world.createTown).toHaveBeenCalled(); expect(world.scene).toBe(engine.renderSystem.instanceEnvironmentGroup);
+    expect(world.options.ownedFoliageDraws).toEqual(native ? { influence, camera } : null);
 });
