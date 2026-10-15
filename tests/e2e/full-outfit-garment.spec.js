@@ -1,14 +1,15 @@
 import { test, expect } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
+import { GARMENT_MODELS } from '../../src/assets/garments.generated.js';
 import { collectBrowserFailures } from './helpers.js';
 
-for (const quality of ['high', 'low']) test(`complete garment fits and restores all supplied classes ${quality}`, async ({ page, baseURL }, testInfo) => {
+for (const outfit of Object.values(GARMENT_MODELS.outfits)) for (const quality of ['high', 'low']) test(`${outfit.name} fits and restores all supplied classes ${quality}`, async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.setViewportSize({ width: quality === 'low' ? 390 : 1280, height: 900 });
     await page.exposeFunction('captureGarmentHUD', async name => { await page.screenshot({ path: testInfo.outputPath(`${name}-hud.png`) }); });
     await page.goto('/', { waitUntil: 'networkidle' });
-    const observation = await page.evaluate(async quality => {
+    const observation = await page.evaluate(async ({ quality, outfit }) => {
         const THREE = await import('three');
         const { GameEngine } = await import('/src/core/GameEngine.js');
         const { BASE_ITEMS } = await import('/src/core/ItemSystem.js');
@@ -26,7 +27,7 @@ for (const quality of ['high', 'low']) test(`complete garment fits and restores 
         };
         const slots = ['head', 'chest', 'legs', 'feet', 'gloves', 'shoulders', 'belt', 'mainHand', 'offHand', 'ring1', 'ring2', 'neck', 'trinket1', 'trinket2'];
         const actors = [], images = [], poses = [], cycles = [], frames = [];
-        const look = { baseName: 'Iron Oath Regalia', rarity: 'Common', slot: 'outfit' };
+        const look = { baseName: outfit.name, rarity: 'Common', slot: 'outfit' };
         const handLooks = {
             Fighter: ['Grovekeeper Blade', 'Grovekeeper Shield'], Rogue: ['Skyweaver Dagger', 'Grovekeeper Blade'],
             Wizard: ['Hearthkeeper Staff', 'Skyweaver Tome'], Cleric: ['Tidekeeper Mace', 'Hearthkeeper Shield']
@@ -59,15 +60,17 @@ for (const quality of ['high', 'low']) test(`complete garment fits and restores 
                 actor.syncEquipmentVisuals(); await actor.mesh.userData.equipmentReady;
                 if (actor.mesh.userData.equipmentVisualMissing?.length || actor.mesh.userData.equipmentVisualFallback?.length) throw Error('Garment missing or fallback');
                 if (JSON.stringify(actor.equipment) !== saved) throw Error('Garment changed combat gear');
-                if (actor.mesh.userData.equipmentVisualGarment !== (enabled ? 'iron-oath-regalia-v1' : '')) throw Error('Wrong garment selection');
+                if (actor.mesh.userData.equipmentVisualGarment !== (enabled ? outfit.id : '')) throw Error('Wrong garment selection');
             }
             await waitForGeometryOwner(render); render.render();
         };
         await apply(true);
-        for (const state of ['CombatIdle', 'Run', 'Attack', 'Death']) {
+        for (const state of ['CombatIdle', 'Run', 'Attack', 'Block', 'Jump', 'Cast', 'Death']) {
             for (const { actor, type } of actors) {
+                if (state === 'Cast' && type === 'Fighter') continue;
                 actor.mixer.stopAllAction(); actor.mesh.userData.resetRestPose(); actor.currentAction = null;
-                actor.playAnimation(state, !['Attack', 'Death'].includes(state), true); actor.updateAnimationMixer(.27);
+                if (!actor.playAnimation(state, !['Attack', 'Jump', 'Cast', 'Death'].includes(state), true)) throw Error(`Missing ${type} ${state} pose`);
+                actor.updateAnimationMixer(.27);
                 const body = actor.mesh.getObjectByName(`${type}_Body`); let samples = 0;
                 actor.mesh.updateMatrixWorld(true);
                 actor.mesh.traverse(mesh => {
@@ -107,7 +110,7 @@ for (const quality of ['high', 'low']) test(`complete garment fits and restores 
         const result = { poses, cycles, images, frames, restoredItems: actors.map(row => row.actor.mesh.userData.equipmentVisualItemCount),
             drawCalls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles };
         game.destroy(); return result;
-    }, quality);
+    }, { quality, outfit: { id: outfit.id, name: outfit.name } });
     for (const picture of observation.images) await writeFile(testInfo.outputPath(picture.name + '.png'), Buffer.from(picture.data.split(',')[1], 'base64'));
     delete observation.images;
     await writeFile(testInfo.outputPath('observation.json'), JSON.stringify({ quality, ...observation }, null, 2));
@@ -118,7 +121,7 @@ for (const quality of ['high', 'low']) test(`complete garment fits and restores 
         expect(frame.calls, frame.name).toBeLessThanOrEqual(budget.calls);
         expect(frame.triangles, frame.name).toBeLessThanOrEqual(budget.triangles);
     }
-    expect(observation.poses).toHaveLength(16);
+    expect(observation.poses).toHaveLength(27);
     expect(observation.poses.every(pose => pose.samples > 0 && pose.items === 9)).toBe(true);
     expect(observation.restoredItems).toEqual([14, 14, 14, 14]);
     expect(observation.cycles[2]).toEqual(observation.cycles[1]);

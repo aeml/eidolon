@@ -70,9 +70,9 @@ const wearableRuntimeReferences = wearableManifest.sources.flatMap(row =>
     ['high', 'low'].map(quality => row.variants[quality].file));
 const auditedWearableCopies = new Set(wearableRuntimeReferences.filter(file => file.startsWith('assets/equipment/runtime/')));
 // Explicit owner-requested complete garment delivery. No directory wildcard:
-// only these eight qualified fits may join the existing supplied-model audit.
-const auditedGarmentCopies = new Set(['Fighter', 'Rogue', 'Cleric', 'Wizard'].flatMap(actorClass =>
-    ['high', 'low'].map(quality => `assets/garments/iron-oath-regalia-v1/${actorClass}-${quality}.glb`)));
+// only these32 registered candidate fits may join the existing supplied-model audit.
+const auditedGarmentCopies = new Set(['iron-oath-regalia-v1', 'nightglass-cowl-v1', 'dawn-reliquary-v1', 'astral-sovereign-v1'].flatMap(id =>
+    ['Fighter', 'Rogue', 'Cleric', 'Wizard'].flatMap(actorClass => ['high', 'low'].map(quality => `assets/garments/${id}/${actorClass}-${quality}.glb`))));
 const garmentModels = Object.values(GARMENT_MODELS.outfits).flatMap(outfit => Object.values(outfit.models).flatMap(models => Object.values(models)));
 const garmentSources = Object.values(GARMENT_MODELS.outfits).flatMap(outfit => outfit.provenance);
 const currentLegacyReferenceFiles = new Set([
@@ -128,13 +128,13 @@ function relative(filePath) {
 }
 
 describe('procedural art migration guard', () => {
-    test('only the exact qualified garment fits and their unchanged supplied sources are allowed', () => {
+    test('only the exact registered garment fits and their unchanged supplied sources are allowed', () => {
         const hash = bytes => createHash('sha256').update(bytes).digest('hex');
         expect(hash(fs.readFileSync(path.join(repoRoot, 'src/assets/garments.generated.js'))))
-            .toBe('078f73741ca632837eb8ee05d384f570cead0b27fbf8424553b3fb4c803649f9');
-        expect(Object.keys(GARMENT_MODELS.outfits)).toEqual(['Iron Oath Regalia']);
+            .toBe('1f2b75b85d9dad30001f2867b503dd29cf1367ace197ac96dc1c65ad6ebba59c');
+        expect(Object.keys(GARMENT_MODELS.outfits)).toEqual(['Iron Oath Regalia', 'Nightglass Cowl', 'Dawn Reliquary', 'Astral Sovereign']);
         expect(garmentModels.map(model => model.file.slice(2)).sort()).toEqual([...auditedGarmentCopies].sort());
-        expect(garmentSources).toHaveLength(56);
+        expect(garmentSources).toHaveLength(224);
         for (const model of garmentModels) {
             const bytes = fs.readFileSync(path.join(repoRoot, model.file));
             expect(bytes.length).toBe(model.bytes); expect(hash(bytes)).toBe(model.sha256);
