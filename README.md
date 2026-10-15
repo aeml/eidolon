@@ -496,7 +496,7 @@ Notes:
 ## Project Status
 
 Current source version: `Alpha 1.79.53` (returning sessions and world preparation;
-prepared locally; its predecessor 1.79.52 is now accepted).
+release candidate; two stale browser fixtures corrected after predeployment CI).
 
 **Alpha 1.79.52 is deployed and verified**, at runtime source `8c8ef016e`.
 All ten CI jobs passed, including native graphics, both deployments and live

@@ -18,6 +18,7 @@ test.describe('startup failure diagnostic phases', () => {
                             ${phase === 'engine-construction' ? "const e = new Error('private fixture detail'); e.code = 'WEBGL2_UNAVAILABLE'; throw e;" : 'this.network = {};'}
                         }
                         async loadGame() { throw new Error('private fixture detail'); }
+                        destroy() { window.__startupFixtureDestroyed = true; }
                     }
                 ` }));
             await page.routeWebSocket(/\/ws(?:\?|$)/, socket => socket.onMessage(data => {
@@ -39,6 +40,9 @@ test.describe('startup failure diagnostic phases', () => {
             if (phase === 'engine-module') await expect(status).toContainText('Reload the page');
             await expect(page.locator('#start-screen')).toBeVisible();
             await expect(page.locator('#loading-screen')).toBeHidden();
+            if (phase === 'world-load') {
+                expect(await page.evaluate(() => window.__startupFixtureDestroyed && window.game === null)).toBe(true);
+            }
         });
     }
 });

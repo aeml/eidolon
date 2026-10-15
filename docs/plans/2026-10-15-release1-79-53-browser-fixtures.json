@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-15",
+  "version": "Alpha 1.79.53",
+  "firstSource": "fdc5bb97090fad95dd3bdad4455f8d319ba2c56b",
+  "firstRun": "https://github.com/aeml/eidolon/actions/runs/38662234727",
+  "status": "Two browser shards failed before deployment; corrected candidate retains the same release version. Production remains accepted 1.79.52.",
+  "findings": [
+    "Synthetic world-load GameEngine lacked destroy(), so the new real-session cleanup prevented its mock diagnostic from being shown. Mock now implements teardown and asserts it ran and window.game was cleared. Actual constructed world-failure cleanup remains covered by the independent native session fixture.",
+    "Phone chat component was instantiated with mobile controls but no installed game or mobile device identity. Rotation beyond 800px correctly selected desktop login policy. The fixture now uses Android Chrome identity with its existing touch/mobile context, preserving all viewport, touch-hit, collapse and journal assertions."
+  ],
+  "validation": "All six affected software-browser cases pass once in 8.7s with zero retries/skips. Scoped lint passes. No production behavior or deadlines changed by these fixture corrections.",
+  "retainedTrial": "An initial iPhone identity enabled the existing Safari browser-warning overlay in Chromium and intercepted the landscape journal tap. Stopped that local fixture run after tracing the interception; switched to Android Chrome identity to match the actual browser. It is not Safari qualification.",
+  "evidence": [
+    {
+      "path": ".qa-release53/ci-first-failures.json",
+      "bytes": 11328,
+      "sha256": "f21346c2b65f26de0cec483da9f1655d5b2bf55b2a7b7e57155e7d767ebb75bc"
+    },
+    {
+      "path": ".qa-release53/failed-job-116185969748.log",
+      "bytes": 66811,
+      "sha256": "a1007c9d55fa782737311e64923109bfb8df9e895f365c6a24483152dccf602f"
+    },
+    {
+      "path": ".qa-release53/failed-job-116185969850.log",
+      "bytes": 66407,
+      "sha256": "5ff7c8e02ed1d6c1e27e8380a93627fe539e6fcbd5c343dbfe344dfe6c1bdd47"
+    },
+    {
+      "path": ".qa-release53/fixture-followup.log",
+      "bytes": 5311,
+      "sha256": "b842de131d73b3e9af3f4576c8ace51e4ee4f053e1447d1fff1506e163b48cf2"
+    },
+    {
+      "path": ".qa-release53/fixture-followup-android.log",
+      "bytes": 1244,
+      "sha256": "1c52cb3638402776970562f627e5d91f7e9bd5efe25ba44121cca1dc48066268"
+    },
+    {
+      "path": ".qa-release53/fixture-followup-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

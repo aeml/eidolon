@@ -1,7 +1,9 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, devices } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
-test.use({ hasTouch: true, isMobile: true });
+// A phone remains a phone after rotation, including before a full game session
+// is installed. Use the device identity alongside touch/viewport emulation.
+test.use({ hasTouch: true, isMobile: true, userAgent: devices['Pixel 7'].userAgent });
 
 for (const [width, height] of [[390, 844], [844, 390], [568, 320]]) {
     test(`${width}x${height}: populated objectives cannot cover expanded chat after rotation`, async ({ page, baseURL }, testInfo) => {

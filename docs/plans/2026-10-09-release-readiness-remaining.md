@@ -31,7 +31,10 @@ coverage records 388 passes, 13 skips and one Magma image-comparison retry;
 770 client suites/11,772 tests, 62 native passes/one skip and live recovery pass.
 [Acceptance, retained retry and custody](2026-10-15-release1-79-52-acceptance.md).
 
-The next coherent milestone, Alpha 1.79.53, is prepared locally. Returning
+The next coherent milestone, Alpha 1.79.53, is a published release candidate.
+Its first CI run stopped before deployment on two stale browser fixtures; six
+corrected software-browser cases pass without retries.
+[Findings and correction](2026-10-15-release1-79-53-browser-fixtures.json). Returning
 phone/desktop sessions now select current input policy and restore shared menus,
 settings and touch controls on teardown, including failed world loading (212 focused checks and ten distinct
 native cases). World preparation preserves twelve exact High/Low maps while
@@ -39,7 +42,7 @@ bounding first-build town work and retaining at most 4,915,200 CPU bytes for
 returning sessions (61 focused checks; two final native scene-lifetime cases).
 [Session qualification](2026-10-15-session-layout-qualification.json),
 [world preparation](2026-10-15-world-raster-preparation.json).
-52 is accepted; publish 53 next and verify its own deployment independently. These changes
+52 is accepted; qualify the corrected 53 candidate and verify its deployment independently. These changes
 close specific usability/loading defects, not final world art, physical-device,
 whole-frame or full original readiness requirements. Soak remains deferred.
 
