@@ -129,17 +129,30 @@ for (const design of designs) {
             const helmet = bounds(sources.head), shoulders = bounds(sources.shoulders), chest = bounds(sources.chest);
             const size = helmet.getSize(new THREE.Vector3()), scale = size.x / .3;
             const ornament = (geometry, anchor, name, material, slot) => addOrnament(document, scene, skin, sources[slot], geometry, anchor, name, material, slot);
-            for (let i = -1; i <= 1; i++) {
-                const anchor = new THREE.Vector3(i * size.x * .21, helmet.max.y - .015 * scale, helmet.getCenter(new THREE.Vector3()).z);
-                const height = (i ? .075 : .12) * scale;
-                const crown = new THREE.ConeGeometry(.023 * scale, height, quality === 'high' ? 8 : 6);
-                crown.translate(anchor.x, anchor.y + height / 2, anchor.z);
-                ornament(crown, anchor, `Oath crown ${i}`, gold, 'head');
+            const crownWidth = size.x * .45, crownBase = helmet.max.y - .065 * scale;
+            const crownShape = new THREE.Shape();
+            crownShape.moveTo(-crownWidth / 2, 0); crownShape.lineTo(crownWidth / 2, 0);
+            crownShape.lineTo(crownWidth / 2, .027 * scale);
+            for (let i = 4; i >= 0; i--) {
+                const x = (i / 4 - .5) * crownWidth;
+                crownShape.lineTo(x, (.13 - Math.abs(i - 2) * .021) * scale);
+                if (i) crownShape.lineTo(x - crownWidth / 8, .035 * scale);
             }
+            crownShape.lineTo(-crownWidth / 2, 0);
+            const crown = new THREE.ExtrudeGeometry(crownShape, { depth: .008 * scale, bevelEnabled: true,
+                bevelSize: .002 * scale, bevelThickness: .002 * scale, bevelSegments: 1, steps: 1, curveSegments: 1 });
+            const crownPositions = crown.attributes.position;
+            for (let i = 0; i < crownPositions.count; i++) {
+                const x = crownPositions.getX(i), surface = frontSurface(sources.head, x, crownBase, helmet.max.z + 1);
+                crownPositions.setXYZ(i, x, crownPositions.getY(i) + crownBase, crownPositions.getZ(i) + surface.z + .003 * scale);
+            }
+            crown.computeVertexNormals();
+            ornament(crown, frontSurface(sources.head, 0, crownBase, helmet.max.z + 1), 'Crowned oath crest', gold, 'head');
             for (const sign of [-1, 1]) for (let i = 0; i < 2; i++) {
                 const anchor = new THREE.Vector3(sign * shoulders.max.x * (.73 + i * .13), shoulders.max.y - .025 * scale, .02 * scale);
                 const direction = new THREE.Vector3(sign * (.5 + i * .15), .9, -.1).normalize(), height = (.115 - i * .015) * scale;
-                const fin = new THREE.ConeGeometry(.03 * scale, height, quality === 'high' ? 8 : 6);
+                const fin = new THREE.ConeGeometry(.04 * scale, height * 1.15, quality === 'high' ? 8 : 6);
+                fin.scale(1, 1, .38);
                 fin.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction));
                 fin.translate(...anchor.clone().addScaledVector(direction, height / 2).toArray());
                 ornament(fin, anchor, `Swept oath fin ${sign} ${i}`, steel, 'shoulders');
