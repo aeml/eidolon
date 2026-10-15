@@ -70,8 +70,8 @@ const wearableRuntimeReferences = wearableManifest.sources.flatMap(row =>
     ['high', 'low'].map(quality => row.variants[quality].file));
 const auditedWearableCopies = new Set(wearableRuntimeReferences.filter(file => file.startsWith('assets/equipment/runtime/')));
 // Explicit owner-requested complete garment delivery. No directory wildcard:
-// only these32 registered candidate fits may join the existing supplied-model audit.
-const auditedGarmentCopies = new Set(['iron-oath-regalia-v1', 'nightglass-cowl-v1', 'dawn-reliquary-v1', 'astral-sovereign-v1'].flatMap(id =>
+// only these40 registered candidate fits may join the existing supplied-model audit.
+const auditedGarmentCopies = new Set(['iron-oath-regalia-v1', 'nightglass-cowl-v1', 'dawn-reliquary-v1', 'astral-sovereign-v1', 'winterthorn-revel-v1'].flatMap(id =>
     ['Fighter', 'Rogue', 'Cleric', 'Wizard'].flatMap(actorClass => ['high', 'low'].map(quality => `assets/garments/${id}/${actorClass}-${quality}.glb`))));
 const garmentModels = Object.values(GARMENT_MODELS.outfits).flatMap(outfit => Object.values(outfit.models).flatMap(models => Object.values(models)));
 const garmentSources = Object.values(GARMENT_MODELS.outfits).flatMap(outfit => outfit.provenance);
@@ -131,10 +131,10 @@ describe('procedural art migration guard', () => {
     test('only the exact registered garment fits and their unchanged supplied sources are allowed', () => {
         const hash = bytes => createHash('sha256').update(bytes).digest('hex');
         expect(hash(fs.readFileSync(path.join(repoRoot, 'src/assets/garments.generated.js'))))
-            .toBe('04711f26aacd7b66f4bb4e5be880fef59c459f59f305eb7b31f697d5333c2739');
-        expect(Object.keys(GARMENT_MODELS.outfits)).toEqual(['Iron Oath Regalia', 'Nightglass Cowl', 'Dawn Reliquary', 'Astral Sovereign']);
+            .toBe('7ba5732bb89b730d1e575329b8a09ff4d69e3d19bb7db4d472f518e110694030');
+        expect(Object.keys(GARMENT_MODELS.outfits)).toEqual(['Iron Oath Regalia', 'Nightglass Cowl', 'Dawn Reliquary', 'Astral Sovereign', 'Winterthorn Revel']);
         expect(garmentModels.map(model => model.file.slice(2)).sort()).toEqual([...auditedGarmentCopies].sort());
-        expect(garmentSources).toHaveLength(224);
+        expect(garmentSources).toHaveLength(280);
         for (const model of garmentModels) {
             const bytes = fs.readFileSync(path.join(repoRoot, model.file));
             expect(bytes.length).toBe(model.bytes); expect(hash(bytes)).toBe(model.sha256);

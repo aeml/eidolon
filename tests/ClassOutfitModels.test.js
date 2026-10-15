@@ -8,9 +8,10 @@ import { equipmentWithAppearances } from '../src/core/EquipmentAppearance.js';
 
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const names = ['Iron Oath Regalia', 'Nightglass Cowl', 'Dawn Reliquary', 'Astral Sovereign'];
+const universalNames = ['Winterthorn Revel'];
 
 test('four distinct class-themed outfits retain unrestricted appearance selection and all original gear', () => {
-    expect(Object.keys(GARMENT_MODELS.outfits)).toEqual(names);
+    expect(Object.keys(GARMENT_MODELS.outfits)).toEqual([...names, ...universalNames]);
     const gear = { chest: { id: 'actual', baseName: 'Plate Mail', rarity: 'Eidolic', stats: { defense: 123 } },
         mainHand: { id: 'sword', baseName: 'Iron Sword', type: 'WEAPON', slot: 'mainHand', rarity: 'Rare' } };
     const saved = JSON.stringify(gear);
@@ -24,7 +25,7 @@ test('four distinct class-themed outfits retain unrestricted appearance selectio
     expect(JSON.stringify(gear)).toBe(saved);
 });
 
-test.each(names.flatMap(name => ['Fighter', 'Rogue', 'Cleric', 'Wizard'].flatMap(actorClass => ['high', 'low'].map(quality => [name, actorClass, quality]))))('%s %s %s has complete actual skinned geometry and canonical UV/joint streams', async (name, actorClass, quality) => {
+test.each([...names, ...universalNames].flatMap(name => ['Fighter', 'Rogue', 'Cleric', 'Wizard'].flatMap(actorClass => ['high', 'low'].map(quality => [name, actorClass, quality]))))('%s %s %s has complete actual skinned geometry and canonical UV/joint streams', async (name, actorClass, quality) => {
     const outfit = GARMENT_MODELS.outfits[name], asset = outfit.models[actorClass][quality], bytes = readFileSync(asset.file);
     expect(bytes.length).toBe(asset.bytes); expect(hash(bytes)).toBe(asset.sha256);
     const data = new ArrayBuffer(bytes.length); new Uint8Array(data).set(bytes);
@@ -52,4 +53,14 @@ test.each(names.flatMap(name => ['Fighter', 'Rogue', 'Cleric', 'Wizard'].flatMap
         }
     });
     expect([...slots].sort()).toEqual(Object.keys(outfit.coverage).sort()); expect(meshes).toBeGreaterThan(7); expect(ornaments).toBeGreaterThan(4);
+});
+
+
+test('winter festival garment is available to every fitted class without equipment or calendar restrictions', () => {
+    const offer = COSMETIC_CATALOGUE.find(offer => offer.name === 'Winterthorn Revel');
+    expect(offer).toMatchObject({ kind: 'outfit', priceEP: 25 });
+    expect(offer.description).toContain('Christmas-themed');
+    const rendered = equipmentWithAppearances({}, { outfit: { baseName: offer.name, rarity: 'Common', slot: 'outfit' } });
+    expect(rendered.outfit.baseName).toBe(offer.name);
+    expect(Object.keys(GARMENT_MODELS.outfits[offer.name].models).sort()).toEqual(['Cleric', 'Fighter', 'Rogue', 'Wizard']);
 });

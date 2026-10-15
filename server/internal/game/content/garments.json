@@ -78,5 +78,25 @@
       "shoulders": "Velvet Mantle",
       "belt": "Silk Sash"
     }
+  },
+  {
+    "id": "winterthorn-revel-v1",
+    "name": "Winterthorn Revel",
+    "kind": "outfit",
+    "realm": "earth",
+    "base": "Robes",
+    "priceEP": 25,
+    "primary": 7551803,
+    "secondary": 14406846,
+    "description": "Warm crimson winter robes, a pale collar, holly seals and a branching antler crown celebrate the winter festival. One complete Christmas-themed outfit for every class; held looks stay independent.",
+    "pieces": {
+      "head": "Silk Hood",
+      "chest": "Robes",
+      "legs": "Leather Pants",
+      "feet": "Leather Boots",
+      "gloves": "Silk Gloves",
+      "shoulders": "Velvet Mantle",
+      "belt": "Silk Sash"
+    }
   }
 ]

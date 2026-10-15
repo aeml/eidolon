@@ -26,7 +26,7 @@ function fixture() {
 test('cosmetics are generated from the server catalogue and all resolve to renderable, recolored gear', () => {
     expect(COSMETIC_CATALOGUE).toEqual([...JSON.parse(fs.readFileSync('server/internal/game/content/cosmetics.json', 'utf8')),
         ...JSON.parse(fs.readFileSync('server/internal/game/content/garments.json', 'utf8'))]);
-    expect(COSMETIC_CATALOGUE).toHaveLength(16);
+    expect(COSMETIC_CATALOGUE).toHaveLength(17);
     for (const offer of COSMETIC_CATALOGUE) {
         if (offer.kind === 'outfit') {
             expect(Object.keys(GARMENT_MODELS.outfits[offer.name].models).sort()).toEqual(['Cleric', 'Fighter', 'Rogue', 'Wizard']);

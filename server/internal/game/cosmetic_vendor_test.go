@@ -77,7 +77,7 @@ func TestCosmeticVendorCatalogueAndPhysicalIdentity(t *testing.T) {
 		t.Fatal("missing physical outfitter")
 	}
 	catalogue := CosmeticCatalogue()
-	if len(catalogue) != 16 {
+	if len(catalogue) != 17 {
 		t.Fatal("incomplete launch collection")
 	}
 	for _, offer := range catalogue {
