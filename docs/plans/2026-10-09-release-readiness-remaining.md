@@ -132,13 +132,26 @@ pass, retaining the initially missed isolated-QA version default and correction.
 Wider menu polish,
 durable window preferences/reset, physical playtests and final review remain open.
 
-The full-outfit garment pipeline and first Iron Oath model remain isolated at
-`/home/aeml/.local/share/eidolon-garment-outfits-20261015`. Client/server ownership,
-preview signatures, save/protobuf custody and High/Low glTF structure have scoped
-passing checks; initial native four-class pose/swap/restore cases pass. Visual
-review found the first material too dark, and the close-view fixture needs true
-close framing/HUD captures. No garment model is counted as accepted or merged.
-The minimum18-look catalog remains open, and this prototype is not part of55.
+## Alpha 1.79.56 garment and layout selection
+
+The full-outfit pipeline and first Fighter-themed Iron Oath Regalia are selected
+and ordinarily merged into local master. One registered appearance covers all
+seven body pieces while preserving combat gear and independent held looks.
+Eight real GLBs provide four supplied class fits/High/Low; this is one look, with
+17minimum distinct looks still open.121focused client checks, focused server
+save/protobuf/ownership checks, full lint,15content groups and four native
+render/vendor cases pass. Corrected prepared Low party124draws/78191tri fits the
+original200/85k budget. Earlier204/94181export failure is retained. This is not
+frame-time, physical-device or final collection-wide art acceptance.
+[Garment qualification](2026-10-15-full-outfit-garment-qualification.json).
+
+Device-local registered-window positions now survive reloads, with wide/compact
+profiles, temporary clamping that preserves the saved layout, phone-safe defaults
+and Settings reset.94focused checks and five distinct native cases pass. Initial
+reset accessible-name and test-format lint failures are retained with corrections.
+[Layout qualification](2026-10-15-durable-window-layout-qualification.json).
+Both selections form prepared56; own release gates remain pending. Wider menus,
+all remaining garments and the complete original goal remain open.
 
 The private pine diffuse-lighting experiment144251bcd remains unselected: the
 visible change was too slight, and its Low view failed the original changed-pixel
