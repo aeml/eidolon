@@ -495,10 +495,12 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.56` (prepared locally), with the first complete
-armor garment and durable device-local window layouts/reset. Its own publication,
-CI, deployment and public verification remain pending. The wider18-look garment
-collection and menu polish remain open.
+Current source version: `Alpha 1.79.56`, **deployed and verified** at `aee456655`:
+first modeled full-outfit garment, independent held looks, and durable device-local
+window layouts/reset. All ten CI jobs pass, including both deployments/live checks.
+Normal-TLS reads match both identities, the ready database and all246 asset pins.
+[Acceptance](docs/plans/2026-10-15-release1-79-56-acceptance.md).
+The remaining garment collection and broader menu/world polish stay open.
 
 **Alpha 1.79.55 is deployed and verified** at `1c936dfc6`: searchable earned
 Lore Book, direct quest tracking and clearer manual quest review. All ten CI jobs
