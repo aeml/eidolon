@@ -93,10 +93,13 @@ for (const quality of ['high', 'low']) test(`owned foliage preserves views and r
         const differences = (a, b) => { let count = 0; for (let i = 0; i < a.length; i += 4)
             if (a[i] !== b[i] || a[i + 1] !== b[i + 1] || a[i + 2] !== b[i + 2] || a[i + 3] !== b[i + 3]) count++; return count; };
         const pairs = [], now = performance.now.bind(performance), clock = Object.getOwnPropertyDescriptor(performance, 'now');
+        const originalActorPositions = actors.map(actor => actor.position.clone());
         const views = [[390, 173], [405, 185], [373, 163], ...sources.filter(s => s.userData.region !== 'earth').map(s => {
             const p = s.userData.placements[Math.floor(s.userData.placements.length / 2)]; return [p.x, p.z];
         })];
         for (const [x, z] of views) {
+            actors.forEach((actor, index) => { actor.position.set(x + index * 3, 0, z); actor.mesh.position.copy(actor.position); });
+            render.applyLightingPreset(render.getRealmForPosition(new THREE.Vector3(x, 0, z)), true);
             render.setCameraTarget(new THREE.Vector3(x, 0, z));
             render.updateEnvironmentLighting(new THREE.Vector3(x, 0, z), 0);
             for (let i = 0; i < 3; i++) render.render();
@@ -107,6 +110,8 @@ for (const quality of ['high', 'low']) test(`owned foliage preserves views and r
             pairs.push({ x, z, changed: differences(before.pixels, after.pixels), unstable: differences(before.pixels, again.pixels),
                 before: { calls: before.calls, triangles: before.triangles }, after: { calls: after.calls, triangles: after.triangles } });
         }
+        actors.forEach((actor, index) => { actor.position.copy(originalActorPositions[index]); actor.mesh.position.copy(actor.position); });
+        render.applyLightingPreset('earth', true);
         render.setCameraTarget(new THREE.Vector3(373, 0, 163)); render.updateEnvironmentLighting(new THREE.Vector3(373, 0, 163), 0);
         for (const delta of [.1, .3, .6]) {
             actors.forEach(actor => actor.updateAnimationMixer(delta)); mixers.forEach(mixer => mixer.update(delta));
