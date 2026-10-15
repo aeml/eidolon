@@ -24,7 +24,7 @@ Every explicit requirement in those sources remains part of the completion audit
 
 ## October 15 added owner requirements
 
-Two additional beta requirements are now explicit and remain unimplemented at
+Two additional beta requirements are now explicit and remain open at
 their full scope: [whole-outfit garments and at least 18 distinct VIP looks](2026-10-15-garment-catalog-and-full-outfits.md),
 and [quest/lore UI, remembered window positions and menu polish](2026-10-15-quest-lore-and-window-quality.md).
 Existing per-slot cosmetics and Chronicle recap/tracking are foundations, not
@@ -65,7 +65,7 @@ returning sessions (61 focused checks; two final native scene-lifetime cases).
 close specific usability/loading defects, not final world art, physical-device,
 whole-frame or full original readiness requirements. Soak remains deferred.
 
-## Alpha 1.79.54: prepared locally, unpublished
+## Alpha 1.79.54: published, verification in progress
 
 Earth trails now sample physical soil/pebbles in world space, correcting the
 stretched, cliff-like pattern at sharp bends while preserving route geometry,
@@ -95,11 +95,32 @@ Dragged character/bag/store positions survive automatic centering and companion
 layout on reopening;79 focused checks and one real-browser case pass.
 [Window correction](2026-10-15-window-position-qualification.json). Durable layout
 preferences and the broader newly requested interface work remain open.
-These selected changes form Alpha1.79.54 on local master.489 cumulative notes
-preserve all488 previous entries. The milestone is still unpublished;
-the final selected tree is undergoing release checks and publication preparation.
-53 has completed its own CI/deployment/public verification; no new milestone is yet published.
+These selected changes form Alpha1.79.54, normally pushed to origin/master at
+`fda5c6b89` after fetching/merging remote state and accepting predecessor53.
+454 final focused checks, full lint,14 content groups and the copied501-module
+publication build pass;224 exact public asset pins are prepared.489 cumulative
+notes preserve all488 previous entries. CI38674416385 is in progress: client and
+one hosted browser shard passed at03:23UTC; remaining hosted/server/native,
+deployment/live and public verification are pending. No later release is published.
 [Preparation and retained evidence](2026-10-15-release1-79-54-preparation.json).
+
+## Next quest-experience milestone: selected locally
+
+The dedicated Lore Book organizes personally earned chapters, exact discovery
+records, restoration accounts and Ilyra replies, with search/categories and
+story-so-far/current-task context. Reading state survives updates/reopening and
+clears between characters. Tracked cards open their correct journal section via
+keyboard/touch. NPC quest review leads with state/objective/reward, preserves
+authored paragraphs and keeps manual actions reachable through long dialogue.
+Pending/rejected/acknowledged requests preserve existing progression semantics.
+
+227 distinct focused checks and13 distinct native UI cases have passing evidence;
+full lint and desktop/phone visual review pass. The older town fixture's stale
+tracker label was corrected with explicit27-objective/26-contract coverage.
+[Qualification and retained failures](2026-10-15-quest-book-qualification.json).
+The implementation is merged into local master and remains unpublished pending
+54 acceptance and its own release preparation/verification. Wider menu polish,
+durable window preferences/reset, physical playtests and final review remain open.
 
 The private pine diffuse-lighting experiment144251bcd remains unselected: the
 visible change was too slight, and its Low view failed the original changed-pixel

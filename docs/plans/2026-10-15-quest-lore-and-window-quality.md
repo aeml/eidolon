@@ -61,8 +61,8 @@ lore and discovery records; `QuestConversation.js` owns manual quest dialogue
 and completion replies. Build on these and authored Chronicle content rather
 than duplicating progression state or presenting old functionality as new work.
 
-`UIManagerWindows.js` already clamps panels to the viewport and observes content
-size. Its service/companion reflow unconditionally recenters or re-pairs some
+At the initial request, `UIManagerWindows.js` already clamped panels to the viewport
+and observed content size. Its service/companion reflow unconditionally recentered or re-paired some
 windows; the generic dragged-window guard alone does not protect those paths.
 Inspect drag completion, reopening and session teardown before selecting a fix.
 

@@ -496,7 +496,12 @@ Notes:
 ## Project Status
 
 Current source version: `Alpha 1.79.54` (world surfaces, foliage rendering and
-remembered windows; qualified locally, publication and deployment checks pending).
+remembered windows; published at `fda5c6b89`, with CI/deployment verification pending).
+
+The next quest-experience milestone is selected locally on master: searchable
+earned lore, current-task links, direct tracker navigation and clearer manual
+quest review/actions. It is not part of the published54 build. [Qualification](docs/plans/2026-10-15-quest-book-qualification.json).
+Its publication waits for54's independent deployment acceptance.
 
 **Alpha 1.79.53 is deployed and verified**, at runtime source `99eefb64d`.
 All ten CI jobs passed, including native graphics, both deployments and live
