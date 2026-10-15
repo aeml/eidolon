@@ -1,0 +1,28 @@
+{
+  "recordedUTC": "2026-10-15",
+  "status": "Selected and locally qualified for the next world-surface milestone; not pushed or deployed",
+  "base": "d2050b4a493500b38c113b5e2d731aa936080a83",
+  "change": "All five dungeon floor families use an eight-metre material tile instead of twenty-four. Canonical union floors share its origin and scale across room/corridor partitions. Thorncrypt floor mortar has shallower relief, less accumulated moss and quieter joint contrast. Wall maps and wall scale remain exact.",
+  "scope": "Supplied 14-slot Fighter, ordinary zoom15, actual production layouts and desktop/phone HUD. Prepared walking/mixer/render frames, not connected combat, physical-phone qualification or final art acceptance.",
+  "validation": {
+    "distinctFocusedChecks": 93,
+    "suites": 7,
+    "details": "76 floor-material/canonical-geometry/surface checks pass. Following the Thorncrypt joint refinement, 16 field/patina checks pass; one stale 24m-repeat expectation fails. It is corrected to three repeats across24m; the targeted registered-map case passes. Its unrelated already-passing companion is explicitly skipped in that follow-up, not counted twice.",
+    "lint": "Full repository lint and whitespace pass.",
+    "wallControl": "Forty wall maps across five themes and High/Low match prior d2050b4a4 SHA-256 bytes. Wall repeat unchanged. Initial private control script failed to resolve a bare three import from a data URL; resolved module URLs then pass, no runtime change.",
+    "nativeDistinctCases": 13,
+    "nativeDetails": "Four final source presentation cases cover all five themes in High1280/Low390. Nine existing native partition/weathering readbacks pass with unchanged tolerances. No native retries or skips. An earlier scale-only High Thorncrypt trial also passes but is not counted as a distinct final case.",
+    "pairedViews": 20,
+    "pairedAssertions": "Reference/candidate/reference at identical frozen clock, camera, pose and lighting: zero repeat pixel difference and exact draw/triangle/GPU-memory equality. Prior material source is exported from d2050b4a4; original24m scale is restored on candidate union UVs for comparison. Twenty retained image pairs differ by599001\u20132663377 channel bytes.",
+    "retainedMetrics": "Raw paired report bodies were attached to the console-only reporter but not saved on successful runs; passing assertions and screenshots are retained. Do not invent raw frame metrics from an empty trace extraction. Independent image byte analysis is saved. The room-composition helper separately saves48 view reports with1632 prepared animation frames, maximumHigh91calls/69873triangles andLow48calls/25703triangles. No FPS claim.",
+    "bounds": "No new geometry, lights, material count, texture dimensions, colliders, rewards or gameplay timing. Existing source maps and normal lighting remain registered. Original whole-game performance failures stay open."
+  },
+  "review": "Reviewed High Thorncrypt before/after, all four elemental High candidate views, Low Thorncrypt and Drowned HUD views. Smaller stones read in relation to the actor; processional paving, ward marks and travel lanes remain distinct. Sparse composition, repetitive dressing, broader world coherence and final owner review remain open.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-world-review-20261015/.qa-floor-scale",
+    "inventoryEntries": 308,
+    "inventorySHA256": "2296f3f8ffb8a73dcafa850af05aa0712a656ff5b7d6b80ab25de62014bd8519",
+    "privateFixtures": "Exact executed copies of floor-scale-review.js and both private specs are archived in this directory. They are not added to production CI. Existing canonical geometry and dungeon material readbacks retain production regression coverage."
+  },
+  "release": "53 corrected a4538cd33 remains in CI38663284956;52 is last accepted. Hold this change and the already locally merged Earth trail fix until53 own deployment is verified, then publish one coherent surface milestone. No soak or beta activation."
+}

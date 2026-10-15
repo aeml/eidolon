@@ -110,7 +110,7 @@ function buildLargeBossApproachLayout() {
 }
 
 describe('WorldGenerator staged overworld startup', () => {
-    test('canonical gameplay floors use the broader24-unit scale continuously across room and corridor partitions', async () => {
+    test('canonical gameplay floors use the eight-metre scale continuously across room and corridor partitions', async () => {
         const generator = createGenerator();
         const layout = buildCanonicalLayout();
         await generator.createAbyssalWell(0, 0, layout);
@@ -124,8 +124,8 @@ describe('WorldGenerator staged overworld startup', () => {
             const vertices = floor.geometry.getAttribute('position');
             const uv = floor.geometry.getAttribute('uv');
             for (let index = 0; index < uv.count; index++) {
-                expect(uv.getX(index)).toBeCloseTo((vertices.getX(index) + floor.position.x - layout.rooms[0].x) / 24, 5);
-                expect(uv.getY(index)).toBeCloseTo((vertices.getY(index) - floor.position.z + layout.rooms[0].z) / 24, 5);
+                expect(uv.getX(index)).toBeCloseTo((vertices.getX(index) + floor.position.x - layout.rooms[0].x) / 8, 5);
+                expect(uv.getY(index)).toBeCloseTo((vertices.getY(index) - floor.position.z + layout.rooms[0].z) / 8, 5);
             }
         }
         verifyCanonicalSurfaces(generator, layout);

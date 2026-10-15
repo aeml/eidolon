@@ -46,6 +46,23 @@ returning sessions (61 focused checks; two final native scene-lifetime cases).
 close specific usability/loading defects, not final world art, physical-device,
 whole-frame or full original readiness requirements. Soak remains deferred.
 
+## Next world-surface milestone: selected locally, unpublished
+
+Earth trails now sample physical soil/pebbles in world space, correcting the
+stretched, cliff-like pattern at sharp bends while preserving route geometry,
+shoulders and Lanternhold paving. [Qualification](2026-10-15-earth-trail-ground-qualification.json).
+All five dungeon floor families now use an eight-metre tile; Thorncrypt floor
+joints are shallower and less dark. Forty wall maps remain byte-identical;
+93 distinct focused checks, full lint and13 native cases pass within the
+[retained scope and fixture correction](2026-10-15-dungeon-floor-scale-qualification.json).
+These selected changes are held on local master for a coherent world milestone
+until corrected53 completes its own CI/deployment/public verification.
+
+The private pine diffuse-lighting experiment144251bcd remains unselected: the
+visible change was too slight, and its Low view failed the original changed-pixel
+threshold. No threshold relaxation or runtime selection. This does not close
+modern-art acceptance, physical-device work or whole-game performance gates.
+
 ## October 14 accepted class milestone
 
 **Alpha 1.79.51 at `e2880b4ee` is deployed and verified.** All ten jobs in

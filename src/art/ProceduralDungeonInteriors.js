@@ -19,7 +19,9 @@ import { createDungeonFloorComposition, getDungeonFloorCompositionPlan } from '.
 import { createDungeonDaisMasonry } from './DungeonDaisMasonry.js';
 
 const TEXTURE_SIZE = 64;
-export const DUNGEON_FLOOR_TEXTURE_SPAN = 24;
+// Human-scale flagstones: the canonical tile spans eight world metres.
+// Shared by union floors, rooms and corridors so joints remain registered.
+export const DUNGEON_FLOOR_TEXTURE_SPAN = 8;
 
 const defineInterior = (dungeonType, label, artStyle, surfaceLanguage) => Object.freeze({
     dungeonType,
