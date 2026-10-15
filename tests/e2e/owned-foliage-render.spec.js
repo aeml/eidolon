@@ -137,8 +137,19 @@ for (const quality of ['high', 'low']) test(`owned foliage preserves views and r
         const beforeMemory = { ...render.renderer.info.memory };
         for (const { owner } of originals) owner.dispose();
         render.render(); const afterMemory = { ...render.renderer.info.memory };
+        render.clearGroupChildren(render.instanceEnvironmentGroup, { dispose: true }); render.render();
+        const retired = { ...render.renderer.info.memory }, lifecycle = [];
+        for (let cycle = 0; cycle < 3; cycle++) {
+            game.worldGenerator.graphicsQuality = render.graphicsQuality;
+            await game.worldGenerator.loadTrees(0, 200); render.render(); render.render();
+            const roots = render.instanceEnvironmentGroup.children.filter(root => root.userData.proceduralFoliage);
+            const active = { roots: roots.length, owned: roots.filter(root => getOwnedFoliageDraws(root)).length,
+                batches: roots.reduce((sum, root) => sum + root.children.length, 0), memory: { ...render.renderer.info.memory } };
+            render.clearGroupChildren(render.instanceEnvironmentGroup, { dispose: true }); render.render();
+            lifecycle.push({ active, retired: { ...render.renderer.info.memory }, remainingRoots: render.foliageShadowInfluence.roots.size });
+        }
         const summary = { sources: sources.length, sourceCells: sources.reduce((sum, s) => sum + s.children.length, 0),
-            outfits: outfitsObserved, pairs, qualityCycles, beforeMemory, afterMemory, pending: render.actorGameplayGeometry.delivery.jobs.size };
+            outfits: outfitsObserved, pairs, qualityCycles, beforeMemory, afterMemory, retired, lifecycle, pending: render.actorGameplayGeometry.delivery.jobs.size };
         game.destroy(); return summary;
     });
     await writeFile(testInfo.outputPath('observation.json'), JSON.stringify({ quality, gpu, ...observation }, null, 2));
@@ -156,5 +167,11 @@ for (const quality of ['high', 'low']) test(`owned foliage preserves views and r
     }
     expect(observation.qualityCycles[2].memory).toEqual(observation.qualityCycles[0].memory);
     expect(observation.qualityCycles[3].memory).toEqual(observation.qualityCycles[1].memory);
+    for (const cycle of observation.lifecycle) {
+        expect(cycle.active.roots).toBe(9); expect(cycle.active.owned).toBe(9);
+        expect(cycle.active.batches).toBeLessThan(40); expect(cycle.remainingRoots).toBe(0);
+        expect(cycle.retired).toEqual(observation.retired);
+        expect(cycle.active.memory).toEqual(observation.lifecycle[0].active.memory);
+    }
     expect(failures).toEqual([]);
 });
