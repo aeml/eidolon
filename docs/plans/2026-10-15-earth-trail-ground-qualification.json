@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-15",
+  "base": "fdc5bb97090fad95dd3bdad4455f8d319ba2c56b",
+  "status": "Selected locally for the Earth trail texture-stretch defect. Not pushed/deployed; publication belongs to the next coherent world milestone after independent 1.79.53 acceptance.",
+  "change": "Soil/aggregate use the existing eight-metre world-space Earth detail field. Road UVs retain shoulders and paired worn tracks; town-gate paving retains its material transition. Shallow physical surface gradients follow the original flat/raised ribbon normals. Other realms and all original road geometry, placement and collision remain.",
+  "review": "Inspected paired equipped High/Low views at the gate, straight road, Bastion and keeper bends. The formerly cliff-like longitudinal smear disappears; the path stays visibly flat and pebbles keep a physical scale. Raised foresters-path review uses the real field above five metres with about22 percent local gradient. Prepared actor animation and actual HUD/minimap, not connected travel, combat, device or final world-art approval.",
+  "verification": {
+    "client": "17 distinct focused checks across four suites, plus full repository lint pass. New High/Low independent map storage, idempotent application and exact disposal checks cover the additional owned map.",
+    "native": "Four paired High/Low flat/raised cases pass37.3s; two raised cases extended with actual sloped path pass21.7s. Original/candidate/original repeat images are stable and draw/geometry counts remain equal. Two actual scene-lifetime cases pass19.4s through three town/death, dungeon, casino-public/VIP cycles with warmed resource return. Eight executions/six distinct cases, no retries/skips in passing qualification.",
+    "cost": "No new mesh, vertex or draw submission. One owned detail raster adds256KiB High/64KiB Low CPU data per trail material and reuses the already bounded Earth field cache. GPU/final-frame targets are not newly certified."
+  },
+  "retainedFailure": "Initial four native comparisons failed shader compilation: replacing the roughness chunk omitted its local float declaration. Corrected that declaration, then all four compiled comparisons pass. Original log/images remain and are not accepted art evidence.",
+  "unselectedAlternative": "The earlier297b721a7/56cc68ece extra-join-vertices experiment reduced long distortion but left an unnatural corner and remains unselected. This implementation starts from published53 candidate source and does not include that runtime.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-trail-surface-20261015/.qa-trail",
+  "inventory": {
+    "path": ".qa-trail/qualification-inventory.json",
+    "files": 87,
+    "sha256": "9a9e33c8768e0449337211eccafa315cf9d5542d4d5906ccb99448d4d9a62a98"
+  },
+  "reproduction": "The private native comparison script is retained as .qa-trail/review-source.js; copy to tests/e2e/trail-surface-review.spec.js and export git show fdc5bb970:src/art/ProceduralWorldPaths.js to .qa-trail/reference-path-source.js before explicit execution. It is not enrolled as a release test; existing world/native suites exercise the selected runtime.",
+  "remaining": "Broader terrain transitions, foliage/landmark/interior cohesion, other realm review, equipped combat, representative scene/frame budgets, devices and full readiness scope remain. Raised terrain remains production-disabled; soak stays owner-deferred."
+}

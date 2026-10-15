@@ -3,6 +3,7 @@ import { EARTH_PATHS } from '../data/worldPopulation.js';
 import { conformGroundRibbon } from './GroundRibbonGeometry.js';
 import { createEarthTrailMaps } from './EarthTrailSurface.js';
 import { applyLanternholdGateRoad, extendLanternholdGatePath } from './LanternholdGateRoad.js';
+import { applyEarthTrailGroundMaterial } from './EarthTrailGroundMaterial.js';
 
 function pathTexture(color = [98, 88, 70], name = 'Earth') {
     const size = 128, pixels = new Uint8Array(size * size * 4);
@@ -82,7 +83,10 @@ export function createWorldPathNetwork(paths, { name = 'World', color, elevation
     const material = new THREE.MeshStandardMaterial({ ...surfaces, roughness: 1,
         transparent: true, alphaTest: .025, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 });
     material.name = `${name} worn-path surface`;
-    if (name === 'Earth') applyLanternholdGateRoad(material, quality);
+    if (name === 'Earth') {
+        applyLanternholdGateRoad(material, quality);
+        applyEarthTrailGroundMaterial(material, quality);
+    }
     for (const path of paths) {
         const renderedPath = name === 'Earth' ? extendLanternholdGatePath(path) : path;
         const mesh = new THREE.Mesh(createWorldPathGeometry(renderedPath, { elevation }), material);
