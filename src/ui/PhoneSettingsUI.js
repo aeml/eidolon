@@ -1,11 +1,14 @@
 // Reparent existing controls so their settings bindings and native input
 // behavior remain intact. Phone routes only change composition and copy.
-import { ownedEvent } from './OwnedEvents.js';
+import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 
 export class PhoneSettingsUI {
     constructor(root) {
+        root.__eidolonPhoneSettings?.dispose();
         this.root = root;
+        root.__eidolonPhoneSettings = this;
         this.body = root.querySelector('.support-window__body--settings');
+        this.originalChildren = [...this.body.childNodes];
         this.scroll = new Map();
         this.current = 'screen';
         const oldSections = [...root.querySelectorAll('.phone-settings-section')];
@@ -44,8 +47,10 @@ export class PhoneSettingsUI {
         root.insertBefore(this.tabs, this.body);
         const scale = root.querySelector('#ui-scale');
         const label = root.querySelector('label[for="ui-scale"]');
+        this.scaleLabel = label; this.originalScaleLabel = label?.textContent;
         if (label) label.textContent = 'Menu text size';
         const hint = scale?.closest('.support-field')?.querySelector('.support-field__hint');
+        this.scaleHint = hint; this.originalScaleHint = hint?.textContent;
         if (hint) hint.textContent = 'Enlarge phone menu text without changing camera framing. Phone and desktop preferences save separately and apply immediately.';
         this.addTouchPreferences();
         this.show('screen');
@@ -82,6 +87,21 @@ export class PhoneSettingsUI {
         ownedEvent(this, hand, 'change', () => apply(true));
         size.oninput = () => apply(true);
         apply();
+    }
+
+    dispose() {
+        if (this.disposed) return;
+        this.disposed = true;
+        disposeOwnedEvents(this);
+        const size = this.root.querySelector('#phone-control-size');
+        if (size) size.oninput = null;
+        this.body.replaceChildren(...this.originalChildren);
+        this.originalChildren.length = 0;
+        this.tabs.remove();
+        if (this.scaleLabel) this.scaleLabel.textContent = this.originalScaleLabel;
+        if (this.scaleHint) this.scaleHint.textContent = this.originalScaleHint;
+        this.sections.clear(); this.scroll.clear();
+        if (this.root.__eidolonPhoneSettings === this) delete this.root.__eidolonPhoneSettings;
     }
 
     show(key) {

@@ -53,6 +53,7 @@ export class SkillTreeUI {
         if (this.disposed) return;
         this.disposed = true;
         disposeOwnedEvents(this);
+        this.mobile?.dispose();
         for (const [notification, timers] of this.comboNotifications) {
             timers.forEach(clearTimeout); notification.remove();
         }

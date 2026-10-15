@@ -14,9 +14,11 @@ jest.unstable_mockModule('../src/assets/StylesheetBoot.js', () => ({
 
 let mockStartupError = null;
 let mockConstructionCount = 0;
+let mockMobileLayout;
 jest.unstable_mockModule('../src/core/GameEngine.js', () => ({
     GameEngine: class MockGameEngine {
-        constructor() {
+        constructor(type, mobile) {
+            mockMobileLayout = mobile;
             mockConstructionCount++;
             if (mockStartupError) throw mockStartupError;
             this.uiManager = {
@@ -157,6 +159,34 @@ describe('asset persistence boot wiring', () => {
         await new Promise(resolve => setTimeout(resolve, 0));
         expect(mockConstructionCount).toBe(1);
         expect(window.game).not.toBeNull();
+    });
+
+    test.each([[1280, 390, true], [390, 1280, false]])('entry after resizing %i to %i uses current layout', async (initial, joined, mobile) => {
+        const previousWidth = window.innerWidth;
+        buildStartDom(); installBrowserMocks(); window.game = null;
+        Object.defineProperty(window, 'innerWidth', { configurable: true, value: initial });
+        const sockets = [];
+        class MockWebSocket {
+            static OPEN = 1;
+            constructor() { this.readyState = 1; sockets.push(this); }
+            send() {}
+        }
+        Object.defineProperty(globalThis, 'WebSocket', { configurable: true, value: MockWebSocket });
+        try {
+            await import('../src/main.js');
+            window.dispatchEvent(new Event('DOMContentLoaded')); await Promise.resolve();
+            document.getElementById('btn-login').click();
+            sockets[0].onmessage({ data: JSON.stringify({ type: 'login_success', payload: { hasCharacter: false } }) });
+            Object.defineProperty(window, 'innerWidth', { configurable: true, value: joined });
+            document.querySelector('.class-btn').click();
+            await new Promise(resolve => setTimeout(resolve, 0));
+            expect(mockConstructionCount).toBe(1);
+            expect(mockMobileLayout).toBe(mobile);
+            expect(document.body.classList.contains('mobile-mode')).toBe(mobile);
+        } finally {
+            Object.defineProperty(window, 'innerWidth', { configurable: true, value: previousWidth });
+            document.body.classList.remove('mobile-mode');
+        }
     });
 
     test('unavailable graphics restores login with actionable in-page guidance, not a browser alert', async () => {

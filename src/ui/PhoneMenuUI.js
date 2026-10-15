@@ -16,6 +16,13 @@ export class PhoneMenuUI {
         const header = menu.querySelector('.window-header');
         const actions = menu.querySelector('.pause-menu__actions');
         if (!header || !actions) return;
+        const top = document.getElementById('mobile-top-right');
+        this.originalChildren = [header, actions, top].filter(Boolean).map(node => [node, [...node.childNodes]]);
+        this.originalText = ['btn-resume', 'btn-mobile-inv', 'btn-mobile-char', 'btn-mobile-quest', 'btn-mobile-map', 'btn-mobile-social']
+            .map(id => document.getElementById(id)).filter(Boolean).map(node => [node, node.textContent]);
+        this.originalAttributes = [[menu, 'role'], [menu, 'aria-label'],
+            [document.getElementById('btn-mobile-menu'), 'aria-controls'], [document.getElementById('btn-mobile-menu'), 'aria-expanded']]
+            .filter(([node]) => node).map(([node, key]) => [node, key, node.getAttribute(key)]);
         menu.setAttribute('role', 'dialog');
         menu.setAttribute('aria-label', 'Game menu');
         const launcher = document.getElementById('btn-mobile-menu');
@@ -41,7 +48,15 @@ export class PhoneMenuUI {
     }
 
     dispose() {
+        if (this.disposed) return;
+        this.disposed = true;
         disposeOwnedEvents(this);
+        for (const [node, children] of this.originalChildren || []) node.replaceChildren(...children);
+        for (const [node, text] of this.originalText || []) node.textContent = text;
+        for (const [node, key, value] of this.originalAttributes || []) {
+            if (value === null) node.removeAttribute(key); else node.setAttribute(key, value);
+        }
+        this.originalChildren = this.originalText = this.originalAttributes = null;
         if (this.menu.__eidolonPhoneMenu === this) delete this.menu.__eidolonPhoneMenu;
     }
 }

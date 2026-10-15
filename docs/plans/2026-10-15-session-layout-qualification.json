@@ -1,0 +1,90 @@
+{
+  "date": "2026-10-15",
+  "status": "Qualified privately; publication held behind Alpha 1.79.52 deployment acceptance.",
+  "base": "8c8ef016eb0fcda59164f3fc2503476dd4514039",
+  "changes": [
+    "Choose the input layout immediately before real engine construction, including viewport changes during login and desktop-UA iPads. Keep CSS consistent with installed controllers during the active session.",
+    "Restore original shared settings/menu nodes, labels and attributes on disposal; retire phone build/quest controls and listeners.",
+    "Hide retired session windows and owned touch controls so phone/desktop returning sessions start cleanly."
+  ],
+  "verification": {
+    "focused_client": "212 distinct passes across 15 suites: 141 input/layout/menu checks and 71 startup/recovery/UI lifecycle checks.",
+    "lint": "Full repository ESLint passed.",
+    "native": "Four new layout/return cases pass on their final relevant runtime paths; five existing touch and UI ownership cases pass after the final cleanup change. No retries or skips.",
+    "scope": "Actual bootstrap, GameEngine renderer/UI/input construction and recovery callbacks; synthetic login socket and prepared loadGame skip world/account loading. No real account, campaign or physical-device acceptance."
+  },
+  "retained_failures": [
+    "Initial wrong desktop test selector corrected to the actual menu button.",
+    "Initial phone-to-desktop settings tabs persisted; restored original DOM on teardown.",
+    "Real returning login exposed an open settings window surviving disposal; retired windows now close before reentry.",
+    "Nonexistent InputManager.test.js selector rejected; reran the actual joystick/world-tap/zoom/aim suites."
+  ],
+  "evidence": [
+    {
+      "path": ".qa-layout/cleanup-unit.log",
+      "bytes": 733,
+      "sha256": "6a1c24d2bec69e0a392bd5892779a60325f3d92bb26cf06cdc08557df1d4787e"
+    },
+    {
+      "path": ".qa-layout/final-lifecycle-native.log",
+      "bytes": 1027,
+      "sha256": "0ee5d66ca0b57708012015753580d6d004adc3ff84946ca69e04532d13f35e38"
+    },
+    {
+      "path": ".qa-layout/final-unit.log",
+      "bytes": 1111,
+      "sha256": "0956439d216145c9e299a4258b4314b9953a4bb543ad541dd4e780d4bb652190"
+    },
+    {
+      "path": ".qa-layout/final-unit2.log",
+      "bytes": 1104,
+      "sha256": "98edbe4e3288fb76a0234eee471e701f733e302986c733b808a716d8ba061019"
+    },
+    {
+      "path": ".qa-layout/lifecycle-unit.log",
+      "bytes": 465,
+      "sha256": "be1ce62186f2ff24d39240d83bc6193e0d0ea4ae4903decbadf903ea83cd105d"
+    },
+    {
+      "path": ".qa-layout/lint-final.log",
+      "bytes": 96,
+      "sha256": "ad22f9743cf3310091cf2c9aec12da330237a2db19fb146a0ec99d54ca582d8f"
+    },
+    {
+      "path": ".qa-layout/lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-layout/native-after.log",
+      "bytes": 1415,
+      "sha256": "8385bd8b588c41220c6bca8e1fe529def7611cf9e159c556570603ec246d8c72"
+    },
+    {
+      "path": ".qa-layout/native-before.log",
+      "bytes": 7357,
+      "sha256": "59551cbe53960eb381368b9f381a0bd70c7036b38a83e70cecb939bf5d4509bd"
+    },
+    {
+      "path": ".qa-layout/native-recovery.log",
+      "bytes": 430,
+      "sha256": "1aa0864b745059dd26b81cfda8fbdfbad64a9b669e5aff46665ebec5dbbf5712"
+    },
+    {
+      "path": ".qa-layout/native-return.log",
+      "bytes": 4423,
+      "sha256": "0dcb46ebdf3ef29efc7ef00a56939518b92e32b746c56f87bb4a8fdb083aaef0"
+    },
+    {
+      "path": ".qa-layout/prepare.log",
+      "bytes": 2666,
+      "sha256": "8d3b93685a3a39dd6ff1478b32f2d537e7547ee39fb127d0048da18db3b88537"
+    },
+    {
+      "path": ".qa-layout/unit.log",
+      "bytes": 552,
+      "sha256": "079861f3589bcb2c643a64bf4a1002217bec83da88f4f71ad7379b9f2fe72415"
+    }
+  ],
+  "remaining": "Release integration and exact deployment acceptance; broader supported browsers, physical phones, sustained budgets and original full readiness gates remain open."
+}

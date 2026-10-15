@@ -9,6 +9,7 @@ import { PublicEmailRecoveryUI } from './ui/EmailRecoveryUI.js';
 import { mountDataPrivacyNotices } from './ui/DataPrivacyNotice.js';
 import { gameStartupFailureMessage, gameStartupFailureKind } from './core/GraphicsStartup.js';
 import { createEngineModuleLoader } from './core/EngineModuleLoader.js';
+import { useMobileLayout } from './core/InputLayout.js';
 
 const loadGameEngine = createEngineModuleLoader(
     () => import('./core/GameEngine.js'),
@@ -19,7 +20,7 @@ const recoveryHandoff = window.__eidolonRecoveryHandoff;
 delete window.__eidolonRecoveryHandoff;
 
 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 800);
+const isMobile = useMobileLayout();
 const urlParams = new URLSearchParams(window.location.search);
 const debugMode = urlParams.get('debug') === '1' || isLocalhost;
 const perfOverlayEnabled = urlParams.get('perf') === '1' || debugMode;
@@ -86,18 +87,14 @@ if (isMobile) {
     };
 }
 
-// Keep .mobile-mode class in sync with viewport width so CSS rules apply
-// even when the browser is resized after initial load.
+// Before entry, follow the viewport; during play, follow the installed
+// controllers until the next session chooses its layout.
 const mobileMediaQuery = window.matchMedia('(max-width: 800px)');
-function handleMobileMediaChange(e) {
-    if (e.matches) {
-        document.body.classList.add('mobile-mode');
-    } else if (!isMobile) {
-        // Only remove if not a genuine mobile device (UA detected).
-        // This preserves .mobile-mode on real mobile devices that might
-        // temporarily report a wider viewport (e.g. landscape iPad).
-        document.body.classList.remove('mobile-mode');
-    }
+function handleMobileMediaChange() {
+    // During play, CSS must follow the installed input/UI policy. A viewport
+    // resize does not rebuild the session's controllers or discard its state.
+    const session = window.game && !window.game.isDestroyed ? window.game : null;
+    document.body.classList.toggle('mobile-mode', session ? session.isMobile : useMobileLayout());
 }
 mobileMediaQuery.addEventListener('change', handleMobileMediaChange);
 
@@ -483,8 +480,6 @@ const bootLogin = async () => {
                 await syncFullscreenPreference(true);
             }
             
-            console.log(`Device Check: Mobile=${isMobile} (UA: ${navigator.userAgent}, Width: ${window.innerWidth})`);
-
             console.log("Creating GameEngine...");
             if (window.game) {
                 console.log("Destroying previous GameEngine instance...");
@@ -495,7 +490,11 @@ const bootLogin = async () => {
             startupPhase = 'engine-module';
             const { GameEngine } = await loadGameEngine();
             startupPhase = 'engine-construction';
-            window.game = new GameEngine(type, isMobile, isMultiplayer, serverAddress, username, authSocket, serverTerrainProfile);
+            // Fullscreen and module loading can both change the viewport. Choose
+            // the session policy at construction, not when the login page loaded.
+            const sessionMobile = useMobileLayout();
+            document.body.classList.toggle('mobile-mode', sessionMobile);
+            window.game = new GameEngine(type, sessionMobile, isMultiplayer, serverAddress, username, authSocket, serverTerrainProfile);
 
             // Wire session-resume / reconnect callbacks into the network layer.
             sessionGame = window.game;

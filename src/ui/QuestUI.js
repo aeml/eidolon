@@ -1,4 +1,4 @@
-import { ownedEvent } from './OwnedEvents.js';
+import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { renderQuestConversation } from './QuestConversation.js';
 import { getFinaleExitGuidance } from './FinaleGuidance.js';
 import { appendChronicleRecap } from './ChronicleRecap.js';
@@ -77,6 +77,14 @@ export class QuestUI {
     // ================================================================
     // PUBLIC API
     // ================================================================
+
+    dispose() {
+        if (this.disposed) return;
+        this.disposed = true;
+        disposeOwnedEvents(this);
+        this.questActions?.remove();
+        this.objectivesPanel?.querySelector('.phone-objectives-controls')?.remove();
+    }
 
     /** Whether the quest NPC window is visible. */
     get isQuestWindowOpen() {

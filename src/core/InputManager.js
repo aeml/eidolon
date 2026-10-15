@@ -103,10 +103,10 @@ export class InputManager {
 
 
     setupMobileControls() {
-        if (this.isMobile) return;
+        if (this.isMobile || this.disposed) return;
         this.isMobile = true;
         const mobileUI = document.getElementById('mobile-ui');
-        if (mobileUI) mobileUI.style.display = 'block';
+        if (mobileUI) { mobileUI.__eidolonInputOwner = this; mobileUI.style.display = 'block'; }
 
         // Joystick Logic
         const zone = document.getElementById('joystick-zone');
@@ -493,6 +493,13 @@ export class InputManager {
     }
 
     dispose() {
+        if (this.disposed) return;
+        this.disposed = true;
+        const mobileUI = document.getElementById('mobile-ui');
+        if (mobileUI?.__eidolonInputOwner === this) {
+            mobileUI.style.display = 'none';
+            delete mobileUI.__eidolonInputOwner;
+        }
         this.touchAbilityAim?.dispose();
         this.resetJoystick?.();
         this.pinchState = null;

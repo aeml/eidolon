@@ -13,7 +13,9 @@ const el = (tag, text, className) => {
 // reading a card nor showing a pending action mutates the shared player build.
 export class MobileSkillTree {
     constructor(owner) {
+        owner.skillTreeWindow.__eidolonMobileSkills?.dispose();
         this.owner = owner;
+        owner.skillTreeWindow.__eidolonMobileSkills = this;
         this.reading = new Map();
         this.pending = null;
         this.feedback = '';
@@ -32,6 +34,16 @@ export class MobileSkillTree {
         this.notice.setAttribute('aria-live', 'polite');
         owner.skillTreeWindow.insertBefore(this.tabs, owner.skillTreeContent);
         owner.skillTreeWindow.append(this.notice);
+    }
+
+    dispose() {
+        if (this.disposed) return;
+        this.disposed = true;
+        this.tabs.remove(); this.notice.remove();
+        this.owner.skillTreeContent.classList.remove('phone-build-content');
+        this.owner.skillTreeContent.replaceChildren();
+        this.reading.clear(); this.pending = null;
+        if (this.owner.skillTreeWindow.__eidolonMobileSkills === this) delete this.owner.skillTreeWindow.__eidolonMobileSkills;
     }
 
     saveReading() {

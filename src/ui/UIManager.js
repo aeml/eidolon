@@ -637,6 +637,15 @@ export class UIManager {
     dispose() {
         if (this.disposed) return;
         this.disposed = true;
+        // Shared markup survives recovery; close the retired session before a
+        // different input layout binds these same controls on the next login.
+        for (const { element } of this.windowLayouts?.values() || []) {
+            if (element) element.style.display = 'none';
+        }
+        for (const element of [this.escMenu, this.hud, this.abilityContainer,
+            this.hotbarContainer, this.menuBar, this.gameTimer, document.getElementById('xp-bar-container')]) {
+            if (element) element.style.display = 'none';
+        }
         disposeOwnedEvents(this);
         for (const name of ['quest', 'skillTree', 'phoneMenu', 'keyboardSettings', 'phoneSettings',
             'forge', 'trading', 'directTrade', 'wardrobe', 'epWallet', 'cosmeticVendor', 'admin',
