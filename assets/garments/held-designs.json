@@ -1,0 +1,8 @@
+[
+  { "id": "grovekeeper-blade-v1", "design": "thornblade", "description": "A branching bronze guard and beveled leaf blade frame an inset emerald channel." },
+  { "id": "skyweaver-dagger-v1", "design": "crescent-dagger", "description": "A swept crescent blade, hooked star guard and blue inlay catch the light." },
+  { "id": "hearthkeeper-staff-v1", "design": "phoenix-staff", "description": "Forged phoenix wings cradle a faceted ember above a wrapped ashwood shaft." },
+  { "id": "tidekeeper-mace-v1", "design": "tide-mace", "description": "Four swept tide flanges surround a pale aquamarine core and bronze wave collars." },
+  { "id": "grovekeeper-shield-v1", "design": "oak-shield", "description": "A scalloped bronze ward carries a raised branching oak and an emerald heart." },
+  { "id": "skyweaver-tome-v1", "design": "astral-tome", "description": "A bound grimoire wears raised crescent metalwork, star clasps and a sapphire seal." }
+]

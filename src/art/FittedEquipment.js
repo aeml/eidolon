@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { AUTHORED_ASSETS } from '../assets/authoredEquipment.generated.js';
+import { HELD_GARMENT_MODELS } from '../assets/heldGarments.generated.js';
 import { GARMENT_MODELS } from '../assets/garments.generated.js';
 import { resolveEquipmentVisualDescriptor, equipmentVisualSignature } from './ProceduralEquipment.js';
 import { isActiveEquipment } from '../core/EquipmentSlots.js';
@@ -118,9 +119,9 @@ function coverRobeUnderlayers(state, selection, parts) {
     }
 }
 
-function instanceMaterials(part, item, look) {
+function instanceMaterials(part, item, look, garment = false) {
     const rarity = typeof item.rarity === 'string' ? item.rarity : item.rarity?.name;
-    const accent = rarity === 'Eidolic' ? '#9f66dc' : AUTHORED_ASSETS.sets[item.setId]?.accentColor;
+    const accent = garment ? null : rarity === 'Eidolic' ? '#9f66dc' : AUTHORED_ASSETS.sets[item.setId]?.accentColor;
     const owned = new Map();
     const uvEligibility = new Map();
     part.traverse(mesh => {
@@ -137,7 +138,7 @@ function instanceMaterials(part, item, look) {
             const result = material.clone(); owned.set(material, result);
             if (accent && result.emissive?.getHex() > 0) { result.emissive.set(accent); result.color.set(accent); }
             if (look) result.color.set(result.emissive?.getHex() > 0 ? look.secondary : look.primary);
-            if (Number(item.potency) > 0 && result.emissive?.getHex() > 0) result.emissiveIntensity *= 1 + Math.min(1, item.potency / 20);
+            if (!garment && Number(item.potency) > 0 && result.emissive?.getHex() > 0) result.emissiveIntensity *= 1 + Math.min(1, item.potency / 20);
             if (uvEligibility.get(material)) applyAuthoredEquipmentSurface(result);
             return result;
         };
@@ -169,7 +170,7 @@ function bindParts(state, gltf, slot, item, catalog, look, skeletons, staged) {
         const grip = AUTHORED_ASSETS.grips[state.actorClass][slot];
         const socket = state.scene.getObjectByName(grip.socket);
         new THREE.Matrix4().fromArray(grip.localMatrix).decompose(root.position, root.quaternion, root.scale);
-        instanceMaterials(root, item, look); parts.push(root); staged.push(root);
+        instanceMaterials(root, item, look, Boolean(catalog.garmentId)); parts.push(root); staged.push(root);
         root.userData.fittedParent = socket;
     } else {
         const targets = new Map(state.body.skeleton.bones.map((bone, i) => [bone.name, { bone, inverse: state.body.skeleton.boneInverses[i] }]));
@@ -214,7 +215,7 @@ function bindParts(state, gltf, slot, item, catalog, look, skeletons, staged) {
     }
     for (const part of parts) {
         const piece = slot === 'outfit' ? part.userData.garmentSlot : slot;
-        Object.assign(part.userData, { authoredEquipment: true, fittedItem: slot === 'outfit' ? catalog.coverage[piece] : catalog.id, slot: piece });
+        Object.assign(part.userData, { authoredEquipment: true, fittedItem: slot === 'outfit' ? catalog.coverage[piece] : catalog.id, slot: piece, garmentId: catalog.garmentId || '' });
     }
 }
 
@@ -254,6 +255,12 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
         const catalog = AUTHORED_ASSETS.items[look?.base || descriptor?.baseName];
         if (!catalog) return [];
         const tier = ['Legendary', 'Eidolic'].includes(typeof item.rarity === 'string' ? item.rarity : item.rarity?.name) ? 'legendary' : 'standard';
+        const held = look && HELD_GARMENT_MODELS[look.name];
+        if (held) {
+            const quality = root.userData.authoredQuality === 'low' ? 'low' : 'high';
+            return [{ slot, item, catalog: { ...catalog, garmentId: held.id }, look: null,
+                file: held.models[quality].file, source: held.models.high.file }];
+        }
         const { file, source } = resolveFittedEquipmentModel(catalog, tier, actorClass, root.userData.authoredQuality, root.userData.fittedEquipmentLOD === false);
         return [{ slot, item, catalog, look, file, source }];
     });
@@ -277,8 +284,8 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
         const selection = {}, missing = [], skeletons = new Map();
         try {
             for (const result of results) {
-                if (result.slot === 'outfit' && result.error) {
-                    root.userData.equipmentVisualMissing = ['outfit'];
+                if ((result.slot === 'outfit' || result.catalog.garmentId) && result.error) {
+                    root.userData.equipmentVisualMissing = [result.slot];
                     throw new Error('Complete garment model unavailable', { cause: result.error });
                 }
                 if (result.error) { missing.push(result.slot); continue; }

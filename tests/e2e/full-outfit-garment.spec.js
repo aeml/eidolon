@@ -64,6 +64,10 @@ for (const quality of ['high', 'low']) test(`complete garment fits and restores 
             await waitForGeometryOwner(render); render.render();
         };
         await apply(true);
+        const heldModels = [];
+        for (const { actor } of actors) actor.mesh.traverse(part => { if (part.userData.garmentId) heldModels.push(part.userData.garmentId); });
+        const expectedHeld = ['grovekeeper-blade-v1', 'skyweaver-dagger-v1', 'hearthkeeper-staff-v1', 'tidekeeper-mace-v1', 'grovekeeper-shield-v1', 'skyweaver-tome-v1'];
+        if (expectedHeld.some(id => !heldModels.includes(id))) throw Error('A modeled held garment was replaced by a palette-only look');
         for (const state of ['CombatIdle', 'Run', 'Attack', 'Death']) {
             for (const { actor, type } of actors) {
                 actor.mixer.stopAllAction(); actor.mesh.userData.resetRestPose(); actor.currentAction = null;
@@ -104,7 +108,7 @@ for (const quality of ['high', 'low']) test(`complete garment fits and restores 
             await apply(true); cycles.push({ original, garment: { ...render.renderer.info.memory } });
         }
         await apply(false); await capture('restored-party');
-        const result = { poses, cycles, images, frames, restoredItems: actors.map(row => row.actor.mesh.userData.equipmentVisualItemCount),
+        const result = { heldModels, poses, cycles, images, frames, restoredItems: actors.map(row => row.actor.mesh.userData.equipmentVisualItemCount),
             drawCalls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles };
         game.destroy(); return result;
     }, quality);
