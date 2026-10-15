@@ -1,0 +1,21 @@
+{
+  "status": "Selected locally for the unpublished world-surface milestone",
+  "base": "a245e61158314903800833057c60c5a2bc8c39ca",
+  "change": "Thorncrypt roots now reuse the existing pine-bark color/roughness/shallow-relief shader. Each tube swaps UV axes so circumferential ridges follow its curved branch through room batching. No new raster, geometry, light, collision or draw batch.",
+  "qualification": {
+    "checks": 11,
+    "suites": 2,
+    "lint": "Changed source and private review fixture lint pass; whitespace pass.",
+    "geometry": "Both High/Low retain exact position, normal, vertex-color and index bytes against a245e6115; only UV channel orientation changes.",
+    "native": "Two cases pass in26.4s, High1280 and Low390, no retries/skips. Supplied14-slot Fighter, zoom15, actual room layouts/HUD and30 prepared walking frames for each of two views. Four reference/candidate/reference pairs have zero reference repeat delta, exact draws/triangles/GPU-memory equality and4960\u201319621 changed channel bytes. Raw reports saved alongside images.",
+    "review": "Root inspected High reference/candidate and Low HUD views. Axial grain breaks the previous smooth molded finish; the effect is restrained at phone scale. Original geometry, shallow silhouettes and decorative walk-through behavior remain.",
+    "scope": "Material integration and prepared presentation, not final modern-art acceptance, server combat, physical-phone or whole-game performance qualification."
+  },
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-world-review-20261015/.qa-root-bark",
+    "inventoryEntries": 40,
+    "inventorySHA256": "48953497c9e031e474eb634c7e1ba01772fcb9308561fbc9d75ce7feb324494f",
+    "fixtures": "Exact private root-bark-review.js/spec.js archived in evidence; not enrolled in production CI."
+  },
+  "release": "Group with locally selected Earth trail/dungeon floor surfaces after corrected53 own deployment is verified.52 remains last accepted; no soak, raised-world activation, beta or gate closure."
+}

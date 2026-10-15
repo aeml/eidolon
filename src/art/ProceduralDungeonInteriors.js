@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { getRegionTheme } from './darkFantasyTheme.js';
 import { getDungeonRoomIdentityTag } from '../utils/dungeonRoomMetadata.js';
+import { applyWoodlandBarkDetail } from './WoodlandBarkMaterial.js';
 import { createDungeonGraveRootGeometry } from './DungeonGraveRootGeometry.js';
 import { sampleVerdantMasonry } from './VerdantMasonry.js';
 import { createCryptWallGeometry } from './CryptWallGeometry.js';
@@ -220,7 +221,7 @@ function createMaterialSet(dungeonType, quality) {
             emissive: theme.palette.accent, emissiveIntensity: .08
         }),
         ...(dungeonType === 'verdant_bastion_catacombs' ? {
-            bark: makeDetailMaterial(0x6e6451, { roughness: .94, vertexColors: true, flatShading: false })
+            bark: applyWoodlandBarkDetail(makeDetailMaterial(0x6e6451, { roughness: .94, vertexColors: true, flatShading: false }), 'pine')
         } : {})
     });
 }
