@@ -78,6 +78,7 @@ export class UIManager {
         // Quest UI (extracted module)
         this.quest = new QuestUI({
             isMobile: this.isMobile,
+            openWorldMap: () => this.toggleWorldMap(),
             getLastPlayer: () => this.lastPlayerRef,
             getDungeonRoomSummary: () => window.game?.getDungeonRoomSummary?.() || null,
             getCurrentInstanceId: () => window.game?.currentInstanceId || null,
