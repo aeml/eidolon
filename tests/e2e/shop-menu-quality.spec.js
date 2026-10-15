@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { collectBrowserFailures } from './helpers.js';
+import { collectBrowserFailures, waitForTouchScrollSettled } from './helpers.js';
 
 for (const phone of [false, true]) test(`merchant offers show exact prices and responsive equipment menus ${phone ? 'phone' : 'desktop'}`, async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
@@ -75,6 +75,22 @@ test.describe('merchant touch controls', () => {
         expect(await page.evaluate(() => window.__shopTouch.player.gold)).toBe(500);
         await shop.locator('#tab-shop-buyback').tap(); await expect(shop.locator('#shop-content-buyback')).toBeVisible();
         await shop.locator('#tab-shop-main').tap(); await expect(first).toBeVisible();
+        const list = shop.locator('#shop-content-main'), bounds = await list.boundingBox();
+        const cdp = await page.context().newCDPSession(page), x = bounds.x + bounds.width / 2, y = bounds.y + bounds.height - 30;
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] });
+        for (let step = 1; step <= 8; step++) {
+            await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: y - bounds.height * .65 * step / 8 }] });
+            await page.waitForTimeout(25);
+        }
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await cdp.detach();
+        await expect.poll(() => list.evaluate(node => node.scrollTop)).toBeGreaterThan(20);
+        await waitForTouchScrollSettled(list);
+        expect(await page.evaluate(() => window.__shopTouch.sent)).toEqual(['head']);
+        const last = shop.getByRole('button', { name: 'Mystery Offhand, 245 Gold', exact: true });
+        await last.scrollIntoViewIfNeeded(); await waitForTouchScrollSettled(list); await last.tap();
+        expect(await page.evaluate(() => window.__shopTouch.sent)).toEqual(['head', 'offHand']);
+        expect(await page.evaluate(() => window.__shopTouch.player.gold)).toBe(500);
+        await first.scrollIntoViewIfNeeded(); await waitForTouchScrollSettled(list);
         for (const action of ['#btn-sell-common', '#btn-sell-uncommon', '#btn-sell-rare']) expect((await shop.locator(action).boundingBox()).height).toBeGreaterThanOrEqual(44);
         await shop.screenshot({ path: testInfo.outputPath('touch-merchant.png') });
         await shop.locator('#btn-close-shop-header').tap(); await expect(shop).toBeHidden();
