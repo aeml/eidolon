@@ -495,8 +495,8 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.54` (world surfaces and rendering;
-prepared locally, with additional isolated world candidates under review).
+Current source version: `Alpha 1.79.54` (world surfaces, foliage rendering and
+remembered windows; qualified locally, publication and deployment checks pending).
 
 **Alpha 1.79.53 is deployed and verified**, at runtime source `99eefb64d`.
 All ten CI jobs passed, including native graphics, both deployments and live
@@ -518,6 +518,10 @@ have not been declared. Outstanding work includes:
 
 - Cohesive world, terrain, actor/equipment, effects and audio presentation,
   reviewed in moving gameplay with the equipped characters and HUD.
+- Full-outfit garments and distinct VIP weapon/offhand models, four class looks
+  and eight universal outfits; [new cosmetic scope](docs/plans/2026-10-15-garment-catalog-and-full-outfits.md).
+- Improved quest tracking, acceptance/turn-in, a navigable lore book and polished
+  menus; [interface scope and first window fix](docs/plans/2026-10-15-quest-lore-and-window-quality.md).
 - Representative gameplay performance within the original scene/frame budgets;
   crowded-town and connected-frame failures remain open. Raised terrain is
   still disabled in production.

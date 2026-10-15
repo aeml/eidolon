@@ -1,23 +1,32 @@
 {
   "date": "2026-10-15",
   "version": "Alpha 1.79.54",
-  "status": "Prepared locally; do not push until corrected Alpha1.79.53 passes its own deployment/live/public acceptance.",
+  "status": "Final selected milestone prepared locally. Alpha1.79.53 predecessor independently accepted; own publication/CI/deployment/live/public verification pending.",
   "selected": [
     "d45fa6a6f Earth trail physical surface",
     "3f658db74 all dungeon floor physical scale and worn Thorncrypt joints",
     "fbc2920e9 branch-following Thorncrypt root bark",
-    "1c07250d1 Ilyra costume gameplay geometry"
+    "1c07250d1 Ilyra costume gameplay geometry",
+    "6c9865a2c Water/Fire/Air trail physical aggregate",
+    "d219ba730 construction-owned native foliage draws with exact cell visibility",
+    "7cf4c8004 dragged window reopening and companion layout memory"
   ],
   "qualification": [
     "2026-10-15-earth-trail-ground-qualification.json",
     "2026-10-15-dungeon-floor-scale-qualification.json",
     "2026-10-15-dungeon-root-bark-qualification.json",
-    "2026-10-15-ilyra-gameplay-geometry-qualification.json"
+    "2026-10-15-ilyra-gameplay-geometry-qualification.json",
+    "2026-10-15-elemental-trail-ground-qualification.json",
+    "2026-10-15-owned-foliage-draw-qualification.json",
+    "2026-10-15-window-position-qualification.json"
   ],
   "validation": {
     "release": "415 checks across four release/history/browser-plan/publication suites pass; twelve version surfaces synchronized.489 cumulative notes/48 archive pages preserve all488 previous entries byte-exact.14 generated content groups verify without regeneration.",
     "feature": "Reuse the scoped CPU/native/lifetime evidence in each qualification, including retained initial failures and limits. No repeated full campaign or soak. Seven additional Firefox interface cases pass; its renderer probe cannot create WebGL2 on this headless host and is not acceptance.",
-    "retainedSetup": "Initial npm run verify:content failed because the script is named check:content; corrected command passes14groups. No generated content changes."
+    "retainedSetup": "Initial npm run verify:content failed because the script is named check:content; corrected command passes14groups. No generated content changes.",
+    "finalSelection": "454 checks across seven release/history/browser-plan/publication/foliage/population/window suites pass in60.042s.14 generated content groups verify.489 cumulative notes retain all488 prior entries byte-exact against accepted99eefb64d.",
+    "additionalNative": "Reuse final High/Low trail2cases34.1s, private foliage2cases1.3m plus permanent foliage2cases43s, and real window drag/reopen/resize1case7.9s. Initial fixture failures and exact corrections remain in individual receipts.",
+    "finalLint": "Full source/test/script lint passed on the selected milestone."
   },
   "evidence": [
     {
@@ -49,7 +58,28 @@
       "path": ".qa-release54/pagination.log",
       "bytes": 55,
       "sha256": "94925ff49581bcbccf903f931f79a22317192f752c584b5fd1ca148e824b448e"
+    },
+    {
+      "path": ".qa-release54/final-selected-checks.log",
+      "bytes": 930,
+      "sha256": "19b792d72268003a43fcea6ae86f191228b1c5d42c2d97b4702c9689f1417f94"
+    },
+    {
+      "path": ".qa-release54/final-content.log",
+      "bytes": 3332,
+      "sha256": "4afd7919a30a073f16c686fc38f1ea540f598de4e322df53d8b3fb1a0e9bce45"
+    },
+    {
+      "path": ".qa-release54/final-history-check.json",
+      "bytes": 96,
+      "sha256": "fbc383538668c09c0febd140b904f5d88c2d778b18dfcc4c3f4017b6f6e4a8cc"
+    },
+    {
+      "path": ".qa-release54/final-lint.log",
+      "bytes": 96,
+      "sha256": "3835ec99b7b4910fc6a949311de34c4da456308fde4c98ff27e8790fdde2face"
     }
   ],
-  "remaining": "Predecessor53 acceptance, own complete CI/deploy/live/exact public verification, whole-game performance and world/art/device/owner readiness gates. No raised-terrain activation, beta declaration or soak."
+  "remaining": "Own complete CI/deploy/live/exact public verification; full world/art, whole-game performance, new VIP garment models/full outfits, quest/lore/menu redesign, device/owner readiness and all original release gates. No raised-terrain activation, beta declaration or soak.",
+  "initialStatus": "Prepared locally; do not push until corrected Alpha1.79.53 passes its own deployment/live/public acceptance."
 }

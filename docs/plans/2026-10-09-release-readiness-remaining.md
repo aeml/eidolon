@@ -83,9 +83,21 @@ geometry preparation. In the prepared four-class town comparison this saves
 remain exact.91 focused checks and two native motion/lifetime cases pass.
 [Scoped geometry qualification](2026-10-15-ilyra-gameplay-geometry-qualification.json).
 Whole-game frame time and other crowded-scene triangle failures remain open.
-These selected changes form Alpha1.79.54 on local master, with415 release checks
-and489 cumulative notes preserving all488 previous entries. The milestone is
-unpublished while additional isolated foliage/trail candidates are reviewed.
+Water/Fire/Air trails now also use world-space physical aggregate, with30 focused
+checks and12 exact-draw/triangle native comparisons across both qualities.
+[Trail qualification and retained setup correction](2026-10-15-elemental-trail-ground-qualification.json).
+Construction-owned foliage reduces scene traversal/draw overhead on native
+multi-draw browsers while retaining original cell visibility, geometry and
+placement.211 distinct focused checks, full lint and four final native cases
+cover exact realm/motion views, quality changes and repeated world retirement.
+[Foliage evidence, mixed Low timings and remaining budgets](2026-10-15-owned-foliage-draw-qualification.json).
+Dragged character/bag/store positions survive automatic centering and companion
+layout on reopening;79 focused checks and one real-browser case pass.
+[Window correction](2026-10-15-window-position-qualification.json). Durable layout
+preferences and the broader newly requested interface work remain open.
+These selected changes form Alpha1.79.54 on local master.489 cumulative notes
+preserve all488 previous entries. The milestone is still unpublished;
+the final selected tree is undergoing release checks and publication preparation.
 53 has completed its own CI/deployment/public verification; no new milestone is yet published.
 [Preparation and retained evidence](2026-10-15-release1-79-54-preparation.json).
 
