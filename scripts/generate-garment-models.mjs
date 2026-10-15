@@ -78,8 +78,10 @@ function panel(points, depth, bevel = .002) {
 function crescent(radius, depth, high) {
     const shape = new THREE.Shape(); shape.absarc(0, 0, radius, .35 * Math.PI, 1.65 * Math.PI, false);
     shape.quadraticCurveTo(-radius * .3, 0, Math.cos(.35 * Math.PI) * radius, Math.sin(.35 * Math.PI) * radius);
-    const geometry = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelSize: depth / 4,
-        bevelThickness: depth / 4, bevelSegments: 1, steps: 1, curveSegments: high ? 16 : 8 });
+    // Low keeps the lunar outline but omits its subpixel bevel strips and
+    // uses fewer arc samples; original robe, UV and skin streams stay intact.
+    const geometry = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: high, bevelSize: depth / 4,
+        bevelThickness: depth / 4, bevelSegments: 1, steps: 1, curveSegments: high ? 16 : 4 });
     geometry.translate(0, 0, -depth / 2); return geometry;
 }
 function sculptClassGarment({ design, quality, sources, ornament, gold, steel, gem, helmet, shoulders, chest, scale }) {

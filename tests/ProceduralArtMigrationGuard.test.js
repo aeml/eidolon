@@ -131,7 +131,7 @@ describe('procedural art migration guard', () => {
     test('only the exact registered garment fits and their unchanged supplied sources are allowed', () => {
         const hash = bytes => createHash('sha256').update(bytes).digest('hex');
         expect(hash(fs.readFileSync(path.join(repoRoot, 'src/assets/garments.generated.js'))))
-            .toBe('1f2b75b85d9dad30001f2867b503dd29cf1367ace197ac96dc1c65ad6ebba59c');
+            .toBe('04711f26aacd7b66f4bb4e5be880fef59c459f59f305eb7b31f697d5333c2739');
         expect(Object.keys(GARMENT_MODELS.outfits)).toEqual(['Iron Oath Regalia', 'Nightglass Cowl', 'Dawn Reliquary', 'Astral Sovereign']);
         expect(garmentModels.map(model => model.file.slice(2)).sort()).toEqual([...auditedGarmentCopies].sort());
         expect(garmentSources).toHaveLength(224);

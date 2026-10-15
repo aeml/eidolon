@@ -1394,8 +1394,8 @@ export const GARMENT_MODELS = {
           },
           "low": {
             "file": "./assets/garments/astral-sovereign-v1/Fighter-low.glb",
-            "bytes": 987876,
-            "sha256": "4909352ab7e12b3b1994d4ef90ef92444a0c8252041eb88fa464627ee688fbf3"
+            "bytes": 866912,
+            "sha256": "bb229b96c63cc3348522510ba280a7cdb129f75b7c44c4320c9ceb89aa9da7d6"
           }
         },
         "Rogue": {
@@ -1406,8 +1406,8 @@ export const GARMENT_MODELS = {
           },
           "low": {
             "file": "./assets/garments/astral-sovereign-v1/Rogue-low.glb",
-            "bytes": 955460,
-            "sha256": "e590871b6e4dc931efae4cccbe0fd8837d8c4961564b73966c116827ad4648bb"
+            "bytes": 834504,
+            "sha256": "df60c29d84a1a72c5cdca756c07e252c43a43952cb32b7831f17bc08742db013"
           }
         },
         "Cleric": {
@@ -1418,8 +1418,8 @@ export const GARMENT_MODELS = {
           },
           "low": {
             "file": "./assets/garments/astral-sovereign-v1/Cleric-low.glb",
-            "bytes": 937980,
-            "sha256": "57e3e3df3ed1a7731d74a45a22d51e0f5d6afd590ea4d9d1e453bc99ae75e022"
+            "bytes": 817024,
+            "sha256": "b0247a1be5f5a2f769d3dd5b19f4588aaeed533e4712dd0220695b70f66ec482"
           }
         },
         "Wizard": {
@@ -1430,8 +1430,8 @@ export const GARMENT_MODELS = {
           },
           "low": {
             "file": "./assets/garments/astral-sovereign-v1/Wizard-low.glb",
-            "bytes": 915108,
-            "sha256": "43dcb9e0521ad929a2e5408c5751eb941fdac07f6feb04f61b51c61eee94ccff"
+            "bytes": 794144,
+            "sha256": "34d661ebad7eb4ed2a78676ca3d7b3b19685d69d21798438d79eb30ae2f97bc2"
           }
         }
       },
@@ -1858,11 +1858,11 @@ export const GARMENT_ASSET_VERSIONS = {
   "./assets/garments/dawn-reliquary-v1/Wizard-high.glb": "5477afef5c899050",
   "./assets/garments/dawn-reliquary-v1/Wizard-low.glb": "c94bee84474b2b60",
   "./assets/garments/astral-sovereign-v1/Fighter-high.glb": "2584da90b250637b",
-  "./assets/garments/astral-sovereign-v1/Fighter-low.glb": "4909352ab7e12b3b",
+  "./assets/garments/astral-sovereign-v1/Fighter-low.glb": "bb229b96c63cc334",
   "./assets/garments/astral-sovereign-v1/Rogue-high.glb": "f506275030921c4a",
-  "./assets/garments/astral-sovereign-v1/Rogue-low.glb": "e590871b6e4dc931",
+  "./assets/garments/astral-sovereign-v1/Rogue-low.glb": "df60c29d84a1a72c",
   "./assets/garments/astral-sovereign-v1/Cleric-high.glb": "129721d4791f94b4",
-  "./assets/garments/astral-sovereign-v1/Cleric-low.glb": "57e3e3df3ed1a773",
+  "./assets/garments/astral-sovereign-v1/Cleric-low.glb": "b0247a1be5f5a2f7",
   "./assets/garments/astral-sovereign-v1/Wizard-high.glb": "ff1fa17e03eb85a7",
-  "./assets/garments/astral-sovereign-v1/Wizard-low.glb": "43dcb9e0521ad929"
+  "./assets/garments/astral-sovereign-v1/Wizard-low.glb": "34d661ebad7eb4ed"
 };
