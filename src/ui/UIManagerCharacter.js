@@ -1,3 +1,4 @@
+import { ownedEvent } from './OwnedEvents.js';
 import { installPrototypeMethods } from '../core/PrototypeInstaller.js';
 import { equipmentVisualSignature } from '../art/ProceduralEquipment.js';
 import { updateCharacterStatsPanel } from './CharacterStatsPanel.js';
@@ -152,9 +153,9 @@ class UIManagerCharacterMethods {
         if (!element) return;
 
         // Stop clicks from reaching the game
-        element.addEventListener('mousedown', (e) => e.stopPropagation());
-        element.addEventListener('click', (e) => e.stopPropagation()); // Also stop click events
-        element.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: false });
+        ownedEvent(this, element, 'mousedown', (e) => e.stopPropagation());
+        ownedEvent(this, element, 'click', (e) => e.stopPropagation()); // Also stop click events
+        ownedEvent(this, element, 'touchstart', (e) => e.stopPropagation(), { passive: false });
 
         // Drag Logic
         const header = element.querySelector('.window-header');
@@ -165,14 +166,16 @@ class UIManagerCharacterMethods {
             return Boolean(target.closest('.close-btn, [data-window-close], #btn-close-abilities, #btn-close-skills, #btn-close-split, #btn-close-stash, #btn-close-forge, #btn-close-trading-house, #btn-close-quest, #btn-close-journal'));
         };
 
-        header.style.cursor = 'move';
+        header.style.cursor = this.isMobile ? 'auto' : 'move';
         header.style.touchAction = 'none'; // Prevent browser handling (scrolling/swiping)
 
         let isDragging = false;
         let startX, startY, startLeft, startTop;
 
         const startDrag = (clientX, clientY) => {
+            if (this.isMobile) return;
             isDragging = true;
+            element.dataset.windowDragging = 'true';
             startX = clientX;
             startY = clientY;
 
@@ -220,26 +223,29 @@ class UIManagerCharacterMethods {
         };
 
         const endDrag = () => {
+            if (!isDragging) return;
             isDragging = false;
+            delete element.dataset.windowDragging;
+            this.rememberWindowPosition?.(element);
         };
 
         // Mouse Events
-        header.addEventListener('mousedown', (e) => {
-            if (isCloseControl(e.target)) {
+        ownedEvent(this, header, 'mousedown', (e) => {
+            if (e.button !== 0 || isCloseControl(e.target) || e.target.closest('button, input, select, a')) {
                 return;
             }
             startDrag(e.clientX, e.clientY);
             e.preventDefault(); // Prevent selection
         });
 
-        window.addEventListener('mousemove', (e) => {
+        ownedEvent(this, window, 'mousemove', (e) => {
             moveDrag(e.clientX, e.clientY);
         });
 
-        window.addEventListener('mouseup', endDrag);
+        ownedEvent(this, window, 'mouseup', endDrag);
 
         // Touch Events
-        header.addEventListener('touchstart', (e) => {
+        ownedEvent(this, header, 'touchstart', (e) => {
             // Allow close controls and buttons to work without triggering drag
             if (isCloseControl(e.target) || e.target.tagName === 'BUTTON' || e.target.closest('button')) {
                 return;
@@ -251,14 +257,15 @@ class UIManagerCharacterMethods {
             }
         }, { passive: false });
 
-        window.addEventListener('touchmove', (e) => {
+        ownedEvent(this, window, 'touchmove', (e) => {
             if (isDragging && e.touches.length === 1) {
                 moveDrag(e.touches[0].clientX, e.touches[0].clientY);
                 e.preventDefault(); // Prevent scrolling
             }
         }, { passive: false });
 
-        window.addEventListener('touchend', endDrag);
+        ownedEvent(this, window, 'touchend', endDrag);
+        ownedEvent(this, window, 'touchcancel', endDrag);
     }
 
     showStatTooltip(statName, x, y) {

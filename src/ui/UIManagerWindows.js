@@ -1,6 +1,7 @@
 import { AUDIO_CUES } from '../audio/AudioManager.js';
 import { ownedEvent } from './OwnedEvents.js';
 import { installPrototypeMethods } from '../core/PrototypeInstaller.js';
+import { WindowLayoutPreferences } from './WindowLayoutPreferences.js';
 import { EnemyHealthBars } from './EnemyHealthBars.js';
 
 class UIManagerWindowMethods {
@@ -64,6 +65,57 @@ class UIManagerWindowMethods {
         }
     }
 
+    getWindowPositionProfile() {
+        if (this.isMobile) return null;
+        return window.innerWidth >= 960 ? 'wide' : 'compact';
+    }
+
+    rememberWindowPosition(element) {
+        const id = [...(this.windowLayouts || [])].find(([, layout]) => layout.element === element)?.[0];
+        const profile = this.getWindowPositionProfile();
+        if (!id || !profile) return;
+        this.windowLayoutPreferences ||= new WindowLayoutPreferences();
+        this.windowLayoutPreferences.remember(id, profile, element.getBoundingClientRect());
+        element.dataset.rememberedLayout = profile;
+    }
+
+    restoreWindowPositions() {
+        this.windowLayoutPreferences ||= new WindowLayoutPreferences();
+        const profile = this.getWindowPositionProfile();
+        this.windowLayouts?.forEach(({ element }, id) => {
+            if (!element || id === 'map' || element.dataset.windowDragging) return;
+            const point = this.windowLayoutPreferences.get(id, profile);
+            if (point) {
+                element.dataset.draggedWindow = 'true';
+                element.dataset.rememberedLayout = profile;
+                this.prepareWindowForLayout(element);
+                element.style.left = `${point.left}px`;
+                element.style.top = `${point.top}px`;
+                element.style.transform = 'none';
+            } else if (element.dataset.rememberedLayout) {
+                // A narrow/phone layout cannot inherit desktop offsets. Keep
+                // saved coordinates intact so expanding restores the old layout.
+                delete element.dataset.draggedWindow;
+                delete element.dataset.rememberedLayout;
+                this.centerWindow(element);
+            }
+        });
+    }
+
+    resetWindowPositions() {
+        this.windowLayoutPreferences ||= new WindowLayoutPreferences();
+        this.windowLayoutPreferences.reset();
+        this.windowLayouts?.forEach(({ element }, id) => {
+            if (!element || id === 'map') return;
+            delete element.dataset.draggedWindow;
+            delete element.dataset.rememberedLayout;
+            this.centerWindow(element);
+        });
+        this.reflowVisibleWindows();
+        const status = document.getElementById('window-layout-status');
+        if (status) status.textContent = 'Window positions reset. Drag a header to save a new layout.';
+    }
+
     registerWindowLayouts() {
         const worldMap = document.getElementById('world-map');
         this.windowLayouts = new Map([
@@ -86,6 +138,7 @@ class UIManagerWindowMethods {
             ['report', { element: this.reportScreen, display: 'block', group: 'modal', placement: 'center' }],
             ['patchNotes', { element: this.patchNotesScreen, display: 'flex', group: 'modal', placement: 'center' }]
         ]);
+        this.restoreWindowPositions();
         this.windowLayouts.forEach(({ element, group }, id) => {
             // The fullscreen world map owns a separate overlay layer.
             if (element && id !== 'map') {
@@ -308,6 +361,7 @@ class UIManagerWindowMethods {
     reflowVisibleWindows() {
         if (!this.windowLayouts) return;
 
+        this.restoreWindowPositions();
         const openService = this.getOpenWindowIds('service');
         const serviceId = openService[0] || null;
         const serviceLayout = serviceId ? this.windowLayouts.get(serviceId) : null;
