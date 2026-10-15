@@ -38,7 +38,7 @@ for (const quality of ['high', 'low']) {
                 currentDungeonLayout: { walkRects: rects }, collisionManager: new CollisionManager(),
                 chunkManager: new ChunkManager(render.entityGroup), floatingTextManager: new FloatingTextManager(render.camera) };
             for (const method of ['spawnTransientEffect', 'isHostileActorTarget', 'isInteractableEntity', 'isPlayerClassEntity']) engine[method] = GameEngine.prototype[method].bind(engine);
-            const q = { engine, owner, actors, render, ui, elapsed: 0, hits: [], trace: [], field: null, beforeMana: owner.stats.mana };
+            const q = { engine, owner, actors, render, ui, pauseForComparison: true, elapsed: 0, hits: [], trace: [], field: null, beforeMana: owner.stats.mana };
             const add = GameEngine.prototype.addEntity.bind(engine);
             engine.addEntity = entity => {
                 add(entity);
@@ -69,7 +69,10 @@ for (const quality of ['high', 'low']) {
                 const node = document.createElement('button');node.textContent = label;Object.assign(node.style, { minHeight: '44px', fontSize: '14px', padding: '6px 10px' });node.onclick = action;controls.appendChild(node);
             };
             button('Cast Magma Orb', () => owner.useAbility(actors[0].position.clone(), engine, 'Fireball'));
-            button('Walk through field', () => { actors[0].move(new THREE.Vector3(q.origin.x + 14, 0, -2));actors[1].move(new THREE.Vector3(q.origin.x + 1, 0, 2));q.walkAt = q.elapsed; });
+            button('Walk through field', () => {
+                actors[0].move(new THREE.Vector3(q.origin.x + 14, 0, -2));actors[1].move(new THREE.Vector3(q.origin.x + 1, 0, 2));q.walkAt = q.elapsed;
+                if (q.pauseForComparison) { q.pauseForComparison = false;q.frame = requestAnimationFrame(q.renderFrame); }
+            });
             document.body.appendChild(controls);render.setCameraTarget(new THREE.Vector3(7, 0, 0));render.setZoom(15);
             let previous = performance.now();
             const frame = now => {
@@ -82,7 +85,11 @@ for (const quality of ['high', 'low']) {
                 }
                 for (const entity of engine.chunkManager.getActiveEntities()) entity.render(1);
                 for (const effect of engine.effects) effect.update(dt);engine.effects = engine.effects.filter(effect => effect.isActive);
-                engine.floatingTextManager.update(dt);ui.updatePlayerStats(owner);ui.updateHotbarCooldowns(owner);render.render();q.frame = requestAnimationFrame(frame);
+                engine.floatingTextManager.update(dt);ui.updatePlayerStats(owner);ui.updateHotbarCooldowns(owner);render.render();
+                // Hold this prepared simulation at the field's first frame.
+                // Pixel readback and button actionability must not consume the
+                // three-second gameplay lifetime before the walk can begin.
+                if (!q.field || !q.pauseForComparison) q.frame = requestAnimationFrame(frame);
             };
             window.__magmaGround = q;q.renderFrame = frame;q.frame = requestAnimationFrame(frame);
             const gl = render.renderer.getContext(), ext = gl.getExtension('WEBGL_debug_renderer_info');
@@ -94,12 +101,15 @@ for (const quality of ['high', 'low']) {
         await page.getByRole('button', { name: 'Cast Magma Orb', exact: true }).click();
         await expect.poll(() => page.evaluate(() => Boolean(window.__magmaGround.field?.isActive))).toBe(true);
         const contrast = await page.evaluate(async quality => {
+            // Resolve modules before freezing the comparison. An await between
+            // reference and replica lets unrelated timers/geometry deliveries
+            // change the scene even though this fixture's RAF is cancelled.
+            const { Projectile } = await import('/src/entities/Projectile.js');
+            const { updateProceduralProjectileVisual } = await import('/src/art/ProceduralProjectileEffects.js');
             const q = window.__magmaGround;cancelAnimationFrame(q.frame);
             const gl = q.render.renderer.getContext();
             const capture = () => { q.render.render();const bytes = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, bytes);return bytes; };
             const visible = capture();q.field.mesh.visible = false;const hidden = capture();q.field.mesh.visible = true;const restored = capture();
-            const { Projectile } = await import('/src/entities/Projectile.js');
-            const { updateProceduralProjectileVisual } = await import('/src/art/ProceduralProjectileEffects.js');
             const replica = new Projectile('replicated-magma-visual', q.owner, 'MagmaGround', q.origin.clone(), q.origin.clone(), { quality });
             replica.setScale(1);
             for (const step of q.fieldSteps) updateProceduralProjectileVisual(replica.mesh, 'MagmaGround', step.elapsed, step.dt);
@@ -113,18 +123,18 @@ for (const quality of ['high', 'low']) {
             const sharedSurfaces = originalParts.every((part, i) => !part.isMesh || part.geometry === replicaParts[i].geometry && part.material === replicaParts[i].material);
             replica.dispose();q.field.mesh.visible = true;const afterReplica = capture();
             const changed = (a, b) => a.reduce((sum, value, i) => sum + Number(value !== b[i]), 0);
-            q.frame = requestAnimationFrame(q.renderFrame);
             return { changed: changed(visible, hidden), restored: changed(visible, restored), replicaDifference: changed(visible, replicated), poseDifferences, sharedSurfaces, afterReplica: changed(visible, afterReplica), radius: q.fieldMesh.userData.gameplayRadius };
         }, quality);
         await page.getByRole('button', { name: 'Walk through field', exact: true }).click();
         await page.screenshot({ path: testInfo.outputPath(`magma-${quality}-walking.png`) });
         await expect.poll(() => page.evaluate(() => Boolean(window.__magmaGround.expiry))).toBe(true);
         const result = await page.evaluate(() => {
-            const q = window.__magmaGround;return { hits: q.hits, trace: q.trace, expiry: q.expiry, manaSpent: q.beforeMana - q.owner.stats.mana,
+            const q = window.__magmaGround;return { walkFieldAge: q.walkAt - q.created, hits: q.hits, trace: q.trace, expiry: q.expiry, manaSpent: q.beforeMana - q.owner.stats.mana,
                 radius: q.field.radius, duration: q.field.duration, origin: q.origin.toArray(), fieldDetached: q.fieldMesh.parent === null, pendingGeometry: q.render.actorGameplayGeometry.delivery.jobs.size };
         });
         await testInfo.attach('magma-ground-observation', { body: JSON.stringify({ initial, contrast, ...result }), contentType: 'application/json' });
         expect(contrast.changed).toBeGreaterThan(0);expect(contrast.restored).toBe(0);expect(contrast.radius).toBe(5);expect(contrast.replicaDifference).toBe(0);expect(contrast.afterReplica).toBe(0);
+        expect(result.walkFieldAge).toBe(0);
         expect(result.manaSpent).toBe(30);expect(result.radius).toBe(5);expect(result.duration).toBe(3);
         expect(result.trace.every(frame => frame.error === 0 && frame.y === 0)).toBe(true);
         expect(result.hits.some(hit => hit.id === 'magma-walker-0' && hit.field)).toBe(true);

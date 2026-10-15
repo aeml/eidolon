@@ -24,9 +24,12 @@ Every explicit requirement in those sources remains part of the completion audit
 
 ## October 15 implementation checkpoint
 
-Alpha 1.79.52 combat feedback and reduced motion is pushed at `8c8ef016e`;
-CI38656850418 is running. Its own deployment and exact public asset verification
-are pending. Alpha 1.79.51 remains the last accepted public release below.
+**Alpha 1.79.52 combat feedback and reduced motion is deployed and verified** at
+`8c8ef016e`. All ten jobs in CI38656850418 passed. Normal-TLS public verification
+matches both identities, ready database and all 204 asset pins. Hosted browser
+coverage records 388 passes, 13 skips and one Magma image-comparison retry;
+770 client suites/11,772 tests, 62 native passes/one skip and live recovery pass.
+[Acceptance, retained retry and custody](2026-10-15-release1-79-52-acceptance.md).
 
 The next coherent milestone, Alpha 1.79.53, is prepared locally. Returning
 phone/desktop sessions now select current input policy and restore shared menus,
@@ -36,7 +39,7 @@ bounding first-build town work and retaining at most 4,915,200 CPU bytes for
 returning sessions (61 focused checks; two final native scene-lifetime cases).
 [Session qualification](2026-10-15-session-layout-qualification.json),
 [world preparation](2026-10-15-world-raster-preparation.json).
-Publish only after 52 acceptance, then verify 53 independently. These changes
+52 is accepted; publish 53 next and verify its own deployment independently. These changes
 close specific usability/loading defects, not final world art, physical-device,
 whole-frame or full original readiness requirements. Soak remains deferred.
 

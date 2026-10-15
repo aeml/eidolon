@@ -496,13 +496,14 @@ Notes:
 ## Project Status
 
 Current source version: `Alpha 1.79.53` (returning sessions and world preparation;
-prepared locally, publication held until 1.79.52 deployment acceptance).
+prepared locally; its predecessor 1.79.52 is now accepted).
 
-**Alpha 1.79.51 is deployed and verified**, at runtime source `e2880b4ee`.
+**Alpha 1.79.52 is deployed and verified**, at runtime source `8c8ef016e`.
 All ten CI jobs passed, including native graphics, both deployments and live
 character/recovery checks. Independent normal-TLS reads match both release
-identities, the ready database and all 199 pinned public assets.
-[Acceptance record](docs/plans/2026-10-14-release1-79-51-acceptance.md).
+identities, the ready database and all 204 pinned public assets. One hosted
+Magma image-comparison retry is retained in the
+[acceptance record](docs/plans/2026-10-15-release1-79-52-acceptance.md).
 The [current work register](docs/plans/2026-10-09-release-readiness-remaining.md)
 retains the full outstanding scope and earlier failures.
 

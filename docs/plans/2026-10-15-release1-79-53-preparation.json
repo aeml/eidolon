@@ -1,7 +1,7 @@
 {
   "date": "2026-10-15",
   "version": "Alpha 1.79.53",
-  "status": "Prepared locally, not pushed or deployed. Publication must wait for terminal CI and exact live acceptance of Alpha 1.79.52 at 8c8ef016e.",
+  "status": "Prepared locally after predecessor Alpha 1.79.52 passed all ten CI jobs and exact public verification. Own publication/CI/deployment/live acceptance remains pending.",
   "selected": [
     "0ed010f1b returning phone/desktop session controls",
     "3591ef16e exact world rasters and bounded first-build preparation",
@@ -15,11 +15,14 @@
     "release": "429 distinct release/history/browser-plan checks across four suites pass, with one stale CI version corrected. Twelve version surfaces synchronized; 488 cumulative notes/48 history pages preserve all 487 previous entries byte-exact.",
     "content": "14 generated content groups verify without regeneration.",
     "session_followup": "Actual failed world-load control first reproduces lingering touch controls. Corrected five-case native layout suite passes in 13.2s, no retries/skips; includes same authenticated desktop retry and resized recovery login. Thirty existing main/startup/recovery unit checks and scoped lint pass.",
-    "scope": "Native prepared login/world fixtures; no actual account/campaign or physical-device acceptance. Reuse the independent session and world qualification scopes; do not sum repeated tests as distinct."
+    "scope": "Native prepared login/world fixtures; no actual account/campaign or physical-device acceptance. Reuse the independent session and world qualification scopes; do not sum repeated tests as distinct.",
+    "magma_comparison": "Final High/Low exact Magma comparisons pass on both native Chrome (15.2s) and software Chromium (30.4s), four executions/two distinct cases, zero retries/skips. Imports resolve before comparison; prepared simulation pauses at field creation until the actual walk control is clicked. All zero-pixel, mana/range/damage/expiry/retirement assertions remain, with a new zero field-age-at-walk check."
   },
   "retained_failures": [
     "Initial version check found CI deploy default still 1.79.52; corrected to 1.79.53 and its 386-test suite passes. Other 43 release tests remain valid.",
-    "Failed-world-load native control left mobile-ui visible over retry screen; main now destroys its constructed session before presenting retry."
+    "Failed-world-load native control left mobile-ui visible over retry screen; main now destroys its constructed session before presenting retry.",
+    "Predecessor hosted Low Magma had 49 changed channels in both replica and restored-original samples despite identical field poses/materials; its existing retry passed. Awaiting module imports between captures allowed unrelated work. Imports now resolve before the comparison; unique historical changing event remains unidentified.",
+    "First corrected software run passed Low and all exact High pixel checks, but High walker started at field age 2.9s and missed damage before the unchanged 3s expiry. Hold the prepared simulation at field creation until the walk button is clicked. Original failed trace retained."
   ],
   "evidence": [
     {
@@ -61,6 +64,31 @@
       "path": ".qa-release53/startup-lint.log",
       "bytes": 0,
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-release53/magma-native.log",
+      "bytes": 567,
+      "sha256": "a7de3ba14fd51f08f80e73282ed3becb9155400839dc02cefa9e5595903c5f1e"
+    },
+    {
+      "path": ".qa-release53/magma-software.log",
+      "bytes": 4269,
+      "sha256": "3d53d07841d5c094e61d0b77cc9e76aa259d58b2f16dcadf24de3886e63d39d4"
+    },
+    {
+      "path": ".qa-release53/magma-software-failure.json",
+      "bytes": 20313,
+      "sha256": "1d714b933e6129a1ece004a520fbea5f217cfe1f24e413bb069f29557b97445b"
+    },
+    {
+      "path": ".qa-release53/magma-native-final.log",
+      "bytes": 567,
+      "sha256": "f77447cb7cf97220f0860ed1d598ff454023f51bbc397e75fe486d10e9d52913"
+    },
+    {
+      "path": ".qa-release53/magma-software-final.log",
+      "bytes": 678,
+      "sha256": "3cbdbf3cdf77b60c4bbb2a466e585796f3c09b2e3e7a64881376c65b3f5e9354"
     }
   ],
   "remaining": "Own complete CI/deploy/live/exact public asset acceptance after predecessor; original full goal, world art, connected performance, devices, operations and approval gates remain active. Soak/stress stays owner-deferred."
