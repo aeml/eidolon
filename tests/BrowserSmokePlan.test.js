@@ -181,3 +181,15 @@ test('hardware dungeon and additive reviews retain a mandatory native release ga
     expect(native).toContain('Lanternhold high homes reveal');
     expect(native).toContain('Lanternhold low homes reveal');
 });
+
+
+test('complete four-class garment gameplay remains a required native gate with unchanged case coverage', () => {
+    const file = 'tests/e2e/full-outfit-garment.spec.js';
+    expect(browserSmokeBaselineFiles(manifest)).not.toContain(file);
+    expect(manifest.scripts['test:e2e:authored-equipment'].split(/\s+/)).toContain(file);
+    const workflow = readFileSync('.github/workflows/ci.yml', 'utf8');
+    const step = workflow.split('- name:').find(step => step.startsWith(' Verify delivered class bodies and fitted equipment'));
+    expect(step).toContain('npm run test:e2e:authored-equipment');
+    expect(step).toContain('--workers=1 --retries=0');
+    expect(step).not.toMatch(/\n\s*if:/);
+});
