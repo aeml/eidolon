@@ -51,7 +51,7 @@ export class QuestUI {
             ownedEvent(this, this.objectivesList, 'keydown', event => {
                 // Keep native scrolling, without bubbling Space to the game's
                 // cast shortcut. Journal and other non-scroll shortcuts still work.
-                if ([' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End'].includes(event.key)) {
+                if ([' ', 'Enter', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End'].includes(event.key)) {
                     event.stopPropagation();
                 }
             });
@@ -191,6 +191,19 @@ export class QuestUI {
     /** Close the quest journal if open. */
     closeJournal() {
         if (this.questJournal) this.questJournal.style.display = 'none';
+    }
+
+    openTrackedObjective(objective) {
+        const quests = this.ctx.getLastPlayer?.()?.quests || this.lastJournalQuests || [];
+        const quest = quests.find(quest => quest.id === objective.id);
+        if (!this.isJournalOpen) this.toggleJournal();
+        else this.updateJournal(quests);
+        if (!quest) return;
+        this.setJournalView(quest.category === 'chronicle' || quest.id?.startsWith('chronicle_') ? 'story' : 'contracts');
+        const control = [...this.journalList.querySelectorAll('[data-quest-track]')]
+            .find(input => input.dataset.questTrack === quest.id);
+        control?.scrollIntoView?.({ block: 'center' });
+        control?.focus({ preventScroll: true });
     }
 
     // ================================================================
@@ -882,13 +895,15 @@ export class QuestUI {
         if (heading) heading.textContent = this.ctx.isMobile && trackedObjectives.length
             ? `TRACKED · ${phoneIndex + 1} / ${trackedObjectives.length}` : `TRACKED · ${trackedObjectives.length}`;
         visibleObjectives.forEach((objective, index) => {
-            const item = document.createElement(this.ctx.isMobile ? 'button' : 'div');
+            const isQuest = (this.lastJournalQuests || []).some(quest => quest?.id === objective.id);
+            const interactive = this.ctx.isMobile || isQuest;
+            const item = document.createElement(interactive ? 'button' : 'div');
             item.className = `objective-entry ${objective.routeTone ? `is-${objective.routeTone}` : ''}`.trim();
             item.title = [objective.title, objective.completed ? 'Ready' : objective.progressLabel, objective.hint].filter(Boolean).join(' · ');
-            if (this.ctx.isMobile) {
+            if (interactive) {
                 item.type = 'button';
                 item.setAttribute('aria-label', `Open journal: ${objective.title} · ${objective.completed ? 'Ready' : objective.progressLabel || ''}`);
-                item.addEventListener('click', () => this.toggleJournal());
+                item.addEventListener('click', () => this.openTrackedObjective(objective));
             }
             const header = document.createElement('div');
             header.className = 'objective-entry__header';

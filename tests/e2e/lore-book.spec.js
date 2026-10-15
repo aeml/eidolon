@@ -65,6 +65,12 @@ for (const [width, height, mobile] of [[1280, 800, false], [390, 844, true]]) te
         await activate(book.getByRole('button', { name: 'Open current quest', exact: true }));
         await expect(book).toBeHidden();
         await expect(page.locator('.chronicle-journal')).toContainText('Read the altered roots');
+        await activate(page.locator('#btn-close-journal'));
+        const tracked = page.locator('#objectives-list button.objective-entry').first();
+        if (mobile) await tracked.tap();
+        else { await tracked.focus(); await page.keyboard.press('Enter'); }
+        await expect(page.locator('[data-journal-view="story"]')).toHaveAttribute('aria-pressed', 'true');
+        await expect(page.locator('[data-quest-track="chronicle_earth_returning_scar"]')).toBeFocused();
         expect(await page.evaluate(() => JSON.stringify(window.__loreBook.quests) === window.__loreBook.saved)).toBe(true);
         await page.evaluate(() => window.__loreBook.ui.dispose());
         expect(failures, failures.join('\n')).toEqual([]);

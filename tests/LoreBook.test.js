@@ -91,4 +91,26 @@ describe('journal lore reading', () => {
         player.quests[1].investigationMask = 3; ui.updateJournal(player.quests);
         expect(book.index.children).toHaveLength(2); expect(book.selected).toBe(selected);
     });
+
+    test('a tracked quest opens its actual journal section without accepting, claiming or toggling its tracking', () => {
+        player.quests.push({ id: 'daily_hunt', title: 'Road patrol', accepted: true, count: 2, maxCount: 3 });
+        ui.updateJournal(player.quests); ui.setJournalView('lore');
+        const before = JSON.stringify(player.quests);
+        const button = document.querySelector('button.objective-entry[aria-label*="Road patrol"]');
+        expect(button).not.toBeNull(); button.click();
+        expect(ui.journalView).toBe('contracts');
+        expect(document.activeElement.dataset.questTrack).toBe('daily_hunt');
+        expect(JSON.stringify(player.quests)).toBe(before);
+        expect(ui.onAcceptQuest).not.toHaveBeenCalled(); expect(ui.onCompleteQuest).not.toHaveBeenCalled();
+    });
+
+    test('typing in search stays out of game shortcuts while Escape can close the journal', () => {
+        const observed = jest.fn(); document.addEventListener('keydown', observed);
+        try {
+            for (const key of ['j', ' ', 'Enter']) ui.loreBook.search.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+            expect(observed).not.toHaveBeenCalled();
+            ui.loreBook.search.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+            expect(observed).toHaveBeenCalledTimes(1);
+        } finally { document.removeEventListener('keydown', observed); }
+    });
 });

@@ -467,6 +467,10 @@
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
 }
 
+button.objective-entry { width: 100%; color: inherit; font: inherit; text-align: left; cursor: pointer; pointer-events: auto; }
+button.objective-entry:hover { border-color: #d5bb8780; }
+button.objective-entry:focus-visible { outline: 2px solid #e4c991; outline-offset: -3px; }
+
 .objective-entry__header {
     display: flex;
     align-items: baseline;
