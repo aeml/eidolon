@@ -219,6 +219,146 @@ export const COSMETIC_CATALOGUE = [
             "shoulders": "Velvet Mantle",
             "belt": "Silk Sash"
         }
+    },
+    {
+        "id": "hollow-court-v1",
+        "name": "Hollow Court",
+        "kind": "outfit",
+        "realm": "fire",
+        "base": "Leather Tunic",
+        "priceEP": 25,
+        "primary": 3221055,
+        "secondary": 13933655,
+        "description": "A scalloped bat diadem and swept wing collar guard a carved amber gourd seal. One complete Halloween-themed outfit for every class; held looks stay independent.",
+        "pieces": {
+            "head": "Leather Cap",
+            "chest": "Leather Tunic",
+            "legs": "Leather Pants",
+            "feet": "Leather Boots",
+            "gloves": "Leather Gloves",
+            "shoulders": "Reinforced Spaulders",
+            "belt": "Studded Belt"
+        }
+    },
+    {
+        "id": "rosebound-vow-v1",
+        "name": "Rosebound Vow",
+        "kind": "outfit",
+        "realm": "water",
+        "base": "Robes",
+        "priceEP": 25,
+        "primary": 7420752,
+        "secondary": 14267813,
+        "description": "An open heart coronet, layered rose brooch and paired rose-leaf shoulders mark a complete Valentine-themed outfit for every class. Held looks stay independent.",
+        "pieces": {
+            "head": "Silk Hood",
+            "chest": "Robes",
+            "legs": "Leather Pants",
+            "feet": "Leather Boots",
+            "gloves": "Silk Gloves",
+            "shoulders": "Velvet Mantle",
+            "belt": "Silk Sash"
+        }
+    },
+    {
+        "id": "lantern-envoy-v1",
+        "name": "Lantern Envoy",
+        "kind": "outfit",
+        "realm": "fire",
+        "base": "Robes",
+        "priceEP": 25,
+        "primary": 8993590,
+        "secondary": 13806947,
+        "description": "A dragon-horn crest, overlapping scale shoulders and caged red lantern seal welcome the Lunar New Year. One complete outfit for every class; held looks stay independent.",
+        "pieces": {
+            "head": "Silk Hood",
+            "chest": "Robes",
+            "legs": "Leather Pants",
+            "feet": "Leather Boots",
+            "gloves": "Silk Gloves",
+            "shoulders": "Velvet Mantle",
+            "belt": "Silk Sash"
+        }
+    },
+    {
+        "id": "springbloom-jubilee-v1",
+        "name": "Springbloom Jubilee",
+        "kind": "outfit",
+        "realm": "earth",
+        "base": "Robes",
+        "priceEP": 25,
+        "primary": 4483410,
+        "secondary": 14995362,
+        "description": "A petal crown, open blossom shoulders and a five-petal flower clasp celebrate spring. One complete outfit for every class; held looks stay independent.",
+        "pieces": {
+            "head": "Silk Hood",
+            "chest": "Robes",
+            "legs": "Leather Pants",
+            "feet": "Leather Boots",
+            "gloves": "Silk Gloves",
+            "shoulders": "Velvet Mantle",
+            "belt": "Silk Sash"
+        }
+    },
+    {
+        "id": "solstice-pyre-v1",
+        "name": "Solstice Pyre",
+        "kind": "outfit",
+        "realm": "fire",
+        "base": "Plate Mail",
+        "priceEP": 25,
+        "primary": 3422273,
+        "secondary": 14654545,
+        "description": "A triple-flame crest, curled fire shoulders and a radiant ember sun seal celebrate midsummer. One complete outfit for every class; held looks stay independent.",
+        "pieces": {
+            "head": "Iron Helm",
+            "chest": "Plate Mail",
+            "legs": "Plate Greaves",
+            "feet": "Iron Boots",
+            "gloves": "Iron Gauntlets",
+            "shoulders": "Steel Pauldrons",
+            "belt": "Plated Girdle"
+        }
+    },
+    {
+        "id": "gilded-harvest-v1",
+        "name": "Gilded Harvest",
+        "kind": "outfit",
+        "realm": "earth",
+        "base": "Leather Tunic",
+        "priceEP": 25,
+        "primary": 6901814,
+        "secondary": 13477725,
+        "description": "Arched wheat stalks, layered grain shoulders and a bound harvest sheaf mark this complete autumn-festival outfit for every class. Held looks stay independent.",
+        "pieces": {
+            "head": "Leather Cap",
+            "chest": "Leather Tunic",
+            "legs": "Leather Pants",
+            "feet": "Leather Boots",
+            "gloves": "Leather Gloves",
+            "shoulders": "Reinforced Spaulders",
+            "belt": "Studded Belt"
+        }
+    },
+    {
+        "id": "midnight-masque-v1",
+        "name": "Midnight Masque",
+        "kind": "outfit",
+        "realm": "air",
+        "base": "Leather Tunic",
+        "priceEP": 25,
+        "primary": 3422544,
+        "secondary": 12167372,
+        "description": "A pierced masquerade diadem, asymmetric feather fan and faceted theatre clasp dress a midnight celebration. One complete outfit for every class; held looks stay independent.",
+        "pieces": {
+            "head": "Silk Hood",
+            "chest": "Leather Tunic",
+            "legs": "Leather Pants",
+            "feet": "Leather Boots",
+            "gloves": "Silk Gloves",
+            "shoulders": "Velvet Mantle",
+            "belt": "Silk Sash"
+        }
     }
 ];
 export const SEASON_COSMETIC_CATALOGUE = [

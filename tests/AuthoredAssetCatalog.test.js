@@ -79,7 +79,7 @@ test('each quality selects its pinned derivative and original diagnostics remain
 });
 
 test('each cosmetic has audited artwork and explicit finite palette colors', () => {
-    expect(COSMETIC_CATALOGUE).toHaveLength(17);
+    expect(COSMETIC_CATALOGUE).toHaveLength(24);
     for (const look of [...COSMETIC_CATALOGUE, ...SEASON_COSMETIC_CATALOGUE]) {
         const base = AUTHORED_ASSETS.items[look.base];
         expect(base).toBeDefined();

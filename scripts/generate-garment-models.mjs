@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import { Document, NodeIO, Accessor, VertexLayout } from '@gltf-transform/core';
 import { mergeDocuments, compactPrimitive, prune, unpartition } from '@gltf-transform/functions';
+import { SEASONAL_GARMENT_IDS, sculptSeasonalGarment } from './sculpt-seasonal-garments.mjs';
 import { AUTHORED_ASSETS } from '../src/assets/authoredEquipment.generated.js';
 
 // Derive a complete fitted garment without modifying delivered actors, source
@@ -84,7 +85,8 @@ function crescent(radius, depth, high) {
         bevelThickness: depth / 4, bevelSegments: 1, steps: 1, curveSegments: high ? 16 : 4 });
     geometry.translate(0, 0, -depth / 2); return geometry;
 }
-function sculptClassGarment({ design, quality, sources, ornament, gold, steel, gem, helmet, shoulders, chest, scale, material }) {
+function sculptClassGarment(options) {
+    const { design, quality, sources, ornament, gold, steel, gem, helmet, shoulders, chest, scale, material } = options;
     const high = quality === 'high';
     const place = (geometry, anchor, name, material, slot) => {
         geometry.translate(...anchor.toArray()); ornament(geometry, anchor, name, material, slot);
@@ -185,11 +187,13 @@ function sculptClassGarment({ design, quality, sources, ornament, gold, steel, g
             const berry = new THREE.OctahedronGeometry(.014 * scale, high ? 1 : 0);
             place(berry, chestAnchor.clone().add(new THREE.Vector3((i - 1) * .018 * scale, i === 1 ? .009 * scale : 0, .017 * scale)), `Holly seal berry ${i}`, berries, 'chest');
         }
+    } else if (SEASONAL_GARMENT_IDS.includes(design.id)) {
+        sculptSeasonalGarment({ ...options, headAnchor, chestAnchor, place, panel });
     } else throw Error('Unregistered sculpted garment');
 }
 
 for (const design of designs) {
-    assert.equal(design.kind, 'outfit'); assert(['iron-oath-regalia-v1', 'nightglass-cowl-v1', 'dawn-reliquary-v1', 'astral-sovereign-v1', 'winterthorn-revel-v1'].includes(design.id), 'Add a deliberate model design before extending the catalog');
+    assert.equal(design.kind, 'outfit'); assert(['iron-oath-regalia-v1', 'nightglass-cowl-v1', 'dawn-reliquary-v1', 'astral-sovereign-v1', 'winterthorn-revel-v1', ...SEASONAL_GARMENT_IDS].includes(design.id), 'Add a deliberate model design before extending the catalog');
     const garment = { id: design.id, name: design.name, coverage: {}, models: {}, provenance: [] };
     for (const [slot, name] of Object.entries(design.pieces)) {
         const item = AUTHORED_ASSETS.items[name]; assert.equal(item?.slot, slot);

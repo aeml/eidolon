@@ -152,3 +152,27 @@ collection now has eleven distinct models: six held looks, all four class-themed
 outfits and Winterthorn Revel, the first universal outfit. Seven universal
 outfits remain to implement. Class themes do not add equip restrictions. Final
 owner collection review, broader art/device/performance and beta gates stay open.
+
+## Remaining universal candidates — October 15
+
+Hollow Court (Halloween), Rosebound Vow (Valentine's), Lantern Envoy (Lunar New
+Year), Springbloom Jubilee, Solstice Pyre (midsummer), Gilded Harvest and Midnight
+Masque now have deliberately modeled silhouettes, seven-piece clothing coverage
+and all four supplied class fits in High/Low. Together with Winterthorn Revel,
+these provide eight universal candidate designs. They reuse the existing25EP
+armor tier without class/calendar restrictions or membership/payment changes.
+
+212focused checks, current24-entry server custody checks, full lint and16content
+groups pass. All96outfit GLBs have byte-matched official zero-error/zero-warning
+validation evidence; all52predecessor outfit/held GLBs remain byte-exact. The Low
+masquerade eye-loop export failure and its geometry correction are retained.
+
+Veyra's collection now offers labeled name/theme search, slot categories and a
+result count, retaining current selection, pending-unlock custody and existing
+purchase confirmation. Search does not issue a purchase or mutate equipment.
+Filters survive same-character reopening and reset for a different character.
+
+**Isolated and unselected** until native visual/motion/preview/budget/resource
+review.28new outfit cases and two revised store interaction cases are prepared;
+none is claimed executed. Alpha1.79.57 is still undergoing ordered CI/deployment.
+The minimum eighteen looks are not yet declared accepted or deployed as a whole.

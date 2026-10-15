@@ -26,7 +26,7 @@ function fixture() {
 test('cosmetics are generated from the server catalogue and all resolve to renderable, recolored gear', () => {
     expect(COSMETIC_CATALOGUE).toEqual([...JSON.parse(fs.readFileSync('server/internal/game/content/cosmetics.json', 'utf8')),
         ...JSON.parse(fs.readFileSync('server/internal/game/content/garments.json', 'utf8'))]);
-    expect(COSMETIC_CATALOGUE).toHaveLength(17);
+    expect(COSMETIC_CATALOGUE).toHaveLength(24);
     for (const offer of COSMETIC_CATALOGUE) {
         if (offer.kind === 'outfit') {
             expect(Object.keys(GARMENT_MODELS.outfits[offer.name].models).sort()).toEqual(['Cleric', 'Fighter', 'Rogue', 'Wizard']);
@@ -38,6 +38,50 @@ test('cosmetics are generated from the server catalogue and all resolve to rende
         expect(look.primary).toBe(offer.primary); expect(look.primary).not.toBe(original.primary);
         expect(createProceduralEquipmentVisual({ id: offer.id, name: offer.name, slot: look.slot, rarity: 'Common' }, { slot: look.slot })).toBeTruthy();
     }
+});
+
+test('collection search and slot filters preserve cards, selection and authoritative purchase state', () => {
+    const { ui, send, player } = fixture(), original = JSON.stringify(player);
+    const first = ui.list.querySelector('button'), selected = ui.selected;
+    ui.reviewPurchase(); expect(ui.confirmation.hidden).toBe(false);
+    ui.category.value = 'outfit'; ui.category.dispatchEvent(new Event('change'));
+    expect(ui.list.querySelectorAll('button:not([hidden])')).toHaveLength(12);
+    expect(ui.list.querySelector('button')).toBe(first); expect(ui.selected).toBe(selected);
+    expect(ui.confirmation.hidden).toBe(true); ui.confirmPurchase(); first.click();
+    expect(send).toHaveBeenCalledTimes(1); expect(ui.selected).toBe(selected);
+    ui.search.value = '  HALLOWEEN  '; ui.search.dispatchEvent(new Event('input'));
+    expect([...ui.list.querySelectorAll('button:not([hidden])')].map(button => button.dataset.offerId)).toEqual(['hollow-court-v1']);
+    expect(ui.results.textContent).toBe('1 of 24 looks');
+    ui.search.value = 'no such festival'; ui.search.dispatchEvent(new Event('input'));
+    expect(ui.empty.hidden).toBe(false); expect(ui.results.textContent).toBe('0 of 24 looks');
+    expect(JSON.stringify(player)).toBe(original); ui.dispose();
+});
+
+test('filtered browsing survives current-owner refresh and reopening, and clears for another character', () => {
+    const { ui, changePlayer, player } = fixture();
+    ui.category.value = 'offHand'; ui.category.dispatchEvent(new Event('change'));
+    expect(ui.list.querySelectorAll('button:not([hidden])')).toHaveLength(4);
+    ui.handleResult({ playerID: player.id, success: true, pending: false, ep: 75, catalogue: offers(), collection: {} });
+    expect(ui.category.value).toBe('offHand'); expect(ui.results.textContent).toBe('4 of 24 looks');
+    ui.close(); ui.open(); expect(ui.category.value).toBe('offHand');
+    expect(ui.search.disabled).toBe(true); expect(ui.results.textContent).toBe('Loading collection…');
+    ui.handleResult({ playerID: player.id, success: true, pending: false, ep: 75, catalogue: offers(), collection: {} });
+    expect(ui.selected.appearance.slot).toBe('offHand');
+    ui.search.value = 'tome'; changePlayer('other-hero'); ui.open();
+    expect(ui.search.value).toBe(''); expect(ui.category.value).toBe('all');
+    expect(ui.list.children).toHaveLength(0); ui.dispose();
+});
+
+test('filtering retains an exact pending unlock and empty reopen cannot show a stale selected look', () => {
+    const { ui, send, player } = fixture();
+    ui.reviewPurchase(); ui.confirmPurchase(); const purchase = send.mock.calls.at(-1);
+    ui.search.value = 'no such look'; ui.search.dispatchEvent(new Event('input'));
+    ui.retry.click(); expect(send.mock.calls.at(-1)).toEqual(purchase);
+    ui.close(); ui.open();
+    ui.handleResult({ playerID: player.id, success: true, pending: true, ep: 75, catalogue: offers(), collection: {} });
+    expect(ui.selected).toBeUndefined(); expect(ui.previewHost.hidden).toBe(true);
+    expect(ui.title.textContent).toBe('Choose a look'); expect(ui.apply.disabled).toBe(true);
+    expect(ui.buy.disabled).toBe(true); ui.dispose();
 });
 
 test('settled-season styles resolve as cosmetic-only pendants and are not EP offers', () => {

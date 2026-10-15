@@ -63,7 +63,7 @@ test('earned season medallions fit the rigged Fighter and remain separate from r
     expect(failures, failures.join('\n')).toEqual([]);
 });
 
-for (const width of [390, 1440]) test(`cosmetic vendor previews, confirms and applies without changing gear at ${width}px`, async ({ page }) => {
+for (const width of [390, 1440]) test(`cosmetic vendor previews, confirms and applies without changing gear at ${width}px`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.goto('/', { waitUntil: 'networkidle' });
@@ -94,11 +94,20 @@ for (const width of [390, 1440]) test(`cosmetic vendor previews, confirms and ap
     });
     const dialog = page.getByRole('dialog', { name: 'Veyra’s cosmetic wardrobe' });
     await expect(dialog).toBeVisible();
-    await expect(dialog.locator('.cosmetic-catalogue button')).toHaveCount(17);
+    await expect(dialog.locator('.cosmetic-catalogue button')).toHaveCount(24);
     const cardBounds = await dialog.locator('.cosmetic-catalogue button').evaluateAll(cards => cards.map(card => ({
         height: card.clientHeight, content: card.scrollHeight
     })));
     for (const card of cardBounds) { expect(card.height).toBeGreaterThanOrEqual(48); expect(card.content - card.height).toBeLessThanOrEqual(1); }
+    await dialog.getByRole('combobox', { name: 'Collection', exact: true }).selectOption('outfit');
+    await expect(dialog.locator('.cosmetic-catalogue button:visible')).toHaveCount(12);
+    await dialog.getByRole('searchbox', { name: 'Find a look', exact: true }).fill('Halloween');
+    await expect(dialog.locator('.cosmetic-catalogue button:visible')).toHaveCount(1);
+    await expect(dialog.locator('.cosmetic-results')).toHaveText('1 of 24 looks');
+    await page.screenshot({ path: testInfo.outputPath('filtered-wardrobe.png') });
+    expect(await page.evaluate(() => window.__cosmeticFixture.requests.map(request => request.type))).toEqual(['get_cosmetic_vendor']);
+    await dialog.getByRole('searchbox', { name: 'Find a look', exact: true }).fill('');
+    await dialog.getByRole('combobox', { name: 'Collection', exact: true }).selectOption('all');
     await expect(dialog.locator('canvas')).toHaveCount(1);
     expect(await page.evaluate(() => window.__cosmeticFixture.ui.preview.failed || false)).toBe(false);
     await dialog.locator('[data-offer-id="grovekeeper-blade-v1"]').click();

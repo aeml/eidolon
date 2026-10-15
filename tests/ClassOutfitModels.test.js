@@ -8,7 +8,7 @@ import { equipmentWithAppearances } from '../src/core/EquipmentAppearance.js';
 
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const names = ['Iron Oath Regalia', 'Nightglass Cowl', 'Dawn Reliquary', 'Astral Sovereign'];
-const universalNames = ['Winterthorn Revel'];
+const universalNames = ['Winterthorn Revel', 'Hollow Court', 'Rosebound Vow', 'Lantern Envoy', 'Springbloom Jubilee', 'Solstice Pyre', 'Gilded Harvest', 'Midnight Masque'];
 
 test('four distinct class-themed outfits retain unrestricted appearance selection and all original gear', () => {
     expect(Object.keys(GARMENT_MODELS.outfits)).toEqual([...names, ...universalNames]);
@@ -56,10 +56,11 @@ test.each([...names, ...universalNames].flatMap(name => ['Fighter', 'Rogue', 'Cl
 });
 
 
-test('winter festival garment is available to every fitted class without equipment or calendar restrictions', () => {
-    const offer = COSMETIC_CATALOGUE.find(offer => offer.name === 'Winterthorn Revel');
+test.each(universalNames)('%s is available to every fitted class without equipment or calendar restrictions', name => {
+    const offer = COSMETIC_CATALOGUE.find(offer => offer.name === name);
     expect(offer).toMatchObject({ kind: 'outfit', priceEP: 25 });
-    expect(offer.description).toContain('Christmas-themed');
+    expect(offer.description).toContain('every class');
+    expect(offer).not.toHaveProperty('class'); expect(offer).not.toHaveProperty('season');
     const rendered = equipmentWithAppearances({}, { outfit: { baseName: offer.name, rarity: 'Common', slot: 'outfit' } });
     expect(rendered.outfit.baseName).toBe(offer.name);
     expect(Object.keys(GARMENT_MODELS.outfits[offer.name].models).sort()).toEqual(['Cleric', 'Fighter', 'Rogue', 'Wizard']);

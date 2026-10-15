@@ -12,6 +12,14 @@
 .cosmetic-vendor { width: min(1000px, calc(100vw - 24px)); }
 .cosmetic-vendor > header { display: flex; align-items: center; justify-content: space-between; gap: 12px; position: sticky; top: 0; z-index: 2; background: #253140; }
 .cosmetic-vendor-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 1fr); gap: 20px; }
+.cosmetic-browser { min-width: 0; }
+.cosmetic-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cosmetic-filters label { display: grid; gap: 6px; color: #d7c7a6; font-size: 14px; }
+.cosmetic-filters :is(input, select) { min-width: 0; width: 100%; min-height: 44px; box-sizing: border-box; padding: 8px; border: 1px solid #71808e; border-radius: 4px; background: #141e29; color: #edf0f3; font: inherit; }
+.cosmetic-filters :is(input, select):focus-visible { outline: 2px solid #ebc778; outline-offset: 2px; }
+.cosmetic-results, .cosmetic-empty { color: #c6d5de; font-size: 14px; line-height: 1.5; }
+.cosmetic-catalogue { max-height: min(500px, 55vh); overflow-y: auto; padding: 3px; overscroll-behavior: contain; }
+.cosmetic-catalogue button[hidden], .cosmetic-preview[hidden] { display: none; }
 .cosmetic-catalogue { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: max-content; gap: 8px; align-content: start; }
 .cosmetic-catalogue button { margin: 0; padding: 12px; text-align: left; overflow-wrap: anywhere; }
 .cosmetic-catalogue button[aria-pressed="true"] { outline: 2px solid #ebc778; background: #405160; }
@@ -29,6 +37,8 @@
     .cosmetic-vendor-body { grid-template-columns: minmax(0, 1fr); }
     .cosmetic-catalogue { max-height: 230px; overflow-y: auto; padding: 3px; overscroll-behavior: contain; }
     .cosmetic-preview { height: 280px; }
+    .cosmetic-filters { grid-template-columns: 1fr; }
+    .cosmetic-filters label, .cosmetic-filters :is(input, select), .cosmetic-results, .cosmetic-empty { font-size: 16px; }
 }
 .wardrobe-panel, .ep-wallet-panel { width: auto; grid-column: 1 / -1; }
 #character-sheet :is(.wardrobe-panel, .ep-wallet-panel), #character-sheet :is(.wardrobe-panel, .ep-wallet-panel)[open] { max-height: none; flex: 0 0 auto; overflow: visible; }
