@@ -495,15 +495,15 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.55` (Lore Book, direct quest tracking and
-clearer manual quest review; prepared locally, unpublished).
-
-The preceding **Alpha1.79.54 is deployed and verified** at `fda5c6b89`: all ten CI
-jobs pass, including both deployments/live checks, and normal-TLS public reads
-match both identities, the ready database and all224 asset pins.
-[Acceptance](docs/plans/2026-10-15-release1-79-54-acceptance.md).
-55 has its own publication/verification gates pending.
+**Alpha 1.79.55 is deployed and verified** at `1c936dfc6`: searchable earned
+Lore Book, direct quest tracking and clearer manual quest review. All ten CI jobs
+pass, including both deployments/live checks. Normal-TLS public reads match both
+identities, the ready database and all227 asset pins.
+[Acceptance](docs/plans/2026-10-15-release1-79-55-acceptance.md).
 [Preparation](docs/plans/2026-10-15-release1-79-55-preparation.json).
+
+The preceding54milestone is independently
+[accepted](docs/plans/2026-10-15-release1-79-54-acceptance.md).
 
 **Alpha 1.79.53 is deployed and verified**, at runtime source `99eefb64d`.
 All ten CI jobs passed, including native graphics, both deployments and live

@@ -106,7 +106,7 @@ at04:02:36UTC matches both54identities/source, ready database and all224pins.
 Four optional workflow steps remain skipped. [Acceptance and custody](2026-10-15-release1-79-54-acceptance.md).
 [Preparation and retained evidence](2026-10-15-release1-79-54-preparation.json).
 
-## Alpha 1.79.55 quest experience: prepared locally
+## Alpha 1.79.55 quest experience: deployed and verified
 
 The dedicated Lore Book organizes personally earned chapters, exact discovery
 records, restoration accounts and Ilyra replies, with search/categories and
@@ -116,15 +116,19 @@ keyboard/touch. NPC quest review leads with state/objective/reward, preserves
 authored paragraphs and keeps manual actions reachable through long dialogue.
 Pending/rejected/acknowledged requests preserve existing progression semantics.
 
-227 distinct focused checks and13 distinct native UI cases have passing evidence;
+228 distinct focused checks and13 distinct native UI cases have passing evidence;
 full lint and desktop/phone visual review pass. The older town fixture's stale
 tracker label was corrected with explicit27-objective/26-contract coverage.
 [Qualification and retained failures](2026-10-15-quest-book-qualification.json).
-The implementation is merged into local master and prepared as55, with synchronized
-version defaults and490cumulative notes preserving all489prior entries byte-exact.
-429release checks pass, retaining the initially missed isolated-QA version default
-and its correction.54is independently accepted.55is unpublished pending its own
-publication/build/CI/deployment/live/public verification. [Preparation](2026-10-15-release1-79-55-preparation.json).
+55is normally pushed and independently accepted at `1c936dfc6`: all ten ordered
+CI jobs succeed, including both deployments.777client suites/11838tests,
+399hosted passes/13skips,64native predeploy passes/one skip and live8mainpasses/
+one skip plus2recovery passes qualify this publication. Normal-TLS reads at
+05:06:14UTC match both identities, ready database and all227asset pins.
+All490cumulative notes preserve the489prior entries byte-exact.429release checks
+pass, retaining the initially missed isolated-QA version default and correction.
+[Acceptance](2026-10-15-release1-79-55-acceptance.md).
+[Preparation](2026-10-15-release1-79-55-preparation.json).
 Wider menu polish,
 durable window preferences/reset, physical playtests and final review remain open.
 
