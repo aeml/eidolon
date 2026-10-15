@@ -1,3 +1,4 @@
+import { createQualityRasterCache } from './QualityRasterCache.js';
 import * as THREE from 'three';
 
 const clamp = value => Math.max(0, Math.min(1, value));
@@ -47,21 +48,39 @@ export function sampleLanternholdPaving(x, y) {
         coverage: clamp((15.4 - Math.max(Math.abs(x), Math.abs(y)) + weather * .3) / 1.4) };
 }
 
-export function createLanternholdPavingMaps(quality = 'high') {
-    const size = quality === 'low' ? 256 : 512;
-    const color = new Uint8Array(size * size * 4), surface = new Uint8Array(color.length);
-    const step = 32 / 512;
-    for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
-        const px = x / size * 32 - 16, py = y / size * 32 - 16;
-        const sample = sampleLanternholdPaving(px, py), at = (y * size + x) * 4;
+const pavingRaster = createQualityRasterCache(512, 256, size => {
+    const length = size * size * 4, data = new Uint8Array(length * 2);
+    const color = data.subarray(0, length), surface = data.subarray(length);
+    const step = 32 / 512, stride = 512 / size, grid = 514;
+    const heights = new Float64Array(grid * grid);
+    // Both qualities differentiate the same physical field at +/- one High
+    // texel. Adjacent stones share these samples; evaluating five complete
+    // color/height recipes per output pixel repeated almost all this work.
+    // Keep a one-texel halo for the original non-wrapping court edge normals.
+    for (let y = -1; y <= 512; y++) for (let x = -1; x <= 512; x++) {
+        if (stride === 2 && x % 2 !== 0 && y % 2 !== 0) continue;
+        const sample = sampleLanternholdPaving(x / 512 * 32 - 16, y / 512 * 32 - 16);
+        heights[(y + 1) * grid + x + 1] = sample.height;
+        if (x < 0 || y < 0 || x >= 512 || y >= 512 || x % stride || y % stride) continue;
+        const at = (y / stride * size + x / stride) * 4;
         color.set([...sample.color, Math.round(sample.coverage * 255)], at);
-        const nx = -(sampleLanternholdPaving(px + step, py).height - sampleLanternholdPaving(px - step, py).height) / (2 * step);
-        const ny = -(sampleLanternholdPaving(px, py + step).height - sampleLanternholdPaving(px, py - step).height) / (2 * step);
-        const length = Math.hypot(nx, ny, 1);
-        surface.set([Math.round((nx / length * .5 + .5) * 255),
-            Math.round((ny / length * .5 + .5) * 255), Math.round((1 / length * .5 + .5) * 255),
-            Math.round(sample.roughness * 255)], at);
+        surface[at + 3] = Math.round(sample.roughness * 255);
     }
+    for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+        const cell = (y * stride + 1) * grid + x * stride + 1, at = (y * size + x) * 4;
+        const nx = -(heights[cell + 1] - heights[cell - 1]) / (2 * step);
+        const ny = -(heights[cell + grid] - heights[cell - grid]) / (2 * step);
+        const length = Math.hypot(nx, ny, 1);
+        surface[at] = Math.round((nx / length * .5 + .5) * 255);
+        surface[at + 1] = Math.round((ny / length * .5 + .5) * 255);
+        surface[at + 2] = Math.round((1 / length * .5 + .5) * 255);
+    }
+    return data;
+});
+
+export function createLanternholdPavingMaps(quality = 'high') {
+    const { size, data } = pavingRaster(quality), length = size * size * 4;
+    const color = data.subarray(0, length), surface = data.subarray(length);
     const make = (data, name, colorSpace) => {
         const texture = new THREE.DataTexture(data, size, size);
         texture.name = name; texture.colorSpace = colorSpace;

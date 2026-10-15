@@ -1,3 +1,4 @@
+import { createQualityRasterCache } from './QualityRasterCache.js';
 import * as THREE from 'three';
 import { LANTERNHOLD_COURTYARDS } from '../data/worldPopulation.js';
 import { WORLD_REGIONS } from '../data/worldGeography.js';
@@ -38,6 +39,21 @@ const CAMPS = LANTERNHOLD_HOMES.map(camp => ({
     ...camp, cos: Math.cos(camp.rotation), sin: Math.sin(camp.rotation)
 }));
 
+function sampleCampTraffic(x, z) {
+    let campTraffic = 0;
+    for (const camp of CAMPS) {
+        const dx = x - camp.x, dz = z - camp.z;
+        // Skip distant sites before rotating into their local hearth space.
+        if (Math.abs(dx) > 5 * LANTERNHOLD_HOME_SCALE || Math.abs(dz) > 5 * LANTERNHOLD_HOME_SCALE) continue;
+        const lx = (dx * camp.cos - dz * camp.sin) / LANTERNHOLD_HOME_SCALE;
+        const lz = (dx * camp.sin + dz * camp.cos) / LANTERNHOLD_HOME_SCALE;
+        // Doorway wear replaces the retired tent/hearth scorch marks.
+        campTraffic = Math.max(campTraffic, (1 - smooth(.7, 1.7, Math.abs(lx))) *
+            smooth(2.2, 2.8, lz) * (1 - smooth(3.2, 5, lz)));
+    }
+    return campTraffic;
+}
+
 export function sampleLanternholdGround(x, z) {
     let paving = 0, traffic = 0;
     const weather = Math.sin(x * .17 + Math.sin(z * .09)) * Math.cos(z * .13 - x * .035);
@@ -53,33 +69,66 @@ export function sampleLanternholdGround(x, z) {
         const distance = Math.hypot((x - court.x) / court.rx, (z - court.z) / court.rz);
         paving = Math.max(paving, 1 - smooth(.8, 1.15, distance + weather * .025));
     }
-    let hearth = 0, campTraffic = 0;
-    for (const camp of CAMPS) {
-        const dx = x - camp.x, dz = z - camp.z;
-        // Skip distant sites before rotating into their local hearth space.
-        if (Math.abs(dx) > 5 * LANTERNHOLD_HOME_SCALE || Math.abs(dz) > 5 * LANTERNHOLD_HOME_SCALE) continue;
-        const lx = (dx * camp.cos - dz * camp.sin) / LANTERNHOLD_HOME_SCALE;
-        const lz = (dx * camp.sin + dz * camp.cos) / LANTERNHOLD_HOME_SCALE;
-        // Doorway wear replaces the retired tent/hearth scorch marks.
-        campTraffic = Math.max(campTraffic, (1 - smooth(.7, 1.7, Math.abs(lx))) *
-            smooth(2.2, 2.8, lz) * (1 - smooth(3.2, 5, lz)));
-    }
+    const hearth = 0, campTraffic = sampleCampTraffic(x, z);
     traffic = Math.max(traffic, campTraffic * .72);
     const damp = (1 - traffic) * (.35 + .25 * weather);
     return { paving, traffic, damp, hearth, campTraffic };
 }
 
-export function createTownCompositionMask(quality = 'high') {
-    const size = quality === 'low' ? 128 : 256, data = new Uint8Array(size * size * 4);
-    const region = WORLD_REGIONS.town;
-    for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
-        const sample = sampleLanternholdGround(region.minX + x / size * (region.maxX - region.minX),
-            region.minZ + y / size * (region.maxZ - region.minZ));
-        const at = (y * size + x) * 4;
-        data[at] = Math.round(sample.paving * 255);
-        data[at + 1] = Math.round(sample.traffic * 255);
-        data[at + 2] = Math.round(sample.damp * 255); data[at + 3] = Math.round(sample.hearth * 255);
+const createTownCompositionMaskRaster = createQualityRasterCache(256, 128, size => {
+    const data = new Uint8Array(size * size * 4), region = WORLD_REGIONS.town;
+    const width = region.maxX - region.minX, depth = region.maxZ - region.minZ;
+    const paving = new Float64Array(size * size), traffic = new Float64Array(size * size);
+    const weather = new Float64Array(size * size);
+    for (let row = 0; row < size; row++) for (let col = 0; col < size; col++) {
+        const x = region.minX + col / size * width, z = region.minZ + row / size * depth;
+        weather[row * size + col] = Math.sin(x * .17 + Math.sin(z * .09)) * Math.cos(z * .13 - x * .035);
     }
+    // Each contribution is zero outside these conservative bounds. Stamp only
+    // its support, retaining the original per-pixel arithmetic and max union.
+    // Weather moves route edges by at most .7m and court radii by at most .025.
+    const stamp = (minX, maxX, minZ, maxZ, sample) => {
+        const x0 = Math.max(0, Math.floor((minX - region.minX) / width * size));
+        const x1 = Math.min(size - 1, Math.ceil((maxX - region.minX) / width * size));
+        const z0 = Math.max(0, Math.floor((minZ - region.minZ) / depth * size));
+        const z1 = Math.min(size - 1, Math.ceil((maxZ - region.minZ) / depth * size));
+        for (let row = z0; row <= z1; row++) for (let col = x0; col <= x1; col++) {
+            sample(region.minX + col / size * width, region.minZ + row / size * depth, row * size + col);
+        }
+    };
+    for (const route of ROUTES) for (let i = 1; i < route.points.length; i++) {
+        const [ax, az] = route.points[i - 1], [bx, bz] = route.points[i];
+        const dx = bx - ax, dz = bz - az, radius = route.width / 2 + 3.1;
+        stamp(Math.min(ax, bx) - radius, Math.max(ax, bx) + radius,
+            Math.min(az, bz) - radius, Math.max(az, bz) + radius, (x, z, at) => {
+                const t = clamp(((x - ax) * dx + (z - az) * dz) / (dx * dx + dz * dz));
+                const distance = Math.hypot(x - ax - t * dx, z - az - t * dz);
+                paving[at] = Math.max(paving[at], 1 - smooth(route.width / 2 - 1, route.width / 2 + 2.4, distance + weather[at] * .7));
+                traffic[at] = Math.max(traffic[at], 1 - smooth(1, route.width / 2 + 1, distance));
+            });
+    }
+    for (const court of COURTS) {
+        stamp(court.x - court.rx * 1.175, court.x + court.rx * 1.175,
+            court.z - court.rz * 1.175, court.z + court.rz * 1.175, (x, z, at) => {
+                const distance = Math.hypot((x - court.x) / court.rx, (z - court.z) / court.rz);
+                paving[at] = Math.max(paving[at], 1 - smooth(.8, 1.15, distance + weather[at] * .025));
+            });
+    }
+    for (let row = 0; row < size; row++) for (let col = 0; col < size; col++) {
+        const cell = row * size + col, at = cell * 4;
+        const campTraffic = sampleCampTraffic(region.minX + col / size * width, region.minZ + row / size * depth);
+        const wear = Math.max(traffic[cell], campTraffic * .72);
+        data[at] = Math.round(paving[cell] * 255);
+        data[at + 1] = Math.round(wear * 255);
+        data[at + 2] = Math.round((1 - wear) * (.35 + .25 * weather[cell]) * 255);
+        // Homes have doorway wear, not the retired tent/hearth scorch channel.
+        data[at + 3] = 0;
+    }
+    return data;
+});
+
+export function createTownCompositionMask(quality = 'high') {
+    const { size, data } = createTownCompositionMaskRaster(quality);
     const texture = new THREE.DataTexture(data, size, size);
     texture.name = 'Lanternhold connected courts and worn verges';
     texture.minFilter = THREE.LinearFilter; texture.magFilter = THREE.LinearFilter;

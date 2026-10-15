@@ -1,3 +1,4 @@
+import { createQualityRasterCache } from './QualityRasterCache.js';
 import { DataTexture, LinearFilter, LinearMipmapLinearFilter, NoColorSpace, RepeatWrapping } from 'three';
 
 export const EARTH_SURFACE_TILE_METRES = 8;
@@ -120,12 +121,17 @@ export function sampleEarthSurface(x, z) {
     return sampleFields(x, z, sampleEarthThatch(x, z));
 }
 
-export function createEarthSurfaceDetail(quality = 'high') {
-    const size = quality === 'low' ? 128 : 256, data = new Uint8Array(size * size * 4), thatch = rasterizeThatch(size);
+const createEarthSurfaceDetailRaster = createQualityRasterCache(256, 128, size => {
+    const data = new Uint8Array(size * size * 4), thatch = rasterizeThatch(size);
     for (let z = 0; z < size; z++) for (let x = 0; x < size; x++) {
         const sample = sampleFields(x * EARTH_SURFACE_TILE_METRES / size, z * EARTH_SURFACE_TILE_METRES / size, thatch[z * size + x]);
         for (let channel = 0; channel < 4; channel++) data[(z * size + x) * 4 + channel] = Math.round(clamp(sample[channel]) * 255);
     }
+    return data;
+});
+
+export function createEarthSurfaceDetail(quality = 'high') {
+    const { size, data } = createEarthSurfaceDetailRaster(quality);
     const texture = new DataTexture(data, size, size);
     texture.name = `Gloamwood physical soil, stone and moss:${quality}`;
     texture.colorSpace = NoColorSpace; texture.wrapS = texture.wrapT = RepeatWrapping;

@@ -1,0 +1,78 @@
+[
+  {
+    "name": "createEarthSurfaceDetail",
+    "quality": "high",
+    "sha256": "ed0b24523b200e97a926696929e138fd5cbac53a4eb2565175af24da80abc89d",
+    "bytes": 262144
+  },
+  {
+    "name": "createTownCompositionMask",
+    "quality": "high",
+    "sha256": "88b981ef9dd0e8de4f1b9008d004a51fecf5648b91d08b5b9437075533caf629",
+    "bytes": 262144
+  },
+  {
+    "name": "createEarthCompositionMask",
+    "quality": "high",
+    "sha256": "9d8b5b040f09e5672620f3f7f7e8c485298b01625c85fb61558e19c2bdc38fde",
+    "bytes": 1048576
+  },
+  {
+    "name": "createForestFloorDetail",
+    "quality": "high",
+    "sha256": "893a06b06b2aaff289043833de3978f63e46636b4af15ecf7ba2dc80f80fbef8",
+    "bytes": 262144
+  },
+  {
+    "name": "createEarthSurfaceDetail",
+    "quality": "low",
+    "sha256": "d8af72fb11fd8702f751d03f01453c54380ca72e91271b85a652f910b989fd30",
+    "bytes": 65536
+  },
+  {
+    "name": "createTownCompositionMask",
+    "quality": "low",
+    "sha256": "cd4d615e02a9f5bdd84134893594d9d20b9545f2cb230b0c30a9e64278fee243",
+    "bytes": 65536
+  },
+  {
+    "name": "createEarthCompositionMask",
+    "quality": "low",
+    "sha256": "312742823ad8ca993323073b32c8d71f07c859ff64effe45f333d58e1ef9ac79",
+    "bytes": 262144
+  },
+  {
+    "name": "createForestFloorDetail",
+    "quality": "low",
+    "sha256": "3d925a2aeceff66bfe74ac9058cf53e3f9b2e60f5fa671e5089e79e8db670158",
+    "bytes": 65536
+  },
+  {
+    "name": "createLanternholdPavingMaps",
+    "quality": "high",
+    "channel": "color",
+    "bytes": 1048576,
+    "sha256": "11791aefebc0be02c12909d3caa208396da665c3c1116c0278068bcf0f053f58"
+  },
+  {
+    "name": "createLanternholdPavingMaps",
+    "quality": "high",
+    "channel": "surface",
+    "bytes": 1048576,
+    "sha256": "070c35944f9b3765cdd9ebf6ddc14c53ecc4e7784ce790d251ae6e45158000c8"
+  },
+  {
+    "name": "createLanternholdPavingMaps",
+    "quality": "low",
+    "channel": "color",
+    "bytes": 262144,
+    "sha256": "3a5980a973a2d334249a406247cdb89ea68d295129d36e64e3cfa7a503fc1889"
+  },
+  {
+    "name": "createLanternholdPavingMaps",
+    "quality": "low",
+    "channel": "surface",
+    "bytes": 262144,
+    "sha256": "aaf2e8efdb3eab972f0dbd03823b06a775ca14311790db568f70c9fb3b8f3a5f"
+  }
+]

@@ -1,0 +1,95 @@
+{
+  "date": "2026-10-15",
+  "base": "0ed010f1b",
+  "status": "Qualified in an owned worktree; next publication held behind Alpha 1.79.52 acceptance.",
+  "implementation": [
+    "Town mask stamps only the conservative support of each route/court instead of checking every route at every pixel. Its full High/Low RGBA outputs match both prior SHA-256 pins and the original analytic field.",
+    "Court paving evaluates a shared physical height grid with a one-texel halo, preserving exact edge normals and the same High/Low derivatives.",
+    "Five fixed factories retain two CPU raster resolutions each. All twelve maps are byte-exact; each returned texture owns fresh upload bytes. No texture, renderer, geometry or WebGL context is retained in the cache."
+  ],
+  "bounded_cpu_bytes": 4915200,
+  "timing_scope": "Separate local Node24 process samples, not a whole-game startup or frame-rate acceptance. Raw observations retained; no timing assertion or relaxed device budget.",
+  "observed_ms": {
+    "town_high_cold_before": 276.906,
+    "town_high_cold_after": 23.97,
+    "paving_high_cold_before": 485.065,
+    "paving_high_cold_after": 148.004,
+    "paving_high_warm_before": [
+      443.332,
+      438.372
+    ],
+    "paving_high_warm_after": [
+      1.153,
+      1.087
+    ]
+  },
+  "validation": {
+    "client": "61 distinct checks across six suites pass; full repository lint passes.",
+    "pixels": "12 original byte-length/SHA-256 pins; all 327680 town-mask channel bytes also compared with the original analytic sampler.",
+    "native": "Final two High/Low real engine transition cases pass in 19.8 seconds, zero retries/skips: three town/death, dungeon, public casino and VIP casino cycles each, supplied 14-slot equipment, warmed resource and ownership assertions. Earlier two cases passed before the paving extension; not counted again as distinct coverage.",
+    "scope": "Prepared local scene transitions. No account/campaign/physical-device/whole-frame/soak acceptance."
+  },
+  "evidence": [
+    {
+      "path": ".qa-preparation/reference.json",
+      "bytes": 2395,
+      "sha256": "c78f11c18276f6544b9a1e2294937393592104095c1cc2501989fe09184f4505"
+    },
+    {
+      "path": ".qa-preparation/cached.json",
+      "bytes": 2407,
+      "sha256": "bd53d0a029354820ff712c30f4aafadec4a745f4d65e9462fde905ccd766a572"
+    },
+    {
+      "path": ".qa-preparation/candidate.json",
+      "bytes": 2417,
+      "sha256": "7031e6a2231fe116f9f1bff785aa2b1193a44a00b25e5d1be5f66e905f1571a2"
+    },
+    {
+      "path": ".qa-preparation/paving-reference.json",
+      "bytes": 2248,
+      "sha256": "6836b7167cfc43f117794b673f9627d8911f5b07925a325f07c5cb08ded8188a"
+    },
+    {
+      "path": ".qa-preparation/paving-candidate.json",
+      "bytes": 2245,
+      "sha256": "c3b2ac34dd745a1c47127f399e6329539df9b5806e54a05662b94b168c7f35c6"
+    },
+    {
+      "path": ".qa-preparation/unit-before-stamps.log",
+      "bytes": 419,
+      "sha256": "809be6131e159eaa107cb82e20fd998fcb65803e1b650d3cc95ed8a0ed7dabd3"
+    },
+    {
+      "path": ".qa-preparation/unit.log",
+      "bytes": 454,
+      "sha256": "9603155677e03ebd816ee53f3d0c5c39e9a5d062e48b02600b0b1b4cb4bd99c1"
+    },
+    {
+      "path": ".qa-preparation/lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-preparation/final-unit.log",
+      "bytes": 417,
+      "sha256": "e2f4ef7cb0d1337cc4523f9ea35e84ffbb54daf9bfa109a07367a34c835caf51"
+    },
+    {
+      "path": ".qa-preparation/final-lint.log",
+      "bytes": 96,
+      "sha256": "ad22f9743cf3310091cf2c9aec12da330237a2db19fb146a0ec99d54ca582d8f"
+    },
+    {
+      "path": ".qa-preparation/native-lifetime.log",
+      "bytes": 8588,
+      "sha256": "32aa34f0ccbd3d4aac383268731508a8cd109f6d9b1f35045067eb59e5ffce8b"
+    },
+    {
+      "path": ".qa-preparation/final-native-lifetime.log",
+      "bytes": 8588,
+      "sha256": "fc4ea12872e4f62c5c263e022465eb607d94385e307e49f55c7ed0e78badb363"
+    }
+  ],
+  "remaining": "Publish with the returning-session milestone only after predecessor acceptance; verify its own CI, deployment and exact assets. Original world-art, connected performance, device and release-readiness requirements remain active."
+}

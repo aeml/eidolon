@@ -1,3 +1,4 @@
+import { createQualityRasterCache } from './QualityRasterCache.js';
 import * as THREE from 'three';
 import { createEarthSurfaceDetail, EARTH_SURFACE_TILE_METRES } from './EarthSurfaceDetail.js';
 import { EARTH_PATHS, distanceToPath } from '../data/worldPopulation.js';
@@ -76,8 +77,8 @@ export function sampleEarthGround(x, z) {
         meadow: sampleEarthMeadow(x, z) * (1 - trail) * (1 - canopy * .7) };
 }
 
-export function createEarthCompositionMask(quality = 'high') {
-    const size = quality === 'low' ? 256 : 512, data = new Uint8Array(size * size * 4);
+const createEarthCompositionMaskRaster = createQualityRasterCache(512, 256, size => {
+    const data = new Uint8Array(size * size * 4);
     const region = WORLD_REGIONS.earth;
     const canopy = new Float64Array(size * size), trails = new Float64Array(size * size);
     const stepX = (region.maxX - region.minX) / size, stepZ = (region.maxZ - region.minZ) / size;
@@ -110,6 +111,11 @@ export function createEarthCompositionMask(quality = 'high') {
         data[at + 3] = Math.round(sampleEarthMeadow(region.minX + x * stepX,
             region.minZ + y * stepZ) * (1 - trail) * (1 - cover * .7) * 255);
     }
+    return data;
+});
+
+export function createEarthCompositionMask(quality = 'high') {
+    const { size, data } = createEarthCompositionMaskRaster(quality);
     const texture = new THREE.DataTexture(data, size, size);
     texture.name = 'Gloamwood woodland, trail and mineral composition';
     texture.minFilter = THREE.LinearFilter; texture.magFilter = THREE.LinearFilter;
@@ -117,8 +123,8 @@ export function createEarthCompositionMask(quality = 'high') {
     return texture;
 }
 
-export function createForestFloorDetail(quality = 'high') {
-    const size = quality === 'low' ? 128 : 256, data = new Uint8Array(size * size * 4);
+const createForestFloorDetailRaster = createQualityRasterCache(256, 128, size => {
+    const data = new Uint8Array(size * size * 4);
     for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
         // Canonical field retains identical leaf locations on Low. Inspect
         // neighboring wrapped cells so jittered leaves can cross cell/tile
@@ -162,6 +168,11 @@ export function createForestFloorDetail(quality = 'high') {
         const seamStrength = smooth(-.6, .1, Math.sin(px * turn * 3) * Math.cos(py * turn * 5));
         data[at + 3] = Math.round((1 - (1 - fracture) * seamStrength) * plateTone * 255);
     }
+    return data;
+});
+
+export function createForestFloorDetail(quality = 'high') {
+    const { size, data } = createForestFloorDetailRaster(quality);
     const texture = new THREE.DataTexture(data, size, size);
     texture.name = 'Gloamwood grain, fallen leaves and fractured bedrock';
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
