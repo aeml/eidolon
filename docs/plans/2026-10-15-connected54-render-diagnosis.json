@@ -1,0 +1,258 @@
+{
+  "date": "2026-10-15",
+  "source": "5bccd9414ed7028178554400a87c82b87f041d36",
+  "status": "Bounded current54 connected gameplay/save checks pass; original High frame-time budgets still fail. No new runtime optimization selected.",
+  "scope": "One native renderer/three normal authenticated socket peers, four supplied classes with14items each, disposable prepared level30 saves/Go-race service and raised terrain.180 frame budget sample, separate180phase sample and three-second CPU diagnostic; not a soak, campaign or physical-device test. Production raised terrain remains disabled.",
+  "sample": {
+    "label": "single-renderer-equipped-raised-party-high",
+    "frames": 180,
+    "intervalMethod": "exact-reported-decimal",
+    "restored": true,
+    "visibleFrames": 180,
+    "rawFrameMedianMs": 33.30000000000291,
+    "rawFrameP95Ms": 50.099999999998545,
+    "rawFrameP99Ms": 66.69999999999709,
+    "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+    "viewport": {
+      "width": 1280,
+      "height": 844,
+      "pixelRatio": 1
+    },
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+    "visibility": "visible",
+    "frameMedianMs": 33.3,
+    "frameP95Ms": 50.1,
+    "frameP99Ms": 66.7,
+    "framesOver33ms": 86,
+    "cpuLoopMedianMs": 33.200000047683716,
+    "cpuLoopP95Ms": 49.39999997615814,
+    "drawCallsMedian": 227,
+    "trianglesMedian": 152623,
+    "geometries": 410,
+    "textures": 370,
+    "activeEntities": 33,
+    "activeEntitiesMin": 33,
+    "activeEntitiesMax": 33,
+    "previewFramesDuringSample": 0,
+    "previewGeometries": 0,
+    "previewTextures": 0,
+    "scope": "One actual GPU renderer, three live normal authenticated socket peers; standing/movement snapshot, not peer input or a battle frame-budget certificate."
+  },
+  "budgets": {
+    "drawCallsMedian": {
+      "observed": 227,
+      "limit": 350,
+      "passes": true
+    },
+    "trianglesMedian": {
+      "observed": 152623,
+      "limit": 250000,
+      "passes": true
+    },
+    "frameMedianMs": {
+      "observed": 33.3,
+      "limit": 20,
+      "passes": false
+    },
+    "frameP95Ms": {
+      "observed": 50.1,
+      "limit": 33.4,
+      "passes": false
+    }
+  },
+  "phaseSummary": {
+    "scope": "Opt-in inclusive synchronous CPU clocks; renderer includes Three.js traversal/submission, not GPU elapsed time. rendererWorld matches the exact gameplay scene AND camera; rendererOther is every other call, including fullscreen composer passes. Exclusive components subtract nested clocks. Instrumentation overhead is included; this separate diagnostic does not replace the ordinary budget sample.",
+    "components": {
+      "update": {
+        "medianMs": 2.299999952316284,
+        "p95Ms": 4.700000047683716
+      },
+      "presentation": {
+        "medianMs": 22.699999928474426,
+        "p95Ms": 30.799999952316284
+      },
+      "renderSystem": {
+        "medianMs": 22.300000071525574,
+        "p95Ms": 30.100000023841858
+      },
+      "renderer": {
+        "medianMs": 22.200000047683716,
+        "p95Ms": 29.5
+      },
+      "rendererWorld": {
+        "medianMs": 22,
+        "p95Ms": 29.300000071525574
+      },
+      "rendererOther": {
+        "medianMs": 0.20000004768371582,
+        "p95Ms": 0.3999999761581421
+      },
+      "presentationOutsideRenderSystem": {
+        "medianMs": 0.3999999761581421,
+        "p95Ms": 0.8000000715255737
+      },
+      "renderSystemOutsideRenderer": {
+        "medianMs": 0.10000002384185791,
+        "p95Ms": 0.30000007152557373
+      },
+      "loopOutsideUpdateAndPresentation": {
+        "medianMs": 0.09999990463256836,
+        "p95Ms": 0.20000004768371582
+      }
+    },
+    "calls": {
+      "update": {
+        "min": 1,
+        "max": 2
+      },
+      "presentation": {
+        "min": 1,
+        "max": 1
+      },
+      "renderSystem": {
+        "min": 1,
+        "max": 1
+      },
+      "renderer": {
+        "min": 16,
+        "max": 16
+      },
+      "rendererWorld": {
+        "min": 1,
+        "max": 1
+      },
+      "rendererOther": {
+        "min": 15,
+        "max": 15
+      }
+    }
+  },
+  "cpuLeaders": [
+    {
+      "source": "",
+      "name": "(program)",
+      "line": 0,
+      "samples": 179,
+      "selfMicros": 557497
+    },
+    {
+      "source": "/vendor/three/build/three.core.js",
+      "name": "multiplyMatrices",
+      "line": 11917,
+      "samples": 163,
+      "selfMicros": 175631
+    },
+    {
+      "source": "",
+      "name": "useProgram",
+      "line": 0,
+      "samples": 2,
+      "selfMicros": 165832
+    },
+    {
+      "source": "",
+      "name": "texSubImage2D",
+      "line": 0,
+      "samples": 33,
+      "selfMicros": 143039
+    },
+    {
+      "source": "/vendor/three/build/three.core.js",
+      "name": "traverseVisible",
+      "line": 14294,
+      "samples": 128,
+      "selfMicros": 138869
+    },
+    {
+      "source": "/vendor/three/build/three.core.js",
+      "name": "updateMatrixWorld",
+      "line": 14354,
+      "samples": 125,
+      "selfMicros": 135393
+    },
+    {
+      "source": "/vendor/three/build/three.core.js",
+      "name": "intersectsObject",
+      "line": 26581,
+      "samples": 104,
+      "selfMicros": 112091
+    },
+    {
+      "source": "/vendor/three/build/three.module.js",
+      "name": "projectObject",
+      "line": 16814,
+      "samples": 86,
+      "selfMicros": 93356
+    },
+    {
+      "source": "/vendor/three/build/three.module.js",
+      "name": "renderObject",
+      "line": 8914,
+      "samples": 69,
+      "selfMicros": 75001
+    },
+    {
+      "source": "/src/art/ActorInstanceBatches.js",
+      "name": "beginFrame",
+      "line": 117,
+      "samples": 63,
+      "selfMicros": 69512
+    },
+    {
+      "source": "/vendor/three/build/three.core.js",
+      "name": "updateMatrix",
+      "line": 14335,
+      "samples": 61,
+      "selfMicros": 66769
+    },
+    {
+      "source": "/src/core/FoliageShadowInfluence.js",
+      "name": "FoliageShadowInfluence.visit",
+      "line": 105,
+      "samples": 53,
+      "selfMicros": 56238
+    }
+  ],
+  "foliage": {
+    "frames": 125,
+    "visits": 298250,
+    "viewChanges": 0,
+    "shadowChanges": 0,
+    "initialRoots": 10
+  },
+  "functional": "All four fitted rigs retain53independent owned bones,14items,zero missing/fallback assets and exact client mesh/ground alignment; largest server-ground error below4.5e-7. Native test1pass/1intentionally unselected four-renderer case skipped,0retries. Actual saved fixtures rechecked by Go harness. No race/panic markers.",
+  "comparison": "Historical49 used22active entities; this sample has33. Prepared current forest profile uses four classes/16Skeletons and excludes the full live world. Neither is a paired timing control, and neither establishes a speedup or waives the connected failure.",
+  "next": "Renderer world CPU remains dominant (22ms separate diagnostic median versus2.3ms update). Matrix traversal, shadow/view discovery and submission account for leading samples. Retain matrix/visibility/callback invalidation and all source geometry; do not revive rejected caching or foliage batching without a materially different measured hypothesis.",
+  "sanitized": {
+    "observedPreparedAccounts": 4,
+    "plaintextFilesScanned": 9,
+    "embeddedEntriesScanned": 2,
+    "remainingPreparedNames": 0,
+    "serverMarkers": {
+      "WARNING: DATA RACE": 0,
+      "panic:": 0,
+      "fatal error:": 0,
+      "Worker panic:": 0,
+      "Recovered from panic in Update:": 0
+    },
+    "native": {
+      "total": 2,
+      "expected": 1,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 1,
+      "ok": true
+    },
+    "maxRetry": 0
+  },
+  "cleanup": {
+    "ownedMongoContainerAbsent": true,
+    "originalResourcesTouched": false
+  },
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-master-20261011/.qa-connected54",
+    "inventoryEntries": 22,
+    "inventorySHA256": "fe90d55e37e379c236d65ae8081afe9bf199cd217aff2bea087e8b674019b10f"
+  },
+  "release": "54 remains locally prepared;53 own corrected deployment still pending. Whole-world performance/readiness remains open."
+}

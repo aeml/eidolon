@@ -159,6 +159,13 @@ acceptance is incomplete.
 
 Bounded current-source Earth renderer census now separates cold and settled equipment preparation in the same native High1280/Low390 fixtures. High gate301626→147466tri and road305035→189499tri; Low gate106063→65649tri and road102486→79386tri. Draw calls stay220/274High and110/141Low. The existing preparation queue reaches0; source/runtime/visibility unchanged. All12observations have exact before/observed/restored submission totals and complete attribution. These untimed prepared views isolate startup preparation; they do not clear retained cold budgets, connected frame-time failures, real phones or final art. [Census](2026-10-11-earth-cold-settled-triangle-census.json).
 
+A current54 disposable connected four-class sample retains the frame-time failure:
+227draws/152623triangles pass High limits, but33.3ms median/50.1ms p95 exceed
+20/33.4ms. One native renderer/three socket peers, all14slot fits, authoritative
+ground and saved fixtures pass; no race/panic markers. Renderer-world CPU remains
+the main cost. This is not a soak or a paired speedup claim.
+[Current diagnosis and exact scope](2026-10-15-connected54-render-diagnosis.json).
+
 ## Retained performance limits and counterexamples
 
 The static foliage batching pilot `504b44ef` remains performance-rejected and
