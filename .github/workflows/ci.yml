@@ -343,7 +343,7 @@ jobs:
         env:
           EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
           PLAYWRIGHT_HTML_OUTPUT_DIR: native-visual-evidence/authored-equipment/report
-        run: sg render -c 'bash scripts/run-native-visual-qa.sh npm run test:e2e:authored-equipment -- --output=native-visual-evidence/authored-equipment/results'
+        run: sg render -c 'bash scripts/run-native-visual-qa.sh npm run test:e2e:authored-equipment -- --workers=1 --retries=0 --output=native-visual-evidence/authored-equipment/results'
 
       - name: Run disposable full-character gameplay
         if: inputs.full_stabilization == true || vars.EIDOLON_FULL_STABILIZATION == 'true'
