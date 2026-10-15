@@ -316,3 +316,19 @@ Continue implementation-owned work while external decisions are pending. Do
 not invent rights, retention, support, backup, access or launch decisions.
 Feature freeze, closed beta and release remain subject to the original gates
 and owner approval. The full original goal stays open.
+
+## October 15 — selected garment and merchant milestone
+
+Alpha 1.79.56 is independently deployed/verified; its quest/Lore Book foundation
+and durable registered-window positions/reset are retained. Alpha 1.79.57 is
+prepared on master and is not yet deployed. It combines six modeled held looks,
+three remaining class outfits, universal Winterthorn Revel and a qualified first
+character/bag/merchant polish slice with on-demand held-item inspection. The
+selected catalog has eleven distinct requested models; seven universal designs
+remain. Qualification receipts retain native review, strict resource cycles,
+unchanged source/gear rules and the corrected Astral Low budget failure.
+
+Final collection approval, broader quest/menu usability, world visual quality,
+frame-time/device coverage, deferred campaign/phone feedback, owner decisions,
+F1–F5, beta and operational/release handoff remain open. Soak/stress remains
+deferred. This milestone does not complete the full game-readiness goal.
