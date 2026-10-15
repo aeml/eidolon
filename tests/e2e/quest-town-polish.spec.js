@@ -25,7 +25,8 @@ test('Ilyra dialogue, manual quest acknowledgement and a crowded tracker remain 
     await expect(panel).toContainText('100 gold · 500 Resonance XP');
     await expect(page.locator('#objectives-list')).toContainText('100 gold · 500 Resonance XP');
     await expect(page.locator('#objectives-list .objective-entry')).toHaveCount(3);
-    await expect(page.locator('.objectives-panel__more')).toContainText('View all 27 objectives');
+    await expect(page.locator('.objectives-panel__more')).toHaveText('Track quests · Journal (J)');
+    expect(await page.evaluate(() => window.__questFixture.ui.quest.activeQuestSummary.length)).toBe(27);
     for (const [width, height] of [[1440, 1000], [1280, 600], [390, 844], [320, 640]]) {
         await page.setViewportSize({ width, height });
         await page.evaluate(() => window.__questFixture.ui.reflowVisibleWindows());
@@ -52,6 +53,7 @@ test('Ilyra dialogue, manual quest acknowledgement and a crowded tracker remain 
     await page.locator('#btn-close-quest').click();
     await page.locator('.objectives-panel__more').click();
     await expect(page.locator('#quest-journal')).toBeVisible();
+    await expect(page.locator('#quest-journal .quest-journal-entry')).toHaveCount(26);
     await expect(page.locator('#quest-journal')).toContainText('100 gold · 50,000 Resonance XP');
     await expect(page.locator('#chat-box')).toBeVisible();
     expect(failures, failures.join('\n')).toEqual([]);

@@ -154,9 +154,19 @@ export function renderQuestConversation(ui, quests) {
     }
     const ready = selected.accepted && selected.maxCount > 0 && selected.count >= selected.maxCount;
     const detail = text('section', '', 'quest-dialogue');
+    detail.dataset.questState = !selected.accepted ? 'available' : ready ? 'ready' : 'active';
+    detail.setAttribute('aria-busy', String(Boolean(ui.pendingQuestAction)));
     const optionalLabel = huntsById.has(selected.id) ? 'OPTIONAL EXPEDITION' : 'OPTIONAL LORE';
     detail.append(text('div', story ? `${selected.legacyOptional ? optionalLabel : `CHAPTER ${selected.chapter}`} · ${speaker}` : 'DAILY CONTRACT', 'quest-dialogue__eyebrow'));
     detail.append(text('h3', ui.getQuestTitle(selected)));
+    const status = text('p', !selected.accepted ? 'Available quest · Review and accept' : ready
+        ? 'Ready to turn in · Claim your reward' : 'In progress · Your next objective', 'quest-dialogue__state');
+    status.setAttribute('role', 'status');
+    const brief = text('section', '', 'quest-dialogue__brief');
+    brief.setAttribute('aria-label', 'Quest objectives and rewards');
+    brief.append(status, text('p', ui.getQuestObjective(selected), 'quest-dialogue__objective'),
+        text('p', `${selected.count || 0} / ${selected.maxCount || 0} · Reward: ${ui.getQuestRewardLabel(selected)}`, 'quest-dialogue__reward'));
+    detail.append(brief);
     const description = story && selected.legacyOptional
         ? darkRealmChaptersById.get(selected.id)?.catchupAcceptance || huntsById.get(selected.id)?.catchupAcceptance || getChronicleInvestigation(selected.id)?.catchupAcceptance || selected.description
         : selected.description;
@@ -166,9 +176,8 @@ export function renderQuestConversation(ui, quests) {
         lore.append(text('summary', 'Ask Ilyra about the history'), text('p', selected.lore));
         detail.appendChild(lore);
     }
-    detail.append(text('p', ui.getQuestObjective(selected), 'quest-dialogue__objective'));
-    detail.append(text('p', `${selected.count || 0} / ${selected.maxCount} · Reward: ${ui.getQuestRewardLabel(selected)}`, 'quest-dialogue__reward'));
     detail.append(text('p', 'At level 100, XP becomes Resonance XP. Any XP left over when you reach the cap also goes into Resonance.', 'quest-dialogue__status'));
+    const actions = text('div', '', 'quest-dialogue__actions');
     if (!selected.accepted || ready) {
         const action = button(ready ? 'Complete Quest' : 'Accept Quest', (event) => {
             ui.questActionError = '';
@@ -176,20 +185,22 @@ export function renderQuestConversation(ui, quests) {
             ui.pendingQuestAction = { quest: { ...selected, rewardLabelAtTurnIn: ui.getQuestRewardLabel(selected) }, complete: ready };
             event.currentTarget.disabled = true;
             event.currentTarget.textContent = 'Waiting for reply…';
+            detail.setAttribute('aria-busy', 'true');
             if (ready) ui.onCompleteQuest?.(selected.id);
             else ui.onAcceptQuest?.(selected.id);
         });
         action.disabled = Boolean(ui.pendingQuestAction);
         if (action.disabled) action.textContent = 'Waiting for reply…';
-        detail.appendChild(action);
+        actions.appendChild(action);
     } else detail.append(text('p', `Return to ${speaker} when your objectives are ready. Rewards are granted only when you click Complete Quest.`, 'quest-dialogue__status'));
     if (ui.questActionError) {
         const error = text('p', ui.questActionError, 'quest-dialogue__status quest-dialogue__error');
         error.setAttribute('role', 'alert');
         detail.append(error);
     }
-    if (!story) detail.append(button('Back to contracts', () => { ui.selectedQuestId = null; redraw(); }));
-    if (story && selected.legacyOptional && current) detail.append(button('Return to main story', () => { ui.selectedQuestId = null; redraw(); }));
+    if (!story) actions.append(button('Back to contracts', () => { ui.selectedQuestId = null; redraw(); }));
+    if (story && selected.legacyOptional && current) actions.append(button('Return to main story', () => { ui.selectedQuestId = null; redraw(); }));
+    detail.append(actions);
     ui.questList.appendChild(detail);
     appendAftermath();
 }

@@ -1552,10 +1552,20 @@
 .quest-dialogue h3 { margin: 8px 0 14px; color: #f1e9d6; font: 22px Georgia, serif; }
 .quest-dialogue__eyebrow { color: var(--quest-accent); font-size: 10px; letter-spacing: .12em; }
 .quest-dialogue__speech, .quest-dialogue__lore { color: #d4dce7; font-size: 13px; line-height: 1.75; }
+.quest-dialogue__speech { white-space: pre-line; }
 .quest-dialogue__lore summary { color: var(--quest-accent); cursor: pointer; }
 .quest-dialogue__objective { border-top: 1px solid #ffffff18; padding-top: 12px; color: #f0dfb8; font-size: 13px; line-height: 1.5; }
 .quest-dialogue__reward, .quest-dialogue__status { color: #9ab7cf; font-size: 12px; line-height: 1.6; }
 .quest-dialogue .menu-btn { margin: 8px 8px 0 0; border-color: var(--quest-accent); }
+.quest-dialogue__brief { padding: 12px 14px; margin: 0 0 18px; border: 1px solid #c7ad744d; border-left: 3px solid var(--quest-accent); border-radius: 4px; background: #101824; }
+.quest-dialogue__state { margin: 0 0 8px; color: var(--quest-accent); font-size: 13px; font-weight: 600; line-height: 1.5; }
+.quest-dialogue[data-quest-state="ready"] .quest-dialogue__state { color: #91dbb2; }
+.quest-dialogue__brief .quest-dialogue__objective { border: 0; padding: 0; margin: 8px 0; font-size: 15px; }
+.quest-dialogue__brief .quest-dialogue__reward { margin: 8px 0 0; color: #b8cbe0; font-size: 13px; }
+.quest-dialogue__actions { position: sticky; bottom: 0; display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin-top: 16px; border: 1px solid #b99b624d; border-radius: 5px; background: #111923; box-shadow: 0 -6px 16px #080c1480; }
+.quest-dialogue__actions:empty { display: none; }
+.quest-dialogue__actions .menu-btn { min-height: 44px; margin: 0; padding: 9px 14px; font-size: 14px; }
+.mobile-mode .quest-dialogue__state { font-size: 16px; }
 .quest-contract { width: 100%; text-align: left; display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 4px 8px; color: #e2e9f1; background: #15202be6; border: 1px solid #65baff30; border-radius: 6px; padding: 10px 12px; cursor: pointer; }
 .quest-contract small { grid-column: 2; color: #91acc4; }
 .quest-contract__marker { grid-row: span 2; font: bold 24px Georgia, serif; color: var(--quest-accent); }

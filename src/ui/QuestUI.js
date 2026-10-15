@@ -1009,7 +1009,7 @@ export class QuestUI {
             // Keep reachable actions mounted across state updates: focus and a
             // held pointer belong to this DOM node, not its replacement.
             const remaining = new Set(this.questActions.children);
-            for (const next of this.questList.querySelectorAll('.quest-dialogue > button, .quest-dialogue__error')) {
+            for (const next of this.questList.querySelectorAll('.quest-dialogue > button, .quest-dialogue__actions > button, .quest-dialogue__error')) {
                 const current = next.dataset.questAction && [...remaining].find(node => node.dataset.questAction === next.dataset.questAction);
                 if (current) {
                     current.onclick = next.onclick;
