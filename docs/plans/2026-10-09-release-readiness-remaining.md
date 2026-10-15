@@ -1,6 +1,6 @@
 # Release-readiness remaining work
 
-Current checkpoint: October 14, 2026. The full goal remains active. No feature
+Current checkpoint: October 15, 2026. The full goal remains active. No feature
 freeze, final modern-art acceptance, closed beta or launch has been declared.
 
 This register records current delivery states and next actions. The preceding
@@ -21,6 +21,24 @@ Authoritative scope remains the [goal](../../goal.md),
 [freeze preparation](2026-10-06-release1-80-freeze-preparation.json) and
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
+
+## October 15 implementation checkpoint
+
+Alpha 1.79.52 combat feedback and reduced motion is pushed at `8c8ef016e`;
+CI38656850418 is running. Its own deployment and exact public asset verification
+are pending. Alpha 1.79.51 remains the last accepted public release below.
+
+The next coherent milestone, Alpha 1.79.53, is prepared locally. Returning
+phone/desktop sessions now select current input policy and restore shared menus,
+settings and touch controls on teardown, including failed world loading (212 focused checks and ten distinct
+native cases). World preparation preserves twelve exact High/Low maps while
+bounding first-build town work and retaining at most 4,915,200 CPU bytes for
+returning sessions (61 focused checks; two final native scene-lifetime cases).
+[Session qualification](2026-10-15-session-layout-qualification.json),
+[world preparation](2026-10-15-world-raster-preparation.json).
+Publish only after 52 acceptance, then verify 53 independently. These changes
+close specific usability/loading defects, not final world art, physical-device,
+whole-frame or full original readiness requirements. Soak remains deferred.
 
 ## October 14 accepted class milestone
 

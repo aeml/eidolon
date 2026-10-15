@@ -536,6 +536,7 @@ const bootLogin = async () => {
                     previousAuthSocket?.close?.();
                     sessionGame.destroy();
                     window.game = null;
+                    handleMobileMediaChange();
                     showSessionRecoveryLogin({ message: reason?.kind === 'moderation' ? reason.message : undefined });
                     publicEmailRecovery?.connectionState('closed');
                 };
@@ -590,6 +591,14 @@ const bootLogin = async () => {
             console.log(`Eidolon Engine Started with ${type}`);
         } catch (error) {
             if (sessionGame && (window.game !== sessionGame || sessionGame.isDestroyed)) return;
+            // A rejected world load has already constructed UI, input and a
+            // renderer. Retire those owners before exposing the retry screen;
+            // the borrowed authentication socket remains available for retry.
+            if (sessionGame) {
+                sessionGame.destroy();
+                if (window.game === sessionGame) window.game = null;
+            }
+            handleMobileMediaChange();
             console.error("Failed to start game:", error);
             loadingScreen.style.display = 'none';
             startScreen.classList.remove('hidden');

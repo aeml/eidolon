@@ -1,11 +1,17 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
-async function prepareEntry(page) {
+async function prepareEntry(page, failFirstLoad = false) {
     await page.route('**/src/core/GameEngine.js', route => route.fulfill({ contentType: 'text/javascript', body: `
         import { GameEngine as Actual } from '/src/core/GameEngine.js?layout-implementation';
         export class GameEngine extends Actual {
-            async loadGame(progress) { this.uiManager.showHUD(); progress(100, 'Prepared'); }
+            async loadGame(progress) {
+                    if (${failFirstLoad} && !window.__failedWorldFixture) {
+                        window.__failedWorldFixture = true; window.__failedEngine = this;
+                        throw Error('Prepared world startup failure');
+                    }
+                    this.uiManager.showHUD(); progress(100, 'Prepared');
+                }
         }` }));
     await page.routeWebSocket(/\/ws(?:\?|$)/, socket => socket.onMessage(data => {
         if (JSON.parse(data).type === 'login') socket.send(JSON.stringify({ type: 'login_success',
@@ -89,10 +95,36 @@ test('returning login changes input policy without retaining touch controls or p
         await page.evaluate(() => window.game.uiManager.toggleSettings());
         await expect(page.locator('#graphics-quality')).toBeVisible();
         if (!mobile) await expect(page.locator('#motion-preference')).toBeVisible();
+        await page.setViewportSize({ width: mobile ? 1280 : 390, height: 844 });
         await page.evaluate(() => window.game.network.onReconnectFailed({ kind: 'expired' }));
         await expect(page.locator('#start-screen')).toBeVisible();
         await expect(page.locator('#mobile-ui')).toBeHidden();
         expect(await page.evaluate(() => window.game)).toBeNull();
+        expect(await page.evaluate(() => document.body.classList.contains('mobile-mode'))).toBe(!mobile);
     }
     expect(failures, failures.join('\n')).toEqual([]);
+});
+
+test('failed world startup retires controls and GPU resources before a desktop retry', async ({ page, baseURL }) => {
+    const failures = collectBrowserFailures(page, baseURL);
+    await prepareEntry(page, true);
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.locator('#auth-username').fill('failed-layout-fixture');
+    await page.locator('#auth-password').fill('synthetic-fixture');
+    await page.locator('#btn-login').click();
+    await page.locator('#btn-play-character').click();
+    await expect(page.locator('#game-startup-status')).toBeVisible();
+    await expect(page.locator('#mobile-ui')).toBeHidden();
+    expect(await page.evaluate(() => ({ retired: window.__failedEngine.isDestroyed,
+        cleared: window.game === null, canvas: window.__failedEngine.renderSystem.renderer.domElement.isConnected })))
+        .toEqual({ retired: true, cleared: true, canvas: false });
+    await page.setViewportSize({ width: 1280, height: 844 });
+    await page.locator('#btn-play-character').click();
+    await expect.poll(() => page.evaluate(() => Boolean(window.game?.uiManager &&
+        !document.getElementById('loading-screen').offsetParent))).toBe(true);
+    expect(await page.evaluate(() => window.game.inputManager.isMobile)).toBe(false);
+    await expect(page.locator('#btn-menu-inventory')).toBeVisible();
+    await page.evaluate(() => window.game.destroy());
+    expect(failures.filter(message => !message.includes('Prepared world startup failure'))).toEqual([]);
 });

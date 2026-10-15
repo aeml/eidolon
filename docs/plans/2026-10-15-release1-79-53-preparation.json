@@ -1,0 +1,67 @@
+{
+  "date": "2026-10-15",
+  "version": "Alpha 1.79.53",
+  "status": "Prepared locally, not pushed or deployed. Publication must wait for terminal CI and exact live acceptance of Alpha 1.79.52 at 8c8ef016e.",
+  "selected": [
+    "0ed010f1b returning phone/desktop session controls",
+    "3591ef16e exact world rasters and bounded first-build preparation",
+    "Final main bootstrap cleanup after failed world loading and restoration of login viewport policy."
+  ],
+  "qualifications": [
+    "2026-10-15-session-layout-qualification.json",
+    "2026-10-15-world-raster-preparation.json"
+  ],
+  "validation": {
+    "release": "429 distinct release/history/browser-plan checks across four suites pass, with one stale CI version corrected. Twelve version surfaces synchronized; 488 cumulative notes/48 history pages preserve all 487 previous entries byte-exact.",
+    "content": "14 generated content groups verify without regeneration.",
+    "session_followup": "Actual failed world-load control first reproduces lingering touch controls. Corrected five-case native layout suite passes in 13.2s, no retries/skips; includes same authenticated desktop retry and resized recovery login. Thirty existing main/startup/recovery unit checks and scoped lint pass.",
+    "scope": "Native prepared login/world fixtures; no actual account/campaign or physical-device acceptance. Reuse the independent session and world qualification scopes; do not sum repeated tests as distinct."
+  },
+  "retained_failures": [
+    "Initial version check found CI deploy default still 1.79.52; corrected to 1.79.53 and its 386-test suite passes. Other 43 release tests remain valid.",
+    "Failed-world-load native control left mobile-ui visible over retry screen; main now destroys its constructed session before presenting retry."
+  ],
+  "evidence": [
+    {
+      "path": ".qa-release53/release-unit.log",
+      "bytes": 43652,
+      "sha256": "d870aad566fdb67a890dc49af35221ea4870c15e95d009841ebdf5a3f9b2bb61"
+    },
+    {
+      "path": ".qa-release53/release-unit-corrected.log",
+      "bytes": 362,
+      "sha256": "29168cef462d1edf074c56e28041b6e74b3049fe4889c3422c093507b3b7553f"
+    },
+    {
+      "path": ".qa-release53/content.log",
+      "bytes": 3259,
+      "sha256": "c8b697423a8c3f4bb67168e4b5a764ba01b1547e8c9f95c2c4f45876302f7599"
+    },
+    {
+      "path": ".qa-release53/history-check.json",
+      "bytes": 64,
+      "sha256": "bc8030f609e07b6196ce9ac736fc52a83323a006a01751e991b8d78240e5794d"
+    },
+    {
+      "path": ".qa-release53/startup-before.log",
+      "bytes": 3882,
+      "sha256": "25ce8115c52bd07e6b6f2e508a6920552b8f2e79c4f4f4f01265baac7dfc393f"
+    },
+    {
+      "path": ".qa-release53/session-final.log",
+      "bytes": 966,
+      "sha256": "ef75f43cf1e377d74eb043afc9b1b0c8a0a6f75e713949377bb5ae0947229c80"
+    },
+    {
+      "path": ".qa-release53/startup-unit.log",
+      "bytes": 402,
+      "sha256": "94d45fffd1800e6343ee81947f57f958b6c91e71ba9621aa10e41af9b2146819"
+    },
+    {
+      "path": ".qa-release53/startup-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "remaining": "Own complete CI/deploy/live/exact public asset acceptance after predecessor; original full goal, world art, connected performance, devices, operations and approval gates remain active. Soak/stress stays owner-deferred."
+}
