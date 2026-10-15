@@ -48,3 +48,5 @@
     .mobile-mode #inventory-screen:has(#inventory-recovery:not([hidden])):not(:has(details[open])) #inventory-grid { grid-column: 1 / -1; padding: 4px 12px; }
     .mobile-mode #inventory-screen:has(#inventory-recovery:not([hidden])):not(:has(details[open])) :is(#inventory-recovery, .equipment-loadouts) { margin: 4px; max-height: none; min-width: 0; }
 }
+
+.cosmetic-detail button[hidden] { display: none; }

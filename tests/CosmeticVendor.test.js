@@ -174,3 +174,18 @@ test('appearance replies are restricted to the current owner and an open vendor'
     ui.close(); ui.handleAppearanceResult({ playerID: player.id, message: 'closed appearance' });
     expect(ui.status.textContent).toBe('Current appearance saved.'); ui.dispose();
 });
+
+test('held inspection and comparison keep authority unchanged and reset for armor or a new character', () => {
+    const { ui, preview, player, send, changePlayer } = fixture();
+    preview.setFocusSlot = jest.fn();
+    const before = JSON.stringify(player), requests = send.mock.calls.length;
+    ui.select(offers().find(offer => offer.id === 'grovekeeper-blade-v1'));
+    expect(ui.inspect.hidden).toBe(false); ui.inspect.click();
+    expect(preview.setFocusSlot).toHaveBeenLastCalledWith('mainHand'); expect(ui.inspect.getAttribute('aria-pressed')).toBe('true');
+    ui.compare.click(); expect(preview.setFocusSlot).toHaveBeenLastCalledWith('mainHand');
+    expect(JSON.stringify(player)).toBe(before); expect(send).toHaveBeenCalledTimes(requests);
+    ui.select(offers()[0]); expect(ui.inspect.hidden).toBe(true); expect(preview.setFocusSlot).toHaveBeenLastCalledWith(null);
+    ui.select(offers().find(offer => offer.id === 'skyweaver-tome-v1')); ui.inspect.click();
+    changePlayer('other-character'); ui.refreshPlayer(); ui.open();
+    expect(ui.inspectHeld).toBe(false); expect(ui.inspect.hidden).toBe(true); ui.dispose();
+});

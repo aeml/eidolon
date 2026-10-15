@@ -1,0 +1,629 @@
+{
+  "date": "2026-10-15T17:17:45.933865+00:00",
+  "runtimeSource": "e51f27da4676de314d7a0a9a1c4af8e2d56a34d5",
+  "state": "Qualified and selected for ordinary merge into master; not yet deployed.",
+  "scope": "Six distinct held 3D looks: sword, dagger, staff, mace, shield and tome, twelve High/Low GLBs. Existing unlock IDs, prices, ownership, real gear and actual socket transforms are preserved. Adds on-demand held-model inspection to the existing vendor preview.",
+  "checks": "180 distinct focused checks across 12 suites, full lint and 16 generated-content groups pass. All twelve final GLBs have zero official validator errors or warnings.",
+  "native": "14 distinct cases pass with no retries: two four-class High/Low full-party cases plus twelve real vendor preview/compare/inspect/rotate/apply cases. Three repeated swap/restore cycles retain exact geometry/texture counts. Each quality exercises sixteen supplied pose records and ninety continuous Run frames.",
+  "sceneBudgets": {
+    "high": {
+      "draws": 244,
+      "triangles": 185541
+    },
+    "low": {
+      "draws": 128,
+      "triangles": 75555
+    }
+  },
+  "visualReview": "Reviewed all six final High detail previews, representative Low inspection, and actual equipped party captures. Matching emerald/sky/ember/aquamarine model colors and front-facing shield/tome inspection resolve the initial review findings. Original material-color captures remain retained.",
+  "retainedFailures": "Preparation retains old version-count, cross-realm GLTF buffer and raw matrix fixture failures. Corrected grip assertion compares strict equality against the actual original gear path. No scene budget or legacy asset ban was relaxed.",
+  "limits": "Scoped implementation selection only. Final owner collection review, broader world/frame-time/device quality and complete eighteen-look collection remain open.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-held-garments-20261015",
+  "evidence": [
+    {
+      "path": ".qa-held-garments/asset-guard.log",
+      "bytes": 597,
+      "sha256": "6bf0062a38d2b7e951a2212bfe83fc8ed79a95b52b60bf45fd6cb1c73eb594db"
+    },
+    {
+      "path": ".qa-held-garments/check.log",
+      "bytes": 89,
+      "sha256": "0ef66107d49406783bd2a7bc2a82db3dc07a5fbc2822f3830de3c2674c7e8fb2"
+    },
+    {
+      "path": ".qa-held-garments/combined-focused.log",
+      "bytes": 1111,
+      "sha256": "62531d1b6ddcc2279d24190120c1fcc2b9f2f719973e5d36e27a9d0d74db2ee7"
+    },
+    {
+      "path": ".qa-held-garments/content.log",
+      "bytes": 3858,
+      "sha256": "680fbd5eb043d9087b0f531ff1ecd48fcb48419d1b0582bcd2f6025ffbcfe46b"
+    },
+    {
+      "path": ".qa-held-garments/corrected-model-focused.log",
+      "bytes": 9547,
+      "sha256": "3221eb7704f223e03f54d1a026fea9274d20efda400c606c7db53aa9ce7c30f7"
+    },
+    {
+      "path": ".qa-held-garments/cosmetics-generation.log",
+      "bytes": 50,
+      "sha256": "047db8e6a2d563972ef9400125c437a4c39213f9e1ec1daa0dc3660028a53dd8"
+    },
+    {
+      "path": ".qa-held-garments/final-focused.log",
+      "bytes": 805,
+      "sha256": "325811197f7d9b7596a77eae3bfcd549227674ec6e2d4c8c8a1e0d8eb101bc22"
+    },
+    {
+      "path": ".qa-held-garments/final-scoped-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-held-garments/first-focused.log",
+      "bytes": 2335,
+      "sha256": "3504d359a81b8c6d4f746f3e833e2a8c9b0eca39e00844bc1a4a78d30c723f7e"
+    },
+    {
+      "path": ".qa-held-garments/full-lint.log",
+      "bytes": 96,
+      "sha256": "0b5033e6a217fbd15dc194727ba175dfcf1a245641eab20298f084f65231cecd"
+    },
+    {
+      "path": ".qa-held-garments/generation.log",
+      "bytes": 90,
+      "sha256": "af0d798fa43a7a37b3cd72af0601a4309f471757c2e2b67e871b6ca6ef025324"
+    },
+    {
+      "path": ".qa-held-garments/grip-baseline-corrected.log",
+      "bytes": 518,
+      "sha256": "16747220fb019786e3c1c7aead13f7096906976c1133a92561d6e66ba5b6e89e"
+    },
+    {
+      "path": ".qa-held-garments/guard-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-held-garments/inspection-combined.log",
+      "bytes": 1287,
+      "sha256": "4b6a0d0fd51f20f353d66a0a66305c83c217d60feef2009a644e7b941cf2184f"
+    },
+    {
+      "path": ".qa-held-garments/inspection-content.log",
+      "bytes": 3858,
+      "sha256": "680fbd5eb043d9087b0f531ff1ecd48fcb48419d1b0582bcd2f6025ffbcfe46b"
+    },
+    {
+      "path": ".qa-held-garments/inspection-first.log",
+      "bytes": 845,
+      "sha256": "ca33ccc1b427d61dfcb8567f9c1c703e872e86f1d55ee04323527afade407eec"
+    },
+    {
+      "path": ".qa-held-garments/inspection-full-lint.log",
+      "bytes": 96,
+      "sha256": "0b5033e6a217fbd15dc194727ba175dfcf1a245641eab20298f084f65231cecd"
+    },
+    {
+      "path": ".qa-held-garments/inspection-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-held-garments/inspection-official-validation.json",
+      "bytes": 14509,
+      "sha256": "7015d1706e3ce405b89ba8389cd923ee2f67e7de8a1822271b160b7fb0228635"
+    },
+    {
+      "path": ".qa-held-garments/inspection-official-validation.log",
+      "bytes": 826,
+      "sha256": "e12602f31f77767658ffbd416ca27b74c86e02485d8791f257cacb195bb4e8cb"
+    },
+    {
+      "path": ".qa-held-garments/inspection-ownership-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-held-garments/inspection-ownership.log",
+      "bytes": 579,
+      "sha256": "99be9104b078d11c3241e7ad5fe8bd811ce3f662b460878e844c781a3eeb2b29"
+    },
+    {
+      "path": ".qa-held-garments/material-generation.log",
+      "bytes": 90,
+      "sha256": "af0d798fa43a7a37b3cd72af0601a4309f471757c2e2b67e871b6ca6ef025324"
+    },
+    {
+      "path": ".qa-held-garments/native-first/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/close-Cleric.png",
+      "bytes": 1355720,
+      "sha256": "0b09ccbdb615aac6a2cecd665fba23db6b9fc12f2becd90831a2a2369c87d0bd"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/close-Fighter-hud.png",
+      "bytes": 765353,
+      "sha256": "5ebce766c011ef6ec8aabb5f1bf2a8863611d03066d040c3f6312a4c5b2dadfc"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/close-Fighter.png",
+      "bytes": 1339166,
+      "sha256": "41ed27baacef509d0751a3e480b34d53157825e8357377a12d59a7339e7af5fa"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/close-Rogue.png",
+      "bytes": 1365185,
+      "sha256": "7751fd517e991306c95e4d97d546bb0c7d390ac603f900df109b4956efc2861c"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/close-Wizard.png",
+      "bytes": 1359763,
+      "sha256": "546021fccaab17e796a8ea23f05351a6c238878fcdd84e1695c3390fcbdab3d7"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/observation.json",
+      "bytes": 3888,
+      "sha256": "2f82a8114a47ff6e7aa58daf3cd71140db978106632aa78c7fa298f108aebdb9"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/original-party.png",
+      "bytes": 2115566,
+      "sha256": "89bb5817032e8be704318f48d4fb65c1f07d0017f82e884cb6caef8bc67372c8"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/party-Attack.png",
+      "bytes": 2105031,
+      "sha256": "7301cbe40ab9c8f02f31a53761aab110031b8320b5b4d1b7b2b00d4623611593"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/party-CombatIdle.png",
+      "bytes": 2104503,
+      "sha256": "8866760091e0105d89129e9ae3a9bf06137a77c4fc006a90ff1cca113294d633"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/party-Death.png",
+      "bytes": 2105395,
+      "sha256": "64044c89963b3d5b8060e225e260fd3f47d6bcf3f04dec54d50a5bc441738a11"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/party-Run-hud.png",
+      "bytes": 1318902,
+      "sha256": "82ea1f3c6b846f27b598623b18ee9b521ca2cd657ffc5547f85e190915be62cc"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/party-Run.png",
+      "bytes": 2104927,
+      "sha256": "dd086d0a34609cad99379c02882bcc427296e78dd6f3619ae4621e31bfebf041"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/restored-party.png",
+      "bytes": 2104005,
+      "sha256": "4858b4c8d78d1e9a8e80ffe0facef51b32631d07dedd64490dabf8ec03140d62"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/close-Cleric.png",
+      "bytes": 382272,
+      "sha256": "608330b9c9686364b3f951521e35388d0d5d856ff0e52a15602001e15112f1c8"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/close-Fighter-hud.png",
+      "bytes": 239021,
+      "sha256": "3132e5c2ae0111d9c4cc0ab33de55e1268a5cb1c82f53d599a31ef338ce9de90"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/close-Fighter.png",
+      "bytes": 378964,
+      "sha256": "ce2ebbd730a288a283e2b41921d79776739ca172f1418147f1d1182d4d6063ba"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/close-Rogue.png",
+      "bytes": 401441,
+      "sha256": "41137374176870e62f8c6a0bf79957c61fc63bcefb6c4a0910c954d9dde207bd"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/close-Wizard.png",
+      "bytes": 395844,
+      "sha256": "1a676e778d1b5133e76aec9a32ca2c1deb283ca1cfc781578b1d5e953b3ac585"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/observation.json",
+      "bytes": 3875,
+      "sha256": "03c67b184e7603f1808cbc036486e8234a7f8d0acde18a52c23246d8e82427ed"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/original-party.png",
+      "bytes": 708521,
+      "sha256": "0a07f5208fc977dfab42913bda90ef76634c961288b9ccee26bbed2db2c97c3f"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/party-Attack.png",
+      "bytes": 707731,
+      "sha256": "7a4610d065b741dd361b831328a050d7e6337d4dd16252740ee16e95f125d5e3"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/party-CombatIdle.png",
+      "bytes": 707710,
+      "sha256": "ee8ae8bc53e0ca5f03a295ae02af986f37181c64259ed4708ff9aa709079fc47"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/party-Death.png",
+      "bytes": 708137,
+      "sha256": "d119a41257c02fd6258cc0be2bfa47a3cacbb314ee13f0f447f4293d586c6310"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/party-Run-hud.png",
+      "bytes": 451827,
+      "sha256": "b056ceee23cf2b096c4791458d0a4cbb32a40ab18ebdc08aba4edec5625388a3"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/party-Run.png",
+      "bytes": 707839,
+      "sha256": "bf60f5c1c50a27ac9df9ca3cb1ab00f7c31af55d97e5da54bb60ad31092530b7"
+    },
+    {
+      "path": ".qa-held-garments/native-first/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/restored-party.png",
+      "bytes": 707760,
+      "sha256": "8c6805ed3b460d228c475a8e832f02bbe93f39ec0f8d998e023e983231805e26"
+    },
+    {
+      "path": ".qa-held-garments/native-first/held-garment-preview-Grove-3898c-ts-the-real-held-model-high/held-garment-preview.png",
+      "bytes": 327795,
+      "sha256": "4a7ff93561c84db6f2f52f59114a1a18ff56235e53627097dd38d0088f5639a4"
+    },
+    {
+      "path": ".qa-held-garments/native-first/held-garment-preview-Grove-532f2-cts-the-real-held-model-low/held-garment-preview.png",
+      "bytes": 157501,
+      "sha256": "1cc07e39642f69302169d0878edf8861dff1791b06abeb0a64c338631e3747ee"
+    },
+    {
+      "path": ".qa-held-garments/native-first/held-garment-preview-Grove-d07ce-ts-the-real-held-model-high/held-garment-preview.png",
+      "bytes": 327719,
+      "sha256": "3a33eeaf64d99e255c3687ee5cc0454c8d8abe26f08ed5293084b1a628d5ad27"
+    },
+    {
+      "path": ".qa-held-garments/native-first/held-garment-preview-Grove-e293a-cts-the-real-held-model-low/held-garment-preview.png",
+      "bytes": 156906,
+      "sha256": "cd3da643ebb5016df9c76e40316816620ed402b477dd0be7143ee47c27e9ecd0"
+    },
+    {
+      "path": ".qa-held-garments/native-first/held-garment-preview-Heart-331c5-cts-the-real-held-model-low/held-garment-preview.png",
+      "bytes": 156646,
+      "sha256": "097837170ac49f58c9317d04f7588eb863dc3a3b75569a30465dee8ebe2f84bc"
+    },
+    {
+      "path": ".qa-held-garments/native-first/held-garment-preview-Heart-a3280-ts-the-real-held-model-high/held-garment-preview.png",
+      "bytes": 327661,
+      "sha256": "086173197f02584ac192b4b8ff7ae42e3c6cb4d9f793a6ed7686af6527734e61"
+    },
+    {
+      "path": ".qa-held-garments/native-first/held-garment-preview-Skywe-14968-ts-the-real-held-model-high/held-garment-preview.png",
+      "bytes": 327864,
+      "sha256": "5bb608dc08bfb9452f4623eab8d3099d6e130b93082f1ffe99b7e7573582e1a1"
+    },
+    {
+      "path": ".qa-held-garments/native-first/held-garment-preview-Skywe-158e1-ts-the-real-held-model-high/held-garment-preview.png",
+      "bytes": 327269,
+      "sha256": "5578dfc96b22a2034c48d1833bf48b70f3280df310ed900135a1d9fedfa0cbc6"
+    },
+    {
+      "path": ".qa-held-garments/native-first/held-garment-preview-Skywe-bfdb4-cts-the-real-held-model-low/held-garment-preview.png",
+      "bytes": 156746,
+      "sha256": "03887efad626d93ca146080c6e808a6653bae2751238e9be71ad21ea50640507"
+    },
+    {
+      "path": ".qa-held-garments/native-first/held-garment-preview-Skywe-fd8e2-cts-the-real-held-model-low/held-garment-preview.png",
+      "bytes": 156292,
+      "sha256": "56b87e8ec92f9734f404ec881162e5dd0840411f24394f6443f6f4c1829354e4"
+    },
+    {
+      "path": ".qa-held-garments/native-first/held-garment-preview-Tidek-2770f-ts-the-real-held-model-high/held-garment-preview.png",
+      "bytes": 327565,
+      "sha256": "99f30ecdc40465061e235ab0aaacde39fbdf7c27e61b8f66e1e633d9dcd7db21"
+    },
+    {
+      "path": ".qa-held-garments/native-first/held-garment-preview-Tidek-683d0-cts-the-real-held-model-low/held-garment-preview.png",
+      "bytes": 156982,
+      "sha256": "5379dc0d6df4020b5b0b404519156ca22d9c8d2f55b1747626059c3d7dc30eb4"
+    },
+    {
+      "path": ".qa-held-garments/native-first.log",
+      "bytes": 2150,
+      "sha256": "7527aba65652dc5be01e32553d74d94caeadef18aee8d6cd066b61adebf77da8"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/close-Cleric.png",
+      "bytes": 1356005,
+      "sha256": "b9523d328c8fa35ad8116679ad395ece637d23de3e4f5a8d983a027c8ceb16ed"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/close-Fighter-hud.png",
+      "bytes": 765731,
+      "sha256": "41ae2923f3ef8a19236254421da116914e0523266d53cade9d6f8a9af9699287"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/close-Fighter.png",
+      "bytes": 1339359,
+      "sha256": "b9b231fbee9c708ee9fc7eeaa45a2436add2bae48bde7c93a78ddb1538c0cbd9"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/close-Rogue.png",
+      "bytes": 1365402,
+      "sha256": "67959daa1edbce985b32f3a9ad11c3ddf3c6c6a12c863fb7d0b6d76cd09b7080"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/close-Wizard.png",
+      "bytes": 1361670,
+      "sha256": "71931844c64735473e0fe03d10fc69da50bcb25967521721cb13a6cf6c8b78e8"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/observation.json",
+      "bytes": 3888,
+      "sha256": "2f82a8114a47ff6e7aa58daf3cd71140db978106632aa78c7fa298f108aebdb9"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/original-party.png",
+      "bytes": 2115640,
+      "sha256": "7b6c4d7c5109202ceebe62c1e8746fff6cacabea126c50d47edfed39f23e8b24"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/party-Attack.png",
+      "bytes": 2105112,
+      "sha256": "9eded6cb2dc936b66b5d85016163bd606c43eed266532a8ff68d010716663a9b"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/party-CombatIdle.png",
+      "bytes": 2104574,
+      "sha256": "8d1952fcaf2c882912b3979f7c8217ec29fb1f0576b4bacc5283d1203d14bb10"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/party-Death.png",
+      "bytes": 2105424,
+      "sha256": "076d371bf750cff25e1e443e3e4a8f27f932ef49044de180fff3abe64f4b2dcb"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/party-Run-hud.png",
+      "bytes": 1318994,
+      "sha256": "1ec873cc395932e8d3839224122a6d382e0c6d5bda608b6d083489fe0366e390"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/party-Run.png",
+      "bytes": 2104926,
+      "sha256": "8d152bc822a2fc87de6ededf9d68b707f6b76f078a8bfaa0cf6d091d89c48328"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/restored-party.png",
+      "bytes": 2104037,
+      "sha256": "c610a110ea5bc714005f21d122cefd02fd2fbd71bf72e62c935bc3c4d53a5ef8"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/close-Cleric.png",
+      "bytes": 382318,
+      "sha256": "5d1cb39c6e84f899680b911d74da6e553bba7dd0120437da15c18657bed5bab7"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/close-Fighter-hud.png",
+      "bytes": 239075,
+      "sha256": "7562731ff1d2d1bef5111d4752610e8a882433a36bf674b618ef703208ffb238"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/close-Fighter.png",
+      "bytes": 378919,
+      "sha256": "b1a880d95e57c8faa500bc035f60aa096bf5f2a6c24f31aabbf702ead0a6da7c"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/close-Rogue.png",
+      "bytes": 401606,
+      "sha256": "7b0d35c264c1a8ed44f6bdc5af67932697f23accc2a35edad21caab671ca3c7c"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/close-Wizard.png",
+      "bytes": 397085,
+      "sha256": "371f70c424cad196fe99035b71b17500ad72c31634d3ea1259db83c2a276b00f"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/observation.json",
+      "bytes": 3875,
+      "sha256": "03c67b184e7603f1808cbc036486e8234a7f8d0acde18a52c23246d8e82427ed"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/original-party.png",
+      "bytes": 708637,
+      "sha256": "f8ae57a582d0bd6ad3cf62b190b0ffbbdec28c6266846ac9916939ae98a264db"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/party-Attack.png",
+      "bytes": 707799,
+      "sha256": "cb7ed5b86db6c59700f0a1da1ebd307584606dc9d0a81a5187408aca26c8da82"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/party-CombatIdle.png",
+      "bytes": 707820,
+      "sha256": "04f67fa1e6abc912e00a9dcbe9ac35a157cc71fa1811d58b4db9881045b22d4b"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/party-Death.png",
+      "bytes": 708208,
+      "sha256": "abb65edb42eedb41799683ce38ca009e2fdc08e7c83db6f5bb71dfd567e83d61"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/party-Run-hud.png",
+      "bytes": 451853,
+      "sha256": "62d518125349aa8e6d4b4f7f9dfddd29506fd4a4422ce99526a9bd96284153d6"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/party-Run.png",
+      "bytes": 707771,
+      "sha256": "9782214d9fa1e5bbef4f40465573ccb97db12de4be426a325a986abb10ad61b3"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/restored-party.png",
+      "bytes": 707662,
+      "sha256": "01c284da0e96cfd4caf7ea79626f5b024814d0a561832385efd9f5cb7287c876"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Grove-3898c-ts-the-real-held-model-high/held-garment-detail.png",
+      "bytes": 322647,
+      "sha256": "526052c7956bc9e9217afae5bd650fde0ad6c24bef83d65940f11126cc34d45d"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Grove-3898c-ts-the-real-held-model-high/held-garment-preview.png",
+      "bytes": 329993,
+      "sha256": "61afcec252709eaf3eccea4d7b6905224cfc16aa6863d3bef1a5cdec5d8ade91"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Grove-532f2-cts-the-real-held-model-low/held-garment-detail.png",
+      "bytes": 151081,
+      "sha256": "2ba782cdc16d9942d185fa28bd9d7c96020c8a54f397f9e25f8599b5b7a97b97"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Grove-532f2-cts-the-real-held-model-low/held-garment-preview.png",
+      "bytes": 157132,
+      "sha256": "8c0ea05bc10988030a02481035fbd718125728af30f64ff3a662df23356c517c"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Grove-d07ce-ts-the-real-held-model-high/held-garment-detail.png",
+      "bytes": 324709,
+      "sha256": "d268905cbd262326865b726dca0961723f5b46e90516e77a4f107a6d537e6e95"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Grove-d07ce-ts-the-real-held-model-high/held-garment-preview.png",
+      "bytes": 330115,
+      "sha256": "3150fbda287f92483945d44c96f91c4eb597aca101f6f6a77e42b446c685899b"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Grove-e293a-cts-the-real-held-model-low/held-garment-detail.png",
+      "bytes": 152666,
+      "sha256": "2b8df087c39de6a9fa4ce6465fd1de01fb760f4f2bbd0d9a1cabd4123fbe0dd1"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Grove-e293a-cts-the-real-held-model-low/held-garment-preview.png",
+      "bytes": 156531,
+      "sha256": "d764cd4e27d0d21e70ba9ca3b9c333cd49c315d111be3e37441c90bb23fed57f"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Heart-331c5-cts-the-real-held-model-low/held-garment-detail.png",
+      "bytes": 150030,
+      "sha256": "92bd869575ecbdc266c0c22a1d7158bec04786f2bb5a3417cc9120a51dbdb68f"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Heart-331c5-cts-the-real-held-model-low/held-garment-preview.png",
+      "bytes": 156261,
+      "sha256": "045d46e193462bded638fed4698a1581ae94d26cd71a53ae8190df4ef282b806"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Heart-a3280-ts-the-real-held-model-high/held-garment-detail.png",
+      "bytes": 321685,
+      "sha256": "f407a6045cce959e5423f19c554184a1943ccb06afc607fcabc30759bfd9538e"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Heart-a3280-ts-the-real-held-model-high/held-garment-preview.png",
+      "bytes": 330026,
+      "sha256": "5489fffef739f7c5827645fdd6c6f2153ebc3fa7c9400c7b42d39475ed23f60a"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Skywe-14968-ts-the-real-held-model-high/held-garment-detail.png",
+      "bytes": 324191,
+      "sha256": "07fbae76876730487eb0d4df97a76131ba693c572ed84cad85804141fac3b2fb"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Skywe-14968-ts-the-real-held-model-high/held-garment-preview.png",
+      "bytes": 329955,
+      "sha256": "deb9132f7dc20988223cb962c49cb853106f81e781d9d8ee7d958800d8abef12"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Skywe-158e1-ts-the-real-held-model-high/held-garment-detail.png",
+      "bytes": 318450,
+      "sha256": "f538b412f68856af73f35f21704c2b523f881d015bb385ab7ad1fe2db1705dd9"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Skywe-158e1-ts-the-real-held-model-high/held-garment-preview.png",
+      "bytes": 329286,
+      "sha256": "7b5e514b3c12d6e8e3450f7e22e7d388618eb685d0a8a4a0f655087ca5dcb5f8"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Skywe-bfdb4-cts-the-real-held-model-low/held-garment-detail.png",
+      "bytes": 147972,
+      "sha256": "2c69516311d2b3a1cca9afa4ebcf7c47b6873ce18166c1868b89828d03b02cb1"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Skywe-bfdb4-cts-the-real-held-model-low/held-garment-preview.png",
+      "bytes": 156385,
+      "sha256": "27602cd284f9270f066615e73b56b4906c863ab1dc4019bd47d0e5a35deb4394"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Skywe-fd8e2-cts-the-real-held-model-low/held-garment-detail.png",
+      "bytes": 151736,
+      "sha256": "13fc2f570f8ae32256ba1aad463ec5227e1d17df0a9624d065c091c8874dcc1a"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Skywe-fd8e2-cts-the-real-held-model-low/held-garment-preview.png",
+      "bytes": 155916,
+      "sha256": "0ca7793ecbce1f766d1b30dec3243e2ee36c4c4f0fd4e01d98a35ea2cfd1ad90"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Tidek-2770f-ts-the-real-held-model-high/held-garment-detail.png",
+      "bytes": 322508,
+      "sha256": "0587d4d479b1c601e34ce5884cabdb9775892ff9f4956ea1d5571318c56a3da5"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Tidek-2770f-ts-the-real-held-model-high/held-garment-preview.png",
+      "bytes": 329874,
+      "sha256": "ca64aa1751f46c2256fa02095c26604e648399c9bd523a935042e3b887b4d1dd"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Tidek-683d0-cts-the-real-held-model-low/held-garment-detail.png",
+      "bytes": 150747,
+      "sha256": "8130fad65910c8225480f66a01ce62ae3228eca0e24ab29b90a3d2cd4efc0744"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection/held-garment-preview-Tidek-683d0-cts-the-real-held-model-low/held-garment-preview.png",
+      "bytes": 156630,
+      "sha256": "8b97d94b911cb76d1587916f71da583b024095425cdd28d4c4e853204d161e8c"
+    },
+    {
+      "path": ".qa-held-garments/native-inspection.log",
+      "bytes": 2150,
+      "sha256": "82c23f47e36f9cd418741c5b8051e3fe895d1d31bace8fb120b1e67bd4034334"
+    },
+    {
+      "path": ".qa-held-garments/official-validation.json",
+      "bytes": 13525,
+      "sha256": "a5cd619b8f81a13b38860d972690d3e0996d7e9b681bc481c24247df852b6cbc"
+    },
+    {
+      "path": ".qa-held-garments/official-validation.log",
+      "bytes": 996,
+      "sha256": "d1d1a8362c2c7daf13656814684c73566815c117351af45c7dd00bba603139f4"
+    },
+    {
+      "path": ".qa-held-garments/prepare.log",
+      "bytes": 2666,
+      "sha256": "07a4982a94cd04d1cd20e8698155d0617952ba7420e76891819f3f8d1421af6b"
+    },
+    {
+      "path": ".qa-held-garments/reviewed-material-generation.log",
+      "bytes": 90,
+      "sha256": "af0d798fa43a7a37b3cd72af0601a4309f471757c2e2b67e871b6ca6ef025324"
+    },
+    {
+      "path": ".qa-held-garments/scoped-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-held-garments/second-focused.log",
+      "bytes": 46187,
+      "sha256": "6930332dfafdb8c2e147bf9abb41a19e26311f09d792a0fad4209a88fb576042"
+    }
+  ]
+}

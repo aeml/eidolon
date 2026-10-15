@@ -128,7 +128,7 @@ test('animation coverage check does not rewrite the actual documentation', () =>
 
 const contentGroups = ['world-geography', 'world-locations', 'world-elevation', 'town-neighborhood',
     'chronicle-investigations', 'chronicle-expeditions', 'chronicle-hunts', 'dark-realm-chronicle',
-    'earth-outcrops', 'world-population', 'cosmetics', 'authored-equipment', 'garment-models', 'animation-coverage', 'gameplay-geometry-precomputed'];
+    'earth-outcrops', 'world-population', 'cosmetics', 'authored-equipment', 'garment-models', 'held-garments', 'animation-coverage', 'gameplay-geometry-precomputed'];
 function prepareGate(failingGroup) {
     mkdirSync(path.join(fixture, 'scripts'));
     copyFileSync(path.join(root, 'scripts/check-content.mjs'), path.join(fixture, 'scripts/check-content.mjs'));
@@ -145,7 +145,7 @@ test('aggregate gate invokes every fixed generator in check mode from outside th
     const result = spawnSync(process.execPath, [path.join(fixture, 'scripts/check-content.mjs')], {cwd: tmpdir(), encoding: 'utf8'});
     expect(result.status).toBe(0);
     expect(gateCalls()).toEqual(contentGroups.map(group => ({group, args: ['--check']})));
-    expect(result.stdout).toContain('Verified 15 generated content groups');
+    expect(result.stdout).toContain('Verified 16 generated content groups');
 });
 
 test('aggregate gate propagates a failed generator and never runs later groups', () => {

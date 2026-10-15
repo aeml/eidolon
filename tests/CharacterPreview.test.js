@@ -176,3 +176,38 @@ test('class replacement and final disposal release owned loadout geometry, not s
         second.shared.forEach(spy => expect(spy).not.toHaveBeenCalled());
     } finally { preview.dispose(); jest.restoreAllMocks(); }
 });
+
+function inspectionFixture() {
+    const { preview, renderer, host } = fixture(); preview.initialize();
+    const root = new THREE.Group(), body = new THREE.Mesh(new THREE.BoxGeometry(1, 4, 1), new THREE.MeshStandardMaterial());
+    body.position.y = 2;
+    const hidden = new THREE.Mesh(new THREE.BoxGeometry(.2, .2, .2), new THREE.MeshStandardMaterial()); hidden.visible = false;
+    const held = new THREE.Group(); Object.assign(held.userData, { authoredEquipment: true, slot: 'offHand' });
+    held.position.set(-1, 1.5, 0); held.rotation.x = Math.PI / 2;
+    const face = new THREE.Mesh(new THREE.BoxGeometry(.5, .7, .03), new THREE.MeshStandardMaterial()); held.add(face);
+    root.add(body, hidden, held); preview.model = root; preview.scene.add(root);
+    return { preview, renderer, host, root, body, hidden, held, face };
+}
+
+test('held inspection frames the exact item front, preserves rotation controls and restores borrowed visibility', () => {
+    const { preview, renderer, host, root, body, hidden, face } = inspectionFixture();
+    preview.render(); const originalHeight = preview.camera.top;
+    renderer.render.mockImplementation(() => { expect(body.visible).toBe(false); expect(hidden.visible).toBe(false); expect(face.visible).toBe(true); });
+    preview.setFocusSlot('offHand');
+    expect(preview.camera.top).toBeLessThan(originalHeight); expect(host.dataset.previewFocus).toBe('offHand');
+    expect(Math.abs(preview.camera.up.dot(preview.focusDirection))).toBeLessThan(.000001);
+    const direction = preview.focusDirection.clone(); host.querySelector('[data-preview-turn="1"]').click();
+    expect(preview.focusDirection.equals(direction)).toBe(true); expect(root.rotation.y).toBe(preview.yaw);
+    expect(body.visible).toBe(true); expect(hidden.visible).toBe(false); expect(face.visible).toBe(true);
+    renderer.render.mockImplementation(() => {}); preview.setFocusSlot(null);
+    expect(preview.camera.top).toBe(originalHeight); expect(preview.camera.up.toArray()).toEqual([0, 1, 0]);
+    expect(host.dataset.previewFocus).toBe('character'); preview.dispose();
+});
+
+test('an inspection render error cannot leave the character or other equipment hidden', () => {
+    const { preview, renderer, body, hidden, face } = inspectionFixture();
+    renderer.render.mockImplementation(() => { throw Error('lost render context'); });
+    expect(() => preview.setFocusSlot('offHand')).toThrow('lost render context');
+    expect(body.visible).toBe(true); expect(hidden.visible).toBe(false); expect(face.visible).toBe(true);
+    preview.dispose();
+});

@@ -8,7 +8,7 @@ if (process.argv.length !== 2) throw new Error('Usage: npm run check:content');
 const root = fileURLToPath(new URL('../', import.meta.url));
 const checks = ['world-geography', 'world-locations', 'world-elevation', 'town-neighborhood',
     'chronicle-investigations', 'chronicle-expeditions', 'chronicle-hunts', 'dark-realm-chronicle',
-    'earth-outcrops', 'world-population', 'cosmetics', 'authored-equipment', 'garment-models', 'animation-coverage', 'gameplay-geometry-precomputed'];
+    'earth-outcrops', 'world-population', 'cosmetics', 'authored-equipment', 'garment-models', 'held-garments', 'animation-coverage', 'gameplay-geometry-precomputed'];
 for (const name of checks) {
     const result = spawnSync(process.execPath, [path.join(root, 'scripts', `generate-${name}.mjs`), '--check'], {cwd: root, stdio: 'inherit'});
     if (result.error) throw result.error;

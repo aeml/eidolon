@@ -27,6 +27,11 @@ export class CosmeticVendorUI {
         this.title = node('h3'); this.description = node('p');
         this.previewHost = node('div', '', 'character-preview cosmetic-preview');
         this.previewHost.innerHTML = `<div class="character-preview-label"></div><div class="character-preview-stage"><span class="character-preview-status" role="status">Select a look to preview.</span></div><div class="character-preview-controls"><button type="button" data-preview-turn="-0.785398" aria-label="Rotate preview left">↶</button><button type="button" data-preview-turn="reset">Front</button><button type="button" data-preview-turn="0.785398" aria-label="Rotate preview right">↷</button></div>`;
+        this.inspect = this.button('Inspect held look', () => {
+            if (!this.canAct() || !this.selected || this.inspect.hidden) return;
+            this.inspectHeld = !this.inspectHeld; this.renderPreview();
+        });
+        this.inspect.hidden = true;
         this.compare = this.button('Show equipped look', () => { if (!this.canAct()) return; this.showOriginal = !this.showOriginal; this.renderPreview(); });
         this.buy = this.button('Unlock cosmetic', () => this.reviewPurchase());
         this.apply = this.button('Apply owned look', () => {
@@ -42,7 +47,7 @@ export class CosmeticVendorUI {
             if (this.canAct() && this.pendingID) this.send('buy_cosmetic', { id: this.pendingID, priceEP: this.pendingPrice, confirmed: true });
         }); this.retry.hidden = true;
         this.status = node('p', '', 'cosmetic-status'); this.status.setAttribute('role', 'status'); this.status.setAttribute('aria-live', 'polite');
-        details.append(this.title, this.description, this.previewHost, this.compare, this.buy, this.apply, this.confirmation, this.retry);
+        details.append(this.title, this.description, this.previewHost, this.inspect, this.compare, this.buy, this.apply, this.confirmation, this.retry);
         body.append(this.list, details);
         this.root.append(header, this.balance, intro, body, this.status);
         document.body.append(this.root);
@@ -62,6 +67,7 @@ export class CosmeticVendorUI {
         this.playerID = player.id;
         this.ready = false; this.catalogueEpoch++;
         this.catalogue = []; this.collection = {}; this.selected = null; this.reviewedOffer = null; this.ep = null;
+        this.inspectHeld = false; this.inspect.hidden = true; this.inspect.textContent = 'Inspect held look'; this.inspect.setAttribute('aria-pressed', 'false');
         this.preview?.dispose(); this.preview = null;
         this.balance.textContent = 'Loading your EP balance…'; this.title.textContent = 'Select a cosmetic'; this.description.textContent = '';
         this.compare.disabled = true; this.retry.hidden = true;
@@ -143,7 +149,13 @@ export class CosmeticVendorUI {
             appearances: { ...player.appearances, [slot]: look }
         };
         if (!this.showOriginal && slot === 'outfit') model.equipment = { ...player.equipment };
+        const held = ['mainHand', 'offHand'].includes(slot);
+        this.inspect.hidden = !held;
+        if (!held) this.inspectHeld = false;
         this.preview.update(model);
+        this.preview.setFocusSlot?.(held && this.inspectHeld ? slot : null);
+        this.inspect.textContent = this.inspectHeld ? 'Show full character' : 'Inspect held look';
+        this.inspect.setAttribute('aria-pressed', String(Boolean(this.inspectHeld)));
         this.compare.textContent = this.showOriginal ? 'Show selected cosmetic' : 'Show equipped look';
     }
 

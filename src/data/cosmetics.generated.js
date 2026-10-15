@@ -48,7 +48,7 @@ export const COSMETIC_CATALOGUE = [
         "priceEP": 15,
         "primary": 7052680,
         "secondary": 13153143,
-        "description": "An ornamental green-steel blade with a harvest-gold guard. Its edge is only an appearance."
+        "description": "A branching bronze guard and beveled leaf blade frame an inset emerald channel."
     },
     {
         "id": "skyweaver-dagger-v1",
@@ -58,7 +58,7 @@ export const COSMETIC_CATALOGUE = [
         "priceEP": 15,
         "primary": 14347501,
         "secondary": 7376804,
-        "description": "Pearl-bright steel with cloud-blue fittings celebrates the open horizon."
+        "description": "A swept crescent blade, hooked star guard and blue inlay catch the light."
     },
     {
         "id": "hearthkeeper-staff-v1",
@@ -68,7 +68,7 @@ export const COSMETIC_CATALOGUE = [
         "priceEP": 15,
         "primary": 9055794,
         "secondary": 15051357,
-        "description": "A red-lacquered ceremonial staff, made for a festival rather than a furnace."
+        "description": "Forged phoenix wings cradle a faceted ember above a wrapped ashwood shaft."
     },
     {
         "id": "tidekeeper-mace-v1",
@@ -78,7 +78,7 @@ export const COSMETIC_CATALOGUE = [
         "priceEP": 15,
         "primary": 10869990,
         "secondary": 2186862,
-        "description": "Silver and lagoon enamel remember promises kept freely beside the river."
+        "description": "Four swept tide flanges surround a pale aquamarine core and bronze wave collars."
     },
     {
         "id": "grovekeeper-shield-v1",
@@ -88,7 +88,7 @@ export const COSMETIC_CATALOGUE = [
         "priceEP": 12,
         "primary": 3759186,
         "secondary": 13153143,
-        "description": "A green and gold shield-face decorated for the grove's reopening, without added protection."
+        "description": "A scalloped bronze ward carries a raised branching oak and an emerald heart."
     },
     {
         "id": "skyweaver-tome-v1",
@@ -98,7 +98,7 @@ export const COSMETIC_CATALOGUE = [
         "priceEP": 12,
         "primary": 7376804,
         "secondary": 14347501,
-        "description": "A cloud-blue book cover with pearl clasps. The spells inside remain your own."
+        "description": "A bound grimoire wears raised crescent metalwork, star clasps and a sapphire seal."
     },
     {
         "id": "hearthkeeper-shield-v1",

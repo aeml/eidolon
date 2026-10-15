@@ -1,0 +1,104 @@
+{
+  "date": "2026-10-15T05:51:26.319930+00:00",
+  "runtimeSource": "849803692bee3c9bc2fbd896aa85a4084cbc9896",
+  "state": "Isolated and UNSELECTED pending native art/grip/motion/preview/resource review. Not merged into master or deployed.",
+  "scope": "Six distinct modeled held looks across existing sword/dagger/staff/mace/shield/tome unlocks. Twelve real High/Low GLBs, exact asset versions and unchanged delivered grip coordinate system/source hashes. Existing ownership IDs/names/slots/prices remain unchanged.",
+  "designs": [
+    {
+      "id": "grovekeeper-blade-v1",
+      "design": "thornblade",
+      "description": "A branching bronze guard and beveled leaf blade frame an inset emerald channel."
+    },
+    {
+      "id": "skyweaver-dagger-v1",
+      "design": "crescent-dagger",
+      "description": "A swept crescent blade, hooked star guard and blue inlay catch the light."
+    },
+    {
+      "id": "hearthkeeper-staff-v1",
+      "design": "phoenix-staff",
+      "description": "Forged phoenix wings cradle a faceted ember above a wrapped ashwood shaft."
+    },
+    {
+      "id": "tidekeeper-mace-v1",
+      "design": "tide-mace",
+      "description": "Four swept tide flanges surround a pale aquamarine core and bronze wave collars."
+    },
+    {
+      "id": "grovekeeper-shield-v1",
+      "design": "oak-shield",
+      "description": "A scalloped bronze ward carries a raised branching oak and an emerald heart."
+    },
+    {
+      "id": "skyweaver-tome-v1",
+      "design": "astral-tome",
+      "description": "A bound grimoire wears raised crescent metalwork, star clasps and a sapphire seal."
+    }
+  ],
+  "validation": {
+    "client": "176distinct checks across12suites pass (163combined+13audit). Includes actual GLTF parse, UV/normal/finite geometry, exact fileSHA/bytes, all four classes/qualities, strict matrix equality with actual delivered-gear baseline, independent hands, immutable gear, original material colors and missing-download retain/retry.",
+    "models": "Official validator:12GLBs, zero errors/warnings. Deterministic held generator and16generated content groups pass.",
+    "lint": "Full lint passes; scoped audit lint also passes after importing the explicit predecessor garment audit.",
+    "audit": "Exact12newheld model paths, frozen generated-manifestSHA, all12source reference hashes and exact source token allowances. Legacy zero-payload limits and all existing character/equipment audits remain unchanged.",
+    "retainedFailures": "Initial asset override count omitted12new model versions; fixed exact765map. Initial actualGLTF fixture passed a Node-realm ArrayBuffer to jsdom GLTFLoader; copied into browser-realm ArrayBuffer. Raw exported grip matrix comparison found preexisting tiny TRS decomposition differences; corrected fixture compares against actual original equipment path on the same actor with strict matrix equality. Initial failures retained.",
+    "pending": "Two existing complete-outfit High/Low party cases now assert actual six held model IDs;12new vendor preview/compare/select cases are prepared but unexecuted. No rendered art, gameplay motion, native scene budgets, repeat-cycle resources, production purchase or physical-device acceptance claimed. Waiting for ordered56CI to finish before local GPU use."
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-held-garments-20261015",
+  "evidence": [
+    {
+      "path": ".qa-held-garments/combined-focused.log",
+      "bytes": 1111,
+      "sha256": "62531d1b6ddcc2279d24190120c1fcc2b9f2f719973e5d36e27a9d0d74db2ee7"
+    },
+    {
+      "path": ".qa-held-garments/asset-guard.log",
+      "bytes": 597,
+      "sha256": "6bf0062a38d2b7e951a2212bfe83fc8ed79a95b52b60bf45fd6cb1c73eb594db"
+    },
+    {
+      "path": ".qa-held-garments/full-lint.log",
+      "bytes": 96,
+      "sha256": "0b5033e6a217fbd15dc194727ba175dfcf1a245641eab20298f084f65231cecd"
+    },
+    {
+      "path": ".qa-held-garments/guard-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-held-garments/official-validation.json",
+      "bytes": 13525,
+      "sha256": "a5cd619b8f81a13b38860d972690d3e0996d7e9b681bc481c24247df852b6cbc"
+    },
+    {
+      "path": ".qa-held-garments/official-validation.log",
+      "bytes": 996,
+      "sha256": "d1d1a8362c2c7daf13656814684c73566815c117351af45c7dd00bba603139f4"
+    },
+    {
+      "path": ".qa-held-garments/content.log",
+      "bytes": 3858,
+      "sha256": "680fbd5eb043d9087b0f531ff1ecd48fcb48419d1b0582bcd2f6025ffbcfe46b"
+    },
+    {
+      "path": ".qa-held-garments/first-focused.log",
+      "bytes": 2335,
+      "sha256": "3504d359a81b8c6d4f746f3e833e2a8c9b0eca39e00844bc1a4a78d30c723f7e"
+    },
+    {
+      "path": ".qa-held-garments/second-focused.log",
+      "bytes": 46187,
+      "sha256": "6930332dfafdb8c2e147bf9abb41a19e26311f09d792a0fad4209a88fb576042"
+    },
+    {
+      "path": ".qa-held-garments/corrected-model-focused.log",
+      "bytes": 9547,
+      "sha256": "3221eb7704f223e03f54d1a026fea9274d20efda400c606c7db53aa9ce7c30f7"
+    },
+    {
+      "path": ".qa-held-garments/grip-baseline-corrected.log",
+      "bytes": 518,
+      "sha256": "16747220fb019786e3c1c7aead13f7096906976c1133a92561d6e66ba5b6e89e"
+    }
+  ]
+}
