@@ -1,0 +1,92 @@
+{
+  "date": "2026-10-15T05:25:44.879542+00:00",
+  "state": "Qualified local selection; publication pending.",
+  "runtimeSource": "86602174e260f5dcd3348db9d71ea8e14dd6931e",
+  "scope": "Device-local dragged character, inventory, store and registered window coordinates; independent wide/compact profiles; phone-safe default placement; Settings reset; owned drag listeners. Pure presentation preferences, no character state.",
+  "validation": {
+    "focused": "94 checks across five suites pass.",
+    "native": "Five distinct native cases pass across original3 and corrected2, without retries. Actual mouse close/reopen, content and viewport resize, reload, keyboard reset, phone saved-offset exclusion/reset, retired desktop and phone UI sessions.",
+    "review": "Desktop and390px phone reset captures reviewed; action reachable, phone44px target, visible confirmation and header/close controls.",
+    "failure": "Original new reset action had a label-for-button that replaced its accessible name. Desktop new case failed waiting for action name, phone case interrupted. Replaced with plain field heading; unchanged action-name checks pass in both corrected cases. Initial evidence retained.",
+    "limits": "No full shared-menu visual redesign, physical playtest or beta usability acceptance. Phone menus use existing fixed responsive layout and cannot be dragged; reset also clears saved desktop profiles on the same device. Storage denial preserves current UI state but cannot survive reload.",
+    "lint": "Full lint passes after joining the multiline parameterized Jest invocation; original lint failure retained. No assertion changes."
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-window-quality-20261015",
+  "evidence": [
+    {
+      "path": ".qa-window-quality/focused.log",
+      "bytes": 766,
+      "sha256": "6087d32e4ca3d8691e1dbb3397f8ee058a407c5c6164417860b3a67e3ec55302"
+    },
+    {
+      "path": ".qa-window-quality/native/window-position-memory-mov-1e8e3-eir-positions-when-reopened/remembered-store-and-bag.png",
+      "bytes": 483457,
+      "sha256": "971a3af3ea819799e7704529637e016687c46f733985a2cfb2287e6b2a1aaf80"
+    },
+    {
+      "path": ".qa-window-quality/native/window-position-memory-mov-1e8e3-eir-positions-when-reopened/remembered-store-resized.png",
+      "bytes": 157529,
+      "sha256": "1dfd47c3825b87f518b77e8b12231d662d58adb02f3f76e3f0b1097b1362cc7e"
+    },
+    {
+      "path": ".qa-window-quality/native/window-position-memory-pho-a38d0-rs-a-reachable-layout-reset/error-context.md",
+      "bytes": 8372,
+      "sha256": "48056e7846269d3ecb0d4e747ac8e49dde7a7a65c5aa2fc6670d9616b0d15f73"
+    },
+    {
+      "path": ".qa-window-quality/native/window-position-memory-pho-a38d0-rs-a-reachable-layout-reset/test-failed-1.png",
+      "bytes": 49461,
+      "sha256": "0b638e579b908f700851ea9ba7f28896f0a2816299a244b7c3bcd528154135fc"
+    },
+    {
+      "path": ".qa-window-quality/native/window-position-memory-sav-0725a-t-layout-and-keyboard-reset/error-context.md",
+      "bytes": 37719,
+      "sha256": "d05f66f737347abd850909dc0858b472048e518fafde456c8dee2d6d6de4a3d2"
+    },
+    {
+      "path": ".qa-window-quality/native/window-position-memory-sav-0725a-t-layout-and-keyboard-reset/test-failed-1.png",
+      "bytes": 95365,
+      "sha256": "dd009beea68e8c5cbe9fbdc66bce827b8d2830111a10a689d1ef272b6b3ff0e7"
+    },
+    {
+      "path": ".qa-window-quality/native-corrected/window-position-memory-pho-a38d0-rs-a-reachable-layout-reset/phone-layout-reset.png",
+      "bytes": 43003,
+      "sha256": "c13a93edae784b5346888d65cd032d49b7e9de11286fb8963a3fc4cc3d62bead"
+    },
+    {
+      "path": ".qa-window-quality/native-corrected/window-position-memory-sav-0725a-t-layout-and-keyboard-reset/layout-reset-settings.png",
+      "bytes": 94393,
+      "sha256": "d64686754ea0200b15dc7639994704c31ba70da05fd1d40c13a687fabd0fb85f"
+    },
+    {
+      "path": ".qa-window-quality/native-corrected.log",
+      "bytes": 557,
+      "sha256": "5499063909da2fd713e81d551eef1de25828fd0d1111ed79d938566f5969753d"
+    },
+    {
+      "path": ".qa-window-quality/native.log",
+      "bytes": 7562,
+      "sha256": "e54d9385f18b19ddfbb046045a82251671437dd2bdd2a22a5d993f099a01ee73"
+    },
+    {
+      "path": ".qa-window-quality/prepare.log",
+      "bytes": 2666,
+      "sha256": "03498a1ad60452234e8b1223da91af46ffb539de34884915e1a91eabd6ced81b"
+    },
+    {
+      "path": ".qa-window-quality/scoped-lint.log",
+      "bytes": 231,
+      "sha256": "77dea477690d85c7baa128586f3df0e1e8c90b1056fb3b12154b4a6126fbd9df"
+    },
+    {
+      "path": ".qa-window-quality/final-lint.log",
+      "bytes": 327,
+      "sha256": "ea894053e262ca39e3933de352edf173bf8e09af8e7a1403c8f65d55b1bf8a53"
+    },
+    {
+      "path": ".qa-window-quality/corrected-final-lint.log",
+      "bytes": 96,
+      "sha256": "33ae01988d54baa1b38dc80f09ec63fb349ee06c2f5c3f4a3d3a8ce4a8756519"
+    }
+  ]
+}

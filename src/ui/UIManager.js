@@ -152,6 +152,7 @@ export class UIManager {
         this.graphicsBrightnessValue = document.getElementById('graphics-brightness-value');
         this.uiScaleSlider = document.getElementById('ui-scale');
         this.uiScaleValue = document.getElementById('ui-scale-value');
+        ownedEvent(this, document.getElementById('btn-reset-window-layout'), 'click', () => this.resetWindowPositions());
         this.controlHintLevelSelect = document.getElementById('control-hint-level');
         this.keyboardReferenceGuide = document.getElementById('help-keyboard-reference');
         this.autoLootToggle = document.getElementById('auto-loot-enabled');

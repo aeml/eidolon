@@ -13,7 +13,7 @@ const resize = (width, height) => {
     Object.defineProperty(window, 'innerWidth', { configurable: true, value: width });
     Object.defineProperty(window, 'innerHeight', { configurable: true, value: height });
 };
-beforeEach(() => resize(1280, 800));
+beforeEach(() => { resize(1280, 800); localStorage.clear(); });
 afterEach(() => { resize(viewport.width, viewport.height); document.body.replaceChildren(); });
 
 function panel(left = 100, top = 100) {
@@ -80,4 +80,46 @@ test('viewport reduction clamps a dragged store and hides its unavailable compan
     expect(ui.inventory.inventoryScreen.style.display).toBe('none');
     ui.closeManagedWindow('shop'); ui.openManagedWindow('shop');
     expect(position(shop)).toEqual(['78px', '348px']);
+});
+
+
+test('a new UI instance restores saved character, bag and store coordinates', () => {
+    const first = fixture();
+    for (const [id, layout] of first.windowLayouts) {
+        if (!['character', 'inventory', 'shop'].includes(id)) continue;
+        first.rememberWindowPosition(layout.element);
+    }
+    const next = fixture();
+    next.openManagedWindow('character'); next.openManagedWindow('inventory');
+    expect(position(next.characterSheet)).toEqual(['58px', '93px']);
+    expect(position(next.inventory.inventoryScreen)).toEqual(['890px', '410px']);
+    next.openManagedWindow('shop', { keepCompanion: true });
+    expect(position(next.inventory.shopScreen)).toEqual(['422px', '176px']);
+    expect(position(next.inventory.inventoryScreen)).toEqual(['890px', '410px']);
+});
+
+test('clamping during content or viewport changes never overwrites saved desktop coordinates', () => {
+    const ui = fixture(), shop = ui.inventory.shopScreen;
+    shop.style.left = '920px'; shop.style.top = '540px'; ui.rememberWindowPosition(shop);
+    ui.openManagedWindow('shop'); resize(1000, 700); ui.reflowVisibleWindows();
+    expect(position(shop)).toEqual(['688px', '448px']);
+    resize(1280, 800); ui.reflowVisibleWindows();
+    expect(position(shop)).toEqual(['920px', '540px']);
+    resize(800, 600); ui.reflowVisibleWindows();
+    expect(shop.dataset.draggedWindow).toBeUndefined();
+    shop.style.left = '30px'; shop.style.top = '40px'; ui.rememberWindowPosition(shop);
+    resize(1280, 800); ui.reflowVisibleWindows();
+    expect(position(shop)).toEqual(['920px', '540px']);
+    resize(800, 600); ui.reflowVisibleWindows();
+    expect(position(shop)).toEqual(['30px', '40px']);
+});
+
+test('phone sessions ignore saved desktop offsets and reset removes all saved layouts', () => {
+    const desktop = fixture(); desktop.rememberWindowPosition(desktop.characterSheet);
+    const phone = fixture(); phone.isMobile = true; phone.restoreWindowPositions();
+    expect(phone.characterSheet.dataset.draggedWindow).toBeUndefined();
+    phone.resetWindowPositions();
+    const next = fixture();
+    expect(next.characterSheet.dataset.draggedWindow).toBeUndefined();
+    expect(next.windowLayoutPreferences.get('character', 'wide')).toBeUndefined();
 });
