@@ -1125,26 +1125,27 @@
 }
 
 .shop-sell-button {
-    font-size: 12px;
-    padding: 5px 10px;
+    font-size: 14px;
+    padding: 8px 10px;
+    min-height: 44px;
 }
 
 .shop-sell-button--common {
-    background: #333;
-    color: #fff;
-    border-color: #fff;
+    background: #242d38;
+    color: #e4e8ed;
+    border-color: #85919c;
 }
 
 .shop-sell-button--uncommon {
-    background: #1a331a;
-    color: #1eff00;
-    border-color: #1eff00;
+    background: #1d302a;
+    color: #a9d8bc;
+    border-color: #769b84;
 }
 
 .shop-sell-button--rare {
-    background: #1a1a33;
-    color: #0070dd;
-    border-color: #0070dd;
+    background: #1e2c40;
+    color: #bad6f3;
+    border-color: #7798ba;
 }
 
 .stash-window {
@@ -1610,3 +1611,5 @@
 .mobile-mode .shop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .mobile-mode .shop-item :is(.shop-item__name, .shop-item__price, .shop-item__detail),
 .mobile-mode .shop-purchase-status { font-size: 16px; }
+
+.mobile-mode .shop-sell-button { font-size: 16px; }

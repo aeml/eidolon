@@ -24,6 +24,7 @@ for (const phone of [false, true]) test(`merchant offers show exact prices and r
     await expect(page.locator('#bag-usage')).toHaveText('1 / 25');
     if (!phone) {
         await expect(page.locator('#character-sheet .character-preview-stage canvas')).toBeVisible();
+        await expect.poll(() => page.evaluate(() => window.__shopQuality.ui.characterPreview.model?.userData.equipmentVisualItemCount)).toBe(3);
         await page.screenshot({ path: testInfo.outputPath('character-and-bag.png') });
     }
     await page.evaluate(() => window.__shopQuality.ui.inventory.toggleShop());
