@@ -86,11 +86,11 @@ describe('Procedural dungeon interior art', () => {
         expect(expected).toEqual([63, 84, 91]);
     });
 
-    test.each(DUNGEON_INTERIOR_IDS)('%s keeps floor detail broad and smoothly filtered without changing wall scale', (dungeonType) => {
+    test.each(DUNGEON_INTERIOR_IDS)('%s keeps human-scale floor detail filtered without changing wall scale', (dungeonType) => {
         const kit = createProceduralDungeonInteriorKit(dungeonType);
         const floor = kit.floorMaterial(120, 96);
         const wall = kit.wallMaterial(120, 96, false);
-        expect(floor.map.repeat.toArray()).toEqual([5, 4]);
+        expect(floor.map.repeat.toArray()).toEqual([15, 12]);
         expect(wall.map.repeat.toArray()).toEqual([10, 8]);
         for (const material of [floor, wall]) {
             expect(material.emissiveMap.repeat.toArray()).toEqual(material.map.repeat.toArray());

@@ -38,9 +38,9 @@ export function sampleVerdantMasonry(x, y, wall = false) {
         - Math.sin(u * 1.7 + stone * 11) * .025);
     const fracture = wall ? (stone > .55 ? (1 - smooth(.006, .025, crackLine))
         * smooth(.28, .65, erosion) * bevel : 0) : flagstone.fracture;
-    const moss = smooth(.52, .82, weather) * (1 - bevel * .8) * .7;
+    const moss = smooth(.52, .82, weather) * (1 - bevel * .8) * (wall ? .7 : .25);
     const tone = .45 + stone * .25 + weather * .2 + grain * .1;
-    const mortar = wall ? [46, 49, 45] : [60, 63, 56];
+    const mortar = wall ? [46, 49, 45] : [68, 70, 63];
     const shadow = [59, 62, 59], light = [91, 93, 85], growth = [48, 60, 37];
     const color = mortar.map((joint, index) => {
         const face = shadow[index] + (light[index] - shadow[index]) * tone;
@@ -49,6 +49,8 @@ export function sampleVerdantMasonry(x, y, wall = false) {
         return Math.round(worn + (growth[index] - worn) * moss);
     });
     return { color, emissive: 0,
-        relief: .35 + bevel * (.14 + stone * .02) + grain * .006 - fracture * .025,
+        // Floor joints are shallow worn mortar; the larger wall relief stays intact.
+        relief: .35 + bevel * (wall ? .14 + stone * .02 : .04 + stone * .006)
+            + grain * .006 - fracture * (wall ? .025 : .008),
         roughness: .98 - bevel * (.12 + stone * .03) };
 }

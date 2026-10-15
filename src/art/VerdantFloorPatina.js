@@ -1,4 +1,4 @@
-// Slow world-space variation crosses UV partitions and the24-unit repeat.
+// Slow world-space variation crosses UV partitions and the material repeat.
 // No texture fetch, clock, displaced geometry or additional render pass.
 export function applyVerdantFloorPatina(material) {
     const previous = material.onBeforeCompile, key = material.customProgramCacheKey();

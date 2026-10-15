@@ -28,7 +28,7 @@ test('registered floor maps retain their256px resolution and own a world-space p
         const map = floor[key];
         expect(map.image.width).toBe(256); expect(map.image.height).toBe(256);
         expect(map.wrapS).toBe(THREE.RepeatWrapping); expect(map.wrapT).toBe(THREE.RepeatWrapping);
-        expect(map.repeat.toArray()).toEqual([1, 1]);
+        expect(map.repeat.toArray()).toEqual([3, 3]);
     }
     expect(floor.displacementMap).toBeNull();
 });
