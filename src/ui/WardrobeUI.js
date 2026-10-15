@@ -35,6 +35,8 @@ export class WardrobeUI {
             option.textContent = slot.replace(/([A-Z])/g, ' $1').replace(/(\d)/g, ' $1').replace(/^./, c => c.toUpperCase());
             this.slot.append(option);
         }
+        const outfit = document.createElement('option');
+        outfit.value = 'outfit'; outfit.textContent = 'Full outfit garment'; this.slot.append(outfit);
         ownedEvent(this, this.root, 'toggle', () => {
             if (this.disposed || !this.root.open) return;
             this.refreshPlayer();
@@ -81,7 +83,8 @@ export class WardrobeUI {
         original.value = '';
         original.textContent = 'Original gear';
         this.look.append(original);
-        const entries = Object.entries(this.collection).filter(([, look]) => itemFitsEquipmentSlot({ slot: look.slot, type: 'ARMOR' }, this.slot.value));
+        const entries = Object.entries(this.collection).filter(([, look]) => this.slot.value === 'outfit' ? look.slot === 'outfit'
+            : itemFitsEquipmentSlot({ slot: look.slot, type: look.slot === 'mainHand' ? 'WEAPON' : 'ARMOR' }, this.slot.value));
         entries.sort((a, b) => a[0].localeCompare(b[0]));
         for (const [key, look] of entries) {
             const option = document.createElement('option');

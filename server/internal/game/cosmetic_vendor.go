@@ -12,10 +12,14 @@ const CosmeticVendorID = "vip-cosmetic-vendor"
 //go:embed content/cosmetics.json
 var cosmeticCatalogueJSON []byte
 
+//go:embed content/garments.json
+var garmentCatalogueJSON []byte
+
 type CosmeticOffer struct {
 	ID          string              `json:"id"`
 	Name        string              `json:"name"`
 	Realm       string              `json:"realm"`
+	Kind        string              `json:"kind,omitempty"`
 	Base        string              `json:"base"`
 	PriceEP     int                 `json:"priceEP"`
 	Description string              `json:"description"`
@@ -30,6 +34,11 @@ func init() {
 	if err := json.Unmarshal(cosmeticCatalogueJSON, &cosmeticCatalogue); err != nil {
 		panic(err)
 	}
+	var garments []CosmeticOffer
+	if err := json.Unmarshal(garmentCatalogueJSON, &garments); err != nil {
+		panic(err)
+	}
+	cosmeticCatalogue = append(cosmeticCatalogue, garments...)
 	ids, names := map[string]bool{}, map[string]bool{}
 	for i := range cosmeticCatalogue {
 		offer := &cosmeticCatalogue[i]
@@ -39,6 +48,11 @@ func init() {
 				break
 			}
 		}
+		if offer.Kind == "outfit" && offer.Appearance.Slot == "chest" {
+			offer.Appearance.Slot = "outfit"
+		} else if offer.Kind != "" {
+			panic("invalid cosmetic garment kind")
+		}
 		if offer.ID == "" || offer.Name == "" || offer.PriceEP <= 0 || offer.Appearance.Slot == "" || ids[offer.ID] || names[offer.Name] {
 			panic("invalid cosmetic catalogue")
 		}
@@ -47,6 +61,15 @@ func init() {
 }
 
 func CosmeticCatalogue() []CosmeticOffer { return append([]CosmeticOffer(nil), cosmeticCatalogue...) }
+
+func validOutfitAppearance(look EquipmentAppearance) bool {
+	for _, offer := range cosmeticCatalogue {
+		if offer.Kind == "outfit" && offer.Appearance == look {
+			return true
+		}
+	}
+	return false
+}
 
 func (w *World) spawnCosmeticVendor() {
 	w.AddEntity(&Entity{ID: CosmeticVendorID, Name: "Veyra · VIP Outfitter", Type: TypeNPC,

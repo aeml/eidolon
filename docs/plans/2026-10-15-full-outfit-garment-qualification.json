@@ -1,0 +1,559 @@
+{
+  "date": "2026-10-15T05:27:17.820343+00:00",
+  "runtimeSource": "136833b51af6af516ef3ea44c00eb7725a8e9e54",
+  "state": "Qualified local selection for next coherent release; full catalog and final visual acceptance remain open.",
+  "scope": "Server-authoritative full-outfit slot with preserved combat gear/independent hands/underlying individual looks. First Fighter-themed Iron Oath Regalia, eight actual skinned GLBs across four class fits and High/Low. Vendor/wardrobe preview/apply and exact model asset versions. No new membership/access rules, new prices, payment or seasonal scheduling. Existing25EP armor tier reused.",
+  "catalogCount": {
+    "outfits": 1,
+    "classFits": 4,
+    "qualityModels": 8,
+    "minimumDistinctLooks": 18,
+    "remainingDistinctLooks": 17,
+    "finalOwnerVisualReview": "open"
+  },
+  "validation": {
+    "client": "121distinct checks across eight suites pass. Browser plan suite also passes; see its exact log for count. Full lint and15generated content groups pass.",
+    "server": "Focused internal/game wardrobe/vendor and root full-outfit persistence/protocol/vendor handler checks pass. Actual characterJSON and remote protobuf retain real gear/stats and independent held appearance. No liveEP purchase performed.",
+    "models": "Official validator: eight GLBs, zero errors/warnings. UVs retained for runtime maps; separate vertex streams and registered53joint/inverse-bind contract guarded by deterministic generator checks.56approved fitted source pieces retain SHA provenance in generated manifest.",
+    "native": "Four distinct native cases pass without retries: four supplied classes on High/Low with32posed records, continuous90frame Run per quality, actualHUD/close captures, three swap/restore cycles, and actual vendor preview/compare/rotate/apply per quality. Prepared party draw/triangle assertions additionally pass in final two reruns. Strict repeat-cycle resource equality retained.",
+    "visualReview": "Reviewed close High with actualHUD, normal gameplay Low party withHUD, and actual vendor preview. Crown, curved shoulder fins and chest seal render; no missing underlying pieces or gear mutations. This selects the first usable model and pipeline, not final collection-wide VIP art acceptance.",
+    "retainedFailures": "Earlier too-dark prototype and less useful close frame retained. Pre-UV/stream correction Low204draws/94181tri failed200/85k; current Low124/78191 passes. Export originally pruned untextured UVs and interleaved streams, preventing existing PBR/batching route. Fixed export and exact format guards. Initial asset-version test retained old745override count; corrected exact753including eight model hashes. No budgets or resource equality weakened.",
+    "limits": "Anonymous controlled game/vendor fixtures, not earned gameplay, live purchases, physical phones, sustained performance, owner art acceptance, all motion-bank states or full beta readiness. Other17minimumlooks and final art/motion/party qualification remain open."
+  },
+  "observations": {
+    "high": {
+      "frames": [
+        {
+          "name": "original-party",
+          "calls": 146,
+          "triangles": 88262
+        },
+        {
+          "name": "party-CombatIdle",
+          "calls": 236,
+          "triangles": 191549
+        },
+        {
+          "name": "party-Run",
+          "calls": 236,
+          "triangles": 191549
+        },
+        {
+          "name": "party-Attack",
+          "calls": 236,
+          "triangles": 191549
+        },
+        {
+          "name": "party-Death",
+          "calls": 236,
+          "triangles": 191549
+        },
+        {
+          "name": "close-Fighter",
+          "calls": 94,
+          "triangles": 147971
+        },
+        {
+          "name": "close-Rogue",
+          "calls": 94,
+          "triangles": 148795
+        },
+        {
+          "name": "close-Wizard",
+          "calls": 103,
+          "triangles": 149001
+        },
+        {
+          "name": "close-Cleric",
+          "calls": 103,
+          "triangles": 150651
+        },
+        {
+          "name": "restored-party",
+          "calls": 220,
+          "triangles": 190923
+        }
+      ],
+      "cycles": [
+        {
+          "original": {
+            "geometries": 259,
+            "textures": 177
+          },
+          "garment": {
+            "geometries": 255,
+            "textures": 177
+          }
+        },
+        {
+          "original": {
+            "geometries": 259,
+            "textures": 177
+          },
+          "garment": {
+            "geometries": 255,
+            "textures": 177
+          }
+        },
+        {
+          "original": {
+            "geometries": 259,
+            "textures": 177
+          },
+          "garment": {
+            "geometries": 255,
+            "textures": 177
+          }
+        }
+      ],
+      "poses": 16,
+      "restoredItems": [
+        14,
+        14,
+        14,
+        14
+      ]
+    },
+    "low": {
+      "frames": [
+        {
+          "name": "original-party",
+          "calls": 120,
+          "triangles": 78418
+        },
+        {
+          "name": "party-CombatIdle",
+          "calls": 124,
+          "triangles": 78191
+        },
+        {
+          "name": "party-Run",
+          "calls": 124,
+          "triangles": 78191
+        },
+        {
+          "name": "party-Attack",
+          "calls": 124,
+          "triangles": 78191
+        },
+        {
+          "name": "party-Death",
+          "calls": 124,
+          "triangles": 78191
+        },
+        {
+          "name": "close-Fighter",
+          "calls": 30,
+          "triangles": 30225
+        },
+        {
+          "name": "close-Rogue",
+          "calls": 28,
+          "triangles": 27558
+        },
+        {
+          "name": "close-Wizard",
+          "calls": 31,
+          "triangles": 27561
+        },
+        {
+          "name": "close-Cleric",
+          "calls": 37,
+          "triangles": 36061
+        },
+        {
+          "name": "restored-party",
+          "calls": 120,
+          "triangles": 78418
+        }
+      ],
+      "cycles": [
+        {
+          "original": {
+            "geometries": 234,
+            "textures": 163
+          },
+          "garment": {
+            "geometries": 230,
+            "textures": 163
+          }
+        },
+        {
+          "original": {
+            "geometries": 234,
+            "textures": 163
+          },
+          "garment": {
+            "geometries": 230,
+            "textures": 163
+          }
+        },
+        {
+          "original": {
+            "geometries": 234,
+            "textures": 163
+          },
+          "garment": {
+            "geometries": 230,
+            "textures": 163
+          }
+        }
+      ],
+      "poses": 16,
+      "restoredItems": [
+        14,
+        14,
+        14,
+        14
+      ]
+    }
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-garment-outfits-20261015",
+  "evidence": [
+    {
+      "path": ".qa-garments/browser-plan.log",
+      "bytes": 501,
+      "sha256": "bf571e4bd7f40523e6488c66d481256ac3aa4cd1ac7d3567e52f431c9676ea0b"
+    },
+    {
+      "path": ".qa-garments/final-budget-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-garments/final-content.log",
+      "bytes": 3769,
+      "sha256": "ae87ceea89480a8e2803d6edf7049321978e220aac0684240a8ec30834d454a0"
+    },
+    {
+      "path": ".qa-garments/final-focused.log",
+      "bytes": 992,
+      "sha256": "0c0da6791316d06607a63b111be86cb3a2fcdafc4d47d4a2a0d98fdd0de60c1a"
+    },
+    {
+      "path": ".qa-garments/final-game-go.log",
+      "bytes": 41,
+      "sha256": "3402ffd2158838ff22bc6db205d0eecf377e2e83090ee4883feec9fa85bc76d7"
+    },
+    {
+      "path": ".qa-garments/final-handler-go.log",
+      "bytes": 27,
+      "sha256": "bdec1e3151eb0296a6d1e80325e3675d4aa4ca1c0a5100114cc28b914398df6a"
+    },
+    {
+      "path": ".qa-garments/final-lint.log",
+      "bytes": 96,
+      "sha256": "3835ec99b7b4910fc6a949311de34c4da456308fde4c98ff27e8790fdde2face"
+    },
+    {
+      "path": ".qa-garments/garment-version-corrected.log",
+      "bytes": 512,
+      "sha256": "ea46291c5e5498b374321895744333e1f272df769c56ab5c79994ce57a983eb6"
+    },
+    {
+      "path": ".qa-garments/layout-gltf-validation.json",
+      "bytes": 41775,
+      "sha256": "f7bcb0a7b2b91895388ddb5bae09944cb279b4981565838bd0dc221096c47cb5"
+    },
+    {
+      "path": ".qa-garments/layout-version-checks.log",
+      "bytes": 2872,
+      "sha256": "9309400fe830b5a9cf17e0a5e38d7a438d99f817f272315921a7e383fbacddd7"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/close-Cleric.png",
+      "bytes": 1358586,
+      "sha256": "906a5e4744cfcea5c98bf35f5f99943b4c7bdd30f437aadbd96f764aba72526d"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/close-Fighter-hud.png",
+      "bytes": 763900,
+      "sha256": "e83caa274319d91872b4e6ec2a3bea3b0309bf497da629b808afb46b2d344ca4"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/close-Fighter.png",
+      "bytes": 1341205,
+      "sha256": "a97dfde661278329ff66ba400f3a6baec504dd5c07f1d02be70df5731fd38ba9"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/close-Rogue.png",
+      "bytes": 1362090,
+      "sha256": "035fb994979b815da8cc85f4b3168eb644d539c22ea85dab6053e4d2d4955071"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/close-Wizard.png",
+      "bytes": 1371352,
+      "sha256": "09888204e06abea975b69aa6096d2b32a33a376b19889923196f7c711fbf8fba"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/observation.json",
+      "bytes": 3674,
+      "sha256": "8194ff34b88e2d318abcf34077f20a6b7d3dfd36e9ae7aea93c04a8814e6aa0a"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/original-party.png",
+      "bytes": 2114878,
+      "sha256": "33f4ecea5397ae9d2d4cbc24c36158cb5ac4ecdadf590355ca768ccfcd9ba151"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/party-Attack.png",
+      "bytes": 2104382,
+      "sha256": "0a18e0f0491e24270aa3fb4bf63274a6f75591829870fe074db970bbf1630a4f"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/party-CombatIdle.png",
+      "bytes": 2104233,
+      "sha256": "41d1591970637244bb0d094c720e583798f1a8547de533d3e1cdb09e0f7b883d"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/party-Death.png",
+      "bytes": 2104850,
+      "sha256": "9cf0abec9adee82b3b5f3358aa0a980f516cf1d33a094ceef59613e3c0eb13a2"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/party-Run-hud.png",
+      "bytes": 1318458,
+      "sha256": "e8046c9e46f3e169e6f3d2cb78068ddb3aed1e5d871e5235ea78093fbb72333f"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/party-Run.png",
+      "bytes": 2104790,
+      "sha256": "8e2bc115a96a545346a3f2d167e7a983c89eb7cbfce317e9bb142a2b47beaf07"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/restored-party.png",
+      "bytes": 2103720,
+      "sha256": "3b90cdf130fbb4d0d470a7ecbbe92fe934ba4520b44b874c0c8f709021eb224e"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/close-Cleric.png",
+      "bytes": 387734,
+      "sha256": "016bddbd6d5cf6cb57d5f234569f21c1e95813d506a115837b68949c7c7251bb"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/close-Fighter-hud.png",
+      "bytes": 240274,
+      "sha256": "43bbe24eab345e5c7116dc208c75372bef4e53f5950bfac236e60158904cd9fe"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/close-Fighter.png",
+      "bytes": 387174,
+      "sha256": "07f09af0af11feec354a2ddd5c6898af99a5e00579760acce4e5dbf54c29c7ef"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/close-Rogue.png",
+      "bytes": 403606,
+      "sha256": "628887cdc76c72ab38240c91505454ec0b56f02bf451ea656108058c679c5476"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/close-Wizard.png",
+      "bytes": 410622,
+      "sha256": "0c3002dc937296d3ea6d9525ae348e9bb2afa208508dfedf22b730ed8e4861a1"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/observation.json",
+      "bytes": 3661,
+      "sha256": "11f3678dd25944ffc8df9635ea55042df69a1fe9ea41a585ca7c554536566a5f"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/original-party.png",
+      "bytes": 708310,
+      "sha256": "163957b00d33e80dfe2b9bc6cbc12a26e3b7a52773de5283791e88d47cafb1ae"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/party-Attack.png",
+      "bytes": 707552,
+      "sha256": "c58be8913e34a5a87a4703cb3d39d1aa2613f38876b547b2f4d3876affa6c809"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/party-CombatIdle.png",
+      "bytes": 707707,
+      "sha256": "7e7e8c20f4d783ba4804aeb0583c4ecdb30fc8388a86454b2264830ab70a6fc4"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/party-Death.png",
+      "bytes": 707845,
+      "sha256": "5158f66f802a32d1acb680ac8b29245e80ed68c1b6bbdf8bf81697f99f0717db"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/party-Run-hud.png",
+      "bytes": 451566,
+      "sha256": "837b1b768e400ba0722cb70eb7f1e6f858b09d052a83f540094f0d91dc141792"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/party-Run.png",
+      "bytes": 707805,
+      "sha256": "eca711339017be7e0718d023c89bf5381e8d68c47054d60c5b0344de5d9e09ee"
+    },
+    {
+      "path": ".qa-garments/native-budget-final/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/restored-party.png",
+      "bytes": 707702,
+      "sha256": "511d031e07d1809a52211cc673238bcc06e230033c1981a7efbaeabe42dfa541"
+    },
+    {
+      "path": ".qa-garments/native-budget-final.log",
+      "bytes": 529,
+      "sha256": "14aee5823ea4aad1a4e1577e5b3100258635e408febd88e9bd6502e059bac8bc"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/close-Cleric.png",
+      "bytes": 1358586,
+      "sha256": "906a5e4744cfcea5c98bf35f5f99943b4c7bdd30f437aadbd96f764aba72526d"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/close-Fighter-hud.png",
+      "bytes": 763900,
+      "sha256": "e83caa274319d91872b4e6ec2a3bea3b0309bf497da629b808afb46b2d344ca4"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/close-Fighter.png",
+      "bytes": 1341205,
+      "sha256": "a97dfde661278329ff66ba400f3a6baec504dd5c07f1d02be70df5731fd38ba9"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/close-Rogue.png",
+      "bytes": 1362090,
+      "sha256": "035fb994979b815da8cc85f4b3168eb644d539c22ea85dab6053e4d2d4955071"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/close-Wizard.png",
+      "bytes": 1371352,
+      "sha256": "09888204e06abea975b69aa6096d2b32a33a376b19889923196f7c711fbf8fba"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/observation.json",
+      "bytes": 3674,
+      "sha256": "8194ff34b88e2d318abcf34077f20a6b7d3dfd36e9ae7aea93c04a8814e6aa0a"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/original-party.png",
+      "bytes": 2114878,
+      "sha256": "33f4ecea5397ae9d2d4cbc24c36158cb5ac4ecdadf590355ca768ccfcd9ba151"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/party-Attack.png",
+      "bytes": 2104382,
+      "sha256": "0a18e0f0491e24270aa3fb4bf63274a6f75591829870fe074db970bbf1630a4f"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/party-CombatIdle.png",
+      "bytes": 2104233,
+      "sha256": "41d1591970637244bb0d094c720e583798f1a8547de533d3e1cdb09e0f7b883d"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/party-Death.png",
+      "bytes": 2104850,
+      "sha256": "9cf0abec9adee82b3b5f3358aa0a980f516cf1d33a094ceef59613e3c0eb13a2"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/party-Run-hud.png",
+      "bytes": 1318458,
+      "sha256": "e8046c9e46f3e169e6f3d2cb78068ddb3aed1e5d871e5235ea78093fbb72333f"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/party-Run.png",
+      "bytes": 2104790,
+      "sha256": "8e2bc115a96a545346a3f2d167e7a983c89eb7cbfce317e9bb142a2b47beaf07"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-7dce3-s-all-supplied-classes-high/restored-party.png",
+      "bytes": 2103720,
+      "sha256": "3b90cdf130fbb4d0d470a7ecbbe92fe934ba4520b44b874c0c8f709021eb224e"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/close-Cleric.png",
+      "bytes": 387734,
+      "sha256": "016bddbd6d5cf6cb57d5f234569f21c1e95813d506a115837b68949c7c7251bb"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/close-Fighter-hud.png",
+      "bytes": 240274,
+      "sha256": "43bbe24eab345e5c7116dc208c75372bef4e53f5950bfac236e60158904cd9fe"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/close-Fighter.png",
+      "bytes": 387174,
+      "sha256": "07f09af0af11feec354a2ddd5c6898af99a5e00579760acce4e5dbf54c29c7ef"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/close-Rogue.png",
+      "bytes": 403606,
+      "sha256": "628887cdc76c72ab38240c91505454ec0b56f02bf451ea656108058c679c5476"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/close-Wizard.png",
+      "bytes": 410622,
+      "sha256": "0c3002dc937296d3ea6d9525ae348e9bb2afa208508dfedf22b730ed8e4861a1"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/observation.json",
+      "bytes": 3661,
+      "sha256": "11f3678dd25944ffc8df9635ea55042df69a1fe9ea41a585ca7c554536566a5f"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/original-party.png",
+      "bytes": 708310,
+      "sha256": "163957b00d33e80dfe2b9bc6cbc12a26e3b7a52773de5283791e88d47cafb1ae"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/party-Attack.png",
+      "bytes": 707552,
+      "sha256": "c58be8913e34a5a87a4703cb3d39d1aa2613f38876b547b2f4d3876affa6c809"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/party-CombatIdle.png",
+      "bytes": 707707,
+      "sha256": "7e7e8c20f4d783ba4804aeb0583c4ecdb30fc8388a86454b2264830ab70a6fc4"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/party-Death.png",
+      "bytes": 707845,
+      "sha256": "5158f66f802a32d1acb680ac8b29245e80ed68c1b6bbdf8bf81697f99f0717db"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/party-Run-hud.png",
+      "bytes": 451566,
+      "sha256": "837b1b768e400ba0722cb70eb7f1e6f858b09d052a83f540094f0d91dc141792"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/party-Run.png",
+      "bytes": 707805,
+      "sha256": "eca711339017be7e0718d023c89bf5381e8d68c47054d60c5b0344de5d9e09ee"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/full-outfit-garment-comple-fa66c-es-all-supplied-classes-low/restored-party.png",
+      "bytes": 707702,
+      "sha256": "511d031e07d1809a52211cc673238bcc06e230033c1981a7efbaeabe42dfa541"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/garment-vendor-preview-com-39aa9-d-applies-independently-low/selected-garment-preview.png",
+      "bytes": 171072,
+      "sha256": "4bc9646b6e2bf8a56a73537c8f0e726444daa35d56e6fa8717825757bd66c835"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview/garment-vendor-preview-com-6d51d--applies-independently-high/selected-garment-preview.png",
+      "bytes": 349077,
+      "sha256": "1b41cb695129f5c3b25f9ef0247e683a4c71b48888ed7816b51b5e862c768ef6"
+    },
+    {
+      "path": ".qa-garments/native-layout-preview.log",
+      "bytes": 804,
+      "sha256": "b83fd7400366a9ea62ab8fff243f2222e8e9f5365e0e60dbe04ddf3311286bcb"
+    },
+    {
+      "path": ".qa-garments/native-refined.log",
+      "bytes": 529,
+      "sha256": "4cb5155a8ad65a363e8d6580583557da98db250dffdf7811e3ec6fabc0fac938"
+    }
+  ]
+}

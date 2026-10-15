@@ -119,6 +119,26 @@ export const COSMETIC_CATALOGUE = [
         "primary": 2186862,
         "secondary": 10869990,
         "description": "A lagoon-colored cover bound with silver threads, with space for names still to come."
+    },
+    {
+        "id": "iron-oath-regalia-v1",
+        "name": "Iron Oath Regalia",
+        "kind": "outfit",
+        "realm": "earth",
+        "base": "Plate Mail",
+        "priceEP": 25,
+        "primary": 5859448,
+        "secondary": 13350280,
+        "description": "Storm-tempered oath-steel, a crowned helm and swept shoulder blades frame a pale-blue covenant seal. One complete armor appearance; your weapons and offhand keep their own looks.",
+        "pieces": {
+            "head": "Iron Helm",
+            "chest": "Plate Mail",
+            "legs": "Plate Greaves",
+            "feet": "Iron Boots",
+            "gloves": "Iron Gauntlets",
+            "shoulders": "Steel Pauldrons",
+            "belt": "Plated Girdle"
+        }
     }
 ];
 export const SEASON_COSMETIC_CATALOGUE = [

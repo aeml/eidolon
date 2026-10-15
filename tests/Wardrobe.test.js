@@ -64,6 +64,20 @@ function wardrobeFixture() {
     return { ui, send, switchPlayer: next => { player = next; } };
 }
 
+test('complete garments have an independent wardrobe selection and can be cleared without removing hand looks', () => {
+    const { ui, send } = wardrobeFixture();
+    const outfit = { baseName: 'Iron Oath Regalia', rarity: 'Common', slot: 'outfit' };
+    ui.handleResult({ playerID: 'first', success: true, collection: { 'Iron Oath Regalia|Common': outfit, 'Silk Hood|Rare': look } });
+    ui.slot.value = 'outfit'; ui.slot.dispatchEvent(new Event('change'));
+    expect([...ui.look.options].map(option => option.value)).toEqual(['', 'Iron Oath Regalia|Common']);
+    ui.look.value = 'Iron Oath Regalia|Common'; ui.apply.click();
+    expect(send).toHaveBeenLastCalledWith('select_appearance', { slot: 'outfit', key: 'Iron Oath Regalia|Common' });
+    ui.handleResult({ playerID: 'first', success: true, collection: { 'Iron Oath Regalia|Common': outfit } });
+    ui.look.value = ''; ui.apply.click();
+    expect(send).toHaveBeenLastCalledWith('select_appearance', { slot: 'outfit', key: '' });
+    ui.dispose();
+});
+
 test('wardrobe ignores missing, foreign and malformed private replies without enabling controls', () => {
     const { ui, send, switchPlayer } = wardrobeFixture();
     switchPlayer({ id: 'second', equipment: { head: gear }, appearances: {} });

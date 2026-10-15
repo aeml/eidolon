@@ -887,7 +887,7 @@ function batchRigidEquipmentParts(group) {
 }
 
 export function equipmentVisualSignature(equipment = {}) {
-    return EQUIPMENT_RENDER_SLOTS.map((slot) => {
+    const gear = EQUIPMENT_RENDER_SLOTS.map((slot) => {
         const item = equipment?.[slot];
         if (!item?.id && !item?.name) return `${slot}:empty`;
         const rarity = getRarityName(item);
@@ -898,6 +898,8 @@ export function equipmentVisualSignature(equipment = {}) {
             item.level || 0, item.potency || 0, item.sockets || 0, gems,
             item.setId || '', item.uniqueEffect || '', item.statScaleVersion || 0].join(':');
     }).join('|');
+    const outfit = equipment.outfit;
+    return outfit?.slot === 'outfit' ? `${gear}|outfit:${outfit.baseName}:${outfit.rarity}` : gear;
 }
 
 function forEachEquipmentAnchor(root, callback) {

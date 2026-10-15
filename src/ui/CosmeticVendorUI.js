@@ -125,8 +125,9 @@ export class CosmeticVendorUI {
         this.buy.textContent = owned ? 'Already owned' : `Unlock for ${offer.priceEP} EP`;
         this.buy.disabled = owned || Boolean(this.pendingID) || this.ep < offer.priceEP;
         const item = this.getPlayer()?.equipment?.[offer.appearance.slot];
-        this.apply.disabled = !owned || Boolean(this.pendingID) || !item?.id || !isActiveEquipment(offer.appearance.slot, item);
-        this.apply.textContent = owned && !item?.id ? 'Equip gear in this slot to apply' : 'Apply owned look';
+        const outfit = offer.appearance.slot === 'outfit';
+        this.apply.disabled = !owned || Boolean(this.pendingID) || (!outfit && (!item?.id || !isActiveEquipment(offer.appearance.slot, item)));
+        this.apply.textContent = owned && !outfit && !item?.id ? 'Equip gear in this slot to apply' : outfit ? 'Apply complete outfit' : 'Apply owned look';
         this.renderPreview();
     }
 
@@ -141,6 +142,7 @@ export class CosmeticVendorUI {
                 type: ['mainHand', 'offHand'].includes(slot) ? 'WEAPON' : 'ARMOR', name: this.selected.base, rarity: 'Common' } },
             appearances: { ...player.appearances, [slot]: look }
         };
+        if (!this.showOriginal && slot === 'outfit') model.equipment = { ...player.equipment };
         this.preview.update(model);
         this.compare.textContent = this.showOriginal ? 'Show selected cosmetic' : 'Show equipped look';
     }

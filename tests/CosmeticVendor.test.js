@@ -5,9 +5,10 @@ import { resolveEquipmentVisualDescriptor, createProceduralEquipmentVisual } fro
 import { CosmeticVendorUI } from '../src/ui/CosmeticVendorUI.js';
 import { CosmeticVendor } from '../src/entities/CosmeticVendor.js';
 import { GameEngine } from '../src/core/GameEngine.js';
+import { GARMENT_MODELS } from '../src/assets/garments.generated.js';
 
 function offers() {
-    return COSMETIC_CATALOGUE.map(offer => ({ ...offer, appearance: { baseName: offer.name, rarity: 'Common', slot: resolveEquipmentVisualDescriptor({ name: offer.base }).slot } }));
+    return COSMETIC_CATALOGUE.map(offer => ({ ...offer, appearance: { baseName: offer.name, rarity: 'Common', slot: offer.kind === 'outfit' ? 'outfit' : resolveEquipmentVisualDescriptor({ name: offer.base }).slot } }));
 }
 
 function fixture() {
@@ -23,9 +24,14 @@ function fixture() {
 }
 
 test('cosmetics are generated from the server catalogue and all resolve to renderable, recolored gear', () => {
-    expect(COSMETIC_CATALOGUE).toEqual(JSON.parse(fs.readFileSync('server/internal/game/content/cosmetics.json', 'utf8')));
-    expect(COSMETIC_CATALOGUE).toHaveLength(12);
+    expect(COSMETIC_CATALOGUE).toEqual([...JSON.parse(fs.readFileSync('server/internal/game/content/cosmetics.json', 'utf8')),
+        ...JSON.parse(fs.readFileSync('server/internal/game/content/garments.json', 'utf8'))]);
+    expect(COSMETIC_CATALOGUE).toHaveLength(13);
     for (const offer of COSMETIC_CATALOGUE) {
+        if (offer.kind === 'outfit') {
+            expect(Object.keys(GARMENT_MODELS.outfits[offer.name].models).sort()).toEqual(['Cleric', 'Fighter', 'Rogue', 'Wizard']);
+            continue;
+        }
         const original = resolveEquipmentVisualDescriptor({ name: offer.base });
         const look = resolveEquipmentVisualDescriptor({ name: offer.name });
         expect(look.slot).toBe(original.slot); expect(look.family).toBe(original.family);
@@ -68,6 +74,19 @@ test('preview and cost confirmation never change actual gear, and duplicate purc
     ui.apply.click();
     expect(send).toHaveBeenLastCalledWith('select_appearance', { slot: 'chest', key: ui.lookKey(offers()[0]) });
     ui.dispose();
+});
+
+test('owned complete outfit applies without armor items and previews the real gear without inventing a hand item', () => {
+    const { ui, send, player, preview } = fixture();
+    const offer = offers().find(offer => offer.kind === 'outfit'), before = JSON.stringify(player);
+    ui.handleResult({ playerID: player.id, success: true, pending: false, ep: 75, catalogue: offers(), collection: { [ui.lookKey(offer)]: offer.appearance } });
+    ui.select(offer);
+    expect(ui.apply.disabled).toBe(false);
+    const model = preview.update.mock.calls.at(-1)[0];
+    expect(model.equipment.chest.id).toBe('real-armor'); expect(model.equipment.outfit).toBeUndefined();
+    expect(model.equipment.mainHand).toBeUndefined(); expect(model.appearances.outfit).toEqual(offer.appearance);
+    ui.apply.click(); expect(send).toHaveBeenLastCalledWith('select_appearance', { slot: 'outfit', key: ui.lookKey(offer) });
+    expect(JSON.stringify(player)).toBe(before); ui.dispose();
 });
 
 test('pending purchase retries the same offer and quoted price, and changing selection cancels confirmation', () => {

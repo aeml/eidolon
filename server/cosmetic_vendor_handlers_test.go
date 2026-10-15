@@ -78,6 +78,60 @@ func TestCosmeticVendorHandlerCommitsEPAndUnlockBeforeSuccess(t *testing.T) {
 	}
 }
 
+func TestFullOutfitWardrobePersistsAndReplicatesWithoutReplacingGear(t *testing.T) {
+	c, committer, _ := cosmeticHandlerPlayer(t)
+	var offer game.CosmeticOffer
+	for _, candidate := range game.CosmeticCatalogue() {
+		if candidate.Kind == "outfit" {
+			offer = candidate
+			break
+		}
+	}
+	if offer.ID == "" {
+		t.Fatal("missing complete outfit offer")
+	}
+	c.handleCosmeticVendor(cosmeticRequest(offer))
+	if response := cosmeticResponse(t, c); !response.Success || response.Pending {
+		t.Fatal("outfit unlock did not commit", response)
+	}
+	p := world.Entities[c.playerID]
+	p.Equipment = map[string]game.Item{
+		"chest":    {ID: "real-armor", Name: "Plate Mail", Slot: "chest", Type: game.ItemArmor, Stats: map[string]int{"defense": 99}},
+		"mainHand": {ID: "real-sword", Name: "Iron Sword", Slot: "mainHand", Type: game.ItemWeapon},
+	}
+	hand := game.EquipmentAppearance{BaseName: "Iron Sword", Slot: "mainHand", Rarity: game.RarityCommon}
+	p.Appearances = map[string]game.EquipmentAppearance{"mainHand": hand}
+	payload, _ := json.Marshal(map[string]string{"slot": "outfit", "key": game.AppearanceKey(offer.Appearance)})
+	c.handleWardrobe(Message{Type: MsgSelectAppearance, Payload: payload})
+	var response Message
+	if err := json.Unmarshal(<-c.send, &response); err != nil || response.Type != MsgWardrobeResult {
+		t.Fatal("missing wardrobe response", err)
+	}
+	var result struct{ Success bool }
+	if err := json.Unmarshal(response.Payload, &result); err != nil || !result.Success {
+		t.Fatal("garment selection failed", err)
+	}
+	if committer.saved.Appearances["outfit"].Slot != "outfit" || committer.saved.Appearances["mainHand"].BaseName != hand.BaseName || committer.saved.Equipment["chest"].ID != "real-armor" {
+		t.Fatal("garment selection was not durably saved with original gear")
+	}
+	saved, err := json.Marshal(committer.saved)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var reloaded database.Character
+	if err := json.Unmarshal(saved, &reloaded); err != nil || reloaded.Appearances["outfit"].BaseName != offer.Name {
+		t.Fatal("garment selection did not survive character serialization", err)
+	}
+	wire, err := proto.Marshal(entityToProto(world.GetEntityCopy(c.playerID)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var decoded statepb.Entity
+	if err := proto.Unmarshal(wire, &decoded); err != nil || decoded.Appearances["outfit"].BaseName != offer.Name || decoded.Appearances["mainHand"].BaseName != hand.BaseName || decoded.Equipment["chest"].Stats["defense"] != 99 {
+		t.Fatal("remote garment replication lost independent gear or hand look", err)
+	}
+}
+
 func TestCosmeticVendorPendingSaveRecoversBothSidesWithoutResaleItem(t *testing.T) {
 	c, committer, dir := cosmeticHandlerPlayer(t)
 	offer := game.CosmeticCatalogue()[0]

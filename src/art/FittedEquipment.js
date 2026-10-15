@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { AUTHORED_ASSETS } from '../assets/authoredEquipment.generated.js';
+import { GARMENT_MODELS } from '../assets/garments.generated.js';
 import { resolveEquipmentVisualDescriptor, equipmentVisualSignature } from './ProceduralEquipment.js';
 import { isActiveEquipment } from '../core/EquipmentSlots.js';
 import { COSMETIC_CATALOGUE, SEASON_COSMETIC_CATALOGUE } from '../data/cosmetics.generated.js';
@@ -174,6 +175,12 @@ function bindParts(state, gltf, slot, item, catalog, look, skeletons, staged) {
         const targets = new Map(state.body.skeleton.bones.map((bone, i) => [bone.name, { bone, inverse: state.body.skeleton.boneInverses[i] }]));
         const meshes = []; root.traverse(mesh => { if (mesh.isSkinnedMesh) meshes.push(mesh); });
         for (const mesh of meshes) {
+            if (slot === 'outfit') {
+                let owner = mesh;
+                while (owner && !owner.userData.garmentSlot) owner = owner.parent;
+                if (!owner || !catalog.coverage[owner.userData.garmentSlot]) throw new Error('Garment piece has no coverage slot');
+                mesh.userData.garmentSlot = owner.userData.garmentSlot;
+            }
             const mirror = slot === 'ring2' || slot === 'trinket2';
             const joints = mesh.skeleton.bones.map(bone => targets.get(mirror ? swapSide(bone.name) : bone.name));
             if (joints.some(joint => !joint)) throw new Error(`Missing fitted ${slot} joint`);
@@ -202,7 +209,13 @@ function bindParts(state, gltf, slot, item, catalog, look, skeletons, staged) {
             instanceMaterials(mesh, item, look); mesh.userData.fittedParent = state.scene; parts.push(mesh); staged.push(mesh);
         }
     }
-    for (const part of parts) Object.assign(part.userData, { authoredEquipment: true, fittedItem: catalog.id, slot });
+    if (slot === 'outfit' && Object.keys(catalog.coverage).some(piece => !parts.some(part => part.userData.garmentSlot === piece))) {
+        throw new Error('Complete garment is missing a body section');
+    }
+    for (const part of parts) {
+        const piece = slot === 'outfit' ? part.userData.garmentSlot : slot;
+        Object.assign(part.userData, { authoredEquipment: true, fittedItem: slot === 'outfit' ? catalog.coverage[piece] : catalog.id, slot: piece });
+    }
 }
 
 export function clearFittedEquipment(root) {
@@ -211,6 +224,7 @@ export function clearFittedEquipment(root) {
     root.userData.equipmentVisualSignature = '';
     root.userData.equipmentVisualItemCount = 0; root.userData.equipmentVisualPartCount = 0;
     root.userData.equipmentVisualFallback = [];
+    root.userData.equipmentVisualGarment = '';
     root.userData.updateWeaponProfile?.({});
     root.dispatchEvent({ type: 'equipmentvisualschanged' });
 }
@@ -228,11 +242,13 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
     const state = owners.get(root); if (!state) return { supported: false };
     const actorClass = root.userData.authoredClass; state.actorClass = actorClass;
     const active = Object.fromEntries(Object.entries(equipment).filter(([slot, item]) => isActiveEquipment(slot, item, actorClass)));
-    const signature = `${root.userData.authoredQuality}:${root.userData.fittedEquipmentLOD !== false}:${root.userData.fittedEquipmentSurfaceBatching !== false}:${equipmentVisualSignature(active)}`;
+    const outfit = equipment.outfit?.slot === 'outfit' && equipment.outfit.rarity === 'Common' ? GARMENT_MODELS.outfits[equipment.outfit.baseName] : null;
+    const visible = outfit ? Object.fromEntries(Object.entries(active).filter(([slot]) => ['mainHand', 'offHand'].includes(slot))) : active;
+    const signature = `${outfit?.id || ''}:${root.userData.authoredQuality}:${root.userData.fittedEquipmentLOD !== false}:${root.userData.fittedEquipmentSurfaceBatching !== false}:${equipmentVisualSignature(visible)}`;
     if (!force && signature === root.userData.equipmentVisualSignature) return { supported: true, changed: false };
     const epoch = ++state.epoch; root.userData.equipmentVisualSignature = signature;
     root.userData.updateWeaponProfile?.(active);
-    const requested = Object.entries(active).flatMap(([slot, item]) => {
+    const requested = Object.entries(visible).flatMap(([slot, item]) => {
         const descriptor = resolveEquipmentVisualDescriptor(item);
         const look = cosmetics.find(look => look.name === descriptor?.baseName);
         const catalog = AUTHORED_ASSETS.items[look?.base || descriptor?.baseName];
@@ -241,6 +257,11 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
         const { file, source } = resolveFittedEquipmentModel(catalog, tier, actorClass, root.userData.authoredQuality, root.userData.fittedEquipmentLOD === false);
         return [{ slot, item, catalog, look, file, source }];
     });
+    if (outfit) {
+        const models = outfit.models[actorClass], quality = root.userData.authoredQuality === 'low' ? 'low' : 'high';
+        requested.push({ slot: 'outfit', item: { id: outfit.id, rarity: 'Common' }, catalog: outfit, look: null,
+            file: models[quality].file, source: models.high.file });
+    }
     root.userData.equipmentReady = Promise.all(requested.map(async request => {
         try { return { ...request, gltf: await state.loader(request.file, 8000) }; }
         catch (error) {
@@ -256,12 +277,17 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
         const selection = {}, missing = [], skeletons = new Map();
         try {
             for (const result of results) {
+                if (result.slot === 'outfit' && result.error) {
+                    root.userData.equipmentVisualMissing = ['outfit'];
+                    throw new Error('Complete garment model unavailable', { cause: result.error });
+                }
                 if (result.error) { missing.push(result.slot); continue; }
                 // Track each completed owned part before a later mesh in the
                 // same asset can reject. One generation-level cleanup also
                 // disposes shared equip-owned skeletons exactly once.
                 bindParts(state, result.gltf, result.slot, result.item, result.catalog, result.look, skeletons, staged);
-                selection[result.slot] = result.catalog.id;
+                if (result.slot === 'outfit') Object.assign(selection, result.catalog.coverage);
+                else selection[result.slot] = result.catalog.id;
             }
             for (const part of staged) {
                 if (part.userData.fittedItem === 'silk-skirt' && selection.chest === 'robes') part.visible = false;
@@ -284,6 +310,7 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
         root.userData.equipmentVisualItemCount = Object.keys(selection).length;
         root.userData.equipmentVisualPartCount = staged.reduce((count, part) => { part.traverse(mesh => { if (mesh.isMesh && mesh.visible) count++; }); return count; }, 0);
         root.userData.equipmentVisualMissing = missing;
+        root.userData.equipmentVisualGarment = outfit?.id || '';
         root.userData.equipmentVisualFallback = results.filter(result => result.fallback).map(result => result.slot);
         root.userData.equipmentVisualRevision = (root.userData.equipmentVisualRevision || 0) + 1;
         if (missing.length) root.userData.equipmentVisualSignature = ''; // Allow retry, never cache failure as success.
