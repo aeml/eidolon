@@ -8,7 +8,8 @@
     "feature": "227distinct focused checks and13distinct native UI cases have passing evidence; full lint and reviewed desktop/phone captures. Reuse unchanged evidence in component receipt.",
     "release": "429distinct checks across4release/history/browser-plan/publication suites pass across the initial three passing suites and corrected386-check version suite.490cumulative notes preserve all489previous entries byte-exact.",
     "retainedFailure": "Initial version suite caught the isolated QA script default still54. Corrected source default to55; unchanged version-alignment assertions pass. Initial failed result retained.",
-    "remaining": "Own exact-source publication build, normal push, ordered CI/deployment/live and independent public verification; all original full-goal gates, new garments and wider menu work."
+    "remaining": "Own exact-source publication build, normal push, ordered CI/deployment/live and independent public verification; all original full-goal gates, new garments and wider menu work.",
+    "sessionFollowup": "One additional session-lifetime check proves the Lore Book frame class is restored on disposal and a new session gets one navigation row.13LoreBook checks and scoped lint pass;228distinct feature checks now have evidence."
   },
   "evidenceRoot": "/home/aeml/.local/share/eidolon-master-20261011",
   "evidence": [
@@ -31,6 +32,16 @@
       "path": ".qa-release55/pagination.log",
       "bytes": 55,
       "sha256": "a5c5ae1e087b558576b04fc17022a2766dd0e02ea70ee11d9e21b5ee04b5ec94"
+    },
+    {
+      "path": ".qa-release55/quest-lifetime.log",
+      "bytes": 485,
+      "sha256": "cad5f912b8fc97cee1abfe70578d7751e2e67b17b36a82242d39bd02065640e0"
+    },
+    {
+      "path": ".qa-release55/quest-lifetime-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
   ]
 }

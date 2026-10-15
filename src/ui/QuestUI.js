@@ -85,6 +85,7 @@ export class QuestUI {
         disposeOwnedEvents(this);
         this.loreBook?.dispose();
         this.journalNavigation?.remove();
+        this.questJournal?.classList.remove('is-lore-book');
         this.questActions?.remove();
         this.objectivesPanel?.querySelector('.phone-objectives-controls')?.remove();
     }

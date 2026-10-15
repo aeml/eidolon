@@ -113,4 +113,18 @@ describe('journal lore reading', () => {
             expect(observed).toHaveBeenCalledTimes(1);
         } finally { document.removeEventListener('keydown', observed); }
     });
+
+    test('leaving a lore session restores the frame and a new session gets one navigation row', () => {
+        const frame = ui.questJournal;
+        expect(frame.classList.contains('is-lore-book')).toBe(true);
+        ui.dispose();
+        expect(frame.classList.contains('is-lore-book')).toBe(false);
+        const next = new QuestUI({ getLastPlayer: () => player });
+        try {
+            next.updateJournal(player.quests);
+            expect(frame.querySelectorAll('.quest-journal-navigation')).toHaveLength(1);
+            expect(next.journalView).toBe('all');
+            expect(frame.classList.contains('is-lore-book')).toBe(false);
+        } finally { next.dispose(); }
+    });
 });
