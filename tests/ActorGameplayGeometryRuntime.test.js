@@ -91,6 +91,34 @@ test('scenery subtrees do not get scanned or watched on actor-group changes', ()
     expect(traverse).not.toHaveBeenCalled(); expect(f.runtime.delivery.roots.size).toBe(0); f.runtime.dispose();
 });
 
+test('Ilyra prepares only her opaque costume and restores source geometry for close views and pool reuse', () => {
+    const f = fixture(), a = actor(), face = actor(), unknown = actor();
+    delete a.root.userData.authoredClass; delete a.root.userData.authoredQuality;
+    a.root.userData.npcAppearance = 'ilyra-fourfold-archmage';
+    const costume = new THREE.Group(); costume.name = 'Ilyra_FourfoldCostume';
+    costume.add(a.mesh); a.root.add(costume, face.mesh);
+    delete unknown.root.userData.authoredClass;
+    unknown.root.userData.npcAppearance = 'unrecognized-npc';
+    f.group.add(a.root, unknown.root); f.pump();
+    expect(f.sent).toHaveLength(1); f.reply();
+    expect(f.runtime.pass.entries.size).toBe(1);
+    const candidate = f.runtime.pass.entries.get(a.mesh).candidate;
+    f.original.mockImplementation(() => {
+        expect(a.mesh.geometry).toBe(f.camera.zoom === 2 ? a.geometry : candidate);
+        expect(face.mesh.geometry).toBe(face.geometry);
+        expect(unknown.mesh.geometry).toBe(unknown.geometry);
+    });
+    f.renderer.render(f.scene, f.camera); expect(a.mesh.geometry).toBe(a.geometry);
+    f.camera.zoom = 2; f.renderer.render(f.scene, f.camera);
+    const dispose = jest.spyOn(candidate, 'dispose'), originalDispose = jest.spyOn(a.geometry, 'dispose');
+    a.root.removeFromParent(); expect(dispose).toHaveBeenCalledTimes(1);
+    expect(originalDispose).not.toHaveBeenCalled();
+    f.group.add(a.root); f.pump(); f.reply();
+    expect(f.runtime.pass.entries.has(a.mesh)).toBe(true);
+    expect(f.runtime.pass.entries.has(face.mesh)).toBe(false);
+    f.runtime.dispose(); expect(a.mesh.geometry).toBe(a.geometry);
+});
+
 test('worker URL preserves only the exact engine release for source and bundled module paths', () => {
     for (const file of ['ActorGameplayGeometryDelivery.js', 'GameEngine.bundle.js']) {
         expect(gameplayGeometryWorkerURL(`https://example.test/game/src/core/${file}?release=abcdef123&unrelated=omit`).href)

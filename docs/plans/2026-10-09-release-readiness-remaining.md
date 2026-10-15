@@ -58,6 +58,12 @@ joints are shallower and less dark. Forty wall maps remain byte-identical;
 Thorncrypt roots also gain branch-following bark using the existing shader,
 with exact geometry preserved,11 focused checks and two native comparisons.
 [Root material qualification](2026-10-15-dungeon-root-bark-qualification.json).
+Ilyra’s dedicated costume now uses the existing guarded gameplay-distance
+geometry preparation. In the prepared four-class town comparison this saves
+8,100 Low triangles and16,200 High triangles including shadows; close-up pixels
+remain exact.91 focused checks and two native motion/lifetime cases pass.
+[Scoped geometry qualification](2026-10-15-ilyra-gameplay-geometry-qualification.json).
+Whole-game frame time and other crowded-scene triangle failures remain open.
 These selected changes are held on local master for a coherent world milestone
 until corrected53 completes its own CI/deployment/public verification.
 

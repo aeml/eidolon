@@ -31,7 +31,17 @@ const under = (mesh, ancestor) => {
     return false;
 };
 const actorRoot = mesh => {
-    for (let node = mesh; node; node = node.parent) if (classes.has(node.userData.authoredClass)) return node;
+    for (let node = mesh; node; node = node.parent) {
+        if (classes.has(node.userData.authoredClass)) return node;
+        if (node.userData.npcAppearance === 'ilyra-fourfold-archmage') {
+            // Ilyra's dedicated costume uses the existing opaque skin guards.
+            // Keep her head/hands, blink basis, eyes, scalp and hair original.
+            for (let part = mesh; part && part !== node; part = part.parent) {
+                if (part.name === 'Ilyra_FourfoldCostume') return node;
+            }
+            return null;
+        }
+    }
     return null;
 };
 const rigidEquipmentRoot = (mesh, root) => {

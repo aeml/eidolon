@@ -28,7 +28,8 @@ export class ActorGameplayGeometryRuntime {
     }
 
     track(root) {
-        if (!this.disposed && classes.has(root?.userData.authoredClass) && inside(root, this.scene)) this.delivery.track(root);
+        if (!this.disposed && (classes.has(root?.userData.authoredClass) || root?.userData.npcAppearance === 'ilyra-fourfold-archmage') &&
+            inside(root, this.scene)) this.delivery.track(root);
     }
 
     scan(group) { for (const child of group.children) this.track(child); }
