@@ -146,3 +146,17 @@ Readable merchant slot cards, actual existing Gold prices, stable focus, wallet/
 
 Selected for the next coherent release after native visual review. First selected equipment-menu slice. Stash/forge/trading presentation, final owner usability/art review and physical phone testing remain open.
 [Qualification and retained evidence](2026-10-15-equipment-menu-qualification.json).
+
+## Related service-window polish candidate — October 15
+
+The staged menu family now extends restrained metal framing to stash, forge,
+trading-house and direct-trade panels. Shared tabs have readable text, a clear
+active underline and44px minimum height, retaining phone text-size preferences.
+Direct-trade offer rows and the Gold field gain readable sizing and consistent
+inset surfaces. Trade drafts, acknowledgements, transfers and confirmation rules
+are unchanged. Veyra's expanded collection also gains search/category browsing.
+
+79existing focused menu/layout checks pass. Twelve existing native service/layout
+cases are prepared for review after the ordered57pipeline; no changed visual or
+physical-device acceptance is claimed yet. This remains isolated with the
+universal garment candidates and does not select unfinished work into master.

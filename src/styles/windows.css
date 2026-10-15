@@ -131,15 +131,22 @@
 .window-tab {
     flex: 1;
     min-width: 0;
+    min-height: 44px;
     padding-inline: 10px;
     border: none;
+    border-bottom: 2px solid transparent;
     border-radius: 0;
-    background: #111;
+    background: #141c26;
+    color: #c6d0dc;
+    font-size: 14px;
 }
 
 .window-tab.is-active {
-    background: #333;
+    background: #293544;
+    border-bottom-color: var(--color-gold);
+    color: #f2d9a3;
 }
+.mobile-mode .window-tab { font-size: var(--phone-menu-text-size, 16px); }
 
 .window-body {
     display: flex;
@@ -1580,13 +1587,13 @@
 .email-recovery .support-field__row { flex-wrap: wrap; }
 .email-recovery input { font-size: 16px; }
 
-/* Equipment menus share the character sheet's restrained metal framing. */
-:is(#inventory-screen, .shop-window) {
+/* Equipment and service menus share restrained metal framing. */
+:is(#inventory-screen, .shop-window, #stash-screen, #forge-screen, #trading-house-screen, #direct-trade-window) {
     background: linear-gradient(150deg, #1b222df5, #10141cf5);
     border-color: #b99b6266;
     box-shadow: inset 0 1px 0 #e0bd6a20, 0 18px 48px #0008;
 }
-:is(#character-sheet, #inventory-screen, .shop-window) > .window-header {
+:is(#character-sheet, #inventory-screen, .shop-window, #stash-screen, #forge-screen, #trading-house-screen, #direct-trade-window) > .window-header {
     border-color: #b99b6233;
     color: var(--color-gold);
 }
