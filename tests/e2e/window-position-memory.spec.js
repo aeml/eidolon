@@ -58,6 +58,6 @@ test('moved character, bag and merchant windows keep their positions when reopen
     await page.evaluate(() => window.__windowMemory.openManagedWindow('shop'));
     await expect.poll(() => position('#shop-screen')).toEqual(clamped);
     await page.screenshot({ path: testInfo.outputPath('remembered-store-resized.png') });
-    await page.evaluate(() => window.__windowMemory.destroy());
+    await page.evaluate(() => window.__windowMemory.dispose());
     expect(failures, failures.join('\n')).toEqual([]);
 });
