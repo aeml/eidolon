@@ -2,6 +2,7 @@ import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { renderQuestConversation } from './QuestConversation.js';
 import { getFinaleExitGuidance } from './FinaleGuidance.js';
 import { appendChronicleRecap } from './ChronicleRecap.js';
+import { LoreBook } from './LoreBook.js';
 import { hasCompletedDarkKing } from '../data/chronicleAftermath.js';
 import { renderWitnessConversation } from './ChronicleWitnessConversation.js';
 import { formatQuestRewards } from './questRewards.js';
@@ -50,7 +51,7 @@ export class QuestUI {
             ownedEvent(this, this.objectivesList, 'keydown', event => {
                 // Keep native scrolling, without bubbling Space to the game's
                 // cast shortcut. Journal and other non-scroll shortcuts still work.
-                if ([' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End'].includes(event.key)) {
+                if ([' ', 'Enter', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End'].includes(event.key)) {
                     event.stopPropagation();
                 }
             });
@@ -82,6 +83,8 @@ export class QuestUI {
         if (this.disposed) return;
         this.disposed = true;
         disposeOwnedEvents(this);
+        this.loreBook?.dispose();
+        this.journalNavigation?.remove();
         this.questActions?.remove();
         this.objectivesPanel?.querySelector('.phone-objectives-controls')?.remove();
     }
@@ -188,6 +191,19 @@ export class QuestUI {
     /** Close the quest journal if open. */
     closeJournal() {
         if (this.questJournal) this.questJournal.style.display = 'none';
+    }
+
+    openTrackedObjective(objective) {
+        const quests = this.ctx.getLastPlayer?.()?.quests || this.lastJournalQuests || [];
+        const quest = quests.find(quest => quest.id === objective.id);
+        if (!this.isJournalOpen) this.toggleJournal();
+        else this.updateJournal(quests);
+        if (!quest) return;
+        this.setJournalView(quest.category === 'chronicle' || quest.id?.startsWith('chronicle_') ? 'story' : 'contracts');
+        const control = [...this.journalList.querySelectorAll('[data-quest-track]')]
+            .find(input => input.dataset.questTrack === quest.id);
+        control?.scrollIntoView?.({ block: 'center' });
+        control?.focus({ preventScroll: true });
     }
 
     // ================================================================
@@ -879,13 +895,15 @@ export class QuestUI {
         if (heading) heading.textContent = this.ctx.isMobile && trackedObjectives.length
             ? `TRACKED · ${phoneIndex + 1} / ${trackedObjectives.length}` : `TRACKED · ${trackedObjectives.length}`;
         visibleObjectives.forEach((objective, index) => {
-            const item = document.createElement(this.ctx.isMobile ? 'button' : 'div');
+            const isQuest = (this.lastJournalQuests || []).some(quest => quest?.id === objective.id);
+            const interactive = this.ctx.isMobile || isQuest;
+            const item = document.createElement(interactive ? 'button' : 'div');
             item.className = `objective-entry ${objective.routeTone ? `is-${objective.routeTone}` : ''}`.trim();
             item.title = [objective.title, objective.completed ? 'Ready' : objective.progressLabel, objective.hint].filter(Boolean).join(' · ');
-            if (this.ctx.isMobile) {
+            if (interactive) {
                 item.type = 'button';
                 item.setAttribute('aria-label', `Open journal: ${objective.title} · ${objective.completed ? 'Ready' : objective.progressLabel || ''}`);
-                item.addEventListener('click', () => this.toggleJournal());
+                item.addEventListener('click', () => this.openTrackedObjective(objective));
             }
             const header = document.createElement('div');
             header.className = 'objective-entry__header';
@@ -991,7 +1009,7 @@ export class QuestUI {
             // Keep reachable actions mounted across state updates: focus and a
             // held pointer belong to this DOM node, not its replacement.
             const remaining = new Set(this.questActions.children);
-            for (const next of this.questList.querySelectorAll('.quest-dialogue > button, .quest-dialogue__error')) {
+            for (const next of this.questList.querySelectorAll('.quest-dialogue > button, .quest-dialogue__actions > button, .quest-dialogue__error')) {
                 const current = next.dataset.questAction && [...remaining].find(node => node.dataset.questAction === next.dataset.questAction);
                 if (current) {
                     current.onclick = next.onclick;
@@ -1026,7 +1044,7 @@ export class QuestUI {
     // ================================================================
 
     setJournalView(view) {
-        this.journalView = ['all', 'story', 'contracts'].includes(view) ? view : 'all';
+        this.journalView = ['all', 'story', 'contracts', 'lore'].includes(view) ? view : 'all';
         this.applyJournalView();
         if (this.journalList) this.journalList.scrollTop = 0;
     }
@@ -1043,7 +1061,7 @@ export class QuestUI {
             nav.className = 'quest-journal-navigation';
             nav.setAttribute('role', 'group');
             nav.setAttribute('aria-label', 'Quest journal sections');
-            for (const [view, label] of [['all', 'All quests'], ['story', 'Story'], ['contracts', 'Contracts']]) {
+            for (const [view, label] of [['all', 'All quests'], ['story', 'Story'], ['contracts', 'Contracts'], ['lore', 'Lore Book']]) {
                 const button = document.createElement('button');
                 button.type = 'button';
                 button.dataset.journalView = view;
@@ -1066,12 +1084,15 @@ export class QuestUI {
 
     applyJournalView() {
         const view = this.journalView || 'all';
+        this.questJournal?.classList.toggle('is-lore-book', view === 'lore');
         for (const button of this.journalNavigation?.children || []) {
             button.setAttribute('aria-pressed', String(button.dataset.journalView === view));
         }
         for (const section of this.journalList?.querySelectorAll('[data-journal-section]') || []) {
-            section.hidden = view !== 'all' && section.dataset.journalSection !== view;
+            section.hidden = section.dataset.journalSection === 'lore' ? view !== 'lore'
+                : view !== 'all' && section.dataset.journalSection !== view;
         }
+        for (const shared of this.journalList?.querySelectorAll('[data-journal-shared]') || []) shared.hidden = view === 'lore';
         const existing = this.journalList?.querySelector('.quest-journal-empty');
         existing?.remove();
         if (view !== 'all' && !this.journalList?.querySelector(`[data-journal-section="${view}"]:not(.quest-journal-reset)`)) {
@@ -1223,6 +1244,7 @@ export class QuestUI {
     }
 
     updateJournal(quests) {
+        const loreFocus = this.loreBook?.element.contains(document.activeElement) ? document.activeElement : null;
         const existingRecap = this.journalList?.querySelector('.quest-chronicle-recap');
         const recapFocused = Boolean(existingRecap && document.activeElement === existingRecap.firstElementChild);
         const existingRecords = new Map([...this.journalList?.querySelectorAll('details[data-discovery-id]') || []]
@@ -1237,6 +1259,7 @@ export class QuestUI {
         const focusedDiscovery = document.activeElement?.closest?.('details[data-discovery-id]')?.dataset.discoveryId;
         const restoreReading = () => {
             this.applyJournalView();
+            if (this.journalView === 'lore' && loreFocus?.isConnected) loreFocus.focus({ preventScroll: true });
             if (recapFocused && existingRecap?.isConnected) existingRecap.firstElementChild.focus({ preventScroll: true });
             const archive = this.journalList?.querySelector('.quest-chronicle-archive');
             if (archive && archiveOpen) archive.open = true;
@@ -1256,6 +1279,11 @@ export class QuestUI {
         this.renderObjectivesPanel(this.buildObjectiveSummary(quests));
         this.updateJournalNavigation(quests);
         this.clearElement(this.journalList);
+        if (this.journalList) {
+            this.loreBook ||= new LoreBook(this);
+            this.loreBook.update(quests, this.journalIdentity);
+            this.journalList.append(this.loreBook.element);
+        }
         const resetSnapshot = this.getDailyResetSnapshot();
 
         const infoDiv = document.createElement('div');
@@ -1273,6 +1301,7 @@ export class QuestUI {
             ? 'Choose “Track on screen” below; use › on the tracker to cycle quests. Story tracking follows new chapters.'
             : 'Choose “Track on screen” on any quest. Scroll the left tracker to see all your selections. Story tracking follows the next chapter.');
         trackingHint.className = 'quest-tracking-hint';
+        trackingHint.dataset.journalShared = 'true';
         this.journalList.appendChild(trackingHint);
 
         const hasActiveChronicle = this.renderChronicleSection(quests, existingRecords, existingRecap);
@@ -1406,11 +1435,13 @@ export class QuestUI {
         });
 
         if (!hasActive) {
-            this.journalList.appendChild(this.createMessage('No active quests.', {
+            const empty = this.createMessage('No active quests.', {
                 color: '#888',
                 textAlign: 'center',
                 marginTop: '20px'
-            }));
+            });
+            empty.dataset.journalShared = 'true';
+            this.journalList.appendChild(empty);
         }
         restoreReading();
     }

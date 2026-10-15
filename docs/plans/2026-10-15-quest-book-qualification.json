@@ -1,0 +1,85 @@
+{
+  "date": "2026-10-15",
+  "state": "Qualified locally; selected for next quest-experience milestone. Not yet published. Predecessor54 CI38674416385 remains in progress.",
+  "runtimeCommit": "2831165789d6ca1bd1a485f31a05758edc935e3e",
+  "changes": [
+    "Dedicated searchable Lore Book: earned chapters, exact discovery masks, restoration accounts and Ilyra completion replies; current task and existing spoiler-safe recap; map/quest links, categories, persistent in-session search/selection/focus.",
+    "Desktop/phone tracked quest cards open the correct journal section and focus its tracking control without accepting, claiming or changing tracking. Keyboard activation does not bubble into game controls.",
+    "NPC quest review puts state/objective/reward before long dialogue, preserves authored paragraphs, keeps desktop actions sticky and retains phone action footer. Pending requests stay disabled; errors permit retry; accepted/completed state waits for authoritative response."
+  ],
+  "clientEvidence": {
+    "distinctPassingChecks": 227,
+    "suites": 9,
+    "finalFocused207": "8suites6.333s after tracker integration; unchanged book/navigation/recap/owned reading evidence reused.",
+    "conversation61": "3affected suites1.465s after action-layout integration; subset of207, not additional distinct tests.",
+    "browserPlan20": "Both new fixtures assigned once to required hosted interface stage.",
+    "lint": "Full lint passed; final stale-fixture change scoped lint passed. CSS reviewed in final native captures."
+  },
+  "nativeEvidence": {
+    "distinctUICasesWithPass": 13,
+    "additionalUnchangedArtCase": 1,
+    "runs": [
+      {
+        "path": "browser-first.log",
+        "passes": 10,
+        "seconds": 37.9
+      },
+      {
+        "path": "browser-tracker.log",
+        "passes": 2,
+        "seconds": 8.6
+      },
+      {
+        "path": "browser-actions.log",
+        "passes": 3,
+        "failures": 1,
+        "seconds": 31.5
+      },
+      {
+        "path": "browser-town-corrected.log",
+        "passes": 1,
+        "seconds": 5.2
+      },
+      {
+        "path": "browser-actions-final.log",
+        "passes": 2,
+        "seconds": 7.9
+      }
+    ],
+    "review": "Reviewed desktop1280x800 and phone390x844 book overview/long memory, and final long-dialogue review/action captures. Text fits, actual close/nav controls remain reachable, desktop action stays in viewport, phone footer is retained. Existing portrait/landscape Chronicle-reading and crowded journal cases pass.",
+    "scope": "Anonymous controlled saved-state and response-timing fixtures using actual UI/CSS. Not an earned campaign, connected economy proof, physical-device playtest or final owner approval."
+  },
+  "retainedFindings": [
+    {
+      "path": "baseline-integration.log",
+      "finding": "Initial invocation included nonexistent ChronicleRecap.test.js;55 actual tests passed. Corrected final invocation includes actual ChronicleCampaignCoherence.test.js."
+    },
+    {
+      "path": "related-checks.log",
+      "finding": "Initial invocation included nonexistent UISessionOwnership.test.js;82 actual tests passed. No such suite is counted as passed."
+    },
+    {
+      "path": "browser-actions.log",
+      "finding": "Old town fixture expected obsolete View all27objectives label. Accepted predecessorfda5c6b89 already uses Track quests \u00b7 Journal (J). Corrected label and added exact27-objective/26-journal-contract coverage; unchanged manual acknowledgement and viewport checks pass."
+    }
+  ],
+  "remaining": [
+    "Own next milestone release preparation, CI/deployment and served-asset verification after54 acceptance.",
+    "Further menu presentation and durable position/reset preferences; full four-class garment implementation and18minimum VIP models.",
+    "Representative progression/finale and physical-device/user review; full original world/performance/operations/owner gates. Soak remains deferred."
+  ],
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-quest-book-20261015",
+    "inventory": {
+      "path": ".qa-quest-book/inventory.json",
+      "bytes": 15559,
+      "sha256": "93eebb37f2511d86e6b80133d50feafd855d1e03b9b8e2c2aefd9825a6fbcc6f"
+    },
+    "source": {
+      "path": ".qa-quest-book/source.json",
+      "bytes": 2157,
+      "sha256": "bd8ed39d5fd4e7d0448f34bc50e278ea45ef71a4ada89b8d8db8f3768ce7ba19"
+    },
+    "files": 74
+  }
+}
