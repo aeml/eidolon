@@ -119,16 +119,18 @@ for (const quality of ['high', 'low']) test(`owned foliage preserves views and r
         }
         const qualityCycles = [];
         for (const quality of ['low', 'high', 'low', 'high']) {
+            const qualityStarted = now();
             for (const record of originals) {
                 updateFoliageRenderQuality(record.owner.group, quality);
                 record.owner = getOwnedFoliageDraws(record.owner.group);
             }
             render.setGraphicsQuality(quality);
+            const qualityMS = now() - qualityStarted;
             const frozen = now(); Object.defineProperty(performance, 'now', { configurable: true, value: () => frozen });
             capture(false); capture(true);
             const before = capture(false), after = capture(true), again = capture(false);
             if (clock) Object.defineProperty(performance, 'now', clock); else delete performance.now;
-            qualityCycles.push({ quality, changed: differences(before.pixels, after.pixels), unstable: differences(before.pixels, again.pixels),
+            qualityCycles.push({ quality, qualityMS, changed: differences(before.pixels, after.pixels), unstable: differences(before.pixels, again.pixels),
                 beforeTriangles: before.triangles, afterTriangles: after.triangles, memory: { ...render.renderer.info.memory } });
         }
         select(false); render.render();
