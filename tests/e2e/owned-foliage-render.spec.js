@@ -122,6 +122,20 @@ for (const quality of ['high', 'low']) test(`owned foliage preserves views and r
             pairs.push({ pose: delta, changed: differences(before.pixels, after.pixels), unstable: differences(before.pixels, again.pixels),
                 before: { calls: before.calls, triangles: before.triangles }, after: { calls: after.calls, triangles: after.triangles } });
         }
+        // The reference InstancedMeshes retain their first uploaded High/Low
+        // geometries. Warm both reference paths before comparing repeat counts;
+        // these are separate test controls, not resources owned by the batches.
+        const originalQuality = render.graphicsQuality;
+        const candidateGeometries = originals.flatMap(record => record.owner.entries.map(entry => entry.mesh.geometry.uuid));
+        select(false); render.render();
+        const referenceWarmup = { before: { ...render.renderer.info.memory }, phases: [] };
+        for (const next of ['high', 'low', originalQuality]) {
+            render.setGraphicsQuality(next); render.render();
+            referenceWarmup.phases.push({ quality: next, memory: { ...render.renderer.info.memory } });
+        }
+        referenceWarmup.after = { ...render.renderer.info.memory };
+        referenceWarmup.candidateUnchanged = JSON.stringify(candidateGeometries) === JSON.stringify(
+            originals.flatMap(record => record.owner.entries.map(entry => entry.mesh.geometry.uuid)));
         const qualityCycles = [];
         for (const quality of ['low', 'high', 'low', 'high']) {
             const qualityStarted = now();
@@ -154,7 +168,7 @@ for (const quality of ['high', 'low']) test(`owned foliage preserves views and r
             lifecycle.push({ active, retired: { ...render.renderer.info.memory }, remainingRoots: render.foliageShadowInfluence.roots.size });
         }
         const summary = { sources: sources.length, sourceCells: sources.reduce((sum, s) => sum + s.children.length, 0),
-            outfits: outfitsObserved, pairs, qualityCycles, beforeMemory, afterMemory, retired, lifecycle, pending: render.actorGameplayGeometry.delivery.jobs.size };
+            outfits: outfitsObserved, pairs, qualityCycles, referenceWarmup, beforeMemory, afterMemory, retired, lifecycle, pending: render.actorGameplayGeometry.delivery.jobs.size };
         game.destroy(); return summary;
     });
     await writeFile(testInfo.outputPath('observation.json'), JSON.stringify({ quality, gpu, ...observation }, null, 2));
@@ -167,6 +181,7 @@ for (const quality of ['high', 'low']) test(`owned foliage preserves views and r
         expect(pair.after.calls).toBeLessThanOrEqual(pair.before.calls);
     }
     expect(observation.pairs.slice(0, 3).every(pair => pair.after.calls < pair.before.calls)).toBe(true);
+    expect(observation.referenceWarmup.candidateUnchanged).toBe(true);
     for (const cycle of observation.qualityCycles) {
         expect(cycle.unstable).toBe(0); expect(cycle.changed).toBe(0); expect(cycle.afterTriangles).toBe(cycle.beforeTriangles);
     }
