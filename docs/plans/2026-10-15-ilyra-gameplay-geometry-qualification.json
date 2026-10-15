@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-15",
+  "status": "Selected locally; unpublished after Alpha 1.79.53 deployment acceptance",
+  "base": "ef6392bc5a2b1eba999911b384dcddcb7db40580",
+  "change": "Use existing guarded asynchronous gameplay geometry preparation for the dedicated Ilyra_FourfoldCostume subtree. Face/hands, blink morphs, eyes/scalp/hair and all other NPCs stay outside eligibility. Original source assets, rig, animation and player detail thresholds are unchanged.",
+  "qualification": {
+    "cpu": "91 checks across ActorGameplayGeometry, ActorGameplayGeometryRuntime, ActorGameplayGeometryDelivery and AuthoredIlyra pass in 1.103s. New lifecycle case verifies costume eligibility, untouched face/unknown NPC, close source restoration, derivative-only disposal and pooled reattachment.",
+    "lint": "Changed source, unit test and private native fixture pass scoped lint and whitespace checks.",
+    "native": "Two final native Chrome cases pass in 22.0s, High1280 and Low390, zero retries/skips. Actual town, four supplied classes with14 equipped slots, real HUD and Ilyra idle. Front/side/back plus forced close-up, 30 prepared motion frames each; eight reference/candidate/reference pairs.",
+    "geometry": "Ten costume primitives are eligible; five produce useful index derivatives. Costume triangle sum10332 to2232, saving8100 per color pass. Existing .006 preparation error, pixel hysteresis42/47, source-vertex attributes, deformation and material guards are retained. Five unchanged outputs remain originals through normal fallback.",
+    "render": "Gameplay High252 draws/261691 triangles becomes252/245491; Low107/85509 becomes107/77409 in each of three orientations. GPU geometry/texture counts match. All eight reference repeats have zero changed bytes. Close-up source restoration has zero candidate/reference pixel delta at both sizes; forced camera.zoom4 is a fixture control, not a claim about available phone zoom.",
+    "lifetime": "Three removal/recreation cycles per quality return exact geometry/texture counts to the retired baseline, leave four player roots and no pending geometry jobs. No fallback asset or browser error.",
+    "review": "Front, side, back reference/candidate and Low HUD/close images reviewed. Robe, cape, hands, staff, idle pose and character silhouette remain coherent at gameplay distance. Minor shading/edge differences are visible in raw comparisons; this is scoped LOD acceptance, not final actor art approval.",
+    "limits": "Prepared town presentation and ownership checks only. This scene falls within triangle caps but does not establish whole-game frame-time targets, crowded forest budgets, connected gameplay, physical-device acceptance or final performance closure."
+  },
+  "retainedFailures": [
+    "Initial native pair failed its fixture expectation of10 installed derivatives. Normal delivery correctly retains originals for five unchanged tiny primitives. Corrected expectation to5; production behavior and image tolerances unchanged. Initial traces/images retained."
+  ],
+  "otherScreen": "Private Low player-detail CPU screen tested .009/.012 error values against unchanged .006 on44 actual visible source inputs. No player error change selected or native-qualified; original player runtime and thresholds remain.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-low-geometry-screen-20261015/.qa-ilyra-geometry",
+    "inventoryEntries": 50,
+    "inventorySHA256": "a13ab8b56ba0852ec6a29e266a92b3c580329f610c807427faf1fd44220ace86",
+    "fixtures": "Exact private review fixture copies retained in inventory, not enrolled in release CI."
+  },
+  "release": "Held with selected world surfaces; 52 remains accepted, corrected53 own CI/deployment pending. No soak, raised-terrain activation or beta declaration."
+}
