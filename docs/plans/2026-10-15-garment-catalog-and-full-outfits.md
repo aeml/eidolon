@@ -97,3 +97,17 @@ Low budget/export failures remain in the receipt.
 Selected locally for the next milestone. The other17minimum looks, wider motion
 coverage, final collection review and beta acceptance remain open. Existing
 12palette cosmetics still do not count as new model deliveries.
+
+## Isolated held-model candidates — October 15
+
+Six modeled candidates now replace the old palette-only visuals for existing
+Grovekeeper Blade/Shield, Skyweaver Dagger/Tome, Hearthkeeper Staff and Tidekeeper
+Mace unlocks. Their distinct thornblade, swept crescent, phoenix fork, tide-flange,
+oak relief and crescent-bound grimoire forms produce12High/Low GLBs while
+retaining all existing IDs/names/prices/ownership and original hand grips.
+
+176focused checks, explicit asset/source audit,12clean official glTF validations
+and16content groups pass. **Unselected and isolated**: native art, motion,
+preview and resource review is pending ordered56CI completion. No additional
+model is counted as accepted yet.
+[Preparation and retained fixture failures](2026-10-15-held-garment-preparation.json).
