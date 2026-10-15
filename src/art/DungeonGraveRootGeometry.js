@@ -12,6 +12,10 @@ export function createDungeonGraveRootGeometry(quality = 'high') {
     ];
     const parts = paths.map(({ points, radius }, branch) => {
         const geometry = createTaperedRoot(points, radius, quality);
+        // TubeGeometry uses U along the branch. Bark expects U around its
+        // circumference and V along its length, retained through room baking.
+        const uv = geometry.attributes.uv;
+        for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getY(i), uv.getX(i));
         const position = geometry.attributes.position, normal = geometry.attributes.normal;
         const colors = new Float32Array(position.count * 3);
         for (let i = 0; i < position.count; i++) {

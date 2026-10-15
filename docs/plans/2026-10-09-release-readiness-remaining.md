@@ -55,6 +55,9 @@ All five dungeon floor families now use an eight-metre tile; Thorncrypt floor
 joints are shallower and less dark. Forty wall maps remain byte-identical;
 93 distinct focused checks, full lint and13 native cases pass within the
 [retained scope and fixture correction](2026-10-15-dungeon-floor-scale-qualification.json).
+Thorncrypt roots also gain branch-following bark using the existing shader,
+with exact geometry preserved,11 focused checks and two native comparisons.
+[Root material qualification](2026-10-15-dungeon-root-bark-qualification.json).
 These selected changes are held on local master for a coherent world milestone
 until corrected53 completes its own CI/deployment/public verification.
 
