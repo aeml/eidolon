@@ -1,3 +1,4 @@
+import { applyElementalTrailGroundMaterial } from './ElementalTrailGroundMaterial.js';
 import * as THREE from 'three';
 import { EARTH_PATHS } from '../data/worldPopulation.js';
 import { conformGroundRibbon } from './GroundRibbonGeometry.js';
@@ -86,7 +87,7 @@ export function createWorldPathNetwork(paths, { name = 'World', color, elevation
     if (name === 'Earth') {
         applyLanternholdGateRoad(material, quality);
         applyEarthTrailGroundMaterial(material, quality);
-    }
+    } else if (['Water', 'Fire', 'Air'].includes(name)) applyElementalTrailGroundMaterial(material, name, quality);
     for (const path of paths) {
         const renderedPath = name === 'Earth' ? extendLanternholdGatePath(path) : path;
         const mesh = new THREE.Mesh(createWorldPathGeometry(renderedPath, { elevation }), material);

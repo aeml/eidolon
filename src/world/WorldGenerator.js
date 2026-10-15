@@ -224,9 +224,9 @@ export class WorldGenerator {
         this.scene.add(earthLocations, roadCart);
         const elementalLocations = ['water', 'fire', 'air'].map(realm => createElementalLocations(realm, { quality: this.graphicsQuality }));
         this.scene.add(...elementalLocations,
-            createWorldPathNetwork(WATER_PATHS, { name: 'Water', color: [126, 142, 143] }),
-            createWorldPathNetwork(FIRE_PATHS, { name: 'Fire', color: [94, 83, 70] }),
-            createWorldPathNetwork(AIR_PATHS, { name: 'Air', color: [123, 118, 133] }));
+            createWorldPathNetwork(WATER_PATHS, { name: 'Water', color: [126, 142, 143], quality: this.graphicsQuality }),
+            createWorldPathNetwork(FIRE_PATHS, { name: 'Fire', color: [94, 83, 70], quality: this.graphicsQuality }),
+            createWorldPathNetwork(AIR_PATHS, { name: 'Air', color: [123, 118, 133], quality: this.graphicsQuality }));
         for (const footprint of [earthLocations, roadCart, ...elementalLocations].flatMap(group => group.userData.walkFootprints)) {
             // Authored solids are currently axis-aligned. Keep the shared
             // footprint explicit rather than using decoration/roof bounds.
