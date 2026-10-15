@@ -106,3 +106,19 @@ full lint and reviewed desktop/phone captures qualify this local selection.
 [Evidence, stale fixture and invocation failures](2026-10-15-quest-book-qualification.json).
 Publication follows acceptance of54. This does not close shared-menu polish,
 durable position/reset preferences, physical playtests or final owner review.
+
+## Durable layout implementation — October 15
+
+Dragged registered windows now save device-local positions across reloads, with
+separate wide and compact desktop layouts. Temporary content/viewport clamping
+does not overwrite the saved coordinates; expanding restores the prior layout.
+Phone sessions retain their responsive default layout and ignore desktop offsets.
+Settings includes a keyboard/touch-accessible Reset window positions action that
+clears saved layouts and recenters the current panels. Unavailable/malformed
+storage falls back gracefully. Drag listeners retire with their UI session.
+
+94focused checks and five distinct native cases pass, retaining the initial
+accessible-name failure and corrected desktop/phone evidence.
+[Qualification](2026-10-15-durable-window-layout-qualification.json).
+This selection closes the implementation gap for durable registered-window
+positions/reset; broader menu polish and final usability review remain open.

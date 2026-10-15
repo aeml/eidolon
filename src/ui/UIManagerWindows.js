@@ -113,7 +113,7 @@ class UIManagerWindowMethods {
         });
         this.reflowVisibleWindows();
         const status = document.getElementById('window-layout-status');
-        if (status) status.textContent = 'Window positions reset. Drag a header to save a new layout.';
+        if (status) status.textContent = 'Window positions reset. Default layouts are restored.';
     }
 
     registerWindowLayouts() {
