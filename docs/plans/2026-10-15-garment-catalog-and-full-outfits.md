@@ -97,3 +97,18 @@ Low budget/export failures remain in the receipt.
 Selected locally for the next milestone. The other17minimum looks, wider motion
 coverage, final collection review and beta acceptance remain open. Existing
 12palette cosmetics still do not count as new model deliveries.
+
+## Isolated remaining class outfits — October 15
+
+Nightglass Cowl, Dawn Reliquary and Astral Sovereign add distinct Rogue, Cleric
+and Wizard designs, with24new GLBs for four supplied rigs/High/Low. They retain
+existing source gear/rigs and the25EP armor tier; class theme adds no cosmetic
+restriction. Their raven vanes, solar crest/leaves and sculpted lunar crown/
+crescent pauldrons are modeled geometry, rather than palette-only variants.
+
+186focused checks, focused server custody checks, full lint and15content groups
+pass. All32total outfit GLBs validate without errors/warnings; the eight original
+IronOath files remain byte-identical. **Unselected and isolated** pending actual
+native gameplay/preview/motion/resource review. The16-case gallery is prepared;
+no new class look is counted accepted yet.
+[Preparation](2026-10-15-class-garment-preparation.json).
