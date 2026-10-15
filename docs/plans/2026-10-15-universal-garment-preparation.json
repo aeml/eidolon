@@ -1,0 +1,153 @@
+{
+  "date": "2026-10-15T17:42:11.857949+00:00",
+  "runtimeSource": "35653f3d2c567bb340d1be973fe5440abdf5127a",
+  "state": "Isolated, UNSELECTED and not deployed. Awaiting ordered57 deployment acceptance before local native GPU review.",
+  "scope": "Seven universal full-outfit candidates complete the proposed minimum eight universal designs with Winterthorn.56new High/Low GLBs for four supplied class fits. Includes searchable/category-filtered Veyra collection. Existing25EP armor tier; no class/calendar restrictions, account/access/payment changes or actual gear mutation.",
+  "looks": [
+    "Hollow Court / Halloween",
+    "Rosebound Vow / Valentine",
+    "Lantern Envoy / Lunar New Year",
+    "Springbloom Jubilee / spring",
+    "Solstice Pyre / midsummer",
+    "Gilded Harvest / autumn",
+    "Midnight Masque / masquerade"
+  ],
+  "validation": {
+    "client": "212distinct focused checks across10suites pass on combined final source. Includes all96current actual outfit GLTFs, eight universal availability cases and filter/custody/reopen/empty-result checks.",
+    "models": "All96current outfit GLBs have byte-matched official zero-error/zero-warning validation evidence. Initial92pass/4Lowmasqueradefail; corrected seven model files validate,89unchanged current GLBs reuse exact prior passing proof. All52predecessor garment/held models remain byte-exact.",
+    "server": "Focused current24-entry catalog, wardrobe/vendor, handler and save/replication checks pass.",
+    "lintAndContent": "Full lint and16generated content groups pass.",
+    "audit": "Explicit96body+12held paths, frozen generated manifests,672body+12held source hashes and exact source token allowances. Asset override count853. Legacy zero-payload bans unchanged.",
+    "native": "28new outfit cases plus two revised complete-catalog store cases prepared, not executed. No native art, scene budget, motion, preview or cleanup acceptance claimed yet.",
+    "retainedFailures": "Unused helper helmet argument failed lint and was removed. Low masquerade ellipse endpoints collapsed into zero-area exported side faces and zero normals; explicit closed polygon eye loops correct actual geometry without fabricated normals. Count-only proof initially guessed88unchanged rather than actual89; corrected summary retained. Filter fixture initially expected2offhands, but all4existing shield/tome unlocks are correctly retained. A nonexistent ownership test name caused an invocation failure; original log retained and existing actual behavior suites pass."
+  },
+  "limits": "Candidate generation does not establish the whole eighteen-look collection as accepted/deployed. Final owner collection review, broader menu/world/audio/device/performance, operations, F1\u2013F5/beta/release gates and deferred playtests remain open. Full goal remains active; no soak/stress.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-universal-garments-20261015",
+  "evidence": [
+    {
+      "path": ".qa-universal-garments/combined-final-focused.log",
+      "bytes": 1117,
+      "sha256": "c611b0228e2d497c593c583b092df2f2428f89885b460fc67191272112345745"
+    },
+    {
+      "path": ".qa-universal-garments/content.log",
+      "bytes": 10033,
+      "sha256": "7336ef6ede5eac75341143fefb6152e4d0ec60ec5e5bed8eac986f9f427a42e6"
+    },
+    {
+      "path": ".qa-universal-garments/corrected-full-lint.log",
+      "bytes": 96,
+      "sha256": "cc8aa727439c5af11737645f533af55a70b8f1f140900a4ca0f3afc929c1736b"
+    },
+    {
+      "path": ".qa-universal-garments/cosmetics.log",
+      "bytes": 50,
+      "sha256": "047db8e6a2d563972ef9400125c437a4c39213f9e1ec1daa0dc3660028a53dd8"
+    },
+    {
+      "path": ".qa-universal-garments/filters-full-lint.log",
+      "bytes": 96,
+      "sha256": "cc8aa727439c5af11737645f533af55a70b8f1f140900a4ca0f3afc929c1736b"
+    },
+    {
+      "path": ".qa-universal-garments/focused.log",
+      "bytes": 1050,
+      "sha256": "19e874a47623dd6d88e0691d5aa0d78230bb0d18acd4d9c399b12a2f130130f8"
+    },
+    {
+      "path": ".qa-universal-garments/full-lint.log",
+      "bytes": 298,
+      "sha256": "3a67ce460aeb0e85a34e806b223be02cbd5590fa5619612a4a84bab0f7b2c2b8"
+    },
+    {
+      "path": ".qa-universal-garments/generate.log",
+      "bytes": 6613,
+      "sha256": "cbbead884710a98e6a0173a7d570125d119dbb835d1ebe5879d4a724f820eac3"
+    },
+    {
+      "path": ".qa-universal-garments/handlers-focused.log",
+      "bytes": 27,
+      "sha256": "2a254c2f991e0dca17b6ea176e394e2d2d8610acc9d7131d65bd7f7024f0b31c"
+    },
+    {
+      "path": ".qa-universal-garments/initial-official-validation.json",
+      "bytes": 722971,
+      "sha256": "1276f048349a3d6a7b31a7751e4f83c5f78cf213ed69c38e224489ade40e6b31"
+    },
+    {
+      "path": ".qa-universal-garments/initial-official-validation.log",
+      "bytes": 3467,
+      "sha256": "0a98623b1106499510f16a5cefc5279b4df3b15f92622d46934e905a9c8ee521"
+    },
+    {
+      "path": ".qa-universal-garments/mask-audit.log",
+      "bytes": 603,
+      "sha256": "bed04951095c2d0e6525a924b61e057a923e8d17b117ab38c8bb68e4eb4930c8"
+    },
+    {
+      "path": ".qa-universal-garments/mask-corrected-generation.log",
+      "bytes": 6613,
+      "sha256": "cbbead884710a98e6a0173a7d570125d119dbb835d1ebe5879d4a724f820eac3"
+    },
+    {
+      "path": ".qa-universal-garments/mask-corrected-validation.json",
+      "bytes": 719030,
+      "sha256": "4c9410c28da18da50f5e2fdb36ab363083e0e64fef534c4c06bf595478d1c8f2"
+    },
+    {
+      "path": ".qa-universal-garments/mask-corrected-validation.log",
+      "bytes": 608,
+      "sha256": "e95645c8ef7e2dcf88cc8c523a610f5abb873e317a05f2b2aed936fae318fa61"
+    },
+    {
+      "path": ".qa-universal-garments/mask-focused.log",
+      "bytes": 551,
+      "sha256": "026390e754e159e1857094141e4cbf2a3e20e27ef7293e669cc159d176df638e"
+    },
+    {
+      "path": ".qa-universal-garments/model-geometry-census.json",
+      "bytes": 2532,
+      "sha256": "79f3d3f5d3b1d67dffe934d2a4b74ec2ae839c3f68b1cd58effea77192009df8"
+    },
+    {
+      "path": ".qa-universal-garments/native-plan.log",
+      "bytes": 3000,
+      "sha256": "0259e483f56d3ba3cb13bf939ccd9851f09467ac08f3b7adb404e8bd2435921e"
+    },
+    {
+      "path": ".qa-universal-garments/official-validation.json",
+      "bytes": 722971,
+      "sha256": "1276f048349a3d6a7b31a7751e4f83c5f78cf213ed69c38e224489ade40e6b31"
+    },
+    {
+      "path": ".qa-universal-garments/official-validation.log",
+      "bytes": 3467,
+      "sha256": "0a98623b1106499510f16a5cefc5279b4df3b15f92622d46934e905a9c8ee521"
+    },
+    {
+      "path": ".qa-universal-garments/predecessor-models.json",
+      "bytes": 6509,
+      "sha256": "8b1f06c0f15441e73f8ae3d9804c7c4b3bf31e1aad30bc45b1eaba43788fe632"
+    },
+    {
+      "path": ".qa-universal-garments/server-focused.log",
+      "bytes": 41,
+      "sha256": "31b56200deb353966406a3879873daea648839e3c5966e2eff8ceb87afc02671"
+    },
+    {
+      "path": ".qa-universal-garments/validation-count-correction.log",
+      "bytes": 270,
+      "sha256": "9103666516ca10f3ab7510a104544d6c3ebd75c64ac1ab07c1d14cb1c15200f0"
+    },
+    {
+      "path": ".qa-universal-garments/vendor-filter-count-corrected.log",
+      "bytes": 498,
+      "sha256": "8fdf75c73df13b593c1c1161ce2881b0d7114536287a0ed734625d06e6e14b26"
+    },
+    {
+      "path": ".qa-universal-garments/vendor-filters-focused.log",
+      "bytes": 2787,
+      "sha256": "145b0529a0d7f1768dcf220727a22452c484f5b231cfc62adeb773c1007fe80c"
+    }
+  ]
+}
