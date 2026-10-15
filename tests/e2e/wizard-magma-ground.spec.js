@@ -6,6 +6,7 @@ test.use({ video: 'on' });
 
 for (const quality of ['high', 'low']) {
     test(`prepared ${quality} Magma uses a grounded stationary field while actors walk through it`, async ({ page, baseURL }, testInfo) => {
+        test.setTimeout(requiresHardwareWebGL() ? 120_000 : 180_000);
         const failures = collectBrowserFailures(page, baseURL), phone = quality === 'low';
         await page.setViewportSize({ width: phone ? 390 : 1280, height: 844 });
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
@@ -127,7 +128,23 @@ for (const quality of ['high', 'low']) {
         }, quality);
         await page.getByRole('button', { name: 'Walk through field', exact: true }).click();
         await page.screenshot({ path: testInfo.outputPath(`magma-${quality}-walking.png`) });
-        await expect.poll(() => page.evaluate(() => Boolean(window.__magmaGround.expiry))).toBe(true);
+        try {
+            // Hosted software rendering can take seconds per frame, while the
+            // fixture deliberately caps each simulation step at 0.1s. Allow
+            // that runner time to observe the same three-second game lifetime;
+            // preserve the native deadline and all simulation bounds below.
+            await expect.poll(() => page.evaluate(() => Boolean(window.__magmaGround.expiry)), {
+                timeout: requiresHardwareWebGL() ? 15_000 : 90_000
+            }).toBe(true);
+        } catch (error) {
+            const timing = await page.evaluate(() => {
+                const q = window.__magmaGround;
+                return { elapsed: q.elapsed, created: q.created, walkAt: q.walkAt, expiry: q.expiry,
+                    fieldElapsed: q.field.elapsedTime, active: q.field.isActive, trace: q.trace, fieldSteps: q.fieldSteps };
+            });
+            await testInfo.attach('magma-expiry-timeout', { body: JSON.stringify({ initial, contrast, timing }), contentType: 'application/json' });
+            throw error;
+        }
         const result = await page.evaluate(() => {
             const q = window.__magmaGround;return { walkFieldAge: q.walkAt - q.created, hits: q.hits, trace: q.trace, expiry: q.expiry, manaSpent: q.beforeMana - q.owner.stats.mana,
                 radius: q.field.radius, duration: q.field.duration, origin: q.origin.toArray(), fieldDetached: q.fieldMesh.parent === null, pendingGeometry: q.render.actorGameplayGeometry.delivery.jobs.size };

@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-15",
+  "version": "Alpha 1.79.53",
+  "source": "a4538cd33f9fd6b87dac45265a82f8cd76160ff1",
+  "run": "https://github.com/aeml/eidolon/actions/runs/38663284956",
+  "finding": "Hosted High Magma expired after the fixture poll deadline. The original trace records the final Boolean(expiry) evaluate returning true at573850.999ms, after the poll began557379.314ms (16.472s). Individual observations cost1.235\u20131.733s and start2.72\u20133.45s apart. The configured retry also timed out. Low passes. No gameplay expiry regression is established by this wall-clock failure.",
+  "change": "Software-only test timeout180s and expiry observation allowance90s match the existing class-effect software policy. Native test120s/expiry poll15s stay unchanged. Actual game duration3s, capped0.1s fixture steps, exact pixel/range/mana/damage/retirement assertions and zero field age at walk remain unchanged. Retain explicit state/step diagnostics if future expiry polling fails.",
+  "validation": "Final High/Low pass once on software Chromium31.0s and native Chrome14.7s; four executions/two distinct cases, zero retries/skips. Scoped lint and whitespace pass.",
+  "scope": "Prepared component fixture scheduling correction only; no runtime/performance acceptance, skips, gameplay deadline relaxation or automatic job rerun.",
+  "evidence": [
+    {
+      "path": ".qa-release53/corrected-shard1.log",
+      "bytes": 88061,
+      "sha256": "656f2416ae57966bfa1f89670a04aa3132d92c49c73bdb87b9780391c52559dc"
+    },
+    {
+      "path": ".qa-release53/magma-timing-software.log",
+      "bytes": 678,
+      "sha256": "d0e072d6143783055a56de91fb5c552c560a783120e3291316d4ad329dbbaaca"
+    },
+    {
+      "path": ".qa-release53/magma-timing-native.log",
+      "bytes": 546,
+      "sha256": "8adc11ef205a0372eafec2e0f3bc3dd77bec969964a6340916a3d767b89ddbed"
+    },
+    {
+      "path": ".qa-release53/magma-timing-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-release53/corrected-browser1/test-results/browser-1/interface/wizard-magma-ground-prepar-c2601-hile-actors-walk-through-it-retry1/trace.zip",
+      "bytes": 6181161,
+      "sha256": "d3ad380df3ca7ea68c587a5c7cc495c56fe3e2e6bddbcf8547f370e33f9709fd"
+    },
+    {
+      "path": ".qa-release53/corrected-browser1/test-results/browser-1/interface/wizard-magma-ground-prepar-c2601-hile-actors-walk-through-it/trace.zip",
+      "bytes": 6206632,
+      "sha256": "860b0cdd3e030423f27f16bb5448c865adeb92740774cb53c1677a76f61a4acf"
+    }
+  ],
+  "release": "Same53 candidate correction.52 remains accepted; own complete CI/deploy/live/public verification required before publishing the held world milestone."
+}

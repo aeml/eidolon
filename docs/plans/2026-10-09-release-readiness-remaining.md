@@ -33,7 +33,11 @@ coverage records 388 passes, 13 skips and one Magma image-comparison retry;
 
 The next coherent milestone, Alpha 1.79.53, is a published release candidate.
 Its first CI run stopped before deployment on two stale browser fixtures; six
-corrected software-browser cases pass without retries.
+corrected software-browser cases pass without retries. The next candidate caught
+a High software-rendering expiry observation timeout; its trace ultimately
+records expiry after the15s poll deadline. The software observation allowance
+is now90s, preserving native15s and exact3s gameplay expiry bounds. Both cases
+pass once on software and native browsers. [Timing evidence](2026-10-15-release1-79-53-magma-timing.json).
 [Findings and correction](2026-10-15-release1-79-53-browser-fixtures.json). Returning
 phone/desktop sessions now select current input policy and restore shared menus,
 settings and touch controls on teardown, including failed world loading (212 focused checks and ten distinct
