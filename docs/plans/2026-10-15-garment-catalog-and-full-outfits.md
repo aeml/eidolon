@@ -112,3 +112,12 @@ IronOath files remain byte-identical. **Unselected and isolated** pending actual
 native gameplay/preview/motion/resource review. The16-case gallery is prepared;
 no new class look is counted accepted yet.
 [Preparation](2026-10-15-class-garment-preparation.json).
+
+## Qualified class garments selection — October 15
+
+Nightglass Cowl, Dawn Reliquary and Astral Sovereign complete the three remaining class-themed designs. Winterthorn Revel adds the first universal Christmas/winter-festival outfit. Four supplied fits and High/Low for each: 32 new GLBs, 40 current outfit GLBs including unchanged Iron Oath.
+
+196 distinct focused client checks across twelve suites pass using corrected retained evidence, plus focused current seventeen-entry server wardrobe/vendor checks, full lint and fifteen generated-content groups. All forty current GLBs have byte-matched official zero-error/zero-warning validation evidence; original Iron Oath remains byte-identical. Sixteen distinct new class/Winter cases have passing native evidence across the first twelve-case run and corrected six-case lunar/Winter run. Each full-party case exercises 27 supplied pose records and 90 continuous Run frames; three strict swap/restore cycles remain equal. Unchanged original Iron Oath four-case evidence is reused only for its earlier pose scope; integrated required native plan will exercise all twenty cases.
+
+Selected for the next coherent release after native visual review. Astral Low controlled fixture has only 66 triangles of headroom; no broader world/frame-time margin claim. Seven universal themes, whole collection/final owner art, physical devices and beta readiness remain open.
+[Qualification and retained evidence](2026-10-15-class-and-winter-garment-qualification.json).
