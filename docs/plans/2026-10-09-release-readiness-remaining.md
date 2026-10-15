@@ -31,7 +31,13 @@ coverage records 388 passes, 13 skips and one Magma image-comparison retry;
 770 client suites/11,772 tests, 62 native passes/one skip and live recovery pass.
 [Acceptance, retained retry and custody](2026-10-15-release1-79-52-acceptance.md).
 
-The next coherent milestone, Alpha 1.79.53, is a published release candidate.
+**Alpha 1.79.53 is deployed and verified** at `99eefb64d`. All ten jobs in
+CI38667006513 passed:772 client suites/11793 tests,394 hosted browser passes/
+13 skips/no reported flakes,62 native passes/one skip and live gameplay/recovery.
+Normal-TLS verification matches both identities, ready database and all213 pins.
+[Acceptance and custody](2026-10-15-release1-79-53-acceptance.md).
+
+Its earlier candidates retained these predeployment findings:
 Its first CI run stopped before deployment on two stale browser fixtures; six
 corrected software-browser cases pass without retries. The next candidate caught
 a High software-rendering expiry observation timeout; its trace ultimately
@@ -46,7 +52,7 @@ bounding first-build town work and retaining at most 4,915,200 CPU bytes for
 returning sessions (61 focused checks; two final native scene-lifetime cases).
 [Session qualification](2026-10-15-session-layout-qualification.json),
 [world preparation](2026-10-15-world-raster-preparation.json).
-52 is accepted; qualify the corrected 53 candidate and verify its deployment independently. These changes
+53 is accepted independently after52. These changes
 close specific usability/loading defects, not final world art, physical-device,
 whole-frame or full original readiness requirements. Soak remains deferred.
 
@@ -70,7 +76,8 @@ remain exact.91 focused checks and two native motion/lifetime cases pass.
 Whole-game frame time and other crowded-scene triangle failures remain open.
 These selected changes form Alpha1.79.54 on local master, with415 release checks
 and489 cumulative notes preserving all488 previous entries. The milestone is
-held until corrected53 completes its own CI/deployment/public verification.
+unpublished while additional isolated foliage/trail candidates are reviewed.
+53 has completed its own CI/deployment/public verification; no new milestone is yet published.
 [Preparation and retained evidence](2026-10-15-release1-79-54-preparation.json).
 
 The private pine diffuse-lighting experiment144251bcd remains unselected: the

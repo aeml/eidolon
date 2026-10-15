@@ -495,15 +495,15 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.54` (Earth trails, dungeon surfaces and Ilyra
-geometry; prepared locally and held until Alpha 1.79.53 deployment acceptance).
+Current source version: `Alpha 1.79.54` (world surfaces and rendering;
+prepared locally, with additional isolated world candidates under review).
 
-**Alpha 1.79.52 is deployed and verified**, at runtime source `8c8ef016e`.
+**Alpha 1.79.53 is deployed and verified**, at runtime source `99eefb64d`.
 All ten CI jobs passed, including native graphics, both deployments and live
 character/recovery checks. Independent normal-TLS reads match both release
-identities, the ready database and all 204 pinned public assets. One hosted
-Magma image-comparison retry is retained in the
-[acceptance record](docs/plans/2026-10-15-release1-79-52-acceptance.md).
+identities, the ready database and all 213 pinned public assets. Earlier
+candidate failures and their corrections remain in the
+[acceptance record](docs/plans/2026-10-15-release1-79-53-acceptance.md).
 The [current work register](docs/plans/2026-10-09-release-readiness-remaining.md)
 retains the full outstanding scope and earlier failures.
 
