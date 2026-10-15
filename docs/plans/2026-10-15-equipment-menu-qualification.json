@@ -1,0 +1,214 @@
+{
+  "date": "2026-10-15T17:17:46.013297+00:00",
+  "runtimeSource": "d10a26ac113c5a9aff2cd732abca935e941bfcb9",
+  "state": "Qualified and selected for ordinary merge into master; not yet deployed.",
+  "scope": "Readable merchant slot cards, actual existing Gold prices, stable focus, wallet/full-bag feedback, inventory capacity and coordinated character/bag/store framing. Readable Sell All colors and at least 44px touch targets. No server economy or speculative wallet/item mutations.",
+  "checks": "151 distinct focused and related checks across nine suites pass, including the required native routing guard. Full lint and subsequent fixture lint pass.",
+  "native": "Three distinct native desktop/phone cases pass without retries. Keyboard and real virtual touch taps exercise existing callbacks, tabs and close/reopen; a CDP touch swipe scrolls offers without buying, then taps the last offhand offer. Wallet remains unchanged until authoritative updates.",
+  "visualReview": "Reviewed corrected synchronized-HUD desktop/phone character/bag/store captures and the final phone touch merchant capture. Price hierarchy, readable rarity text, responsive two-column offers and reachable close controls are visible.",
+  "retainedFailures": "Initial stale MenuPolish markup assertion corrected to actual price/status presentation. Two native keyboard fixtures initially lacked the real Fighter Charge fields required by updateHUD; corrected fixture passed unchanged UI assertions. Logs and traces retained.",
+  "limits": "First selected equipment-menu slice. Stash/forge/trading presentation, final owner usability/art review and physical phone testing remain open.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-menu-polish-20261015",
+  "evidence": [
+    {
+      "path": ".qa-menu-polish/browser-fixture-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-menu-polish/focused-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-menu-polish/focused.log",
+      "bytes": 720,
+      "sha256": "cc067dcd81d6a29a3e4a6523cbfa3e04f63c3525039ef3c522bc9ecfdd56536b"
+    },
+    {
+      "path": ".qa-menu-polish/full-lint.log",
+      "bytes": 96,
+      "sha256": "0b5033e6a217fbd15dc194727ba175dfcf1a245641eab20298f084f65231cecd"
+    },
+    {
+      "path": ".qa-menu-polish/hud-fixture-corrected-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-menu-polish/menu-contract-corrected.log",
+      "bytes": 505,
+      "sha256": "0ea12ff33949c1e15d55aba78f47c21bd87fe43ff1bf4ab95584efa8e2e43b26"
+    },
+    {
+      "path": ".qa-menu-polish/native-contrast/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".qa-menu-polish/native-contrast/shop-menu-quality-merchant-b4f0e-nsive-equipment-menus-phone/merchant-offers.png",
+      "bytes": 187183,
+      "sha256": "cba31daa280c77e1f3450104ddeebe0ccd498ffa21b806888a0ab225d9a008ae"
+    },
+    {
+      "path": ".qa-menu-polish/native-contrast/shop-menu-quality-merchant-e5d48-ive-equipment-menus-desktop/character-and-bag.png",
+      "bytes": 561440,
+      "sha256": "bfcce1706587495b9cf7859631471bc6acc2b008c2325669d197bae44be29d27"
+    },
+    {
+      "path": ".qa-menu-polish/native-contrast/shop-menu-quality-merchant-e5d48-ive-equipment-menus-desktop/merchant-offers.png",
+      "bytes": 629765,
+      "sha256": "3b8de87dc90170086400eea5135ff8c13a8e5e63712009bd9aced7d90ecc1321"
+    },
+    {
+      "path": ".qa-menu-polish/native-contrast.log",
+      "bytes": 545,
+      "sha256": "0850dd85de2aec9c57abb506b65cd23036377fea7db227762f73c8e837bd9ad7"
+    },
+    {
+      "path": ".qa-menu-polish/native-final/.last-run.json",
+      "bytes": 145,
+      "sha256": "0fcb227e7dc8314c3c29c2873ead0fbe797e02bba7f35989fcb7bdc7cee5e5e9"
+    },
+    {
+      "path": ".qa-menu-polish/native-final/shop-menu-quality-merchant-b4f0e-nsive-equipment-menus-phone/test-failed-1.png",
+      "bytes": 129308,
+      "sha256": "bb49a4c9fea39c25fe5f0ca3c5a81f4c3715317de2d4bbc262778f5839f36a2b"
+    },
+    {
+      "path": ".qa-menu-polish/native-final/shop-menu-quality-merchant-d1468-ithout-changing-local-money/touch-merchant.png",
+      "bytes": 163726,
+      "sha256": "4ab3c093729a7ec6a9e30f71f790e06e5935e8781935aebb6b5f7c5acb4596cb"
+    },
+    {
+      "path": ".qa-menu-polish/native-final/shop-menu-quality-merchant-e5d48-ive-equipment-menus-desktop/test-failed-1.png",
+      "bytes": 571857,
+      "sha256": "a6055ae56688cfeace16d4d55bd135a5559fb43870475264556ef32fc46d9077"
+    },
+    {
+      "path": ".qa-menu-polish/native-final.log",
+      "bytes": 7000,
+      "sha256": "17b5103088be0192f0f77509340054c4af63674f7444e49583b872d4a2ec6fe3"
+    },
+    {
+      "path": ".qa-menu-polish/native-first/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".qa-menu-polish/native-first/shop-menu-quality-merchant-b4f0e-nsive-equipment-menus-phone/merchant-offers.png",
+      "bytes": 187342,
+      "sha256": "6b65747d304d3bdaab19c8c33dfa890621fb1c8ee5eceb159741a8d4764da48d"
+    },
+    {
+      "path": ".qa-menu-polish/native-first/shop-menu-quality-merchant-e5d48-ive-equipment-menus-desktop/character-and-bag.png",
+      "bytes": 573252,
+      "sha256": "b8106fc76bb84b0ec573027883fcedcdac04c84ceb7c4b4b233a8ca497e53855"
+    },
+    {
+      "path": ".qa-menu-polish/native-first/shop-menu-quality-merchant-e5d48-ive-equipment-menus-desktop/merchant-offers.png",
+      "bytes": 634116,
+      "sha256": "613a62fd7eee9313c482fb1dcf14da068944c0fb863b26302ee658a332f2dddf"
+    },
+    {
+      "path": ".qa-menu-polish/native-first.log",
+      "bytes": 545,
+      "sha256": "25bed9a044fd3214d7e8bbd49ef9c5015d7402ac679a62aab7a32b289d1952a9"
+    },
+    {
+      "path": ".qa-menu-polish/native-fixture-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-menu-polish/native-hud-corrected/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".qa-menu-polish/native-hud-corrected/shop-menu-quality-merchant-b4f0e-nsive-equipment-menus-phone/merchant-offers.png",
+      "bytes": 187185,
+      "sha256": "883ad475e4643405f65c32b042fcf1ae5c3c43bc2890a342d8959ccd4361d9a6"
+    },
+    {
+      "path": ".qa-menu-polish/native-hud-corrected/shop-menu-quality-merchant-e5d48-ive-equipment-menus-desktop/character-and-bag.png",
+      "bytes": 574943,
+      "sha256": "bb226b895b1ca9ac8b6dcd9f62d94dc4bca5b1931a57a5770620a6e406e6750c"
+    },
+    {
+      "path": ".qa-menu-polish/native-hud-corrected/shop-menu-quality-merchant-e5d48-ive-equipment-menus-desktop/merchant-offers.png",
+      "bytes": 629959,
+      "sha256": "2f4a73bdf485b55cda9f8913c7c1fb1df375ffa6edbe54f54f6185d724c98d48"
+    },
+    {
+      "path": ".qa-menu-polish/native-hud-corrected.log",
+      "bytes": 545,
+      "sha256": "26de2572762c4c22c2eb2f1c888fbb8fb5832e6122a45eceffc2e7c491de7392"
+    },
+    {
+      "path": ".qa-menu-polish/native-routing-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-menu-polish/native-routing-plan.log",
+      "bytes": 516,
+      "sha256": "5042d83cfbd0eacadc6a2f37a36e411f092de3813791ff0552bd2391aa07a960"
+    },
+    {
+      "path": ".qa-menu-polish/native-swipe/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".qa-menu-polish/native-swipe/shop-menu-quality-merchant-d1468-ithout-changing-local-money/touch-merchant.png",
+      "bytes": 161671,
+      "sha256": "a227691524d873debc443caa5202e1206feae288c733719117b1b254728ba604"
+    },
+    {
+      "path": ".qa-menu-polish/native-swipe.log",
+      "bytes": 439,
+      "sha256": "0050f24ccf8249a11679d2154211b7362d5040211a6ec528e83e8d03d1e6ca0c"
+    },
+    {
+      "path": ".qa-menu-polish/prepare.log",
+      "bytes": 2666,
+      "sha256": "07a4982a94cd04d1cd20e8698155d0617952ba7420e76891819f3f8d1421af6b"
+    },
+    {
+      "path": ".qa-menu-polish/related.log",
+      "bytes": 926898,
+      "sha256": "728ce4db7d4d3f33dfd834f29d33d3be5908ada6e9b52859796ea87ef6b7659c"
+    },
+    {
+      "path": ".qa-menu-polish/scoped-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-menu-polish/sell-action-contrast.log",
+      "bytes": 505,
+      "sha256": "d5c902007bfa9e878f52f4babc5a8dfb313cc93ce80a76c218c7e24afaeaaa91"
+    },
+    {
+      "path": ".qa-menu-polish/sell-action-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-menu-polish/swipe-fixture-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-menu-polish/touch-fixture-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-menu-polish/touch-plan.log",
+      "bytes": 395,
+      "sha256": "c1d8a3e7dd9e16e0c9e3134f1fe85c70ef7b9733d9c500688285dd97350ff044"
+    }
+  ]
+}

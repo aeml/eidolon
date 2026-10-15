@@ -137,3 +137,12 @@ shares the character sheet's restrained metal framing with the merchant.
 native desktop/phone captures and interaction review; no broad menu or final
 visual acceptance is claimed.
 [Preparation and retained stale markup failure](2026-10-15-equipment-menu-preparation.json).
+
+## Qualified menu polish selection — October 15
+
+Readable merchant slot cards, actual existing Gold prices, stable focus, wallet/full-bag feedback, inventory capacity and coordinated character/bag/store framing. Readable Sell All colors and at least 44px touch targets. No server economy or speculative wallet/item mutations.
+
+151 distinct focused and related checks across nine suites pass, including the required native routing guard. Full lint and subsequent fixture lint pass. Three distinct native desktop/phone cases pass without retries. Keyboard and real virtual touch taps exercise existing callbacks, tabs and close/reopen; a CDP touch swipe scrolls offers without buying, then taps the last offhand offer. Wallet remains unchanged until authoritative updates.
+
+Selected for the next coherent release after native visual review. First selected equipment-menu slice. Stash/forge/trading presentation, final owner usability/art review and physical phone testing remain open.
+[Qualification and retained evidence](2026-10-15-equipment-menu-qualification.json).
