@@ -113,7 +113,7 @@ func (w *World) SelectAppearance(playerID, slot, key string) error {
 	if err := w.loadoutAccess(p, 0); err != nil {
 		return err
 	}
-	if !isEquipmentSlot(slot) {
+	if !isEquipmentSlot(slot) && slot != "outfit" {
 		return errors.New("Choose a real equipment slot")
 	}
 	look, owned := p.AppearanceCollection[key]
@@ -121,16 +121,22 @@ func (w *World) SelectAppearance(playerID, slot, key string) error {
 		if !owned || AppearanceKey(look) != key {
 			return errors.New("Unlock this look in your wardrobe first")
 		}
-		kind := ItemArmor
-		if look.Slot == "mainHand" {
-			kind = ItemWeapon
-		}
-		if !itemFitsEquipmentSlot(Item{Slot: look.Slot, Type: kind}, slot) {
-			return errors.New("That appearance does not fit this equipment slot")
-		}
-		item := p.Equipment[slot]
-		if item.ID == "" || !activeEquipmentItem(slot, item) {
-			return errors.New("Equip an item in this slot before choosing its appearance")
+		if slot == "outfit" {
+			if !validOutfitAppearance(look) {
+				return errors.New("Choose an unlocked complete outfit")
+			}
+		} else {
+			kind := ItemArmor
+			if look.Slot == "mainHand" {
+				kind = ItemWeapon
+			}
+			if !itemFitsEquipmentSlot(Item{Slot: look.Slot, Type: kind}, slot) {
+				return errors.New("That appearance does not fit this equipment slot")
+			}
+			item := p.Equipment[slot]
+			if item.ID == "" || !activeEquipmentItem(slot, item) {
+				return errors.New("Equip an item in this slot before choosing its appearance")
+			}
 		}
 	}
 	selection := maps.Clone(p.Appearances)
