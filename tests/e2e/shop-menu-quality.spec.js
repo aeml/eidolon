@@ -13,6 +13,7 @@ for (const phone of [false, true]) test(`merchant offers show exact prices and r
         const equipment = Object.fromEntries([['chest', 'Plate Mail'], ['mainHand', 'Iron Sword'], ['offHand', 'Wooden Shield']]
             .map(([slot, name]) => [slot, { ...BASE_ITEMS.find(item => item.name === name), id: `real-${slot}`, baseName: name, rarity: RARITY.RARE, level: 7, potency: 0 }]));
         const player = { id: 'shop-quality', subType: 'Fighter', level: 7, xp: 0, xpToNextLevel: 1000, statPoints: 0,
+            abilityName: 'Charge', abilityDescription: 'Dash towards an enemy and deal damage.', abilityManaCost: 20, abilityCooldown: 0,
             equipment, inventory: Array(25).fill(null), gold: 500,
             stats: { hp: 180, maxHp: 180, mana: 50, maxMana: 50, strength: 20, dexterity: 12, intelligence: 10, vitality: 18, wisdom: 10, damage: 30, defense: 12 },
             baseStats: { strength: 20, dexterity: 12, intelligence: 10, vitality: 18, wisdom: 10 } };
