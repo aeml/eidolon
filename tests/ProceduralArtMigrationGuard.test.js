@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { createHash } from 'node:crypto';
+import { GARMENT_MODELS, GARMENT_ASSET_VERSIONS } from '../src/assets/garments.generated.js';
 
 const repoRoot = path.resolve(process.cwd());
 const assetsRoot = path.join(repoRoot, 'assets');
@@ -68,6 +69,12 @@ const wearableManifest = JSON.parse(wearableManifestBytes);
 const wearableRuntimeReferences = wearableManifest.sources.flatMap(row =>
     ['high', 'low'].map(quality => row.variants[quality].file));
 const auditedWearableCopies = new Set(wearableRuntimeReferences.filter(file => file.startsWith('assets/equipment/runtime/')));
+// Explicit owner-requested complete garment delivery. No directory wildcard:
+// only these eight qualified fits may join the existing supplied-model audit.
+const auditedGarmentCopies = new Set(['Fighter', 'Rogue', 'Cleric', 'Wizard'].flatMap(actorClass =>
+    ['high', 'low'].map(quality => `assets/garments/iron-oath-regalia-v1/${actorClass}-${quality}.glb`)));
+const garmentModels = Object.values(GARMENT_MODELS.outfits).flatMap(outfit => Object.values(outfit.models).flatMap(models => Object.values(models)));
+const garmentSources = Object.values(GARMENT_MODELS.outfits).flatMap(outfit => outfit.provenance);
 const currentLegacyReferenceFiles = new Set([
     'scripts/serve-static.mjs'
 ]);
@@ -79,6 +86,9 @@ const MAX_LEGACY_MODEL_BYTES = 0;
 const MAX_RUNTIME_GLB_TOKENS = 1;
 const auditedAssetReferenceAllowlist = new Map([
     ['src/art/AuthoredIlyra.js', new Set(['./assets/npcs/ilyra/ilyra-archmage.glb'])],
+    ['src/assets/garments.generated.js', [...garmentModels.map(model => model.file),
+        ...garmentSources.map(source => source.path), ...Object.keys(GARMENT_ASSET_VERSIONS)]],
+    ['scripts/generate-garment-models.mjs', new Set(['assets/garments/${design.id}/${actorClass}-${quality}.glb'])],
     ['src/art/AuthoredFighter.js', new Set()],
     // Preserve duplicate original references for the32 unchanged variants:
     // each appearance is expected, not an unlimited token or path allowance.
@@ -118,6 +128,24 @@ function relative(filePath) {
 }
 
 describe('procedural art migration guard', () => {
+    test('only the exact qualified garment fits and their unchanged supplied sources are allowed', () => {
+        const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+        expect(hash(fs.readFileSync(path.join(repoRoot, 'src/assets/garments.generated.js'))))
+            .toBe('078f73741ca632837eb8ee05d384f570cead0b27fbf8424553b3fb4c803649f9');
+        expect(Object.keys(GARMENT_MODELS.outfits)).toEqual(['Iron Oath Regalia']);
+        expect(garmentModels.map(model => model.file.slice(2)).sort()).toEqual([...auditedGarmentCopies].sort());
+        expect(garmentSources).toHaveLength(56);
+        for (const model of garmentModels) {
+            const bytes = fs.readFileSync(path.join(repoRoot, model.file));
+            expect(bytes.length).toBe(model.bytes); expect(hash(bytes)).toBe(model.sha256);
+            expect(GARMENT_ASSET_VERSIONS[model.file]).toBe(model.sha256.slice(0, 16));
+        }
+        for (const source of garmentSources) {
+            const file = source.path.replace(/^\.\//, '');
+            expect(auditedWearableCopies.has(file) || stagedEquipmentExports.has(file)).toBe(true);
+            expect(hash(fs.readFileSync(path.join(repoRoot, source.path)))).toBe(source.sha256);
+        }
+    });
     test('only the exact audited wearable catalog and unchanged supplied sources authorize runtime copies', () => {
         const hash = bytes => createHash('sha256').update(bytes).digest('hex');
         expect(hash(wearableManifestBytes)).toBe('55b7b7bbc27198911f4205af0f1aff85887e21540935cd5c0b05ff9e9cdcbbb1');
@@ -146,7 +174,8 @@ describe('procedural art migration guard', () => {
             !nonAuthoredMigrationBridges.has(relative(filePath)) &&
             !stagedCharacterExports.has(relative(filePath)) &&
             !stagedEquipmentExports.has(relative(filePath)) &&
-            !auditedWearableCopies.has(relative(filePath))
+            !auditedWearableCopies.has(relative(filePath)) &&
+            !auditedGarmentCopies.has(relative(filePath))
         ));
         const totalBytes = modelFiles.reduce((sum, filePath) => sum + fs.statSync(filePath).size, 0);
 
