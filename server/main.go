@@ -27,6 +27,7 @@ import (
 	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
 	"eidolon-server/internal/operations"
+	"eidolon-server/internal/registrationinvites"
 
 	"github.com/gorilla/websocket"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -73,6 +74,9 @@ var economyMetricsFilePath = flag.String("economy-metrics-file", "logs/economy_m
 var qaUsernamesFlag = flag.String("qa-usernames", os.Getenv("EIDOLON_QA_USERNAMES"), "Comma-separated usernames allowed to use QA-only commands")
 var adminTestUsernamesFlag = flag.String("test-usernames", os.Getenv("EIDOLON_TEST_USERNAMES"), "Comma-separated automation accounts excluded from real-player administration views; grants no privileges")
 var qaTerrainElevationFlag = flag.Bool("qa-terrain-elevation", false, "Enable the Earth terrain integration candidate on an explicitly configured QA server")
+var requireInvitationAdmissionFlag = flag.Bool("require-invitation-admission", false, "Persistent closed-beta admission guard; invitation mode only")
+var registrationInvitations = registrationinvites.OpenPolicy()
+
 var terrainProfileFlag = flag.String("terrain-profile", os.Getenv("EIDOLON_TERRAIN_PROFILE"), "Server-owned terrain profile: flat-v1 (default) or earth-elevation-rocks-v1; does not enable QA commands")
 var adminBootstrapUsernamesFlag = flag.String("admin-bootstrap-usernames", os.Getenv("EIDOLON_ADMIN_BOOTSTRAP_USERNAMES"), "Comma-separated exact usernames allowed to bootstrap the durable admin role")
 
@@ -142,6 +146,7 @@ func isQAUsername(username string) bool {
 }
 
 type healthResponse struct {
+	RegistrationMode  string                        `json:"registrationMode"`
 	Status            string                        `json:"status"`
 	Database          string                        `json:"database"`
 	Commit            string                        `json:"commit"`
@@ -159,11 +164,12 @@ func collectHealthResponse(ctx context.Context, pingDatabase func(context.Contex
 	var memory runtime.MemStats
 	runtime.ReadMemStats(&memory)
 	response := healthResponse{
-		Status:     "ok",
-		Database:   "ready",
-		Commit:     buildCommit,
-		Version:    buildVersion,
-		Goroutines: runtime.NumGoroutine(), HeapAllocBytes: memory.HeapAlloc,
+		RegistrationMode: registrationInvitations.Mode(),
+		Status:           "ok",
+		Database:         "ready",
+		Commit:           buildCommit,
+		Version:          buildVersion,
+		Goroutines:       runtime.NumGoroutine(), HeapAllocBytes: memory.HeapAlloc,
 		HeapObjects:       memory.HeapObjects,
 		BroadcastQueues:   transientBroadcastMetrics(),
 		WebsocketClosures: transportClosureMetrics(),
@@ -461,6 +467,12 @@ func setupLogging() ([]io.Closer, error) {
 
 func main() {
 	flag.Parse()
+	policy, policyErr := registrationinvites.FromEnv(os.Getenv, *requireInvitationAdmissionFlag)
+	if policyErr != nil {
+		fmt.Fprintln(os.Stderr, policyErr)
+		os.Exit(2)
+	}
+	registrationInvitations = policy
 	terrainProfile, terrainErr := resolveTerrainStartupProfile(*terrainProfileFlag, *qaTerrainElevationFlag, len(parseQAUsernames(*qaUsernamesFlag)) > 0)
 	if terrainErr != nil {
 		fmt.Fprintln(os.Stderr, terrainErr)

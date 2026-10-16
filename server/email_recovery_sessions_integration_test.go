@@ -91,6 +91,14 @@ func recoveryConnectedMailSink(t *testing.T) <-chan postmarkRecoveryMessage {
 }
 
 func TestEmailRecoveryActualConnectedSessions(t *testing.T) {
+	testEmailRecoveryActualConnectedSessions(t, false)
+}
+
+func TestEmailRecoveryActualInvitationSessions(t *testing.T) {
+	testEmailRecoveryActualConnectedSessions(t, true)
+}
+
+func testEmailRecoveryActualConnectedSessions(t *testing.T, invitationMode bool) {
 	repo, uri, binary := resourceJournalIntegration(t)
 	messages := recoveryConnectedMailSink(t)
 	fixture, current := resourceJournalFixture(t, repo)
@@ -100,7 +108,12 @@ func TestEmailRecoveryActualConnectedSessions(t *testing.T) {
 		t.Fatal(err)
 	}
 	const next = "  New connected recovery passphrase  "
-	address, stop := compatStartServer(t, binary, uri, 1711, "-save-journal-dir", t.TempDir())
+	args := []string{"-save-journal-dir", t.TempDir()}
+	if invitationMode {
+		invitationFixtureSettings(t, []string{fixture.Name + "-new-invitee"}, nil)
+		args = append(args, "--require-invitation-admission")
+	}
+	address, stop := compatStartServer(t, binary, uri, 1711, args...)
 	defer stop()
 	request := func(conn *websocket.Conn, action string, payload map[string]string) string {
 		t.Helper()
@@ -162,7 +175,11 @@ func TestEmailRecoveryActualConnectedSessions(t *testing.T) {
 
 	// The pending emailed challenge survives a real process restart. A new live
 	// owner and token are then invalidated by the proved reset, not its request.
-	address, stop = compatStartServer(t, binary, uri, 1712, "-save-journal-dir", t.TempDir())
+	args = []string{"-save-journal-dir", t.TempDir()}
+	if invitationMode {
+		args = append(args, "--require-invitation-admission")
+	}
+	address, stop = compatStartServer(t, binary, uri, 1712, args...)
 	defer stop()
 	owner = credentialSocket(t, address)
 	resourceSend(t, owner, MsgLogin, AuthPayload{Username: fixture.Name, Password: current})

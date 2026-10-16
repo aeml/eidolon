@@ -68,3 +68,70 @@ for (const mode of ['verify', 'reset', 'setup']) {
         expect(requests).toBe(1);
     });
 }
+
+for (const mode of ['invited-desktop', 'invited-phone', 'existing-login', 'required-code']) {
+    test(`invitation registration real bootstrap and controls: ${mode}`, async ({ page }) => {
+        await page.setViewportSize({ width: mode === 'invited-phone' ? 390 : 1280, height: 844 });
+        await page.route('**/src/core/GameEngine.js*', route => route.fulfill({ contentType: 'text/javascript', body: 'export class GameEngine {}' }));
+        const name = 'Synthetic invitee 雨';
+        const code = `v1.${Buffer.from(JSON.stringify({ username: name, cohort: 'qa', expires: 2000000000, id: 'A'.repeat(22) })).toString('base64url')}.${'A'.repeat(43)}`;
+        let registrations = 0, logins = 0, analytics = 0;
+        page.on('request', request => { if (/google-analytics|googletagmanager/.test(request.url())) analytics++; });
+        await page.routeWebSocket(/\/ws(?:\?|$)/, socket => {
+            socket.onMessage(data => {
+                const message = JSON.parse(data);
+                if (message.type === 'login') {
+                    logins++;
+                    expect(message.payload.invitation === undefined).toBe(true);
+                    socket.send(JSON.stringify({ type: 'login_success', payload: { hasCharacter: true, characterType: 'Fighter', resumeToken: 'b'.repeat(64) } }));
+                }
+                if (message.type !== 'register') return;
+                registrations++;
+                if (mode === 'required-code' && registrations === 1) {
+                    expect(message.payload.invitation === undefined).toBe(true);
+                    socket.send(JSON.stringify({ type: 'registration_status', payload: { mode: 'invitation' } }));
+                    socket.send(JSON.stringify({ type: 'error', payload: 'Registration failed: A valid invitation is required to create a new account. Existing accounts can sign in normally.' }));
+                    return;
+                }
+                expect(message.payload.invitation === code).toBe(true);
+                expect(message.payload.username === name).toBe(true);
+                socket.send(JSON.stringify({ type: 'error', payload: 'Registration successful! Please login.' }));
+            });
+        });
+        await page.goto('/' + (mode === 'required-code' ? '' : '#invite=' + code), { waitUntil: 'domcontentloaded' });
+        const input = page.locator('#auth-invitation');
+        await expect(page.locator('#btn-register')).toBeEnabled();
+        expect(registrations).toBe(0); expect(logins).toBe(0);
+        if (mode === 'required-code') {
+            await expect(input).toBeHidden();
+            await page.locator('#auth-username').fill(name);
+        } else {
+            await expect(input).toBeVisible();
+            expect(await input.evaluate((element, expected) => element.value === expected, code)).toBe(true);
+            await expect(page.locator('#auth-username')).toHaveValue(name);
+            expect(await page.evaluate(() => location.hash === '' && window.__eidolonInvitationHandoff === undefined && window.__eidolonRecoverySensitivePage === true)).toBe(true);
+            expect(await page.evaluate(() => window.__eidolonGoogleTagInitialized === undefined)).toBe(true);
+            expect(analytics).toBe(0);
+        }
+        await page.locator('#auth-password').fill('A synthetic invited account phrase 93!');
+        if (mode === 'existing-login') {
+            await page.locator('#btn-login').click();
+            await expect.poll(() => logins).toBe(1);
+            expect(registrations).toBe(0);
+        } else {
+            await page.locator('#auth-email').fill('invitee@example.invalid');
+            if (mode === 'required-code') {
+                await page.locator('#btn-register').click();
+                await expect(input).toBeVisible();
+                await input.fill(code);
+            }
+            expect(await page.locator('#login-panel input:visible').evaluateAll(inputs => inputs.every(input => {
+                const r = input.getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth;
+            }))).toBe(true);
+            await input.press('Enter');
+            await expect.poll(() => registrations).toBe(mode === 'required-code' ? 2 : 1);
+        }
+        await expect(input).toBeHidden();
+        expect(await input.evaluate(element => element.value === '')).toBe(true);
+    });
+}

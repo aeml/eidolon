@@ -32,6 +32,11 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 		defer done()
+		if err := registrationInvitations.Check(payload.Username, payload.Invitation, time.Now()); err != nil {
+			c.sendRegistrationInvitationRequired()
+			c.sendError("Registration failed: " + err.Error())
+			return
+		}
 		err = db.CreateUser(payload.Username, payload.Email, payload.Password)
 		done()
 		if err != nil {

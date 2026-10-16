@@ -117,6 +117,7 @@ jobs:
           EIDOLON_SCHEMA_BINARY="$duel_binary_dir/server" go test -race ./internal/database -run '^TestCharacterJournalPreflightActualBinary$' -count=1 -timeout=30s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestCharacterBoundActualStartupLegacyRefusal$' -count=1 -timeout=30s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestCredentialActualFreshConnectionsAndTakeover$' -count=1
+          EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestRegistrationInvitationActual(AdmissionAndReplay|StartupRefusal)$' -count=1 -timeout=60s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestSessionIdentityActualSocketsRejectReplacementAccount$' -count=1 -timeout=30s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestDirectTradeActualSocketsCrashAndRecovery$' -count=1 -timeout=120s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestGroundItemActualSocketsRejectedSaveCrashAndRecovery$' -count=1 -timeout=120s
@@ -126,7 +127,7 @@ jobs:
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestBossVictoryActualPartyKillCrashAndRecovery$' -count=1 -timeout=120s
           EIDOLON_BOSS_TEST_MONGO_URI=mongodb://127.0.0.1:27017 go test -race ./internal/database -run '^TestBossVictoryStoreActualMongo$' -count=1 -timeout=45s
           EIDOLON_WEEKLY_DISPOSABLE_DATABASE=1 MONGO_URI=mongodb://127.0.0.1:27017 EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestWeeklyRaid(Mongo|Production)' -count=1 -timeout=120s
-          EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestEmailRecoveryActualConnectedSessions$' -count=1 -timeout=45s
+          EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestEmailRecoveryActual(Connected|Invitation)Sessions$' -count=1 -timeout=90s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestResourceActualTokenResumeAndDeathRecovery$' -count=1 -timeout=45s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestTerrainActual(SavedSessionsAcrossProfileChanges|HealthMatchesLoginProfile)$' -count=1 -timeout=120s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestDarkRealmAdministratorActualTravelAndRestart$' -count=1 -timeout=90s

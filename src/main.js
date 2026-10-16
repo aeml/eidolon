@@ -10,6 +10,10 @@ import { mountDataPrivacyNotices } from './ui/DataPrivacyNotice.js';
 import { gameStartupFailureMessage, gameStartupFailureKind } from './core/GraphicsStartup.js';
 import { createEngineModuleLoader } from './core/EngineModuleLoader.js';
 import { useMobileLayout } from './core/InputLayout.js';
+import { RegistrationInvitationUI, primeRegistrationInvitation } from './ui/RegistrationInvitationUI.js';
+
+const invitationLink = primeRegistrationInvitation(document, window.location, window.history, window.__eidolonInvitationHandoff);
+delete window.__eidolonInvitationHandoff;
 
 const loadGameEngine = createEngineModuleLoader(
     () => import('./core/GameEngine.js'),
@@ -142,6 +146,10 @@ const bootLogin = async () => {
     const authStatus = document.getElementById('auth-status');
     const gameStartupStatus = document.getElementById('game-startup-status');
     const loginPanel = document.getElementById('login-panel');
+    const invitationUI = new RegistrationInvitationUI({
+        root: document.getElementById('auth-invitation-field'), input: document.getElementById('auth-invitation'),
+        hint: document.getElementById('auth-invitation-hint'), onRegister: () => btnRegister?.click(), rejected: invitationLink.rejected
+    });
     
     let authSocket = null;
     let isAuthenticated = false;
@@ -324,6 +332,7 @@ const bootLogin = async () => {
         authSocket.onmessage = (event) => {
             if (socket !== authSocket) return;
             const msg = JSON.parse(event.data);
+            if (msg.type === 'registration_status' && invitationUI.handleStatus(msg.payload)) return;
             if (msg.type === 'email_recovery_result' && publicEmailRecovery?.handleResult(msg.payload)) return;
             if (msg.type === 'password_change_result') {
                 const token = credentialTokenChange(msg.payload);
@@ -334,10 +343,13 @@ const bootLogin = async () => {
             if (msg.type === 'error') {
                 finishAuthRequest();
                 authStatus.textContent = msg.payload;
-                authStatus.style.color = '#ff4444';
+                const registered = msg.payload === 'Registration successful! Please login.';
+                if (registered) invitationUI.clear();
+                authStatus.style.color = registered ? '#4CAF50' : '#ff4444';
             } else if (msg.type === 'login_success') {
                 finishAuthRequest();
                 isAuthenticated = true;
+                invitationUI.clear();
                 publicEmailRecovery?.close();
                 if (!loginModeration?.current()) {
                     loginModeration?.dispose();
@@ -440,7 +452,8 @@ const bootLogin = async () => {
                 payload: {
                     username: authUsernameInput.value,
                     email: authEmailInput.value,
-                    password: authPasswordInput.value
+                    password: authPasswordInput.value,
+                    ...invitationUI.registrationFields()
                 }
             }, "Register request sent...");
         });

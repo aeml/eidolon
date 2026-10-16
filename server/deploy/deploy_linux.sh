@@ -49,6 +49,30 @@ case "${EIDOLON_TERRAIN_PROFILE}" in
 esac
 export EIDOLON_TERRAIN_PROFILE
 
+if [[ -z "${EIDOLON_REGISTRATION_MODE:-}" ]] &&
+   [[ -n "${EIDOLON_INVITATION_KEY:-}${EIDOLON_INVITATION_COHORT:-}${EIDOLON_INVITATION_ROSTER_BASE64:-}${EIDOLON_INVITATION_REVOKED_BASE64:-}" ]]; then
+  echo "Set registration mode explicitly when supplying invitation settings; previous services remain unchanged." >&2; exit 1
+fi
+EIDOLON_REGISTRATION_MODE="${EIDOLON_REGISTRATION_MODE:-open}"
+invitation_preflight_args=()
+case "${EIDOLON_REGISTRATION_MODE}" in
+  open)
+    if [[ "${COMPOSE_FILE:-}" == *logs/invitation-guard.compose.yml* ]]; then
+      echo "Remove the persistent invitation guard explicitly before choosing open registration; previous services remain unchanged." >&2; exit 1
+    fi
+    ;;
+  invitation)
+    if [[ "${COMPOSE_FILE:-}" != 'docker-compose.yml:logs/invitation-guard.compose.yml' ]] ||
+       ! cmp -s logs/invitation-guard.compose.yml deploy/invitation-guard.compose.yml; then
+      echo "Invitation mode requires the reviewed persistent Compose guard in logs/ and its explicit COMPOSE_FILE setting; previous services remain unchanged." >&2; exit 1
+    fi
+    invitation_preflight_args=(--require-invitation-admission)
+    ;;
+  *) echo "Registration mode must be open or invitation; previous services remain unchanged." >&2; exit 1 ;;
+esac
+export EIDOLON_REGISTRATION_MODE
+
+
 case "${EIDOLON_MONITOR_ENABLED:-false}" in
   true|false) ;;
   *) echo "EIDOLON_MONITOR_ENABLED must be true or false." >&2; exit 1 ;;
@@ -142,7 +166,7 @@ fi
 echo "Preparing database for read-only compatibility check..."
 docker compose up -d --no-recreate --wait mongo
 echo "Checking target server compatibility before replacing the live API..."
-schema_preflight="$(docker compose run --rm --no-deps -T api --check-schema --mongo-uri="${MONGO_URI}" --terrain-profile="${EIDOLON_TERRAIN_PROFILE}")"
+schema_preflight="$(docker compose run --rm --no-deps -T api --check-schema --mongo-uri="${MONGO_URI}" --terrain-profile="${EIDOLON_TERRAIN_PROFILE}" "${invitation_preflight_args[@]}")"
 printf '%s\n' "${schema_preflight}"
 # Only the target binary's complete single-line receipt may authorize stopping
 # the old writer. Reject a stale/wrong image, surrounding noise or unsafe numeric
@@ -187,7 +211,7 @@ if (( database_schema < target_schema )); then
   bash ./deploy/backup_before_upgrade.sh
   if (( target_schema >= 23 )); then
     echo "Checking drained account-bound character journals before target startup..."
-    if ! journal_preflight="$(docker compose run --rm --no-deps -T -v "${SERVER_DIR}/logs:/app/logs:ro" api --check-save-journal --save-journal-dir=/app/logs/character-saves --terrain-profile="${EIDOLON_TERRAIN_PROFILE}")" || \
+    if ! journal_preflight="$(docker compose run --rm --no-deps -T -v "${SERVER_DIR}/logs:/app/logs:ro" api --check-save-journal --save-journal-dir=/app/logs/character-saves --terrain-profile="${EIDOLON_TERRAIN_PROFILE}" "${invitation_preflight_args[@]}")" || \
        [ "${journal_preflight}" != "Character journal preflight passed: supported=2 commit=${EIDOLON_BUILD_COMMIT}" ]; then
       echo "Journal transition refused before migration; backup and pending files preserved." >&2
       if [ "${journal_previous_running}" = true ]; then
@@ -219,12 +243,23 @@ fi
 HOST_PORT="${APP_HOST_PORT:-18082}"
 HEALTH_URL="http://127.0.0.1:${HOST_PORT}/healthz"
 echo "Waiting for healthy release ${EIDOLON_BUILD_COMMIT}, terrain ${EIDOLON_TERRAIN_PROFILE} at ${HEALTH_URL} ..."
+registration_health_matches() {
+  if [[ "${EIDOLON_REGISTRATION_MODE}" == invitation ]]; then
+    printf '%s' "$1" | grep -Fq '"registrationMode":"invitation"'
+  else
+    # Older open-alpha binaries predate this field. They remain an allowed
+    # open-mode rollback; invitation mode always requires explicit proof.
+    ! printf '%s' "$1" | grep -Fq '"registrationMode"' ||
+      printf '%s' "$1" | grep -Fq '"registrationMode":"open"'
+  fi
+}
 health_json=""
 for attempt in $(seq 1 30); do
   if health_json="$(curl --connect-timeout 2 --max-time 5 -fsS "${HEALTH_URL}" 2>/dev/null)" && \
      printf '%s' "${health_json}" | grep -Fq "\"commit\":\"${EIDOLON_BUILD_COMMIT}\"" && \
      printf '%s' "${health_json}" | grep -Fq '"database":"ready"' && \
-     printf '%s' "${health_json}" | grep -Fq "\"terrainProfile\":\"${EIDOLON_TERRAIN_PROFILE}\""; then
+     printf '%s' "${health_json}" | grep -Fq "\"terrainProfile\":\"${EIDOLON_TERRAIN_PROFILE}\"" && \
+     registration_health_matches "${health_json}"; then
     break
   fi
   if [ "${attempt}" -eq 30 ]; then
