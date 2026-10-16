@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { bundleGameAnalytics } from './bundle-game-analytics.mjs';
 
 const RELEASE_PARAMETER = 'release';
 const SAFE_RELEASE = /^[A-Za-z0-9._-]{7,80}$/;
@@ -155,6 +156,7 @@ export async function versionPagesRuntime(root, release) {
     if (typeof manifest.version !== 'string' || !manifest.version.trim()) {
         throw new Error('Pages source manifest requires a version');
     }
+    const bundledAnalytics = await bundleGameAnalytics(absoluteRoot);
     const bundledStyles = await bundleGameStyles(absoluteRoot);
     const files = await listRuntimeFiles(absoluteRoot);
     let changedFiles = 0;
@@ -171,7 +173,7 @@ export async function versionPagesRuntime(root, release) {
         changedFiles += 1;
     }
     await fs.writeFile(manifestPath, `${JSON.stringify({ ...manifest, commit: release }, null, 2)}\n`);
-    return { root: absoluteRoot, release, scannedFiles: files.length, changedFiles, bundledStyles };
+    return { root: absoluteRoot, release, scannedFiles: files.length, changedFiles, bundledStyles, bundledAnalytics };
 }
 
 const invokedPath = process.argv[1] ? pathToFileURL(path.resolve(process.argv[1])).href : null;
