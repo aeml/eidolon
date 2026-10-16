@@ -22,6 +22,20 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
+## Alpha 1.79.64: prepared, not yet deployed
+
+Alpha 1.79.64 is prepared, not yet deployed: bonded Bastion foundation stones,
+Wardrobe's View character action, phone form text-size support and actual
+four-class garment purchase/model/save coverage, including a Rogue offhand blade.
+[Foundation qualification](2026-10-16-bastion-bonded-foundation-qualification.md),
+[normal-movement integration](2026-10-16-bonded-bastion-normal-movement.md),
+[wardrobe qualification](2026-10-16-wardrobe-class-sessions-qualification.md).
+Accepted public63 remains at `dc9e686b8`; source preparation is not deployment.
+The town batching regression remains rejected and isolated. Original performance
+findings, broader world/actor/art and full game/readiness gates remain open.
+Installed-host TLS/logging activation still needs an administrator. Human pacing,
+physical-phone feedback and soak/stress remain deferred. The full goal is active.
+
 ## Alpha 1.79.63: deployed and verified within scoped acceptance
 
 Alpha 1.79.63 at `dc9e686b8` is deployed and verified within the actual native

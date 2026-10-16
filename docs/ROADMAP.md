@@ -1,5 +1,18 @@
 # Eidolon Engineering Roadmap
 
+Alpha 1.79.64 is prepared, not yet deployed: bonded Bastion foundation stones,
+Wardrobe's View character action, phone form text-size support and actual
+four-class garment purchase/model/save coverage, including a Rogue offhand blade.
+[Foundation qualification](plans/2026-10-16-bastion-bonded-foundation-qualification.md),
+[normal-movement integration](plans/2026-10-16-bonded-bastion-normal-movement.md),
+[wardrobe qualification](plans/2026-10-16-wardrobe-class-sessions-qualification.md).
+Accepted public63 remains at `dc9e686b8`; source preparation is not deployment.
+The town batching regression remains rejected and isolated. Original performance
+findings, broader world/actor/art and full game/readiness gates remain open.
+Installed-host TLS/logging activation still needs an administrator. Human pacing,
+physical-phone feedback and soak/stress remain deferred. The full goal is active.
+
+
 Alpha 1.79.63 at `dc9e686b8` is deployed and verified within the actual native
 wardrobe and query-free Pages delivery-diagnostics scope. All ten CI jobs pass:
 785 client suites / 12,044 tests, 451 hosted browser passes / 13 skips, 89 native passes / one

@@ -2056,3 +2056,18 @@ actual deployment verification; do not publish unversioned source as63.
 The full original goal, original performance failures and owner-dependent gates
 remain active; human pacing/physical-phone feedback and soak/stress deferred.
 [Qualification](docs/plans/2026-10-16-bastion-bonded-foundation-qualification.md).
+
+
+## October 16 Alpha 1.79.64 presentation milestone preparation
+
+Bonded Bastion foundation construction and its actual normal-input moving
+integration, Wardrobe's return-to-character action, phone form text-size support
+and four-class actual garment purchase/model/save coverage are merged for
+prepared Alpha 1.79.64. It is not deployed; public63 remains accepted atdc9e686b8.
+Synchronize and verify publication, normally push master, then verify exact
+ordered CI/deployments/live identities/assets before another release.
+Town batching remains rejected after measured CPU regression. Original route/
+cold/device performance failures, final art and all original readiness/owner
+requirements remain open. Full goal active; human pacing/physical-phone feedback
+and soak/stress deferred. No beta/access change or installed-host TLS/logging
+activation is claimed by source publication.
