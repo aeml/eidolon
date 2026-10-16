@@ -2009,3 +2009,21 @@ full-game claim. Isolated rendered-wardrobe prototype and current CPUdiagnosis
 are successor work; original failures remain. Full original goal active; human
 pacing/physical-phone feedback and soak/stress deferred.
 [Acceptance](docs/plans/2026-10-16-release1-79-62-acceptance.md).
+
+
+## October16 wardrobe integration and delivery preparation
+
+Qualified actual rendered wardrobe sessions and query-free Pages delivery
+configuration/checker are selected for preparedAlpha1.79.63. Accepted62/exact8a4
+remains public. Final nativeFonecase/ninephases plus unchangedEseven-phase proof
+covers real purchases/owner-observer/preview/gear changes/savedLow/relogin/clear/
+privatewallet. Four fixture failures remain retained; no production bug claimed.
+The separate nativeDHigh180frame/5sCPU/180GPU diagnostic is reused without a
+favorable timing replay; rendererworld22.6ms remains dominant. Private actual
+Nginx13cases/14rows and10CPUguards qualify source logging, with retained old-
+combined/header-inheritance counterexamples. Live TLS/logactivation remains
+pending administrator; no source merge proves activation or completeF2/F4.
+No new game-power/accounts/schema/access change, beta, full-game/FPS/finalart
+claim or soak/stress. Full original goal remains active; owner-deferred human
+pacing/physical-phone feedback stays deferred. Continue implementation and
+ordered publication/deployment verification.

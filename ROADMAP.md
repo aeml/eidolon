@@ -1,5 +1,19 @@
 # Eidolon Roadmap
 
+Alpha 1.79.63 is prepared, not yet deployed: actual native wardrobe UI/socket/
+returning-save coverage and mandatory predeployment enrollment, plus query-free
+Pages delivery diagnostics using existing upstream response IDs. No new header
+directive replaces inherited security headers.
+[Wardrobe qualification](docs/plans/2026-10-16-garment-rendered-session-qualification.md),
+[delivery qualification](docs/plans/2026-10-16-pages-delivery-diagnostics-qualification.json),
+[operator guide](docs/operations/pages-delivery-diagnostics.md).
+Accepted public62 remains at `8a4a5ca88`; source preparation is not deployment.
+Installed-host TLS/logging activation remains pending an administrator. Fresh
+current-source renderer diagnostics retain the performance work; no final art,
+whole-game/F2/beta claim. Human pacing/physical-phone feedback and soak/stress
+remain deferred. The full original goal stays active.
+
+
 October16 current accepted milestone: Alpha 1.79.62 at `8a4a5ca88` is deployed and verified within the Bastion
 cap/root, phone garment text, saved-session wardrobe and secure-template scope.
 All ten CI jobs pass:785client suites/12044tests,451hosted browser passes/13skips,
