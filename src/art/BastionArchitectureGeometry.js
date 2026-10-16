@@ -13,9 +13,60 @@ function horizontalStone(points, height, bevel = .15) {
     return geometry;
 }
 
+const FOUNDATION_OUTLINE = [[-33, -26], [-22, -28], [9, -27], [31, -24], [33, -13],
+    [31, 8], [33, 21], [25, 25], [13, 23], [-12, 24], [-29, 23], [-33, 15]];
+
 export function createBastionFoundation() {
-    return horizontalStone([[-33, -26], [-22, -28], [9, -27], [31, -24], [33, -13],
-        [31, 8], [33, 21], [25, 25], [13, 23], [-12, 24], [-29, 23], [-33, 15]], 2.5, .3);
+    // Preserve the shared drowned-shelf geometry byte for byte.
+    return horizontalStone(FOUNDATION_OUTLINE, 2.5, .3);
+}
+
+function clipFoundationStone(left, right, back, front) {
+    let points = FOUNDATION_OUTLINE.map(point => [...point]);
+    for (const [axis, boundary, direction] of [[0, left, 1], [0, right, -1], [1, back, 1], [1, front, -1]]) {
+        const next = [];
+        for (let i = 0; i < points.length; i++) {
+            const a = points[i], b = points[(i + 1) % points.length];
+            const aInside = (a[axis] - boundary) * direction >= 0;
+            const bInside = (b[axis] - boundary) * direction >= 0;
+            if (aInside) next.push(a);
+            if (aInside !== bInside) {
+                const t = (boundary - a[axis]) / (b[axis] - a[axis]);
+                next.push([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]);
+            }
+        }
+        points = next;
+    }
+    return points;
+}
+
+// A bonded top over the existing footing, rather than a single broad slab.
+// Keep the old XZ outline and 3.1m top envelope. Every course joins the same
+// geometry/material batch; bevels and recessed mortar provide actual relief.
+export function createBondedBastionFoundation() {
+    const parts = [horizontalStone(FOUNDATION_OUTLINE, 2.25, .3)];
+    const pitchX = 4.4, pitchZ = 3.2, joint = .12;
+    for (let row = 0; row < 17; row++) {
+        const back = -28 + row * pitchZ;
+        const origin = -33 - (row % 2) * pitchX / 2;
+        for (let column = 0; column < 16; column++) {
+            const left = origin + column * pitchX;
+            const points = clipFoundationStone(left + joint, left + pitchX - joint,
+                back + joint, back + pitchZ - joint);
+            const area = Math.abs(points.reduce((sum, p, i) => {
+                const q = points[(i + 1) % points.length];
+                return sum + p[0] * q[1] - q[0] * p[1];
+            }, 0)) / 2;
+            if (points.length < 3 || area < .4) continue;
+            const height = .14 + ((row * 11 + column * 7) % 4) * .02;
+            const stone = horizontalStone(points, height, .055);
+            stone.translate(0, 2.79, 0); parts.push(stone);
+        }
+    }
+    const result = mergeGeometries(parts, false);
+    parts.forEach(part => part.dispose());
+    result.computeBoundingBox(); result.computeBoundingSphere();
+    return result;
 }
 
 export function createBastionRamp() {

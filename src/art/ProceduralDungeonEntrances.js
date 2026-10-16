@@ -4,7 +4,7 @@ import { getRegionTheme } from './darkFantasyTheme.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createDungeonVeilMaterial } from './DungeonVeilMaterial.js';
 import { createBastionForegateGeometry } from './BastionForegateGeometry.js';
-import { createBastionFoundation, createBastionRamp, createBastionGatehouse, createBastionTowerParapet, createBastionRecess } from './BastionArchitectureGeometry.js';
+import { createBastionFoundation, createBondedBastionFoundation, createBastionRamp, createBastionGatehouse, createBastionTowerParapet, createBastionRecess } from './BastionArchitectureGeometry.js';
 import { createTaperedRoot } from './EarthLandmarkGeometry.js';
 import { createMoltenFoundation, createMoltenVault, createMoltenVaultRib, createMoltenForegate, createMoltenChain } from './MoltenEntranceGeometry.js';
 import { createTideReliquaryArch } from './TideReliquaryGeometry.js';
@@ -66,6 +66,7 @@ const SHAPES = Object.freeze({
     disc: geometry('dungeon-entrance-unit-disc', () => new THREE.CircleGeometry(0.5, 24)),
     bastionForegate: geometry('dungeon-entrance-bastion-foregate', createBastionForegateGeometry),
     bastionFoundation: geometry('dungeon-entrance-bastion-foundation', createBastionFoundation),
+    bastionBondedFoundation: geometry('dungeon-entrance-bastion-bonded-foundation', createBondedBastionFoundation),
     bastionRamp: geometry('dungeon-entrance-bastion-ramp', createBastionRamp),
     bastionHall: geometry('dungeon-entrance-bastion-hall', createBastionGatehouse),
     bastionParapet: geometry('dungeon-entrance-bastion-parapet', createBastionTowerParapet),
@@ -234,7 +235,7 @@ function spike(parent, name, materialValue, position, scale, rotation = [0, 0, 0
 
 function createVerdantBastion(root) {
     const m = MATERIAL_SETS.verdant_bastion_catacombs;
-    addMesh(root, 'verdant:buried-fortress-plinth', SHAPES.bastionFoundation, m.stone);
+    addMesh(root, 'verdant:buried-fortress-plinth', SHAPES.bastionBondedFoundation, m.pale);
     addMesh(root, 'verdant:mossed-ramp', SHAPES.bastionRamp, m.pale, { position: [0, 2.7, 22], rotation: [-.06, 0, 0] });
     addMesh(root, 'verdant:gatehouse', SHAPES.bastionHall, m.stone);
     addMesh(root, 'verdant:recessed-hall-door', SHAPES.bastionRecess, m.dark, {
