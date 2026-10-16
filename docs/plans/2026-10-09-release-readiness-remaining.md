@@ -1,6 +1,6 @@
 # Release-readiness remaining work
 
-Current checkpoint: October 15, 2026. The full goal remains active. No feature
+Current checkpoint: October 16, 2026. The full goal remains active. No feature
 freeze, final modern-art acceptance, closed beta or launch has been declared.
 
 This register records current delivery states and next actions. The preceding
@@ -21,6 +21,24 @@ Authoritative scope remains the [goal](../../goal.md),
 [freeze preparation](2026-10-06-release1-80-freeze-preparation.json) and
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
+
+## Alpha 1.79.60: prepared, not yet deployed
+
+Qualified guild-menu drafts, choices, text cursor/calendar focus and reading
+continuity are selected with inactive private-beta invitation preparation.
+[Guild evidence](2026-10-16-guild-menu-continuity-preparation.json),
+[invitation evidence](2026-10-16-beta-invitation-qualification.json) and
+[operator guide](../operations/beta-invitations.md).
+The QA harness also supports production-flat and raised party profiles; scoped
+functional checks pass, while original route/crowded-world timing and cold
+triangle failures remain failures. [Retained qualification](2026-10-16-production-flat-party-qualification.json).
+Alpha1.79.59 remains the last fully accepted implementation. Public registration stays open; no beta,
+capacity, final art or full-game completion claim. Soak/stress remains deferred.
+
+Current public source is runtime-equivalent documentation commit `d1a04f16b`:
+its redeployment passed both deployments, but live recovery retained an HTTP408
+module-load failure. Fresh normal-TLS351asset/identity checks pass; that later
+workflow is not fully accepted. [Finding](2026-10-16-receipt59-redeployment-finding.md).
 
 ## October 15 added owner requirements
 
@@ -306,7 +324,7 @@ acceptance is incomplete.
 | Support, privacy and operations | Assign service objectives/budget, alert/support/moderation/incident/maintenance/content ownership and applicable retention/recovery policies. Complete operational 1.81–1.86 and 1.87–1.89 consolidation evidence. | Implementation and owner |
 | Asset/dependency rights and notices | Finish exact shipped catalog/provenance/license review, player notices/help/known issues and owner rights decisions. Supplied files or matching hashes do not grant rights. Preserve existing notices; do not invent licenses. | Implementation and owner |
 | Feature freeze F1–F5 | Prove every promised mandatory feature/content item, threat boundaries, supported population/service policy, privacy/admin/recovery ownership and frozen content/dependency catalog with exception process. None of F1–F5 is declared complete by this register. | Implementation and owner |
-| Near-complete beta at 1.90 | Complete preceding mandatory systems/art/usability/operations. Implement invitation-based new-account admission while retaining existing logins: current `client_dispatch.go` registration calls `CreateUser` without an invitation gate. Prepare and validate the feature before activation; public access remains unchanged pending owner approval. Complete invitation preparation, chosen cohort capacity/support and integrated candidate approval. Preserve existing-account access/progress. No beta/admission change without owner approval. | Implementation and owner |
+| Near-complete beta at 1.90 | Complete preceding mandatory systems/art/usability/operations. Implement invitation-based new-account admission while retaining existing logins: signed exact-name invitations, private issuer, early URL/analytics privacy and persistent deployment guard are implemented and qualified in `2a2fc765d`, selected for prepared Alpha1.79.60. Real Mongo/socket replay/concurrency, existing login/recovery, native bootstrap and old-binary refusal pass. [Qualification](2026-10-16-beta-invitation-qualification.json). Activation and distribution are not approved; public access remains unchanged pending owner approval. Complete invitation preparation, chosen cohort capacity/support and integrated candidate approval. Preserve existing-account access/progress. No beta/admission change without owner approval. | Implementation and owner |
 | Findings and qualification 1.91–1.98 | Collect actual cohort evidence, reproduce/fix blockers, and complete data/security/economy/capacity/device/privacy/operations/final-content signoffs. Preparation may proceed; missing beta evidence is not a pass. | Implementation and owner/cohort |
 | 1.99 and handoff | Prove every original requirement, final exact CI/live identity/assets/readiness/account smoke, support/monitor/recovery handoff and explicit owner go/no-go/public naming/carryover decision. No completion claim based on version or green CI. | Implementation and owner |
 

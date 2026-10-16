@@ -495,7 +495,18 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.59`, **deployed and verified**, at runtime
+Current source version: `Alpha 1.79.60`, **prepared; not yet deployed**: guild
+message/draft/calendar continuity and inactive private-beta invitation preparation.
+Public access remains open alpha; beta activation requires owner approval near
+whole-game completion. [Invitation guide](docs/operations/beta-invitations.md),
+[qualification](docs/plans/2026-10-16-beta-invitation-qualification.json).
+
+Current public source is runtime-equivalent documentation commit `d1a04f16b`:
+its redeployment passed both deployments, but live recovery retained an HTTP408
+module-load failure. Fresh normal-TLS351asset/identity checks pass; that later
+workflow is not fully accepted. [Finding](docs/plans/2026-10-16-receipt59-redeployment-finding.md).
+
+**Alpha 1.79.59 was fully accepted**, at runtime
 source `2c4cbb4c9`: centered garment slots beneath the character preview and
 clearer returning Lore Book task/finale context with preserved reading focus/
 scroll. All ten ordered CI jobs pass; normal-TLS reads match both identities,

@@ -2,11 +2,18 @@
 
 Current delivery and unfinished work are recorded in the
 [remaining-work register](plans/2026-10-09-release-readiness-remaining.md).
-The complete four-class Alpha 1.79.51 milestone at `e2880b4ee` is deployed and
-verified after all ten CI jobs and independent public asset/identity checks pass.
-[Acceptance](plans/2026-10-14-release1-79-51-acceptance.md). The project remains open alpha.
+Last fully accepted implementation: Alpha1.79.59 at `2c4cbb4c9`, after all ten CI jobs
+and normal-TLS351asset/identity checks. [Acceptance](plans/2026-10-16-release1-79-59-acceptance.md).
+Alpha1.79.60 is prepared, not yet deployed: qualified guild-menu continuity and
+inactive invitation preparation. [Invitation qualification](plans/2026-10-16-beta-invitation-qualification.json).
+The project remains open alpha; beta activation awaits owner approval.
 Soak/stress qualification is deferred until features are nearly complete;
 automatic scheduling is disabled, and earlier failures remain open.
+
+Current public source is runtime-equivalent documentation commit `d1a04f16b`:
+its redeployment passed both deployments, but live recovery retained an HTTP408
+module-load failure. Fresh normal-TLS351asset/identity checks pass; that later
+workflow is not fully accepted. [Finding](plans/2026-10-16-receipt59-redeployment-finding.md).
 
 Prior dated deployment checkpoints are retained in
 [the preceding roadmap pointer](https://github.com/aeml/eidolon/blob/2f5b4ad71d4cbd5709a199d51bc4529b8d28228a/docs/ROADMAP.md)

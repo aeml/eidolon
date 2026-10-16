@@ -7,7 +7,7 @@ const soak = readFileSync('.github/workflows/nightly-soak.yml', 'utf8');
 test('documentation-only pushes skip publishing without filtering required PR checks', () => {
     const push = ci.split('\n  push:\n')[1].split('\n  pull_request:')[0];
     const ignored = [...push.matchAll(/^ {6}- '([^']+)'$/gm)].map(match => match[1]);
-    expect(ignored).toEqual(['README.md', 'docs/**/*.md']);
+    expect(ignored).toEqual(['README.md', 'ROADMAP.md', 'goal.md', 'docs/**/*.md']);
     expect(push).toContain('branches: [master, main]');
     expect(ci.match(/paths-ignore:/g)).toHaveLength(1);
     const otherTriggers = ci.split('\n  pull_request:\n')[1].split('\npermissions:')[0];

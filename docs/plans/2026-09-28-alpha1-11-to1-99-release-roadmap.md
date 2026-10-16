@@ -9,7 +9,22 @@ within the full completion goal. They remain open even where earlier versions
 passed narrower cosmetic, Chronicle or window-layout checks. The current
 delivery state is maintained in the [remaining-work register](2026-10-09-release-readiness-remaining.md).
 
-## Current release state — October 14
+## Current release state — October 16
+
+Last fully accepted implementation: Alpha1.79.59 at `2c4cbb4c9`, centered garment row and
+returning Lore Book context, all ten ordered CI jobs and normal-TLS351asset checks.
+[Acceptance](2026-10-16-release1-79-59-acceptance.md).
+Alpha1.79.60 is prepared, not yet deployed, with qualified guild-menu continuity
+and inactive invitation preparation. [Qualification](2026-10-16-beta-invitation-qualification.json).
+Public alpha access remains unchanged. Beta activation is still owner-gated
+near whole-game completion; all original quality/readiness requirements remain.
+
+Current public source is runtime-equivalent documentation commit `d1a04f16b`:
+its redeployment passed both deployments, but live recovery retained an HTTP408
+module-load failure. Fresh normal-TLS351asset/identity checks pass; that later
+workflow is not fully accepted. [Finding](2026-10-16-receipt59-redeployment-finding.md).
+
+## Historical release state — October 14
 
 Alpha 1.79.51 at `e2880b4ee` is deployed and verified. All ten jobs in
 CI38517044265 passed, including both deployments and live recovery; normal-TLS

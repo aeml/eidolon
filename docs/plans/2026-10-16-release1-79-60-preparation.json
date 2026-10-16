@@ -1,0 +1,87 @@
+{
+  "date": "2026-10-16T04:41:56.701225+00:00",
+  "version": "Alpha 1.79.60",
+  "selection": "6efcbd03bee969d427ee8b9be215aa6d897a63d8",
+  "state": "Prepared coherent source/versions/notes; not yet pushed or deployed. Full local client suite is running; publication requires terminal checks and exact own CI/deployment/live/public verification.",
+  "previousAccepted": {
+    "source": "2c4cbb4c9b8257439061c23959a896d58dc1c09b",
+    "ci": 38836797920,
+    "acceptance": "2026-10-16-release1-79-59-acceptance.md"
+  },
+  "actualCurrentPublic": {
+    "source": "d1a04f16be07ac53e622e24aac9137a16d68a170",
+    "version": "Alpha 1.79.59",
+    "ci": 38842570608,
+    "workflowState": "nine jobs pass; live recovery HTTP408 analytics module-load failure, later party phase not reached; not fully accepted",
+    "publicIntegrity": "Fresh04:38:49UTC normal-TLS351pins/identities/readyDB/analytics match exact runtime-equivalent documentation commit",
+    "finding": "2026-10-16-receipt59-redeployment-finding.md"
+  },
+  "scope": "Qualified GuildUI drafts/MOTD/choices/caret/scroll/calendar continuity; privately qualified invitation admission/issuer/privacy/persistent guard, inactive default-open alpha; root goal/roadmap doc-only trigger correction; QA-only flat/raised profile support retains original failed route timing/cold triangles.",
+  "validation": {
+    "focused": "452checks/six suites pass on final trigger/versions/privacy source; previous relevant qualification retained without summing overlaps.",
+    "guild": "96distinct checks/four suites, six distinct native desktop/phone cases; original wrong scroll-owner fixture failure retained/corrected.",
+    "invitations": "Source2a2fc765d:24top-level focused Go/race tests+nested cases, three final actual Mongo/socket/startup/recovery scenarios, seven distinct native bootstrap cases/four final invitation reruns, exact old-binary/cleanup and actual merged Compose parsing; see source-scoped receipt.",
+    "lint": "Full repository lint passes; affected RunnerQueue test lint rerun passes.",
+    "content": "16generated groups pass without rewriting.",
+    "patchHistory": "495notes, all494previous entries byte-exact, including23legacy notes without newer CSS class. Initial subset-only471entry parser corrected before making all-history claim."
+  },
+  "qualifications": [
+    "2026-10-16-guild-menu-continuity-preparation.json",
+    "2026-10-16-beta-invitation-qualification.json",
+    "2026-10-16-production-flat-party-qualification.json"
+  ],
+  "limits": "Open alpha access remains unchanged. No invitation distribution or beta activation; owner approval near whole-game completion remains required. No full-world/art/performance/device/gameplay/capacity/owner/F1-F5/beta/release completion claim. No soak/stress.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-master-20261011",
+  "evidence": [
+    {
+      "path": ".qa-release60/focused-final.log",
+      "bytes": 872,
+      "sha256": "f6e87d1fb33cdc756d24d8faff5f2abb1cff16a3aa40909a6771eecc8c74d5c8"
+    },
+    {
+      "path": ".qa-release60/lint.log",
+      "bytes": 96,
+      "sha256": "a29c0a7e2376cadd1c9ad7322fd09c2eb7bb601811d6e47ea28cd8d47949e38a"
+    },
+    {
+      "path": ".qa-release60/trigger-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-release60/content.log",
+      "bytes": 10033,
+      "sha256": "151d626875e25217c1db98059abc5e4480151ace86691c9d9405c95668f1f313"
+    },
+    {
+      "path": ".qa-release60/patch-history.json",
+      "bytes": 60,
+      "sha256": "23ea4ab21089a56eff1e9e998fa247c37876aec4d78840f9c74bc2043cf3dc7c"
+    },
+    {
+      "path": ".qa-release60/receipt59-ci.json",
+      "bytes": 13676,
+      "sha256": "636e6a2aa35c72d3a20b07f9c469411669736fbd9efa8b2ee0d7bdabe3bd78d9"
+    },
+    {
+      "path": ".qa-release60/receipt59-live-failed.log",
+      "bytes": 72327,
+      "sha256": "256ebe7e9696b98f4809fe6c9144e0103702bdf2fc210f4a3e8d5a7cb84c921d"
+    },
+    {
+      "path": ".qa-release60/previous59-live.json",
+      "bytes": 123549,
+      "sha256": "8e28bc0ba4c03698280c4d2045cde8009ebbff20e43701ab5910b59487ef8c95"
+    },
+    {
+      "path": ".qa-release60/receipt59-public-current.json",
+      "bytes": 123427,
+      "sha256": "960e29686893dac63561c692ba5cd340570798f2b2e048fd8fd085647032f174"
+    },
+    {
+      "path": ".qa-release60/receipt59-evidence.json",
+      "bytes": 981,
+      "sha256": "53f59a83c54ff8a36dedb7abf63e2847a5dc88e94ac02c7869043b259f8ee79f"
+    }
+  ]
+}

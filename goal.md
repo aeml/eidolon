@@ -1914,3 +1914,23 @@ was never published. Superseded subset runs were cancelled before deployment.
 The combined candidate requires full CI and exact deployment verification.
 Human balance, final world/art/device/operations and original roadmap remain open;
 soak/stress testing remains deferred by owner.
+
+
+## October16 qualified guild and invitation preparation
+
+Qualified guild-menu continuity and inactive signed exact-account invitations
+are selected on master for prepared Alpha1.79.60. Real Mongo/WebSocket admission,
+concurrent replay, existing login/recovery across restart, native desktop/phone
+bootstrap, exact old-binary refusal and persistent Compose/journal guard checks
+pass. Public59 remains accepted; alpha access is unchanged. Beta activation and
+distribution require owner approval near whole-game completion. Production-flat
+QA support is qualified, while all retained route timing/cold triangles and full
+original art/performance/device/gameplay/owner/F1–F5/beta/release/handoff gates
+remain open. No soak/stress. [Evidence](docs/plans/2026-10-16-beta-invitation-qualification.json).
+
+October16 current-public audit found the documentation push also deployed59 at
+`d1a04f16b`: nine CI jobs pass, live recovery fails on HTTP408 analytics-module
+loading, later party phase not reached. All runtime inputs match accepted2c4;
+fresh351normal-TLS pins/identities/readyDB match actuald1. Failure retained, no
+retry/waiver. Root goal/roadmap document-only trigger correction is included in
+prepared60; full original gates remain open. [Finding](docs/plans/2026-10-16-receipt59-redeployment-finding.md).
