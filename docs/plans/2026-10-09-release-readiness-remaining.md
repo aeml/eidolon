@@ -330,6 +330,23 @@ samples, not paired speedup, cold/whole-world/battle or final art acceptance.
 [Current diagnosis](2026-10-16-connected58-render-diagnosis.md). Original
 counterexamples remain below; no rejected cache or renderer experiment revived.
 
+Current59runtime production-flat normal-input travel now has an actual moving
+review:115.97seconds,270frames and49grounded/alive14slot observations from town
+to the Bastion approach. This is one prepared Fighter before party setup, not
+an earned campaign, fight or first-dungeon entry. All four original High frame
+limits fail: town33.4/50.1ms, road33.3/50ms, woodland33.4/50ms and approach49.9/
+66.7ms (median/p95). Ordinary queues are settled; counts remain within limits.
+The pre-sample town screenshot also retains275844triangles above250000.
+Modified QA defaultRaised compatibility passes grounding/rig/save scope but
+retains another49.9/66.6ms timing failure. No favorable-timing replay, target
+change or production-profile activation occurred. These failures supersede any
+interpretation that the earlier fresh sample certified full performance.
+[Exact scope, limits and evidence](2026-10-16-production-flat-party-qualification.json).
+QA profile-selection support is qualified/merged locally, not yet published.
+Reviewed Bastion outerwall/cap construction still reads as broad flat blocks;
+code-owned entrance masonry is the next bounded visual question alongside
+original world/terrain/performance work. No final-art claim is made.
+
 ## Retained performance limits and counterexamples
 
 The static foliage batching pilot `504b44ef` remains performance-rejected and
