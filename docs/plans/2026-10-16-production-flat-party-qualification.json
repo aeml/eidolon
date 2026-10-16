@@ -1,0 +1,264 @@
+{
+  "date": "2026-10-16T03:18:06.112759+00:00",
+  "qaSource": "87f59f8c8c11022e71cf8950d95005893490640d",
+  "runtimeBase": "2c4cbb4c9b8257439061c23959a896d58dc1c09b",
+  "state": "QA profile selection/grounding/source boundary qualified for master. No runtime change. Original Highperformance gates FAIL and modernart remain open; this is not performance/art/wholegame acceptance.",
+  "functional": "Three bounded fixture cases pass (flatHigh,flatLow,defaultRaisedHigh), with one alternative four-browser skip each and zero retries/flakes/race/panic markers. Four prepared saved classes/14slots,one native renderer/3normalsocket peers. DefaultRaised was deliberately unconfigured to prove old harness behavior. Go unconfigured guard is a skip, not additional integration evidence.",
+  "retainedTimingFailures": {
+    "defaultRaisedHigh": {
+      "quality": "high",
+      "frames": 180,
+      "visibleFrames": 180,
+      "restored": true,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "maximumDraws": 251,
+      "maximumTriangles": 183547,
+      "medianDraws": 251,
+      "medianTriangles": 171531,
+      "frameMedianMs": 49.9,
+      "frameP95Ms": 66.6,
+      "cpuLoopMedianMs": 39.09999990463257,
+      "cpuLoopP95Ms": 52.60000002384186,
+      "geometryFirst": {
+        "pending": 48,
+        "installed": 27,
+        "swaps": 27,
+        "reduced": true,
+        "enabled": true
+      },
+      "geometryLast": {
+        "pending": 0,
+        "installed": 65,
+        "swaps": 65,
+        "reduced": true,
+        "enabled": true
+      },
+      "originalLimits": {
+        "maximumDraws": 350,
+        "maximumTriangles": 250000,
+        "maximumFrameMedianMs": 20,
+        "maximumFrameP95Ms": 33.4
+      },
+      "scope": "One actual GPU renderer, three live normal authenticated socket peers; standing/movement snapshot, not peer input or a battle frame-budget certificate.",
+      "samplePass": false
+    },
+    "productionFlatRoute": [
+      {
+        "label": "bastion-approach",
+        "budget": {
+          "draws": 350,
+          "triangles": 250000,
+          "frameMedianMs": 20,
+          "frameP95Ms": 33.4
+        },
+        "medianCalls": 122,
+        "maxCalls": 126,
+        "medianTriangles": 76493,
+        "maxTriangles": 79803,
+        "frameMedianMs": 49.9,
+        "frameP95Ms": 66.7,
+        "cpuLoopMedianMs": 40.299999952316284,
+        "firstGeometry": {
+          "pending": 0,
+          "installed": 16,
+          "swaps": 16,
+          "reduced": true,
+          "enabled": true
+        },
+        "lastGeometry": {
+          "pending": 0,
+          "installed": 16,
+          "swaps": 16,
+          "reduced": true,
+          "enabled": true
+        }
+      },
+      {
+        "label": "earth-road",
+        "budget": {
+          "draws": 350,
+          "triangles": 250000,
+          "frameMedianMs": 20,
+          "frameP95Ms": 33.4
+        },
+        "medianCalls": 99,
+        "maxCalls": 99,
+        "medianTriangles": 92634,
+        "maxTriangles": 92634,
+        "frameMedianMs": 33.3,
+        "frameP95Ms": 50,
+        "cpuLoopMedianMs": 27.40000009536743,
+        "firstGeometry": {
+          "pending": 0,
+          "installed": 16,
+          "swaps": 16,
+          "reduced": true,
+          "enabled": true
+        },
+        "lastGeometry": {
+          "pending": 0,
+          "installed": 16,
+          "swaps": 16,
+          "reduced": true,
+          "enabled": true
+        }
+      },
+      {
+        "label": "town-start",
+        "budget": {
+          "draws": 350,
+          "triangles": 250000,
+          "frameMedianMs": 20,
+          "frameP95Ms": 33.4
+        },
+        "medianCalls": 239,
+        "maxCalls": 239,
+        "medianTriangles": 182596,
+        "maxTriangles": 182596,
+        "frameMedianMs": 33.4,
+        "frameP95Ms": 50.1,
+        "cpuLoopMedianMs": 39.10000002384186,
+        "firstGeometry": {
+          "pending": 0,
+          "installed": 21,
+          "swaps": 21,
+          "reduced": true,
+          "enabled": true
+        },
+        "lastGeometry": {
+          "pending": 0,
+          "installed": 21,
+          "swaps": 21,
+          "reduced": true,
+          "enabled": true
+        }
+      },
+      {
+        "label": "woodland-cut",
+        "budget": {
+          "draws": 350,
+          "triangles": 250000,
+          "frameMedianMs": 20,
+          "frameP95Ms": 33.4
+        },
+        "medianCalls": 119,
+        "maxCalls": 122,
+        "medianTriangles": 131299,
+        "maxTriangles": 132695,
+        "frameMedianMs": 33.4,
+        "frameP95Ms": 50,
+        "cpuLoopMedianMs": 33.5,
+        "firstGeometry": {
+          "pending": 0,
+          "installed": 16,
+          "swaps": 16,
+          "reduced": true,
+          "enabled": true
+        },
+        "lastGeometry": {
+          "pending": 0,
+          "installed": 16,
+          "swaps": 16,
+          "reduced": true,
+          "enabled": true
+        }
+      }
+    ]
+  },
+  "route": {
+    "framework": "0passes1failure1skip, no retry. Firstfailuretown-startmedian33.4>20ms, all four actual samples fail unchanged frame targets.",
+    "movement": "One level30prepared Fighter before socket-party setup; no earned campaign or other-character save proof on this failed route. Native normal-input town\u2192gate\u2192Earth\u2192Verdant approach reaches all eight named endpoints alive/14slots/grounded at49observations,270postloginframes,115.96851886seconds. Firstdungeon entry and combat not exercised.",
+    "motionReview": "Reviewed four gameplay/HUD PNG endpoints and three consecutive recorded movement frames. Townstone has defined material scale; Earth retains broad muddy variation/repeatedplants; Bastion outerwall/caps read as broad flat blocks. Candidate nextfocus is bounded codeowned entrance masonry/beveledconstruction, with sourcegeometry/rigs/authority preserved. No finalartclaim.",
+    "coldCounterexample": "Town-startpre-sampledebugscreenshot275844triangles exceeds250000; all ordinary60warmup/180frame samples have pendinggeometry0 and peaktriangleswithinlimits, so their timingfailures cannot be dismissed as pendinggeometry. Coldcounterexample retained separately."
+  },
+  "hostContext": "Read-only uptime at02:59 showedload18.33/20.66/21.65 on sharedhost. This is context, not a causal speedup/excuse or permission to stop other services. No favorabletiming retry or thresholdchange.",
+  "limits": "Private same-terrain runtime, not productionaccounts, actualpeerinput/battle, physicalphone, capacity/soak/campaign or finalownerart. No publicterrain/admission/access change. Fullgoaloriginalgates remainactive.",
+  "cleanup": "Allfixtures terminal; ownservers/DockerMongo/listeners18220/18221/18222/4190 absent. Sanitized beforeinspection; zero remaining prepared strings in plaintext/embeddedrecords. Routeonlyonecharacterloggedin before failure.",
+  "evidence": [
+    {
+      "path": ".qa-flat-party/high/terminal.json",
+      "bytes": 1198,
+      "sha256": "6db9d6f4dda46381f3cf7e2813ca5e2d708f7ae8826055a4b4c428f6baf54619"
+    },
+    {
+      "path": ".qa-flat-party/high/sanitized.json",
+      "bytes": 429,
+      "sha256": "7258b18c58b4d57078569d11a7182d4426f751a805cb7fc6d96f3f8e3c25d573"
+    },
+    {
+      "path": ".qa-flat-party/high/native-report.json",
+      "bytes": 738592,
+      "sha256": "dc4c7ea5958cf6bec27f371ba8984d9a470cde4d8d59e1b604b4f3773b523f22"
+    },
+    {
+      "path": ".qa-flat-party/high/server-sanitized.log",
+      "bytes": 4187,
+      "sha256": "5235401c6ce727128677e7f92f6ae13478f50125e4c41de2ae365c94e12b4f06"
+    },
+    {
+      "path": ".qa-flat-party/low/terminal.json",
+      "bytes": 1196,
+      "sha256": "154779542d553e58279644f742fa1af37b2502a6fe1b44636ced7bb9e1152651"
+    },
+    {
+      "path": ".qa-flat-party/low/sanitized.json",
+      "bytes": 429,
+      "sha256": "7258b18c58b4d57078569d11a7182d4426f751a805cb7fc6d96f3f8e3c25d573"
+    },
+    {
+      "path": ".qa-flat-party/low/native-report.json",
+      "bytes": 731081,
+      "sha256": "b00c6af02049baf2825321c64f5890e7c1bf1d1347664c74a8dfb62f8abc000c"
+    },
+    {
+      "path": ".qa-flat-party/low/server-sanitized.log",
+      "bytes": 4187,
+      "sha256": "c6ecdf8a56d1b25da5f797bf61c79f1e55092d4215a3301d4925b85047e06442"
+    },
+    {
+      "path": ".qa-flat-party/raised-compat-high/terminal.json",
+      "bytes": 1472,
+      "sha256": "1b82717b6ce069c301512ac0a407fd123d228750f751e42a869c662666a5bef2"
+    },
+    {
+      "path": ".qa-flat-party/raised-compat-high/sanitized.json",
+      "bytes": 429,
+      "sha256": "7258b18c58b4d57078569d11a7182d4426f751a805cb7fc6d96f3f8e3c25d573"
+    },
+    {
+      "path": ".qa-flat-party/raised-compat-high/native-report.json",
+      "bytes": 314908,
+      "sha256": "d5fcf3b005a8db5f62f06b59cd161dec53b560174dd2dcbca86ecd83426b5746"
+    },
+    {
+      "path": ".qa-flat-party/raised-compat-high/server-sanitized.log",
+      "bytes": 4187,
+      "sha256": "73d4bf0a63f333a0d280728971c5840f7a9652ab495c0a714e3ca175ef88e6c3"
+    },
+    {
+      "path": ".qa-flat-party/route-high/terminal.json",
+      "bytes": 1486,
+      "sha256": "dc55677c1064cacb489cb5ec8dbcb4c8465ce63269ff8b2ba4902c8d229e1e8e"
+    },
+    {
+      "path": ".qa-flat-party/route-high/sanitized.json",
+      "bytes": 431,
+      "sha256": "a758d2b1d378ad9120dadb6042770d985e2dcc32d8372a27e5c50ae7b352cc1b"
+    },
+    {
+      "path": ".qa-flat-party/route-high/native-report.json",
+      "bytes": 994133,
+      "sha256": "19d58ad2785698d912874ef6594ebcb9e3ca85c49082f68cf8b920f310f474e4"
+    },
+    {
+      "path": ".qa-flat-party/route-high/server-sanitized.log",
+      "bytes": 2274,
+      "sha256": "064de710bacdb7ce1e94638d3bde406f414e79cd2630273d044ea5bcabf64c07"
+    }
+  ]
+}
