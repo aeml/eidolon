@@ -1,13 +1,14 @@
 {
   "date": "2026-10-16T01:13:10.046681+00:00",
   "base": "4f5b2e57fbe2112cea68e0da10fc288ad5c85b47",
-  "state": "Isolated and UNSELECTED pending native desktop/phone presentation, input and focus review. Not merged into master or deployed.",
-  "scope": "Lore Book distinguishes personally claimed finale, recaps earlier roads in past tense after Nexus/finale, and shows up to three other personally accepted tasks with objective/progress and correct-journal links. More tasks remain accessible through Review all quests. Reading/quest state and manual acceptance/claim rules remain unchanged. Personally tracked accepted contracts sort first without changing preferences or receipts. Same-reader new memories preserve the recorded-memory index scroll and semantic navigation focus. New readers and changed filters retain fresh-list behavior.",
+  "state": "Qualified for ordinary master selection: final combined native run7passed, workers1/retries0. Not yet deployed.",
+  "scope": "Lore Book distinguishes personally claimed finale, recaps earlier roads in past tense after Nexus/finale, and shows up to three other personally accepted tasks with objective/progress and correct-journal links. More tasks remain accessible through Review all quests. Reading/quest state and manual acceptance/claim rules remain unchanged. Personally tracked accepted contracts sort first without changing preferences or receipts. Same-reader new memories preserve the recorded-memory index scroll and semantic navigation focus. New readers and changed filters retain fresh-list behavior. Three centered Weapon Garment, Armor Garment and Offhand Garment controls sit directly below the character preview. Confirmed appearance names refresh independently, empty/reset slots show Original gear and activation opens the matching owned Wardrobe selector without applying or purchasing. Real equipment and combat stats remain unchanged.",
   "validation": {
     "focused": "143distinct checks across7suites pass. Final four-suite reading/navigation/coherence/conversation rerun61checks passes; unchanged mobile/Chronicle/tracker evidence retained.",
     "lint": "All changed runtime/client tests and final native fixture pass scoped lint.",
-    "native": "Four existing/expanded book cases prepared, not executed while ordered58CI is active. Covers desktop/phone mid-story reading plus prepared fresh/returning/finale/optional-catch-up/contract state, linked navigation, unchanged progress and semantic focus after actual refresh. No earned campaign/pacing or physical-device acceptance claimed.",
-    "retainedFailures": "Initial focused run caught a real overview focus loss: parent QuestUI clears/detaches the book before child render can capture active focus. Parent now restores the replacement action by semantic ID. Existing conversation fixture counted all hidden Lore Book title occurrences as contract rows; updated to assert the exact26unique contract tracking IDs instead. Original two failures retained; corrected all54pass. Added memory-index regression reproduces lost scroll123\u21920 before the fix. Same-reader index updates now restore it; native desktop/phone index-scroll validation is prepared, not yet executed."
+    "native": "Initial run: five passes/two failures. Captured and reviewed garment row at1280/900/390px, existing desktop/phone reading and returning-story/task presentation. Browser layout caught memory-index reset844/1093\u21920 during parent detach; parent now captures before detach and restores after reattachment/visible view. Corrected two returning cases pass. Final combined seven-case run pending before selection. Final combined seven-case run passes on the final source, workers1/retries0; all original failures retained.",
+    "retainedFailures": "Initial focused run caught a real overview focus loss: parent QuestUI clears/detaches the book before child render can capture active focus. Parent now restores the replacement action by semantic ID. Existing conversation fixture counted all hidden Lore Book title occurrences as contract rows; updated to assert the exact26unique contract tracking IDs instead. Original two failures retained; corrected all54pass. Added memory-index regression reproduces lost scroll123\u21920 before the fix. Same-reader index updates now restore it; native desktop/phone index-scroll validation is prepared, not yet executed.",
+    "garment": "66distinct checks across6suites pass; scoped changed-code lint passes. All three native widths pass keyboard navigation, row ordering/alignment, current-look refresh, no overflow and no automatic select request."
   },
   "limits": "No publication selection before native review. Full quest/menu usability and owner review remain open alongside original art/device/performance/audio/operations/F1\u2013F5/beta/release gates. Soak/stress stays deferred; full goal active.",
   "evidenceRoot": "/home/aeml/.local/share/eidolon-lore-task-context-20261016",
@@ -81,6 +82,46 @@
       "path": ".qa-lore-task-context/final-reading-lint.log",
       "bytes": 0,
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-lore-task-context/garment-focused-final.log",
+      "bytes": 623,
+      "sha256": "515614cd7e4e78c1ed6c7ba48ba6eab057ca1cff9797771525871a78477ed32e"
+    },
+    {
+      "path": ".qa-lore-task-context/garment-integration-focused.log",
+      "bytes": 673,
+      "sha256": "4c5b4f0428ef6f3b95c596cfe35e0a8a3a6f4dda93e496f865316d1386b217da"
+    },
+    {
+      "path": ".qa-lore-task-context/garment-lint-final.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-lore-task-context/parent-scroll-focused.log",
+      "bytes": 731,
+      "sha256": "bff31f72e148c5e0f5f5cf4b0c8eb3ea56f04d4b096ca65f95bfcf2596078831"
+    },
+    {
+      "path": ".qa-lore-task-context/parent-scroll-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-lore-task-context/native.log",
+      "bytes": 8226,
+      "sha256": "21dc9be6c796a7c5541e94ea60640b26ce8d35d911b67c5a293317d3d7f0637d"
+    },
+    {
+      "path": ".qa-lore-task-context/native-corrected.log",
+      "bytes": 638,
+      "sha256": "c58cced4bef6e9c532c2a1c3b629da36dd315aeab7b6ab8667058bde2c59c57c"
+    },
+    {
+      "path": ".qa-lore-task-context/native-final.log",
+      "bytes": 1362,
+      "sha256": "f220990376fc72d2834ac99573499558c16567fdecaf111197fa555090fab9b5"
     }
   ]
 }
