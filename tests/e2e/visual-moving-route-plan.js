@@ -7,6 +7,7 @@ export function visualMovingRoutePlan(realm = 'earth') {
             ['east-gate', 120, 200], ['earth-road', 240, 200], ['woodland-cut', 470, 200], ['bastion-approach', 760, 200]],
         budgetLabels: ['town-start', 'earth-road', 'woodland-cut', 'bastion-approach'],
         maximumFrames: 900,
+        maxStepDistance: 20,
         scope: 'Prepared level30 Fighter, normal ground-input continuous town→gate→Earth road→Verdant approach, actual HUD and native render. Explicit post-login screencast; excluded from subsequent party frame timings. No campaign/encounter clear/mobile/final-art approval.'
     };
     if (realm === 'water') {
@@ -22,6 +23,9 @@ export function visualMovingRoutePlan(realm = 'earth') {
                 ...points.map(([x, z], index) => [labels[index], x, z])],
             budgetLabels: ['town-start', 'water-road', 'water-passage', 'abyssal-approach'],
             maximumFrames: 1800,
+            // North/west 20m clicks land under the tracker/minimap at this
+            // camera. Keep normal ground clicks in the unobstructed centre.
+            maxStepDistance: 12,
             scope: 'Prepared level30 Fighter, normal ground-input continuous town→north gate→authored Water road→Abyssal approach, actual HUD and native render. Explicit post-login screencast; excluded from subsequent party frame timings. No campaign/encounter clear/mobile/final-art approval.'
         };
     }

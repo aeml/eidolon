@@ -9,6 +9,7 @@ test('default visual route preserves the previously qualified Earth path and cap
         ['east-gate', 120, 200], ['earth-road', 240, 200], ['woodland-cut', 470, 200], ['bastion-approach', 760, 200]]);
     expect(route.budgetLabels).toEqual(['town-start', 'earth-road', 'woodland-cut', 'bastion-approach']);
     expect(route.maximumFrames).toBe(900);
+    expect(route.maxStepDistance).toBe(20);
 });
 
 test('Water route follows every authored road waypoint and ends at the public Well approach', () => {
@@ -20,6 +21,7 @@ test('Water route follows every authored road waypoint and ends at the public We
     expect(route.budgetLabels.every(label => label === 'town-start' || route.waypoints.some(([name]) => label === name))).toBe(true);
     expect(new Set(route.waypoints.map(([name]) => name)).size).toBe(route.waypoints.length);
     expect(route.scope).toContain('normal ground-input');
+    expect(route.maxStepDistance).toBe(12);
     expect(() => visualMovingRoutePlan('unknown')).toThrow('earth or water');
 });
 

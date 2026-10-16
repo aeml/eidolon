@@ -92,7 +92,7 @@ export async function captureEarthMovingRoute(page, testInfo) {
                 const before = await readPlayerState(page), distance = Math.hypot(x - before.x, z - before.z);
                 if (distance < .6) break;
                 expect(performance.now() - started, 'Bounded ordinary-input visual route').toBeLessThan(140000);
-                const step = Math.min(20, distance) / distance;
+                const step = Math.min(route.maxStepDistance, distance) / distance;
                 const targetX = before.x + (x - before.x) * step, targetZ = before.z + (z - before.z) * step;
                 await moveByGroundClick(page, targetX - before.x, targetZ - before.z, {
                     moveOnly: true, requireClearPath: true, allowAlternatePaths: false, allowJumpFallback: false,
