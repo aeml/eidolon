@@ -72,7 +72,14 @@ export function createAbyssalMooring(start, end) {
     // The source shelf is scaled from 3.1m to 3m in the entrance. Seat the
     // plate slightly into those actual stones, not above their source height.
     plate.translate(anchorX, b.y - .67, b.z);
-    for (const part of [eye, plate]) {
+    const outward = Math.sign(b.z - a.z), wallZ = a.z - outward * .35;
+    const wallEye = new THREE.TorusGeometry(.5, .14, 4, 8);
+    wallEye.translate(a.x, a.y, wallZ);
+    const wallPlate = new THREE.BoxGeometry(1.4, 1.4, .22);
+    wallPlate.translate(a.x, a.y, wallZ - outward * .75);
+    const bracket = new THREE.BoxGeometry(.5, .3, .75);
+    bracket.translate(a.x, a.y - .5, wallZ - outward * .375);
+    for (const part of [eye, plate, wallEye, wallPlate, bracket]) {
         parts.push(part.toNonIndexed()); part.dispose();
     }
     const geometry = mergeGeometries(parts, false);

@@ -23,7 +23,7 @@ test('drowned quay has physical staggered slab joints within the original water-
 });
 
 test('mooring links have open holes, visible iron surfaces and a sagging line inside the old anchor clearance', () => {
-    const start = new THREE.Vector3(18, 7, 8), end = new THREE.Vector3(29, 3.7, 18);
+    const start = new THREE.Vector3(21, 7, 5.35), end = new THREE.Vector3(29, 3.7, 18);
     const chain = createAbyssalMooring(start.toArray(), end.toArray());
     const material = new THREE.MeshStandardMaterial(), mesh = new THREE.Mesh(chain, material);
     mesh.updateMatrixWorld(true);

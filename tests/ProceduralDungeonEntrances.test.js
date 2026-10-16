@@ -91,6 +91,19 @@ describe('procedural dungeon entrances', () => {
                 }
                 expect(contacts.length).toBeGreaterThan(0);
                 expect(contacts.some(depth => depth > 0 && depth < .1)).toBe(true);
+                const outward = end === 'front' ? 1 : -1;
+                const wallZ = mooring.geometry.boundingBox[outward === 1 ? 'min' : 'max'].z;
+                const pillar = root.getObjectByName(`abyssal:tide-pillar:${side}`), wallContacts = [];
+                for (let i = 0; i < position.count; i++) {
+                    if (Math.abs(position.getZ(i) - wallZ) > 1e-5) continue;
+                    const corner = mooring.localToWorld(new THREE.Vector3().fromBufferAttribute(position, i));
+                    const hit = new THREE.Raycaster(corner.clone().add(new THREE.Vector3(0, 0, outward * 2)),
+                        new THREE.Vector3(0, 0, -outward)).intersectObject(pillar)[0];
+                    expect(hit).toBeDefined();
+                    wallContacts.push((hit.point.z - corner.z) * outward);
+                }
+                expect(wallContacts.length).toBeGreaterThan(0);
+                expect(wallContacts.every(depth => depth > 0 && depth < .7)).toBe(true);
             }
         }
     });
