@@ -64,3 +64,12 @@ The first rejected Fire inventory remains
 `7b7c45d0703e1223ae795e8f692073c72d278ab76be6eb1c7e94e5a56819ae9d`;
 the second remains
 `73fd05f6931edbe35a948a6c92f5eb15de9a747d343555e1fab053e17638c89d`.
+
+The first release CI source `a6641d5ad` failed two stale expected town-mask
+hashes in the raster ownership fixture. Only those two hashes are regenerated
+for the already qualified paving change; ten other raster references and every
+ownership assertion remain unchanged. All thirteen ownership/analytic-field
+checks now pass, including independent buffers, mutation, disposal and exact
+agreement at every town-mask pixel. The old native comparison bytes remain
+frozen. Closed first-source five-file inventory SHA-256:
+`1b0c8386df12dc774efa65a3c75314bdd993254d7036254816c0a5ca2db14be5`.
