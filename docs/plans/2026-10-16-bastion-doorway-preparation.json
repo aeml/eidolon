@@ -1,12 +1,91 @@
 {
-  "date": "2026-10-16T04:50:48.316749+00:00",
-  "source": "99ba9f154b11c36eba1171a6f62f36a933ea69ef",
+  "date": "2026-10-16T05:15:12.595972+00:00",
+  "source": "73c10920e931e26a956a390a5b8527673cf19b62",
   "base": "800f3acef78e36042a4232a8dac6a4b2cd1b8bf0",
   "state": "Isolated CPU-qualified candidate; not selected, merged or deployed. Native ordinary-zoom/motion/HUD/supplied-actor, cutaway, resources and quality review still required. Alpha60 is a separate prepared publication.",
-  "scope": "Replace solid front hall wall plus painted black doorway with chamfered actual pointed opening and3m throat; move existing dark panel behind the throat. Existing material/merged mesh count and exact envelope retained. No portal/collision/interaction or supplied actor changes.",
+  "scope": "Real chamfered pointed hall opening/3m throat/backplane plus chipped beveled rear/side wall tops, all within exact old wall envelopes and original merged material/draw. Floor/portal/interaction/collision and supplied actors unchanged.",
   "validation": {
     "focused": "26checks/two suites pass, including real empty doorway ray versus old solid wall, actual inner jamb, front shoulders/lintel, unchanged floor/envelope, finite normals and merged groups.",
     "lint": "Scoped source/test lint and diffcheck pass.",
+    "geometry": {
+      "baseline": {
+        "triangles": 60,
+        "attributeBytes": 5760,
+        "groups": 0,
+        "bounds": {
+          "min": [
+            -21,
+            3,
+            -17
+          ],
+          "max": [
+            21,
+            27,
+            7
+          ]
+        },
+        "doorwayOccluded": true,
+        "sideTopFilled": true,
+        "rearTopFilled": true
+      },
+      "candidate": {
+        "triangles": 324,
+        "attributeBytes": 31104,
+        "groups": 0,
+        "bounds": {
+          "min": [
+            -21,
+            3,
+            -17
+          ],
+          "max": [
+            21,
+            27,
+            7
+          ]
+        },
+        "doorwayOccluded": false,
+        "sideTopFilled": false,
+        "rearTopFilled": false
+      }
+    },
+    "limits": "264added triangles/25344attribute bytes in existing merged mesh; not a full-world/cold/Low/FPS pass. All retained timing/triangle failures remain. Four-case private actual-world/HUD/equipped importedFighter/camera-motion comparison is syntax/list validated ONLY, not executed; two old source routes preserve both wall geometry and black panel placement. Wait until own Alpha60 CI/native/live terminal before native."
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-bastion-wall-detail-20261016",
+  "evidence": [
+    {
+      "path": ".qa-bastion/focused-weathered.log",
+      "bytes": 625,
+      "sha256": "79ba474d6e1659d93dfe410fa6328d0743a42ea9dd24c0cbce5d6b20efb2c6c1"
+    },
+    {
+      "path": ".qa-bastion/lint-weathered.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-bastion/geometry-weathered.json",
+      "bytes": 627,
+      "sha256": "fff7cd5d2a4c097665afa3b192635a72f525b3abbe85ca678ebad358b21ae161"
+    },
+    {
+      "path": ".qa-bastion/bastion-world.spec.js",
+      "bytes": 7407,
+      "sha256": "2d18effab73e9bd4b7650afee74c9ba645b0e6278533e1e5331cb74bd8eaf63f"
+    },
+    {
+      "path": ".qa-bastion/visual.config.mjs",
+      "bytes": 307,
+      "sha256": "cb9f58573ed7a38ad6193f1a53638155f59357791c97c571eb923ea18d5ade16"
+    },
+    {
+      "path": ".qa-bastion/visual-plan-final.log",
+      "bytes": 300,
+      "sha256": "eb6ab862a6247dcc32f82a63317f363aee21afa3b2c4fa91e76602a902f20121"
+    }
+  ],
+  "initialCandidate": {
+    "source": "99ba9f154b11c36eba1171a6f62f36a933ea69ef",
     "geometry": {
       "baseline": {
         "triangles": 60,
@@ -45,24 +124,22 @@
         "doorwayOccluded": false
       }
     },
-    "limits": "Only72added triangles/6912attribute bytes in existing merged mesh. This is not a whole-world/frame/Low/cold performance pass, final world-art approval or actual earned-travel proof. All retained timing/triangle failures remain. No native session launched; qualification awaits publication GPU availability."
-  },
-  "evidenceRoot": "/home/aeml/.local/share/eidolon-bastion-wall-detail-20261016",
-  "evidence": [
-    {
-      "path": ".qa-bastion/focused.log",
-      "bytes": 610,
-      "sha256": "6419b3603ae3b9d6442890ebc7a71468af5f21849c3f74a894fca8359bef63ce"
-    },
-    {
-      "path": ".qa-bastion/lint.log",
-      "bytes": 0,
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-    },
-    {
-      "path": ".qa-bastion/geometry.json",
-      "bytes": 517,
-      "sha256": "2f8db59e517b4f53609fea8e0d90a14c74a6485097e8a3548730f5a32a2b3ba5"
-    }
-  ]
+    "evidence": [
+      {
+        "path": ".qa-bastion/focused.log",
+        "bytes": 610,
+        "sha256": "6419b3603ae3b9d6442890ebc7a71468af5f21849c3f74a894fca8359bef63ce"
+      },
+      {
+        "path": ".qa-bastion/lint.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": ".qa-bastion/geometry.json",
+        "bytes": 517,
+        "sha256": "2f8db59e517b4f53609fea8e0d90a14c74a6485097e8a3548730f5a32a2b3ba5"
+      }
+    ]
+  }
 }
