@@ -11,6 +11,8 @@ import { compareDemonOrcScene } from './demon-orc-scene-comparison.js';
 // Ground clicks use normal client/server movement; no teleport or direct actor
 // assignment occurs on the town→gate→Earth→Verdant approach route.
 export async function captureEarthMovingRoute(page, testInfo) {
+    const expectedProfile = process.env.EIDOLON_E2E_TERRAIN_PROFILE || 'earth-elevation-rocks-v1';
+    expect(['flat-v1', 'earth-elevation-rocks-v1']).toContain(expectedProfile);
     const folder = testInfo.outputPath('post-login-moving-route');
     await mkdir(folder, { recursive: true, mode: 0o700 });
     const session = await page.context().newCDPSession(page);
@@ -32,7 +34,7 @@ export async function captureEarthMovingRoute(page, testInfo) {
     const screenshot = async label => {
         const snapshot = await observe();
         expect(snapshot.equippedItems).toBe(14); expect(snapshot.hp).toBeGreaterThan(0);
-        expect(snapshot.profile).toBe('earth-elevation-rocks-v1');
+        expect(snapshot.profile).toBe(expectedProfile);
         expect(Math.abs(snapshot.y - snapshot.terrain)).toBeLessThan(.1);
         expect(Math.abs(snapshot.meshY - snapshot.terrain)).toBeLessThan(.15);
         observations.push({ label, elapsedMs: performance.now() - started, ...snapshot });
@@ -113,6 +115,7 @@ export async function captureEarthMovingRoute(page, testInfo) {
         try { await session.send('Page.stopScreencast'); }
         finally { await session.detach(); await Promise.all(writes); }
         await writeFile(testInfo.outputPath('moving-route.json'), JSON.stringify({
+            terrainProfile: expectedProfile,
             scope: 'Prepared level30 Fighter, normal ground-input continuous town→gate→Earth road→Verdant approach, actual HUD and native render. Explicit post-login screencast; excluded from subsequent party frame timings. No campaign/encounter clear/mobile/final-art approval.',
             frames, observations, profiles, elapsedMs: performance.now() - started
         }, null, 2));
