@@ -22,23 +22,26 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
-## Alpha 1.79.60: prepared, not yet deployed
+## Alpha 1.79.60: deployed and verified within scoped acceptance
 
-Qualified guild-menu drafts, choices, text cursor/calendar focus and reading
-continuity are selected with inactive private-beta invitation preparation.
-[Guild evidence](2026-10-16-guild-menu-continuity-preparation.json),
-[invitation evidence](2026-10-16-beta-invitation-qualification.json) and
+Guild drafts, choices, caret/calendar focus and reading continuity are deployed
+with inactive private-beta invitation preparation. [Acceptance](2026-10-16-release1-79-60-acceptance.md),
+[Guild qualification](2026-10-16-guild-menu-continuity-preparation.json),
+[invitation qualification](2026-10-16-beta-invitation-qualification.json) and
 [operator guide](../operations/beta-invitations.md).
-The QA harness also supports production-flat and raised party profiles; scoped
-functional checks pass, while original route/crowded-world timing and cold
-triangle failures remain failures. [Retained qualification](2026-10-16-production-flat-party-qualification.json).
-Alpha1.79.59 remains the last fully accepted implementation. Public registration stays open; no beta,
-capacity, final art or full-game completion claim. Soak/stress remains deferred.
+All ten CI jobs pass:783client suites/12025tests,448hosted browser passes/13skips,
+88native passes/one skip. A configured live geometry-shard retry and initial
+publicHTTP408 remain retained. Normal-TLS356pins/identities/readyDB/open signup/
+flat terrain match after one targeted public read. Neither finding's transport
+cause is declared resolved.
 
-Current public source is runtime-equivalent documentation commit `d1a04f16b`:
-its redeployment passed both deployments, but live recovery retained an HTTP408
-module-load failure. Fresh normal-TLS351asset/identity checks pass; that later
-workflow is not fully accepted. [Finding](2026-10-16-receipt59-redeployment-finding.md).
+QA-only flat/raised party support is delivered; functional proof does not waive
+original route/crowded-world timing or cold-triangle failures.
+[Retained qualification](2026-10-16-production-flat-party-qualification.json).
+Bastion wall/doorway and analytics bundle candidates remain isolated/unselected,
+awaiting native review. The earlier [documentation-push finding](2026-10-16-receipt59-redeployment-finding.md)
+remains historical evidence. No beta, capacity, final art or full-game completion
+claim. Soak/stress and human pacing/physical-device feedback remain deferred.
 
 ## October 15 added owner requirements
 
@@ -280,7 +283,7 @@ public asset pins. [Acceptance](2026-10-16-release1-79-59-acceptance.md).
 This advances the interface scope; original quality/release gates remain open.
 Soak/stress and human pacing/physical-device feedback remain deferred.
 
-## Qualified local successor — guild menu continuity
+## Guild menu continuity — delivered in Alpha 1.79.60
 
 Same-character/same-guild updates now retain enrollment/invite/message drafts,
 leaderboard choices, caret/focus and reading offsets. Untouched messages follow
@@ -289,8 +292,9 @@ controls and destructive confirmations keep focus.96distinct checks/4suites
 and6distinct native desktop/phone cases qualify. The old draft-loss regression
 and two native fixture/invocation failures remain retained with corrections.
 [Qualification](2026-10-16-guild-menu-continuity-preparation.json).
-Merged into local master for the next coherent milestone, not yet pushed or
-deployed. The production-flat normal-input world review remains in progress.
+Included in scoped acceptedAlpha1.79.60. The production-flat normal-input world
+review completed its route observations while retaining failed timing and cold
+triangle results; it is not a whole-world performance acceptance.
 
 ## Outstanding requirements and next evidence
 
@@ -324,7 +328,7 @@ acceptance is incomplete.
 | Support, privacy and operations | Assign service objectives/budget, alert/support/moderation/incident/maintenance/content ownership and applicable retention/recovery policies. Complete operational 1.81–1.86 and 1.87–1.89 consolidation evidence. | Implementation and owner |
 | Asset/dependency rights and notices | Finish exact shipped catalog/provenance/license review, player notices/help/known issues and owner rights decisions. Supplied files or matching hashes do not grant rights. Preserve existing notices; do not invent licenses. | Implementation and owner |
 | Feature freeze F1–F5 | Prove every promised mandatory feature/content item, threat boundaries, supported population/service policy, privacy/admin/recovery ownership and frozen content/dependency catalog with exception process. None of F1–F5 is declared complete by this register. | Implementation and owner |
-| Near-complete beta at 1.90 | Complete preceding mandatory systems/art/usability/operations. Implement invitation-based new-account admission while retaining existing logins: signed exact-name invitations, private issuer, early URL/analytics privacy and persistent deployment guard are implemented and qualified in `2a2fc765d`, selected for prepared Alpha1.79.60. Real Mongo/socket replay/concurrency, existing login/recovery, native bootstrap and old-binary refusal pass. [Qualification](2026-10-16-beta-invitation-qualification.json). Activation and distribution are not approved; public access remains unchanged pending owner approval. Complete invitation preparation, chosen cohort capacity/support and integrated candidate approval. Preserve existing-account access/progress. No beta/admission change without owner approval. | Implementation and owner |
+| Near-complete beta at 1.90 | Complete preceding mandatory systems/art/usability/operations. Implement invitation-based new-account admission while retaining existing logins: signed exact-name invitations, private issuer, early URL/analytics privacy and persistent deployment guard are implemented and qualified in `2a2fc765d`, deployed inactive in scoped acceptedAlpha1.79.60. Real Mongo/socket replay/concurrency, existing login/recovery, native bootstrap and old-binary refusal pass. [Qualification](2026-10-16-beta-invitation-qualification.json). Activation and distribution are not approved; public access remains unchanged pending owner approval. Complete invitation preparation, chosen cohort capacity/support and integrated candidate approval. Preserve existing-account access/progress. No beta/admission change without owner approval. | Implementation and owner |
 | Findings and qualification 1.91–1.98 | Collect actual cohort evidence, reproduce/fix blockers, and complete data/security/economy/capacity/device/privacy/operations/final-content signoffs. Preparation may proceed; missing beta evidence is not a pass. | Implementation and owner/cohort |
 | 1.99 and handoff | Prove every original requirement, final exact CI/live identity/assets/readiness/account smoke, support/monitor/recovery handoff and explicit owner go/no-go/public naming/carryover decision. No completion claim based on version or green CI. | Implementation and owner |
 

@@ -11,18 +11,17 @@ delivery state is maintained in the [remaining-work register](2026-10-09-release
 
 ## Current release state — October 16
 
-Last fully accepted implementation: Alpha1.79.59 at `2c4cbb4c9`, centered garment row and
-returning Lore Book context, all ten ordered CI jobs and normal-TLS351asset checks.
-[Acceptance](2026-10-16-release1-79-59-acceptance.md).
-Alpha1.79.60 is prepared, not yet deployed, with qualified guild-menu continuity
-and inactive invitation preparation. [Qualification](2026-10-16-beta-invitation-qualification.json).
-Public alpha access remains unchanged. Beta activation is still owner-gated
-near whole-game completion; all original quality/readiness requirements remain.
+Alpha1.79.60/exact`800f3acef` is deployed and verified within guild-menu continuity
+and inactive private-beta invitation preparation scope. All ten ordered CI jobs
+pass; normal-TLS356asset pins, identities, readyDB, open registration and flat
+terrain match after a targeted read reconciles an initialHTTP408. One configured
+live geometry-shard retry also remains retained. [Acceptance](2026-10-16-release1-79-60-acceptance.md).
 
-Current public source is runtime-equivalent documentation commit `d1a04f16b`:
-its redeployment passed both deployments, but live recovery retained an HTTP408
-module-load failure. Fresh normal-TLS351asset/identity checks pass; that later
-workflow is not fully accepted. [Finding](2026-10-16-receipt59-redeployment-finding.md).
+Public alpha access remains unchanged. Beta activation still requires owner
+approval near whole-game completion; all original quality/readiness gates remain.
+The earlier59[accepted implementation](2026-10-16-release1-79-59-acceptance.md)
+and [documentation-push failure](2026-10-16-receipt59-redeployment-finding.md)
+remain retained as dated history.
 
 ## Historical release state — October 14
 

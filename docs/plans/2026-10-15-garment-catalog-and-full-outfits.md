@@ -1,12 +1,12 @@
 # Garments: full outfits and distinct VIP models
 
 Owner requirement added October 15, 2026. **Required before beta; full scope
-remains open.** The pipeline and eleven modeled looks are deployed/verified in
-Alpha1.79.57; seven universal additions now qualify and are selected on master
-forAlpha1.79.58, pending publication. Final
-collection art approval remains open. This expands the original cosmetic scope.
-The existing vendor, unlocks and per-slot appearance pipeline are foundations,
-not evidence that this new requirement is complete.
+remains open.** The minimum18distinct modeled looks and all four class fits are
+implemented/deployed in scoped acceptedAlpha1.79.58; the centered equipment row
+is delivered in59 and retained in60. [Collection acceptance](2026-10-16-release1-79-58-acceptance.md),
+[current delivery](2026-10-16-release1-79-60-acceptance.md).
+Final collection art and the broader behavior/pose/device acceptance below
+remain open. Counts and narrower cosmetic checks do not close that scope.
 
 ## Appearance behavior
 

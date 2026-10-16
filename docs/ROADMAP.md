@@ -2,18 +2,15 @@
 
 Current delivery and unfinished work are recorded in the
 [remaining-work register](plans/2026-10-09-release-readiness-remaining.md).
-Last fully accepted implementation: Alpha1.79.59 at `2c4cbb4c9`, after all ten CI jobs
-and normal-TLS351asset/identity checks. [Acceptance](plans/2026-10-16-release1-79-59-acceptance.md).
-Alpha1.79.60 is prepared, not yet deployed: qualified guild-menu continuity and
-inactive invitation preparation. [Invitation qualification](plans/2026-10-16-beta-invitation-qualification.json).
-The project remains open alpha; beta activation awaits owner approval.
-Soak/stress qualification is deferred until features are nearly complete;
-automatic scheduling is disabled, and earlier failures remain open.
-
-Current public source is runtime-equivalent documentation commit `d1a04f16b`:
-its redeployment passed both deployments, but live recovery retained an HTTP408
-module-load failure. Fresh normal-TLS351asset/identity checks pass; that later
-workflow is not fully accepted. [Finding](plans/2026-10-16-receipt59-redeployment-finding.md).
+Alpha1.79.60/exact`800f3acef` is deployed and verified within guild-menu continuity
+and inactive invitation preparation scope. All ten CI jobs pass;356normal-TLS
+pins/identities/readyDB/open alpha/flat terrain match after a targeted read of
+one initialHTTP408. A configured live geometry-load retry also remains retained.
+[Acceptance](plans/2026-10-16-release1-79-60-acceptance.md).
+Public alpha access remains unchanged; full original requirements stay open.
+Soak/stress and human pacing/physical-phone feedback remain deferred, not passed.
+The earlier [documentation-push finding](plans/2026-10-16-receipt59-redeployment-finding.md)
+remains historical evidence; accepted60 is the current serving source.
 
 Prior dated deployment checkpoints are retained in
 [the preceding roadmap pointer](https://github.com/aeml/eidolon/blob/2f5b4ad71d4cbd5709a199d51bc4529b8d28228a/docs/ROADMAP.md)

@@ -1934,3 +1934,19 @@ loading, later party phase not reached. All runtime inputs match accepted2c4;
 fresh351normal-TLS pins/identities/readyDB match actuald1. Failure retained, no
 retry/waiver. Root goal/roadmap document-only trigger correction is included in
 prepared60; full original gates remain open. [Finding](docs/plans/2026-10-16-receipt59-redeployment-finding.md).
+
+
+## October16 Alpha1.79.60 scoped acceptance
+
+Exact800f3acef/CI38852963115 alltenorderedjobs pass:783clientsuites/12025tests,
+448hostedbrowser passes/13skips,88nativepasses/one skip. Live7first-attempt+
+oneconfiguredretry/one skip,2townrecovery+1restedparty pass; initial immutable
+shardERR_ABORTED retained. Freshpublic356normalTLS pins/identities/readyDB/
+openregistration/flatprofile match at2026-10-16T06:07:16.609623+00:00 after one bounded
+targeted read reconciles an initial Lanternhold scriptHTTP408. No clean-sweep
+or root-cause-resolution claim. Guildmenu continuity/inactive invitation prep
+are delivered; alphaaccess unchanged. Bastion wall/doorway andanalyticsbundle
+candidates remain isolated pendingnative. Fulloriginal visual/performance/device/
+gameplay/operations/rights/owner/F1–F5/beta/cohort/release/handoff goal remains
+active. Humanpacing/physicalphonefeedback andsoak/stress remain deferred.
+[Acceptance](docs/plans/2026-10-16-release1-79-60-acceptance.md).

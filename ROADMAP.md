@@ -1,8 +1,8 @@
 # Eidolon Roadmap
 
-October16 current checkpoint: Alpha1.79.60 is prepared, not yet deployed, with qualified guild-menu continuity and inactive private-beta invitation preparation. Alpha1.79.59/exact`2c4cbb4c9` remains the last fully accepted implementation; its centered garment row and returning Lore Book context pass all ten ordered CI jobs and fresh normal-TLS351asset verification. [Accepted59](docs/plans/2026-10-16-release1-79-59-acceptance.md). Alpha stays open; beta activation and the full original game/readiness gates remain open. [Remaining work](docs/plans/2026-10-09-release-readiness-remaining.md).
+October16 current checkpoint: Alpha1.79.60/exact`800f3acef` is accepted within guild-menu continuity and inactive invitation preparation scope. All ten ordered CI jobs pass. Normal-TLS356pins/identities/readyDB/open-registration/flat-profile match with an initial publicHTTP408 and configured live geometry-load retry retained. [Acceptance](docs/plans/2026-10-16-release1-79-60-acceptance.md). Full original goal and quality/owner/F1–F5/beta/release gates remain open; alpha access unchanged. [Remaining work](docs/plans/2026-10-09-release-readiness-remaining.md).
 
-Current public source is runtime-equivalent documentation commit `d1a04f16b`:
+Historical documentation-push observation at `d1a04f16b`:
 its redeployment passed both deployments, but live recovery retained an HTTP408
 module-load failure. Fresh normal-TLS351asset/identity checks pass; that later
 workflow is not fully accepted. [Finding](docs/plans/2026-10-16-receipt59-redeployment-finding.md).

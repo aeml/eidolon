@@ -495,13 +495,17 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.60`, **prepared; not yet deployed**: guild
-message/draft/calendar continuity and inactive private-beta invitation preparation.
-Public access remains open alpha; beta activation requires owner approval near
-whole-game completion. [Invitation guide](docs/operations/beta-invitations.md),
-[qualification](docs/plans/2026-10-16-beta-invitation-qualification.json).
+Current source version: `Alpha 1.79.60`, **deployed and verified within its scoped
+acceptance**, at runtime `800f3acef`: guild draft/calendar/menu continuity and
+inactive private-beta invitation preparation. All ten ordered CI jobs pass;
+783client suites/12025tests,448hosted browser passes/13skips and88native passes/
+one skip. Live retained one configured geometry-load retry. Normal-TLS356pins
+match after one targeted read reconciles an initial HTTP408; transport findings
+remain open. Alpha signup stays open. [Acceptance](docs/plans/2026-10-16-release1-79-60-acceptance.md).
+[Invitation guide](docs/operations/beta-invitations.md). Full original quality/
+readiness gates remain open; soak/stress remains deferred.
 
-Current public source is runtime-equivalent documentation commit `d1a04f16b`:
+Historical documentation-push observation at `d1a04f16b`:
 its redeployment passed both deployments, but live recovery retained an HTTP408
 module-load failure. Fresh normal-TLS351asset/identity checks pass; that later
 workflow is not fully accepted. [Finding](docs/plans/2026-10-16-receipt59-redeployment-finding.md).
