@@ -1,0 +1,480 @@
+{
+  "at": "2026-10-16T14:11:06.015837+00:00",
+  "source": "1617ce47ab687dbe4caf24cb11d0cfaf5c73fcd7",
+  "classRenderedSource": "71b5302b1",
+  "priorClassFlowSource": "54b6af37d",
+  "state": "Qualified for ordinary master selection/next coherent presentation release, not yet deployed.",
+  "changes": "Viewcharacter action returnsfullyvisibleportraitandkeyboardfocus withoutchanginglook/rotation/openwardrobe or sendingrequests. Phonewardrobe/loadout/walletformtextfollowsactualmenu-textpreference. Mandatorynativewardrobe case coversall4classes usingclass-specificlegalgear/outfits/handmodels andRogueexplicitoffhandweapon selection.",
+  "validation": {
+    "CPU": "33focused/3suites+fullLint beforemobile-onlyCSSfix; newtestassertslocalfocus/selection/requestownership/retirement. Finalscopedviewportlint+shellsyntax/diffpass.",
+    "actualNative": "4final actual2clientcases pass2.9m/36phases withworkers1/retries0 (prior4pass2.8m retained). Normal3purchases/EPdebit/characterpreviewclass+signature/localremoteheldslotIDs/realweapon-chestchanges/savedLow/relogins/clearedrestoration.",
+    "viewportNative": "3finalnativecases pass19.0s at1280x900,900x650,390x844; enlargedphone125% hasallwardrobeformfonts20px, controls>=44px/nooverflow, fullportraitreturn/focus andnoextra selectionrequest. Previous3ViewUIcases pass12.7s beforenewfontassert.",
+    "classes": [
+      {
+        "class": "Rogue",
+        "phases": 9,
+        "outfit": "nightglass-cowl-v1",
+        "heldBySlot": {
+          "offHand": [
+            "grovekeeper-blade-v1"
+          ],
+          "mainHand": [
+            "skyweaver-dagger-v1"
+          ]
+        },
+        "savedQuality": "low",
+        "restoredItems": 14,
+        "remainingEP": 45,
+        "sourceFile": "native-view-results/garment-connected-appearan-005e7-gh-gear-changes-and-relogin/rendered-wardrobe-phases.json"
+      },
+      {
+        "class": "Fighter",
+        "phases": 9,
+        "outfit": "iron-oath-regalia-v1",
+        "heldBySlot": {
+          "offHand": [
+            "grovekeeper-shield-v1"
+          ],
+          "mainHand": [
+            "grovekeeper-blade-v1"
+          ]
+        },
+        "savedQuality": "low",
+        "restoredItems": 14,
+        "remainingEP": 48,
+        "sourceFile": "native-view-results/garment-connected-appearan-e00d9-gh-gear-changes-and-relogin/rendered-wardrobe-phases.json"
+      },
+      {
+        "class": "Wizard",
+        "phases": 9,
+        "outfit": "astral-sovereign-v1",
+        "heldBySlot": {
+          "offHand": [
+            "skyweaver-tome-v1"
+          ],
+          "mainHand": [
+            "hearthkeeper-staff-v1"
+          ]
+        },
+        "savedQuality": "low",
+        "restoredItems": 14,
+        "remainingEP": 48,
+        "sourceFile": "native-view-results/garment-connected-appearan-fa9fe-gh-gear-changes-and-relogin/rendered-wardrobe-phases.json"
+      },
+      {
+        "class": "Cleric",
+        "phases": 9,
+        "outfit": "dawn-reliquary-v1",
+        "heldBySlot": {
+          "offHand": [
+            "grovekeeper-shield-v1"
+          ],
+          "mainHand": [
+            "tidekeeper-mace-v1"
+          ]
+        },
+        "savedQuality": "low",
+        "restoredItems": 14,
+        "remainingEP": 48,
+        "sourceFile": "native-view-results/garment-connected-appearan-fb05d-gh-gear-changes-and-relogin/rendered-wardrobe-phases.json"
+      }
+    ],
+    "nativeBrowser": "ActualChrome153.0.8010.36, AMD/RADV Vulkan; phoneviewport is notphysicalphone."
+  },
+  "sourceBoundary": "71b nativeclass proof reused: finalappchange is mobile-onlyCSSfontvariable; thoseactualclasscontexts aredesktop. 1617 finalnativeviewport proof validatesmobilechange. No sourcegameplay/gear/price/EP/stat/schema/access change.",
+  "retainedFindings": [
+    "Firstfourclassflow passed butRogue screenshotwas scrolledpastportrait afteroffhandselection; motivatednewViewcharacter action, not an equip failure.",
+    "Initialfontcounter anchoredgrep found0tests; correctedselector selected390case. Thatcase failed20px expectation onfixed16pxrule; finalvariable-backedrule passes withoutdeadlinechange. Uncredentialledcounter screenshot/trace/video retained."
+  ],
+  "privacy": "Actualcredentialedcases auto-trace/videooff, runnercredentialscan passed/sanitized0 forbothruns; ownDockerAPI/Mongo/ports18243/4283 retired. UIcounterfixture hasnoaccountcredentials; itsfailuretrace/video areseparate. Syntheticimage-labelpixelsnotclaimedredacted.",
+  "limits": "No earnedEP/campaign/allpose/oldbinary/physicaldevice/framebudget/finalownerart/fullgame/F2/betaacceptance. No newsoak/stress. Originalperformancecounterexamplesretained.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-wardrobe-class-sessions-20261016",
+  "inventorySha256": "1238a4c43eb3f3fa97bedfb3b5fdf3495252a850074b7e773786f4687474cc77",
+  "evidence": [
+    {
+      "path": "discovery.log",
+      "bytes": 640,
+      "sha256": "772a562f3e8d11cfdbfc173ed56ac879789841fe5f211e87aa8f391d3dda78a5"
+    },
+    {
+      "path": "focused.log",
+      "bytes": 414,
+      "sha256": "7c9a2c06508b1012bdd0ace5f9a0b681464865f46614ec8b21c1cea6095a9f84"
+    },
+    {
+      "path": "font-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "lint-final.log",
+      "bytes": 96,
+      "sha256": "2529459345a1efdeb634ef958de7c4432ac9162453c5595b6a6578e77d0fb8e4"
+    },
+    {
+      "path": "lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native-font-final-results/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": "native-font-final-results/character-sheet-presentati-02a4b-progression-controls-usable/character-build.png",
+      "bytes": 305701,
+      "sha256": "d6bcf494bbae26ad4ffaaa21d523a5decb903ed661b58c9516f1b69eba436d9f"
+    },
+    {
+      "path": "native-font-final-results/character-sheet-presentati-02a4b-progression-controls-usable/character-garment-slots.png",
+      "bytes": 287715,
+      "sha256": "44dad1bf5286149f18d1ff525ffa6b17d109c7996b668ea5c568dc1af268b949"
+    },
+    {
+      "path": "native-font-final-results/character-sheet-presentati-02a4b-progression-controls-usable/character-progression.png",
+      "bytes": 243679,
+      "sha256": "b63c75564904a6d17d73032565a85a1f69d480041bc34ce165980d95e1de9b6f"
+    },
+    {
+      "path": "native-font-final-results/character-sheet-presentati-02a4b-progression-controls-usable/character-wardrobe-return.png",
+      "bytes": 314642,
+      "sha256": "4c2a86a01fee924ca5ad07493abeb9d13b1c2fbc46923c081a6ae2e59005eb26"
+    },
+    {
+      "path": "native-font-final-results/character-sheet-presentati-ba6ba-progression-controls-usable/character-build.png",
+      "bytes": 188297,
+      "sha256": "77e743f02db5205a8a0a7022e60bff81042c52708a6381921e4b3122bbcf4278"
+    },
+    {
+      "path": "native-font-final-results/character-sheet-presentati-ba6ba-progression-controls-usable/character-garment-slots.png",
+      "bytes": 162109,
+      "sha256": "7052fe845b7b8110a636a6b9d044f927f5a5028a9f1752f88f3bc69310608385"
+    },
+    {
+      "path": "native-font-final-results/character-sheet-presentati-ba6ba-progression-controls-usable/character-progression.png",
+      "bytes": 158114,
+      "sha256": "560706755cf415485d862aa5f5ccdec57292f7dbc5c0cd1eecc862a52fac1927"
+    },
+    {
+      "path": "native-font-final-results/character-sheet-presentati-ba6ba-progression-controls-usable/character-wardrobe-return.png",
+      "bytes": 199003,
+      "sha256": "f854880a9ff4a2c4e3e2dfb09ee40123653c26797072b1e0cb14b645cbf793d9"
+    },
+    {
+      "path": "native-font-final-results/character-sheet-presentati-f9efa-progression-controls-usable/character-build.png",
+      "bytes": 493637,
+      "sha256": "d9ea87e56c6d437f425ccabe6c7b7b352b2dde3096e1a2fd263f36a9dfdc640d"
+    },
+    {
+      "path": "native-font-final-results/character-sheet-presentati-f9efa-progression-controls-usable/character-garment-slots.png",
+      "bytes": 505031,
+      "sha256": "155441614b5d2141aa11ec08e67688e1ab01f1f8c2e5645312598db5e011293c"
+    },
+    {
+      "path": "native-font-final-results/character-sheet-presentati-f9efa-progression-controls-usable/character-progression.png",
+      "bytes": 493210,
+      "sha256": "804af429f969235ff7c34ddf44c795e07281dcee3c8d8c0f87c390bfa3a95e54"
+    },
+    {
+      "path": "native-font-final-results/character-sheet-presentati-f9efa-progression-controls-usable/character-wardrobe-return.png",
+      "bytes": 503451,
+      "sha256": "da91fe975ea0bdd3751b51c44096f4be1a86410f87afce9a241c9d7f6c402698"
+    },
+    {
+      "path": "native-font-final.log",
+      "bytes": 661,
+      "sha256": "b36670f4c2e9f6cac4e19bc2c6131466c3189f0587edca41326f4ea62790aef5"
+    },
+    {
+      "path": "native-inputs.json",
+      "bytes": 482,
+      "sha256": "9d47bd506685b45016f133aea663f699401cf460160d5baed8b4aac46f06a905"
+    },
+    {
+      "path": "native-phone-font-before-results/.last-run.json",
+      "bytes": 45,
+      "sha256": "e22df5d0991eb28c09093b1e678b3fa8cd1fab48185d38e67cf79fb6e63ad5ea"
+    },
+    {
+      "path": "native-phone-font-before.log",
+      "bytes": 393,
+      "sha256": "1697fd480a6deb33a0e1d34c9dd7ef3070278c64f7b89213ca41f6cb3fe47beb"
+    },
+    {
+      "path": "native-phone-font-selected-before-results/.last-run.json",
+      "bytes": 96,
+      "sha256": "74fafabfc304ba16f1f372d612257348b778df208898be2fd1c11372788a2af7"
+    },
+    {
+      "path": "native-phone-font-selected-before-results/character-sheet-presentati-ba6ba-progression-controls-usable/character-build.png",
+      "bytes": 188297,
+      "sha256": "77e743f02db5205a8a0a7022e60bff81042c52708a6381921e4b3122bbcf4278"
+    },
+    {
+      "path": "native-phone-font-selected-before-results/character-sheet-presentati-ba6ba-progression-controls-usable/character-garment-slots.png",
+      "bytes": 162109,
+      "sha256": "7052fe845b7b8110a636a6b9d044f927f5a5028a9f1752f88f3bc69310608385"
+    },
+    {
+      "path": "native-phone-font-selected-before-results/character-sheet-presentati-ba6ba-progression-controls-usable/character-progression.png",
+      "bytes": 158114,
+      "sha256": "560706755cf415485d862aa5f5ccdec57292f7dbc5c0cd1eecc862a52fac1927"
+    },
+    {
+      "path": "native-phone-font-selected-before-results/character-sheet-presentati-ba6ba-progression-controls-usable/test-failed-1.png",
+      "bytes": 94157,
+      "sha256": "c3c6920af76388e8e96ad5af1fe2d52557b9d5a9763b4f926140162d4aa654f5"
+    },
+    {
+      "path": "native-phone-font-selected-before-results/character-sheet-presentati-ba6ba-progression-controls-usable/trace.zip",
+      "bytes": 4305058,
+      "sha256": "8b342aca23dfb70e3ecf33fe4f93cfadc4b86381d2e4dbf445b6788a31e81c04"
+    },
+    {
+      "path": "native-phone-font-selected-before-results/character-sheet-presentati-ba6ba-progression-controls-usable/video.webm",
+      "bytes": 147701,
+      "sha256": "a8dd071fa91f3256111e9b804eebefb0a653b6633466e141948409f4f74b45ec"
+    },
+    {
+      "path": "native-phone-font-selected-before.log",
+      "bytes": 3761,
+      "sha256": "de19b24ecc2d540ba5910dda188d3e22f79e11f70e34520783fb9a0341ad2057"
+    },
+    {
+      "path": "native-results/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": "native-results/garment-connected-appearan-005e7-gh-gear-changes-and-relogin/attachments/rendered-wardrobe-phases-8395937a3f517c91f4a11946a2c78fb91f3e3b45.json",
+      "bytes": 72550,
+      "sha256": "9c06598b1c464f1fab6367b489d66bb457220a2ebf96bb0c789f6db001cf532d"
+    },
+    {
+      "path": "native-results/garment-connected-appearan-005e7-gh-gear-changes-and-relogin/confirmed-character-garments.png",
+      "bytes": 440338,
+      "sha256": "7bcada125b61e0e9a777f74861a3b9d38297dc3048c4525baf4df6db81505aec"
+    },
+    {
+      "path": "native-results/garment-connected-appearan-005e7-gh-gear-changes-and-relogin/rendered-wardrobe-phases.json",
+      "bytes": 72550,
+      "sha256": "9c06598b1c464f1fab6367b489d66bb457220a2ebf96bb0c789f6db001cf532d"
+    },
+    {
+      "path": "native-results/garment-connected-appearan-e00d9-gh-gear-changes-and-relogin/attachments/rendered-wardrobe-phases-0688f3f9fb54faf928f5d2e9c422e45ec7dfef37.json",
+      "bytes": 72560,
+      "sha256": "59fc6e5d3d08ecd8ea9a972f8e15694dc2fa4809f35faacf46c2bff62926b642"
+    },
+    {
+      "path": "native-results/garment-connected-appearan-e00d9-gh-gear-changes-and-relogin/confirmed-character-garments.png",
+      "bytes": 652548,
+      "sha256": "cbe7d1994d7281b7326a5d7a83db5bf6995d79429392101dba54142cf39f6970"
+    },
+    {
+      "path": "native-results/garment-connected-appearan-e00d9-gh-gear-changes-and-relogin/rendered-wardrobe-phases.json",
+      "bytes": 72560,
+      "sha256": "59fc6e5d3d08ecd8ea9a972f8e15694dc2fa4809f35faacf46c2bff62926b642"
+    },
+    {
+      "path": "native-results/garment-connected-appearan-fa9fe-gh-gear-changes-and-relogin/attachments/rendered-wardrobe-phases-3aeca1ebb0e1b875f24107836ac4d94927f95f7c.json",
+      "bytes": 71755,
+      "sha256": "1363eca1f64149aeb6b71b52f33e74961ece40dcc2b6d87f22cdf987fdb621d5"
+    },
+    {
+      "path": "native-results/garment-connected-appearan-fa9fe-gh-gear-changes-and-relogin/confirmed-character-garments.png",
+      "bytes": 648899,
+      "sha256": "679a564aa20cce9e50ee2b8af8442b5aa5bc3480e2bde45c3ab9c28357f3a055"
+    },
+    {
+      "path": "native-results/garment-connected-appearan-fa9fe-gh-gear-changes-and-relogin/rendered-wardrobe-phases.json",
+      "bytes": 71755,
+      "sha256": "1363eca1f64149aeb6b71b52f33e74961ece40dcc2b6d87f22cdf987fdb621d5"
+    },
+    {
+      "path": "native-results/garment-connected-appearan-fb05d-gh-gear-changes-and-relogin/attachments/rendered-wardrobe-phases-6c1ee38fcefea696258e3fc09a4515e724fc8af8.json",
+      "bytes": 72099,
+      "sha256": "d7fe9202eb8a3e682ea5a111813efb6eaf44384d5451bdcc4395323544afa467"
+    },
+    {
+      "path": "native-results/garment-connected-appearan-fb05d-gh-gear-changes-and-relogin/confirmed-character-garments.png",
+      "bytes": 649451,
+      "sha256": "6637742652f30272b96bf1aeb300224492ca7f54c0646e199780b756c2fb0f40"
+    },
+    {
+      "path": "native-results/garment-connected-appearan-fb05d-gh-gear-changes-and-relogin/rendered-wardrobe-phases.json",
+      "bytes": 72099,
+      "sha256": "d7fe9202eb8a3e682ea5a111813efb6eaf44384d5451bdcc4395323544afa467"
+    },
+    {
+      "path": "native-view-inputs.json",
+      "bytes": 415,
+      "sha256": "b0ad982877622ff5159f865fff5e37ccd88fc4a7d28fec8f09144c38ca6cf293"
+    },
+    {
+      "path": "native-view-results/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": "native-view-results/garment-connected-appearan-005e7-gh-gear-changes-and-relogin/attachments/rendered-wardrobe-phases-32cbd882c558b5a1f987c4837725dfe6b80cb8d1.json",
+      "bytes": 72550,
+      "sha256": "79f979e6204ed357ab9b91bef8807aaa1c3db300d2d4edde110b2d9a50d53603"
+    },
+    {
+      "path": "native-view-results/garment-connected-appearan-005e7-gh-gear-changes-and-relogin/confirmed-character-garments.png",
+      "bytes": 647786,
+      "sha256": "04836b2248b610d62d8aa80ef2ec3ed71b84ab9f3a26a9aa9fb3e523185fa36d"
+    },
+    {
+      "path": "native-view-results/garment-connected-appearan-005e7-gh-gear-changes-and-relogin/rendered-wardrobe-phases.json",
+      "bytes": 72550,
+      "sha256": "79f979e6204ed357ab9b91bef8807aaa1c3db300d2d4edde110b2d9a50d53603"
+    },
+    {
+      "path": "native-view-results/garment-connected-appearan-e00d9-gh-gear-changes-and-relogin/attachments/rendered-wardrobe-phases-62ec3f1fc302ad5c8e9ea41765eb5dd359744254.json",
+      "bytes": 72560,
+      "sha256": "3cc01ce6f643d26c7ad43526f86c2ccb05b39663e8979e26407bae1c07182cdf"
+    },
+    {
+      "path": "native-view-results/garment-connected-appearan-e00d9-gh-gear-changes-and-relogin/confirmed-character-garments.png",
+      "bytes": 652708,
+      "sha256": "499ceab7cee640a3414df4b458627000f2bc066b37f74ea982de931e4a43ae0c"
+    },
+    {
+      "path": "native-view-results/garment-connected-appearan-e00d9-gh-gear-changes-and-relogin/rendered-wardrobe-phases.json",
+      "bytes": 72560,
+      "sha256": "3cc01ce6f643d26c7ad43526f86c2ccb05b39663e8979e26407bae1c07182cdf"
+    },
+    {
+      "path": "native-view-results/garment-connected-appearan-fa9fe-gh-gear-changes-and-relogin/attachments/rendered-wardrobe-phases-345635a32f92e7325eb9ccc9df01497493b925cd.json",
+      "bytes": 71755,
+      "sha256": "111ff8e178b7f90b69cc17dbf92af1de1e7536aa1458d4032ccabbd79a7fb4e8"
+    },
+    {
+      "path": "native-view-results/garment-connected-appearan-fa9fe-gh-gear-changes-and-relogin/confirmed-character-garments.png",
+      "bytes": 648833,
+      "sha256": "3f75689c1ea480da89eab6576d104cd134eb569675eefdde4fbd31452c50d1e2"
+    },
+    {
+      "path": "native-view-results/garment-connected-appearan-fa9fe-gh-gear-changes-and-relogin/rendered-wardrobe-phases.json",
+      "bytes": 71755,
+      "sha256": "111ff8e178b7f90b69cc17dbf92af1de1e7536aa1458d4032ccabbd79a7fb4e8"
+    },
+    {
+      "path": "native-view-results/garment-connected-appearan-fb05d-gh-gear-changes-and-relogin/attachments/rendered-wardrobe-phases-f3007530f61ff22db27fb2544f9195f22245e5bf.json",
+      "bytes": 72099,
+      "sha256": "36c8c01f260592d02012a718f9e36ea5cf8fc8c4f3523bf07fb273f9cd341a68"
+    },
+    {
+      "path": "native-view-results/garment-connected-appearan-fb05d-gh-gear-changes-and-relogin/confirmed-character-garments.png",
+      "bytes": 649329,
+      "sha256": "6789eb5d539c58f10de797528ef355435f396078456303e5f9d342eb0a8b2722"
+    },
+    {
+      "path": "native-view-results/garment-connected-appearan-fb05d-gh-gear-changes-and-relogin/rendered-wardrobe-phases.json",
+      "bytes": 72099,
+      "sha256": "36c8c01f260592d02012a718f9e36ea5cf8fc8c4f3523bf07fb273f9cd341a68"
+    },
+    {
+      "path": "native-view.log",
+      "bytes": 3972,
+      "sha256": "ec821466ea59587f3466f04086d7d45eaea128f323515f7cf922aae6d677bce0"
+    },
+    {
+      "path": "native-viewport-results/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": "native-viewport-results/character-sheet-presentati-02a4b-progression-controls-usable/character-build.png",
+      "bytes": 305701,
+      "sha256": "d6bcf494bbae26ad4ffaaa21d523a5decb903ed661b58c9516f1b69eba436d9f"
+    },
+    {
+      "path": "native-viewport-results/character-sheet-presentati-02a4b-progression-controls-usable/character-garment-slots.png",
+      "bytes": 287715,
+      "sha256": "44dad1bf5286149f18d1ff525ffa6b17d109c7996b668ea5c568dc1af268b949"
+    },
+    {
+      "path": "native-viewport-results/character-sheet-presentati-02a4b-progression-controls-usable/character-progression.png",
+      "bytes": 243679,
+      "sha256": "b63c75564904a6d17d73032565a85a1f69d480041bc34ce165980d95e1de9b6f"
+    },
+    {
+      "path": "native-viewport-results/character-sheet-presentati-02a4b-progression-controls-usable/character-wardrobe-return.png",
+      "bytes": 314642,
+      "sha256": "4c2a86a01fee924ca5ad07493abeb9d13b1c2fbc46923c081a6ae2e59005eb26"
+    },
+    {
+      "path": "native-viewport-results/character-sheet-presentati-ba6ba-progression-controls-usable/character-build.png",
+      "bytes": 188297,
+      "sha256": "77e743f02db5205a8a0a7022e60bff81042c52708a6381921e4b3122bbcf4278"
+    },
+    {
+      "path": "native-viewport-results/character-sheet-presentati-ba6ba-progression-controls-usable/character-garment-slots.png",
+      "bytes": 162109,
+      "sha256": "7052fe845b7b8110a636a6b9d044f927f5a5028a9f1752f88f3bc69310608385"
+    },
+    {
+      "path": "native-viewport-results/character-sheet-presentati-ba6ba-progression-controls-usable/character-progression.png",
+      "bytes": 158114,
+      "sha256": "560706755cf415485d862aa5f5ccdec57292f7dbc5c0cd1eecc862a52fac1927"
+    },
+    {
+      "path": "native-viewport-results/character-sheet-presentati-ba6ba-progression-controls-usable/character-wardrobe-return.png",
+      "bytes": 199003,
+      "sha256": "f854880a9ff4a2c4e3e2dfb09ee40123653c26797072b1e0cb14b645cbf793d9"
+    },
+    {
+      "path": "native-viewport-results/character-sheet-presentati-f9efa-progression-controls-usable/character-build.png",
+      "bytes": 493637,
+      "sha256": "d9ea87e56c6d437f425ccabe6c7b7b352b2dde3096e1a2fd263f36a9dfdc640d"
+    },
+    {
+      "path": "native-viewport-results/character-sheet-presentati-f9efa-progression-controls-usable/character-garment-slots.png",
+      "bytes": 505031,
+      "sha256": "155441614b5d2141aa11ec08e67688e1ab01f1f8c2e5645312598db5e011293c"
+    },
+    {
+      "path": "native-viewport-results/character-sheet-presentati-f9efa-progression-controls-usable/character-progression.png",
+      "bytes": 493210,
+      "sha256": "804af429f969235ff7c34ddf44c795e07281dcee3c8d8c0f87c390bfa3a95e54"
+    },
+    {
+      "path": "native-viewport-results/character-sheet-presentati-f9efa-progression-controls-usable/character-wardrobe-return.png",
+      "bytes": 503451,
+      "sha256": "da91fe975ea0bdd3751b51c44096f4be1a86410f87afce9a241c9d7f6c402698"
+    },
+    {
+      "path": "native-viewport.log",
+      "bytes": 661,
+      "sha256": "40b01eaa7630d121b5d57e05db136ca2eb74c309329eb9c0642c62f663acb125"
+    },
+    {
+      "path": "native.log",
+      "bytes": 3971,
+      "sha256": "af4d65e8438cbc803a052b2eed02f3a1dbf9781b5c624d9bd5fd23a546af1206"
+    },
+    {
+      "path": "view-focused.log",
+      "bytes": 429,
+      "sha256": "9f6d443b39c27defdac5de39439f1cec8ead12a60009a6f5c39d95ecb6a482c2"
+    },
+    {
+      "path": "view-lint.log",
+      "bytes": 96,
+      "sha256": "2529459345a1efdeb634ef958de7c4432ac9162453c5595b6a6578e77d0fb8e4"
+    },
+    {
+      "path": "viewport-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "worker.log",
+      "bytes": 2542,
+      "sha256": "ac909a38ec9b28ec5d71e173eaa24621614d199b77ebdeaac5817c013fa63079"
+    }
+  ]
+}
