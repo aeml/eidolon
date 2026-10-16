@@ -1,0 +1,161 @@
+{
+  "date": "2026-10-16T05:15:12.595972+00:00",
+  "source": "73c10920e931e26a956a390a5b8527673cf19b62",
+  "base": "800f3acef78e36042a4232a8dac6a4b2cd1b8bf0",
+  "state": "Isolated CPU-qualified candidate; not selected, merged or deployed. Native ordinary-zoom/motion/HUD/supplied-actor, cutaway, resources and quality review still required. Alpha60 is a separate prepared publication.",
+  "scope": "Real chamfered pointed hall opening/3m throat/backplane plus chipped beveled rear/side wall tops, all within exact old wall envelopes and original merged material/draw. Floor/portal/interaction/collision and supplied actors unchanged.",
+  "validation": {
+    "focused": "26checks/two suites pass, including real empty doorway ray versus old solid wall, actual inner jamb, front shoulders/lintel, unchanged floor/envelope, finite normals and merged groups.",
+    "lint": "Scoped source/test lint and diffcheck pass.",
+    "geometry": {
+      "baseline": {
+        "triangles": 60,
+        "attributeBytes": 5760,
+        "groups": 0,
+        "bounds": {
+          "min": [
+            -21,
+            3,
+            -17
+          ],
+          "max": [
+            21,
+            27,
+            7
+          ]
+        },
+        "doorwayOccluded": true,
+        "sideTopFilled": true,
+        "rearTopFilled": true
+      },
+      "candidate": {
+        "triangles": 324,
+        "attributeBytes": 31104,
+        "groups": 0,
+        "bounds": {
+          "min": [
+            -21,
+            3,
+            -17
+          ],
+          "max": [
+            21,
+            27,
+            7
+          ]
+        },
+        "doorwayOccluded": false,
+        "sideTopFilled": false,
+        "rearTopFilled": false
+      }
+    },
+    "limits": "264added triangles/25344attribute bytes in existing merged mesh; not a full-world/cold/Low/FPS pass. All retained timing/triangle failures remain. Four-case private actual-world/HUD/equipped importedFighter/camera-motion comparison is syntax/list validated ONLY, not executed; two old source routes preserve both wall geometry and black panel placement. Wait until own Alpha60 CI/native/live terminal before native.",
+    "privateHarness": "Reference files are staged from exact800f on host and read by NodeFS inside native namespace; no Git/container-network dependency. Four cases are syntax/list validated only, awaiting own60CI terminal."
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-bastion-wall-detail-20261016",
+  "evidence": [
+    {
+      "path": ".qa-bastion/focused-weathered.log",
+      "bytes": 625,
+      "sha256": "79ba474d6e1659d93dfe410fa6328d0743a42ea9dd24c0cbce5d6b20efb2c6c1"
+    },
+    {
+      "path": ".qa-bastion/lint-weathered.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-bastion/geometry-weathered.json",
+      "bytes": 627,
+      "sha256": "fff7cd5d2a4c097665afa3b192635a72f525b3abbe85ca678ebad358b21ae161"
+    },
+    {
+      "path": ".qa-bastion/bastion-world.spec.js",
+      "bytes": 7549,
+      "sha256": "a2037a5164758fb7d23a1cea53d1fa1b021a84a1dea19dc54fb4a283f6328c5a"
+    },
+    {
+      "path": ".qa-bastion/visual.config.mjs",
+      "bytes": 307,
+      "sha256": "cb9f58573ed7a38ad6193f1a53638155f59357791c97c571eb923ea18d5ade16"
+    },
+    {
+      "path": ".qa-bastion/visual-plan-final.log",
+      "bytes": 300,
+      "sha256": "eb6ab862a6247dcc32f82a63317f363aee21afa3b2c4fa91e76602a902f20121"
+    },
+    {
+      "path": ".qa-bastion/source.json",
+      "bytes": 542,
+      "sha256": "091fb4909ad06b3f5bcac403fd562c16ebe6e562d682387570dd1cc20165c724"
+    },
+    {
+      "path": ".qa-bastion/reference/BastionArchitectureGeometry.js",
+      "bytes": 2381,
+      "sha256": "ae1312a3b413a1ac6f2faa1d87bcfd4dff838623cc5d3370382b029c3568baa2"
+    },
+    {
+      "path": ".qa-bastion/reference/ProceduralDungeonEntrances.js",
+      "bytes": 26314,
+      "sha256": "427ba8f149e7c9cdb1ff51f7defafce76ed45ed1ca2b00ea0e2e0f1c563f25dd"
+    }
+  ],
+  "initialCandidate": {
+    "source": "99ba9f154b11c36eba1171a6f62f36a933ea69ef",
+    "geometry": {
+      "baseline": {
+        "triangles": 60,
+        "attributeBytes": 5760,
+        "groups": 0,
+        "bounds": {
+          "min": [
+            -21,
+            3,
+            -17
+          ],
+          "max": [
+            21,
+            27,
+            7
+          ]
+        },
+        "doorwayOccluded": true
+      },
+      "candidate": {
+        "triangles": 132,
+        "attributeBytes": 12672,
+        "groups": 0,
+        "bounds": {
+          "min": [
+            -21,
+            3,
+            -17
+          ],
+          "max": [
+            21,
+            27,
+            7
+          ]
+        },
+        "doorwayOccluded": false
+      }
+    },
+    "evidence": [
+      {
+        "path": ".qa-bastion/focused.log",
+        "bytes": 610,
+        "sha256": "6419b3603ae3b9d6442890ebc7a71468af5f21849c3f74a894fca8359bef63ce"
+      },
+      {
+        "path": ".qa-bastion/lint.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": ".qa-bastion/geometry.json",
+        "bytes": 517,
+        "sha256": "2f8db59e517b4f53609fea8e0d90a14c74a6485097e8a3548730f5a32a2b3ba5"
+      }
+    ]
+  }
+}

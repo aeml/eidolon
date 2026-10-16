@@ -1,0 +1,227 @@
+{
+  "at": "2026-10-16T07:11:59.035561+00:00",
+  "source": "4c3ee325dc3393930d687db37fbee68f8651d975",
+  "runtimeSource": "928c4367bc84702ecf3c9fcc80f87c7bd298f154",
+  "reference": "800f3acef78e36042a4232a8dac6a4b2cd1b8bf0",
+  "state": "Qualified scoped entrance improvement, ready for master merge. Not yet deployed or final world/FPS accepted.",
+  "scope": "Real pointed recessed hall door/three-metre throat, chipped beveled wall tops within exact prior envelopes, merged staggered ramp stones within old22x2x23slab, smooth existing root normals. Original portal/interaction/collision and supplied actors retained.",
+  "validation": {
+    "cpu": "35checks/three suites pass; rays prove empty door/jamb/shoulders/lintel/floor/chips and physical staggered paving gaps, exact envelopes, finite attributes, no geometry groups. All existing four-entrance bounds/material contracts pass.",
+    "native": "Four world comparisons(reference/candidate High1280x844 and Low390x844),120moving samples/case, gameplay zoom15/30, full scenery, Earthlighting, HUD and14-slot importedFighter. Four corrected cutaway cases acrossHigh/Low/desktop/phone/landscape pass,workers1/retries0.",
+    "world": [
+      {
+        "case": "bastion-world-Bastion-world-high-carved-doorway",
+        "maxCalls": 78,
+        "maxTriangles": 65298,
+        "equipped": 14,
+        "resources": {
+          "geometries": 12,
+          "textures": 17,
+          "ownedSkeletons": 6,
+          "beforeCleanup": {
+            "geometries": 72,
+            "textures": 67
+          },
+          "afterSkeletons": {
+            "geometries": 72,
+            "textures": 62
+          },
+          "contextLost": true,
+          "entranceOwned": 18,
+          "entranceRetired": 18,
+          "canvasConnected": false,
+          "rendererDisposed": true,
+          "actorReleased": true
+        }
+      },
+      {
+        "case": "bastion-world-Bastion-world-high-reference800f",
+        "maxCalls": 78,
+        "maxTriangles": 56610,
+        "equipped": 14,
+        "resources": {
+          "geometries": 12,
+          "textures": 17,
+          "ownedSkeletons": 6,
+          "beforeCleanup": {
+            "geometries": 72,
+            "textures": 67
+          },
+          "afterSkeletons": {
+            "geometries": 72,
+            "textures": 62
+          },
+          "contextLost": true,
+          "entranceOwned": 18,
+          "entranceRetired": 18,
+          "canvasConnected": false,
+          "rendererDisposed": true,
+          "actorReleased": true
+        }
+      },
+      {
+        "case": "bastion-world-Bastion-world-low-carved-doorway",
+        "maxCalls": 42,
+        "maxTriangles": 29061,
+        "equipped": 14,
+        "resources": {
+          "geometries": 12,
+          "textures": 17,
+          "ownedSkeletons": 6,
+          "beforeCleanup": {
+            "geometries": 70,
+            "textures": 47
+          },
+          "afterSkeletons": {
+            "geometries": 70,
+            "textures": 42
+          },
+          "contextLost": true,
+          "entranceOwned": 18,
+          "entranceRetired": 18,
+          "canvasConnected": false,
+          "rendererDisposed": true,
+          "actorReleased": true
+        }
+      },
+      {
+        "case": "bastion-world-Bastion-world-low-reference800f",
+        "maxCalls": 42,
+        "maxTriangles": 24717,
+        "equipped": 14,
+        "resources": {
+          "geometries": 12,
+          "textures": 17,
+          "ownedSkeletons": 6,
+          "beforeCleanup": {
+            "geometries": 70,
+            "textures": 47
+          },
+          "afterSkeletons": {
+            "geometries": 70,
+            "textures": 42
+          },
+          "contextLost": true,
+          "entranceOwned": 18,
+          "entranceRetired": 18,
+          "canvasConnected": false,
+          "rendererDisposed": true,
+          "actorReleased": true
+        }
+      }
+    ],
+    "review": "Highreference/candidate flankzoom30 and candidate grave-roadzoom15, plus Lowphoneflankzoom30/grave-roadzoom15 images inspected. Recessed door and staggered joints visibly improve prior painted door/plain slab. Large plinth/root silhouettes and broader world art still need work.",
+    "geometry": "Gatehouse60->324triangles(+264); ramp12->4092(+4080); one cached geometry added(38->39), materials30 and drawMeshCount<=9 unchanged. No extra material/draw batch selected.",
+    "resourceMethod": "PinnedThree0.181.2 WebGLRenderer.dispose() does not reset renderer.info memory. Initial four cases and one diagnostic failed the private zero-counter assumption(12geometries/17textures after context loss). Final fixture observes actual dispose events:all18entrance-owned resources retire,canvas detached,actor released,renderer disposed,context lost,identical residual counters in reference/candidate. No production cleanup code changed.",
+    "lint": "Scoped four source/unit files and final browser fixture lint plus diff checks pass.",
+    "retainedFindings": [
+      "Initial paving used separate vertex-color material and exceeded existing nine-draw cap; removed that material and reused existing pale stone. Original failed CPU checks retained.",
+      "Cache geometry expectation updated38->39 for the one new cached merged ramp. Original draw/triangle/frame limits unchanged.",
+      "Original cutaway position(-30,-25)now leaves10/31desktop pixels visible; exact old geometry gives4/31andpasses. First replacement(-28,-26)passesdesktop butfailsphone(14/50); final(-27,-24)reachablebehindintactrearwall gives0->31/33/50/44andpassesall4withunchanged25%initial/80%recovery/zerooutsidepixel thresholds. CPUrays andnativecounterexample retained."
+    ]
+  },
+  "limits": "Prepared component/world views, not actual server/earned travel/campaign, physical-phone or FPS proof. Existing full-world frame/cold-triangle/soak/transport/rights/owner/F1-F5/beta/release gates remain open. Soak/stress deferred.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-bastion-wall-detail-20261016",
+  "evidence": [
+    {
+      "path": ".qa-bastion/focused-paving.log",
+      "bytes": 2202,
+      "sha256": "bc0fc30731d4fb5536cf01d9cdbd6148ca020e638d639bc605511a1fd8b9af7d"
+    },
+    {
+      "path": ".qa-bastion/focused-paving-final.log",
+      "bytes": 1342,
+      "sha256": "ae6423444f3ced48b3b143b347ab72dc292b1769f686fab1d035f08c72e11076"
+    },
+    {
+      "path": ".qa-bastion/focused-paving-qualified.log",
+      "bytes": 458,
+      "sha256": "b3775feadf015fc3298576a25ed67ebb7c9277284961ec324b5e9c5f2b87b818"
+    },
+    {
+      "path": ".qa-bastion/lint-paving-qualified.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-bastion/lint-cutaway-final.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-bastion/native-world.log",
+      "bytes": 13277,
+      "sha256": "0cd7544db4be056518c0b182829bc74145943f324f30c604cb749dd64af7cc6e"
+    },
+    {
+      "path": ".qa-bastion/retirement-diagnostic.log",
+      "bytes": 3568,
+      "sha256": "db053ac596bd0d3300dd3c933d08dd6d76c414e7297794b3f871a8e0bb592507"
+    },
+    {
+      "path": ".qa-bastion/native-paving.log",
+      "bytes": 651,
+      "sha256": "af110a7f662f343afb90a348aee1661cc53373b69a6c384a096f3c43fe734bbd"
+    },
+    {
+      "path": ".qa-bastion/native-cutaway.log",
+      "bytes": 15179,
+      "sha256": "a43fe3316ed32f508aef487e1f80d6cb7ea20a92e4bf57259e11a155a6ec0a43"
+    },
+    {
+      "path": ".qa-bastion/native-cutaway-baseline.log",
+      "bytes": 661,
+      "sha256": "744017e957724394f1686168c6047b522c3c34a0a9b32bfeb59cbb918a8518f9"
+    },
+    {
+      "path": ".qa-bastion/native-cutaway-fixed.log",
+      "bytes": 8565,
+      "sha256": "39124fed29991ddc71fc0012ac47e05e3dbea630c609e516872c45231a6b3ecf"
+    },
+    {
+      "path": ".qa-bastion/native-cutaway-intact-face.log",
+      "bytes": 1804,
+      "sha256": "8315122cdd9ec57dd9d53630c2c832e592fd7b41bb7fcc17866aaaae99276a83"
+    },
+    {
+      "path": ".qa-bastion/occlusion-rays.jsonl",
+      "bytes": 753,
+      "sha256": "a11594c584e1c9783a6fa2bdc7895e3ac9f8afebdd55f3158d1572c15546905c"
+    },
+    {
+      "path": ".qa-bastion/bastion-world-before-ownership-fix.spec.txt",
+      "bytes": 9464,
+      "sha256": "ea5ae0845761a4722da9c2cd7e73d437af26375820019d36d53043fbabb9169e"
+    },
+    {
+      "path": ".qa-bastion/bastion-world.spec.js",
+      "bytes": 11267,
+      "sha256": "eca3f28a5adb0ee01ea5967ef58ee885f4f3f81982fb2209a9859c0b0c8b4916"
+    },
+    {
+      "path": ".qa-bastion/run-source.json",
+      "bytes": 459,
+      "sha256": "1d836d3ef9f9fe384229b0a64eea857b8ae777ea4a1abd398911de601260354a"
+    },
+    {
+      "path": ".qa-bastion/native-paving/bastion-world-Bastion-world-high-carved-doorway/bastion-world-review.json",
+      "bytes": 42347,
+      "sha256": "09dc914f3022e531c17f37f92c319a54b0289fe5732d4177ab62bfcc05402622"
+    },
+    {
+      "path": ".qa-bastion/native-paving/bastion-world-Bastion-world-high-reference800f/bastion-world-review.json",
+      "bytes": 42385,
+      "sha256": "dd4844c807650f8a9817a60cbe35a787af19cebf585eff5e88e70d8c8ca1391f"
+    },
+    {
+      "path": ".qa-bastion/native-paving/bastion-world-Bastion-world-low-carved-doorway/bastion-world-review.json",
+      "bytes": 42303,
+      "sha256": "44e58a7d1ac76de975ec720edc58f6f334079a9defd317499aba1e8f86d3b0b5"
+    },
+    {
+      "path": ".qa-bastion/native-paving/bastion-world-Bastion-world-low-reference800f/bastion-world-review.json",
+      "bytes": 42341,
+      "sha256": "8d5b3cae84882d527d7550716e20c26a2c942b038016e98bb6584e8e1a12a782"
+    }
+  ]
+}
