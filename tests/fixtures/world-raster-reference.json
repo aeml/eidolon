@@ -8,7 +8,7 @@
   {
     "name": "createTownCompositionMask",
     "quality": "high",
-    "sha256": "88b981ef9dd0e8de4f1b9008d004a51fecf5648b91d08b5b9437075533caf629",
+    "sha256": "ad07d2abcb8420930faa1bc8ec6b92cde869c41efad2346e6caaab7bcdf0a89b",
     "bytes": 262144
   },
   {
@@ -32,7 +32,7 @@
   {
     "name": "createTownCompositionMask",
     "quality": "low",
-    "sha256": "cd4d615e02a9f5bdd84134893594d9d20b9545f2cb230b0c30a9e64278fee243",
+    "sha256": "0d52e93b07de5f1c1192a8fb24f7d350558dc4f61ef09e43c83a4dc2b6579e13",
     "bytes": 65536
   },
   {
