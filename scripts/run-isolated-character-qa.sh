@@ -180,6 +180,7 @@ qa_allowlist+=",${QA_USERNAME_BASE}-death-resources"
 qa_allowlist+=",${QA_USERNAME_BASE}-casino-guest"
 qa_allowlist+=",${QA_USERNAME_BASE}-auth-recovery"
 qa_allowlist+=",${QA_USERNAME_BASE}-socket-owner,${QA_USERNAME_BASE}-socket-observer"
+qa_allowlist+=",${QA_USERNAME_BASE}-garment-owner,${QA_USERNAME_BASE}-garment-observer"
 qa_allowlist+=",${QA_USERNAME_BASE}-rest-transitions-death,${QA_USERNAME_BASE}-rest-transitions-dungeon"
 qa_allowlist+=",${QA_USERNAME_BASE}-duration,${QA_USERNAME_BASE}-forge,${QA_USERNAME_BASE}-whip,${QA_USERNAME_BASE}-ground"
 qa_allowlist+=",${QA_USERNAME_BASE}-time-warp"
@@ -379,6 +380,13 @@ run_forge_socket_appearance() {
     EIDOLON_E2E_USERNAME_SECONDARY="${QA_USERNAME_BASE}-socket-observer" EIDOLON_E2E_PASSWORD_SECONDARY="${QA_PASSWORD}" \
     EIDOLON_E2E_SOCKET_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_SOCKET_MONGO_PORT="${mongo_port}" \
     npx playwright test --retries=0 --output=test-results/forge-socket-appearance tests/e2e/forge-socket-appearance.spec.js
+}
+
+run_garment_connected_appearance() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-garment-owner" \
+    EIDOLON_E2E_USERNAME_SECONDARY="${QA_USERNAME_BASE}-garment-observer" EIDOLON_E2E_PASSWORD_SECONDARY="${QA_PASSWORD}" \
+    EIDOLON_E2E_SOCKET_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_SOCKET_MONGO_PORT="${mongo_port}" \
+    npx playwright test --retries=0 --output=test-results/garment-connected-appearance tests/e2e/garment-connected-appearance.spec.js "$@"
 }
 
 run_talent_economy() {
@@ -784,6 +792,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   forge-socket-appearance)
     run_forge_socket_appearance
+    ;;
+  garment-connected-appearance)
+    run_garment_connected_appearance "$@"
     ;;
   pvp-cadence)
     run_pvp_cadence

@@ -1,0 +1,229 @@
+{
+  "at": "2026-10-16T11:11:02.947252+00:00",
+  "source": "ec6ce1f39c24ac81c0a8ab3452673f89cceb62ec",
+  "applicationRuntime": "8a4a5ca880ea2c7ad0ba8e0d7ac04a501f96afac",
+  "state": "Qualified new actual native browser/socket/save coverage and mandatory predeploy enrollment; ready for master merge/future coherent publication. No application runtime change.",
+  "nativeFunctional": {
+    "final": "One finalnativeFcase passes(1.1m), ninephases, Chrome153.0.8010.36/AMD RADV Vulkan. EarlierEcasepasses57.3s/sevenphases unchangedcoreproof; zeroautomaticretries.",
+    "proof": "Two actualclients/normalauthenticateddisposableMongo/socketserver. PreparedreturningFighter14realitems/oldheadlook/100EP. OrdinaryVeyrapurchases25+15+12EP, explicitindependentapply, privatevendor/walletacks; selected9body/heldpieces locally/remotely, realweaponremove8/restore9; exactpreview/worldsignature, HighthenUI-deferredreloadwithsavedLow, reentry/persistedselection, realchestremoveunderoutfit9rendered/13realgear, clear13currentgearvisuals, reequip14, clearedrelogin. RealIDs/stats/baseattributes/Gold/level/XP/retainedhead/hands unchanged exceptexplicitrealgearremoval/re-equip;EP48verifiedprivateUIafterbothrelogins.",
+    "scope": "PreparedoneFighter/oneobserver, notearnedEP/campaign,allclasses/poses/oldbinarycompatibility/physicalphone/finalownerart. Existing unchanged collection/pose/model evidence remains separate.",
+    "cleanup": "All owned Mongo/API/image/network resourcesretired;18243/18244/4283listeners empty; credentialartifactscanner passes. No production grant/account/data change."
+  },
+  "retainedFailures": {
+    "software": "Firstsoftwaresecondworldfirst-view120stimeout,beforewardrobeassertions; originaldeadlinekept. Onlyfirstlogretained; initialautoerrorcontextwasnotarchivedbeforeoutpathreuse. No trace/video byprivatecredentialsettings.",
+    "nativeA": "33.3sfailsnonexistentplayer.ep; EPintentionallyprivatevendor/walletresult, correctedactualUIoracle.",
+    "nativeB": "35.9sfailsbadlegacyseedwirebaseNameinsteadBSONbase_name; correctedcanonicalfixture, no productionbug claimed.",
+    "nativeC": "FullrawitemcomparisonfailsownerInventoryRARITYmetadataobjectvsremotewireCommonstring. Normalizeonlyrarityname; everyotherrealitemfield stillcompared.",
+    "nativeD": "Afterallpurchases/local-remote/preview/weaponrestoreandHighdiagnostics, expectingliveactorLODLowfails. ActualUIexplicitlyrequiresreload forownedmeshes. Correctedtestfollowsdeferredreload/reloginanddoesnotoverwriteexistingLowpreference. No app/controller/deadline/rulechange.",
+    "evidence": "UniqueC/D/E/Foutputsretained; A/Berrorcontextsarchived. Earlybody-onlyattachmentswerenotpersistedwithlistreporter; finalhelperwritesJSONandpathattaches. Exactsourceinputs/logsretained; no failedcasecountedasacceptance."
+  },
+  "separateCurrentDiagnosis": {
+    "source": "5ed2e3fbb",
+    "runtime": "8a4a5ca88",
+    "scope": "ReusedactualnativeDHighpre-Low180frameinclusiveCPUdiagnostic/separate5sallowlistedCDPsummary/separate180GPUqueries. Laterfunctionalfailuredoesnotinvalidatecompleted/restoreddiagnosticownership. No unchangedtimingreplayinE/F, quiet-host/pairedspeedup/ordinarybudgetclaim. Scriptdefaultsflat-v1/QA-elevationfalse; notpublicrouteorwholeworldcertification.",
+    "frame": {
+      "frameMedianMs": 33.3,
+      "frameP95Ms": 50,
+      "cpuLoopMedianMs": 29.100000023841858,
+      "cpuLoopP95Ms": 39.800000071525574,
+      "drawCallsMedian": 214,
+      "trianglesMedian": 202043,
+      "activeEntities": 164,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 720,
+        "pixelRatio": 1
+      },
+      "restored": true
+    },
+    "phaseSummary": {
+      "scope": "Opt-in inclusive synchronous CPU clocks; renderer includes Three.js traversal/submission, not GPU elapsed time. rendererWorld matches the exact gameplay scene AND camera; rendererOther is every other call, including fullscreen composer passes. Exclusive components subtract nested clocks. Instrumentation overhead is included; this separate diagnostic does not replace the ordinary budget sample.",
+      "components": {
+        "update": {
+          "medianMs": 4.699999928474426,
+          "p95Ms": 9.5
+        },
+        "presentation": {
+          "medianMs": 23.899999976158142,
+          "p95Ms": 33
+        },
+        "renderSystem": {
+          "medianMs": 23.199999928474426,
+          "p95Ms": 32
+        },
+        "renderer": {
+          "medianMs": 22.899999976158142,
+          "p95Ms": 31.800000071525574
+        },
+        "rendererWorld": {
+          "medianMs": 22.600000023841858,
+          "p95Ms": 31.199999928474426
+        },
+        "rendererOther": {
+          "medianMs": 0.30000007152557373,
+          "p95Ms": 0.5
+        },
+        "presentationOutsideRenderSystem": {
+          "medianMs": 0.5000001192092896,
+          "p95Ms": 1.7000000476837158
+        },
+        "renderSystemOutsideRenderer": {
+          "medianMs": 0.20000004768371582,
+          "p95Ms": 0.5000001192092896
+        },
+        "loopOutsideUpdateAndPresentation": {
+          "medianMs": 0.19999992847442627,
+          "p95Ms": 0.3999999761581421
+        }
+      },
+      "calls": {
+        "update": {
+          "min": 1,
+          "max": 2
+        },
+        "presentation": {
+          "min": 1,
+          "max": 1
+        },
+        "renderSystem": {
+          "min": 1,
+          "max": 1
+        },
+        "renderer": {
+          "min": 16,
+          "max": 16
+        },
+        "rendererWorld": {
+          "min": 1,
+          "max": 1
+        },
+        "rendererOther": {
+          "min": 15,
+          "max": 15
+        }
+      }
+    },
+    "gpu": {
+      "counterBits": 64,
+      "calls": 180,
+      "cpuMedianMs": 22.299999952316284,
+      "cpuP95Ms": 26.800000071525574,
+      "gpuMedianMs": 14.64326,
+      "gpuP95Ms": 22.38445,
+      "restored": true,
+      "scope": "Separate instrumented world-render calls, matching exact gameplay scene AND camera. CPU clocks include synchronous waits. GPU elapsed queries enclose world work and its shadows, excluding later fullscreen passes; they are not isolated shader busy-time measurements and may include submission starvation. Asynchronous polling never waits for the GPU. This is not an ordinary frame-budget sample or a comparison with another population."
+    },
+    "interpretation": "Rendererworld22.6msmedian remainsdominantvs4.7msupdate;214draws/202043tri,164activeentities,zero pendinggeometry, nopreviewframes. Diagnostic33.3/50msaboveoriginalHigh20/33.4limits,butinstrumentedwindowdoesnotreplaceformaloriginalbudgetsample. Originalfailures/budgetsremain. FreshcallersincludeprojectObject/updateMatrixWorld/shadowtraversal/getProgram/getParameters/ActorInstanceMultiDraw; do notreviverejectedglobalcaches/foliagegiantbounds/identity/scratchpilotswithoutnewcausalhypothesis."
+  },
+  "ci": "New mandatory trusted nativepredeploy step uses ordinary isolatedQAroute/hardwareguard/workers1/retries0/dedicated18243+4283/uniqueevidencepaths. Existing7runnerguards,scopedlint,bashsyntax/diff/discovery pass. Its ownfutureexactCI stillrequired; notpartofaccepted62run.",
+  "limits": "Fulloriginalgoal/garmentfinalcollection/oldbinary/pose/device/owner/beta/performance/operations remainsopen. No newsoak/stress.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-garment-connected-20261016",
+  "evidence": [
+    {
+      "path": ".qa-garment-connected/software-first.log",
+      "bytes": 5125,
+      "sha256": "72710ab95ca64d1b8338ddf13600c2d8b80f14f2fb15bc1500cd3cc43747a469"
+    },
+    {
+      "path": ".qa-garment-connected/native-first.log",
+      "bytes": 5351,
+      "sha256": "cff4e61a2588657ab689274e951b80cfca707132a93c1add8e0b73623edef1d7"
+    },
+    {
+      "path": ".qa-garment-connected/native-private-wallet.log",
+      "bytes": 5227,
+      "sha256": "e64a09781bf556f0af5a12461f034df4148f8e9f6ca4eb7f8862d52b1c51ffd8"
+    },
+    {
+      "path": ".qa-garment-connected/native-canonical.log",
+      "bytes": 12602,
+      "sha256": "d7c1298dfff60723571b0c08e645eea89e49fc2611d1aa87baefca14fd3cb37d"
+    },
+    {
+      "path": ".qa-garment-connected/native-rarity.log",
+      "bytes": 8197,
+      "sha256": "eb978be3aeb65cc19604f62c0d4c64facd40e097a329193cadab2dedb259064a"
+    },
+    {
+      "path": ".qa-garment-connected/native-quality.log",
+      "bytes": 4063,
+      "sha256": "50048d6558367f3bdb7d166b4c9d7881153fef25216607250a0cb4c45af91e76"
+    },
+    {
+      "path": ".qa-garment-connected/native-body.log",
+      "bytes": 3867,
+      "sha256": "7ebec7fb1271796e44ac9b6725d7a82f1cdbc5b4a863303363e1b4897178322f"
+    },
+    {
+      "path": ".qa-garment-connected/native-first-inputs.json",
+      "bytes": 678,
+      "sha256": "b7050854c33aad0e427aae6a2f63f5e2065f8f449347673a8c6c272072304853"
+    },
+    {
+      "path": ".qa-garment-connected/native-private-wallet-inputs.json",
+      "bytes": 1014,
+      "sha256": "e535f50194a104aa2a87a521b8ff3bb40855e8919cd30d4119849582f877ed7d"
+    },
+    {
+      "path": ".qa-garment-connected/native-canonical-inputs.json",
+      "bytes": 1215,
+      "sha256": "1494db867f7e6c7e20d2d8c699fc6d10c6b98ffa558f3d5db57b9e85289909d2"
+    },
+    {
+      "path": ".qa-garment-connected/native-rarity-inputs.json",
+      "bytes": 1063,
+      "sha256": "deafb5f368844e8d7e7e0fc593364879003718227778549d66175419456add3f"
+    },
+    {
+      "path": ".qa-garment-connected/native-quality-inputs.json",
+      "bytes": 1094,
+      "sha256": "63f3aaa6e9ccae5025f6dad7c1a9f8c0ecbb76b7786d8cfd76f72adea045ef66"
+    },
+    {
+      "path": ".qa-garment-connected/native-body-inputs.json",
+      "bytes": 955,
+      "sha256": "cc7aa69bde20ff8acccb799088422eba2f00531a96357127d21026df876534a6"
+    },
+    {
+      "path": ".qa-garment-connected/lint-current.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-garment-connected/ci-guards.log",
+      "bytes": 510,
+      "sha256": "312b468139a5e57e0f2c43070386a85abfbf1c118a9f77287f5d02a77fa84ae0"
+    },
+    {
+      "path": ".qa-garment-connected/native-body-results/garment-connected-appearan-220e1-gh-gear-changes-and-relogin/rendered-wardrobe-phases.json",
+      "bytes": 70490,
+      "sha256": "20ada28cbebfeb6cb8dc10e7895f8b7589eb989f9b92e63a6fcf93241f06eaec"
+    },
+    {
+      "path": ".qa-garment-connected/native-body-results/garment-connected-appearan-220e1-gh-gear-changes-and-relogin/confirmed-character-garments.png",
+      "bytes": 652290,
+      "sha256": "fdf547b813641e9d4ef20d755dc5f865127f5136d8316a2e84304cfe5af5e45f"
+    },
+    {
+      "path": ".qa-garment-connected/native-rarity-results/garment-connected-appearan-220e1-gh-gear-changes-and-relogin/current-town-wardrobe-frame-diagnosis.json",
+      "bytes": 134584,
+      "sha256": "9458298b776b20eea051c768e8b1710190ac20f6c6ef0ad9caf28cf53efe8b1b"
+    },
+    {
+      "path": ".qa-garment-connected/native-rarity-results/garment-connected-appearan-220e1-gh-gear-changes-and-relogin/current-town-wardrobe-cpu-functions.json",
+      "bytes": 19802,
+      "sha256": "d570b6f5b7fe35af1df868e5cbc3c3c2b2358932f8f6641c4610f682f7856dab"
+    },
+    {
+      "path": ".qa-garment-connected/native-rarity-results/garment-connected-appearan-220e1-gh-gear-changes-and-relogin/current-town-wardrobe-gpu-diagnosis.json",
+      "bytes": 18348,
+      "sha256": "e1f1d2d62bc87ceb24833588233f740180119a27dfc671cf2c4ed01ad7415b19"
+    },
+    {
+      "path": ".qa-garment-connected/native-rarity-results/garment-connected-appearan-220e1-gh-gear-changes-and-relogin/current-town-gpu-counter-availability.json",
+      "bytes": 17,
+      "sha256": "783afb9611a73ec622d706af6b7dc86731b091512b1b3c88c3230dbb4573f6c5"
+    }
+  ]
+}
