@@ -27,7 +27,9 @@ for (const type of ['SandstormDjinn', 'ThunderRoc']) for (const quality of ['hig
             system.entityGroup.add(...groups);
             system.setZoom(quality === 'low' ? 32 : 16);
             system.setCameraTarget(offset.clone().add(new THREE.Vector3(0, 1, 0)));
+            system.applyLightingPreset(system.getRealmForPosition(offset), true);
             system.updateEnvironmentLighting(offset, 0);
+            const lightingRealm = system.currentRealm;
             const gl = system.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
             const renderer = debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
             const factoryModels = models.filter(m => m.variant === 1).map(({ root }) => ({
@@ -46,7 +48,7 @@ for (const type of ['SandstormDjinn', 'ThunderRoc']) for (const quality of ['hig
             const difference = (a, b) => {
                 let total = 0, changed = 0, exactChanges = 0, maximumChannelError = 0;
                 for (let i = 0; i < a.length; i += 4) {
-                    const delta = Math.max(...[0, 1, 2].map(c => Math.abs(a[i + c] - b[i + c])));
+                    const delta = Math.max(Math.abs(a[i] - b[i]), Math.abs(a[i + 1] - b[i + 1]), Math.abs(a[i + 2] - b[i + 2]));
                     total += delta; changed += Number(delta > 8); exactChanges += Number(delta > 0);
                     maximumChannelError = Math.max(maximumChannelError, delta);
                 }
@@ -74,13 +76,14 @@ for (const type of ['SandstormDjinn', 'ThunderRoc']) for (const quality of ['hig
                     mixers.forEach((mixer, i) => { mixer.stopAllAction(); mixer.uncacheRoot(models[i].root); });
                 }
             } finally { system.dispose(); canvasRetired = !canvas.isConnected; }
-            return { rows, images, canvasRetired, renderer, quality: system.graphicsQuality, factoryModels };
+            return { rows, images, canvasRetired, renderer, quality: system.graphicsQuality, lightingRealm, factoryModels };
         }, { type, quality });
         for (const entry of evidence.images) await writeFile(testInfo.outputPath(entry.name), Buffer.from(entry.data, 'base64'));
         delete evidence.images;
         await writeFile(testInfo.outputPath('elemental-rigid-parts.json'), JSON.stringify(evidence, null, 2));
         expect(evidence.rows).toHaveLength(30);
         expect(evidence.quality).toBe(quality);
+        expect(evidence.lightingRealm).toBe(type === 'SandstormDjinn' ? 'fire' : 'air');
         expect(evidence.factoryModels).toHaveLength(4);
         for (const model of evidence.factoryModels) {
             expect(model.type).toBe(type); expect(model.fallback).toBe(false);
