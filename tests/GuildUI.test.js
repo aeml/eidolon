@@ -212,3 +212,73 @@ describe('GuildUI', () => {
         expect(ui.onDisband).not.toHaveBeenCalled();
     });
 });
+
+
+describe('guild menu continuity through live updates', () => {
+    const guild = { id: 'g1', name: 'Wardens', tag: 'WARD', motd: 'Gather at the east gate.',
+        permissions: { invite: true, manage_motd: true, manage_events: true },
+        members: [{ playerId: 'player-Alice', username: 'Alice', rank: 'leader', online: true }],
+        bank: { gold: 100, items: [] }, events: [], activities: [{ id: 'verdant', name: 'Verdant Bastion' }] };
+    beforeEach(() => { sessionStorage.clear(); document.body.replaceChildren(); });
+    test('roster and leaderboard responses preserve invite/message drafts, caret and reading position without sending actions', () => {
+        const { ui, container } = createUI({ id: 'player-Alice', name: 'Alice', inventory: [] });
+        ui.onInvite = jest.fn(); ui.onSetMOTD = jest.fn(); ui.update({ guild });
+        container.querySelector('[data-guild-invite]').value = 'Bob';
+        const message = container.querySelector('[data-guild-motd]');
+        message.value = 'Bring your dungeon key.'; message.focus(); message.setSelectionRange(6, 10);
+        container.scrollTop = 123;
+        const replace = container.replaceChildren.bind(container);
+        const mutation = jest.spyOn(container, 'replaceChildren').mockImplementation((...nodes) => { replace(...nodes); container.scrollTop = 0; });
+        ui.update({ guild: { ...guild, members: [...guild.members, { username: 'Bob', rank: 'member' }] } });
+        expect(container.querySelector('[data-guild-invite]').value).toBe('Bob');
+        expect(document.activeElement).toBe(container.querySelector('[data-guild-motd]'));
+        expect(document.activeElement.value).toBe('Bring your dungeon key.');
+        expect(document.activeElement.selectionStart).toBe(6); expect(document.activeElement.selectionEnd).toBe(10);
+        expect(container.scrollTop).toBe(123);
+        container.querySelector('[data-guild-leaderboard-dungeon]').value = 'abyssal_well';
+        ui.updateLeaderboard({ season: 'Autumn', runs: [] });
+        expect(container.querySelector('[data-guild-leaderboard-dungeon]').value).toBe('abyssal_well');
+        expect(container.querySelector('[data-guild-motd]').value).toBe('Bring your dungeon key.');
+        expect(ui.onInvite).not.toHaveBeenCalled(); expect(ui.onSetMOTD).not.toHaveBeenCalled(); mutation.mockRestore();
+    });
+    test('untouched messages follow authoritative changes while an intentionally empty edit remains a draft', () => {
+        const { ui, container } = createUI({ id: 'player-Alice', inventory: [] }); ui.update({ guild });
+        ui.update({ guild: { ...guild, motd: 'The raid starts at dusk.' } });
+        expect(container.querySelector('[data-guild-motd]').value).toBe('The raid starts at dusk.');
+        container.querySelector('[data-guild-motd]').value = '';
+        ui.update({ guild: { ...guild, motd: 'Another officer changed the message.' } });
+        expect(container.querySelector('[data-guild-motd]').value).toBe('');
+    });
+    test('incoming invitations preserve an unsubmitted enrollment draft, then joining clears it', () => {
+        const { ui, container } = createUI({ id: 'player-Alice', inventory: [] });
+        container.querySelector('[data-guild-name]').value = 'Night Watch';
+        container.querySelector('[data-guild-tag]').value = 'NW';
+        ui.update({ invites: [{ guildId: 'g2', guildName: 'Visitors', guildTag: 'VIS' }] });
+        expect(container.querySelector('[data-guild-name]').value).toBe('Night Watch');
+        expect(container.querySelector('[data-guild-tag]').value).toBe('NW');
+        ui.update({ guild }); ui.update({ guild: null });
+        expect(container.querySelector('[data-guild-name]').value).toBe('');
+    });
+    test('calendar input keeps focus through roster updates and all drafts clear across character or guild changes', () => {
+        const player = { id: 'player-Alice', inventory: [] };
+        const { ui, container } = createUI(player); ui.update({ guild });
+        ui.events.editor.open = true; ui.events.title.value = 'Evening expedition'; ui.events.title.focus();
+        ui.update({ guild }); expect(document.activeElement).toBe(ui.events.title); expect(ui.events.title.value).toBe('Evening expedition');
+        container.querySelector('[data-guild-invite]').value = 'Bob';
+        player.id = 'player-Eve'; ui.update({ guild });
+        expect(ui.events.title.value).toBe(''); expect(ui.events.editor.open).toBe(false);
+        expect(container.querySelector('[data-guild-invite]').value).toBe('');
+        container.querySelector('[data-guild-invite]').value = 'Charlie';
+        ui.update({ guild: { ...guild, id: 'g2' } });
+        expect(container.querySelector('[data-guild-invite]').value).toBe('');
+    });
+    test('permission loss retires draft controls and a destructive confirmation keeps its own focus', () => {
+        const { ui, container } = createUI({ id: 'player-Alice', inventory: [] }); ui.update({ guild });
+        const input = container.querySelector('[data-guild-invite]'); input.value = 'Bob'; input.focus();
+        ui.update({ guild: { ...guild, permissions: {} } });
+        expect(container.querySelector('[data-guild-invite]')).toBeNull(); expect(document.activeElement).not.toBe(input);
+        ui.update({ guild }); container.querySelector('[data-guild-invite]').focus();
+        ui.confirmAction('Leave Guild', 'Are you sure?', jest.fn());
+        expect(document.activeElement.textContent).toBe('Confirm Leave Guild');
+    });
+});
