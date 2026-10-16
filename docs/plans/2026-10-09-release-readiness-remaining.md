@@ -36,6 +36,25 @@ limits. Original performance, broader art/game/readiness and owner gates stay op
 Installed-host TLS/logging activation needs an administrator. Human pacing,
 physical-phone feedback and soak/stress remain deferred. Full original goal active.
 
+## Qualified local source awaiting the next milestone
+
+Local master `eafff6770` contains two qualified corrections beyond public65:
+
+- QA waypoints reject dead/zero-health characters before mutation. Existing
+  bounded preparation now precedes peer invitations after ordinary travel.
+  Counter/race checks and the complete normal Water/native party/save fixture
+  pass. [Lifecycle qualification](2026-10-16-qa-waypoint-lifecycle.md).
+- Flat party and PvP markers retain exact High/Low pixels from both sides while
+  saving one draw per ring. Actual four-class party comparisons eliminate their
+  recurring version invalidations; CPU windows overlap, without a whole-scene
+  speedup claim. 60 focused/routing checks, full lint, two native component cases
+  and the native Go-race/save comparison pass. [Marker qualification](2026-10-16-flat-party-ring-qualification.md).
+
+These changes are merged locally, not pushed/deployed as a new release. Keep
+publication coherent and synchronize versions/cumulative notes before pushing.
+Public65 remains accepted at `9b7419700`. Original performance, final art/device,
+owner/beta/cohort and full-game gates stay open; soak/stress remains deferred.
+
 ## Alpha 1.79.64: deployed and verified within scoped acceptance
 
 Alpha 1.79.64 at `50983561a` is deployed and verified within the bonded
