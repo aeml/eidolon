@@ -22,19 +22,19 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
-## Alpha 1.79.65: prepared, not yet deployed
+## Alpha 1.79.65: deployed and verified within scoped acceptance
 
-Alpha 1.79.65 is prepared, not yet deployed: constructed Abyssal quay stones,
-linked moorings with grounded wall/floor fittings, sculpted shell crowns and
-ordinary-input Water road integration with actual equipped character/HUD.
-[Construction qualification](2026-10-16-abyssal-quay-qualification.md),
-[normal Water movement](2026-10-16-water-normal-movement.md).
-Accepted public64 remains at `50983561a`; source preparation is not deployment.
-A separate fresh post-route High-party sample records33.3/49.9ms, above the
-retained20/33.4ms frame limits. Original route/cold/device/performance findings,
-broader art/game/readiness and owner gates stay open. Installed-host TLS/logging
-activation needs an administrator. Human pacing, physical-phone feedback and
-soak/stress remain deferred. The full original goal remains active.
+Alpha 1.79.65 at `9b7419700` is deployed and verified within the Abyssal
+quay, grounded moorings, shell crowns and ordinary-input Water integration scope.
+All ten CI jobs pass: 787 client suites / 12,054 tests, 451 hosted browser
+passes / 13 skips, 92 native passes / one skip and first-attempt live/recovery/party
+checks. Normal-TLS 363 asset pins, both identities, ready database, open registration,
+flat terrain and analytics match at 2026-10-16T17:29:43.935838+00:00.
+[Acceptance](2026-10-16-release1-79-65-acceptance.md).
+The separate High-party 33.3/49.9 ms frame finding remains above retained 20/33.4 ms
+limits. Original performance, broader art/game/readiness and owner gates stay open.
+Installed-host TLS/logging activation needs an administrator. Human pacing,
+physical-phone feedback and soak/stress remain deferred. Full original goal active.
 
 ## Alpha 1.79.64: deployed and verified within scoped acceptance
 

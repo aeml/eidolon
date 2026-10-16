@@ -2100,3 +2100,14 @@ limits. That functional/art evidence does not clear FPS, original cold/device/
 whole-world findings or any full-game/owner/readiness gate. Full original goal
 active; human pacing/physical-phone feedback and soak/stress remain deferred.
 No beta, access, policy, value or installed-host TLS/logging activation is claimed.
+
+
+## October 16 Alpha 1.79.65 scoped acceptance
+
+Exact `9b74197009846151245c882bb335f3e8c6ffe8a4` / [CI](https://github.com/aeml/eidolon/actions/runs/38932741970) passes all ten ordered jobs and live checks.
+Normal-TLS checks of 363 pins, identities, ready database, open registration, flat terrain and analytics match at 2026-10-16T17:29:43.935838+00:00.
+Abyssal construction and ordinary-input Water integration are accepted within
+scope. The post-route High-party 33.3/49.9 ms finding and all original performance,
+art/game/readiness/owner/F1–F5/beta/cohort/1.99 gates remain open. Full original
+goal active; human pacing/physical-phone feedback and soak/stress deferred.
+[Acceptance](docs/plans/2026-10-16-release1-79-65-acceptance.md).
