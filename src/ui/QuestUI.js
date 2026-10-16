@@ -1261,8 +1261,9 @@ export class QuestUI {
         const restoreReading = () => {
             this.applyJournalView();
             if (this.journalView === 'lore' && loreFocus) {
-                const replacement = loreFocus.dataset.loreAction && [...this.loreBook.element.querySelectorAll('[data-lore-action]')]
-                    .find(button => button.dataset.loreAction === loreFocus.dataset.loreAction);
+                const key = loreFocus.dataset.loreAction ? 'loreAction' : loreFocus.dataset.memoryId ? 'memoryId' : null;
+                const replacement = key && [...this.loreBook.element.querySelectorAll('button')]
+                    .find(button => button.dataset[key] === loreFocus.dataset[key]);
                 (loreFocus.isConnected ? loreFocus : replacement)?.focus({ preventScroll: true });
             }
             if (recapFocused && existingRecap?.isConnected) existingRecap.firstElementChild.focus({ preventScroll: true });

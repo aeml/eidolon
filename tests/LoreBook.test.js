@@ -180,4 +180,23 @@ describe('journal lore reading', () => {
         expect([...ui.trackedQuestKeys]).toEqual(preferences); expect(JSON.stringify(player.quests)).toBe(before);
         expect(ui.onAcceptQuest).not.toHaveBeenCalled(); expect(ui.onCompleteQuest).not.toHaveBeenCalled();
     });
+
+    test('a newly earned memory retains keyboard focus on the existing recorded-memory navigation button', () => {
+        const book = ui.loreBook, old = book.index.querySelector('button'), id = old.dataset.memoryId;
+        const replace = book.index.replaceChildren.bind(book.index);
+        // jsdom has no layout; reproduce the browser's lost scroll range while
+        // replacing a long navigation list, then require its saved restoration.
+        const mutation = jest.spyOn(book.index, 'replaceChildren').mockImplementation((...nodes) => {
+            replace(...nodes); book.index.scrollTop = 0;
+        });
+        old.focus(); book.index.scrollTop = 123;
+        player.quests.push({ id: 'chronicle_02_second_note', category: 'chronicle', chapter: 2,
+            title: 'The second note', accepted: true, completed: true, lore: 'Another promise remembered.' });
+        const before = JSON.stringify(player.quests); ui.updateJournal(player.quests);
+        expect(document.activeElement.dataset.memoryId).toBe(id); expect(document.activeElement).not.toBe(old);
+        expect(book.index.scrollTop).toBe(123); mutation.mockRestore();
+        expect(book.index.children).toHaveLength(3);
+        expect(JSON.stringify(player.quests)).toBe(before);
+        expect(ui.onAcceptQuest).not.toHaveBeenCalled(); expect(ui.onCompleteQuest).not.toHaveBeenCalled();
+    });
 });

@@ -123,6 +123,21 @@ for (const [width, mobile] of [[1280, false], [390, true]]) test.describe(`Retur
         });
         await expect(patrol).toBeFocused(); await expect(patrol).toContainText('Ready to turn in');
         await page.screenshot({ path: testInfo.outputPath('returning-story-and-tasks.png') });
+        const navigation = book.getByRole('navigation', { name: 'Recorded memories' });
+        const record = navigation.getByRole('button').last();
+        await record.scrollIntoViewIfNeeded(); await record.focus();
+        const memory = await record.getAttribute('data-memory-id');
+        const indexScroll = await navigation.evaluate(node => node.scrollTop);
+        expect(indexScroll).toBeGreaterThan(0);
+        await page.evaluate(() => {
+            const { ui, quests } = window.__returningLore;
+            quests.push({ id: 'chronicle_01_bell_below', category: 'chronicle', chapter: 1, completed: true,
+                accepted: true, title: 'The Bell Below', lore: 'A personally recovered opening account.' });
+            ui.quest.updateJournal(quests); window.__returningLore.saved = JSON.stringify(quests);
+        });
+        expect(await page.evaluate(() => document.activeElement.dataset.memoryId)).toBe(memory);
+        expect(await navigation.evaluate(node => node.scrollTop)).toBeCloseTo(indexScroll, 0);
+        await patrol.scrollIntoViewIfNeeded(); await patrol.focus();
         if (mobile) await patrol.tap(); else await page.keyboard.press('Enter');
         await expect(page.locator('[data-journal-view="contracts"]')).toHaveAttribute('aria-pressed', 'true');
         await expect(page.locator('[data-quest-track="daily_patrol"]')).toBeFocused();

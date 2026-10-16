@@ -87,12 +87,13 @@ export class LoreBook {
     }
 
     update(quests, identity) {
-        if (identity !== this.identity || !this.model) {
+        const sameReader = identity === this.identity && Boolean(this.model);
+        if (!sameReader) {
             this.identity = identity; this.search.value = ''; this.category = 'all'; this.selected = null;
             this.indexSignature = this.pageSignature = this.overviewSignature = null;
         }
         this.model = buildLoreBook(quests);
-        this.renderOverview(); this.renderLibrary();
+        this.renderOverview(); this.renderLibrary({ preserveIndexScroll: sameReader });
     }
 
     renderOverview() {
@@ -143,7 +144,7 @@ export class LoreBook {
         this.overview.replaceChildren(now, summary);
     }
 
-    renderLibrary() {
+    renderLibrary({ preserveIndexScroll = false } = {}) {
         if (!this.model) return;
         const query = this.search.value.trim().toLocaleLowerCase();
         const matches = this.model.entries.filter(entry => (this.category === 'all' || entry.kind === this.category)
@@ -154,6 +155,7 @@ export class LoreBook {
         const signature = JSON.stringify(matches.map(entry => [entry.id, entry.title, entry.context]));
         if (signature !== this.indexSignature) {
             this.indexSignature = signature;
+            const scroll = preserveIndexScroll ? this.index.scrollTop : 0;
             this.index.replaceChildren(...matches.map(entry => {
                 const button = node('button'); button.type = 'button'; button.dataset.memoryId = entry.id;
                 button.append(node('span', entry.kind === 'chapters' ? 'CHAPTER' : 'DISCOVERY', 'lore-book__eyebrow'),
@@ -165,6 +167,7 @@ export class LoreBook {
                 };
                 return button;
             }));
+            this.index.scrollTop = scroll;
         }
         for (const button of this.index.children) button.setAttribute('aria-current', String(button.dataset.memoryId === this.selected));
         const entry = matches.find(entry => entry.id === this.selected);

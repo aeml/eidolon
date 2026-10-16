@@ -1,13 +1,13 @@
 {
-  "date": "2026-10-16T00:52:04.956637+00:00",
+  "date": "2026-10-16T01:13:10.046681+00:00",
   "base": "4f5b2e57fbe2112cea68e0da10fc288ad5c85b47",
   "state": "Isolated and UNSELECTED pending native desktop/phone presentation, input and focus review. Not merged into master or deployed.",
-  "scope": "Lore Book distinguishes personally claimed finale, recaps earlier roads in past tense after Nexus/finale, and shows up to three other personally accepted tasks with objective/progress and correct-journal links. More tasks remain accessible through Review all quests. Reading/quest state and manual acceptance/claim rules remain unchanged. Personally tracked accepted contracts sort first without changing preferences or receipts.",
+  "scope": "Lore Book distinguishes personally claimed finale, recaps earlier roads in past tense after Nexus/finale, and shows up to three other personally accepted tasks with objective/progress and correct-journal links. More tasks remain accessible through Review all quests. Reading/quest state and manual acceptance/claim rules remain unchanged. Personally tracked accepted contracts sort first without changing preferences or receipts. Same-reader new memories preserve the recorded-memory index scroll and semantic navigation focus. New readers and changed filters retain fresh-list behavior.",
   "validation": {
-    "focused": "142distinct checks across7suites pass: prior141 plus tracked-task ordering/immutability regression. Final LoreBook/journal rerun22checks passes.",
+    "focused": "143distinct checks across7suites pass. Final four-suite reading/navigation/coherence/conversation rerun61checks passes; unchanged mobile/Chronicle/tracker evidence retained.",
     "lint": "All changed runtime/client tests and final native fixture pass scoped lint.",
     "native": "Four existing/expanded book cases prepared, not executed while ordered58CI is active. Covers desktop/phone mid-story reading plus prepared fresh/returning/finale/optional-catch-up/contract state, linked navigation, unchanged progress and semantic focus after actual refresh. No earned campaign/pacing or physical-device acceptance claimed.",
-    "retainedFailures": "Initial focused run caught a real overview focus loss: parent QuestUI clears/detaches the book before child render can capture active focus. Parent now restores the replacement action by semantic ID. Existing conversation fixture counted all hidden Lore Book title occurrences as contract rows; updated to assert the exact26unique contract tracking IDs instead. Original two failures retained; corrected all54pass."
+    "retainedFailures": "Initial focused run caught a real overview focus loss: parent QuestUI clears/detaches the book before child render can capture active focus. Parent now restores the replacement action by semantic ID. Existing conversation fixture counted all hidden Lore Book title occurrences as contract rows; updated to assert the exact26unique contract tracking IDs instead. Original two failures retained; corrected all54pass. Added memory-index regression reproduces lost scroll123\u21920 before the fix. Same-reader index updates now restore it; native desktop/phone index-scroll validation is prepared, not yet executed."
   },
   "limits": "No publication selection before native review. Full quest/menu usability and owner review remain open alongside original art/device/performance/audio/operations/F1\u2013F5/beta/release gates. Soak/stress stays deferred; full goal active.",
   "evidenceRoot": "/home/aeml/.local/share/eidolon-lore-task-context-20261016",
@@ -54,6 +54,31 @@
     },
     {
       "path": ".qa-lore-task-context/tracked-task-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-lore-task-context/memory-focus-focused.log",
+      "bytes": 579,
+      "sha256": "84f754ec33f94b25bf2addc23bfbb17b8f47f3e084869e6f60a9b6fc85d5937f"
+    },
+    {
+      "path": ".qa-lore-task-context/memory-focus-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-lore-task-context/index-scroll-before-fix.log",
+      "bytes": 1461,
+      "sha256": "53cc9fd3891d9a7356de2363010367c7881f5ba553ba826988146b730c6942a7"
+    },
+    {
+      "path": ".qa-lore-task-context/final-reading-focused.log",
+      "bytes": 716,
+      "sha256": "b4f8a81bd91ae79e4191ce8abb4a93e2d05a896d1b59ae9b8f027be151853ea6"
+    },
+    {
+      "path": ".qa-lore-task-context/final-reading-lint.log",
       "bytes": 0,
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
