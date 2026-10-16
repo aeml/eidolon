@@ -28,6 +28,13 @@ func TestTerrainActualEquippedBrowserParty(t *testing.T) {
 	if quality != "high" && quality != "low" {
 		t.Fatal("requires explicit high or low party quality")
 	}
+	profile := os.Getenv("EIDOLON_TERRAIN_PARTY_PROFILE")
+	if profile == "" {
+		profile = game.RaisedEarthTerrainProfile
+	}
+	if profile != game.FlatTerrainProfile && profile != game.RaisedEarthTerrainProfile {
+		t.Fatal("party fixture requires flat-v1 or earth-elevation-rocks-v1 terrain")
+	}
 	mode := os.Getenv("EIDOLON_TERRAIN_PARTY_RENDER_MODE")
 	if mode != "four-browser" && mode != "single-renderer" {
 		t.Fatal("requires explicit four-browser or single-renderer scope")
@@ -68,7 +75,7 @@ func TestTerrainActualEquippedBrowserParty(t *testing.T) {
 		t.Fatal("cannot encode isolated browser accounts")
 	}
 	address, stop := compatStartServer(t, binary, uri, 1879, "-save-journal-dir", t.TempDir(),
-		"-terrain-profile", game.RaisedEarthTerrainProfile, "-qa-usernames", strings.Join(names, ","))
+		"-terrain-profile", profile, "-qa-usernames", strings.Join(names, ","))
 	root, err := filepath.Abs("..")
 	if err != nil {
 		t.Fatal(err)
@@ -83,7 +90,7 @@ func TestTerrainActualEquippedBrowserParty(t *testing.T) {
 		"EIDOLON_E2E_USERNAME="+accounts[0].Username, "EIDOLON_E2E_PASSWORD="+accounts[0].Password,
 		"EIDOLON_E2E_REGISTER=0", "EIDOLON_E2E_BROWSER_PATH=/usr/bin/google-chrome",
 		"EIDOLON_E2E_WEB_PORT=4190", "EIDOLON_E2E_BASE_URL=http://127.0.0.1:4190", "EIDOLON_E2E_REUSE_SERVER=0",
-		"EIDOLON_E2E_WS_URL=ws://"+address+"/ws", "EIDOLON_E2E_TERRAIN_PROFILE="+game.RaisedEarthTerrainProfile,
+		"EIDOLON_E2E_WS_URL=ws://"+address+"/ws", "EIDOLON_E2E_TERRAIN_PROFILE="+profile,
 		"EIDOLON_E2E_BACKEND_ORIGIN_IP=", "EIDOLON_E2E_HEADLESS=1", "CI=", "PLAYWRIGHT_NO_COPY_PROMPT=1")
 	log, err := os.OpenFile(filepath.Join(evidence, "browser.log"), os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
 	if err != nil {
@@ -106,5 +113,5 @@ func TestTerrainActualEquippedBrowserParty(t *testing.T) {
 			t.Fatal("fresh connected-party save lost its membership, gear, bag or EP", err)
 		}
 	}
-	t.Logf("actual four-class %s party mode=%s and preserved fourteen-slot saves passed; owned evidence=%s", quality, mode, evidence)
+	t.Logf("actual four-class %s party mode=%s profile=%s and preserved fourteen-slot saves passed; owned evidence=%s", quality, mode, profile, evidence)
 }
