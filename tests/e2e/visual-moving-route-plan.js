@@ -37,8 +37,11 @@ export function visualMovingRoutePlan(realm = 'earth') {
             ['air-passage', 'air-road', 'aerie-turn', 'sky-road', 'spire-crossing', 'tempest-approach'];
         if (labels.length !== road.points.length) throw new Error('Elemental visual route labels must cover every authored road waypoint');
         const bypass = EARTH_PATHS.find(path => path.id === 'bastion-bypass');
-        const start = fire ? [['north-court', 0, 186], ['west-court', -60, 186], ['west-street', -60, 200],
-            ['west-gate', -120, 200], ['earth-west-road', -600, 200]] :
+        // The direct west chord at z186 crosses the rotated auction hall.
+        // Follow the existing paved service route south of the forge, then
+        // cross the centre of the west gate; retain every physical collider.
+        const start = fire ? [['south-court', 0, 219], ['west-service-lane', -13, 227], ['west-court', -40, 229],
+            ['forge-west-lane', -48, 218], ['west-inner-gate', -100, 200], ['west-gate', -120, 200], ['earth-west-road', -600, 200]] :
             [['north-court', 0, 186], ['market-pass', 60, 186], ['east-street', 60, 200],
                 ['east-gate', 120, 200], ['earth-road', 240, 200],
                 ...bypass.points.slice(0, -1).map(([x, z], i) => [`bastion-bypass-${i}`, x, z])];

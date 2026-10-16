@@ -3,6 +3,9 @@ import { visualMovingRoutePlan } from './e2e/visual-moving-route-plan.js';
 import { WATER_PATHS, WATER_LOCATIONS, FIRE_PATHS, FIRE_LOCATIONS, AIR_PATHS, AIR_LOCATIONS } from '../src/data/elementalPopulation.js';
 import { EARTH_PATHS } from '../src/data/worldPopulation.js';
 import { DUNGEON_ENTRANCE_DEFINITIONS } from '../src/data/dungeonEntrances.js';
+import * as THREE from 'three';
+import { CollisionManager } from '../src/core/CollisionManager.js';
+import { getLanternholdWalkCollider } from '../src/art/ProceduralLanternholdArchitecture.js';
 
 test('default visual route preserves the previously qualified Earth path and capture scope', () => {
     const route = visualMovingRoutePlan();
@@ -51,6 +54,32 @@ test('Air uses every Bastion bypass chord outside the live entrance collision ci
     for (let i = 1; i < bypass.points.length; i++) for (let j = 0; j <= 100; j++) {
         const a = bypass.points[i - 1], b = bypass.points[i], x = a[0] + (b[0] - a[0]) * j / 100, z = a[1] + (b[1] - a[1]) * j / 100;
         expect(Math.hypot(x - definition.position[0], z - definition.position[2])).toBeGreaterThan(definition.interactionRadius + 1.25);
+    }
+});
+
+test('Fire leaves through the south service route instead of crossing the actual auction-hall footprint', () => {
+    const collision = new CollisionManager();
+    // Current authoritative town placements. Use the production rotated
+    // wall/hearth footprints rather than roof/sign picking bounds.
+    for (const [structureId, x, z, rotation] of [['trading_house', -22, 185, Math.PI / 4],
+        ['blacksmith', -30, 200, Math.PI / 2], ['stash', -28, 210, 0], ['forge', -28, 218, 0]]) {
+        const root = new THREE.Group(); root.userData.structureId = structureId;
+        root.position.set(x, 0, z); root.rotation.y = rotation;
+        collision.addOrientedCollider(getLanternholdWalkCollider(root));
+    }
+    const clear = (a, b) => {
+        const steps = Math.ceil(a.distanceTo(b) / .25); let previous = a;
+        for (let i = 1; i <= steps; i++) {
+            const point = a.clone().lerp(b, i / steps), corrected = collision.checkCollision(point, 1.25, previous);
+            if (corrected && corrected.distanceTo(point) > .00001) return false;
+            previous = point;
+        }
+        return true;
+    };
+    expect(clear(new THREE.Vector3(-12.0485, 0, 185.9843), new THREE.Vector3(-24.0485, 0, 185.9883))).toBe(false);
+    const route = visualMovingRoutePlan('fire'); let previous = new THREE.Vector3(-1.25, 0, 200);
+    for (const [, x, z] of route.waypoints.slice(0, 6)) {
+        const point = new THREE.Vector3(x, 0, z); expect(clear(previous, point)).toBe(true); previous = point;
     }
 });
 
