@@ -227,6 +227,23 @@ service-menu polish remain isolated pending native qualification. Their CPU/
 structural checks are preparation, not deployed collection-wide art acceptance.
 The full goal, original gates, deferred playtests and soak policy remain unchanged.
 
+## Alpha 1.79.58: selected and prepared, not deployed
+
+All seven remaining universal outfits now qualify alongside the prior eleven
+looks, completing implementation of the minimum18modeled collection. Eight
+universal designs retain all four fits/High/Low and no class/calendar restrictions.
+Veyra search/categories and reply scroll/focus, coordinated service framing,
+readable tabs/trade controls and remembered layout behavior qualify in42distinct
+native cases.292distinct focused checks, current24-entry server custody, full
+lint and exact content/model/source validation pass. Initial spring petal flicker,
+Low mask export defects and fixture failures remain retained with corrections.
+[Qualification](2026-10-16-universal-garment-qualification.json).
+
+These changes are ordinarily merged into master for58publication after57acceptance.
+Final owner collection art, broader quest/menu/world/audio/device/performance,
+operations, owner/F1–F5/beta/release gates and deferred playtests remain open.
+No soak/stress or complete-game-readiness claim is made.
+
 ## Outstanding requirements and next evidence
 
 All rows below are open at the full requirement's scope, even where substantial

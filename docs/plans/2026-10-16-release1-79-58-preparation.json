@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-16T00:30:37.690690+00:00",
+  "qualifiedSelection": "df9debb874b4be38f1c96801b5309510e45e0b42",
+  "version": "Alpha 1.79.58",
+  "state": "Selected, merged into master and prepared for ordinary publication after accepted57. Not deployed or accepted yet.",
+  "scope": "Seven remaining universal full-outfit models complete the minimum eighteen-look catalog with accepted57. Search/category/result count and preserved store scroll/focus; coordinated stash/forge/trade service frames, active tabs and readable Gold/offer controls. Preserve actual gear/stats, independent hands, prices, ownership and access.",
+  "validation": {
+    "client": "684distinct focused checks across14suites pass:292component/model/vendor/menu/layout checks plus392current version/note checks. Final changed geometry/vendor/model-audit cases have explicit passing reruns.",
+    "models": "All108current body/held GLBs retain byte-matched official zero-error/zero-warning evidence. All52predecessor models remain exact. Final12body outfits/four fits/High/Low deterministic generation--check passes on master without rewriting. All sixteen generated groups have passing evidence with changed garment group requalified.",
+    "native": "42distinct cases have passing evidence across initial42, corrected eight affected Rose/Spring and final two full-catalog filter/scroll/focus cases. Original350/250kHigh and200/85kLow budgets unchanged;27poses/90Run frames and3strictresource cycles per party case. Twelve service/layout cases include desktop/phone input/acknowledgements/window memory.",
+    "server": "Current24-entry catalog/wardrobe/vendor/handler/save-replication focused checks pass; no production purchases or live access changes.",
+    "lint": "Full lint passes after final geometry/runtime changes; last fixture-only ID correction has scoped passing lint.",
+    "notes": "All492prior entries retained byte-exact within493cumulative notes. Login/frontend/backend/container/deploy/isolated-QA version defaults synchronized.",
+    "retainedFailures": "Initial Low mask loops, count/fixture mistakes and a spring petal flicker found visually despite test passes are retained in component receipts. Corrected outward layered fan/rose leaves, exact committed garment ID and real native scroll/focus checks qualify final source. No threshold relaxed."
+  },
+  "limits": "Final owner collection art, broader quest/menu/world/audio/device/performance, original operations/owner/F1\u2013F5/beta/release gates and deferred campaign/phone feedback remain open. No soak/stress, beta declaration or full-goal completion.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-master-20261011",
+  "evidence": [
+    {
+      "path": ".qa-release58/final-garment-generation.log",
+      "bytes": 6612,
+      "sha256": "409cba135b52facd8d8648bf64dcf9d88f5f0ac9086bf852763030ddd0406712"
+    },
+    {
+      "path": ".qa-release58/version-notes-focused.log",
+      "bytes": 584,
+      "sha256": "afbf2fccd8ff7fe76ea98a3a1bcc037d3dbda9c8597ff3644133b74684bc111c"
+    },
+    {
+      "path": ".qa-release58/patch-history.json",
+      "bytes": 181,
+      "sha256": "02e412788f08ca0e7190f0cb18b9ee73d7118cddf801356d54be73f884b287b8"
+    },
+    {
+      "path": "docs/plans/2026-10-16-universal-garment-qualification.json",
+      "bytes": 100978,
+      "sha256": "edd4dc6fa11060647abbec604ebb98a694ac878be556227161b4b5bb26632e5e"
+    }
+  ]
+}

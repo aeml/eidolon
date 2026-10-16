@@ -2,7 +2,8 @@
 
 Owner requirement added October 15, 2026. **Required before beta; full scope
 remains open.** The pipeline and eleven modeled looks are deployed/verified in
-Alpha1.79.57; seven universal candidates still await native qualification. Final
+Alpha1.79.57; seven universal additions now qualify and are selected on master
+forAlpha1.79.58, pending publication. Final
 collection art approval remains open. This expands the original cosmetic scope.
 The existing vendor, unlocks and per-slot appearance pipeline are foundations,
 not evidence that this new requirement is complete.

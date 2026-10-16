@@ -3,7 +3,8 @@
 Owner requirement added October 15, 2026. **Required before beta; full review open.**
 Quest/Lore Book improvements, durable window layouts/reset and the first
 character/bag/merchant polish slice are deployed/verified throughAlpha1.79.57.
-Related service-window refinements remain isolated for native review. Improve
+Related service-window refinements now qualify and are selected forAlpha1.79.58
+pending publication. Improve
 the whole quest experience and bring game menus up to the visual quality of the
 improved world. Existing functionality is a foundation, not final acceptance.
 
