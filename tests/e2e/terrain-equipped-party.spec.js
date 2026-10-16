@@ -26,7 +26,7 @@ import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { profileGameplayScene } from './scene-performance.js';
 import { profileWorldGpuTime } from './world-gpu-observation.js';
 import { comparePartyRingFrames } from './party-ring-comparison.js';
-import { compareBatchedMaterialFrames } from './batched-material-comparison.js';
+import { compareBatchedMaterialFrames, captureBatchedMaterialSubmissions } from './batched-material-comparison.js';
 import { summarizePartyCPUProfile } from './party-cpu-summary.js';
 import { captureUnderstoryPreparation } from './understory-preparation-diagnosis.js';
 import { captureUnderstoryDetailComparison } from './understory-detail-comparison.js';
@@ -780,6 +780,18 @@ test(`single native renderer observes three live equipped party socket peers on 
                 scope: 'Same connected normal four-class/three-peer scene; exact original fitted surfaces versus qualified attribute submissions. Full outfits preserved and live actors/AI/game clocks retained. No physical-device or busy-battle certificate.'
             }, null, 2), contentType: 'application/json' });
             console.log('[paired-fitted-surface-profile]', JSON.stringify(phases));
+        }
+        if (process.env.EIDOLON_TERRAIN_PARTY_MATERIAL_SUBMISSIONS === '1') {
+            const observation = await captureBatchedMaterialSubmissions(page);
+            await testInfo.attach('batched-material-submissions', { body: JSON.stringify(observation, null, 2), contentType: 'application/json' });
+            console.log('[batched-material-submissions]', JSON.stringify(observation));
+            expect(observation.restored.policy).toBe(true);
+            if (!observation.restored.initial) {
+                expect(observation.restored.active).toBe(0);
+                expect(observation.restored.created).toBe(observation.restored.retired);
+            }
+            expect(observation.rows.every(row => row.poseAndGeometryStable)).toBe(true);
+            expect(observation.rows.every(row => row.calls === observation.rows[0].calls && row.triangles === observation.rows[0].triangles)).toBe(true);
         }
         if (process.env.EIDOLON_TERRAIN_PARTY_MATERIAL_COMPARE === '1') {
             const comparison = await compareBatchedMaterialFrames(page);

@@ -39,3 +39,47 @@ export async function compareBatchedMaterialFrames(page) {
     }
     return { phases, restored, scope: 'Borrowed/owned/owned/borrowed policy within one current-source four-class scene; ordinary simulation and natural population/draw changes retained. Separate120worldcall metadata probes after180frame samples. No source/texture/geometry writes, visibility policy changes or original performance/device clearance.' };
 }
+
+export async function captureBatchedMaterialSubmissions(page) {
+    return page.evaluate(() => {
+        const game = window.game, system = game.renderSystem, owner = system.actorInstances?.multiDraw;
+        if (!owner?.materialVariantPool) throw new Error('Actual multi-draw owner required');
+        const initial = owner.materialVariants, identities = new WeakMap();
+        let next = 0;
+        const identity = object => {
+            if (!object) return 0;
+            if (!identities.has(object)) identities.set(object, ++next);
+            return identities.get(object);
+        };
+        const state = () => {
+            const actors = [];
+            for (const actor of game.activeEntitiesCache) {
+                const meshes = [];
+                actor.mesh?.traverse(node => meshes.push([identity(node), node.visible, identity(node.geometry),
+                    node.geometry?.attributes.position?.version, node.geometry?.index?.version, ...node.matrixWorld.elements]));
+                actors.push([identity(actor), ...actor.position.toArray(), meshes]);
+            }
+            return JSON.stringify([system.camera.matrixWorld.elements, system.camera.projectionMatrix.elements, actors]);
+        };
+        const rows = [];
+        let reference, restored;
+        try {
+            // All four submissions run synchronously in one browser task.
+            // No simulation/network update or pose write occurs between them.
+            for (const enabled of [false, true, true, false]) {
+                owner.materialVariants = enabled; system.render();
+                const current = state(); reference ??= current;
+                rows.push({ enabled, calls: system.renderer.info.render.calls, triangles: system.renderer.info.render.triangles,
+                    actorCount: game.activeEntitiesCache.length, poseAndGeometryStable: current === reference,
+                    activeVariants: owner.materialVariantPool.entries.size });
+            }
+        } finally {
+            owner.materialVariants = initial; system.render();
+            const pool = owner.materialVariantPool;
+            restored = { policy: owner.materialVariants === initial, initial, active: pool.entries.size,
+                created: pool.created, retired: pool.retired };
+        }
+        return { rows, restored,
+            scope: 'Four synchronous full-world render submissions at one camera/actor pose, without advancing simulation or writing actors. Internal pose/geometry identities are compared but never emitted. Count diagnostic only; render caches/uniforms update normally. This is not frame timing, performance acceptance or a frozen-world speedup.' };
+    });
+}
