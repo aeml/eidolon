@@ -576,6 +576,9 @@ sudo test ! -e /etc/nginx/sites-available/eidolonrealms.conf && \
 sudo test ! -L /etc/nginx/sites-available/eidolonrealms.conf && \
 sudo test ! -e /etc/nginx/sites-enabled/eidolonrealms.conf && \
 sudo test ! -L /etc/nginx/sites-enabled/eidolonrealms.conf && \
+sudo test ! -e /etc/nginx/conf.d/eidolon-delivery.conf && \
+sudo test ! -L /etc/nginx/conf.d/eidolon-delivery.conf && \
+sudo install -m 644 deploy/nginx/eidolon-delivery-http.conf /etc/nginx/conf.d/eidolon-delivery.conf && \
 sudo install -m 644 deploy/nginx/eidolonrealms-http.conf /etc/nginx/sites-available/eidolonrealms.conf && \
 sudo ln -s /etc/nginx/sites-available/eidolonrealms.conf /etc/nginx/sites-enabled/eidolonrealms.conf && \
 sudo nginx -t && \
@@ -586,7 +589,7 @@ sudo systemctl reload nginx && \
 sudo certbot renew --dry-run --cert-name play.eidolonrealms.com
 ```
 
-These commands deliberately stop if either target already exists. For the
+These commands deliberately stop if a site or named-format target already exists. For the
 current installed service, **do not reinstall or run that chain**. Inspect its
 existing configuration and use `sudo nginx -t`, `systemctl status certbot.timer`
 and an operator-approved
