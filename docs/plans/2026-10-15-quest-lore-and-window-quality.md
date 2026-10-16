@@ -5,7 +5,7 @@ Quest/Lore Book improvements, durable window layouts/reset and the first
 character/bag/merchant polish slice are deployed/verified throughAlpha1.79.57.
 Related service-window refinements are deployed in acceptedAlpha1.79.58.
 Returning Lore Book task/finale context and the centered garment row are deployed
-in acceptedAlpha1.79.59 and retained through accepted62. Improve
+in acceptedAlpha1.79.59 and retained through accepted63. Improve
 the whole quest experience and bring game menus up to the visual quality of the
 improved world. Existing functionality is a foundation, not final acceptance.
 
@@ -198,10 +198,16 @@ earned campaign or physical playtest receipt, and remains unselected.
 
 Quest conversations/tracker/Lore Book and durable window positions are delivered
 through55/56, service-menu polish through58, and returning earned-story/current-
-task context through59, retained in accepted62. [Character/lore qualification](2026-10-16-character-garment-row-qualification.md),
+task context through59, retained in accepted63. [Character/lore qualification](2026-10-16-character-garment-row-qualification.md),
 [accepted59](2026-10-16-release1-79-59-acceptance.md),
 [accepted58](2026-10-16-release1-79-58-acceptance.md).
 The earlier isolated/pending sections retain their original dated states; they
 do not override this delivery checkpoint. Final full UI/owner/physical-device
 review remains open. Phone garment-text preference support is delivered in accepted62.
 [Qualification](2026-10-16-garment-phone-text-qualification.md). Broader full-game gates remain active.
+
+
+Alpha 1.79.63 retains this delivered UI and verifies the real two-client wardrobe
+purchase/equipment/save workflow in mandatory native CI. Final full UI, owner
+and physical-device review remain open.
+[Current acceptance](2026-10-16-release1-79-63-acceptance.md).

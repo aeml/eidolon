@@ -2027,3 +2027,17 @@ No new game-power/accounts/schema/access change, beta, full-game/FPS/finalart
 claim or soak/stress. Full original goal remains active; owner-deferred human
 pacing/physical-phone feedback stays deferred. Continue implementation and
 ordered publication/deployment verification.
+
+
+## October 16 Alpha 1.79.63 scoped acceptance
+
+Exact `dc9e686b8` / CI 38893117224 passes all ten ordered jobs: 785 suites / 12,044 tests,
+451 browser / 13 skips, 89 native / one skip and first-attempt live/recovery/party.
+Fresh normal-TLS 362 pins / identities / ready DB / open / flat / analytics match at 2026-10-16T12:18:22.987413+00:00.
+Actual native two-client wardrobe purchase/gear/save coverage and query-free
+Pages delivery diagnostics are delivered within scoped acceptance. Installed
+host TLS/logging activation remains pending administrator; no complete F2/X10,
+original-route FPS, final art, beta or full-game claim. Isolated renderer pilots
+remain unselected. Full original goal active; human pacing/physical-phone
+feedback and soak/stress deferred.
+[Acceptance](docs/plans/2026-10-16-release1-79-63-acceptance.md).

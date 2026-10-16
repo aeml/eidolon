@@ -1,20 +1,18 @@
 # Eidolon Roadmap
 
-Alpha 1.79.63 is prepared, not yet deployed: actual native wardrobe UI/socket/
-returning-save coverage and mandatory predeployment enrollment, plus query-free
-Pages delivery diagnostics using existing upstream response IDs. No new header
-directive replaces inherited security headers.
-[Wardrobe qualification](docs/plans/2026-10-16-garment-rendered-session-qualification.md),
-[delivery qualification](docs/plans/2026-10-16-pages-delivery-diagnostics-qualification.json),
-[operator guide](docs/operations/pages-delivery-diagnostics.md).
-Accepted public62 remains at `8a4a5ca88`; source preparation is not deployment.
-Installed-host TLS/logging activation remains pending an administrator. Fresh
-current-source renderer diagnostics retain the performance work; no final art,
-whole-game/F2/beta claim. Human pacing/physical-phone feedback and soak/stress
-remain deferred. The full original goal stays active.
+Alpha 1.79.63 at `dc9e686b8` is deployed and verified within the actual native
+wardrobe and query-free Pages delivery-diagnostics scope. All ten CI jobs pass:
+785 client suites / 12,044 tests, 451 hosted browser passes / 13 skips, 89 native passes / one
+skip and first-attempt live/recovery/party passes. Fresh normal-TLS 362 asset pins,
+both identities, ready database, open registration and flat terrain match at 2026-10-16T12:18:22.987413+00:00.
+[Acceptance](docs/plans/2026-10-16-release1-79-63-acceptance.md).
+Installed-host TLS/logging activation remains pending an administrator; template
+publication does not change the live Nginx file. Earlier transport findings,
+original performance failures and full game/readiness gates remain open. Human
+pacing/physical-phone feedback and soak/stress remain deferred. Full goal active.
 
 
-October16 current accepted milestone: Alpha 1.79.62 at `8a4a5ca88` is deployed and verified within the Bastion
+October16 previous accepted milestone: Alpha 1.79.62 at `8a4a5ca88` is deployed and verified within the Bastion
 cap/root, phone garment text, saved-session wardrobe and secure-template scope.
 All ten CI jobs pass:785client suites/12044tests,451hosted browser passes/13skips,
 88native passes/one skip and first-attempt live/recovery/party passes. Fresh
