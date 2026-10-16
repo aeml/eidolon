@@ -548,16 +548,25 @@ for (const quality of ['high', 'low']) test(`published ${quality} ${type === 'Sk
                 constructors: actors.map(actor => actor.mesh.userData.humanoidRenderBatches), poses,
                 groups: multi?.entries.size || 0, extension: render.renderer.extensions.has('WEBGL_multi_draw'),
                 restored: !owner.hidden.length && !multi.hidden.length && !owner.group.visible && !multi.group.visible,
-                draws: render.renderer.info.render.calls };
+                draws: render.renderer.info.render.calls,
+                materialVariants: { enabled: multi.materialVariants, active: multi.materialVariantPool.entries.size,
+                    created: multi.materialVariantPool.created } };
         } finally {
             for (const actor of actors) actor.dispose();
             game.destroy();
         }
         result.disposed = multi.disposed && multi.entries.size === 0 && multi.group.parent === null && owner.roots.size === 0;
+        result.materialVariants.retired = multi.materialVariantPool.retired;
+        result.materialVariants.remaining = multi.materialVariantPool.entries.size;
         return result;
     }, { release, quality, type });
     await testInfo.attach('published-default-actor-owner', { body: JSON.stringify({ quality, type, result, engineSHA256: metadata.engineSHA256 }), contentType: 'application/json' });
     expect(result.enabled && result.extension && result.restored && result.disposed).toBe(true);
+    expect(result.materialVariants.enabled).toBe(quality === 'high');
+    if (quality === 'high') expect(result.materialVariants.active).toBeGreaterThan(0);
+    else expect(result.materialVariants.active).toBe(0);
+    expect(result.materialVariants.created).toBe(result.materialVariants.retired);
+    expect(result.materialVariants.remaining).toBe(0);
     expect(result.groups).toBeGreaterThan(0); expect(result.draws).toBeGreaterThan(0);
     if (type === 'DemonOrc') {
         expect(result.poses.map(pose => pose.state)).toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);

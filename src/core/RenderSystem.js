@@ -733,7 +733,12 @@ export class RenderSystem {
         if (previousQuality !== normalized) this.actorColorBatches?.reset();
         // Low/Medium keep the original direct-singleton path; High combines
         // compatible leaves only when the frame has native multi-draw support.
-        if (this.actorInstances) this.actorInstances.batchSingletons = normalized === 'high';
+        if (this.actorInstances) {
+            this.actorInstances.batchSingletons = normalized === 'high';
+            // Paired native cost qualification selects owned shader variants
+            // for High; Low/Medium retain their existing borrowed materials.
+            if (this.actorInstances.multiDraw) this.actorInstances.multiDraw.materialVariants = normalized === 'high';
+        }
         updateFoliageRenderQuality(this.instanceEnvironmentGroup, normalized);
         updateElementalGroundCoverQuality(this.instanceEnvironmentGroup, normalized);
         this.bloomQualityScale = normalized === 'high' ? 1.0 : (normalized === 'medium' ? 0.66 : 0.0);
@@ -1078,6 +1083,7 @@ export class RenderSystem {
         try {
             if (enabled) {
                 this.actorInstances = new ActorInstanceBatches(this.scene, [this.scene, this.entityGroup], { shadowInfluence: true, multiDraw: true, instanceFrustum: true, batchSingletons: this.graphicsQuality === 'high' });
+                if (this.actorInstances.multiDraw) this.actorInstances.multiDraw.materialVariants = this.graphicsQuality === 'high';
             } else {
                 this.actorInstances.dispose(); this.actorInstances = null;
             }
