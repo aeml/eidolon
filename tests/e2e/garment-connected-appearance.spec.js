@@ -1,6 +1,8 @@
 import { execFileSync } from 'node:child_process';
 import { expect, test } from '@playwright/test';
 import { BASE_ITEMS, squishFlatItemStat } from '../../src/core/ItemSystem.js';
+import { profileGameplayScene } from './scene-performance.js';
+import { summarizePartyCPUProfile } from './party-cpu-summary.js';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld,
     openGame, projectEntity } from './helpers.js';
 
@@ -142,6 +144,8 @@ test('purchased independent garments render locally and remotely through gear ch
             await expect.poll(() => renderedAppearance(page)).toMatchObject({ ...model, appearances: expected, gold: 1234, ep: remaining, level: 30, xp: 0 });
             await expect.poll(() => renderedAppearance(observer, ownerID)).toMatchObject({ ...model, appearances: expected });
             const local = await renderedAppearance(page), remote = await renderedAppearance(observer, ownerID);
+            expect(local.appearances).toEqual(expected);
+            expect(remote.appearances).toEqual(expected);
             expect(local.equipment).toEqual(remote.equipment);
             expect(local.signature).toBe(remote.signature);
             expect(local.stats).toEqual(original.stats);
@@ -181,6 +185,22 @@ test('purchased independent garments render locally and remotely through gear ch
         expect((await renderedAppearance(page)).equipment).toEqual(original.equipment);
         await page.locator('#btn-close-character').click();
         if (await page.locator('#inventory-screen').isVisible()) await page.keyboard.press('i');
+        if (process.env.EIDOLON_E2E_GARMENT_CPU === '1') {
+            await page.bringToFront();
+            const frames = await profileGameplayScene(page, 'current-town-rendered-wardrobe', { phases: true });
+            await testInfo.attach('current-town-wardrobe-frame-diagnosis', { body: JSON.stringify(frames), contentType: 'application/json' });
+            const cdp = await page.context().newCDPSession(page);
+            try {
+                await cdp.send('Profiler.enable');
+                await cdp.send('Profiler.start');
+                await page.waitForTimeout(5000);
+                const { profile } = await cdp.send('Profiler.stop');
+                const summary = summarizePartyCPUProfile(profile, new URL(baseURL).origin);
+                // Only allowlisted source/function/caller identities survive.
+                // Never retain raw profiles, URL queries or account data.
+                await testInfo.attach('current-town-wardrobe-cpu-functions', { body: JSON.stringify(summary), contentType: 'application/json' });
+            } finally { await cdp.detach(); }
+        }
         await chooseLowQuality(page);
         await chooseLowQuality(observer);
         await check('low-quality-local-and-remote', 'iron-oath-regalia-v1');
