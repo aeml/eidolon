@@ -1260,7 +1260,11 @@ export class QuestUI {
         const focusedDiscovery = document.activeElement?.closest?.('details[data-discovery-id]')?.dataset.discoveryId;
         const restoreReading = () => {
             this.applyJournalView();
-            if (this.journalView === 'lore' && loreFocus?.isConnected) loreFocus.focus({ preventScroll: true });
+            if (this.journalView === 'lore' && loreFocus) {
+                const replacement = loreFocus.dataset.loreAction && [...this.loreBook.element.querySelectorAll('[data-lore-action]')]
+                    .find(button => button.dataset.loreAction === loreFocus.dataset.loreAction);
+                (loreFocus.isConnected ? loreFocus : replacement)?.focus({ preventScroll: true });
+            }
             if (recapFocused && existingRecap?.isConnected) existingRecap.firstElementChild.focus({ preventScroll: true });
             const archive = this.journalList?.querySelector('.quest-chronicle-archive');
             if (archive && archiveOpen) archive.open = true;

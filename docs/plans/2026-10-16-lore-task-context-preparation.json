@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-16T00:41:24.299096+00:00",
+  "base": "4f5b2e57fbe2112cea68e0da10fc288ad5c85b47",
+  "state": "Isolated and UNSELECTED pending native desktop/phone presentation, input and focus review. Not merged into master or deployed.",
+  "scope": "Lore Book distinguishes personally claimed finale, recaps earlier roads in past tense after Nexus/finale, and shows up to three other personally accepted tasks with objective/progress and correct-journal links. More tasks remain accessible through Review all quests. Reading/quest state and manual acceptance/claim rules remain unchanged.",
+  "validation": {
+    "focused": "141distinct checks across7suites pass:54LoreBook/campaign-coherence/conversation plus87journal/Chronicle/mobile/tracker checks.",
+    "lint": "All changed runtime/client tests and final native fixture pass scoped lint.",
+    "native": "Four existing/expanded book cases prepared, not executed while ordered58CI is active. Covers desktop/phone mid-story reading plus prepared fresh/returning/finale/optional-catch-up/contract state, linked navigation, unchanged progress and semantic focus after actual refresh. No earned campaign/pacing or physical-device acceptance claimed.",
+    "retainedFailures": "Initial focused run caught a real overview focus loss: parent QuestUI clears/detaches the book before child render can capture active focus. Parent now restores the replacement action by semantic ID. Existing conversation fixture counted all hidden Lore Book title occurrences as contract rows; updated to assert the exact26unique contract tracking IDs instead. Original two failures retained; corrected all54pass."
+  },
+  "limits": "No publication selection before native review. Full quest/menu usability and owner review remain open alongside original art/device/performance/audio/operations/F1\u2013F5/beta/release gates. Soak/stress stays deferred; full goal active.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-lore-task-context-20261016",
+  "evidence": [
+    {
+      "path": ".qa-lore-task-context/corrected-focused.log",
+      "bytes": 639,
+      "sha256": "5d3bcc74c9aec73bb47f59fc2a84de64d0b6cd81a20eec23eeea9e91993afd97"
+    },
+    {
+      "path": ".qa-lore-task-context/final-native-fixture-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-lore-task-context/focused.log",
+      "bytes": 2511,
+      "sha256": "81fb4abb2ffcc5d964a0a28f8486a191fda9d85efb66428da5f046382b25cdf8"
+    },
+    {
+      "path": ".qa-lore-task-context/lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-lore-task-context/native-fixture-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-lore-task-context/native-plan.log",
+      "bytes": 614,
+      "sha256": "57cc16347075f8d3a713f102343757bbdd792040d793c6e25ec7dae7957fb41f"
+    },
+    {
+      "path": ".qa-lore-task-context/related.log",
+      "bytes": 715,
+      "sha256": "100a9f1e6edc39aa283b0d3851f3ac4804278ce0f5ded72f91aa6ecb871f1b33"
+    }
+  ]
+}

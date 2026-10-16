@@ -14,6 +14,7 @@ const ROADS = [
 export function getChronicleRecap(quests) {
     const records = Array.isArray(quests) ? quests.filter(Boolean) : [];
     const complete = id => records.some(q => q?.id === id && q.completed === true);
+    const finaleCompleted = complete('chronicle_15_dark_king');
     const lines = [];
     if (complete('chronicle_01_bell_below')) lines.push('Ilyra traced the dissonant echoes beneath Lanternhold. The four Eidolons shelter mortal lands through their crystals; the failing covenant needs your help.');
     for (const [realm, id, dungeon, crystal] of ROADS) {
@@ -24,12 +25,16 @@ export function getChronicleRecap(quests) {
         }
     }
     if (ROADS.every(([realm]) => hasChronicleRestoration(records, realm))) {
-        lines.push(`The four repaired crystals can resonate together. At level 100, enter the shared Dark Realm expedition through the Fourfold Portal. ${PORTAL_DIRECTIONS}`);
+        lines.push(complete('chronicle_14_resonance_gate') || finaleCompleted
+            ? 'The four repaired crystals resonated together and opened your way into the shared Dark Realm expedition.'
+            : `The four repaired crystals can resonate together. At level 100, enter the shared Dark Realm expedition through the Fourfold Portal. ${PORTAL_DIRECTIONS}`);
     }
     const expedition = darkRealmChapters.findLast(chapter => complete(chapter.id));
     if (expedition) lines.push(`Last recovered expedition account · ${expedition.title}: ${expedition.summary}`);
-    if (complete('chronicle_14_resonance_gate')) lines.push('The Umbral Nexus yielded the Fifth Note, and you claimed it with Ilyra. The Dungeon Guide in Lanternhold can prepare your private court raid; the Fourfold Portal is the shared expedition entrance, not the throne room.');
-    if (complete('chronicle_15_dark_king')) lines.push('Malachar has fallen, and you personally completed the finale with Ilyra. Return to her to reread A Letter Without a Throne. The end of his reign is not the end of Eidolon’s story.');
+    if (complete('chronicle_14_resonance_gate')) lines.push('The Umbral Nexus yielded the Fifth Note, and you claimed it with Ilyra. ' + (finaleCompleted
+        ? 'That note opened the road to Malachar’s private court.'
+        : 'The Dungeon Guide in Lanternhold can prepare your private court raid; the Fourfold Portal is the shared expedition entrance, not the throne room.'));
+    if (finaleCompleted) lines.push('Malachar has fallen, and you personally completed the finale with Ilyra. Return to her to reread A Letter Without a Throne. The end of his reign is not the end of Eidolon’s story.');
     return lines;
 }
 

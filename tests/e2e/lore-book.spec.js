@@ -76,3 +76,59 @@ for (const [width, height, mobile] of [[1280, 800, false], [390, 844, true]]) te
         expect(failures, failures.join('\n')).toEqual([]);
     });
 });
+
+for (const [width, mobile] of [[1280, false], [390, true]]) test.describe(`Returning lore context ${width}`, () => {
+    test.use({ viewport: { width, height: 844 }, hasTouch: mobile, isMobile: mobile });
+    test('claimed finale and accepted contracts remain clear, linked and stable through progress updates', async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+        await page.goto('/', { waitUntil: 'networkidle' });
+        // Prepared personal receipts exercise returning UI, not earned campaign pacing.
+        await page.evaluate(async mobile => {
+            const { UIManager } = await import('/src/ui/UIManager.js');
+            const { getChronicleInvestigation } = await import('/src/core/ChronicleInvestigation.js');
+            const optional = getChronicleInvestigation('chronicle_earth_returning_scar');
+            document.getElementById('start-screen').style.display = 'none';
+            document.body.classList.toggle('mobile-mode', mobile);
+            const quests = ['chronicle_10_rootheart_raid', 'chronicle_11_tidestar_raid', 'chronicle_12_ember_crown_raid', 'chronicle_13_skyglass_raid', 'chronicle_14_resonance_gate', 'chronicle_15_dark_king']
+                .map(id => ({ id, category: 'chronicle', completed: true, accepted: true, title: id === 'chronicle_15_dark_king' ? 'A Letter Without a Throne' : 'A restored covenant' }));
+            quests.push({ id: optional.id, title: optional.title, category: 'chronicle', legacyOptional: true, accepted: true,
+                type: 'INVESTIGATE', count: 1, maxCount: optional.sites.length, investigationMask: 2 },
+            { id: 'daily_patrol', title: 'Road patrol', accepted: true, count: 2, maxCount: 3, objectiveText: 'Defeat three road threats.' },
+            { id: 'unaccepted_future', title: 'UNSEEN CONTRACT', accepted: false });
+            const ui = new UIManager(mobile); ui.lastPlayerRef = { id: 'returning-reader', level: 1, quests: [] };
+            const actions = []; ui.quest.onAcceptQuest = () => actions.push('accept'); ui.quest.onCompleteQuest = () => actions.push('claim');
+            ui.showHUD(); ui.quest.toggleJournal(); ui.quest.setJournalView('lore');
+            window.__returningLore = { ui, quests, actions };
+        }, mobile);
+        const book = page.getByRole('region', { name: 'Lore book', exact: true });
+        await expect(book).toContainText('The first page awaits');
+        await expect(book).not.toContainText('Your Chronicle is complete');
+        await expect(book).not.toContainText('Malachar has fallen');
+        await page.evaluate(() => {
+            const { ui, quests } = window.__returningLore;
+            ui.lastPlayerRef.level = 100; ui.lastPlayerRef.quests = quests;
+            ui.quest.updateJournal(quests);
+        });
+        await expect(book).toContainText('Your Chronicle is complete');
+        await expect(book).not.toContainText('At level 100, enter');
+        await expect(book).not.toContainText('can prepare your private court raid');
+        await expect(book).not.toContainText('UNSEEN CONTRACT');
+        const patrol = book.getByRole('button', { name: /Road patrol/ });
+        await patrol.scrollIntoViewIfNeeded(); await patrol.focus();
+        await page.evaluate(() => {
+            const { ui, quests } = window.__returningLore;
+            quests.find(quest => quest.id === 'daily_patrol').count = 3;
+            ui.quest.updateJournal(quests); window.__returningLore.saved = JSON.stringify(quests);
+        });
+        await expect(patrol).toBeFocused(); await expect(patrol).toContainText('Ready to turn in');
+        await page.screenshot({ path: testInfo.outputPath('returning-story-and-tasks.png') });
+        if (mobile) await patrol.tap(); else await page.keyboard.press('Enter');
+        await expect(page.locator('[data-journal-view="contracts"]')).toHaveAttribute('aria-pressed', 'true');
+        await expect(page.locator('[data-quest-track="daily_patrol"]')).toBeFocused();
+        expect(await page.evaluate(() => window.__returningLore.actions)).toEqual([]);
+        expect(await page.evaluate(() => JSON.stringify(window.__returningLore.quests) === window.__returningLore.saved)).toBe(true);
+        await page.evaluate(() => window.__returningLore.ui.dispose());
+        expect(failures, failures.join('\n')).toEqual([]);
+    });
+});

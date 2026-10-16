@@ -27,6 +27,19 @@ test.each([undefined, -1, 1.5, 0x100000000])('missing or invalid discovery mask 
     expect(buildLoreBook(quests).entries.filter(entry => entry.kind === 'discoveries')).toEqual([]);
 });
 
+test('secondary tasks require personal acceptance and claimed completion alone proves the finale', () => {
+    const final = { id: 'chronicle_15_dark_king', category: 'chronicle', accepted: true, count: 1, maxCount: 1 };
+    const patrol = { id: 'daily_patrol', title: 'Road patrol', accepted: true, count: 2, maxCount: 3 };
+    const optional = { id: 'chronicle_optional', legacyOptional: true, accepted: true, title: 'An old promise' };
+    const quests = [final, patrol, optional, { id: 'future', title: 'UNSEEN CONTRACT', accepted: false },
+        { id: 'claimed', accepted: true, completed: true }];
+    const before = JSON.stringify(quests), book = buildLoreBook(quests);
+    expect(book.finaleCompleted).toBe(false); expect(book.current.id).toBe(final.id);
+    expect(book.activeTasks.map(task => task.id)).toEqual([patrol.id, optional.id]);
+    expect(JSON.stringify(quests)).toBe(before);
+    expect(buildLoreBook([{ ...final, completed: true }]).finaleCompleted).toBe(true);
+});
+
 describe('journal lore reading', () => {
     let player, ui;
     beforeEach(() => {
@@ -126,5 +139,33 @@ describe('journal lore reading', () => {
             expect(next.journalView).toBe('all');
             expect(frame.classList.contains('is-lore-book')).toBe(false);
         } finally { next.dispose(); }
+    });
+
+    test('accepted side tasks update and retain keyboard focus, then link to the correct journal without progression changes', () => {
+        player.quests.push({ id: 'daily_patrol', title: 'Road patrol', accepted: true, count: 2, maxCount: 3 });
+        ui.updateJournal(player.quests);
+        const before = JSON.stringify(player.quests);
+        const action = ui.loreBook.overview.querySelector('[data-lore-action="task:daily_patrol"]');
+        expect(action.textContent).toContain('2 / 3'); action.focus();
+        player.quests.at(-1).count = 3; ui.updateJournal(player.quests);
+        expect(document.activeElement.dataset.loreAction).toBe('task:daily_patrol');
+        expect(document.activeElement.textContent).toContain('Ready to turn in');
+        document.activeElement.click(); expect(ui.journalView).toBe('contracts');
+        expect(document.activeElement.dataset.questTrack).toBe('daily_patrol');
+        expect(ui.onAcceptQuest).not.toHaveBeenCalled(); expect(ui.onCompleteQuest).not.toHaveBeenCalled();
+        expect(JSON.parse(before).slice(0, -1)).toEqual(player.quests.slice(0, -1));
+        expect(player.quests.at(-1).completed).toBeUndefined();
+    });
+
+    test('personally claimed finale gets a completed Chronicle view and bounded access to other accepted tasks', () => {
+        player.quests = [{ id: 'chronicle_15_dark_king', category: 'chronicle', completed: true, accepted: true, title: 'A Letter Without a Throne' },
+            ...Array.from({ length: 4 }, (_, i) => ({ id: `daily_${i}`, accepted: true, title: `Patrol ${i}`, count: 0, maxCount: 2 }))];
+        ui.updateJournal(player.quests);
+        const text = ui.loreBook.overview.textContent;
+        expect(text).toContain('Your Chronicle is complete'); expect(text).not.toContain('its next steps');
+        expect(ui.loreBook.overview.querySelectorAll('.lore-book__task')).toHaveLength(3);
+        const all = ui.loreBook.overview.querySelector('[data-lore-action="all"]'); all.click();
+        expect(ui.journalView).toBe('all');
+        expect(ui.onAcceptQuest).not.toHaveBeenCalled(); expect(ui.onCompleteQuest).not.toHaveBeenCalled();
     });
 });

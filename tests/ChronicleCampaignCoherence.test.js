@@ -108,3 +108,15 @@ test('expedition recap uses the latest personally completed authored account, no
     expect(lines.join(' ')).not.toContain(unseen.summary);
     expect(lines.join(' ')).not.toContain('court raid');
 });
+
+test('claimed Nexus and finale recap the earlier road without directing a completed player back to their first expedition', () => {
+    const nexus = { id: 'chronicle_14_resonance_gate', completed: true };
+    const final = { id: 'chronicle_15_dark_king', completed: true };
+    const beforeFinale = getChronicleRecap([...repairs, nexus]).join(' ');
+    expect(beforeFinale).toContain('opened your way'); expect(beforeFinale).toContain('prepare your private court raid');
+    const afterFinale = getChronicleRecap([...repairs, nexus, final]).join(' ');
+    expect(afterFinale).toContain('Malachar has fallen'); expect(afterFinale).toContain('opened the road');
+    expect(afterFinale).not.toContain('At level 100, enter');
+    expect(afterFinale).not.toContain('can prepare your private court raid');
+    expect(afterFinale).toContain('A Letter Without a Throne');
+});
