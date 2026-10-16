@@ -246,6 +246,19 @@ Final owner collection art, broader quest/menu/world/audio/device/performance,
 operations, owner/F1–F5/beta/release gates and deferred playtests remain open.
 No soak/stress or complete-game-readiness claim is made.
 
+## Alpha 1.79.59: selected and prepared, not deployed
+
+Weapon Garment, Armor Garment and Offhand Garment appear centered in one row
+below the character preview, with confirmed names/reset state and direct links
+to the matching owned Wardrobe selector. Returning Lore Book context separates
+claimed finale from active goals, prioritizes tracked accepted tasks, links to
+correct journal entries and retains memory-list scroll/focus through receipts.
+209focused checks and seven distinct native desktop/tablet/phone cases qualify.
+Initial browser scroll-reset failures remain retained with their correction.
+[Qualification](2026-10-16-character-garment-row-qualification.md).
+This advances the interface scope; original quality/release gates remain open.
+Soak/stress and human pacing/physical-device feedback remain deferred.
+
 ## Outstanding requirements and next evidence
 
 All rows below are open at the full requirement's scope, even where substantial

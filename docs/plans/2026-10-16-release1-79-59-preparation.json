@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-16T01:44:43.383160+00:00",
+  "version": "Alpha 1.79.59",
+  "previousAccepted": {
+    "source": "4f5b2e57fbe2112cea68e0da10fc288ad5c85b47",
+    "ci": 38829902231,
+    "acceptance": "2026-10-16-release1-79-58-acceptance.md"
+  },
+  "selection": "cb7de2c64513041ca84bccd1ba99ea8eb5d78c9d",
+  "state": "Selected on master, synchronized versions/cumulative notes prepared; not yet deployed. Publication requires matching exact-source CI/deployment/live checks and normal-TLS public verification.",
+  "scope": "Centered Weapon Garment, Armor Garment and Offhand Garment row below character picture, displaying confirmed current look/reset state and opening existing owned selector without applying. Returning Lore Book shows personally accepted/tracked tasks, claimed finale/past-tense recap, correct-journal links and retained memory focus/scroll through updates. Real equipment/stats/manual quest and wardrobe authority unchanged.",
+  "validation": {
+    "focused": "209distinct checks across13interface suites, plus392version/patch-history checks across2suites:601distinct checks across15suites.",
+    "native": "Seven distinct desktop/tablet/phone cases pass on final corrected source, workers1/retries0. Captures reviewed. Initial5pass/2fail and corrected2pass retained; repeated cases are not additional coverage.",
+    "lint": "Full repository lint passes.",
+    "content": "16generated content groups verify without rewriting.",
+    "patchHistory": "494entries; all493prior entries byte-exact.",
+    "retainedFailures": "Initial real native memory-index scroll844/1093\u21920 during parent detachment; restored after visible reattachment. Earlier isolated focus/fixture failures and final release nonexistent PatchNotes.test.js invocation retained; corrected actual PatchNotesPagination/VersionPresentation392pass."
+  },
+  "qualifications": [
+    "2026-10-16-character-garment-row-qualification.md",
+    "2026-10-16-lore-task-context-preparation.json"
+  ],
+  "limits": "No physical-phone, human campaign pacing, final owner art, whole-world performance, capacity or complete-game claim. Original requirements/gates remain active. Soak/stress remains deferred.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-master-20261011/.qa-release59",
+  "evidence": [
+    {
+      "path": ".qa-release59/version-notes-focused.log",
+      "bytes": 599,
+      "sha256": "6ad824f554bc5904ffe971f459cfbc766a14caec251313efcd1c722388ba19cf"
+    },
+    {
+      "path": ".qa-release59/version-notes-invocation-failure.log",
+      "bytes": 846,
+      "sha256": "1a173509f6105dbe22b8f6ecc61cb67cb149af0fa8238f5885da5469728c98d8"
+    },
+    {
+      "path": ".qa-release59/lint.log",
+      "bytes": 96,
+      "sha256": "7f1e7859f604cf9acb0fed65464d54129d217b54c4fb33cb60ded4b6cd1ea609"
+    },
+    {
+      "path": ".qa-release59/content.log",
+      "bytes": 10033,
+      "sha256": "9e602325475ac932eb4592f17920c4a5babd1894623d980c2f0d44da1c0cdb06"
+    },
+    {
+      "path": ".qa-release59/patch-history.json",
+      "bytes": 60,
+      "sha256": "76ac1fe6345420a3a9e37c9b41aee75551f34f2d23320ddfc624bedc0e375a95"
+    }
+  ]
+}

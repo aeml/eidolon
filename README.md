@@ -495,6 +495,12 @@ Notes:
 
 ## Project Status
 
+Current source version: `Alpha 1.79.59`, **prepared locally, not deployed**:
+centered garment slots beneath the character preview and clearer returning Lore
+Book task/finale context with preserved reading focus/scroll.209focused checks
+and seven native desktop/tablet/phone cases qualify this interface milestone.
+[Qualification](docs/plans/2026-10-16-character-garment-row-qualification.md).
+
 **Alpha 1.79.58 is deployed and verified**, at runtime source `4f5b2e57f`:
 all eight universal outfits, searchable/category-filtered Veyra collection,
 retained store scroll/focus and coordinated service-window polish. The requested
