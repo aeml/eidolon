@@ -1,19 +1,19 @@
 {
-  "at": "2026-10-16T07:38:55.686290+00:00",
+  "at": "2026-10-16T07:48:31.802020+00:00",
   "source": "6040d997b7332a42d385ddd84619c38e4e6d1eef",
   "base": "a60c8e91690f8d8df91d664f8e5183688e101fd2",
-  "state": "Combined cap/root CPU-only candidate; isolated/unselected. Supersedes cap-only preparation scope, preserving its43CPU evidence. Actual native shader/visual/cost/resource review pending own61CI GPU release.",
-  "scope": "Fortresshorizontal3.6x2.8mfilteredstonecourses/relief plus tenBastionroots at16length/8radial subdivisions instead of12/6. Original sharedhigh24/10andlow12/6 geometryoutputs remainbyteexact for allten paths. Existingmaterials/caches/mergeddraw/colliders/populations/portal unchanged.",
+  "state": "Combined foundation-cap/root candidate, isolated and unselected. Only CPU qualification and a native test plan exist. Native review must wait for the current Alpha61 CI to release the GPU.",
+  "scope": "Fortress horizontal caps use filtered stone courses and relief at3.6x2.8metres. Ten Bastion roots use16length/8radial subdivisions instead of12/6. Shared existing High24/10 and Low12/6 outputs remain byte-exact for all ten paths. Existing materials, merged draw count, colliders, placement, populations and portal are unchanged.",
   "validation": {
-    "cpu": "52checks/four suites pass including newmediumradius/taper/finite-normal case. Four affected source/test lints and diffcheck pass.",
+    "cpu": "52checks across four suites pass, including the new medium-detail radius/taper/finite-normal case. Four affected source/test files pass lint and diff checks.",
     "geometry": {
       "referenceTriangles": 1440,
       "candidateTriangles": 2560,
       "addedTriangles": 1120,
       "existingHighLowOutputsByteExact": true
     },
-    "nativePlan": "Four source-specificHighLowworld/HUD/14slotFighter/motion15/30cases listedONLY. Baseline routesTHREEexact61modules:WorldSurfaceDetail,EarthLandmarkGeometry,ProceduralDungeonEntrances. Oldcap-onlyone-moduleroute would NOT establish baseline geometry now. Native notexecuted.",
-    "limits": "Root geometries add1120triangles(+2240High including shadows), notzero-geometry combinedchange. Capshaderaloneaddsnogeometry. Original whole-scene/frame/cold limits unchanged; no render/visual/performancepass claimed. Mustinspectaliasing/visiblebenefit/nativecost and actualcounts/resources beforeselection."
+    "nativePlan": "Four source-specific High/Low actual-world/HUD/14-slot Fighter/motion cases are listed only. Baseline routes THREE exact Alpha61 modules: WorldSurfaceDetail, EarthLandmarkGeometry and ProceduralDungeonEntrances. Each case also records bounded prepared one-actor scene timing at zoom15/30; raw RAF intervals and synchronous CPU clocks are diagnostics, not GPU elapsed time or dynamic/whole-game acceptance. No native execution yet.",
+    "limits": "Roots add1120triangles, or2240in High including shadows. The cap shader alone adds no geometry. Original scene/frame/cold limits remain unchanged; no render, visual or performance pass is claimed. Inspect aliasing, visible benefit, native cost, actual counts and resource retirement before selection."
   },
   "evidenceRoot": "/home/aeml/.local/share/eidolon-bastion-cap-material-20261016",
   "evidence": [
@@ -53,11 +53,6 @@
       "sha256": "322bce36bdc66c51372a34479128f2fa9917c1ff53f88368efa74f12e7111360"
     },
     {
-      "path": ".qa-bastion-cap/bastion-world.spec.js",
-      "bytes": 11304,
-      "sha256": "5e41df32bd6f35edbb6392de714db113ea05727d35380c300ce0ff8009b59f56"
-    },
-    {
       "path": ".qa-bastion-cap/reference/WorldSurfaceDetail.js",
       "bytes": 14562,
       "sha256": "8a0b969379c5874b88345cb3aad78d7e80e5912735700f8d95f992af19e1c0da"
@@ -71,6 +66,21 @@
       "path": ".qa-bastion-cap/reference/EarthLandmarkGeometry.js",
       "bytes": 7910,
       "sha256": "0b29a16c003882dba1a5c501f5ddea35e0c506a6a25a0bea8c128e0aa44b4894"
+    },
+    {
+      "path": ".qa-bastion-cap/bastion-world.spec.js",
+      "bytes": 12621,
+      "sha256": "27bf222cc86c717cdc14c8ae55b3a1c7037b6dd6b8448258fe279660b4e07b8d"
+    },
+    {
+      "path": ".qa-bastion-cap/native-plan-root-timing.log",
+      "bytes": 328,
+      "sha256": "b6dca24ecbc3aa2edf4ff7f7bebd953cfac7204cdd98ea6af19fb957a542fef0"
+    },
+    {
+      "path": ".qa-bastion-cap/bastion-world-before-timing.spec.txt",
+      "bytes": 11304,
+      "sha256": "5e41df32bd6f35edbb6392de714db113ea05727d35380c300ce0ff8009b59f56"
     }
   ]
 }
