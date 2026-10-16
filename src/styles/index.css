@@ -55,5 +55,3 @@
 @import './phone-stash.css';
 @import './phone-encounter.css';
 @import './phone-community.css';
-
-.auth-invitation-field[hidden] { display: none !important; }

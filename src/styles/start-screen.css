@@ -156,6 +156,8 @@
     font-size: 12px;
 }
 
+.auth-invitation-field[hidden] { display: none !important; }
+
 .auth-field__hint {
     margin-left: auto;
     color: var(--entry-muted);
