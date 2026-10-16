@@ -173,3 +173,21 @@ test('character garment shortcuts show confirmed independent appearances and ope
     ui.dispose(); slots[0].click();
     expect(ui.root.isConnected).toBe(false);
 });
+
+
+test('View character returns focus to the portrait without changing selection or sending requests', () => {
+    document.body.innerHTML = `<section id="character-sheet"><div id="character-preview">
+        <button data-preview-turn="reset">Front</button></div><div id="host"></div></section>`;
+    const preview = document.getElementById('character-preview'); preview.scrollIntoView = jest.fn();
+    const player = { id: 'first', equipment: { head: gear }, appearances: { head: look } }, send = jest.fn();
+    const ui = new WardrobeUI({ host: document.getElementById('host'), getPlayer: () => player, send });
+    ui.root.open = true; ui.handleResult({ playerID: 'first', success: true, collection: { 'Silk Hood|Rare': look } });
+    const view = ui.root.querySelector('[data-action="view-character"]');
+    expect(view.hidden).toBe(false); view.click();
+    expect(preview.scrollIntoView).toHaveBeenCalledWith({ block: 'center', behavior: 'auto' });
+    expect(document.activeElement).toBe(preview.querySelector('button'));
+    expect(ui.look.value).toBe('Silk Hood|Rare'); expect(ui.root.open).toBe(true);
+    expect(send).not.toHaveBeenCalled();
+    ui.root.open = false; view.click(); expect(preview.scrollIntoView).toHaveBeenCalledTimes(1);
+    ui.dispose(); view.click(); expect(preview.scrollIntoView).toHaveBeenCalledTimes(1);
+});

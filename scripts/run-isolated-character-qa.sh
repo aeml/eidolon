@@ -181,6 +181,9 @@ qa_allowlist+=",${QA_USERNAME_BASE}-casino-guest"
 qa_allowlist+=",${QA_USERNAME_BASE}-auth-recovery"
 qa_allowlist+=",${QA_USERNAME_BASE}-socket-owner,${QA_USERNAME_BASE}-socket-observer"
 qa_allowlist+=",${QA_USERNAME_BASE}-garment-owner,${QA_USERNAME_BASE}-garment-observer"
+for qa_garment_class in fighter rogue cleric wizard; do
+  qa_allowlist+=",${QA_USERNAME_BASE}-garment-owner-${qa_garment_class},${QA_USERNAME_BASE}-garment-observer-${qa_garment_class}"
+done
 qa_allowlist+=",${QA_USERNAME_BASE}-rest-transitions-death,${QA_USERNAME_BASE}-rest-transitions-dungeon"
 qa_allowlist+=",${QA_USERNAME_BASE}-duration,${QA_USERNAME_BASE}-forge,${QA_USERNAME_BASE}-whip,${QA_USERNAME_BASE}-ground"
 qa_allowlist+=",${QA_USERNAME_BASE}-time-warp"

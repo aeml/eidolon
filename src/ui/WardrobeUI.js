@@ -21,7 +21,10 @@ export class WardrobeUI {
             <button type="button" data-action="learn">Learn owned looks</button>
             <label>Equipment slot<select aria-label="Appearance slot"></select></label>
             <label>Collected look<select aria-label="Collected appearance"></select></label>
-            <button type="button" data-action="apply" disabled>Apply appearance</button>
+            <div class="wardrobe-actions">
+                <button type="button" data-action="apply" disabled>Apply appearance</button>
+                <button type="button" data-action="view-character">View character</button>
+            </div>
             <p role="status" aria-live="polite">Customize in town, out of combat. Choose Original gear to reset a slot.</p>
         </div>`;
         host?.prepend(this.root);
@@ -29,6 +32,16 @@ export class WardrobeUI {
         this.status = this.root.querySelector('[role="status"]');
         this.apply = this.root.querySelector('[data-action="apply"]');
         this.learn = this.root.querySelector('[data-action="learn"]');
+        this.previewTarget = host?.closest('#character-sheet')?.querySelector('#character-preview');
+        const viewCharacter = this.root.querySelector('[data-action="view-character"]');
+        viewCharacter.hidden = !this.previewTarget;
+        ownedEvent(this, viewCharacter, 'click', () => {
+            if (this.disposed || !this.root.open || !this.previewTarget?.isConnected) return;
+            // Return to the confirmed model without resetting the selected look,
+            // rotation or wardrobe. Move keyboard focus to its existing control.
+            this.previewTarget.querySelector('[data-preview-turn="reset"]')?.focus({ preventScroll: true });
+            this.previewTarget.scrollIntoView?.({ block: 'center', behavior: 'auto' });
+        });
         for (const slot of EQUIPMENT_SLOT_KEYS) {
             const option = document.createElement('option');
             option.value = slot;
