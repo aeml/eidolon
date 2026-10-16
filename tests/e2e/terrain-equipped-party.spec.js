@@ -33,6 +33,10 @@ test.use({ trace: 'off', screenshot: 'off', video: 'off', serviceWorkers:
     process.env.EIDOLON_E2E_BODY_LOD_COMPARE === '1' || process.env.EIDOLON_E2E_BODY_LOD_PILOT ||
     process.env.EIDOLON_E2E_WEARABLE_ATTRIBUTE_COMPARE === '1' || process.env.EIDOLON_E2E_WEARABLE_ATTRIBUTE_PILOT ? 'block' : 'allow' });
 
+const partyTerrainProfile = process.env.EIDOLON_E2E_TERRAIN_PROFILE || 'earth-elevation-rocks-v1';
+const partyTerrainLabel = partyTerrainProfile === 'flat-v1' ? 'flat' : 'raised';
+const groundedForPartyProfile = entry => partyTerrainProfile === 'flat-v1' ? entry.ground === 0 : entry.ground > 1;
+
 function observePartyTerrain() {
     const game = window.game;
     const evidence = window.__equippedTerrainParty = { states: {}, damage: [], healing: [], casts: [], projectileDraws: 0 };
@@ -70,6 +74,7 @@ function observePartyTerrain() {
 
 function readPartyTerrain(ids) {
     const game = window.game, field = game.terrainElevation, seenBones = new Set();
+    const sampleGround = (x, z) => field ? field.sample(x, z) : game.terrainProfile === 'flat-v1' ? 0 : NaN;
     const actors = ids.map(id => {
         const actor = id === game.player.id ? game.player : game.remotePlayers.get(id);
         const root = actor?.mesh, authority = window.__equippedTerrainParty.states[id];
@@ -90,10 +95,10 @@ function readPartyTerrain(ids) {
             missing: root?.userData.equipmentVisualMissing?.length || 0,
             fallback: root?.userData.equipmentVisualFallback?.length || 0,
             bodyFallback: Boolean(root?.userData.assetFallback), bones: bones.size, ownedBones, independentBones, surfaceBatches,
-            ground: actor?.position && field?.sample(actor.position.x, actor.position.z),
-            playerError: actor?.position && field ? Math.abs(actor.position.y - field.sample(actor.position.x, actor.position.z)) : Infinity,
-            meshError: root && field ? Math.abs(root.position.y - field.sample(root.position.x, root.position.z)) : Infinity,
-            authorityError: Number.isFinite(authority?.y) && field ? Math.abs(authority.y - field.sample(authority.x, authority.z)) : Infinity
+            ground: actor?.position && sampleGround(actor.position.x, actor.position.z),
+            playerError: actor?.position ? Math.abs(actor.position.y - sampleGround(actor.position.x, actor.position.z)) : Infinity,
+            meshError: root ? Math.abs(root.position.y - sampleGround(root.position.x, root.position.z)) : Infinity,
+            authorityError: Number.isFinite(authority?.y) ? Math.abs(authority.y - sampleGround(authority.x, authority.z)) : Infinity
         };
     });
     const cover = game.getInstanceEnvironmentGroup().children.find(root => root.userData.earthUnderstory);
@@ -103,7 +108,7 @@ function readPartyTerrain(ids) {
             multiDrawAvailable: game.renderSystem.renderer.extensions.has('WEBGL_multi_draw') } };
 }
 
-test('connected equipped four-class party shares raised ground, fitted outfits, Fireball draws and targeted healing', async ({ page, browser, baseURL }, testInfo) => {
+test(`connected equipped four-class party shares ${partyTerrainLabel} ground, fitted outfits, Fireball draws and targeted healing`, async ({ page, browser, baseURL }, testInfo) => {
     test.skip(process.env.EIDOLON_E2E_TERRAIN_PARTY !== '1', 'Explicit disposable connected terrain party check');
     test.skip(process.env.EIDOLON_TERRAIN_PARTY_RENDER_MODE !== 'four-browser', 'Four actual renderer scope only');
     expect(process.env.EIDOLON_E2E_BODY_LOD_PILOT, 'Body LOD diagnostic currently qualifies the single-renderer observer only').toBeUndefined();
@@ -175,11 +180,11 @@ test('connected equipped four-class party shares raised ground, fitted outfits, 
         const assertParty = async actor => {
             await expect.poll(async () => {
                 const value = await actor.page.evaluate(readPartyTerrain, ids);
-                return value.profile === 'earth-elevation-rocks-v1' && value.quality === quality &&
+                return value.profile === partyTerrainProfile && value.quality === quality &&
                     value.actors.length === 4 && value.actors.every((entry, index) => entry.ready &&
                         entry.class === actors[index].class && entry.bodyQuality === quality && entry.items === 14 &&
                         !entry.missing && !entry.fallback && !entry.bodyFallback && entry.bones > 0 &&
-                        entry.ownedBones && entry.independentBones && entry.ground > 1 &&
+                        entry.ownedBones && entry.independentBones && groundedForPartyProfile(entry) &&
                         entry.playerError < .1 && entry.meshError < .15 && entry.authorityError < .1);
             }, { message: 'All four actual replicated outfits/rigs must be independently owned and grounded', timeout: 30_000 }).toBe(true);
         };
@@ -222,7 +227,7 @@ test('connected equipped four-class party shares raised ground, fitted outfits, 
         }
         for (const actor of actors) await assertParty(actor);
         await expect(leader.page.locator('#esc-menu')).toBeHidden();
-        const report = await profileGameplayScene(leader.page, `connected-equipped-raised-party-${quality}`);
+        const report = await profileGameplayScene(leader.page, `connected-equipped-${partyTerrainLabel}-party-${quality}`);
         expect(report.frames).toBe(180);
         expect(report.visibleFrames).toBe(180); expect(report.restored).toBe(true);
         expect(report.frameSamples).toHaveLength(180);
@@ -244,7 +249,7 @@ test('connected equipped four-class party shares raised ground, fitted outfits, 
 // This separately measures one real renderer with three still-connected normal
 // socket peers, avoiding four renderers competing for a single test GPU. It is
 // not a substitute for the native four-client input/healing checks above.
-test('single native renderer observes three live equipped party socket peers on raised ground', async ({ page, baseURL }, testInfo) => {
+test(`single native renderer observes three live equipped party socket peers on ${partyTerrainLabel} ground`, async ({ page, baseURL }, testInfo) => {
     test.skip(process.env.EIDOLON_E2E_TERRAIN_PARTY !== '1' ||
         process.env.EIDOLON_TERRAIN_PARTY_RENDER_MODE !== 'single-renderer', 'Explicit isolated single-renderer party scope');
     test.setTimeout((process.env.EIDOLON_TERRAIN_ART_ROUTE === '1' || process.env.EIDOLON_TERRAIN_RIG_PAIR === '1') ? 230_000 : 180_000);
@@ -348,7 +353,7 @@ test('single native renderer observes three live equipped party socket peers on 
             await expect.poll(() => peer.socket.readyState).toBe(1);
             send(peer, 'login', { username: account.username, password: account.password });
             const login = await waitMessage(peer, 'login_success');
-            expect(login.terrainProfile).toBe('earth-elevation-rocks-v1');
+            expect(login.terrainProfile).toBe(partyTerrainProfile);
             send(peer, 'join', { type: account.characterClass });
             await waitMessage(peer, 'quest_update');
             // Real user-visible invitation, accepted by a real authenticated peer.
@@ -371,10 +376,10 @@ test('single native renderer observes three live equipped party socket peers on 
             .map(member => member.id).filter(id => id !== leaderID)], leaderID);
         await expect.poll(async () => {
             const value = await page.evaluate(readPartyTerrain, ids);
-            return value.profile === 'earth-elevation-rocks-v1' && value.quality === quality && value.actors.length === 4 &&
+            return value.profile === partyTerrainProfile && value.quality === quality && value.actors.length === 4 &&
                 value.actors.every(entry => entry.ready && entry.bodyQuality === quality && entry.items === 14 &&
                     !entry.missing && !entry.fallback && !entry.bodyFallback && entry.bones > 0 &&
-                    entry.ownedBones && entry.independentBones && entry.ground > 1 && entry.playerError < .1 &&
+                    entry.ownedBones && entry.independentBones && groundedForPartyProfile(entry) && entry.playerError < .1 &&
                     entry.meshError < .15 && entry.authorityError < .1);
         }, { timeout: 30_000 }).toBe(true);
         await expect(page.locator('#esc-menu')).toBeHidden();
@@ -513,7 +518,7 @@ test('single native renderer observes three live equipped party socket peers on 
         }
         if (process.env.EIDOLON_E2E_ACTOR_CELL_MULTI_DRAW === '1') await prepareActorCellMultiDrawParty(page, testInfo);
         recordPeerLiveness('profiling');
-        const report = await profileGameplayScene(page, `single-renderer-equipped-raised-party-${quality}`);
+        const report = await profileGameplayScene(page, `single-renderer-equipped-${partyTerrainLabel}-party-${quality}`);
         expect(report.frames).toBe(180);
         expect(report.visibleFrames).toBe(180); expect(report.restored).toBe(true);
         expect(report.frameSamples).toHaveLength(180);

@@ -1,0 +1,272 @@
+{
+  "date": "2026-10-16T02:06:06.259260+00:00",
+  "source": "e8315cc42f9f1b2330fa18c8d496f32822436dfa",
+  "runtimeBase": "2c4cbb4c9b8257439061c23959a896d58dc1c09b",
+  "state": "Isolated UNSELECTED QA fixture improvement. Productionmatching flat High/Low bounded native samples completed and sanitized; defaultRaisedcompatibility onthismodifiedfixture pending until59native/liveCI terminal. No runtime, model, scene, visibility, save, default or budget change. Notmerged/deployed.",
+  "changes": "Allowlist flat-v1/earth-elevation-rocks-v1 explicit private fixture profile; defaultRaisedpreserved. Server/login/browser agree on actual selectedprofile. Flat null elevation field explicitly samples authoritative zero, raised keeps >1ground condition. Dynamictitles/evidence matchscope. Invalidprofileguard rejectsbeforeanyDocker/process startup.",
+  "validation": {
+    "lint": "ScopedJS lint, shellsyntax and diffcheck pass.",
+    "GoCompileGuard": "UnconfiguredGo-race invocation exitsok by existing fixture skip; not an integrationpass.",
+    "native": {
+      "high": {
+        "quality": "high",
+        "frames": 180,
+        "visibleFrames": 180,
+        "restored": true,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "maximumDraws": 258,
+        "maximumTriangles": 203550,
+        "medianDraws": 257,
+        "medianTriangles": 195654,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 33.4,
+        "cpuLoopMedianMs": 22.299999952316284,
+        "cpuLoopP95Ms": 27.90000009536743,
+        "geometryFirst": {
+          "pending": 36,
+          "installed": 43,
+          "swaps": 43,
+          "reduced": true,
+          "enabled": true
+        },
+        "geometryLast": {
+          "pending": 0,
+          "installed": 70,
+          "swaps": 70,
+          "reduced": true,
+          "enabled": true
+        },
+        "originalLimits": {
+          "maximumDraws": 350,
+          "maximumTriangles": 250000,
+          "maximumFrameMedianMs": 20,
+          "maximumFrameP95Ms": 33.4
+        },
+        "scope": "One actual GPU renderer, three live normal authenticated socket peers; standing/movement snapshot, not peer input or a battle frame-budget certificate.",
+        "samplePass": true,
+        "phaseCPU": {
+          "update": {
+            "medianMs": 4,
+            "p95Ms": 7.5
+          },
+          "presentation": {
+            "medianMs": 26.899999976158142,
+            "p95Ms": 34.40000009536743
+          },
+          "renderSystem": {
+            "medianMs": 26.199999928474426,
+            "p95Ms": 33.799999952316284
+          },
+          "renderer": {
+            "medianMs": 26.00000011920929,
+            "p95Ms": 33.49999988079071
+          },
+          "rendererWorld": {
+            "medianMs": 25.699999928474426,
+            "p95Ms": 33.199999928474426
+          },
+          "rendererOther": {
+            "medianMs": 0.2999999523162842,
+            "p95Ms": 0.9000000953674316
+          },
+          "presentationOutsideRenderSystem": {
+            "medianMs": 0.5,
+            "p95Ms": 1.1999999284744263
+          },
+          "renderSystemOutsideRenderer": {
+            "medianMs": 0.20000004768371582,
+            "p95Ms": 0.5
+          },
+          "loopOutsideUpdateAndPresentation": {
+            "medianMs": 0.10000002384185791,
+            "p95Ms": 0.30000007152557373
+          }
+        },
+        "foliageCounters": {
+          "frames": 73,
+          "visits": 25842,
+          "viewChanges": 0,
+          "shadowChanges": 0,
+          "initialRoots": 10
+        }
+      },
+      "low": {
+        "quality": "low",
+        "frames": 180,
+        "visibleFrames": 180,
+        "restored": true,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "maximumDraws": 181,
+        "maximumTriangles": 82191,
+        "medianDraws": 167,
+        "medianTriangles": 81036,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 33.4,
+        "cpuLoopMedianMs": 21.899999976158142,
+        "cpuLoopP95Ms": 31.299999952316284,
+        "geometryFirst": {
+          "pending": 22,
+          "installed": 58,
+          "swaps": 58,
+          "reduced": true,
+          "enabled": true
+        },
+        "geometryLast": {
+          "pending": 0,
+          "installed": 76,
+          "swaps": 76,
+          "reduced": true,
+          "enabled": true
+        },
+        "originalLimits": {
+          "maximumDraws": 200,
+          "maximumTriangles": 85000,
+          "maximumFrameMedianMs": 33.4,
+          "maximumFrameP95Ms": 50
+        },
+        "scope": "One actual GPU renderer, three live normal authenticated socket peers; standing/movement snapshot, not peer input or a battle frame-budget certificate.",
+        "samplePass": true,
+        "phaseCPU": {
+          "update": {
+            "medianMs": 3.700000047683716,
+            "p95Ms": 8.099999904632568
+          },
+          "presentation": {
+            "medianMs": 18.700000047683716,
+            "p95Ms": 26.399999976158142
+          },
+          "renderSystem": {
+            "medianMs": 18.09999990463257,
+            "p95Ms": 25.700000047683716
+          },
+          "renderer": {
+            "medianMs": 17.800000071525574,
+            "p95Ms": 25.600000023841858
+          },
+          "rendererWorld": {
+            "medianMs": 17.800000071525574,
+            "p95Ms": 25.600000023841858
+          },
+          "rendererOther": {
+            "medianMs": 0,
+            "p95Ms": 0
+          },
+          "presentationOutsideRenderSystem": {
+            "medianMs": 0.6000000238418579,
+            "p95Ms": 1.5000001192092896
+          },
+          "renderSystemOutsideRenderer": {
+            "medianMs": 0.10000002384185791,
+            "p95Ms": 0.2999999523162842
+          },
+          "loopOutsideUpdateAndPresentation": {
+            "medianMs": 0.10000002384185791,
+            "p95Ms": 0.49999988079071045
+          }
+        },
+        "foliageCounters": {
+          "frames": 123,
+          "visits": 42804,
+          "viewChanges": 0,
+          "shadowChanges": 0,
+          "initialRoots": 10
+        }
+      }
+    },
+    "cleanup": "Bothnativefixtures terminal0, onepass/oneskippedalternative each, zero retries/flakes/race/panic markers. Sanitized before inspection; no terrainDocker/process/listener remains on18220/18221/4190."
+  },
+  "next": "No local GPUwhile59native/liveCIactive. After59accepted, one modified-fixture defaultRaisedcompatibility run is justified by changed QA branch; do not repeat flat samples for favorable timing. Review and select onlyafterappropriate regression qualification. A representative moving productionflat combatroute remains a separate originalperformance question.",
+  "limits": "Bothviewports1280x844, one real renderer/three normal socket peers; prepared fourteen-slot saves and ordinarypopulation. No peerinput/battle/physicalphone/fullworld/pairedspeedup/cold/soak/capacity/campaign acceptance. Highseparateinstrumentedphase33.3median/50p95 exceedsoriginalHightiming; retainit alongsidepassingordinarysample.",
+  "evidence": [
+    {
+      "path": ".qa-flat-party/high/terminal.json",
+      "bytes": 1198,
+      "sha256": "6db9d6f4dda46381f3cf7e2813ca5e2d708f7ae8826055a4b4c428f6baf54619"
+    },
+    {
+      "path": ".qa-flat-party/high/sanitized.json",
+      "bytes": 429,
+      "sha256": "7258b18c58b4d57078569d11a7182d4426f751a805cb7fc6d96f3f8e3c25d573"
+    },
+    {
+      "path": ".qa-flat-party/high/budget-summary.json",
+      "bytes": 2122,
+      "sha256": "a3766b95fbbbe9239144b767514fed7d3dcacdd478fe36c6e53015899caddfd7"
+    },
+    {
+      "path": ".qa-flat-party/high/single-renderer-live-party-profile.json",
+      "bytes": 79950,
+      "sha256": "fe4f1e043f7ee6f7209ca6eb408c00955f337a2479bd66163b42ae05c68834bd"
+    },
+    {
+      "path": ".qa-flat-party/high/diagnostic-party-phases.json",
+      "bytes": 194000,
+      "sha256": "9cc0cff87b557b00fc978998a75f811f0276f749e9918d741b9021e36d7ebd1a"
+    },
+    {
+      "path": ".qa-flat-party/high/diagnostic-cpu-functions.json",
+      "bytes": 31572,
+      "sha256": "b6786ce279003d47ef6eb0418be7f3ccbebf9875f6c0093c1ebb7e5ba6aef690"
+    },
+    {
+      "path": ".qa-flat-party/high/native-report.json",
+      "bytes": 738592,
+      "sha256": "dc4c7ea5958cf6bec27f371ba8984d9a470cde4d8d59e1b604b4f3773b523f22"
+    },
+    {
+      "path": ".qa-flat-party/high/server-sanitized.log",
+      "bytes": 4187,
+      "sha256": "5235401c6ce727128677e7f92f6ae13478f50125e4c41de2ae365c94e12b4f06"
+    },
+    {
+      "path": ".qa-flat-party/low/terminal.json",
+      "bytes": 1196,
+      "sha256": "154779542d553e58279644f742fa1af37b2502a6fe1b44636ced7bb9e1152651"
+    },
+    {
+      "path": ".qa-flat-party/low/sanitized.json",
+      "bytes": 429,
+      "sha256": "7258b18c58b4d57078569d11a7182d4426f751a805cb7fc6d96f3f8e3c25d573"
+    },
+    {
+      "path": ".qa-flat-party/low/budget-summary.json",
+      "bytes": 2148,
+      "sha256": "e2448a3f73786d220c459306d0a26a6bd0ea9f1bbfc9f942c640b845baaa1741"
+    },
+    {
+      "path": ".qa-flat-party/low/single-renderer-live-party-profile.json",
+      "bytes": 79726,
+      "sha256": "910dc6dfc5796ea4a4d1886335efb9b719b39a8efbb671444e95d62827c5cf5f"
+    },
+    {
+      "path": ".qa-flat-party/low/diagnostic-party-phases.json",
+      "bytes": 190361,
+      "sha256": "d68a2204df237df4c2c1d6420b6fbb4d238fa20648d3b99ccaf729d7fde60fbf"
+    },
+    {
+      "path": ".qa-flat-party/low/diagnostic-cpu-functions.json",
+      "bytes": 29443,
+      "sha256": "f89c0c68c56cf16e095bad1c2abf86837048bad80eb9938efdc892a072ef7d7c"
+    },
+    {
+      "path": ".qa-flat-party/low/native-report.json",
+      "bytes": 731081,
+      "sha256": "b00c6af02049baf2825321c64f5890e7c1bf1d1347664c74a8dfb62f8abc000c"
+    },
+    {
+      "path": ".qa-flat-party/low/server-sanitized.log",
+      "bytes": 4187,
+      "sha256": "c6ecdf8a56d1b25da5f797bf61c79f1e55092d4215a3301d4925b85047e06442"
+    }
+  ]
+}

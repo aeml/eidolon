@@ -13,6 +13,12 @@ case "${terrain_scenario}" in
 esac
 readonly terrain_test terrain_timeout
 if [[ "${terrain_scenario}" == connected-party* ]]; then
+  case "${EIDOLON_TERRAIN_PARTY_PROFILE:-earth-elevation-rocks-v1}" in
+    flat-v1|earth-elevation-rocks-v1) ;;
+    *) echo 'Connected party QA terrain must be flat-v1 or earth-elevation-rocks-v1.' >&2; exit 1 ;;
+  esac
+fi
+if [[ "${terrain_scenario}" == connected-party* ]]; then
   if ! [[ "${EIDOLON_TERRAIN_BROWSER_NODE:-}" == /* ]] || ! [[ -x "${EIDOLON_TERRAIN_BROWSER_NODE:-}" ]]; then
     echo "Connected party QA requires an explicit absolute executable Node path." >&2
     exit 1
