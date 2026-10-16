@@ -1,0 +1,927 @@
+{
+  "at": "2026-10-16T13:12:08.390611+00:00",
+  "source": "22beedd81a781deaeac3b9518e596e8d25df5a71",
+  "referenceSource": "434d1011bb5118dd09d30596bc3ae8b34cef71d1",
+  "state": "Qualified for ordinary master selection and next coherent world milestone; not yet deployed.",
+  "scope": "Bastion-only bonded top stones/recessed mortar inside original footing envelope. Existing fieldstone cap material reused; no new material/map/draw batch. Shared Abyssal default and allnonfoundation source parts/metadata exact.",
+  "cpu": "71focused checks/sixsuites+fullLint; separatecorrected1case sourcecensus passes.28initialfocusedare included, not additional.",
+  "sourceCensus": {
+    "scope": "CPU source exactness/count screen only; native visual/culling/budget qualification remains pending.",
+    "legacyFoundationSha256": "ec5db6918a47c96ddf2f4bba8f43c0128ae7f5f233d2cb5c6167ac684254641a",
+    "candidateTriangles": 7280,
+    "rows": [
+      {
+        "id": "verdant_bastion_catacombs",
+        "sourceParts": 49,
+        "beforeTriangles": 9035,
+        "afterTriangles": 16223,
+        "draws": 9,
+        "allUnchangedPartsExact": true
+      },
+      {
+        "id": "molten_core",
+        "sourceParts": 32,
+        "beforeTriangles": 10796,
+        "afterTriangles": 10796,
+        "draws": 9,
+        "allUnchangedPartsExact": true
+      },
+      {
+        "id": "tempest_spire",
+        "sourceParts": 34,
+        "beforeTriangles": 2196,
+        "afterTriangles": 2196,
+        "draws": 8,
+        "allUnchangedPartsExact": true
+      },
+      {
+        "id": "abyssal_well",
+        "sourceParts": 26,
+        "beforeTriangles": 2052,
+        "afterTriangles": 2052,
+        "draws": 8,
+        "allUnchangedPartsExact": true
+      }
+    ]
+  },
+  "native": "4reference/candidateHighLowprepared-worldcases each180moving samples, zoom15/30, westapproach/graveroad/flank, imported14slotFighter/HUD/fullscenery; plus4nativeWizardcutawaycases with unchangedocclusion/outsidepixelthresholds. Workers1/retries0.",
+  "world": [
+    {
+      "case": "bastion-world-Bastion-bond-b0d4f-ation-low-bonded-foundation",
+      "reference": false,
+      "quality": "low",
+      "frames": 180,
+      "maxCalls": 63,
+      "maxTriangles": 57172,
+      "prepared": {
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "equipped": 14,
+        "missing": [],
+        "importedFighter": true,
+        "stats": {
+          "strength": 10,
+          "intelligence": 2,
+          "dexterity": 4,
+          "wisdom": 3,
+          "vitality": 8,
+          "maxHp": 80,
+          "hp": 80,
+          "maxMana": 20,
+          "mana": 20,
+          "speed": 5,
+          "damage": 2,
+          "defense": 0,
+          "hpRegen": 0.08,
+          "manaRegen": 0.03,
+          "attackSpeed": 1.9607843137254901,
+          "cooldownReduction": 0.02,
+          "manaCostReduction": 0,
+          "castSpeed": 1.006,
+          "critChanceBonus": 0,
+          "poisonDamageBonus": 0,
+          "fireDamageBonus": 0,
+          "healingDoneBonus": 0,
+          "holyDamageBonus": 0,
+          "lifestealBonus": 0,
+          "allResistBonus": 0
+        },
+        "character": "Fighter",
+        "quality": "low",
+        "mobile": true
+      },
+      "timing": {
+        "scope": "Bounded prepared one-actor scene timing; synchronous CPU submission and raw RAF intervals, not GPU elapsed time or dynamic/server/whole-game acceptance.",
+        "profiles": [
+          {
+            "zoom": 15,
+            "samples": 90,
+            "rawMedianMs": 16.69999999999891,
+            "rawP95Ms": 16.700000000000728,
+            "cpuMedianMs": 4,
+            "cpuP95Ms": 8
+          },
+          {
+            "zoom": 30,
+            "samples": 90,
+            "rawMedianMs": 16.69999999999891,
+            "rawP95Ms": 16.799999999999272,
+            "cpuMedianMs": 4,
+            "cpuP95Ms": 7.5
+          }
+        ]
+      },
+      "resources": {
+        "geometries": 12,
+        "textures": 17,
+        "ownedSkeletons": 6,
+        "beforeCleanup": {
+          "geometries": 78,
+          "textures": 71
+        },
+        "afterSkeletons": {
+          "geometries": 78,
+          "textures": 66
+        },
+        "contextLost": true,
+        "entranceOwned": 18,
+        "entranceRetired": 18,
+        "canvasConnected": false,
+        "rendererDisposed": true,
+        "actorReleased": true
+      }
+    },
+    {
+      "case": "bastion-world-Bastion-bond-e2cc5-tion-high-bonded-foundation",
+      "reference": false,
+      "quality": "high",
+      "frames": 180,
+      "maxCalls": 110,
+      "maxTriangles": 121332,
+      "prepared": {
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "equipped": 14,
+        "missing": [],
+        "importedFighter": true,
+        "stats": {
+          "strength": 10,
+          "intelligence": 2,
+          "dexterity": 4,
+          "wisdom": 3,
+          "vitality": 8,
+          "maxHp": 80,
+          "hp": 80,
+          "maxMana": 20,
+          "mana": 20,
+          "speed": 5,
+          "damage": 2,
+          "defense": 0,
+          "hpRegen": 0.08,
+          "manaRegen": 0.03,
+          "attackSpeed": 1.9607843137254901,
+          "cooldownReduction": 0.02,
+          "manaCostReduction": 0,
+          "castSpeed": 1.006,
+          "critChanceBonus": 0,
+          "poisonDamageBonus": 0,
+          "fireDamageBonus": 0,
+          "healingDoneBonus": 0,
+          "holyDamageBonus": 0,
+          "lifestealBonus": 0,
+          "allResistBonus": 0
+        },
+        "character": "Fighter",
+        "quality": "high",
+        "mobile": false
+      },
+      "timing": {
+        "scope": "Bounded prepared one-actor scene timing; synchronous CPU submission and raw RAF intervals, not GPU elapsed time or dynamic/server/whole-game acceptance.",
+        "profiles": [
+          {
+            "zoom": 15,
+            "samples": 90,
+            "rawMedianMs": 16.69999999999709,
+            "rawP95Ms": 16.700000000000728,
+            "cpuMedianMs": 5.100000023841858,
+            "cpuP95Ms": 8.5
+          },
+          {
+            "zoom": 30,
+            "samples": 90,
+            "rawMedianMs": 16.700000000000728,
+            "rawP95Ms": 16.700000000000728,
+            "cpuMedianMs": 4.600000023841858,
+            "cpuP95Ms": 7.799999952316284
+          }
+        ]
+      },
+      "resources": {
+        "geometries": 12,
+        "textures": 17,
+        "ownedSkeletons": 6,
+        "beforeCleanup": {
+          "geometries": 83,
+          "textures": 94
+        },
+        "afterSkeletons": {
+          "geometries": 83,
+          "textures": 89
+        },
+        "contextLost": true,
+        "entranceOwned": 18,
+        "entranceRetired": 18,
+        "canvasConnected": false,
+        "rendererDisposed": true,
+        "actorReleased": true
+      }
+    },
+    {
+      "case": "bastion-world-Bastion-bonded-foundation-high-reference63",
+      "reference": true,
+      "quality": "high",
+      "frames": 180,
+      "maxCalls": 110,
+      "maxTriangles": 106956,
+      "prepared": {
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "equipped": 14,
+        "missing": [],
+        "importedFighter": true,
+        "stats": {
+          "strength": 10,
+          "intelligence": 2,
+          "dexterity": 4,
+          "wisdom": 3,
+          "vitality": 8,
+          "maxHp": 80,
+          "hp": 80,
+          "maxMana": 20,
+          "mana": 20,
+          "speed": 5,
+          "damage": 2,
+          "defense": 0,
+          "hpRegen": 0.08,
+          "manaRegen": 0.03,
+          "attackSpeed": 1.9607843137254901,
+          "cooldownReduction": 0.02,
+          "manaCostReduction": 0,
+          "castSpeed": 1.006,
+          "critChanceBonus": 0,
+          "poisonDamageBonus": 0,
+          "fireDamageBonus": 0,
+          "healingDoneBonus": 0,
+          "holyDamageBonus": 0,
+          "lifestealBonus": 0,
+          "allResistBonus": 0
+        },
+        "character": "Fighter",
+        "quality": "high",
+        "mobile": false
+      },
+      "timing": {
+        "scope": "Bounded prepared one-actor scene timing; synchronous CPU submission and raw RAF intervals, not GPU elapsed time or dynamic/server/whole-game acceptance.",
+        "profiles": [
+          {
+            "zoom": 15,
+            "samples": 90,
+            "rawMedianMs": 16.69999999999709,
+            "rawP95Ms": 16.799999999999272,
+            "cpuMedianMs": 4.899999976158142,
+            "cpuP95Ms": 6.600000023841858
+          },
+          {
+            "zoom": 30,
+            "samples": 90,
+            "rawMedianMs": 16.700000000000728,
+            "rawP95Ms": 16.700000000000728,
+            "cpuMedianMs": 5.100000023841858,
+            "cpuP95Ms": 6.799999952316284
+          }
+        ]
+      },
+      "resources": {
+        "geometries": 12,
+        "textures": 17,
+        "ownedSkeletons": 6,
+        "beforeCleanup": {
+          "geometries": 83,
+          "textures": 94
+        },
+        "afterSkeletons": {
+          "geometries": 83,
+          "textures": 89
+        },
+        "contextLost": true,
+        "entranceOwned": 18,
+        "entranceRetired": 18,
+        "canvasConnected": false,
+        "rendererDisposed": true,
+        "actorReleased": true
+      }
+    },
+    {
+      "case": "bastion-world-Bastion-bonded-foundation-low-reference63",
+      "reference": true,
+      "quality": "low",
+      "frames": 180,
+      "maxCalls": 63,
+      "maxTriangles": 49984,
+      "prepared": {
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "equipped": 14,
+        "missing": [],
+        "importedFighter": true,
+        "stats": {
+          "strength": 10,
+          "intelligence": 2,
+          "dexterity": 4,
+          "wisdom": 3,
+          "vitality": 8,
+          "maxHp": 80,
+          "hp": 80,
+          "maxMana": 20,
+          "mana": 20,
+          "speed": 5,
+          "damage": 2,
+          "defense": 0,
+          "hpRegen": 0.08,
+          "manaRegen": 0.03,
+          "attackSpeed": 1.9607843137254901,
+          "cooldownReduction": 0.02,
+          "manaCostReduction": 0,
+          "castSpeed": 1.006,
+          "critChanceBonus": 0,
+          "poisonDamageBonus": 0,
+          "fireDamageBonus": 0,
+          "healingDoneBonus": 0,
+          "holyDamageBonus": 0,
+          "lifestealBonus": 0,
+          "allResistBonus": 0
+        },
+        "character": "Fighter",
+        "quality": "low",
+        "mobile": true
+      },
+      "timing": {
+        "scope": "Bounded prepared one-actor scene timing; synchronous CPU submission and raw RAF intervals, not GPU elapsed time or dynamic/server/whole-game acceptance.",
+        "profiles": [
+          {
+            "zoom": 15,
+            "samples": 90,
+            "rawMedianMs": 16.69999999999891,
+            "rawP95Ms": 16.700000000000728,
+            "cpuMedianMs": 2.799999952316284,
+            "cpuP95Ms": 5.100000023841858
+          },
+          {
+            "zoom": 30,
+            "samples": 90,
+            "rawMedianMs": 16.69999999999891,
+            "rawP95Ms": 16.700000000000728,
+            "cpuMedianMs": 3.100000023841858,
+            "cpuP95Ms": 5.299999952316284
+          }
+        ]
+      },
+      "resources": {
+        "geometries": 12,
+        "textures": 17,
+        "ownedSkeletons": 6,
+        "beforeCleanup": {
+          "geometries": 78,
+          "textures": 71
+        },
+        "afterSkeletons": {
+          "geometries": 78,
+          "textures": 66
+        },
+        "contextLost": true,
+        "entranceOwned": 18,
+        "entranceRetired": 18,
+        "canvasConnected": false,
+        "rendererDisposed": true,
+        "actorReleased": true
+      }
+    }
+  ],
+  "delta": "Calls byte-exact per-view in all180pairedpositions perquality. +7188Lowtri/+14376Highwithshadows exactly for every sampledview.",
+  "failures": [
+    "Initialexistingcacheguardexpected39butnewsite-specificgeometrymakes40; updatedexpectedownedcachecount, retainingdraw/materialcontracts.",
+    "Firstprivateexactnesscensususedoptimizedmaterial-batchnames toexcludea rawpart andfailed; changedfixtureto rawoptimized:false for sourcepartcomparison. Bothinitiallogs retained."
+  ],
+  "privacy": "Prepared nonsocketartfixture, no account credentials. NativeChrome153AMD/RADV. BrowserviewportLow390 is notphysicalphonecertification.",
+  "limits": "Prepared boundedscene, no normalservermovement/earnedstory/battle/wholeworld/physicaldevice/FPS/finalownerartacceptance. Originaltargets/coldroute failures preserved; no newsoak/stress. Normalmovementintegration remains for upcomingcoherentmilestone.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-bastion-bonded-foundation-20261016",
+  "inventorySha256": "83957726b697d142c03ac64e2aeee30916262e4244a1679a12df0c91ec85da54",
+  "evidence": [
+    {
+      "path": "architecture-reference.js",
+      "bytes": 5479,
+      "sha256": "6a8ba4a88e57180bc193f2ec4db4ff5272a161cdc8207af551e07f6d211084c8"
+    },
+    {
+      "path": "bastion-world.spec.js",
+      "bytes": 12846,
+      "sha256": "f51109bc6c495b1185a7ffc4de6e40c6d0efad83091ad4020903e07b70e6dbbc"
+    },
+    {
+      "path": "bonded-guards.log",
+      "bytes": 404,
+      "sha256": "bceabe17d22a23829acfcc3272ede1452e8f1c0792444b054d2e95e0a1870c2f"
+    },
+    {
+      "path": "entrances-reference.js",
+      "bytes": 26582,
+      "sha256": "56e250ea654e8834b4cac3e1580d219902208536d8126e336910e53ed93a0c14"
+    },
+    {
+      "path": "existing-guards.log",
+      "bytes": 1347,
+      "sha256": "08dcb1ed613956eb382eff2585b79c0b3f443f695cb7165b07e686432830a37e"
+    },
+    {
+      "path": "focused-final.log",
+      "bytes": 556,
+      "sha256": "d5b7dbf9ac05914eda884123b26b2eac45ec7d0b7e1892fd35eb5ec0ce22d15c"
+    },
+    {
+      "path": "lint-final.log",
+      "bytes": 96,
+      "sha256": "2529459345a1efdeb634ef958de7c4432ac9162453c5595b6a6578e77d0fb8e4"
+    },
+    {
+      "path": "lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native-cutaway-results/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": "native-cutaway-results/entrance-visibility-verdan-03e2c-t-moving-camera-or-landmark/entrance-before.png",
+      "bytes": 139208,
+      "sha256": "690b63517046ba5f5c142439b72f5af963c9e62303db57d88a36d0773bde6597"
+    },
+    {
+      "path": "native-cutaway-results/entrance-visibility-verdan-03e2c-t-moving-camera-or-landmark/entrance-revealed.png",
+      "bytes": 139392,
+      "sha256": "32c9797b45790b360304147c2eeb468889254249aa06a4b99a44196f0825bc09"
+    },
+    {
+      "path": "native-cutaway-results/entrance-visibility-verdan-0585d-t-moving-camera-or-landmark/entrance-before.png",
+      "bytes": 367943,
+      "sha256": "e5f8baf97e8d7f0631c78e1e9f89233d173dbacf18ffa71f164c8428305148d1"
+    },
+    {
+      "path": "native-cutaway-results/entrance-visibility-verdan-0585d-t-moving-camera-or-landmark/entrance-revealed.png",
+      "bytes": 368956,
+      "sha256": "4e1262e0b27d50fe16024be7ee5628ea82d832aa89b70a573af423c2b63f5290"
+    },
+    {
+      "path": "native-cutaway-results/entrance-visibility-verdan-545a5-t-moving-camera-or-landmark/entrance-before.png",
+      "bytes": 178844,
+      "sha256": "c6c359673161b8b41a680798e0f429e7c3aea65239a9b619132f065bd748bf8f"
+    },
+    {
+      "path": "native-cutaway-results/entrance-visibility-verdan-545a5-t-moving-camera-or-landmark/entrance-revealed.png",
+      "bytes": 178838,
+      "sha256": "a18696850a8d1a0b9bd109bbe7fbfe83821986ce951f15fb0d4bb1aaa1f21c7f"
+    },
+    {
+      "path": "native-cutaway-results/entrance-visibility-verdan-b3792-t-moving-camera-or-landmark/entrance-before.png",
+      "bytes": 345907,
+      "sha256": "044eaee3a58d32ab232d929f85f0639d8c0b53f695141b9347efd9e36a62fa63"
+    },
+    {
+      "path": "native-cutaway-results/entrance-visibility-verdan-b3792-t-moving-camera-or-landmark/entrance-revealed.png",
+      "bytes": 346552,
+      "sha256": "5e6c669b0b0d1969fc380ae045fe3cc2561485a206fa1160ec69869cea1feecc"
+    },
+    {
+      "path": "native-cutaway.log",
+      "bytes": 2379,
+      "sha256": "1b356e4ff28ea5bb6fb96be7d473ea5037aac8c5ae79eda97b5b06fa49223492"
+    },
+    {
+      "path": "native-discovery.log",
+      "bytes": 354,
+      "sha256": "3af084478994cc778a59a2cc697ed458354366b340cda7f4539671d01a715f28"
+    },
+    {
+      "path": "native-world-results/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-b0d4f-ation-low-bonded-foundation/bastion-eastern-flank-zoom15-phase0.png",
+      "bytes": 342516,
+      "sha256": "eef603341c52c263118c3963e750e321663b4fb98278310437df5031ac07c403"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-b0d4f-ation-low-bonded-foundation/bastion-eastern-flank-zoom15-phase15.png",
+      "bytes": 345357,
+      "sha256": "444d725d49423bc82f6f5cd051fbfdcafff0e99a4b861e45fe59dbf120dfee09"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-b0d4f-ation-low-bonded-foundation/bastion-eastern-flank-zoom15-phase29.png",
+      "bytes": 346338,
+      "sha256": "0eee5def33feebf5b19fe6ee74a1ddd0d5905fea11976e60dc9ba82a66619c8e"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-b0d4f-ation-low-bonded-foundation/bastion-eastern-flank-zoom30-phase0.png",
+      "bytes": 371276,
+      "sha256": "afdd4fd3c838dd5a42116c1ba0ff5dc0c8cecd278828283326ff61e80f53f467"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-b0d4f-ation-low-bonded-foundation/bastion-eastern-flank-zoom30-phase15.png",
+      "bytes": 370721,
+      "sha256": "cd5a7ea6149100e5084e7f98365f4704fe4d75b17bc8c8fa8c6137a223eea74c"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-b0d4f-ation-low-bonded-foundation/bastion-eastern-flank-zoom30-phase29.png",
+      "bytes": 369018,
+      "sha256": "993fb2350ae48648381d187768f8d00e2926367d47d23b61d44cbdabf8ca3e9c"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-b0d4f-ation-low-bonded-foundation/bastion-grave-road-zoom15-phase0.png",
+      "bytes": 370266,
+      "sha256": "b9111ae7268c5c1ca23db6e8646833a931014e80d9ab3754fe929297012cba2c"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-b0d4f-ation-low-bonded-foundation/bastion-grave-road-zoom15-phase15.png",
+      "bytes": 369708,
+      "sha256": "3722c735fe18ce043006da66249f70619829d31a9ebb7b87008f0851e383dedc"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-b0d4f-ation-low-bonded-foundation/bastion-grave-road-zoom15-phase29.png",
+      "bytes": 369002,
+      "sha256": "677fd09f794cc5b52c1acafa5fd252a5b0fe4c235c399970bf2300f0387d5eb0"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-b0d4f-ation-low-bonded-foundation/bastion-grave-road-zoom30-phase0.png",
+      "bytes": 379363,
+      "sha256": "52999d0873c041d62766becb96d1f3e82cbd28f836516f3d608e292fa5a881c5"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-b0d4f-ation-low-bonded-foundation/bastion-grave-road-zoom30-phase15.png",
+      "bytes": 380030,
+      "sha256": "d032819efa688cdf246298a4b95d2c56b05a9961c27859cf736fb7f4014cea43"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-b0d4f-ation-low-bonded-foundation/bastion-grave-road-zoom30-phase29.png",
+      "bytes": 379533,
+      "sha256": "c751ce876b2a95e14226e946effcf89c1fae078ca8e6fd13a5568d9ec090ef25"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-b0d4f-ation-low-bonded-foundation/bastion-west-approach-zoom15-phase0.png",
+      "bytes": 373333,
+      "sha256": "d2a9c5132b6be702948032756cac366b1f65ad6e8faff71a869cf971cbd28ba8"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-b0d4f-ation-low-bonded-foundation/bastion-west-approach-zoom15-phase15.png",
+      "bytes": 367205,
+      "sha256": "27cfde48560cb0c4af40a7c3f553a333eeaba9f150c48ce45f58cbd90cfb1d56"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-b0d4f-ation-low-bonded-foundation/bastion-west-approach-zoom15-phase29.png",
+      "bytes": 360159,
+      "sha256": "bf30375e41aa5c6eba7c16266fd929f374d6e80db13f315acff9c679538860ec"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-b0d4f-ation-low-bonded-foundation/bastion-west-approach-zoom30-phase0.png",
+      "bytes": 388548,
+      "sha256": "875e3c2fbcd7bc654b1e9d04a02613dbbecac589f8321198236ab429b334d697"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-b0d4f-ation-low-bonded-foundation/bastion-west-approach-zoom30-phase15.png",
+      "bytes": 386601,
+      "sha256": "6d63103e77536e6b7a22ca93f3406d8989634da15e6347e67dd5586dfb750bc6"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-b0d4f-ation-low-bonded-foundation/bastion-west-approach-zoom30-phase29.png",
+      "bytes": 386002,
+      "sha256": "28d1d3784d6575f608d1ba3636945f4356a7db8b1c84df95295e94759d2aff5c"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-b0d4f-ation-low-bonded-foundation/bastion-world-review.json",
+      "bytes": 63345,
+      "sha256": "17d7cb1ecd4ae9f817613c0910f2d17f8dd98ea50f53b13470c7329c48727319"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-e2cc5-tion-high-bonded-foundation/bastion-eastern-flank-zoom15-phase0.png",
+      "bytes": 1116857,
+      "sha256": "64c46ef17f803183347660a1ffd85fbe6651b4042a4fcaff020661badfb8db54"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-e2cc5-tion-high-bonded-foundation/bastion-eastern-flank-zoom15-phase15.png",
+      "bytes": 1124435,
+      "sha256": "80d42060da863caa3669d75d426a075d9f2f5b4b0dee4e396322f4546efd106c"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-e2cc5-tion-high-bonded-foundation/bastion-eastern-flank-zoom15-phase29.png",
+      "bytes": 1129972,
+      "sha256": "b171e903ae5e3baf7d74b273c15c5a67aa2faf6b9bddc6f67db403aa4e01fbbb"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-e2cc5-tion-high-bonded-foundation/bastion-eastern-flank-zoom30-phase0.png",
+      "bytes": 1163158,
+      "sha256": "2a1a372ffc2cf321da28610ea28f2e713af8d48d297743a5641fd13e42f02fcf"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-e2cc5-tion-high-bonded-foundation/bastion-eastern-flank-zoom30-phase15.png",
+      "bytes": 1163708,
+      "sha256": "324fe74f438ac89ba5b81d4d69cbe92433efa91bb570c0dce389c53a6d8fe465"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-e2cc5-tion-high-bonded-foundation/bastion-eastern-flank-zoom30-phase29.png",
+      "bytes": 1164229,
+      "sha256": "5b7d50fff6b4a2fbd20deddaf60ccd2a6d8661407bfcfc55c1e0e2ccc6bc38bb"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-e2cc5-tion-high-bonded-foundation/bastion-grave-road-zoom15-phase0.png",
+      "bytes": 1179421,
+      "sha256": "5fd79271d70fe6268b3908028e2e0a3017c7a54ffbf7491951a2c92ad86d8352"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-e2cc5-tion-high-bonded-foundation/bastion-grave-road-zoom15-phase15.png",
+      "bytes": 1181692,
+      "sha256": "524826f482e277390932f74e5668ccfdb1c1b78c63fd610fa1ea5a59cbc11102"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-e2cc5-tion-high-bonded-foundation/bastion-grave-road-zoom15-phase29.png",
+      "bytes": 1182509,
+      "sha256": "865ba45cc8dcec6a9b2dd6cb0446d0b797ddc58adf570b731ce7c5710306437b"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-e2cc5-tion-high-bonded-foundation/bastion-grave-road-zoom30-phase0.png",
+      "bytes": 1209565,
+      "sha256": "4e6e676a719fcb8faeb4da89a0312e40a00c29b412c6de2f504eb49411671bc0"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-e2cc5-tion-high-bonded-foundation/bastion-grave-road-zoom30-phase15.png",
+      "bytes": 1204214,
+      "sha256": "ab76c8fca2cb54097b4275ae0bdcd28079ec2c14125cc1bf74d170c64a0cb142"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-e2cc5-tion-high-bonded-foundation/bastion-grave-road-zoom30-phase29.png",
+      "bytes": 1201910,
+      "sha256": "057315f4ee7b07c7b23ace2e75bf618d41aa59e4642f5435ad32a7e4f8e6c1a8"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-e2cc5-tion-high-bonded-foundation/bastion-west-approach-zoom15-phase0.png",
+      "bytes": 1126212,
+      "sha256": "87e14cb5d9216fba6d16237a23835b15f50b6f6c71ec80b7584f41895ac8286b"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-e2cc5-tion-high-bonded-foundation/bastion-west-approach-zoom15-phase15.png",
+      "bytes": 1094760,
+      "sha256": "10f1afc6cad1e40dbfee8fba0faba1654b6ed99d672787a91baee35501ff8560"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-e2cc5-tion-high-bonded-foundation/bastion-west-approach-zoom15-phase29.png",
+      "bytes": 1066429,
+      "sha256": "f9efacda025951b50da54fcfa0bbf720428fbf5476b092735225ac4823d27f27"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-e2cc5-tion-high-bonded-foundation/bastion-west-approach-zoom30-phase0.png",
+      "bytes": 1202593,
+      "sha256": "c83634fe5f1dadffb90f9aec71c1591ba3fff1cb087925a63f16b4d1a148e89c"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-e2cc5-tion-high-bonded-foundation/bastion-west-approach-zoom30-phase15.png",
+      "bytes": 1195729,
+      "sha256": "76629e89fb1601d1315e95e3797629be2ed5509d4ed5c1f04d14348720cf60d6"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-e2cc5-tion-high-bonded-foundation/bastion-west-approach-zoom30-phase29.png",
+      "bytes": 1190471,
+      "sha256": "2089418baf821a56f35401bc31475a0cc42800bc29bcbb4152741801c38edc39"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bond-e2cc5-tion-high-bonded-foundation/bastion-world-review.json",
+      "bytes": 63490,
+      "sha256": "0a3604f05f5ebd6aa422fb56137e6d3898ab39cac14066c031b81eaa102378ed"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-high-reference63/bastion-eastern-flank-zoom15-phase0.png",
+      "bytes": 1059430,
+      "sha256": "0442c5599bd54495b1b1c95f2ac7d69c11d76e369d7d2d4476923c8e2d98e1cd"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-high-reference63/bastion-eastern-flank-zoom15-phase15.png",
+      "bytes": 1068720,
+      "sha256": "c4204d74975471988764c79671708a476d471a477d105b6db9f9ec99dba0763a"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-high-reference63/bastion-eastern-flank-zoom15-phase29.png",
+      "bytes": 1074455,
+      "sha256": "ddd7c451a842f34a0415706d562e9b7caabf61d4716d175bcc2e9e08fe3810a7"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-high-reference63/bastion-eastern-flank-zoom30-phase0.png",
+      "bytes": 1141160,
+      "sha256": "6eab7a9761a042f560fe1bac883b679c668f7e530fb1b2438a84b892b1798a21"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-high-reference63/bastion-eastern-flank-zoom30-phase15.png",
+      "bytes": 1142361,
+      "sha256": "ec7758d3c9acde4032b424ba03949c1e5f6cffc07130265212a2fb2411dc96d1"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-high-reference63/bastion-eastern-flank-zoom30-phase29.png",
+      "bytes": 1142933,
+      "sha256": "e3976dbfd2037670cc173a9325cee6d7dd2d14dbe5e683ce5ec0ad7af617389d"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-high-reference63/bastion-grave-road-zoom15-phase0.png",
+      "bytes": 1176739,
+      "sha256": "399b30b8ce9bfe607b8e0b8a7a1e0bb20ce419deb5c4ab3897dd469f53b2ceca"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-high-reference63/bastion-grave-road-zoom15-phase15.png",
+      "bytes": 1180309,
+      "sha256": "53e319c3d771c269d652c0eba2ff56873d2e6fc0479908b8c25e73fd9aa29cd8"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-high-reference63/bastion-grave-road-zoom15-phase29.png",
+      "bytes": 1179373,
+      "sha256": "e38891c6d43121b9f57e6b7818e3b951598df75300a076ffa9d0854ba63e5be3"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-high-reference63/bastion-grave-road-zoom30-phase0.png",
+      "bytes": 1189574,
+      "sha256": "fe9e52e2910ec533ed3d1c40370d15ce57b5c8837151eb38a34beaf88c028ee2"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-high-reference63/bastion-grave-road-zoom30-phase15.png",
+      "bytes": 1184605,
+      "sha256": "bb9b4a726f72a517202f5ada171f209e38f6af79778b7a754f471128c5e3ad24"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-high-reference63/bastion-grave-road-zoom30-phase29.png",
+      "bytes": 1182946,
+      "sha256": "36cccb0fcc19dc67007ccaf935393950429f775d95a21239d973544fcbb8738a"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-high-reference63/bastion-west-approach-zoom15-phase0.png",
+      "bytes": 1103014,
+      "sha256": "efd0aa72e3fd6885c1fd216c88fb9e41b31234db761fae01ab3f0a0f6387668f"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-high-reference63/bastion-west-approach-zoom15-phase15.png",
+      "bytes": 1066986,
+      "sha256": "e420b03bd87277be967f65323efad69b0f5e8f220f80c716e90286409013784c"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-high-reference63/bastion-west-approach-zoom15-phase29.png",
+      "bytes": 1034714,
+      "sha256": "9eb3ebd00e32cc1a706bbc2b99a468ace9580404bbd8b751c6ada536b9da8569"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-high-reference63/bastion-west-approach-zoom30-phase0.png",
+      "bytes": 1189047,
+      "sha256": "ce595723df535118fdd9c64b4117ac29824ba29f46e954463e976c0b6babaa0c"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-high-reference63/bastion-west-approach-zoom30-phase15.png",
+      "bytes": 1182575,
+      "sha256": "1a31b4a3c9217f930c0c007be572fbb1bdf1dc08c56346ad4f46b8089664a260"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-high-reference63/bastion-west-approach-zoom30-phase29.png",
+      "bytes": 1177438,
+      "sha256": "54606ec76f1673b682e277d7ff0dc412d7cfb0da1d9934f0babf6bd2c82279fa"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-high-reference63/bastion-world-review.json",
+      "bytes": 63533,
+      "sha256": "96851a4b6b205d58b16010f5927f97acd8a990b5448a91e5c00d4e00b3ea2049"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-low-reference63/bastion-eastern-flank-zoom15-phase0.png",
+      "bytes": 340268,
+      "sha256": "44194ab0fb1fb80aa61f18765a8135ae3fb04e625b37cc9bc356593c2568991e"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-low-reference63/bastion-eastern-flank-zoom15-phase15.png",
+      "bytes": 342334,
+      "sha256": "8a412a803c1cb4255c4395a4646ad04546e77a53dbbfc620d9853bb043d87367"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-low-reference63/bastion-eastern-flank-zoom15-phase29.png",
+      "bytes": 342938,
+      "sha256": "630ba3b1b2f6101a1a9b57c9564e7977fde962f30a38db0820de3c056a8d9577"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-low-reference63/bastion-eastern-flank-zoom30-phase0.png",
+      "bytes": 366054,
+      "sha256": "99a6f61c8021d789b0d319316ea3a3c506b591fbeadcf83849eb5a03ceb31577"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-low-reference63/bastion-eastern-flank-zoom30-phase15.png",
+      "bytes": 365244,
+      "sha256": "270962c624e69b377c133129416bc9f32c02888c8d7b6697af5eebae04b13a27"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-low-reference63/bastion-eastern-flank-zoom30-phase29.png",
+      "bytes": 364337,
+      "sha256": "d5e4387537e68b32543a4e242514cad864d9eaa035e526f7eb2e637c66936f62"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-low-reference63/bastion-grave-road-zoom15-phase0.png",
+      "bytes": 369068,
+      "sha256": "4c75cfbdf269b7ee856a0418fcd1bb2842f7a4143ef6535c6b030d78162d6721"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-low-reference63/bastion-grave-road-zoom15-phase15.png",
+      "bytes": 368766,
+      "sha256": "864e277162ee70f7233263915ba1bbca30530653f8d7c02ff7dba80b347121b5"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-low-reference63/bastion-grave-road-zoom15-phase29.png",
+      "bytes": 368378,
+      "sha256": "ad6b055857a090b1c531dccd3594e917367bd6637b0a15ff205fc6b2b22e8dd9"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-low-reference63/bastion-grave-road-zoom30-phase0.png",
+      "bytes": 377265,
+      "sha256": "46d83c73135ead8d6e316605c418d1f900b4312923a8c62dcaaca66f9a7388f5"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-low-reference63/bastion-grave-road-zoom30-phase15.png",
+      "bytes": 377702,
+      "sha256": "0a71a53ee1fc268ab389a9f765a6d7a06b723d951b15010b87c0e34dc5214b96"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-low-reference63/bastion-grave-road-zoom30-phase29.png",
+      "bytes": 376574,
+      "sha256": "24eaee9f35928e3cd52d3d2d337179a9a57933c5b61b31a8c07346724e975ef9"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-low-reference63/bastion-west-approach-zoom15-phase0.png",
+      "bytes": 369099,
+      "sha256": "5f3053e2d89d741f30966d588d7850000fb531afd7c1a4c922ed8ba184ad2352"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-low-reference63/bastion-west-approach-zoom15-phase15.png",
+      "bytes": 361962,
+      "sha256": "1d7157b37ebf8138319239607a2ae2e32892999e3afb28acee5384d704e15721"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-low-reference63/bastion-west-approach-zoom15-phase29.png",
+      "bytes": 354797,
+      "sha256": "014a93c2e995e52577b0c8d5614a4709445a8d7ad097272b35ba97e7f5915d13"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-low-reference63/bastion-west-approach-zoom30-phase0.png",
+      "bytes": 386390,
+      "sha256": "2a86483c5801985f73771475668f456b55aea4e53595cf806b79f6e9a461a7f4"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-low-reference63/bastion-west-approach-zoom30-phase15.png",
+      "bytes": 384373,
+      "sha256": "8e8b9ec7555a8b0bf514131a12eb1e7e7e2f4bb70d10a61eeb8521cd8aadf181"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-low-reference63/bastion-west-approach-zoom30-phase29.png",
+      "bytes": 383326,
+      "sha256": "4992e7d2aeae56d4a1aa11149f402985e8811235d5fa69df1513254534fc0bc4"
+    },
+    {
+      "path": "native-world-results/bastion-world-Bastion-bonded-foundation-low-reference63/bastion-world-review.json",
+      "bytes": 63445,
+      "sha256": "6b005776f040c66be1321c45ca500d602fb79b17d85ea7fdbaa4e67dd06fcc8c"
+    },
+    {
+      "path": "native-world.log",
+      "bytes": 700,
+      "sha256": "b4ffbf33ee387aeba3c05b05a7d7f84a18debb051c4f105104447f60e1d58dc5"
+    },
+    {
+      "path": "reference/BastionArchitectureGeometry.js",
+      "bytes": 5479,
+      "sha256": "6a8ba4a88e57180bc193f2ec4db4ff5272a161cdc8207af551e07f6d211084c8"
+    },
+    {
+      "path": "reference/ProceduralDungeonEntrances.js",
+      "bytes": 26493,
+      "sha256": "5c5e66c18875d6e332142afee847d7717f8eb8d64f91302b5b978729d70bab69"
+    },
+    {
+      "path": "run-source.json",
+      "bytes": 343,
+      "sha256": "150269c0f3f706ab70c5a4114bae324617b3a97660131ee6331c7d4783b510cd"
+    },
+    {
+      "path": "source-census-raw.log",
+      "bytes": 1213,
+      "sha256": "33cc09ac27938e41d8b2aa670e06926afbd04d8597199ae5b4113b8b5020d26e"
+    },
+    {
+      "path": "source-census.json",
+      "bytes": 1003,
+      "sha256": "d86c99c72e767856a55056e3974a900413ca404c48dec07cc11efd28802d99e8"
+    },
+    {
+      "path": "source-census.log",
+      "bytes": 3485,
+      "sha256": "856c88cc340b17488c4748615e1dc623a2d3623f0aa9987935418f4355ca8788"
+    },
+    {
+      "path": "source-census.test.js",
+      "bytes": 2953,
+      "sha256": "6af77496f0a1bbfa498e3ae085a9b3c97423b9ae890dfdf11d1b13d85050cd02"
+    },
+    {
+      "path": "visual.config.mjs",
+      "bytes": 303,
+      "sha256": "e42b09059313b8f4b2ff1886b9f932a0906618aebb4246d33dfb582e1deac77f"
+    },
+    {
+      "path": "worker.log",
+      "bytes": 2542,
+      "sha256": "ac909a38ec9b28ec5d71e173eaa24621614d199b77ebdeaac5817c013fa63079"
+    }
+  ]
+}
