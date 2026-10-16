@@ -304,6 +304,17 @@ ground and saved fixtures pass; no race/panic markers. Renderer-world CPU remain
 the main cost. This is not a soak or a paired speedup claim.
 [Current diagnosis and exact scope](2026-10-15-connected54-render-diagnosis.json).
 
+A fresh accepted58source sample now meets unchanged limits in both High and
+Low: peaks246draws/180755triangles,16.7/33.4ms High;153/79641,16.7/16.7ms Low.
+Two bounded disposable four-class14slot fixtures, one native renderer/three
+normal socket peers, one pass/one skipped alternative each, zero retries/race/
+panic markers and cleanup confirmed. Both viewports1280×844; the existing
+fixture uses private raised terrain, not public production-flat or real phones.
+The older54profile predates selected constructor-owned foliage. These are fresh
+samples, not paired speedup, cold/whole-world/battle or final art acceptance.
+[Current diagnosis](2026-10-16-connected58-render-diagnosis.md). Original
+counterexamples remain below; no rejected cache or renderer experiment revived.
+
 ## Retained performance limits and counterexamples
 
 The static foliage batching pilot `504b44ef` remains performance-rejected and
