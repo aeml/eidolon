@@ -495,10 +495,13 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.59`, **prepared locally, not deployed**:
-centered garment slots beneath the character preview and clearer returning Lore
-Book task/finale context with preserved reading focus/scroll.209focused checks
-and seven native desktop/tablet/phone cases qualify this interface milestone.
+Current source version: `Alpha 1.79.59`, **deployed and verified**, at runtime
+source `2c4cbb4c9`: centered garment slots beneath the character preview and
+clearer returning Lore Book task/finale context with preserved reading focus/
+scroll. All ten ordered CI jobs pass; normal-TLS reads match both identities,
+ready database and all351public asset pins. Original quality/readiness gates
+remain open; soak/stress remains deferred.
+[Acceptance](docs/plans/2026-10-16-release1-79-59-acceptance.md).
 [Qualification](docs/plans/2026-10-16-character-garment-row-qualification.md).
 
 **Alpha 1.79.58 is deployed and verified**, at runtime source `4f5b2e57f`:

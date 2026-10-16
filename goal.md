@@ -68,13 +68,16 @@ current source, external state and recent acceptance receipts when they disagree
    invitation-based, with up to 100 planned. Do not change public access or
    declare beta/full release without the owner's approval.
 
-## Additional owner requirements — October 15, 2026
+## Additional owner requirements — October 15–16, 2026
 
 Before beta, complete [full-outfit garments and the VIP model catalog](docs/plans/2026-10-15-garment-catalog-and-full-outfits.md):
 one armor garment replaces all worn body-gear visuals, independent weapon and
 offhand garments replace their held slot, at least one distinct VIP model per
 weapon/offhand family, four class-themed outfits and eight universal outfits.
 Existing per-slot palette cosmetics do not fulfill this new scope.
+October16 adds the character equipment layout: Weapon Garment, Armor Garment
+and Offhand Garment must appear together, centered in one row directly below
+the character picture.
 
 Also complete the [quest, lore and window quality pass](docs/plans/2026-10-15-quest-lore-and-window-quality.md):
 improved quest tracking, acceptance and turn-in; a navigable lore book explaining

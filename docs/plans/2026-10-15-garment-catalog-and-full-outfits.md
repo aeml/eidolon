@@ -26,6 +26,17 @@ not evidence that this new requirement is complete.
 - Preserve supplied class bodies, rigs and animation banks. Fit garments to those
   models; do not replace approved actors to make a costume easier to render.
 
+## Character equipment layout — October 16
+
+The owner requires Weapon Garment, Armor Garment and Offhand Garment together
+in one centered row immediately below the character picture. Show the confirmed
+appearance or Original gear and connect each slot to the existing owned Wardrobe
+selector. This preserves the full-outfit/independent-hand behavior above and the
+server's existing ownership, application and reset rules. The implementation is
+deployed and independently verified in Alpha1.79.59.
+[Acceptance](2026-10-16-release1-79-59-acceptance.md).
+[Scoped layout qualification](2026-10-16-character-garment-row-qualification.md).
+
 ## Minimum model catalog
 
 Current source inventory: `src/core/ItemSystem.js` defines four weapon families
@@ -64,16 +75,16 @@ integration or membership restrictions as part of this requirement.
 
 - [ ] Implement whole-outfit selection, precedence, persistence and restoration
   across current individual cosmetics, underlying gear changes and old saves.
-- [ ] Complete a manifest of model IDs, target families/classes, source/provenance,
+- [x] Complete a manifest of model IDs, target families/classes, source/provenance,
   material/texture assets, compatible rigs and quality-level budgets.
-- [ ] Produce and integrate all 18 minimum models, with all four class fits for
+- [x] Produce and integrate all 18 minimum models, with all four class fits for
   the eight universal outfits; extend the manifest for new equipment families.
 - [ ] Match vendor/wardrobe previews to equipped local and remote appearances;
   retain current server-authoritative ownership and purchase behavior.
 - [ ] Review at gameplay and preview zoom, idle/run/attack/cast/dodge/death poses,
   legal dual wielding, High/Low, swapping, pooling, reconnect and scene teardown.
   No floating pieces, exposed underlying armor, broken grips or missing models.
-- [ ] Check representative equipped-party rendering/resource costs and bounded
+- [x] Check representative equipped-party rendering/resource costs and bounded
   cleanup. Focused validation continues; soak remains deferred.
 - [ ] Complete owner visual review of the finished collection and record scoped
   deployment evidence. Catalog counts alone do not establish visual quality.
@@ -150,11 +161,16 @@ Selected for the next coherent release after native visual review. Astral Low co
 
 ## Current selected collection
 
-The earlier preparation sections record historical isolated states. The selected
-collection now has eleven distinct models: six held looks, all four class-themed
-outfits and Winterthorn Revel, the first universal outfit. Seven universal
-outfits remain to implement. Class themes do not add equip restrictions. Final
-owner collection review, broader art/device/performance and beta gates stay open.
+The earlier preparation sections record historical isolated states. The current
+selected and independently verified collection contains eighteen distinct looks:
+six held-family models, four class-themed outfits and eight universal outfits,
+with96body-fit/quality GLBs and12held-quality GLBs. All seven later universal
+looks ship in accepted Alpha1.79.58. Class themes do not add equip restrictions.
+[Deployment acceptance](2026-10-16-release1-79-58-acceptance.md).
+[Model/fit/resource qualification](2026-10-16-universal-garment-qualification.json).
+The checked technical catalog/model/resource items above have scoped evidence;
+unchecked behavior/visual review items retain their full scope. Final owner
+collection review, broader art/device/performance and beta gates stay open.
 
 ## Remaining universal candidates — October 15
 
@@ -192,5 +208,7 @@ tabs/trade controls and saved layout behavior have desktop/phone evidence.
 validation and exact predecessor-asset proof pass. Initial spring petal flicker
 and store fixture failures are retained with their corrections.
 [Qualification and evidence](2026-10-16-universal-garment-qualification.json).
-Not yet deployed; broader original quality/readiness gates and deferred playtests
-remain open. This selected milestone does not complete the full goal.
+Deployed and independently verified as Alpha1.79.58.
+[Acceptance](2026-10-16-release1-79-58-acceptance.md). Broader original quality/
+readiness gates and deferred playtests remain open. This collection milestone
+does not complete the full goal.

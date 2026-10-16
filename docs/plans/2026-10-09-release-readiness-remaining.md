@@ -246,7 +246,7 @@ Final owner collection art, broader quest/menu/world/audio/device/performance,
 operations, owner/F1–F5/beta/release gates and deferred playtests remain open.
 No soak/stress or complete-game-readiness claim is made.
 
-## Alpha 1.79.59: selected and prepared, not deployed
+## Alpha 1.79.59: deployed and verified
 
 Weapon Garment, Armor Garment and Offhand Garment appear centered in one row
 below the character preview, with confirmed names/reset state and direct links
@@ -256,6 +256,9 @@ correct journal entries and retains memory-list scroll/focus through receipts.
 209focused checks and seven distinct native desktop/tablet/phone cases qualify.
 Initial browser scroll-reset failures remain retained with their correction.
 [Qualification](2026-10-16-character-garment-row-qualification.md).
+These changes are merged into master and deployed as`2c4cbb4c9`. All ten ordered
+CI jobs pass; normal-TLS reads match both identities, ready database and all351
+public asset pins. [Acceptance](2026-10-16-release1-79-59-acceptance.md).
 This advances the interface scope; original quality/release gates remain open.
 Soak/stress and human pacing/physical-device feedback remain deferred.
 
