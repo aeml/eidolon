@@ -163,11 +163,29 @@ vec3 eidolonSurface(vec3 p) {
     }
 #endif
 #if EIDOLON_SURFACE == 7
-    // Horizontal foundation caps are worn stone, not wall courses turned
-    // sideways into oversized paving. Reserve ashlar joints for vertical faces.
+    // Horizontal foundation caps have their own broad, worn paving. Register
+    // it in world XZ rather than turning the vertical ashlar pattern sideways.
+    // Filter the joints and relief together at ordinary gameplay distances.
     if (axis.y > max(axis.x, axis.z)) {
-        float grain = eidolonNoise(uv * 1.8);
-        return vec3(.74 + weather * .28 + grain * .14, .9 + grain * .08, grain * .018);
+        vec2 capWarp = vec2(eidolonNoise(p.xz * .7 + vec2(7., 19.)),
+            eidolonNoise(p.xz * .8 + vec2(31., 3.))) - .5;
+        vec2 capTile = (p.xz + capWarp * .28) / vec2(3.6, 2.8);
+        float capRow = floor(capTile.y);
+        capTile.x += mod(capRow, 2.) * .5 + (eidolonHash(vec2(capRow, 43.)) - .5) * .3;
+        vec2 capCell = floor(capTile), capFace = fract(capTile);
+        vec2 capFootprint = max(fwidth(capTile), vec2(.001));
+        vec2 capEdge = min(capFace, 1. - capFace);
+        vec2 capInside = smoothstep(vec2(.014) - capFootprint * .5,
+            vec2(.05) + capFootprint * .5, capEdge);
+        float capCoverage = capInside.x * capInside.y;
+        float capDetail = 1. - smoothstep(.3, .9, max(capFootprint.x, capFootprint.y));
+        float capSeed = eidolonHash(capCell + vec2(13., 29.));
+        float grainFade = 1. - smoothstep(.25, .8, max(fwidth(p.x * 1.8), fwidth(p.z * 1.8)));
+        float grain = mix(.5, eidolonNoise(p.xz * 1.8), grainFade);
+        float capTone = .88 + capSeed * .18 + weather * .12 + grain * .08;
+        return vec3(mix(.96, mix(.74, capTone, capCoverage), capDetail),
+            mix(.98, .91 + grain * .07 - capSeed * .025, capCoverage * capDetail),
+            (capCoverage * .022 + grain * .006 * grainFade) * capDetail);
     }
 #endif
     vec2 tileSize = EIDOLON_SURFACE == 7 ? vec2(2.8, 1.4) : (EIDOLON_SURFACE == 2 ? vec2(.62, .46) : vec2(1.05, .56));
@@ -217,7 +235,7 @@ export function applyWorldSurfaceDetail(material, surface) {
         throw new Error('World surface detail cannot replace an existing shader hook');
     }
     material.userData.worldSurfaceDetail = surface;
-    material.customProgramCacheKey = () => `eidolon-world-surface-v${surface === 'stratified-rock' ? 6 : surface === 'fieldstone' ? 2 : 1}:${surface}`;
+    material.customProgramCacheKey = () => `eidolon-world-surface-v${surface === 'stratified-rock' ? 6 : ['fieldstone', 'fortress'].includes(surface) ? 2 : 1}:${surface}`;
     material.onBeforeCompile = shader => {
         shader.vertexShader = shader.vertexShader.replace('#include <common>',
             '#include <common>\nvarying vec3 vEidolonSurface;');

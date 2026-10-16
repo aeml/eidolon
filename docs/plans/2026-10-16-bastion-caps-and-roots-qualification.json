@@ -1,0 +1,431 @@
+{
+  "at": "2026-10-16T08:48:02.901648+00:00",
+  "source": "bc525b32aa5df7eab7215c72a6cda7a3e428ae84",
+  "renderedRuntimeSource": "6040d997b7332a42d385ddd84619c38e4e6d1eef",
+  "renderedHead": "a866f48e4",
+  "referenceSource": "a60c8e91690f8d8df91d664f8e5183688e101fd2",
+  "state": "Qualified scoped art improvement, ready for ordinary master merge. Not yet deployed or accepted as final world art/performance.",
+  "scope": "Fortress foundation caps use world-registered staggered stone joints, restrained weather variation and filtered PBR relief. Ten Bastion roots use16length/8radial subdivisions. Existing material/draw count, portal, interaction/collision envelopes, scenery populations and supplied actors stay intact.",
+  "validation": {
+    "cpu": "53 checks across four suites plus affected source/test lint and diff checks pass. Ten paths retain byte-exact original High/Medium/Low outputs; final Bastion buffers also match the actually rendered candidate byte-for-byte after the detail-name correction.",
+    "native": "Four native actual-world reference/candidate High/Low cases pass at workers1/retries0 after the worker prerequisite is prepared. Each records120 moving samples at gameplay zoom15/30, a14-slot imported Fighter, prepared HUD and full scenery. Four existing native Wizard cutaway cases also pass with unchanged thresholds and zero outside-region changes.",
+    "world": [
+      {
+        "case": "bastion-world-Bastion-cap-and-root-high-caps-and-roots",
+        "maxCalls": 78,
+        "maxTriangles": 67538,
+        "prepared": {
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "equipped": 14,
+          "missing": [],
+          "importedFighter": true,
+          "stats": {
+            "strength": 10,
+            "intelligence": 2,
+            "dexterity": 4,
+            "wisdom": 3,
+            "vitality": 8,
+            "maxHp": 80,
+            "hp": 80,
+            "maxMana": 20,
+            "mana": 20,
+            "speed": 5,
+            "damage": 2,
+            "defense": 0,
+            "hpRegen": 0.08,
+            "manaRegen": 0.03,
+            "attackSpeed": 1.9607843137254901,
+            "cooldownReduction": 0.02,
+            "manaCostReduction": 0,
+            "castSpeed": 1.006,
+            "critChanceBonus": 0,
+            "poisonDamageBonus": 0,
+            "fireDamageBonus": 0,
+            "healingDoneBonus": 0,
+            "holyDamageBonus": 0,
+            "lifestealBonus": 0,
+            "allResistBonus": 0
+          },
+          "character": "Fighter",
+          "quality": "high",
+          "mobile": false
+        },
+        "timing": {
+          "scope": "Bounded prepared one-actor scene timing; synchronous CPU submission and raw RAF intervals, not GPU elapsed time or dynamic/server/whole-game acceptance.",
+          "profiles": [
+            {
+              "zoom": 15,
+              "samples": 90,
+              "rawMedianMs": 16.69999999999891,
+              "rawP95Ms": 16.799999999999272,
+              "cpuMedianMs": 6.199999928474426,
+              "cpuP95Ms": 8.700000047683716
+            },
+            {
+              "zoom": 30,
+              "samples": 90,
+              "rawMedianMs": 16.700000000000728,
+              "rawP95Ms": 16.700000000000728,
+              "cpuMedianMs": 6.100000023841858,
+              "cpuP95Ms": 8.200000047683716
+            }
+          ]
+        },
+        "resources": {
+          "geometries": 12,
+          "textures": 17,
+          "ownedSkeletons": 6,
+          "beforeCleanup": {
+            "geometries": 72,
+            "textures": 67
+          },
+          "afterSkeletons": {
+            "geometries": 72,
+            "textures": 62
+          },
+          "contextLost": true,
+          "entranceOwned": 18,
+          "entranceRetired": 18,
+          "canvasConnected": false,
+          "rendererDisposed": true,
+          "actorReleased": true
+        }
+      },
+      {
+        "case": "bastion-world-Bastion-cap-and-root-high-reference61",
+        "maxCalls": 78,
+        "maxTriangles": 65298,
+        "prepared": {
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "equipped": 14,
+          "missing": [],
+          "importedFighter": true,
+          "stats": {
+            "strength": 10,
+            "intelligence": 2,
+            "dexterity": 4,
+            "wisdom": 3,
+            "vitality": 8,
+            "maxHp": 80,
+            "hp": 80,
+            "maxMana": 20,
+            "mana": 20,
+            "speed": 5,
+            "damage": 2,
+            "defense": 0,
+            "hpRegen": 0.08,
+            "manaRegen": 0.03,
+            "attackSpeed": 1.9607843137254901,
+            "cooldownReduction": 0.02,
+            "manaCostReduction": 0,
+            "castSpeed": 1.006,
+            "critChanceBonus": 0,
+            "poisonDamageBonus": 0,
+            "fireDamageBonus": 0,
+            "healingDoneBonus": 0,
+            "holyDamageBonus": 0,
+            "lifestealBonus": 0,
+            "allResistBonus": 0
+          },
+          "character": "Fighter",
+          "quality": "high",
+          "mobile": false
+        },
+        "timing": {
+          "scope": "Bounded prepared one-actor scene timing; synchronous CPU submission and raw RAF intervals, not GPU elapsed time or dynamic/server/whole-game acceptance.",
+          "profiles": [
+            {
+              "zoom": 15,
+              "samples": 90,
+              "rawMedianMs": 16.69999999999709,
+              "rawP95Ms": 16.700000000000728,
+              "cpuMedianMs": 7.5,
+              "cpuP95Ms": 10.300000071525574
+            },
+            {
+              "zoom": 30,
+              "samples": 90,
+              "rawMedianMs": 16.700000000000728,
+              "rawP95Ms": 16.80000000000291,
+              "cpuMedianMs": 7.200000047683716,
+              "cpuP95Ms": 10.100000023841858
+            }
+          ]
+        },
+        "resources": {
+          "geometries": 12,
+          "textures": 17,
+          "ownedSkeletons": 6,
+          "beforeCleanup": {
+            "geometries": 72,
+            "textures": 67
+          },
+          "afterSkeletons": {
+            "geometries": 72,
+            "textures": 62
+          },
+          "contextLost": true,
+          "entranceOwned": 18,
+          "entranceRetired": 18,
+          "canvasConnected": false,
+          "rendererDisposed": true,
+          "actorReleased": true
+        }
+      },
+      {
+        "case": "bastion-world-Bastion-cap-and-root-low-caps-and-roots",
+        "maxCalls": 42,
+        "maxTriangles": 30181,
+        "prepared": {
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "equipped": 14,
+          "missing": [],
+          "importedFighter": true,
+          "stats": {
+            "strength": 10,
+            "intelligence": 2,
+            "dexterity": 4,
+            "wisdom": 3,
+            "vitality": 8,
+            "maxHp": 80,
+            "hp": 80,
+            "maxMana": 20,
+            "mana": 20,
+            "speed": 5,
+            "damage": 2,
+            "defense": 0,
+            "hpRegen": 0.08,
+            "manaRegen": 0.03,
+            "attackSpeed": 1.9607843137254901,
+            "cooldownReduction": 0.02,
+            "manaCostReduction": 0,
+            "castSpeed": 1.006,
+            "critChanceBonus": 0,
+            "poisonDamageBonus": 0,
+            "fireDamageBonus": 0,
+            "healingDoneBonus": 0,
+            "holyDamageBonus": 0,
+            "lifestealBonus": 0,
+            "allResistBonus": 0
+          },
+          "character": "Fighter",
+          "quality": "low",
+          "mobile": true
+        },
+        "timing": {
+          "scope": "Bounded prepared one-actor scene timing; synchronous CPU submission and raw RAF intervals, not GPU elapsed time or dynamic/server/whole-game acceptance.",
+          "profiles": [
+            {
+              "zoom": 15,
+              "samples": 90,
+              "rawMedianMs": 16.69999999999891,
+              "rawP95Ms": 16.700000000000728,
+              "cpuMedianMs": 3.899999976158142,
+              "cpuP95Ms": 6.200000047683716
+            },
+            {
+              "zoom": 30,
+              "samples": 90,
+              "rawMedianMs": 16.69999999999891,
+              "rawP95Ms": 16.700000000000728,
+              "cpuMedianMs": 3.600000023841858,
+              "cpuP95Ms": 5.399999976158142
+            }
+          ]
+        },
+        "resources": {
+          "geometries": 12,
+          "textures": 17,
+          "ownedSkeletons": 6,
+          "beforeCleanup": {
+            "geometries": 70,
+            "textures": 47
+          },
+          "afterSkeletons": {
+            "geometries": 70,
+            "textures": 42
+          },
+          "contextLost": true,
+          "entranceOwned": 18,
+          "entranceRetired": 18,
+          "canvasConnected": false,
+          "rendererDisposed": true,
+          "actorReleased": true
+        }
+      },
+      {
+        "case": "bastion-world-Bastion-cap-and-root-low-reference61",
+        "maxCalls": 42,
+        "maxTriangles": 29061,
+        "prepared": {
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "equipped": 14,
+          "missing": [],
+          "importedFighter": true,
+          "stats": {
+            "strength": 10,
+            "intelligence": 2,
+            "dexterity": 4,
+            "wisdom": 3,
+            "vitality": 8,
+            "maxHp": 80,
+            "hp": 80,
+            "maxMana": 20,
+            "mana": 20,
+            "speed": 5,
+            "damage": 2,
+            "defense": 0,
+            "hpRegen": 0.08,
+            "manaRegen": 0.03,
+            "attackSpeed": 1.9607843137254901,
+            "cooldownReduction": 0.02,
+            "manaCostReduction": 0,
+            "castSpeed": 1.006,
+            "critChanceBonus": 0,
+            "poisonDamageBonus": 0,
+            "fireDamageBonus": 0,
+            "healingDoneBonus": 0,
+            "holyDamageBonus": 0,
+            "lifestealBonus": 0,
+            "allResistBonus": 0
+          },
+          "character": "Fighter",
+          "quality": "low",
+          "mobile": true
+        },
+        "timing": {
+          "scope": "Bounded prepared one-actor scene timing; synchronous CPU submission and raw RAF intervals, not GPU elapsed time or dynamic/server/whole-game acceptance.",
+          "profiles": [
+            {
+              "zoom": 15,
+              "samples": 90,
+              "rawMedianMs": 16.69999999999891,
+              "rawP95Ms": 16.700000000000728,
+              "cpuMedianMs": 3.8000000715255737,
+              "cpuP95Ms": 5.399999976158142
+            },
+            {
+              "zoom": 30,
+              "samples": 90,
+              "rawMedianMs": 16.69999999999891,
+              "rawP95Ms": 16.700000000000728,
+              "cpuMedianMs": 3.399999976158142,
+              "cpuP95Ms": 5
+            }
+          ]
+        },
+        "resources": {
+          "geometries": 12,
+          "textures": 17,
+          "ownedSkeletons": 6,
+          "beforeCleanup": {
+            "geometries": 70,
+            "textures": 47
+          },
+          "afterSkeletons": {
+            "geometries": 70,
+            "textures": 42
+          },
+          "contextLost": true,
+          "entranceOwned": 18,
+          "entranceRetired": 18,
+          "canvasConnected": false,
+          "rendererDisposed": true,
+          "actorReleased": true
+        }
+      }
+    ],
+    "geometry": "Existing root total1440->2560triangles, +1120. High adds2240including shadows; Low adds1120. No extra draw or material. All named scene limits remain unchanged.",
+    "timing": "Both reference and candidate raw RAF medians are16.7ms, p95 up to16.8ms in the bounded prepared one-actor views. Synchronous CPU values are retained per case. This is neither GPU elapsed time, a quiet-host causal speed comparison nor dynamic/connected/whole-game FPS acceptance. Original failed routes/cold triangles remain open.",
+    "resource": "All18tracked entrance-owned resources dispose in every case; renderer/context/actor/canvas retirement passes. Residual dead-renderer counters remain diagnostics, not live allocation counts.",
+    "review": "High baseline/candidate flankzoom30, Low phone candidate flankzoom30 and High candidate grave-roadzoom15 inspected. Horizontal plinth courses are visibly clearer and roots have a less faceted contour. Broader large-form/root/terrain/actor art still needs work.",
+    "retainedFindings": [
+      "First four private cases fail because the new worktree lacked its ignored generated worker;404 caused fallback geometry. No failure was waived. The official builder creates the local worker with unchanged public SHA28b738eaf5aa3a9ba5df513fbd8c400f3d82a5f0f2624d529731c57b80a95f03; corrected four-case execution passes. Original failures and fallback counts/timings remain retained.",
+      "Initial detail label medium could collide with the global Medium quality. Final label bastion keeps the old Medium fallback at High detail. CPU comparison proves all30original profile/path outputs and all10rendered Bastion buffers byte-exact, so unchanged native art evidence is reused without repeating it."
+    ]
+  },
+  "limits": "Prepared scene/cutaway proof, not earned travel/campaign, full-game HUD, physical-device, owner final art, beta or whole-game performance acceptance. No production data/access/schema change or new soak/stress.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-bastion-cap-material-20261016",
+  "evidence": [
+    {
+      "path": ".qa-bastion-cap/native-prepared-worker/bastion-world-Bastion-cap-and-root-high-caps-and-roots/bastion-world-review.json",
+      "bytes": 43003,
+      "sha256": "07dece162040523a9987e3708ab22b88d67616d799f27573639b9d18a241e4f2"
+    },
+    {
+      "path": ".qa-bastion-cap/native-prepared-worker/bastion-world-Bastion-cap-and-root-high-reference61/bastion-world-review.json",
+      "bytes": 43028,
+      "sha256": "11efc225cf9dea288e8fc96b98cba09eef25be9189ea65afce8e23b6631ad31a"
+    },
+    {
+      "path": ".qa-bastion-cap/native-prepared-worker/bastion-world-Bastion-cap-and-root-low-caps-and-roots/bastion-world-review.json",
+      "bytes": 42958,
+      "sha256": "bdfcf1773d3671bdc1f797e2cbefb6a8e6c9c6618b85063de288b2fd24f95105"
+    },
+    {
+      "path": ".qa-bastion-cap/native-prepared-worker/bastion-world-Bastion-cap-and-root-low-reference61/bastion-world-review.json",
+      "bytes": 42981,
+      "sha256": "351ce3a97beb82b6fc3ed9853dd867e03e2adc85303155fed1bd017872e6d75a"
+    },
+    {
+      "path": ".qa-bastion-cap/focused-preserved.log",
+      "bytes": 493,
+      "sha256": "c639ceca1b9af86c8bcbeff887f69b3cca55b29f19449504dfabd689da7091b5"
+    },
+    {
+      "path": ".qa-bastion-cap/lint-preserved.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-bastion-cap/root-geometry-preservation.json",
+      "bytes": 7001,
+      "sha256": "ee6d83505985cb1c8de4f3be9dc3dbfb2c9df58115239d3debd776a4d91ed210"
+    },
+    {
+      "path": ".qa-bastion-cap/root-geometry-preservation.log",
+      "bytes": 169,
+      "sha256": "0cfc339b3319a7a497e733359b4802b9ad30401eb3c5a51dfffab5372fed7226"
+    },
+    {
+      "path": ".qa-bastion-cap/native-review.log",
+      "bytes": 14909,
+      "sha256": "42cd89321086c486a9e0ae8d8da52d7be0d87079b1de306131c69da3f5211163"
+    },
+    {
+      "path": ".qa-bastion-cap/native-prepared-worker.log",
+      "bytes": 691,
+      "sha256": "fe5715301b9b35a299d72ea3b299769cc703ebbc75b8502c69552623ef5cdb0d"
+    },
+    {
+      "path": ".qa-bastion-cap/native-cutaway.log",
+      "bytes": 1804,
+      "sha256": "547b340a333076afb783630218bb5ab6854de296eec41197207df91e08836bea"
+    },
+    {
+      "path": ".qa-bastion-cap/prepare-worker.log",
+      "bytes": 2542,
+      "sha256": "ac909a38ec9b28ec5d71e173eaa24621614d199b77ebdeaac5817c013fa63079"
+    },
+    {
+      "path": ".qa-bastion-cap/native-inputs.json",
+      "bytes": 2056,
+      "sha256": "f3b6a3fef927b25364eb2513098136e16346a0f5704b3a11843b298ae97f3b93"
+    },
+    {
+      "path": ".qa-bastion-cap/run-source.json",
+      "bytes": 705,
+      "sha256": "1146c86ea278b34600d1dc1fd0b509ad862ab5f253923607c864abc8b3e8927e"
+    },
+    {
+      "path": ".qa-bastion-cap/bastion-world.spec.js",
+      "bytes": 12621,
+      "sha256": "27bf222cc86c717cdc14c8ae55b3a1c7037b6dd6b8448258fe279660b4e07b8d"
+    },
+    {
+      "path": ".qa-bastion-cap/reference/candidate-medium-EarthLandmarkGeometry.js",
+      "bytes": 7975,
+      "sha256": "19e547cad8102df67d9e3ee8f26b225034e91c101c45dbe9b91ae4273fb9e778"
+    }
+  ]
+}

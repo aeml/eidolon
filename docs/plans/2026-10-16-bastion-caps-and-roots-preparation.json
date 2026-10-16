@@ -1,0 +1,86 @@
+{
+  "at": "2026-10-16T07:48:31.802020+00:00",
+  "source": "6040d997b7332a42d385ddd84619c38e4e6d1eef",
+  "base": "a60c8e91690f8d8df91d664f8e5183688e101fd2",
+  "state": "Combined foundation-cap/root candidate, isolated and unselected. Only CPU qualification and a native test plan exist. Native review must wait for the current Alpha61 CI to release the GPU.",
+  "scope": "Fortress horizontal caps use filtered stone courses and relief at3.6x2.8metres. Ten Bastion roots use16length/8radial subdivisions instead of12/6. Shared existing High24/10 and Low12/6 outputs remain byte-exact for all ten paths. Existing materials, merged draw count, colliders, placement, populations and portal are unchanged.",
+  "validation": {
+    "cpu": "52checks across four suites pass, including the new medium-detail radius/taper/finite-normal case. Four affected source/test files pass lint and diff checks.",
+    "geometry": {
+      "referenceTriangles": 1440,
+      "candidateTriangles": 2560,
+      "addedTriangles": 1120,
+      "existingHighLowOutputsByteExact": true
+    },
+    "nativePlan": "Four source-specific High/Low actual-world/HUD/14-slot Fighter/motion cases are listed only. Baseline routes THREE exact Alpha61 modules: WorldSurfaceDetail, EarthLandmarkGeometry and ProceduralDungeonEntrances. Each case also records bounded prepared one-actor scene timing at zoom15/30; raw RAF intervals and synchronous CPU clocks are diagnostics, not GPU elapsed time or dynamic/whole-game acceptance. No native execution yet.",
+    "limits": "Roots add1120triangles, or2240in High including shadows. The cap shader alone adds no geometry. Original scene/frame/cold limits remain unchanged; no render, visual or performance pass is claimed. Inspect aliasing, visible benefit, native cost, actual counts and resource retirement before selection."
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-bastion-cap-material-20261016",
+  "evidence": [
+    {
+      "path": ".qa-bastion-cap/focused-root.log",
+      "bytes": 493,
+      "sha256": "98055a383bec09d7122555eb272870d57cd484a7c8c30e52f51ad0f0cb9636aa"
+    },
+    {
+      "path": ".qa-bastion-cap/focused-root-final.log",
+      "bytes": 493,
+      "sha256": "1a8961ef32538990fabb7bb5535ac5bb5eac7a4cf13e469f189c5087c93ac384"
+    },
+    {
+      "path": ".qa-bastion-cap/lint-root-final.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-bastion-cap/root-geometry.json",
+      "bytes": 5551,
+      "sha256": "9393efd0f1d667ecee0f587eda3ba082be54de03eb2f988a0f0571fbe1da5408"
+    },
+    {
+      "path": ".qa-bastion-cap/root-geometry.log",
+      "bytes": 115,
+      "sha256": "286be1768471d2c4072ad315aaed545b9b244d396d30b41a58c51dd6e6d9bb3d"
+    },
+    {
+      "path": ".qa-bastion-cap/native-plan-root.log",
+      "bytes": 328,
+      "sha256": "b6dca24ecbc3aa2edf4ff7f7bebd953cfac7204cdd98ea6af19fb957a542fef0"
+    },
+    {
+      "path": ".qa-bastion-cap/run-source.json",
+      "bytes": 463,
+      "sha256": "322bce36bdc66c51372a34479128f2fa9917c1ff53f88368efa74f12e7111360"
+    },
+    {
+      "path": ".qa-bastion-cap/reference/WorldSurfaceDetail.js",
+      "bytes": 14562,
+      "sha256": "8a0b969379c5874b88345cb3aad78d7e80e5912735700f8d95f992af19e1c0da"
+    },
+    {
+      "path": ".qa-bastion-cap/reference/ProceduralDungeonEntrances.js",
+      "bytes": 26489,
+      "sha256": "81936d84e292419553ba14ea601e9b8ba42d137279bf92b68af9b3424d243ba9"
+    },
+    {
+      "path": ".qa-bastion-cap/reference/EarthLandmarkGeometry.js",
+      "bytes": 7910,
+      "sha256": "0b29a16c003882dba1a5c501f5ddea35e0c506a6a25a0bea8c128e0aa44b4894"
+    },
+    {
+      "path": ".qa-bastion-cap/bastion-world.spec.js",
+      "bytes": 12621,
+      "sha256": "27bf222cc86c717cdc14c8ae55b3a1c7037b6dd6b8448258fe279660b4e07b8d"
+    },
+    {
+      "path": ".qa-bastion-cap/native-plan-root-timing.log",
+      "bytes": 328,
+      "sha256": "b6dca24ecbc3aa2edf4ff7f7bebd953cfac7204cdd98ea6af19fb957a542fef0"
+    },
+    {
+      "path": ".qa-bastion-cap/bastion-world-before-timing.spec.txt",
+      "bytes": 11304,
+      "sha256": "5e41df32bd6f35edbb6392de714db113ea05727d35380c300ce0ff8009b59f56"
+    }
+  ]
+}

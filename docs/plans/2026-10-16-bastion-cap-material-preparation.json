@@ -1,0 +1,52 @@
+{
+  "at": "2026-10-16T07:23:40.509583+00:00",
+  "source": "524059fef4457279e9e2e9f36f924ddc62b435d6",
+  "base": "a60c8e91690f8d8df91d664f8e5183688e101fd2",
+  "state": "Isolated CPU-qualified preparation ONLY. Unselected/unmerged/unpublished; native shader compile/HighLow moving equipped HUD review/resources/cost proof remain mandatory after own61CI GPU release.",
+  "scope": "Only fortress horizontal material branch:3.6x2.8metre warped/staggered cap stones, subtle per-stone weather variation, derivative-filtered joints/roughness/relief. Vertical ashlar remains unchanged. No new geometry, texture, mesh/material/draw, emission, collider/placement or population change. Program key fortress1->2; other material keys unchanged.",
+  "validation": {
+    "cpu": "43existing focused checks across WorldSurfaceDetail/BastionArchitectureGeometry/ProceduralDungeonEntrances pass; covers standard lighting/transform hooks, existing geometry/material/collision/draw contracts. This is not real GPU compilation or visual acceptance.",
+    "lint": "Changed source lint/diffcheck pass.",
+    "nativePlan": "Four actualworld/reference cases listed only: exact61WorldSurfaceDetail baseline/currentcandidate, Highdesktop/Lowphone, zoom15/30,120moving samples, imported14slotFighter/HUD/fullscenery, resourceownership/contextretirement. No execution while own61CI GPUreserved.",
+    "limits": "Additional shader noise/filter cost requires native assessment; no improvement claimed before inspection. Original failed frame/cold-triangle/fullworld gates remain. Nativecapstonecontrast/aliasing/seams might require correction or rejection."
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-bastion-cap-material-20261016",
+  "evidence": [
+    {
+      "path": ".qa-bastion-cap/focused.log",
+      "bytes": 438,
+      "sha256": "190f444b04db41e4b451b9fb755551126e3971084bdc94f69e7393a8377d0e45"
+    },
+    {
+      "path": ".qa-bastion-cap/lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-bastion-cap/native-plan.log",
+      "bytes": 330,
+      "sha256": "a29f392bb7e1095d0a972e5d2fa88adb90e2b7334815ee6782335304ff0aecc8"
+    },
+    {
+      "path": ".qa-bastion-cap/run-source.json",
+      "bytes": 405,
+      "sha256": "ef4c060e1bbcf046df0f35285ac32ac94267796d7b7eb04f6743bfd36effb62a"
+    },
+    {
+      "path": ".qa-bastion-cap/bastion-world.spec.js",
+      "bytes": 11195,
+      "sha256": "55284caf85e4a872694a7d1b4c0c32d0ac4312d0b86f969ed2663d9e66b6a23c"
+    },
+    {
+      "path": ".qa-bastion-cap/visual.config.mjs",
+      "bytes": 307,
+      "sha256": "cb9f58573ed7a38ad6193f1a53638155f59357791c97c571eb923ea18d5ade16"
+    },
+    {
+      "path": ".qa-bastion-cap/reference/WorldSurfaceDetail.js",
+      "bytes": 14562,
+      "sha256": "8a0b969379c5874b88345cb3aad78d7e80e5912735700f8d95f992af19e1c0da"
+    }
+  ],
+  "next": "Follow own61CI terminal/publicverification first. Then execute four native source-specific comparisons atworkers1/retries0,reviewordinaryzoom/motion/HighLowwithHUD and actualimportedactor; compare exactdraw/tri/resourcecounts and shadercost withoutrelaxingoriginalbudgets. Selectonlyifbenefitqualifies."
+}

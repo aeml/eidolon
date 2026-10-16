@@ -1,11 +1,13 @@
 import { Vector3, CatmullRomCurve3 } from 'three';
 import { createTaperedRoot, createGroveArchStone, createGrovePierCourse, createGroveThresholdStone } from '../src/art/EarthLandmarkGeometry.js';
 
-test.each(['high', 'low'])('organic roots taper within their old radius at %s quality', quality => {
+test.each(['high', 'medium', 'low', 'bastion'])('organic roots taper within their old radius at %s quality', quality => {
     const points = [[14, -.35, 4], [10, 3, 2], [9, 8, 0], [5, 12, 0], [1, 15.8, 0]];
     const curve = new CatmullRomCurve3(points.map(point => new Vector3(...point)));
     const geometry = createTaperedRoot(points, .85, quality);
-    const position = geometry.attributes.position, radial = quality === 'low' ? 6 : 10, segments = quality === 'low' ? 12 : 24;
+    const position = geometry.attributes.position;
+    const [segments, radial] = { low: [12, 6], medium: [24, 10], high: [24, 10], bastion: [16, 8] }[quality];
+    expect(position.count).toBe((segments + 1) * (radial + 1));
     for (let ring = 0; ring <= segments; ring++) {
         const center = curve.getPointAt(ring / segments);
         for (let side = 0; side <= radial; side++) {
