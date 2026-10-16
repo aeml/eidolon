@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { groundEnemyDeathClip } from './EnemyDeathGrounding.js';
 import { configureEnemyStrikeContact } from './EnemyStrikeContact.js';
 import { configureCreatureAttack } from './CreatureAttackClips.js';
+import { batchHumanoidRenderParts } from './HumanoidRenderBatches.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -141,7 +142,7 @@ function installRestPoseReset(root) {
     };
 }
 
-function finalize(root, type, clips) {
+function finalize(root, type, clips, { batch = false } = {}) {
     const definition = PROCEDURAL_OVERWORLD_ENEMY_DEFINITIONS[type];
     root.updateMatrixWorld(true);
     const body = root.getObjectByName(`Rig_${type}Body`);
@@ -172,6 +173,9 @@ function finalize(root, type, clips) {
     groundEnemyDeathClip(type, clips);
     configureEnemyStrikeContact(root, type, clips);
     configureCreatureAttack(root, type, clips);
+    // Merge immutable siblings inside their own live animation pivots before
+    // the pooled reset captures the actual tree. Materials remain borrowed.
+    if (batch) batchHumanoidRenderParts(root);
     installRestPoseReset(root);
     return root;
 }
@@ -425,10 +429,10 @@ function createBird(type, options = {}) {
     }
     addCrown(head, type, materials, options.crownCount ?? 7, 0.38, options.crownHeight ?? 0.78);
     addOrbit(accent, type, materials, options.orbitCount ?? 8, options.orbitRadius ?? 1.25, 'orb');
-    return finalize(root, type, createClips(type, bodyY, { stride: options.stride ?? 0.72, reach: options.reach ?? 1.12, fall: 0.7 }));
+    return finalize(root, type, createClips(type, bodyY, { stride: options.stride ?? 0.72, reach: options.reach ?? 1.12, fall: 0.7 }), { batch: options.batch === true });
 }
 
-export function createProceduralSandstormDjinn() {
+export function createProceduralSandstormDjinn({ batch = true } = {}) {
     const type = 'SandstormDjinn';
     const materials = createMaterials(type);
     const root = new THREE.Group();
@@ -450,7 +454,7 @@ export function createProceduralSandstormDjinn() {
     mesh(frame.weapon, `${type}_GlassScimitar`, geometry(`${type}-scimitar`, () => new THREE.TorusGeometry(0.72, 0.1, 6, 16, Math.PI * 1.25)), materials.pale, {
         position: [0, -0.72, 0], rotation: [Math.PI / 2, 0, 0.4]
     });
-    return finalize(root, type, createClips(type, frame.bodyY, { stride: 0.58, reach: 1.14, fall: 0.65 }));
+    return finalize(root, type, createClips(type, frame.bodyY, { stride: 0.58, reach: 1.14, fall: 0.65 }), { batch });
 }
 
 export function createProceduralMagmaGolem() {
@@ -606,8 +610,9 @@ export function createProceduralCloudElemental() {
     return finalize(root, type, createClips(type, frame.bodyY, { stride: 0.6, reach: 1.08, fall: 0.58 }));
 }
 
-export function createProceduralThunderRoc() {
+export function createProceduralThunderRoc({ batch = true } = {}) {
     return createBird('ThunderRoc', {
+        batch,
         realm: 'air', bodyY: 2.3, bodyRadius: 0.8, sealRadius: 1.5,
         wing: { count: 13, length: 2.2, width: 0.18, rootX: 0.56, rootY: 0.43 },
         tailCount: 9, tailLength: 1.75, crownCount: 8, crownHeight: 0.92, orbitCount: 12, orbitRadius: 1.52, stride: 0.8

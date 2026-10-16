@@ -69,7 +69,10 @@ describe('procedural Cinder Wastes and Stormcrown enemy families', () => {
             bounds: definition.bounds
         }));
         expect(enemy.userData.assetFallback).toBeUndefined();
-        expect(metrics.visibleMeshes).toBeGreaterThanOrEqual(minimumMeshes);
+        // Detail is a source-recipe invariant; delivery may merge immutable
+        // siblings. Keep the original source minimum and default-model bounds.
+        expect(sceneMetrics(create({ batch: false })).visibleMeshes).toBeGreaterThanOrEqual(minimumMeshes);
+        expect(metrics.visibleMeshes).toBeGreaterThan(0);
         expect(metrics.nonFiniteTransforms).toBe(0);
         expect(bounds.min.y).toBeGreaterThanOrEqual(-0.001);
         expect(bounds.min.y).toBeLessThan(0.02);
