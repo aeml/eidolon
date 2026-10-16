@@ -33,7 +33,7 @@ func (w *World) MovePlayerToQAWaypoint(playerID, waypoint string) (*Entity, bool
 	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
-	if !ok || player.Type != TypePlayer || player.InstanceID != "" {
+	if !ok || player.Type != TypePlayer || player.InstanceID != "" || player.State == "DEAD" || player.Health <= 0 {
 		return nil, false
 	}
 
