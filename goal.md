@@ -2085,3 +2085,18 @@ purchase/gear/save coverage are accepted within scope. Original full requirement
 remain active; rejected town batching stays isolated. Human pacing, physical
 phone feedback and soak/stress remain deferred. No beta or full-game claim.
 [Acceptance](docs/plans/2026-10-16-release1-79-64-acceptance.md).
+
+
+## October 16 Alpha 1.79.65 Water construction preparation
+
+Qualified Abyssal quay slabs, grounded linked moorings, solid fluted shell
+crowns and ordinary-input Water-road integration are merged into master for
+prepared Alpha 1.79.65. Source preparation is not deployment. Public64 remains
+accepted at50983561a; verify ordered65CI/deployments/live identities/assets before
+another release. Actual ordinary Water travel passes with913frames/155alive,
+grounded14-slot observations; its two fixture findings retain their corrections.
+A separate post-route High-party sample33.3/49.9ms exceeds retained20/33.4ms frame
+limits. That functional/art evidence does not clear FPS, original cold/device/
+whole-world findings or any full-game/owner/readiness gate. Full original goal
+active; human pacing/physical-phone feedback and soak/stress remain deferred.
+No beta, access, policy, value or installed-host TLS/logging activation is claimed.

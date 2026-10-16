@@ -1,5 +1,18 @@
 # Eidolon Roadmap
 
+Alpha 1.79.65 is prepared, not yet deployed: constructed Abyssal quay stones,
+linked moorings with grounded wall/floor fittings, sculpted shell crowns and
+ordinary-input Water road integration with actual equipped character/HUD.
+[Construction qualification](docs/plans/2026-10-16-abyssal-quay-qualification.md),
+[normal Water movement](docs/plans/2026-10-16-water-normal-movement.md).
+Accepted public64 remains at `50983561a`; source preparation is not deployment.
+A separate fresh post-route High-party sample records33.3/49.9ms, above the
+retained20/33.4ms frame limits. Original route/cold/device/performance findings,
+broader art/game/readiness and owner gates stay open. Installed-host TLS/logging
+activation needs an administrator. Human pacing, physical-phone feedback and
+soak/stress remain deferred. The full original goal remains active.
+
+
 Alpha 1.79.64 at `50983561a` is deployed and verified within the bonded
 Bastion footing, wardrobe return, phone form text and four-class saved-session
 scope. All ten CI jobs pass: 785 client suites / 12,046 tests,
