@@ -117,10 +117,11 @@ func TestFullOutfitGarmentActualSavedSessions(t *testing.T) {
 		}
 		return true
 	}
-	assertGear := func(e *statepb.Entity) {
+	assertGear := func(recipient string, e *statepb.Entity) {
 		t.Helper()
 		if len(e.Equipment) != len(baseline.Equipment) || !proto.Equal(e.Stats, baseline.Stats) || e.Damage != baseline.Damage || e.Defense != baseline.Defense {
-			t.Fatal("public cosmetic update changed combat stats or gear count")
+			t.Fatalf("%s cosmetic update: gear %d/%d, stats %v/%v, damage %d/%d, defense %d/%d", recipient,
+				len(e.Equipment), len(baseline.Equipment), e.Stats, baseline.Stats, e.Damage, baseline.Damage, e.Defense, baseline.Defense)
 		}
 		for slot, item := range baseline.Equipment {
 			if !proto.Equal(e.Equipment[slot], item) {
@@ -142,8 +143,8 @@ func TestFullOutfitGarmentActualSavedSessions(t *testing.T) {
 		if !wardrobe.Success || !reflect.DeepEqual(wardrobe.Appearances, expected) || !reflect.DeepEqual(wardrobe.Collection, collection) {
 			t.Fatal("garment selection lost independent choices")
 		}
-		assertGear(wellRestedReadActorAfter(t, owner, name, started, checkPublic))
-		assertGear(wellRestedReadActorAfter(t, observer, name, started, checkPublic))
+		assertGear("owner", wellRestedReadActorAfter(t, owner, name, started, checkPublic))
+		assertGear("observer", wellRestedReadActorAfter(t, observer, name, started, checkPublic))
 	}
 	for _, slot := range []string{"mainHand", "offHand", "outfit"} {
 		buy(offers[slot], true)
@@ -167,7 +168,7 @@ func TestFullOutfitGarmentActualSavedSessions(t *testing.T) {
 	observer, _ = resourceLoginCharacter(t, address, observerName, password, "Cleric")
 	defer observer.Close()
 	readWardrobe()
-	assertGear(wellRestedReadActor(t, observer, name, checkPublic))
+	assertGear("observer after restart", wellRestedReadActor(t, observer, name, checkPublic))
 	for _, slot := range []string{"mainHand", "offHand", "outfit"} {
 		buy(offers[slot], false)
 	}
