@@ -21,6 +21,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"syscall"
 	"time"
@@ -65,7 +66,10 @@ func run() error {
 		return fmt.Errorf("unclosed frontend server")
 	}
 	frontend := string(source[start:end])
-	for _, marker := range []string{"server_name play.eidolonrealms.com;", "listen 80;", "listen [::]:80;", "set $eidolon_pages_host aeml.github.io;", "proxy_ssl_name aeml.github.io;"} {
+	if len(regexp.MustCompile(`(?m)^\s*proxy_pass\s+`).FindAllString(frontend, -1)) != 1 {
+		return fmt.Errorf("fixture requires one fixed Pages proxy")
+	}
+	for _, marker := range []string{"server_name play.eidolonrealms.com;", "listen 80;", "listen [::]:80;", "set $eidolon_pages_host aeml.github.io;", "proxy_ssl_name aeml.github.io;", "proxy_pass https://$eidolon_pages_host$request_uri;"} {
 		if !strings.Contains(frontend, marker) {
 			return fmt.Errorf("missing fixture binding: %s", marker)
 		}
@@ -219,7 +223,8 @@ func run() error {
 		}
 	}
 	defer stop()
-	client := &http.Client{Timeout: 2 * time.Second, Transport: &http.Transport{Proxy: nil}}
+	client := &http.Client{Timeout: 2 * time.Second, Transport: &http.Transport{Proxy: nil},
+		CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
 	defer client.CloseIdleConnections()
 	uri := "/src/analytics/game.bundle.js?release=0123456789abcdef&qa=%2Fheld%20look"
 	get := func(port int) (int, string, error) {
