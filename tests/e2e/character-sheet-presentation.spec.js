@@ -37,6 +37,12 @@ for (const [width, height, mobile] of [[1280, 900, false], [900, 650, false], [3
         const buttons = garments.getByRole('button');
         await expect(buttons).toHaveCount(3);
         expect(await buttons.allTextContents()).toEqual(['Weapon GarmentOriginal gear', 'Armor GarmentOriginal gear', 'Offhand GarmentOriginal gear']);
+        if (mobile) {
+            await page.evaluate(() => window.__characterSheet.ui.setUiScale(125));
+            const sizes = await garments.locator('.garment-slot-label, .garment-slot-look')
+                .evaluateAll(nodes => nodes.map(node => Number.parseFloat(getComputedStyle(node).fontSize)));
+            expect(sizes).toEqual([20, 20, 20, 20, 20, 20]);
+        }
         const preview = await sheet.locator('.character-preview').boundingBox();
         const row = await garments.boundingBox();
         expect(row.y).toBeGreaterThanOrEqual(preview.y + preview.height);
