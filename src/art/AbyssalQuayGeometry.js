@@ -63,6 +63,16 @@ export function createAbyssalMooring(start, end) {
         link.translate(center.x, center.y, center.z);
         const unpacked = link.toNonIndexed(); link.dispose(); parts.push(unpacked);
     }
+    // An actual bolted pad eye terminates the line on the quay. The former
+    // low, outboard endpoint left a floating link and buried the chain in stone.
+    const outboard = Math.sign(b.x - a.x), anchorX = b.x + outboard * .35;
+    const eye = new THREE.TorusGeometry(.5, .14, 4, 8);
+    eye.rotateY(Math.PI / 2); eye.translate(anchorX, b.y, b.z);
+    const plate = new THREE.BoxGeometry(1.4, .22, 1.4);
+    plate.translate(anchorX, b.y - .57, b.z);
+    for (const part of [eye, plate]) {
+        parts.push(part.toNonIndexed()); part.dispose();
+    }
     const geometry = mergeGeometries(parts, false);
     parts.forEach(part => part.dispose());
     geometry.computeBoundingBox(); geometry.computeBoundingSphere();

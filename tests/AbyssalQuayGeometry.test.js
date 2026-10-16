@@ -23,7 +23,7 @@ test('drowned quay has physical staggered slab joints within the original water-
 });
 
 test('mooring links have open holes, visible iron surfaces and a sagging line inside the old anchor clearance', () => {
-    const start = new THREE.Vector3(18, 7, 8), end = new THREE.Vector3(34, 2, 18);
+    const start = new THREE.Vector3(18, 7, 8), end = new THREE.Vector3(30.5, 3.7, 18);
     const chain = createAbyssalMooring(start.toArray(), end.toArray());
     const material = new THREE.MeshStandardMaterial(), mesh = new THREE.Mesh(chain, material);
     mesh.updateMatrixWorld(true);
@@ -39,18 +39,15 @@ test('mooring links have open holes, visible iron surfaces and a sagging line in
     expect(hit(start)).toHaveLength(0);
     expect(hit(start.clone().add(across)).length).toBeGreaterThan(0);
     chain.setDrawRange(0, Infinity);
-    const centers = [], position = chain.attributes.position;
-    for (let first = 0; first < position.count; first += 192) {
-        const center = new THREE.Vector3();
-        for (let i = first; i < first + 192; i++) center.add(new THREE.Vector3().fromBufferAttribute(position, i));
-        centers.push(center.divideScalar(192));
-    }
-    const middle = centers.reduce((best, center) => Math.abs(center.x - 26) < Math.abs(best.x - 26) ? center : best);
-    const straightY = start.y + (end.y - start.y) * (middle.x - start.x) / (end.x - start.x);
-    expect(straightY - middle.y).toBeGreaterThan(1);
+    const position = chain.attributes.position, middleX = (start.x + end.x) / 2;
+    const middle = Array.from({ length: position.count }, (_, i) => new THREE.Vector3().fromBufferAttribute(position, i))
+        .filter(vertex => Math.abs(vertex.x - middleX) < .3);
+    expect(middle.length).toBeGreaterThan(0);
+    expect(Math.min(...middle.map(vertex => vertex.y))).toBeLessThan((start.y + end.y) / 2 - .7);
+    // Links stay above the 3.1m stone while their fitting bites into its top.
+    expect(chain.boundingBox.min.y).toBeCloseTo(3.02, 5);
     expect(chain.boundingBox.min.x).toBeGreaterThan(17);
     expect(chain.boundingBox.max.x).toBeLessThan(35);
-    expect(chain.boundingBox.min.y).toBeGreaterThan(1);
     expect(chain.boundingBox.max.y).toBeLessThan(8);
     expect(chain.groups).toHaveLength(0);
     expect(position.count / 3).toBeLessThan(1600);

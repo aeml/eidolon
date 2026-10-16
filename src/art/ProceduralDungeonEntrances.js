@@ -414,8 +414,8 @@ function createAbyssalWell(root) {
         spike(root, `abyssal:shell-crown:${side}`, m.pale,
             [side * 21, 29, -1], [14, 10, 14]);
         for (const [end, start, finish] of [
-            ['front', [side * 18, 7, 8], [side * 34, 2, 18]],
-            ['rear', [side * 18, 6, -10], [side * 34, 2, -19]]
+            ['front', [side * 18, 7, 8], [side * 30.5, 3.7, 18]],
+            ['rear', [side * 18, 6, -10], [side * 30.5, 3.7, -19]]
         ]) addMesh(root, `abyssal:anchor-tentacle-${end}:${side}`,
             geometry(`dungeon-entrance-abyssal-mooring-${end}:${side}`, () => createAbyssalMooring(start, finish)), m.metal);
         for (const [index, xOffset] of [-5, 0, 5].entries()) {
