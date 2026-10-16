@@ -2071,3 +2071,17 @@ cold/device performance failures, final art and all original readiness/owner
 requirements remain open. Full goal active; human pacing/physical-phone feedback
 and soak/stress deferred. No beta/access change or installed-host TLS/logging
 activation is claimed by source publication.
+
+
+## October 16 Alpha 1.79.64 scoped acceptance
+
+Exact `50983561aacf4cfe55ba4926962db0f82217bbcc` / [CI](https://github.com/aeml/eidolon/actions/runs/38916988636) passes all ten ordered jobs.
+785 client suites / 12,046 tests, 451 hosted browser passes / 13 skips,
+92 native passes / one skip and first-attempt live/recovery/party checks pass.
+Fresh normal-TLS 362 pins, both identities, ready database, open registration,
+flat terrain and analytics match at 2026-10-16T15:39:02.254518+00:00. Bonded Bastion footing,
+normal-input integration, Wardrobe return, phone form text and actual four-class
+purchase/gear/save coverage are accepted within scope. Original full requirements
+remain active; rejected town batching stays isolated. Human pacing, physical
+phone feedback and soak/stress remain deferred. No beta or full-game claim.
+[Acceptance](docs/plans/2026-10-16-release1-79-64-acceptance.md).

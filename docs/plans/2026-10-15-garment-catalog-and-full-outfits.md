@@ -3,7 +3,7 @@
 Owner requirement added October 15, 2026. **Required before beta; full scope
 remains open.** The minimum18distinct modeled looks and all four class fits are
 implemented/deployed in scoped acceptedAlpha1.79.58; the centered equipment row
-is delivered in59 and retained in accepted63. [Collection acceptance](2026-10-16-release1-79-58-acceptance.md),
+is delivered in59 and retained in accepted64. [Collection acceptance](2026-10-16-release1-79-58-acceptance.md),
 [current delivery](2026-10-16-release1-79-63-acceptance.md).
 Final collection art and the broader behavior/pose/device acceptance below
 remain open. Counts and narrower cosmetic checks do not close that scope.
@@ -236,3 +236,16 @@ persisted clearing across nine phases. The centered garment row is retained.
 [release acceptance](2026-10-16-release1-79-63-acceptance.md).
 All-class/old-binary, broader poses, physical-device and final owner collection
 acceptance remain open; this does not complete the full garment checklist.
+
+
+## Four-class actual wardrobe delivery — October 16
+
+Accepted Alpha 1.79.64 verifies normal purchases, local/remote/preview models,
+real gear changes, saved Low preferences and returning/cleared outfits across
+all four supplied classes, including the Rogue offhand blade. The centered
+three-slot row remains below the portrait; View character returns to its model
+and keyboard control, and phone forms respect the menu text-size preference.
+[Acceptance](2026-10-16-release1-79-64-acceptance.md),
+[qualification](2026-10-16-wardrobe-class-sessions-qualification.md).
+This closes that scoped class/session coverage; broader old-binary/pose/device
+behavior and final owner collection art review remain open.

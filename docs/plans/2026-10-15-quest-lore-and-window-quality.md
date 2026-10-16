@@ -5,7 +5,7 @@ Quest/Lore Book improvements, durable window layouts/reset and the first
 character/bag/merchant polish slice are deployed/verified throughAlpha1.79.57.
 Related service-window refinements are deployed in acceptedAlpha1.79.58.
 Returning Lore Book task/finale context and the centered garment row are deployed
-in acceptedAlpha1.79.59 and retained through accepted63. Improve
+in acceptedAlpha1.79.59 and retained through accepted64. Improve
 the whole quest experience and bring game menus up to the visual quality of the
 improved world. Existing functionality is a foundation, not final acceptance.
 
@@ -211,3 +211,14 @@ Alpha 1.79.63 retains this delivered UI and verifies the real two-client wardrob
 purchase/equipment/save workflow in mandatory native CI. Final full UI, owner
 and physical-device review remain open.
 [Current acceptance](2026-10-16-release1-79-63-acceptance.md).
+
+
+## Wardrobe return and phone form delivery — October 16
+
+Accepted Alpha 1.79.64 retains the centered garment row and adds View character
+without changing appearance or rotation. Phone loadout, Wardrobe and wallet forms
+follow the selected menu text size. Three native desktop/compact/phone cases
+verify the portrait return/focus, row alignment, 44px controls and 125% phone text.
+[Acceptance](2026-10-16-release1-79-64-acceptance.md),
+[qualification](2026-10-16-wardrobe-class-sessions-qualification.md).
+Final full UI/owner/physical-device review and the full goal remain open.
