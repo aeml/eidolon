@@ -86,7 +86,7 @@ export async function captureEarthMovingRoute(page, testInfo) {
         recording = true;
         await session.send('Page.startScreencast', captureOptions);
         // Earth walks north of Votive Market before joining the east gate.
-        // Water continues along the north street to its authored realm road.
+        // Water goes around the casino to the north street and authored road.
         for (const [label, x, z] of route.waypoints) {
             while (true) {
                 const before = await readPlayerState(page), distance = Math.hypot(x - before.x, z - before.z);

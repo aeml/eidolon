@@ -15,7 +15,10 @@ export function visualMovingRoutePlan(realm = 'earth') {
         if (labels.length !== points.length) throw new Error('Water visual route labels must cover every authored road waypoint');
         return {
             realm,
-            waypoints: [['north-court', 0, 186], ['north-street', 0, 120], ['north-gate', 0, 80], ['water-road', 0, -400],
+            // The casino occupies x±13.25, z161.75..178.25. Take its open
+            // eastern lane before returning to the north gate centreline.
+            waypoints: [['north-court', 0, 186], ['casino-east-lane', 20, 186], ['casino-back-lane', 20, 150],
+                ['north-street', 0, 150], ['north-gate', 0, 80], ['water-road', 0, -400],
                 ...points.map(([x, z], index) => [labels[index], x, z])],
             budgetLabels: ['town-start', 'water-road', 'water-passage', 'abyssal-approach'],
             maximumFrames: 1800,
