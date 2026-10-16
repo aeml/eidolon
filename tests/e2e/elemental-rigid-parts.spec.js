@@ -5,16 +5,16 @@ import { collectBrowserFailures } from './helpers.js';
 const costOnly = process.env.EIDOLON_E2E_ELEMENTAL_COST === '1';
 const creatures = [
     ['SandstormDjinn', 'fire', 23], ['MagmaGolem', 'fire', 32], ['ScorchedWraith', 'fire', 23],
-    ['InfernalBehemoth', 'fire', 22], ['PhoenixSentinel', 'fire', 23], ['StormHarpy', 'air', 33],
+    ['InfernalBehemoth', 'fire', 22], ['PhoenixSentinel', 'fire', 23], ['StormHarpy', 'air', 33, 24],
     ['CloudElemental', 'air', 23], ['ThunderRoc', 'air', 23], ['TempestGiant', 'air', 28], ['CycloneAvatar', 'air', 24]
 ];
-for (const framing of costOnly ? ['group'] : ['group', 'close']) for (const [type, realm, drawMeshes] of creatures) for (const quality of ['high', 'low'])
-    test(`${costOnly ? 'cost' : framing} ${quality} ${type} rigid siblings preserve the animated surfaces`, async ({ page, baseURL }, testInfo) => {
+for (const framing of costOnly ? ['group'] : ['group', 'close']) for (const [type, realm, drawMeshes, lowGroupZoom = 32] of creatures) for (const quality of ['high', 'low'])
+    test(`${costOnly ? 'cost' : framing} ${quality} ${type} ${costOnly ? 'walk uses bounded source and merged render windows' : 'rigid siblings preserve the animated surfaces'}`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         await page.setViewportSize({ width: quality === 'low' ? 390 : 1280, height: 844 });
         await page.goto('/', { waitUntil: 'networkidle' });
-        const evidence = await page.evaluate(async ({ type, quality, framing, costOnly, realm }) => {
+        const evidence = await page.evaluate(async ({ type, quality, framing, costOnly, realm, lowGroupZoom }) => {
             const THREE = await import('three');
             const { RenderSystem } = await import('/src/core/RenderSystem.js');
             const recipes = await import('/src/art/ProceduralOverworldEnemies.js');
@@ -31,7 +31,9 @@ for (const framing of costOnly ? ['group'] : ['group', 'close']) for (const [typ
                 groups[variant].add(root); models.push({ root, index: i, variant });
             }
             system.entityGroup.add(...groups);
-            system.setZoom(framing === 'close' ? 8 : quality === 'low' ? 32 : 16);
+            // Smaller Harpy silhouettes need the closer cluster framing to
+            // satisfy the same foreground coverage requirement on a phone.
+            system.setZoom(framing === 'close' ? 8 : quality === 'low' ? lowGroupZoom : 16);
             system.setCameraTarget(offset.clone().add(framing === 'close' ? new THREE.Vector3(-3, 1, -3) : new THREE.Vector3(0, 1, 0)));
             system.applyLightingPreset(system.getRealmForPosition(offset), true);
             system.updateEnvironmentLighting(offset, 0);
@@ -66,7 +68,8 @@ for (const framing of costOnly ? ['group'] : ['group', 'close']) for (const [typ
                 let cost;
                 try { cost = await measureElementalRenderCost({ THREE, system, groups, models, offset }); }
                 finally { system.dispose(); canvasRetired = !canvas.isConnected; }
-                return { cost, rows: [], images: [], canvasRetired, renderer, quality: system.graphicsQuality, lightingRealm, factoryModels };
+                return { cost, rows: [], images: [], canvasRetired, renderer, quality: system.graphicsQuality,
+                    zoom: system.currentZoom, framing, lightingRealm, factoryModels };
             }
             try {
                 capture(0); capture(1); capture(0);
@@ -90,8 +93,9 @@ for (const framing of costOnly ? ['group'] : ['group', 'close']) for (const [typ
                     mixers.forEach((mixer, i) => { mixer.stopAllAction(); mixer.uncacheRoot(models[i].root); });
                 }
             } finally { system.dispose(); canvasRetired = !canvas.isConnected; }
-            return { rows, images, canvasRetired, renderer, quality: system.graphicsQuality, framing, lightingRealm, factoryModels };
-        }, { type, quality, framing, costOnly, realm });
+            return { rows, images, canvasRetired, renderer, quality: system.graphicsQuality,
+                zoom: system.currentZoom, framing, lightingRealm, factoryModels };
+        }, { type, quality, framing, costOnly, realm, lowGroupZoom });
         for (const entry of evidence.images) await writeFile(testInfo.outputPath(entry.name), Buffer.from(entry.data, 'base64'));
         delete evidence.images;
         await writeFile(testInfo.outputPath('elemental-rigid-parts.json'), JSON.stringify(evidence, null, 2));
