@@ -262,6 +262,18 @@ public asset pins. [Acceptance](2026-10-16-release1-79-59-acceptance.md).
 This advances the interface scope; original quality/release gates remain open.
 Soak/stress and human pacing/physical-device feedback remain deferred.
 
+## Qualified local successor — guild menu continuity
+
+Same-character/same-guild updates now retain enrollment/invite/message drafts,
+leaderboard choices, caret/focus and reading offsets. Untouched messages follow
+authoritative text; character/guild changes clear drafts, permissions retire
+controls and destructive confirmations keep focus.96distinct checks/4suites
+and6distinct native desktop/phone cases qualify. The old draft-loss regression
+and two native fixture/invocation failures remain retained with corrections.
+[Qualification](2026-10-16-guild-menu-continuity-preparation.json).
+Merged into local master for the next coherent milestone, not yet pushed or
+deployed. The production-flat normal-input world review remains in progress.
+
 ## Outstanding requirements and next evidence
 
 All rows below are open at the full requirement's scope, even where substantial
@@ -294,7 +306,7 @@ acceptance is incomplete.
 | Support, privacy and operations | Assign service objectives/budget, alert/support/moderation/incident/maintenance/content ownership and applicable retention/recovery policies. Complete operational 1.81–1.86 and 1.87–1.89 consolidation evidence. | Implementation and owner |
 | Asset/dependency rights and notices | Finish exact shipped catalog/provenance/license review, player notices/help/known issues and owner rights decisions. Supplied files or matching hashes do not grant rights. Preserve existing notices; do not invent licenses. | Implementation and owner |
 | Feature freeze F1–F5 | Prove every promised mandatory feature/content item, threat boundaries, supported population/service policy, privacy/admin/recovery ownership and frozen content/dependency catalog with exception process. None of F1–F5 is declared complete by this register. | Implementation and owner |
-| Near-complete beta at 1.90 | Complete preceding mandatory systems/art/usability/operations, invitation preparation, chosen cohort capacity/support and integrated candidate approval. Preserve existing-account access/progress. No beta/admission change without owner approval. | Implementation and owner |
+| Near-complete beta at 1.90 | Complete preceding mandatory systems/art/usability/operations. Implement invitation-based new-account admission while retaining existing logins: current `client_dispatch.go` registration calls `CreateUser` without an invitation gate. Prepare and validate the feature before activation; public access remains unchanged pending owner approval. Complete invitation preparation, chosen cohort capacity/support and integrated candidate approval. Preserve existing-account access/progress. No beta/admission change without owner approval. | Implementation and owner |
 | Findings and qualification 1.91–1.98 | Collect actual cohort evidence, reproduce/fix blockers, and complete data/security/economy/capacity/device/privacy/operations/final-content signoffs. Preparation may proceed; missing beta evidence is not a pass. | Implementation and owner/cohort |
 | 1.99 and handoff | Prove every original requirement, final exact CI/live identity/assets/readiness/account smoke, support/monitor/recovery handoff and explicit owner go/no-go/public naming/carryover decision. No completion claim based on version or green CI. | Implementation and owner |
 
