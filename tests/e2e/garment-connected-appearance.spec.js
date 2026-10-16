@@ -3,6 +3,7 @@ import { expect, test } from '@playwright/test';
 import { BASE_ITEMS, squishFlatItemStat } from '../../src/core/ItemSystem.js';
 import { profileGameplayScene } from './scene-performance.js';
 import { summarizePartyCPUProfile } from './party-cpu-summary.js';
+import { requiresHardwareWebGL } from './browserLaunchPolicy.js';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld,
     openGame, projectEntity } from './helpers.js';
 
@@ -136,6 +137,7 @@ test('purchased independent garments render locally and remotely through gear ch
             const ext = gl.getExtension('WEBGL_debug_renderer_info');
             return String(gl.getParameter(ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
         });
+        if (requiresHardwareWebGL()) expect(renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
         await expect.poll(() => renderedAppearance(page)).toMatchObject({ ready: true, items: 14, garment: '', missing: [], fallback: [] });
         await expect.poll(() => renderedAppearance(observer, ownerID)).toMatchObject({ ready: true, items: 14, garment: '', missing: [], fallback: [] });
         const original = await renderedAppearance(page);
