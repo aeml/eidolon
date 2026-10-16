@@ -123,7 +123,14 @@ const renderedAppearance = (page, id = null) => page.evaluate(id => {
         equipment: Object.fromEntries(Object.entries(actor?.equipment || {}).map(([slot, item]) =>
             [slot, { ...item, rarity: typeof item.rarity === 'string' ? item.rarity : item.rarity?.name }])),
         signature: root?.userData.equipmentVisualSignature, gold: actor?.gold,
-        level: actor?.level, xp: actor?.xp, stats: actor?.baseStats };
+        level: actor?.level, xp: actor?.xp, stats: actor?.baseStats,
+        // Untimed preparation context only; functional readiness is separate
+        // from later gameplay-distance index preparation and frame budgets.
+        worldPreparation: game.renderSystem.actorGameplayGeometry ? {
+            pending: game.renderSystem.actorGameplayGeometry.delivery.jobs.size,
+            installed: game.renderSystem.actorGameplayGeometry.pass.entries.size,
+            reduced: game.renderSystem.actorGameplayGeometry.pass.reduced
+        } : null };
 }, id);
 
 async function openVeyra(page) {
