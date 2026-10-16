@@ -380,6 +380,13 @@ triangle results; it is not a whole-world performance acceptance.
 
 ## Outstanding requirements and next evidence
 
+Post66 native diagnosis rules out matrix-upload avoidance: all 3,238 existing
+written batch targets change, despite 3.75% equal individual writes. A fresh
+High party still records 33.3/50 ms frames. The eyebrow single-pass proposal also
+fails its exact-pixel criterion and remains isolated. No additional runtime is
+selected; original performance gates stay open.
+[Current findings and custody](2026-10-16-current-renderer-rejections.md).
+
 All rows below are open at the full requirement's scope, even where substantial
 implementation and scoped acceptance exist. Reuse valid unchanged evidence and
 repair concrete gaps; do not rebuild delivered systems merely because final
