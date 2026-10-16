@@ -91,14 +91,14 @@ for (const [width, height, mobile] of [[1280, 900, false], [900, 650, false], [3
         await page.evaluate(() => {
             const { ui, player } = window.__characterSheet;
             window.__characterSheet.gearBefore = JSON.stringify(player.equipment);
-            player.appearances = { mainHand: { baseName: 'Sunforged Greatblade' }, outfit: { baseName: 'Iron Oath Regalia' }, offHand: { baseName: 'Aegis of the Dawn' } };
+            player.appearances = { mainHand: { baseName: 'Grovekeeper Blade', rarity: 'Common', slot: 'mainHand' }, outfit: { baseName: 'Iron Oath Regalia', rarity: 'Common', slot: 'outfit' }, offHand: { baseName: 'Grovekeeper Shield', rarity: 'Common', slot: 'offHand' } };
             ui.updateCharacterSheet(player);
             ui.wardrobe.root.open = false;
         });
         await garments.scrollIntoViewIfNeeded();
-        await expect(buttons.nth(0)).toContainText('Sunforged Greatblade');
+        await expect(buttons.nth(0)).toContainText('Grovekeeper Blade');
         await expect(buttons.nth(1)).toContainText('Iron Oath Regalia');
-        await expect(buttons.nth(2)).toContainText('Aegis of the Dawn');
+        await expect(buttons.nth(2)).toContainText('Grovekeeper Shield');
         expect(await garments.evaluate(node => node.scrollWidth <= node.clientWidth + 1)).toBe(true);
         expect(await page.evaluate(() => JSON.stringify(window.__characterSheet.player.equipment) === window.__characterSheet.gearBefore)).toBe(true);
         await page.screenshot({ path: testInfo.outputPath('character-garment-slots.png') });
