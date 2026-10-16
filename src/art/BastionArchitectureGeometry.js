@@ -20,9 +20,25 @@ export function createBastionFoundation() {
 
 export function createBastionGatehouse() {
     const parts = [];
+    // A real pointed doorway with a three-metre throat. The former dark panel
+    // sat on a solid wall; viewing it from the approach exposed the flat face.
+    // Chamfer the carved edge within the exact old front-wall envelope.
+    const opening = new THREE.Shape([
+        [-21, 3], [-5.5, 3], [-5.5, 12], [-3.8, 17], [0, 21],
+        [3.8, 17], [5.5, 12], [5.5, 3], [21, 3], [21, 27], [-21, 27]
+    ].map(([x, y]) => new THREE.Vector2(x, y)));
+    const front = new THREE.ExtrudeGeometry(opening, { depth: 3, steps: 1,
+        bevelEnabled: true, bevelSize: .18, bevelThickness: .18,
+        bevelSegments: 1, curveSegments: 1 });
+    front.computeBoundingBox();
+    const bounds = front.boundingBox, size = bounds.getSize(new THREE.Vector3());
+    front.translate(-bounds.min.x, -bounds.min.y, -bounds.min.z);
+    front.scale(42 / size.x, 24 / size.y, 3 / size.z);
+    front.translate(-21, 3, 4);
+    parts.push(front);
     // Open ruined hall, not a solid box with an enormous flat roof cap.
     for (const [width, height, depth, x, y, z] of [
-        [42, 24, 3, 0, 15, 5.5], [42, 22, 3, 0, 14, -15.5],
+        [42, 22, 3, 0, 14, -15.5],
         [3, 23, 21, -19.5, 14.5, -5], [3, 21, 21, 19.5, 13.5, -5],
         [39, 1, 21, 0, 3.5, -5]
     ]) {

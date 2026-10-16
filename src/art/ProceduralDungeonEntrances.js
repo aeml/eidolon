@@ -237,7 +237,7 @@ function createVerdantBastion(root) {
     box(root, 'verdant:mossed-ramp', m.pale, [22, 2, 23], [0, 2.7, 22], [-0.06, 0, 0]);
     addMesh(root, 'verdant:gatehouse', SHAPES.bastionHall, m.stone);
     addMesh(root, 'verdant:recessed-hall-door', SHAPES.bastionRecess, m.dark, {
-        position: [0, 3, 7.07], castShadow: false
+        position: [0, 3, 3.97], castShadow: false
     });
     for (let i = 0; i < 11; i++) {
         if (i === 3 || i === 8) continue;
