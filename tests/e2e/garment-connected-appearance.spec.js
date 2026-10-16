@@ -139,7 +139,9 @@ test('purchased independent garments render locally and remotely through gear ch
         const expected = { ...legacy };
         const hands = ['grovekeeper-blade-v1', 'grovekeeper-shield-v1'];
         let remaining = 100;
-        const check = async (name, garment, held = hands, items = 14) => {
+        // An outfit renders seven modeled body sections and two real held
+        // slots. Real rings/neck/trinkets remain equipped but are suppressed.
+        const check = async (name, garment, held = hands, items = garment ? 9 : 14) => {
             const model = { ready: true, garment, held, items, missing: [], fallback: [] };
             await expect.poll(() => renderedAppearance(page)).toMatchObject({ ...model, appearances: expected, gold: 1234, ep: remaining, level: 30, xp: 0 });
             await expect.poll(() => renderedAppearance(observer, ownerID)).toMatchObject({ ...model, appearances: expected });
@@ -176,7 +178,7 @@ test('purchased independent garments render locally and remotely through gear ch
         await page.screenshot({ path: testInfo.outputPath('confirmed-character-garments.png') });
         // Removing real gear under an outfit must not create a cosmetic weapon.
         await page.locator('#slot-mainhand').click();
-        await check('empty-real-weapon', 'iron-oath-regalia-v1', ['grovekeeper-shield-v1'], 13);
+        await check('empty-real-weapon', 'iron-oath-regalia-v1', ['grovekeeper-shield-v1'], 8);
         if (!await page.locator('#inventory-screen').isVisible()) await page.keyboard.press('i');
         const index = await page.evaluate(() => window.game.player.inventory.findIndex(item => item?.id === 'garment-connected-mainHand'));
         expect(index).toBeGreaterThanOrEqual(0);
