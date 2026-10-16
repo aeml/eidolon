@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { createProceduralSandstormDjinn, createProceduralThunderRoc } from '../src/art/ProceduralOverworldEnemies.js';
+import { getHumanoidBatchGeometryCount } from '../src/art/HumanoidRenderBatches.js';
 
 const recipes = [
     ['SandstormDjinn', createProceduralSandstormDjinn, 63, 23],
@@ -52,6 +53,19 @@ function compareTriangles(reference, candidate) {
 }
 
 for (const [type, make, sourceMeshes, drawMeshes] of recipes) describe(type, () => {
+    test('reuses merged render resources while keeping each animation tree independent', () => {
+        const first = make(), cached = getHumanoidBatchGeometryCount(), second = make();
+        expect(getHumanoidBatchGeometryCount()).toBe(cached);
+        const parts = leaves(first).filter(p => p.userData.humanoidBatchSources);
+        expect(parts.length).toBeGreaterThan(0);
+        for (const part of parts) {
+            const other = second.getObjectByName(part.name);
+            expect(other).not.toBe(part); expect(other.geometry).toBe(part.geometry); expect(other.material).toBe(part.material);
+        }
+        const a = first.getObjectByName(`Rig_${type}Body`), b = second.getObjectByName(`Rig_${type}Body`), rest = b.position.y;
+        a.position.y += 3; expect(b.position.y).toBe(rest);
+        first.userData.resetPose(); expect(a.position.y).toBe(rest); expect(b.position.y).toBe(rest);
+    });
     test('merges constructor-owned siblings while retaining all real clip targets and shared materials', () => {
         const reference = make({ batch: false }), candidate = make();
         expect(leaves(reference)).toHaveLength(sourceMeshes); expect(leaves(candidate)).toHaveLength(drawMeshes);
