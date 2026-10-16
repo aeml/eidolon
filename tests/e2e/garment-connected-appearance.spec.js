@@ -2,6 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { expect, test } from '@playwright/test';
 import { BASE_ITEMS, squishFlatItemStat } from '../../src/core/ItemSystem.js';
 import { profileGameplayScene } from './scene-performance.js';
+import { profileWorldGpuTime } from './world-gpu-observation.js';
 import { summarizePartyCPUProfile } from './party-cpu-summary.js';
 import { requiresHardwareWebGL } from './browserLaunchPolicy.js';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld,
@@ -208,6 +209,17 @@ test('purchased independent garments render locally and remotely through gear ch
                 // Never retain raw profiles, URL queries or account data.
                 await testInfo.attach('current-town-wardrobe-cpu-functions', { body: JSON.stringify(summary), contentType: 'application/json' });
             } finally { await cdp.detach(); }
+            // GPU queries run after both CPU profilers have restored hooks.
+            const gpuCounter = await page.evaluate(() => {
+                const gl = window.game.renderSystem.renderer.getContext();
+                const ext = gl.getExtension('EXT_disjoint_timer_query_webgl2');
+                return ext ? gl.getQuery(ext.TIME_ELAPSED_EXT, ext.QUERY_COUNTER_BITS_EXT) : 0;
+            });
+            await testInfo.attach('current-town-gpu-counter-availability', { body: JSON.stringify({ gpuCounter }), contentType: 'application/json' });
+            if (Number.isInteger(gpuCounter) && gpuCounter >= 30) {
+                const gpu = await profileWorldGpuTime(page, 'current-town-rendered-wardrobe-separate-gpu');
+                await testInfo.attach('current-town-wardrobe-gpu-diagnosis', { body: JSON.stringify(gpu), contentType: 'application/json' });
+            }
         }
         await chooseLowQuality(page);
         await chooseLowQuality(observer);
