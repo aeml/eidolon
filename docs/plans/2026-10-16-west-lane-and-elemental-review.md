@@ -50,3 +50,17 @@ approval. Soak/stress and human pacing/phone feedback remain deferred.
 Private retained evidence resides in the owned elemental review worktree under
 `.qa-elemental-travel`. Synthetic credentials in closed records and HTML reports
 are scrubbed; captured image pixels are not claimed to be redacted.
+
+Recorded moving-route draw counters reach 946 on Fire and 668 on Air; the named
+Tempest approach sample reports 404. These exceed the retained 350-call target.
+The separate 180-frame party windows report 16.7/33.4 ms median/p95, with
+269/194,156 Fire and 252/194,736 Air median calls/triangles. These different
+windows neither clear prior frame failures nor prove a paired speedup. The cause
+of the moving draw peaks remains unproved; no budget or assertion is relaxed.
+
+Frozen qualified evidence inventory: 4,083 files, SHA-256
+`bea07a73f219f6c2f5cda9a0b4a086c12eb00ee3adc191de9c20f891233744fb`.
+The first rejected Fire inventory remains
+`7b7c45d0703e1223ae795e8f692073c72d278ab76be6eb1c7e94e5a56819ae9d`;
+the second remains
+`73fd05f6931edbe35a948a6c92f5eb15de9a747d343555e1fab053e17638c89d`.

@@ -22,6 +22,16 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
+## Alpha 1.79.67: prepared; deployment acceptance pending
+
+Alpha 1.79.67 is prepared with western Lanternhold paving aligned to the clear
+service/residential lane and ordinary-input Fire/Air approach review. Native
+High/Low comparisons preserve draw/triangle counts and collision parity. The
+original performance and full game/readiness gates remain open. Public 1.79.66
+remains the accepted release until exact CI, deployments and public assets are
+verified. [Qualification](2026-10-16-west-lane-and-elemental-review.md).
+Human pacing/physical-phone feedback and soak/stress remain deferred.
+
 ## Alpha 1.79.66: deployed and verified within scoped acceptance
 
 Alpha 1.79.66 at `ac430ab8b` is deployed and verified within the road
