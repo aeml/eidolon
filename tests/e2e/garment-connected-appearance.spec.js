@@ -1,4 +1,5 @@
 import { execFileSync } from 'node:child_process';
+import { writeFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
 import { BASE_ITEMS, squishFlatItemStat } from '../../src/core/ItemSystem.js';
 import { profileGameplayScene } from './scene-performance.js';
@@ -19,6 +20,12 @@ const names = { head: 'Iron Helm', chest: 'Plate Mail', legs: 'Plate Greaves',
     belt: 'Plated Girdle', mainHand: 'Iron Sword', offHand: 'Wooden Shield',
     ring1: 'Ruby Ring', ring2: 'Silver Ring', neck: 'Necklace',
     trinket1: 'Amulet of Power', trinket2: 'Orb of Mana' };
+
+async function attachJSON(testInfo, name, value) {
+    const path = testInfo.outputPath(`${name}.json`);
+    await writeFile(path, JSON.stringify(value));
+    await testInfo.attach(name, { path, contentType: 'application/json' });
+}
 
 async function registerReturningFixture(page, credentials, observer = false) {
     const container = process.env.EIDOLON_E2E_SOCKET_MONGO_CONTAINER;
@@ -47,8 +54,10 @@ async function registerReturningFixture(page, credentials, observer = false) {
         x: observer ? 15 : 12, y: 0, z: 188,
         stats: { strength: 10, dexterity: 10, intelligence: 10, wisdom: 10, vitality: 10 },
         inventory: [], equipment: observer ? {} : equipment, stash: [], quests: [],
-        unlocked_skills: [], appearances: observer ? {} : legacy,
-        appearance_collection: observer ? {} : { 'Silk Hood|Rare': legacy.head } };
+        unlocked_skills: [],
+        // BSON field names differ from the ordinary wire appearance shape.
+        appearances: observer ? {} : { head: { base_name: legacy.head.baseName, rarity: legacy.head.rarity, slot: 'head' } },
+        appearance_collection: observer ? {} : { 'Silk Hood|Rare': { base_name: legacy.head.baseName, rarity: legacy.head.rarity, slot: 'head' } } };
     const script = `
         if (!db.getSiblingDB('admin').auth(process.env.MONGO_INITDB_ROOT_USERNAME, process.env.MONGO_INITDB_ROOT_PASSWORD)) throw Error('Fixture auth failed');
         const r = db.getSiblingDB('eidolon').users.updateOne(
@@ -147,8 +156,8 @@ test('purchased independent garments render locally and remotely through gear ch
             return String(gl.getParameter(ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
         });
         if (requiresHardwareWebGL()) expect(renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
-        await expect.poll(() => renderedAppearance(page)).toMatchObject({ ready: true, items: 14, garment: '', missing: [], fallback: [] });
-        await expect.poll(() => renderedAppearance(observer, ownerID)).toMatchObject({ ready: true, items: 14, garment: '', missing: [], fallback: [] });
+        await expect.poll(() => renderedAppearance(page)).toMatchObject({ ready: true, items: 14, garment: '', appearances: legacy, missing: [], fallback: [] });
+        await expect.poll(() => renderedAppearance(observer, ownerID)).toMatchObject({ ready: true, items: 14, garment: '', appearances: legacy, missing: [], fallback: [] });
         const original = await renderedAppearance(page);
         const expected = { ...legacy };
         const hands = ['grovekeeper-blade-v1', 'grovekeeper-shield-v1'];
@@ -207,7 +216,7 @@ test('purchased independent garments render locally and remotely through gear ch
         if (process.env.EIDOLON_E2E_GARMENT_CPU === '1') {
             await page.bringToFront();
             const frames = await profileGameplayScene(page, 'current-town-rendered-wardrobe', { phases: true });
-            await testInfo.attach('current-town-wardrobe-frame-diagnosis', { body: JSON.stringify(frames), contentType: 'application/json' });
+            await attachJSON(testInfo, 'current-town-wardrobe-frame-diagnosis', frames);
             const cdp = await page.context().newCDPSession(page);
             try {
                 await cdp.send('Profiler.enable');
@@ -217,7 +226,7 @@ test('purchased independent garments render locally and remotely through gear ch
                 const summary = summarizePartyCPUProfile(profile, new URL(baseURL).origin);
                 // Only allowlisted source/function/caller identities survive.
                 // Never retain raw profiles, URL queries or account data.
-                await testInfo.attach('current-town-wardrobe-cpu-functions', { body: JSON.stringify(summary), contentType: 'application/json' });
+                await attachJSON(testInfo, 'current-town-wardrobe-cpu-functions', summary);
             } finally { await cdp.detach(); }
             // GPU queries run after both CPU profilers have restored hooks.
             const gpuCounter = await page.evaluate(() => {
@@ -225,10 +234,10 @@ test('purchased independent garments render locally and remotely through gear ch
                 const ext = gl.getExtension('EXT_disjoint_timer_query_webgl2');
                 return ext ? gl.getQuery(ext.TIME_ELAPSED_EXT, ext.QUERY_COUNTER_BITS_EXT) : 0;
             });
-            await testInfo.attach('current-town-gpu-counter-availability', { body: JSON.stringify({ gpuCounter }), contentType: 'application/json' });
+            await attachJSON(testInfo, 'current-town-gpu-counter-availability', { gpuCounter });
             if (Number.isInteger(gpuCounter) && gpuCounter >= 30) {
                 const gpu = await profileWorldGpuTime(page, 'current-town-rendered-wardrobe-separate-gpu');
-                await testInfo.attach('current-town-wardrobe-gpu-diagnosis', { body: JSON.stringify(gpu), contentType: 'application/json' });
+                await attachJSON(testInfo, 'current-town-wardrobe-gpu-diagnosis', gpu);
             }
         }
         await chooseLowQuality(page);
@@ -247,7 +256,7 @@ test('purchased independent garments render locally and remotely through gear ch
         expect((await renderedAppearance(page)).equipment).toEqual(original.equipment);
         expect(failures, failures.join('\n')).toEqual([]);
         expect(remoteFailures, remoteFailures.join('\n')).toEqual([]);
-        await testInfo.attach('rendered-wardrobe-phases', { body: JSON.stringify({ renderer, scope: 'Prepared returning Fighter, actual local/observer models and normal UI/socket/save paths; not earned EP, all-class fit or frame-time qualification.', phases }), contentType: 'application/json' });
+        await attachJSON(testInfo, 'rendered-wardrobe-phases', { renderer, scope: 'Prepared returning Fighter, actual local/observer models and normal UI/socket/save paths; not earned EP, all-class fit or frame-time qualification.', phases });
     } catch (error) {
         const readiness = async current => current && !current.isClosed() ? current.evaluate(() => {
             const game = window.game;
@@ -259,9 +268,9 @@ test('purchased independent garments render locally and remotely through gear ch
                 triangles: game?.renderSystem?.renderer?.info?.render?.triangles,
                 initialViewFrames: game?.renderSystem?._initialViewPreparation?.frames };
         }).catch(() => ({ unavailable: true })) : null;
-        await testInfo.attach('wardrobe-failure-readiness', { body: JSON.stringify({
+        await attachJSON(testInfo, 'wardrobe-failure-readiness', {
             owner: await readiness(page), observer: await readiness(observer), failures, remoteFailures
-        }), contentType: 'application/json' });
+        });
         throw error;
     } finally { await context.close(); }
 });
