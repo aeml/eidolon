@@ -19,7 +19,13 @@ path, a strictly40lowercase-hex public release identity, downstream status/bytes
 upstream status/connect/header/response time, request time and cache outcome.
 It omits raw request/query data, client addresses, agents, referrers, cookies,
 authorization and bodies. JSON escaping preserves quoted/backslashed paths.
-The response's `X-Eidolon-Delivery-ID` matches the log even for errors.
+The existing upstream `X-GitHub-Request-ID`, when provided, is recorded for
+response/log correlation. Missing upstream IDs remain explicit `-` values. Cached responses can share an
+upstream ID; the local random ID, time, path and release distinguish log rows.
+No new response-header directive is added: on Nginx1.24 a child `add_header`
+would replace inherited header declarations. The private fixture verifies that
+parent security headers survive, including the408response.
+[Nginx header inheritance](https://nginx.org/en/docs/http/ngx_http_headers_module.html#add_header).
 
 The frontend's server-level access log overrides inherited combined logging for
 that site. Other sites and the backend WebSocket configuration are unchanged.
@@ -45,11 +51,12 @@ GOTOOLCHAIN=go1.27.2 go run scripts/verify-pages-upstream-tls.go
 This starts one temporary unprivileged loopback Nginx with synthetic certificates
 and queries. It checks eight configured/insecure-control certificate cases plus
 five delivery cases, with14requests including readiness. It verifies query
-omission, public release filtering, JSON escaping, unique response/log IDs,
+omission, public release filtering, JSON escaping, unique local IDs/upstream response correlation,
 upstream408 attribution and absence of inherited combined frontend records.
 It stops its own process and removes temporary files. It never reloads a host
-service or contacts production. The original secure Alpha62 template intentionally
-fails the five new delivery cases while its eight certificate cases still pass.
+service or contacts production. The original secure Alpha62 template preserves routing/certificates but fails
+the new structured-log/privacy checks. An initial unselected custom-header
+candidate fails the inherited-security-header check and is superseded.
 
 ## Existing-host activation
 
@@ -72,19 +79,19 @@ sudo install -m 644 server/deploy/nginx/eidolon-delivery-http.conf /etc/nginx/co
 sudoedit /etc/nginx/sites-available/eidolonrealms.conf
 ```
 
-Add these two directives at the **server level of the existing HTTPS frontend**
+Add this directive at the **server level of the existing HTTPS frontend**
 for `play.eidolonrealms.com`, outside `location` blocks:
 
 ```nginx
 access_log /var/log/nginx/eidolon-delivery.log eidolon_delivery;
-add_header X-Eidolon-Delivery-ID $request_id always;
 ```
 
-Inspect that frontend's existing `access_log`/`add_header` directives and any
+Inspect that frontend's existing `access_log` directives and any
 location overrides first; preserve unrelated security headers, Certbot settings,
 cache, routing and the backend. Do not leave a second frontend access-log
 directive that still writes raw combined requests. If a child location has its
-own headers/logging, reconcile that inheritance explicitly before validation.
+own access logging, reconcile that inheritance explicitly before validation.
+Leave existing response-header declarations unchanged.
 Apply [upstream certificate verification](pages-upstream-tls.md) separately if
 it is still pending; this logging change does not enable that setting.
 
@@ -94,10 +101,9 @@ curl --fail --silent --show-error --dump-header /tmp/eidolon-delivery-headers ht
 curl --fail --silent --show-error https://server.eidolonrealms.com/healthz
 ```
 
-Check the current accepted frontend/backend identities, ready database, one
-32hex response ID and its matching new JSON log row. The agent can perform
-read-only verification after actual activation. An unchanged healthy response
-without the new header does not prove activation.
+Check the current accepted frontend/backend identities, ready database, the
+upstream request ID (when returned) and its matching new JSON log row. The agent can perform
+read-only verification after actual activation. A healthy response by itself does not prove the new access log is active.
 
 The inspected host's existing `/var/log/nginx/*.log` rotation covers the new
 filename: daily,14rotations, compression/delayed compression and0640www-data:adm

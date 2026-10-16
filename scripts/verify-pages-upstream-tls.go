@@ -163,7 +163,7 @@ func run() error {
 		if err = os.WriteFile(keyFile, pem.EncodeToMemory(&pem.Block{Type: "EC PRIVATE KEY", Bytes: private}), 0600); err != nil {
 			return err
 		}
-		fmt.Fprintf(&peers, "server { listen 127.0.0.1:%d ssl; server_name aeml.github.io; access_log off; ssl_certificate %q; ssl_certificate_key %q; location = /assets/upstream-408.js { return 408 \"fixture-upstream-408\"; } location / { return 200 \"$ssl_server_name|$http_host|$request_uri\"; } }\n", c.port, certFile, keyFile)
+		fmt.Fprintf(&peers, "server { listen 127.0.0.1:%d ssl; server_name aeml.github.io; access_log off; add_header X-GitHub-Request-ID $request_id always; ssl_certificate %q; ssl_certificate_key %q; location = /assets/upstream-408.js { return 408 \"fixture-upstream-408\"; } location / { return 200 \"$ssl_server_name|$http_host|$request_uri\"; } }\n", c.port, certFile, keyFile)
 	}
 	type target struct {
 		mode, name string
@@ -196,7 +196,7 @@ func run() error {
 		}
 	}
 	log := filepath.Join(dir, "error.log")
-	config := fmt.Sprintf("worker_processes 1; pid %q; error_log %q error; events { worker_connections 64; } http { access_log %q combined; client_body_temp_path %q; proxy_temp_path %q; %s %s %s }", filepath.Join(dir, "nginx.pid"), log, inheritedLog, filepath.Join(dir, "body"), filepath.Join(dir, "proxy"), deliveryFormat, peers.String(), fronts.String())
+	config := fmt.Sprintf("worker_processes 1; pid %q; error_log %q error; events { worker_connections 64; } http { add_header X-Eidolon-Fixture-Security inherited always; access_log %q combined; client_body_temp_path %q; proxy_temp_path %q; %s %s %s }", filepath.Join(dir, "nginx.pid"), log, inheritedLog, filepath.Join(dir, "body"), filepath.Join(dir, "proxy"), deliveryFormat, peers.String(), fronts.String())
 	configuration := filepath.Join(dir, "nginx.conf")
 	if err = os.WriteFile(configuration, []byte(config), 0600); err != nil {
 		return err
@@ -305,6 +305,7 @@ func run() error {
 		{"upstream-408", "/assets/upstream-408.js?release=" + release, 408},
 	}
 	ids := make(map[string]string)
+	inheritedHeaders := true
 	for _, test := range privacyPaths {
 		request, err := http.NewRequest("GET", fmt.Sprintf("http://127.0.0.1:%d%s", targets[0].port, test.uri), nil)
 		if err != nil {
@@ -323,10 +324,12 @@ func run() error {
 		if readErr != nil {
 			return readErr
 		}
-		id := response.Header.Get("X-Eidolon-Delivery-ID")
+		id := response.Header.Get("X-GitHub-Request-ID")
+		inherited := response.Header.Get("X-Eidolon-Fixture-Security") == "inherited"
+		inheritedHeaders = inheritedHeaders && inherited
 		_, duplicate := ids[id]
 		ids[id] = test.name
-		pass := response.StatusCode == test.want && regexp.MustCompile(`^[0-9a-f]{32}$`).MatchString(id) && !duplicate
+		pass := response.StatusCode == test.want && regexp.MustCompile(`^[0-9a-f]{32}$`).MatchString(id) && !duplicate && inherited
 		if test.want == 200 {
 			pass = pass && string(body) == "aeml.github.io|play.eidolonrealms.com|"+test.uri
 		}
@@ -341,10 +344,14 @@ func run() error {
 	}
 	data, readErr := os.ReadFile(deliveryLog)
 	rowsValid := readErr == nil && !strings.Contains(string(data), privateMarker) && !strings.Contains(string(data), "qa@example.invalid")
-	rows := strings.Split(strings.TrimSpace(string(data)), "\n")
+	var rows []string
+	if trimmed := strings.TrimSpace(string(data)); trimmed != "" {
+		rows = strings.Split(trimmed, "\n")
+	}
 	rowsValid = rowsValid && len(rows) == 14
 	seen := make(map[string]bool)
-	allowed := map[string]bool{"time": true, "requestId": true, "method": true, "path": true, "release": true, "status": true, "bytes": true, "requestSeconds": true, "upstreamStatus": true, "connectSeconds": true, "headerSeconds": true, "upstreamSeconds": true, "cache": true}
+	seenUpstream := make(map[string]bool)
+	allowed := map[string]bool{"time": true, "requestId": true, "method": true, "path": true, "release": true, "status": true, "bytes": true, "requestSeconds": true, "upstreamStatus": true, "upstreamRequestId": true, "connectSeconds": true, "headerSeconds": true, "upstreamSeconds": true, "cache": true}
 	for _, line := range rows {
 		var row map[string]any
 		if json.Unmarshal([]byte(line), &row) != nil {
@@ -364,7 +371,12 @@ func run() error {
 			rowsValid = false
 		}
 		seen[id] = true
-		if name, ok := ids[id]; ok {
+		upstreamID, _ := row["upstreamRequestId"].(string)
+		if name, ok := ids[upstreamID]; ok {
+			if seenUpstream[upstreamID] {
+				rowsValid = false
+			}
+			seenUpstream[upstreamID] = true
 			var expectedURI string
 			expectedStatus := 0
 			for _, test := range privacyPaths {
@@ -386,7 +398,7 @@ func run() error {
 		}
 	}
 	for id := range ids {
-		if !seen[id] {
+		if !seenUpstream[id] {
 			rowsValid = false
 		}
 	}
@@ -396,7 +408,7 @@ func run() error {
 	version, _ := exec.Command(*binary, "-v").CombinedOutput()
 	digest := sha256.Sum256(source)
 	formatDigest := sha256.Sum256(deliveryFormat)
-	json.NewEncoder(os.Stdout).Encode(map[string]any{"scope": "Private unprivileged loopback nginx, synthetic certificates/queries only; no host reload, public traffic or production TLS/log policy change.", "nginx": strings.TrimSpace(string(version)), "templateSha256": hex.EncodeToString(digest[:]), "deliveryFormatSha256": hex.EncodeToString(formatDigest[:]), "cases": results, "deliveryCases": deliveryResults, "deliveryRows": len(rows), "deliveryRowsValid": rowsValid, "noInheritedCombinedLog": noInherited, "allPass": passed})
+	json.NewEncoder(os.Stdout).Encode(map[string]any{"scope": "Private unprivileged loopback nginx, synthetic certificates/queries only; no host reload, public traffic or production TLS/log policy change.", "nginx": strings.TrimSpace(string(version)), "templateSha256": hex.EncodeToString(digest[:]), "deliveryFormatSha256": hex.EncodeToString(formatDigest[:]), "cases": results, "deliveryCases": deliveryResults, "deliveryRows": len(rows), "deliveryRowsValid": rowsValid, "inheritedSecurityHeaders": inheritedHeaders, "noInheritedCombinedLog": noInherited, "allPass": passed})
 	if !passed {
 		return fmt.Errorf("Pages upstream verification or routing failed")
 	}
