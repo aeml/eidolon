@@ -2,13 +2,14 @@ import { expect, test } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 import { collectBrowserFailures } from './helpers.js';
 
-for (const framing of ['group', 'close']) for (const type of ['SandstormDjinn', 'ThunderRoc']) for (const quality of ['high', 'low'])
-    test(`${framing} ${quality} ${type} rigid siblings preserve the animated surfaces`, async ({ page, baseURL }, testInfo) => {
+const costOnly = process.env.EIDOLON_E2E_ELEMENTAL_COST === '1';
+for (const framing of costOnly ? ['group'] : ['group', 'close']) for (const type of ['SandstormDjinn', 'ThunderRoc']) for (const quality of ['high', 'low'])
+    test(`${costOnly ? 'cost' : framing} ${quality} ${type} rigid siblings preserve the animated surfaces`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         await page.setViewportSize({ width: quality === 'low' ? 390 : 1280, height: 844 });
         await page.goto('/', { waitUntil: 'networkidle' });
-        const evidence = await page.evaluate(async ({ type, quality, framing }) => {
+        const evidence = await page.evaluate(async ({ type, quality, framing, costOnly }) => {
             const THREE = await import('three');
             const { RenderSystem } = await import('/src/core/RenderSystem.js');
             const recipes = await import('/src/art/ProceduralOverworldEnemies.js');
@@ -55,6 +56,13 @@ for (const framing of ['group', 'close']) for (const type of ['SandstormDjinn', 
                 return { meanError: total / (copy.width * copy.height), changed: changed / (copy.width * copy.height), exactChanges, maximumChannelError };
             };
             let canvasRetired = false;
+            if (costOnly) {
+                const { measureElementalRenderCost } = await import('/tests/e2e/elemental-render-cost.js');
+                let cost;
+                try { cost = await measureElementalRenderCost({ THREE, system, groups, models, offset }); }
+                finally { system.dispose(); canvasRetired = !canvas.isConnected; }
+                return { cost, rows: [], images: [], canvasRetired, renderer, quality: system.graphicsQuality, lightingRealm, factoryModels };
+            }
             try {
                 capture(0); capture(1); capture(0);
                 for (const state of ['Idle', 'Walk', 'Run', 'Attack', 'Death']) for (const phase of [.15, .55]) for (let view = 0; view < 3; view++) {
@@ -78,11 +86,11 @@ for (const framing of ['group', 'close']) for (const type of ['SandstormDjinn', 
                 }
             } finally { system.dispose(); canvasRetired = !canvas.isConnected; }
             return { rows, images, canvasRetired, renderer, quality: system.graphicsQuality, framing, lightingRealm, factoryModels };
-        }, { type, quality, framing });
+        }, { type, quality, framing, costOnly });
         for (const entry of evidence.images) await writeFile(testInfo.outputPath(entry.name), Buffer.from(entry.data, 'base64'));
         delete evidence.images;
         await writeFile(testInfo.outputPath('elemental-rigid-parts.json'), JSON.stringify(evidence, null, 2));
-        expect(evidence.rows).toHaveLength(30);
+        expect(evidence.rows).toHaveLength(costOnly ? 0 : 30);
         expect(evidence.quality).toBe(quality);
         expect(evidence.lightingRealm).toBe(type === 'SandstormDjinn' ? 'fire' : 'air');
         expect(evidence.factoryModels).toHaveLength(4);
@@ -99,6 +107,19 @@ for (const framing of ['group', 'close']) for (const type of ['SandstormDjinn', 
             expect(row.foregroundPixels, label).toBeGreaterThan(1000);
             expect(row.candidate.calls, label).toBeLessThan(row.source.calls);
             expect(row.candidate.triangles, label).toBe(row.source.triangles);
+        }
+        if (costOnly) {
+            expect(evidence.cost.restored).toBe(true);
+            expect(evidence.cost.windows.map(w => w.variant)).toEqual([0, 1, 1, 0]);
+            for (const window of evidence.cost.windows) {
+                expect(window.samples).toHaveLength(32);
+                expect(window.samples.every(s => s.visibility === 'visible')).toBe(true);
+            }
+            const source = evidence.cost.windows.filter(w => w.variant === 0), candidate = evidence.cost.windows.filter(w => w.variant === 1);
+            for (const row of candidate) {
+                expect(row.callsMedian).toBeLessThan(Math.min(...source.map(w => w.callsMedian)));
+                expect(row.trianglesMedian).toBe(source[0].trianglesMedian);
+            }
         }
         expect(evidence.canvasRetired).toBe(true);
         expect(failures, failures.join('\n')).toEqual([]);
