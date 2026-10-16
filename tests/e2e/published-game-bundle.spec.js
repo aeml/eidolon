@@ -1,6 +1,6 @@
 import { requiresHardwareWebGL } from './browserLaunchPolicy.js';
 import { expect, test } from '@playwright/test';
-import { cp, mkdtemp, readFile, rm, stat } from 'node:fs/promises';
+import { cp, mkdtemp, readFile, realpath, rm, stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
@@ -37,7 +37,7 @@ async function enterPublishedFixture(page) {
 test.beforeAll(async () => {
     root = await mkdtemp(path.join(tmpdir(), 'eidolon-published-engine-'));
     for (const filename of ['src', 'assets', 'vendor', 'index.html', 'release.json', 'sw.js'])
-        await cp(path.resolve(filename), path.join(root, filename), { recursive: true });
+        await cp(filename === 'vendor' ? await realpath(filename) : path.resolve(filename), path.join(root, filename), { recursive: true });
     precomputedCatalog = parseCatalog(await readFile(path.join(root, 'src/data/gameplayGeometryPrecomputed.js'), 'utf8'));
     metadata = await bundleGameEngine(root);
     metadata.engineSHA256 = createHash('sha256').update(await readFile(path.join(root, 'src/core/GameEngine.bundle.js'))).digest('hex');

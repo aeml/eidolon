@@ -1,0 +1,74 @@
+{
+  "at": "2026-10-16T07:03:47.652111+00:00",
+  "source": "5db7bfecd3ca5c2a2f939d679044164c8d04d16d",
+  "base": "800f3acef78e36042a4232a8dac6a4b2cd1b8bf0",
+  "state": "Qualified in copied-publication scope; ready for ordinary master merge. Not deployed; no transport root-cause or full-game claim.",
+  "scope": "Bundle the independent four-module analytics entry into one copied output. Preserve editable sources, private blocking boot order, analytics behavior and service-worker bytes.",
+  "validation": {
+    "cpu": "95 distinct checks across five suites, using the final 15-case changed bundle suite and unchanged previously passing companion suites; repeated passes are not summed.",
+    "native": "Three native Chrome153 cases, workers1/retries0, private loopback and virtual production origin: public start/engagement/end, private invitation and recovery provider suppression. Old three module requests deliberately fail HTTP408 and are never requested. No real analytics/mail/account/network or secret captures.",
+    "copiedPublisher": {
+      "engineModules": 505,
+      "analytics": {
+        "path": "src/analytics/game.bundle.js",
+        "bytes": 6606,
+        "sha256": "f504aa961e3ecc46355eeb98d3cdb8420ec7bb620774b3278b44cf3b978bcf8e"
+      },
+      "analyticsModules": 4,
+      "workerSha256": "28b738eaf5aa3a9ba5df513fbd8c400f3d82a5f0f2624d529731c57b80a95f03",
+      "externalAnalyticsImports": []
+    },
+    "lint": "Scoped changed JavaScript lint/diff check pass.",
+    "retainedFinding": "Initial Playwright list rejected screenshot/trace/video overrides inside nested describe. New cases reside in existing email-recovery file with recording disabled globally; corrected three-case plan and native execution pass. Original list error retained.",
+    "limits": "Removes three module requests, including observer path from failed Alpha59 redeployment. Other Alpha60 module HTTP408 and geometry-shard abort remain unresolved; no proxy or retry change."
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-analytics-bundle-20261016",
+  "evidence": [
+    {
+      "path": ".qa-analytics/focused.log",
+      "bytes": 718,
+      "sha256": "af537d83974282dc35709dee6d0c5806515a84724aae7b8b2a7f76de0bd1fff1"
+    },
+    {
+      "path": ".qa-analytics/focused-final.log",
+      "bytes": 717,
+      "sha256": "7282c8756248c66fbededf9a409325df537bb256a25dcbc9ae526fe76ee2f3a9"
+    },
+    {
+      "path": ".qa-analytics/binding-final.log",
+      "bytes": 523,
+      "sha256": "7abc8340eb2120a5cf2feb84e1c4b0e12e1fa6cfb18fc2cdd3f780eb73ddba0a"
+    },
+    {
+      "path": ".qa-analytics/engine-compatibility.log",
+      "bytes": 503,
+      "sha256": "6ac41c744914219179f1ca0626a9db90cf008494f62d4e02844f6022546414dd"
+    },
+    {
+      "path": ".qa-analytics/lint-final-binding.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-analytics/native-plan.log",
+      "bytes": 6824,
+      "sha256": "86584535a72f2e80deb3c1e622d30a8d9f3060826a7e824f7634b820a408409b"
+    },
+    {
+      "path": ".qa-analytics/native-unsupported-scope.txt",
+      "bytes": 4911,
+      "sha256": "1f5a9d80435bde9a2771ae1db997cbbf98a36d0f626c97baae9569b37edcf418"
+    },
+    {
+      "path": ".qa-analytics/native.log",
+      "bytes": 733,
+      "sha256": "b1d83a720727d375905faf07244b245e0ddbf3c7fee86e992e15754f7189c46a"
+    },
+    {
+      "path": ".qa-analytics/build-summary.json",
+      "bytes": 5844,
+      "sha256": "91bbec4313f460c63f33730e31b8d78a2812404f1697b8fdd9ac05bdd8c234fc"
+    }
+  ],
+  "publicationRequirements": "Include derived src/analytics/game.bundle.js in release pin manifest. Synchronize release and cumulative notes before runtime push; full exact-source CI and public verification required."
+}

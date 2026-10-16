@@ -1,4 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { cp, mkdtemp, readFile, realpath, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import { bundleGameEngine } from '../../scripts/bundle-game-engine.mjs';
+import { versionPagesRuntime } from '../../scripts/version-pages-runtime.mjs';
+import { collectBrowserFailures } from './helpers.js';
 
 // Synthetic proofs only. Disable recordings even for failures; backend
 // persistence/session boundaries have separate source-specific checks.
@@ -135,3 +141,80 @@ for (const mode of ['invited-desktop', 'invited-phone', 'existing-login', 'requi
         expect(await input.evaluate(element => element.value === '')).toBe(true);
     });
 }
+
+// A virtual production origin exercises the actual hostname/privacy policy.
+// All HTTP, the provider and sockets are fulfilled locally: no external mail,
+// analytics collection, production account or real invitation is involved.
+test.describe('copied published analytics', () => {
+    test.use({ serviceWorkers: 'block' });
+    let root;
+    test.beforeAll(async () => {
+        root = await mkdtemp(path.join(tmpdir(), 'eidolon-published-analytics-'));
+        for (const filename of ['src', 'assets', 'vendor', 'index.html', 'release.json', 'sw.js'])
+            await cp(filename === 'vendor' ? await realpath(filename) : path.resolve(filename), path.join(root, filename), { recursive: true });
+        await bundleGameEngine(root);
+        await versionPagesRuntime(root, 'analyticsfixture20261016');
+    });
+    test.afterAll(async () => { if (root) await rm(root, { recursive: true, force: true }); });
+    for (const mode of ['public', 'invitation', 'recovery']) test(`closed module graph and private-link policy: ${mode}`, async ({ page }) => {
+        const production = 'https://play.eidolonrealms.com';
+        const failures = collectBrowserFailures(page, production);
+        let providerRequests = 0, oldModuleRequests = 0, bundleRequests = 0;
+        await page.setViewportSize({ width: mode === 'invitation' ? 390 : 1280, height: 844 });
+        await page.addInitScript(() => {
+            window.__analyticsFixtureTime = 0;
+            Object.defineProperty(performance, 'now', { configurable: true, value: () => window.__analyticsFixtureTime });
+        });
+        await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+        await page.route('https://www.googletagmanager.com/**', route => {
+            providerRequests++;
+            return route.fulfill({ contentType: 'text/javascript', body: 'window.__analyticsProviderFixture = true;' });
+        });
+        await page.route(`${production}/**`, async route => {
+            const pathname = new URL(route.request().url()).pathname;
+            if (/\/src\/analytics\/(?:GameSessionObserver|GameSessionTracker|GoogleAnalytics)\.js$/.test(pathname)) {
+                oldModuleRequests++;
+                return route.fulfill({ status: 408, body: 'Owned unavailable-submodule control' });
+            }
+            if (pathname === '/src/analytics/game.bundle.js') bundleRequests++;
+            const filename = path.resolve(root, `.${pathname === '/' ? '/index.html' : pathname}`);
+            if (!filename.startsWith(`${root}${path.sep}`)) throw Error('Invalid private fixture request');
+            const mime = { '.js': 'text/javascript', '.css': 'text/css', '.html': 'text/html', '.json': 'application/json',
+                '.png': 'image/png', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.ttf': 'font/ttf' };
+            return route.fulfill({ contentType: mime[path.extname(filename)] || 'application/octet-stream', body: await readFile(filename) });
+        });
+        const fragment = mode === 'invitation' ? `#invite=v1.eyJ1c2VybmFtZSI6IkFub24ifQ.${'A'.repeat(43)}` :
+            mode === 'recovery' ? `#eidolon-recovery=reset&account=private-owner&token=${'a'.repeat(64)}` : '';
+        await page.goto(production + '/' + fragment, { waitUntil: 'networkidle' });
+        await page.bringToFront();
+        await expect.poll(() => bundleRequests).toBe(1);
+        expect(oldModuleRequests).toBe(0);
+        if (mode !== 'public') {
+            expect(await page.evaluate(() => location.hash === '' && window.__eidolonRecoverySensitivePage === true)).toBe(true);
+            expect(providerRequests).toBe(0);
+        } else await expect.poll(() => providerRequests).toBe(1);
+        await page.evaluate(() => {
+            window.game = { _firstStateReceived: true, playerType: 'Fighter', player: { hasSyncedLevel: true, username: 'must-not-leak' },
+                network: { socket: { readyState: 1 }, _reconnecting: false, token: 'must-not-leak' } };
+        });
+        if (mode === 'public') {
+            await expect.poll(() => page.evaluate(() => window.dataLayer?.some(row => row[1] === 'gameplay_start'))).toBe(true);
+            await page.evaluate(() => { window.__analyticsFixtureTime = 31000; });
+            await expect.poll(() => page.evaluate(() => window.dataLayer?.some(row => row[1] === 'gameplay_engagement'))).toBe(true);
+            await page.evaluate(() => window.dispatchEvent(new Event('pagehide')));
+            const events = await page.evaluate(() => window.dataLayer.map(row => [...row]).filter(row => row[0] === 'event'));
+            expect(events.map(row => row[1])).toEqual(['gameplay_start', 'gameplay_engagement', 'gameplay_end']);
+            expect(events[1][2].active_play_seconds).toBe(31);
+            expect(JSON.stringify(events)).not.toContain('must-not-leak');
+        } else {
+            // Advance the real interval after a simulated successful world
+            // entry: private-page suppression must also hold for later play.
+            await page.evaluate(() => { window.__analyticsFixtureTime = 31000; });
+            await page.waitForTimeout(1200);
+            expect(await page.evaluate(() => window.dataLayer === undefined && window.__eidolonGoogleTagInitialized === undefined)).toBe(true);
+            expect(providerRequests).toBe(0);
+        }
+        expect(bundleRequests).toBe(1); expect(oldModuleRequests).toBe(0);
+        expect(failures, failures.join('\n')).toEqual([]);
+    });
+});
