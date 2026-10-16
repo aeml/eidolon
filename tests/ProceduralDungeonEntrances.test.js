@@ -298,7 +298,7 @@ describe('procedural dungeon entrances', () => {
         }
         expect(new Set(firstRoots.map((root) => root.userData.artStyle)).size).toBe(4);
         expect(getProceduralDungeonEntranceCacheMetrics()).toEqual({
-            geometries: 44, // Dedicated quay replaces the shared shelf; four cached linked moorings.
+            geometries: 45, // Dedicated quay, four linked moorings and a shared sculpted shell crown.
             materials: 30,
             entrances: 4
         });

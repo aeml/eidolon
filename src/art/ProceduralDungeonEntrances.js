@@ -5,7 +5,7 @@ import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createDungeonVeilMaterial } from './DungeonVeilMaterial.js';
 import { createBastionForegateGeometry } from './BastionForegateGeometry.js';
 import { createBondedBastionFoundation, createBastionRamp, createBastionGatehouse, createBastionTowerParapet, createBastionRecess } from './BastionArchitectureGeometry.js';
-import { createAbyssalQuay, createAbyssalMooring } from './AbyssalQuayGeometry.js';
+import { createAbyssalQuay, createAbyssalMooring, createAbyssalShellCrown } from './AbyssalQuayGeometry.js';
 import { createTaperedRoot } from './EarthLandmarkGeometry.js';
 import { createMoltenFoundation, createMoltenVault, createMoltenVaultRib, createMoltenForegate, createMoltenChain } from './MoltenEntranceGeometry.js';
 import { createTideReliquaryArch } from './TideReliquaryGeometry.js';
@@ -67,6 +67,7 @@ const SHAPES = Object.freeze({
     disc: geometry('dungeon-entrance-unit-disc', () => new THREE.CircleGeometry(0.5, 24)),
     bastionForegate: geometry('dungeon-entrance-bastion-foregate', createBastionForegateGeometry),
     abyssalQuay: geometry('dungeon-entrance-abyssal-quay', createAbyssalQuay),
+    abyssalShell: geometry('dungeon-entrance-abyssal-shell', createAbyssalShellCrown),
     bastionBondedFoundation: geometry('dungeon-entrance-bastion-bonded-foundation', createBondedBastionFoundation),
     bastionRamp: geometry('dungeon-entrance-bastion-ramp', createBastionRamp),
     bastionHall: geometry('dungeon-entrance-bastion-hall', createBastionGatehouse),
@@ -411,8 +412,8 @@ function createAbyssalWell(root) {
             position: [side * 21, 13, -1],
             scale: [13, 26, 13]
         });
-        spike(root, `abyssal:shell-crown:${side}`, m.pale,
-            [side * 21, 29, -1], [14, 10, 14]);
+        addMesh(root, `abyssal:shell-crown:${side}`, SHAPES.abyssalShell, m.pale,
+            { position: [side * 21, 29, -1], scale: [14, 10, 14] });
         for (const [end, start, finish] of [
             ['front', [side * 18, 7, 8], [side * 29, 3.7, 18]],
             ['rear', [side * 18, 6, -10], [side * 29, 3.7, -19]]

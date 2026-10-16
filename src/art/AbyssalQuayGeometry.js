@@ -80,3 +80,43 @@ export function createAbyssalMooring(start, end) {
     geometry.computeBoundingBox(); geometry.computeBoundingSphere();
     return geometry;
 }
+
+export function createAbyssalShellCrown() {
+    const positions = [], uvs = [], indices = [], slices = 36, courses = 5;
+    const stride = slices + 1, faceSize = stride * (courses + 1);
+    for (const sign of [1, -1]) for (let course = 0; course <= courses; course++) {
+        const r = course / courses;
+        for (let slice = 0; slice <= slices; slice++) {
+            const angle = -Math.PI / 2 + slice / slices * Math.PI;
+            const x = .5 * r * Math.sin(angle), y = -.5 + r * Math.cos(angle);
+            const relief = .035 + .07 * Math.sin(r * Math.PI / 2) + .025 * r * Math.cos(angle * 12);
+            positions.push(x, y, sign * relief); uvs.push(x + .5, y + .5);
+        }
+    }
+    for (let face = 0; face < 2; face++) for (let course = 0; course < courses; course++) {
+        for (let slice = 0; slice < slices; slice++) {
+            const a = face * faceSize + course * stride + slice;
+            const b = a + stride, c = b + 1, d = a + 1;
+            indices.push(...(face === 0 ? [a, c, b] : [a, b, c]));
+            if (course > 0) indices.push(...(face === 0 ? [a, d, c] : [a, c, d]));
+        }
+    }
+    // Join the curved outer edge and both lower edges. The two faces form a
+    // solid sculpted stone fan, with physical radial flutes and a rolled lip.
+    for (let slice = 0; slice < slices; slice++) {
+        const a = courses * stride + slice, b = a + 1;
+        indices.push(a, b, b + faceSize, a, b + faceSize, a + faceSize);
+    }
+    for (const slice of [0, slices]) for (let course = 0; course < courses; course++) {
+        const a = course * stride + slice, b = a + stride;
+        indices.push(...(slice === 0
+            ? [a, b, b + faceSize, a, b + faceSize, a + faceSize]
+            : [a, a + faceSize, b + faceSize, a, b + faceSize, b]));
+    }
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+    geometry.setIndex(indices); geometry.computeVertexNormals();
+    geometry.computeBoundingBox(); geometry.computeBoundingSphere();
+    return geometry;
+}
