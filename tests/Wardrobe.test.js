@@ -141,3 +141,35 @@ test('collapsed and disposed wardrobe controls cannot send or accept retired res
     expect(ui.root.textContent).toBe(prior);
     expect(ui.root.isConnected).toBe(false);
 });
+
+test('character garment shortcuts show confirmed independent appearances and open the correct owned selector', () => {
+    document.body.innerHTML = `<div id="host"><div class="character-garment-slots">${[
+        ['mainHand', 'Weapon Garment'], ['outfit', 'Armor Garment'], ['offHand', 'Offhand Garment']
+    ].map(([slot, label]) => `<button data-garment-slot="${slot}"><span class="garment-slot-label">${label}</span><span class="garment-slot-look"></span></button>`).join('')}</div></div>`;
+    let player = { id: 'first', equipment: { head: gear }, appearances: {
+        mainHand: { baseName: 'Sunblade', rarity: 'Common', slot: 'mainHand' },
+        outfit: { baseName: 'Iron Oath Regalia', rarity: 'Common', slot: 'outfit' },
+        offHand: { baseName: 'Moonward', rarity: 'Common', slot: 'offHand' }
+    } };
+    const saved = JSON.stringify(player), send = jest.fn();
+    const ui = new WardrobeUI({ host: document.getElementById('host'), getPlayer: () => player, send });
+    const slots = [...document.querySelectorAll('[data-garment-slot]')];
+    expect(slots.map(button => button.querySelector('.garment-slot-look').textContent)).toEqual(['Sunblade', 'Iron Oath Regalia', 'Moonward']);
+    for (const button of slots) {
+        button.click();
+        expect(ui.root.open).toBe(true);
+        expect(ui.slot.value).toBe(button.dataset.garmentSlot);
+        ui.handleResult({ playerID: 'first', success: true, collection: Object.fromEntries(Object.values(player.appearances).map(look => [`${look.baseName}|${look.rarity}`, look])) });
+        expect(ui.look.value).toBe(`${player.appearances[button.dataset.garmentSlot].baseName}|Common`);
+    }
+    expect(send.mock.calls.some(([type]) => type === 'select_appearance')).toBe(false);
+    expect(JSON.stringify(player)).toBe(saved);
+    player.appearances = { outfit: player.appearances.outfit };
+    ui.refreshPlayer();
+    expect(slots.map(button => button.querySelector('.garment-slot-look').textContent)).toEqual(['Original gear', 'Iron Oath Regalia', 'Original gear']);
+    player = { id: 'second', appearances: {} }; ui.refreshPlayer();
+    expect(slots.every(button => button.textContent.includes('Original gear'))).toBe(true);
+    expect(ui.apply.disabled).toBe(true);
+    ui.dispose(); slots[0].click();
+    expect(ui.root.isConnected).toBe(false);
+});

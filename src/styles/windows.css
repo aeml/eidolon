@@ -1355,6 +1355,39 @@
 .character-preview-controls button:hover { background: #303947; }
 .character-preview-controls button:focus-visible, .equip-slot:focus-visible { outline: 2px solid #e4c991; outline-offset: 2px; }
 
+.character-garment-slots {
+    grid-column: 1 / -1;
+    grid-row: 8;
+    justify-self: center;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    width: min(100%, 330px);
+    margin-top: 4px;
+}
+.garment-slot {
+    min-width: 0;
+    min-height: 76px;
+    padding: 8px 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    border: 1px solid #b99b6266;
+    border-radius: 4px;
+    background: linear-gradient(180deg, #253044, #111b28);
+    color: #d5bb87;
+    font: inherit;
+    text-align: center;
+    cursor: pointer;
+}
+.garment-slot-label { font-size: 11px; line-height: 1.35; }
+.garment-slot-look { font-size: 10px; line-height: 1.4; color: #aeb9c8; overflow-wrap: anywhere; }
+.garment-slot.has-appearance { border-color: #d5bb87; }
+.garment-slot.has-appearance .garment-slot-look { color: #efe1bd; }
+.garment-slot:hover { background: #303d51; }
+.garment-slot:focus-visible { outline: 2px solid #e4c991; outline-offset: 2px; }
+
 .equip-slot {
     box-sizing: border-box;
     background: var(--bg-input);

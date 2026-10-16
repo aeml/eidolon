@@ -35,6 +35,7 @@ class UIManagerCharacterMethods {
         // Only update DOM if visible to save performance
         if (this.characterSheet.style.display === 'none') return;
 
+        this.wardrobe?.refreshPlayer();
         if (this.characterSheet.style.display === 'block') this.characterPreview?.update(player);
 
         const signature = this.serializeCharacterSheet(player);

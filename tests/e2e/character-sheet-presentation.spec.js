@@ -33,6 +33,20 @@ for (const [width, height, mobile] of [[1280, 900, false], [900, 650, false], [3
         await expect(sheet).toBeVisible();
         await expect(sheet.locator('.character-preview-stage canvas')).toBeVisible();
         expect(await sheet.locator('.char-sheet-body').evaluate(node => node.scrollWidth <= node.clientWidth + 1)).toBe(true);
+        const garments = sheet.getByRole('group', { name: 'Garment appearances' });
+        const buttons = garments.getByRole('button');
+        await expect(buttons).toHaveCount(3);
+        expect(await buttons.allTextContents()).toEqual(['Weapon GarmentOriginal gear', 'Armor GarmentOriginal gear', 'Offhand GarmentOriginal gear']);
+        const preview = await sheet.locator('.character-preview').boundingBox();
+        const row = await garments.boundingBox();
+        expect(row.y).toBeGreaterThanOrEqual(preview.y + preview.height);
+        expect(row.x + row.width / 2).toBeCloseTo(preview.x + preview.width / 2, 0);
+        const boxes = await Promise.all([0, 1, 2].map(i => buttons.nth(i).boundingBox()));
+        expect(boxes.every(box => Math.abs(box.y - boxes[0].y) < 1 && box.height >= 44)).toBe(true);
+        expect(boxes[1].x).toBeGreaterThan(boxes[0].x + boxes[0].width);
+        expect(boxes[2].x).toBeGreaterThan(boxes[1].x + boxes[1].width);
+        expect(await garments.evaluate(node => node.scrollWidth <= node.clientWidth + 1)).toBe(true);
+
         if (!mobile && width >= 1000) {
             const gear = await sheet.locator('.equipment-slots').boundingBox(), stats = await sheet.locator('#stats-content').boundingBox();
             expect(stats.x).toBeGreaterThanOrEqual(gear.x + gear.width);
@@ -60,6 +74,35 @@ for (const [width, height, mobile] of [[1280, 900, false], [900, 650, false], [3
         expect(await page.evaluate(() => window.__characterSheet.player.resonancePoints)).toBe(2);
         if (mobile) expect((await power.boundingBox()).height).toBeGreaterThanOrEqual(44);
         await page.screenshot({ path: testInfo.outputPath('character-progression.png') });
+        const requests = await page.evaluate(() => {
+            const { ui } = window.__characterSheet;
+            const requests = []; ui.onWardrobeRequest = (type, payload) => requests.push({ type, payload });
+            window.__characterSheet.requests = requests;
+            return requests;
+        });
+        expect(requests).toEqual([]);
+        for (const [index, slot] of ['mainHand', 'outfit', 'offHand'].entries()) {
+            await buttons.nth(index).scrollIntoViewIfNeeded();
+            await buttons.nth(index).focus(); await page.keyboard.press('Enter');
+            await expect(sheet.getByRole('combobox', { name: 'Appearance slot' })).toHaveValue(slot);
+            await expect(sheet.getByRole('combobox', { name: 'Collected appearance' })).toBeFocused();
+        }
+        expect(await page.evaluate(() => window.__characterSheet.requests.some(request => request.type === 'select_appearance'))).toBe(false);
+        await page.evaluate(() => {
+            const { ui, player } = window.__characterSheet;
+            window.__characterSheet.gearBefore = JSON.stringify(player.equipment);
+            player.appearances = { mainHand: { baseName: 'Sunforged Greatblade' }, outfit: { baseName: 'Iron Oath Regalia' }, offHand: { baseName: 'Aegis of the Dawn' } };
+            ui.updateCharacterSheet(player);
+            ui.wardrobe.root.open = false;
+        });
+        await garments.scrollIntoViewIfNeeded();
+        await expect(buttons.nth(0)).toContainText('Sunforged Greatblade');
+        await expect(buttons.nth(1)).toContainText('Iron Oath Regalia');
+        await expect(buttons.nth(2)).toContainText('Aegis of the Dawn');
+        expect(await garments.evaluate(node => node.scrollWidth <= node.clientWidth + 1)).toBe(true);
+        expect(await page.evaluate(() => JSON.stringify(window.__characterSheet.player.equipment) === window.__characterSheet.gearBefore)).toBe(true);
+        await page.screenshot({ path: testInfo.outputPath('character-garment-slots.png') });
+
         expect(failures, failures.join('\n')).toEqual([]);
     });
 }
