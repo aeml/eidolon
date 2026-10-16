@@ -58,6 +58,16 @@ export class WardrobeUI {
             this.status.textContent = 'Applying appearance…';
             this.send('select_appearance', { slot: this.slot.value, key: this.look.value });
         });
+        this.garmentSlots = [...(host?.querySelectorAll('[data-garment-slot]') || [])];
+        for (const button of this.garmentSlots) ownedEvent(this, button, 'click', () => {
+            if (this.disposed) return;
+            this.refreshPlayer();
+            this.slot.value = button.dataset.garmentSlot;
+            this.renderLooks();
+            this.root.open = true;
+            this.look.focus({ preventScroll: true });
+            this.root.scrollIntoView?.({ block: 'nearest' });
+        });
         this.refreshPlayer();
         this.setReady(false);
     }
@@ -69,6 +79,14 @@ export class WardrobeUI {
     refreshPlayer() {
         if (this.disposed) return;
         const player = this.getPlayer();
+        for (const button of this.garmentSlots) {
+            const name = player?.appearances?.[button.dataset.garmentSlot]?.baseName || 'Original gear';
+            const value = button.querySelector('.garment-slot-look');
+            if (value.textContent === name) continue;
+            value.textContent = name;
+            button.classList.toggle('has-appearance', name !== 'Original gear');
+            button.setAttribute('aria-label', `${button.querySelector('.garment-slot-label').textContent}: ${name}. Choose appearance`);
+        }
         if (player?.id === this.playerID) return;
         this.playerID = player?.id;
         this.collection = {};

@@ -75,7 +75,9 @@ test('many accepted quests remain in the Journal but only three compact cards ap
     expect(document.querySelector('.objectives-panel__more')).toBe(button);
     button.click();
     expect(ui.isJournalOpen).toBe(true);
-    expect(document.querySelector('#journal-list').textContent.match(/Daily Hunt/g)).toHaveLength(26);
+    const contractIDs = [...document.querySelectorAll('#journal-list [data-quest-track]')]
+        .map(control => control.dataset.questTrack).filter(id => id.startsWith('daily_')).sort();
+    expect(contractIDs).toEqual(Array.from({ length: 26 }, (_, i) => `daily_${i}`).sort());
 });
 
 test('all fifteen chapters have distinct substantial completion dialogue', () => {

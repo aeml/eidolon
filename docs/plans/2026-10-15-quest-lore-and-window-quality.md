@@ -179,3 +179,15 @@ and store fixture failures are retained with their corrections.
 [Qualification and evidence](2026-10-16-universal-garment-qualification.json).
 Not yet deployed; broader original quality/readiness gates and deferred playtests
 remain open. This selected milestone does not complete the full goal.
+
+## Returning-story/current-task candidate — October 16
+
+The isolated Lore Book refinement recognizes personally claimed finale receipts,
+uses past-tense expedition/court recap after those milestones, and shows other
+accepted tasks with objective/progress and direct journal links. It preserves
+keyboard focus when an acknowledged update rebuilds an overview action. Counts
+alone cannot claim the finale; unaccepted contracts stay out of current tasks.
+141focused checks and changed-file lint pass. Four desktop/phone browser cases
+are prepared but unexecuted while the ordered58pipeline runs. This is not an
+earned campaign or physical playtest receipt, and remains unselected.
+[Preparation and retained focus/fixture failures](2026-10-16-lore-task-context-preparation.json).

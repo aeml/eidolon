@@ -1246,6 +1246,10 @@ export class QuestUI {
 
     updateJournal(quests) {
         const loreFocus = this.loreBook?.element.contains(document.activeElement) ? document.activeElement : null;
+        const loreScroll = this.loreBook && this.loreBook.identity === this.journalIdentity ? {
+            index: this.loreBook.index.scrollTop, article: this.loreBook.article.scrollTop,
+            pageSignature: this.loreBook.pageSignature
+        } : null;
         const existingRecap = this.journalList?.querySelector('.quest-chronicle-recap');
         const recapFocused = Boolean(existingRecap && document.activeElement === existingRecap.firstElementChild);
         const existingRecords = new Map([...this.journalList?.querySelectorAll('details[data-discovery-id]') || []]
@@ -1260,7 +1264,18 @@ export class QuestUI {
         const focusedDiscovery = document.activeElement?.closest?.('details[data-discovery-id]')?.dataset.discoveryId;
         const restoreReading = () => {
             this.applyJournalView();
-            if (this.journalView === 'lore' && loreFocus?.isConnected) loreFocus.focus({ preventScroll: true });
+            if (this.journalView === 'lore' && loreFocus) {
+                const key = loreFocus.dataset.loreAction ? 'loreAction' : loreFocus.dataset.memoryId ? 'memoryId' : null;
+                const replacement = key && [...this.loreBook.element.querySelectorAll('button')]
+                    .find(button => button.dataset[key] === loreFocus.dataset[key]);
+                (loreFocus.isConnected ? loreFocus : replacement)?.focus({ preventScroll: true });
+            }
+            // Detached lists have no layout/scroll range. Restore only after
+            // reattaching the book and making its reading view visible again.
+            if (loreScroll && this.journalView === 'lore') {
+                this.loreBook.index.scrollTop = loreScroll.index;
+                if (this.loreBook.pageSignature === loreScroll.pageSignature) this.loreBook.article.scrollTop = loreScroll.article;
+            }
             if (recapFocused && existingRecap?.isConnected) existingRecap.firstElementChild.focus({ preventScroll: true });
             const archive = this.journalList?.querySelector('.quest-chronicle-archive');
             if (archive && archiveOpen) archive.open = true;

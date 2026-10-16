@@ -1,0 +1,127 @@
+{
+  "date": "2026-10-16T01:13:10.046681+00:00",
+  "base": "4f5b2e57fbe2112cea68e0da10fc288ad5c85b47",
+  "state": "Qualified for ordinary master selection: final combined native run7passed, workers1/retries0. Not yet deployed.",
+  "scope": "Lore Book distinguishes personally claimed finale, recaps earlier roads in past tense after Nexus/finale, and shows up to three other personally accepted tasks with objective/progress and correct-journal links. More tasks remain accessible through Review all quests. Reading/quest state and manual acceptance/claim rules remain unchanged. Personally tracked accepted contracts sort first without changing preferences or receipts. Same-reader new memories preserve the recorded-memory index scroll and semantic navigation focus. New readers and changed filters retain fresh-list behavior. Three centered Weapon Garment, Armor Garment and Offhand Garment controls sit directly below the character preview. Confirmed appearance names refresh independently, empty/reset slots show Original gear and activation opens the matching owned Wardrobe selector without applying or purchasing. Real equipment and combat stats remain unchanged.",
+  "validation": {
+    "focused": "143distinct checks across7suites pass. Final four-suite reading/navigation/coherence/conversation rerun61checks passes; unchanged mobile/Chronicle/tracker evidence retained.",
+    "lint": "All changed runtime/client tests and final native fixture pass scoped lint.",
+    "native": "Initial run: five passes/two failures. Captured and reviewed garment row at1280/900/390px, existing desktop/phone reading and returning-story/task presentation. Browser layout caught memory-index reset844/1093\u21920 during parent detach; parent now captures before detach and restores after reattachment/visible view. Corrected two returning cases pass. Final combined seven-case run pending before selection. Final combined seven-case run passes on the final source, workers1/retries0; all original failures retained.",
+    "retainedFailures": "Initial focused run caught a real overview focus loss: parent QuestUI clears/detaches the book before child render can capture active focus. Parent now restores the replacement action by semantic ID. Existing conversation fixture counted all hidden Lore Book title occurrences as contract rows; updated to assert the exact26unique contract tracking IDs instead. Original two failures retained; corrected all54pass. Added memory-index regression reproduces lost scroll123\u21920 before the fix. Same-reader index updates now restore it; native desktop/phone index-scroll validation is prepared, not yet executed.",
+    "garment": "66distinct checks across6suites pass; scoped changed-code lint passes. All three native widths pass keyboard navigation, row ordering/alignment, current-look refresh, no overflow and no automatic select request."
+  },
+  "limits": "No publication selection before native review. Full quest/menu usability and owner review remain open alongside original art/device/performance/audio/operations/F1\u2013F5/beta/release gates. Soak/stress stays deferred; full goal active.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-lore-task-context-20261016",
+  "evidence": [
+    {
+      "path": ".qa-lore-task-context/corrected-focused.log",
+      "bytes": 639,
+      "sha256": "5d3bcc74c9aec73bb47f59fc2a84de64d0b6cd81a20eec23eeea9e91993afd97"
+    },
+    {
+      "path": ".qa-lore-task-context/final-native-fixture-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-lore-task-context/focused.log",
+      "bytes": 2511,
+      "sha256": "81fb4abb2ffcc5d964a0a28f8486a191fda9d85efb66428da5f046382b25cdf8"
+    },
+    {
+      "path": ".qa-lore-task-context/lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-lore-task-context/native-fixture-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-lore-task-context/native-plan.log",
+      "bytes": 614,
+      "sha256": "57cc16347075f8d3a713f102343757bbdd792040d793c6e25ec7dae7957fb41f"
+    },
+    {
+      "path": ".qa-lore-task-context/related.log",
+      "bytes": 715,
+      "sha256": "100a9f1e6edc39aa283b0d3851f3ac4804278ce0f5ded72f91aa6ecb871f1b33"
+    },
+    {
+      "path": ".qa-lore-task-context/tracked-task-focused.log",
+      "bytes": 579,
+      "sha256": "3ad40423b38e0684617033d32aa250e34993f36870d97c3afa1964d131622b00"
+    },
+    {
+      "path": ".qa-lore-task-context/tracked-task-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-lore-task-context/memory-focus-focused.log",
+      "bytes": 579,
+      "sha256": "84f754ec33f94b25bf2addc23bfbb17b8f47f3e084869e6f60a9b6fc85d5937f"
+    },
+    {
+      "path": ".qa-lore-task-context/memory-focus-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-lore-task-context/index-scroll-before-fix.log",
+      "bytes": 1461,
+      "sha256": "53cc9fd3891d9a7356de2363010367c7881f5ba553ba826988146b730c6942a7"
+    },
+    {
+      "path": ".qa-lore-task-context/final-reading-focused.log",
+      "bytes": 716,
+      "sha256": "b4f8a81bd91ae79e4191ce8abb4a93e2d05a896d1b59ae9b8f027be151853ea6"
+    },
+    {
+      "path": ".qa-lore-task-context/final-reading-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-lore-task-context/garment-focused-final.log",
+      "bytes": 623,
+      "sha256": "515614cd7e4e78c1ed6c7ba48ba6eab057ca1cff9797771525871a78477ed32e"
+    },
+    {
+      "path": ".qa-lore-task-context/garment-integration-focused.log",
+      "bytes": 673,
+      "sha256": "4c5b4f0428ef6f3b95c596cfe35e0a8a3a6f4dda93e496f865316d1386b217da"
+    },
+    {
+      "path": ".qa-lore-task-context/garment-lint-final.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-lore-task-context/parent-scroll-focused.log",
+      "bytes": 731,
+      "sha256": "bff31f72e148c5e0f5f5cf4b0c8eb3ea56f04d4b096ca65f95bfcf2596078831"
+    },
+    {
+      "path": ".qa-lore-task-context/parent-scroll-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-lore-task-context/native.log",
+      "bytes": 8226,
+      "sha256": "21dc9be6c796a7c5541e94ea60640b26ce8d35d911b67c5a293317d3d7f0637d"
+    },
+    {
+      "path": ".qa-lore-task-context/native-corrected.log",
+      "bytes": 638,
+      "sha256": "c58cced4bef6e9c532c2a1c3b629da36dd315aeab7b6ab8667058bde2c59c57c"
+    },
+    {
+      "path": ".qa-lore-task-context/native-final.log",
+      "bytes": 1362,
+      "sha256": "f220990376fc72d2834ac99573499558c16567fdecaf111197fa555090fab9b5"
+    }
+  ]
+}

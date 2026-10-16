@@ -11,6 +11,10 @@
 .lore-book__current-title { color: #e6cc94; font-weight: 600; }
 .lore-book__status { color: #a8bbcf; font-size: 13px; }
 .lore-book__current .menu-btn { min-height: 44px; padding: 8px 12px; margin: 12px 8px 0 0; font: inherit; }
+.lore-book__current h4 { color: #e6cc94; margin: 18px 0 0; }
+.lore-book__current .lore-book__task { display: grid; gap: 4px; width: 100%; box-sizing: border-box; text-align: left; white-space: normal; overflow-wrap: anywhere; }
+.lore-book__task span { color: #c8cbd2; font-weight: normal; }
+.lore-book__task small { color: #a8bbcf; font-size: .9em; }
 .lore-book__recap { max-height: 270px; overflow-y: auto; scrollbar-gutter: stable; }
 .lore-book__tools { display: grid; gap: 10px; margin-bottom: 12px; }
 .lore-book__tools label { display: grid; gap: 6px; color: #d8c9ad; }

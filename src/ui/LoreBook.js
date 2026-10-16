@@ -39,7 +39,10 @@ export function buildLoreBook(quests = []) {
             sections: [{ title: 'What changed', paragraphs: paragraphs(restoration.text) }]
         });
     }
-    return { current: getCurrentChronicleQuest(story), recap: getChronicleRecap(story), entries: [...entries.values()] };
+    const current = getCurrentChronicleQuest(story);
+    return { current, recap: getChronicleRecap(story), entries: [...entries.values()],
+        finaleCompleted: story.some(quest => quest.id === 'chronicle_15_dark_king' && quest.completed === true),
+        activeTasks: (quests || []).filter(quest => quest?.id && quest.accepted === true && !quest.completed && quest.id !== current?.id) };
 }
 
 function node(tag, text = '', className = '') {
@@ -84,17 +87,20 @@ export class LoreBook {
     }
 
     update(quests, identity) {
-        if (identity !== this.identity || !this.model) {
+        const sameReader = identity === this.identity && Boolean(this.model);
+        if (!sameReader) {
             this.identity = identity; this.search.value = ''; this.category = 'all'; this.selected = null;
             this.indexSignature = this.pageSignature = this.overviewSignature = null;
         }
         this.model = buildLoreBook(quests);
-        this.renderOverview(); this.renderLibrary();
+        this.renderOverview(); this.renderLibrary({ preserveIndexScroll: sameReader });
     }
 
     renderOverview() {
-        const { current, recap } = this.model;
-        const signature = JSON.stringify([current, recap]);
+        const { current, recap, activeTasks, finaleCompleted } = this.model;
+        const tracked = new Set(this.ui.getTrackedObjectives().map(objective => objective.id));
+        const tasks = activeTasks.slice().sort((a, b) => Number(tracked.has(b.id)) - Number(tracked.has(a.id)));
+        const signature = JSON.stringify([current, recap, tasks, finaleCompleted]);
         if (signature === this.overviewSignature) return;
         this.overviewSignature = signature;
         const now = node('section', '', 'lore-book__current');
@@ -105,11 +111,31 @@ export class LoreBook {
                 node('p', current.accepted ? this.ui.getQuestObjective(current) : 'Speak to Archmage Ilyra in Lanternhold to accept this chapter.'),
                 node('p', !current.accepted ? 'Not yet accepted' : ready ? 'Ready to turn in · Return to Ilyra' : `${current.count || 0} / ${current.maxCount || 0} · In progress`, 'lore-book__status'));
             const quest = node('button', 'Open current quest', 'menu-btn'); quest.type = 'button';
+            quest.dataset.loreAction = 'current';
             quest.onclick = () => this.ui.setJournalView('story');
             now.append(quest);
+        } else if (finaleCompleted) {
+            now.append(node('p', 'Your Chronicle is complete', 'lore-book__current-title'),
+                node('p', 'You claimed the finale with Ilyra. Revisit your earned memories, finish optional accounts or continue your contracts.'));
         } else now.append(node('p', 'Visit Archmage Ilyra in Lanternhold to revisit your Chronicle and its next steps.'));
+        if (tasks.length) {
+            now.append(node('h4', 'Other accepted tasks'));
+            for (const task of tasks.slice(0, 3)) {
+                const action = node('button', '', 'menu-btn lore-book__task'); action.type = 'button';
+                action.dataset.loreAction = `task:${task.id}`;
+                const ready = task.maxCount > 0 && task.count >= task.maxCount;
+                action.append(node('strong', this.ui.getQuestTitle(task)), node('span', this.ui.getQuestObjective(task)),
+                    node('small', ready ? 'Ready to turn in' : `${task.count || 0} / ${task.maxCount || 0} · In progress`));
+                action.onclick = () => this.ui.openTrackedObjective(task); now.append(action);
+            }
+        }
+        if (tasks.length > 3 || (!current && finaleCompleted)) {
+            const journal = node('button', 'Review all quests', 'menu-btn'); journal.type = 'button';
+            journal.dataset.loreAction = 'all'; journal.onclick = () => this.ui.setJournalView('all'); now.append(journal);
+        }
         if (this.ui.ctx.openWorldMap) {
             const map = node('button', 'Open world map', 'menu-btn'); map.type = 'button';
+            map.dataset.loreAction = 'map';
             map.onclick = () => this.ui.ctx.openWorldMap(); now.append(map);
         }
         const summary = node('section', '', 'lore-book__recap');
@@ -118,7 +144,7 @@ export class LoreBook {
         this.overview.replaceChildren(now, summary);
     }
 
-    renderLibrary() {
+    renderLibrary({ preserveIndexScroll = false } = {}) {
         if (!this.model) return;
         const query = this.search.value.trim().toLocaleLowerCase();
         const matches = this.model.entries.filter(entry => (this.category === 'all' || entry.kind === this.category)
@@ -129,6 +155,7 @@ export class LoreBook {
         const signature = JSON.stringify(matches.map(entry => [entry.id, entry.title, entry.context]));
         if (signature !== this.indexSignature) {
             this.indexSignature = signature;
+            const scroll = preserveIndexScroll ? this.index.scrollTop : 0;
             this.index.replaceChildren(...matches.map(entry => {
                 const button = node('button'); button.type = 'button'; button.dataset.memoryId = entry.id;
                 button.append(node('span', entry.kind === 'chapters' ? 'CHAPTER' : 'DISCOVERY', 'lore-book__eyebrow'),
@@ -140,6 +167,7 @@ export class LoreBook {
                 };
                 return button;
             }));
+            this.index.scrollTop = scroll;
         }
         for (const button of this.index.children) button.setAttribute('aria-current', String(button.dataset.memoryId === this.selected));
         const entry = matches.find(entry => entry.id === this.selected);
