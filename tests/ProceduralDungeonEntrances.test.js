@@ -280,7 +280,7 @@ describe('procedural dungeon entrances', () => {
         }
         expect(new Set(firstRoots.map((root) => root.userData.artStyle)).size).toBe(4);
         expect(getProceduralDungeonEntranceCacheMetrics()).toEqual({
-            geometries: 40, // Site-specific bonded footing; shared Abyssal shelf remains cached.
+            geometries: 44, // Dedicated quay replaces the shared shelf; four cached linked moorings.
             materials: 30,
             entrances: 4
         });
