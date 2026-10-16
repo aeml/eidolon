@@ -1,0 +1,170 @@
+{
+  "at": "2026-10-16T11:03:52.367308+00:00",
+  "source": "76c298d1f059520db3b9141fac2568dfb94db09e",
+  "base": "8a4a5ca880ea2c7ad0ba8e0d7ac04a501f96afac",
+  "state": "Qualified repository template/checker/guide; ready for master selection. Host activation not performed.",
+  "scope": "Site-specific JSON access logging omits raw queries/addresses/agents/referrers/auth/bodies, records only40hex publicrelease,downstream/upstreamstatus,timings/cache/localrandomrequestID/existingupstreamX-GitHub-Request-ID. Overrides inheritedfrontendcombinedlogging; backend/routes/SNI/CA/cache/otherhosts/headersunchanged. No new response-header directives.",
+  "actualPrivateNginx": {
+    "allPass": true,
+    "cases": [
+      {
+        "mode": "configured",
+        "case": "valid",
+        "status": 200,
+        "expected": 200,
+        "routingMatches": true,
+        "pass": true
+      },
+      {
+        "mode": "configured",
+        "case": "untrusted",
+        "status": 502,
+        "expected": 502,
+        "routingMatches": false,
+        "pass": true
+      },
+      {
+        "mode": "configured",
+        "case": "expired",
+        "status": 502,
+        "expected": 502,
+        "routingMatches": false,
+        "pass": true
+      },
+      {
+        "mode": "configured",
+        "case": "wrong-name",
+        "status": 502,
+        "expected": 502,
+        "routingMatches": false,
+        "pass": true
+      },
+      {
+        "mode": "insecure-control",
+        "case": "valid",
+        "status": 200,
+        "expected": 200,
+        "routingMatches": true,
+        "pass": true
+      },
+      {
+        "mode": "insecure-control",
+        "case": "untrusted",
+        "status": 200,
+        "expected": 200,
+        "routingMatches": true,
+        "pass": true
+      },
+      {
+        "mode": "insecure-control",
+        "case": "expired",
+        "status": 200,
+        "expected": 200,
+        "routingMatches": true,
+        "pass": true
+      },
+      {
+        "mode": "insecure-control",
+        "case": "wrong-name",
+        "status": 200,
+        "expected": 200,
+        "routingMatches": true,
+        "pass": true
+      }
+    ],
+    "deliveryCases": [
+      {
+        "case": "public-release-only",
+        "pass": true
+      },
+      {
+        "case": "private-root-query",
+        "pass": true
+      },
+      {
+        "case": "json-escaped-path-invalid-release",
+        "pass": true
+      },
+      {
+        "case": "manifest-query",
+        "pass": true
+      },
+      {
+        "case": "upstream-408",
+        "pass": true
+      }
+    ],
+    "deliveryFormatSha256": "29984a190f84df2ea94875bc53c8900e3c6a4308a75200f88b9cf08f0da222aa",
+    "deliveryRows": 14,
+    "deliveryRowsValid": true,
+    "inheritedSecurityHeaders": true,
+    "nginx": "nginx version: nginx/1.24.0 (Ubuntu)",
+    "noInheritedCombinedLog": true,
+    "scope": "Private unprivileged loopback nginx, synthetic certificates/queries only; no host reload, public traffic or production TLS/log policy change.",
+    "templateSha256": "4f7a8001c7b9c88b61b240b76906036d804eb007020960b9f329732c903f5300"
+  },
+  "counterexamples": {
+    "accepted62": "Eight certificate and five HTTP/routing/header cases remain correct, but zero structured delivery rows and inherited combined logs make privacy/diagnostic checks fail. Actual14loopbackrequests; no production mutation.",
+    "superseded8d567d74e": "Initial addedresponseheader produced correctlogging but hidesparentsecurityheaders onNginx1.24. FreshactualinheritanceguardfailsfiveHTTPcases. Removedfromselectedtree; correlateexistingX-GitHub-Request-IDinstead. Finalguardpasses inheritedheader, including408.",
+    "initialBaselineCount": "Earlier missing-log split reported one empty pseudo-row; corrected parserreports0. Originallogretained."
+  },
+  "regression": "10focused NginxPagesRouting/RunnerQueueSeparation checks/twosuites,gofmt/diff pass. ActualcheckeralreadymandatoryCI; newcaseswillrunafterfuturecoherentpublication. No newdependency/CIjob/nativeGPUwork.",
+  "retainedLiveFinding": "Exact historical59observerURI/sourcehas12HTTP200andoneHTTP408(03:58:46UTC,11624B); no matchingerrorrecord incurrent/previouslogs. Onlysafeaggregatesretained. No upstreamtiming/status inoldcombinedformat, hencecauseunresolved.",
+  "privacyContinuity": "Existinginvitation/recoverylinks alreadyusefragments andearlyScrub/analyticsguards; sourceinspectorreusesunchangedproof. NewformatdoesnotclaimredactionofNginxerror/provider/historiclogs. Cachedresponses canreuseupstreamIDs; localID/time/path distinguishrows. No realprivatevalues/rawprofiles/logs exported.",
+  "activation": "Root-ownedinstalledsite/noninteractiveSSHsudo passwordrequired. Concretebackup/install/validate/reload/verify/rollbackguide prepared; actualhostactivationstillrequiresadministrator. Existinglogrotationdaily14/compress/0640www-data:adm documented,butmustconfirmbeforeactivation. No retentionchange, deletion,exports orrealtrafficinprivatefixture.",
+  "limits": "No complete F2/F4, transportrootcause, finalart/FPS/device/capacity/beta/fullgoalclaim. No soak/stress. Fulloriginalgoalactive.",
+  "guide": "../operations/pages-delivery-diagnostics.md",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-pages-delivery-diagnostics-20261016",
+  "evidence": [
+    {
+      "path": ".qa-pages-delivery/first-check.log",
+      "bytes": 1548,
+      "sha256": "b6e0cc5cb1441c1ec5f7cf81546d5c1e2703da17526395eedf1eb4aa28ab8658"
+    },
+    {
+      "path": ".qa-pages-delivery/baseline.log",
+      "bytes": 1615,
+      "sha256": "972149223c774c9ee65be626a179ab1682e911ac254b48807226eeef8c63ebb3"
+    },
+    {
+      "path": ".qa-pages-delivery/final-check.log",
+      "bytes": 1548,
+      "sha256": "b6e0cc5cb1441c1ec5f7cf81546d5c1e2703da17526395eedf1eb4aa28ab8658"
+    },
+    {
+      "path": ".qa-pages-delivery/inherited-headers-check.log",
+      "bytes": 1580,
+      "sha256": "7b0ddc20743b31e4386328615b76595520d462cfc155b4928582c9f2e435b069"
+    },
+    {
+      "path": ".qa-pages-delivery/own-header-candidate-guarded-baseline.log",
+      "bytes": 1647,
+      "sha256": "5fbdafbcd809cd183d7b3fe3fd784d6f9fdc737c90b764366f88fda86044e2ba"
+    },
+    {
+      "path": ".qa-pages-delivery/accepted62-guarded-baseline.log",
+      "bytes": 1642,
+      "sha256": "1b15fa0b648aaac74785fc5c5263005e0524b96303695e9d435affc3a3820076"
+    },
+    {
+      "path": ".qa-pages-delivery/focused.log",
+      "bytes": 580,
+      "sha256": "65018bec1fae7ed4fb7f8523ba0b2b4314ed3f066f74f6fc6dd0de31cf4aeee3"
+    },
+    {
+      "path": ".qa-pages-delivery/final-focused.log",
+      "bytes": 595,
+      "sha256": "b6b070d2d9fcb29101354d29cef0a267100715d76592d1e1cd8d0d0e3f5cc7bf"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-master-20261011/.qa-release62/retained59-proxy-log-summary.json",
+      "bytes": 1064,
+      "sha256": "56fe7d48dc95636d725158d5b9369a02ecc40225ce04e766d445fdb56045da8a"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-master-20261011/.qa-release62/nginx-logrotate-policy.log",
+      "bytes": 329,
+      "sha256": "c6f585f3a98e424c30c5208f2f52c8e39665b76744cd5bcc523efdee0a7d69ee"
+    }
+  ]
+}
