@@ -247,7 +247,7 @@ function createVerdantBastion(root) {
             [-19 + i * 3.8, 27 + height / 2, 5.5], [0, 0, (i % 3 - 1) * .018]);
     }
     const livingRoot = (name, points, radius) => addMesh(root, name,
-        geometry(name, () => createTaperedRoot(points, radius, 'medium')), m.root);
+        geometry(name, () => createTaperedRoot(points, radius, 'bastion')), m.root);
     for (const side of [-1, 1]) {
         addMesh(root, `verdant:tower:${side}`, SHAPES.cylinder8, m.stone, {
             position: [side * 25, 17, -7],
