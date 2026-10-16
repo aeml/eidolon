@@ -258,6 +258,12 @@ for (const actorClass of Object.keys(classLooks)) test(`${actorClass}: purchased
         await expect.poll(() => page.evaluate(() => window.game.uiManager.characterPreview?.model?.userData.equipmentVisualSignature))
             .toBe((await renderedAppearance(page)).signature);
         expect(await page.evaluate(() => window.game.uiManager.characterPreview.model.userData.authoredClass)).toBe(actorClass);
+
+        const wardrobe = page.locator('#character-sheet .wardrobe-panel');
+        if (await wardrobe.getAttribute('open') === null) await wardrobe.locator('summary').click();
+        await wardrobe.getByRole('button', { name: 'View character', exact: true }).click();
+        await expect(page.locator('#character-preview')).toBeInViewport({ ratio: 1 });
+        await expect(page.getByRole('button', { name: 'Reset character view', exact: true })).toBeFocused();
         await page.screenshot({ path: testInfo.outputPath('confirmed-character-garments.png') });
         // Removing real gear under an outfit must not create a cosmetic weapon.
         await page.locator('#slot-mainhand').click();
