@@ -495,14 +495,14 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.57`, **prepared locally, not deployed**:
-six modeled held garments, three remaining class outfits, universal Winterthorn
-Revel, close held-item inspection and clearer equipment/store menus. The selected
-collection has eleven distinct looks; seven universal outfits remain. Focused
-qualification and native captures are retained in the linked garment/menu plans.
-Alpha 1.79.56 remains the independently verified public release at `aee456655`.
-[Acceptance](docs/plans/2026-10-15-release1-79-56-acceptance.md).
-Final collection review, broader menu/world polish and readiness gates stay open.
+Current source version: `Alpha 1.79.57`, **deployed and verified** at `baecf1cf8`:
+six modeled held garment families, all four class-themed outfits, universal
+Winterthorn Revel, close held inspection and clearer equipment/store menus.
+All ten CI jobs pass, including both deployments/live checks. Normal-TLS reads
+match both identities, ready database and all294pinned assets.
+[Acceptance](docs/plans/2026-10-16-release1-79-57-acceptance.md).
+Seven universal outfits and related store/service polish remain isolated pending
+native review. Final collection, broader world/UI and readiness gates stay open.
 
 **Alpha 1.79.55 is deployed and verified** at `1c936dfc6`: searchable earned
 Lore Book, direct quest tracking and clearer manual quest review. All ten CI jobs

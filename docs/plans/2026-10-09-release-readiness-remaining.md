@@ -210,6 +210,23 @@ unique historical writer or prove capacity. [Retained fix/failure](2026-10-14-el
 **Soak/stress qualification is deferred by the owner until features are nearly
 complete.** Automatic scheduling is disabled; prior failures remain open.
 
+## Alpha 1.79.57: deployed and independently verified
+
+The selected requested garment collection now has eleven modeled looks: six held
+families, all four class-themed outfits and universal Winterthorn Revel. Vendor
+inspection and the first character/bag/merchant polish slice are included.
+All ten CI38777481810jobs pass, including both deployments/live checks:
+782client suites/11931tests,426hosted passes/13skips,74native passes/one skip,
+eight live main passes/one skip plus two recovery and one Well Rested party pass.
+Normal-TLS verification at2026-10-16 00:13:21UTC matches both57identities/source,
+ready database and all294pins.492notes retain all491prior entries byte-exact.
+[Acceptance and custody](2026-10-16-release1-79-57-acceptance.md).
+
+Seven universal outfit candidates, searchable collection browsing and related
+service-menu polish remain isolated pending native qualification. Their CPU/
+structural checks are preparation, not deployed collection-wide art acceptance.
+The full goal, original gates, deferred playtests and soak policy remain unchanged.
+
 ## Outstanding requirements and next evidence
 
 All rows below are open at the full requirement's scope, even where substantial

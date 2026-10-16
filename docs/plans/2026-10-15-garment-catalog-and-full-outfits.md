@@ -1,7 +1,9 @@
 # Garments: full outfits and distinct VIP models
 
-Owner requirement added October 15, 2026. **Required before beta; not yet
-implemented or visually accepted.** This expands the original cosmetic scope.
+Owner requirement added October 15, 2026. **Required before beta; full scope
+remains open.** The pipeline and eleven modeled looks are deployed/verified in
+Alpha1.79.57; seven universal candidates still await native qualification. Final
+collection art approval remains open. This expands the original cosmetic scope.
 The existing vendor, unlocks and per-slot appearance pipeline are foundations,
 not evidence that this new requirement is complete.
 
