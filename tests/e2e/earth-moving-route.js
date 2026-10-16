@@ -5,12 +5,14 @@ import { profileGameplayScene } from './scene-performance.js';
 import { capturePartySubmissionFrames } from './party-submission-frames.js';
 import { compareSingletonScene } from './singleton-scene-comparison.js';
 import { compareDemonOrcScene } from './demon-orc-scene-comparison.js';
+import { visualMovingRoutePlan } from './visual-moving-route-plan.js';
 
 // Explicit post-login visual evidence. These prepared level30 saves are not an
 // earned campaign, encounter clear, physical phone or frame-budget certificate.
-// Ground clicks use normal client/server movement; no teleport or direct actor
-// assignment occurs on the town→gate→Earth→Verdant approach route.
+// Ground clicks use normal client/server movement through the explicitly
+// selected Earth or Water road. No teleport or direct actor assignment occurs.
 export async function captureEarthMovingRoute(page, testInfo) {
+    const route = visualMovingRoutePlan(process.env.EIDOLON_TERRAIN_ART_REALM || 'earth');
     const expectedProfile = process.env.EIDOLON_E2E_TERRAIN_PROFILE || 'earth-elevation-rocks-v1';
     expect(['flat-v1', 'earth-elevation-rocks-v1']).toContain(expectedProfile);
     const folder = testInfo.outputPath('post-login-moving-route');
@@ -44,7 +46,7 @@ export async function captureEarthMovingRoute(page, testInfo) {
             await capturePartySubmissionFrames(page, testInfo, `${label}-submission-frames.json`);
         }
         if (process.env.EIDOLON_E2E_ROUTE_BUDGETS === '1' &&
-            ['town-start', 'earth-road', 'woodland-cut', 'bastion-approach'].includes(label)) {
+            route.budgetLabels.includes(label)) {
             // Keep capture work outside the ordinary real-frame budget sample.
             const resume = recording;
             if (resume) { recording = false; await session.send('Page.stopScreencast'); }
@@ -69,7 +71,7 @@ export async function captureEarthMovingRoute(page, testInfo) {
         }
     };
     session.on('Page.screencastFrame', event => {
-        if (recording && frames.length < 900) {
+        if (recording && frames.length < route.maximumFrames) {
             const name = `frame-${String(frames.length).padStart(4, '0')}.jpg`;
             frames.push({ name, timestamp: event.metadata.timestamp });
             writes.push(writeFile(`${folder}/${name}`, Buffer.from(event.data, 'base64'), { mode: 0o600 }));
@@ -83,15 +85,14 @@ export async function captureEarthMovingRoute(page, testInfo) {
         await screenshot('town-start');
         recording = true;
         await session.send('Page.startScreencast', captureOptions);
-        // Votive Market at(30,200) occupies the direct line from the plaza.
-        // Walk its northern side, then return to the real east gate road.
-        for (const [label, x, z] of [['north-court', 0, 186], ['market-pass', 60, 186], ['east-street', 60, 200],
-            ['east-gate', 120, 200], ['earth-road', 240, 200], ['woodland-cut', 470, 200], ['bastion-approach', 760, 200]]) {
+        // Earth walks north of Votive Market before joining the east gate.
+        // Water goes around the casino to the north street and authored road.
+        for (const [label, x, z] of route.waypoints) {
             while (true) {
                 const before = await readPlayerState(page), distance = Math.hypot(x - before.x, z - before.z);
                 if (distance < .6) break;
                 expect(performance.now() - started, 'Bounded ordinary-input visual route').toBeLessThan(140000);
-                const step = Math.min(20, distance) / distance;
+                const step = Math.min(route.maxStepDistance, distance) / distance;
                 const targetX = before.x + (x - before.x) * step, targetZ = before.z + (z - before.z) * step;
                 await moveByGroundClick(page, targetX - before.x, targetZ - before.z, {
                     moveOnly: true, requireClearPath: true, allowAlternatePaths: false, allowJumpFallback: false,
@@ -116,13 +117,14 @@ export async function captureEarthMovingRoute(page, testInfo) {
         finally { await session.detach(); await Promise.all(writes); }
         await writeFile(testInfo.outputPath('moving-route.json'), JSON.stringify({
             terrainProfile: expectedProfile,
-            scope: 'Prepared level30 Fighter, normal ground-input continuous town→gate→Earth road→Verdant approach, actual HUD and native render. Explicit post-login screencast; excluded from subsequent party frame timings. No campaign/encounter clear/mobile/final-art approval.',
+            routeRealm: route.realm,
+            scope: route.scope,
             frames, observations, profiles, elapsedMs: performance.now() - started
         }, null, 2));
     }
     expect(frames.length).toBeGreaterThan(20);
     if (process.env.EIDOLON_E2E_ROUTE_BUDGETS === '1') {
-        expect(profiles.map(profile => profile.label)).toEqual(['town-start', 'earth-road', 'woodland-cut', 'bastion-approach']);
+        expect(profiles.map(profile => profile.label)).toEqual(route.budgetLabels);
         for (const { label, budget, report } of profiles) {
             expect(report.frames, label).toBe(180); expect(report.visibleFrames, label).toBe(180);
             expect(report.restored, label).toBe(true);

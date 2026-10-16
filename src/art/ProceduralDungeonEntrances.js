@@ -4,7 +4,8 @@ import { getRegionTheme } from './darkFantasyTheme.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createDungeonVeilMaterial } from './DungeonVeilMaterial.js';
 import { createBastionForegateGeometry } from './BastionForegateGeometry.js';
-import { createBastionFoundation, createBondedBastionFoundation, createBastionRamp, createBastionGatehouse, createBastionTowerParapet, createBastionRecess } from './BastionArchitectureGeometry.js';
+import { createBondedBastionFoundation, createBastionRamp, createBastionGatehouse, createBastionTowerParapet, createBastionRecess } from './BastionArchitectureGeometry.js';
+import { createAbyssalQuay, createAbyssalMooring, createAbyssalShellCrown } from './AbyssalQuayGeometry.js';
 import { createTaperedRoot } from './EarthLandmarkGeometry.js';
 import { createMoltenFoundation, createMoltenVault, createMoltenVaultRib, createMoltenForegate, createMoltenChain } from './MoltenEntranceGeometry.js';
 import { createTideReliquaryArch } from './TideReliquaryGeometry.js';
@@ -65,7 +66,8 @@ const SHAPES = Object.freeze({
     ring: geometry('dungeon-entrance-unit-ring', () => new THREE.RingGeometry(0.29, 0.5, 24)),
     disc: geometry('dungeon-entrance-unit-disc', () => new THREE.CircleGeometry(0.5, 24)),
     bastionForegate: geometry('dungeon-entrance-bastion-foregate', createBastionForegateGeometry),
-    bastionFoundation: geometry('dungeon-entrance-bastion-foundation', createBastionFoundation),
+    abyssalQuay: geometry('dungeon-entrance-abyssal-quay', createAbyssalQuay),
+    abyssalShell: geometry('dungeon-entrance-abyssal-shell', createAbyssalShellCrown),
     bastionBondedFoundation: geometry('dungeon-entrance-bastion-bonded-foundation', createBondedBastionFoundation),
     bastionRamp: geometry('dungeon-entrance-bastion-ramp', createBastionRamp),
     bastionHall: geometry('dungeon-entrance-bastion-hall', createBastionGatehouse),
@@ -387,7 +389,7 @@ function createAbyssalWell(root) {
     const m = MATERIAL_SETS.abyssal_well;
     // The beveled source is 3.1 high; keep its top below the water at 3.1.
     // Coplanar surfaces otherwise flicker when cutaway materials change draw order.
-    addMesh(root, 'abyssal:drowned-shelf', SHAPES.bastionFoundation, m.stone, { scale: [1.05, 3 / 3.1, .84] });
+    addMesh(root, 'abyssal:drowned-shelf', SHAPES.abyssalQuay, m.pale, { scale: [1.05, 3 / 3.1, .84] });
     addMesh(root, 'abyssal:black-water-eye', SHAPES.disc, m.dark, {
         position: [0, 3.1, -4],
         rotation: [-Math.PI / 2, 0, 0],
@@ -410,12 +412,13 @@ function createAbyssalWell(root) {
             position: [side * 21, 13, -1],
             scale: [13, 26, 13]
         });
-        spike(root, `abyssal:shell-crown:${side}`, m.pale,
-            [side * 21, 29, -1], [14, 10, 14]);
-        beam(root, `abyssal:anchor-tentacle-front:${side}`, m.metal,
-            [side * 18, 7, 8], [side * 34, 2, 18], 1.6, SHAPES.tapered6);
-        beam(root, `abyssal:anchor-tentacle-rear:${side}`, m.metal,
-            [side * 18, 6, -10], [side * 34, 2, -19], 1.45, SHAPES.tapered6);
+        addMesh(root, `abyssal:shell-crown:${side}`, SHAPES.abyssalShell, m.pale,
+            { position: [side * 21, 29, -1], scale: [14, 10, 14] });
+        for (const [end, start, finish] of [
+            ['front', [side * 21, 7, 5.35], [side * 29, 3.7, 18]],
+            ['rear', [side * 21, 6, -7.45], [side * 29, 3.7, -19]]
+        ]) addMesh(root, `abyssal:anchor-tentacle-${end}:${side}`,
+            geometry(`dungeon-entrance-abyssal-mooring-${end}:${side}`, () => createAbyssalMooring(start, finish)), m.metal);
         for (const [index, xOffset] of [-5, 0, 5].entries()) {
             spike(root, `abyssal:coral-antler:${side}:${index}`, index % 2 ? m.accent : m.pale,
                 [side * 24 + xOffset, 11 + index * 2, 9],

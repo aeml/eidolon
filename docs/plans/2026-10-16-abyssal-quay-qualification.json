@@ -1,0 +1,131 @@
+{
+  "source": "864b27b95d54d97e5b51bcaf5a3337797716412e",
+  "scope": "Qualified Water entrance construction; not merged/deployed, owner/final world art or full performance acceptance.",
+  "profiles": [
+    {
+      "quality": "high",
+      "samples": 180,
+      "pairedCallDeltas": [
+        0
+      ],
+      "pairedTriangleDeltas": [
+        22560
+      ],
+      "peakCalls": 112,
+      "peakTriangles": 99677,
+      "resources": {
+        "geometries": 12,
+        "textures": 17,
+        "ownedSkeletons": 6,
+        "beforeCleanup": {
+          "geometries": 78,
+          "textures": 50
+        },
+        "afterSkeletons": {
+          "geometries": 78,
+          "textures": 45
+        },
+        "contextLost": true,
+        "entranceOwned": 17,
+        "entranceRetired": 17,
+        "canvasConnected": false,
+        "rendererDisposed": true,
+        "actorReleased": true
+      },
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    },
+    {
+      "quality": "low",
+      "samples": 180,
+      "pairedCallDeltas": [
+        0
+      ],
+      "pairedTriangleDeltas": [
+        11280
+      ],
+      "peakCalls": 50,
+      "peakTriangles": 37143,
+      "resources": {
+        "geometries": 12,
+        "textures": 17,
+        "ownedSkeletons": 6,
+        "beforeCleanup": {
+          "geometries": 74,
+          "textures": 36
+        },
+        "afterSkeletons": {
+          "geometries": 74,
+          "textures": 31
+        },
+        "contextLost": true,
+        "entranceOwned": 17,
+        "entranceRetired": 17,
+        "canvasConnected": false,
+        "rendererDisposed": true,
+        "actorReleased": true
+      },
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    }
+  ],
+  "census": {
+    "scope": "CPU source exactness/count screen only; native visual/culling/budget qualification remains pending.",
+    "candidateQuayTriangles": 5380,
+    "rows": [
+      {
+        "id": "verdant_bastion_catacombs",
+        "sourceParts": 49,
+        "beforeTriangles": 16223,
+        "afterTriangles": 16223,
+        "draws": 9,
+        "allUnchangedPartsExact": true
+      },
+      {
+        "id": "molten_core",
+        "sourceParts": 32,
+        "beforeTriangles": 10796,
+        "afterTriangles": 10796,
+        "draws": 9,
+        "allUnchangedPartsExact": true
+      },
+      {
+        "id": "tempest_spire",
+        "sourceParts": 34,
+        "beforeTriangles": 2196,
+        "afterTriangles": 2196,
+        "draws": 8,
+        "allUnchangedPartsExact": true
+      },
+      {
+        "id": "abyssal_well",
+        "sourceParts": 26,
+        "beforeTriangles": 2052,
+        "afterTriangles": 13332,
+        "draws": 8,
+        "allUnchangedPartsExact": true
+      }
+    ]
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-water-approach-review-20261016/.qa-water-approach",
+  "inventoryFiles": 222,
+  "inventorySha256": "4109dd9c3fba11d5757f98fe4ec65257bd3a61eb6325c4ba7829b673721b9220",
+  "manualReview": {
+    "source": "bd52ed810d866e9235203d6628aa3beadc3dc03b",
+    "qualificationSource": "864b27b95d54d97e5b51bcaf5a3337797716412e",
+    "selected": true,
+    "scope": "Implementation visual review, not owner approval or final world art.",
+    "at": "2026-10-16T16:18:47.449516+00:00",
+    "reviewed": [
+      "High1280 arrivalzoom30/normalzoom15flank",
+      "Low390 arrivalzoom15/30",
+      "Allfour native world/cutaway cases and production wall/floor contact raycasts",
+      "Separate actual normalWaterarrival PNG and movement frames0200/0600/0900"
+    ],
+    "findings": "Physicalslabs replace wallbrick-frequency platform, shellfans read ascarvednauticalcrowns, upper andlower chainends nowjoinvisibleembeddedfittings withoutburied/floatinglinks. Portal/HUD/player remainreadable. Broaderterrain/vegetation/actor/worldart remainsunfinished.",
+    "performance": "Prepared component counter scope only. Separate post-routeparty33.3/49.9ms exceedsretained20/33.4Highlimits; no new FPSacceptance or causalregression claim."
+  },
+  "limitations": [
+    "Prepared camera/actor positions, not actual earned or normal-input travel.",
+    "No frame timing, GPU profiling, soak/stress, whole-world/cold/device or physical-phone certification.",
+    "Existing world/actor/gameplay/readiness and owner requirements remain open."
+  ]
+}
