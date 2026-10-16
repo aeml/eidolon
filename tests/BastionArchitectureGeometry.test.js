@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { createBastionGatehouse, createBastionRamp } from '../src/art/BastionArchitectureGeometry.js';
+import { createBastionGatehouse, createBastionRamp, createBastionFoundation, createBondedBastionFoundation } from '../src/art/BastionArchitectureGeometry.js';
 
 test('Bastion has a real recessed doorway, finite chamfers and the unchanged wall/floor envelope', () => {
     const geometry = createBastionGatehouse();
@@ -46,4 +46,23 @@ test('Bastion ramp has physical staggered joints within its former slab envelope
     expect(geometry.attributes.position.count / 3).toBeLessThan(5000);
     expect(geometry.groups).toHaveLength(0);
     geometry.dispose(); material.dispose();
+});
+
+
+test('bonded Bastion foundation has staggered physical joints inside the original footing envelope', () => {
+    const original = createBastionFoundation(), candidate = createBondedBastionFoundation();
+    original.computeBoundingBox(); candidate.computeBoundingBox();
+    for (const edge of ['min', 'max']) candidate.boundingBox[edge].toArray().forEach((value, i) =>
+        expect(value).toBeCloseTo(original.boundingBox[edge].toArray()[i], 5));
+    const material = new THREE.MeshStandardMaterial(), mesh = new THREE.Mesh(candidate, material);
+    mesh.updateMatrixWorld(true);
+    const top = (x, z) => new THREE.Raycaster(new THREE.Vector3(x, 8, z),
+        new THREE.Vector3(0, -1, 0)).intersectObject(mesh)[0].point.y;
+    expect(top(0, -.8)).toBeGreaterThan(3);
+    expect(top(-2.2, -.8)).toBeCloseTo(2.85, 5);
+    expect(top(-2.2, 2.4)).toBeGreaterThan(3);
+    expect(candidate.groups).toHaveLength(0);
+    expect(candidate.attributes.position.count / 3).toBeLessThan(12000);
+    expect(Object.values(candidate.attributes).every(attribute => [...attribute.array].every(Number.isFinite))).toBe(true);
+    original.dispose(); candidate.dispose(); material.dispose();
 });

@@ -280,7 +280,7 @@ describe('procedural dungeon entrances', () => {
         }
         expect(new Set(firstRoots.map((root) => root.userData.artStyle)).size).toBe(4);
         expect(getProceduralDungeonEntranceCacheMetrics()).toEqual({
-            geometries: 39, // One cached merged flagstone ramp; draw cap stays nine.
+            geometries: 40, // Site-specific bonded footing; shared Abyssal shelf remains cached.
             materials: 30,
             entrances: 4
         });
