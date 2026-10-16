@@ -26,6 +26,7 @@ import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { profileGameplayScene } from './scene-performance.js';
 import { profileWorldGpuTime } from './world-gpu-observation.js';
 import { comparePartyRingFrames } from './party-ring-comparison.js';
+import { compareBatchedMaterialFrames } from './batched-material-comparison.js';
 import { summarizePartyCPUProfile } from './party-cpu-summary.js';
 import { captureUnderstoryPreparation } from './understory-preparation-diagnosis.js';
 import { captureUnderstoryDetailComparison } from './understory-detail-comparison.js';
@@ -779,6 +780,23 @@ test(`single native renderer observes three live equipped party socket peers on 
                 scope: 'Same connected normal four-class/three-peer scene; exact original fitted surfaces versus qualified attribute submissions. Full outfits preserved and live actors/AI/game clocks retained. No physical-device or busy-battle certificate.'
             }, null, 2), contentType: 'application/json' });
             console.log('[paired-fitted-surface-profile]', JSON.stringify(phases));
+        }
+        if (process.env.EIDOLON_TERRAIN_PARTY_MATERIAL_COMPARE === '1') {
+            const comparison = await compareBatchedMaterialFrames(page);
+            expect(comparison.restored.policy).toBe(true);
+            if (!comparison.restored.initial) {
+                expect(comparison.restored.active).toBe(0);
+                expect(comparison.restored.created).toBe(comparison.restored.retired);
+            }
+            for (const phase of comparison.phases) {
+                expect(phase.profile.frames).toBe(180); expect(phase.profile.visibleFrames).toBe(180);
+                expect(phase.profile.previewFramesDuringSample).toBe(0);
+                expect(phase.programs.frames).toBe(120); expect(phase.programs.restored).toBe(true);
+                if (phase.enabled) expect(phase.before.active).toBeGreaterThan(0);
+                else expect(phase.before.active).toBe(0);
+            }
+            await testInfo.attach('paired-batched-material-profile', { body: JSON.stringify(comparison, null, 2), contentType: 'application/json' });
+            console.log('[paired-batched-material-profile]', JSON.stringify(comparison));
         }
         if (process.env.EIDOLON_TERRAIN_PARTY_RING_COMPARE === '1') {
             const comparison = await comparePartyRingFrames(page);
