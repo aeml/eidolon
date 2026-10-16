@@ -1,10 +1,10 @@
 {
-  "date": "2026-10-16T00:41:24.299096+00:00",
+  "date": "2026-10-16T00:52:04.956637+00:00",
   "base": "4f5b2e57fbe2112cea68e0da10fc288ad5c85b47",
   "state": "Isolated and UNSELECTED pending native desktop/phone presentation, input and focus review. Not merged into master or deployed.",
-  "scope": "Lore Book distinguishes personally claimed finale, recaps earlier roads in past tense after Nexus/finale, and shows up to three other personally accepted tasks with objective/progress and correct-journal links. More tasks remain accessible through Review all quests. Reading/quest state and manual acceptance/claim rules remain unchanged.",
+  "scope": "Lore Book distinguishes personally claimed finale, recaps earlier roads in past tense after Nexus/finale, and shows up to three other personally accepted tasks with objective/progress and correct-journal links. More tasks remain accessible through Review all quests. Reading/quest state and manual acceptance/claim rules remain unchanged. Personally tracked accepted contracts sort first without changing preferences or receipts.",
   "validation": {
-    "focused": "141distinct checks across7suites pass:54LoreBook/campaign-coherence/conversation plus87journal/Chronicle/mobile/tracker checks.",
+    "focused": "142distinct checks across7suites pass: prior141 plus tracked-task ordering/immutability regression. Final LoreBook/journal rerun22checks passes.",
     "lint": "All changed runtime/client tests and final native fixture pass scoped lint.",
     "native": "Four existing/expanded book cases prepared, not executed while ordered58CI is active. Covers desktop/phone mid-story reading plus prepared fresh/returning/finale/optional-catch-up/contract state, linked navigation, unchanged progress and semantic focus after actual refresh. No earned campaign/pacing or physical-device acceptance claimed.",
     "retainedFailures": "Initial focused run caught a real overview focus loss: parent QuestUI clears/detaches the book before child render can capture active focus. Parent now restores the replacement action by semantic ID. Existing conversation fixture counted all hidden Lore Book title occurrences as contract rows; updated to assert the exact26unique contract tracking IDs instead. Original two failures retained; corrected all54pass."
@@ -46,6 +46,16 @@
       "path": ".qa-lore-task-context/related.log",
       "bytes": 715,
       "sha256": "100a9f1e6edc39aa283b0d3851f3ac4804278ce0f5ded72f91aa6ecb871f1b33"
+    },
+    {
+      "path": ".qa-lore-task-context/tracked-task-focused.log",
+      "bytes": 579,
+      "sha256": "3ad40423b38e0684617033d32aa250e34993f36870d97c3afa1964d131622b00"
+    },
+    {
+      "path": ".qa-lore-task-context/tracked-task-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
   ]
 }

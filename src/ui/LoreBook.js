@@ -97,7 +97,9 @@ export class LoreBook {
 
     renderOverview() {
         const { current, recap, activeTasks, finaleCompleted } = this.model;
-        const signature = JSON.stringify([current, recap, activeTasks, finaleCompleted]);
+        const tracked = new Set(this.ui.getTrackedObjectives().map(objective => objective.id));
+        const tasks = activeTasks.slice().sort((a, b) => Number(tracked.has(b.id)) - Number(tracked.has(a.id)));
+        const signature = JSON.stringify([current, recap, tasks, finaleCompleted]);
         if (signature === this.overviewSignature) return;
         this.overviewSignature = signature;
         const now = node('section', '', 'lore-book__current');
@@ -115,9 +117,9 @@ export class LoreBook {
             now.append(node('p', 'Your Chronicle is complete', 'lore-book__current-title'),
                 node('p', 'You claimed the finale with Ilyra. Revisit your earned memories, finish optional accounts or continue your contracts.'));
         } else now.append(node('p', 'Visit Archmage Ilyra in Lanternhold to revisit your Chronicle and its next steps.'));
-        if (activeTasks.length) {
+        if (tasks.length) {
             now.append(node('h4', 'Other accepted tasks'));
-            for (const task of activeTasks.slice(0, 3)) {
+            for (const task of tasks.slice(0, 3)) {
                 const action = node('button', '', 'menu-btn lore-book__task'); action.type = 'button';
                 action.dataset.loreAction = `task:${task.id}`;
                 const ready = task.maxCount > 0 && task.count >= task.maxCount;
@@ -126,7 +128,7 @@ export class LoreBook {
                 action.onclick = () => this.ui.openTrackedObjective(task); now.append(action);
             }
         }
-        if (activeTasks.length > 3 || (!current && finaleCompleted)) {
+        if (tasks.length > 3 || (!current && finaleCompleted)) {
             const journal = node('button', 'Review all quests', 'menu-btn'); journal.type = 'button';
             journal.dataset.loreAction = 'all'; journal.onclick = () => this.ui.setJournalView('all'); now.append(journal);
         }

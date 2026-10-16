@@ -168,4 +168,16 @@ describe('journal lore reading', () => {
         expect(ui.journalView).toBe('all');
         expect(ui.onAcceptQuest).not.toHaveBeenCalled(); expect(ui.onCompleteQuest).not.toHaveBeenCalled();
     });
+
+    test('current-task overview puts personally tracked contracts first without changing tracking or quest receipts', () => {
+        player.quests.push(...Array.from({ length: 5 }, (_, i) => ({ id: `daily_${i}`, accepted: true, title: `Patrol ${i}`, count: 0, maxCount: 2 })));
+        ui.updateJournal(player.quests);
+        const patrol = player.quests.at(-1), before = JSON.stringify(player.quests);
+        for (const task of player.quests.slice(-5)) ui.setQuestTracked(task, task.id === patrol.id);
+        const preferences = [...ui.trackedQuestKeys];
+        ui.updateJournal(player.quests);
+        expect(ui.loreBook.overview.querySelector('.lore-book__task').dataset.loreAction).toBe(`task:${patrol.id}`);
+        expect([...ui.trackedQuestKeys]).toEqual(preferences); expect(JSON.stringify(player.quests)).toBe(before);
+        expect(ui.onAcceptQuest).not.toHaveBeenCalled(); expect(ui.onCompleteQuest).not.toHaveBeenCalled();
+    });
 });
