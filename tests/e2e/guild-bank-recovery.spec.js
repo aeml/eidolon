@@ -67,3 +67,65 @@ for (const phone of [false, true]) test(`${phone ? 'phone' : 'desktop'}: guild b
         expect(failures, failures.join('\n')).toEqual([]);
     } finally { await page.evaluate(() => { window.__guild?.ui.dispose(); delete window.__guild; }); }
 });
+
+for (const phone of [false, true]) test(`${phone ? 'phone' : 'desktop'}: guild drafts and calendar input survive live roster updates`, async ({ page, baseURL }, testInfo) => {
+    const failures = collectBrowserFailures(page, baseURL);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.setViewportSize({ width: phone ? 390 : 1280, height: 844 });
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await mountGuild(page, phone);
+    await page.evaluate(() => {
+        const { ui, guild, controller, sent } = window.__guild;
+        ui.lastPlayerRef.id = 'player-Alice';
+        guild.permissions = { ...guild.permissions, invite: true, manage_motd: true, manage_events: true };
+        guild.motd = 'Meet at the east gate.';
+        guild.activities = [{ id: 'verdant', name: 'Verdant Bastion' }]; guild.events = [];
+        guild.members.push(...Array.from({ length: 16 }, (_, index) => ({ username: `Companion${index + 1}`, rank: 'member', online: false })));
+        controller.handleMessage({ type: 'guild_update', payload: { guild } });
+        ui.social.guild.onInvite = name => sent.push({ unexpectedInvite: name });
+        ui.social.guild.onSetMOTD = message => sent.push({ unexpectedMessage: message });
+        ui.social.guild.onEvent = payload => sent.push({ unexpectedEvent: payload });
+    });
+    const frame = page.locator('#social-window'), panel = page.locator('#tab-panel-guild');
+    const scrollOwner = phone ? frame : panel;
+    const invite = panel.getByLabel('Guild invite username');
+    const message = panel.getByLabel('Guild message of the day');
+    await invite.fill('Future companion'); await message.fill('Bring a key for the expedition.');
+    await message.focus();
+    await message.evaluate(input => input.setSelectionRange(6, 9));
+    const before = await scrollOwner.evaluate(node => node.scrollTop);
+    await page.evaluate(() => {
+        const { guild, controller } = window.__guild;
+        guild.members[1].online = true; guild.members[1].level = 31; guild.members[1].class = 'Rogue';
+        controller.handleMessage({ type: 'guild_update', payload: { guild } });
+    });
+    await expect(invite).toHaveValue('Future companion');
+    await expect(message).toHaveValue('Bring a key for the expedition.'); await expect(message).toBeFocused();
+    expect(await message.evaluate(input => [input.selectionStart, input.selectionEnd])).toEqual([6, 9]);
+    expect(await scrollOwner.evaluate(node => node.scrollTop)).toBeCloseTo(before, 0);
+    await expect(message).toBeInViewport();
+    await page.screenshot({ path: testInfo.outputPath('guild-message-draft.png') });
+    const schedule = panel.locator('.guild-events > details > summary');
+    await schedule.scrollIntoViewIfNeeded(); await schedule.click();
+    const title = panel.getByLabel('Event title', { exact: true });
+    await title.fill('Evening expedition'); await title.focus();
+    const calendarScroll = await scrollOwner.evaluate(node => node.scrollTop);
+    expect(calendarScroll).toBeGreaterThan(0);
+    await page.evaluate(() => {
+        const { guild, controller } = window.__guild;
+        guild.bank.gold += 5;
+        controller.handleMessage({ type: 'guild_update', payload: { guild } });
+    });
+    await expect(title).toHaveValue('Evening expedition'); await expect(title).toBeFocused(); await expect(title).toBeInViewport();
+    expect(await scrollOwner.evaluate(node => node.scrollTop)).toBeCloseTo(calendarScroll, 0);
+    await page.screenshot({ path: testInfo.outputPath('guild-calendar-draft.png') });
+    expect(await page.evaluate(() => window.__guild.sent)).toEqual([]);
+    await page.evaluate(() => {
+        const { ui, guild, controller } = window.__guild;
+        ui.lastPlayerRef.id = 'player-Eve';
+        controller.handleMessage({ type: 'guild_update', payload: { guild } });
+    });
+    await expect(invite).toHaveValue(''); await expect(title).toHaveValue('');
+    await page.evaluate(() => window.__guild.ui.dispose());
+    expect(failures, failures.join('\n')).toEqual([]);
+});

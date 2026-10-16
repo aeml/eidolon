@@ -1,6 +1,9 @@
 import { GuildEventsUI } from './GuildEventsUI.js';
 import { socialSafetyActions } from './SocialSafetyUI.js';
 
+const DRAFT_FIELDS = ['guild-name', 'guild-tag', 'guild-invite', 'guild-motd',
+    'guild-leaderboard-dungeon', 'guild-leaderboard-difficulty', 'guild-leaderboard-level'];
+
 export class GuildUI {
     constructor({ container, getLastPlayer, addChatMessage }) {
         this.container = container;
@@ -52,6 +55,29 @@ export class GuildUI {
 
     render() {
         if (!this.container) return;
+        const player = this.getLastPlayer?.(), owner = player?.id || player?.name;
+        const context = JSON.stringify([owner, this.state.guild?.id || '']);
+        const sameContext = Boolean(owner && context === this.renderedContext);
+        const focused = sameContext && this.container.contains(document.activeElement) ? document.activeElement : null;
+        const drafts = sameContext ? DRAFT_FIELDS.flatMap(key => {
+            const input = this.container.querySelector(`[data-${key}]`);
+            if (!input) return [];
+            // An untouched message follows the authoritative update; a local
+            // edit survives another member's roster or leaderboard response.
+            const dirty = key !== 'guild-motd' || input.value !== input.defaultValue;
+            return [{ key, value: input.value, dirty, focused: focused === input,
+                start: input.selectionStart, end: input.selectionEnd, direction: input.selectionDirection }];
+        }) : [];
+        const scroll = [];
+        const frame = this.container.closest('#social-window');
+        for (let node = this.container; node; node = frame && node !== frame ? node.parentElement : null) {
+            scroll.push({ node, top: node.scrollTop, left: node.scrollLeft });
+        }
+        if (!sameContext) {
+            this.events.resetEditor(); this.events.editor.open = false;
+            this.events.feedback.textContent = '';
+        }
+        this.renderedContext = context;
         this.restoreBankRequest();
         this.container.replaceChildren();
         this.renderBankStatus();
@@ -59,9 +85,22 @@ export class GuildUI {
         if (!this.state.guild) {
             this.events.clear();
             this.renderEnrollment();
-            return;
+        } else this.renderGuild(this.state.guild);
+        for (const draft of drafts) {
+            const input = this.container.querySelector(`[data-${draft.key}]`);
+            if (!input) continue; // Lost permissions do not retain hidden controls.
+            if (draft.dirty) input.value = draft.value;
+            if (draft.focused && !this.confirmation) {
+                input.focus({ preventScroll: true });
+                if (typeof draft.start === 'number') input.setSelectionRange(draft.start, draft.end, draft.direction);
+            }
         }
-        this.renderGuild(this.state.guild);
+        if (focused?.isConnected && !focused.disabled && !focused.closest('[hidden]') && !this.confirmation) {
+            focused.focus({ preventScroll: true });
+        }
+        if (sameContext && !this.confirmation) for (const { node, top, left } of scroll) {
+            node.scrollTop = top; node.scrollLeft = left;
+        }
     }
 
     dispose() {
