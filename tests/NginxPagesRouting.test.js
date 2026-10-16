@@ -13,10 +13,13 @@ describe('Pages proxy configuration for the IPv4-only origin host', () => {
         expect(frontend).not.toContain('proxy_pass https://aeml.github.io;');
     });
 
-    test('retains Pages custom-domain routing and upstream TLS SNI', () => {
+    test('retains Pages custom-domain routing and verifies the upstream TLS identity', () => {
         expect(frontend).toContain('proxy_set_header Host play.eidolonrealms.com;');
         expect(frontend).toContain('proxy_ssl_server_name on;');
         expect(frontend).toContain('proxy_ssl_name aeml.github.io;');
+        expect(frontend).toContain('proxy_ssl_verify on;');
+        expect(frontend).toContain('proxy_ssl_verify_depth 3;');
+        expect(frontend).toContain('proxy_ssl_trusted_certificate /etc/ssl/certs/ca-certificates.crt;');
     });
 
     test('keeps the backend on loopback with WebSocket upgrades', () => {

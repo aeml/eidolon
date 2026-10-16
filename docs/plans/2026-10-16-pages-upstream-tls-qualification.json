@@ -1,0 +1,145 @@
+{
+  "at": "2026-10-16T09:16:34.837596+00:00",
+  "source": "b49d22810d4482709920a02c3666e80a5b04ef07",
+  "base": "7aab5635dd9f3af5c3665c83372e79f41406cb1e",
+  "state": "Qualified repository template/checker/CI preparation. Ready for master merge; existing host activation is NOT performed and requires a host administrator.",
+  "finding": "Read-only game-site/global/snippet/Certbot directive inspection shows SNI/name but no upstream verification or trusted-CA override. Nginx documents proxy_ssl_verify off by default. The original template accepts untrusted, expired and wrong-name synthetic peers in the actual private Nginx1.24.0 fixture. No production interception test or HTTP408 cause inference was made.",
+  "scope": "Frontend template enables upstream certificate verification with the system CA bundle and depth3, preserving fixed aeml.github.io identity, custom-domain Host, URI/release query, DNS/timeouts/cache and backend WebSocket configuration.",
+  "validation": {
+    "actualNginx": {
+      "allPass": true,
+      "cases": [
+        {
+          "mode": "configured",
+          "case": "valid",
+          "status": 200,
+          "expected": 200,
+          "routingMatches": true,
+          "pass": true
+        },
+        {
+          "mode": "configured",
+          "case": "untrusted",
+          "status": 502,
+          "expected": 502,
+          "routingMatches": false,
+          "pass": true
+        },
+        {
+          "mode": "configured",
+          "case": "expired",
+          "status": 502,
+          "expected": 502,
+          "routingMatches": false,
+          "pass": true
+        },
+        {
+          "mode": "configured",
+          "case": "wrong-name",
+          "status": 502,
+          "expected": 502,
+          "routingMatches": false,
+          "pass": true
+        },
+        {
+          "mode": "insecure-control",
+          "case": "valid",
+          "status": 200,
+          "expected": 200,
+          "routingMatches": true,
+          "pass": true
+        },
+        {
+          "mode": "insecure-control",
+          "case": "untrusted",
+          "status": 200,
+          "expected": 200,
+          "routingMatches": true,
+          "pass": true
+        },
+        {
+          "mode": "insecure-control",
+          "case": "expired",
+          "status": 200,
+          "expected": 200,
+          "routingMatches": true,
+          "pass": true
+        },
+        {
+          "mode": "insecure-control",
+          "case": "wrong-name",
+          "status": 200,
+          "expected": 200,
+          "routingMatches": true,
+          "pass": true
+        }
+      ],
+      "nginx": "nginx version: nginx/1.24.0 (Ubuntu)",
+      "scope": "Private unprivileged loopback nginx, synthetic certificates only; no host reload, public traffic or production TLS policy change.",
+      "templateSha256": "11abf184fff3d232fbbdaef617d610f0ff54fca0f5041a7ee6948198cad5ec11"
+    },
+    "regression": "10 focused checks across NginxPagesRouting and RunnerQueueSeparation pass, plus scoped fixture lint, gofmt/diff. CI enrolls the bounded unprivileged private checker; missing Nginx is installed only on the ephemeral hosted runner. No host service is reloaded by the checker.",
+    "livePreflight": "Normal authenticated read-only SSH and live OpenSSL verification of aeml.github.io succeed with the installed system CA bundle and depth3. No public or backend policy was changed.",
+    "hostBoundary": "Active target /etc/nginx/sites-available/eidolonrealms.conf is root:root0644. A fresh noninteractive sudo -n true returns password-required. No privilege bypass or protected-file write was attempted. Concrete three-line activation/backup/validation/rollback guide is prepared.",
+    "retainedCounterexample": "Initial actual template run intentionally fails three rejection cases: all bad peers return200. Corrected configured cases return502 while valid returns200 with exact SNI/Host/escaped URI; explicit insecure controls still return200. Original baseline is retained."
+  },
+  "activation": "Pending administrator execution of docs/operations/pages-upstream-tls.md; template merge alone does not enable live verification or close F2/X10. Reinspect active directives and normal-TLS app identities/assets after actual activation.",
+  "limits": "No production config reload, account/value/schema/roles/DNS/CA-store change. No transport-root-cause, complete F2, independent penetration, capacity, beta or full-goal claim. No soak/stress.",
+  "sources": [
+    "https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_ssl_verify",
+    "https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_ssl_trusted_certificate"
+  ],
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-upstream-tls-20261016",
+  "evidence": [
+    {
+      "path": ".qa-upstream-tls/baseline.log",
+      "bytes": 1200,
+      "sha256": "35c6b4bce6f13b5cb9a2dba0a8fc4a041b68f1e17dc7f24defd3f227ed1a67e4"
+    },
+    {
+      "path": ".qa-upstream-tls/verified.log",
+      "bytes": 1139,
+      "sha256": "72302e25e3444a6c9cf070263dba9a1c2695908c6e1674c7eb1c58a7025c260d"
+    },
+    {
+      "path": ".qa-upstream-tls/final-verified.log",
+      "bytes": 1139,
+      "sha256": "72302e25e3444a6c9cf070263dba9a1c2695908c6e1674c7eb1c58a7025c260d"
+    },
+    {
+      "path": ".qa-upstream-tls/guarded-verified.log",
+      "bytes": 1139,
+      "sha256": "72302e25e3444a6c9cf070263dba9a1c2695908c6e1674c7eb1c58a7025c260d"
+    },
+    {
+      "path": ".qa-upstream-tls/focused.log",
+      "bytes": 346,
+      "sha256": "27b59d14ffc60685a4cc14949063e5b490cfb8a37e67bc9a9876608c5ef152eb"
+    },
+    {
+      "path": ".qa-upstream-tls/final-focused.log",
+      "bytes": 403,
+      "sha256": "9f2a7abbf70fc2e1112098a8c5113f5b1db95b6d8f2f710071dbd7370725fcaa"
+    },
+    {
+      "path": ".qa-upstream-tls/lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-master-20261011/.qa-release61/frontend-tls-directives.log",
+      "bytes": 700,
+      "sha256": "7916ceb8535fb3d768fbbabe99cd3bce74b18e128c0900fdfeeebb17e94991da"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-master-20261011/.qa-release61/frontend-pages-ca-preflight.log",
+      "bytes": 367,
+      "sha256": "4356f4edff9b46e50b44c73ea9ea9f57fefe2eb6339a2fead3727efc1e5a7370"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-master-20261011/.qa-release61/frontend-root-probe.log",
+      "bytes": 29,
+      "sha256": "9b3a3b7a78f239c4473bb193476b1a860c91f1c2b4fab9c7639eceea414a60fb"
+    }
+  ]
+}

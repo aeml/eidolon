@@ -96,6 +96,14 @@ jobs:
           go-version: '1.27.2'
           cache-dependency-path: server/go.sum
 
+      - name: Verify private Pages upstream certificate and routing fixtures
+        run: |
+          if ! command -v nginx >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends nginx
+          fi
+          GOTOOLCHAIN=go1.27.2 go run scripts/verify-pages-upstream-tls.go
+
       - name: Verify Go modules and reachable vulnerabilities
         working-directory: server
         run: |
