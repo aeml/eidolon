@@ -105,7 +105,7 @@ for (const width of [390, 1440]) test(`cosmetic vendor previews, confirms and ap
     await expect(dialog.locator('.cosmetic-catalogue button:visible')).toHaveCount(1);
     await expect(dialog.locator('.cosmetic-results')).toHaveText('1 of 24 looks');
     await dialog.locator('[data-offer-id="hollow-court-v1"]').click();
-    await expect.poll(() => page.evaluate(() => window.__cosmeticFixture.ui.preview.model?.userData.equipmentVisualSignature || '')).toContain('Hollow Court');
+    await expect.poll(() => page.evaluate(() => window.__cosmeticFixture.ui.preview.model?.userData.equipmentVisualGarment || '')).toBe('hollow-court-v1');
     await page.screenshot({ path: testInfo.outputPath('filtered-wardrobe.png') });
     expect(await page.evaluate(() => window.__cosmeticFixture.requests.map(request => request.type))).toEqual(['get_cosmetic_vendor']);
     await dialog.getByRole('searchbox', { name: 'Find a look', exact: true }).fill('');
