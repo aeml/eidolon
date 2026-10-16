@@ -2,13 +2,13 @@ import { expect, test } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 import { collectBrowserFailures } from './helpers.js';
 
-for (const type of ['SandstormDjinn', 'ThunderRoc']) for (const quality of ['high', 'low'])
-    test(`${quality} ${type} rigid siblings preserve the animated surfaces`, async ({ page, baseURL }, testInfo) => {
+for (const framing of ['group', 'close']) for (const type of ['SandstormDjinn', 'ThunderRoc']) for (const quality of ['high', 'low'])
+    test(`${framing} ${quality} ${type} rigid siblings preserve the animated surfaces`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         await page.setViewportSize({ width: quality === 'low' ? 390 : 1280, height: 844 });
         await page.goto('/', { waitUntil: 'networkidle' });
-        const evidence = await page.evaluate(async ({ type, quality }) => {
+        const evidence = await page.evaluate(async ({ type, quality, framing }) => {
             const THREE = await import('three');
             const { RenderSystem } = await import('/src/core/RenderSystem.js');
             const recipes = await import('/src/art/ProceduralOverworldEnemies.js');
@@ -25,8 +25,8 @@ for (const type of ['SandstormDjinn', 'ThunderRoc']) for (const quality of ['hig
                 groups[variant].add(root); models.push({ root, index: i, variant });
             }
             system.entityGroup.add(...groups);
-            system.setZoom(quality === 'low' ? 32 : 16);
-            system.setCameraTarget(offset.clone().add(new THREE.Vector3(0, 1, 0)));
+            system.setZoom(framing === 'close' ? 8 : quality === 'low' ? 32 : 16);
+            system.setCameraTarget(offset.clone().add(framing === 'close' ? new THREE.Vector3(-3, 1, -3) : new THREE.Vector3(0, 1, 0)));
             system.applyLightingPreset(system.getRealmForPosition(offset), true);
             system.updateEnvironmentLighting(offset, 0);
             const lightingRealm = system.currentRealm;
@@ -60,6 +60,7 @@ for (const type of ['SandstormDjinn', 'ThunderRoc']) for (const quality of ['hig
                 for (const state of ['Idle', 'Walk', 'Run', 'Attack', 'Death']) for (const phase of [.15, .55]) for (let view = 0; view < 3; view++) {
                     const mixers = models.map(({ root, index }) => {
                         root.userData.resetPose();
+                        root.visible = framing !== 'close' || index === 0;
                         const mixer = new THREE.AnimationMixer(root), clip = THREE.AnimationClip.findByName(root.userData.animations, state);
                         const action = mixer.clipAction(clip); action.setLoop(THREE.LoopOnce, 1); action.clampWhenFinished = true; action.play();
                         mixer.setTime(clip.duration * (phase + index * .06));
@@ -76,8 +77,8 @@ for (const type of ['SandstormDjinn', 'ThunderRoc']) for (const quality of ['hig
                     mixers.forEach((mixer, i) => { mixer.stopAllAction(); mixer.uncacheRoot(models[i].root); });
                 }
             } finally { system.dispose(); canvasRetired = !canvas.isConnected; }
-            return { rows, images, canvasRetired, renderer, quality: system.graphicsQuality, lightingRealm, factoryModels };
-        }, { type, quality });
+            return { rows, images, canvasRetired, renderer, quality: system.graphicsQuality, framing, lightingRealm, factoryModels };
+        }, { type, quality, framing });
         for (const entry of evidence.images) await writeFile(testInfo.outputPath(entry.name), Buffer.from(entry.data, 'base64'));
         delete evidence.images;
         await writeFile(testInfo.outputPath('elemental-rigid-parts.json'), JSON.stringify(evidence, null, 2));
