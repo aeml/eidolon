@@ -35,7 +35,9 @@ async function registerReturningFixture(page, credentials, observer = false) {
         !/^ws:\/\/127\.0\.0\.1:\d+\/ws$/.test(process.env.EIDOLON_E2E_WS_URL || '')) {
         throw new Error('Garment fixture requires disposable local Mongo and loopback QA');
     }
-    await page.addInitScript(() => localStorage.setItem('eidolon.graphicsQuality', 'high'));
+    await page.addInitScript(() => {
+        if (!localStorage.getItem('eidolon.graphicsQuality')) localStorage.setItem('eidolon.graphicsQuality', 'high');
+    });
     await openGame(page);
     await page.locator('#auth-username').fill(credentials.username);
     await page.locator('#auth-password').fill(credentials.password);
@@ -120,13 +122,20 @@ async function chooseOutfit(page, key) {
     await expect(wardrobe.getByRole('status')).toContainText('Appearance updated');
 }
 
-async function chooseLowQuality(page) {
+async function chooseLowQuality(page, credentials) {
     await page.bringToFront();
     await page.keyboard.press('Escape');
     await page.locator('#btn-settings').click();
+    let prompt = '';
+    page.once('dialog', async dialog => { prompt = dialog.message(); await dialog.dismiss(); });
     await page.locator('#graphics-quality').selectOption('low');
+    expect(prompt).toContain('need a reload');
     await page.locator('#btn-close-settings').click();
     if (await page.locator('#btn-resume').isVisible()) await page.locator('#btn-resume').click();
+    await expect.poll(() => page.evaluate(() => window.game.renderSystem.graphicsQuality)).toBe('low');
+    // The supported UI explicitly retains owned actor meshes until reload.
+    // Re-enter through the ordinary login with the saved Low preference.
+    await loginAndEnterWorld(page, credentials);
     await expect.poll(() => renderedAppearance(page)).toMatchObject({ quality: 'low' });
 }
 
@@ -244,8 +253,8 @@ test('purchased independent garments render locally and remotely through gear ch
                 await attachJSON(testInfo, 'current-town-wardrobe-gpu-diagnosis', gpu);
             }
         }
-        await chooseLowQuality(page);
-        await chooseLowQuality(observer);
+        await chooseLowQuality(page, owner);
+        await chooseLowQuality(observer, other);
         await check('low-quality-local-and-remote', 'iron-oath-regalia-v1');
         await expect.poll(() => renderedAppearance(observer, ownerID)).toMatchObject({ quality: 'low' });
         await page.bringToFront();
