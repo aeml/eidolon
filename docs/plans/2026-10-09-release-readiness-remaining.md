@@ -22,15 +22,17 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
-## Alpha 1.79.61: prepared, not yet deployed
+## Alpha 1.79.61: deployed and verified within scoped acceptance
 
-Alpha1.79.61 is prepared, not yet deployed: qualified Bastion doorway,
-weathered walls and modeled paving, plus a closed analytics startup bundle.
-[Entrance qualification](2026-10-16-bastion-entrance-qualification.json),
-[analytics qualification](2026-10-16-analytics-bundle-qualification.json).
-Alpha1.79.60/exact800f remains the accepted public release. The prior transport
-findings and full original game/readiness requirements remain open. Alpha access
-is unchanged; soak/stress remains deferred.
+Alpha 1.79.61 at `a60c8e916` is deployed and verified within the Bastion
+entrance and analytics startup scope. All ten CI jobs pass: 785 client suites /
+12,042 tests; 451 hosted browser passes / 13 skips; 88 native passes / one skip;
+and first-attempt live, recovery and party passes. Fresh normal-TLS checks match
+359 asset pins, both identities, a ready database, open registration and flat
+terrain at 2026-10-16T08:18:03.708942+00:00.
+[Acceptance](2026-10-16-release1-79-61-acceptance.md).
+Earlier transport failures and full original game/readiness gates remain open.
+Soak/stress and human pacing/physical-phone feedback remain deferred.
 
 ## Alpha 1.79.60: deployed and verified within scoped acceptance
 
@@ -48,8 +50,8 @@ cause is declared resolved.
 QA-only flat/raised party support is delivered; functional proof does not waive
 original route/crowded-world timing or cold-triangle failures.
 [Retained qualification](2026-10-16-production-flat-party-qualification.json).
-Bastion entrance and analytics bundle are now qualified and selected for
-prepared61; deployment verification remains pending. The earlier [documentation-push finding](2026-10-16-receipt59-redeployment-finding.md)
+Bastion entrance and the analytics bundle are now delivered in accepted61.
+Separate successor cap/root work remains isolated pending native review. The earlier [documentation-push finding](2026-10-16-receipt59-redeployment-finding.md)
 remains historical evidence. No beta, capacity, final art or full-game completion
 claim. Soak/stress and human pacing/physical-device feedback remain deferred.
 

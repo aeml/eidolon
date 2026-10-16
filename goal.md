@@ -1963,3 +1963,19 @@ frame/triangle budgets remain recorded. Analytics95distinctCPU/three native
 privacy cases/actual copied publication qualify its scope. The full original
 goal remains active; no whole-world/FPS/beta/art/operations/owner closure,
 private invitation activation/distribution, or new soak/stress.
+
+
+## October16 Alpha1.79.61 scoped acceptance
+
+Exacta60c8e916/CI38866154758 passes all ten ordered jobs:785client suites/
+12042tests,451hosted browser passes/13skips,88native passes/one skip. All eight
+live main cases pass first attempt, plus two recovery and one rested-party case.
+Fresh normal-TLS359asset pins, identities, readyDB/open registration/flat profile
+and the closed analytics bundle match at2026-10-16T08:18:03.708942+00:00. Bastion doorway, worn walls,
+merged paving and startup bundling are delivered within their scoped receipts.
+Earlier HTTP408/geometry-shard causes remain unresolved. Further cap/root art,
+phone-text refinement and saved-session test coverage are separate successor
+work. The full original world/actor/combat/audio/performance/device/gameplay/
+operations/rights/owner/F1–F5/beta/cohort/release/handoff goal remains active.
+Human pacing/physical-phone feedback and soak/stress remain deferred.
+[Acceptance](docs/plans/2026-10-16-release1-79-61-acceptance.md).
