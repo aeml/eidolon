@@ -1,5 +1,14 @@
 # Eidolon Engineering Roadmap
 
+Alpha1.79.61 is prepared, not yet deployed: qualified Bastion doorway,
+weathered walls and modeled paving, plus a closed analytics startup bundle.
+[Entrance qualification](plans/2026-10-16-bastion-entrance-qualification.json),
+[analytics qualification](plans/2026-10-16-analytics-bundle-qualification.json).
+Alpha1.79.60/exact800f remains the accepted public release. The prior transport
+findings and full original game/readiness requirements remain open. Alpha access
+is unchanged; soak/stress remains deferred.
+
+
 Current delivery and unfinished work are recorded in the
 [remaining-work register](plans/2026-10-09-release-readiness-remaining.md).
 Alpha1.79.60/exact`800f3acef` is deployed and verified within guild-menu continuity

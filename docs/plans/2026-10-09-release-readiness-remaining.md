@@ -22,6 +22,16 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
+## Alpha 1.79.61: prepared, not yet deployed
+
+Alpha1.79.61 is prepared, not yet deployed: qualified Bastion doorway,
+weathered walls and modeled paving, plus a closed analytics startup bundle.
+[Entrance qualification](2026-10-16-bastion-entrance-qualification.json),
+[analytics qualification](2026-10-16-analytics-bundle-qualification.json).
+Alpha1.79.60/exact800f remains the accepted public release. The prior transport
+findings and full original game/readiness requirements remain open. Alpha access
+is unchanged; soak/stress remains deferred.
+
 ## Alpha 1.79.60: deployed and verified within scoped acceptance
 
 Guild drafts, choices, caret/calendar focus and reading continuity are deployed
@@ -38,8 +48,8 @@ cause is declared resolved.
 QA-only flat/raised party support is delivered; functional proof does not waive
 original route/crowded-world timing or cold-triangle failures.
 [Retained qualification](2026-10-16-production-flat-party-qualification.json).
-Bastion wall/doorway and analytics bundle candidates remain isolated/unselected,
-awaiting native review. The earlier [documentation-push finding](2026-10-16-receipt59-redeployment-finding.md)
+Bastion entrance and analytics bundle are now qualified and selected for
+prepared61; deployment verification remains pending. The earlier [documentation-push finding](2026-10-16-receipt59-redeployment-finding.md)
 remains historical evidence. No beta, capacity, final art or full-game completion
 claim. Soak/stress and human pacing/physical-device feedback remain deferred.
 

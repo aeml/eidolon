@@ -495,7 +495,17 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.60`, **deployed and verified within its scoped
+Current source version: `Alpha 1.79.61`, **prepared; not yet deployed**.
+Alpha1.79.61 is prepared, not yet deployed: qualified Bastion doorway,
+weathered walls and modeled paving, plus a closed analytics startup bundle.
+[Entrance qualification](docs/plans/2026-10-16-bastion-entrance-qualification.json),
+[analytics qualification](docs/plans/2026-10-16-analytics-bundle-qualification.json).
+Alpha1.79.60/exact800f remains the accepted public release. The prior transport
+findings and full original game/readiness requirements remain open. Alpha access
+is unchanged; soak/stress remains deferred.
+
+
+Previously accepted version: `Alpha 1.79.60`, **deployed and verified within its scoped
 acceptance**, at runtime `800f3acef`: guild draft/calendar/menu continuity and
 inactive private-beta invitation preparation. All ten ordered CI jobs pass;
 783client suites/12025tests,448hosted browser passes/13skips and88native passes/

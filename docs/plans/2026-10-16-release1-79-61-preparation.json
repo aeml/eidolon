@@ -1,0 +1,59 @@
+{
+  "at": "2026-10-16T07:15:15.859974+00:00",
+  "version": "Alpha 1.79.61",
+  "selection": "3f09584e46184708c5fb0f2ed758160a246d41c2",
+  "state": "Prepared synchronized source/versions/notes; not pushed/deployed. Exact-source copied publisher and CI/public verification required.",
+  "previousAccepted": {
+    "source": "800f3acef78e36042a4232a8dac6a4b2cd1b8bf0",
+    "ci": 38852963115,
+    "acceptance": "2026-10-16-release1-79-60-acceptance.md"
+  },
+  "scope": "Bastion carved hall doorway/weathered wall tops/merged staggered ramp; closed analytics entry removes three independent module requests, preserving private boot order. Retains centered garment row and all selected prior features.",
+  "validation": {
+    "focused": "459checks/seven suites pass after pagination correction. Initial two patch-pagination failures preserved:11embedded notes and stale495total; normal existing paginator restores10embedded,496total.",
+    "lint": "Full selected-source repository lint pass.",
+    "notes": "496entries, all495prior byte-exact including legacy entries.",
+    "entrance": "35CPU/three suites, four native world/reference HighLow cases and four corrected native cutaway cases; actual ownership/context release passes. All original scene/frame budgets preserved; see entrance receipt for retained setup/first material failures.",
+    "analytics": "95distinctCPU/five suites, three native virtual-production public/private cases and actual copied publication qualify5db; graph4modules/6606bytes, no external imports. See analytics receipt.",
+    "content": "16groups passed on unchanged content/generator inputs before entrance merge; final required CI will check final source.",
+    "fullSuite": "Required hosted exact-source client/server/browser/native/live checks remain mandatory. No duplicate optional local exhaustive run or new soak."
+  },
+  "qualifications": [
+    "2026-10-16-bastion-entrance-qualification.json",
+    "2026-10-16-analytics-bundle-qualification.json"
+  ],
+  "limits": "Alpha stays open/flat-v1. No invitation activation/distribution, migrations/grants/payments. Transport causes, large Bastion plinth/root forms and full world/performance/device/gameplay/operations/owner/F1-F5/beta/cohort/release/handoff goal remain open. Soak/stress and human pacing/physical-phone feedback remain deferred.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-master-20261011",
+  "evidence": [
+    {
+      "path": ".qa-release61/focused.log",
+      "bytes": 5776,
+      "sha256": "c722c8911146f03dd5b941f529338ea4ed0f488c0cdb7711daec497b7b85fbf4"
+    },
+    {
+      "path": ".qa-release61/focused-final.log",
+      "bytes": 991,
+      "sha256": "9af56255f6c236a4860a088b256649c4ec174657b25305d91709320fd98a5c74"
+    },
+    {
+      "path": ".qa-release61/lint.log",
+      "bytes": 96,
+      "sha256": "c61daf828f7d10de9f3aa18fb8f0a233daadb618645847c20a1849b6ed16132d"
+    },
+    {
+      "path": ".qa-release61/pagination.log",
+      "bytes": 55,
+      "sha256": "5c0aed7b998c72bc5813db721d82c6153a65230539da227b94fc566fd2d7b33e"
+    },
+    {
+      "path": ".qa-release61/patch-history-final.log",
+      "bytes": 107,
+      "sha256": "3f4a014d8241f6b296d0716e4214fbc259fb7056f04a21068eb0fcabca87bcc1"
+    },
+    {
+      "path": ".qa-release61/patch-history.json",
+      "bytes": 60,
+      "sha256": "cc2446965885b7a958d16d7a342d7aaa4011cb1c99ad9b4b6ff642228a7eebb1"
+    }
+  ]
+}

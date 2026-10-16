@@ -1950,3 +1950,16 @@ candidates remain isolated pendingnative. Fulloriginal visual/performance/device
 gameplay/operations/rights/owner/F1–F5/beta/cohort/release/handoff goal remains
 active. Humanpacing/physicalphonefeedback andsoak/stress remain deferred.
 [Acceptance](docs/plans/2026-10-16-release1-79-60-acceptance.md).
+
+
+## October16 Bastion entrance and startup delivery preparation
+
+Qualified Bastion doorway/weathered walls/merged flagstone ramp and independent
+analytics bundle are selected for prepared Alpha1.79.61. Alpha60/exact800f is
+still accepted public;61 has not been pushed or deployed. Four prepared native
+world/reference comparisons, four corrected native cutaway cases and35CPUchecks
+qualify the entrance. Retained fixture failures and unchanged original
+frame/triangle budgets remain recorded. Analytics95distinctCPU/three native
+privacy cases/actual copied publication qualify its scope. The full original
+goal remains active; no whole-world/FPS/beta/art/operations/owner closure,
+private invitation activation/distribution, or new soak/stress.
