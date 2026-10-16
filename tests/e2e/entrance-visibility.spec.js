@@ -31,14 +31,15 @@ for (const config of cases) {
             });
             render.addToEnvironment(root);
             const hero = new Wizard('visibility-wizard');
-            // The lower Verdant profile exposes the old (-36,-30) position.
-            // Keep this an actual occlusion test, outside its collision circle.
+            // The weathered Verdant rear-wall edge exposes part of the old
+            // (-30,-25) sample. Stand behind its intact face, still outside
+            // the collision circle; keep the original occlusion thresholds.
             // Molten's old (-10,-10) sample was inside blocked architecture;
             // use the reachable rear-pylon edge for its redesigned vault.
             // Likewise use the outside tide-pillar edge for the rebuilt Well.
             // Tempest's old (-10,-10) sample was also inside its solid; the
             // western edge retains real occlusion at a reachable position.
-            hero.position.set(...(config.type === 'verdant_bastion_catacombs' ? [-30, 0, -25] :
+            hero.position.set(...(config.type === 'verdant_bastion_catacombs' ? [-27, 0, -24] :
                 config.type === 'molten_core' ? [-10, 0, -36] : config.type === 'abyssal_well' ? [-35, 0, -15] : [-22, 0, -10]));
             if (Math.hypot(hero.position.x, hero.position.z) <= root.userData.interactionRadius + 1.25) {
                 throw new Error('Refined-entrance cutaway fixture must remain outside the physical entrance');
