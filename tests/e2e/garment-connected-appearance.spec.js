@@ -58,6 +58,7 @@ async function registerReturningFixture(page, credentials, observer = false) {
         execFileSync('docker', ['exec', '-i', container, 'mongosh', '--quiet', '--port', port, '--file', '/dev/stdin'],
             { input: script, stdio: ['pipe', 'pipe', 'pipe'], timeout: 20_000 });
     } catch { throw new Error('Could not seed disposable returning garment fixture'); }
+    await page.bringToFront();
     await loginAndEnterWorld(page, credentials);
 }
 
@@ -124,9 +125,11 @@ test('purchased independent garments render locally and remotely through gear ch
     await registerReturningFixture(page, owner);
     const ownerID = await page.evaluate(() => window.game.player.id);
     const context = await browser.newContext({ baseURL });
+    let observer;
+    let remoteFailures = [];
     try {
-        const observer = await context.newPage();
-        const remoteFailures = collectBrowserFailures(observer, baseURL);
+        observer = await context.newPage();
+        remoteFailures = collectBrowserFailures(observer, baseURL);
         await registerReturningFixture(observer, other, true);
         const renderer = await page.evaluate(() => {
             const gl = window.game.renderSystem.renderer.getContext();
@@ -153,6 +156,7 @@ test('purchased independent garments render locally and remotely through gear ch
             expect(local.stats).toEqual(original.stats);
             phases.push({ name, local, remote });
         };
+        await page.bringToFront();
         await openVeyra(page);
         const vendor = page.getByRole('dialog', { name: 'Veyra’s cosmetic wardrobe' });
         for (const [id, name, slot, price] of [
@@ -218,5 +222,20 @@ test('purchased independent garments render locally and remotely through gear ch
         expect(failures, failures.join('\n')).toEqual([]);
         expect(remoteFailures, remoteFailures.join('\n')).toEqual([]);
         await testInfo.attach('rendered-wardrobe-phases', { body: JSON.stringify({ renderer, scope: 'Prepared returning Fighter, actual local/observer models and normal UI/socket/save paths; not earned EP, all-class fit or frame-time qualification.', phases }), contentType: 'application/json' });
+    } catch (error) {
+        const readiness = async current => current && !current.isClosed() ? current.evaluate(() => {
+            const game = window.game;
+            return { visibility: document.visibilityState,
+                loadingVisible: Boolean(document.getElementById('loading-screen')?.offsetParent),
+                firstState: Boolean(game?._firstStateReceived), destroyed: Boolean(game?.isDestroyed),
+                socketState: game?.network?.socket?.readyState,
+                calls: game?.renderSystem?.renderer?.info?.render?.calls,
+                triangles: game?.renderSystem?.renderer?.info?.render?.triangles,
+                initialViewFrames: game?.renderSystem?._initialViewPreparation?.frames };
+        }).catch(() => ({ unavailable: true })) : null;
+        await testInfo.attach('wardrobe-failure-readiness', { body: JSON.stringify({
+            owner: await readiness(page), observer: await readiness(observer), failures, remoteFailures
+        }), contentType: 'application/json' });
+        throw error;
     } finally { await context.close(); }
 });
