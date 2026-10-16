@@ -84,7 +84,11 @@ const renderedAppearance = (page, id = null) => page.evaluate(id => {
         quality: root?.userData.authoredQuality, garment: root?.userData.equipmentVisualGarment,
         held: [...held].sort(), body: [...body].sort(), items: root?.userData.equipmentVisualItemCount,
         missing: root?.userData.equipmentVisualMissing || [], fallback: root?.userData.equipmentVisualFallback || [],
-        appearances: actor?.appearances, equipment: actor?.equipment,
+        appearances: actor?.appearances,
+        // Inventory adds presentation metadata to the owner's rarity. Remote
+        // wire items retain its canonical name; compare the same real rarity.
+        equipment: Object.fromEntries(Object.entries(actor?.equipment || {}).map(([slot, item]) =>
+            [slot, { ...item, rarity: typeof item.rarity === 'string' ? item.rarity : item.rarity?.name }])),
         signature: root?.userData.equipmentVisualSignature, gold: actor?.gold,
         level: actor?.level, xp: actor?.xp, stats: actor?.baseStats };
 }, id);
