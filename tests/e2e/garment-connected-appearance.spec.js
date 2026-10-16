@@ -76,7 +76,7 @@ const renderedAppearance = (page, id = null) => page.evaluate(id => {
         held: [...held].sort(), body: [...body].sort(), items: root?.userData.equipmentVisualItemCount,
         missing: root?.userData.equipmentVisualMissing || [], fallback: root?.userData.equipmentVisualFallback || [],
         appearances: actor?.appearances, equipment: actor?.equipment,
-        signature: root?.userData.equipmentVisualSignature, gold: actor?.gold, ep: actor?.ep,
+        signature: root?.userData.equipmentVisualSignature, gold: actor?.gold,
         level: actor?.level, xp: actor?.xp, stats: actor?.baseStats };
 }, id);
 
@@ -117,6 +117,14 @@ async function chooseLowQuality(page) {
     await expect.poll(() => renderedAppearance(page)).toMatchObject({ quality: 'low' });
 }
 
+async function expectPrivateWallet(page, ep) {
+    await openCharacter(page);
+    const wallet = page.locator('#character-sheet .ep-wallet-panel');
+    if (await wallet.getAttribute('open') === null) await wallet.locator('summary').click();
+    await expect(wallet.locator('[data-balance]')).toHaveText(`${ep} EP · 1,234 Gold`);
+    await wallet.locator('summary').click();
+}
+
 test('purchased independent garments render locally and remotely through gear changes and relogin', async ({ page, browser, baseURL }, testInfo) => {
     test.skip(!process.env.EIDOLON_E2E_SOCKET_MONGO_CONTAINER, 'Explicit disposable socket fixture only');
     test.setTimeout(300_000);
@@ -149,7 +157,7 @@ test('purchased independent garments render locally and remotely through gear ch
         // slots. Real rings/neck/trinkets remain equipped but are suppressed.
         const check = async (name, garment, held = hands, items = garment ? 9 : 14) => {
             const model = { ready: true, garment, held, items, missing: [], fallback: [] };
-            await expect.poll(() => renderedAppearance(page)).toMatchObject({ ...model, appearances: expected, gold: 1234, ep: remaining, level: 30, xp: 0 });
+            await expect.poll(() => renderedAppearance(page)).toMatchObject({ ...model, appearances: expected, gold: 1234, level: 30, xp: 0 });
             await expect.poll(() => renderedAppearance(observer, ownerID)).toMatchObject({ ...model, appearances: expected });
             const local = await renderedAppearance(page), remote = await renderedAppearance(observer, ownerID);
             expect(local.appearances).toEqual(expected);
@@ -171,7 +179,9 @@ test('purchased independent garments render locally and remotely through gear ch
             await vendor.getByRole('button', { name: `Unlock for ${price} EP`, exact: true }).click();
             await vendor.getByRole('button', { name: 'Confirm EP purchase', exact: true }).click();
             remaining -= price;
-            await expect.poll(() => page.evaluate(() => window.game.player.ep)).toBe(remaining);
+            // EP is intentionally absent from shared actor frames. Confirm
+            // the actual private vendor acknowledgement through its menu.
+            await expect(vendor.getByText(`${remaining} EP · Permanent cosmetic unlocks`, { exact: true })).toBeVisible();
             await vendor.getByRole('button', { name: slot === 'outfit' ? 'Apply complete outfit' : 'Apply owned look', exact: true }).click();
             expected[slot] = { baseName: name, rarity: 'Common', slot };
             await expect.poll(() => renderedAppearance(page)).toMatchObject({ appearances: expected });
@@ -228,10 +238,12 @@ test('purchased independent garments render locally and remotely through gear ch
         await page.bringToFront();
         await loginAndEnterWorld(page, owner);
         await check('saved-selection-relogin', 'iron-oath-regalia-v1');
+        await expectPrivateWallet(page, remaining);
         await chooseOutfit(page, ''); delete expected.outfit;
         await check('clear-outfit-retains-hand-and-legacy-looks', '');
         await loginAndEnterWorld(page, owner);
         await check('cleared-outfit-relogin', '');
+        await expectPrivateWallet(page, remaining);
         expect((await renderedAppearance(page)).equipment).toEqual(original.equipment);
         expect(failures, failures.join('\n')).toEqual([]);
         expect(remoteFailures, remoteFailures.join('\n')).toEqual([]);
