@@ -118,6 +118,11 @@ for (const [width, height, mobile] of [[1280, 900, false], [900, 650, false], [3
             const r = node.getBoundingClientRect(); return { height: r.height, fits: node.scrollWidth <= node.clientWidth + 1 };
         }));
         expect(actions.every(action => action.height >= 44 && action.fits)).toBe(true);
+        if (mobile) {
+            const formSizes = await wardrobe.locator('.equipment-loadouts-body :is(p, label, select, button)')
+                .evaluateAll(nodes => nodes.map(node => Number.parseFloat(getComputedStyle(node).fontSize)));
+            expect(formSizes).toEqual(Array(formSizes.length).fill(20));
+        }
         await viewCharacter.click();
         await expect(sheet.locator('#character-preview')).toBeInViewport({ ratio: 1 });
         await expect(sheet.getByRole('button', { name: 'Reset character view', exact: true })).toBeFocused();
