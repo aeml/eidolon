@@ -80,7 +80,13 @@ func TestTerrainActualEquippedBrowserParty(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	ctx, cancel := context.WithTimeout(t.Context(), 240*time.Second)
+	browserTimeout := 240 * time.Second
+	if realm := os.Getenv("EIDOLON_TERRAIN_ART_REALM"); os.Getenv("EIDOLON_TERRAIN_ART_ROUTE") == "1" &&
+		mode == "single-renderer" && (realm == "fire" || realm == "air") {
+		// New 2.4–2.6km travel scope, not an extension of existing routes.
+		browserTimeout = 360 * time.Second
+	}
+	ctx, cancel := context.WithTimeout(t.Context(), browserTimeout)
 	defer cancel()
 	command := exec.CommandContext(ctx, node, "node_modules/@playwright/test/cli.js", "test",
 		"tests/e2e/terrain-equipped-party.spec.js", "--workers=1", "--output="+filepath.Join(evidence, "browser-results"))

@@ -1,4 +1,5 @@
-import { WATER_PATHS } from '../../src/data/elementalPopulation.js';
+import { WATER_PATHS, FIRE_PATHS, AIR_PATHS } from '../../src/data/elementalPopulation.js';
+import { EARTH_PATHS } from '../../src/data/worldPopulation.js';
 
 export function visualMovingRoutePlan(realm = 'earth') {
     if (realm === 'earth') return {
@@ -29,5 +30,28 @@ export function visualMovingRoutePlan(realm = 'earth') {
             scope: 'Prepared level30 Fighter, normal ground-input continuous town→north gate→authored Water road→Abyssal approach, actual HUD and native render. Explicit post-login screencast; excluded from subsequent party frame timings. No campaign/encounter clear/mobile/final-art approval.'
         };
     }
-    throw new Error('Visual moving route realm must be earth or water');
+    if (realm === 'fire' || realm === 'air') {
+        const fire = realm === 'fire';
+        const road = (fire ? FIRE_PATHS : AIR_PATHS).find(path => path.id === `${realm}-passage`);
+        const labels = fire ? ['fire-passage', 'fire-road', 'furnace-turn', 'kiln-road', 'furnace-crossing', 'molten-approach'] :
+            ['air-passage', 'air-road', 'aerie-turn', 'sky-road', 'spire-crossing', 'tempest-approach'];
+        if (labels.length !== road.points.length) throw new Error('Elemental visual route labels must cover every authored road waypoint');
+        const bypass = EARTH_PATHS.find(path => path.id === 'bastion-bypass');
+        const start = fire ? [['north-court', 0, 186], ['west-court', -60, 186], ['west-street', -60, 200],
+            ['west-gate', -120, 200], ['earth-west-road', -600, 200]] :
+            [['north-court', 0, 186], ['market-pass', 60, 186], ['east-street', 60, 200],
+                ['east-gate', 120, 200], ['earth-road', 240, 200],
+                ...bypass.points.slice(0, -1).map(([x, z], i) => [`bastion-bypass-${i}`, x, z])];
+        return {
+            realm, waypoints: [...start, ...road.points.map(([x, z], i) => [labels[i], x, z])],
+            budgetLabels: ['town-start', fire ? 'earth-west-road' : 'bastion-bypass-2', `${realm}-passage`, labels.at(-1)],
+            maximumFrames: 3000, maxStepDistance: 12,
+            // These new 2.4–2.6km routes are longer than Earth/Water. Bound
+            // their travel and the complete party/save case separately;
+            // existing route deadlines and all frame budgets stay unchanged.
+            maximumRouteMs: 240_000, testTimeoutMs: 350_000,
+            scope: `Prepared level30 Fighter, normal ground-input continuous town→${fire ? 'west gate→authored Fire road→Molten' : 'east gate→authored Bastion bypass→Air road→Tempest'} approach, actual HUD and native render. Explicit post-login screencast; excluded from subsequent party frame timings. No campaign/encounter clear/mobile/final-art approval.`
+        };
+    }
+    throw new Error('Visual moving route realm must be earth, water, fire or air');
 }

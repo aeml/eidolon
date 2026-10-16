@@ -11,17 +11,18 @@ case "${terrain_scenario}" in
   connected-party-observer) terrain_test='^TestTerrainActualEquippedBrowserParty$'; terrain_timeout=300s ;;
   *) echo "Terrain save QA scenario must be world, readiness, connected-party or connected-party-observer." >&2; exit 1 ;;
 esac
-readonly terrain_test terrain_timeout
 if [[ -n "${EIDOLON_TERRAIN_ART_REALM:-}" ]]; then
   case "${EIDOLON_TERRAIN_ART_REALM}" in
     earth|water) ;;
-    *) echo 'Visual moving route realm must be earth or water.' >&2; exit 1 ;;
+    fire|air) terrain_timeout=420s ;;
+    *) echo 'Visual moving route realm must be earth, water, fire or air.' >&2; exit 1 ;;
   esac
   if [[ "${EIDOLON_TERRAIN_ART_ROUTE:-}" != 1 || "${terrain_scenario}" != connected-party-observer ]]; then
     echo 'An explicit visual route realm requires ART_ROUTE=1 and connected-party-observer.' >&2
     exit 1
   fi
 fi
+readonly terrain_test terrain_timeout
 if [[ "${terrain_scenario}" == connected-party* ]]; then
   case "${EIDOLON_TERRAIN_PARTY_PROFILE:-earth-elevation-rocks-v1}" in
     flat-v1|earth-elevation-rocks-v1) ;;

@@ -30,6 +30,7 @@ import { compareBatchedMaterialFrames, captureBatchedMaterialSubmissions } from 
 import { summarizePartyCPUProfile } from './party-cpu-summary.js';
 import { captureUnderstoryPreparation } from './understory-preparation-diagnosis.js';
 import { captureUnderstoryDetailComparison } from './understory-detail-comparison.js';
+import { visualMovingRoutePlan } from './visual-moving-route-plan.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off', serviceWorkers:
     process.env.EIDOLON_E2E_BODY_LOD_COMPARE === '1' || process.env.EIDOLON_E2E_BODY_LOD_PILOT ||
@@ -254,7 +255,9 @@ test(`connected equipped four-class party shares ${partyTerrainLabel} ground, fi
 test(`single native renderer observes three live equipped party socket peers on ${partyTerrainLabel} ground`, async ({ page, baseURL }, testInfo) => {
     test.skip(process.env.EIDOLON_E2E_TERRAIN_PARTY !== '1' ||
         process.env.EIDOLON_TERRAIN_PARTY_RENDER_MODE !== 'single-renderer', 'Explicit isolated single-renderer party scope');
-    test.setTimeout((process.env.EIDOLON_TERRAIN_ART_ROUTE === '1' || process.env.EIDOLON_TERRAIN_RIG_PAIR === '1') ? 230_000 : 180_000);
+    const movingRoute = process.env.EIDOLON_TERRAIN_ART_ROUTE === '1'
+        ? visualMovingRoutePlan(process.env.EIDOLON_TERRAIN_ART_REALM || 'earth') : null;
+    test.setTimeout(movingRoute ? movingRoute.testTimeoutMs ?? 230_000 : process.env.EIDOLON_TERRAIN_RIG_PAIR === '1' ? 230_000 : 180_000);
     const url = process.env.EIDOLON_E2E_WS_URL;
     expect(url).toMatch(/^ws:\/\/127\.0\.0\.1:\d+\/ws$/);
     expect(process.env.EIDOLON_E2E_REGISTER).toBe('0');

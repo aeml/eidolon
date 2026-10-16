@@ -10,7 +10,7 @@ import { visualMovingRoutePlan } from './visual-moving-route-plan.js';
 // Explicit post-login visual evidence. These prepared level30 saves are not an
 // earned campaign, encounter clear, physical phone or frame-budget certificate.
 // Ground clicks use normal client/server movement through the explicitly
-// selected Earth or Water road. No teleport or direct actor assignment occurs.
+// selected authored realm road. No teleport or direct actor assignment occurs.
 export async function captureEarthMovingRoute(page, testInfo) {
     const route = visualMovingRoutePlan(process.env.EIDOLON_TERRAIN_ART_REALM || 'earth');
     const expectedProfile = process.env.EIDOLON_E2E_TERRAIN_PROFILE || 'earth-elevation-rocks-v1';
@@ -91,7 +91,7 @@ export async function captureEarthMovingRoute(page, testInfo) {
             while (true) {
                 const before = await readPlayerState(page), distance = Math.hypot(x - before.x, z - before.z);
                 if (distance < .6) break;
-                expect(performance.now() - started, 'Bounded ordinary-input visual route').toBeLessThan(140000);
+                expect(performance.now() - started, 'Bounded ordinary-input visual route').toBeLessThan(route.maximumRouteMs ?? 140000);
                 const step = Math.min(route.maxStepDistance, distance) / distance;
                 const targetX = before.x + (x - before.x) * step, targetZ = before.z + (z - before.z) * step;
                 await moveByGroundClick(page, targetX - before.x, targetZ - before.z, {
@@ -118,6 +118,7 @@ export async function captureEarthMovingRoute(page, testInfo) {
         await writeFile(testInfo.outputPath('moving-route.json'), JSON.stringify({
             terrainProfile: expectedProfile,
             routeRealm: route.realm,
+            maximumRouteMs: route.maximumRouteMs ?? 140000,
             scope: route.scope,
             frames, observations, profiles, elapsedMs: performance.now() - started
         }, null, 2));
