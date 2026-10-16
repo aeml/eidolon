@@ -495,7 +495,21 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.65`, **deployed and verified within scoped acceptance**.
+Current source version: `Alpha 1.79.66`, **prepared, not yet deployed**.
+Alpha 1.79.66 is prepared, not yet deployed: roads behind player/mob names
+and Well Rested, single-pass flat party/PvP markers, High-only actor material
+ownership and living-character QA travel/party preparation.
+[Road qualification](docs/plans/2026-10-16-road-overlay-qualification.md),
+[material qualification](docs/plans/2026-10-16-batched-material-qualification.md),
+[marker qualification](docs/plans/2026-10-16-flat-party-ring-qualification.md),
+[lifecycle qualification](docs/plans/2026-10-16-qa-waypoint-lifecycle.md).
+Accepted public65 remains at `9b7419700`; preparation is not deployment.
+The original route/cold/FPS/device findings, broader art/game/readiness and owner
+requirements remain open. High shader churn correction is not whole-game FPS
+acceptance; Low/Medium retain borrowed materials after inconclusive Low cost data.
+Installed-host TLS/logging activation needs an administrator. Human pacing,
+physical-phone feedback and soak/stress remain deferred. Full original goal active.
+
 Alpha 1.79.65 at `9b7419700` is deployed and verified within the Abyssal
 quay, grounded moorings, shell crowns and ordinary-input Water integration scope.
 All ten CI jobs pass: 787 client suites / 12,054 tests, 451 hosted browser
@@ -507,11 +521,6 @@ The separate High-party 33.3/49.9 ms frame finding remains above retained 20/33.
 limits. Original performance, broader art/game/readiness and owner gates stay open.
 Installed-host TLS/logging activation needs an administrator. Human pacing,
 physical-phone feedback and soak/stress remain deferred. Full original goal active.
-
-Qualified local master also contains the living-character QA waypoint guard,
-validated post-route party preparation and single-pass flat party/PvP markers.
-These changes await the next coherent release; the accepted public runtime
-remains `9b7419700`. [Queued source and qualification](docs/plans/2026-10-09-release-readiness-remaining.md#qualified-local-source-awaiting-the-next-milestone).
 
 Alpha 1.79.64 at `50983561a` is deployed and verified within the bonded
 Bastion footing, wardrobe return, phone form text and four-class saved-session

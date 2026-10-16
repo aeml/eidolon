@@ -2111,3 +2111,16 @@ scope. The post-route High-party 33.3/49.9 ms finding and all original performan
 art/game/readiness/owner/F1–F5/beta/cohort/1.99 gates remain open. Full original
 goal active; human pacing/physical-phone feedback and soak/stress deferred.
 [Acceptance](docs/plans/2026-10-16-release1-79-65-acceptance.md).
+
+
+## October 16 Alpha 1.79.66 preparation
+
+Qualified road overlay ordering, flat party/PvP markers, High-only actor material
+ownership and QA lifecycle/party preparation are merged into master for coherent
+Alpha 1.79.66. Preparation is not deployment; public65 remains accepted. Verify
+exact CI, ordered deployments and public identities/assets before another release.
+Native road tests reproduce old name/aura overlap and preserve exact corrected
+foreground pixels. High shader churn is eliminated within scoped probes; original
+FPS/cold/device/full-world findings stay open. Low cost data is inconclusive, so
+Low/Medium retain borrowed materials. Full game/readiness/owner/beta/cohort scope
+remains active; human pacing/physical-phone feedback and soak/stress deferred.

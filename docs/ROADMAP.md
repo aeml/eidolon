@@ -1,5 +1,20 @@
 # Eidolon Engineering Roadmap
 
+Alpha 1.79.66 is prepared, not yet deployed: roads behind player/mob names
+and Well Rested, single-pass flat party/PvP markers, High-only actor material
+ownership and living-character QA travel/party preparation.
+[Road qualification](plans/2026-10-16-road-overlay-qualification.md),
+[material qualification](plans/2026-10-16-batched-material-qualification.md),
+[marker qualification](plans/2026-10-16-flat-party-ring-qualification.md),
+[lifecycle qualification](plans/2026-10-16-qa-waypoint-lifecycle.md).
+Accepted public65 remains at `9b7419700`; preparation is not deployment.
+The original route/cold/FPS/device findings, broader art/game/readiness and owner
+requirements remain open. High shader churn correction is not whole-game FPS
+acceptance; Low/Medium retain borrowed materials after inconclusive Low cost data.
+Installed-host TLS/logging activation needs an administrator. Human pacing,
+physical-phone feedback and soak/stress remain deferred. Full original goal active.
+
+
 Alpha 1.79.65 at `9b7419700` is deployed and verified within the Abyssal
 quay, grounded moorings, shell crowns and ordinary-input Water integration scope.
 All ten CI jobs pass: 787 client suites / 12,054 tests, 451 hosted browser
