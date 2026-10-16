@@ -149,3 +149,32 @@ Readable merchant slot cards, actual existing Gold prices, stable focus, wallet/
 
 Selected for the next coherent release after native visual review. First selected equipment-menu slice. Stash/forge/trading presentation, final owner usability/art review and physical phone testing remain open.
 [Qualification and retained evidence](2026-10-15-equipment-menu-qualification.json).
+
+## Related service-window polish candidate — October 15
+
+The staged menu family now extends restrained metal framing to stash, forge,
+trading-house and direct-trade panels. Shared tabs have readable text, a clear
+active underline and44px minimum height, retaining phone text-size preferences.
+Direct-trade offer rows and the Gold field gain readable sizing and consistent
+inset surfaces. Trade drafts, acknowledgements, transfers and confirmation rules
+are unchanged. Veyra's expanded collection also gains search/category browsing.
+
+79existing focused menu/layout checks pass. Twelve existing native service/layout
+cases are prepared for review after the ordered57pipeline; no changed visual or
+physical-device acceptance is claimed yet. This remains isolated with the
+universal garment candidates and does not select unfinished work into master.
+
+## Qualified universal collection and service-menu selection — October 16
+
+All seven remaining universal designs are selected after42distinct native cases,
+reviewed gameplay/preview/menu captures, unchanged scene budgets and strict
+resource cycles. The minimum18distinct modeled looks is implemented; final
+owner collection art approval remains open. Search/categories and current-owner
+scroll/focus retention improve Veyra browsing. Shared service framing, readable
+tabs/trade controls and saved layout behavior have desktop/phone evidence.
+292distinct focused checks, focused server custody, full lint, content/model
+validation and exact predecessor-asset proof pass. Initial spring petal flicker
+and store fixture failures are retained with their corrections.
+[Qualification and evidence](2026-10-16-universal-garment-qualification.json).
+Not yet deployed; broader original quality/readiness gates and deferred playtests
+remain open. This selected milestone does not complete the full goal.

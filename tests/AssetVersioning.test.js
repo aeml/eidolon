@@ -35,7 +35,7 @@ describe('asset URL versioning', () => {
 
     test('retired dungeon models no longer need a special cache-version override', () => {
         expect(ASSET_VERSION_OVERRIDES).toEqual({ ...AUTHORED_ASSET_VERSIONS, ...GARMENT_ASSET_VERSIONS, ...HELD_GARMENT_ASSET_VERSIONS, [ILYRA_MODEL_PATH]: '010301379aaa92a3' });
-        expect(Object.keys(ASSET_VERSION_OVERRIDES)).toHaveLength(797);
+        expect(Object.keys(ASSET_VERSION_OVERRIDES)).toHaveLength(853);
         expect(Object.keys(ASSET_VERSION_OVERRIDES).some(path => path.includes('/buildings/'))).toBe(false);
         expect(resolveAssetPath('./assets/buildings/dungeons/the_verdant_bastion.glb')).toBe(
             `./assets/buildings/dungeons/the_verdant_bastion.glb?v=${DEFAULT_ASSET_VERSION}`

@@ -2286,6 +2286,3205 @@ export const GARMENT_MODELS = {
           "sha256": "fa6008f893c91def45686cb42fcc364527101879b668486a42f95baf74a8f03b"
         }
       ]
+    },
+    "Hollow Court": {
+      "id": "hollow-court-v1",
+      "name": "Hollow Court",
+      "coverage": {
+        "head": "leather-cap",
+        "chest": "leather-tunic",
+        "legs": "leather-pants",
+        "feet": "leather-boots",
+        "gloves": "leather-gloves",
+        "shoulders": "reinforced-spaulders",
+        "belt": "studded-belt"
+      },
+      "models": {
+        "Fighter": {
+          "high": {
+            "file": "./assets/garments/hollow-court-v1/Fighter-high.glb",
+            "bytes": 1598524,
+            "sha256": "e164f22f886547689878496b678591e8cc73accc84beca9014f8c1509dcddf89"
+          },
+          "low": {
+            "file": "./assets/garments/hollow-court-v1/Fighter-low.glb",
+            "bytes": 927712,
+            "sha256": "62c0ddf7bc4b1dc2b1ea9fd6e2d5e8644c5b5d99d8f5322b9936c3804c3e742a"
+          }
+        },
+        "Rogue": {
+          "high": {
+            "file": "./assets/garments/hollow-court-v1/Rogue-high.glb",
+            "bytes": 1494700,
+            "sha256": "6ba1e040f929113e31081bf7642d7fa95adbd73c3e87a4643c8a89ed748e8a75"
+          },
+          "low": {
+            "file": "./assets/garments/hollow-court-v1/Rogue-low.glb",
+            "bytes": 868532,
+            "sha256": "de69a395bc0ddb3c53fdcbd8bda2f9dd77f40891e292ff7d0ad13f355cb221cb"
+          }
+        },
+        "Cleric": {
+          "high": {
+            "file": "./assets/garments/hollow-court-v1/Cleric-high.glb",
+            "bytes": 1493288,
+            "sha256": "a030ecec2943b0c08b1cf98343cc57fc944824cda562944488f98778ddf39ee3"
+          },
+          "low": {
+            "file": "./assets/garments/hollow-court-v1/Cleric-low.glb",
+            "bytes": 874580,
+            "sha256": "df71406029aae4da10b666ca76a17ad3e9fb6d0cf7f0058c8de3ab158a5567c1"
+          }
+        },
+        "Wizard": {
+          "high": {
+            "file": "./assets/garments/hollow-court-v1/Wizard-high.glb",
+            "bytes": 1498192,
+            "sha256": "be8841984c7d1fb2f6837b130a0f212b7414021b3459ac97a96f2cb8f0167cb3"
+          },
+          "low": {
+            "file": "./assets/garments/hollow-court-v1/Wizard-low.glb",
+            "bytes": 871468,
+            "sha256": "7f2f19d6732a5d00b789f8150df3aad5054fca4cf8fb41ce2cfd58b235ad507d"
+          }
+        }
+      },
+      "provenance": [
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Fighter/leather-cap-standard-high.glb",
+          "sha256": "ecb390415087f4ab23e5f846abf6bc1fbd793e0f05f46b2f7c97719df655c435"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Fighter/leather-tunic-standard-high.glb",
+          "sha256": "889463321349ec8e04dbdfd667b630909abc1af1617e6c6dde29e65af45df256"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Fighter/leather-pants-standard-high.glb",
+          "sha256": "e95aae299aa7c7bdf7a0984959c01a14075f1a55ba000d30a70594e213c07cee"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Fighter/leather-boots-standard-high.glb",
+          "sha256": "1dcceb4fd29f0a00a3fad051be332ba63fc3c47e2768d128fbb5790daade4c11"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Fighter/leather-gloves-standard-high.glb",
+          "sha256": "10b1c2f4241d9e301e246951928ef5eaa22b7282cddabf4f26ec1464ae5690db"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Fighter/reinforced-spaulders-standard-high.glb",
+          "sha256": "264d254def0aa5721452e3171f91508ba925945b2fe5fc1ae7b689dea4ba45e0"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Fighter/studded-belt-standard-high.glb",
+          "sha256": "3fa3484240ce329eeb41b78f3027b95357f9c6a123df7c2290ccbd175d8c18f1"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Fighter/leather-cap-standard-low.glb",
+          "sha256": "79fc868322e0046ce3b41e0a0e138c65ce194550be223f167092977953372153"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Fighter/leather-tunic-standard-low.glb",
+          "sha256": "ad9bd3d1f4de2ceb962fe8335785263c16be8270b9e53cb13accfc6dfcde2187"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Fighter/leather-pants-standard-low.glb",
+          "sha256": "d85f451f1e02186dededd81c1843395520ba2548fd1f7335c3ea19f16fda057f"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Fighter/leather-boots-standard-low.glb",
+          "sha256": "aaabda6b72d5cfc8e8e4afd20ef99fddd459394ffc01407afeb2c93767f9f09b"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Fighter/leather-gloves-standard-low.glb",
+          "sha256": "a303ef1abe4e30b896eb3126bd8700aa9b08867c28d9f7f0114d15138e727715"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Fighter/reinforced-spaulders-standard-low.glb",
+          "sha256": "6c9b8846cc4422a8f1425dece0a52bbefc97c514a2a954b26cbedf8d6cf0b971"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Fighter/studded-belt-standard-low.glb",
+          "sha256": "d5d10efca893964deeb97638f04c3602f24510a034af1c4c268e2ba39dfbf714"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Rogue/leather-cap-standard-high.glb",
+          "sha256": "8641a5191f9898482b0f1de933cbad390aedc767ab24e711f69b419ae9f4b809"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Rogue/leather-tunic-standard-high.glb",
+          "sha256": "ead0d8a6dbc92caa5b3e565e003d8a3a077e2472e18abfa16fc12c664a59c71c"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Rogue/leather-pants-standard-high.glb",
+          "sha256": "614c8d073741be345e8fd82eb6a24f68bf0625f765f30cd083ea8e2d181f9f9e"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Rogue/leather-boots-standard-high.glb",
+          "sha256": "99f7804ca7a3063c09eb64bcb79b905ce2b0732986f09a9bfb9418427d42d087"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Rogue/leather-gloves-standard-high.glb",
+          "sha256": "9a85fe421ede0122e22da1b130d33b9cb307de35a5c5d3d892693a0d8520579e"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Rogue/reinforced-spaulders-standard-high.glb",
+          "sha256": "e71ba276cd2202098a34247c40958b1c801424f4d2e73c8475829924815b7ea5"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Rogue/studded-belt-standard-high.glb",
+          "sha256": "ba32ae43c944a1c47b229c81df982beb5df0d5723a6a42b47c1b8ffd96861ebe"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Rogue/leather-cap-standard-low.glb",
+          "sha256": "f71f4d4995ffbd9f96e3e1fe984b395c8c3d7afedd44c777913955d72b2df132"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Rogue/leather-tunic-standard-low.glb",
+          "sha256": "52d25f55b12812770206cbcd101e2263dad0ab94cfff4c236dd7f46ab09df3b3"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Rogue/leather-pants-standard-low.glb",
+          "sha256": "b82996e483a6082c63745360b88edbc38186160ca89d6c65142c65b3351f5383"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Rogue/leather-boots-standard-low.glb",
+          "sha256": "3ed8ed389dc4528db24ff1905500944ab62814c8f7caa64898f11d13b58dfaed"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Rogue/leather-gloves-standard-low.glb",
+          "sha256": "85862a7bc1a862e7aa787a328f8d5ffc3d557b3d286ad1f6442c869f9ea9684d"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Rogue/reinforced-spaulders-standard-low.glb",
+          "sha256": "32d71c3b7fbac5c5375c216229bf0f799544a93a5a083b0a55c66505f52a97c1"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Rogue/studded-belt-standard-low.glb",
+          "sha256": "e3150cd4a6ba174232e87eace64234769eba9692724ab775cdde9242eee7ba25"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Cleric/leather-cap-standard-high.glb",
+          "sha256": "3f64f6df5527ae305b740c4a137aa8b6f81bcb4a472288c5c39c4f1f7eb87601"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Cleric/leather-tunic-standard-high.glb",
+          "sha256": "003812e4e0d3bb98791693606ddedd8b7ea8ccaa725c18ea9b6b7285ae4788a7"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Cleric/leather-pants-standard-high.glb",
+          "sha256": "e8a7ab7f4b1da3c13212d4c0fb69d3b5ef1973e3ca0a3bd0a84a71beab5945cc"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Cleric/leather-boots-standard-high.glb",
+          "sha256": "34531ca16fc5b621171a68dc7b37e3382fb0917bf43e1d1bb55412367cc0265e"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Cleric/leather-gloves-standard-high.glb",
+          "sha256": "0bb3e181bafa3a0d2d477a59bd09ac1619c1666548abd26ad53d5b067a91ccf5"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Cleric/reinforced-spaulders-standard-high.glb",
+          "sha256": "6d15b2214b0c4ae1d1dc9ad6cb0dacea385e77386cb05a3db06637adc3211a00"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Cleric/studded-belt-standard-high.glb",
+          "sha256": "beb31e57fd31c9e67cc209cc37ce1769dd88ccef261c740eca2fd5dbc4c8ea86"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Cleric/leather-cap-standard-low.glb",
+          "sha256": "278b86b3417203e8cdc736617171679c74d26d5c88ea50298d86170503b8a5f5"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Cleric/leather-tunic-standard-low.glb",
+          "sha256": "07f9acebe8ee82cfa95ffdc6ebd83cc7928cdadd5ea5b12fa3fa41e6c59e3d07"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Cleric/leather-pants-standard-low.glb",
+          "sha256": "06f6398f845b4137118ff73d487fcf498522ea223065c8172273904807c1a477"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Cleric/leather-boots-standard-low.glb",
+          "sha256": "882dc459c380e3890773678b054891eb2b869853bb52466ea11926e7664bba20"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Cleric/leather-gloves-standard-low.glb",
+          "sha256": "3bd386a5d388a8ad25837e5472a490b412497386506a6fb716dce44228b00217"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Cleric/reinforced-spaulders-standard-low.glb",
+          "sha256": "13316340665e5ad9dd093a168e6b346313f856f5a1d3669b0ce9056af1b821e5"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Cleric/studded-belt-standard-low.glb",
+          "sha256": "4105ad64544a0abbef6475152d9ec2abe35ca0010b1435e5d0a0001cfdcb50a2"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Wizard/leather-cap-standard-high.glb",
+          "sha256": "1528bdccb2366f65bbf196830a256d16736df98526f017eb2453ac6941797979"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Wizard/leather-tunic-standard-high.glb",
+          "sha256": "101c6bb6f2633bd3749d4ef08657c94c36b8402735298e8927a07e245242e80d"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Wizard/leather-pants-standard-high.glb",
+          "sha256": "5154550a0f38925ba201ceac8644b0e523c304ff8bac208cb0a00dd998d978a8"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Wizard/leather-boots-standard-high.glb",
+          "sha256": "eeb4ba2c1363d9d2edf7aa479a35d180cb02d62d011a064483a27a062dbc2d10"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Wizard/leather-gloves-standard-high.glb",
+          "sha256": "317ceae6bce36afe0b283e14d831d285d9f28c3d5d91d67fb95628023ad9bfd8"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Wizard/reinforced-spaulders-standard-high.glb",
+          "sha256": "962c596a0e55fd5a89b14018cc0ef510d3740c2ada64c59c006c149a0f3ec1ce"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Wizard/studded-belt-standard-high.glb",
+          "sha256": "2e522087da286f22b96f70ddf2145bb4a9bbe2a3ac598b09c558f5bc411aa60c"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Wizard/leather-cap-standard-low.glb",
+          "sha256": "7020d71807dd08d137f784362a83ad7c67a3c55953bcd07454a19dd992ce87fe"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Wizard/leather-tunic-standard-low.glb",
+          "sha256": "b70f28df5a1e1482577784702db4af9cea59bab62e3ce475f3061f4ad232ec22"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Wizard/leather-pants-standard-low.glb",
+          "sha256": "628f36b906e3f8005a8d73593a080e31cd9e2758c715518c205bda6e7ac2d864"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Wizard/leather-boots-standard-low.glb",
+          "sha256": "691f3fbff99b76d0a998d3278bb5fd7d82d52b78399e356676c0648a1883a4a7"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Wizard/leather-gloves-standard-low.glb",
+          "sha256": "6bbe9335a94be6b7406d56fc35fd4a67476dc42fe196851856cbd41aad22c407"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Wizard/reinforced-spaulders-standard-low.glb",
+          "sha256": "288e62597aa7b223b78030ac7e0134bfe031d86998a8febe6d405cd1cc31a550"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Wizard/studded-belt-standard-low.glb",
+          "sha256": "29365e866b67db3e44a2d1ded2581d01c8d54ba39de7e6c2a89f08fc575ef7fc"
+        }
+      ]
+    },
+    "Rosebound Vow": {
+      "id": "rosebound-vow-v1",
+      "name": "Rosebound Vow",
+      "coverage": {
+        "head": "silk-hood",
+        "chest": "robes",
+        "legs": "leather-pants",
+        "feet": "leather-boots",
+        "gloves": "silk-gloves",
+        "shoulders": "velvet-mantle",
+        "belt": "silk-sash"
+      },
+      "models": {
+        "Fighter": {
+          "high": {
+            "file": "./assets/garments/rosebound-vow-v1/Fighter-high.glb",
+            "bytes": 1579012,
+            "sha256": "2560a93ce76c46d31bf60e0564e1c6964ae12b388c136170e143b667d6af13ea"
+          },
+          "low": {
+            "file": "./assets/garments/rosebound-vow-v1/Fighter-low.glb",
+            "bytes": 997320,
+            "sha256": "05f619f7415395152b5ea51e364d493f88a77ced30cb0340d8762a37229df438"
+          }
+        },
+        "Rogue": {
+          "high": {
+            "file": "./assets/garments/rosebound-vow-v1/Rogue-high.glb",
+            "bytes": 1472088,
+            "sha256": "b78abb2e63350a48507e821871cc334e415f921e5fced24329be11d8eee2120a"
+          },
+          "low": {
+            "file": "./assets/garments/rosebound-vow-v1/Rogue-low.glb",
+            "bytes": 942112,
+            "sha256": "8a2491d24ed79bf5b7f70912b978defa0100f9251fd5d9cbfbbb25162151129a"
+          }
+        },
+        "Cleric": {
+          "high": {
+            "file": "./assets/garments/rosebound-vow-v1/Cleric-high.glb",
+            "bytes": 1470376,
+            "sha256": "1c1dea3c8789449747e5f455ad92d32735dc595ce33ba131294afeb42a4feb9e"
+          },
+          "low": {
+            "file": "./assets/garments/rosebound-vow-v1/Cleric-low.glb",
+            "bytes": 938784,
+            "sha256": "1fcd183af0f5345d8f4e59bf186702243e653da2286cb80baf7aa361bb6147ec"
+          }
+        },
+        "Wizard": {
+          "high": {
+            "file": "./assets/garments/rosebound-vow-v1/Wizard-high.glb",
+            "bytes": 1472252,
+            "sha256": "92fc7ec7dc855ea2599b1182ae2c2cf19515a5921f430683c6c94a0a05862924"
+          },
+          "low": {
+            "file": "./assets/garments/rosebound-vow-v1/Wizard-low.glb",
+            "bytes": 906232,
+            "sha256": "85d78c8f253e11c6ef798a24037c9299c5525e7e1b48191cfdac7cedda8e82bc"
+          }
+        }
+      },
+      "provenance": [
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Fighter/silk-hood-standard-high.glb",
+          "sha256": "169b7455a8fa12728857c10c641c0f8770f44c442e9bb247ec7ab374af2baa48"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Fighter/robes-standard-high.glb",
+          "sha256": "2e98549e65d91e9f882169d8895a274e94ca45590be4a4e41d868a1dcd157656"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Fighter/leather-pants-standard-high.glb",
+          "sha256": "e95aae299aa7c7bdf7a0984959c01a14075f1a55ba000d30a70594e213c07cee"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Fighter/leather-boots-standard-high.glb",
+          "sha256": "1dcceb4fd29f0a00a3fad051be332ba63fc3c47e2768d128fbb5790daade4c11"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Fighter/silk-gloves-standard-high.glb",
+          "sha256": "a677fe61062c43720699c9b275d6dfd1c27fce5fff9bb8971db480855d725161"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Fighter/velvet-mantle-standard-high.glb",
+          "sha256": "505851500c1d743eadc08f09cac52c3befca4b192b9e90c88195a48568762ed1"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Fighter/silk-sash-standard-high.glb",
+          "sha256": "a57bd0e8fb2aa7f306b936e2f5bb0f09721bc26a910fab66dae06c75fe31118c"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Fighter/silk-hood-standard-low.glb",
+          "sha256": "8f46faa37f15ed666381afb2b50b66f41ec56206ac9d7e1c0643bea037f78cd7"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Fighter/robes-standard-low.glb",
+          "sha256": "4206a9adf70160cd0fe08d3a92a9cc6d0fe4eca3ef75af3c5fcb9bbd9f335893"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Fighter/leather-pants-standard-low.glb",
+          "sha256": "d85f451f1e02186dededd81c1843395520ba2548fd1f7335c3ea19f16fda057f"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Fighter/leather-boots-standard-low.glb",
+          "sha256": "aaabda6b72d5cfc8e8e4afd20ef99fddd459394ffc01407afeb2c93767f9f09b"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Fighter/silk-gloves-standard-low.glb",
+          "sha256": "0b9f55882a4ee2431f9e9c00ff934b5e0a1d33e93b10ec49baaa65b9de2cccef"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Fighter/velvet-mantle-standard-low.glb",
+          "sha256": "8fa97eed5bef2525408e34d4044ac605eef228fe8ec1dc819cef6f7d9955a0fb"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Fighter/silk-sash-standard-low.glb",
+          "sha256": "a684c9ccce0434a55f5c6aedee4754249d06437d0166d5050cfb772da1b4657a"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Rogue/silk-hood-standard-high.glb",
+          "sha256": "4e5e8e68db37e2ac2c6e4b742e864691d004be90d5089275236ed7162fe4972e"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Rogue/robes-standard-high.glb",
+          "sha256": "6d1f7ce40c46e6dfa207d92e001eb43996ee018ac4dc165102449820fe153f3d"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Rogue/leather-pants-standard-high.glb",
+          "sha256": "614c8d073741be345e8fd82eb6a24f68bf0625f765f30cd083ea8e2d181f9f9e"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Rogue/leather-boots-standard-high.glb",
+          "sha256": "99f7804ca7a3063c09eb64bcb79b905ce2b0732986f09a9bfb9418427d42d087"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Rogue/silk-gloves-standard-high.glb",
+          "sha256": "204570cc787ecc38eb8b1219ca81ff4a8b3fdd08828f701024bb06dd54af2446"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Rogue/velvet-mantle-standard-high.glb",
+          "sha256": "e1f13b9f637faff38042eb42288d930a0f154db320cebac75c45225f6b7b99d0"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Rogue/silk-sash-standard-high.glb",
+          "sha256": "ddecbe0cd0b9c7dad6c6a74a536092a9ca1842a6bb6b08f40e353b3eb8efaa96"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Rogue/silk-hood-standard-low.glb",
+          "sha256": "7f751f1a8cb057f2707ec09fd4e48ff29982eaf39b7399d8c3cb6b94cb917697"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Rogue/robes-standard-low.glb",
+          "sha256": "38baf816fb01402c3f3cf13c803dbead059ceae76ea2b8661b5c881b2468da0b"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Rogue/leather-pants-standard-low.glb",
+          "sha256": "b82996e483a6082c63745360b88edbc38186160ca89d6c65142c65b3351f5383"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Rogue/leather-boots-standard-low.glb",
+          "sha256": "3ed8ed389dc4528db24ff1905500944ab62814c8f7caa64898f11d13b58dfaed"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Rogue/silk-gloves-standard-low.glb",
+          "sha256": "db9dfccde2bee58bc2b9e8e2a04fb0a392902e374d0e693134a897e07e44fe24"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Rogue/velvet-mantle-standard-low.glb",
+          "sha256": "eb2df0becf895132228dec3676202a9df5a4e9e536687ab2309a4655763be77b"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Rogue/silk-sash-standard-low.glb",
+          "sha256": "af5f549ac4b289e299c43b8aba979e137b851343ecb63fab12ebcf8e85953ec4"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Cleric/silk-hood-standard-high.glb",
+          "sha256": "3e0714806674d3609cecb8bdc1c8337d101da913c5f469b44407c556833176c9"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Cleric/robes-standard-high.glb",
+          "sha256": "3a914a03c6259987b58326212b0527be43328d33693dabeb5491faedfafb7612"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Cleric/leather-pants-standard-high.glb",
+          "sha256": "e8a7ab7f4b1da3c13212d4c0fb69d3b5ef1973e3ca0a3bd0a84a71beab5945cc"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Cleric/leather-boots-standard-high.glb",
+          "sha256": "34531ca16fc5b621171a68dc7b37e3382fb0917bf43e1d1bb55412367cc0265e"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Cleric/silk-gloves-standard-high.glb",
+          "sha256": "63a3a23642c29b39f7b09caeabac1c4d3442da0bed88cb6a9575d5c070948a56"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Cleric/velvet-mantle-standard-high.glb",
+          "sha256": "29d4d7dd3eec922aed5aaca55ee78c49c5922fdcd6148dd92c801e89e61791bb"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Cleric/silk-sash-standard-high.glb",
+          "sha256": "e2838edd2ae344674cadb6571447838128d4f420de63dc7deac937e246290345"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Cleric/silk-hood-standard-low.glb",
+          "sha256": "c88d47eaa397b726a01a10c7f4754abea6d8a260c6d8bbbf39dbe89bdca6251d"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Cleric/robes-standard-low.glb",
+          "sha256": "6f73e6531ad6b19ca9e7e1a7d471fa60563f14db4cc17f88a932e6cc7871bed5"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Cleric/leather-pants-standard-low.glb",
+          "sha256": "06f6398f845b4137118ff73d487fcf498522ea223065c8172273904807c1a477"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Cleric/leather-boots-standard-low.glb",
+          "sha256": "882dc459c380e3890773678b054891eb2b869853bb52466ea11926e7664bba20"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Cleric/silk-gloves-standard-low.glb",
+          "sha256": "0d1e54f9cc734309affd876081ed9fe3490994a818b94b123e61d9c56d89efd5"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Cleric/velvet-mantle-standard-low.glb",
+          "sha256": "49084a6c4b3323a19f609a2a9657f3da42278e5ff62bfd0af1595ebb4fba0831"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Cleric/silk-sash-standard-low.glb",
+          "sha256": "142d994a35db4ee510241c2d73b1807ec668edc69339a2d836926970b891ed72"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Wizard/silk-hood-standard-high.glb",
+          "sha256": "b2240687fa789bd505a028fe5f9867e90ca4c8b2b35bbe1c636f6b9da3ad9252"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Wizard/robes-standard-high.glb",
+          "sha256": "a27879d859e5c0a28ae01590fb713d5b534d24b6f05f3c563240f58972f895c2"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Wizard/leather-pants-standard-high.glb",
+          "sha256": "5154550a0f38925ba201ceac8644b0e523c304ff8bac208cb0a00dd998d978a8"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Wizard/leather-boots-standard-high.glb",
+          "sha256": "eeb4ba2c1363d9d2edf7aa479a35d180cb02d62d011a064483a27a062dbc2d10"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Wizard/silk-gloves-standard-high.glb",
+          "sha256": "bf58a8158d941fc4459332db289c6b777a06b4622c216da3e69903f98d6c41da"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Wizard/velvet-mantle-standard-high.glb",
+          "sha256": "d1697ef6fa961ca698a4de71d4134f63997377829c30537bd33cf7d23c8898b0"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Wizard/silk-sash-standard-high.glb",
+          "sha256": "7fe1931e4d6fe3debeb16b9955b56f45162f74c5b2bf3b1efd035d544d3bac09"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Wizard/silk-hood-standard-low.glb",
+          "sha256": "51b4071570b171b0dffcb115f5328bc907306f2a03e674aa255d7afde10f5704"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Wizard/robes-standard-low.glb",
+          "sha256": "d9eb0af5612f7f0bba59e74a334a8dd0bb119abf16f11d1e253b3a5d9137d18a"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Wizard/leather-pants-standard-low.glb",
+          "sha256": "628f36b906e3f8005a8d73593a080e31cd9e2758c715518c205bda6e7ac2d864"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Wizard/leather-boots-standard-low.glb",
+          "sha256": "691f3fbff99b76d0a998d3278bb5fd7d82d52b78399e356676c0648a1883a4a7"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Wizard/silk-gloves-standard-low.glb",
+          "sha256": "3044e184e4c2713d7be570019a4fa19861c046ded9e6e50ed5a426370d625e30"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Wizard/velvet-mantle-standard-low.glb",
+          "sha256": "d6940036715d8f9e8b1b11ad6571d8ec85fb6f2586492ad2e77070c6a418ef5e"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Wizard/silk-sash-standard-low.glb",
+          "sha256": "fa6008f893c91def45686cb42fcc364527101879b668486a42f95baf74a8f03b"
+        }
+      ]
+    },
+    "Lantern Envoy": {
+      "id": "lantern-envoy-v1",
+      "name": "Lantern Envoy",
+      "coverage": {
+        "head": "silk-hood",
+        "chest": "robes",
+        "legs": "leather-pants",
+        "feet": "leather-boots",
+        "gloves": "silk-gloves",
+        "shoulders": "velvet-mantle",
+        "belt": "silk-sash"
+      },
+      "models": {
+        "Fighter": {
+          "high": {
+            "file": "./assets/garments/lantern-envoy-v1/Fighter-high.glb",
+            "bytes": 1545880,
+            "sha256": "81451dc2267c70f0d9d5097e1a7aa96be1661f69a461d97787b507701f43c2d8"
+          },
+          "low": {
+            "file": "./assets/garments/lantern-envoy-v1/Fighter-low.glb",
+            "bytes": 973884,
+            "sha256": "9b5359dcef5f69b868e6b7098941fef09622306465b38e9412d2b33139fc2d92"
+          }
+        },
+        "Rogue": {
+          "high": {
+            "file": "./assets/garments/lantern-envoy-v1/Rogue-high.glb",
+            "bytes": 1438956,
+            "sha256": "dd85a46b924d429e3835026690c781b3f4b04739e97160a3f7a94031222cda5a"
+          },
+          "low": {
+            "file": "./assets/garments/lantern-envoy-v1/Rogue-low.glb",
+            "bytes": 918680,
+            "sha256": "5b718375ffb0a4deb58164dd4a56a0abcd6347c50e5f360d68a5aedc226b29ce"
+          }
+        },
+        "Cleric": {
+          "high": {
+            "file": "./assets/garments/lantern-envoy-v1/Cleric-high.glb",
+            "bytes": 1437248,
+            "sha256": "c5517dde003ea94f68815570883058871495d7dcc99fa7acb437a070cf335904"
+          },
+          "low": {
+            "file": "./assets/garments/lantern-envoy-v1/Cleric-low.glb",
+            "bytes": 915364,
+            "sha256": "98542103680cf77f73e7f133ff5711471eee136dfee6f045a60e48b965202733"
+          }
+        },
+        "Wizard": {
+          "high": {
+            "file": "./assets/garments/lantern-envoy-v1/Wizard-high.glb",
+            "bytes": 1439120,
+            "sha256": "678b24d30c43cd75446b5cfacd28264aa66747bce1dda7626676dabf8334d2bb"
+          },
+          "low": {
+            "file": "./assets/garments/lantern-envoy-v1/Wizard-low.glb",
+            "bytes": 882800,
+            "sha256": "d234573e2c67a5fc8d31f3ebbd7de7afac06520dfeb477f3573f19c083442bd8"
+          }
+        }
+      },
+      "provenance": [
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Fighter/silk-hood-standard-high.glb",
+          "sha256": "169b7455a8fa12728857c10c641c0f8770f44c442e9bb247ec7ab374af2baa48"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Fighter/robes-standard-high.glb",
+          "sha256": "2e98549e65d91e9f882169d8895a274e94ca45590be4a4e41d868a1dcd157656"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Fighter/leather-pants-standard-high.glb",
+          "sha256": "e95aae299aa7c7bdf7a0984959c01a14075f1a55ba000d30a70594e213c07cee"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Fighter/leather-boots-standard-high.glb",
+          "sha256": "1dcceb4fd29f0a00a3fad051be332ba63fc3c47e2768d128fbb5790daade4c11"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Fighter/silk-gloves-standard-high.glb",
+          "sha256": "a677fe61062c43720699c9b275d6dfd1c27fce5fff9bb8971db480855d725161"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Fighter/velvet-mantle-standard-high.glb",
+          "sha256": "505851500c1d743eadc08f09cac52c3befca4b192b9e90c88195a48568762ed1"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Fighter/silk-sash-standard-high.glb",
+          "sha256": "a57bd0e8fb2aa7f306b936e2f5bb0f09721bc26a910fab66dae06c75fe31118c"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Fighter/silk-hood-standard-low.glb",
+          "sha256": "8f46faa37f15ed666381afb2b50b66f41ec56206ac9d7e1c0643bea037f78cd7"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Fighter/robes-standard-low.glb",
+          "sha256": "4206a9adf70160cd0fe08d3a92a9cc6d0fe4eca3ef75af3c5fcb9bbd9f335893"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Fighter/leather-pants-standard-low.glb",
+          "sha256": "d85f451f1e02186dededd81c1843395520ba2548fd1f7335c3ea19f16fda057f"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Fighter/leather-boots-standard-low.glb",
+          "sha256": "aaabda6b72d5cfc8e8e4afd20ef99fddd459394ffc01407afeb2c93767f9f09b"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Fighter/silk-gloves-standard-low.glb",
+          "sha256": "0b9f55882a4ee2431f9e9c00ff934b5e0a1d33e93b10ec49baaa65b9de2cccef"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Fighter/velvet-mantle-standard-low.glb",
+          "sha256": "8fa97eed5bef2525408e34d4044ac605eef228fe8ec1dc819cef6f7d9955a0fb"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Fighter/silk-sash-standard-low.glb",
+          "sha256": "a684c9ccce0434a55f5c6aedee4754249d06437d0166d5050cfb772da1b4657a"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Rogue/silk-hood-standard-high.glb",
+          "sha256": "4e5e8e68db37e2ac2c6e4b742e864691d004be90d5089275236ed7162fe4972e"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Rogue/robes-standard-high.glb",
+          "sha256": "6d1f7ce40c46e6dfa207d92e001eb43996ee018ac4dc165102449820fe153f3d"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Rogue/leather-pants-standard-high.glb",
+          "sha256": "614c8d073741be345e8fd82eb6a24f68bf0625f765f30cd083ea8e2d181f9f9e"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Rogue/leather-boots-standard-high.glb",
+          "sha256": "99f7804ca7a3063c09eb64bcb79b905ce2b0732986f09a9bfb9418427d42d087"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Rogue/silk-gloves-standard-high.glb",
+          "sha256": "204570cc787ecc38eb8b1219ca81ff4a8b3fdd08828f701024bb06dd54af2446"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Rogue/velvet-mantle-standard-high.glb",
+          "sha256": "e1f13b9f637faff38042eb42288d930a0f154db320cebac75c45225f6b7b99d0"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Rogue/silk-sash-standard-high.glb",
+          "sha256": "ddecbe0cd0b9c7dad6c6a74a536092a9ca1842a6bb6b08f40e353b3eb8efaa96"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Rogue/silk-hood-standard-low.glb",
+          "sha256": "7f751f1a8cb057f2707ec09fd4e48ff29982eaf39b7399d8c3cb6b94cb917697"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Rogue/robes-standard-low.glb",
+          "sha256": "38baf816fb01402c3f3cf13c803dbead059ceae76ea2b8661b5c881b2468da0b"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Rogue/leather-pants-standard-low.glb",
+          "sha256": "b82996e483a6082c63745360b88edbc38186160ca89d6c65142c65b3351f5383"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Rogue/leather-boots-standard-low.glb",
+          "sha256": "3ed8ed389dc4528db24ff1905500944ab62814c8f7caa64898f11d13b58dfaed"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Rogue/silk-gloves-standard-low.glb",
+          "sha256": "db9dfccde2bee58bc2b9e8e2a04fb0a392902e374d0e693134a897e07e44fe24"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Rogue/velvet-mantle-standard-low.glb",
+          "sha256": "eb2df0becf895132228dec3676202a9df5a4e9e536687ab2309a4655763be77b"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Rogue/silk-sash-standard-low.glb",
+          "sha256": "af5f549ac4b289e299c43b8aba979e137b851343ecb63fab12ebcf8e85953ec4"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Cleric/silk-hood-standard-high.glb",
+          "sha256": "3e0714806674d3609cecb8bdc1c8337d101da913c5f469b44407c556833176c9"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Cleric/robes-standard-high.glb",
+          "sha256": "3a914a03c6259987b58326212b0527be43328d33693dabeb5491faedfafb7612"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Cleric/leather-pants-standard-high.glb",
+          "sha256": "e8a7ab7f4b1da3c13212d4c0fb69d3b5ef1973e3ca0a3bd0a84a71beab5945cc"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Cleric/leather-boots-standard-high.glb",
+          "sha256": "34531ca16fc5b621171a68dc7b37e3382fb0917bf43e1d1bb55412367cc0265e"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Cleric/silk-gloves-standard-high.glb",
+          "sha256": "63a3a23642c29b39f7b09caeabac1c4d3442da0bed88cb6a9575d5c070948a56"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Cleric/velvet-mantle-standard-high.glb",
+          "sha256": "29d4d7dd3eec922aed5aaca55ee78c49c5922fdcd6148dd92c801e89e61791bb"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Cleric/silk-sash-standard-high.glb",
+          "sha256": "e2838edd2ae344674cadb6571447838128d4f420de63dc7deac937e246290345"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Cleric/silk-hood-standard-low.glb",
+          "sha256": "c88d47eaa397b726a01a10c7f4754abea6d8a260c6d8bbbf39dbe89bdca6251d"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Cleric/robes-standard-low.glb",
+          "sha256": "6f73e6531ad6b19ca9e7e1a7d471fa60563f14db4cc17f88a932e6cc7871bed5"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Cleric/leather-pants-standard-low.glb",
+          "sha256": "06f6398f845b4137118ff73d487fcf498522ea223065c8172273904807c1a477"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Cleric/leather-boots-standard-low.glb",
+          "sha256": "882dc459c380e3890773678b054891eb2b869853bb52466ea11926e7664bba20"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Cleric/silk-gloves-standard-low.glb",
+          "sha256": "0d1e54f9cc734309affd876081ed9fe3490994a818b94b123e61d9c56d89efd5"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Cleric/velvet-mantle-standard-low.glb",
+          "sha256": "49084a6c4b3323a19f609a2a9657f3da42278e5ff62bfd0af1595ebb4fba0831"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Cleric/silk-sash-standard-low.glb",
+          "sha256": "142d994a35db4ee510241c2d73b1807ec668edc69339a2d836926970b891ed72"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Wizard/silk-hood-standard-high.glb",
+          "sha256": "b2240687fa789bd505a028fe5f9867e90ca4c8b2b35bbe1c636f6b9da3ad9252"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Wizard/robes-standard-high.glb",
+          "sha256": "a27879d859e5c0a28ae01590fb713d5b534d24b6f05f3c563240f58972f895c2"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Wizard/leather-pants-standard-high.glb",
+          "sha256": "5154550a0f38925ba201ceac8644b0e523c304ff8bac208cb0a00dd998d978a8"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Wizard/leather-boots-standard-high.glb",
+          "sha256": "eeb4ba2c1363d9d2edf7aa479a35d180cb02d62d011a064483a27a062dbc2d10"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Wizard/silk-gloves-standard-high.glb",
+          "sha256": "bf58a8158d941fc4459332db289c6b777a06b4622c216da3e69903f98d6c41da"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Wizard/velvet-mantle-standard-high.glb",
+          "sha256": "d1697ef6fa961ca698a4de71d4134f63997377829c30537bd33cf7d23c8898b0"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Wizard/silk-sash-standard-high.glb",
+          "sha256": "7fe1931e4d6fe3debeb16b9955b56f45162f74c5b2bf3b1efd035d544d3bac09"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Wizard/silk-hood-standard-low.glb",
+          "sha256": "51b4071570b171b0dffcb115f5328bc907306f2a03e674aa255d7afde10f5704"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Wizard/robes-standard-low.glb",
+          "sha256": "d9eb0af5612f7f0bba59e74a334a8dd0bb119abf16f11d1e253b3a5d9137d18a"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Wizard/leather-pants-standard-low.glb",
+          "sha256": "628f36b906e3f8005a8d73593a080e31cd9e2758c715518c205bda6e7ac2d864"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Wizard/leather-boots-standard-low.glb",
+          "sha256": "691f3fbff99b76d0a998d3278bb5fd7d82d52b78399e356676c0648a1883a4a7"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Wizard/silk-gloves-standard-low.glb",
+          "sha256": "3044e184e4c2713d7be570019a4fa19861c046ded9e6e50ed5a426370d625e30"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Wizard/velvet-mantle-standard-low.glb",
+          "sha256": "d6940036715d8f9e8b1b11ad6571d8ec85fb6f2586492ad2e77070c6a418ef5e"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Wizard/silk-sash-standard-low.glb",
+          "sha256": "fa6008f893c91def45686cb42fcc364527101879b668486a42f95baf74a8f03b"
+        }
+      ]
+    },
+    "Springbloom Jubilee": {
+      "id": "springbloom-jubilee-v1",
+      "name": "Springbloom Jubilee",
+      "coverage": {
+        "head": "silk-hood",
+        "chest": "robes",
+        "legs": "leather-pants",
+        "feet": "leather-boots",
+        "gloves": "silk-gloves",
+        "shoulders": "velvet-mantle",
+        "belt": "silk-sash"
+      },
+      "models": {
+        "Fighter": {
+          "high": {
+            "file": "./assets/garments/springbloom-jubilee-v1/Fighter-high.glb",
+            "bytes": 1586504,
+            "sha256": "6d57367a1011a7595ba5687869d06de6cccdc25e456395cbc06f05ba0f2ab8ab"
+          },
+          "low": {
+            "file": "./assets/garments/springbloom-jubilee-v1/Fighter-low.glb",
+            "bytes": 1020920,
+            "sha256": "f5fd034617d5e4d9aaa6294678680e119611e14343aa3bbdb8f73f89687fd1a3"
+          }
+        },
+        "Rogue": {
+          "high": {
+            "file": "./assets/garments/springbloom-jubilee-v1/Rogue-high.glb",
+            "bytes": 1479596,
+            "sha256": "b85d7a7a9bd7267a4496807fad5cfb6357e64c543fa36389002472dbe2c12ab0"
+          },
+          "low": {
+            "file": "./assets/garments/springbloom-jubilee-v1/Rogue-low.glb",
+            "bytes": 965728,
+            "sha256": "09fba230bf0e6ccb742007c1798f58ff431a867bdc15afca0bee9500f0e260f6"
+          }
+        },
+        "Cleric": {
+          "high": {
+            "file": "./assets/garments/springbloom-jubilee-v1/Cleric-high.glb",
+            "bytes": 1477872,
+            "sha256": "43210b6d8a6e2272666899416f8672778df075ffe21e183ab4c499a29de39f6a"
+          },
+          "low": {
+            "file": "./assets/garments/springbloom-jubilee-v1/Cleric-low.glb",
+            "bytes": 962388,
+            "sha256": "b9530fd44ed6e9781043bc03f96768ccb60d8a199adea15ad4750671fba9f726"
+          }
+        },
+        "Wizard": {
+          "high": {
+            "file": "./assets/garments/springbloom-jubilee-v1/Wizard-high.glb",
+            "bytes": 1479756,
+            "sha256": "e8cea3fbc0020892e82bd237b53a898e0a5295909f2a59d735c98e769e84f3a3"
+          },
+          "low": {
+            "file": "./assets/garments/springbloom-jubilee-v1/Wizard-low.glb",
+            "bytes": 929844,
+            "sha256": "deb932df6b31ff74e79f5aefc831b24c65551d78ac78b12aa83c973485361518"
+          }
+        }
+      },
+      "provenance": [
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Fighter/silk-hood-standard-high.glb",
+          "sha256": "169b7455a8fa12728857c10c641c0f8770f44c442e9bb247ec7ab374af2baa48"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Fighter/robes-standard-high.glb",
+          "sha256": "2e98549e65d91e9f882169d8895a274e94ca45590be4a4e41d868a1dcd157656"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Fighter/leather-pants-standard-high.glb",
+          "sha256": "e95aae299aa7c7bdf7a0984959c01a14075f1a55ba000d30a70594e213c07cee"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Fighter/leather-boots-standard-high.glb",
+          "sha256": "1dcceb4fd29f0a00a3fad051be332ba63fc3c47e2768d128fbb5790daade4c11"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Fighter/silk-gloves-standard-high.glb",
+          "sha256": "a677fe61062c43720699c9b275d6dfd1c27fce5fff9bb8971db480855d725161"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Fighter/velvet-mantle-standard-high.glb",
+          "sha256": "505851500c1d743eadc08f09cac52c3befca4b192b9e90c88195a48568762ed1"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Fighter/silk-sash-standard-high.glb",
+          "sha256": "a57bd0e8fb2aa7f306b936e2f5bb0f09721bc26a910fab66dae06c75fe31118c"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Fighter/silk-hood-standard-low.glb",
+          "sha256": "8f46faa37f15ed666381afb2b50b66f41ec56206ac9d7e1c0643bea037f78cd7"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Fighter/robes-standard-low.glb",
+          "sha256": "4206a9adf70160cd0fe08d3a92a9cc6d0fe4eca3ef75af3c5fcb9bbd9f335893"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Fighter/leather-pants-standard-low.glb",
+          "sha256": "d85f451f1e02186dededd81c1843395520ba2548fd1f7335c3ea19f16fda057f"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Fighter/leather-boots-standard-low.glb",
+          "sha256": "aaabda6b72d5cfc8e8e4afd20ef99fddd459394ffc01407afeb2c93767f9f09b"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Fighter/silk-gloves-standard-low.glb",
+          "sha256": "0b9f55882a4ee2431f9e9c00ff934b5e0a1d33e93b10ec49baaa65b9de2cccef"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Fighter/velvet-mantle-standard-low.glb",
+          "sha256": "8fa97eed5bef2525408e34d4044ac605eef228fe8ec1dc819cef6f7d9955a0fb"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Fighter/silk-sash-standard-low.glb",
+          "sha256": "a684c9ccce0434a55f5c6aedee4754249d06437d0166d5050cfb772da1b4657a"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Rogue/silk-hood-standard-high.glb",
+          "sha256": "4e5e8e68db37e2ac2c6e4b742e864691d004be90d5089275236ed7162fe4972e"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Rogue/robes-standard-high.glb",
+          "sha256": "6d1f7ce40c46e6dfa207d92e001eb43996ee018ac4dc165102449820fe153f3d"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Rogue/leather-pants-standard-high.glb",
+          "sha256": "614c8d073741be345e8fd82eb6a24f68bf0625f765f30cd083ea8e2d181f9f9e"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Rogue/leather-boots-standard-high.glb",
+          "sha256": "99f7804ca7a3063c09eb64bcb79b905ce2b0732986f09a9bfb9418427d42d087"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Rogue/silk-gloves-standard-high.glb",
+          "sha256": "204570cc787ecc38eb8b1219ca81ff4a8b3fdd08828f701024bb06dd54af2446"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Rogue/velvet-mantle-standard-high.glb",
+          "sha256": "e1f13b9f637faff38042eb42288d930a0f154db320cebac75c45225f6b7b99d0"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Rogue/silk-sash-standard-high.glb",
+          "sha256": "ddecbe0cd0b9c7dad6c6a74a536092a9ca1842a6bb6b08f40e353b3eb8efaa96"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Rogue/silk-hood-standard-low.glb",
+          "sha256": "7f751f1a8cb057f2707ec09fd4e48ff29982eaf39b7399d8c3cb6b94cb917697"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Rogue/robes-standard-low.glb",
+          "sha256": "38baf816fb01402c3f3cf13c803dbead059ceae76ea2b8661b5c881b2468da0b"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Rogue/leather-pants-standard-low.glb",
+          "sha256": "b82996e483a6082c63745360b88edbc38186160ca89d6c65142c65b3351f5383"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Rogue/leather-boots-standard-low.glb",
+          "sha256": "3ed8ed389dc4528db24ff1905500944ab62814c8f7caa64898f11d13b58dfaed"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Rogue/silk-gloves-standard-low.glb",
+          "sha256": "db9dfccde2bee58bc2b9e8e2a04fb0a392902e374d0e693134a897e07e44fe24"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Rogue/velvet-mantle-standard-low.glb",
+          "sha256": "eb2df0becf895132228dec3676202a9df5a4e9e536687ab2309a4655763be77b"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Rogue/silk-sash-standard-low.glb",
+          "sha256": "af5f549ac4b289e299c43b8aba979e137b851343ecb63fab12ebcf8e85953ec4"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Cleric/silk-hood-standard-high.glb",
+          "sha256": "3e0714806674d3609cecb8bdc1c8337d101da913c5f469b44407c556833176c9"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Cleric/robes-standard-high.glb",
+          "sha256": "3a914a03c6259987b58326212b0527be43328d33693dabeb5491faedfafb7612"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Cleric/leather-pants-standard-high.glb",
+          "sha256": "e8a7ab7f4b1da3c13212d4c0fb69d3b5ef1973e3ca0a3bd0a84a71beab5945cc"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Cleric/leather-boots-standard-high.glb",
+          "sha256": "34531ca16fc5b621171a68dc7b37e3382fb0917bf43e1d1bb55412367cc0265e"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Cleric/silk-gloves-standard-high.glb",
+          "sha256": "63a3a23642c29b39f7b09caeabac1c4d3442da0bed88cb6a9575d5c070948a56"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Cleric/velvet-mantle-standard-high.glb",
+          "sha256": "29d4d7dd3eec922aed5aaca55ee78c49c5922fdcd6148dd92c801e89e61791bb"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Cleric/silk-sash-standard-high.glb",
+          "sha256": "e2838edd2ae344674cadb6571447838128d4f420de63dc7deac937e246290345"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Cleric/silk-hood-standard-low.glb",
+          "sha256": "c88d47eaa397b726a01a10c7f4754abea6d8a260c6d8bbbf39dbe89bdca6251d"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Cleric/robes-standard-low.glb",
+          "sha256": "6f73e6531ad6b19ca9e7e1a7d471fa60563f14db4cc17f88a932e6cc7871bed5"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Cleric/leather-pants-standard-low.glb",
+          "sha256": "06f6398f845b4137118ff73d487fcf498522ea223065c8172273904807c1a477"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Cleric/leather-boots-standard-low.glb",
+          "sha256": "882dc459c380e3890773678b054891eb2b869853bb52466ea11926e7664bba20"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Cleric/silk-gloves-standard-low.glb",
+          "sha256": "0d1e54f9cc734309affd876081ed9fe3490994a818b94b123e61d9c56d89efd5"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Cleric/velvet-mantle-standard-low.glb",
+          "sha256": "49084a6c4b3323a19f609a2a9657f3da42278e5ff62bfd0af1595ebb4fba0831"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Cleric/silk-sash-standard-low.glb",
+          "sha256": "142d994a35db4ee510241c2d73b1807ec668edc69339a2d836926970b891ed72"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Wizard/silk-hood-standard-high.glb",
+          "sha256": "b2240687fa789bd505a028fe5f9867e90ca4c8b2b35bbe1c636f6b9da3ad9252"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Wizard/robes-standard-high.glb",
+          "sha256": "a27879d859e5c0a28ae01590fb713d5b534d24b6f05f3c563240f58972f895c2"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Wizard/leather-pants-standard-high.glb",
+          "sha256": "5154550a0f38925ba201ceac8644b0e523c304ff8bac208cb0a00dd998d978a8"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Wizard/leather-boots-standard-high.glb",
+          "sha256": "eeb4ba2c1363d9d2edf7aa479a35d180cb02d62d011a064483a27a062dbc2d10"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Wizard/silk-gloves-standard-high.glb",
+          "sha256": "bf58a8158d941fc4459332db289c6b777a06b4622c216da3e69903f98d6c41da"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Wizard/velvet-mantle-standard-high.glb",
+          "sha256": "d1697ef6fa961ca698a4de71d4134f63997377829c30537bd33cf7d23c8898b0"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Wizard/silk-sash-standard-high.glb",
+          "sha256": "7fe1931e4d6fe3debeb16b9955b56f45162f74c5b2bf3b1efd035d544d3bac09"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Wizard/silk-hood-standard-low.glb",
+          "sha256": "51b4071570b171b0dffcb115f5328bc907306f2a03e674aa255d7afde10f5704"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Wizard/robes-standard-low.glb",
+          "sha256": "d9eb0af5612f7f0bba59e74a334a8dd0bb119abf16f11d1e253b3a5d9137d18a"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Wizard/leather-pants-standard-low.glb",
+          "sha256": "628f36b906e3f8005a8d73593a080e31cd9e2758c715518c205bda6e7ac2d864"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Wizard/leather-boots-standard-low.glb",
+          "sha256": "691f3fbff99b76d0a998d3278bb5fd7d82d52b78399e356676c0648a1883a4a7"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Wizard/silk-gloves-standard-low.glb",
+          "sha256": "3044e184e4c2713d7be570019a4fa19861c046ded9e6e50ed5a426370d625e30"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Wizard/velvet-mantle-standard-low.glb",
+          "sha256": "d6940036715d8f9e8b1b11ad6571d8ec85fb6f2586492ad2e77070c6a418ef5e"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Wizard/silk-sash-standard-low.glb",
+          "sha256": "fa6008f893c91def45686cb42fcc364527101879b668486a42f95baf74a8f03b"
+        }
+      ]
+    },
+    "Solstice Pyre": {
+      "id": "solstice-pyre-v1",
+      "name": "Solstice Pyre",
+      "coverage": {
+        "head": "iron-helm",
+        "chest": "plate-mail",
+        "legs": "plate-greaves",
+        "feet": "iron-boots",
+        "gloves": "iron-gauntlets",
+        "shoulders": "steel-pauldrons",
+        "belt": "plated-girdle"
+      },
+      "models": {
+        "Fighter": {
+          "high": {
+            "file": "./assets/garments/solstice-pyre-v1/Fighter-high.glb",
+            "bytes": 1893044,
+            "sha256": "036359f338ed99404ac783c415f99c60670faa9a20029f5a3b5dc0b6a58b5052"
+          },
+          "low": {
+            "file": "./assets/garments/solstice-pyre-v1/Fighter-low.glb",
+            "bytes": 1107012,
+            "sha256": "53728b95fecaec770b039c4c0ecb0fc234b095c367009e4fce1d02a1679be236"
+          }
+        },
+        "Rogue": {
+          "high": {
+            "file": "./assets/garments/solstice-pyre-v1/Rogue-high.glb",
+            "bytes": 1767052,
+            "sha256": "2cb78821d4b6d6720941acf66128295e70b77a83d2671cf5243c108e3d8db874"
+          },
+          "low": {
+            "file": "./assets/garments/solstice-pyre-v1/Rogue-low.glb",
+            "bytes": 1038208,
+            "sha256": "f79dafbd5f73862234899bc079b203f969dc748963f0eb9d84ff582e00ca311b"
+          }
+        },
+        "Cleric": {
+          "high": {
+            "file": "./assets/garments/solstice-pyre-v1/Cleric-high.glb",
+            "bytes": 1846544,
+            "sha256": "5dfd0a442940a74a24ab9a00709e588ec70942bcd31f904fd3f51b2211da4a53"
+          },
+          "low": {
+            "file": "./assets/garments/solstice-pyre-v1/Cleric-low.glb",
+            "bytes": 1100532,
+            "sha256": "c53880db5b5a317bb0606769370bce47c15a3194f0a7b4a9ea2c57b65e8fdee1"
+          }
+        },
+        "Wizard": {
+          "high": {
+            "file": "./assets/garments/solstice-pyre-v1/Wizard-high.glb",
+            "bytes": 1745184,
+            "sha256": "404ed2fbafc6ffbed7093f467c046473ad4c2fec1bc86e0b25ed54e7bfd1e91e"
+          },
+          "low": {
+            "file": "./assets/garments/solstice-pyre-v1/Wizard-low.glb",
+            "bytes": 1020216,
+            "sha256": "6e27bda82037792fa56806e846d5963fc29e88c86675aee981f3299b5dcda6dc"
+          }
+        }
+      },
+      "provenance": [
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Fighter/iron-helm-standard-high.glb",
+          "sha256": "5bebbb7a787dcb0aa2947370d74848993a750b6b37d15b9e81bd4bc3936d4964"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Fighter/plate-mail-standard-high.glb",
+          "sha256": "d3acc3a207fc03a09435ef0f23c7b18edff012372395ba8dd8f2efa1fd946b56"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Fighter/plate-greaves-standard-high.glb",
+          "sha256": "dc94971627f29ad7cec2613edb68d6b329acb87e2c7f87366ff36e98d10ab42a"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Fighter/iron-boots-standard-high.glb",
+          "sha256": "f34610d8ce48c4acd50f5b26056921a7326d60b527af8a261e54d0381ca8505e"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Fighter/iron-gauntlets-standard-high.glb",
+          "sha256": "0075c63fa8337e7095fa4a67f3a8d478b979662390135af1c2e84a95523e2e2d"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Fighter/steel-pauldrons-standard-high.glb",
+          "sha256": "1c84cde67d54b5594c1a72fde07a3c99cecdfc95d122b07513de33af2247a591"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Fighter/plated-girdle-standard-high.glb",
+          "sha256": "eabd0774cb6471391f33ac56fda75b8d4cb95e3471ac8d1e091d8f5dc978244e"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Fighter/iron-helm-standard-low.glb",
+          "sha256": "79d9ecb89036b204e1839fd14c3dbc122c4e0d738f3775b0adb1c8967311581d"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Fighter/plate-mail-standard-low.glb",
+          "sha256": "a30261e30b9f32932be1020c82a40b989f01fa40f7bff3cf2e325b8b6051743b"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Fighter/plate-greaves-standard-low.glb",
+          "sha256": "44021dc406d9fa7f0a316b21faaa58f78f37d4259747e75474f4a31996ffab6b"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Fighter/iron-boots-standard-low.glb",
+          "sha256": "9527b1b92253f57bc24615c32f3c50b0d6675544275d1bbceed5f7c0e86d2f24"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Fighter/iron-gauntlets-standard-low.glb",
+          "sha256": "790c4200d9764f56c65977133fbd8a212ec2d255516868760e6cfcec6e481503"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Fighter/steel-pauldrons-standard-low.glb",
+          "sha256": "3390e9d8c5b080b4a209c0faa9c5560b2eed8ea01eb85031acac6a75486fca46"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Fighter/plated-girdle-standard-low.glb",
+          "sha256": "4914ef3a91fbe3592e06bd79e64fd77f7c592f37ca00bda5207a66daad0b3021"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Rogue/iron-helm-standard-high.glb",
+          "sha256": "bf480195ee4000eadf80697fe52189cb7f678a4618c5ba8ef93ad2958a5f661e"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Rogue/plate-mail-standard-high.glb",
+          "sha256": "6ec5ab3a9196a76065ca3759bfc000ba7166375252c05627bbd41740bcd612d4"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Rogue/plate-greaves-standard-high.glb",
+          "sha256": "f832effa4c03d0a986c3f1c29e709591faec2b8288f1656123a91a166bd1bf6e"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Rogue/iron-boots-standard-high.glb",
+          "sha256": "4d397dcad0384bb2ad3e744a810f00b2f1e387132c27fcb98102d64fa2811c93"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Rogue/iron-gauntlets-standard-high.glb",
+          "sha256": "fe742917c721c1bdd3789d701727acad4d611d38add3da757a138e3a159f04e8"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Rogue/steel-pauldrons-standard-high.glb",
+          "sha256": "d194a8df44a3ee9236dc5d70e9535b78bf4099608616aa2f51e4045a457c1bdd"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Rogue/plated-girdle-standard-high.glb",
+          "sha256": "8b39a753162c36f9f0547ca0b3c37d188ff1237b7071c31888242102319519b9"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Rogue/iron-helm-standard-low.glb",
+          "sha256": "85f622e70978e4c7599f81be26a73fbb0f5f0643e48b5caf94e24f848e53e706"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Rogue/plate-mail-standard-low.glb",
+          "sha256": "732044eabfa2dfb5315c824a89908e271b903ade0e5d34bd9f6e2e9e279cbef7"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Rogue/plate-greaves-standard-low.glb",
+          "sha256": "7a42ef1dfc8c36175a60ea894e633e978da34cc6464ac4a996e03e4d1dc658d5"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Rogue/iron-boots-standard-low.glb",
+          "sha256": "d416eeca7dac385daa4ad788797ef774da03aff7bf88cc0165783113acec95a3"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Rogue/iron-gauntlets-standard-low.glb",
+          "sha256": "528382ee380ff29f0729fa23b7c24f8c2985785aa5f77ee4e1647bffecc26e05"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Rogue/steel-pauldrons-standard-low.glb",
+          "sha256": "e473fcd6ebd3bf102881baee265bfd380ef54b26b914c5089bde13a2767ac0ae"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Rogue/plated-girdle-standard-low.glb",
+          "sha256": "743e047295c69fa0197c7bf30c20dfce60c8587eb8794bd5dc94a99091b8a5e9"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Cleric/iron-helm-standard-high.glb",
+          "sha256": "f11dbb0215de2f1868a3d7d7238a92b1d8b690bc3945ca3db9d0c45eeebc3633"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Cleric/plate-mail-standard-high.glb",
+          "sha256": "a6ca7c1729f9d520bc53bd24c8b34c9afd5e268ff44ac9beb825a87b81e02c87"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Cleric/plate-greaves-standard-high.glb",
+          "sha256": "167a8c7cb63e80585977065060b35f8ebb26e3ef78b4611b8973228c0d3d6fde"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Cleric/iron-boots-standard-high.glb",
+          "sha256": "948c032bd8700e7ced3a9e8710e9d66425e579ad01e598eae1f4bcae22b14f46"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Cleric/iron-gauntlets-standard-high.glb",
+          "sha256": "9214361d0bd16388faa0dbf9e8d1357976ddc93dbaab5e9f8b315076b6019870"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Cleric/steel-pauldrons-standard-high.glb",
+          "sha256": "8c9e823754d30cb64a4a39bb14b45437c48d361aedd1ca3ef1c1771cd528473d"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Cleric/plated-girdle-standard-high.glb",
+          "sha256": "208fece19a01a95548da5ba745505be58d6234ff22327bb4be82f9cbebfee814"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Cleric/iron-helm-standard-low.glb",
+          "sha256": "50f0e759e76bccc36a9417b92bffb1f4e6e03c7cf7e5dea8ff324870cd852964"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Cleric/plate-mail-standard-low.glb",
+          "sha256": "b330b2440fbadbef8734744fd7b5107263f4975691d86768073c957cf5d79498"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Cleric/plate-greaves-standard-low.glb",
+          "sha256": "041216913c97dfe2d534f646fb7b4ee30979247ab4fa7efea2d496009772f298"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Cleric/iron-boots-standard-low.glb",
+          "sha256": "737647c4a5066c529898bd6bd51a526a8da124c472a9705e3b776979341f3772"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Cleric/iron-gauntlets-standard-low.glb",
+          "sha256": "a4310076a6e4601d344f904153636badab4289c0fb0832c4a8267aaf738e9e11"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Cleric/steel-pauldrons-standard-low.glb",
+          "sha256": "40c6f8cc289d374f8bcb605f7aa4de93f79ce7d41e6c91f3797ba5a1284eae79"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Cleric/plated-girdle-standard-low.glb",
+          "sha256": "40c325f51f5ba3c17ecf400ca6a4cb1c5c0c7cc39b9fcf8eea7c6021fadbc6a5"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Wizard/iron-helm-standard-high.glb",
+          "sha256": "4c3b9630dd1e48aa86441d96e0d039058c5d439ed0c637dfaf2988abd7b7cdd6"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Wizard/plate-mail-standard-high.glb",
+          "sha256": "1f5ce7c81075453345bdf266a44a32971abf8ab446bfc66468c910f34d3cb119"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Wizard/plate-greaves-standard-high.glb",
+          "sha256": "aa26b745a300abffb7ebca0e94d44c6bfd58d5c902e5d7ab37e7a03c092a468c"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Wizard/iron-boots-standard-high.glb",
+          "sha256": "a7fd398f8d3323472e3350cb5cf944516b538bf0118e9b11c0950816c923913d"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Wizard/iron-gauntlets-standard-high.glb",
+          "sha256": "11837222443cd1b212726d062e5d679b8c545ecd8ada12e755a5d25751323a4e"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Wizard/steel-pauldrons-standard-high.glb",
+          "sha256": "8532d55e1eacaadc3e1e38418fce4009a56b08a8d6df78998a1e8308f5c5541e"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Wizard/plated-girdle-standard-high.glb",
+          "sha256": "d36d4ba117045f1b1fd44c564336f820976361359616d7d125a5c9bf816c6f8a"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Wizard/iron-helm-standard-low.glb",
+          "sha256": "151864c55b7c46e9d31a24d894711db26ac4e2fe05902e09a39beaac25c045e0"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Wizard/plate-mail-standard-low.glb",
+          "sha256": "b545aab3e4f7cd9efa148f6c2d8c8a1b9d71d16b84465ce9c5eb6a3c604b05f8"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Wizard/plate-greaves-standard-low.glb",
+          "sha256": "4156ec372acc0f3b72b2419080a97bb20459aded5942a9e185aa091666c619d0"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Wizard/iron-boots-standard-low.glb",
+          "sha256": "7d38afe8fc91eb0a98e0948b798f7e85c08b83ad70b81f5059af93c764898a1b"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Wizard/iron-gauntlets-standard-low.glb",
+          "sha256": "f3335db3bf834c61be031e47cd3a4297ee8875ddc3a75ef251b18a202175f893"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Wizard/steel-pauldrons-standard-low.glb",
+          "sha256": "d308303e244a5764e51b33149fcf358c830629504bff86646399fd159e93dd7d"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Wizard/plated-girdle-standard-low.glb",
+          "sha256": "34b45a3b2d0508eaaabf00cc1e0d2f791ee1d74ac648e358693aa127f9215eb9"
+        }
+      ]
+    },
+    "Gilded Harvest": {
+      "id": "gilded-harvest-v1",
+      "name": "Gilded Harvest",
+      "coverage": {
+        "head": "leather-cap",
+        "chest": "leather-tunic",
+        "legs": "leather-pants",
+        "feet": "leather-boots",
+        "gloves": "leather-gloves",
+        "shoulders": "reinforced-spaulders",
+        "belt": "studded-belt"
+      },
+      "models": {
+        "Fighter": {
+          "high": {
+            "file": "./assets/garments/gilded-harvest-v1/Fighter-high.glb",
+            "bytes": 1779760,
+            "sha256": "b24d2c7932773e16a049ce57d7c5861ee8f0255ee8d5fcfcb638fb5a09fbd0d5"
+          },
+          "low": {
+            "file": "./assets/garments/gilded-harvest-v1/Fighter-low.glb",
+            "bytes": 1117012,
+            "sha256": "432777006bf57865b3f7421c290613948a81bb61039b890cd45242afbef7a2af"
+          }
+        },
+        "Rogue": {
+          "high": {
+            "file": "./assets/garments/gilded-harvest-v1/Rogue-high.glb",
+            "bytes": 1675940,
+            "sha256": "8adc9b59d693ba099e7db5cdc40c95f15f19f0cede3aaa0af1c900f19389d21c"
+          },
+          "low": {
+            "file": "./assets/garments/gilded-harvest-v1/Rogue-low.glb",
+            "bytes": 1057820,
+            "sha256": "634d3d2b53068ed881dffbdba7a31f2d81192f1661c26b6dea720a65028d49af"
+          }
+        },
+        "Cleric": {
+          "high": {
+            "file": "./assets/garments/gilded-harvest-v1/Cleric-high.glb",
+            "bytes": 1674564,
+            "sha256": "9af7adb95cb90f5591cd2bf98e16e20a94dae36e5945900ab5f4265510eaa5c3"
+          },
+          "low": {
+            "file": "./assets/garments/gilded-harvest-v1/Cleric-low.glb",
+            "bytes": 1063888,
+            "sha256": "9cb506e93da9a6790ffe39ac066fcc599e61f2ac29933a92fb7728954067d89f"
+          }
+        },
+        "Wizard": {
+          "high": {
+            "file": "./assets/garments/gilded-harvest-v1/Wizard-high.glb",
+            "bytes": 1679412,
+            "sha256": "23efbca0c8903c4ccd6b8397cf978dcdbc845420884565dc3b5b93f33b1751b5"
+          },
+          "low": {
+            "file": "./assets/garments/gilded-harvest-v1/Wizard-low.glb",
+            "bytes": 1060728,
+            "sha256": "88ce37875b6a4a4f4d34eb8d69926f45b7cb14c9a5d3642f48b0408162a6f134"
+          }
+        }
+      },
+      "provenance": [
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Fighter/leather-cap-standard-high.glb",
+          "sha256": "ecb390415087f4ab23e5f846abf6bc1fbd793e0f05f46b2f7c97719df655c435"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Fighter/leather-tunic-standard-high.glb",
+          "sha256": "889463321349ec8e04dbdfd667b630909abc1af1617e6c6dde29e65af45df256"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Fighter/leather-pants-standard-high.glb",
+          "sha256": "e95aae299aa7c7bdf7a0984959c01a14075f1a55ba000d30a70594e213c07cee"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Fighter/leather-boots-standard-high.glb",
+          "sha256": "1dcceb4fd29f0a00a3fad051be332ba63fc3c47e2768d128fbb5790daade4c11"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Fighter/leather-gloves-standard-high.glb",
+          "sha256": "10b1c2f4241d9e301e246951928ef5eaa22b7282cddabf4f26ec1464ae5690db"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Fighter/reinforced-spaulders-standard-high.glb",
+          "sha256": "264d254def0aa5721452e3171f91508ba925945b2fe5fc1ae7b689dea4ba45e0"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Fighter/studded-belt-standard-high.glb",
+          "sha256": "3fa3484240ce329eeb41b78f3027b95357f9c6a123df7c2290ccbd175d8c18f1"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Fighter/leather-cap-standard-low.glb",
+          "sha256": "79fc868322e0046ce3b41e0a0e138c65ce194550be223f167092977953372153"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Fighter/leather-tunic-standard-low.glb",
+          "sha256": "ad9bd3d1f4de2ceb962fe8335785263c16be8270b9e53cb13accfc6dfcde2187"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Fighter/leather-pants-standard-low.glb",
+          "sha256": "d85f451f1e02186dededd81c1843395520ba2548fd1f7335c3ea19f16fda057f"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Fighter/leather-boots-standard-low.glb",
+          "sha256": "aaabda6b72d5cfc8e8e4afd20ef99fddd459394ffc01407afeb2c93767f9f09b"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Fighter/leather-gloves-standard-low.glb",
+          "sha256": "a303ef1abe4e30b896eb3126bd8700aa9b08867c28d9f7f0114d15138e727715"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Fighter/reinforced-spaulders-standard-low.glb",
+          "sha256": "6c9b8846cc4422a8f1425dece0a52bbefc97c514a2a954b26cbedf8d6cf0b971"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Fighter/studded-belt-standard-low.glb",
+          "sha256": "d5d10efca893964deeb97638f04c3602f24510a034af1c4c268e2ba39dfbf714"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Rogue/leather-cap-standard-high.glb",
+          "sha256": "8641a5191f9898482b0f1de933cbad390aedc767ab24e711f69b419ae9f4b809"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Rogue/leather-tunic-standard-high.glb",
+          "sha256": "ead0d8a6dbc92caa5b3e565e003d8a3a077e2472e18abfa16fc12c664a59c71c"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Rogue/leather-pants-standard-high.glb",
+          "sha256": "614c8d073741be345e8fd82eb6a24f68bf0625f765f30cd083ea8e2d181f9f9e"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Rogue/leather-boots-standard-high.glb",
+          "sha256": "99f7804ca7a3063c09eb64bcb79b905ce2b0732986f09a9bfb9418427d42d087"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Rogue/leather-gloves-standard-high.glb",
+          "sha256": "9a85fe421ede0122e22da1b130d33b9cb307de35a5c5d3d892693a0d8520579e"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Rogue/reinforced-spaulders-standard-high.glb",
+          "sha256": "e71ba276cd2202098a34247c40958b1c801424f4d2e73c8475829924815b7ea5"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Rogue/studded-belt-standard-high.glb",
+          "sha256": "ba32ae43c944a1c47b229c81df982beb5df0d5723a6a42b47c1b8ffd96861ebe"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Rogue/leather-cap-standard-low.glb",
+          "sha256": "f71f4d4995ffbd9f96e3e1fe984b395c8c3d7afedd44c777913955d72b2df132"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Rogue/leather-tunic-standard-low.glb",
+          "sha256": "52d25f55b12812770206cbcd101e2263dad0ab94cfff4c236dd7f46ab09df3b3"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Rogue/leather-pants-standard-low.glb",
+          "sha256": "b82996e483a6082c63745360b88edbc38186160ca89d6c65142c65b3351f5383"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Rogue/leather-boots-standard-low.glb",
+          "sha256": "3ed8ed389dc4528db24ff1905500944ab62814c8f7caa64898f11d13b58dfaed"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Rogue/leather-gloves-standard-low.glb",
+          "sha256": "85862a7bc1a862e7aa787a328f8d5ffc3d557b3d286ad1f6442c869f9ea9684d"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Rogue/reinforced-spaulders-standard-low.glb",
+          "sha256": "32d71c3b7fbac5c5375c216229bf0f799544a93a5a083b0a55c66505f52a97c1"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Rogue/studded-belt-standard-low.glb",
+          "sha256": "e3150cd4a6ba174232e87eace64234769eba9692724ab775cdde9242eee7ba25"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Cleric/leather-cap-standard-high.glb",
+          "sha256": "3f64f6df5527ae305b740c4a137aa8b6f81bcb4a472288c5c39c4f1f7eb87601"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Cleric/leather-tunic-standard-high.glb",
+          "sha256": "003812e4e0d3bb98791693606ddedd8b7ea8ccaa725c18ea9b6b7285ae4788a7"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Cleric/leather-pants-standard-high.glb",
+          "sha256": "e8a7ab7f4b1da3c13212d4c0fb69d3b5ef1973e3ca0a3bd0a84a71beab5945cc"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Cleric/leather-boots-standard-high.glb",
+          "sha256": "34531ca16fc5b621171a68dc7b37e3382fb0917bf43e1d1bb55412367cc0265e"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Cleric/leather-gloves-standard-high.glb",
+          "sha256": "0bb3e181bafa3a0d2d477a59bd09ac1619c1666548abd26ad53d5b067a91ccf5"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Cleric/reinforced-spaulders-standard-high.glb",
+          "sha256": "6d15b2214b0c4ae1d1dc9ad6cb0dacea385e77386cb05a3db06637adc3211a00"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Cleric/studded-belt-standard-high.glb",
+          "sha256": "beb31e57fd31c9e67cc209cc37ce1769dd88ccef261c740eca2fd5dbc4c8ea86"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Cleric/leather-cap-standard-low.glb",
+          "sha256": "278b86b3417203e8cdc736617171679c74d26d5c88ea50298d86170503b8a5f5"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Cleric/leather-tunic-standard-low.glb",
+          "sha256": "07f9acebe8ee82cfa95ffdc6ebd83cc7928cdadd5ea5b12fa3fa41e6c59e3d07"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Cleric/leather-pants-standard-low.glb",
+          "sha256": "06f6398f845b4137118ff73d487fcf498522ea223065c8172273904807c1a477"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Cleric/leather-boots-standard-low.glb",
+          "sha256": "882dc459c380e3890773678b054891eb2b869853bb52466ea11926e7664bba20"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Cleric/leather-gloves-standard-low.glb",
+          "sha256": "3bd386a5d388a8ad25837e5472a490b412497386506a6fb716dce44228b00217"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Cleric/reinforced-spaulders-standard-low.glb",
+          "sha256": "13316340665e5ad9dd093a168e6b346313f856f5a1d3669b0ce9056af1b821e5"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Cleric/studded-belt-standard-low.glb",
+          "sha256": "4105ad64544a0abbef6475152d9ec2abe35ca0010b1435e5d0a0001cfdcb50a2"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Wizard/leather-cap-standard-high.glb",
+          "sha256": "1528bdccb2366f65bbf196830a256d16736df98526f017eb2453ac6941797979"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Wizard/leather-tunic-standard-high.glb",
+          "sha256": "101c6bb6f2633bd3749d4ef08657c94c36b8402735298e8927a07e245242e80d"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Wizard/leather-pants-standard-high.glb",
+          "sha256": "5154550a0f38925ba201ceac8644b0e523c304ff8bac208cb0a00dd998d978a8"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Wizard/leather-boots-standard-high.glb",
+          "sha256": "eeb4ba2c1363d9d2edf7aa479a35d180cb02d62d011a064483a27a062dbc2d10"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Wizard/leather-gloves-standard-high.glb",
+          "sha256": "317ceae6bce36afe0b283e14d831d285d9f28c3d5d91d67fb95628023ad9bfd8"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Wizard/reinforced-spaulders-standard-high.glb",
+          "sha256": "962c596a0e55fd5a89b14018cc0ef510d3740c2ada64c59c006c149a0f3ec1ce"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Wizard/studded-belt-standard-high.glb",
+          "sha256": "2e522087da286f22b96f70ddf2145bb4a9bbe2a3ac598b09c558f5bc411aa60c"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Wizard/leather-cap-standard-low.glb",
+          "sha256": "7020d71807dd08d137f784362a83ad7c67a3c55953bcd07454a19dd992ce87fe"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Wizard/leather-tunic-standard-low.glb",
+          "sha256": "b70f28df5a1e1482577784702db4af9cea59bab62e3ce475f3061f4ad232ec22"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Wizard/leather-pants-standard-low.glb",
+          "sha256": "628f36b906e3f8005a8d73593a080e31cd9e2758c715518c205bda6e7ac2d864"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Wizard/leather-boots-standard-low.glb",
+          "sha256": "691f3fbff99b76d0a998d3278bb5fd7d82d52b78399e356676c0648a1883a4a7"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Wizard/leather-gloves-standard-low.glb",
+          "sha256": "6bbe9335a94be6b7406d56fc35fd4a67476dc42fe196851856cbd41aad22c407"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Wizard/reinforced-spaulders-standard-low.glb",
+          "sha256": "288e62597aa7b223b78030ac7e0134bfe031d86998a8febe6d405cd1cc31a550"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Wizard/studded-belt-standard-low.glb",
+          "sha256": "29365e866b67db3e44a2d1ded2581d01c8d54ba39de7e6c2a89f08fc575ef7fc"
+        }
+      ]
+    },
+    "Midnight Masque": {
+      "id": "midnight-masque-v1",
+      "name": "Midnight Masque",
+      "coverage": {
+        "head": "silk-hood",
+        "chest": "leather-tunic",
+        "legs": "leather-pants",
+        "feet": "leather-boots",
+        "gloves": "silk-gloves",
+        "shoulders": "velvet-mantle",
+        "belt": "silk-sash"
+      },
+      "models": {
+        "Fighter": {
+          "high": {
+            "file": "./assets/garments/midnight-masque-v1/Fighter-high.glb",
+            "bytes": 1580908,
+            "sha256": "59ba0fbe01bb5dfaa4981d7d34b93980b89d6f0c2c16535199c3b4f779b40e4c"
+          },
+          "low": {
+            "file": "./assets/garments/midnight-masque-v1/Fighter-low.glb",
+            "bytes": 932560,
+            "sha256": "196e55afe4ad81be2c91de5689243ae1d57f8d0f90aad47407dcf8bc42f0da57"
+          }
+        },
+        "Rogue": {
+          "high": {
+            "file": "./assets/garments/midnight-masque-v1/Rogue-high.glb",
+            "bytes": 1475624,
+            "sha256": "be52354f9310eb2fbac31a9c37299bf56a160cc7dab17d77f0527b9cd585c7ee"
+          },
+          "low": {
+            "file": "./assets/garments/midnight-masque-v1/Rogue-low.glb",
+            "bytes": 875480,
+            "sha256": "9d87ff0dd8d09bcadcda7c15e743dd768ded9e5412e08e6e8254905a601fc55e"
+          }
+        },
+        "Cleric": {
+          "high": {
+            "file": "./assets/garments/midnight-masque-v1/Cleric-high.glb",
+            "bytes": 1467808,
+            "sha256": "8399ce8c8c1c756d45af863e2595a6a170f99290838fbe13f822769084dcab2f"
+          },
+          "low": {
+            "file": "./assets/garments/midnight-masque-v1/Cleric-low.glb",
+            "bytes": 874144,
+            "sha256": "2656a4a75f89fbb4d26da8d42a29a5abfbffee4c91917c4bf71910752f1caf58"
+          }
+        },
+        "Wizard": {
+          "high": {
+            "file": "./assets/garments/midnight-masque-v1/Wizard-high.glb",
+            "bytes": 1470904,
+            "sha256": "ac3645012c0b29eb98a9da03d4c37fb32efab5cac1677290ae95d5b9e3f0c54a"
+          },
+          "low": {
+            "file": "./assets/garments/midnight-masque-v1/Wizard-low.glb",
+            "bytes": 869636,
+            "sha256": "3d89e18d98ff2072874efda808270ecf800bf6ac9dbc6ccbef652379f244c2d2"
+          }
+        }
+      },
+      "provenance": [
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Fighter/silk-hood-standard-high.glb",
+          "sha256": "169b7455a8fa12728857c10c641c0f8770f44c442e9bb247ec7ab374af2baa48"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Fighter/leather-tunic-standard-high.glb",
+          "sha256": "889463321349ec8e04dbdfd667b630909abc1af1617e6c6dde29e65af45df256"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Fighter/leather-pants-standard-high.glb",
+          "sha256": "e95aae299aa7c7bdf7a0984959c01a14075f1a55ba000d30a70594e213c07cee"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Fighter/leather-boots-standard-high.glb",
+          "sha256": "1dcceb4fd29f0a00a3fad051be332ba63fc3c47e2768d128fbb5790daade4c11"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Fighter/silk-gloves-standard-high.glb",
+          "sha256": "a677fe61062c43720699c9b275d6dfd1c27fce5fff9bb8971db480855d725161"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Fighter/velvet-mantle-standard-high.glb",
+          "sha256": "505851500c1d743eadc08f09cac52c3befca4b192b9e90c88195a48568762ed1"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Fighter/silk-sash-standard-high.glb",
+          "sha256": "a57bd0e8fb2aa7f306b936e2f5bb0f09721bc26a910fab66dae06c75fe31118c"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Fighter/silk-hood-standard-low.glb",
+          "sha256": "8f46faa37f15ed666381afb2b50b66f41ec56206ac9d7e1c0643bea037f78cd7"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Fighter/leather-tunic-standard-low.glb",
+          "sha256": "ad9bd3d1f4de2ceb962fe8335785263c16be8270b9e53cb13accfc6dfcde2187"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Fighter/leather-pants-standard-low.glb",
+          "sha256": "d85f451f1e02186dededd81c1843395520ba2548fd1f7335c3ea19f16fda057f"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Fighter/leather-boots-standard-low.glb",
+          "sha256": "aaabda6b72d5cfc8e8e4afd20ef99fddd459394ffc01407afeb2c93767f9f09b"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Fighter/silk-gloves-standard-low.glb",
+          "sha256": "0b9f55882a4ee2431f9e9c00ff934b5e0a1d33e93b10ec49baaa65b9de2cccef"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Fighter/velvet-mantle-standard-low.glb",
+          "sha256": "8fa97eed5bef2525408e34d4044ac605eef228fe8ec1dc819cef6f7d9955a0fb"
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Fighter/silk-sash-standard-low.glb",
+          "sha256": "a684c9ccce0434a55f5c6aedee4754249d06437d0166d5050cfb772da1b4657a"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Rogue/silk-hood-standard-high.glb",
+          "sha256": "4e5e8e68db37e2ac2c6e4b742e864691d004be90d5089275236ed7162fe4972e"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Rogue/leather-tunic-standard-high.glb",
+          "sha256": "ead0d8a6dbc92caa5b3e565e003d8a3a077e2472e18abfa16fc12c664a59c71c"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Rogue/leather-pants-standard-high.glb",
+          "sha256": "614c8d073741be345e8fd82eb6a24f68bf0625f765f30cd083ea8e2d181f9f9e"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Rogue/leather-boots-standard-high.glb",
+          "sha256": "99f7804ca7a3063c09eb64bcb79b905ce2b0732986f09a9bfb9418427d42d087"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Rogue/silk-gloves-standard-high.glb",
+          "sha256": "204570cc787ecc38eb8b1219ca81ff4a8b3fdd08828f701024bb06dd54af2446"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Rogue/velvet-mantle-standard-high.glb",
+          "sha256": "e1f13b9f637faff38042eb42288d930a0f154db320cebac75c45225f6b7b99d0"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Rogue/silk-sash-standard-high.glb",
+          "sha256": "ddecbe0cd0b9c7dad6c6a74a536092a9ca1842a6bb6b08f40e353b3eb8efaa96"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Rogue/silk-hood-standard-low.glb",
+          "sha256": "7f751f1a8cb057f2707ec09fd4e48ff29982eaf39b7399d8c3cb6b94cb917697"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Rogue/leather-tunic-standard-low.glb",
+          "sha256": "52d25f55b12812770206cbcd101e2263dad0ab94cfff4c236dd7f46ab09df3b3"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Rogue/leather-pants-standard-low.glb",
+          "sha256": "b82996e483a6082c63745360b88edbc38186160ca89d6c65142c65b3351f5383"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Rogue/leather-boots-standard-low.glb",
+          "sha256": "3ed8ed389dc4528db24ff1905500944ab62814c8f7caa64898f11d13b58dfaed"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Rogue/silk-gloves-standard-low.glb",
+          "sha256": "db9dfccde2bee58bc2b9e8e2a04fb0a392902e374d0e693134a897e07e44fe24"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Rogue/velvet-mantle-standard-low.glb",
+          "sha256": "eb2df0becf895132228dec3676202a9df5a4e9e536687ab2309a4655763be77b"
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Rogue/silk-sash-standard-low.glb",
+          "sha256": "af5f549ac4b289e299c43b8aba979e137b851343ecb63fab12ebcf8e85953ec4"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Cleric/silk-hood-standard-high.glb",
+          "sha256": "3e0714806674d3609cecb8bdc1c8337d101da913c5f469b44407c556833176c9"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Cleric/leather-tunic-standard-high.glb",
+          "sha256": "003812e4e0d3bb98791693606ddedd8b7ea8ccaa725c18ea9b6b7285ae4788a7"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Cleric/leather-pants-standard-high.glb",
+          "sha256": "e8a7ab7f4b1da3c13212d4c0fb69d3b5ef1973e3ca0a3bd0a84a71beab5945cc"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Cleric/leather-boots-standard-high.glb",
+          "sha256": "34531ca16fc5b621171a68dc7b37e3382fb0917bf43e1d1bb55412367cc0265e"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Cleric/silk-gloves-standard-high.glb",
+          "sha256": "63a3a23642c29b39f7b09caeabac1c4d3442da0bed88cb6a9575d5c070948a56"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Cleric/velvet-mantle-standard-high.glb",
+          "sha256": "29d4d7dd3eec922aed5aaca55ee78c49c5922fdcd6148dd92c801e89e61791bb"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Cleric/silk-sash-standard-high.glb",
+          "sha256": "e2838edd2ae344674cadb6571447838128d4f420de63dc7deac937e246290345"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Cleric/silk-hood-standard-low.glb",
+          "sha256": "c88d47eaa397b726a01a10c7f4754abea6d8a260c6d8bbbf39dbe89bdca6251d"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Cleric/leather-tunic-standard-low.glb",
+          "sha256": "07f9acebe8ee82cfa95ffdc6ebd83cc7928cdadd5ea5b12fa3fa41e6c59e3d07"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Cleric/leather-pants-standard-low.glb",
+          "sha256": "06f6398f845b4137118ff73d487fcf498522ea223065c8172273904807c1a477"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Cleric/leather-boots-standard-low.glb",
+          "sha256": "882dc459c380e3890773678b054891eb2b869853bb52466ea11926e7664bba20"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Cleric/silk-gloves-standard-low.glb",
+          "sha256": "0d1e54f9cc734309affd876081ed9fe3490994a818b94b123e61d9c56d89efd5"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Cleric/velvet-mantle-standard-low.glb",
+          "sha256": "49084a6c4b3323a19f609a2a9657f3da42278e5ff62bfd0af1595ebb4fba0831"
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Cleric/silk-sash-standard-low.glb",
+          "sha256": "142d994a35db4ee510241c2d73b1807ec668edc69339a2d836926970b891ed72"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Wizard/silk-hood-standard-high.glb",
+          "sha256": "b2240687fa789bd505a028fe5f9867e90ca4c8b2b35bbe1c636f6b9da3ad9252"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Wizard/leather-tunic-standard-high.glb",
+          "sha256": "101c6bb6f2633bd3749d4ef08657c94c36b8402735298e8927a07e245242e80d"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Wizard/leather-pants-standard-high.glb",
+          "sha256": "5154550a0f38925ba201ceac8644b0e523c304ff8bac208cb0a00dd998d978a8"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Wizard/leather-boots-standard-high.glb",
+          "sha256": "eeb4ba2c1363d9d2edf7aa479a35d180cb02d62d011a064483a27a062dbc2d10"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Wizard/silk-gloves-standard-high.glb",
+          "sha256": "bf58a8158d941fc4459332db289c6b777a06b4622c216da3e69903f98d6c41da"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Wizard/velvet-mantle-standard-high.glb",
+          "sha256": "d1697ef6fa961ca698a4de71d4134f63997377829c30537bd33cf7d23c8898b0"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Wizard/silk-sash-standard-high.glb",
+          "sha256": "7fe1931e4d6fe3debeb16b9955b56f45162f74c5b2bf3b1efd035d544d3bac09"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "head",
+          "path": "./assets/equipment/runtime/Wizard/silk-hood-standard-low.glb",
+          "sha256": "51b4071570b171b0dffcb115f5328bc907306f2a03e674aa255d7afde10f5704"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "chest",
+          "path": "./assets/equipment/runtime/Wizard/leather-tunic-standard-low.glb",
+          "sha256": "b70f28df5a1e1482577784702db4af9cea59bab62e3ce475f3061f4ad232ec22"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "legs",
+          "path": "./assets/equipment/runtime/Wizard/leather-pants-standard-low.glb",
+          "sha256": "628f36b906e3f8005a8d73593a080e31cd9e2758c715518c205bda6e7ac2d864"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "feet",
+          "path": "./assets/equipment/runtime/Wizard/leather-boots-standard-low.glb",
+          "sha256": "691f3fbff99b76d0a998d3278bb5fd7d82d52b78399e356676c0648a1883a4a7"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "gloves",
+          "path": "./assets/equipment/runtime/Wizard/silk-gloves-standard-low.glb",
+          "sha256": "3044e184e4c2713d7be570019a4fa19861c046ded9e6e50ed5a426370d625e30"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "shoulders",
+          "path": "./assets/equipment/runtime/Wizard/velvet-mantle-standard-low.glb",
+          "sha256": "d6940036715d8f9e8b1b11ad6571d8ec85fb6f2586492ad2e77070c6a418ef5e"
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "slot": "belt",
+          "path": "./assets/equipment/runtime/Wizard/silk-sash-standard-low.glb",
+          "sha256": "fa6008f893c91def45686cb42fcc364527101879b668486a42f95baf74a8f03b"
+        }
+      ]
     }
   }
 };
@@ -2329,5 +5528,61 @@ export const GARMENT_ASSET_VERSIONS = {
   "./assets/garments/winterthorn-revel-v1/Cleric-high.glb": "37b77350dc235781",
   "./assets/garments/winterthorn-revel-v1/Cleric-low.glb": "96229fdfabdfa6a8",
   "./assets/garments/winterthorn-revel-v1/Wizard-high.glb": "b48c4709a34fba09",
-  "./assets/garments/winterthorn-revel-v1/Wizard-low.glb": "86c20f296073bcf4"
+  "./assets/garments/winterthorn-revel-v1/Wizard-low.glb": "86c20f296073bcf4",
+  "./assets/garments/hollow-court-v1/Fighter-high.glb": "e164f22f88654768",
+  "./assets/garments/hollow-court-v1/Fighter-low.glb": "62c0ddf7bc4b1dc2",
+  "./assets/garments/hollow-court-v1/Rogue-high.glb": "6ba1e040f929113e",
+  "./assets/garments/hollow-court-v1/Rogue-low.glb": "de69a395bc0ddb3c",
+  "./assets/garments/hollow-court-v1/Cleric-high.glb": "a030ecec2943b0c0",
+  "./assets/garments/hollow-court-v1/Cleric-low.glb": "df71406029aae4da",
+  "./assets/garments/hollow-court-v1/Wizard-high.glb": "be8841984c7d1fb2",
+  "./assets/garments/hollow-court-v1/Wizard-low.glb": "7f2f19d6732a5d00",
+  "./assets/garments/rosebound-vow-v1/Fighter-high.glb": "2560a93ce76c46d3",
+  "./assets/garments/rosebound-vow-v1/Fighter-low.glb": "05f619f741539515",
+  "./assets/garments/rosebound-vow-v1/Rogue-high.glb": "b78abb2e63350a48",
+  "./assets/garments/rosebound-vow-v1/Rogue-low.glb": "8a2491d24ed79bf5",
+  "./assets/garments/rosebound-vow-v1/Cleric-high.glb": "1c1dea3c87894497",
+  "./assets/garments/rosebound-vow-v1/Cleric-low.glb": "1fcd183af0f5345d",
+  "./assets/garments/rosebound-vow-v1/Wizard-high.glb": "92fc7ec7dc855ea2",
+  "./assets/garments/rosebound-vow-v1/Wizard-low.glb": "85d78c8f253e11c6",
+  "./assets/garments/lantern-envoy-v1/Fighter-high.glb": "81451dc2267c70f0",
+  "./assets/garments/lantern-envoy-v1/Fighter-low.glb": "9b5359dcef5f69b8",
+  "./assets/garments/lantern-envoy-v1/Rogue-high.glb": "dd85a46b924d429e",
+  "./assets/garments/lantern-envoy-v1/Rogue-low.glb": "5b718375ffb0a4de",
+  "./assets/garments/lantern-envoy-v1/Cleric-high.glb": "c5517dde003ea94f",
+  "./assets/garments/lantern-envoy-v1/Cleric-low.glb": "98542103680cf77f",
+  "./assets/garments/lantern-envoy-v1/Wizard-high.glb": "678b24d30c43cd75",
+  "./assets/garments/lantern-envoy-v1/Wizard-low.glb": "d234573e2c67a5fc",
+  "./assets/garments/springbloom-jubilee-v1/Fighter-high.glb": "6d57367a1011a759",
+  "./assets/garments/springbloom-jubilee-v1/Fighter-low.glb": "f5fd034617d5e4d9",
+  "./assets/garments/springbloom-jubilee-v1/Rogue-high.glb": "b85d7a7a9bd7267a",
+  "./assets/garments/springbloom-jubilee-v1/Rogue-low.glb": "09fba230bf0e6ccb",
+  "./assets/garments/springbloom-jubilee-v1/Cleric-high.glb": "43210b6d8a6e2272",
+  "./assets/garments/springbloom-jubilee-v1/Cleric-low.glb": "b9530fd44ed6e978",
+  "./assets/garments/springbloom-jubilee-v1/Wizard-high.glb": "e8cea3fbc0020892",
+  "./assets/garments/springbloom-jubilee-v1/Wizard-low.glb": "deb932df6b31ff74",
+  "./assets/garments/solstice-pyre-v1/Fighter-high.glb": "036359f338ed9940",
+  "./assets/garments/solstice-pyre-v1/Fighter-low.glb": "53728b95fecaec77",
+  "./assets/garments/solstice-pyre-v1/Rogue-high.glb": "2cb78821d4b6d672",
+  "./assets/garments/solstice-pyre-v1/Rogue-low.glb": "f79dafbd5f738622",
+  "./assets/garments/solstice-pyre-v1/Cleric-high.glb": "5dfd0a442940a74a",
+  "./assets/garments/solstice-pyre-v1/Cleric-low.glb": "c53880db5b5a317b",
+  "./assets/garments/solstice-pyre-v1/Wizard-high.glb": "404ed2fbafc6ffbe",
+  "./assets/garments/solstice-pyre-v1/Wizard-low.glb": "6e27bda82037792f",
+  "./assets/garments/gilded-harvest-v1/Fighter-high.glb": "b24d2c7932773e16",
+  "./assets/garments/gilded-harvest-v1/Fighter-low.glb": "432777006bf57865",
+  "./assets/garments/gilded-harvest-v1/Rogue-high.glb": "8adc9b59d693ba09",
+  "./assets/garments/gilded-harvest-v1/Rogue-low.glb": "634d3d2b53068ed8",
+  "./assets/garments/gilded-harvest-v1/Cleric-high.glb": "9af7adb95cb90f55",
+  "./assets/garments/gilded-harvest-v1/Cleric-low.glb": "9cb506e93da9a679",
+  "./assets/garments/gilded-harvest-v1/Wizard-high.glb": "23efbca0c8903c4c",
+  "./assets/garments/gilded-harvest-v1/Wizard-low.glb": "88ce37875b6a4a4f",
+  "./assets/garments/midnight-masque-v1/Fighter-high.glb": "59ba0fbe01bb5dfa",
+  "./assets/garments/midnight-masque-v1/Fighter-low.glb": "196e55afe4ad81be",
+  "./assets/garments/midnight-masque-v1/Rogue-high.glb": "be52354f9310eb2f",
+  "./assets/garments/midnight-masque-v1/Rogue-low.glb": "9d87ff0dd8d09bca",
+  "./assets/garments/midnight-masque-v1/Cleric-high.glb": "8399ce8c8c1c756d",
+  "./assets/garments/midnight-masque-v1/Cleric-low.glb": "2656a4a75f89fbb4",
+  "./assets/garments/midnight-masque-v1/Wizard-high.glb": "ac3645012c0b29eb",
+  "./assets/garments/midnight-masque-v1/Wizard-low.glb": "3d89e18d98ff2072"
 };

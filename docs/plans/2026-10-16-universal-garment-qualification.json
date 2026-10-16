@@ -1,0 +1,2020 @@
+{
+  "date": "2026-10-16T00:27:11.509300+00:00",
+  "runtimeSource": "9948129451cd4cd1ee30f8f5f4cb2c1382a8c7a0",
+  "state": "Qualified and selected for ordinary merge into master after accepted57; not yet deployed.",
+  "scope": "Seven universal outfits complete the minimum eight universal designs with Winterthorn.56new GLBs across four supplied fits/High/Low. The requested modeled catalog reaches18distinct looks including four class outfits and six held families. Search/category/result-count browsing, current-owner scroll/focus preservation and coordinated stash/forge/trading/direct-trade framing/controls are included. Existing ownership,25EP armor prices, actual gear/stats and independent hands remain unchanged.",
+  "validation": {
+    "client": "292distinct focused checks across12suites have passing evidence:213garment/vendor/equipment/cache/audit/preview/browser-plan checks plus79existing menu/layout checks. Changed Rose/Spring models and updated vendor behavior have explicit final reruns.",
+    "models": "96current body-outfit GLBs have byte-matched official zero-error/zero-warning proof. Final16Rose/Spring models validate;80unchanged body files reuse exact prior proof. All52predecessor body/held GLBs and other unchanged new assets retain exact bytes. Twelve held models retain accepted57validation.",
+    "server": "Focused24-entry wardrobe/vendor, handler and persistence/replication checks pass.",
+    "lintAndContent": "Full lint passes after final geometry/runtime changes; subsequent fixture-only correction passes scoped lint.16generated groups pass, with final garment generation matching committed source and explicit frozen manifest/source/model audit passing.",
+    "native": "42distinct cases qualify via initial42passing run, corrected eight affected Rose/Spring cases and final two collection/store cases. Seven new outfits each passHigh/Low four-class27-pose/90Run-frame party and vendor compare/apply; twelve service/layout cases pass and two complete-catalog keyboard/filter/scroll/focus/purchase cases pass. Native workers1/retries0. No unchanged broad campaign or soak rerun.",
+    "resources": "Each party fixture passes three strict swap/restore geometry/texture cycles; vendor teardown releases its preview. Real14slot gear remains unchanged and restores after clear.",
+    "visualReview": "Reviewed every new High outfit close with actual held gear/HUD, representative Low gameplay/close captures, corrected Spring High/Low and Rose silhouettes, filtered actual-model desktop store, and phone/desktop forge/trade surfaces. The initial inward overlapping spring petals produced visible flicker despite test passes; corrected outward fan/depth-separated bases and outward rose shoulder leaves resolve the observed defect. Final owner collection/art approval remains open.",
+    "retainedFailures": "Preparation retains unused helper argument lint, four invalid Low masquerade eye loops, count-only proof89-vs88 and offhand fixture4-vs2/missing-suite invocation failures. Two later store cases incorrectly searched a human display name in the registered-ID signature; exact committed equipmentVisualGarment ID now qualifies and the original traces remain. No budget or legacy payload ban relaxed."
+  },
+  "sceneBudgets": {
+    "full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high": {
+      "quality": "high",
+      "maxDraws": 232,
+      "maxTriangles": 178975,
+      "posedRecords": 27,
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/observation.json"
+    },
+    "full-outfit-garment-Gilded-6037c-s-all-supplied-classes-high": {
+      "quality": "high",
+      "maxDraws": 240,
+      "maxTriangles": 185033,
+      "posedRecords": 27,
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-6037c-s-all-supplied-classes-high/observation.json"
+    },
+    "full-outfit-garment-Lanter-6ef27-s-all-supplied-classes-high": {
+      "quality": "high",
+      "maxDraws": 244,
+      "maxTriangles": 178879,
+      "posedRecords": 27,
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-6ef27-s-all-supplied-classes-high/observation.json"
+    },
+    "full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high": {
+      "quality": "high",
+      "maxDraws": 240,
+      "maxTriangles": 178911,
+      "posedRecords": 27,
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/observation.json"
+    },
+    "full-outfit-garment-Hollow-149ab-s-all-supplied-classes-high": {
+      "quality": "high",
+      "maxDraws": 248,
+      "maxTriangles": 180041,
+      "posedRecords": 27,
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-149ab-s-all-supplied-classes-high/observation.json"
+    },
+    "full-outfit-garment-Gilded-073b8-es-all-supplied-classes-low": {
+      "quality": "low",
+      "maxDraws": 128,
+      "maxTriangles": 76019,
+      "posedRecords": 27,
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-073b8-es-all-supplied-classes-low/observation.json"
+    },
+    "full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low": {
+      "quality": "low",
+      "maxDraws": 128,
+      "maxTriangles": 72869,
+      "posedRecords": 27,
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/observation.json"
+    },
+    "full-outfit-garment-Solsti-8ecb6-s-all-supplied-classes-high": {
+      "quality": "high",
+      "maxDraws": 236,
+      "maxTriangles": 188205,
+      "posedRecords": 27,
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-8ecb6-s-all-supplied-classes-high/observation.json"
+    },
+    "full-outfit-garment-Midnig-cf44c-es-all-supplied-classes-low": {
+      "quality": "low",
+      "maxDraws": 128,
+      "maxTriangles": 72803,
+      "posedRecords": 27,
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-cf44c-es-all-supplied-classes-low/observation.json"
+    },
+    "full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low": {
+      "quality": "low",
+      "maxDraws": 124,
+      "maxTriangles": 73285,
+      "posedRecords": 27,
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/observation.json"
+    },
+    "full-outfit-garment-Solsti-7e1b1-es-all-supplied-classes-low": {
+      "quality": "low",
+      "maxDraws": 124,
+      "maxTriangles": 76989,
+      "posedRecords": 27,
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-7e1b1-es-all-supplied-classes-low/observation.json"
+    },
+    "full-outfit-garment-Hollow-81fe0-es-all-supplied-classes-low": {
+      "quality": "low",
+      "maxDraws": 132,
+      "maxTriangles": 72755,
+      "posedRecords": 27,
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-81fe0-es-all-supplied-classes-low/observation.json"
+    },
+    "full-outfit-garment-Midnig-ecb48-s-all-supplied-classes-high": {
+      "quality": "high",
+      "maxDraws": 240,
+      "maxTriangles": 178265,
+      "posedRecords": 27,
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-ecb48-s-all-supplied-classes-high/observation.json"
+    },
+    "full-outfit-garment-Lanter-30cb9-es-all-supplied-classes-low": {
+      "quality": "low",
+      "maxDraws": 132,
+      "maxTriangles": 72757,
+      "posedRecords": 27,
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-30cb9-es-all-supplied-classes-low/observation.json"
+    }
+  },
+  "limits": "Scoped model delivery/visual review does not establish final owner art, whole-world frame-time/device performance, full quest/menu usability or beta/release readiness. Original operations/owner/F1\u2013F5/campaign/phone/cohort gates remain open. Soak/stress stays deferred; full goal remains active.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-universal-garments-20261015",
+  "evidence": [
+    {
+      "path": ".qa-universal-garments/before-fan-models.json",
+      "bytes": 13377,
+      "sha256": "fa1d096b7df0319f905a842afeb938883bfd9e8a6e7f73915a2a5706b3526627"
+    },
+    {
+      "path": ".qa-universal-garments/combined-final-focused.log",
+      "bytes": 1117,
+      "sha256": "c611b0228e2d497c593c583b092df2f2428f89885b460fc67191272112345745"
+    },
+    {
+      "path": ".qa-universal-garments/content.log",
+      "bytes": 10033,
+      "sha256": "7336ef6ede5eac75341143fefb6152e4d0ec60ec5e5bed8eac986f9f427a42e6"
+    },
+    {
+      "path": ".qa-universal-garments/corrected-full-lint.log",
+      "bytes": 96,
+      "sha256": "cc8aa727439c5af11737645f533af55a70b8f1f140900a4ca0f3afc929c1736b"
+    },
+    {
+      "path": ".qa-universal-garments/cosmetics.log",
+      "bytes": 50,
+      "sha256": "047db8e6a2d563972ef9400125c437a4c39213f9e1ec1daa0dc3660028a53dd8"
+    },
+    {
+      "path": ".qa-universal-garments/fan-corrected-generation.log",
+      "bytes": 6613,
+      "sha256": "cbbead884710a98e6a0173a7d570125d119dbb835d1ebe5879d4a724f820eac3"
+    },
+    {
+      "path": ".qa-universal-garments/fan-corrected-validation.json",
+      "bytes": 718477,
+      "sha256": "de056a56c1e17442c28b417554a66f50df7dd789aba9a9deb5a32bc5d8ea0a1f"
+    },
+    {
+      "path": ".qa-universal-garments/fan-corrected-validation.log",
+      "bytes": 520,
+      "sha256": "052ccd840b975cb62a2a027026757dd378bcd89ba3e17affd74a915797d9ca78"
+    },
+    {
+      "path": ".qa-universal-garments/fan-models-focused.log",
+      "bytes": 570,
+      "sha256": "a15388dbcadbdec5e932dd738d9bdb699f4500dd30effc6284cc2e10c33e5d55"
+    },
+    {
+      "path": ".qa-universal-garments/fan-scroll-focused.log",
+      "bytes": 649,
+      "sha256": "f48dea87be76d5102bb2f768c72619935be39f4509e2f805407df6a62f72d153"
+    },
+    {
+      "path": ".qa-universal-garments/fan-scroll-full-lint.log",
+      "bytes": 96,
+      "sha256": "cc8aa727439c5af11737645f533af55a70b8f1f140900a4ca0f3afc929c1736b"
+    },
+    {
+      "path": ".qa-universal-garments/filters-full-lint.log",
+      "bytes": 96,
+      "sha256": "cc8aa727439c5af11737645f533af55a70b8f1f140900a4ca0f3afc929c1736b"
+    },
+    {
+      "path": ".qa-universal-garments/focused.log",
+      "bytes": 1050,
+      "sha256": "19e874a47623dd6d88e0691d5aa0d78230bb0d18acd4d9c399b12a2f130130f8"
+    },
+    {
+      "path": ".qa-universal-garments/full-lint.log",
+      "bytes": 298,
+      "sha256": "3a67ce460aeb0e85a34e806b223be02cbd5590fa5619612a4a84bab0f7b2c2b8"
+    },
+    {
+      "path": ".qa-universal-garments/generate.log",
+      "bytes": 6613,
+      "sha256": "cbbead884710a98e6a0173a7d570125d119dbb835d1ebe5879d4a724f820eac3"
+    },
+    {
+      "path": ".qa-universal-garments/handlers-focused.log",
+      "bytes": 27,
+      "sha256": "2a254c2f991e0dca17b6ea176e394e2d2d8610acc9d7131d65bd7f7024f0b31c"
+    },
+    {
+      "path": ".qa-universal-garments/initial-official-validation.json",
+      "bytes": 722971,
+      "sha256": "1276f048349a3d6a7b31a7751e4f83c5f78cf213ed69c38e224489ade40e6b31"
+    },
+    {
+      "path": ".qa-universal-garments/initial-official-validation.log",
+      "bytes": 3467,
+      "sha256": "0a98623b1106499510f16a5cefc5279b4df3b15f92622d46934e905a9c8ee521"
+    },
+    {
+      "path": ".qa-universal-garments/mask-audit.log",
+      "bytes": 603,
+      "sha256": "bed04951095c2d0e6525a924b61e057a923e8d17b117ab38c8bb68e4eb4930c8"
+    },
+    {
+      "path": ".qa-universal-garments/mask-corrected-generation.log",
+      "bytes": 6613,
+      "sha256": "cbbead884710a98e6a0173a7d570125d119dbb835d1ebe5879d4a724f820eac3"
+    },
+    {
+      "path": ".qa-universal-garments/mask-corrected-validation.json",
+      "bytes": 719030,
+      "sha256": "4c9410c28da18da50f5e2fdb36ab363083e0e64fef534c4c06bf595478d1c8f2"
+    },
+    {
+      "path": ".qa-universal-garments/mask-corrected-validation.log",
+      "bytes": 608,
+      "sha256": "e95645c8ef7e2dcf88cc8c523a610f5abb873e317a05f2b2aed936fae318fa61"
+    },
+    {
+      "path": ".qa-universal-garments/mask-focused.log",
+      "bytes": 551,
+      "sha256": "026390e754e159e1857094141e4cbf2a3e20e27ef7293e669cc159d176df638e"
+    },
+    {
+      "path": ".qa-universal-garments/model-geometry-census.json",
+      "bytes": 2532,
+      "sha256": "79f3d3f5d3b1d67dffe934d2a4b74ec2ae839c3f68b1cd58effea77192009df8"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/.last-run.json",
+      "bytes": 145,
+      "sha256": "22ee12ff57140060bf0924b9b8e819b518bc91a2ca279db90bd616f5d65cfd00"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/cosmetic-vendor-cosmetic-v-81155-hout-changing-gear-at-390px/test-failed-1.png",
+      "bytes": 136775,
+      "sha256": "55dbeeb4a0e15a7644a678bfb381a8a93549d8424d6e89fb55a992eb2427d84d"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/cosmetic-vendor-cosmetic-v-c2ecb-out-changing-gear-at-1440px/test-failed-1.png",
+      "bytes": 438959,
+      "sha256": "5b4b93e7f207788c09b98c9577da49391be20c5c018317a2b0b7b94fcef2e041"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/close-Cleric.png",
+      "bytes": 1332194,
+      "sha256": "d6eaed0aa936837df2e1a17fea23cb4102849b228f990261adb8b5792e349bbf"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/close-Fighter-hud.png",
+      "bytes": 756452,
+      "sha256": "7cc47a7a38b53db423a73b175d6f21f293afa21f6d235c3c1acd789c180a2b7e"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/close-Fighter.png",
+      "bytes": 1316916,
+      "sha256": "1212929cc4045427b41f19dca5c766bcb0d82b7f5c439d316bf054872b0c40a2"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/close-Rogue.png",
+      "bytes": 1339897,
+      "sha256": "ffea13ebd0ed0d73ba66f3e5de72b4d1ac9639b21298eebdb6f4bac7e120dd73"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/close-Wizard.png",
+      "bytes": 1337053,
+      "sha256": "8a6af86b1f035c63108f82e00d6c30eba9b6bb9ea0904c3251553b79aafdb142"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/observation.json",
+      "bytes": 5523,
+      "sha256": "87fc34595097d5155bee8fe8e2b2bab05cf094bc260e2fd00f818b2b28f76751"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/original-party.png",
+      "bytes": 2115640,
+      "sha256": "7b6c4d7c5109202ceebe62c1e8746fff6cacabea126c50d47edfed39f23e8b24"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/party-Attack.png",
+      "bytes": 2103408,
+      "sha256": "6177ef9ebddda6b8e49765d1729796023b782c7b1b3124d110e8d8ec048257a9"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/party-Block.png",
+      "bytes": 2102866,
+      "sha256": "d57c6801be8a9c3aa70fec97240f6578d94335eb4e7fbe7f6dfd60c610abce8e"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/party-Cast.png",
+      "bytes": 2103576,
+      "sha256": "429e523a43a3d880d79954ef1031ef2c99103b47b2425dcd3e05ac6ea1e8d581"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/party-CombatIdle.png",
+      "bytes": 2103344,
+      "sha256": "1676e20950eb853b1dbfc5dfd5eb726ed482a80688681d95febfa5676f1800d7"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/party-Death.png",
+      "bytes": 2103787,
+      "sha256": "f6201790db7652591af85332f6ac4f59b784073987ed9b521581c5640d67c9cc"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/party-Jump.png",
+      "bytes": 2104140,
+      "sha256": "a4c03e3c6050048b87fe59dc6af0cc157c7fe96d4a02b1a911b79bec3308f341"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/party-Run-hud.png",
+      "bytes": 1318248,
+      "sha256": "31702f90106ce5cf3825c2d68d12ab6761138647fe684dc9c8c1a1f682ebd3a1"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/party-Run.png",
+      "bytes": 2103703,
+      "sha256": "9b9a62cc414c00c269fffc6ffeedf44ad520693a49d940302a7228f8a4876e45"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/restored-party.png",
+      "bytes": 2104037,
+      "sha256": "c610a110ea5bc714005f21d122cefd02fd2fbd71bf72e62c935bc3c4d53a5ef8"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/close-Cleric.png",
+      "bytes": 364843,
+      "sha256": "755ba07c2e318346a301c0d4792da5422e31e66ff0601849d197c7f34a39ab1d"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/close-Fighter-hud.png",
+      "bytes": 229033,
+      "sha256": "672ee4e2b3bc29a400ac00d990e2148b1134c65a60fb0f6014b2f1cb5f2c46f8"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/close-Fighter.png",
+      "bytes": 362030,
+      "sha256": "e3d6f95284b835999180645bbbee9a9610216482aaf096210fa066fe1657ed90"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/close-Rogue.png",
+      "bytes": 381881,
+      "sha256": "c4dd7085509682bf3d3ac3fdf456100eb053b96ee53bf24aa3440ea09bb3b162"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/close-Wizard.png",
+      "bytes": 377343,
+      "sha256": "d6863cfc3801ab47d26ffe656c06688e1cd9cd98daa7cddd50d89bd471f4188e"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/observation.json",
+      "bytes": 5507,
+      "sha256": "3adfb0ceffa7fa9c78ad59591dd47d397a88e902243fdabed078701635a67062"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/original-party.png",
+      "bytes": 708637,
+      "sha256": "f8ae57a582d0bd6ad3cf62b190b0ffbbdec28c6266846ac9916939ae98a264db"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/party-Attack.png",
+      "bytes": 707535,
+      "sha256": "b642d0ba4abad222c05253cf2729cc45e76a749b3fb95dbf95215be2de402fcb"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/party-Block.png",
+      "bytes": 707534,
+      "sha256": "9d75c2bf14673dfd05681f6b8c0ca76490acece02f001c7faf0a880c8686d244"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/party-Cast.png",
+      "bytes": 707652,
+      "sha256": "0b5cc63ba389e625865e54ffc7593882d61c85fd2f06a928e03a2cd9b8f1b6b2"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/party-CombatIdle.png",
+      "bytes": 707648,
+      "sha256": "25312c7491e63843080911a8c900ad10ca7afa7e86c35eb12bcb014372666c17"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/party-Death.png",
+      "bytes": 707902,
+      "sha256": "3c589b572b74c984225bf6639a9dd5c66311a3aea2eb056c85f6edffa8d2ae01"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/party-Jump.png",
+      "bytes": 707981,
+      "sha256": "c204f1f0603bccfc1b743bf66499f9626bf933e5fd116b4adbb819440ec5425a"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/party-Run-hud.png",
+      "bytes": 451985,
+      "sha256": "9ad92885acdab087421b638ef4bca925665e53080262f526e67b227ee9b487b1"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/party-Run.png",
+      "bytes": 707720,
+      "sha256": "f9314bde628d916ab3c51e837a60616c9c7c075d9a59420d3e8a2f7eebbd4eeb"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/restored-party.png",
+      "bytes": 707662,
+      "sha256": "01c284da0e96cfd4caf7ea79626f5b024814d0a561832385efd9f5cb7287c876"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/close-Cleric.png",
+      "bytes": 1332223,
+      "sha256": "7224c89ab6309f8b90e2e2b85391f67e96d3d413419eb217e9fccfe5a9f29cba"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/close-Fighter-hud.png",
+      "bytes": 755590,
+      "sha256": "34643464c63718e72e60cd9156945bc2da27877ad2b42a101dcbf69be0d98fc5"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/close-Fighter.png",
+      "bytes": 1317863,
+      "sha256": "a3cb2387b0ce4c61973c95ee471b67801508527a55afdab973b8b7c037f8a508"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/close-Rogue.png",
+      "bytes": 1340019,
+      "sha256": "b4657deb56b4211c6e1ec5fe919988412a80828adea191f03ae41d4c1e006c9e"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/close-Wizard.png",
+      "bytes": 1337462,
+      "sha256": "08d81b0add3b3eeb3cd0ddf3d917fb1172ed52314308d9e75b7a3060a65449b6"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/observation.json",
+      "bytes": 5523,
+      "sha256": "de8ea7f5934578b8f178dbb57c531f5a962b5e5e1aff77ef6fd3898b5d13476b"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/original-party.png",
+      "bytes": 2115640,
+      "sha256": "7b6c4d7c5109202ceebe62c1e8746fff6cacabea126c50d47edfed39f23e8b24"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/party-Attack.png",
+      "bytes": 2103677,
+      "sha256": "28d89a4e8c82837ccd77c3639165ccac64559b586b7ca54f49a1efec553c8fd7"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/party-Block.png",
+      "bytes": 2102986,
+      "sha256": "5379fc726bf48c42ed33f1a2554998181e432cf644d4c0ac3a77a010b24a93d4"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/party-Cast.png",
+      "bytes": 2103508,
+      "sha256": "90eb941cfc41596d45dad76c40807947a52ea874e09a878adb2f65ec199fbac4"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/party-CombatIdle.png",
+      "bytes": 2103467,
+      "sha256": "3219bcb9b9c8031b86d467cb53c872d751615344a8e1d3a526a812c316a0e0b3"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/party-Death.png",
+      "bytes": 2104046,
+      "sha256": "3f0f3c05d223ba48790493a2ae0dd099bc72f9614b90d2143043babd8986007c"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/party-Jump.png",
+      "bytes": 2104495,
+      "sha256": "28f5c0a82a7db62727937772f16d941a5a85c891d070ab49e5db69adffeaf6df"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/party-Run-hud.png",
+      "bytes": 1318231,
+      "sha256": "ef519d862fe0932622c715949aecceb5183efa0e0814e492a05e41e370bfce9f"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/party-Run.png",
+      "bytes": 2103779,
+      "sha256": "5a0954e313c109d934fa22d762414dd3304bc18470c6aa5dfcb3bf1352ee0f20"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/restored-party.png",
+      "bytes": 2104037,
+      "sha256": "c610a110ea5bc714005f21d122cefd02fd2fbd71bf72e62c935bc3c4d53a5ef8"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/close-Cleric.png",
+      "bytes": 363336,
+      "sha256": "467b431706858957a1c085ca074b391de8f22411bfafc6152f564895271c8384"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/close-Fighter-hud.png",
+      "bytes": 227280,
+      "sha256": "7d80742b0acba2209275c60e62af9d6ec28ab63541e2ecf4822cfd335930b460"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/close-Fighter.png",
+      "bytes": 361288,
+      "sha256": "d9c1b6af681bfa73856d8b4a3d485df3c772e3980f5ef4a01147152156b4ae4c"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/close-Rogue.png",
+      "bytes": 380664,
+      "sha256": "93d9faf7da40dcec5a4053d492f05a8f770629a00fa7aa012c18b694423db5c1"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/close-Wizard.png",
+      "bytes": 376266,
+      "sha256": "a78cba2295645f185b21ca1797ab5eddbee454eef3f4c02b62c27d03c53e91b5"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/observation.json",
+      "bytes": 5507,
+      "sha256": "1318adaa8f0e29d41516f6c7a5b586b9a18cd1800bfc165fa5d0334ab5546912"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/original-party.png",
+      "bytes": 708637,
+      "sha256": "f8ae57a582d0bd6ad3cf62b190b0ffbbdec28c6266846ac9916939ae98a264db"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/party-Attack.png",
+      "bytes": 707624,
+      "sha256": "7287e303a56c3bbda701f3a932edf8b9913925afe1b21e46974450c152b4aa79"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/party-Block.png",
+      "bytes": 707509,
+      "sha256": "f92a2df190af60613e4f7c53c43dc4ef3da4a46bb7bca5aeda1e846b75d2bcda"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/party-Cast.png",
+      "bytes": 707776,
+      "sha256": "8ba9d31c0815224c8a6feeeeda3c4f7e5a3eb909d73482a9c86981f5feb2936e"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/party-CombatIdle.png",
+      "bytes": 707702,
+      "sha256": "7d4b2fcba109680b86c752f1b0159b8cc780b294db89c6bc1c357fe05d742075"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/party-Death.png",
+      "bytes": 707968,
+      "sha256": "deef1fc0fe6509d389f4948b4a9e840c2a5e79fe41b3d804c737964278c6bc05"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/party-Jump.png",
+      "bytes": 707966,
+      "sha256": "c236cc0177f5eac8a728c6580415cf356fc7b5d1058bc01dfaef421f2f01b9d0"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/party-Run-hud.png",
+      "bytes": 452013,
+      "sha256": "eb50af391a4fcc77e691dcd13486cd333ad8d5c836291d36abd4aea35fa15265"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/party-Run.png",
+      "bytes": 707775,
+      "sha256": "ae13f782bb0cf0ffedf51465184aab04ebcd61de4f0d06871806acedac32e6fb"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/restored-party.png",
+      "bytes": 707662,
+      "sha256": "01c284da0e96cfd4caf7ea79626f5b024814d0a561832385efd9f5cb7287c876"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/garment-vendor-preview-Ros-b3790--applies-independently-high/selected-garment-preview.png",
+      "bytes": 344782,
+      "sha256": "1d6b2c65988b189325bbd23583ce17be6e592ae3ff1e14efa51110bdf095510f"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/garment-vendor-preview-Ros-b4748-d-applies-independently-low/selected-garment-preview.png",
+      "bytes": 152816,
+      "sha256": "6258ea67cd6c9bf448ba06b38bd475ab55d13874a3947fc338d850e5c25c83b2"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/garment-vendor-preview-Spr-14be7-d-applies-independently-low/selected-garment-preview.png",
+      "bytes": 156900,
+      "sha256": "9701c574ee1ca7321f97674833106b1212582992767e50306fd54391ccfab938"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll/garment-vendor-preview-Spr-98075--applies-independently-high/selected-garment-preview.png",
+      "bytes": 343479,
+      "sha256": "f853db468dbd299e973819c799ea9e1f5514e5d7aea3529e35fb52062b35d9bd"
+    },
+    {
+      "path": ".qa-universal-garments/native-fan-scroll.log",
+      "bytes": 9340,
+      "sha256": "660ba85e3994d077de4e88448971d4b69116afde7f9b57e22e6b884adbf34570"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/cosmetic-vendor-cosmetic-v-81155-hout-changing-gear-at-390px/filtered-wardrobe.png",
+      "bytes": 137626,
+      "sha256": "f9b2a8a34dc5524f8307ad38f3216952f0320fc86d13eb17441a40295ac5e29d"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/cosmetic-vendor-cosmetic-v-c2ecb-out-changing-gear-at-1440px/filtered-wardrobe.png",
+      "bytes": 417220,
+      "sha256": "d3d0cb23385f647fa53b2b6c281d7b47f99d49c618606f34f58a6c652610fbd1"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/direct-trade-review-1280-d-cd960-aits-for-acknowledged-offer/direct-trade-acknowledged-review.png",
+      "bytes": 417342,
+      "sha256": "919bd2e6fa523d0d300914595d63108c51e21ea30888b67fa0e5045e88df4efb"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/direct-trade-review-1280-d-cd960-aits-for-acknowledged-offer/direct-trade-unsent-review.png",
+      "bytes": 419217,
+      "sha256": "80698002baddce36df9555a7d4ec07f98c8520baf4d320c41eae13568871eac3"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/direct-trade-review-390-di-5b586-aits-for-acknowledged-offer/direct-trade-acknowledged-review.png",
+      "bytes": 139855,
+      "sha256": "93d17e2b999386707e48fb2a50e612a8c8f71f3ad2842074309d6c8ce1a2d813"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/direct-trade-review-390-di-5b586-aits-for-acknowledged-offer/direct-trade-unsent-review.png",
+      "bytes": 138687,
+      "sha256": "ec2423c04c4d2ad253598903436bb228f52361bf8d6d2ab7d81736ebb21a708c"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/direct-trade-review-844-di-5b2ba-aits-for-acknowledged-offer/direct-trade-acknowledged-review.png",
+      "bytes": 135771,
+      "sha256": "af7cab9ff057a0e7dd75601ec51ae06970e012146721317a21e5ed6c2f7bdf55"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/direct-trade-review-844-di-5b2ba-aits-for-acknowledged-offer/direct-trade-unsent-review.png",
+      "bytes": 139755,
+      "sha256": "363b04d2849f7b24f00d6ef1cbc581b36a2b290f309ec4604035f2c7426b2973"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/forge-presentation-1280px--4cd66-gh-refresh-and-capped-items/forge-potency-cap.png",
+      "bytes": 281891,
+      "sha256": "219a2111a8cd15f7b43544dc6a9b8abcd79b5adc54b4b14c8a184a11311958e9"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/forge-presentation-1280px--4cd66-gh-refresh-and-capped-items/forge-socket-cap.png",
+      "bytes": 281482,
+      "sha256": "b41d17ca0e920adcfcf2ea958461254bdc0587b88da78a607639615250f33a57"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/forge-presentation-1280px--4cd66-gh-refresh-and-capped-items/forge-upgrade.png",
+      "bytes": 279549,
+      "sha256": "4edb338fcf38d9ebe4b5b6666b8ecd8122ef5bedfd4d467eb84fd3ace3f068f0"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/forge-presentation-390px-F-1149a-gh-refresh-and-capped-items/forge-potency-cap.png",
+      "bytes": 142131,
+      "sha256": "98329ecd7a83a0c5df411068fc1931394be3fe1bb5f5c65b0f5c4c5dbde76600"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/forge-presentation-390px-F-1149a-gh-refresh-and-capped-items/forge-socket-cap.png",
+      "bytes": 142020,
+      "sha256": "724baa6b877f6b14a553aba4a54bcee18e8761493e57fb200425f23bb4098bc8"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/forge-presentation-390px-F-1149a-gh-refresh-and-capped-items/forge-upgrade.png",
+      "bytes": 167416,
+      "sha256": "17f8c2ea0bc9a296d0762d5f6dfc6089ac1a87257a77a1ddf890ed3a272c601b"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-073b8-es-all-supplied-classes-low/close-Cleric.png",
+      "bytes": 362394,
+      "sha256": "b46fae4688c1e9d90650d51ad5e0294f9728ba25abb081069432123f56cd7471"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-073b8-es-all-supplied-classes-low/close-Fighter-hud.png",
+      "bytes": 227028,
+      "sha256": "2bbe16d8820ad32e921a394b6e410bfead6081b770e3cc2b23700887cf2c6b9a"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-073b8-es-all-supplied-classes-low/close-Fighter.png",
+      "bytes": 358999,
+      "sha256": "898121a6411b2f87797dc72c9e4e0f89c701566d3ebf780abdc8cf5944d384c2"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-073b8-es-all-supplied-classes-low/close-Rogue.png",
+      "bytes": 377622,
+      "sha256": "721afc627a2e5d8226e84f4119e33dc0d2c3665ac39d8bbc8de21d147193ca08"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-073b8-es-all-supplied-classes-low/close-Wizard.png",
+      "bytes": 374493,
+      "sha256": "1cc616b37d9154c9fc5b7a71e0e34b01a43f8f9312dbf1fa54ac12efcc8427a6"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-073b8-es-all-supplied-classes-low/observation.json",
+      "bytes": 5507,
+      "sha256": "3371f6ebc0448decd26f2e99fea4f4f84b83590d12099fa7f3671a8982c57465"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-073b8-es-all-supplied-classes-low/original-party.png",
+      "bytes": 708637,
+      "sha256": "f8ae57a582d0bd6ad3cf62b190b0ffbbdec28c6266846ac9916939ae98a264db"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-073b8-es-all-supplied-classes-low/party-Attack.png",
+      "bytes": 707672,
+      "sha256": "ec2c1c30d89be9e98bbbb86226080ffde16e0fa02905bb1a5689ff32a8b0c8e9"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-073b8-es-all-supplied-classes-low/party-Block.png",
+      "bytes": 707584,
+      "sha256": "d0c1c2f47e6bfae503f8df427bd646498341800ed9976d2c883adc1b20ff25d0"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-073b8-es-all-supplied-classes-low/party-Cast.png",
+      "bytes": 707760,
+      "sha256": "2b2f10039dce25004b9907efee8702b671031e600fbbd9e3f13e496ca3b736ff"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-073b8-es-all-supplied-classes-low/party-CombatIdle.png",
+      "bytes": 707620,
+      "sha256": "4cba484189b74bebd4fa876fb9d86dad9c77cbcd98174c181343347823eb1bdf"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-073b8-es-all-supplied-classes-low/party-Death.png",
+      "bytes": 708064,
+      "sha256": "0e4f258ae98102260ed1375c9975aa727c032e04a6c3fca887431881a0dbe117"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-073b8-es-all-supplied-classes-low/party-Jump.png",
+      "bytes": 707979,
+      "sha256": "7d0ba6ae30713a7bbbf3cd104a88e6e51a342ca23758a1e92e4981de4abb2e77"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-073b8-es-all-supplied-classes-low/party-Run-hud.png",
+      "bytes": 451731,
+      "sha256": "a8c34dd5ec6fc066669261fd362a98360d85c9310c45ad26b6d716a1ac11cd0d"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-073b8-es-all-supplied-classes-low/party-Run.png",
+      "bytes": 707810,
+      "sha256": "5fe38ade0701dbd9b78a97aca4109d72c368bcececaa4d13de8666e0ddb389b8"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-073b8-es-all-supplied-classes-low/restored-party.png",
+      "bytes": 707662,
+      "sha256": "01c284da0e96cfd4caf7ea79626f5b024814d0a561832385efd9f5cb7287c876"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-6037c-s-all-supplied-classes-high/close-Cleric.png",
+      "bytes": 1332118,
+      "sha256": "a2edc70a0e1693f85e3e8a8692ea918aa865b75eccb9f9c95a544cbd6bfcb4e6"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-6037c-s-all-supplied-classes-high/close-Fighter-hud.png",
+      "bytes": 751103,
+      "sha256": "58b6f3b4fc742187cec73a4b6aec034c0bf22af5d9dcd3d508ec40f3bb2a2db9"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-6037c-s-all-supplied-classes-high/close-Fighter.png",
+      "bytes": 1315071,
+      "sha256": "e06e3960627d0fe1610b84eecf9a0952bae2bf698d17789d84d87239dc856680"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-6037c-s-all-supplied-classes-high/close-Rogue.png",
+      "bytes": 1337612,
+      "sha256": "ffbef65de25c847d3c8f94e43df14b32932ba7989aa1ae17e694dff58603bbb1"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-6037c-s-all-supplied-classes-high/close-Wizard.png",
+      "bytes": 1337523,
+      "sha256": "e418f578a8206eb7995c64d68f3bbab845c74bf5a8bf7cf6ef3f3c023eca018d"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-6037c-s-all-supplied-classes-high/observation.json",
+      "bytes": 5523,
+      "sha256": "6ad61beb9af3f3832db633499d17b6865f38ce1bb8761da4aa1ba82177ca22c6"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-6037c-s-all-supplied-classes-high/original-party.png",
+      "bytes": 2115640,
+      "sha256": "7b6c4d7c5109202ceebe62c1e8746fff6cacabea126c50d47edfed39f23e8b24"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-6037c-s-all-supplied-classes-high/party-Attack.png",
+      "bytes": 2104044,
+      "sha256": "2dd45d3f054fb20d4930fe8007779b55ee9804aa0f137a2de22a0d47fe18c2f1"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-6037c-s-all-supplied-classes-high/party-Block.png",
+      "bytes": 2103349,
+      "sha256": "d5333d6388422bfbafc4721f67748d79f16039f21e44ca3da5e5fd00d7e4cecb"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-6037c-s-all-supplied-classes-high/party-Cast.png",
+      "bytes": 2103963,
+      "sha256": "a3e066b175500cb1c4c1a543aea7cca93ef82dce11e94d64abf0131b9cfbef5d"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-6037c-s-all-supplied-classes-high/party-CombatIdle.png",
+      "bytes": 2103633,
+      "sha256": "1ab618905c6228f35cba4d3110f71cf6862bf4dc68f997fe5d88be0aa187dcbb"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-6037c-s-all-supplied-classes-high/party-Death.png",
+      "bytes": 2104082,
+      "sha256": "b16899b7479fa2771e0681b07c36949af03c5de730fe6c967c750a17599bff82"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-6037c-s-all-supplied-classes-high/party-Jump.png",
+      "bytes": 2104267,
+      "sha256": "47fb2d27fbce3ad4004d23f32b72b398a5a3101bafdadc30f4210f07579c0b6e"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-6037c-s-all-supplied-classes-high/party-Run-hud.png",
+      "bytes": 1318138,
+      "sha256": "e27ad0ae2e3f34fb75abd1f68c8f7809ea3ce2d63e050daf4a121f558b03b22f"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-6037c-s-all-supplied-classes-high/party-Run.png",
+      "bytes": 2103853,
+      "sha256": "dc59ac77c9a7d7c8ca124328f5fa209e4e949009b8006f30f8f5fae13b4ac198"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Gilded-6037c-s-all-supplied-classes-high/restored-party.png",
+      "bytes": 2104037,
+      "sha256": "c610a110ea5bc714005f21d122cefd02fd2fbd71bf72e62c935bc3c4d53a5ef8"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-149ab-s-all-supplied-classes-high/close-Cleric.png",
+      "bytes": 1321389,
+      "sha256": "3bb74e986ee772ce463958761f7949921b3e048ef4ed511f6244d14eeda745b4"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-149ab-s-all-supplied-classes-high/close-Fighter-hud.png",
+      "bytes": 742217,
+      "sha256": "eef5c07b3967060e352b33c84dd251a074dfe5b0c26a3dea70ba9b8da05ba3ce"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-149ab-s-all-supplied-classes-high/close-Fighter.png",
+      "bytes": 1304755,
+      "sha256": "740603a33b6cd0607d7b404673739befd6f9dfbd1c1b3969f4f66cbb2fd7372b"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-149ab-s-all-supplied-classes-high/close-Rogue.png",
+      "bytes": 1326632,
+      "sha256": "5e9f837d3427985ebe59db108e6ef7924f304faf296d1ad089547e47acef0cfb"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-149ab-s-all-supplied-classes-high/close-Wizard.png",
+      "bytes": 1327030,
+      "sha256": "d31d33dbdf7b1073ba4d5dd0df3c3a7aecb859f4c187ce7a5219e7d4089ce499"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-149ab-s-all-supplied-classes-high/observation.json",
+      "bytes": 5523,
+      "sha256": "43411e9afa51e55eff630a9c78e233f955dbaf7927bb4908e4a1a68821ff0069"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-149ab-s-all-supplied-classes-high/original-party.png",
+      "bytes": 2115640,
+      "sha256": "7b6c4d7c5109202ceebe62c1e8746fff6cacabea126c50d47edfed39f23e8b24"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-149ab-s-all-supplied-classes-high/party-Attack.png",
+      "bytes": 2104164,
+      "sha256": "0cc53241601d1fd4f5ed1798d0fcb3afcc2045d6c07bbaafe107e1b2e02ed525"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-149ab-s-all-supplied-classes-high/party-Block.png",
+      "bytes": 2103208,
+      "sha256": "47099287fefb07d3711368915ad43e22de2bd9fb13d41226571fadbe200a62aa"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-149ab-s-all-supplied-classes-high/party-Cast.png",
+      "bytes": 2104129,
+      "sha256": "5c3b5bbf6fa12d2c2d2d2955d901ed26d47db7ff9acdc0d9ba22f3f1634ae91b"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-149ab-s-all-supplied-classes-high/party-CombatIdle.png",
+      "bytes": 2103887,
+      "sha256": "8c963131492b122ff7131f1846dd0f3fd29e6c94a6bf5f5e4f98beaf685fd7f7"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-149ab-s-all-supplied-classes-high/party-Death.png",
+      "bytes": 2104283,
+      "sha256": "c1e68ed57caae47aee7d2610b4b90950279aa45b858aff0930cab56cdfd21e2b"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-149ab-s-all-supplied-classes-high/party-Jump.png",
+      "bytes": 2104650,
+      "sha256": "34752afe3d04f3828e4d5d414cf6fff898444d0cc56f37f71b7d6ab74c691f14"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-149ab-s-all-supplied-classes-high/party-Run-hud.png",
+      "bytes": 1318042,
+      "sha256": "e8006c44782472fdccde7329c0680e929be180cae635af572bc3a4fe2d1e36b9"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-149ab-s-all-supplied-classes-high/party-Run.png",
+      "bytes": 2103825,
+      "sha256": "1479cb182a456bcb8734272d538231160e4fab017fa34a737b671ebfa7abc4dc"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-149ab-s-all-supplied-classes-high/restored-party.png",
+      "bytes": 2104037,
+      "sha256": "c610a110ea5bc714005f21d122cefd02fd2fbd71bf72e62c935bc3c4d53a5ef8"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-81fe0-es-all-supplied-classes-low/close-Cleric.png",
+      "bytes": 352409,
+      "sha256": "5a7c513dfd63577377b0db50507f26849de9106d5a956cc683e945da3574f669"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-81fe0-es-all-supplied-classes-low/close-Fighter-hud.png",
+      "bytes": 218540,
+      "sha256": "c2a38e5b47cea3b640ec8bf8de113db0b1082587a9d4bc4b5d0a20d9717c9e67"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-81fe0-es-all-supplied-classes-low/close-Fighter.png",
+      "bytes": 348759,
+      "sha256": "28d6d4fce6ad7ad98bec3e7e048ce42b0f4a9b58438b6c1a14fcad1fdfb83d82"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-81fe0-es-all-supplied-classes-low/close-Rogue.png",
+      "bytes": 366751,
+      "sha256": "9257dac0a99af42493d9fb71dd6509a71ca193e3a96e18de646115ba7532f05c"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-81fe0-es-all-supplied-classes-low/close-Wizard.png",
+      "bytes": 364533,
+      "sha256": "dfc4e1856cd62e415863d504962ccfe5bdbb78f6c514f3bc8f2a1d9b3f915702"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-81fe0-es-all-supplied-classes-low/observation.json",
+      "bytes": 5507,
+      "sha256": "a193ecfd0dd902f064c355900027849fd9391f8f6f3de0515cd2b287ecb583e6"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-81fe0-es-all-supplied-classes-low/original-party.png",
+      "bytes": 708637,
+      "sha256": "f8ae57a582d0bd6ad3cf62b190b0ffbbdec28c6266846ac9916939ae98a264db"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-81fe0-es-all-supplied-classes-low/party-Attack.png",
+      "bytes": 707541,
+      "sha256": "5697f1b555ae4f6a3bbf7f72215ec9d85e605ca39e870d26614e37c0714554a2"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-81fe0-es-all-supplied-classes-low/party-Block.png",
+      "bytes": 707421,
+      "sha256": "640e77abaa99ecb0f387b01d865b6d17ee756f223dc22b6ec588c85dc9da63e4"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-81fe0-es-all-supplied-classes-low/party-Cast.png",
+      "bytes": 707646,
+      "sha256": "87503977a04cacca3e08173eb2a6925f3e5a7c2f44f1f63b57a0b4540f857c10"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-81fe0-es-all-supplied-classes-low/party-CombatIdle.png",
+      "bytes": 707610,
+      "sha256": "5b7ed40f07085197b6183592e2e140b3c69a7f7f363a943cea936f5d722973f0"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-81fe0-es-all-supplied-classes-low/party-Death.png",
+      "bytes": 707734,
+      "sha256": "2fb3090c4c72699b81bd1435d1d46be10ad93060d7637a178255d539796d8a90"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-81fe0-es-all-supplied-classes-low/party-Jump.png",
+      "bytes": 707825,
+      "sha256": "d0614ca9ca94e882ce7455fdb3cbab7a927f9e9eb4c2efcfbce6b04f538bdeb7"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-81fe0-es-all-supplied-classes-low/party-Run-hud.png",
+      "bytes": 451699,
+      "sha256": "dea462c5d374d70e11e2d541203247564ae1241ca656c689d4c01a6c52faa66e"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-81fe0-es-all-supplied-classes-low/party-Run.png",
+      "bytes": 707656,
+      "sha256": "d3cb35823500cf8e5e8c455e87f547797df87f37da0f8e43edc368d6d19398ba"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Hollow-81fe0-es-all-supplied-classes-low/restored-party.png",
+      "bytes": 707662,
+      "sha256": "01c284da0e96cfd4caf7ea79626f5b024814d0a561832385efd9f5cb7287c876"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-30cb9-es-all-supplied-classes-low/close-Cleric.png",
+      "bytes": 367316,
+      "sha256": "e090159d38917d83a41baa2f3eadf028466323bfcb7094c70709fdcd6a272f9e"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-30cb9-es-all-supplied-classes-low/close-Fighter-hud.png",
+      "bytes": 231589,
+      "sha256": "fb72afde69f31723749c481393c1876e6e78f0d11fbb523c5d1a64a565dfb1ad"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-30cb9-es-all-supplied-classes-low/close-Fighter.png",
+      "bytes": 364316,
+      "sha256": "bda20d98b92ffdde935cafdfd8a72192f4af27598ff03584b70af81b2a04b73e"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-30cb9-es-all-supplied-classes-low/close-Rogue.png",
+      "bytes": 384346,
+      "sha256": "7150f947e108a739753503b75a6fae9ab240cc22832e20853cd2a46163f47817"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-30cb9-es-all-supplied-classes-low/close-Wizard.png",
+      "bytes": 379848,
+      "sha256": "96153fb52c8fa26514a5f51740bb3bdf14d98e5eb0263b83db1e65ea6674fad6"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-30cb9-es-all-supplied-classes-low/observation.json",
+      "bytes": 5507,
+      "sha256": "8e35108d42b3db78586c04bf15b102098e36849f3dd3636040b56f1df711329c"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-30cb9-es-all-supplied-classes-low/original-party.png",
+      "bytes": 708637,
+      "sha256": "f8ae57a582d0bd6ad3cf62b190b0ffbbdec28c6266846ac9916939ae98a264db"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-30cb9-es-all-supplied-classes-low/party-Attack.png",
+      "bytes": 707589,
+      "sha256": "abf9125cdcd3fcceef593b4bbebff7f866845c355c0841faec4fb5e1e7d959d8"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-30cb9-es-all-supplied-classes-low/party-Block.png",
+      "bytes": 707599,
+      "sha256": "c2c6a604bcb487b837e33e6af2e4d3900df308bcb0cb1bb8df656d11861d980b"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-30cb9-es-all-supplied-classes-low/party-Cast.png",
+      "bytes": 707656,
+      "sha256": "7a74cd1d6d5707b059f5352b8597b5b084a0b4a486a28aa785af1a827d423ee2"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-30cb9-es-all-supplied-classes-low/party-CombatIdle.png",
+      "bytes": 707659,
+      "sha256": "9d1466efef3adf39339c63690e5c26fd17652e2d4c590530070f93de7ee4fc01"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-30cb9-es-all-supplied-classes-low/party-Death.png",
+      "bytes": 708002,
+      "sha256": "f7b03d33516c3ad9fa91aac73b3db169f295aac8cbc64a5f988aac67d41814a5"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-30cb9-es-all-supplied-classes-low/party-Jump.png",
+      "bytes": 707959,
+      "sha256": "934df47d7da58281a6e13fcea4fda238da74b9fb66672a8cb7dc20c70f9b9a1e"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-30cb9-es-all-supplied-classes-low/party-Run-hud.png",
+      "bytes": 452237,
+      "sha256": "9228620040a1fb3f10d74f32a89342b2b38274321964a3cca948aed0740d0b02"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-30cb9-es-all-supplied-classes-low/party-Run.png",
+      "bytes": 707693,
+      "sha256": "5d4b8b6ad198291424a39c0dab616ba3365217682a6d77a0d289840902b35dde"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-30cb9-es-all-supplied-classes-low/restored-party.png",
+      "bytes": 707662,
+      "sha256": "01c284da0e96cfd4caf7ea79626f5b024814d0a561832385efd9f5cb7287c876"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-6ef27-s-all-supplied-classes-high/close-Cleric.png",
+      "bytes": 1334132,
+      "sha256": "e3a8543737c6b321aa988dfb9a0da81adc3858b05be86e0d00c920e9ba9f9b1a"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-6ef27-s-all-supplied-classes-high/close-Fighter-hud.png",
+      "bytes": 758907,
+      "sha256": "a28e4635083ccce3d9e14d129f19ab23920ee0d24a5f5576157ea537d5362088"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-6ef27-s-all-supplied-classes-high/close-Fighter.png",
+      "bytes": 1319267,
+      "sha256": "2033c6de5940e2fe5bcc28e27fce3ab107be2ac50f0ad57fe02a74df154d5d2e"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-6ef27-s-all-supplied-classes-high/close-Rogue.png",
+      "bytes": 1342109,
+      "sha256": "3275ec89ae96998abefef69b2dbd4b822d28fa6b22fe528c1ae8abd429813092"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-6ef27-s-all-supplied-classes-high/close-Wizard.png",
+      "bytes": 1339488,
+      "sha256": "8d249651fc66449ac4189ec76bd60c936619ab23c7e7ed3ab807f64e0a96d36b"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-6ef27-s-all-supplied-classes-high/observation.json",
+      "bytes": 5523,
+      "sha256": "db382fe2a68ce918a7032e88d8979f80717b0e6fe02626bce6dca8da5c14ad2b"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-6ef27-s-all-supplied-classes-high/original-party.png",
+      "bytes": 2115640,
+      "sha256": "7b6c4d7c5109202ceebe62c1e8746fff6cacabea126c50d47edfed39f23e8b24"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-6ef27-s-all-supplied-classes-high/party-Attack.png",
+      "bytes": 2103578,
+      "sha256": "9eb18d1547321aae97fa2d35b9c6f374840fb7f1969235118c6ed22b312101aa"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-6ef27-s-all-supplied-classes-high/party-Block.png",
+      "bytes": 2103123,
+      "sha256": "8e5f3159f55b115bf90bed417ead5f87ff1f82d9ded1f0adefd5b6486c62354e"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-6ef27-s-all-supplied-classes-high/party-Cast.png",
+      "bytes": 2103879,
+      "sha256": "3e7edcdc9f18213ae4358150601a6cc2b3bfcce6dfabcc4076bf0d43b7b9d200"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-6ef27-s-all-supplied-classes-high/party-CombatIdle.png",
+      "bytes": 2103462,
+      "sha256": "20262a9ba6e4551d2ef1ec9c91f749abe11a7fd5c6a3cc98f3a6b89a90b635ed"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-6ef27-s-all-supplied-classes-high/party-Death.png",
+      "bytes": 2104209,
+      "sha256": "067c43d6ed10c347fbe1bcad9da00ce6cc3cbd2de2c5530af34feeb5fd007766"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-6ef27-s-all-supplied-classes-high/party-Jump.png",
+      "bytes": 2104432,
+      "sha256": "4abc31a674df95d155edc2f720476e52a3fd51e65e4c6c9c8bd42a27da4f8acd"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-6ef27-s-all-supplied-classes-high/party-Run-hud.png",
+      "bytes": 1318860,
+      "sha256": "0767509427ca85caefb63f65e5eb78446c5dc4a7a613680188cc8fae8bdc7ed6"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-6ef27-s-all-supplied-classes-high/party-Run.png",
+      "bytes": 2103754,
+      "sha256": "cf7c5ce430b91360753f95809a66e0b4f0a2428efb5d4c15963c92df573147a3"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Lanter-6ef27-s-all-supplied-classes-high/restored-party.png",
+      "bytes": 2104037,
+      "sha256": "c610a110ea5bc714005f21d122cefd02fd2fbd71bf72e62c935bc3c4d53a5ef8"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-cf44c-es-all-supplied-classes-low/close-Cleric.png",
+      "bytes": 355946,
+      "sha256": "41ad523baa3ab362567455253d4d4220b7ed64d3f7f2bad8ca348cac92ea1818"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-cf44c-es-all-supplied-classes-low/close-Fighter-hud.png",
+      "bytes": 221498,
+      "sha256": "54d9022dda71877fa1f9c50a8012bdc31a95c62b6f59f7fa1287ad8e4af40324"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-cf44c-es-all-supplied-classes-low/close-Fighter.png",
+      "bytes": 352976,
+      "sha256": "7077d0c7abcfac449ac7b698933e6b69657a05bb92e1cf5e2db1c8985299174f"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-cf44c-es-all-supplied-classes-low/close-Rogue.png",
+      "bytes": 372906,
+      "sha256": "c4bb5f13e275edddecfc5dadfd837445d7bc68e82d7771a98d64d961c0772abd"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-cf44c-es-all-supplied-classes-low/close-Wizard.png",
+      "bytes": 368895,
+      "sha256": "024c45809fde361c5fb12d1d96538adf663835318017d5f048235d213fd6e634"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-cf44c-es-all-supplied-classes-low/observation.json",
+      "bytes": 5507,
+      "sha256": "cd74460dc9ebf686c9e54a6c241e073a885c8a9e74cf356a7eaeb4de675e7059"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-cf44c-es-all-supplied-classes-low/original-party.png",
+      "bytes": 708637,
+      "sha256": "f8ae57a582d0bd6ad3cf62b190b0ffbbdec28c6266846ac9916939ae98a264db"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-cf44c-es-all-supplied-classes-low/party-Attack.png",
+      "bytes": 707558,
+      "sha256": "e3e0bf03a4b87b4e606141f1e5fdb3a324514dd323418991bd6c743fe925373f"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-cf44c-es-all-supplied-classes-low/party-Block.png",
+      "bytes": 707415,
+      "sha256": "feae00eefc842544a645de6758d3e528e2c805475c8fee6b4bcafc17467fd2f7"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-cf44c-es-all-supplied-classes-low/party-Cast.png",
+      "bytes": 707506,
+      "sha256": "56413a59467317f51f132a8cc20741a43860abd864392687ff2c6e9d77bacdb1"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-cf44c-es-all-supplied-classes-low/party-CombatIdle.png",
+      "bytes": 707537,
+      "sha256": "dd7f601c35d4f1da174e1f4a96e33fe343911939cf1b94754ce6d4103c2653dc"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-cf44c-es-all-supplied-classes-low/party-Death.png",
+      "bytes": 707767,
+      "sha256": "8b3137f199ba61fc3e93f726e016027bd7c97b62f834155b0b62357e34271ea7"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-cf44c-es-all-supplied-classes-low/party-Jump.png",
+      "bytes": 707698,
+      "sha256": "55fb0fd3b7139795f1a66b4a4caaa0c952e5bd7d1d63c505fbfd64955202774c"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-cf44c-es-all-supplied-classes-low/party-Run-hud.png",
+      "bytes": 451574,
+      "sha256": "b7e0023ef8d7c487f84877f5b59754b206dcd11225a0b06c84a2089bafd3d7e0"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-cf44c-es-all-supplied-classes-low/party-Run.png",
+      "bytes": 707511,
+      "sha256": "3356398956fbf46c13191fdbcfca13db2349e5cf2811cc810245a904e948ece2"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-cf44c-es-all-supplied-classes-low/restored-party.png",
+      "bytes": 707662,
+      "sha256": "01c284da0e96cfd4caf7ea79626f5b024814d0a561832385efd9f5cb7287c876"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-ecb48-s-all-supplied-classes-high/close-Cleric.png",
+      "bytes": 1326327,
+      "sha256": "e2265ddc1eb67bf5b88ebe5c134410eda2576ca5fc5c2fe697aba6b0b078c24f"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-ecb48-s-all-supplied-classes-high/close-Fighter-hud.png",
+      "bytes": 743954,
+      "sha256": "ae60da4db6c9b948a9537188b6a4cc9afd11de91d684660ed38e7e2b042a1ff0"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-ecb48-s-all-supplied-classes-high/close-Fighter.png",
+      "bytes": 1309590,
+      "sha256": "a15e48cf16958431ea85f5800f1a649c9d4ed0e023633c33c898920212807ea9"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-ecb48-s-all-supplied-classes-high/close-Rogue.png",
+      "bytes": 1332415,
+      "sha256": "09bda51e1e9822da9a48b89d9da3cce35ab619db06dad389704c5e8a24efbb9e"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-ecb48-s-all-supplied-classes-high/close-Wizard.png",
+      "bytes": 1332299,
+      "sha256": "0f786315e7f998f84b51028e3193738002bc43cdb405ee1679e73cc39dd92900"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-ecb48-s-all-supplied-classes-high/observation.json",
+      "bytes": 5523,
+      "sha256": "756b9c3c57b08a62016359c5218a7506386db63c66a64f976fb4a7dd502ab343"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-ecb48-s-all-supplied-classes-high/original-party.png",
+      "bytes": 2115640,
+      "sha256": "7b6c4d7c5109202ceebe62c1e8746fff6cacabea126c50d47edfed39f23e8b24"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-ecb48-s-all-supplied-classes-high/party-Attack.png",
+      "bytes": 2103797,
+      "sha256": "08c13c2de86cc785295535c5910b4666990ae8bb26019dd06b349dd6442fb545"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-ecb48-s-all-supplied-classes-high/party-Block.png",
+      "bytes": 2102995,
+      "sha256": "f3bcbb26a8e3cb99e7553325b44ae81a2521e1f8977b276bd7e14729f255e0ce"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-ecb48-s-all-supplied-classes-high/party-Cast.png",
+      "bytes": 2103654,
+      "sha256": "d57ccb93662228fd4f0965fcb7915f2c9c8e2af0f5bfe37dcad457589ffa48e2"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-ecb48-s-all-supplied-classes-high/party-CombatIdle.png",
+      "bytes": 2103330,
+      "sha256": "73cddcc5869e2ba1945aa6392415f602cab6eb3777bc951820dea3366b561f6f"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-ecb48-s-all-supplied-classes-high/party-Death.png",
+      "bytes": 2103690,
+      "sha256": "83a4a9225bf885c6506432e799bc3fb666ada24410763d01c2fd3689292f3e95"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-ecb48-s-all-supplied-classes-high/party-Jump.png",
+      "bytes": 2104029,
+      "sha256": "8c4a9486e379a319efc29cd15c1eb4fdd33a95cd3cff43b61e1b2586d3490c56"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-ecb48-s-all-supplied-classes-high/party-Run-hud.png",
+      "bytes": 1317487,
+      "sha256": "07f1f5af7a919dd80176b7a924c379b34fe3c1d25e8f938f4d0d7ca906f5ff55"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-ecb48-s-all-supplied-classes-high/party-Run.png",
+      "bytes": 2103703,
+      "sha256": "a5565f888eaaae61ec7353d62f741a00e02df8925d4aa62d6b3a883aa32d1fdd"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Midnig-ecb48-s-all-supplied-classes-high/restored-party.png",
+      "bytes": 2104037,
+      "sha256": "c610a110ea5bc714005f21d122cefd02fd2fbd71bf72e62c935bc3c4d53a5ef8"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/close-Cleric.png",
+      "bytes": 1331604,
+      "sha256": "27a2a7ebaa570d949201521e9d42bb91c1563f7daebab7a895db0dd0e211c98f"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/close-Fighter-hud.png",
+      "bytes": 756484,
+      "sha256": "bdaab0d0d8e0c8ab76090c04cf1bade8b76a06c047defb2669e694c80aec5e62"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/close-Fighter.png",
+      "bytes": 1317264,
+      "sha256": "d2e29852c033a712c27390f104776c06b6c3708ecc9ea747718299111e05671f"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/close-Rogue.png",
+      "bytes": 1339187,
+      "sha256": "c60c5d8b66c827a23782d4878f30df27be4747b5cf71dc0a6d10223a0237206a"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/close-Wizard.png",
+      "bytes": 1336174,
+      "sha256": "5edff16a7cf7373e1431350ebdec2ca2fc1623ea19f8b2764030cdb83b89947d"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/observation.json",
+      "bytes": 5523,
+      "sha256": "87fc34595097d5155bee8fe8e2b2bab05cf094bc260e2fd00f818b2b28f76751"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/original-party.png",
+      "bytes": 2115640,
+      "sha256": "7b6c4d7c5109202ceebe62c1e8746fff6cacabea126c50d47edfed39f23e8b24"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/party-Attack.png",
+      "bytes": 2103491,
+      "sha256": "7fb58f33dd2d6820aa3a05dc4436248ee93c440a8b95433f5a6add830ccc08df"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/party-Block.png",
+      "bytes": 2102702,
+      "sha256": "4b36dbdf79edeba591d273ffb087611dacd1f5640cbfff21392ec7b7b1faa9f7"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/party-Cast.png",
+      "bytes": 2103560,
+      "sha256": "e52ea7e5f24d7d6d87d96543e39236dac58d574fc9d07a02897ad7c7ee93a781"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/party-CombatIdle.png",
+      "bytes": 2103277,
+      "sha256": "b8f2b7cf431874a83123b2ddc235e40dfd9743cb8dec574673e3a7d5c222fa31"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/party-Death.png",
+      "bytes": 2103740,
+      "sha256": "5a5cb557851b10f7532610a2c1223f435238f42892a3a3ace630f0adc71f9095"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/party-Jump.png",
+      "bytes": 2103929,
+      "sha256": "919d376d42fe2e08ca9827da9c2d8115e54a3df08014f41a71a4476770b86193"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/party-Run-hud.png",
+      "bytes": 1318195,
+      "sha256": "bce03f331d37d77330f916d513e33f3e0723777ab405ef8524e4254bb81f5105"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/party-Run.png",
+      "bytes": 2103654,
+      "sha256": "d6a72e1a0a7664c6ea35e3887b6bd1dacda2b6ac624dbdbad68a87a5a0e2969e"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-36ce5-s-all-supplied-classes-high/restored-party.png",
+      "bytes": 2104037,
+      "sha256": "c610a110ea5bc714005f21d122cefd02fd2fbd71bf72e62c935bc3c4d53a5ef8"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/close-Cleric.png",
+      "bytes": 364220,
+      "sha256": "c778572dc6b29e87e2782a45af8fc6a62933d16e50aee125ed8ae0a175699d90"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/close-Fighter-hud.png",
+      "bytes": 228948,
+      "sha256": "763ed370ab67bb4c5a96803a0c27d65b99a2926c32d65faa9b965efdbee9581e"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/close-Fighter.png",
+      "bytes": 361910,
+      "sha256": "f1b71ee492a8b45983a90d0cd9994dd6af597ef13d728c52524e0b70dd7a9c42"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/close-Rogue.png",
+      "bytes": 381677,
+      "sha256": "fff26ffa38c6739a46c3fe760991f1efbf473ed186b1c0ad9b0739008fd170e9"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/close-Wizard.png",
+      "bytes": 377038,
+      "sha256": "19db43d7973c97d10421a65d87f80bce080d5c4012a89dd4ce48051e80d85ba8"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/observation.json",
+      "bytes": 5507,
+      "sha256": "3adfb0ceffa7fa9c78ad59591dd47d397a88e902243fdabed078701635a67062"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/original-party.png",
+      "bytes": 708637,
+      "sha256": "f8ae57a582d0bd6ad3cf62b190b0ffbbdec28c6266846ac9916939ae98a264db"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/party-Attack.png",
+      "bytes": 707554,
+      "sha256": "1eda76cbcfe291df659809575e40d38a77250c8bae5f34672c269c647e3efe6c"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/party-Block.png",
+      "bytes": 707516,
+      "sha256": "4e509df6472757173ea42f4cb907215260f7e365a2d5d7d74dcbbf267f3881ad"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/party-Cast.png",
+      "bytes": 707591,
+      "sha256": "e0b1340e114eb9978f188763a0064eef651ce1597c735bc36320b18b32da135e"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/party-CombatIdle.png",
+      "bytes": 707573,
+      "sha256": "bc638ed1ecff44e1cd337bb22268d336bbc72c3182497487caed87f68736e13d"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/party-Death.png",
+      "bytes": 707825,
+      "sha256": "e9f7d78a0c140cb81d2e24004cd59071c2bd5c0dda480b8550ac78ace8ded180"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/party-Jump.png",
+      "bytes": 707859,
+      "sha256": "68c693bf7bdf6d265399e91e229272a49723d6b0fe65004af29d29b8e8aad341"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/party-Run-hud.png",
+      "bytes": 451943,
+      "sha256": "01e0eee57f960b48199e86a92cd721bd5cbd859e50fc72ee8ea6177b3b1324fd"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/party-Run.png",
+      "bytes": 707679,
+      "sha256": "1a6b2f276cab169fb8ebf7a337807603d0d91d6d9bd2d5203c87781e01133ce7"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Rosebo-732ad-es-all-supplied-classes-low/restored-party.png",
+      "bytes": 707662,
+      "sha256": "01c284da0e96cfd4caf7ea79626f5b024814d0a561832385efd9f5cb7287c876"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-7e1b1-es-all-supplied-classes-low/close-Cleric.png",
+      "bytes": 363154,
+      "sha256": "2a52c73d1947b713b8c810a899f868161602e46fe28e26020608650242b3dbd9"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-7e1b1-es-all-supplied-classes-low/close-Fighter-hud.png",
+      "bytes": 225840,
+      "sha256": "f67c51bc9ebd2f67fd9f52192074e89ef0b541ec2cb0c294460743f74ea7024a"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-7e1b1-es-all-supplied-classes-low/close-Fighter.png",
+      "bytes": 359535,
+      "sha256": "9c80f21e7fdec1820df0c8764e1f885a0e9f198bd3af8ad36c4a90d0b8bccd9b"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-7e1b1-es-all-supplied-classes-low/close-Rogue.png",
+      "bytes": 380665,
+      "sha256": "de7b97e297d74561c4c12c5b61f9adce431bc218a0f09cc6a52f0b5bb7ef3662"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-7e1b1-es-all-supplied-classes-low/close-Wizard.png",
+      "bytes": 375736,
+      "sha256": "a9c1be603c99f1f8e26b1f6210dcdcee1bb5a2e1002714a4e00092112a3f9f2e"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-7e1b1-es-all-supplied-classes-low/observation.json",
+      "bytes": 5507,
+      "sha256": "e8455fe120ad4aedd449848af02dbad1d96761ca7abba5797a97f781f92a8c4c"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-7e1b1-es-all-supplied-classes-low/original-party.png",
+      "bytes": 708637,
+      "sha256": "f8ae57a582d0bd6ad3cf62b190b0ffbbdec28c6266846ac9916939ae98a264db"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-7e1b1-es-all-supplied-classes-low/party-Attack.png",
+      "bytes": 707467,
+      "sha256": "2aba405929eefc8400c100ce0f1262ad065e85e09aa5c9a02dcc736c1b4835f5"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-7e1b1-es-all-supplied-classes-low/party-Block.png",
+      "bytes": 707404,
+      "sha256": "4b09b8231f93dd3a13c95a99e0ffae476e25706b0cacb9262166cea86aea3608"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-7e1b1-es-all-supplied-classes-low/party-Cast.png",
+      "bytes": 707478,
+      "sha256": "5394902082f032bf5f0db5612c9bb5dc1e4b109805c3718bb149543c66908fc7"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-7e1b1-es-all-supplied-classes-low/party-CombatIdle.png",
+      "bytes": 707493,
+      "sha256": "1414e81f3f2d0994b247b8314bdf0bcdaaba26e363feed40f749b885486d187f"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-7e1b1-es-all-supplied-classes-low/party-Death.png",
+      "bytes": 707678,
+      "sha256": "7f412944a2eae2fce5e5a913652f3b1a7d93aea8b4b1f4275b85a1af5f10e218"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-7e1b1-es-all-supplied-classes-low/party-Jump.png",
+      "bytes": 707691,
+      "sha256": "ea2291a72edf09d62e9146e11032e1fb85e0caf5f8749bf6543e8f26405fe483"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-7e1b1-es-all-supplied-classes-low/party-Run-hud.png",
+      "bytes": 451657,
+      "sha256": "822b8d866224c5aeef8a5d03bcb37adc963735cec49765d9ab9cdd9154c43524"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-7e1b1-es-all-supplied-classes-low/party-Run.png",
+      "bytes": 707500,
+      "sha256": "4d8e6f08acc1d1d69b3271294355686683c12232968233c1af72014da3b02669"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-7e1b1-es-all-supplied-classes-low/restored-party.png",
+      "bytes": 707662,
+      "sha256": "01c284da0e96cfd4caf7ea79626f5b024814d0a561832385efd9f5cb7287c876"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-8ecb6-s-all-supplied-classes-high/close-Cleric.png",
+      "bytes": 1340413,
+      "sha256": "c2a95872f893576c537888caf9abb55f5663c0cae6aa356024cf630256cc5a41"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-8ecb6-s-all-supplied-classes-high/close-Fighter-hud.png",
+      "bytes": 755717,
+      "sha256": "d81993c0c9d8c23b2ecb21e2dfc9044cce32a3ab5dbee10540e67e1f5580c849"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-8ecb6-s-all-supplied-classes-high/close-Fighter.png",
+      "bytes": 1323500,
+      "sha256": "d5c8850227ca7a6818d552550d095cef0fd9394218264e68447c663152f31bd6"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-8ecb6-s-all-supplied-classes-high/close-Rogue.png",
+      "bytes": 1347167,
+      "sha256": "c24ce1c4d7cc55c05cbb0a08d38e4a9cefcd40dcf618b74303fe62fece2f88a2"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-8ecb6-s-all-supplied-classes-high/close-Wizard.png",
+      "bytes": 1344115,
+      "sha256": "445c57318189ac4e4132b5def9be8b27c25a375a0895f567ce2edf5ba9d60e70"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-8ecb6-s-all-supplied-classes-high/observation.json",
+      "bytes": 5523,
+      "sha256": "994aacd43c5ffd5f1d48a5da3902395b28b6f1434e6a42602e4fe3cef7e849c6"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-8ecb6-s-all-supplied-classes-high/original-party.png",
+      "bytes": 2115640,
+      "sha256": "7b6c4d7c5109202ceebe62c1e8746fff6cacabea126c50d47edfed39f23e8b24"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-8ecb6-s-all-supplied-classes-high/party-Attack.png",
+      "bytes": 2104196,
+      "sha256": "669901cf60fcadccda896697c6e42e242e652a1c5c1eff70966240261a155c0b"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-8ecb6-s-all-supplied-classes-high/party-Block.png",
+      "bytes": 2103238,
+      "sha256": "db019a0f1286eb679b8fe65bdb9b7c53c1c4b136f2e9ef0b8a1bece731a5eec7"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-8ecb6-s-all-supplied-classes-high/party-Cast.png",
+      "bytes": 2103886,
+      "sha256": "7de28857702da24d2d7ede3840cf193b329c51720c206d94bc1bffc5dd0c21ef"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-8ecb6-s-all-supplied-classes-high/party-CombatIdle.png",
+      "bytes": 2103882,
+      "sha256": "b0b80aa1fd6a260f5dbd643073db2b3ae64283fb97de76603160b13dd0479bcb"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-8ecb6-s-all-supplied-classes-high/party-Death.png",
+      "bytes": 2104051,
+      "sha256": "5d31d0a240e3045a84084b7f5e04694a7f361d4a372e1042026a31cd9d3ffa69"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-8ecb6-s-all-supplied-classes-high/party-Jump.png",
+      "bytes": 2104586,
+      "sha256": "083137c3f2e2ae9f3311567cde685d704fb47c612d5fba71bff93568a1486ac8"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-8ecb6-s-all-supplied-classes-high/party-Run-hud.png",
+      "bytes": 1318272,
+      "sha256": "3901f7358f47b19b0fe9e8767d5674947ab22b5063ae653203a06f1134e17eff"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-8ecb6-s-all-supplied-classes-high/party-Run.png",
+      "bytes": 2104116,
+      "sha256": "57bec850c60fb3c1d64f2fb859d684a642d3421138ebd250d668b8e8eabad875"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Solsti-8ecb6-s-all-supplied-classes-high/restored-party.png",
+      "bytes": 2104037,
+      "sha256": "c610a110ea5bc714005f21d122cefd02fd2fbd71bf72e62c935bc3c4d53a5ef8"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/close-Cleric.png",
+      "bytes": 1331287,
+      "sha256": "021bd2cd542098aee3569d060fa3a4d398f4ef4f4f4418e493b453b4937a4e13"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/close-Fighter-hud.png",
+      "bytes": 755086,
+      "sha256": "dea8d29f05d82ecfba8b7f66f621cc49950c4a60660847778026b852be243553"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/close-Fighter.png",
+      "bytes": 1317191,
+      "sha256": "edfd04b4cce3e1db0e9c360ca7dc63b5a19b73e8637fc412094b6adffdac8f7a"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/close-Rogue.png",
+      "bytes": 1339418,
+      "sha256": "d3f27f834b0b700e781f8bdbcbf267825127da4bae00239b30b93149f25db962"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/close-Wizard.png",
+      "bytes": 1337175,
+      "sha256": "a2dbcc8afc400c325f8beff0f64c80e457690679054f86886ac67bb2adf6bc90"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/observation.json",
+      "bytes": 5523,
+      "sha256": "de8ea7f5934578b8f178dbb57c531f5a962b5e5e1aff77ef6fd3898b5d13476b"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/original-party.png",
+      "bytes": 2115640,
+      "sha256": "7b6c4d7c5109202ceebe62c1e8746fff6cacabea126c50d47edfed39f23e8b24"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/party-Attack.png",
+      "bytes": 2103590,
+      "sha256": "5bf39dfb28c4b1aa930594cd7f66311a766a37d9cd4dbb65ad2939cb108cb50c"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/party-Block.png",
+      "bytes": 2102709,
+      "sha256": "5b59ff0116f9c8091dee14d611129ed07a73122708c3c29a1cf7e01406d3b91a"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/party-Cast.png",
+      "bytes": 2103454,
+      "sha256": "eea407f2923176d9690c436781b32b698b708a3aee7b877351aad48a7ca520ad"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/party-CombatIdle.png",
+      "bytes": 2103202,
+      "sha256": "da3a410d952719040206bdcef5848108d6540963995aea1ed9fc393c0050f1fb"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/party-Death.png",
+      "bytes": 2104041,
+      "sha256": "c2beeb3201f505076bfceb37c4daa0142f8aa59aaf1f540df9ec0d904f9d7ac7"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/party-Jump.png",
+      "bytes": 2104355,
+      "sha256": "aff0049591d85512532f3259d2640e56e83b0455fa5b5f5eebcf1fdd767720bb"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/party-Run-hud.png",
+      "bytes": 1318093,
+      "sha256": "f0668a3f69502b18bd712dd7145049de45fd67c2fd9574144cfa3c602c986f29"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/party-Run.png",
+      "bytes": 2103712,
+      "sha256": "e3613ee102b93b732c0b332cec98470da1a6b7ada6daf18df94bcf8688d58677"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-7d81a-s-all-supplied-classes-high/restored-party.png",
+      "bytes": 2104037,
+      "sha256": "c610a110ea5bc714005f21d122cefd02fd2fbd71bf72e62c935bc3c4d53a5ef8"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/close-Cleric.png",
+      "bytes": 363446,
+      "sha256": "9b27dd210078f11f36ecfe423fe6a8ce9e73d1c6885df58d7ecf536605dc33a1"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/close-Fighter-hud.png",
+      "bytes": 227230,
+      "sha256": "86d6f25b4173096ef6739e9d89fda7e8931d7de7f7968c76e6274cfc6c72f9ed"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/close-Fighter.png",
+      "bytes": 361456,
+      "sha256": "345fd96407062d45467b28253ca598f4f907a0c1a601dd729ddeecf2d41e1160"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/close-Rogue.png",
+      "bytes": 380574,
+      "sha256": "d11909d321971589983183c6642d3a584c5134ac02b2002d50311a2057f5ce1a"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/close-Wizard.png",
+      "bytes": 376393,
+      "sha256": "cabe3a954e713f749aed73ca6cfa19c1ea7e3b2cab6df70638046d59e148c832"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/observation.json",
+      "bytes": 5507,
+      "sha256": "1318adaa8f0e29d41516f6c7a5b586b9a18cd1800bfc165fa5d0334ab5546912"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/original-party.png",
+      "bytes": 708637,
+      "sha256": "f8ae57a582d0bd6ad3cf62b190b0ffbbdec28c6266846ac9916939ae98a264db"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/party-Attack.png",
+      "bytes": 707560,
+      "sha256": "6ae72ba5f339bf7c5eacbcb8af4a0b763d5a6bb61d07c393abf0d2e830f53a63"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/party-Block.png",
+      "bytes": 707478,
+      "sha256": "656f857d65134d16b06d99f6b1e2db473b1907b1c277b0561fb9565c91fab25e"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/party-Cast.png",
+      "bytes": 707679,
+      "sha256": "e573f8c93604493823e761cde15f67612f9699ea3bc4d23b8890b7422ca52563"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/party-CombatIdle.png",
+      "bytes": 707552,
+      "sha256": "d34b31dfe76efbb0624eeebf6f0f8fd296052b0d68d2be9ddd7ff5d9698652ed"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/party-Death.png",
+      "bytes": 707888,
+      "sha256": "92265aedbc9a868db4df6b08fd99d216c122ff79c05ebc10f156b14601fcdad1"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/party-Jump.png",
+      "bytes": 707951,
+      "sha256": "07ca0f5ffea436a96287d0c94f751c45b80160ca6ec9bc00665420d3722a596b"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/party-Run-hud.png",
+      "bytes": 451926,
+      "sha256": "feceac5cee4ddb804e261fcfa445ebc7cb53a489191f5e6cb3ea810e7fcf002c"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/party-Run.png",
+      "bytes": 707757,
+      "sha256": "b9dab75770503e867f60f3f9a2575ccdd48687050e4c6d19cd6c905e00bfd21d"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/full-outfit-garment-Spring-b9eef-es-all-supplied-classes-low/restored-party.png",
+      "bytes": 707662,
+      "sha256": "01c284da0e96cfd4caf7ea79626f5b024814d0a561832385efd9f5cb7287c876"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/garment-vendor-preview-Gil-e4ca3--applies-independently-high/selected-garment-preview.png",
+      "bytes": 344003,
+      "sha256": "9bece9719dfe2934c054c588c069e94e545d687e90c9cc8a2b239b259d3b0a45"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/garment-vendor-preview-Gil-f4e7c-d-applies-independently-low/selected-garment-preview.png",
+      "bytes": 152198,
+      "sha256": "c3d85285d4395dd1a9ee624d60746d6b62c76e4a64d55e2f03bab2846c4fadb3"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/garment-vendor-preview-Hol-23c5b--applies-independently-high/selected-garment-preview.png",
+      "bytes": 344533,
+      "sha256": "7a537ee5ea0f86ae2c4c41c16fc948d4ff67640229ed5fad44e280713ccc01e7"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/garment-vendor-preview-Hol-c5248-d-applies-independently-low/selected-garment-preview.png",
+      "bytes": 151216,
+      "sha256": "555465f42f212044b0a52584af051509830277478a9ca09207d346efa601ee90"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/garment-vendor-preview-Lan-08b0d-d-applies-independently-low/selected-garment-preview.png",
+      "bytes": 153004,
+      "sha256": "d7c6f471054bb5f82a19e7c6e1d47b0aaf005bf1665469b031bc28a1b7faf4e5"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/garment-vendor-preview-Lan-cf5b7--applies-independently-high/selected-garment-preview.png",
+      "bytes": 345965,
+      "sha256": "b8242ac967bb627133b52b2ae416abadaa9b5f59293ae130d95703abcee8dbb7"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/garment-vendor-preview-Mid-63f87-d-applies-independently-low/selected-garment-preview.png",
+      "bytes": 154474,
+      "sha256": "35fe2e079dca0ac7c23a8b99b2c86adc9fc57225d68764210e80d6ff6d1068ff"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/garment-vendor-preview-Mid-9726b--applies-independently-high/selected-garment-preview.png",
+      "bytes": 345231,
+      "sha256": "da56f3654229bc752aad1c2e92d1b858bb867693cd05ff02a7ecf5216b629742"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/garment-vendor-preview-Ros-b3790--applies-independently-high/selected-garment-preview.png",
+      "bytes": 344560,
+      "sha256": "7d5e2fd92b7d11e314edc82b5b356760db400a9dcba4b793160b448dbdc69ca7"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/garment-vendor-preview-Ros-b4748-d-applies-independently-low/selected-garment-preview.png",
+      "bytes": 152776,
+      "sha256": "4d85ff74bd75d1e0bc1d3552a2d352768a551d8154029054d6ee69b3cb0ccc78"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/garment-vendor-preview-Sol-5c86e--applies-independently-high/selected-garment-preview.png",
+      "bytes": 343923,
+      "sha256": "a626fd5be6f36211e85fcc5de42f9f27a9810e74420f67cbbf6840da6f27c9ad"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/garment-vendor-preview-Sol-f7dce-d-applies-independently-low/selected-garment-preview.png",
+      "bytes": 152546,
+      "sha256": "512d2f642b9c5f3d09875ce85760866f6778a1a3efa1dfbf844662abe16fac4a"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/garment-vendor-preview-Spr-14be7-d-applies-independently-low/selected-garment-preview.png",
+      "bytes": 156812,
+      "sha256": "5862c19a2c190b86c1397badc1859f6219a6c74a52a0edfaea5be466daf57402"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/garment-vendor-preview-Spr-98075--applies-independently-high/selected-garment-preview.png",
+      "bytes": 343360,
+      "sha256": "167881eabcdd909db3d245841fb4cd855f22aeaf089964d940d58f927e97ee9f"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/mobile-stash-layout-360x80-8adea--surface-and-explicit-moves/stash-detail-360.png",
+      "bytes": 108499,
+      "sha256": "b316df958e0e687fcd5bdc76658f6fe3a4bfc920c997e35a2780b671b6e89af8"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/mobile-stash-layout-360x80-8adea--surface-and-explicit-moves/stash-list-360.png",
+      "bytes": 122693,
+      "sha256": "e35c7cfdfccab30cc111c1c46627160f19cef63e21ebfa6b28c96e0f89d457dd"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/mobile-stash-layout-390x84-338d5--surface-and-explicit-moves/stash-detail-390.png",
+      "bytes": 117940,
+      "sha256": "696a3a422c39c454df3c768d11d73920c0167d5cab21493e4df93677c235efce"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/mobile-stash-layout-390x84-338d5--surface-and-explicit-moves/stash-list-390.png",
+      "bytes": 131119,
+      "sha256": "d4809aa4364ebf83f0ab3156b65cd6c263dfa8819cae9e517b53943a95894a66"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/mobile-stash-layout-568x32-07741--surface-and-explicit-moves/stash-detail-568.png",
+      "bytes": 72082,
+      "sha256": "1870e151676438fe6d358b5b35e27f883e85b98d6a73749adab3f523f38d4926"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/mobile-stash-layout-568x32-07741--surface-and-explicit-moves/stash-list-568.png",
+      "bytes": 63088,
+      "sha256": "0511f1d4ea6ee606274599ca36a85da5d20c4d1a29b7149e696582b543fc179a"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/mobile-stash-layout-844x39-31e1e--surface-and-explicit-moves/stash-detail-844.png",
+      "bytes": 111628,
+      "sha256": "4bf8d316931f068e5aafdfbda5892a6b65a735587f8a214772f26901df6c552c"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/mobile-stash-layout-844x39-31e1e--surface-and-explicit-moves/stash-list-844.png",
+      "bytes": 90945,
+      "sha256": "36e00dc946a198c16fa6eaccffa92763ebc2537d068ee3b6c0421466aa3522c0"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/window-position-memory-mov-1e8e3-eir-positions-when-reopened/remembered-store-and-bag.png",
+      "bytes": 648238,
+      "sha256": "30fa044030b4a7f526c3b72ff414d654a451fb19d350be1e69d6fbb59f675afd"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/window-position-memory-mov-1e8e3-eir-positions-when-reopened/remembered-store-resized.png",
+      "bytes": 262014,
+      "sha256": "dcaee4fc24889f60be4c6ae2f01537b044fa8482767270bdd3dc12c7c35d2671"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/window-position-memory-pho-a38d0-rs-a-reachable-layout-reset/phone-layout-reset.png",
+      "bytes": 42572,
+      "sha256": "fce9d92e277bbbd71c30780ed10e240ba18a8a163dceb61a0cfe8c1f859d91e9"
+    },
+    {
+      "path": ".qa-universal-garments/native-first/window-position-memory-sav-0725a-t-layout-and-keyboard-reset/layout-reset-settings.png",
+      "bytes": 95915,
+      "sha256": "c6924a17c9161e7dba6e0ec4eb46376c584b7f7899f44a2d527a1918ef1e22d5"
+    },
+    {
+      "path": ".qa-universal-garments/native-first.log",
+      "bytes": 5969,
+      "sha256": "230eb9a2a4d9212c47c956f32e7d21d9b891cfd82b446821839358669b51e8e0"
+    },
+    {
+      "path": ".qa-universal-garments/native-plan.log",
+      "bytes": 3000,
+      "sha256": "0259e483f56d3ba3cb13bf939ccd9851f09467ac08f3b7adb404e8bd2435921e"
+    },
+    {
+      "path": ".qa-universal-garments/native-scroll-corrected/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".qa-universal-garments/native-scroll-corrected/cosmetic-vendor-cosmetic-v-81155-hout-changing-gear-at-390px/filtered-wardrobe.png",
+      "bytes": 136775,
+      "sha256": "55dbeeb4a0e15a7644a678bfb381a8a93549d8424d6e89fb55a992eb2427d84d"
+    },
+    {
+      "path": ".qa-universal-garments/native-scroll-corrected/cosmetic-vendor-cosmetic-v-c2ecb-out-changing-gear-at-1440px/filtered-wardrobe.png",
+      "bytes": 438959,
+      "sha256": "5b4b93e7f207788c09b98c9577da49391be20c5c018317a2b0b7b94fcef2e041"
+    },
+    {
+      "path": ".qa-universal-garments/native-scroll-corrected.log",
+      "bytes": 556,
+      "sha256": "7f2ca2168040288384625d2d7775c0b0891f2b01ef7b887ee4959470eb7a09f6"
+    },
+    {
+      "path": ".qa-universal-garments/official-validation.json",
+      "bytes": 722971,
+      "sha256": "1276f048349a3d6a7b31a7751e4f83c5f78cf213ed69c38e224489ade40e6b31"
+    },
+    {
+      "path": ".qa-universal-garments/official-validation.log",
+      "bytes": 3467,
+      "sha256": "0a98623b1106499510f16a5cefc5279b4df3b15f92622d46934e905a9c8ee521"
+    },
+    {
+      "path": ".qa-universal-garments/predecessor-models.json",
+      "bytes": 6509,
+      "sha256": "8b1f06c0f15441e73f8ae3d9804c7c4b3bf31e1aad30bc45b1eaba43788fe632"
+    },
+    {
+      "path": ".qa-universal-garments/prepare-client.log",
+      "bytes": 2666,
+      "sha256": "1021408c9f2fc26e195a70878fe2e746231357d71a8b8230e16649537316635b"
+    },
+    {
+      "path": ".qa-universal-garments/preview-id-fixture-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-universal-garments/qualified-scene-budgets.json",
+      "bytes": 4167,
+      "sha256": "b338a994d029a293f90999b7e8666e2e0d57ab9981d2cceb1b2b2ddf6ec68c38"
+    },
+    {
+      "path": ".qa-universal-garments/server-focused.log",
+      "bytes": 41,
+      "sha256": "31b56200deb353966406a3879873daea648839e3c5966e2eff8ceb87afc02671"
+    },
+    {
+      "path": ".qa-universal-garments/service-frame-focused.log",
+      "bytes": 564,
+      "sha256": "90c89c33e8b603c690abeccaba30c56e7d68d9b5b0571317b53f24fa1cd9a7bc"
+    },
+    {
+      "path": ".qa-universal-garments/service-native-plan.log",
+      "bytes": 1482,
+      "sha256": "0803ba692bb030b30b3e0904f77ae8be3783ecce09fce14e12f75a7c1c71552b"
+    },
+    {
+      "path": ".qa-universal-garments/source-before-native.json",
+      "bytes": 208,
+      "sha256": "068b9354f0fe7eeaabed531d1e485078d678d0666c432856de1e69a1d182fff4"
+    },
+    {
+      "path": ".qa-universal-garments/validation-count-correction.log",
+      "bytes": 270,
+      "sha256": "9103666516ca10f3ab7510a104544d6c3ebd75c64ac1ab07c1d14cb1c15200f0"
+    },
+    {
+      "path": ".qa-universal-garments/vendor-filter-count-corrected.log",
+      "bytes": 498,
+      "sha256": "8fdf75c73df13b593c1c1161ce2881b0d7114536287a0ed734625d06e6e14b26"
+    },
+    {
+      "path": ".qa-universal-garments/vendor-filters-focused.log",
+      "bytes": 2787,
+      "sha256": "145b0529a0d7f1768dcf220727a22452c484f5b231cfc62adeb773c1007fe80c"
+    }
+  ]
+}

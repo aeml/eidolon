@@ -154,3 +154,42 @@ collection now has eleven distinct models: six held looks, all four class-themed
 outfits and Winterthorn Revel, the first universal outfit. Seven universal
 outfits remain to implement. Class themes do not add equip restrictions. Final
 owner collection review, broader art/device/performance and beta gates stay open.
+
+## Remaining universal candidates — October 15
+
+Hollow Court (Halloween), Rosebound Vow (Valentine's), Lantern Envoy (Lunar New
+Year), Springbloom Jubilee, Solstice Pyre (midsummer), Gilded Harvest and Midnight
+Masque now have deliberately modeled silhouettes, seven-piece clothing coverage
+and all four supplied class fits in High/Low. Together with Winterthorn Revel,
+these provide eight universal candidate designs. They reuse the existing25EP
+armor tier without class/calendar restrictions or membership/payment changes.
+
+212focused checks, current24-entry server custody checks, full lint and16content
+groups pass. All96outfit GLBs have byte-matched official zero-error/zero-warning
+validation evidence; all52predecessor outfit/held GLBs remain byte-exact. The Low
+masquerade eye-loop export failure and its geometry correction are retained.
+
+Veyra's collection now offers labeled name/theme search, slot categories and a
+result count, retaining current selection, pending-unlock custody and existing
+purchase confirmation. Search does not issue a purchase or mutate equipment.
+Filters survive same-character reopening and reset for a different character.
+
+**Isolated and unselected** until native visual/motion/preview/budget/resource
+review.28new outfit cases and two revised store interaction cases are prepared;
+none is claimed executed. Alpha1.79.57 is still undergoing ordered CI/deployment.
+The minimum eighteen looks are not yet declared accepted or deployed as a whole.
+
+## Qualified universal collection and service-menu selection — October 16
+
+All seven remaining universal designs are selected after42distinct native cases,
+reviewed gameplay/preview/menu captures, unchanged scene budgets and strict
+resource cycles. The minimum18distinct modeled looks is implemented; final
+owner collection art approval remains open. Search/categories and current-owner
+scroll/focus retention improve Veyra browsing. Shared service framing, readable
+tabs/trade controls and saved layout behavior have desktop/phone evidence.
+292distinct focused checks, focused server custody, full lint, content/model
+validation and exact predecessor-asset proof pass. Initial spring petal flicker
+and store fixture failures are retained with their corrections.
+[Qualification and evidence](2026-10-16-universal-garment-qualification.json).
+Not yet deployed; broader original quality/readiness gates and deferred playtests
+remain open. This selected milestone does not complete the full goal.

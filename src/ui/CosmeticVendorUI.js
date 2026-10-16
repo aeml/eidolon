@@ -21,8 +21,23 @@ export class CosmeticVendorUI {
         this.balance = node('p');
         const intro = node('p', 'Permanent appearance unlocks only. No stats, no sellable items, no Gold resale. VIP membership is not required.');
         const body = node('div', '', 'cosmetic-vendor-body');
+        const browser = node('section', '', 'cosmetic-browser');
+        const filters = node('div', '', 'cosmetic-filters');
+        const searchLabel = node('label', 'Find a look');
+        this.search = node('input'); this.search.type = 'search'; this.search.placeholder = 'Name, theme or style';
+        searchLabel.append(this.search);
+        const categoryLabel = node('label', 'Collection');
+        this.category = node('select');
+        for (const [value, label] of [['all', 'All looks'], ['outfit', 'Complete outfits'], ['mainHand', 'Weapons'], ['offHand', 'Offhands'], ['armor', 'Individual armor']]) {
+            const option = node('option', label); option.value = value; this.category.append(option);
+        }
+        categoryLabel.append(this.category); filters.append(searchLabel, categoryLabel);
+        this.results = node('p', '', 'cosmetic-results'); this.results.setAttribute('role', 'status');
+        this.results.setAttribute('aria-live', 'polite');
+        this.empty = node('p', 'No looks match. Try another name or collection.', 'cosmetic-empty'); this.empty.hidden = true;
         this.list = node('div', '', 'cosmetic-catalogue');
         this.list.setAttribute('aria-label', 'Cosmetic collection');
+        browser.append(filters, this.results, this.list, this.empty);
         const details = node('section', '', 'cosmetic-detail');
         this.title = node('h3'); this.description = node('p');
         this.previewHost = node('div', '', 'character-preview cosmetic-preview');
@@ -48,10 +63,12 @@ export class CosmeticVendorUI {
         }); this.retry.hidden = true;
         this.status = node('p', '', 'cosmetic-status'); this.status.setAttribute('role', 'status'); this.status.setAttribute('aria-live', 'polite');
         details.append(this.title, this.description, this.previewHost, this.inspect, this.compare, this.buy, this.apply, this.confirmation, this.retry);
-        body.append(this.list, details);
+        body.append(browser, details);
         this.root.append(header, this.balance, intro, body, this.status);
         document.body.append(this.root);
         ownedEvent(this, this.root, 'keydown', event => event.stopPropagation());
+        ownedEvent(this, this.search, 'input', () => this.filterCatalogue());
+        ownedEvent(this, this.category, 'change', () => this.filterCatalogue());
         ownedEvent(this, this.root, 'close', () => { this.ready = false; this.preview?.dispose(); this.preview = null; });
     }
 
@@ -63,10 +80,15 @@ export class CosmeticVendorUI {
     open() {
         const player = this.getPlayer();
         if (this.disposed || !player?.id) return false;
-        if (this.playerID !== player.id) { this.pendingID = null; this.pendingPrice = null; }
+        if (this.playerID !== player.id) {
+            this.pendingID = null; this.pendingPrice = null;
+            this.search.value = ''; this.category.value = 'all';
+        }
         this.playerID = player.id;
         this.ready = false; this.catalogueEpoch++;
         this.catalogue = []; this.collection = {}; this.selected = null; this.reviewedOffer = null; this.ep = null;
+        this.offerCards = []; this.search.disabled = true; this.category.disabled = true;
+        this.results.textContent = 'Loading collection…'; this.empty.hidden = true; this.previewHost.hidden = true;
         this.inspectHeld = false; this.inspect.hidden = true; this.inspect.textContent = 'Inspect held look'; this.inspect.setAttribute('aria-pressed', 'false');
         this.preview?.dispose(); this.preview = null;
         this.balance.textContent = 'Loading your EP balance…'; this.title.textContent = 'Select a cosmetic'; this.description.textContent = '';
@@ -102,20 +124,45 @@ export class CosmeticVendorUI {
         if (result.id === this.pendingID && result.pending === false) this.pendingID = null;
         this.retry.hidden = !this.pendingID;
         this.status.textContent = result?.message || 'Choose a look to preview.';
+        const scrollTop = this.list.scrollTop;
+        const focusedID = this.list.contains(document.activeElement)
+            ? document.activeElement.closest('[data-offer-id]')?.dataset.offerId : null;
         this.list.replaceChildren();
+        this.offerCards = []; this.search.disabled = false; this.category.disabled = false;
         for (const offer of this.catalogue) {
             const owned = Boolean(this.collection[this.lookKey(offer)]);
             const button = this.button(`${offer.name} · ${owned ? 'Owned' : `${offer.priceEP} EP`}`, () => {
-                if (this.canAct() && epoch === this.catalogueEpoch) this.select(offer);
+                if (this.canAct() && !button.hidden && epoch === this.catalogueEpoch) this.select(offer);
             });
             button.dataset.offerId = offer.id;
             const swatch = node('span', offer.realm, 'cosmetic-swatch');
             swatch.style.borderColor = `#${Number(offer.primary).toString(16).padStart(6, '0')}`;
-            button.prepend(swatch); this.list.append(button);
+            button.prepend(swatch); this.list.append(button); this.offerCards.push({ offer, button });
         }
-        this.select(this.catalogue.find(offer => offer.id === this.selected?.id) || this.catalogue[0]);
+        this.filterCatalogue();
+        this.select(this.catalogue.find(offer => offer.id === this.selected?.id) || this.offerCards.find(card => !card.button.hidden)?.offer);
+        this.list.scrollTop = scrollTop;
+        if (focusedID) this.offerCards.find(card => card.offer.id === focusedID && !card.button.hidden)?.button.focus({ preventScroll: true });
         if (!result?.success) this.buy.disabled = true;
         return true;
+    }
+
+    filterCatalogue() {
+        if (!this.canAct()) return;
+        const query = this.search.value.trim().toLocaleLowerCase(), category = this.category.value;
+        let count = 0;
+        for (const { offer, button } of this.offerCards) {
+            const slot = offer.appearance.slot;
+            const group = ['outfit', 'mainHand', 'offHand'].includes(slot) ? slot : 'armor';
+            const text = `${offer.name} ${offer.description} ${offer.realm}`.toLocaleLowerCase();
+            button.hidden = (category !== 'all' && category !== group) || !text.includes(query);
+            if (!button.hidden) count++;
+        }
+        this.results.textContent = `${count} of ${this.catalogue.length} looks`;
+        this.empty.hidden = count > 0;
+        // Browsing never purchases or changes the selected preview. A cost
+        // confirmation must be reviewed again after changing browsing context.
+        this.confirmation.hidden = true; this.reviewedOffer = null;
     }
 
     select(offer) {
@@ -123,7 +170,11 @@ export class CosmeticVendorUI {
         offer = this.catalogue.find(current => current.id === offer?.id);
         this.selected = offer; this.showOriginal = false; this.confirmation.hidden = true; this.reviewedOffer = null;
         this.compare.disabled = !offer;
-        if (!offer) { this.buy.disabled = true; this.apply.disabled = true; return; }
+        this.previewHost.hidden = !offer;
+        if (!offer) {
+            this.title.textContent = 'Choose a look'; this.description.textContent = '';
+            this.inspect.hidden = true; this.buy.disabled = true; this.apply.disabled = true; return;
+        }
         this.title.textContent = offer.name;
         this.description.textContent = offer.description;
         this.list.querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.offerId === offer.id)));
