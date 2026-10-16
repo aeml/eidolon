@@ -18,6 +18,33 @@ export function createBastionFoundation() {
         [31, 8], [33, 21], [25, 25], [13, 23], [-12, 24], [-29, 23], [-33, 15]], 2.5, .3);
 }
 
+export function createBastionRamp() {
+    const parts = [];
+    // Retain the old 22 x 2 x 23 envelope. Recessed mortar and bevels make
+    // the joints physical; one merged mesh keeps individual stones off the
+    // draw list. Stagger the courses without extending the ramp's footprint.
+    const base = new THREE.BoxGeometry(22, 1.85, 23).toNonIndexed();
+    base.translate(0, -.075, 0); parts.push(base);
+    for (let row = 0; row < 8; row++) {
+        for (let column = 0; column < (row % 2 ? 9 : 8); column++) {
+            const left = Math.max(-11, -11 + (column - (row % 2) * .5) * 2.75) + .08;
+            const right = Math.min(11, -11 + (column + 1 - (row % 2) * .5) * 2.75) - .08;
+            const back = -11.5 + row * 2.875 + .08, front = back + 2.715;
+            const chip = .055 + ((row * 13 + column * 7) % 6) * .017;
+            const stone = horizontalStone([
+                [left + chip, back], [right - chip, back], [right, back + chip],
+                [right, front - chip], [right - chip, front], [left + chip, front],
+                [left, front - chip], [left, back + chip]
+            ], .1, .05);
+            stone.translate(0, .8, 0);
+            parts.push(stone);
+        }
+    }
+    const result = mergeGeometries(parts, false);
+    parts.forEach(part => part.dispose());
+    return result;
+}
+
 function fitWall(geometry, width, height, depth) {
     geometry.computeBoundingBox();
     const bounds = geometry.boundingBox, size = bounds.getSize(new THREE.Vector3());

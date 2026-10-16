@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { createBastionGatehouse } from '../src/art/BastionArchitectureGeometry.js';
+import { createBastionGatehouse, createBastionRamp } from '../src/art/BastionArchitectureGeometry.js';
 
 test('Bastion has a real recessed doorway, finite chamfers and the unchanged wall/floor envelope', () => {
     const geometry = createBastionGatehouse();
@@ -25,5 +25,25 @@ test('Bastion has a real recessed doorway, finite chamfers and the unchanged wal
     expect([...geometry.attributes.normal.array].every(Number.isFinite)).toBe(true);
     expect(geometry.attributes.position.count / 3).toBeLessThan(500);
     expect(geometry.groups).toHaveLength(0); // One merged geometry/material draw.
+    geometry.dispose(); material.dispose();
+});
+
+test('Bastion ramp has physical staggered joints within its former slab envelope', () => {
+    const geometry = createBastionRamp();
+    const material = new THREE.MeshStandardMaterial();
+    const mesh = new THREE.Mesh(geometry, material); mesh.updateMatrixWorld(true);
+    const surface = (x, z) => new THREE.Raycaster(new THREE.Vector3(x, 4, z),
+        new THREE.Vector3(0, -1, 0)).intersectObject(mesh)[0].point.y;
+    expect(surface(-9.625, -10.0625)).toBeCloseTo(1, 5);
+    expect(surface(-8.25, -10.0625)).toBeCloseTo(.85, 5);
+    // The next row shifts its vertical joint by half a stone.
+    expect(surface(-8.25, -7.1875)).toBeCloseTo(1, 5);
+    expect(surface(0, -8.625)).toBeCloseTo(.85, 5);
+    geometry.computeBoundingBox();
+    geometry.boundingBox.min.toArray().forEach((value, i) => expect(value).toBeCloseTo([-11, -1, -11.5][i], 5));
+    geometry.boundingBox.max.toArray().forEach((value, i) => expect(value).toBeCloseTo([11, 1, 11.5][i], 5));
+    expect(Object.values(geometry.attributes).every(attribute => [...attribute.array].every(Number.isFinite))).toBe(true);
+    expect(geometry.attributes.position.count / 3).toBeLessThan(5000);
+    expect(geometry.groups).toHaveLength(0);
     geometry.dispose(); material.dispose();
 });

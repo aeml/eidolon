@@ -4,7 +4,7 @@ import { getRegionTheme } from './darkFantasyTheme.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createDungeonVeilMaterial } from './DungeonVeilMaterial.js';
 import { createBastionForegateGeometry } from './BastionForegateGeometry.js';
-import { createBastionFoundation, createBastionGatehouse, createBastionTowerParapet, createBastionRecess } from './BastionArchitectureGeometry.js';
+import { createBastionFoundation, createBastionRamp, createBastionGatehouse, createBastionTowerParapet, createBastionRecess } from './BastionArchitectureGeometry.js';
 import { createTaperedRoot } from './EarthLandmarkGeometry.js';
 import { createMoltenFoundation, createMoltenVault, createMoltenVaultRib, createMoltenForegate, createMoltenChain } from './MoltenEntranceGeometry.js';
 import { createTideReliquaryArch } from './TideReliquaryGeometry.js';
@@ -41,7 +41,7 @@ function material(key, color, options = {}) {
             depthWrite: options.depthWrite ?? true,
             colorWrite: options.colorWrite ?? true,
             side: options.side ?? THREE.FrontSide,
-            flatShading: true,
+            flatShading: options.flatShading ?? true,
             polygonOffset: true,
             polygonOffsetFactor: 1,
             polygonOffsetUnits: 1,
@@ -66,6 +66,7 @@ const SHAPES = Object.freeze({
     disc: geometry('dungeon-entrance-unit-disc', () => new THREE.CircleGeometry(0.5, 24)),
     bastionForegate: geometry('dungeon-entrance-bastion-foregate', createBastionForegateGeometry),
     bastionFoundation: geometry('dungeon-entrance-bastion-foundation', createBastionFoundation),
+    bastionRamp: geometry('dungeon-entrance-bastion-ramp', createBastionRamp),
     bastionHall: geometry('dungeon-entrance-bastion-hall', createBastionGatehouse),
     bastionParapet: geometry('dungeon-entrance-bastion-parapet', createBastionTowerParapet),
     bastionRecess: geometry('dungeon-entrance-bastion-recess', createBastionRecess),
@@ -122,7 +123,7 @@ function regionMaterials(region) {
     return Object.freeze({
         veil: MATERIALS.get(veilKey),
         ...(region === 'verdant_bastion_catacombs' ? {
-            root: material(`${prefix}:root`, 0x363b2b, { roughness: .98, surface: 'bark' })
+            root: material(`${prefix}:root`, 0x363b2b, { roughness: .98, surface: 'bark', flatShading: false })
         } : {}),
         dark: material(`${prefix}:dark`, definitions.dark, { roughness: 0.98 }),
         stone: material(`${prefix}:stone`, definitions.stone, { roughness: 0.94,
@@ -234,7 +235,7 @@ function spike(parent, name, materialValue, position, scale, rotation = [0, 0, 0
 function createVerdantBastion(root) {
     const m = MATERIAL_SETS.verdant_bastion_catacombs;
     addMesh(root, 'verdant:buried-fortress-plinth', SHAPES.bastionFoundation, m.stone);
-    box(root, 'verdant:mossed-ramp', m.pale, [22, 2, 23], [0, 2.7, 22], [-0.06, 0, 0]);
+    addMesh(root, 'verdant:mossed-ramp', SHAPES.bastionRamp, m.pale, { position: [0, 2.7, 22], rotation: [-.06, 0, 0] });
     addMesh(root, 'verdant:gatehouse', SHAPES.bastionHall, m.stone);
     addMesh(root, 'verdant:recessed-hall-door', SHAPES.bastionRecess, m.dark, {
         position: [0, 3, 3.97], castShadow: false
