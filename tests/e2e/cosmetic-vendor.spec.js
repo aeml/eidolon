@@ -104,10 +104,21 @@ for (const width of [390, 1440]) test(`cosmetic vendor previews, confirms and ap
     await dialog.getByRole('searchbox', { name: 'Find a look', exact: true }).fill('Halloween');
     await expect(dialog.locator('.cosmetic-catalogue button:visible')).toHaveCount(1);
     await expect(dialog.locator('.cosmetic-results')).toHaveText('1 of 24 looks');
+    await dialog.locator('[data-offer-id="hollow-court-v1"]').click();
+    await expect.poll(() => page.evaluate(() => window.__cosmeticFixture.ui.preview.model?.userData.equipmentVisualSignature || '')).toContain('Hollow Court');
     await page.screenshot({ path: testInfo.outputPath('filtered-wardrobe.png') });
     expect(await page.evaluate(() => window.__cosmeticFixture.requests.map(request => request.type))).toEqual(['get_cosmetic_vendor']);
     await dialog.getByRole('searchbox', { name: 'Find a look', exact: true }).fill('');
     await dialog.getByRole('combobox', { name: 'Collection', exact: true }).selectOption('all');
+    await dialog.locator('[data-offer-id="midnight-masque-v1"]').focus();
+    const scroll = await dialog.locator('.cosmetic-catalogue').evaluate(node => node.scrollTop);
+    expect(scroll).toBeGreaterThan(0);
+    await page.evaluate(() => {
+        const { ui, player } = window.__cosmeticFixture;
+        ui.handleResult({ playerID: player.id, success: true, pending: false, ep: ui.ep, catalogue: ui.catalogue, collection: ui.collection });
+    });
+    await expect(dialog.locator('[data-offer-id="midnight-masque-v1"]')).toBeFocused();
+    expect(await dialog.locator('.cosmetic-catalogue').evaluate(node => node.scrollTop)).toBeCloseTo(scroll, 0);
     await expect(dialog.locator('canvas')).toHaveCount(1);
     expect(await page.evaluate(() => window.__cosmeticFixture.ui.preview.failed || false)).toBe(false);
     await dialog.locator('[data-offer-id="grovekeeper-blade-v1"]').click();

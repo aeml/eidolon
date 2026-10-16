@@ -2760,49 +2760,49 @@ export const GARMENT_MODELS = {
         "Fighter": {
           "high": {
             "file": "./assets/garments/rosebound-vow-v1/Fighter-high.glb",
-            "bytes": 1579020,
-            "sha256": "a1a3af2c8eb48c78a193336bcbeadb277cbd2f64f0b193313a80a6073cf1e80a"
+            "bytes": 1579012,
+            "sha256": "2560a93ce76c46d31bf60e0564e1c6964ae12b388c136170e143b667d6af13ea"
           },
           "low": {
             "file": "./assets/garments/rosebound-vow-v1/Fighter-low.glb",
-            "bytes": 997328,
-            "sha256": "4c6bbd25705fe57b41ffaa3f3ed9f69f9bbcffc22683a09c84defeb206771db3"
+            "bytes": 997320,
+            "sha256": "05f619f7415395152b5ea51e364d493f88a77ced30cb0340d8762a37229df438"
           }
         },
         "Rogue": {
           "high": {
             "file": "./assets/garments/rosebound-vow-v1/Rogue-high.glb",
-            "bytes": 1472092,
-            "sha256": "acdcb2d74b2b7ad7a6b82573700a197d91fd1a6d862125d8401dd230708dc8a4"
+            "bytes": 1472088,
+            "sha256": "b78abb2e63350a48507e821871cc334e415f921e5fced24329be11d8eee2120a"
           },
           "low": {
             "file": "./assets/garments/rosebound-vow-v1/Rogue-low.glb",
-            "bytes": 942116,
-            "sha256": "4cd58324aba983ee79a1e3c2bdbc75bb74011958e0bb484d4b6e3f4a41d76b32"
+            "bytes": 942112,
+            "sha256": "8a2491d24ed79bf5b7f70912b978defa0100f9251fd5d9cbfbbb25162151129a"
           }
         },
         "Cleric": {
           "high": {
             "file": "./assets/garments/rosebound-vow-v1/Cleric-high.glb",
-            "bytes": 1470392,
-            "sha256": "0eb7f6918c7057b483c68624c2ea1adaaa40c34edaf69fca8ccfed96a00a7dce"
+            "bytes": 1470376,
+            "sha256": "1c1dea3c8789449747e5f455ad92d32735dc595ce33ba131294afeb42a4feb9e"
           },
           "low": {
             "file": "./assets/garments/rosebound-vow-v1/Cleric-low.glb",
-            "bytes": 938800,
-            "sha256": "7d599f961148b1038ae6a687fbfa329547ac40da343c27829ea272038615807e"
+            "bytes": 938784,
+            "sha256": "1fcd183af0f5345d8f4e59bf186702243e653da2286cb80baf7aa361bb6147ec"
           }
         },
         "Wizard": {
           "high": {
             "file": "./assets/garments/rosebound-vow-v1/Wizard-high.glb",
-            "bytes": 1472264,
-            "sha256": "aba2bc8babdba05f3697253e92531b29b3114414fc5a2a492615fdd51a65cb25"
+            "bytes": 1472252,
+            "sha256": "92fc7ec7dc855ea2599b1182ae2c2cf19515a5921f430683c6c94a0a05862924"
           },
           "low": {
             "file": "./assets/garments/rosebound-vow-v1/Wizard-low.glb",
-            "bytes": 906248,
-            "sha256": "c60c3fd7e26604fef87614e657c089ada25017a8c9ae2e25cbe4cf297ed9eda1"
+            "bytes": 906232,
+            "sha256": "85d78c8f253e11c6ef798a24037c9299c5525e7e1b48191cfdac7cedda8e82bc"
           }
         }
       },
@@ -3674,49 +3674,49 @@ export const GARMENT_MODELS = {
         "Fighter": {
           "high": {
             "file": "./assets/garments/springbloom-jubilee-v1/Fighter-high.glb",
-            "bytes": 1586508,
-            "sha256": "148b3f975e09e5b9609ed5e158d92fc38c167ddb300d05f3be9e4574f5fd3c7e"
+            "bytes": 1586504,
+            "sha256": "6d57367a1011a7595ba5687869d06de6cccdc25e456395cbc06f05ba0f2ab8ab"
           },
           "low": {
             "file": "./assets/garments/springbloom-jubilee-v1/Fighter-low.glb",
-            "bytes": 1020924,
-            "sha256": "972281b7475ee4a47cedc5ffd6972e5282d3cc110987fd2ee18aa30efc222d5e"
+            "bytes": 1020920,
+            "sha256": "f5fd034617d5e4d9aaa6294678680e119611e14343aa3bbdb8f73f89687fd1a3"
           }
         },
         "Rogue": {
           "high": {
             "file": "./assets/garments/springbloom-jubilee-v1/Rogue-high.glb",
-            "bytes": 1479592,
-            "sha256": "4254567fddc65c762079d21acab74588b208ac2cdd0e8c39211aa357da687a5d"
+            "bytes": 1479596,
+            "sha256": "b85d7a7a9bd7267a4496807fad5cfb6357e64c543fa36389002472dbe2c12ab0"
           },
           "low": {
             "file": "./assets/garments/springbloom-jubilee-v1/Rogue-low.glb",
-            "bytes": 965724,
-            "sha256": "f0f3c67f8f346b6d39d1cd8907f09093153d812210a5d425b97c5daccac5e7c5"
+            "bytes": 965728,
+            "sha256": "09fba230bf0e6ccb742007c1798f58ff431a867bdc15afca0bee9500f0e260f6"
           }
         },
         "Cleric": {
           "high": {
             "file": "./assets/garments/springbloom-jubilee-v1/Cleric-high.glb",
-            "bytes": 1477888,
-            "sha256": "5f49c005f16c25b0ac85d3329a3b03d6f3719d924a8b266e908de5474683bdae"
+            "bytes": 1477872,
+            "sha256": "43210b6d8a6e2272666899416f8672778df075ffe21e183ab4c499a29de39f6a"
           },
           "low": {
             "file": "./assets/garments/springbloom-jubilee-v1/Cleric-low.glb",
-            "bytes": 962404,
-            "sha256": "162147ea57a285970594e03e0c59d3db33452aab83aa7d0ed5e973605cb924a0"
+            "bytes": 962388,
+            "sha256": "b9530fd44ed6e9781043bc03f96768ccb60d8a199adea15ad4750671fba9f726"
           }
         },
         "Wizard": {
           "high": {
             "file": "./assets/garments/springbloom-jubilee-v1/Wizard-high.glb",
-            "bytes": 1479764,
-            "sha256": "8ccd024bf5a12c699ce4dd9a5448ad2de3e0176a2f183a8197b42df5df776898"
+            "bytes": 1479756,
+            "sha256": "e8cea3fbc0020892e82bd237b53a898e0a5295909f2a59d735c98e769e84f3a3"
           },
           "low": {
             "file": "./assets/garments/springbloom-jubilee-v1/Wizard-low.glb",
-            "bytes": 929852,
-            "sha256": "f13e4bd4bd53a941600a42e6ea0672da1157afb551a73e4a0bad4a71407e8790"
+            "bytes": 929844,
+            "sha256": "deb932df6b31ff74e79f5aefc831b24c65551d78ac78b12aa83c973485361518"
           }
         }
       },
@@ -5537,14 +5537,14 @@ export const GARMENT_ASSET_VERSIONS = {
   "./assets/garments/hollow-court-v1/Cleric-low.glb": "df71406029aae4da",
   "./assets/garments/hollow-court-v1/Wizard-high.glb": "be8841984c7d1fb2",
   "./assets/garments/hollow-court-v1/Wizard-low.glb": "7f2f19d6732a5d00",
-  "./assets/garments/rosebound-vow-v1/Fighter-high.glb": "a1a3af2c8eb48c78",
-  "./assets/garments/rosebound-vow-v1/Fighter-low.glb": "4c6bbd25705fe57b",
-  "./assets/garments/rosebound-vow-v1/Rogue-high.glb": "acdcb2d74b2b7ad7",
-  "./assets/garments/rosebound-vow-v1/Rogue-low.glb": "4cd58324aba983ee",
-  "./assets/garments/rosebound-vow-v1/Cleric-high.glb": "0eb7f6918c7057b4",
-  "./assets/garments/rosebound-vow-v1/Cleric-low.glb": "7d599f961148b103",
-  "./assets/garments/rosebound-vow-v1/Wizard-high.glb": "aba2bc8babdba05f",
-  "./assets/garments/rosebound-vow-v1/Wizard-low.glb": "c60c3fd7e26604fe",
+  "./assets/garments/rosebound-vow-v1/Fighter-high.glb": "2560a93ce76c46d3",
+  "./assets/garments/rosebound-vow-v1/Fighter-low.glb": "05f619f741539515",
+  "./assets/garments/rosebound-vow-v1/Rogue-high.glb": "b78abb2e63350a48",
+  "./assets/garments/rosebound-vow-v1/Rogue-low.glb": "8a2491d24ed79bf5",
+  "./assets/garments/rosebound-vow-v1/Cleric-high.glb": "1c1dea3c87894497",
+  "./assets/garments/rosebound-vow-v1/Cleric-low.glb": "1fcd183af0f5345d",
+  "./assets/garments/rosebound-vow-v1/Wizard-high.glb": "92fc7ec7dc855ea2",
+  "./assets/garments/rosebound-vow-v1/Wizard-low.glb": "85d78c8f253e11c6",
   "./assets/garments/lantern-envoy-v1/Fighter-high.glb": "81451dc2267c70f0",
   "./assets/garments/lantern-envoy-v1/Fighter-low.glb": "9b5359dcef5f69b8",
   "./assets/garments/lantern-envoy-v1/Rogue-high.glb": "dd85a46b924d429e",
@@ -5553,14 +5553,14 @@ export const GARMENT_ASSET_VERSIONS = {
   "./assets/garments/lantern-envoy-v1/Cleric-low.glb": "98542103680cf77f",
   "./assets/garments/lantern-envoy-v1/Wizard-high.glb": "678b24d30c43cd75",
   "./assets/garments/lantern-envoy-v1/Wizard-low.glb": "d234573e2c67a5fc",
-  "./assets/garments/springbloom-jubilee-v1/Fighter-high.glb": "148b3f975e09e5b9",
-  "./assets/garments/springbloom-jubilee-v1/Fighter-low.glb": "972281b7475ee4a4",
-  "./assets/garments/springbloom-jubilee-v1/Rogue-high.glb": "4254567fddc65c76",
-  "./assets/garments/springbloom-jubilee-v1/Rogue-low.glb": "f0f3c67f8f346b6d",
-  "./assets/garments/springbloom-jubilee-v1/Cleric-high.glb": "5f49c005f16c25b0",
-  "./assets/garments/springbloom-jubilee-v1/Cleric-low.glb": "162147ea57a28597",
-  "./assets/garments/springbloom-jubilee-v1/Wizard-high.glb": "8ccd024bf5a12c69",
-  "./assets/garments/springbloom-jubilee-v1/Wizard-low.glb": "f13e4bd4bd53a941",
+  "./assets/garments/springbloom-jubilee-v1/Fighter-high.glb": "6d57367a1011a759",
+  "./assets/garments/springbloom-jubilee-v1/Fighter-low.glb": "f5fd034617d5e4d9",
+  "./assets/garments/springbloom-jubilee-v1/Rogue-high.glb": "b85d7a7a9bd7267a",
+  "./assets/garments/springbloom-jubilee-v1/Rogue-low.glb": "09fba230bf0e6ccb",
+  "./assets/garments/springbloom-jubilee-v1/Cleric-high.glb": "43210b6d8a6e2272",
+  "./assets/garments/springbloom-jubilee-v1/Cleric-low.glb": "b9530fd44ed6e978",
+  "./assets/garments/springbloom-jubilee-v1/Wizard-high.glb": "e8cea3fbc0020892",
+  "./assets/garments/springbloom-jubilee-v1/Wizard-low.glb": "deb932df6b31ff74",
   "./assets/garments/solstice-pyre-v1/Fighter-high.glb": "036359f338ed9940",
   "./assets/garments/solstice-pyre-v1/Fighter-low.glb": "53728b95fecaec77",
   "./assets/garments/solstice-pyre-v1/Rogue-high.glb": "2cb78821d4b6d672",

@@ -42,7 +42,7 @@ export function sculptSeasonalGarment({ design, quality, material, gold, steel, 
         place(heart, offset(headAnchor, 0, .015), 'Open heart coronet', gold, 'head');
         const rose = material('Rose petal enamel', 0xbd617c, .1, .65);
         for (const sign of [-1, 1]) for (let i = 0; i < 3; i++) {
-            const frond = leaf(); frond.rotateZ(sign * (.35 + i * .4)); frond.rotateY(-sign * .3);
+            const frond = leaf(); frond.rotateZ(-sign * (.35 + i * .4)); frond.rotateY(-sign * .3);
             place(frond, offset(shoulder(sign), sign * .03 * i, 0), `Rose shoulder leaf ${sign} ${i}`, gold, 'shoulders');
         }
         for (let ring = 0; ring < 2; ring++) for (let i = 0; i < 5; i++) {
@@ -72,8 +72,10 @@ export function sculptSeasonalGarment({ design, quality, material, gold, steel, 
         const petalColor = material('Spring ivory petals', 0xf0dfc2, 0, .82);
         const green = material('Spring leaf enamel', 0x6c9770, .15, .65);
         for (let i = 0; i < 7; i++) {
-            const petal = leaf(.028, .09); petal.rotateZ((i - 3) * .3);
-            place(petal, offset(headAnchor, (i - 3) * .025, 0), `Spring petal crown ${i}`, i % 2 ? green : petalColor, 'head');
+            const petal = leaf(.028, .09); petal.rotateZ(-(i - 3) * .3);
+            // Fan outward and separate the overlapping bases in depth. Inward
+            // coplanar petals collapse into a flickering patch on the hood.
+            place(petal, offset(headAnchor, (i - 3) * .025, 0, Math.abs(i - 3) * .003), `Spring petal crown ${i}`, i % 2 ? green : petalColor, 'head');
         }
         for (const sign of [-1, 1]) for (let i = 0; i < 5; i++) {
             const petal = leaf(.028, .07); petal.rotateZ(i * Math.PI * .4); petal.rotateX(-.55);

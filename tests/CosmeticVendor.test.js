@@ -84,6 +84,17 @@ test('filtering retains an exact pending unlock and empty reopen cannot show a s
     expect(ui.buy.disabled).toBe(true); ui.dispose();
 });
 
+test('a current-owner catalogue acknowledgement preserves scroll and keyboard focus without selecting or buying', () => {
+    const { ui, send, player } = fixture();
+    const selected = ui.selected.id, card = ui.list.querySelector('[data-offer-id="midnight-masque-v1"]');
+    card.focus(); ui.list.scrollTop = 123;
+    ui.handleResult({ playerID: player.id, success: true, pending: false, ep: 75, catalogue: offers(), collection: {} });
+    expect(ui.list.scrollTop).toBe(123);
+    expect(document.activeElement.dataset.offerId).toBe('midnight-masque-v1');
+    expect(document.activeElement).not.toBe(card); expect(ui.selected.id).toBe(selected);
+    expect(send).toHaveBeenCalledTimes(1); ui.dispose();
+});
+
 test('settled-season styles resolve as cosmetic-only pendants and are not EP offers', () => {
     expect(SEASON_COSMETIC_CATALOGUE).toEqual(JSON.parse(fs.readFileSync('server/internal/game/content/season-cosmetics.json', 'utf8')));
     expect(SEASON_COSMETIC_CATALOGUE.map(offer => offer.medal)).toEqual(['Bronze', 'Silver', 'Gold']);

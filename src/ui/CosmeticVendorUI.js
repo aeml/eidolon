@@ -124,6 +124,9 @@ export class CosmeticVendorUI {
         if (result.id === this.pendingID && result.pending === false) this.pendingID = null;
         this.retry.hidden = !this.pendingID;
         this.status.textContent = result?.message || 'Choose a look to preview.';
+        const scrollTop = this.list.scrollTop;
+        const focusedID = this.list.contains(document.activeElement)
+            ? document.activeElement.closest('[data-offer-id]')?.dataset.offerId : null;
         this.list.replaceChildren();
         this.offerCards = []; this.search.disabled = false; this.category.disabled = false;
         for (const offer of this.catalogue) {
@@ -138,6 +141,8 @@ export class CosmeticVendorUI {
         }
         this.filterCatalogue();
         this.select(this.catalogue.find(offer => offer.id === this.selected?.id) || this.offerCards.find(card => !card.button.hidden)?.offer);
+        this.list.scrollTop = scrollTop;
+        if (focusedID) this.offerCards.find(card => card.offer.id === focusedID && !card.button.hidden)?.button.focus({ preventScroll: true });
         if (!result?.success) this.buy.disabled = true;
         return true;
     }
