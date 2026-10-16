@@ -175,7 +175,12 @@ function finalize(root, type, clips, { batch = false } = {}) {
     configureCreatureAttack(root, type, clips);
     // Merge immutable siblings inside their own live animation pivots before
     // the pooled reset captures the actual tree. Materials remain borrowed.
-    if (batch) batchHumanoidRenderParts(root);
+    if (batch) batchHumanoidRenderParts(root, {
+        // Contact anatomy stays directly addressable. Keep the Harpy's angled
+        // feather bounds separate; a merged local box expands under the pivot.
+        preserveParts: [`${type}_Beak`],
+        preserveParents: type === 'StormHarpy' ? [`Rig_${type}ArmLeft`, `Rig_${type}ArmRight`] : []
+    });
     installRestPoseReset(root);
     return root;
 }
@@ -457,7 +462,7 @@ export function createProceduralSandstormDjinn({ batch = true } = {}) {
     return finalize(root, type, createClips(type, frame.bodyY, { stride: 0.58, reach: 1.14, fall: 0.65 }), { batch });
 }
 
-export function createProceduralMagmaGolem() {
+export function createProceduralMagmaGolem({ batch = true } = {}) {
     const type = 'MagmaGolem';
     const materials = createMaterials(type);
     const root = new THREE.Group();
@@ -478,10 +483,10 @@ export function createProceduralMagmaGolem() {
     addCrown(frame.head, type, materials, 8, 0.5, 1.02);
     addOrbit(frame.accent, type, materials, 10, 1.55, 'orb');
     mesh(frame.weapon, `${type}_FaultHammer`, geometry(`${type}-hammer`, () => new THREE.BoxGeometry(1.15, 0.72, 0.7)), materials.dark, { position: [0, -0.92, 0] });
-    return finalize(root, type, createClips(type, frame.bodyY, { stride: 0.31, reach: 1.12, fall: 0.98 }));
+    return finalize(root, type, createClips(type, frame.bodyY, { stride: 0.31, reach: 1.12, fall: 0.98 }), { batch });
 }
 
-export function createProceduralScorchedWraith() {
+export function createProceduralScorchedWraith({ batch = true } = {}) {
     const type = 'ScorchedWraith';
     const materials = createMaterials(type);
     const root = new THREE.Group();
@@ -504,10 +509,10 @@ export function createProceduralScorchedWraith() {
         });
         mesh(frame.body, `${type}_CinderCenser${side}`, geometry(`${type}-censer`, () => new THREE.OctahedronGeometry(0.24, 0)), materials.glow, { position: [sign * 0.9, -1.1, -0.3] });
     }
-    return finalize(root, type, createClips(type, frame.bodyY, { stride: 0.52, reach: 1.18, fall: 0.7 }));
+    return finalize(root, type, createClips(type, frame.bodyY, { stride: 0.52, reach: 1.18, fall: 0.7 }), { batch });
 }
 
-export function createProceduralInfernalBehemoth() {
+export function createProceduralInfernalBehemoth({ batch = true } = {}) {
     const type = 'InfernalBehemoth';
     const materials = createMaterials(type);
     const root = new THREE.Group();
@@ -545,18 +550,19 @@ export function createProceduralInfernalBehemoth() {
         });
     }
     addOrbit(accent, type, materials, 8, 1.28, 'orb');
-    return finalize(root, type, createClips(type, bodyY, { stride: 0.3, reach: 1.18, fall: 0.82 }));
+    return finalize(root, type, createClips(type, bodyY, { stride: 0.3, reach: 1.18, fall: 0.82 }), { batch });
 }
 
-export function createProceduralPhoenixSentinel() {
+export function createProceduralPhoenixSentinel({ batch = true } = {}) {
     return createBird('PhoenixSentinel', {
+        batch,
         realm: 'fire', bodyY: 2.35, bodyRadius: 0.76, sealRadius: 1.45,
         wing: { count: 12, length: 2.05, width: 0.18, rootX: 0.54, rootY: 0.42 },
         tailCount: 11, tailLength: 2.05, crownCount: 9, crownHeight: 1.05, orbitCount: 10, orbitRadius: 1.42, stride: 0.78
     });
 }
 
-export function createProceduralStormHarpy() {
+export function createProceduralStormHarpy({ batch = true } = {}) {
     const type = 'StormHarpy';
     const materials = createMaterials(type);
     const root = new THREE.Group();
@@ -583,10 +589,10 @@ export function createProceduralStormHarpy() {
     const accent = pivot(leftWing, `Rig_${type}Accent`, [0.2, 0, -0.25]);
     addOrbit(accent, type, materials, 9, 1.18);
     addCrown(head, type, materials, 7, 0.36, 0.82);
-    return finalize(root, type, createClips(type, bodyY, { stride: 0.72, reach: 1.16, fall: 0.65 }));
+    return finalize(root, type, createClips(type, bodyY, { stride: 0.72, reach: 1.16, fall: 0.65 }), { batch });
 }
 
-export function createProceduralCloudElemental() {
+export function createProceduralCloudElemental({ batch = true } = {}) {
     const type = 'CloudElemental';
     const materials = createMaterials(type);
     const root = new THREE.Group();
@@ -607,7 +613,7 @@ export function createProceduralCloudElemental() {
     addOrbit(frame.accent, type, materials, 12, 1.55, 'orb');
     addCrown(frame.head, type, materials, 6, 0.48, 0.86);
     mesh(frame.weapon, `${type}_StormCore`, geometry(`${type}-weapon-core`, () => new THREE.IcosahedronGeometry(0.42, 0)), materials.pale, { position: [0, -0.75, 0] });
-    return finalize(root, type, createClips(type, frame.bodyY, { stride: 0.6, reach: 1.08, fall: 0.58 }));
+    return finalize(root, type, createClips(type, frame.bodyY, { stride: 0.6, reach: 1.08, fall: 0.58 }), { batch });
 }
 
 export function createProceduralThunderRoc({ batch = true } = {}) {
@@ -619,7 +625,7 @@ export function createProceduralThunderRoc({ batch = true } = {}) {
     });
 }
 
-export function createProceduralTempestGiant() {
+export function createProceduralTempestGiant({ batch = true } = {}) {
     const type = 'TempestGiant';
     const materials = createMaterials(type);
     const root = new THREE.Group();
@@ -643,10 +649,10 @@ export function createProceduralTempestGiant() {
     addOrbit(frame.accent, type, materials, 12, 1.75, 'orb');
     mesh(frame.weapon, `${type}_ThunderMaulShaft`, geometry(`${type}-maul-shaft`, () => new THREE.CylinderGeometry(0.1, 0.14, 2.8, 7)), materials.plate, { position: [0, -0.98, 0] });
     mesh(frame.weapon, `${type}_ThunderMaul`, geometry(`${type}-maul`, () => new THREE.CylinderGeometry(0.58, 0.68, 1.22, 8)), materials.dark, { position: [0, -2.42, 0], rotation: [0, 0, Math.PI / 2] });
-    return finalize(root, type, createClips(type, frame.bodyY, { stride: 0.3, reach: 1.2, fall: 1.02 }));
+    return finalize(root, type, createClips(type, frame.bodyY, { stride: 0.3, reach: 1.2, fall: 1.02 }), { batch });
 }
 
-export function createProceduralCycloneAvatar() {
+export function createProceduralCycloneAvatar({ batch = true } = {}) {
     const type = 'CycloneAvatar';
     const materials = createMaterials(type);
     const root = new THREE.Group();
@@ -668,7 +674,7 @@ export function createProceduralCycloneAvatar() {
     addCrown(frame.head, type, materials, 10, 0.58, 1.25);
     addOrbit(frame.accent, type, materials, 14, 1.82, 'orb');
     mesh(frame.weapon, `${type}_EyeBlade`, geometry(`${type}-eye-blade`, () => new THREE.ConeGeometry(0.22, 2.1, 5)), materials.pale, { position: [0, -1.05, 0], rotation: [0, 0, Math.PI] });
-    return finalize(root, type, createClips(type, frame.bodyY, { stride: 0.66, reach: 1.22, fall: 0.66 }));
+    return finalize(root, type, createClips(type, frame.bodyY, { stride: 0.66, reach: 1.22, fall: 0.66 }), { batch });
 }
 
 const CREATORS = Object.freeze({

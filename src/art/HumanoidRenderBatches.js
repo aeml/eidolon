@@ -9,7 +9,8 @@ export function getHumanoidBatchGeometryCount() {
     return GEOMETRIES.size;
 }
 
-export function batchHumanoidRenderParts(root) {
+export function batchHumanoidRenderParts(root, { preserveParts = [], preserveParents = [] } = {}) {
+    const preservedParts = new Set(preserveParts), preservedParents = new Set(preserveParents);
     const animated = new Set(root.userData.animations.flatMap(clip =>
         clip.tracks.map(track => PropertyBinding.parseTrackName(track.name).nodeName)));
     const parents = [];
@@ -19,12 +20,13 @@ export function batchHumanoidRenderParts(root) {
         if (object.children.length) parents.push(object);
     });
     for (const parent of parents) {
+        if (preservedParents.has(parent.name)) continue;
         const buckets = new Map();
         for (const part of parent.children) {
             // Never cross a pivot, equipment anchor, body-mask boundary or
             // transparent sort boundary. Source previews retain named pieces.
             if (!part.isMesh || part.isSkinnedMesh || part.children.length || !part.visible ||
-                animated.has(part.name) || Array.isArray(part.material) || part.material.transparent ||
+                animated.has(part.name) || preservedParts.has(part.name) || Array.isArray(part.material) || part.material.transparent ||
                 Object.keys(part.geometry.morphAttributes).length) continue;
             part.updateMatrix();
             if (part.matrix.determinant() <= 0) continue;

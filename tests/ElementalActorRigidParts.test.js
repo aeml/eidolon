@@ -1,11 +1,12 @@
 import * as THREE from 'three';
-import { createProceduralSandstormDjinn, createProceduralThunderRoc } from '../src/art/ProceduralOverworldEnemies.js';
-import { getHumanoidBatchGeometryCount } from '../src/art/HumanoidRenderBatches.js';
+import * as builders from '../src/art/ProceduralOverworldEnemies.js';
+import { batchHumanoidRenderParts, getHumanoidBatchGeometryCount } from '../src/art/HumanoidRenderBatches.js';
 
 const recipes = [
-    ['SandstormDjinn', createProceduralSandstormDjinn, 63, 23],
-    ['ThunderRoc', createProceduralThunderRoc, 82, 22]
-];
+    ['SandstormDjinn', 63, 23], ['MagmaGolem', 80, 32], ['ScorchedWraith', 60, 23],
+    ['InfernalBehemoth', 49, 22], ['PhoenixSentinel', 78, 23], ['StormHarpy', 60, 33],
+    ['CloudElemental', 69, 23], ['ThunderRoc', 82, 23], ['TempestGiant', 83, 28], ['CycloneAvatar', 82, 24]
+].map(([type, source, draws]) => [type, builders[`createProcedural${type}`], source, draws]);
 const leaves = root => { const result = []; root.traverse(p => { if (p.isMesh) result.push(p); }); return result; };
 const count = p => p.geometry.index?.count ?? p.geometry.attributes.position.count;
 const animationData = root => root.userData.animations.map(c => ({ name: c.name, duration: c.duration,
@@ -96,4 +97,19 @@ for (const [type, make, sourceMeshes, drawMeshes] of recipes) describe(type, () 
             }
         }
     });
+});
+
+test('Harpy preserves its original declared bounds where an unrestricted wing merge expands them', () => {
+    const naive = builders.createProceduralStormHarpy({ batch: false }); batchHumanoidRenderParts(naive);
+    const candidate = builders.createProceduralStormHarpy(), radius = builders.PROCEDURAL_OVERWORLD_ENEMY_DEFINITIONS.StormHarpy.bounds.radius;
+    expect(new THREE.Box3().setFromObject(naive).min.x).toBeLessThan(-radius);
+    const bounds = new THREE.Box3().setFromObject(candidate);
+    expect(bounds.min.x).toBeGreaterThanOrEqual(-radius); expect(bounds.max.x).toBeLessThanOrEqual(radius);
+});
+
+test.each(['PhoenixSentinel', 'ThunderRoc'])('%s retains the actual named beak used by its attack anatomy checks', type => {
+    const make = builders[`createProcedural${type}`], source = make({ batch: false }), naive = make({ batch: false });
+    batchHumanoidRenderParts(naive); expect(naive.getObjectByName(`${type}_Beak`)).toBeUndefined();
+    const before = source.getObjectByName(`${type}_Beak`), after = make().getObjectByName(`${type}_Beak`);
+    expect(after.isMesh).toBe(true); expect(after.geometry).toBe(before.geometry); expect(after.material).toBe(before.material);
 });

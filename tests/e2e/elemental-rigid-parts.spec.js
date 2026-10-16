@@ -3,13 +3,18 @@ import { writeFile } from 'node:fs/promises';
 import { collectBrowserFailures } from './helpers.js';
 
 const costOnly = process.env.EIDOLON_E2E_ELEMENTAL_COST === '1';
-for (const framing of costOnly ? ['group'] : ['group', 'close']) for (const type of ['SandstormDjinn', 'ThunderRoc']) for (const quality of ['high', 'low'])
+const creatures = [
+    ['SandstormDjinn', 'fire', 23], ['MagmaGolem', 'fire', 32], ['ScorchedWraith', 'fire', 23],
+    ['InfernalBehemoth', 'fire', 22], ['PhoenixSentinel', 'fire', 23], ['StormHarpy', 'air', 33],
+    ['CloudElemental', 'air', 23], ['ThunderRoc', 'air', 23], ['TempestGiant', 'air', 28], ['CycloneAvatar', 'air', 24]
+];
+for (const framing of costOnly ? ['group'] : ['group', 'close']) for (const [type, realm, drawMeshes] of creatures) for (const quality of ['high', 'low'])
     test(`${costOnly ? 'cost' : framing} ${quality} ${type} rigid siblings preserve the animated surfaces`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         await page.setViewportSize({ width: quality === 'low' ? 390 : 1280, height: 844 });
         await page.goto('/', { waitUntil: 'networkidle' });
-        const evidence = await page.evaluate(async ({ type, quality, framing, costOnly }) => {
+        const evidence = await page.evaluate(async ({ type, quality, framing, costOnly, realm }) => {
             const THREE = await import('three');
             const { RenderSystem } = await import('/src/core/RenderSystem.js');
             const recipes = await import('/src/art/ProceduralOverworldEnemies.js');
@@ -17,7 +22,7 @@ for (const framing of costOnly ? ['group'] : ['group', 'close']) for (const type
             const make = recipes[`createProcedural${type}`];
             document.getElementById('start-screen').style.display = 'none';
             const system = new RenderSystem(quality === 'low'); system.setGraphicsQuality(quality);
-            const offset = type === 'SandstormDjinn' ? new THREE.Vector3(-1252, 0, 200) : new THREE.Vector3(1968, 0, 130);
+            const offset = realm === 'fire' ? new THREE.Vector3(-1252, 0, 200) : new THREE.Vector3(1968, 0, 130);
             const floor = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.MeshStandardMaterial({ color: 0x454342, roughness: 1 }));
             floor.rotation.x = -Math.PI / 2; floor.position.copy(offset); floor.receiveShadow = true; system.scene.add(floor);
             const groups = [new THREE.Group(), new THREE.Group()], models = [], rows = [], images = [];
@@ -86,17 +91,17 @@ for (const framing of costOnly ? ['group'] : ['group', 'close']) for (const type
                 }
             } finally { system.dispose(); canvasRetired = !canvas.isConnected; }
             return { rows, images, canvasRetired, renderer, quality: system.graphicsQuality, framing, lightingRealm, factoryModels };
-        }, { type, quality, framing, costOnly });
+        }, { type, quality, framing, costOnly, realm });
         for (const entry of evidence.images) await writeFile(testInfo.outputPath(entry.name), Buffer.from(entry.data, 'base64'));
         delete evidence.images;
         await writeFile(testInfo.outputPath('elemental-rigid-parts.json'), JSON.stringify(evidence, null, 2));
         expect(evidence.rows).toHaveLength(costOnly ? 0 : 30);
         expect(evidence.quality).toBe(quality);
-        expect(evidence.lightingRealm).toBe(type === 'SandstormDjinn' ? 'fire' : 'air');
+        expect(evidence.lightingRealm).toBe(realm);
         expect(evidence.factoryModels).toHaveLength(4);
         for (const model of evidence.factoryModels) {
             expect(model.type).toBe(type); expect(model.fallback).toBe(false);
-            expect(model.batches.drawMeshes).toBe(type === 'SandstormDjinn' ? 23 : 22);
+            expect(model.batches.drawMeshes).toBe(drawMeshes);
         }
         for (const row of evidence.rows) {
             const label = `${row.state}/${row.phase}/${row.view}`;
