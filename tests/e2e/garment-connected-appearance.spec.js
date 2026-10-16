@@ -261,8 +261,15 @@ test('purchased independent garments render locally and remotely through gear ch
         await loginAndEnterWorld(page, owner);
         await check('saved-selection-relogin', 'iron-oath-regalia-v1');
         await expectPrivateWallet(page, remaining);
+        await page.locator('#slot-chest').click();
+        await check('real-chest-removed-under-outfit', 'iron-oath-regalia-v1');
         await chooseOutfit(page, ''); delete expected.outfit;
-        await check('clear-outfit-retains-hand-and-legacy-looks', '');
+        await check('clear-outfit-restores-current-gear-and-retained-looks', '', hands, 13);
+        if (!await page.locator('#inventory-screen').isVisible()) await page.keyboard.press('i');
+        const chest = await page.evaluate(() => window.game.player.inventory.findIndex(item => item?.id === 'garment-connected-chest'));
+        expect(chest).toBeGreaterThanOrEqual(0);
+        await page.locator('#inventory-grid .inv-slot').nth(chest).click();
+        await check('real-chest-restored-after-clearing-outfit', '');
         await loginAndEnterWorld(page, owner);
         await check('cleared-outfit-relogin', '');
         await expectPrivateWallet(page, remaining);

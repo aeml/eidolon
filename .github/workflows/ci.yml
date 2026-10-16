@@ -373,6 +373,16 @@ jobs:
           EIDOLON_ISOLATED_QA_NETWORK_MODE: private-smoke
         run: sg render -c 'npm run test:e2e:isolated'
 
+      - name: Verify actual local and remote garment wardrobe
+        env:
+          EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
+          EIDOLON_E2E_REQUIRE_NATIVE_GPU: '1'
+          EIDOLON_ISOLATED_QA_ROUTE: garment-connected-appearance
+          EIDOLON_ISOLATED_QA_PORT: '18243'
+          EIDOLON_E2E_WEB_PORT: '4283'
+          PLAYWRIGHT_HTML_OUTPUT_DIR: native-visual-evidence/garment-connected/report
+        run: sg render -c 'bash scripts/run-isolated-character-qa.sh --workers=1 --reporter=line,html --output=native-visual-evidence/garment-connected/results'
+
       # Default Playwright output/report folders are cleared by subsequent
       # commands. Retain anonymous visual stages separately so release smoke
       # cannot erase the images needed for character/environment review.
