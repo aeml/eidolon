@@ -22,7 +22,8 @@ function weatherStone(geometry, seed) {
 // Site-owned geometry; no global caches, textures, collider or gameplay changes.
 export function createTaperedRoot(points, radius, quality = 'high') {
     const curve = new THREE.CatmullRomCurve3(points.map(point => new THREE.Vector3(...point)));
-    const segments = quality === 'low' ? 12 : 24, radial = quality === 'low' ? 6 : 10;
+    const segments = quality === 'low' ? 12 : quality === 'medium' ? 16 : 24;
+    const radial = quality === 'low' ? 6 : quality === 'medium' ? 8 : 10;
     const geometry = new THREE.TubeGeometry(curve, segments, radius, radial, false);
     const position = geometry.attributes.position, center = new THREE.Vector3(), vertex = new THREE.Vector3();
     for (let ring = 0; ring <= segments; ring++) {
