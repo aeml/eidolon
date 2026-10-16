@@ -22,6 +22,22 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
+## Alpha 1.79.62: prepared, not yet deployed
+
+Alpha 1.79.62 is prepared, not yet deployed: qualified Bastion cap/root
+detail and phone garment text-size support, with saved-session wardrobe coverage
+and a verified Pages upstream TLS template/private checker enrolled in CI.
+[Bastion qualification](2026-10-16-bastion-caps-and-roots-qualification.md),
+[phone qualification](2026-10-16-garment-phone-text-qualification.md),
+[saved-session qualification](2026-10-16-garment-saved-session-qualification.md),
+[TLS qualification](2026-10-16-pages-upstream-tls-qualification.json).
+Existing host TLS activation remains pending administrator execution of the
+[operator guide](../operations/pages-upstream-tls.md); publishing the template
+does not change the installed Nginx configuration. Accepted public Alpha1.79.61
+remains at `a60c8e916`. Earlier transport findings and the full original game/
+readiness requirements remain open. Alpha access is unchanged; soak/stress and
+human pacing/physical-phone feedback remain deferred.
+
 ## Alpha 1.79.61: deployed and verified within scoped acceptance
 
 Alpha 1.79.61 at `a60c8e916` is deployed and verified within the Bastion
@@ -51,7 +67,7 @@ QA-only flat/raised party support is delivered; functional proof does not waive
 original route/crowded-world timing or cold-triangle failures.
 [Retained qualification](2026-10-16-production-flat-party-qualification.json).
 Bastion entrance and the analytics bundle are now delivered in accepted61.
-Separate successor cap/root work remains isolated pending native review. The earlier [documentation-push finding](2026-10-16-receipt59-redeployment-finding.md)
+Successor cap/root work is qualified and merged for prepared62; deployment remains pending. The earlier [documentation-push finding](2026-10-16-receipt59-redeployment-finding.md)
 remains historical evidence. No beta, capacity, final art or full-game completion
 claim. Soak/stress and human pacing/physical-device feedback remain deferred.
 

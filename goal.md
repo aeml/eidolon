@@ -1979,3 +1979,18 @@ work. The full original world/actor/combat/audio/performance/device/gameplay/
 operations/rights/owner/F1–F5/beta/cohort/release/handoff goal remains active.
 Human pacing/physical-phone feedback and soak/stress remain deferred.
 [Acceptance](docs/plans/2026-10-16-release1-79-61-acceptance.md).
+
+
+## October16 stonework, wardrobe and upstream TLS preparation
+
+Qualified Bastion cap courses/site-specific root detail, phone garment text-size
+support, actual wardrobe purchase/observer/restart coverage and the secure Pages
+upstream template/private Nginx checker are merged into master for prepared
+Alpha1.79.62. Accepted public61 remains at a60c8e916;62 has not been deployed.
+Host TLS activation is a separate pending administrator action: the installed
+file is root-owned and noninteractive sudo requires a password. The concrete
+backup/change/validation/rollback guide is docs/operations/pages-upstream-tls.md.
+All retained fixture/network/performance findings remain; no final world-art,
+complete F2, capacity, beta, original-route FPS or full-game claim. The full
+original goal remains active; human pacing/physical-phone feedback and soak/
+stress remain deferred. Continue implementation and ordered release verification.

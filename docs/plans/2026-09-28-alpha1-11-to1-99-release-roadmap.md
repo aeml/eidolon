@@ -11,6 +11,21 @@ delivery state is maintained in the [remaining-work register](2026-10-09-release
 
 ## Current release state — October 16
 
+Alpha 1.79.62 is prepared, not yet deployed: qualified Bastion cap/root
+detail and phone garment text-size support, with saved-session wardrobe coverage
+and a verified Pages upstream TLS template/private checker enrolled in CI.
+[Bastion qualification](2026-10-16-bastion-caps-and-roots-qualification.md),
+[phone qualification](2026-10-16-garment-phone-text-qualification.md),
+[saved-session qualification](2026-10-16-garment-saved-session-qualification.md),
+[TLS qualification](2026-10-16-pages-upstream-tls-qualification.json).
+Existing host TLS activation remains pending administrator execution of the
+[operator guide](../operations/pages-upstream-tls.md); publishing the template
+does not change the installed Nginx configuration. Accepted public Alpha1.79.61
+remains at `a60c8e916`. Earlier transport findings and the full original game/
+readiness requirements remain open. Alpha access is unchanged; soak/stress and
+human pacing/physical-phone feedback remain deferred.
+
+
 Alpha 1.79.61 at `a60c8e916` is deployed and verified within the Bastion
 entrance and analytics startup scope. All ten CI jobs pass: 785 client suites /
 12,042 tests; 451 hosted browser passes / 13 skips; 88 native passes / one skip;
