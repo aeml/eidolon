@@ -108,6 +108,23 @@ for (const [width, height, mobile] of [[1280, 900, false], [900, 650, false], [3
         expect(await garments.evaluate(node => node.scrollWidth <= node.clientWidth + 1)).toBe(true);
         expect(await page.evaluate(() => JSON.stringify(window.__characterSheet.player.equipment) === window.__characterSheet.gearBefore)).toBe(true);
         await page.screenshot({ path: testInfo.outputPath('character-garment-slots.png') });
+        // A long wardrobe form must offer a direct return to the model on
+        // desktop and enlarged phone text, preserving its confirmed choices.
+        await buttons.nth(2).click();
+        const wardrobe = sheet.locator('.wardrobe-panel');
+        const viewCharacter = wardrobe.getByRole('button', { name: 'View character', exact: true });
+        await viewCharacter.scrollIntoViewIfNeeded();
+        const actions = await wardrobe.locator('.wardrobe-actions button').evaluateAll(nodes => nodes.map(node => {
+            const r = node.getBoundingClientRect(); return { height: r.height, fits: node.scrollWidth <= node.clientWidth + 1 };
+        }));
+        expect(actions.every(action => action.height >= 44 && action.fits)).toBe(true);
+        await viewCharacter.click();
+        await expect(sheet.locator('#character-preview')).toBeInViewport({ ratio: 1 });
+        await expect(sheet.getByRole('button', { name: 'Reset character view', exact: true })).toBeFocused();
+        expect(await page.evaluate(() => JSON.stringify(window.__characterSheet.player.equipment) === window.__characterSheet.gearBefore)).toBe(true);
+        expect(await page.evaluate(() => window.__characterSheet.requests.some(request => request.type === 'select_appearance'))).toBe(false);
+        await page.screenshot({ path: testInfo.outputPath('character-wardrobe-return.png') });
+
 
         expect(failures, failures.join('\n')).toEqual([]);
     });
