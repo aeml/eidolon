@@ -212,3 +212,16 @@ Deployed and independently verified as Alpha1.79.58.
 [Acceptance](2026-10-16-release1-79-58-acceptance.md). Broader original quality/
 readiness gates and deferred playtests remain open. This collection milestone
 does not complete the full goal.
+
+
+## Qualified saved sessions and remote protocol — October16
+
+New actual Mongo/socket evidence covers a returning legacy collection, the full
+armor outfit with independent weapon/offhand looks, exact EP debit/replay,
+owner/observer protobuf updates and three ordinary process lifetimes. Removing
+the outfit preserves retained individual/hand choices and its saved cleared
+state. Real gear, combat/base stats, Gold, items and level/XP remain unchanged.
+[Qualification and retained rest-transition fixture finding](2026-10-16-garment-saved-session-qualification.json).
+This coverage is selected for a later release after the ongoing61pipeline;
+it does not add browser/model-fit/old-binary/owner art acceptance or close the
+full garment checklist. No production accounts or access were changed.
