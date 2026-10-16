@@ -87,12 +87,13 @@ for (const phone of [false, true]) test(`${phone ? 'phone' : 'desktop'}: guild d
         ui.social.guild.onEvent = payload => sent.push({ unexpectedEvent: payload });
     });
     const frame = page.locator('#social-window'), panel = page.locator('#tab-panel-guild');
+    const scrollOwner = phone ? frame : panel;
     const invite = panel.getByLabel('Guild invite username');
     const message = panel.getByLabel('Guild message of the day');
     await invite.fill('Future companion'); await message.fill('Bring a key for the expedition.');
     await message.focus();
     await message.evaluate(input => input.setSelectionRange(6, 9));
-    const before = await frame.evaluate(node => node.scrollTop);
+    const before = await scrollOwner.evaluate(node => node.scrollTop);
     await page.evaluate(() => {
         const { guild, controller } = window.__guild;
         guild.members[1].online = true; guild.members[1].level = 31; guild.members[1].class = 'Rogue';
@@ -101,14 +102,14 @@ for (const phone of [false, true]) test(`${phone ? 'phone' : 'desktop'}: guild d
     await expect(invite).toHaveValue('Future companion');
     await expect(message).toHaveValue('Bring a key for the expedition.'); await expect(message).toBeFocused();
     expect(await message.evaluate(input => [input.selectionStart, input.selectionEnd])).toEqual([6, 9]);
-    expect(await frame.evaluate(node => node.scrollTop)).toBeCloseTo(before, 0);
+    expect(await scrollOwner.evaluate(node => node.scrollTop)).toBeCloseTo(before, 0);
     await expect(message).toBeInViewport();
     await page.screenshot({ path: testInfo.outputPath('guild-message-draft.png') });
     const schedule = panel.locator('.guild-events > details > summary');
     await schedule.scrollIntoViewIfNeeded(); await schedule.click();
     const title = panel.getByLabel('Event title', { exact: true });
     await title.fill('Evening expedition'); await title.focus();
-    const calendarScroll = await frame.evaluate(node => node.scrollTop);
+    const calendarScroll = await scrollOwner.evaluate(node => node.scrollTop);
     expect(calendarScroll).toBeGreaterThan(0);
     await page.evaluate(() => {
         const { guild, controller } = window.__guild;
@@ -116,7 +117,7 @@ for (const phone of [false, true]) test(`${phone ? 'phone' : 'desktop'}: guild d
         controller.handleMessage({ type: 'guild_update', payload: { guild } });
     });
     await expect(title).toHaveValue('Evening expedition'); await expect(title).toBeFocused(); await expect(title).toBeInViewport();
-    expect(await frame.evaluate(node => node.scrollTop)).toBeCloseTo(calendarScroll, 0);
+    expect(await scrollOwner.evaluate(node => node.scrollTop)).toBeCloseTo(calendarScroll, 0);
     await page.screenshot({ path: testInfo.outputPath('guild-calendar-draft.png') });
     expect(await page.evaluate(() => window.__guild.sent)).toEqual([]);
     await page.evaluate(() => {
