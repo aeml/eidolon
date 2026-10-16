@@ -1,0 +1,85 @@
+{
+  "at": "2026-10-16T07:48:01.205100+00:00",
+  "source": "714e766899ceb5dba2476bb3d8ee10b818628abe",
+  "runtimeSource": "a60c8e91690f8d8df91d664f8e5183688e101fd2",
+  "state": "Qualified added integration coverage and CI enrollment. Ready for ordinary master merge; not published in the ongoing Alpha 1.79.61 run.",
+  "scope": "A prepared returning Fighter keeps three legacy individual looks and real equipment. Actual vendor sockets buy Iron Oath Regalia, Grovekeeper Blade and Grovekeeper Shield. Independent slot selections replicate through owner/observer protobuf; three server process lifetimes retain selections and collection. Replayed purchases do not charge twice; removing the outfit retains the old head choice and new independent held looks.",
+  "validation": {
+    "finalActualCommand": "Two actual Mongo/socket tests pass with race detector, count=1, timeout=90s: existing chest purchase/confirmation/restart plus the new full-outfit saved-session test. 23.062s total, five ordinary process lifetimes.",
+    "newCase": "13.43s final pass; earlier corrected independent pass14.53s is retained but not counted as a distinct test.",
+    "workflow": "Seven RunnerQueueSeparation checks pass; gofmt and diff check pass. The workflow explicitly enrolls both actual socket tests with its existing disposable Mongo and exact built binary.",
+    "invariants": "Exact real equipment, base/effective combat stats, Gold, level/XP, inventory/stash and unrelated receipt ledgers unchanged. Exact catalog EP debit once per distinct purchase. Both owner and observer receive the selected look map; saved clear survives another restart.",
+    "retainedFinding": "Initial new case and diagnostic failed comparing initial un-rested attributes10 with later ordinary Well Rested attributes11. Production well_rested.go applies the existing10% boost on the first positive town-rest bank. Corrected fixture waits for that actual transition before taking its baseline; healing/time/rules and strict stat/gear equality remain unchanged. No runtime fix was needed.",
+    "compileOnly": "The first compile-plan invocation explicitly skipped external services because disposable opt-in was absent. That is compile/guard evidence, not an actual session pass.",
+    "cleanup": "Script-owned loopback Mongo removed and all five final server processes stopped normally; no remaining18241listener. No live account, production role/currency/access or schema changed."
+  },
+  "limits": "Prepared saves and protocol/persistence evidence, not earned EP acquisition, actual browser rendering, model-fit/art/pose approval, old-binary migration or final beta acceptance. Existing rendered garment receipts retain their own scopes. Alpha access remains open; no invitations were distributed and no soak/stress was run.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-garment-save-roundtrip-20261016",
+  "evidence": [
+    {
+      "path": ".qa-garment-save/compile-plan.log",
+      "bytes": 261,
+      "sha256": "93ceba8063ed7d7f420a379ee5237ddd458a472c49dbfaacc73bc8071cf4b9b4"
+    },
+    {
+      "path": ".qa-garment-save/socket-first.log",
+      "bytes": 396,
+      "sha256": "bff7b562f329517158d70417196e29963521d31e0272135cd67ead6854ba2232"
+    },
+    {
+      "path": ".qa-garment-save/socket-diagnostic.log",
+      "bytes": 527,
+      "sha256": "6395adbf479093018bb8ca9b698e3d5d2259e4c196c7b25600ba2f9f25300d85"
+    },
+    {
+      "path": ".qa-garment-save/socket-rest-aware.log",
+      "bytes": 766,
+      "sha256": "309f49b880ae3ea16c6b53fea4c9fd6bf7b49cc7e8d5b2ed11ac9716839157d1"
+    },
+    {
+      "path": ".qa-garment-save/socket-final.log",
+      "bytes": 1344,
+      "sha256": "8fbce4d20a2ab0870d7c1474dbb60e9342da34abf5fa33ace7c1dd7f032a9dac"
+    },
+    {
+      "path": ".qa-garment-save/workflow-checks.log",
+      "bytes": 350,
+      "sha256": "a12f7e99908b7e61c8ec8fe1cca5811985438a5f1e05c1d872d2205e82181b09"
+    },
+    {
+      "path": ".qa-garment-save/run-sockets.sh",
+      "bytes": 1246,
+      "sha256": "46155314c09b277594bfca637556aa86902f773b03537bac12046d4bae88dc52"
+    },
+    {
+      "path": ".qa-garment-save/run-final-sockets.sh",
+      "bytes": 1292,
+      "sha256": "da3d1c5e44d04c707469e4b1378a26a4a1438eec6438f69f91edfccf80dd3a5f"
+    },
+    {
+      "path": "/tmp/eidolon-compat-session-3635033558/server.log",
+      "bytes": 2624,
+      "sha256": "b5ac376edbd6ad6a2056f3427c4440284e4eb72da0cec3135a00bb2e9528f7e6"
+    },
+    {
+      "path": "/tmp/eidolon-compat-session-1039847615/server.log",
+      "bytes": 2191,
+      "sha256": "ac65738c0ee4832f00618cee1b5e924790ae7b9fc4a55369d6704a9e41b4b611"
+    },
+    {
+      "path": "/tmp/eidolon-compat-session-4238467129/server.log",
+      "bytes": 3774,
+      "sha256": "9363f13f9ef604238a05e1db7ff61a80ddfd56f21d224cc616b7f23c0e052e1d"
+    },
+    {
+      "path": "/tmp/eidolon-compat-session-2731514649/server.log",
+      "bytes": 3346,
+      "sha256": "57d8497454e2d99ced4087358bad881c5dc525be93b4fba633218e5c8ec81d77"
+    },
+    {
+      "path": "/tmp/eidolon-compat-session-1700171604/server.log",
+      "bytes": 2011,
+      "sha256": "f4df0750fb7040818e42cff25c5be9791765e054419d9bc621a14e8759e039ed"
+    }
+  ]
+}
