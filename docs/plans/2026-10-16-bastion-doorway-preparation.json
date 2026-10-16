@@ -49,7 +49,8 @@
         "rearTopFilled": false
       }
     },
-    "limits": "264added triangles/25344attribute bytes in existing merged mesh; not a full-world/cold/Low/FPS pass. All retained timing/triangle failures remain. Four-case private actual-world/HUD/equipped importedFighter/camera-motion comparison is syntax/list validated ONLY, not executed; two old source routes preserve both wall geometry and black panel placement. Wait until own Alpha60 CI/native/live terminal before native."
+    "limits": "264added triangles/25344attribute bytes in existing merged mesh; not a full-world/cold/Low/FPS pass. All retained timing/triangle failures remain. Four-case private actual-world/HUD/equipped importedFighter/camera-motion comparison is syntax/list validated ONLY, not executed; two old source routes preserve both wall geometry and black panel placement. Wait until own Alpha60 CI/native/live terminal before native.",
+    "privateHarness": "Reference files are staged from exact800f on host and read by NodeFS inside native namespace; no Git/container-network dependency. Four cases are syntax/list validated only, awaiting own60CI terminal."
   },
   "evidenceRoot": "/home/aeml/.local/share/eidolon-bastion-wall-detail-20261016",
   "evidence": [
@@ -70,8 +71,8 @@
     },
     {
       "path": ".qa-bastion/bastion-world.spec.js",
-      "bytes": 7407,
-      "sha256": "2d18effab73e9bd4b7650afee74c9ba645b0e6278533e1e5331cb74bd8eaf63f"
+      "bytes": 7549,
+      "sha256": "a2037a5164758fb7d23a1cea53d1fa1b021a84a1dea19dc54fb4a283f6328c5a"
     },
     {
       "path": ".qa-bastion/visual.config.mjs",
@@ -82,6 +83,21 @@
       "path": ".qa-bastion/visual-plan-final.log",
       "bytes": 300,
       "sha256": "eb6ab862a6247dcc32f82a63317f363aee21afa3b2c4fa91e76602a902f20121"
+    },
+    {
+      "path": ".qa-bastion/source.json",
+      "bytes": 542,
+      "sha256": "091fb4909ad06b3f5bcac403fd562c16ebe6e562d682387570dd1cc20165c724"
+    },
+    {
+      "path": ".qa-bastion/reference/BastionArchitectureGeometry.js",
+      "bytes": 2381,
+      "sha256": "ae1312a3b413a1ac6f2faa1d87bcfd4dff838623cc5d3370382b029c3568baa2"
+    },
+    {
+      "path": ".qa-bastion/reference/ProceduralDungeonEntrances.js",
+      "bytes": 26314,
+      "sha256": "427ba8f149e7c9cdb1ff51f7defafce76ed45ed1ca2b00ea0e2e0f1c563f25dd"
     }
   ],
   "initialCandidate": {
