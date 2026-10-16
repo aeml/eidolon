@@ -3,13 +3,13 @@ import * as THREE from 'three';
 import { LANTERNHOLD_COURTYARDS } from '../data/worldPopulation.js';
 import { WORLD_REGIONS } from '../data/worldGeography.js';
 import { createLanternholdPavingMaps } from './LanternholdPaving.js';
-import { LANTERNHOLD_HOMES, LANTERNHOLD_HOME_SCALE, LANTERNHOLD_RESIDENTIAL_PATHS } from '../data/lanternholdNeighborhood.js';
+import { LANTERNHOLD_HOMES, LANTERNHOLD_HOME_SCALE, LANTERNHOLD_RESIDENTIAL_PATHS, LANTERNHOLD_WEST_SERVICE_PATH } from '../data/lanternholdNeighborhood.js';
 
 // Surface composition, not navigation data: branches connect service courts
 // and gate approaches, bending around the casino and larger service buildings.
 const ROUTES = [
     { width: 9, points: [[0, 100], [21, 133], [23, 179], [9, 190], [0, 202], [0, 300]] },
-    { width: 8, points: [[-100, 200], [-48, 218], [-40, 229], [-13, 227], [0, 219], [40, 222], [51, 209], [100, 200]] },
+    { width: 8, points: [...[...LANTERNHOLD_WEST_SERVICE_PATH].reverse(), [0, 219], [40, 222], [51, 209], [100, 200]] },
     { width: 6, points: [[-40, 229], [-55, 238]] },
     { width: 6, points: [[40, 222], [55, 240]] },
     { width: 6, points: [[12, 230], [28, 235], [42, 234], [55, 240]] },

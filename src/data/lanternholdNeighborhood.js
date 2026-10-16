@@ -1,6 +1,12 @@
 // Doors face the shared residential lanes. Keep the four gate roads and the
 // service/communal courts open; scenery and authoritative residents share this plan.
 export const LANTERNHOLD_HOME_SCALE = 1.7;
+// The western paving follows the clear service/residential lane. Its old
+// diagonal crossed the planted rest edge and the east wall of the west home.
+// This describes the surface and its review route, never collision overrides.
+export const LANTERNHOLD_WEST_SERVICE_PATH = Object.freeze([
+    [0, 216], [-13, 224], [-40, 224], [-48, 218], [-61, 211], [-61, 200], [-100, 200]
+].map(Object.freeze));
 export const LANTERNHOLD_HOMES = Object.freeze([
     ...[-74, 74].flatMap(x => [130, 157, 185, 215, 270].map(z =>
         Object.freeze({ x, z, rotation: x < 0 ? Math.PI / 2 : -Math.PI / 2 }))),
