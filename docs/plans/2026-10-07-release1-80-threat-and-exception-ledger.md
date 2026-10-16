@@ -71,3 +71,27 @@ runtime; scoped race-enabled origin, connection-admission and protocol tests
 then passed. No production writes, credential exposure, mail, benchmark or
 campaign repetition. This ledger reviews F2 and records exceptions; open issues
 and F3/F4 decisions still prevent claiming a complete1.80 freeze.
+
+
+## October16 current transport-trust update
+
+The earlier baseline rows retain their dated evidence. SSH now uses the trusted
+repository host pin, BatchMode and strict host checking; accepted61CI/sourcea60
+and its deployment receipt prove that scoped X02 delivery. This does not resolve
+master protection/runner-policy decisions or complete F2.
+
+**X10 — Pages upstream certificate verification:** current game proxy directive
+inspection finds SNI/name but no verification or CA override in the readable
+inheritance chain. Nginx defaults verification to off. The actual local1.24.0
+fixture demonstrates the original template accepting untrusted, expired and
+wrong-name peers. The corrected template rejects all three with502, accepts the
+valid peer and preserves SNI, Host, asset path and escaped release query; eight
+configured/control cases and10focused guards pass.
+[Qualification](2026-10-16-pages-upstream-tls-qualification.json),
+[operator activation guide](../operations/pages-upstream-tls.md).
+The live GitHub peer passes the host's normal CA/depth3 preflight. The game site
+is root-owned0644 and noninteractive SSH sudo requires a password, so activation
+remains an administrator action. No protected-file write, privilege bypass or
+production reload occurred. Template selection alone does not close X10/F2.
+The earlier HTTP408/shard-abort causes, other named exceptions and full original
+readiness gates remain open. No soak/stress or production data/access change.
