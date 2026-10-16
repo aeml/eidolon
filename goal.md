@@ -2124,3 +2124,16 @@ foreground pixels. High shader churn is eliminated within scoped probes; origina
 FPS/cold/device/full-world findings stay open. Low cost data is inconclusive, so
 Low/Medium retain borrowed materials. Full game/readiness/owner/beta/cohort scope
 remains active; human pacing/physical-phone feedback and soak/stress deferred.
+
+
+## October 16 Alpha 1.79.66 scoped acceptance
+
+Exact `ac430ab8be589cddc3643c9befaf1651b3b05eda` / [CI](https://github.com/aeml/eidolon/actions/runs/38958381811) passes all ten ordered jobs and live checks.
+Normal-TLS 366 pins/identities/database/open registration/flat terrain/analytics
+match at 2026-10-16T21:00:17.637704+00:00. Roads render behind player/mob names and auras; flat marker,
+High actor material and living-character QA corrections are accepted within scope.
+First workflow YAML rejection and its parsing regression/correction are retained.
+Original FPS/cold/device/full-world, broader game/readiness/owner/F1–F5/beta/cohort/
+1.99/handoff gates remain open. Full original goal active; human pacing/physical
+phone feedback and soak/stress deferred.
+[Acceptance](docs/plans/2026-10-16-release1-79-66-acceptance.md).

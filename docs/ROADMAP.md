@@ -1,18 +1,18 @@
 # Eidolon Engineering Roadmap
 
-Alpha 1.79.66 is prepared, not yet deployed: roads behind player/mob names
-and Well Rested, single-pass flat party/PvP markers, High-only actor material
-ownership and living-character QA travel/party preparation.
-[Road qualification](plans/2026-10-16-road-overlay-qualification.md),
-[material qualification](plans/2026-10-16-batched-material-qualification.md),
-[marker qualification](plans/2026-10-16-flat-party-ring-qualification.md),
-[lifecycle qualification](plans/2026-10-16-qa-waypoint-lifecycle.md).
-Accepted public65 remains at `9b7419700`; preparation is not deployment.
-The original route/cold/FPS/device findings, broader art/game/readiness and owner
-requirements remain open. High shader churn correction is not whole-game FPS
+Alpha 1.79.66 at `ac430ab8b` is deployed and verified within the road
+name/aura ordering, flat markers, High actor material ownership and QA lifecycle
+scope. All ten CI jobs pass: 789 client suites / 12,075 tests, 451 hosted
+browser passes / 13 skips, 98 native passes / one skip and first-attempt live,
+recovery and rested-party checks. Normal-TLS 366 pins, both identities, ready
+database, open registration, flat terrain and analytics match at 2026-10-16T21:00:17.637704+00:00.
+[Acceptance](plans/2026-10-16-release1-79-66-acceptance.md).
+The initial workflow parsing failure is retained with its block-scalar correction
+and regression check. High shader churn correction is not whole-game FPS
 acceptance; Low/Medium retain borrowed materials after inconclusive Low cost data.
-Installed-host TLS/logging activation needs an administrator. Human pacing,
-physical-phone feedback and soak/stress remain deferred. Full original goal active.
+Original performance, art/game/readiness/owner/beta gates remain open. Installed
+host TLS/logging needs an administrator. Human pacing, physical-phone feedback
+and soak/stress remain deferred. Full original goal active.
 
 
 Alpha 1.79.65 at `9b7419700` is deployed and verified within the Abyssal
