@@ -1,0 +1,89 @@
+{
+  "date": "2026-10-16T04:32:23.103981+00:00",
+  "source": "2a2fc765d340b30fbfe49eda9ebc42d6526edb42",
+  "state": "Privately implemented and qualified; not yet merged or deployed. Public access remains open alpha. Beta activation is not approved.",
+  "scope": "Exact-name signed expiring roster-bound invitation admission, revocation and private issuer; default open and retained accounts/login/recovery preserved. Fragment-only form prefill and early analytics suppression. Persistent Compose required-flag guard fails closed on old binaries and deployment preflight. No schema change, privilege grant or messaging.",
+  "validation": {
+    "client": "53 checks in three privacy/invitation/analytics suites pass; related login/recovery 40-check earlier result retained, overlaps not added. Scoped final lint passes.",
+    "go": "24 top-level focused tests pass with nested configuration/deploy/credential cases; optional real-Mongo tests are skipped here and independently executed below. Final private core package and issuer race checks pass.",
+    "actualMongo": "Final source: invitation admission/replay/concurrent unique-index registration, unsafe startup refusal and full email verification/reset/session revocation across restart in invitation mode pass under race detection. Earlier default-open credential/takeover/recovery tests also pass; unchanged behavior reused. Only a disposable loopback Mongo and synthetic local mail sink.",
+    "native": "Seven distinct real-bootstrap desktop/390px phone/register/existing-login/recovery cases pass, workers1/retries0. Four changed invitation cases rerun on final source pass; repeated cases not additional coverage. Recordings/trace/video disabled for synthetic credentials.",
+    "deployment": "Actual merged Compose parser preserves every ordinary API flag and unrelated Mongo/service configuration; shell and Compose preserve encoded punctuation/Unicode roster. Invalid guard/mode/config and mismatched health fail closed. Guarded journal upgrade and rejection recovery pass. Exact prior Alpha59 binary exits2 on unknown required flag before storage; exact prior cleanup preserves logs guard and .env."
+  },
+  "retainedFindings": [
+    "Initial malformed duplicate-api guard template was rejected during review before actual Compose qualification; corrected minimal command-only override.",
+    "Initial fake Docker argument-normalization fixture lost the appended flag; three cases failed before replacement. Corrected joined-string normalization, original failure log retained.",
+    "Initial legacy-cleanup evidence script assumed git clean without the actual -C prefix; assertion failed before cleanup. Corrected extraction executes the exact historical line in an owned temporary repository.",
+    "Longest legal names and .env punctuation exposed token HTML-escape expansion/config interpretation edges. Final encoder avoids HTML expansion, roster uses bounded canonical base64url JSON, and final package/Compose/socket checks cover the result."
+  ],
+  "limits": "Invitation use is one retained immutable account, protected by existing unique indexes; before deletion/name reuse/older-data restore retire affected invitations or rotate cohort/key. Roster100 is not measured capacity or cumulative historical-account cap. Activation/distribution await explicit owner approval near whole-game completion. Full original visual/performance/device/gameplay/owner/F1-F5/beta/release gates remain open; no soak/stress.",
+  "guide": "../operations/beta-invitations.md",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-beta-invitations-20261016",
+  "evidence": [
+    {
+      "path": ".qa-invitations/privacy-expanded.log",
+      "bytes": 651,
+      "sha256": "f68cd8d033ec31529cf285487188370ce78603d971947deb53961b46ebaef41f"
+    },
+    {
+      "path": ".qa-invitations/lint-final.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-invitations/server-final.log",
+      "bytes": 24228,
+      "sha256": "bdd2046958b9bfcb5d58be7a44450919914e174b77b34feea68cb24991350a12"
+    },
+    {
+      "path": ".qa-invitations/sockets.log",
+      "bytes": 2180,
+      "sha256": "968c8f8b9765647aed73df3a2bfb2e02001f46d5f571debc630ad346ad3ab105"
+    },
+    {
+      "path": ".qa-invitations/sockets-final.log",
+      "bytes": 1774,
+      "sha256": "f2b035cf494c16a7fe3fe177cf0adac890408bd4e2d83a2541a511be760ac124"
+    },
+    {
+      "path": ".qa-invitations/native.log",
+      "bytes": 1155,
+      "sha256": "a9a8a6ea3e8f900123d096ce6ceef7127e6ae6d6fd937881146806e37233c0cd"
+    },
+    {
+      "path": ".qa-invitations/native-final.log",
+      "bytes": 806,
+      "sha256": "1ca59de59bdf122faff82c3988c1bc6749c8bd0da72b81dc36087b2496f1b9fa"
+    },
+    {
+      "path": ".qa-invitations/deploy-expanded.log",
+      "bytes": 1477,
+      "sha256": "7d83b1e305d0a39990f45fc5ff14c8925dd5af4a36b0e7f897a7dd4493f14c70"
+    },
+    {
+      "path": ".qa-invitations/deploy-corrected.log",
+      "bytes": 27,
+      "sha256": "debbaa19777dc53a3be1903ff83a48fab61f3cc1defc1c25c7682d1944bcaec7"
+    },
+    {
+      "path": ".qa-invitations/journal-guard.log",
+      "bytes": 27,
+      "sha256": "8772a71c5218e8a398e0fac8de9c17962d6a0baed4b9e43d68fc253208d89500"
+    },
+    {
+      "path": ".qa-invitations/old-guard.log",
+      "bytes": 88,
+      "sha256": "e0d9d3195371114369f8765b5def811d8f14635e9ccee87f725914291e6d6b51"
+    },
+    {
+      "path": ".qa-invitations/old-guard-corrected.log",
+      "bytes": 108,
+      "sha256": "2312f500fe74019e61d28d811028d2b3fcd7999ddab1c123a402c35cb2da02c0"
+    },
+    {
+      "path": ".qa-invitations/legacy-guard.json",
+      "bytes": 269,
+      "sha256": "31625c5f03d1ef12225b87367921f17fb880381ec11e04e162bb8892abd9cc12"
+    }
+  ]
+}

@@ -9,7 +9,7 @@ function sensitivePage(win) {
     if (win.__eidolonRecoverySensitivePage) return true;
     const query = new URLSearchParams(win.location.search);
     const fragment = new URLSearchParams((win.location.hash || '').slice(1));
-    return query.has('eidolon-private') || query.has('eidolon-recovery') || fragment.has('eidolon-private') || fragment.has('eidolon-recovery');
+    return query.has('eidolon-private') || query.has('eidolon-recovery') || query.has('invite') || fragment.has('eidolon-private') || fragment.has('eidolon-recovery') || fragment.has('invite');
 }
 
 // A closed collection contract, not an arbitrary event forwarding API. Never

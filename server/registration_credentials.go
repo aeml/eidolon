@@ -3,12 +3,13 @@ package main
 import (
 	"errors"
 	"strings"
-	"unicode"
 	"unicode/utf8"
+
+	"eidolon-server/internal/registrationinvites"
 )
 
 const (
-	registrationUsernameMaxBytes = 128
+	registrationUsernameMaxBytes = registrationinvites.UsernameMaxBytes
 	registrationPasswordMinChars = 15
 	registrationPasswordMaxBytes = 72 // Existing bcrypt encoder rejects longer input.
 )
@@ -45,8 +46,7 @@ var registrationBlockedPasswords = map[string]struct{}{
 // Trusted legacy fixture/import creation and existing login remain unchanged.
 // Spaces, Unicode, case and the exact chosen hash input are preserved.
 func validateRegistrationCredentials(payload AuthPayload) error {
-	if !utf8.ValidString(payload.Username) || len(payload.Username) > registrationUsernameMaxBytes ||
-		strings.TrimSpace(payload.Username) == "" || strings.IndexFunc(payload.Username, unicode.IsControl) >= 0 {
+	if !registrationinvites.ValidUsername(payload.Username) {
 		return errors.New("Username must contain 1-128 UTF-8 bytes and no control characters.")
 	}
 	if isReservedBootstrapRegistrationName(payload.Username) {

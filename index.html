@@ -386,6 +386,11 @@
                     <input type="password" id="auth-password" class="auth-input" placeholder="Password" autocomplete="current-password" aria-describedby="auth-password-hint">
                 </div>
                 
+                <div id="auth-invitation-field" class="auth-field auth-invitation-field" hidden>
+                    <label for="auth-invitation">Invitation code</label>
+                    <span id="auth-invitation-hint" class="auth-field__hint">Only new accounts need an invitation. Existing accounts can sign in normally.</span>
+                    <input type="password" id="auth-invitation" class="auth-input" maxlength="1024" autocomplete="one-time-code" autocapitalize="none" spellcheck="false" aria-describedby="auth-invitation-hint" placeholder="Paste your invitation code">
+                </div>
                 <div class="auth-panel__actions">
                     <button id="btn-login" class="auth-btn auth-btn--fill">Login</button>
                     <button id="btn-register" class="auth-btn auth-btn--fill">Register</button>

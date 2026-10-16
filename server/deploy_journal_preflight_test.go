@@ -13,10 +13,10 @@ func TestDeployJournalUpgradeChecksDrainedVolumeAndRestartsPreviousOnRefusal(t *
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, kind := range []string{"valid", "legacy", "noisy", "wrong-build", "wrong-format", "already-stopped", "fresh", "bad-container", "raised"} {
+	for _, kind := range []string{"valid", "legacy", "noisy", "wrong-build", "wrong-format", "already-stopped", "fresh", "bad-container", "raised", "invitation", "invitation-legacy"} {
 		t.Run(kind, func(t *testing.T) {
 			root := t.TempDir()
-			for _, name := range []string{"deploy", "bin"} {
+			for _, name := range []string{"deploy", "bin", "logs"} {
 				if err := os.Mkdir(filepath.Join(root, name), 0700); err != nil {
 					t.Fatal(err)
 				}
@@ -32,12 +32,19 @@ echo preserved-backup > "$JOURNAL_BACKUP"
 				".env":    "MONGO_INITDB_ROOT_USERNAME=fixture\nMONGO_INITDB_ROOT_PASSWORD=fixture\nMONGO_URI=mongodb://mongo:27017\n",
 				"bin/git": "#!/bin/sh\nexit 1\n",
 				"bin/curl": `#!/bin/sh
-printf '{"commit":"fixture-commit","database":"ready","terrainProfile":"%s"}' "$JOURNAL_PROFILE"
+registration=''
+if [ "$JOURNAL_KIND" = invitation ] || [ "$JOURNAL_KIND" = invitation-legacy ]; then registration=',"registrationMode":"invitation"'; fi
+printf '{"commit":"fixture-commit","database":"ready","terrainProfile":"%s"%s}' "$JOURNAL_PROFILE" "$registration"
 `,
 				"bin/docker": `#!/bin/bash
 echo "$*" >> "$JOURNAL_COMMANDS"
-case "$*" in
-  *--check-schema*) [[ "$*" = *"--terrain-profile=$JOURNAL_PROFILE" ]] || exit 93; echo 'Schema preflight passed: database=22 supported=23 commit=fixture-commit' ;;
+plain="$*"
+if [[ "$JOURNAL_KIND" == invitation* ]] && [[ "$plain" == *--check-schema* || "$plain" == *--check-save-journal* ]]; then
+ [[ "$plain" == *' --require-invitation-admission' ]] || exit 94
+ plain="${plain% --require-invitation-admission}"
+fi
+case "$plain" in
+  *--check-schema*) [[ "$plain" = *"--terrain-profile=$JOURNAL_PROFILE" ]] || exit 93; echo 'Schema preflight passed: database=22 supported=23 commit=fixture-commit' ;;
   'compose ps -a -q api')
     case "$JOURNAL_KIND" in
       fresh) ;;
@@ -49,9 +56,9 @@ case "$*" in
   *--check-save-journal*)
     [[ "$*" = *"/logs:/app/logs:ro"* ]] || exit 91
     [[ "$*" = *"--save-journal-dir=/app/logs/character-saves"* ]] || exit 92
-    [[ "$*" = *"--terrain-profile=$JOURNAL_PROFILE" ]] || exit 93
+    [[ "$plain" = *"--terrain-profile=$JOURNAL_PROFILE" ]] || exit 93
     case "$JOURNAL_KIND" in
-      legacy|already-stopped) exit 1 ;;
+      legacy|already-stopped|invitation-legacy) exit 1 ;;
       noisy) echo noise; echo 'Character journal preflight passed: supported=2 commit=fixture-commit' ;;
       wrong-build) echo 'Character journal preflight passed: supported=2 commit=foreign-commit' ;;
       wrong-format) echo 'Character journal preflight passed: supported=1 commit=fixture-commit' ;;
@@ -71,6 +78,16 @@ esac
 				profile = "earth-elevation-rocks-v1"
 			}
 			files[".env"] += "EIDOLON_TERRAIN_PROFILE=" + profile + "\n"
+
+			if strings.HasPrefix(kind, "invitation") {
+				guard, err := os.ReadFile("deploy/invitation-guard.compose.yml")
+				if err != nil {
+					t.Fatal(err)
+				}
+				files["deploy/invitation-guard.compose.yml"] = string(guard)
+				files["logs/invitation-guard.compose.yml"] = string(guard)
+				files[".env"] += "EIDOLON_REGISTRATION_MODE=invitation\nCOMPOSE_FILE=docker-compose.yml:logs/invitation-guard.compose.yml\n"
+			}
 			for name, content := range files {
 				if err := os.WriteFile(filepath.Join(root, name), []byte(content), 0700); err != nil {
 					t.Fatal(err)
@@ -85,7 +102,7 @@ esac
 			output, runErr := command.CombinedOutput()
 			commands, _ := os.ReadFile(filepath.Join(root, "commands"))
 			state, _ := os.ReadFile(filepath.Join(root, "live"))
-			valid := kind == "valid" || kind == "fresh" || kind == "raised"
+			valid := kind == "valid" || kind == "fresh" || kind == "raised" || kind == "invitation"
 			if (runErr == nil) != valid {
 				t.Fatalf("upgrade %s: %v %s", kind, runErr, output)
 			}

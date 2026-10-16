@@ -57,3 +57,41 @@ test('private-mode navigation query boots a fresh sensitive document and is scru
     const doc={head:{appendChild:jest.fn()}};
     initializeAnalytics('game',win,doc)('account_export');expect(doc.head.appendChild).not.toHaveBeenCalled();
 });
+
+const invitation = `v1.eyJ1c2VybmFtZSI6Ik1pcmEifQ.${'A'.repeat(43)}`;
+function expectPrivate(win) {
+    const doc = { head: { appendChild: jest.fn() } };
+    initializeAnalytics('game', win, doc)('gameplay_start');
+    expect(doc.head.appendChild).not.toHaveBeenCalled();
+    expect(win.dataLayer).toBeUndefined();
+}
+test('invitation is scrubbed before analytics, held only in non-enumerable RAM and never submitted on open', () => {
+    const win = boot(`invite=${invitation}&view=help`);
+    expect(win.location.hash).toBe('#view=help');
+    expect(win.location.search).toBe('?release=fixture');
+    expect(win.__eidolonInvitationHandoff).toEqual({ token: invitation, scrubbed: true });
+    expect(Object.keys(win)).not.toContain('__eidolonInvitationHandoff');
+    expect(win.fetch).toBeUndefined();
+    expectPrivate(win);
+});
+test.each([
+    ['invite=bad', '?release=fixture'],
+    [`invite=${invitation}&invite=${invitation}`, '?release=fixture'],
+    ['', `?invite=${invitation}&release=fixture`],
+    [`invite=${invitation}`, `?invite=${invitation}`],
+    [`invite=${invitation}&eidolon-recovery=reset&account=owner&token=${'a'.repeat(64)}`, '?release=fixture'],
+])('malformed, query, duplicate and mixed invitations fail closed before analytics', (fragment, query) => {
+    const win = boot(fragment, false, query);
+    expect(win.__eidolonInvitationHandoff).toEqual({ invalid: true, scrubbed: true });
+    expect(win.location.href).not.toContain(invitation);
+    if (fragment.includes('eidolon-recovery')) expect(win.__eidolonRecoveryHandoff.invalid).toBe(true);
+    expectPrivate(win);
+});
+test('blocked invitation history keeps analytics off even while the address cannot be scrubbed', () => {
+    const win = boot(`invite=${invitation}`, true);
+    expect(win.__eidolonInvitationHandoff.scrubbed).toBe(false);
+    expectPrivate(win);
+});
+test.each([['?invite=bad', ''], ['', '#invite=bad']])('analytics fallback suppresses private invitations even without the head handoff', (search, hash) => {
+    expectPrivate({ location: { hostname: 'play.eidolonrealms.com', search, hash } });
+});

@@ -15,10 +15,10 @@ func TestDeploySchemaPreflightPrecedesLiveReplacement(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, scenario := range []string{"compatible", "upgrade", "backup-failed", "future-schema", "database-unavailable", "missing-contract", "foreign-mongo", "missing-previous-image", "wrong-build", "noisy-contract", "duplicate-contract", "unsupported-success", "zero-target", "leading-zero", "oversized-schema", "fresh-database", "raised", "invalid-terrain", "partial-terrain", "health-terrain-mismatch", "health-terrain-missing"} {
+	for _, scenario := range []string{"compatible", "upgrade", "backup-failed", "future-schema", "database-unavailable", "missing-contract", "foreign-mongo", "missing-previous-image", "wrong-build", "noisy-contract", "duplicate-contract", "unsupported-success", "zero-target", "leading-zero", "oversized-schema", "fresh-database", "raised", "invalid-terrain", "partial-terrain", "health-terrain-mismatch", "health-terrain-missing", "invitation", "invitation-missing-guard", "invitation-stale-guard", "invitation-wrong-compose", "invitation-open-guard", "invitation-settings-without-mode", "invalid-registration", "health-invitation-missing", "health-invitation-open", "health-open-invitation"} {
 		t.Run(scenario, func(t *testing.T) {
 			root := t.TempDir()
-			for _, dir := range []string{"deploy", "bin"} {
+			for _, dir := range []string{"deploy", "bin", "logs"} {
 				if err := os.Mkdir(filepath.Join(root, dir), 0700); err != nil {
 					t.Fatal(err)
 				}
@@ -37,17 +37,24 @@ if [ "$PREFLIGHT_SCENARIO" = backup-failed ]; then exit 1; fi
 				"bin/git":   "#!/bin/sh\nexit 1\n",
 				"bin/sleep": "#!/bin/sh\nexit 0\n",
 				"bin/curl": `#!/bin/sh
+registration=''
+case "$PREFLIGHT_SCENARIO" in
+ invitation) registration=',"registrationMode":"invitation"' ;;
+ health-invitation-open) registration=',"registrationMode":"open"' ;;
+ health-open-invitation) registration=',"registrationMode":"invitation"' ;;
+esac
 profile=flat-v1
 if [ "$PREFLIGHT_SCENARIO" = raised ]; then profile=earth-elevation-rocks-v1; fi
 if [ "$PREFLIGHT_SCENARIO" = health-terrain-mismatch ]; then profile=earth-elevation-rocks-v1; fi
 if [ "$PREFLIGHT_SCENARIO" = health-terrain-missing ]; then
   printf '%s' '{"commit":"fixture-commit","database":"ready"}'; exit 0
 fi
-printf '{"commit":"fixture-commit","database":"ready","terrainProfile":"%s"}' "$profile"
+printf '{"commit":"fixture-commit","database":"ready","terrainProfile":"%s"%s}' "$profile" "$registration"
 `,
 				"bin/docker": `#!/bin/bash
 printf '%s\n' "$*" >> "$PREFLIGHT_COMMANDS"
-case "$*" in
+joined="$*"
+case "${joined% --require-invitation-admission}" in
   'compose up -d --no-recreate --wait mongo')
     if [ "$PREFLIGHT_SCENARIO" = database-unavailable ]; then exit 1; fi ;;
   'compose run --rm --no-deps -T api --check-schema --mongo-uri=mongodb://mongo:27017 --terrain-profile=flat-v1'|'compose run --rm --no-deps -T api --check-schema --mongo-uri=mongodb://mongo:27017 --terrain-profile=earth-elevation-rocks-v1')
@@ -85,6 +92,32 @@ esac
 			} else {
 				files[".env"] += "EIDOLON_TERRAIN_PROFILE=flat-v1\n"
 			}
+
+			invitationScenario := strings.HasPrefix(scenario, "invitation-") || scenario == "invitation" || strings.HasPrefix(scenario, "health-invitation-")
+			if invitationScenario {
+				guard, err := os.ReadFile("deploy/invitation-guard.compose.yml")
+				if err != nil {
+					t.Fatal(err)
+				}
+				files["deploy/invitation-guard.compose.yml"] = string(guard)
+				files["logs/invitation-guard.compose.yml"] = string(guard)
+				files[".env"] += "EIDOLON_REGISTRATION_MODE=invitation\nCOMPOSE_FILE=docker-compose.yml:logs/invitation-guard.compose.yml\n"
+				switch scenario {
+				case "invitation-missing-guard":
+					delete(files, "logs/invitation-guard.compose.yml")
+				case "invitation-stale-guard":
+					files["logs/invitation-guard.compose.yml"] += "# stale\n"
+				case "invitation-wrong-compose":
+					files[".env"] += "COMPOSE_FILE=docker-compose.yml\n"
+				case "invitation-open-guard":
+					files[".env"] += "EIDOLON_REGISTRATION_MODE=open\n"
+				case "invitation-settings-without-mode":
+					files[".env"] += "EIDOLON_REGISTRATION_MODE=\nCOMPOSE_FILE=\nEIDOLON_INVITATION_KEY=synthetic-private-invalid\n"
+				}
+			}
+			if scenario == "invalid-registration" {
+				files[".env"] += "EIDOLON_REGISTRATION_MODE=synthetic-private-invalid\n"
+			}
 			for name, content := range files {
 				if err := os.WriteFile(filepath.Join(root, name), []byte(content), 0700); err != nil {
 					t.Fatal(err)
@@ -105,13 +138,13 @@ esac
 			if err != nil {
 				t.Fatal(err)
 			}
-			if strings.HasPrefix(scenario, "health-terrain-") {
+			if strings.HasPrefix(scenario, "health-") {
 				if runErr == nil || string(state) != "replaced" || !strings.Contains(string(output), "health/release verification failed") {
 					t.Fatalf("terrain mismatch must fail live acceptance without claiming rollback: %v %s", runErr, output)
 				}
 				return
 			}
-			if scenario == "invalid-terrain" || scenario == "partial-terrain" {
+			if scenario == "invalid-terrain" || scenario == "partial-terrain" || strings.HasPrefix(scenario, "invitation-") || scenario == "invalid-registration" {
 				for _, mutation := range []string{"pin-previous-image", "compose build", "compose up", "backup"} {
 					if strings.Contains(string(commands), mutation) {
 						t.Fatalf("invalid terrain reached %s", mutation)
@@ -121,7 +154,7 @@ esac
 					t.Fatal("invalid configuration text leaked")
 				}
 			}
-			if scenario != "compatible" && scenario != "upgrade" && scenario != "fresh-database" && scenario != "raised" {
+			if scenario != "compatible" && scenario != "upgrade" && scenario != "fresh-database" && scenario != "raised" && scenario != "invitation" {
 				if runErr == nil || string(state) != "healthy-previous-release" || strings.Contains(string(commands), "compose up -d\n") {
 					t.Fatalf("failed preflight replaced live API: %v\n%s\n%s", runErr, commands, output)
 				}
@@ -137,6 +170,9 @@ esac
 				t.Fatalf("compatible deployment failed: %v\n%s", runErr, output)
 			}
 			expected := "pin-previous-image\ncompose build api\ncompose up -d --no-recreate --wait mongo\ncompose run --rm --no-deps -T api --check-schema --mongo-uri=mongodb://mongo:27017 --terrain-profile=flat-v1\n"
+			if scenario == "invitation" {
+				expected = strings.ReplaceAll(expected, "--terrain-profile=flat-v1\n", "--terrain-profile=flat-v1 --require-invitation-admission\n")
+			}
 			if scenario == "raised" {
 				expected = strings.ReplaceAll(expected, "--terrain-profile=flat-v1", "--terrain-profile=earth-elevation-rocks-v1")
 			}

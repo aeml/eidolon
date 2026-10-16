@@ -1,0 +1,21 @@
+# Copy into server/logs/ only at owner-approved beta activation.
+# COMPOSE_FILE=docker-compose.yml:logs/invitation-guard.compose.yml persists
+# across old-source cleanup, which preserves logs/ and .env.
+# Old binaries reject the required flag before touching account storage.
+services:
+  api:
+    command:
+      - --require-invitation-admission
+      - --addr=:8080
+      - --auth-max-concurrent=${EIDOLON_AUTH_MAX_CONCURRENT:-4}
+      - --ws-max-connections=${EIDOLON_WS_MAX_CONNECTIONS:-512}
+      - --mongo-uri=${MONGO_URI}
+      - --log-file=${LOG_FILE:-logs/server.log}
+      - --save-journal-dir=/app/logs/character-saves
+      - --log-stdout=${LOG_STDOUT:-true}
+      - --log-http-errors=${LOG_HTTP_ERRORS:-false}
+      - --suspicious-log-file=${SUSPICIOUS_LOG_FILE:-logs/junk.log}
+      - --suspicious-stdout=${SUSPICIOUS_STDOUT:-false}
+      - --qa-usernames=${EIDOLON_QA_USERNAMES:-}
+      - --terrain-profile=${EIDOLON_TERRAIN_PROFILE:-flat-v1}
+      - --admin-bootstrap-usernames=${EIDOLON_ADMIN_BOOTSTRAP_USERNAMES:-}

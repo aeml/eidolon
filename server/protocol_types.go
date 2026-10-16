@@ -464,9 +464,10 @@ type EndgameSpendPayload struct {
 }
 
 type AuthPayload struct {
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Invitation string `json:"invitation,omitempty"`
+	Username   string `json:"username"`
+	Email      string `json:"email"`
+	Password   string `json:"password"`
 }
 
 type JoinPayload struct {
