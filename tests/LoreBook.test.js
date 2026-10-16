@@ -189,12 +189,17 @@ describe('journal lore reading', () => {
         const mutation = jest.spyOn(book.index, 'replaceChildren').mockImplementation((...nodes) => {
             replace(...nodes); book.index.scrollTop = 0;
         });
+        const clear = ui.clearElement.bind(ui);
+        const detach = jest.spyOn(ui, 'clearElement').mockImplementation(element => {
+            clear(element);
+            if (element === ui.journalList) book.index.scrollTop = 0;
+        });
         old.focus(); book.index.scrollTop = 123;
         player.quests.push({ id: 'chronicle_02_second_note', category: 'chronicle', chapter: 2,
             title: 'The second note', accepted: true, completed: true, lore: 'Another promise remembered.' });
         const before = JSON.stringify(player.quests); ui.updateJournal(player.quests);
         expect(document.activeElement.dataset.memoryId).toBe(id); expect(document.activeElement).not.toBe(old);
-        expect(book.index.scrollTop).toBe(123); mutation.mockRestore();
+        expect(book.index.scrollTop).toBe(123); mutation.mockRestore(); detach.mockRestore();
         expect(book.index.children).toHaveLength(3);
         expect(JSON.stringify(player.quests)).toBe(before);
         expect(ui.onAcceptQuest).not.toHaveBeenCalled(); expect(ui.onCompleteQuest).not.toHaveBeenCalled();
