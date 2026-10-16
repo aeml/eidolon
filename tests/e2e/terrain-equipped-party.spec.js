@@ -25,6 +25,7 @@ import { captureEarthMovingRoute } from './earth-moving-route.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { profileGameplayScene } from './scene-performance.js';
 import { profileWorldGpuTime } from './world-gpu-observation.js';
+import { comparePartyRingFrames } from './party-ring-comparison.js';
 import { summarizePartyCPUProfile } from './party-cpu-summary.js';
 import { captureUnderstoryPreparation } from './understory-preparation-diagnosis.js';
 import { captureUnderstoryDetailComparison } from './understory-detail-comparison.js';
@@ -778,6 +779,17 @@ test(`single native renderer observes three live equipped party socket peers on 
                 scope: 'Same connected normal four-class/three-peer scene; exact original fitted surfaces versus qualified attribute submissions. Full outfits preserved and live actors/AI/game clocks retained. No physical-device or busy-battle certificate.'
             }, null, 2), contentType: 'application/json' });
             console.log('[paired-fitted-surface-profile]', JSON.stringify(phases));
+        }
+        if (process.env.EIDOLON_TERRAIN_PARTY_RING_COMPARE === '1') {
+            const comparison = await comparePartyRingFrames(page);
+            expect(comparison.restored).toBe(true);
+            for (const phase of comparison.phases) {
+                expect(phase.before.count).toBe(3); expect(phase.profile.frames).toBe(180);
+                expect(phase.profile.visibleFrames).toBe(180); expect(phase.profile.previewFramesDuringSample).toBe(0);
+                expect(phase.versionDeltas.every(delta => phase.single ? delta === 0 : delta > 0)).toBe(true);
+            }
+            await testInfo.attach('paired-party-ring-profile', { body: JSON.stringify(comparison, null, 2), contentType: 'application/json' });
+            console.log('[paired-party-ring-profile]', JSON.stringify(comparison));
         }
         if (process.env.EIDOLON_TERRAIN_PARTY_WORLD_GPU_PROFILE === '1') {
             const diagnostic = await profileWorldGpuTime(page, `connected-world-gpu-${quality}`);

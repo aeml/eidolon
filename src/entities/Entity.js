@@ -164,13 +164,15 @@ export class Entity {
                 const declaredRadius = Number(this.mesh.userData.bounds?.radius) || 0;
                 const innerRadius = declaredRadius ? declaredRadius * 0.75 : 0.55;
                 const outerRadius = declaredRadius ? declaredRadius * 1.05 : 0.75;
+                // One pass renders this planar marker from either side.
                 const ring = new THREE.Mesh(
                     new THREE.RingGeometry(innerRadius, outerRadius, 32),
                     new THREE.MeshBasicMaterial({
                         color: 0x44ff88,
                         transparent: true,
                         opacity: 0.7,
-                        side: THREE.DoubleSide
+                        side: THREE.DoubleSide,
+                        forceSinglePass: true
                     })
                 );
                 ring.name = NAME;
@@ -208,7 +210,7 @@ export class Entity {
         if (this._pvpHostileActive && !existing) {
             const ring = new THREE.Mesh(
                 new THREE.RingGeometry(0.78, 1.0, 32),
-                new THREE.MeshBasicMaterial({ color: 0xff3f4f, transparent: true, opacity: 0.85, side: THREE.DoubleSide })
+                new THREE.MeshBasicMaterial({ color: 0xff3f4f, transparent: true, opacity: 0.85, side: THREE.DoubleSide, forceSinglePass: true })
             );
             ring.name = name;
             ring.rotation.x = -Math.PI / 2;
