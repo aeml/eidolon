@@ -1,0 +1,68 @@
+{
+  "date": "2026-10-16T04:50:48.316749+00:00",
+  "source": "99ba9f154b11c36eba1171a6f62f36a933ea69ef",
+  "base": "800f3acef78e36042a4232a8dac6a4b2cd1b8bf0",
+  "state": "Isolated CPU-qualified candidate; not selected, merged or deployed. Native ordinary-zoom/motion/HUD/supplied-actor, cutaway, resources and quality review still required. Alpha60 is a separate prepared publication.",
+  "scope": "Replace solid front hall wall plus painted black doorway with chamfered actual pointed opening and3m throat; move existing dark panel behind the throat. Existing material/merged mesh count and exact envelope retained. No portal/collision/interaction or supplied actor changes.",
+  "validation": {
+    "focused": "26checks/two suites pass, including real empty doorway ray versus old solid wall, actual inner jamb, front shoulders/lintel, unchanged floor/envelope, finite normals and merged groups.",
+    "lint": "Scoped source/test lint and diffcheck pass.",
+    "geometry": {
+      "baseline": {
+        "triangles": 60,
+        "attributeBytes": 5760,
+        "groups": 0,
+        "bounds": {
+          "min": [
+            -21,
+            3,
+            -17
+          ],
+          "max": [
+            21,
+            27,
+            7
+          ]
+        },
+        "doorwayOccluded": true
+      },
+      "candidate": {
+        "triangles": 132,
+        "attributeBytes": 12672,
+        "groups": 0,
+        "bounds": {
+          "min": [
+            -21,
+            3,
+            -17
+          ],
+          "max": [
+            21,
+            27,
+            7
+          ]
+        },
+        "doorwayOccluded": false
+      }
+    },
+    "limits": "Only72added triangles/6912attribute bytes in existing merged mesh. This is not a whole-world/frame/Low/cold performance pass, final world-art approval or actual earned-travel proof. All retained timing/triangle failures remain. No native session launched; qualification awaits publication GPU availability."
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-bastion-wall-detail-20261016",
+  "evidence": [
+    {
+      "path": ".qa-bastion/focused.log",
+      "bytes": 610,
+      "sha256": "6419b3603ae3b9d6442890ebc7a71468af5f21849c3f74a894fca8359bef63ce"
+    },
+    {
+      "path": ".qa-bastion/lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-bastion/geometry.json",
+      "bytes": 517,
+      "sha256": "2f8db59e517b4f53609fea8e0d90a14c74a6485097e8a3548730f5a32a2b3ba5"
+    }
+  ]
+}
