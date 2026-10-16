@@ -27,7 +27,11 @@ for (const quality of ['high', 'low']) test(`${quality}: nearby ${type} material
         const canvas = render.renderer.domElement, copy = document.createElement('canvas');
         copy.width = canvas.width; copy.height = canvas.height;
         const context = copy.getContext('2d', { willReadFrequently: true }), reports = [];
-        const pool = render.actorInstances.multiDraw.materialVariantPool;
+        const pool = render.actorInstances.multiDraw.materialVariantPool, qualityPolicies = [];
+        for (const value of [quality, 'low', 'medium', 'high', quality]) {
+            render.setGraphicsQuality(value); render.render();
+            qualityPolicies.push({ quality: value, enabled: render.actorInstances.multiDraw.materialVariants, active: pool.entries.size });
+        }
         const capture = variants => {
             render.actorInstances.enabled = true; render.actorInstances.multiDraw.materialVariants = variants; render.render(); context.drawImage(canvas, 0, 0);
             return { pixels: context.getImageData(0, 0, copy.width, copy.height).data,
@@ -77,7 +81,7 @@ for (const quality of ['high', 'low']) test(`${quality}: nearby ${type} material
             models.forEach(mesh => { mesh.removeFromParent(); MeshFactory.releaseMesh(type, mesh); });
             floor.removeFromParent(); render.disposeObjectResources(floor); render.dispose();
         }
-        return { reports, materials: { created: pool.created, retired: pool.retired, remaining: pool.entries.size } };
+        return { reports, qualityPolicies, materials: { created: pool.created, retired: pool.retired, remaining: pool.entries.size } };
     }, { quality, type });
     await writeFile(testInfo.outputPath(`${type}-instance-comparison.json`), JSON.stringify(result, null, 2));
     await testInfo.attach('skeleton-instance-comparison', { body: JSON.stringify(result), contentType: 'application/json' });
@@ -91,5 +95,10 @@ for (const quality of ['high', 'low']) test(`${quality}: nearby ${type} material
     }
     expect(result.materials.created).toBeGreaterThan(0);
     expect(result.materials.retired).toBe(result.materials.created); expect(result.materials.remaining).toBe(0);
+    for (const policy of result.qualityPolicies) {
+        expect(policy.enabled).toBe(policy.quality === 'high');
+        if (policy.quality === 'high') expect(policy.active).toBeGreaterThan(0);
+        else expect(policy.active).toBe(0);
+    }
     expect(failures, failures.join('\n')).toEqual([]);
 });
