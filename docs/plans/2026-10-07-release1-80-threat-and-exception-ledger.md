@@ -95,3 +95,10 @@ remains an administrator action. No protected-file write, privilege bypass or
 production reload occurred. Template selection alone does not close X10/F2.
 The earlier HTTP408/shard-abort causes, other named exceptions and full original
 readiness gates remain open. No soak/stress or production data/access change.
+
+
+October16 scoped delivery: acceptedAlpha1.79.62 includes the secure template
+and private actual-Nginx checker in mandatory hosted CI. Eight certificate/
+control cases pass. Installed host activation remains pending administrator
+execution; X10/F2 is not closed.
+[Acceptance](2026-10-16-release1-79-62-acceptance.md).

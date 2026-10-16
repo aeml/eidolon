@@ -22,21 +22,18 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
-## Alpha 1.79.62: prepared, not yet deployed
+## Alpha 1.79.62: deployed and verified within scoped acceptance
 
-Alpha 1.79.62 is prepared, not yet deployed: qualified Bastion cap/root
-detail and phone garment text-size support, with saved-session wardrobe coverage
-and a verified Pages upstream TLS template/private checker enrolled in CI.
-[Bastion qualification](2026-10-16-bastion-caps-and-roots-qualification.md),
-[phone qualification](2026-10-16-garment-phone-text-qualification.md),
-[saved-session qualification](2026-10-16-garment-saved-session-qualification.md),
-[TLS qualification](2026-10-16-pages-upstream-tls-qualification.json).
-Existing host TLS activation remains pending administrator execution of the
-[operator guide](../operations/pages-upstream-tls.md); publishing the template
-does not change the installed Nginx configuration. Accepted public Alpha1.79.61
-remains at `a60c8e916`. Earlier transport findings and the full original game/
-readiness requirements remain open. Alpha access is unchanged; soak/stress and
-human pacing/physical-phone feedback remain deferred.
+Alpha 1.79.62 at `8a4a5ca88` is deployed and verified within the Bastion
+cap/root, phone garment text, saved-session wardrobe and secure-template scope.
+All ten CI jobs pass:785client suites/12044tests,451hosted browser passes/13skips,
+88native passes/one skip and first-attempt live/recovery/party passes. Fresh
+normal-TLS362asset pins, both identities, readyDB, open registration and flat
+terrain match at2026-10-16T10:26:30.161423+00:00. [Acceptance](2026-10-16-release1-79-62-acceptance.md).
+Installed host TLS activation remains pending an administrator; template
+publication does not change the live Nginx file. Earlier transport findings and
+the full original game/readiness gates remain open. Human pacing/physical-phone
+feedback and soak/stress remain deferred.
 
 ## Alpha 1.79.61: deployed and verified within scoped acceptance
 
@@ -67,7 +64,7 @@ QA-only flat/raised party support is delivered; functional proof does not waive
 original route/crowded-world timing or cold-triangle failures.
 [Retained qualification](2026-10-16-production-flat-party-qualification.json).
 Bastion entrance and the analytics bundle are now delivered in accepted61.
-Successor cap/root work is qualified and merged for prepared62; deployment remains pending. The earlier [documentation-push finding](2026-10-16-receipt59-redeployment-finding.md)
+Successor cap/root work is delivered in accepted62 within its scoped qualification. The earlier [documentation-push finding](2026-10-16-receipt59-redeployment-finding.md)
 remains historical evidence. No beta, capacity, final art or full-game completion
 claim. Soak/stress and human pacing/physical-device feedback remain deferred.
 
@@ -392,10 +389,12 @@ retains another49.9/66.6ms timing failure. No favorable-timing replay, target
 change or production-profile activation occurred. These failures supersede any
 interpretation that the earlier fresh sample certified full performance.
 [Exact scope, limits and evidence](2026-10-16-production-flat-party-qualification.json).
-QA profile-selection support is qualified/merged locally, not yet published.
-Reviewed Bastion outerwall/cap construction still reads as broad flat blocks;
-code-owned entrance masonry is the next bounded visual question alongside
-original world/terrain/performance work. No final-art claim is made.
+QA profile-selection support is deployed in accepted60 and retained in62;
+the original route performance failures remain open.
+The reviewed59 Bastion outerwall/caps read as broad flat blocks. Accepted61
+adds the recessed doorway, weathered walls and modeled ramp; accepted62 adds
+stone cap courses and site-specific root detail. Large plinth/root silhouettes,
+terrain composition and original performance work remain. No final-art claim.
 
 ## Retained performance limits and counterexamples
 

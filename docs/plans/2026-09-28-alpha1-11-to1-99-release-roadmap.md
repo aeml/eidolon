@@ -11,19 +11,16 @@ delivery state is maintained in the [remaining-work register](2026-10-09-release
 
 ## Current release state — October 16
 
-Alpha 1.79.62 is prepared, not yet deployed: qualified Bastion cap/root
-detail and phone garment text-size support, with saved-session wardrobe coverage
-and a verified Pages upstream TLS template/private checker enrolled in CI.
-[Bastion qualification](2026-10-16-bastion-caps-and-roots-qualification.md),
-[phone qualification](2026-10-16-garment-phone-text-qualification.md),
-[saved-session qualification](2026-10-16-garment-saved-session-qualification.md),
-[TLS qualification](2026-10-16-pages-upstream-tls-qualification.json).
-Existing host TLS activation remains pending administrator execution of the
-[operator guide](../operations/pages-upstream-tls.md); publishing the template
-does not change the installed Nginx configuration. Accepted public Alpha1.79.61
-remains at `a60c8e916`. Earlier transport findings and the full original game/
-readiness requirements remain open. Alpha access is unchanged; soak/stress and
-human pacing/physical-phone feedback remain deferred.
+Alpha 1.79.62 at `8a4a5ca88` is deployed and verified within the Bastion
+cap/root, phone garment text, saved-session wardrobe and secure-template scope.
+All ten CI jobs pass:785client suites/12044tests,451hosted browser passes/13skips,
+88native passes/one skip and first-attempt live/recovery/party passes. Fresh
+normal-TLS362asset pins, both identities, readyDB, open registration and flat
+terrain match at2026-10-16T10:26:30.161423+00:00. [Acceptance](2026-10-16-release1-79-62-acceptance.md).
+Installed host TLS activation remains pending an administrator; template
+publication does not change the live Nginx file. Earlier transport findings and
+the full original game/readiness gates remain open. Human pacing/physical-phone
+feedback and soak/stress remain deferred.
 
 
 Alpha 1.79.61 at `a60c8e916` is deployed and verified within the Bastion

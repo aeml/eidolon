@@ -3,8 +3,8 @@
 Owner requirement added October 15, 2026. **Required before beta; full scope
 remains open.** The minimum18distinct modeled looks and all four class fits are
 implemented/deployed in scoped acceptedAlpha1.79.58; the centered equipment row
-is delivered in59 and retained in60. [Collection acceptance](2026-10-16-release1-79-58-acceptance.md),
-[current delivery](2026-10-16-release1-79-60-acceptance.md).
+is delivered in59 and retained in accepted62. [Collection acceptance](2026-10-16-release1-79-58-acceptance.md),
+[current delivery](2026-10-16-release1-79-62-acceptance.md).
 Final collection art and the broader behavior/pose/device acceptance below
 remain open. Counts and narrower cosmetic checks do not close that scope.
 
@@ -222,6 +222,6 @@ owner/observer protobuf updates and three ordinary process lifetimes. Removing
 the outfit preserves retained individual/hand choices and its saved cleared
 state. Real gear, combat/base stats, Gold, items and level/XP remain unchanged.
 [Qualification and retained rest-transition fixture finding](2026-10-16-garment-saved-session-qualification.json).
-This coverage is selected for a later release after the ongoing61pipeline;
+This coverage is included in accepted62 and its actual hosted socket stage;
 it does not add browser/model-fit/old-binary/owner art acceptance or close the
 full garment checklist. No production accounts or access were changed.

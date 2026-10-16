@@ -1994,3 +1994,18 @@ All retained fixture/network/performance findings remain; no final world-art,
 complete F2, capacity, beta, original-route FPS or full-game claim. The full
 original goal remains active; human pacing/physical-phone feedback and soak/
 stress remain deferred. Continue implementation and ordered release verification.
+
+
+## October16 Alpha1.79.62 scoped acceptance
+
+Exact8a4a5ca88/CI38880235188 passes all ten ordered jobs:785suites/12044tests,
+451browser/13skip,88native/one skip and first-attempt live/recovery/party.
+Fresh normal-TLS362asset pins/identities/readyDB/open/flat/analytics match
+at2026-10-16T10:26:30.161423+00:00. Bastion cap/root detail, phone text preference, actual wardrobe
+save/remote socket coverage and secure upstream template/private checker are
+delivered within scoped acceptance. Installed host TLS activation remains
+pending administrator; no completeF2/X10, original-route FPS, finalart, beta or
+full-game claim. Isolated rendered-wardrobe prototype and current CPUdiagnosis
+are successor work; original failures remain. Full original goal active; human
+pacing/physical-phone feedback and soak/stress deferred.
+[Acceptance](docs/plans/2026-10-16-release1-79-62-acceptance.md).
