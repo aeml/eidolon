@@ -409,6 +409,24 @@ adds the recessed doorway, weathered walls and modeled ramp; accepted62 adds
 stone cap courses and site-specific root detail. Large plinth/root silhouettes,
 terrain composition and original performance work remain. No final-art claim.
 
+A subsequent town-instancing prototype is rejected after actual native A-B-A
+frames: CPU loop median rises16.6–16.8ms to19.2ms, and calls214to215 with exact
+202043triangles. Standalone High/Low view comparisons pass after preserving the
+original building shadow policy, but their mixed call savings do not generalize.
+The connected Low tail fails on a hidden-close-button fixture wait; there is no
+Low timing result or complete-case pass. These fresh scoped baseline windows do
+not erase the original route/cold/device failures. No runtime change is selected.
+[Rejection and retained evidence](2026-10-16-town-batching-rejection.md).
+
+Accepted63 now has a new moving review of the materially changed61/62Bastion
+stonework/roots: actual flat-profile travel, equipped Fighter and HUD,458recorded
+frames/49grounded fourteen-slot observations. Route timing sampling is off;
+original59FPS/cold failures remain. The existing subsequent four-class socket
+party/save check passes. The foundation still reads as one broad rounded slab;
+site-specific block construction is the next concrete art question, preserving
+the shared Abyssal default and original bounds/budgets. Broader final world art
+remains open. [Moving review](2026-10-16-current-bastion-moving-review.md).
+
 ## Retained performance limits and counterexamples
 
 The static foliage batching pilot `504b44ef` remains performance-rejected and
