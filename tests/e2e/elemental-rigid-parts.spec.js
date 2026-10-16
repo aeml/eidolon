@@ -16,8 +16,9 @@ for (const type of ['SandstormDjinn', 'ThunderRoc']) for (const quality of ['hig
             const make = recipes[`createProcedural${type}`];
             document.getElementById('start-screen').style.display = 'none';
             const system = new RenderSystem(quality === 'low'); system.setGraphicsQuality(quality);
+            const offset = type === 'SandstormDjinn' ? new THREE.Vector3(-1252, 0, 200) : new THREE.Vector3(1968, 0, 130);
             const floor = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.MeshStandardMaterial({ color: 0x454342, roughness: 1 }));
-            floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; system.scene.add(floor);
+            floor.rotation.x = -Math.PI / 2; floor.position.copy(offset); floor.receiveShadow = true; system.scene.add(floor);
             const groups = [new THREE.Group(), new THREE.Group()], models = [], rows = [], images = [];
             for (let variant = 0; variant < 2; variant++) for (let i = 0; i < 4; i++) {
                 const root = variant ? await MeshFactory.createMeshForType(type) : make({ batch: false });
@@ -25,9 +26,8 @@ for (const type of ['SandstormDjinn', 'ThunderRoc']) for (const quality of ['hig
             }
             system.entityGroup.add(...groups);
             system.setZoom(quality === 'low' ? 32 : 16);
-            system.setCameraTarget(new THREE.Vector3(0, 1, 0));
-            system.applyLightingPreset(type === 'SandstormDjinn' ? 'fire' : 'air', true);
-            system.updateEnvironmentLighting(new THREE.Vector3(), 0);
+            system.setCameraTarget(offset.clone().add(new THREE.Vector3(0, 1, 0)));
+            system.updateEnvironmentLighting(offset, 0);
             const gl = system.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
             const renderer = debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
             const factoryModels = models.filter(m => m.variant === 1).map(({ root }) => ({
@@ -61,7 +61,7 @@ for (const type of ['SandstormDjinn', 'ThunderRoc']) for (const quality of ['hig
                         const mixer = new THREE.AnimationMixer(root), clip = THREE.AnimationClip.findByName(root.userData.animations, state);
                         const action = mixer.clipAction(clip); action.setLoop(THREE.LoopOnce, 1); action.clampWhenFinished = true; action.play();
                         mixer.setTime(clip.duration * (phase + index * .06));
-                        root.position.set((index % 2 ? 1 : -1) * 3, 0, index < 2 ? -3 : 3);
+                        root.position.set((index % 2 ? 1 : -1) * 3, 0, index < 2 ? -3 : 3).add(offset);
                         root.rotation.y = [0, -Math.PI / 3, Math.PI / 2][view];
                         root.updateMatrixWorld(true); return mixer;
                     });
