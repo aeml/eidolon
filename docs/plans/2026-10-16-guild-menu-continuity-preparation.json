@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-16T02:23:57.734614+00:00",
+  "base": "ded6a3d58",
+  "source": "83d2e690e",
+  "state": "Isolated UNSELECTED candidate; native desktop/phone qualification pending until59native/liveCI terminal. Not merged/deployed.",
+  "scope": "Keep nonvaluable guild enrollment/invite/message drafts, leaderboard choices, caret/focus and reading offsets through same-character/same-guild roster/leaderboard refreshes. Untouched message follows authoritative text. Context changes clear drafts/calendar editor. Permission loss removes controls; destructive confirmations keep their own focus. Bank request/custody/retry behavior remains existing authority. Calendar stable editor focus is restored after parent reattachment.",
+  "validation": {
+    "focused": "96distinct checks across4suites pass:38GuildUI/GuildEvents,58SocialUIFriends/GroupFinder.",
+    "regressionControl": "Actual oldded6source loses invitedusernameBob\u2192empty inone isolatednegativecontrol; originalfailure retained. Correctedsource restoredbyteexactSHAproof.",
+    "lint": "Changedruntime/unit/nativeJS scopedlint and diffcheck pass.",
+    "native": "Six cases prepared: desktop/phone newdraft/calendar continuity, existingbankretry/destructiveconfirmation andGroupsconsenthandoff. NOT EXECUTED while59native/liveactive."
+  },
+  "limits": "ControlledUI fixtures and unitchecks do not establish actualguildserver/currency integration orphysicaldevices. Preserveoriginalfullgoal/gates anddeferredsoak policy.",
+  "evidence": [
+    {
+      "path": ".qa-guild-menu/focused.log",
+      "bytes": 544,
+      "sha256": "e68c1c604734778bcd938cacfa952d0a774efa6a52f167d7fa2b511cc3dc661b"
+    },
+    {
+      "path": ".qa-guild-menu/related.log",
+      "bytes": 560,
+      "sha256": "7040a3847d2449ea7b957396e39f51d63c0f65d08b89b3c2a79f45b754ff46c3"
+    },
+    {
+      "path": ".qa-guild-menu/lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-guild-menu/native-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-guild-menu/native-plan.log",
+      "bytes": 649,
+      "sha256": "e6c7044682132e4da3ad68676642ac5a6b9e89f1001e1cc58c176d38e9515afa"
+    },
+    {
+      "path": ".qa-guild-menu/pre-fix-regression.log",
+      "bytes": 1502,
+      "sha256": "36cbc1efbf9f3f2d6492cca275616d05cec6b5541f5af1d5c379d3d55a6889ee"
+    },
+    {
+      "path": ".qa-guild-menu/pre-fix-regression.json",
+      "bytes": 174,
+      "sha256": "6c30965dcde48e3b361b44f43c69309862887f58e8fd5d47ca3fadee28e5bd71"
+    }
+  ]
+}
