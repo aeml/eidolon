@@ -23,7 +23,7 @@ test('drowned quay has physical staggered slab joints within the original water-
 });
 
 test('mooring links have open holes, visible iron surfaces and a sagging line inside the old anchor clearance', () => {
-    const start = new THREE.Vector3(18, 7, 8), end = new THREE.Vector3(30.5, 3.7, 18);
+    const start = new THREE.Vector3(18, 7, 8), end = new THREE.Vector3(29, 3.7, 18);
     const chain = createAbyssalMooring(start.toArray(), end.toArray());
     const material = new THREE.MeshStandardMaterial(), mesh = new THREE.Mesh(chain, material);
     mesh.updateMatrixWorld(true);
@@ -44,8 +44,8 @@ test('mooring links have open holes, visible iron surfaces and a sagging line in
         .filter(vertex => Math.abs(vertex.x - middleX) < .3);
     expect(middle.length).toBeGreaterThan(0);
     expect(Math.min(...middle.map(vertex => vertex.y))).toBeLessThan((start.y + end.y) / 2 - .7);
-    // Links stay above the 3.1m stone while their fitting bites into its top.
-    expect(chain.boundingBox.min.y).toBeCloseTo(3.02, 5);
+    // Links clear the three-metre shelf while their fitting bites into its top.
+    expect(chain.boundingBox.min.y).toBeCloseTo(2.92, 5);
     expect(chain.boundingBox.min.x).toBeGreaterThan(17);
     expect(chain.boundingBox.max.x).toBeLessThan(35);
     expect(chain.boundingBox.max.y).toBeLessThan(8);

@@ -74,6 +74,24 @@ describe('procedural dungeon entrances', () => {
             const shelfBounds = new THREE.Box3().setFromObject(root.getObjectByName('abyssal:drowned-shelf'));
             const poolBounds = new THREE.Box3().setFromObject(pool);
             expect(poolBounds.min.y - shelfBounds.max.y).toBeGreaterThan(.05);
+            // Check contacts after the actual shelf/architecture transforms.
+            // Reusing the 3.1m source height would float the anchor plates.
+            const shelf = root.getObjectByName('abyssal:drowned-shelf');
+            for (const side of [-1, 1]) for (const end of ['front', 'rear']) {
+                const mooring = root.getObjectByName(`abyssal:anchor-tentacle-${end}:${side}`);
+                const position = mooring.geometry.attributes.position;
+                const low = mooring.geometry.boundingBox.min.y, contacts = [];
+                for (let i = 0; i < position.count; i++) {
+                    if (Math.abs(position.getY(i) - low) > 1e-5) continue;
+                    const corner = mooring.localToWorld(new THREE.Vector3().fromBufferAttribute(position, i));
+                    const hit = new THREE.Raycaster(corner.clone().add(new THREE.Vector3(0, 2, 0)), new THREE.Vector3(0, -1, 0))
+                        .intersectObject(shelf)[0];
+                    expect(hit).toBeDefined();
+                    contacts.push(hit.point.y - corner.y);
+                }
+                expect(contacts.length).toBeGreaterThan(0);
+                expect(contacts.some(depth => depth > 0 && depth < .1)).toBe(true);
+            }
         }
     });
     test.each([false, true])('Molten gate faces its east approach within the unchanged gameplay box (batched=%s)', optimized => {
