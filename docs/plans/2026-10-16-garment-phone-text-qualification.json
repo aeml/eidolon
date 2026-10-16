@@ -1,0 +1,53 @@
+{
+  "at": "2026-10-16T08:34:39.185283+00:00",
+  "source": "127febd23",
+  "base": "8af333415",
+  "state": "Qualified CSS usability correction, ready for master merge and a later synchronized release. Not deployed in accepted61.",
+  "scope": "Phone garment-slot labels and current-look names follow the existing menu-text preference. The three buttons stay in one centered row below the portrait; real gear/appearance ownership and callbacks are unchanged.",
+  "validation": {
+    "reproduced": "Actual390px browser check fails on the original fixed11/10px labels after the player chooses125%/20px menu text. Original failed log/screenshot/trace retained.",
+    "corrected": "Three actual software-rendered System Chrome layout/interaction cases pass, workers1/retries0, at1280/900/390px in42.2s. The phone case sets the real preference to125%, checks all six labels at20px, then reuses the existing row order/center/below-picture/touch-size/overflow/keyboard-focus/current-look/no-auto-apply/gear-custody assertions.",
+    "review": "Phone screenshot inspected: enlarged slot labels and selected names wrap within three aligned controls with readable text and no horizontal overflow. Desktop/tablet cases preserve their existing behavior.",
+    "lint": "Changed browser fixture lint and diff checks pass. No new mirrored unit tests were added for this CSS correction.",
+    "environment": "Private explicit SwiftShader launch, no competing native GPU workload. This proves browser layout/interactions, not physical-phone or GPU/model-art acceptance."
+  },
+  "limits": "Full menu/owner/device/beta and original game requirements remain open. No account, item, EP, access or schema change; no soak/stress.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-character-garment-text-20261016",
+  "evidence": [
+    {
+      "path": ".qa-garment-text/software-baseline.log",
+      "bytes": 3864,
+      "sha256": "870ff5c1f56ae8b4173395d002c910a815d8061e1b67089c57365015eb03160b"
+    },
+    {
+      "path": ".qa-garment-text/software-fixed.log",
+      "bytes": 822,
+      "sha256": "8d3e2b313a8c9b06b3b7782c653d4588a7da3a92bdb3206f376426e7dcbfcd96"
+    },
+    {
+      "path": ".qa-garment-text/lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-garment-text/software.config.mjs",
+      "bytes": 504,
+      "sha256": "42e8f3cd15122caf699ceca1b741f1487dbbe599f9ad449a4f33f288a22e8c26"
+    },
+    {
+      "path": ".qa-garment-text/software-fixed/character-sheet-presentati-02a4b-progression-controls-usable/character-garment-slots.png",
+      "bytes": 289566,
+      "sha256": "3f8ceb55e31f7b5895537331e63c3c6c63b63e2aea5081f6b3f03a58a77f6b59"
+    },
+    {
+      "path": ".qa-garment-text/software-fixed/character-sheet-presentati-ba6ba-progression-controls-usable/character-garment-slots.png",
+      "bytes": 165564,
+      "sha256": "10a20ff8d587059a3c39b0e42fa165bd3d18c7f370c7cc60a8ae1fdcf155c5dd"
+    },
+    {
+      "path": ".qa-garment-text/software-fixed/character-sheet-presentati-f9efa-progression-controls-usable/character-garment-slots.png",
+      "bytes": 517584,
+      "sha256": "7311f1bfb17d615df8f0a1e9d370775695cb1f83e4f396dedb7abba65e8beba2"
+    }
+  ]
+}

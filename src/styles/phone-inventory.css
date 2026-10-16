@@ -36,6 +36,9 @@
 .mobile-mode #character-sheet .equip-slot { width: 76px; height: 76px; font-size: 13px; padding-bottom: 22px; }
 .mobile-mode .phone-equipped-label { display: block; position: absolute; bottom: 2px; left: 2px; right: 2px; color: #d4deea; font-size: 11px; line-height: 1.1; }
 .mobile-mode .character-preview-label { font-size: 14px; }
+.mobile-mode .character-garment-slots :is(.garment-slot-label, .garment-slot-look) {
+    font-size: var(--phone-menu-text-size, 16px);
+}
 
 #phone-item-details {
     position: fixed;
