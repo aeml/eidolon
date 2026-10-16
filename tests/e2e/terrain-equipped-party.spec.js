@@ -263,6 +263,16 @@ test(`single native renderer observes three live equipped party socket peers on 
     const failures = collectBrowserFailures(page, baseURL), peers = [];
     let peerStage = 'joining';
     const peerLiveness = [];
+    const setupLifecycle = [];
+    const recordSetupLifecycle = async stage => {
+        const value = await page.evaluate(() => {
+            const game = window.game, player = game?.player;
+            return { health: player?.stats?.hp, state: player?.state, x: player?.position.x, z: player?.position.z,
+                items: player?.mesh?.userData.equipmentVisualItemCount,
+                partyMembers: game?.uiManager.social.partyData?.members?.length || 0 };
+        });
+        setupLifecycle.push({ stage, ...value }); return value;
+    };
     const recordPeerLiveness = stage => {
         peerStage = stage;
         peerLiveness.push({ stage, readyStates: peers.map(peer => peer.socket.readyState) });
@@ -332,6 +342,13 @@ test(`single native renderer observes three live equipped party socket peers on 
         if (process.env.EIDOLON_TERRAIN_ART_ROUTE === '1') await captureEarthMovingRoute(page, testInfo);
         if (process.env.EIDOLON_TERRAIN_RENDER_DIAGNOSTIC === '1') await captureActualSceneRenderDiagnosis(page, testInfo);
         await page.evaluate(observePartyTerrain);
+        // Normal travel ends before bounded QA preparation. Establish the
+        // existing encounter protection before leaving the leader idle in a
+        // dangerous realm while three peers log in and accept invitations.
+        expect((await recordSetupLifecycle('route-finished')).health).toBeGreaterThan(0);
+        await page.locator('#chat-input').click();
+        await useEncounterQAWaypoint(page);
+        expect((await recordSetupLifecycle('leader-prepared')).health).toBeGreaterThan(0);
         const leaderID = await page.evaluate(() => window.game.player.id);
         await page.keyboard.press('o');
         await expect(page.locator('#social-window')).toBeVisible();
@@ -369,8 +386,7 @@ test(`single native renderer observes three live equipped party socket peers on 
         await expect.poll(() => page.evaluate(() => window.game.uiManager.social.partyData?.members?.length)).toBe(4);
         await page.keyboard.press('Escape');
         await expect(page.locator('#social-window')).toBeHidden();
-        await page.locator('#chat-input').click();
-        await useEncounterQAWaypoint(page);
+        expect((await recordSetupLifecycle('party-joined')).health).toBeGreaterThan(0);
         await moveByGroundClick(page, -6, 0, { moveOnly: true, allowAlternatePaths: true, allowJumpFallback: false, minimumDistance: 2 });
         const ids = await page.evaluate(leaderID => [leaderID, ...window.game.uiManager.social.partyData.members
             .map(member => member.id).filter(id => id !== leaderID)], leaderID);
@@ -858,6 +874,10 @@ test(`single native renderer observes three live equipped party socket peers on 
         console.log('[untimed-party-draw-attribution]', JSON.stringify(draws.slice(0, 16)));
         console.log('[untimed-same-scene-instance-comparison]', JSON.stringify(pairedDraws));
     } finally {
+        await writeFile(testInfo.outputPath('party-setup-lifecycle.json'), JSON.stringify({
+            scope: 'Post-route QA preparation only; real health/state observations, no player writes. Ordinary route remains unprotected and separate.',
+            stages: setupLifecycle
+        }, null, 2));
         await page.evaluate(() => {
             window.__actorInstanceViewPilot?.dispose(); delete window.__actorInstanceViewPilot;
             if (window.__gameplayGeometryLifecycle?.runtime) window.game.renderSystem.setActorGameplayGeometryEnabled(false);
