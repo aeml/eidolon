@@ -17,6 +17,24 @@ function fixture() {
     return { group, sources, material, owner, camera, renderer, begin };
 }
 
+test('optional owned material variants follow mutable appearance and retire when disabled', () => {
+    const f = fixture(), sourceDispose = jest.spyOn(f.material, 'dispose');
+    try {
+        f.begin(); const mesh = [...f.owner.entries.values()][0].mesh;
+        expect(mesh.material).toBe(f.material);
+        f.owner.materialVariants = true; f.begin(); const variant = mesh.material;
+        expect(variant).not.toBe(f.material); expect(f.owner.materialVariantPool.entries.size).toBe(1);
+        const dispose = jest.spyOn(variant, 'dispose');
+        f.material.color.setHex(0x123456); f.material.roughness = .23; f.begin();
+        expect(mesh.material).toBe(variant); expect(variant.color.equals(f.material.color)).toBe(true);
+        expect(variant.roughness).toBe(.23);
+        f.owner.materialVariants = false; f.begin();
+        expect(mesh.material).toBe(f.material); expect(dispose).toHaveBeenCalledTimes(1);
+        expect(f.owner.materialVariantPool.entries.size).toBe(0); expect(sourceDispose).not.toHaveBeenCalled();
+    } finally { f.owner.dispose(); }
+    expect(f.sources.every(source => source.visible)).toBe(true); expect(sourceDispose).not.toHaveBeenCalled();
+});
+
 test('only the unchanged owned batch sorting callback has known shadow behavior', () => {
     const f = fixture();
     try {

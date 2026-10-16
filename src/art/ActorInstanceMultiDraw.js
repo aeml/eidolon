@@ -1,4 +1,5 @@
 import { BatchedMesh, Frustum, Group, Matrix4, Vector4 } from 'three';
+import { BatchedMaterialVariants } from './BatchedMaterialVariants.js';
 
 const ownedSorts = new WeakMap();
 // Identity, rather than a userData flag, qualifies this module's existing
@@ -23,6 +24,7 @@ export class ActorInstanceMultiDraw {
         parent.add(this.group); this.entries = new Map(); this.hidden = [];
         this.frustum = new Frustum(); this.projection = new Matrix4(); this.matrix = new Matrix4();
         this.enabled = true; this.perInstanceFrustum = false; this.identities = new WeakMap(); this.nextIdentity = 0;
+        this.materialVariants = false; this.materialVariantPool = new BatchedMaterialVariants();
     }
 
     geometryVersion(geometry) {
@@ -37,6 +39,7 @@ export class ActorInstanceMultiDraw {
 
     beginFrame(renderer, camera, sources) {
         this.endFrame();
+        this.materialVariantPool.beginFrame();
         if (this.disposed || !this.enabled || !renderer?.extensions?.has('WEBGL_multi_draw') || camera?.isArrayCamera) {
             this.clearEntries(); return;
         }
@@ -54,6 +57,7 @@ export class ActorInstanceMultiDraw {
             for (const [key, group] of groups) {
                 if (group.length < 2) continue;
                 used.add(key);
+                const material = this.materialVariants ? this.materialVariantPool.use(group[0].material) : group[0].material;
                 const geometries = [...new Set(group.map(source => source.geometry))];
                 const signature = JSON.stringify([geometries.map(geometry => this.geometryVersion(geometry)), group.map(source =>
                     [source.uuid, source.instanceMatrix.count])]);
@@ -63,7 +67,7 @@ export class ActorInstanceMultiDraw {
                     const capacity = group.reduce((n, source) => n + source.instanceMatrix.count, 0);
                     const vertices = geometries.reduce((n, geometry) => n + geometry.attributes.position.count, 0);
                     const indices = geometries[0].index ? geometries.reduce((n, geometry) => n + geometry.index.count, 0) : 0;
-                    const mesh = new BatchedMesh(capacity, vertices, indices, group[0].material);
+                    const mesh = new BatchedMesh(capacity, vertices, indices, material);
                     mesh.name = 'ActorCellMultiDraw'; mesh.matrixAutoUpdate = false; mesh.frustumCulled = false;
                     mesh.perObjectFrustumCulled = false;
                     mesh.castShadow = group[0].castShadow; mesh.receiveShadow = group[0].receiveShadow;
@@ -100,6 +104,7 @@ export class ActorInstanceMultiDraw {
                 // Optional stock per-instance clipping follows the same pass
                 // camera. Displaced geometry and explicit no-cull buckets keep
                 // the qualified whole-original-bucket path.
+                entry.mesh.material = material;
                 entry.mesh.perObjectFrustumCulled = this.perInstanceFrustum &&
                     group[0].frustumCulled && !group[0].material.displacementMap;
                 entry.mesh.matrixWorld.copy(group[0].matrixWorld);
@@ -115,6 +120,7 @@ export class ActorInstanceMultiDraw {
             for (const [key, entry] of this.entries) if (!used.has(key)) {
                 entry.mesh.removeFromParent(); entry.mesh.dispose(); this.entries.delete(key);
             }
+            this.materialVariantPool.endFrame();
             this.group.visible = used.size > 0;
         } catch (error) { this.endFrame(); this.clearEntries(); throw error; }
     }
@@ -127,6 +133,7 @@ export class ActorInstanceMultiDraw {
     clearEntries() {
         for (const { mesh } of this.entries.values()) { mesh.removeFromParent(); mesh.dispose(); }
         this.entries.clear();
+        this.materialVariantPool.clear();
     }
 
     clear() { this.endFrame(); this.clearEntries(); }
