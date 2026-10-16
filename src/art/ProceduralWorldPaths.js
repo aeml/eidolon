@@ -92,6 +92,10 @@ export function createWorldPathNetwork(paths, { name = 'World', color, elevation
         const renderedPath = name === 'Earth' ? extendLanternholdGatePath(path) : path;
         const mesh = new THREE.Mesh(createWorldPathGeometry(renderedPath, { elevation }), material);
         mesh.name = `world-path:${path.id}`; mesh.receiveShadow = true;
+        // Transparent ribbons can span far beyond their sort center. Draw
+        // after blackwater (-1), before actor labels and aura effects (0),
+        // so a nearby stretch cannot paint over those foreground visuals.
+        mesh.renderOrder = -.5;
         mesh.userData.worldPathId = path.id;
         group.add(mesh);
     }
