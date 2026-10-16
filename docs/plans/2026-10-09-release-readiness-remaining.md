@@ -227,7 +227,7 @@ service-menu polish remain isolated pending native qualification. Their CPU/
 structural checks are preparation, not deployed collection-wide art acceptance.
 The full goal, original gates, deferred playtests and soak policy remain unchanged.
 
-## Alpha 1.79.58: selected and prepared, not deployed
+## Alpha 1.79.58: deployed and verified
 
 All seven remaining universal outfits now qualify alongside the prior eleven
 looks, completing implementation of the minimum18modeled collection. Eight
@@ -239,7 +239,9 @@ lint and exact content/model/source validation pass. Initial spring petal flicke
 Low mask export defects and fixture failures remain retained with corrections.
 [Qualification](2026-10-16-universal-garment-qualification.json).
 
-These changes are ordinarily merged into master for58publication after57acceptance.
+These changes are merged into master and deployed as `4f5b2e57f`. All ten ordered
+CI jobs pass; normal-TLS reads match both identities, ready database and all350
+public asset pins. [Acceptance](2026-10-16-release1-79-58-acceptance.md).
 Final owner collection art, broader quest/menu/world/audio/device/performance,
 operations, owner/F1–F5/beta/release gates and deferred playtests remain open.
 No soak/stress or complete-game-readiness claim is made.

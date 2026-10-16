@@ -495,14 +495,14 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.58`, **prepared locally, not deployed**:
+**Alpha 1.79.58 is deployed and verified**, at runtime source `4f5b2e57f`:
 all eight universal outfits, searchable/category-filtered Veyra collection,
 retained store scroll/focus and coordinated service-window polish. The requested
-minimum18distinct modeled looks is implemented and selected on master. Final
-owner collection/art review and broader quality/readiness gates remain open.
+minimum18distinct modeled looks is implemented. All ten ordered CI jobs pass;
+normal-TLS public reads match both identities, ready database and all350asset
+pins. Final owner collection/art review and broader quality/readiness gates remain open.
+[Acceptance](docs/plans/2026-10-16-release1-79-58-acceptance.md).
 [Qualification](docs/plans/2026-10-16-universal-garment-qualification.json).
-Alpha1.79.57 remains the independently verified public release at `baecf1cf8`.
-[Acceptance](docs/plans/2026-10-16-release1-79-57-acceptance.md).
 
 **Alpha 1.79.55 is deployed and verified** at `1c936dfc6`: searchable earned
 Lore Book, direct quest tracking and clearer manual quest review. All ten CI jobs
