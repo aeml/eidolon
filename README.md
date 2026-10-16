@@ -495,14 +495,16 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.61`, **prepared; not yet deployed**.
-Alpha1.79.61 is prepared, not yet deployed: qualified Bastion doorway,
-weathered walls and modeled paving, plus a closed analytics startup bundle.
-[Entrance qualification](docs/plans/2026-10-16-bastion-entrance-qualification.json),
-[analytics qualification](docs/plans/2026-10-16-analytics-bundle-qualification.json).
-Alpha1.79.60/exact800f remains the accepted public release. The prior transport
-findings and full original game/readiness requirements remain open. Alpha access
-is unchanged; soak/stress remains deferred.
+Current source version: `Alpha 1.79.61`, **deployed and verified within scoped acceptance**.
+Alpha 1.79.61 at `a60c8e916` is deployed and verified within the Bastion
+entrance and analytics startup scope. All ten CI jobs pass: 785 client suites /
+12,042 tests; 451 hosted browser passes / 13 skips; 88 native passes / one skip;
+and first-attempt live, recovery and party passes. Fresh normal-TLS checks match
+359 asset pins, both identities, a ready database, open registration and flat
+terrain at 2026-10-16T08:18:03.708942+00:00.
+[Acceptance](docs/plans/2026-10-16-release1-79-61-acceptance.md).
+Earlier transport failures and full original game/readiness gates remain open.
+Soak/stress and human pacing/physical-phone feedback remain deferred.
 
 
 Previously accepted version: `Alpha 1.79.60`, **deployed and verified within its scoped

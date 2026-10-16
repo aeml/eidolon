@@ -1,12 +1,14 @@
 # Eidolon Engineering Roadmap
 
-Alpha1.79.61 is prepared, not yet deployed: qualified Bastion doorway,
-weathered walls and modeled paving, plus a closed analytics startup bundle.
-[Entrance qualification](plans/2026-10-16-bastion-entrance-qualification.json),
-[analytics qualification](plans/2026-10-16-analytics-bundle-qualification.json).
-Alpha1.79.60/exact800f remains the accepted public release. The prior transport
-findings and full original game/readiness requirements remain open. Alpha access
-is unchanged; soak/stress remains deferred.
+Alpha 1.79.61 at `a60c8e916` is deployed and verified within the Bastion
+entrance and analytics startup scope. All ten CI jobs pass: 785 client suites /
+12,042 tests; 451 hosted browser passes / 13 skips; 88 native passes / one skip;
+and first-attempt live, recovery and party passes. Fresh normal-TLS checks match
+359 asset pins, both identities, a ready database, open registration and flat
+terrain at 2026-10-16T08:18:03.708942+00:00.
+[Acceptance](plans/2026-10-16-release1-79-61-acceptance.md).
+Earlier transport failures and full original game/readiness gates remain open.
+Soak/stress and human pacing/physical-phone feedback remain deferred.
 
 
 Current delivery and unfinished work are recorded in the
@@ -19,7 +21,7 @@ one initialHTTP408. A configured live geometry-load retry also remains retained.
 Public alpha access remains unchanged; full original requirements stay open.
 Soak/stress and human pacing/physical-phone feedback remain deferred, not passed.
 The earlier [documentation-push finding](plans/2026-10-16-receipt59-redeployment-finding.md)
-remains historical evidence; accepted60 is the current serving source.
+remains historical evidence; accepted61 is the current serving source. The60receipt remains historical evidence.
 
 Prior dated deployment checkpoints are retained in
 [the preceding roadmap pointer](https://github.com/aeml/eidolon/blob/2f5b4ad71d4cbd5709a199d51bc4529b8d28228a/docs/ROADMAP.md)
