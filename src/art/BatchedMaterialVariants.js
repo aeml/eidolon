@@ -6,8 +6,10 @@ const supported = source => {
         source.onBeforeRender !== Material.prototype.onBeforeRender ||
         !(source.onBeforeCompile === Material.prototype.onBeforeCompile &&
           source.customProgramCacheKey === Material.prototype.customProgramCacheKey || isOwnedRigidSurfaceMaterial(source))) return false;
-    // Built-in copy serializes metadata. Complex metadata/custom accessors keep
-    // the borrowed path; no user callbacks or recursive graphs are cloned.
+    // Built-in copy serializes metadata. Only plain primitive metadata is
+    // supported; custom prototypes/accessors and recursive graphs stay borrowed.
+    const prototype = Object.getPrototypeOf(source.userData);
+    if (prototype !== Object.prototype && prototype !== null) return false;
     return Object.values(Object.getOwnPropertyDescriptors(source.userData)).every(descriptor =>
         Object.hasOwn(descriptor, 'value') && (descriptor.value === null ||
         ['string', 'number', 'boolean', 'undefined'].includes(typeof descriptor.value)));

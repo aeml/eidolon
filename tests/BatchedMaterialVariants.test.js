@@ -95,3 +95,11 @@ test('copy failure falls back and retires a partial owned material without leaki
         expect(pool.created).toBe(pool.retired);
     } finally { copy.mockRestore(); }
 });
+
+test('inherited metadata serialization callbacks are not invoked by the variant owner', () => {
+    const source = new THREE.MeshStandardMaterial(), pool = new BatchedMaterialVariants();
+    const toJSON = jest.fn(() => { throw new Error('must not serialize a custom metadata prototype'); });
+    source.userData = Object.create({ toJSON }); source.userData.label = 'primitive-own-value';
+    pool.beginFrame(); expect(pool.use(source)).toBe(source); pool.endFrame();
+    expect(toJSON).not.toHaveBeenCalled(); expect(pool.created).toBe(0); pool.clear();
+});
