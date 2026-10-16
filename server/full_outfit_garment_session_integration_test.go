@@ -63,7 +63,12 @@ func TestFullOutfitGarmentActualSavedSessions(t *testing.T) {
 	owner, _ := resourceLoginCharacter(t, address, name, password, "Fighter")
 	observer, _ := resourceLoginCharacter(t, address, observerName, password, "Cleric")
 	defer observer.Close()
-	baseline := wellRestedReadActor(t, owner, name, func(e *statepb.Entity) bool { return len(e.Equipment) == 4 })
+	// Ordinary town recovery activates the existing 10% Well Rested boost.
+	// Compare after that real transition, rather than mistaking elapsed rest
+	// between login and selection for cosmetic power. Do not suppress recovery.
+	baseline := wellRestedReadActor(t, owner, name, func(e *statepb.Entity) bool {
+		return len(e.Equipment) == 4 && e.WellRestedSeconds > 0
+	})
 	expected := maps.Clone(legacy)
 	remaining := fixture.EP
 	var wardrobe cosmeticSocketResult
