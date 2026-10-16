@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import yaml from 'js-yaml';
 
 const repoRoot = path.resolve(process.cwd());
 const packageJson = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8'));
@@ -11,6 +12,14 @@ const dockerignore = fs.readFileSync(path.join(repoRoot, 'server', '.dockerignor
 const workflow = fs.readFileSync(path.join(repoRoot, '.github', 'workflows', 'ci.yml'), 'utf8');
 
 describe('tooling baseline', () => {
+    test('CI workflow parses and every run step is a shell string', () => {
+        const parsed = yaml.load(workflow);
+        expect(parsed.name).toBe('CI');
+        for (const job of Object.values(parsed.jobs)) for (const step of job.steps || []) {
+            if (Object.hasOwn(step, 'run')) expect(typeof step.run).toBe('string');
+        }
+    });
+
     test('loads locked runtime dependencies from the generated local vendor tree', () => {
         expect(packageJson.dependencies.three).toMatch(/^\d+\.\d+\.\d+$/);
         expect(packageJson.devDependencies.protobufjs).toMatch(/^\d+\.\d+\.\d+$/);
