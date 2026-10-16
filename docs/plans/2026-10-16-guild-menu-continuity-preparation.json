@@ -1,14 +1,15 @@
 {
-  "date": "2026-10-16T02:23:57.734614+00:00",
+  "date": "2026-10-16T03:03:43.165881+00:00",
   "base": "ded6a3d58",
   "source": "83d2e690e",
-  "state": "Isolated UNSELECTED candidate; native desktop/phone qualification pending until59native/liveCI terminal. Not merged/deployed.",
+  "state": "Qualified for ordinary master selection:96distinct focused checks/4suites and6distinct native desktop/phone cases pass. Not yet deployed.",
   "scope": "Keep nonvaluable guild enrollment/invite/message drafts, leaderboard choices, caret/focus and reading offsets through same-character/same-guild roster/leaderboard refreshes. Untouched message follows authoritative text. Context changes clear drafts/calendar editor. Permission loss removes controls; destructive confirmations keep their own focus. Bank request/custody/retry behavior remains existing authority. Calendar stable editor focus is restored after parent reattachment.",
   "validation": {
     "focused": "96distinct checks across4suites pass:38GuildUI/GuildEvents,58SocialUIFriends/GroupFinder.",
     "regressionControl": "Actual oldded6source loses invitedusernameBob\u2192empty inone isolatednegativecontrol; originalfailure retained. Correctedsource restoredbyteexactSHAproof.",
     "lint": "Changedruntime/unit/nativeJS scopedlint and diffcheck pass.",
-    "native": "Six cases prepared: desktop/phone newdraft/calendar continuity, existingbankretry/destructiveconfirmation andGroupsconsenthandoff. NOT EXECUTED while59native/liveactive."
+    "native": "Six distinct cases qualify: initial5passes/1desktop fixture failure, then corrected desktop1pass. Runtime unchanged between runs. Desktop scrolls innerGuildpanel; phone scrolls outerSocialwindow. Fixture now checks positive scroll and exact restoration on actual viewport owner, preserving the original assertion. Owned native Chrome153, workers1/retries0. Reviewed desktop/phone message/caret/calendar images plus retained bank/Groups cases. No actual guild-server/payment/physical-device claim.",
+    "retainedFailures": "OldsourceBob\u2192empty regression retained; firstnative wrong-desktop-scroll-owner assertion retained; anchoredgrepCLIinvocation selected0cases and is retained. Corrected verifiedCLIselects1case and nativepasses. No blind rerun or automatic production action."
   },
   "limits": "ControlledUI fixtures and unitchecks do not establish actualguildserver/currency integration orphysicaldevices. Preserveoriginalfullgoal/gates anddeferredsoak policy.",
   "evidence": [
@@ -46,6 +47,31 @@
       "path": ".qa-guild-menu/pre-fix-regression.json",
       "bytes": 174,
       "sha256": "6c30965dcde48e3b361b44f43c69309862887f58e8fd5d47ca3fadee28e5bd71"
+    },
+    {
+      "path": ".qa-guild-menu/native.log",
+      "bytes": 4055,
+      "sha256": "655e61d65debf3dddb96381336aa9ee657efd9eb2479a78c4dbd872020de2b9b"
+    },
+    {
+      "path": ".qa-guild-menu/native-corrected-invocation-failure.log",
+      "bytes": 393,
+      "sha256": "ca85fd1c36284c6c02e3fe8789a40d861548876bf75f846d2ead3a9eba909adc"
+    },
+    {
+      "path": ".qa-guild-menu/native-corrected-plan.log",
+      "bytes": 148,
+      "sha256": "108356a3885bd92dcd9ecb1e8b1ec6712495729e4b74be1efa35831d4af26142"
+    },
+    {
+      "path": ".qa-guild-menu/native-corrected-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa-guild-menu/native-corrected.log",
+      "bytes": 411,
+      "sha256": "69e5953ab7866bc8ab4736488044a9207f29396f21a4fbed2c48e6c721cc2d31"
     }
   ]
 }
