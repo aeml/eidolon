@@ -495,7 +495,13 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.63`, **deployed and verified within scoped acceptance**.
+Local `master` also includes qualified, unpublished Bastion foundation block
+construction for the next coherent world-art milestone. Its versions/patch
+notes, broader milestone integration and deployment verification are pending.
+[Qualification](docs/plans/2026-10-16-bastion-bonded-foundation-qualification.md).
+This source work does not change the accepted public release below.
+
+Current published release: `Alpha 1.79.63`, **deployed and verified within scoped acceptance**.
 Alpha 1.79.63 at `dc9e686b8` is deployed and verified within the actual native
 wardrobe and query-free Pages delivery-diagnostics scope. All ten CI jobs pass:
 785 client suites / 12,044 tests, 451 hosted browser passes / 13 skips, 89 native passes / one

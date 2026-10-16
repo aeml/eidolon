@@ -427,6 +427,15 @@ site-specific block construction is the next concrete art question, preserving
 the shared Abyssal default and original bounds/budgets. Broader final world art
 remains open. [Moving review](2026-10-16-current-bastion-moving-review.md).
 
+Local master now contains the qualified Bastion bonded-foundation construction:
+71 focused checks/six suites, four native reference/candidate cases and four
+native cutaway cases pass. Draws/material count and original bounds remain;
+all non-foundation source parts and the shared Abyssal shelf are exact. This is
+unpublished source for the next coherent world milestone, with broader normal-
+movement integration, synchronized release versions/notes and deployment still
+pending. Public63 remains unchanged. No original performance/final-art gate is
+closed. [Qualification](2026-10-16-bastion-bonded-foundation-qualification.md).
+
 ## Retained performance limits and counterexamples
 
 The static foliage batching pilot `504b44ef` remains performance-rejected and

@@ -2041,3 +2041,18 @@ original-route FPS, final art, beta or full-game claim. Isolated renderer pilots
 remain unselected. Full original goal active; human pacing/physical-phone
 feedback and soak/stress deferred.
 [Acceptance](docs/plans/2026-10-16-release1-79-63-acceptance.md).
+
+
+## October 16 world finishing continues after accepted Alpha 1.79.63
+
+The rejected town batching experiment remains isolated after actual High CPU
+regression. Current63 moving art review confirms the remaining broad foundation
+slab. Qualified bonded-foundation construction is now merged into local master:
+71 focused checks/six suites, eight native cases, exact shared Abyssal/other
+source assets, unchanged draws/material count and original entry bounds.
+This is unpublished source for the next coherent world milestone. Complete its
+broader integration, synchronized release versions/notes, normal push and
+actual deployment verification; do not publish unversioned source as63.
+The full original goal, original performance failures and owner-dependent gates
+remain active; human pacing/physical-phone feedback and soak/stress deferred.
+[Qualification](docs/plans/2026-10-16-bastion-bonded-foundation-qualification.md).
