@@ -28,6 +28,8 @@ test.each(types.flatMap(type => ['high', 'low'].map(quality => [type, quality]))
 
 test.each(types)('%s shares shapes and existing physical finishes in every room identity', type => {
     const kit = createProceduralDungeonInteriorKit(type, { quality: 'low' });
+    const fixedShapes = kit.metrics().detailGeometries, floorPlans = new Set();
+    expect(fixedShapes).toBe(20);
     let previous;
     for (const identity of DUNGEON_ROOM_IDENTITY_IDS) {
         const room = { x: 30000, z: 20000, width: 120, height: 120, identity, roomIdentity: identity };
@@ -49,8 +51,18 @@ test.each(types)('%s shares shapes and existing physical finishes in every room 
                 triangles += (part.geometry.index?.count || part.geometry.attributes.position.count) / 3;
         }); return triangles; };
         expect(count(root)).toBe(count(optimized));
+        const floor = root.getObjectByName(`${identity}:floor-composition`).geometry;
+        floorPlans.add(floor);
+        const cached = kit.metrics().detailGeometries;
+        const repeat = kit.createRoomDressing(room, 1, { optimized: false });
+        expect(repeat.getObjectByName(`${identity}:floor-composition`).geometry).toBe(floor);
+        expect(kit.metrics().detailGeometries).toBe(cached);
     }
-    expect(kit.metrics().detailGeometries).toBe(25); expect(kit.metrics().surfaceTextures).toBe(8);
+    // Eight distinct purpose plans replace four shared plans; the arena also
+    // owns one cached dais. Repeated rooms must add no more shared geometry.
+    expect(floorPlans.size).toBe(8);
+    expect(kit.metrics().detailGeometries).toBe(fixedShapes + floorPlans.size + 1);
+    expect(kit.metrics().detailGeometries).toBe(29); expect(kit.metrics().surfaceTextures).toBe(8);
 });
 
 test('zone disposal releases shared relic channels once and keeps material/texture reuse', () => {
