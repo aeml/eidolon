@@ -818,8 +818,12 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} element
         expect(row.props.map(prop => `${prop.role}:${prop.vertexColors}`).sort()).toEqual(['metal:false', 'metal:true', 'stone:false', 'stone:true']);
         for (const identity of ['entry_gate', 'treasure_cache', 'restorative_shrine']) expect(row.paving).toContain(identity);
         expect(row.compositionRooms).toBe(row.roomCount);
-        expect(row.compositions.map(part => part.plan).sort()).toEqual(row.type === 'umbral_nexus'
-            ? ['arena', 'court', 'nave'] : ['arena', 'court', 'nave', 'procession']);
+        // Each canonical seed retains its actual room purposes. Cache, font,
+        // passage and ambush courts now have their own physical paving plans.
+        const expectedPlans = row.type === 'umbral_nexus' ? ['arena', 'broken-court', 'chapel', 'nave', 'vault']
+            : row.type === 'verdant_bastion_catacombs' ? ['arena', 'broken-court', 'chapel', 'nave', 'procession', 'vault']
+                : ['aisle', 'arena', 'chapel', 'nave', 'procession', 'vault'];
+        expect(row.compositions.map(part => part.plan).sort()).toEqual(expectedPlans);
         for (const part of row.compositions) {
             expect(part.stones).toBeGreaterThan(0); expect(part.stones).toBeLessThanOrEqual(44);
             expect(part.calls).toBeGreaterThan(0); expect(part.calls).toBeLessThanOrEqual(quality === 'low' ? 200 : 350);

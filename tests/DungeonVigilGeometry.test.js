@@ -1,11 +1,13 @@
 import * as THREE from 'three';
 import { createDungeonVigilBase, createDungeonVigilShaft, createDungeonVigilCage,
-    createDungeonBevelBlock, createDungeonFontBasin, createDungeonCofferLid } from '../src/art/DungeonVigilGeometry.js';
+    createDungeonBevelBlock, createDungeonFontBasin, createDungeonCofferLid,
+    createDungeonAmbushPier } from '../src/art/DungeonVigilGeometry.js';
 import { createProceduralDungeonInteriorKit } from '../src/art/ProceduralDungeonInteriors.js';
 
 test.each([['foot', createDungeonVigilBase, 300], ['shaft', createDungeonVigilShaft, 400],
     ['cage', createDungeonVigilCage, 200], ['block', createDungeonBevelBlock, 100],
-    ['font', createDungeonFontBasin, 300], ['lid', createDungeonCofferLid, 200]])('%s has finite deterministic bounded surface detail', (name, make, triangles) => {
+    ['font', createDungeonFontBasin, 300], ['lid', createDungeonCofferLid, 200],
+    ['pier', createDungeonAmbushPier, 200]])('%s has finite deterministic bounded surface detail', (name, make, triangles) => {
     const first = make(), second = make();
     expect(first.attributes.position.array).toEqual(second.attributes.position.array);
     for (const key of ['position', 'normal', 'uv']) {
@@ -20,6 +22,38 @@ test.each([['foot', createDungeonVigilBase, 300], ['shaft', createDungeonVigilSh
     expect(bounds.max.y).toBeLessThanOrEqual(name === 'cage' ? .83 : .51);
     expect(Math.max(Math.abs(bounds.min.x), Math.abs(bounds.max.x), Math.abs(bounds.min.z), Math.abs(bounds.max.z))).toBeLessThanOrEqual(.56);
     first.dispose(); second.dispose();
+});
+
+test.each(['verdant_bastion_catacombs', 'molten_core', 'tempest_spire', 'abyssal_well', 'umbral_nexus'])('%s ambush piers share physical stone and preserve the old encounter apron', dungeonType => {
+    const kit = createProceduralDungeonInteriorKit(dungeonType, { quality: 'low' });
+    const room = { x: 30000, z: 20000, width: 120, height: 120, type: 'elite', hook: 'elite_ambush' };
+    const first = kit.createRoomDressing(room, 0, { optimized: false });
+    const second = kit.createRoomDressing({ ...room, x: 30400 }, 1, { optimized: false });
+    first.updateMatrixWorld(true);
+    const probe = first.getObjectByName('ambush:watch-pier:0');
+    expect(probe.geometry).toBe(second.getObjectByName('ambush:watch-pier:0').geometry);
+    expect(probe.geometry.userData.dungeonVigilGeometry).toBe('broken-watch-pier');
+    expect(probe.material.userData.dungeonPropSurface).toBe('stone');
+    expect(probe.material.normalMap).not.toBeNull();
+    const oldGeometry = new THREE.ConeGeometry(.5, 1, 4);
+    for (let i = 0; i < 6; i++) {
+        const pier = first.getObjectByName(`ambush:watch-pier:${i}`);
+        expect(pier.geometry).toBe(probe.geometry);
+        expect(pier.material).toBe(probe.material);
+        expect(pier.castShadow && pier.receiveShadow).toBe(true);
+        const old = oldGeometry.clone().applyMatrix4(pier.matrixWorld);
+        old.computeBoundingBox();
+        // Compare transformed vertices, not the wider rotated local AABB.
+        const current = new THREE.Box3().setFromObject(pier, true);
+        for (const axis of ['x', 'y', 'z']) {
+            expect(current.min[axis]).toBeGreaterThanOrEqual(old.boundingBox.min[axis] - .003);
+            expect(current.max[axis]).toBeLessThanOrEqual(old.boundingBox.max[axis] + .003);
+        }
+        expect(Math.hypot(pier.position.x, pier.position.z)).toBeCloseTo(24);
+        old.dispose();
+    }
+    oldGeometry.dispose();
+    expect(first.userData.visualOnly).toBe(true);
 });
 
 test('constructed vigil stays in its former apron and shares kit shapes across rooms', () => {

@@ -22,6 +22,34 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
+## Alpha 1.79.79: prepared; deployment acceptance pending
+
+Alpha 1.79.79 is prepared with distinct room-purpose masonry and ruined
+ambush piers across the five dungeon themes. Treasure vaults, shrine chapels,
+broken ambush galleries, sentry courts and parallel passage aisles replace five
+uses of the same court plan. Entry, approach and arena floor attributes remain
+exact. Six plain ambush spikes become shared, bevelled stone courses with broken
+crowns, inside their former transformed bounds. Existing materials, batching,
+central encounter space, collisions, interactions and progression remain.
+79distinct focused checks/three suites qualify the component. Final-source native
+High/Low comparisons retain80exact source restorations,70unchanged room views,
+10changed ambush views, original scene caps and ten exact resource returns;
+two copied-build cases retain all five generated dungeon themes in both qualities.
+Exact client/model trees permit scoped evidence reuse in the combined assembly.
+The floor plans add232,320cached CPU bytes per fully populated kit; the pier
+adds10,096cached CPU bytes and624baked triangles per ambush room. Native views
+remove two High/one Low submissions, with the additional High shadow triangles
+recorded. No new texture, material, module or permanent browser case is added.
+Original geometry/observer failures and superseded accounting remain retained.
+[Component](../art/2026-10-17-dungeon-masonry-and-ambush-piers.md).
+[Assembly](2026-10-17-room-masonry-assembly.md).
+This is a bounded masonry improvement; sparse room architecture/dressing and
+final modern art remain open. Alpha1.79.78 is accepted after its own exact
+CI/deployment/public verification. This prepared release still requires its own exact CI and live acceptance.
+Full original game/world/art/combat/audio/performance/device/security/operations/
+owner/F1-F5/beta/1.99 scope stays active. Human campaign/phone feedback and
+soak/stress remain deferred, not passed. Public access and earned progress stay.
+
 ## Alpha 1.79.78: deployed and verified within scoped acceptance
 
 Alpha 1.79.78 is deployed and verified with verified standalone recovery points, selected
