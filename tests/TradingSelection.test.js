@@ -170,10 +170,10 @@ describe('auction read feedback', () => {
         const { ui } = setup();
         ui.onTradingSearch = () => true;
         ui.handleSearch();
-        const manager = { trading: ui, windowLayouts: new Map([
+        const manager = Object.assign(new CharacterUI(), { trading: ui, windowLayouts: new Map([
             ['trading', { element: ui.tradingHouseScreen }]
-        ]), isElementVisible: () => true, playUICue: jest.fn() };
-        CharacterUI.prototype.closeManagedWindow.call(manager, 'trading');
+        ]), isElementVisible: () => true, playUICue: jest.fn() });
+        manager.closeManagedWindow('trading');
         expect(ui.tradingHouseScreen.style.display).toBe('none');
         expect(ui.selectedTradingItem).toBeNull();
         expect(ui.readStatus.get('bid').hidden).toBe(true);
