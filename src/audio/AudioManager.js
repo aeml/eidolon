@@ -1,6 +1,7 @@
 import { WorldAmbience } from './WorldAmbience.js';
 import { ABILITY_CAST_PROFILES, getAbilityCastProfile } from './AbilityCastProfiles.js';
 import { createCombatImpactCue } from './CombatImpactProfiles.js';
+import { DangerAudioMix } from './DangerAudioMix.js';
 
 const DEFAULT_VOLUME = 0.45;
 const CUE_COOLDOWN_MS = 45;
@@ -106,6 +107,7 @@ export class AudioManager {
         this.disposed = false;
         this.activeTones = new Set();
         this.contactNoiseBuffer = null;
+        this.dangerMix = new DangerAudioMix(this);
 
         this.enabled = this.readStoredBoolean('eidolon.audioEnabled', true);
         this.volume = this.readStoredNumber('eidolon.audioVolume', DEFAULT_VOLUME, 0, 1);
@@ -323,7 +325,7 @@ export class AudioManager {
         // gesture. OfflineAudioContext deliberately schedules before rendering.
         if (context.state === 'suspended' && typeof context.startRendering !== 'function') return false;
         if (!this.reserveCueTones(cueName, cue.length)) return false;
-        const destination = this.ensureBusGain(bus);
+        const destination = cueName === AUDIO_CUES.dangerWarning ? this.ensureBusGain(bus) : this.dangerMix.destination(bus);
         if (!destination) return false;
 
         const startAt = context.currentTime || 0;
@@ -333,6 +335,9 @@ export class AudioManager {
         } catch {
             this.stopTones(voice => voice.cueId === cueId);
             return false;
+        }
+        if (cueName === AUDIO_CUES.dangerWarning) {
+            this.dangerMix.warn(Math.max(...cue.map(tone => (tone.delay || 0) + tone.duration)) + .01);
         }
         this.lastCueTimes.set(cueName, this.now());
         return true;
@@ -348,6 +353,7 @@ export class AudioManager {
 
     stopOneShots(bus = null) {
         this.stopTones(voice => !bus || voice.bus === bus);
+        if (!bus || bus === 'combat') this.dangerMix.reset();
         for (const [cueName, media] of this.mediaCache) {
             if (!bus || this.getCueBus(cueName) === bus) media?.pause?.();
         }
@@ -574,6 +580,7 @@ export class AudioManager {
         this.observedContext?.removeEventListener?.('statechange', this.onContextStateChange);
         this.observedContext = null;
         this.ambience.dispose();
+        this.dangerMix.dispose();
         if (this.masterGain) this.masterGain.gain.value = 0;
         this.stopTones();
         this.contactNoiseBuffer = null;

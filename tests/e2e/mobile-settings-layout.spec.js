@@ -263,6 +263,39 @@ test('danger audio renders directional samples through the combat and master con
         expect(sample.played).toBe(false);
         sample.channels.forEach(channel => expect(channel.peak).toBe(0));
     }
+    const mix = await page.evaluate(async () => {
+        const { AudioManager, AUDIO_CUES } = await import('/src/audio/AudioManager.js');
+        const { createAmbienceLayer, createAmbienceNoise, AMBIENCE_PROFILES } = await import('/src/audio/WorldAmbience.js');
+        const rendered = {};
+        for (const key of ['warning', 'combat', 'combat-warning', 'ambience', 'ambience-warning']) {
+            const context = new OfflineAudioContext(2, 48000, 48000);
+            const audio = new AudioManager({ context, storage: { getItem: () => null, setItem: () => {} }, now: () => 1000 });
+            audio.setVolume(1);
+            let layer;
+            if (key.startsWith('combat')) audio.play(AUDIO_CUES.wizardCast, { skillName: 'Fireball' });
+            if (key.startsWith('ambience')) layer = createAmbienceLayer(context, audio.dangerMix.destination('ambience'),
+                createAmbienceNoise(context), AMBIENCE_PROFILES.fire);
+            if (key.includes('warning')) audio.play(AUDIO_CUES.dangerWarning, { pan: -.8, gain: .75 });
+            const buffer = await context.startRendering();
+            rendered[key] = [...buffer.getChannelData(0)];
+            layer?.dispose(); audio.dispose();
+        }
+        const rms = values => Math.sqrt(values.reduce((sum, value) => sum + value * value, 0) / values.length);
+        const ratio = (kind, from, to) => {
+            const start = Math.floor(from * 48000), end = Math.floor(to * 48000);
+            const background = rendered[kind].slice(start, end);
+            const remaining = rendered[`${kind}-warning`].slice(start, end)
+                .map((value, index) => value - rendered.warning[start + index]);
+            return { baselineRms: rms(background), residualRms: rms(remaining), ratio: rms(remaining) / rms(background) };
+        };
+        return { combatDuring: ratio('combat', .03, .16), ambienceDuring: ratio('ambience', .03, .16),
+            ambienceRecovered: ratio('ambience', .6, .9) };
+    });
+    await testInfo.attach('warning-background-mix', { body: JSON.stringify(mix), contentType: 'application/json' });
+    for (const sample of Object.values(mix)) expect(sample.baselineRms).toBeGreaterThan(.0001);
+    expect(mix.combatDuring.ratio).toBeCloseTo(.35, 3);
+    expect(mix.ambienceDuring.ratio).toBeCloseTo(.55, 3);
+    expect(mix.ambienceRecovered.ratio).toBeCloseTo(1, 5);
     expect(failures).toEqual([]);
 });
 

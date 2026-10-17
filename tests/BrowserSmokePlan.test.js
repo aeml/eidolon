@@ -157,6 +157,9 @@ test('hardware dungeon and additive reviews retain a mandatory native release ga
         expect(native).toContain(name);
     }
     expect(browserSmokeBaselineFiles(manifest)).toContain('tests/e2e/additive-effects-render.spec.js');
+    expect(native).toContain('tests/e2e/hidden-actor-batching.spec.js');
+    expect(native).toContain('hidden actor batches preserve prepared class appearances');
+    expect(browserSmokeBaselineFiles(manifest)).not.toContain('tests/e2e/hidden-actor-batching.spec.js');
     expect(native).toContain('tests/e2e/additive-effects-render.spec.js');
     expect(native).toContain('additive status, cast and contact');
     expect(native).toContain('tests/e2e/camp-instance-frustum.spec.js');

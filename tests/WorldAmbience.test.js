@@ -36,7 +36,7 @@ test('instances take priority over reused world coordinates and logged-out games
 
 test('sound beds wait for activation, crossfade with bounded ownership, reuse noise and dispose', () => {
     const context = contextFixture();
-    const audio = { context, enabled: true, volume: .5, busVolumes: { ambience: 1 }, ensureBusGain: () => ({}) };
+    const audio = { context, enabled: true, volume: .5, busVolumes: { ambience: 1 }, dangerMix: { destination: () => ({}) } };
     const ambience = new WorldAmbience(audio);
     const visible = jest.spyOn(document, 'hidden', 'get').mockReturnValue(false);
     try {

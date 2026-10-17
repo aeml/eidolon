@@ -3,7 +3,8 @@ import { AudioManager, AUDIO_CUES, MAX_CUE_TONES } from '../src/audio/AudioManag
 
 function contextFixture() {
     const nodes = [];
-    const param = () => ({ value: 0, setValueAtTime: jest.fn(), exponentialRampToValueAtTime: jest.fn() });
+    const param = () => ({ value: 0, setValueAtTime: jest.fn(), exponentialRampToValueAtTime: jest.fn(),
+        linearRampToValueAtTime: jest.fn(), cancelScheduledValues: jest.fn() });
     const node = (properties = {}) => {
         const value = { connect: jest.fn(), disconnect: jest.fn(), start: jest.fn(), stop: jest.fn(), ...properties };
         nodes.push(value); return value;

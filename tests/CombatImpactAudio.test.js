@@ -36,7 +36,7 @@ test('a generic authored contact cannot override typed impacts, but legacy asset
     const audio = new AudioManager({ context: { state: 'running', currentTime: 0 }, now: () => now,
         storage: { getItem: () => null } });
     const authored = jest.spyOn(audio, 'playAuthoredCue').mockReturnValue(true);
-    jest.spyOn(audio, 'ensureBusGain').mockReturnValue({});
+    jest.spyOn(audio.dangerMix, 'destination').mockReturnValue({});
     const tones = jest.spyOn(audio, 'playTone').mockImplementation(() => {});
     try {
         expect(audio.play(AUDIO_CUES.combatHit, { kind: 'fire', impact: 1 })).toBe(true);

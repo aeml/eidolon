@@ -96,7 +96,7 @@ export class WorldAmbience {
         this.fading?.dispose(); this.fading = this.active;
         this.fading?.fadeOut();
         this.buffer ||= createAmbienceNoise(context);
-        this.active = createAmbienceLayer(context, audio.ensureBusGain('ambience'), this.buffer, AMBIENCE_PROFILES[next]);
+        this.active = createAmbienceLayer(context, audio.dangerMix.destination('ambience'), this.buffer, AMBIENCE_PROFILES[next]);
         this.activeKey = next;
     }
 

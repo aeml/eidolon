@@ -23,11 +23,13 @@ export class OpaqueSkinnedColorRuntime {
         const record = { dirty: true };
         record.changed = event => { if (!this.owner.ownedProxies.has(event.child)) record.dirty = true; };
         root.addEventListener('childadded', record.changed); root.addEventListener('childremoved', record.changed);
+        root.addEventListener('appearancechanged', record.changed);
         this.roots.set(root, record); this.owner.register(root);
     }
     untrack(root) {
         const record = this.roots.get(root); if (!record) return;
         root.removeEventListener('childadded', record.changed); root.removeEventListener('childremoved', record.changed);
+        root.removeEventListener('appearancechanged', record.changed);
         this.roots.delete(root); this.owner.unregister(root);
     }
     synchronize() {

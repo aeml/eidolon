@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OpaqueSkinnedColorBatches } from '../src/core/OpaqueSkinnedColorBatches.js';
 import { OpaqueSkinnedColorRuntime } from '../src/core/OpaqueSkinnedColorRuntime.js';
+import { applyActorStealthAppearance, restoreActorStealthAppearance } from '../src/entities/ActorStealthAppearance.js';
 
 function fixture({ runtime = false } = {}) {
     const scene = new THREE.Scene(), group = new THREE.Group(), root = new THREE.Group(), bone = new THREE.Bone();
@@ -36,6 +37,55 @@ function fixture({ runtime = false } = {}) {
     const frame = (targetScene=scene,targetCamera=camera) => {renderer.calls=[];renderer.render(targetScene,targetCamera);return renderer.calls;};
     return { scene,group,root,meshes,material,skeleton,camera,renderer,originals,owner,manager,frame };
 }
+
+test.each(['root', 'ancestor'])('an initially hidden %s retains deferred color grouping until revealed', hidden => {
+    const f = fixture({ runtime: true }), target = hidden === 'root' ? f.root : f.group;
+    try {
+        target.visible = false;
+        expect(f.frame()).toHaveLength(0);
+        expect(f.owner.entries.size).toBe(0);
+        target.visible = true;
+        expect(f.frame()).toHaveLength(1);
+        expect(f.owner.lastSavedSubmissions).toBe(1);
+        expect(f.meshes.every(mesh => mesh.visible && mesh.castShadow)).toBe(true);
+    } finally { f.manager.dispose(); }
+});
+
+test.each(['root', 'ancestor'])('appearance changes under a hidden %s recover color grouping on reveal', hidden => {
+    const f = fixture({ runtime: true }), target = hidden === 'root' ? f.root : f.group;
+    try {
+        expect(f.frame()).toHaveLength(1);
+        const old = [...f.owner.entries.values()][0]; let retired = 0;
+        old.geometry.addEventListener('dispose', () => retired++);
+        target.visible = false;
+        f.root.userData.equipmentVisualRevision = 1;
+        expect(f.frame()).toHaveLength(0);
+        expect(retired).toBe(1);
+        target.visible = true;
+        expect(f.frame()).toHaveLength(1);
+        const restored = [...f.owner.entries.values()][0];
+        expect(restored).not.toBe(old);
+        for (let i = 0; i < 3; i++) {
+            expect(f.frame()).toHaveLength(1);
+            expect([...f.owner.entries.values()][0]).toBe(restored);
+        }
+        expect(retired).toBe(1);
+    } finally { f.manager.dispose(); }
+});
+
+test('initial stealth restores ordinary color grouping through the existing appearance event', () => {
+    const f = fixture({ runtime: true }), actor = { mesh: f.root };
+    try {
+        applyActorStealthAppearance(actor);
+        expect(f.frame()).toHaveLength(2);
+        expect(f.owner.entries.size).toBe(0);
+        restoreActorStealthAppearance(actor);
+        expect(f.meshes.every(mesh => mesh.material === f.material && mesh.visible)).toBe(true);
+        expect(f.frame()).toHaveLength(1);
+        expect(f.owner.lastSavedSubmissions).toBe(1);
+    } finally { restoreActorStealthAppearance(actor); f.manager.dispose(); }
+    expect(f.root._listeners.appearancechanged).toHaveLength(0);
+});
 
 test.each(['attribute', 'offset', 'stride', 'itemSize', 'count', 'normalized', 'gpuType'])(
     'live %s attribute metadata invalidates the color copy and recovers exactly', field => {
