@@ -166,9 +166,11 @@ function configureDungeonMaterial(material, isTransparent = false) {
     material.opacity = isTransparent ? 0.28 : 1;
     material.depthWrite = !isTransparent;
     material.flatShading = true;
-    material.polygonOffset = true;
-    material.polygonOffsetFactor = 1;
-    material.polygonOffsetUnits = 1;
+    // Modeled floors/insets have real geometric separation at server Y0.
+    // Positive slope bias lets buried surfaces draw through flush paving.
+    material.polygonOffset = false;
+    material.polygonOffsetFactor = 0;
+    material.polygonOffsetUnits = 0;
     material.shadowSide = THREE.FrontSide;
     return material;
 }
