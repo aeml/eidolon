@@ -11,6 +11,10 @@ const floorStone = {
     molten_core: [94, 83, 72], tempest_spire: [112, 118, 126],
     abyssal_well: [76, 96, 102], umbral_nexus: [85, 77, 99]
 };
+const wallStone = {
+    molten_core: [76, 69, 62], tempest_spire: [93, 99, 108],
+    abyssal_well: [65, 77, 82], umbral_nexus: [73, 66, 84]
+};
 function hash(x, y, seed) {
     let n = Math.imul(x + 91, 1597334677) ^ Math.imul(y + 17, 3812015801) ^ seed;
     n = Math.imul(n ^ n >>> 16, 2246822519);
@@ -42,7 +46,10 @@ export function sampleElementalDungeonSurface(x, y, type, wall, palette) {
     // of unrelated bright stones. Mortar is worn, not perfectly black.
     const base = palette.shadow.map((value, i) => {
         const regional = value + ((wall ? palette.midtone[i] : palette.ground[i]) - value) * (wall ? .48 : .72);
-        return wall ? regional : floorStone[type][i] * .8 + regional * .2;
+        // Keep the wall's mineral albedo separate from the colored room light,
+        // as on the floor. Multiplying two saturated regional palettes hid the
+        // blind arcades and their stonework even beside the equipped player.
+        return (wall ? wallStone : floorStone)[type][i] * .8 + regional * .2;
     });
     const tone = .88 + stone * .12 + weather * .08 + grain * .025;
     const color = base.map(value => value * tone * ((wall ? .75 : .87) + bevel * (wall ? .25 : .13))
