@@ -22,6 +22,27 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
+## Alpha 1.79.76: prepared; deployment acceptance pending
+
+Alpha 1.79.76 is prepared with character geometry preparation cleanup.
+The delivery schedules queued work only, cancels an empty queued pump and
+clears its handle on disposal. Active-worker deadlines, source and generation
+guards remain covered by the existing tests.
+Four new regressions fail against the original delivery; all89focused checks
+across3suites and changed-file lint pass. Actual native four-class fourteen-slot
+proof passes four settled equipment-release cycles and four synchronous queued
+cancellations, with zero roots/jobs/queue/active/scheduled work and no extra
+dispatch after cancellation. Every return preserves the retained128geometry/
+90texture pool. The renderer stays High while body/equipment assets alternate
+High/Low; this is resource ownership proof, not frame-time or device acceptance.
+The exact accepted75 delivery reproduces the scheduled-callback finding in
+all eight observations. Its failure and a zero-test discovery error are retained.
+[Qualification](2026-10-17-geometry-preparation-quiescence.md).
+Public Alpha1.79.75 remains accepted until exact76 CI/deployment/public verification.
+Full world/art/game/combat/audio/device/performance/operations/owner/F1-F5/beta/
+1.99 scope remains active. Human campaign/phone feedback and soak/stress are deferred.
+Public access, progression and supplied actor/equipment assets are unchanged.
+
 ## Alpha 1.79.75: deployed and verified within scoped acceptance
 
 Alpha 1.79.75 is deployed and verified with clearer danger-warning audio and actor color

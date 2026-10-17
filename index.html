@@ -352,7 +352,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.79.75</span>
+                    <span class="start-version-row__label">Alpha 1.79.76</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
                 <p id="game-startup-status" class="game-startup-status" role="alert" tabindex="-1" hidden></p>
@@ -863,7 +863,15 @@
                 </span>
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
-            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.75" data-notes-pages="50" data-notes-total="510">
+            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.76" data-notes-pages="51" data-notes-total="511">
+                <div class="patch-note-entry" data-version="1.79.76">
+                    <h3>Alpha 1.79.76 (Cleaner character preparation)</h3>
+                    <ul>
+                        <li>Improved cleanup after character appearances load and equipment is released.</li>
+                        <li>Queued appearance loading is cancelled promptly when a character is removed.</li>
+                        <li>Full prior patch history remains available through Load more notes.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.79.75">
                     <h3>Alpha 1.79.75 (Clearer danger warnings and character rendering)</h3>
                     <ul>
@@ -958,17 +966,6 @@
                         <li>The Fire and Air approaches are verified through normal travel from town with an equipped character and the full interface.</li>
                         <li>High and Low paving checks preserve town geometry, collisions, draw counts and triangle counts.</li>
                         <li>Open alpha continues while the remaining game quality and beta-readiness work progresses.</li>
-                        <li>Full prior patch history remains available through Load more notes.</li>
-                    </ul>
-                </div>
-                <div class="patch-note-entry" data-version="1.79.66">
-                    <h3>Alpha 1.79.66 (Clear names and sanctuary light)</h3>
-                    <ul>
-                        <li>Earth, Water, Fire and Air roads now render behind player names, enemy names and auras, including Well Rested.</li>
-                        <li>Party and hostile-player ground markers preserve both visible faces with fewer rendering submissions.</li>
-                        <li>High-quality actor rendering separates supported batched materials to avoid repeated shader feature changes; Low and Medium retain their existing rendering path.</li>
-                        <li>QA travel rejects dead characters, and party validation prepares the living leader before inviting peers.</li>
-                        <li>Open alpha continues while remaining performance, game quality and beta-readiness work progresses.</li>
                         <li>Full prior patch history remains available through Load more notes.</li>
                     </ul>
                 </div>
