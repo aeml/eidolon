@@ -2,8 +2,9 @@
 
 Private source: `4599a8a25d3cce4ae6d49eb59b73ed08f7e136ac`, based on qualified
 court/elemental/Player Guide head `40750f368a82e46d1d53cb7f0e9824e72a95e558`.
-**Unselected, not merged/pushed/deployed.** Native surface/cost review is pending;
-the software diagnostics fail original close-camera triangle budgets.
+**Unselected, not merged/pushed/deployed.** Native surface observations are now
+collected; shader cost and close-camera geometry review remain pending. Both
+software and native diagnostics fail original close-camera triangle budgets.
 
 The existing canopy shader has coherent leaf veins and roughness variation.
 Rooted sedge/bracken previously shared its diffuse lighting but had no UVs or
@@ -44,9 +45,10 @@ the unchanged actor geometry selection/close-camera path; source has42/47pixel
 thresholds, but their exact contribution requires a direct owner observation.
 This finding is not proof that changing those thresholds preserves appearance.
 
-The software field has13,087High and7,439Low plants. Its two unique geometry
-buffers gain12,168High/11,064Low UV bytes; native spatial batches may copy that
-attribute into additional owned buffers and need measurement. No zero-VRAM or
+The field has13,087High and7,439Low plants. Its unique geometry UV attribute
+arrays total12,168High/11,064Low bytes, measured in both software and native
+scenes. The two source recipes retain their shared geometry ownership; these
+are measured aggregate attribute bytes, not a count of independent GPU buffers. No zero-VRAM or
 unchanged GPU cost claim is made. Original/candidate material ownership retires
 once each and the renderer canvas retires in both completed captures.
 
@@ -57,11 +59,32 @@ It includes both failed cases, source-matched reference factories, source audit,
 CPU/lint logs, private setup/config/spec and all images/results. It excludes
 stdout and future native/cost files. Do not mutate or rerun that closed packet.
 
-Next: after release72live QA frees the GPU, inspect this same surface on native
-rendering and collect bounded same-scene GPU-cost observations where supported.
+Next: collect bounded same-scene GPU-cost observations where supported.
 Keep the close-camera finding open. A separate private comparison of full versus
 already prepared actor indices may investigate it without changing production
 thresholds, geometry, visibility or assets; require actual pose/pixel evidence
 before any runtime selection. The full modern-world/performance/device/owner/
 beta/1.99 goal remains active. Human pacing/physical-phone feedback and
 soak/stress remain deferred.
+
+## Native confirmation
+
+The first native execution on doc continuation
+`8b6c5346aeda22005b33a84339c8d463f0190282` uses identical runtime/helper/spec
+bytes to the closed software packet. AMD/RADV records the same original/candidate
+410,270High and124,224Low close-camera triangle counts. Both cases **fail** their
+original limits. Every static source/restoration comparison remains exact, with
+visible leaf-surface differences of4,939–47,665pixels High and668–4,898Low.
+All48realRAF submission comparisons, ordinary-view limits and material/canvas
+retirements remain intact. There are no browser failures or missing supplied
+equipment assets. These are native observations, not clean whole-case passes or
+end-to-end/frame-time/device acceptance.
+
+Closed native packet:32files in
+`.qa-understory-surface/native-evidence-inventory.json`, SHA256
+`66dd60330fa439988bd124bd27567155cf5d4abc443639cba0a0bea2bdb39067`.
+The software44packet was reverified byte-exact. Do not replay these unchanged
+failed cases or change their closed setup/guards; use a separate observation to
+investigate the actor geometry path and a new fixture for shader cost. Neither
+production thresholds nor visibility/assets have been changed. The surface
+runtime remains unselected and is excluded from prepared/pushedAlpha1.79.73.
