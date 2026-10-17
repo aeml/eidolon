@@ -182,9 +182,14 @@ export class LoreBook {
         const pageSignature = JSON.stringify([entry || [query, this.category, this.model.entries.length], this.readingReturn, returnEntry?.title]);
         if (pageSignature === this.pageSignature) return;
         this.pageSignature = pageSignature;
-        const title = node('h3', entry?.title || (this.model.entries.length ? 'No matching memories' : 'The first page awaits'));
+        // Keep the reader's heading when an earned account enriches this page.
+        // QuestUI can then restore that same focus after reattaching the book.
+        const title = this.article.querySelector('h3') || node('h3');
+        const titleFocused = document.activeElement === title;
+        title.textContent = entry?.title || (this.model.entries.length ? 'No matching memories' : 'The first page awaits');
         title.tabIndex = -1;
         this.article.replaceChildren(title);
+        if (titleFocused) title.focus({ preventScroll: true });
         if (!entry) {
             this.article.append(node('p', this.model.entries.length
                 ? 'Try another name or phrase, or choose All memories.'

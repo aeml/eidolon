@@ -41,6 +41,23 @@ for (const [width, height, mobile] of [[1280, 800, false], [390, 844, true]]) te
         await activate(book.getByRole('button', { name: 'People', exact: true }));
         await search.fill('Mara');
         await activate(book.locator('[data-memory-id="people:mara"]'));
+        await indexedArticle.getByRole('heading', { name: 'Mara', exact: true }).focus();
+        const readingScroll = await page.evaluate(() => {
+            const list = window.__loreBook.ui.quest.journalList;
+            list.scrollTop = Math.min(240, list.scrollHeight - list.clientHeight);
+            return list.scrollTop;
+        });
+        expect(readingScroll).toBeGreaterThan(0);
+        await page.evaluate(() => {
+            const { ui, quests } = window.__loreBook;
+            ui.quest.updateJournal([...quests, { id: 'chronicle_saved_name', completed: true, title: 'A signed account', lore: 'Mara Fen signed the account.' }]);
+        });
+        await expect(indexedArticle.getByRole('heading', { name: 'Mara Fen', exact: true })).toBeFocused();
+        await expect(search).toHaveValue('Mara');
+        expect(await page.evaluate(() => window.__loreBook.ui.quest.journalList.scrollTop)).toBe(readingScroll);
+        await page.screenshot({ path: testInfo.outputPath('book-updated-reading-focus.jpg'), type: 'jpeg', quality: 90 });
+        await page.evaluate(() => window.__loreBook.ui.quest.updateJournal(window.__loreBook.quests));
+        await expect(indexedArticle.getByRole('heading', { name: 'Mara', exact: true })).toBeFocused();
         const readMemory = indexedArticle.getByRole('button', { name: "Read Mara's diary", exact: true });
         await readMemory.focus();
         await page.evaluate(() => {

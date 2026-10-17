@@ -87,6 +87,15 @@ describe('reading a referenced memory', () => {
     });
     afterEach(() => { book.dispose(); document.body.replaceChildren(); });
 
+    test('the reading heading keeps keyboard focus when newly earned context updates its return link', () => {
+        book.article.querySelector('h3').focus();
+        book.update([...quests, { id: 'chronicle_letter', title: 'The recovered letter', completed: true, lore: 'Mara Fen signed the letter.' }], 'reader');
+        expect(document.activeElement).toBe(book.article.querySelector('h3'));
+        expect(book.article.querySelector('h3').textContent).toBe('The open door');
+        expect(book.article.textContent).toContain('Return to Mara Fen');
+        expect(book.selected).toBe('chapter:chronicle_open_door');
+    });
+
     test('read and return preserve category, search, selected person, index scroll and keyboard focus through refresh', () => {
         expect(book.selected).toBe('chapter:chronicle_open_door'); expect(book.search.value).toBe('');
         expect(document.activeElement).toBe(book.article.querySelector('h3'));
@@ -109,6 +118,28 @@ describe('reading a referenced memory', () => {
         expect(book.readingReturn).toBeNull(); expect(book.selected).toBeNull();
         expect(book.article.textContent).not.toContain('Mara');
     });
+});
+
+test.each([true, false])('a learned personal name preserves the reader heading focus without taking outside focus: reading=%s', reading => {
+    document.body.innerHTML = '<button id="outside">Other menu</button><div id="quest-journal"><div id="journal-list"></div></div><div id="objectives-panel"><div id="objectives-list"></div></div>';
+    const quests = [{ id: 'chronicle_open_door', title: 'The open door', completed: true, lore: 'Mara kept the door open in Lanternhold.' }];
+    const player = { id: 'heading-reader', quests };
+    const ui = new QuestUI({ getLastPlayer: () => player });
+    try {
+        ui.updateJournal(quests); ui.setJournalView('lore');
+        const book = ui.loreBook;
+        book.filters.querySelector('[data-lore-filter="people"]').click();
+        book.search.value = 'Mara'; book.search.dispatchEvent(new Event('input'));
+        const outside = document.getElementById('outside');
+        (reading ? book.article.querySelector('h3') : outside).focus();
+        const updated = [...quests, { id: 'chronicle_letter', title: 'The recovered letter', completed: true, lore: 'Mara Fen signed the letter.' }];
+        const receipts = JSON.stringify(updated);
+        ui.updateJournal(updated);
+        expect(book.article.querySelector('h3').textContent).toBe('Mara Fen');
+        expect(document.activeElement).toBe(reading ? book.article.querySelector('h3') : outside);
+        expect(book.selected).toBe('people:mara'); expect(book.search.value).toBe('Mara');
+        expect(JSON.stringify(updated)).toBe(receipts);
+    } finally { ui.dispose(); document.body.replaceChildren(); }
 });
 
 test.each(['reference', 'return'])('%s action remains focused when personal evidence rebuilds the page', mode => {
