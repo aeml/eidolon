@@ -2282,7 +2282,7 @@ pacing, physical-phone feedback and soak/stress remain deferred. Full goal activ
 
 ## October17 Alpha1.79.72 preparation
 
-Alpha 1.79.72 is prepared with a coherent Dark Realm record-building and
+Alpha 1.79.72 is deployed and verified with a coherent Dark Realm record-building and
 flagstone material pass. Fourteen existing shelter/archive/kiln sites gain bonded
 stone within their original wall envelopes. Documents, shelves, ferry supplies,
 seating, bedding and the unfinished celebration reinforce the existing accounts.
@@ -2302,7 +2302,8 @@ while open;54 focused checks and both unchanged keyboard browser cases pass.
 [Material qualification](docs/plans/2026-10-17-dark-paving-material-qualification.md).
 [Marker qualification](docs/plans/2026-10-17-dark-record-marker-qualification.md).
 [Focus qualification](docs/plans/2026-10-17-modal-keyboard-focus-qualification.md).
-Public Alpha1.79.71 remains accepted until exact72 CI/deployment/public verification.
+All ten CI jobs pass. Fresh normal-TLS verification matches both72 identities, ready database, open registration, flat terrain and all380 asset pins at 2026-10-17T12:51:20.503638+00:00.
+[Acceptance](docs/plans/2026-10-17-release1-79-72-acceptance.md).
 Broader district/world composition, art/game/performance/readiness/owner/beta
 gates stay open. Human campaign/phone feedback and soak/stress remain deferred.
 Full original goal active; public access and progression rules are unchanged.
