@@ -59,6 +59,34 @@ for (const mobile of [false, true]) test.describe(`Quest action review ${mobile 
         await expect(questWindow).toContainText('QUEST COMPLETE');
         await expect(questWindow).toContainText('Reward received');
         expect(await page.evaluate(() => [window.__actionReview.accepts, window.__actionReview.claims])).toEqual([2, 1]);
+        await page.evaluate(() => window.__actionReview.ui.quest.openWitnessConversation('chronicle-witness-mara'));
+        const shelter = questWindow.locator('[data-witness-topic="shelter"]');
+        const summary = shelter.locator('summary');
+        await activate(summary); await summary.focus();
+        const scroll = await questWindow.locator('#quest-list').evaluate(element => { element.scrollTop = 80; return element.scrollTop; });
+        await page.evaluate(() => {
+            const { ui, quest } = window.__actionReview;
+            ui.quest.updateQuestWindow([{ ...quest, investigationMask: 1 }]);
+        });
+        await expect(summary).toBeFocused(); await expect(shelter).toHaveJSProperty('open', true);
+        expect(await questWindow.locator('#quest-list').evaluate(element => element.scrollTop)).toBe(scroll);
+        const target = await summary.boundingBox(); expect(target.height).toBeGreaterThanOrEqual(44);
+        await page.screenshot({ path: testInfo.outputPath('witness-topic-refresh.png') });
+        if (mobile) await summary.tap(); else await page.keyboard.press('Space');
+        await expect(shelter).toHaveJSProperty('open', false);
+        const door = questWindow.locator('[data-witness-topic="door"]');
+        await door.locator('summary').focus();
+        await page.evaluate(() => {
+            const { ui, quest } = window.__actionReview; ui.quest.updateQuestWindow([quest]);
+        });
+        await expect(door).toHaveCount(0);
+        await expect(questWindow.locator('.quest-conversation__intro')).toBeFocused();
+        await page.locator('#btn-close-quest').focus();
+        await page.evaluate(() => {
+            const { ui, quest } = window.__actionReview; ui.quest.updateQuestWindow([{ ...quest, investigationMask: 1 }]);
+        });
+        await expect(page.locator('#btn-close-quest')).toBeFocused();
+        expect(await page.evaluate(() => [window.__actionReview.accepts, window.__actionReview.claims])).toEqual([2, 1]);
         await page.locator('#btn-close-quest').click();
         await page.evaluate(() => window.__actionReview.ui.dispose());
         expect(failures, failures.join('\n')).toEqual([]);

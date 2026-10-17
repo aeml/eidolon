@@ -26,6 +26,10 @@ export function renderWitnessConversation(ui, quests) {
     if (signature === ui.witnessSignature) return;
     ui.witnessSignature = signature;
     const open = new Set([...ui.questList.querySelectorAll('details[open]')].map(topic => topic.dataset.witnessTopic));
+    const active = document.activeElement;
+    const focusedTopic = ui.questList.contains(active) && active.tagName === 'SUMMARY'
+        ? active.parentElement.dataset.witnessTopic : null;
+    const focusedIntro = Boolean(active && active === ui.questList.querySelector('.quest-conversation__intro'));
     const scroll = ui.questList.scrollTop;
     ui.questList.replaceChildren();
     ui.questActions?.replaceChildren();
@@ -55,5 +59,11 @@ export function renderWitnessConversation(ui, quests) {
     const hint = document.createElement('p');
     hint.textContent = 'Optional conversation · More to discuss as you record field evidence and restore the crystals. Ilyra remains your story quest giver.';
     ui.questList.append(hint);
+    if (focusedTopic) {
+        const replacement = [...ui.questList.querySelectorAll('details')]
+            .find(topic => topic.dataset.witnessTopic === focusedTopic)?.querySelector('summary');
+        if (replacement) replacement.focus({ preventScroll: true });
+        else { intro.tabIndex = -1; intro.focus({ preventScroll: true }); }
+    } else if (focusedIntro) { intro.tabIndex = -1; intro.focus({ preventScroll: true }); }
     ui.questList.scrollTop = scroll;
 }
