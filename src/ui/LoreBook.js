@@ -3,6 +3,7 @@ import { CHRONICLE_RESTORATIONS, hasChronicleRestoration } from '../core/Chronic
 import { getChronicleRecap } from './ChronicleRecap.js';
 import { getIlyraCompletionReply } from './QuestConversation.js';
 import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
+import { buildLoreMemoryIndex } from './LoreMemoryIndex.js';
 
 const storyQuest = quest => quest && (quest.category === 'chronicle' || quest.id?.startsWith('chronicle_'));
 const paragraphs = text => String(text || '').split(/\n\s*\n/).filter(Boolean);
@@ -17,6 +18,7 @@ export function buildLoreBook(quests = []) {
             entries.set(`chapter:${quest.id}`, {
                 id: `chapter:${quest.id}`, kind: 'chapters', title: quest.title || 'Recorded chapter',
                 context: `Chapter ${quest.chapter || '—'} · ${quest.legacyOptional ? 'Optional account' : 'Completed'}`,
+                realm: getChronicleInvestigation(quest.id)?.realm,
                 sections: [
                     { title: 'The account', paragraphs: paragraphs(quest.lore || quest.description) },
                     { title: 'Ilyra’s words', paragraphs: paragraphs(getIlyraCompletionReply(quest)) }
@@ -27,6 +29,7 @@ export function buildLoreBook(quests = []) {
             entries.set(`discovery:${site.id}`, {
                 id: `discovery:${site.id}`, kind: 'discoveries', title: site.title,
                 context: `${quest.title || 'Field record'} · ${getChronicleInvestigation(quest.id)?.realm || 'Eidolon'}`,
+                realm: getChronicleInvestigation(quest.id)?.realm,
                 sections: [{ title: 'Recovered words', paragraphs: paragraphs(site.text) }]
             });
         }
@@ -35,12 +38,13 @@ export function buildLoreBook(quests = []) {
         if (!hasChronicleRestoration(story, realm)) continue;
         entries.set(`restoration:${realm}`, {
             id: `restoration:${realm}`, kind: 'discoveries', title: `After the Vigil · ${restoration.title}`,
-            context: `${realm} · Restoration account`,
+            context: `${realm} · Restoration account`, realm,
             sections: [{ title: 'What changed', paragraphs: paragraphs(restoration.text) }]
         });
     }
     const current = getCurrentChronicleQuest(story);
-    return { current, recap: getChronicleRecap(story), entries: [...entries.values()],
+    const memories = [...entries.values()];
+    return { current, recap: getChronicleRecap(story), entries: [...memories, ...buildLoreMemoryIndex(memories)],
         finaleCompleted: story.some(quest => quest.id === 'chronicle_15_dark_king' && quest.completed === true),
         activeTasks: (quests || []).filter(quest => quest?.id && quest.accepted === true && !quest.completed && quest.id !== current?.id) };
 }
@@ -67,9 +71,9 @@ export class LoreBook {
         label.append(this.search);
         this.filters = node('div', '', 'lore-book__filters');
         this.filters.setAttribute('role', 'group'); this.filters.setAttribute('aria-label', 'Memory categories');
-        for (const [key, title] of [['all', 'All memories'], ['chapters', 'Chapters'], ['discoveries', 'Discoveries']]) {
+        for (const [key, title] of [['all', 'All memories'], ['chapters', 'Chapters'], ['discoveries', 'Discoveries'], ['people', 'People'], ['places', 'Places']]) {
             const button = node('button', title); button.type = 'button'; button.dataset.loreFilter = key;
-            ownedEvent(this, button, 'click', () => { this.category = key; this.renderLibrary(); });
+            ownedEvent(this, button, 'click', () => { this.readingReturn = null; this.category = key; this.renderLibrary(); });
             this.filters.append(button);
         }
         this.count = node('p', '', 'lore-book__count'); this.count.setAttribute('role', 'status');
@@ -79,7 +83,7 @@ export class LoreBook {
         this.article = node('article', '', 'lore-book__page');
         library.append(this.index, this.article);
         this.element.append(heading, this.overview, tools, library);
-        ownedEvent(this, this.search, 'input', () => this.renderLibrary());
+        ownedEvent(this, this.search, 'input', () => { this.readingReturn = null; this.renderLibrary(); });
         ownedEvent(this, this.element, 'keydown', event => {
             if (event.key !== 'Escape' && (event.target === this.search ||
                 [' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End'].includes(event.key))) event.stopPropagation();
@@ -89,7 +93,7 @@ export class LoreBook {
     update(quests, identity) {
         const sameReader = identity === this.identity && Boolean(this.model);
         if (!sameReader) {
-            this.identity = identity; this.search.value = ''; this.category = 'all'; this.selected = null;
+            this.identity = identity; this.search.value = ''; this.category = 'all'; this.selected = null; this.readingReturn = null;
             this.indexSignature = this.pageSignature = this.overviewSignature = null;
         }
         this.model = buildLoreBook(quests);
@@ -146,22 +150,25 @@ export class LoreBook {
 
     renderLibrary({ preserveIndexScroll = false } = {}) {
         if (!this.model) return;
+        if (this.readingReturn && !this.model.entries.some(entry => entry.id === this.readingReturn.selected)) this.readingReturn = null;
         const query = this.search.value.trim().toLocaleLowerCase();
-        const matches = this.model.entries.filter(entry => (this.category === 'all' || entry.kind === this.category)
+        const matches = this.model.entries.filter(entry => (this.category === 'all' ? ['chapters', 'discoveries'].includes(entry.kind) : entry.kind === this.category)
             && [entry.title, entry.context, ...entry.sections.flatMap(section => section.paragraphs)].join(' ').toLocaleLowerCase().includes(query));
         if (!matches.some(entry => entry.id === this.selected)) this.selected = matches[0]?.id || null;
         for (const button of this.filters.children) button.setAttribute('aria-pressed', String(button.dataset.loreFilter === this.category));
-        this.count.textContent = `${matches.length} of ${this.model.entries.length} recorded memories`;
+        const indexed = ['people', 'places'].includes(this.category);
+        const total = this.model.entries.filter(entry => indexed ? entry.kind === this.category : ['chapters', 'discoveries'].includes(entry.kind)).length;
+        this.count.textContent = `${matches.length} of ${total} ${indexed ? `remembered ${this.category}` : 'recorded memories'}`;
         const signature = JSON.stringify(matches.map(entry => [entry.id, entry.title, entry.context]));
         if (signature !== this.indexSignature) {
             this.indexSignature = signature;
             const scroll = preserveIndexScroll ? this.index.scrollTop : 0;
             this.index.replaceChildren(...matches.map(entry => {
                 const button = node('button'); button.type = 'button'; button.dataset.memoryId = entry.id;
-                button.append(node('span', entry.kind === 'chapters' ? 'CHAPTER' : 'DISCOVERY', 'lore-book__eyebrow'),
+                button.append(node('span', { chapters: 'CHAPTER', discoveries: 'DISCOVERY', people: 'PERSON', places: 'PLACE' }[entry.kind], 'lore-book__eyebrow'),
                     node('strong', entry.title), node('small', entry.context));
                 button.onclick = () => {
-                    this.selected = entry.id; this.renderLibrary();
+                    this.readingReturn = null; this.selected = entry.id; this.renderLibrary();
                     const title = this.article.querySelector('h3'); title?.focus({ preventScroll: true });
                     this.article.scrollIntoView?.({ block: 'nearest' });
                 };
@@ -171,7 +178,7 @@ export class LoreBook {
         }
         for (const button of this.index.children) button.setAttribute('aria-current', String(button.dataset.memoryId === this.selected));
         const entry = matches.find(entry => entry.id === this.selected);
-        const pageSignature = JSON.stringify(entry || [query, this.category, this.model.entries.length]);
+        const pageSignature = JSON.stringify([entry || [query, this.category, this.model.entries.length], this.readingReturn]);
         if (pageSignature === this.pageSignature) return;
         this.pageSignature = pageSignature;
         const title = node('h3', entry?.title || (this.model.entries.length ? 'No matching memories' : 'The first page awaits'));
@@ -184,9 +191,30 @@ export class LoreBook {
             return;
         }
         this.article.append(node('p', entry.context, 'lore-book__status'));
+        if (this.readingReturn) {
+            const previous = this.model.entries.find(memory => memory.id === this.readingReturn.selected);
+            const back = node('button', `Return to ${previous.title}`, 'menu-btn'); back.type = 'button';
+            back.onclick = () => {
+                const saved = this.readingReturn; this.readingReturn = null;
+                this.search.value = saved.query; this.category = saved.category; this.selected = saved.selected;
+                this.renderLibrary(); this.index.scrollTop = saved.scroll;
+                this.article.querySelector('h3')?.focus({ preventScroll: true });
+            };
+            this.article.append(back);
+        }
         for (const section of entry.sections) {
             this.article.append(node('h4', section.title));
             for (const paragraph of section.paragraphs) this.article.append(node('p', paragraph));
+            if (section.memoryId && this.model.entries.some(memory => memory.id === section.memoryId)) {
+                const read = node('button', `Read ${section.title}`, 'menu-btn'); read.type = 'button';
+                read.onclick = () => {
+                    this.readingReturn = { selected: this.selected, query: this.search.value, category: this.category, scroll: this.index.scrollTop };
+                    this.search.value = ''; this.category = 'all'; this.selected = section.memoryId;
+                    this.renderLibrary(); this.article.querySelector('h3')?.focus({ preventScroll: true });
+                    this.article.scrollIntoView?.({ block: 'nearest' });
+                };
+                this.article.append(read);
+            }
         }
     }
 

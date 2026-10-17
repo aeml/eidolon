@@ -13,7 +13,8 @@ const records = () => [
 
 test('the book includes personally completed chapters and exact sparse discovery identities only', () => {
     const quests = records(), before = JSON.stringify(quests), book = buildLoreBook(quests);
-    expect(book.entries.map(entry => entry.id)).toEqual(['chapter:chronicle_01_bell_below', `discovery:${investigation.sites[1].id}`]);
+    expect(book.entries.filter(entry => ['chapters', 'discoveries'].includes(entry.kind)).map(entry => entry.id))
+        .toEqual(['chapter:chronicle_01_bell_below', `discovery:${investigation.sites[1].id}`]);
     const text = JSON.stringify(book.entries);
     expect(text).toContain(investigation.sites[1].text);
     expect(text).not.toContain('UNFINISHED ACCOUNT'); expect(text).not.toContain('UNSEEN ENDING');
