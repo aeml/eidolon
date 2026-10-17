@@ -43,6 +43,20 @@ an8-file packet with SHA-256
 The corrected fixture calls `setCameraTarget` and requires visible actor bounds
 and representative close submissions. No unchanged failed fixture was replayed.
 
-Next work must preserve close-view appearance. A private shadow-only comparison
-can investigate High separately; it cannot solve Low or justify hiding content.
-The full game, art, performance and release-readiness goal remains active.
+A separate High-only shadow-boundary comparison is also rejected. The supplied
+full geometry remains active for color, with exactly unchanged color triangle
+counts in all16class/pose observations. Existing prepared indices are swapped
+only during shadows, then restored. Skinned-only shadows still produce
+273250–282443total triangles and change up to17509pixels; all prepared shadow
+indices produce263572–272765triangles and change up to18997pixels. Every mode
+in every view exceeds the original250000triangle limit and alters visible
+shadows. All16original-image restorations are exact, source geometry returns,
+the canvas retires and no browser failure occurs. The one native case fails;
+no production change is selected.
+
+The closed18-file shadow rejection packet has SHA-256
+`201743a192fe0b76b5f17195831f3c9709f05391c86d2ab235bf0870ae227af4`.
+Do not repeat these unchanged threshold, bounds or shadow-only proposals as
+performance fixes. Further work needs a different approach preserving close
+appearance and addressing both profiles. The full game, art, performance and
+release-readiness goal remains active.
