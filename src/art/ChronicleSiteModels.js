@@ -5,6 +5,8 @@ import { createKeeperCottage } from './KeeperCottage.js';
 import { createReturningScarClue } from './ReturningScar.js';
 import { createChronicleBookGeometry } from './ChronicleBookGeometry.js';
 import { createInscribedWaystoneGeometry } from './InscribedWaystoneGeometry.js';
+import { createDarkRecordMasonry } from './DarkRecordMasonry.js';
+import { createDarkRecordFurniture } from './DarkRecordFurniture.js';
 
 const PALETTES = {
     earth: { stone: 0x696b50, wood: 0x54402e, glow: 0x95d994 },
@@ -33,7 +35,13 @@ export function createChronicleSiteModel(site, realm) {
     };
     const stone = material(colors.stone);
     const wood = material(colors.wood);
-    if (site.model === 'cold_kiln') {
+    const darkMasonry = realm === 'dark' && ['flood_shelter', 'cold_kiln', 'observatory'].includes(site.model);
+    if (darkMasonry) {
+        stone.color.setHex(0x80766f);
+        stone.vertexColors = true;
+        applyWorldSurfaceDetail(stone, 'fieldstone');
+        applyWorldSurfaceDetail(wood, 'timber');
+    } else if (site.model === 'cold_kiln') {
         applyWorldSurfaceDetail(stone, 'stone');
         applyWorldSurfaceDetail(wood, 'timber');
     } else if (realm !== 'earth' && site.model === 'command_stone') {
@@ -42,6 +50,7 @@ export function createChronicleSiteModel(site, realm) {
     const brass = material(0xb59a62, { metalness: 0.55, roughness: 0.4 });
     const glow = material(colors.glow, { emissive: colors.glow, emissiveIntensity: 0.65 });
     const paper = material(0xe6d8b4);
+    if (darkMasonry && site.id === 'dark_waiting_table') paper.side = THREE.DoubleSide;
     const mesh = (geometry, surface, x = 0, y = 0, z = 0) => {
         geometries.add(geometry);
         const object = new THREE.Mesh(geometry, surface);
@@ -59,7 +68,7 @@ export function createChronicleSiteModel(site, realm) {
         return value;
     };
     const wall = (w, h, d, x, z) => {
-        if (site.model !== 'ruined_house') box(w, h, d, stone, x, h / 2, z);
+        if (site.model !== 'ruined_house' && !darkMasonry) box(w, h, d, stone, x, h / 2, z);
         walls.push(new THREE.Box3(new THREE.Vector3(x - w / 2, -1, z - d / 2), new THREE.Vector3(x + w / 2, h, z + d / 2)));
     };
     const book = () => {
@@ -73,7 +82,9 @@ export function createChronicleSiteModel(site, realm) {
     };
     const house = ['ruined_house', 'flood_shelter', 'cold_kiln', 'observatory'].includes(site.model);
     if (house) {
-        if (site.model !== 'ruined_house') box(7.2, 0.12, 6.2, stone, 0, 0.01, -0.5);
+        if (darkMasonry) {
+            mesh(createDarkRecordMasonry(), stone).name = 'Dark record masonry';
+        } else if (site.model !== 'ruined_house') box(7.2, 0.12, 6.2, stone, 0, 0.01, -0.5);
         // Roofless and open towards +Z: the book remains visible from the road.
         // Only the actual three walls block walking, never the foundation.
         wall(7, 2.2, 0.45, 0, -3.3);
@@ -87,6 +98,10 @@ export function createChronicleSiteModel(site, realm) {
                 if (part.material) materials.add(part.material);
             });
             root.add(cottage);
+        } else if (darkMasonry && site.model !== 'cold_kiln') {
+            for (const [key, geometry] of Object.entries(createDarkRecordFurniture(site))) {
+                mesh(geometry, { wood, brass, paper }[key]).name = `Dark record furnishings:${key}`;
+            }
         } else if (site.model === 'flood_shelter') {
             for (const x of [-2.5, 2.5]) {
                 cylinder(0.14, 0.18, 2.7, wood, x, 1.35, 1.6);
@@ -118,7 +133,10 @@ export function createChronicleSiteModel(site, realm) {
         });
         root.add(clue);
     } else {
-        cylinder(1.9, 2.1, 0.18, stone);
+        // Dark Realm records stand on the authoritative Y0 floor. These
+        // nonblocking stone aprons must stay below ordinary Y.05 party rings.
+        // Other realms retain their existing presentation for separate review.
+        cylinder(1.9, 2.1, realm === 'dark' ? .03 : .18, stone).name = 'ChronicleSiteApron';
         switch (site.model) {
         case 'tide_lens': {
             cylinder(0.7, 1.15, 1.1, stone);
