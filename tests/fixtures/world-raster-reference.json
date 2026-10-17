@@ -52,27 +52,27 @@
     "quality": "high",
     "channel": "color",
     "bytes": 1048576,
-    "sha256": "11791aefebc0be02c12909d3caa208396da665c3c1116c0278068bcf0f053f58"
+    "sha256": "4a1bc4bd46d45466717a41b9c57e97a060c9371e73aac4ef768a3f90f24e4c2d"
   },
   {
     "name": "createLanternholdPavingMaps",
     "quality": "high",
     "channel": "surface",
     "bytes": 1048576,
-    "sha256": "070c35944f9b3765cdd9ebf6ddc14c53ecc4e7784ce790d251ae6e45158000c8"
+    "sha256": "25e2ffd9358dcd401370ce626fa7749def8ad187caaa929440a5145e393e3a9f"
   },
   {
     "name": "createLanternholdPavingMaps",
     "quality": "low",
     "channel": "color",
     "bytes": 262144,
-    "sha256": "3a5980a973a2d334249a406247cdb89ea68d295129d36e64e3cfa7a503fc1889"
+    "sha256": "85fed56a01254fb766521d029e78f7b5cfc1763e8f74f58165b4824961d30f00"
   },
   {
     "name": "createLanternholdPavingMaps",
     "quality": "low",
     "channel": "surface",
     "bytes": 262144,
-    "sha256": "aaf2e8efdb3eab972f0dbd03823b06a775ca14311790db568f70c9fb3b8f3a5f"
+    "sha256": "ca8fab6f71d90fa86e410f3a24b1ccc70c6aef8c98e25de7b17475cdda8e9aaf"
   }
 ]

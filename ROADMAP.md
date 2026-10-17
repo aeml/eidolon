@@ -1,6 +1,30 @@
 # Eidolon Roadmap
 
-Alpha 1.79.72 is prepared with a coherent Dark Realm record-building and
+Alpha 1.79.73 is prepared with a coherent town/story-surface, Low housing
+and Player Guide milestone. Lanternhold's central court gains quieter mixed-width
+flagstones while retaining its material/map family, geometry, lighting and
+shadows. Water, Fire and Air story-site paving, house floors and reflective pool
+fills sit below ordinary markers; walls, interactions and magical ripples remain
+in place. All54 elemental story sites have required High/Low native marker
+coverage. Low residential clipping also works without native multi-draw, retaining
+all15homes and exact visible output. Five prepared native Low town views meet
+the original scene limits; cold-wide and close-camera/global performance findings
+remain open. Five Player Guide paragraphs explain garments, Journal/Lore Book
+tasks and device-local window positions. The assembly reuses exact qualified
+runtime and HTML bytes; unselected leaf-surface experiments are excluded.
+[Assembly qualification](docs/plans/2026-10-17-world-quality-assembly-qualification.md).
+[Court qualification](docs/plans/2026-10-17-town-court-material-qualification.md).
+[Elemental markers](docs/plans/2026-10-17-elemental-story-grounding-qualification.md).
+[Low fallback](docs/plans/2026-10-17-low-residential-fallback-findings.md).
+[Guide checks](docs/plans/2026-10-17-player-guide-new-features.json).
+[Close-camera finding](docs/plans/2026-10-17-close-camera-rendering-finding.md).
+Public Alpha1.79.72 remains accepted until exact73 CI/deployment/public verification.
+Broader world/art/game/audio/device/performance/operations/owner/F1-F5/beta/1.99
+scope stays active. Human campaign/phone feedback and soak/stress remain deferred.
+Public access, earned progression and supplied actor/equipment assets are unchanged.
+
+
+Alpha 1.79.72 is deployed and verified with a coherent Dark Realm record-building and
 flagstone material pass. Fourteen existing shelter/archive/kiln sites gain bonded
 stone within their original wall envelopes. Documents, shelves, ferry supplies,
 seating, bedding and the unfinished celebration reinforce the existing accounts.
@@ -20,7 +44,8 @@ while open;54 focused checks and both unchanged keyboard browser cases pass.
 [Material qualification](docs/plans/2026-10-17-dark-paving-material-qualification.md).
 [Marker qualification](docs/plans/2026-10-17-dark-record-marker-qualification.md).
 [Focus qualification](docs/plans/2026-10-17-modal-keyboard-focus-qualification.md).
-Public Alpha1.79.71 remains accepted until exact72 CI/deployment/public verification.
+All ten CI jobs pass. Fresh normal-TLS verification matches both72 identities, ready database, open registration, flat terrain and all380 asset pins at 2026-10-17T12:51:20.503638+00:00.
+[Acceptance](docs/plans/2026-10-17-release1-79-72-acceptance.md).
 Broader district/world composition, art/game/performance/readiness/owner/beta
 gates stay open. Human campaign/phone feedback and soak/stress remain deferred.
 Full original goal active; public access and progression rules are unchanged.
