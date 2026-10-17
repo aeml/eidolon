@@ -38,8 +38,8 @@ export function sampleDarkRealmStreet(u, v) {
     // individual stones avoid a noisy checker behind actors and ground warnings.
     const tone = 64 + seed * 5 + weather * 14 + mineral * 7;
     return {
-        color: [mix(56, tone + 4 + rim * 2, coverage), mix(55, tone + 2 + rim * 2, coverage),
-            mix(53, tone + rim, coverage)],
+        color: [mix(63, tone + 4 + rim * 2, coverage), mix(62, tone + 2 + rim * 2, coverage),
+            mix(60, tone + rim, coverage)],
         height: coverage * (.018 + mineral * .004) + grain * .002,
         roughness: mix(.98, .81 + weather * .1 + grain * .04, coverage)
     };
