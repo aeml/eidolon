@@ -4,7 +4,39 @@ import { createDungeonFloorComposition, getDungeonFloorCompositionPlan } from '.
 import { createProceduralDungeonInteriorKit, DUNGEON_INTERIOR_IDS, DUNGEON_ROOM_IDENTITY_IDS } from '../src/art/ProceduralDungeonInteriors.js';
 import { RenderSystem } from '../src/core/RenderSystem.js';
 
-test.each(['nave', 'court', 'procession', 'arena'])('%s preserves readable central floor and finite shallow masonry', plan => {
+test('all eight room purposes have distinct physical floor compositions', () => {
+    const plans = DUNGEON_ROOM_IDENTITY_IDS.map(getDungeonFloorCompositionPlan);
+    expect(new Set(plans).size).toBe(8);
+    const geometries = plans.map(createDungeonFloorComposition);
+    expect(new Set(geometries.map(geometry => Array.from(geometry.attributes.position.array).join(','))).size).toBe(8);
+    for (const geometry of geometries) geometry.dispose();
+});
+
+test.each(['vault', 'chapel', 'broken-court', 'guard', 'aisle'])('%s retains the original court footprint and stone budget', plan => {
+    const original = createDungeonFloorComposition('court'), candidate = createDungeonFloorComposition(plan);
+    expect(candidate.userData.dungeonFloorComposition.stones).toBe(original.userData.dungeonFloorComposition.stones);
+    expect(candidate.attributes.position.count).toBe(original.attributes.position.count);
+    for (const axis of ['x', 'y', 'z']) {
+        expect(candidate.boundingBox.min[axis]).toBeGreaterThanOrEqual(original.boundingBox.min[axis] - .00001);
+        expect(candidate.boundingBox.max[axis]).toBeLessThanOrEqual(original.boundingBox.max[axis] + .00001);
+    }
+    original.dispose(); candidate.dispose();
+});
+
+test.each([
+    ['vault', [-6, -1, -.8], [6, 1, 10.4]],
+    ['chapel', [-5.7, -1, -2.6], [5.7, 1, 8.4]]
+])('%s leaves the complete existing service-paving envelope clear', (plan, min, max) => {
+    const geometry = createDungeonFloorComposition(plan), position = geometry.attributes.position;
+    const protectedArea = new THREE.Box3(new THREE.Vector3(...min), new THREE.Vector3(...max));
+    for (let i = 0; i < position.count; i += 3) {
+        const triangle = new THREE.Triangle(...[i, i + 1, i + 2].map(j => new THREE.Vector3().fromBufferAttribute(position, j)));
+        expect(protectedArea.intersectsTriangle(triangle)).toBe(false);
+    }
+    geometry.dispose();
+});
+
+test.each(['nave', 'court', 'procession', 'arena', 'vault', 'chapel', 'broken-court', 'guard', 'aisle'])('%s preserves readable central floor and finite shallow masonry', plan => {
     const a = createDungeonFloorComposition(plan), b = createDungeonFloorComposition(plan);
     expect(a.attributes.position.array).toEqual(b.attributes.position.array);
     expect(a.groups).toHaveLength(0);
@@ -62,16 +94,18 @@ test.each(DUNGEON_INTERIOR_IDS)('%s fits every identity and shares existing fini
             expect(sourceBounds.max.distanceTo(batchedBounds.max)).toBeLessThan(.01);
             root.add(source, optimized);
         }
-        expect(shapes.size).toBe(4);
-        expect(kit.metrics().detailGeometries).toBe(type === 'verdant_bastion_catacombs' ? 22 : 25);
+        expect(shapes.size).toBe(8);
+        expect(kit.metrics().detailGeometries).toBe(type === 'verdant_bastion_catacombs' ? 26 : 29);
         expect(kit.metrics().detailMaterials).toBe(type === 'verdant_bastion_catacombs' ? 8 : 7);
         const paving = root.getObjectByName('entry_gate:floor-composition');
         const old = root.getObjectByName('entry_gate:processional-paving');
         expect(paving.material).toBe(old.material);
         const watched = [paving.geometry, paving.material, paving.material.map, paving.material.normalMap, paving.material.roughnessMap]
             .map(resource => jest.spyOn(resource, 'dispose'));
+        const compositionDisposal = [...shapes.values()].filter(geometry => geometry !== paving.geometry)
+            .map(resource => jest.spyOn(resource, 'dispose'));
         RenderSystem.prototype.disposeObjectResources.call({}, root);
-        for (const spy of watched) expect(spy).toHaveBeenCalledTimes(1);
+        for (const spy of [...watched, ...compositionDisposal]) expect(spy).toHaveBeenCalledTimes(1);
     }
 });
 
