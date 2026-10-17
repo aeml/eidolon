@@ -3,6 +3,13 @@ import { acquirePartyAllyPointer, gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIO
 import { clipDungeonEffectSegment } from '../src/skills/dungeonEffectGeometry.js';
 import { groundMovementObserved } from './groundMovementObservation.js';
 
+test('a long formation route does not clip its first issued step onto a blocked destination', () => {
+    const origin = { x: 0, z: 0, blockedTargetPosition: { x: 12, z: 0 } };
+    const step = partyFormationStep(origin, { x: 30, z: 0 }, null, () => true);
+    expect(Math.hypot(step.dx - 12, step.dz)).toBeGreaterThan(.35);
+    expect(Math.hypot(step.dx, step.dz)).toBeLessThanOrEqual(12.000001);
+});
+
 test('recorded post-Sentinel formation replans away from the remembered blocked destination', () => {
     const state = { x: 20003.205716013712, z: 18383.88517710351, radius: 1.25,
         blockedTargetPosition: { x: 20002.861915313555, z: 18383.41188011564 } };

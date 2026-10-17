@@ -746,6 +746,12 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                                     const origin = p.position.clone();
                                     origin.x = from.x;
                                     origin.z = from.z;
+                                    if (p.blockedTargetPosition && Math.hypot(from.x - p.position.x, from.z - p.position.z) < 1e-6) {
+                                        const scale = Math.min(1, 12 / Math.hypot(step.dx, step.dz));
+                                        const visible = planVisibleGroundStepInPage({ dx: step.dx * scale, dz: step.dz * scale }, { minimumDistance: .25 });
+                                        if (!visible || Math.hypot(p.position.x + visible.dx - p.blockedTargetPosition.x,
+                                            p.position.z + visible.dz - p.blockedTargetPosition.z) <= .35) return false;
+                                    }
                                     return partyPathAvoidsActors(origin, step, bodies, p.radius || 1.25) &&
                                         isEarnedRetreatPathClear(g.collisionManager, origin, p.radius || 1.25,
                                             { x: step.dx, z: step.dz });

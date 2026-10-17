@@ -79,8 +79,9 @@ export function partyFormationStep(state, anchor, previousAnchor, canStep, spaci
         // not select that same destination again. Account for the existing
         // quarter-unit ground projection tolerance before issuing another click.
         const blocked = state.blockedTargetPosition;
+        const scale = Math.min(1, 12 / Math.hypot(step.dx, step.dz));
         if (blocked && Math.hypot(from.x - state.x, from.z - state.z) < 1e-6 &&
-            Math.hypot(from.x + step.dx - blocked.x, from.z + step.dz - blocked.z) <= MOVEMENT_ARRIVAL_DISTANCE + .25) return false;
+            Math.hypot(from.x + step.dx * scale - blocked.x, from.z + step.dz * scale - blocked.z) <= MOVEMENT_ARRIVAL_DISTANCE + .25) return false;
         return canStep(step, from);
     };
     const angle = Math.atan2(state.z - anchor.z, state.x - anchor.x);
