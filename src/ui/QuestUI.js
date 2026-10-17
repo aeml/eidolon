@@ -277,6 +277,15 @@ export class QuestUI {
         return label;
     }
 
+    createQuestMapControl(quest) {
+        if (!quest?.id || !this.ctx.showQuestOnMap) return null;
+        const button = document.createElement('button'); button.type = 'button';
+        button.className = 'menu-btn quest-map-action'; button.textContent = 'Show quest on map';
+        button.dataset.questMap = quest.id;
+        button.onclick = () => this.ctx.showQuestOnMap(quest.id);
+        return button;
+    }
+
     formatQuestTarget(target, maxCount) {
         const targetMap = {
             DungeonBoss: 'Dungeon Boss',
@@ -1130,6 +1139,7 @@ export class QuestUI {
 
         if (current) {
             section.appendChild(this.createTrackingControl(current));
+            const map = this.createQuestMapControl(current); if (map) section.appendChild(map);
             section.appendChild(this.createMessage(!current.accepted ? 'Available from Archmage Ilyra in Lanternhold' : current.count >= current.maxCount ? 'Ready to complete — return to Archmage Ilyra' : 'Given by Archmage Ilyra · Return to her when ready', { color: '#ffd56a', fontSize: '12px' }));
             section.appendChild(this.createMessage(`Chapter ${current.chapter}: ${this.getQuestTitle(current)}`, {
                 color: '#fff2bd', fontSize: '15px', fontWeight: 'bold', marginTop: '3px'
@@ -1201,6 +1211,7 @@ export class QuestUI {
                 catchup.append(this.createMessage(this.getQuestTitle(quest)));
                 if (quest.accepted) {
                     catchup.append(this.createTrackingControl(quest));
+                    const map = this.createQuestMapControl(quest); if (map) catchup.append(map);
                     catchup.append(this.createMessage(this.getQuestObjective(quest)));
                 }
             }
@@ -1260,6 +1271,7 @@ export class QuestUI {
         const dailyOpen = this.journalList?.querySelector('.quest-repeatable-ladder')?.open;
         const dailyFocused = document.activeElement === this.journalList?.querySelector('.quest-repeatable-ladder > summary');
         const focusedQuest = this.journalList?.contains(document.activeElement) ? document.activeElement.dataset.questTrack : null;
+        const focusedQuestMap = !loreFocus && this.journalList?.contains(document.activeElement) ? document.activeElement.dataset.questMap : null;
         const openDiscoveries = new Set([...this.journalList?.querySelectorAll('details[data-discovery-id][open]') || []].map(record => record.dataset.discoveryId));
         const focusedDiscovery = document.activeElement?.closest?.('details[data-discovery-id]')?.dataset.discoveryId;
         const restoreReading = () => {
@@ -1283,6 +1295,8 @@ export class QuestUI {
             if (dailyFocused) this.journalList?.querySelector('.quest-repeatable-ladder > summary')?.focus({ preventScroll: true });
             if (focusedQuest) [...this.journalList.querySelectorAll('[data-quest-track]')]
                 .find(input => input.dataset.questTrack === focusedQuest)?.focus({ preventScroll: true });
+            if (focusedQuestMap) [...this.journalList.querySelectorAll('[data-quest-map]')]
+                .find(button => !this.loreBook?.element.contains(button) && button.dataset.questMap === focusedQuestMap)?.focus({ preventScroll: true });
             for (const record of this.journalList?.querySelectorAll('details[data-discovery-id]') || []) {
                 record.open = openDiscoveries.has(record.dataset.discoveryId);
                 if (record.dataset.discoveryId === focusedDiscovery) record.querySelector('summary')?.focus({ preventScroll: true });
@@ -1447,6 +1461,7 @@ export class QuestUI {
             div.appendChild(progressRow);
             div.appendChild(reward);
             div.appendChild(this.createTrackingControl(q));
+            const map = this.createQuestMapControl(q); if (map) div.appendChild(map);
             this.journalList.appendChild(div);
         });
 

@@ -50,8 +50,16 @@ function trackedIds(engine, quests) {
     return new Set([current, ...quests.filter(q => q.accepted && !q.completed && q !== current)].filter(Boolean).slice(0, 3).map(q => q.id));
 }
 
-export function getAtlasQuestLocations(engine) {
-    const quests = (engine?.player?.quests || []).filter(Boolean), tracked = trackedIds(engine, quests);
+export function getAtlasQuestLocations(engine, { questId = null } = {}) {
+    const personalQuests = (engine?.player?.quests || []).filter(Boolean);
+    const selected = questId === null ? null : personalQuests.find(q => q.id === questId && !q.completed &&
+        (q.accepted === true || q === getCurrentChronicleQuest(personalQuests)));
+    if (questId !== null && !selected) return [];
+    // A deliberate map request is temporary. It neither pins a quest nor
+    // grants progress, and later unaccepted chapters remain unavailable.
+    const quests = selected ? [selected] : personalQuests;
+    const tracked = selected ? new Set([selected.id]) : trackedIds(engine, quests);
+    const focusLabel = selected ? 'Selected' : 'Tracked';
     const instanceId = engine?.currentInstanceId || '';
     const overworld = !instanceId && (!engine?.currentInstanceType || engine.currentInstanceType === 'overworld');
     const dark = instanceId === 'dark-realm' && engine.currentInstanceType === 'dark_realm';
@@ -81,7 +89,7 @@ export function getAtlasQuestLocations(engine) {
         }
         if (sameSpace) {
             for (const site of chapter.sites) if (!known.has(site.id) && (!site.requires || known.has(site.requires))) {
-                add(q, site, 'quests', `Tracked · ${title}`, 'Investigate for your accepted quest. Story text is revealed through play.');
+                add(q, site, 'quests', `${focusLabel} · ${title}`, 'Investigate for your accepted quest. Story text is revealed through play.');
             }
             continue;
         }
@@ -91,7 +99,7 @@ export function getAtlasQuestLocations(engine) {
             const point = overworld ? TOWN_SERVICE_POINTS.find(p => p.id === 'dungeon-guide')
                 : WORLD_LOCATIONS.find(p => p.id === 'story-wizard-dark-realm');
             add(q, { ...point, name: `${title} · ${overworld ? 'Dungeon Guide' : 'return to Lanternhold'}` },
-                'quests', 'Tracked · private encounter admission',
+                'quests', `${focusLabel} · private encounter admission`,
                 `${dark ? 'This marker is the recovery camp, not a dungeon entrance. Recall (B) or use Return to Lanternhold in the Escape menu. ' : ''}Speak to the Dungeon Guide in Lanternhold for ${encounter}. The Fourfold Portal enters the shared expedition, not this private encounter. Every traveler must meet their own level and story requirements.`);
             continue;
         }
@@ -103,23 +111,23 @@ export function getAtlasQuestLocations(engine) {
                 : `Only level-100-or-higher ${enemy} defeated inside this district count for this hunt.`;
             if (room) add(q, { id: darkChapter.district, name: `${title} · district`, x: room.x, z: room.z,
                 area: { minX: room.x - room.width / 2, maxX: room.x + room.width / 2, minZ: room.z - room.height / 2, maxZ: room.z + room.height / 2 } },
-            'quests', 'Tracked · search this district', [q.objectiveText, instruction,
+            'quests', `${focusLabel} · search this district`, [q.objectiveText, instruction,
                 'This marks a search area, not a live enemy. Follow the connected roads; a waypoint is not a safe path. Return to Ilyra’s projection at the Resonant Foothold and click Complete Quest when ready.'].filter(Boolean).join(' '));
         }
         if (!overworld) continue;
         if (darkChapter) {
-            add(q, TOWN_SERVICE_POINTS.find(p => p.id === 'resonance-portal'), 'quests', 'Tracked · Dark Realm journey',
+            add(q, TOWN_SERVICE_POINTS.find(p => p.id === 'resonance-portal'), 'quests', `${focusLabel} · Dark Realm journey`,
                 'Enter through the Fourfold Portal when eligible. Follow the expedition and use the Dungeon Guide for eligible dungeon/raid admission.');
             continue;
         }
         const dungeon = DUNGEON_ENTRANCE_DEFINITIONS[dungeonTargets[q.target]];
         if (dungeon) {
             add(q, { id: dungeon.dungeonType, name: `${title} · entrance`, x: dungeon.position[0], z: dungeon.position[2] },
-                'quests', 'Tracked · dungeon entrance', 'This is the public entrance, not the boss location. Check admission requirements and clear the instance with your party.');
+                'quests', `${focusLabel} · dungeon entrance`, 'This is the public entrance, not the boss location. Check admission requirements and clear the instance with your party.');
             continue;
         }
         if (q.type === 'REPAIR' || /^DungeonBoss/.test(q.target || '')) {
-            add(q, { ...TOWN_SERVICE_POINTS.find(p => p.id === 'dungeon-guide'), name: `${title} · Dungeon Guide` }, 'quests', 'Tracked · prepare a party',
+            add(q, { ...TOWN_SERVICE_POINTS.find(p => p.id === 'dungeon-guide'), name: `${title} · Dungeon Guide` }, 'quests', `${focusLabel} · prepare a party`,
                 'Speak to the Dungeon Guide for the required raid or dungeon. Entry requirements still apply; this marker is not the crystal or boss.');
             continue;
         }
@@ -130,12 +138,12 @@ export function getAtlasQuestLocations(engine) {
         if (search) {
             const enemyName = (hunt?.enemy || q.target || 'quest targets').replace(/([a-z\d])([A-Z])/g, '$1 $2');
             add(q, { id: realmId, name: `${title} · ${realm.name} area`, ...search }, 'quests',
-                'Tracked · search area, not a live target',
+                `${focusLabel} · search area, not a live target`,
                 `${q.objectiveText || `Find ${enemyName} in ${realm.name}.`} ${search.directions} ${hunt ? `Only ${enemyName} enemies of level ${hunt.minEnemyLevel} or higher count for this hunt. ` : ''}This marks a search area, not a specific spawn. Check enemy levels before fighting.`);
             continue;
         }
         if (realm) add(q, { id: realmId, name: `${title} · ${realm.name} area`, x: (realm.minX + realm.maxX) / 2,
-            z: (realm.minZ + realm.maxZ) / 2, area: realm }, 'quests', 'Tracked · broad search area, not a live target',
+            z: (realm.minZ + realm.maxZ) / 2, area: realm }, 'quests', `${focusLabel} · broad search area, not a live target`,
         `${q.objectiveText || `Find ${q.target} in ${realm.name}.`} The marker is the region center, not a specific spawn. Follow the quest’s level requirements.`);
     }
     return locations.sort((a, b) => Number(b.category === 'quests') - Number(a.category === 'quests'));

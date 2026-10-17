@@ -37,6 +37,48 @@ test('saved discovery identity comes from the authoritative sparse mask, never t
 });
 const getChronicleSites = id => chronicleInvestigations.find(q => q.id === id).sites;
 
+test('an explicitly selected untracked investigation maps only eligible unread targets without changing pin choices', () => {
+    const quest = investigation(), engine = game([quest]); quest.investigationMask = 5; quest.count = 2;
+    engine.uiManager.quest.setQuestTracked(quest, false);
+    const saved = localStorage.getItem('eidolon.questTracking.v1:atlas-reader'), receipts = JSON.stringify(engine.player.quests);
+    expect(getAtlasQuestLocations(engine).filter(p => p.category === 'quests')).toEqual([]);
+    const locations = getAtlasQuestLocations(engine, { questId: quest.id });
+    expect(locations.filter(p => p.category === 'quests').map(p => p.name)).toEqual(['New growth']);
+    expect(locations.find(p => p.category === 'quests').availability).toContain('Selected');
+    expect(localStorage.getItem('eidolon.questTracking.v1:atlas-reader')).toBe(saved);
+    expect(JSON.stringify(engine.player.quests)).toBe(receipts);
+    for (const site of getChronicleSites(quest.id)) expect(JSON.stringify(locations)).not.toContain(site.text);
+    engine.uiManager.quest.dispose();
+});
+
+test('selected quest navigation points a ready quest to its manual turn-in without pinning it', () => {
+    const quest = investigation(), engine = game([quest]); quest.count = quest.maxCount;
+    engine.uiManager.quest.setQuestTracked(quest, false);
+    const locations = getAtlasQuestLocations(engine, { questId: quest.id }).filter(p => p.category === 'quests');
+    expect(locations).toHaveLength(1); expect(locations[0].name).toContain('Turn in');
+    expect(locations[0].purpose).toContain('Complete Quest');
+    expect(engine.uiManager.quest.getTrackedObjectives()).toEqual([]);
+    engine.uiManager.quest.dispose();
+});
+
+test('selected current chapter points to manual acceptance even when story tracking is off', () => {
+    const quest = investigation(), engine = game([quest]); quest.accepted = false;
+    engine.uiManager.quest.setQuestTracked(quest, false);
+    const markers = getAtlasQuestLocations(engine, { questId: quest.id }).filter(p => p.category === 'quests');
+    expect(markers).toHaveLength(1); expect(markers[0].name).toContain('Accept');
+    expect(markers[0].purpose).toContain('Accept Quest'); expect(quest.accepted).toBe(false);
+    expect(engine.uiManager.quest.getTrackedObjectives()).toEqual([]); engine.uiManager.quest.dispose();
+});
+
+test('a direct request cannot expose a later unaccepted chapter, completed objective or an unknown quest', () => {
+    const current = { id: 'chronicle_01_bell_below', category: 'chronicle', chapter: 1, type: 'KILL', target: 'Skeleton', accepted: true, maxCount: 10 };
+    const future = { id: 'chronicle_15_dark_king', category: 'chronicle', chapter: 15, target: 'UmbraPrime', accepted: false, title: 'UNSEEN ENDING' };
+    const completed = investigation(); completed.completed = true; completed.investigationMask = 7;
+    const engine = game([current, future, completed]);
+    for (const questId of [future.id, completed.id, 'missing-quest']) expect(getAtlasQuestLocations(engine, { questId })).toEqual([]);
+    engine.uiManager.quest.dispose();
+});
+
 test('journal tracking preferences apply to atlas and switch with character ownership', () => {
     const q = investigation(), engine = game([q]);
     expect(getAtlasQuestLocations(engine)).toHaveLength(3);

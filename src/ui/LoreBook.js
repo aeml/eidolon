@@ -118,6 +118,8 @@ export class LoreBook {
             quest.dataset.loreAction = 'current';
             quest.onclick = () => this.ui.setJournalView('story');
             now.append(quest);
+            const map = this.ui.createQuestMapControl?.(current);
+            if (map) { map.dataset.loreAction = `quest-map:${current.id}`; now.append(map); }
         } else if (finaleCompleted) {
             now.append(node('p', 'Your Chronicle is complete', 'lore-book__current-title'),
                 node('p', 'You claimed the finale with Ilyra. Revisit your earned memories, finish optional accounts or continue your contracts.'));

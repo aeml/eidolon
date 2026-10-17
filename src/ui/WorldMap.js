@@ -427,6 +427,7 @@ export class WorldMap {
         this.touchGesture = null; this.isDragging = false;
         const opening = !this.isVisible();
         if (opening) {
+            this.navigation.clearQuestFocus?.();
             this.opener = document.activeElement;
             this.gameEngine.inputManager?.clearInputState?.();
             this.navigation.refresh(true);
@@ -435,6 +436,7 @@ export class WorldMap {
         } else this.opener?.focus?.();
         if (this.gameEngine?.uiManager?.windowLayouts) {
             const opened = this.gameEngine.uiManager.toggleManagedWindow('map');
+            if (!opened) this.navigation.clearQuestFocus?.();
             if (opened && this.gameEngine.player) {
                 this.cameraX = this.gameEngine.player.position.x;
                 this.cameraZ = this.gameEngine.player.position.z;
@@ -447,6 +449,7 @@ export class WorldMap {
 
         const isHidden = this.container.style.display === 'none' || this.container.style.display === '';
         this.container.style.display = isHidden ? 'flex' : 'none';
+        if (!isHidden) this.navigation.clearQuestFocus?.();
         if (isHidden && this.gameEngine.player) {
             this.cameraX = this.gameEngine.player.position.x;
             this.cameraZ = this.gameEngine.player.position.z;

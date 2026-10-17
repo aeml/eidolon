@@ -56,9 +56,9 @@ const SERVICE_PURPOSE = {
     'dungeon-guide': 'Prepare a party, check entry requirements and resume eligible dungeon or raid runs.'
 };
 
-export function getAtlasLocations(engine) {
+export function getAtlasLocations(engine, { questId = null } = {}) {
     // Interiors have their own maps. Public entrances are not interior targets.
-    if (!isOverworldAtlas(engine)) return [...(getInstanceAtlas(engine)?.locations || []), ...getAtlasQuestLocations(engine)];
+    if (!isOverworldAtlas(engine)) return [...(getInstanceAtlas(engine)?.locations || []), ...getAtlasQuestLocations(engine, { questId })];
     const player = engine?.player;
     const result = TOWN_SERVICE_POINTS.map(point => {
         const portal = point.id === 'resonance-portal';
@@ -92,7 +92,7 @@ export function getAtlasLocations(engine) {
             purpose: `Walkable opening toward ${destination}.`, availability: 'Open passage · combat territory beyond town' });
     }
     result.push(...getPublicEventLocations(engine?.publicEvents?.data));
-    return [...result, ...getAtlasQuestLocations(engine), ...getAtlasWorldLocations(engine)];
+    return [...result, ...getAtlasQuestLocations(engine, { questId }), ...getAtlasWorldLocations(engine)];
 }
 
 export function getWaypointGuidance(engine, waypoint) {
@@ -132,6 +132,7 @@ export class AtlasNavigation {
         this.map = map; this.engine = map.gameEngine;
         this.filters = new Set(Object.keys(ATLAS_CATEGORIES));
         this.query = ''; this.selectedId = null; this.waypoint = null;
+        this.questFocusId = null; this.questFocusReturn = null;
         map.container.querySelector('.atlas-navigation')?.remove();
         this.root = document.createElement('section'); this.root.className = 'atlas-navigation';
         this.root.setAttribute('aria-label', 'Atlas destinations');
@@ -156,14 +157,25 @@ export class AtlasNavigation {
             controls.prepend(this.root.querySelector('.atlas-waypoint-row'));
         }
         this.search.oninput = () => {
+            this.restoreQuestFocus({ viewport: false, search: false });
             this.query = this.search.value.trim().toLocaleLowerCase();
             this.root.querySelector('details').open = true; this.refresh(true);
         };
+        this.questFocusNotice = document.createElement('div'); this.questFocusNotice.className = 'atlas-quest-focus';
+        this.questFocusNotice.hidden = true;
+        this.questFocusLabel = document.createElement('p'); this.questFocusLabel.setAttribute('role', 'status');
+        const returnToMap = document.createElement('button'); returnToMap.type = 'button'; returnToMap.className = 'menu-btn';
+        returnToMap.textContent = 'Return to map'; returnToMap.onclick = () => this.clearQuestFocus({ focusSearch: true });
+        this.questFocusNotice.append(this.questFocusLabel, returnToMap); this.root.prepend(this.questFocusNotice);
         const filters = this.root.querySelector('.atlas-filters');
         for (const [id, category] of Object.entries(ATLAS_CATEGORIES)) {
             const label = document.createElement('label'), input = document.createElement('input');
-            input.type = 'checkbox'; input.checked = true;
-            input.onchange = () => { if (input.checked) this.filters.add(id); else this.filters.delete(id); this.refresh(true); map._redrawIfVisible(); };
+            input.type = 'checkbox'; input.checked = true; input.dataset.atlasCategory = id;
+            input.onchange = () => {
+                const checked = input.checked; this.restoreQuestFocus({ viewport: false });
+                if (checked) this.filters.add(id); else this.filters.delete(id);
+                this.refresh(true); map._redrawIfVisible();
+            };
             label.append(input, ` ${category.symbol} ${category.name}`); filters.append(label);
         }
         this.root.querySelector('[data-atlas-overview]').onclick = () => map.showWorldOverview();
@@ -182,14 +194,26 @@ export class AtlasNavigation {
     refresh(force = false) {
         const space = atlasSpaceKey(this.engine);
         if (this.space && this.space !== space) {
+            this.restoreQuestFocus({ viewport: false });
             this.selectedId = null; this.query = ''; this.search.value = '';
         }
         this.space = space;
+        if (this.questFocusId && !this.engine.player?.quests?.some(q => q.id === this.questFocusId && !q.completed)) this.restoreQuestFocus();
         this.root.querySelector('[data-atlas-terrain-legend]').hidden = !this.map.cartography?.elevation || !isOverworldAtlas(this.engine);
-        this.locations = getAtlasLocations(this.engine);
+        this.locations = getAtlasLocations(this.engine, { questId: this.questFocusId });
+        if (this.questFocusId && !this.locations.some(p => p.id === this.selectedId && p.questId === this.questFocusId && p.category === 'quests')) {
+            const target = this.nearestQuestTarget(this.locations.filter(p => p.questId === this.questFocusId && p.category === 'quests'));
+            if (target) { this.selectedId = target.id; this.positionOnLocation(target); }
+            else { this.restoreQuestFocus(); this.locations = getAtlasLocations(this.engine); }
+        }
+        this.questFocusNotice.hidden = !this.questFocusId;
+        const focusedQuest = this.engine.player?.quests?.find(q => q.id === this.questFocusId);
+        this.questFocusLabel.textContent = focusedQuest ? `Quest focus · ${focusedQuest.title || focusedQuest.id}` : '';
+        for (const input of this.root.querySelectorAll('[data-atlas-category]')) input.checked = this.filters.has(input.dataset.atlasCategory);
         const signature = JSON.stringify([this.locations, this.query, [...this.filters], this.selectedId]);
         if (force || signature !== this.signature) {
             const focused = this.root.contains(document.activeElement) ? document.activeElement : null;
+            const readingDetail = this.detail.contains(focused);
             this.signature = signature;
             const visible = this.locations.filter(p => this.filters.has(p.category) && `${p.name} ${p.purpose}`.toLocaleLowerCase().includes(this.query));
             this.results.replaceChildren();
@@ -205,7 +229,7 @@ export class AtlasNavigation {
             const overview = this.root.querySelector('[data-atlas-overview]');
             overview.textContent = isOverworldAtlas(this.engine) ? 'World overview' : 'Area overview';
             overview.disabled = !isOverworldAtlas(this.engine) && !getInstanceAtlas(this.engine)?.bounds;
-            if (focused && !focused.isConnected) this.search.focus();
+            if (focused && !focused.isConnected) (readingDetail && this.detail.querySelector('h3') || this.search).focus({ preventScroll: true });
         }
         const guidance = getWaypointGuidance(this.engine, this.waypoint);
         const text = guidance?.text || (this.waypoint ? `${this.waypoint.name} · waypoint in ${this.waypoint.instanceId ? 'another area' : 'the overworld'}` : 'No personal waypoint');
@@ -216,14 +240,52 @@ export class AtlasNavigation {
     select(id) {
         const location = this.locations.find(p => p.id === id);
         if (!location) return;
-        this.map.autoFitAtlas = false;
-        this.selectedId = id; this.map.cameraX = location.x; this.map.cameraZ = location.z;
+        if (this.questFocusId && (location.questId !== this.questFocusId || location.category !== 'quests')) this.restoreQuestFocus({ viewport: false });
+        this.selectedId = id; this.positionOnLocation(location);
         this.root.querySelector('details').open = false;
+        this.refresh(true); this.map._redrawIfVisible();
+        this.detail.querySelector('h3')?.focus();
+    }
+
+    positionOnLocation(location) {
+        this.map.autoFitAtlas = false;
+        this.map.cameraX = location.x; this.map.cameraZ = location.z;
         this.map.mapOffsetX = 0; this.map.mapOffsetY = 0;
         this.map.scale = location.category === 'services' || location.category === 'quests' ? 3 : 1;
         if (location.area) { this.map.fitAtlasBounds(location.area); this.map.autoFitAtlas = false; }
-        this.map.updateZoomLabel(); this.refresh(true); this.map._redrawIfVisible();
-        this.detail.querySelector('h3')?.focus();
+        this.map.updateZoomLabel();
+    }
+
+    focusQuest(questId) {
+        const targets = getAtlasLocations(this.engine, { questId }).filter(p => p.category === 'quests' && p.questId === questId);
+        if (!targets.length) return false;
+        const target = this.nearestQuestTarget(targets);
+        if (!this.questFocusReturn) this.questFocusReturn = { query: this.query, search: this.search.value, filters: [...this.filters], selectedId: this.selectedId,
+            viewport: Object.fromEntries(['cameraX', 'cameraZ', 'scale', 'mapOffsetX', 'mapOffsetY', 'autoFitAtlas'].map(key => [key, this.map[key]])) };
+        this.questFocusId = questId; this.selectedId = target.id; this.query = ''; this.search.value = ''; this.filters.add('quests');
+        this.refresh(true); this.select(target.id); return true;
+    }
+
+    nearestQuestTarget(targets) {
+        const position = this.engine.player?.position || { x: 0, z: 0 };
+        const distance = p => (p.x - position.x) ** 2 + (p.z - position.z) ** 2;
+        return targets.length ? targets.reduce((nearest, p) => distance(p) < distance(nearest) ? p : nearest) : null;
+    }
+
+    restoreQuestFocus({ viewport = true, search = true } = {}) {
+        if (!this.questFocusReturn) return false;
+        const saved = this.questFocusReturn; this.questFocusReturn = null; this.questFocusId = null;
+        this.query = saved.query; if (search) this.search.value = saved.search;
+        this.filters = new Set(saved.filters); this.selectedId = saved.selectedId;
+        if (viewport) { Object.assign(this.map, saved.viewport); this.map.updateZoomLabel?.(); }
+        return true;
+    }
+
+    clearQuestFocus({ focusSearch = false } = {}) {
+        if (!this.restoreQuestFocus()) return false;
+        this.refresh(true); this.map._redrawIfVisible();
+        if (focusSearch) this.search.focus({ preventScroll: true });
+        return true;
     }
 
     renderDetail() {

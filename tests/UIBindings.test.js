@@ -3,6 +3,24 @@ import { UIBindings } from '../src/core/UIBindings.js';
 import { ReportUI } from '../src/ui/ReportUI.js';
 
 describe('UIBindings', () => {
+    test.each([false, true])('quest map navigation preserves pins and gives detail focus only while the map remains open (close=%s)', close => {
+        document.body.innerHTML = '<button id="outside">Other control</button><canvas tabindex="0"></canvas><h3 tabindex="-1">Quest target</h3>';
+        const engine = createEngine(), canvas = document.querySelector('canvas'), heading = document.querySelector('h3');
+        let visible = false;
+        engine.worldMap.isVisible = () => visible;
+        engine.uiManager.toggleWorldMap = jest.fn(() => { visible = true; queueMicrotask(() => { if (visible) canvas.focus(); }); });
+        const navigation = engine.worldMap.navigation = { questFocusId: null, detail: document.body,
+            focusQuest: jest.fn(id => { navigation.questFocusId = id; heading.focus(); return true; }) };
+        new UIBindings(engine).bindConstructorCallbacks(); const sent = engine.network.send.mock.calls.length;
+        expect(engine.uiManager.onQuestMapFocus('daily_skeleton')).toBe(true);
+        if (close) { visible = false; document.getElementById('outside').focus(); }
+        return Promise.resolve().then(() => {
+            expect(engine.uiManager.toggleWorldMap).toHaveBeenCalledTimes(1);
+            expect(navigation.focusQuest).toHaveBeenCalledWith('daily_skeleton');
+            expect(document.activeElement).toBe(close ? document.getElementById('outside') : heading);
+            expect(engine.network.send.mock.calls).toHaveLength(sent);
+        });
+    });
     test.each([false, true])('password Settings binds only the current online engine (phone=%s)', phone => {
         document.body.innerHTML = '<section class="support-window__body--settings"></section>';
         const engine = createEngine(); engine.isMultiplayer = true; window.game = engine;

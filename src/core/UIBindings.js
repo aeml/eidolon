@@ -305,7 +305,25 @@ export class UIBindings {
             engine.network.send('request_quests', {});
         };
 
+        this.bindMapCallbacks();
+    }
+
+    bindMapCallbacks() {
+        const engine = this.engine, ui = engine.uiManager;
         ui.onMapToggle = () => engine.worldMap.toggle();
+        ui.onQuestMapFocus = questId => {
+            if (!engine.worldMap.isVisible?.()) ui.toggleWorldMap();
+            const navigation = engine.worldMap.navigation;
+            const focused = navigation?.focusQuest?.(questId) || false;
+            if (focused) queueMicrotask(() => {
+                // The ordinary map opener first focuses its canvas. A deliberate
+                // quest request then moves to the selected destination's detail.
+                if (engine.worldMap.isVisible?.() && navigation.questFocusId === questId)
+                    navigation.detail.querySelector('h3')?.focus({ preventScroll: true });
+            });
+            else ui.addChatMessage?.('System', 'This quest has no mapped target in your current area. The map shows your current surroundings.');
+            return focused;
+        };
         ui.social.onGroupMeetingPoint = id => {
             if (engine.currentInstanceId) {
                 ui.addChatMessage?.('System', 'Leave your current instance to view the Lanternhold meeting point on the world map.');
