@@ -813,7 +813,9 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} element
             mapSize: quality === 'low' && row.type !== 'verdant_bastion_catacombs' ? 64 : 256, collidersStable: true });
         if (row.type === 'verdant_bastion_catacombs') expect(row.verdant).toBe(true);
         else expect(row).toMatchObject({ compiled: true, patina: row.type });
-        expect(row.props.map(prop => `${prop.role}:${prop.vertexColors}`).sort()).toEqual(['metal:false', 'stone:false', 'stone:true']);
+        // The finished entry ward shares the prop maps while retaining its
+        // baked vertex colors, including ironwork as well as masonry.
+        expect(row.props.map(prop => `${prop.role}:${prop.vertexColors}`).sort()).toEqual(['metal:false', 'metal:true', 'stone:false', 'stone:true']);
         for (const identity of ['entry_gate', 'treasure_cache', 'restorative_shrine']) expect(row.paving).toContain(identity);
         expect(row.compositionRooms).toBe(row.roomCount);
         expect(row.compositions.map(part => part.plan).sort()).toEqual(row.type === 'umbral_nexus'
