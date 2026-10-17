@@ -41,9 +41,24 @@ for (const [width, height, mobile] of [[1280, 800, false], [390, 844, true]]) te
         await activate(book.getByRole('button', { name: 'People', exact: true }));
         await search.fill('Mara');
         await activate(book.locator('[data-memory-id="people:mara"]'));
+        const readMemory = indexedArticle.getByRole('button', { name: "Read Mara's diary", exact: true });
+        await readMemory.focus();
+        await page.evaluate(() => {
+            const { ui, quests } = window.__loreBook;
+            ui.quest.updateJournal([...quests, { id: 'chronicle_saved_letter', completed: true, title: 'A saved letter', lore: 'Mara kept a written account.' }]);
+        });
+        await expect(readMemory).toBeFocused();
+        await page.evaluate(() => window.__loreBook.ui.quest.updateJournal(window.__loreBook.quests));
         await activate(indexedArticle.getByRole('button', { name: "Read Mara's diary", exact: true }));
         await expect(indexedArticle.getByRole('heading', { name: "Mara's diary", exact: true })).toBeFocused();
         await expect(search).toHaveValue('');
+        await indexedArticle.getByRole('button', { name: 'Return to Mara', exact: true }).focus();
+        await page.evaluate(() => {
+            const { ui, quests } = window.__loreBook;
+            ui.quest.updateJournal([...quests, { id: 'chronicle_saved_name', completed: true, title: 'A signed account', lore: 'Mara Fen signed the account.' }]);
+        });
+        await expect(indexedArticle.getByRole('button', { name: 'Return to Mara Fen', exact: true })).toBeFocused();
+        await page.evaluate(() => window.__loreBook.ui.quest.updateJournal(window.__loreBook.quests));
         await activate(indexedArticle.getByRole('button', { name: 'Return to Mara', exact: true }));
         await expect(search).toHaveValue('Mara');
         await expect(book.getByRole('button', { name: 'People', exact: true })).toHaveAttribute('aria-pressed', 'true');

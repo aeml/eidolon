@@ -1,6 +1,7 @@
 import { buildLoreMemoryIndex } from '../src/ui/LoreMemoryIndex.js';
 import { buildLoreBook, LoreBook } from '../src/ui/LoreBook.js';
 import { getChronicleInvestigation } from '../src/core/ChronicleInvestigation.js';
+import { QuestUI } from '../src/ui/QuestUI.js';
 
 const memory = (id, text, extra = {}) => ({ id, kind: 'chapters', title: id,
     sections: [{ title: 'The account', paragraphs: [text] }], ...extra });
@@ -108,4 +109,26 @@ describe('reading a referenced memory', () => {
         expect(book.readingReturn).toBeNull(); expect(book.selected).toBeNull();
         expect(book.article.textContent).not.toContain('Mara');
     });
+});
+
+test.each(['reference', 'return'])('%s action remains focused when personal evidence rebuilds the page', mode => {
+    document.body.innerHTML = '<div id="quest-journal"><div id="journal-list"></div></div><div id="objectives-panel"><div id="objectives-list"></div></div>';
+    const quests = [{ id: 'chronicle_door', title: 'The open door', completed: true, lore: 'Mara kept the door open.' }];
+    const player = { id: 'reader', quests }, ui = new QuestUI({ getLastPlayer: () => player });
+    try {
+        ui.updateJournal(quests); ui.setJournalView('lore');
+        const book = ui.loreBook;
+        book.filters.querySelector('[data-lore-filter="people"]').click();
+        book.index.querySelector('[data-memory-id="people:mara"]').click();
+        const read = [...book.article.querySelectorAll('button')].find(button => button.textContent === 'Read The open door');
+        if (mode === 'return') read.click();
+        const action = mode === 'reference' ? read : [...book.article.querySelectorAll('button')].find(button => button.textContent === 'Return to Mara');
+        action.focus();
+        player.quests = [...quests, { id: 'chronicle_letter', title: 'The recovered letter', completed: true, lore: 'Mara Fen signed the letter.' }];
+        ui.updateJournal(player.quests);
+        const expected = mode === 'reference' ? 'Read The open door' : 'Return to Mara Fen';
+        const replacement = [...book.article.querySelectorAll('button')].find(button => button.textContent === expected);
+        expect(replacement).toBeDefined(); expect(document.activeElement).toBe(replacement);
+        expect(replacement).not.toBe(action);
+    } finally { ui.dispose(); document.body.replaceChildren(); }
 });

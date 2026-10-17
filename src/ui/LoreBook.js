@@ -178,7 +178,8 @@ export class LoreBook {
         }
         for (const button of this.index.children) button.setAttribute('aria-current', String(button.dataset.memoryId === this.selected));
         const entry = matches.find(entry => entry.id === this.selected);
-        const pageSignature = JSON.stringify([entry || [query, this.category, this.model.entries.length], this.readingReturn]);
+        const returnEntry = this.readingReturn && this.model.entries.find(memory => memory.id === this.readingReturn.selected);
+        const pageSignature = JSON.stringify([entry || [query, this.category, this.model.entries.length], this.readingReturn, returnEntry?.title]);
         if (pageSignature === this.pageSignature) return;
         this.pageSignature = pageSignature;
         const title = node('h3', entry?.title || (this.model.entries.length ? 'No matching memories' : 'The first page awaits'));
@@ -191,9 +192,9 @@ export class LoreBook {
             return;
         }
         this.article.append(node('p', entry.context, 'lore-book__status'));
-        if (this.readingReturn) {
-            const previous = this.model.entries.find(memory => memory.id === this.readingReturn.selected);
-            const back = node('button', `Return to ${previous.title}`, 'menu-btn'); back.type = 'button';
+        if (returnEntry) {
+            const back = node('button', `Return to ${returnEntry.title}`, 'menu-btn'); back.type = 'button';
+            back.dataset.loreAction = `return:${returnEntry.id}`;
             back.onclick = () => {
                 const saved = this.readingReturn; this.readingReturn = null;
                 this.search.value = saved.query; this.category = saved.category; this.selected = saved.selected;
@@ -207,6 +208,7 @@ export class LoreBook {
             for (const paragraph of section.paragraphs) this.article.append(node('p', paragraph));
             if (section.memoryId && this.model.entries.some(memory => memory.id === section.memoryId)) {
                 const read = node('button', `Read ${section.title}`, 'menu-btn'); read.type = 'button';
+                read.dataset.loreAction = `memory:${section.memoryId}`;
                 read.onclick = () => {
                     this.readingReturn = { selected: this.selected, query: this.search.value, category: this.category, scroll: this.index.scrollTop };
                     this.search.value = ''; this.category = 'all'; this.selected = section.memoryId;

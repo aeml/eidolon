@@ -20,17 +20,22 @@ evidence clears it. Original manual acceptance, reward claiming, saved receipts,
 current tasks and story recap remain unchanged. Shared44px filter/action sizing
 and wrapping support keyboard, mouse and phone touch layouts.
 
-All28focused cases across the existing LoreBook and new LoreMemoryIndex suites
-pass, including ten new privacy/reference/navigation cases. Scoped lint passes.
+All30focused cases across the existing LoreBook and new LoreMemoryIndex suites
+pass, including twelve new privacy/reference/navigation cases. Scoped lint passes.
 The first run exposed duplicate index entries under All memories and an invalid
 one-site test assumption. Original inputs and its three failures are retained;
 the implementation preserves the original memory-only list and the fixture now
 uses actual sparse multi-site evidence. Existing UI count/focus assertions were
-retained. Ten new cases do not replace the original eighteen.
+retained. Twelve new cases do not replace the original eighteen.
 
 The two existing desktop/phone earned-memory browser cases are extended with
 people/place navigation and read/return interactions. The two returning-story
-cases retain their coverage. Native execution and reviewed captures are pending;
-this isolated candidate is not yet selected, merged or published. Final physical
+cases retain their coverage. Their first four native executions pass in13.1seconds.
+Two subsequent targeted cases expose a lost Read focus and stale Return label
+when new personal evidence rebuilds the page. Stable action identities now
+preserve focus through the existing journal owner; return-label changes update
+the page signature. Both negative cases and their inputs remain preserved.
+Final-source native execution and reviewed captures are pending; this isolated
+candidate is not yet selected, merged or published. Final physical
 device, whole-game usability and owner art review remain open. The full original
 goal stays active; no campaign, soak or server stress run is introduced.
