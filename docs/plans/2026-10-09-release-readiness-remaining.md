@@ -673,8 +673,6 @@ all-quality singleton prototypes unselected. Do not blanket-merge their work
 branches. Follow concrete measured hypotheses and preserve stock invalidation,
 lighting, supplied asset identity, original content and safety semantics.
 
-## Execution discipline
-
 October17 adds a supported close-camera counterexample: a prepared flat-Earth
 scene with four supplied fourteen-slot actors submits410,270triangles High and
 124,224Low at zoom5, above the unchanged250,000/85,000limits. A source-matched
@@ -684,6 +682,8 @@ within their limits. This is not a shader triangle regression or native/frame/
 phone proof, and does not select the experimental material. Investigate the
 unchanged actor geometry/close-camera path with source/pose/pixel evidence.
 [Retained finding](2026-10-17-close-camera-rendering-finding.md).
+
+## Execution discipline
 
 Preserve the original dirty checkout and use owned detached worktrees. Merge
 selected, validated work into master, fetch and ordinarily merge origin before
