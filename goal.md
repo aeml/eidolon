@@ -2193,3 +2193,17 @@ CPU/three Fire diagnostic outcomes are retained in a verified frozen inventory.
 [Findings](docs/plans/2026-10-17-elemental-surfaces-unselected.md).
 Continue remaining code-owned game/environment/interior work; all original
 features/readiness/owner/beta/1.99 gates remain active, with soak/stress deferred.
+
+## October 17 Alpha 1.79.69 preparation
+
+Alpha 1.79.69 is prepared with a scoped casino interior material and atmosphere
+pass: restrained marble, cloth/timber detail, warm existing lights and correct
+indoor/outdoor particle restoration. 100 focused checks/seven suites, full lint,
+High/Low public/VIP fitted-crowd views and actual connected casino settlement/
+reconnect/guard/menu-recall checks qualify the change. The full-hall High median
+still exceeds its original target for both prior and candidate art; broader
+performance and final art/game/readiness gates remain open. Public 1.79.68 stays
+accepted until exact CI, deployment and public files are verified.
+[Qualification](docs/plans/2026-10-17-casino-interior-qualification.md).
+The full original goal remains active. Human pacing/phone feedback and soak/stress
+remain deferred.

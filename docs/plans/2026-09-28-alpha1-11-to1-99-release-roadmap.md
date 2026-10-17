@@ -1,5 +1,18 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+Alpha 1.79.69 is prepared with a scoped casino interior material and atmosphere
+pass: restrained marble, cloth/timber detail, warm existing lights and correct
+indoor/outdoor particle restoration. 100 focused checks/seven suites, full lint,
+High/Low public/VIP fitted-crowd views and actual connected casino settlement/
+reconnect/guard/menu-recall checks qualify the change. The full-hall High median
+still exceeds its original target for both prior and candidate art; broader
+performance and final art/game/readiness gates remain open. Public 1.79.68 stays
+accepted until exact CI, deployment and public files are verified.
+[Qualification](2026-10-17-casino-interior-qualification.md).
+The full original goal remains active. Human pacing/phone feedback and soak/stress
+remain deferred.
+
+
 Alpha 1.79.68 at `89f60d0a8` is deployed and verified within the ten generated
 Fire/Air rigid-rig scope. All ten CI jobs pass: 790 client suites / 12,263 tests,
 451 hosted browser passes / 13 skips, 140 native passes / one skip and live/
