@@ -266,10 +266,25 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
                         const gallery = window.__eidolonAnimationGalleryController, render = gallery.renderSystem;
                         const focus = gallery.controls.target.clone().set(x, floor === 'vip' ? 8 : 0, z);
                         render.setZoom(18);
-                        render.camera.position.copy(focus).add({ x: 20, y: 90, z: 85 });
+                        render.cameraTarget.copy(focus);
+                        render.camera.position.copy(focus).add(render.cameraOffset);
                         gallery.controls.target.copy(focus); gallery.controls.update();
+                        render.updateShadowFocus(focus);
                         return new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
                     }, { x, z, floor });
+                    const evidence = await page.evaluate(() => {
+                        const render = window.__eidolonAnimationGalleryController.renderSystem;
+                        const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
+                        return { zoom: render.zoom, cameraOffset: render.camera.position.clone().sub(render.cameraTarget).toArray(),
+                            calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles,
+                            renderer: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER) };
+                    });
+                    expect(evidence.cameraOffset.map(value => Math.round(value))).toEqual([100, 100, 100]);
+                    if (process.env.EIDOLON_E2E_REQUIRE_NATIVE_GPU === '1') expect(evidence.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
+                    await testInfo.attach(`casino-play-zoom-${label}-${floor}-${quality}`, {
+                        body: JSON.stringify({ quality, floor, label, ...evidence,
+                            scope: 'Controlled equipped crowd at standard gameplay camera offset/zoom18 and matching shadow focus. Separate actual authenticated casino checks own network, HUD and wagering evidence; counts are snapshots, not performance acceptance.' }), contentType: 'application/json'
+                    });
                     await page.screenshot({ path: testInfo.outputPath(`casino-play-zoom-${label}-${floor}-${quality}.png`) });
                 }
             }
