@@ -101,3 +101,33 @@ The earlier39/11closed packets remain byte-exact. Native execution of this same
 diagnostic is still pending release GPU availability; do not replay software or
 change its closed payloads. Candidate selection remains pending that review and
 the ordered exact72 deployment prerequisite.
+
+## Native confirmation and component selection
+
+The unchanged initial/settled diagnostic passes once on native AMD/RADV in
+6.9seconds, source `c7c4f0f9933ee0ae92e0f07977942f6870364ed4`. It ran after the
+release's native predeployment renderer finished, during the frontend/server
+deployment gap, and finished before live QA began. Multi-draw remains deliberately
+unavailable. All ten reference/restoration comparisons are exact. After the
+existing preparation queue drains, all five sampled court/wide views meet the
+original Low200draw/85,000triangle limits. The widest prepared view again records
+191draws/78,881triangles; no content, geometry or preparation policy changed.
+
+Closed native packet: nine files in
+`.qa-low-town-fallback/settled-native-inventory.json`, SHA256
+`5d8f9a289e26caf072e039788018b49a2980fae4fb24b53b73f7728127936552`.
+The earlier39/11andsoftware9packets remain byte-exact. Native confirmation is a
+current-source submission/semantic result, not a global frame-time/device pass.
+The retained94,465cold-wide failure is still a failure; preparation contributes
+to initial cost and its latency/arrival behavior needs further work.
+
+Review selects the central Low housing policy for the next coherent milestone
+after exact72 acceptance. It fixes off-screen whole-ward submissions on browsers
+without multi-draw, preserves exact visible output, all fifteen homes and shared
+collision/ownership rules, and leaves High/Medium capability selection unchanged.
+The copied-production three-case proof, native96pose comparisons/four lifetime
+cycles and new prepared-view confirmation support this component selection.
+It does not waive inherited cold/close-camera/global performance, final art,
+physical-device, owner or beta gates. The implementation is not merged/pushed/
+deployed yet; combine it with the qualified court/elemental and Player Guide
+work rather than creating a separate tiny release.
