@@ -3,7 +3,7 @@ import { Material } from 'three';
 // Material detail in physical world units, including merged/instanced buildings.
 // Retains MeshStandardMaterial lighting, shadows, fog and quality settings. No
 // downloaded textures, per-frame updates, extra meshes or displaced colliders.
-const SURFACES = Object.freeze({ stone: 1, slate: 2, timber: 3, fieldstone: 4, bark: 5, 'stratified-rock': 6, fortress: 7, 'weathered-masonry': 8, canvas: 9 });
+const SURFACES = Object.freeze({ stone: 1, slate: 2, timber: 3, fieldstone: 4, bark: 5, 'stratified-rock': 6, fortress: 7, 'weathered-masonry': 8, canvas: 9, 'polished-marble': 10 });
 
 const FRAGMENT = /* glsl */`
 varying vec3 vEidolonSurface;
@@ -63,7 +63,26 @@ vec3 eidolonSurface(vec3 p) {
     vec3 axis = abs(cross(dFdx(p), dFdy(p)));
     vec2 uv = axis.y > max(axis.x, axis.z) ? p.xz : (axis.x > axis.z ? p.zy : p.xy);
     float weather = eidolonNoise(p.xz * .23 + p.y * .17);
-#if EIDOLON_SURFACE == 9
+#if EIDOLON_SURFACE == 10
+    // Quiet mineral clouds and interrupted veins, registered in metres across
+    // the merged gaming floor. Thin seams and relief fade together at distance.
+    float cloud = eidolonNoise(uv * .22 + vec2(17., 31.));
+    vec2 drift = vec2(eidolonNoise(uv * .48), eidolonNoise(uv * .37 + vec2(23., 7.))) - .5;
+    float mineral = eidolonNoise(uv * vec2(.58, .31) + drift * 1.7);
+    float veinWidth = mix(.007, .018, cloud);
+    float veinFootprint = max(fwidth(mineral), .001);
+    float vein = (1. - smoothstep(veinWidth - veinFootprint, veinWidth * 2. + veinFootprint,
+        abs(mineral - .53))) * (1. - smoothstep(.045, .14, veinFootprint));
+    // Four-metre stone panels share their joints with the eight-metre physical
+    // slabs. They add no geometry, collision, light source or texture allocation.
+    vec2 panel = uv / 4.;
+    vec2 edge = min(fract(panel), 1. - fract(panel));
+    vec2 footprint = max(fwidth(panel), vec2(.0001));
+    vec2 inside = smoothstep(vec2(.0015) - footprint * .5, vec2(.004) + footprint * .5, edge);
+    float joint = (1. - inside.x * inside.y) * (1. - smoothstep(.08, .25, max(footprint.x, footprint.y)));
+    return vec3(.89 + cloud * .12 + mineral * .06 - vein * .17 - joint * .13,
+        .3 + cloud * .08 + vein * .08 + joint * .18, -vein * .0005 - joint * .0015);
+#elif EIDOLON_SURFACE == 9
     // World-registered coarse canvas, including baked and instanced cloth.
     // Blend the three projections rather than switching at a bent tent fold
     // or sail normal. The8mm thread period is physical, not UV-scale dependent.
