@@ -10,7 +10,10 @@ for (const quality of ['high', 'low']) test(`${quality} arena stone stays readab
     test.setTimeout(120_000);
     const failures = collectBrowserFailures(page, baseURL);
     let referenceServed = false;
+    let sceneReferenceServed = false;
     const referenceFile = process.env.EIDOLON_ARENA_ART_REFERENCE_FILE;
+    const sceneReferenceFile = process.env.EIDOLON_ARENA_SCENE_REFERENCE_FILE;
+    if (Boolean(referenceFile) !== Boolean(sceneReferenceFile)) throw Error('Arena baseline needs both immutable court and scene-owner sources');
     if (referenceFile) {
         const source = readFileSync(referenceFile, 'utf8');
         await page.route('**/src/art/ProceduralPvPArena.js*', route => {
@@ -18,6 +21,15 @@ for (const quality of ['high', 'low']) test(`${quality} arena stone stays readab
             return route.fulfill({ body: source, contentType: 'text/javascript' });
         });
         await testInfo.attach('arena-art-reference', { body: JSON.stringify({ file: referenceFile,
+            sha256: createHash('sha256').update(source).digest('hex') }), contentType: 'application/json' });
+    }
+    if (sceneReferenceFile) {
+        const source = readFileSync(sceneReferenceFile, 'utf8');
+        await page.route('**/src/core/RenderSystem.js*', route => {
+            sceneReferenceServed = true;
+            return route.fulfill({ body: source, contentType: 'text/javascript' });
+        });
+        await testInfo.attach('arena-scene-reference', { body: JSON.stringify({ file: sceneReferenceFile,
             sha256: createHash('sha256').update(source).digest('hex') }), contentType: 'application/json' });
     }
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
@@ -88,7 +100,8 @@ for (const quality of ['high', 'low']) test(`${quality} arena stone stays readab
             render.setZoom(18); render.setCameraTarget(target);
             render.updateEnvironmentLighting(target, 0); render.render();
             const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
-            return { state, focus, zoom: render.currentZoom, calls: render.renderer.info.render.calls,
+            return { state, focus, zoom: render.currentZoom, overworldVisible: render.staticEnvironmentGroup.visible,
+                calls: render.renderer.info.render.calls,
                 triangles: render.renderer.info.render.triangles, floorY: court.getObjectByName('PvPArenaFloor').position.y,
                 cameraOffset: render.camera.position.clone().sub(render.cameraTarget).toArray(),
                 renderer: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER),
@@ -130,7 +143,7 @@ for (const quality of ['high', 'low']) test(`${quality} arena stone stays readab
             } };
         return { actors: actors.length, courtMeshes: court.children.length };
     }, quality);
-    if (referenceFile) expect(referenceServed).toBe(true);
+    if (referenceFile) { expect(referenceServed).toBe(true); expect(sceneReferenceServed).toBe(true); }
     expect(setup).toEqual({ actors: 4, courtMeshes: referenceFile ? 17 : 18 });
     const rows = [];
     let cleanup, motion;
@@ -144,6 +157,7 @@ for (const quality of ['high', 'low']) test(`${quality} arena stone stays readab
             rows.push({ label, ...row });
             await page.screenshot({ path: testInfo.outputPath(`arena-${quality}-${label}.png`) });
             expect(row.zoom).toBe(18); expect(row.cameraOffset.map(v => Math.round(v))).toEqual([100, 100, 100]);
+            expect(row.overworldVisible).toBe(Boolean(referenceFile));
             for (const actor of row.actors) {
                 expect(actor.quality).toBe(quality);
                 expect(actor.items).toBe(14); expect(actor.missing).toBe(0); expect(actor.fallback).toBe(0);
@@ -179,7 +193,7 @@ for (const quality of ['high', 'low']) test(`${quality} arena stone stays readab
     } finally {
         cleanup = await page.evaluate(() => window.__arenaArtReview.dispose());
         await writeFile(testInfo.outputPath('arena-art-review.json'), JSON.stringify({ quality, setup, rows, motion, captures, cleanup,
-            scope: 'Controlled canonical-footprint scene, supplied four-class fourteen-slot outfits, standard camera/zoom18, names and team/hostile markers;90normalRAF Run frames with explicit screencast outside timing acceptance. Current floor matches serverY0; explicit old-court reference retainsY.1 as a negative marker-gap control under the current scene owner. Prepared poses/positions, not earned/network practice, physical-phone, frame-time or whole-game acceptance.' }, null, 2));
+            scope: 'Controlled canonical-footprint scene, supplied four-class fourteen-slot outfits, standard camera/zoom18, names and team/hostile markers;90normalRAF Run frames with explicit screencast outside timing acceptance. Current floor matches serverY0 and hides underlying world terrain; immutable old-court/old-scene reference retainsY.1 and world terrain as a negative marker-gap control. Prepared poses/positions, not earned/network practice, physical-phone, frame-time or whole-game acceptance.' }, null, 2));
     }
     expect(cleanup.disposed).toEqual(cleanup.expected); expect(cleanup.canvasRetired).toBe(true);
     expect(failures, failures.join('\n')).toEqual([]);
