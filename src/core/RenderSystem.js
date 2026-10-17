@@ -22,6 +22,7 @@ import { cacheUnchangedLocalMatrix } from './UnchangedLocalMatrix.js';
 import { WORLD_REGIONS } from '../data/worldGeography.js';
 import { createRealmGroundMesh } from '../art/RealmGroundMesh.js';
 import { createProceduralReflectionEnvironment } from '../art/ProceduralReflectionEnvironment.js';
+import { CASINO_INTERIOR_LIGHTING } from '../art/CasinoInteriorLighting.js';
 import {
     DUNGEON_THEME_KEYS,
     createRegionLightingPresets,
@@ -191,7 +192,7 @@ export class RenderSystem {
             fogFar: 4200
         };
 
-        this.realmLightingPresets = createRegionLightingPresets();
+        this.realmLightingPresets = { ...createRegionLightingPresets(), casino: CASINO_INTERIOR_LIGHTING };
         this.perfStats = {
             lastTime: performance.now(),
             lastUpdate: performance.now(),
@@ -403,7 +404,7 @@ export class RenderSystem {
      */
     updateRealmParticles(dt, cameraTarget) {
         if (!this._pMesh) return;
-        if (this.graphicsQuality === 'low') {
+        if (this.graphicsQuality === 'low' || this.environmentThemeOverride === 'casino') {
             this._pMesh.visible = false;
             return;
         }
@@ -598,7 +599,7 @@ export class RenderSystem {
         // coordinates. Preserve each raid's authored lighting and atmosphere.
         const sceneTheme = RAID_ENVIRONMENT_THEMES[context] || context;
         const dungeonTheme = DUNGEON_THEME_KEY_SET.has(sceneTheme) ? sceneTheme : null;
-        this.environmentThemeOverride = dungeonTheme;
+        this.environmentThemeOverride = context === 'casino' ? 'casino' : dungeonTheme;
         const realm = this.getRealmForPosition(position || this.cameraTarget);
         this.currentRealm = realm;
         this.applyLightingPreset(realm, immediate);
@@ -606,6 +607,7 @@ export class RenderSystem {
         // Recycle the atmosphere immediately so a dungeon transition cannot
         // carry overworld snow, embers, or wind across the loading boundary.
         if (this._pLife) this._pLife.fill(0);
+        if (this._pMesh) this._pMesh.visible = context !== 'casino' && this.graphicsQuality !== 'low';
         this._pRealm = null;
         return realm;
     }
