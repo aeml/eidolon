@@ -22,12 +22,12 @@ export function createDungeonFloorComposition(plan) {
     };
     const stone = outline => {
         const center = outline.reduce((a, b) => [a[0] + b[0] / 4, a[1] + b[1] / 4], [0, 0]);
-        const height = .119 + (stones % 3) * .002;
+        const height = .019 + (stones % 3) * .002;
         // Contract toward the polygon centroid. An axis-aligned inset can
         // cross a diagonal ring edge and turn its bevel normal downward.
         const top = outline.map(([x, z]) => [center[0] + (x - center[0]) * .94, height,
             center[1] + (z - center[1]) * .94]);
-        const bottom = outline.map(([x, z]) => [x, .104, z]);
+        const bottom = outline.map(([x, z]) => [x, .004, z]);
         const shade = .78 + ((stones * 7) % 11) * .017;
         triangle(top[0], top[2], top[1], shade); triangle(top[0], top[3], top[2], shade);
         for (let i = 0; i < 4; i++) {

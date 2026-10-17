@@ -15,10 +15,10 @@ test.each(DUNGEON_INTERIOR_IDS)('%s boss floor is grounded, mapped stone with un
             source.updateMatrixWorld(true);
             const floor = source.getObjectByName('boss:buried-dais');
             const bounds = new THREE.Box3().setFromObject(floor);
-            // The authoritative walk floor isY=.1. The old .32-high black
+            // The authoritative walk floor is Y0. The old .32-high black
             // cylinder covered feet and had no stone maps or visible joints.
-            expect(bounds.min.y).toBeGreaterThan(.1);
-            expect(bounds.max.y).toBeLessThan(.14);
+            expect(bounds.min.y).toBeGreaterThan(0);
+            expect(bounds.max.y).toBeLessThan(.05);
             expect(bounds.min.x).toBeGreaterThanOrEqual(room.x - 17.4);
             expect(bounds.max.x).toBeLessThanOrEqual(room.x + 17.4);
             expect(bounds.min.z).toBeGreaterThanOrEqual(room.z - 17.4);
@@ -32,7 +32,7 @@ test.each(DUNGEON_INTERIOR_IDS)('%s boss floor is grounded, mapped stone with un
             expect(floor.material).toBe(source.getObjectByName('boss_lair:floor-composition').material);
             for (const map of ['map', 'normalMap', 'roughnessMap']) expect(floor.material[map].image.width).toBe(quality === 'low' ? 64 : 128);
             const inlay = source.getObjectByName(hook ? 'boss:crystal-vigil-inlay' : 'boss:soul-circuit');
-            expect(inlay.position.y).toBe(.14);
+            expect(inlay.position.y).toBe(.035);
             if (shared) expect(floor.geometry).toBe(shared);
             shared = floor.geometry;
             const optimized = kit.createRoomDressing(room, 3);

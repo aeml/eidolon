@@ -15,10 +15,11 @@ test('dungeon materials preserve near-ground visibility at gameplay zoom', async
         scene.add(new THREE.HemisphereLight(0xffffff, 0xffffff, 2));
         const floor = new THREE.Mesh(new THREE.PlaneGeometry(24, 24));
         floor.rotation.x = -Math.PI / 2;
-        floor.position.y = .1; // canonical walk-floor elevation
+        floor.position.y = 0; // Material probe at server ground; generated floors have separate marker checks.
         scene.add(floor);
         const underlay = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
         underlay.rotation.x = -Math.PI / 2;
+        underlay.position.y = -.01;
         scene.add(underlay);
         const target = new THREE.WebGLRenderTarget(1280, 900);
         const results = [];
@@ -28,7 +29,7 @@ test('dungeon materials preserve near-ground visibility at gameplay zoom', async
             for (const zoom of [10, 30]) {
                 render.setZoom(zoom); render.setCameraTarget(new THREE.Vector3(0, 0, 0));
                 render.camera.updateMatrixWorld(true);
-                const point = new THREE.Vector3(0, .1, 0).project(render.camera);
+                const point = new THREE.Vector3(0, 0, 0).project(render.camera);
                 const capture = visible => {
                     underlay.visible = visible;
                     render.renderer.setRenderTarget(target);

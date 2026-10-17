@@ -372,7 +372,10 @@ export async function playDungeonThroughInputs(page, {
                     const scale = Math.min(1, 14 / distance);
                     await timing.measure('leaderInput', () => tryDungeonGroundStep(() => moveByGroundClick(page,
                         (destination.x - player.x) * scale, (destination.z - player.z) * scale,
-                        { allowJumpFallback: false })));
+                        // Follow the chosen canonical walkway. Friendly actors
+                        // can cover its waypoint; Shift preserves ground intent
+                        // instead of alternating between sideways click targets.
+                        { moveOnly: true, allowJumpFallback: false, allowAlternatePaths: false, requireClearPath: true })));
                     if (afterGroundStep) await timing.measure('formation', () => afterGroundStep(page));
                     timing.count('leaderGroundSteps');
                 }

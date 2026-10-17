@@ -1,4 +1,7 @@
 import { EventEmitter } from 'node:events';
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { observeStaticDelivery, recordStaticDelivery } from './e2e/static-delivery-evidence.js';
 
 const origin = 'https://game.example';
@@ -135,18 +138,25 @@ test('page closure freezes the observation clock and makes pending lifetime limi
 test.each(['success', 'route-failure', 'closed-page'])('automatic fixture retains evidence and releases listeners on %s', async outcome => {
     const page = new EventEmitter(); page.mainFrame = () => page;
     const attachments = [], error = new Error('original route failure');
-    const run = recordStaticDelivery({ page, baseURL: origin }, async evidence => {
-        const req = request(); page.emit('request', req); page.emit('requestfailed', req);
-        expect(evidence.snapshot().failureCount).toBe(1);
-        if (outcome === 'closed-page') page.emit('close');
-        if (outcome === 'route-failure') throw error;
-    }, { attach: async (name, data) => attachments.push({ name, ...data }) });
-    if (outcome === 'route-failure') await expect(run).rejects.toBe(error); else await run;
-    expect(page.eventNames()).toEqual([]);
-    expect(attachments).toHaveLength(1);
-    expect(attachments[0].name).toBe('static-delivery-evidence');
-    const body = JSON.parse(attachments[0].body);
-    expect(body.failureCount).toBe(1);
-    expect(body.observationEnded.reason).toBe(outcome === 'closed-page' ? 'page-close' : 'manual');
-    expect(JSON.stringify(body)).not.toMatch(/private|secret|game.example/);
+    const directory = mkdtempSync(join(tmpdir(), 'eidolon-static-delivery-')), artifact = join(directory, 'static-delivery-evidence.json');
+    try {
+        // A line reporter does not save an inline attachment body. The observer
+        // must create its durable sanitized artifact independently of reporters.
+        const run = recordStaticDelivery({ page, baseURL: origin }, async evidence => {
+            const req = request(); page.emit('request', req); page.emit('requestfailed', req);
+            expect(evidence.snapshot().failureCount).toBe(1);
+            if (outcome === 'closed-page') page.emit('close');
+            if (outcome === 'route-failure') throw error;
+        }, { outputPath: name => { expect(name).toBe('static-delivery-evidence.json'); return artifact; },
+            attach: async (name, data) => attachments.push({ name, ...data }) });
+        if (outcome === 'route-failure') await expect(run).rejects.toBe(error); else await run;
+        expect(page.eventNames()).toEqual([]);
+        expect(attachments).toHaveLength(1);
+        expect(attachments[0].name).toBe('static-delivery-evidence');
+        expect(existsSync(artifact)).toBe(true); expect(attachments[0].path).toBe(artifact);
+        const body = JSON.parse(readFileSync(artifact, 'utf8'));
+        expect(body.failureCount).toBe(1);
+        expect(body.observationEnded.reason).toBe(outcome === 'closed-page' ? 'page-close' : 'manual');
+        expect(JSON.stringify(body)).not.toMatch(/private|secret|game.example/);
+    } finally { rmSync(directory, { recursive: true, force: true }); }
 });

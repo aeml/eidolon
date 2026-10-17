@@ -1,9 +1,21 @@
 import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture, partyGraphicsQuality, partyGearProfile, partyEquippedItemSnapshot } from './partyDungeonFixture.js';
+import { BASE_ITEMS } from '../src/core/ItemSystem.js';
+import { canEquipItem, isDualWieldingRogue } from '../src/core/EquipmentSlots.js';
 
 const env = { EIDOLON_E2E_PARTY_DUNGEON: '1', EIDOLON_E2E_REGISTER: '1',
     EIDOLON_E2E_BUILD_MONGO_CONTAINER: 'eidolon-isolated-qa-mongo-party',
     EIDOLON_E2E_BUILD_MONGO_PORT: '18581', EIDOLON_E2E_WS_URL: 'ws://127.0.0.1:18580/ws',
     EIDOLON_E2E_USERNAME: 'codexqa012345abcdef' };
+
+test.each(PARTY_ROLES)('%s prepared party has fourteen class-legal active slots', className => {
+    const items = Object.fromEntries(BASE_ITEMS.map(base => [base.name,
+        { ...base, level: 30, rarity: 'Common', stats: {}, maxStack: 1, statScaleVersion: 1 }]));
+    const character = partyDungeonCharacter({ stats: {}, items }, [], className, 'fixture', 'common');
+    for (const [slot, item] of Object.entries(character.equipment)) {
+        expect({ slot, name: item.name, legal: canEquipItem(className, item, slot) }).toMatchObject({ legal: true });
+    }
+    if (className === 'Rogue') expect(isDualWieldingRogue(className, character.equipment)).toBe(true);
+});
 
 test('party graphics comparisons retain the High baseline and require an explicit supported override', () => {
     expect(partyGraphicsQuality()).toBe('high');

@@ -370,7 +370,7 @@ export class WorldGenerator {
         const floorMat = new THREE.MeshStandardMaterial({ map: texture });
         const floor = new THREE.Mesh(floorGeo, floorMat);
         floor.rotation.x = -Math.PI / 2;
-        floor.position.set(centerX, 0.1, centerZ); // Slightly above ground to cover grass
+        floor.position.set(centerX, 0, centerZ); // Instance floor matches authoritative player ground.
         this.scene.add(floor);
 
         // Walls
@@ -473,7 +473,7 @@ export class WorldGenerator {
             floor.userData.dungeonType = this.dungeonInteriorKit?.dungeonType || '';
             floor.userData.walkSurface = { ...rect };
             floor.rotation.x = -Math.PI / 2;
-            floor.position.set(centerX, 0.1, centerZ);
+            floor.position.set(centerX, 0, centerZ);
             floor.receiveShadow = true;
             this.scene.add(floor);
         }
@@ -844,7 +844,7 @@ export class WorldGenerator {
         floor.userData.proceduralDungeonSurface = Boolean(this.dungeonInteriorKit);
         floor.userData.dungeonType = this.dungeonInteriorKit?.dungeonType || '';
         floor.rotation.x = -Math.PI / 2;
-        floor.position.set(x, 0.1, z);
+        floor.position.set(x, 0, z);
         floor.receiveShadow = true;
         this.scene.add(floor);
         
@@ -940,7 +940,7 @@ export class WorldGenerator {
         floor.userData.proceduralDungeonSurface = Boolean(this.dungeonInteriorKit);
         floor.userData.dungeonType = this.dungeonInteriorKit?.dungeonType || '';
         floor.rotation.x = -Math.PI / 2;
-        floor.position.set(x, 0.1, z); // Match room/corridor height
+        floor.position.set(x, 0, z); // Match room/corridor height
         floor.receiveShadow = true;
         this.scene.add(floor);
 
@@ -1036,7 +1036,7 @@ export class WorldGenerator {
         if (segmentLength <= 0) return; // Completely trimmed
 
         // Floor (Trimmed)
-        // Use 0.1 to match room floor height since we are trimming
+        // Match authoritative ground Y0 across the trimmed corridor and rooms.
         const geo = this.dungeonInteriorKit
             ? this.dungeonInteriorKit.floorGeometry(segmentLength, width)
             : new THREE.PlaneGeometry(segmentLength, width);
@@ -1054,7 +1054,7 @@ export class WorldGenerator {
         mesh.userData.proceduralDungeonSurface = Boolean(this.dungeonInteriorKit);
         mesh.userData.dungeonType = this.dungeonInteriorKit?.dungeonType || '';
         mesh.rotation.x = -Math.PI / 2;
-        mesh.position.set(cx, 0.1, cz);
+        mesh.position.set(cx, 0, cz);
         mesh.rotation.z = -angle; 
         mesh.receiveShadow = true;
         this.scene.add(mesh);

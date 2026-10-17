@@ -3,6 +3,18 @@ import { jest } from '@jest/globals';
 import { RenderSystem } from '../src/core/RenderSystem.js';
 
 describe('RenderSystem scene groups', () => {
+    test('local-origin crypt owns its ground and restores town terrain on exit', () => {
+        const render = new RenderSystem(false);
+        try {
+            render.setEnvironmentContext('crypt', new THREE.Vector3(), true);
+            expect(render.staticEnvironmentGroup.visible).toBe(false);
+            for (const quality of ['low', 'high']) {
+                render.setGraphicsQuality(quality); expect(render.staticEnvironmentGroup.visible).toBe(false);
+            }
+            render.setEnvironmentContext('overworld', new THREE.Vector3(0, 0, 200), true);
+            expect(render.staticEnvironmentGroup.visible).toBe(true);
+        } finally { render.dispose(); }
+    });
     test('arena owns its ground while exit restores the overworld terrain', () => {
         const render = new RenderSystem(false), position = new THREE.Vector3(0, 0, 0);
         try {

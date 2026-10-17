@@ -10,8 +10,8 @@ test.each(['nave', 'court', 'procession', 'arena'])('%s preserves readable centr
     expect(a.groups).toHaveLength(0);
     const p = a.attributes.position, n = a.attributes.normal, uv = a.attributes.uv;
     expect(p.count / 3).toBeLessThanOrEqual(440);
-    expect(a.boundingBox.min.y).toBeGreaterThan(.1);
-    expect(a.boundingBox.max.y).toBeLessThan(.14);
+    expect(a.boundingBox.min.y).toBeGreaterThan(0);
+    expect(a.boundingBox.max.y).toBeLessThan(.05);
     const vertex = i => new THREE.Vector3().fromBufferAttribute(p, i);
     for (let i = 0; i < p.count; i += 3) {
         const points = [vertex(i), vertex(i + 1), vertex(i + 2)];
@@ -19,7 +19,7 @@ test.each(['nave', 'court', 'procession', 'arena'])('%s preserves readable centr
         expect(triangle.getArea()).toBeGreaterThan(.00001);
         // The closest point on every triangle, not only its vertices, must
         // remain outside the original center seal's radius6.
-        const closest = triangle.closestPointToPoint(new THREE.Vector3(0, .12, 0), new THREE.Vector3());
+        const closest = triangle.closestPointToPoint(new THREE.Vector3(0, .02, 0), new THREE.Vector3());
         expect(Math.hypot(closest.x, closest.z)).toBeGreaterThan(7.5);
     }
     for (let i = 0; i < p.count; i++) {

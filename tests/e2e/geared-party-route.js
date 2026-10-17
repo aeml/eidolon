@@ -26,6 +26,7 @@ import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
 import { RAID_PARTY_ROLES, DARK_KING_RAID, raidPartyFixture } from '../raidPartyFixture.js';
 import { formAndEnterRaid, enterRaid } from './raid-party-entry.js';
 import { stepRaidVigilInput } from './raid-vigil-input.js';
+import { captureInstanceGrounding } from './instance-ground-observation.js';
 import { raidVigilSupportAnchor, raidVigilRecoveryAnchor, raidVigilEscortRecoveryAnchor } from '../raidVigilControls.js';
 import { assertDarkKingPhases } from '../darkKingPartyEvidence.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
@@ -706,6 +707,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                     await expect(actor.page.locator('#dungeon-entrance-hint-name')).not.toHaveText('Dungeon Guide');
                 }
                 await tank.page.screenshot({ path: testInfo.outputPath('party-instance-entry.png') });
+                for (const actor of actors) await captureInstanceGrounding(actor.page, testInfo, `party-entry-${actor.className}`, roles.length);
                 await captureFinalePhase();
             },
             afterGroundStep: async () => {
@@ -737,10 +739,19 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                                     z: observed.get(other.id)?.z ?? other.position.z, radius: other.radius || 1.25 }));
                             let step;
                             try {
-                                step = partyFormationStep(p.position, anchor, previous, (step, from) => {
+                                const position = { x: p.position.x, z: p.position.z, radius: p.radius || 1.25,
+                                    blockedTargetPosition: p.blockedTargetPosition && {
+                                        x: p.blockedTargetPosition.x, z: p.blockedTargetPosition.z } };
+                                step = partyFormationStep(position, anchor, previous, (step, from) => {
                                     const origin = p.position.clone();
                                     origin.x = from.x;
                                     origin.z = from.z;
+                                    if (p.blockedTargetPosition && Math.hypot(from.x - p.position.x, from.z - p.position.z) < 1e-6) {
+                                        const scale = Math.min(1, 12 / Math.hypot(step.dx, step.dz));
+                                        const visible = planVisibleGroundStepInPage({ dx: step.dx * scale, dz: step.dz * scale }, { minimumDistance: .25 });
+                                        if (!visible || Math.hypot(p.position.x + visible.dx - p.blockedTargetPosition.x,
+                                            p.position.z + visible.dz - p.blockedTargetPosition.z) <= .35) return false;
+                                    }
                                     return partyPathAvoidsActors(origin, step, bodies, p.radius || 1.25) &&
                                         isEarnedRetreatPathClear(g.collisionManager, origin, p.radius || 1.25,
                                             { x: step.dx, z: step.dz });

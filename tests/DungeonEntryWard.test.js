@@ -3,6 +3,23 @@ import * as THREE from 'three';
 import { DUNGEON_INTERIOR_IDS, createDungeonRoomStatePresentation,
     applyDungeonRoomStatePresentation, animateDungeonRoomStatePresentation } from '../src/art/ProceduralDungeonInteriors.js';
 import { RenderSystem } from '../src/core/RenderSystem.js';
+import { Entity } from '../src/entities/Entity.js';
+import { createDungeonEntryWard } from '../src/art/DungeonEntryWard.js';
+import { getRegionTheme } from '../src/art/darkFantasyTheme.js';
+
+test('walkable entry threshold preserves ordinary party markers without weakening depth testing', () => {
+    const ward = createDungeonEntryWard(getRegionTheme('verdant_bastion_catacombs'));
+    const actor = new Entity('ward-threshold-marker'); actor.mesh = new THREE.Group();
+    actor.mesh.position.set(-1.1, 0, 0); actor.mesh.userData.bounds = { radius: 1.25 }; actor.setPartyHighlight(true);
+    try {
+        ward.updateMatrixWorld(true); actor.mesh.updateMatrixWorld(true);
+        const opaque = ward.children.filter(part => part.isMesh && !part.material.transparent);
+        const marker = actor.mesh.getObjectByName('PartyRing'), target = new THREE.Vector3(0, .05, 0);
+        const camera = target.clone().add(new THREE.Vector3(100, 100, 100));
+        const hits = new THREE.Raycaster(camera, target.clone().sub(camera).normalize()).intersectObjects([...opaque, marker]);
+        expect(marker.material.depthTest).toBe(true); expect(hits[0]?.object.name).toBe('PartyRing');
+    } finally { actor.setPartyHighlight(false); RenderSystem.prototype.disposeObjectResources.call({}, ward); }
+});
 
 test.each(DUNGEON_INTERIOR_IDS)('%s entry ward is grounded, bounded and keeps its physical opening stable across room states', type => {
     const room = { x: 280, z: -350, width: 40, height: 40, type: 'start' };
@@ -11,7 +28,7 @@ test.each(DUNGEON_INTERIOR_IDS)('%s entry ward is grounded, bounded and keeps it
     expect(ward.children).toHaveLength(3);
     root.updateMatrixWorld(true);
     const box = new THREE.Box3().setFromObject(ward);
-    expect(box.min.y).toBeGreaterThanOrEqual(.1);
+    expect(box.min.y).toBeGreaterThanOrEqual(0);
     expect(box.max.y).toBeLessThan(10);
     expect(box.min.x).toBeGreaterThan(room.x - 4); expect(box.max.x).toBeLessThan(room.x + 4);
     expect(box.min.z).toBeGreaterThan(room.z - 5); expect(box.max.z).toBeLessThan(room.z - 2);

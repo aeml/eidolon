@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { expect, test } from '@playwright/test';
+import { expect, test } from './static-delivery-test.js';
 import { partyDungeonCharacter, requireIsolatedPartyFixture } from '../partyDungeonFixture.js';
 import { seedActor } from './geared-party-route.js';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, projectEntity, returnToTown, selectGraphicsThroughSettings } from './helpers.js';
@@ -7,6 +7,7 @@ import { openDungeonGuide } from './dungeon-guide.js';
 import { walkInvestigationWaypoints } from './chronicle-investigation-route.js';
 import { darkRealmChapters } from '../../src/data/chronicleCatalog.js';
 import { createInvestigationTravelDefense } from './fresh-investigation-combat.js';
+import { captureInstanceGrounding, captureGroundingReturn } from './instance-ground-observation.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off', actionTimeout: 20_000 });
 
@@ -23,7 +24,12 @@ test('prepared expedition entrant discovers shore records, claims Ilyra’s rewa
     const catalog = JSON.parse(output.split('\n').find(line => line.startsWith('[party-fixture-catalog]')).slice(23));
     const chapter = darkRealmChapters[0];
     const index = catalog.quests.findIndex(q => q.id === chapter.id);
-    expect(index).toBe(29);
+    expect(index).toBeGreaterThan(0);
+    // Expansion chapters may precede the expedition. Seed only the current
+    // server catalog prefix, and prove every Dark Realm chapter stays unseeded.
+    expect(catalog.quests.slice(index).map(quest => quest.id)).toEqual([
+        ...darkRealmChapters.map(quest => quest.id), 'chronicle_14_resonance_gate', 'chronicle_15_dark_king'
+    ]);
     // Prepared entry prerequisites ONLY. No Dark Realm discovery, reward,
     // completion, location, invulnerability or combat damage is fabricated.
     const prior = catalog.quests.slice(0, index).map(q => ({ id: q.id, accepted: true, completed: true,
@@ -32,6 +38,7 @@ test('prepared expedition entrant discovers shore records, claims Ilyra’s rewa
     await seedActor(page, credentials, character);
     await selectGraphicsThroughSettings(page, 'low');
     const beforeTravel = await createInvestigationTravelDefense(page);
+    let groundingEntry = 0;
     const enterRealm = async () => {
         await openDungeonGuide(page);
         expect(await page.locator('#dungeon-type-select option[value="umbral_nexus"]').count()).toBe(0);
@@ -40,6 +47,7 @@ test('prepared expedition entrant discovers shore records, claims Ilyra’s rewa
             scene: window.game.currentInstanceType, rooms: window.game.currentDungeonLayout?.rooms?.length,
             x: Math.round(window.game.player.position.x), z: Math.round(window.game.player.position.z) })))
             .toEqual({ instance: 'dark-realm', scene: 'dark_realm', rooms: 5, x: 40000, z: 40800 });
+        await captureInstanceGrounding(page, testInfo, `dark-camp-${++groundingEntry}`);
     };
     const openCampIlyra = async () => {
         await walkInvestigationWaypoints(page, [[40009, 40800]]);
@@ -110,9 +118,11 @@ test('prepared expedition entrant discovers shore records, claims Ilyra’s rewa
         expect((await readQuest()).completed).toBe(false);
         await page.screenshot({ path: testInfo.outputPath(`${site.id}.png`) });
         await page.locator('#btn-close-journal').click();
+        await captureInstanceGrounding(page, testInfo, `dark-record-${i}`);
         console.log(`[dark-expedition] recorded ${site.id} through ordinary travel and E inspection`);
     }
     await returnToTown(page, { allowRespawn: false });
+    await captureGroundingReturn(page, testInfo, 'dark-first-return');
     await enterRealm();
     await openCampIlyra();
     const before = await readQuest();
@@ -142,6 +152,7 @@ test('prepared expedition entrant discovers shore records, claims Ilyra’s rewa
         grantedGold: before.rewardGold, grantedResonanceXP: before.rewardXP });
     expect(await page.evaluate(() => window.game.player.gold)).toBe(gold + before.rewardGold);
     await returnToTown(page, { allowRespawn: false });
+    await captureGroundingReturn(page, testInfo, 'dark-final-return');
     console.log('[dark-expedition] shared entry, three discoveries, manual camp reward, saved reconnect and Recall passed; prepared prerequisites are not earned campaign evidence');
     expect(failures, failures.join('\n')).toEqual([]);
 });
