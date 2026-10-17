@@ -2243,3 +2243,19 @@ Retained original performance findings and all broader game/performance/final-ar
 F1–F5/beta/cohort/1.99/handoff gates remain open. Human pacing, physical-phone
 feedback and soak/stress remain deferred. Full original goal active.
 [Acceptance](docs/plans/2026-10-17-release1-79-70-acceptance.md).
+
+## October 17 combined expedition qualification progress
+
+Private candidate `d1f6334b1` now includes grounded instance floors, shallow
+finishes/material depth and32Dark Realm record approaches.177integrated checks/
+ten suites, full lint, six integrated native checks, four prior/current street
+cases and the combined actual solo expedition pass within scope. Full party
+qualification remains pending after retained invalid-Rogue-loadout, remembered-
+blocked-target and sideways-traversal failures.90focused planner checks/four
+suites qualify the corrections; new full party process4957 is active in the
+owned grounding worktree. Do not restart it without inspecting terminal state.
+No71release metadata selected or runtime pushed; public70 remains accepted.
+Rejected fitted-skeleton runtime remains isolated; only its findings MD is
+selected. Full original art/game/performance/owner/F1–F5/operations/beta/1.99/
+handoff scope remains active. Human pacing/physical-phone and soak/stress remain
+deferred, not passed. See the current remaining-work register.

@@ -22,6 +22,40 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
+## October 17 expedition candidate: private; gameplay qualification pending
+
+Owned candidate `d1f6334b1` combines server-grounded dungeon/Dark Realm floors,
+shallow finishes, unbiased dungeon materials and 32 side streets leading to the
+38 existing Dark Realm records. The shared scene/atlas has 42 paths; district
+batches retain ten road meshes and every ribbon vertex/UV/index. No movement,
+collision, class, quest, eligibility or reward rule changes are selected.
+
+177 integrated checks/ten suites and full lint pass. Integrated native checks
+pass six cases, including 44 party/hostile marker comparisons at High/Low.
+Earlier immutable prior-source controls retain zero marker pixels; the separate
+depth probe retains its initial bias failure and corrected ten controls. Street
+comparisons pass four cases/32 views: sixteen prior views have zero street signal,
+sixteen current views have 152–1828 changed crop pixels and visible party markers.
+The combined actual Low solo expedition passes discoveries, manual reward,
+saved reconnect and town returns, observing ten meshes/all 42 street IDs.
+
+Full party qualification remains incomplete. Two entry failures exposed the old
+prepared Rogue's inactive shield; its fixture now uses a legal secondary weapon.
+A later failed run defeated all four bosses and completed three town/checkpoint
+returns, then requested the remembered blocked formation destination. A fresh
+seed subsequently failed the unchanged traversal deadline while alternating
+sideways click destinations. Both failures remain retained. Planner/ground-input
+corrections pass 90 focused checks/four suites; a new full party run is active.
+No unchanged test retry, relaxed deadline/radius or new soak was used. The
+candidate remains isolated pending that result and exact release qualification.
+Public Alpha 1.79.70 remains accepted. Broader world/art/game/performance,
+owner/device/F1–F5/beta/1.99/handoff gates remain open.
+
+The fitted body-skeleton prototype remains unselected after increased Fighter
+submissions, mixed CPU results and an incomplete allocation classification.
+Only its [findings](2026-10-17-fitted-skeleton-reuse-unselected.md) are selected;
+its runtime and frozen evidence remain isolated. No unchanged timing replay.
+
 ## Alpha 1.79.70: deployed and verified within scoped acceptance
 
 Alpha 1.79.70 at `668c34652` is deployed and verified within the arena/casino
