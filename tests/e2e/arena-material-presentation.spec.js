@@ -95,7 +95,9 @@ for (const quality of ['high', 'low']) test(`${quality} arena stone stays readab
                 actors: actors.map(actor => ({ type: actor.mesh.userData.authoredClass, quality: actor.mesh.userData.authoredQuality,
                     items: actor.mesh.userData.equipmentVisualItemCount, missing: actor.mesh.userData.equipmentVisualMissing?.length || 0,
                     fallback: actor.mesh.userData.equipmentVisualFallback?.length || 0, nameVisible: actor.nameTag?.visible === true,
-                    finite: actor.mesh.matrixWorld.elements.every(Number.isFinite), y: actor.mesh.position.y })) };
+                    finite: actor.mesh.matrixWorld.elements.every(Number.isFinite), y: actor.mesh.position.y,
+                    markerGap: (actor.mesh.getObjectByName('PartyRing') || actor.mesh.getObjectByName('PvPHostileRing'))
+                        .getWorldPosition(new THREE.Vector3()).y - court.getObjectByName('PvPArenaFloor').position.y })) };
         };
         window.__arenaArtReview = { render, ui, actors, court, frame,
             async walk() {
@@ -129,7 +131,7 @@ for (const quality of ['high', 'low']) test(`${quality} arena stone stays readab
         return { actors: actors.length, courtMeshes: court.children.length };
     }, quality);
     if (referenceFile) expect(referenceServed).toBe(true);
-    expect(setup).toEqual({ actors: 4, courtMeshes: 17 });
+    expect(setup).toEqual({ actors: 4, courtMeshes: referenceFile ? 17 : 18 });
     const rows = [];
     let cleanup, motion;
     const captures = [], writes = [];
@@ -146,6 +148,8 @@ for (const quality of ['high', 'low']) test(`${quality} arena stone stays readab
                 expect(actor.quality).toBe(quality);
                 expect(actor.items).toBe(14); expect(actor.missing).toBe(0); expect(actor.fallback).toBe(0);
                 expect(actor.nameVisible).toBe(true); expect(actor.finite).toBe(true); expect(actor.y).toBe(0);
+                if (referenceFile) expect(actor.markerGap).toBeLessThan(0);
+                else expect(actor.markerGap).toBeGreaterThan(0);
             }
             if (process.env.EIDOLON_E2E_REQUIRE_NATIVE_GPU === '1') expect(row.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
         }
@@ -169,11 +173,13 @@ for (const quality of ['high', 'low']) test(`${quality} arena stone stays readab
         }
         expect(motion).toHaveLength(90); expect(captures.length).toBeGreaterThan(4);
         expect(motion.every(row => row.visibility === 'visible')).toBe(true);
+        expect(motion.every(row => row.clipTimes.every(Number.isFinite))).toBe(true);
+        expect(new Set(motion.map(row => row.clipTimes[0])).size).toBeGreaterThan(1);
         expect(motion[89].positions[0][0]).not.toBe(motion[0].positions[0][0]);
     } finally {
         cleanup = await page.evaluate(() => window.__arenaArtReview.dispose());
         await writeFile(testInfo.outputPath('arena-art-review.json'), JSON.stringify({ quality, setup, rows, motion, captures, cleanup,
-            scope: 'Controlled canonical-footprint scene, supplied four-class fourteen-slot outfits, standard camera/zoom18, names and team/hostile markers;90normalRAF Run frames with explicit screencast outside timing acceptance. Server arena Y0 and existing visual floorY.1 retained. Prepared poses/positions, not earned/network practice, physical-phone, frame-time or whole-game acceptance.' }, null, 2));
+            scope: 'Controlled canonical-footprint scene, supplied four-class fourteen-slot outfits, standard camera/zoom18, names and team/hostile markers;90normalRAF Run frames with explicit screencast outside timing acceptance. Current floor matches serverY0; explicit old-court reference retainsY.1 as a negative marker-gap control under the current scene owner. Prepared poses/positions, not earned/network practice, physical-phone, frame-time or whole-game acceptance.' }, null, 2));
     }
     expect(cleanup.disposed).toEqual(cleanup.expected); expect(cleanup.canvasRetired).toBe(true);
     expect(failures, failures.join('\n')).toEqual([]);

@@ -3,6 +3,21 @@ import { jest } from '@jest/globals';
 import { RenderSystem } from '../src/core/RenderSystem.js';
 
 describe('RenderSystem scene groups', () => {
+    test('arena owns its ground while exit restores the overworld terrain', () => {
+        const render = new RenderSystem(false), position = new THREE.Vector3(0, 0, 0);
+        try {
+            expect(render.setEnvironmentContext('pvp_arena', position, true)).toBe('earth');
+            expect(render.staticEnvironmentGroup.visible).toBe(false);
+            expect(render.environmentThemeOverride).toBeNull();
+            for (const quality of ['low', 'high']) {
+                render.setGraphicsQuality(quality);
+                expect(render.staticEnvironmentGroup.visible).toBe(false);
+            }
+            render.setEnvironmentContext('overworld', new THREE.Vector3(0, 0, 200), true);
+            expect(render.staticEnvironmentGroup.visible).toBe(true);
+            expect(render.currentRealm).toBe('town');
+        } finally { render.dispose(); }
+    });
     test('casino entry uses indoor light without outdoor particles and restores the actual realm on exit', () => {
         const render = new RenderSystem(false), position = new THREE.Vector3(-2400, 8, 200);
         render.initRealmParticles();

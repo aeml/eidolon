@@ -1,5 +1,26 @@
 import { createProceduralPvPArena } from '../src/art/ProceduralPvPArena.js';
-import { Box3 } from 'three';
+import { Box3, Group, Raycaster, Vector3 } from 'three';
+import { Entity } from '../src/entities/Entity.js';
+
+test('the canonical arena floor does not occlude an ordinary party marker at server height zero', () => {
+    const arena = createProceduralPvPArena({ walkRects: [{ width: 50.5, height: 34.5 }] });
+    const actor = new Entity('arena-marker-grounding'); actor.mesh = new Group();
+    actor.mesh.userData.bounds = { radius: 1.25 }; actor.setPartyHighlight(true);
+    const floor = arena.getObjectByName('PvPArenaFloor'), marker = actor.mesh.getObjectByName('PartyRing');
+    const target = new Vector3(1.1, .05, 0), camera = new Vector3(100, 100, 100);
+    try {
+        arena.updateMatrixWorld(true); actor.mesh.updateMatrixWorld(true);
+        expect(marker.material.depthTest).toBe(true);
+        const hits = new Raycaster(camera, target.clone().sub(camera).normalize()).intersectObjects([floor, marker]);
+        expect(hits[0]?.object.name).toBe('PartyRing');
+        expect(floor.position.y).toBe(0);
+    } finally {
+        actor.setPartyHighlight(false);
+        const materials = new Set();
+        arena.traverse(part => { part.geometry?.dispose(); if (part.material) materials.add(part.material); });
+        materials.forEach(material => { material.map?.dispose(); material.dispose(); });
+    }
+});
 
 test('arena has one canonical floor, low boundaries and no invisible gameplay objects', () => {
     const layout = { walkRects: [{ x: 0, z: 0, width: 50.5, height: 34.5 }] };
@@ -9,6 +30,15 @@ test('arena has one canonical floor, low boundaries and no invisible gameplay ob
     expect(floors[0].geometry.parameters).toMatchObject({ width: 50.5, height: 34.5 });
     expect(floors[0].material.map.name).toContain('lanternhold-vigil-stone');
     expect(floors[0].material.map.repeat.toArray()).toEqual([50.5 / 12, 34.5 / 12]);
+    expect(floors[0].position.y).toBe(0);
+    const foundation = new Box3().setFromObject(arena.getObjectByName('PvPArenaFoundation'));
+    for (const base of arena.children.filter(mesh => mesh.name === 'PvPArenaBeaconBase')) {
+        const bounds = new Box3().setFromObject(base);
+        expect(bounds.min.x).toBeGreaterThanOrEqual(foundation.min.x - 1e-5);
+        expect(bounds.max.x).toBeLessThanOrEqual(foundation.max.x + 1e-5);
+        expect(bounds.min.z).toBeGreaterThanOrEqual(foundation.min.z - 1e-5);
+        expect(bounds.max.z).toBeLessThanOrEqual(foundation.max.z + 1e-5);
+    }
     expect(floors[0].material.userData.worldSurfaceDetail).toBe('fortress');
     const boundaries = arena.children.filter(mesh => mesh.name === 'PvPArenaBoundary');
     expect(boundaries).toHaveLength(4);

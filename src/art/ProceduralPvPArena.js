@@ -35,10 +35,17 @@ export function createProceduralPvPArena(layout) {
     applyWorldSurfaceDetail(stone, 'fortress');
     applyWorldSurfaceDetail(rim, 'fieldstone');
     const gold = new THREE.MeshStandardMaterial({ color: 0xc7ae72, roughness: 0.55, metalness: 0.3 });
+    // Support the low walls and corner beacons after the overworld terrain is
+    // hidden. The thin finishing surface stays at authoritative player Y0;
+    // the substrate stops one centimetre below it to avoid coplanar faces.
+    const foundation = new THREE.Mesh(new THREE.BoxGeometry(rect.width + 3.2, .6, rect.height + 3.2), rim);
+    foundation.name = 'PvPArenaFoundation';
+    foundation.position.set(rect.x || 0, -.31, rect.z || 0);
+    foundation.castShadow = true; foundation.receiveShadow = true; root.add(foundation);
     const floor = new THREE.Mesh(new THREE.PlaneGeometry(rect.width, rect.height), stone);
     floor.name = 'PvPArenaFloor';
     floor.rotation.x = -Math.PI / 2;
-    floor.position.set(rect.x || 0, 0.1, rect.z || 0);
+    floor.position.set(rect.x || 0, 0, rect.z || 0);
     floor.receiveShadow = true;
     root.add(floor);
     const box = (width, height, depth, x, z, material = rim, name = 'PvPArenaBeaconBase') => {
