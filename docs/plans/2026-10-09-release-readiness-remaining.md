@@ -22,9 +22,9 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
-## Alpha 1.79.73: prepared; deployment acceptance pending
+## Alpha 1.79.73: deployed and verified within scoped acceptance
 
-Alpha 1.79.73 is prepared with a coherent town/story-surface, Low housing
+Alpha 1.79.73 is deployed and verified with a coherent town/story-surface, Low housing
 and Player Guide milestone. Lanternhold's central court gains quieter mixed-width
 flagstones while retaining its material/map family, geometry, lighting and
 shadows. Water, Fire and Air story-site paving, house floors and reflective pool
@@ -42,7 +42,8 @@ runtime and HTML bytes; unselected leaf-surface experiments are excluded.
 [Low fallback](2026-10-17-low-residential-fallback-findings.md).
 [Guide checks](2026-10-17-player-guide-new-features.json).
 [Close-camera finding](2026-10-17-close-camera-rendering-finding.md).
-Public Alpha1.79.72 remains accepted until exact73 CI/deployment/public verification.
+All ten corrected-source CI jobs pass. Fresh normal-TLS verification matches both73 identities, ready database, open registration, flat terrain and all380 asset pins at 2026-10-17T14:34:51.974410+00:00.
+[Acceptance](2026-10-17-release1-79-73-acceptance.md).
 Broader world/art/game/audio/device/performance/operations/owner/F1-F5/beta/1.99
 scope stays active. Human campaign/phone feedback and soak/stress remain deferred.
 Public access, earned progression and supplied actor/equipment assets are unchanged.
