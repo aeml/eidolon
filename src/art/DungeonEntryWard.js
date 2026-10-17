@@ -35,7 +35,7 @@ export function createDungeonEntryWard(theme) {
     for (const side of [-1, 1]) {
         for (let course = 0; course < 4; course++)
             block(stoneParts, side * 3.2, .65 + course * .78, 0, .76, .75, .82, .87 + course * .035);
-        block(stoneParts, side * 3.2, .28, 0, 1.3, .34, 1.3, .85);
+        block(stoneParts, side * 3.2, .18, 0, 1.3, .34, 1.3, .85);
         block(stoneParts, side * 3.2, 3.45, 0, 1.02, .25, 1.08, 1);
         for (let segment = 0; segment < 7; segment++) {
             const shape = new THREE.Shape();
@@ -57,8 +57,8 @@ export function createDungeonEntryWard(theme) {
             for (const dx of [-.23, .23]) block(metalParts, side * 3.2 + dx, y, .51, .065, .065, .045);
         }
     }
-    block(stoneParts, 0, .19, 0, 7.7, .16, 1.35, .88);
-    block(metalParts, 0, .28, .12, 5.6, .025, .08, .9);
+    block(stoneParts, 0, .015, 0, 7.7, .02, 1.35, .88);
+    block(metalParts, 0, .033, .12, 5.6, .005, .08, .9);
     const addBaked = (name, parts, material, castShadow) => {
         const geometry = mergeGeometries(parts, false); parts.forEach(part => part.dispose());
         geometry.clearGroups(); geometry.computeBoundingBox(); geometry.computeBoundingSphere();
@@ -74,7 +74,7 @@ export function createDungeonEntryWard(theme) {
         color: 0x615b4b, vertexColors: true, roughness: .48, metalness: .68 }), false);
 
     const shape = new THREE.Shape();
-    shape.moveTo(-2.83, .29); shape.lineTo(-2.83, 3.5);
+    shape.moveTo(-2.83, .03); shape.lineTo(-2.83, 3.5);
     const end = Math.acos(-2.8 / 5.63);
     for (let i = 0; i <= 14; i++) {
         const angle = Math.PI + (end - Math.PI) * i / 14;
@@ -84,7 +84,7 @@ export function createDungeonEntryWard(theme) {
         const angle = Math.PI + (end - Math.PI) * i / 14;
         shape.lineTo(-(2.8 + Math.cos(angle) * 5.63), 3.5 + Math.sin(angle) * 5.63);
     }
-    shape.lineTo(2.83, .29); shape.closePath();
+    shape.lineTo(2.83, .03); shape.closePath();
     const geometry = new THREE.ShapeGeometry(shape), position = geometry.attributes.position;
     for (let i = 0; i < position.count; i++) geometry.attributes.uv.setXY(i, position.getX(i) / 5.66 + .5, position.getY(i) / 8.4);
     const material = createDungeonVeilMaterial(theme.palette.spirit);

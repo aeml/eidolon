@@ -592,9 +592,9 @@ export class RenderSystem {
     }
 
     setEnvironmentContext(context = null, position = null, immediate = true) {
-        // Casino and arena floors are owned by their instances. The arena uses
-        // server Y0, so underlying overworld ground must not share its depth.
-        if (this.staticEnvironmentGroup) this.staticEnvironmentGroup.visible = context !== 'casino' && context !== 'pvp_arena';
+        // Local-origin casino, arena and crypt floors are instance-owned.
+        // Underlying overworld ground must not share the server-grounded floor.
+        if (this.staticEnvironmentGroup) this.staticEnvironmentGroup.visible = context !== 'casino' && context !== 'pvp_arena' && context !== 'crypt';
         // Remote raid coordinates are allocation slots, not overworld realm
         // coordinates. Preserve each raid's authored lighting and atmosphere.
         const sceneTheme = RAID_ENVIRONMENT_THEMES[context] || context;

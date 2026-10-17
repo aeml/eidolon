@@ -370,7 +370,7 @@ export class WorldGenerator {
         const floorMat = new THREE.MeshStandardMaterial({ map: texture });
         const floor = new THREE.Mesh(floorGeo, floorMat);
         floor.rotation.x = -Math.PI / 2;
-        floor.position.set(centerX, 0.1, centerZ); // Slightly above ground to cover grass
+        floor.position.set(centerX, 0, centerZ); // Instance floor matches authoritative player ground.
         this.scene.add(floor);
 
         // Walls

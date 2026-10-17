@@ -34,3 +34,22 @@ for (const procedural of [false, true]) for (const kind of ['union', 'room', 'co
         }
     });
 }
+
+test('local-origin crypt floor preserves ordinary party markers at server Y0', async () => {
+    const scene = new Group(), generator = new WorldGenerator(scene, { addCollider() {} });
+    generator.floorTexture = new Texture(); generator.wallTexture = new Texture();
+    await generator.createDungeon(0, 0, 100);
+    const actor = new Entity('crypt-floor-marker'); actor.mesh = new Group();
+    actor.mesh.userData.bounds = { radius: 1.25 }; actor.setPartyHighlight(true);
+    try {
+        const floors = scene.children.filter(part => part.geometry?.type === 'PlaneGeometry');
+        expect(floors).toHaveLength(1); scene.updateMatrixWorld(true); actor.mesh.updateMatrixWorld(true);
+        const marker = actor.mesh.getObjectByName('PartyRing');
+        const target = new Vector3(1.1, .05, 0), camera = target.clone().add(new Vector3(100, 100, 100));
+        const hits = new Raycaster(camera, target.clone().sub(camera).normalize()).intersectObjects([...floors, marker]);
+        expect(hits[0]?.object.name).toBe('PartyRing'); expect(floors[0].position.y).toBe(0);
+    } finally {
+        actor.setPartyHighlight(false); RenderSystem.prototype.disposeObjectResources.call({}, scene);
+        generator.floorTexture.dispose(); generator.wallTexture.dispose();
+    }
+});
