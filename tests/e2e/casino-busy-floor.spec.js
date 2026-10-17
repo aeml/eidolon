@@ -150,9 +150,11 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
                 render.camera.top = 58; render.camera.bottom = -58;
                 render.camera.updateProjectionMatrix();
                 const focus = new THREE.Vector3(0, upstairs ? 8 : 0, 152);
-                render.camera.position.copy(focus).add(new THREE.Vector3(20, 90, 85));
+                render.cameraTarget.copy(focus);
+                render.camera.position.copy(focus).add(render.cameraOffset);
                 gallery.controls.target.copy(focus);
                 gallery.controls.update();
+                render.updateShadowFocus(focus);
                 const seated = models.filter(model => {
                         if (!model.mesh.visible) return false;
                         const pelvis = model.mesh.getObjectByName('pelvis'), thigh = model.mesh.getObjectByName('thigh_l');
