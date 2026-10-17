@@ -739,7 +739,10 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                                     z: observed.get(other.id)?.z ?? other.position.z, radius: other.radius || 1.25 }));
                             let step;
                             try {
-                                step = partyFormationStep(p.position, anchor, previous, (step, from) => {
+                                const position = { x: p.position.x, z: p.position.z, radius: p.radius || 1.25,
+                                    blockedTargetPosition: p.blockedTargetPosition && {
+                                        x: p.blockedTargetPosition.x, z: p.blockedTargetPosition.z } };
+                                step = partyFormationStep(position, anchor, previous, (step, from) => {
                                     const origin = p.position.clone();
                                     origin.x = from.x;
                                     origin.z = from.z;

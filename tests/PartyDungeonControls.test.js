@@ -3,6 +3,23 @@ import { acquirePartyAllyPointer, gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIO
 import { clipDungeonEffectSegment } from '../src/skills/dungeonEffectGeometry.js';
 import { groundMovementObserved } from './groundMovementObservation.js';
 
+test('recorded post-Sentinel formation replans away from the remembered blocked destination', () => {
+    const state = { x: 20003.205716013712, z: 18383.88517710351, radius: 1.25,
+        blockedTargetPosition: { x: 20002.861915313555, z: 18383.41188011564 } };
+    const anchor = { x: 19999.95378555282, z: 18379.98756259074 };
+    const previous = { x: 20000.211470994593, z: 18384.01648419884 };
+    const bodies = [anchor, { x: 20004.342560558413, z: 18380.889675028517 },
+        { x: 19995.979641193368, z: 18382.23935570613 }];
+    const step = partyFormationStep(state, anchor, previous,
+        (step, from) => partyPathAvoidsActors(from, step, bodies), 4, -Math.PI / 3, bodies);
+    expect(partyPathAvoidsActors(state, step, bodies)).toBe(true);
+    // Actor.move rejects a repeated blocked destination within .1 units.
+    // Reserve the existing .25 ground-projection tolerance as well.
+    expect(Math.hypot(state.x + step.dx - state.blockedTargetPosition.x,
+        state.z + step.dz - state.blockedTargetPosition.z)).toBeGreaterThan(.35);
+    expect(Math.hypot(state.x + step.dx - anchor.x, state.z + step.dz - anchor.z)).toBeLessThan(5);
+});
+
 test('moving-boss deflection is real combat-follow input, not a settled formation arrival', () => {
     const before = { x: 109994.55393638906, z: 19319.384811486263,
         instanceId: 'air-raid', instanceType: 'air_crystal_raid' };

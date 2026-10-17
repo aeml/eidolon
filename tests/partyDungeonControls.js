@@ -1,3 +1,5 @@
+import { MOVEMENT_ARRIVAL_DISTANCE } from '../src/core/MovementSmoothing.js';
+
 // Input planning only: retain spacing around the Fighter instead of aiming
 // followers at the same point (which may be covered by a large boss model).
 export function partyFollowStep(state, anchor, spacing = 4) {
@@ -71,10 +73,20 @@ export class PartyFormationRouteUnavailable extends Error {
 export function partyFormationStep(state, anchor, previousAnchor, canStep, spacing = 4, slotOffset = null, actors = []) {
     const direct = partyFollowStep(state, anchor, spacing);
     if (!direct) return null;
+    const canWalk = (step, from = state) => {
+        // Actor.move deliberately ignores a repeated blocked target. A prior
+        // input can make progress and then stop short, so geometry alone must
+        // not select that same destination again. Account for the existing
+        // quarter-unit ground projection tolerance before issuing another click.
+        const blocked = state.blockedTargetPosition;
+        if (blocked && Math.hypot(from.x - state.x, from.z - state.z) < 1e-6 &&
+            Math.hypot(from.x + step.dx - blocked.x, from.z + step.dz - blocked.z) <= MOVEMENT_ARRIVAL_DISTANCE + .25) return false;
+        return canStep(step, from);
+    };
     const angle = Math.atan2(state.z - anchor.z, state.x - anchor.x);
     const approach = previousAnchor && Math.hypot(previousAnchor.x - anchor.x, previousAnchor.z - anchor.z) > 1
         ? Math.atan2(previousAnchor.z - anchor.z, previousAnchor.x - anchor.x) : angle;
-    if (!Number.isFinite(slotOffset) && canStep(direct, state)) return direct;
+    if (!Number.isFinite(slotOffset) && canWalk(direct, state)) return direct;
     const nodes = [{ x: state.x, z: state.z, goal: false }];
     const add = (x, z, goal = false) => {
         if (![x, z].every(Number.isFinite)) return;
@@ -95,7 +107,7 @@ export function partyFormationStep(state, anchor, previousAnchor, canStep, spaci
         return { dx: step.dx * scale, dz: step.dz * scale };
     };
     for (const goal of nodes.slice(1)) {
-        if (canStep(delta(state, goal), state)) return firstInput(goal);
+        if (canWalk(delta(state, goal), state)) return firstInput(goal);
     }
     if (previousAnchor) add(previousAnchor.x, previousAnchor.z);
     // At most eight nearby bodies contribute detour vertices. All bodies still
@@ -152,7 +164,7 @@ export function partyFormationStep(state, anchor, previousAnchor, canStep, spaci
             // half-unit-or-longer corner therefore proves real displacement;
             // the old one-unit cutoff could reject the only body-clear route.
             if (length > 24 || (current === 0 && length < .5 && !nodes[index].goal) || costs[current] + length >= costs[index]) continue;
-            if (!canStep(step, nodes[current])) continue;
+            if (!canWalk(step, nodes[current])) continue;
             costs[index] = costs[current] + length;
             parents[index] = current;
         }
