@@ -54,13 +54,13 @@ export function createDungeonProcessionalPaving(identity) {
                 const outline = [[x0 + chip, z0], [x1 - chip, z0], [x1, z0 + chip],
                     [x1, z1 - chip], [x1 - chip, z1], [x0 + chip, z1], [x0, z1 - chip], [x0, z0 + chip]];
                 const center = [(x0 + x1) / 2, (z0 + z1) / 2];
-                // Production dungeon floors sit at Y=.1. Keep the entire
-                // relief above that surface and below the ward/room-state seals.
-                const height = .12 + noise(seed + 5) * .01;
+                // Server players stand at Y0. Keep relief above the floor and
+                // below ordinary party/hostile markers as players cross it.
+                const height = .02 + noise(seed + 5) * .01;
                 shade = .82 + noise(seed + 9) * .18;
                 const top = outline.map(([x, z]) => [x + Math.sign(center[0] - x) * .055,
                     height, z + Math.sign(center[1] - z) * .055]);
-                const bottom = outline.map(([x, z]) => [x, .104, z]);
+                const bottom = outline.map(([x, z]) => [x, .004, z]);
                 for (let i = 0; i < outline.length; i++) {
                     const next = (i + 1) % outline.length;
                     // X/Z outlines run clockwise as viewed from above. Reverse

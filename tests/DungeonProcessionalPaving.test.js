@@ -16,8 +16,8 @@ test.each(rooms)('%s paving is deterministic, shallow and has upward, finite sur
     expect(geometry.attributes.position.array).toEqual(repeat.attributes.position.array);
     expect(geometry.groups).toHaveLength(0);
     expect(geometry.attributes.position.count / 3).toBeLessThanOrEqual(800);
-    expect(geometry.boundingBox.min.y).toBeGreaterThan(.1);
-    expect(geometry.boundingBox.max.y).toBeLessThan(.131);
+    expect(geometry.boundingBox.min.y).toBeGreaterThan(0);
+    expect(geometry.boundingBox.max.y).toBeLessThan(.05);
     for (const attribute of Object.values(geometry.attributes)) expect(Array.from(attribute.array).every(Number.isFinite)).toBe(true);
     const p = geometry.attributes.position, n = geometry.attributes.normal, uv = geometry.attributes.uv;
     for (let i = 0; i < p.count; i++) {

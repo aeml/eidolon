@@ -284,7 +284,7 @@ function addPylon(root, shapes, materials, name, x, z, height = 4) {
     });
 }
 
-function addFloorRing(root, shapes, material, name, radius, y = 0.14) {
+function addFloorRing(root, shapes, material, name, radius, y = 0.035) {
     return addPart(root, name, shapes.vigilInlay, material, {
         position: [0, y, 0],
         rotation: [-Math.PI / 2, 0, 0],
@@ -531,7 +531,7 @@ function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials, comp
 
     const wardRadius = Math.min(6, radius * .32);
     addFloorRing(root, shapes, materials.shadow, `${identity}:outer-ward`, wardRadius);
-    addFloorRing(root, shapes, materials.inlay, `${identity}:inner-ward`, wardRadius * 0.67, 0.16);
+    addFloorRing(root, shapes, materials.inlay, `${identity}:inner-ward`, wardRadius * 0.67, 0.04);
     buildRegionalMotif(root, dungeonType, shapes, materials, radius);
 
     switch (identity) {
@@ -579,9 +579,9 @@ function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials, comp
     case 'boss_approach':
         for (let i = -1; i <= 1; i += 1) {
             addPart(root, `approach:warning-bar:${i}`, shapes.box, i === 0 ? materials.accent : materials.metal, {
-                position: [i * 5.5, 0.18, 0],
+                position: [i * 5.5, 0.018, 0],
                 rotation: [0, (Math.PI / 4) * (i === 0 ? 1 : -1), 0],
-                scale: [0.72, 0.3, radius * 1.2],
+                scale: [0.72, 0.008, radius * 1.2],
                 castShadow: false
             });
         }
@@ -600,11 +600,11 @@ function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials, comp
             // The old broad, emissive boss disc overwhelms Maelin/the crystal
             // under bloom. This is decorative inlay, not a combat telegraph.
             addPart(root, 'boss:crystal-vigil-inlay', shapes.vigilInlay, materials.metal, {
-                position: [0, 0.14, 0], rotation: [-Math.PI / 2, 0, 0],
+                position: [0, 0.035, 0], rotation: [-Math.PI / 2, 0, 0],
                 scale: [radius * 0.84, radius * 0.84, 1], castShadow: false, receiveShadow: false
             });
         } else {
-            addFloorRing(root, shapes, materials.inlay, 'boss:soul-circuit', radius * 0.42, 0.14);
+            addFloorRing(root, shapes, materials.inlay, 'boss:soul-circuit', radius * 0.42, 0.035);
         }
         for (let i = 0; i < 6; i += 1) {
             const angle = (i / 6) * Math.PI * 2;

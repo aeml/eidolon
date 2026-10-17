@@ -42,9 +42,9 @@ export function createDungeonDaisMasonry() {
             const center = polygon.reduce((sum, p) => [sum[0] + p[0] / polygon.length, sum[1] + p[1] / polygon.length], [0, 0]);
             // Contract convex polygons toward their centroid: stable mortar
             // joints and inward bevels even at clipped diagonal outer corners.
-            const bottom = polygon.map(([px, pz]) => [center[0] + (px - center[0]) * .986, .104,
+            const bottom = polygon.map(([px, pz]) => [center[0] + (px - center[0]) * .986, .004,
                 center[1] + (pz - center[1]) * .986]);
-            const height = .121 + (stones % 4) * .001;
+            const height = .021 + (stones % 4) * .001;
             const top = bottom.map(([px, , pz]) => [center[0] + (px - center[0]) * .97, height,
                 center[1] + (pz - center[1]) * .97]);
             const shade = .82 + ((stones * 7) % 11) * .016;
