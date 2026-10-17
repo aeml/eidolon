@@ -146,6 +146,7 @@ test('default fitted surface equip and normal pool release retain bounded GPU re
         const { RenderSystem } = await import('/src/core/RenderSystem.js');
         const { MeshFactory } = await import('/src/utils/MeshFactory.js');
         const { Actor } = await import('/src/entities/Actor.js');
+        const { waitForGeometryOwner } = await import('/tests/e2e/geometry-owner-observation.js');
         document.getElementById('start-screen').style.display = 'none';
         const render = new RenderSystem(false); render.setGraphicsQuality('high'); await render.preloadEnvironment(); render.waterTexture = null;
         const slots = ['head', 'chest', 'legs', 'feet', 'gloves', 'shoulders', 'belt', 'mainHand', 'offHand', 'neck', 'ring1', 'ring2', 'trinket1', 'trinket2'];
@@ -156,6 +157,11 @@ test('default fitted surface equip and normal pool release retain bounded GPU re
             Cleric: ['Iron Helm', 'Robes', 'Leather Pants', 'Iron Boots', 'Silk Gloves', 'Steel Pauldrons', 'Studded Belt', 'Cleric Mace', 'Wooden Shield']
         };
         const memory = () => ({ ...render.renderer.info.memory });
+        const deliveryState = () => {
+            const delivery = render.actorGameplayGeometry.delivery;
+            return { roots: delivery.roots.size, jobs: delivery.jobs.size, queue: delivery.queue.length,
+                active: Boolean(delivery.active), scheduled: delivery.scheduled !== null, dispatched: delivery.dispatched };
+        };
         const cycle = async (quality, warmOriginals = false) => {
             const actors = [];
             try {
@@ -192,9 +198,11 @@ test('default fitted surface equip and normal pool release retain bounded GPU re
                 const fighter = actors.find(actor => actor.meshType === 'Fighter');
                 const fighterEyeBatches = [...render.actorColorBatches.owner.entries.values()].filter(entry => entry.root === fighter.mesh &&
                     entry.meshes.every(mesh => /^Fighter_(?:Eye|Pupil|Iris)_[lr]$/.test(mesh.name))).length;
+                await waitForGeometryOwner(render); render.render();
                 const allocated = memory(); actors.forEach(actor => actor.dispose()); actors.length = 0;
+                await waitForGeometryOwner(render);
                 for (let i = 0; i < 2; i++) render.render();
-                return { quality, warmOriginals, fighterEyeBatches, allocated, released: memory(), attachedActors: render.entityGroup.children.length };
+                return { quality, warmOriginals, fighterEyeBatches, allocated, released: memory(), attachedActors: render.entityGroup.children.length, delivery: deliveryState() };
             } finally { actors.forEach(actor => actor.dispose()); }
         };
         try {
@@ -204,16 +212,49 @@ test('default fitted surface equip and normal pool release retain bounded GPU re
             const warmup = [await cycle('high', true), await cycle('low', true)];
             const baseline = memory(), cycles = [];
             for (const quality of ['high', 'low', 'high', 'low']) cycles.push(await cycle(quality));
-            return { warmup, baseline, cycles, scope: 'Four complete outfits per cycle; generated gear releases, intentionally retained body/asset pools warmed for both qualities. High renderer/composer stays fixed while body/equipment detail changes.' };
+            const cancellations = [];
+            for (const type of Object.keys(outfits)) {
+                // Equip a real detached asset first, then cancel its newly
+                // queued preparation synchronously before the pump can run.
+                const actor = new Actor(`cancel-queued-${type}`, {}), root = await MeshFactory.createMeshForType(type, { quality: 'high' });
+                actor.meshType = type; actor.setMesh(root);
+                try {
+                    actor.syncEquipmentVisuals(Object.fromEntries([...outfits[type], 'Necklace', 'Ruby Ring', 'Silver Ring', 'Amulet of Power', 'Orb of Mana'].map((name, index) => [slots[index], {
+                        id: `cancel-${type}-${slots[index]}`, name, baseName: name, rarity: 'Rare',
+                        slot: slots[index] === 'offHand' && type === 'Rogue' ? 'mainHand' : slots[index],
+                        type: ['Iron Sword', 'Steel Dagger', 'Wooden Staff', 'Cleric Mace'].includes(name) ? 'WEAPON' : 'ARMOR'
+                    }])));
+                    await root.userData.equipmentReady;
+                    if (root.userData.equipmentVisualItemCount !== 14) throw new Error('Cancellation outfit incomplete');
+                    render.entityGroup.add(root); const queued = deliveryState();
+                    actor.dispose(); const released = deliveryState();
+                    cancellations.push({ type, queued, released });
+                    await waitForGeometryOwner(render);
+                } finally { actor.dispose(); }
+            }
+            render.render(); const afterCancellation = memory();
+            const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
+            return { warmup, baseline, cycles, cancellations, afterCancellation,
+                renderer: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER),
+                scope: 'Four complete outfits per cycle; original/prepared pools warmed at both qualities, actual worker settled before allocation/release counts. Four measured cycles plus four real detached-equipment add/dispose cancellations; no queued pump or worker dispatch after cancellation. High renderer/composer stays fixed while body/equipment detail changes. No frame-time/campaign/device claim.' };
         } finally { render.dispose(); }
     });
     const artifact = testInfo.outputPath('lifetime.json'); await writeFile(artifact, JSON.stringify(result, null, 2));
     await testInfo.attach('fitted-surface-gpu-lifetime', { path: artifact, contentType: 'application/json' });
     for (const cycle of result.cycles) {
         expect(cycle.fighterEyeBatches).toBe(3);
+        expect(cycle.delivery).toMatchObject({ roots: 0, jobs: 0, queue: 0, active: false, scheduled: false });
         expect(cycle.attachedActors).toBe(0); expect(cycle.released).toEqual(result.baseline);
         expect(cycle.allocated.textures).toBeGreaterThan(cycle.released.textures);
         expect(cycle.allocated.geometries).toBeGreaterThan(cycle.released.geometries);
     }
+    expect(result.cancellations).toHaveLength(4);
+    for (const row of result.cancellations) {
+        expect(row.queued.jobs).toBeGreaterThan(0); expect(row.queued.queue).toBeGreaterThan(0);
+        expect(row.queued).toMatchObject({ roots: 1, active: false, scheduled: true });
+        expect(row.released).toEqual({ roots: 0, jobs: 0, queue: 0, active: false, scheduled: false, dispatched: row.queued.dispatched });
+    }
+    expect(result.afterCancellation).toEqual(result.baseline);
+    if (process.env.EIDOLON_E2E_REQUIRE_NATIVE_GPU === '1') expect(result.renderer).not.toMatch(/SwiftShader|llvmpipe|software/i);
     expect(failures, failures.join('\n')).toEqual([]);
 });

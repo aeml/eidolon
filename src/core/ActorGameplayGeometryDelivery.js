@@ -64,6 +64,7 @@ export class ActorGameplayGeometryDelivery {
             !Number.isFinite(timeoutMs) || timeoutMs <= 0) throw new Error('Bounded delivery limits required');
         this.pass = pass; this.maxSourceBytes = maxSourceBytes; this.maxJobs = maxJobs; this.timeoutMs = timeoutMs;
         this.disposedSources = new WeakSet(); this.roots = new Map(); this.jobs = new Map(); this.queue = []; this.id = 0; this.dispatched = 0; this.disposed = false;
+        this.scheduled = null;
         this.stats = { requested: 0, installed: 0, stale: 0, fallback: 0, failed: 0, cacheHits: 0, rejected: 0, maxCopiedBytes: 0 };
         this.retired = (entry, reason) => {
             if (reason === 'source-disposed') { this.disposedSources.add(entry.source); this.cancel(entry.mesh); return; }
@@ -114,6 +115,9 @@ export class ActorGameplayGeometryDelivery {
         if (!job) return;
         this.jobs.delete(mesh); job.generation.source.removeEventListener('dispose', job.onDispose);
         this.queue = this.queue.filter(queued => queued !== job);
+        if (!this.queue.length && this.scheduled !== null) {
+            clearTimeout(this.scheduled); this.scheduled = null;
+        }
     }
 
     release(root) {
@@ -131,7 +135,7 @@ export class ActorGameplayGeometryDelivery {
     }
 
     schedule() {
-        if (!this.scheduled && !this.active && !this.failed && !this.disposed) this.scheduled = setTimeout(() => {
+        if (this.queue.length && this.scheduled === null && !this.active && !this.failed && !this.disposed) this.scheduled = setTimeout(() => {
             this.scheduled = null; this.pump();
         }, 0);
     }
@@ -209,6 +213,7 @@ export class ActorGameplayGeometryDelivery {
         if (this.disposed) return;
         this.disposed = true; this.pass.retireListeners.delete(this.retired);
         clearTimeout(this.timer); clearTimeout(this.scheduled);
+        this.scheduled = null;
         for (const root of this.roots.keys()) this.untrack(root);
         this.worker?.removeEventListener('message', this.message);
         this.worker?.removeEventListener('error', this.error);

@@ -31,6 +31,57 @@ beforeEach(() => jest.useFakeTimers());
 afterEach(() => jest.useRealTimers());
 const pump = () => jest.advanceTimersByTime(0);
 
+describe('idle geometry preparation', () => {
+    test('removing the last queued actor cancels its pump before a worker is created', () => {
+        const f = fixture();
+        try {
+            f.delivery.track(f.root);
+            expect(f.delivery.scheduled).not.toBeNull();
+            f.root.removeFromParent();
+            expect(f.delivery.jobs.size).toBe(0); expect(f.delivery.queue).toHaveLength(0);
+            expect(f.delivery.scheduled).toBeNull(); expect(jest.getTimerCount()).toBe(0);
+            pump(); expect(f.sent).toHaveLength(0); expect(f.delivery.worker).toBeNull();
+            expect(f.mesh.geometry).toBe(f.source);
+        } finally { f.dispose(); }
+    });
+
+    test('cancelling one actor preserves another queued actor and becomes idle after its reply', () => {
+        const f = fixture(), other = f.root.clone(true), mesh = other.children.find(node => node.isSkinnedMesh);
+        f.scene.add(other);
+        try {
+            f.delivery.track(f.root); f.delivery.track(other);
+            const expected = f.delivery.jobs.get(mesh).id;
+            f.delivery.untrack(f.root);
+            expect(f.delivery.queue).toHaveLength(1); expect(f.delivery.scheduled).not.toBeNull();
+            pump(); expect(f.sent).toHaveLength(1); expect(f.sent[0].data.id).toBe(expected);
+            f.reply(); expect(f.pass.entries.has(mesh)).toBe(true); expect(f.pass.entries.has(f.mesh)).toBe(false);
+            expect(f.delivery.scheduled).toBeNull(); expect(jest.getTimerCount()).toBe(0);
+        } finally { f.dispose(); }
+    });
+
+    test('reattaching after the last cancellation dispatches only the fresh generation', () => {
+        const f = fixture();
+        try {
+            f.delivery.track(f.root); const cancelledPump = f.delivery.scheduled;
+            f.root.removeFromParent(); f.scene.add(f.root);
+            const freshID = f.delivery.jobs.get(f.mesh).id;
+            expect(f.delivery.scheduled).not.toBe(cancelledPump);
+            pump(); expect(f.sent).toHaveLength(1); expect(f.sent[0].data.id).toBe(freshID);
+            f.reply(); expect(f.pass.entries.size).toBe(1);
+            expect(f.delivery.scheduled).toBeNull(); expect(jest.getTimerCount()).toBe(0);
+        } finally { f.dispose(); }
+    });
+
+    test('disposing queued work clears the observable pump handle and all callbacks', () => {
+        const f = fixture();
+        try {
+            f.delivery.track(f.root); f.dispose();
+            expect(f.delivery.scheduled).toBeNull(); expect(jest.getTimerCount()).toBe(0);
+            pump(); expect(f.sent).toHaveLength(0); expect(f.worker.terminate).not.toHaveBeenCalled();
+        } finally { f.dispose(); }
+    });
+});
+
 test('source remains visible while the worker owns only copied buffers', () => {
     const f = fixture(); f.delivery.track(f.root); pump();
     expect(f.sent).toHaveLength(1); expect(f.pass.entries.size).toBe(0); f.draw(); expect(f.mesh.geometry).toBe(f.source);
