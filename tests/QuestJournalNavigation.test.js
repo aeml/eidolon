@@ -19,6 +19,18 @@ describe('journal sections and contract readability', () => {
         ui.updateJournal(player.quests);
     });
 
+    test('accepted optional accounts have a direct map action without joining the tracked list', () => {
+        ui.ctx.showQuestOnMap = jest.fn();
+        player.quests.push({ id: 'chronicle_earth_keepers_house', title: 'The Keeper’s Empty House', category: 'chronicle',
+            legacyOptional: true, type: 'INVESTIGATE', accepted: true, count: 0, maxCount: 1, investigationMask: 0 });
+        ui.updateJournal(player.quests); ui.setJournalView('story');
+        const before = JSON.stringify(player.quests), tracking = ui.getTrackedObjectives().map(q => q.id);
+        document.querySelector('[data-quest-map="chronicle_earth_keepers_house"]').click();
+        expect(ui.ctx.showQuestOnMap).toHaveBeenCalledWith('chronicle_earth_keepers_house');
+        expect(ui.getTrackedObjectives().map(q => q.id)).toEqual(tracking); expect(JSON.stringify(player.quests)).toBe(before);
+        expect(ui.onCompleteQuest).not.toHaveBeenCalled();
+    });
+
     test('navigation filters sections without changing quest or tracking state', () => {
         const before = JSON.stringify(player.quests);
         const tracked = ui.getTrackedObjectives().map(q => q.id);

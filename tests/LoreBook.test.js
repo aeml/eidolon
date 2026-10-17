@@ -53,6 +53,22 @@ describe('journal lore reading', () => {
     });
     afterEach(() => { ui.dispose(); document.body.replaceChildren(); });
 
+    test.each(['lore', 'story'])('quest map action in %s preserves focus through progress and never accepts, claims or toggles tracking', view => {
+        ui.dispose(); const showQuestOnMap = jest.fn();
+        ui = new QuestUI({ getLastPlayer: () => player, showQuestOnMap });
+        ui.onAcceptQuest = jest.fn(); ui.onCompleteQuest = jest.fn();
+        ui.updateJournal(player.quests); ui.setJournalView(view);
+        const findAction = () => [...ui.journalList.querySelectorAll('[data-quest-map]')]
+            .find(button => view === 'lore' ? ui.loreBook.element.contains(button) : !ui.loreBook.element.contains(button));
+        const action = findAction(); expect(action.textContent).toBe('Show quest on map'); action.focus();
+        player.quests = player.quests.map(q => q.id === investigation.id ? { ...q, count: 2 } : q);
+        ui.updateJournal(player.quests); expect(document.activeElement).toBe(findAction());
+        const receipts = JSON.stringify(player.quests), tracked = ui.getTrackedObjectives().map(q => q.id);
+        findAction().click(); expect(showQuestOnMap).toHaveBeenCalledWith(investigation.id);
+        expect(ui.getTrackedObjectives().map(q => q.id)).toEqual(tracked); expect(JSON.stringify(player.quests)).toBe(receipts);
+        expect(ui.onAcceptQuest).not.toHaveBeenCalled(); expect(ui.onCompleteQuest).not.toHaveBeenCalled();
+    });
+
     test('lore has its own view; current task links to quests and map without claiming or accepting', () => {
         expect(ui.loreBook.element.hidden).toBe(false);
         expect(document.querySelector('.chronicle-journal').hidden).toBe(true);
