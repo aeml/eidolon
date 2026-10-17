@@ -56,7 +56,7 @@ export function partyDungeonCharacter(catalog, quests, className, name, profile 
     const tank = className === 'Fighter', rogue = className === 'Rogue';
     const names = {
         mainHand: { Fighter: 'Iron Sword', Cleric: 'Cleric Mace', Wizard: 'Wooden Staff', Rogue: 'Steel Dagger' }[className],
-        offHand: tank || rogue ? 'Wooden Shield' : 'Spell Tome',
+        offHand: tank ? 'Wooden Shield' : rogue ? 'Iron Sword' : 'Spell Tome',
         head: tank ? 'Iron Helm' : rogue ? 'Leather Cap' : 'Silk Hood',
         chest: tank ? 'Plate Mail' : rogue ? 'Leather Tunic' : 'Robes',
         legs: tank ? 'Plate Greaves' : rogue ? 'Leather Pants' : 'Silk Skirt',
