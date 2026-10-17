@@ -7,7 +7,7 @@ import { openDungeonGuide } from './dungeon-guide.js';
 import { walkInvestigationWaypoints } from './chronicle-investigation-route.js';
 import { darkRealmChapters } from '../../src/data/chronicleCatalog.js';
 import { createInvestigationTravelDefense } from './fresh-investigation-combat.js';
-import { captureInstanceGrounding } from './instance-ground-observation.js';
+import { captureInstanceGrounding, captureGroundingReturn } from './instance-ground-observation.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off', actionTimeout: 20_000 });
 
@@ -117,6 +117,7 @@ test('prepared expedition entrant discovers shore records, claims Ilyra’s rewa
         console.log(`[dark-expedition] recorded ${site.id} through ordinary travel and E inspection`);
     }
     await returnToTown(page, { allowRespawn: false });
+    await captureGroundingReturn(page, testInfo, 'dark-first-return');
     await enterRealm();
     await openCampIlyra();
     const before = await readQuest();
@@ -146,6 +147,7 @@ test('prepared expedition entrant discovers shore records, claims Ilyra’s rewa
         grantedGold: before.rewardGold, grantedResonanceXP: before.rewardXP });
     expect(await page.evaluate(() => window.game.player.gold)).toBe(gold + before.rewardGold);
     await returnToTown(page, { allowRespawn: false });
+    await captureGroundingReturn(page, testInfo, 'dark-final-return');
     console.log('[dark-expedition] shared entry, three discoveries, manual camp reward, saved reconnect and Recall passed; prepared prerequisites are not earned campaign evidence');
     expect(failures, failures.join('\n')).toEqual([]);
 });

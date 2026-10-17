@@ -30,6 +30,8 @@ export async function captureInstanceGrounding(page, testInfo, label, minimumAct
                 return { local: actor === game.player, class: actor.mesh?.userData.authoredClass,
                     y: actor.position.y, meshY: actor.mesh?.position.y, fallback: Boolean(actor.mesh?.userData.assetFallback),
                     equippedItems: actor.mesh?.userData.equipmentVisualItemCount || 0,
+                    equipmentMissing: actor.mesh?.userData.equipmentVisualMissing?.length || 0,
+                    equipmentFallback: actor.mesh?.userData.equipmentVisualFallback?.length || 0,
                     partyRing: ring && { y: ring.getWorldPosition(new THREE.Vector3()).y, depthTest: ring.material.depthTest } };
             }) };
     });
@@ -41,6 +43,7 @@ export async function captureInstanceGrounding(page, testInfo, label, minimumAct
     expect(evidence.actors.length).toBeGreaterThanOrEqual(minimumActors);
     for (const actor of evidence.actors) {
         expect(actor.class).toBeTruthy(); expect(actor.fallback).toBe(false);
+        expect(actor.equippedItems).toBe(14); expect(actor.equipmentMissing).toBe(0); expect(actor.equipmentFallback).toBe(0);
         expect(actor.y).toBe(0); expect(actor.meshY).toBeCloseTo(0, 5);
         if (!actor.local) {
             expect(actor.partyRing).toBeTruthy(); expect(actor.partyRing.depthTest).toBe(true);
@@ -48,4 +51,14 @@ export async function captureInstanceGrounding(page, testInfo, label, minimumAct
         }
     }
     if (process.env.EIDOLON_E2E_REQUIRE_NATIVE_GPU === '1') expect(evidence.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
+}
+
+export async function captureGroundingReturn(page, testInfo, label) {
+    if (process.env.EIDOLON_INSTANCE_GROUND_REVIEW !== '1') return;
+    const evidence = await page.evaluate(() => ({ instance: window.game.currentInstanceId,
+        overworldVisible: window.game.renderSystem.staticEnvironmentGroup.visible,
+        player: window.game.player.position.toArray(), realm: window.game.renderSystem.currentRealm }));
+    await writeFile(testInfo.outputPath(`grounding-${label}.json`), JSON.stringify(evidence, null, 2));
+    await page.screenshot({ path: testInfo.outputPath(`grounding-${label}.png`) });
+    expect(evidence.instance || '').toBe(''); expect(evidence.overworldVisible).toBe(true); expect(evidence.realm).toBe('town');
 }
