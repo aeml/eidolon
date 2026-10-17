@@ -409,8 +409,14 @@ triangle results; it is not a whole-world performance acceptance.
 Post68 guarded High-only elemental instancing remains unselected. Two native
 High cases pass96views, but the first Djinn CPU windows regress despite lower
 draw calls; Roc timing is inconclusive. No unchanged timing retry was made.
-[Findings](2026-10-17-elemental-instance-unselected.md). A separate opt-in
-constructor surface prototype is still under review and is not deployed.
+[Findings](2026-10-17-elemental-instance-unselected.md). The separate surface
+prototype also remains unselected: 40 advanced / 40 raw-factory native cases
+pass, but five of twenty dense CPU comparisons are inconclusive. Actual visible
+Fire submissions fall160→113 while triangles rise48,723→48,853 at the view edge;
+live CPU is mixed. Three distinct diagnostic failures and their corrections are
+retained; no fourth timing retry or Air factory run. Continue required game/
+environment work without selecting experimental runtime solely on draw counts.
+[Surface findings](2026-10-17-elemental-surfaces-unselected.md).
 
 Post66 native diagnosis rules out matrix-upload avoidance: all 3,238 existing
 written batch targets change, despite 3.75% equal individual writes. A fresh

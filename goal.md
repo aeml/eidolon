@@ -2182,3 +2182,14 @@ normal-input party/save checks are accepted. Moving 492/360 draw peaks and Air
 readiness/owner/F1–F5/beta/cohort/1.99/handoff goal active. Human pacing, physical
 phone feedback and soak/stress remain deferred.
 [Acceptance](docs/plans/2026-10-17-release1-79-68-acceptance.md).
+
+## October 17 unselected surface findings
+
+Accepted public runtime remains Alpha1.79.68/89f60d0a8. The isolated surface
+candidate preserves component geometry/appearance but changes world-edge
+submission granularity (+130triangles despite160→113draws) and has mixed live
+CPU. No runtime selection,69preparation or unchanged timing retry. Closed native/
+CPU/three Fire diagnostic outcomes are retained in a verified frozen inventory.
+[Findings](docs/plans/2026-10-17-elemental-surfaces-unselected.md).
+Continue remaining code-owned game/environment/interior work; all original
+features/readiness/owner/beta/1.99 gates remain active, with soak/stress deferred.
