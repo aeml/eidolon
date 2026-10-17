@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { test } from './static-delivery-test.js';
 import { runGearedPartyRoute } from './geared-party-route.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });

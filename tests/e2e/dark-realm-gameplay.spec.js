@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { expect, test } from '@playwright/test';
+import { expect, test } from './static-delivery-test.js';
 import { partyDungeonCharacter, requireIsolatedPartyFixture } from '../partyDungeonFixture.js';
 import { seedActor } from './geared-party-route.js';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, projectEntity, returnToTown, selectGraphicsThroughSettings } from './helpers.js';
