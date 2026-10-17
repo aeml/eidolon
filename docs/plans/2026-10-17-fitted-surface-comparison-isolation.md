@@ -23,20 +23,33 @@ not waive a visual limit or qualify the independent simplification difference.
 Frozen150-file accepted-source control:
 `775b61300c30d2c40000cd803f6c7b41e53a8275652a16cdbcc3997265b98aa1`.
 
-The fitted-surface fixture now compares original source geometry while changing
-only fitted submission batching, retains all70exact pose/draw assertions per
-quality and restores the geometry owner in a finally block. Its subsequent
-ABBA observations wait for fully settled production geometry. Those observations
-are not a frame-budget acceptance. This makes the intended single-variable
-equivalence check explicit instead of relying on an unfinished worker queue.
+A private follow-up isolates original source geometry during the fitted-surface
+comparison, retaining all70exact pose/draw assertions and restoring the geometry
+owner in a finally block. The same High Cleric case still differs. A new two-case
+native raw-source control runs accepted74 and corrected color modules separately.
+Both retain the same70delta/triangle rows, the same five changed pixels and
+byte-identical before/after images. Those pixels are near the robe/feet/shadow,
+at x642–644,y416–420. The two cases remain failed. Frozen24-file raw control:
+`0ba9008c30aa63edb7f37decd991846dd0fc43ee20df99170157313bf9594e65`.
+
+The provisional component-fixture isolation is not selected. The original
+fitted-source comparison and its zero-tolerance assertion remain unchanged.
+Its known High discrepancy is open work, with accepted/current controls retained;
+it is not reclassified as passed or hidden by disabling another renderer.
 
 Two added native High/Low cases separately keep the production geometry owner
 enabled throughout. They toggle only color submission batching on the same
 prepared actors, exercise hidden initial/equipment generations and Rogue stealth
 restoration, and require132exact pose comparisons, equal triangle/swap counts,
 active prepared derivatives and restored eligible batches. The mandatory native
-release step includes both cases; hosted coverage is unchanged. Native outcomes
-for the changed fixtures remain pending. No pixel tolerance is raised.
+release step includes both cases; hosted coverage is unchanged. Both new cases pass all132comparisons with equal triangles and active prepared
+swaps; restored groups are present in every eligible pose. The exact resource
+pool case and Low component comparison also pass. The five-case run remains
+fourpassed/onefailed; the High component failure is retained in a32-file packet:
+`1119fa904333e747a45eaaa4877c7fa55528e6a0f9b64bfe368f974192e51829`.
+Only the two default-production cases and unchanged exact resource case qualify
+the new color-recovery scope. This is not a clean five-case run or full fitted-
+surface/art/performance acceptance. No pixel tolerance is raised.
 
 Private evidence: `/home/aeml/.local/share/eidolon-danger-audio-mix-20261017`.
 Full game/world/art/audio/performance/device/operations/owner/beta/1.99 scope
