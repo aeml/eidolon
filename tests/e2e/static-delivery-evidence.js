@@ -1,4 +1,5 @@
 import { readdirSync } from 'node:fs';
+import { writeFile } from 'node:fs/promises';
 import { performance } from 'node:perf_hooks';
 import { knownModules, safeNetworkCode } from './startup-module-evidence.js';
 
@@ -104,8 +105,12 @@ export async function recordStaticDelivery({ page, baseURL }, use, testInfo) {
     try { await use(evidence); }
     finally {
         evidence.dispose();
+        // Line-only live recovery runs do not persist inline attachment bodies.
+        // Save the same bounded, query-free metadata before reporter attachment.
+        const path = testInfo.outputPath('static-delivery-evidence.json');
+        await writeFile(path, JSON.stringify(evidence.snapshot()) + '\n');
         await testInfo.attach('static-delivery-evidence', {
-            body: JSON.stringify(evidence.snapshot()), contentType: 'application/json'
+            path, contentType: 'application/json'
         });
     }
 }
