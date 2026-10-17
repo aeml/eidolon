@@ -472,6 +472,45 @@ neither path restores journals/images or authorizes reopening game admission.
 Production restoration, off-machine destination, retention and recovery-time/
 recovery-point objectives still require their own operator decisions.
 
+### Transfer a selected recovery set over SSH
+
+After choosing an approved destination/access scope, copy one explicit completed
+point with the local `copy_upgrade_backup.sh` helper:
+
+```sh
+bash ./deploy/copy_upgrade_backup.sh \
+  /exact/backups/save-upgrade-YYYYMMDDTHHMMSSZ-XXXXXX \
+  backup-user@approved-backup-host /private/backup-root /exact/pinned-known-hosts 22
+```
+
+This is the full private Mongo/journal/previous-image recovery set. Both machines
+need Bash, GNU coreutils/tar and gzip; the sender also needs OpenSSH. The remote
+root must already exist, be owned by the receiving user with mode0700, and use
+a physical path without symlink traversal. Provide a trusted pinned known-hosts
+file. Authentication uses the SSH agent or default identity files; per-host SSH
+configuration, connection sharing and forwarding are disabled. New or changed
+host keys refuse; the tool never discovers or accepts a key automatically.
+
+The receiver extracts only fixed artifacts into a new private staging directory,
+checks pinned manifest/marker/verifier hashes, then verifies every artifact hash,
+gzip stream and previous-image pair. It flushes only the selected files and
+directories before publishing `COMPLETE` and the final directory. The normal
+restore verifier still requires `COMPLETE`; its `--pending-transfer` mode is only
+an integrity check used by the receiver before publication. It does not authorize
+a restore or make a partial transfer eligible for ordinary recovery.
+
+An existing destination point is never overwritten. Failed transfers retain
+private files for inspection, without a successful completion receipt. A failure
+at the final directory flush can leave that directory without `COMPLETE`; inspect
+it explicitly rather than assuming its name establishes recovery readiness.
+No backup is chosen automatically, pruned, restored or scheduled. Source points
+and game services are unchanged. Copy verification does not establish archive
+authenticity, at-rest protection, save/image compatibility or the chosen recovery
+objectives. Destination approval and the actual off-machine exercise remain
+separate from the qualified synthetic loopback transport.
+
+### Mongo-only recovery after explicit approval
+
 After explicit recovery approval, specify the exact archive and confirm the
 loss of subsequent progress. The default requires an empty `eidolon` database,
 such as an isolated restoration target. There is no automatic archive selection:
