@@ -52,7 +52,11 @@ test('constructed vigil stays in its former apron and shares kit shapes across r
     expect(portal.position.toArray()).toEqual([0, 0, -.05]);
     expect(portal.getWorldPosition(new THREE.Vector3()).toArray()).toEqual([0, 0, -10.13]);
     const opening = new THREE.Box3().setFromObject(portal);
-    expect(opening.min.y).toBeGreaterThanOrEqual(.28); expect(opening.max.y).toBeGreaterThan(8);
+    // The veil now reaches the shallow Y.03 threshold above server ground,
+    // below the ordinary Y.05 marker plane. Preserve the original tall opening.
+    expect(opening.min.y).toBeCloseTo(.03, 6);
+    expect(opening.min.y).toBeLessThan(.05);
+    expect(opening.max.y).toBeGreaterThan(8);
 });
 
 test('cache and font retain interaction centers and fit the former visual aprons', () => {
