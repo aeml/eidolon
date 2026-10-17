@@ -140,13 +140,18 @@ for (const quality of ['high', 'low']) test(`${quality}: Dark record rooms retai
             }
         };
     }, quality);
-    const rows = [], motion = []; let cleanup;
+    const rows = [], motion = []; let cleanup, failure;
+    const persist = () => writeFile(testInfo.outputPath('record-architecture.json'), JSON.stringify({ quality, rows, motion, cleanup,
+        complete: !failure && cleanup?.canvasRetired === true && rows.length === 14 && motion.length === 4,
+        failureName: failure?.name,
+        scope: 'Paired native component views at fourteen existing Dark Realm records, ordinary zoom18. Four prepared fourteen-slot Fighter/production-HUD approaches per quality, 90 real RAF frames each. Exact colliders and per-site GPU memory restoration; shallow floor/marker depth. No authoritative travel/progression, frame-time, physical-device, capacity or final-art acceptance.' }, null, 2));
     try {
         const ids = await page.evaluate(() => window.__darkRecordArchitecture.ids);
         expect(ids).toHaveLength(14);
         for (const id of ids) {
             const { row, referencePng, currentPng } = await page.evaluate(id => window.__darkRecordArchitecture.view(id), id);
             rows.push(row);
+            await persist();
             for (const [name, data] of [['prior', referencePng], ['current', currentPng]])
                 await writeFile(testInfo.outputPath(`${quality}-${id}-${name}.png`), Buffer.from(data.split(',')[1], 'base64'));
             expect(row.zoom).toBe(18); expect(row.changedPixels).toBeGreaterThan(200);
@@ -160,6 +165,7 @@ for (const quality of ['high', 'low']) test(`${quality}: Dark record rooms retai
         for (const id of ['dark_ferry_manifest', 'dark_waiting_table', 'dark_architect_plan', 'dark_bakers_ledger']) {
             const result = await page.evaluate(id => window.__darkRecordArchitecture.walk(id), id);
             motion.push(result);
+            await persist();
             expect(result.class).toBe('Fighter'); expect(result.items).toBe(14);
             expect(result.missing).toBe(0); expect(result.fallback).toBe(0);
             expect(result.rows).toHaveLength(90);
@@ -170,10 +176,13 @@ for (const quality of ['high', 'low']) test(`${quality}: Dark record rooms retai
             await page.screenshot({ path: testInfo.outputPath(`${quality}-${id}-equipped-hud.png`) });
         }
         expect(referenceServed).toBe(true);
+    } catch (error) {
+        failure = error;
     } finally {
-        cleanup = await page.evaluate(() => window.__darkRecordArchitecture.dispose());
-        await writeFile(testInfo.outputPath('record-architecture.json'), JSON.stringify({ quality, rows, motion, cleanup,
-            scope: 'Paired native component views at fourteen existing Dark Realm records, ordinary zoom18. Four prepared fourteen-slot Fighter/production-HUD approaches per quality, 90 real RAF frames each. Exact colliders and per-site GPU memory restoration; shallow floor/marker depth. No authoritative travel/progression, frame-time, physical-device, capacity or final-art acceptance.' }, null, 2));
+        try { cleanup = await page.evaluate(() => window.__darkRecordArchitecture.dispose()); }
+        catch (error) { failure ||= error; cleanup = { canvasRetired: false, unavailable: true }; }
+        await persist();
     }
+    if (failure) throw failure;
     expect(cleanup.canvasRetired).toBe(true); expect(failures, failures.join('\n')).toEqual([]);
 });
