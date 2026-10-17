@@ -5,13 +5,24 @@ import { writeFile } from 'node:fs/promises';
 // no equipment, progression, location, party membership or marker visibility.
 export async function captureInstanceGrounding(page, testInfo, label, minimumActors = 1) {
     if (process.env.EIDOLON_INSTANCE_GROUND_REVIEW !== '1') return;
-    await expect.poll(() => page.evaluate(() => {
-        const game = window.game, ids = new Set(game.uiManager.social.partyData?.members?.map(member => member.id) || []);
-        return [game.player, ...game.remotePlayers.values()].filter(actor =>
-            (actor === game.player || ids.has(actor.id)) && actor.mesh?.userData.authoredClass && !actor.mesh.userData.assetFallback &&
-            actor.mesh.userData.equipmentVisualItemCount === 14 && !actor.mesh.userData.equipmentVisualMissing?.length &&
-            !actor.mesh.userData.equipmentVisualFallback?.length).length;
-    }), { message: 'Server-delivered party meshes and complete outfits must be ready for grounding observation' }).toBeGreaterThanOrEqual(minimumActors);
+    let readiness;
+    try {
+        await expect.poll(async () => {
+            readiness = await page.evaluate(() => {
+                const game = window.game, ids = new Set(game.uiManager.social.partyData?.members?.map(member => member.id) || []);
+                return [game.player, ...game.remotePlayers.values()].filter(actor => actor === game.player || ids.has(actor.id))
+                    .map(actor => ({ local: actor === game.player, class: actor.mesh?.userData.authoredClass || null,
+                        fallback: Boolean(actor.mesh?.userData.assetFallback),
+                        equippedItems: actor.mesh?.userData.equipmentVisualItemCount || 0,
+                        missing: actor.mesh?.userData.equipmentVisualMissing || [],
+                        equipmentFallback: actor.mesh?.userData.equipmentVisualFallback || [] }));
+            });
+            return readiness.filter(actor => actor.class && !actor.fallback && actor.equippedItems === 14 &&
+                !actor.missing.length && !actor.equipmentFallback.length).length;
+        }, { message: 'Server-delivered party meshes and complete outfits must be ready for grounding observation' }).toBeGreaterThanOrEqual(minimumActors);
+    } finally {
+        await writeFile(testInfo.outputPath(`grounding-readiness-${label}.json`), JSON.stringify({ actors: readiness }, null, 2));
+    }
     const evidence = await page.evaluate(async () => {
         const THREE = await import('three');
         const game = window.game, render = game.renderSystem;
