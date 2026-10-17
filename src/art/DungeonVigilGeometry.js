@@ -51,6 +51,20 @@ export function createDungeonBevelBlock() {
     return finish(geometry, 'bevel-block');
 }
 
+export function createDungeonWallPier(width, height, depth) {
+    // A small physical chamfer catches the room light without projecting
+    // beyond the existing wall. Keep its width constant in world metres.
+    const bevel = Math.min(.08, width * .12, depth * .12, height * .08);
+    const x = width / 2 - bevel, y = height / 2 - bevel;
+    const shape = new THREE.Shape();
+    shape.moveTo(-x, -y); shape.lineTo(x, -y);
+    shape.lineTo(x, y); shape.lineTo(-x, y); shape.closePath();
+    const geometry = new THREE.ExtrudeGeometry(shape, { depth: depth - bevel * 2, steps: 1,
+        bevelEnabled: true, bevelSize: bevel, bevelThickness: bevel, bevelSegments: 1, curveSegments: 1 });
+    geometry.translate(0, 0, -depth / 2 + bevel);
+    return finish(geometry, 'chamfered-wall-pier');
+}
+
 export function createDungeonFontBasin() {
     // Continuous outer foot, bowl, turned rim and inner basin; no opaque top
     // pretending to be a hollow vessel. Bounds retain the former font apron.

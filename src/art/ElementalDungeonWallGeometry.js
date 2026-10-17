@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { createDungeonWallPier } from './DungeonVigilGeometry.js';
 
 const profiles = Object.freeze({
     molten_core: { span: 12, pier: 1.3, band: .9, crown: .7, arch: 'forge' },
@@ -17,8 +18,8 @@ export function createElementalDungeonWallGeometry(type, width, height, depth, q
     if (width < 6 || height < 6) return new THREE.BoxGeometry(width, height, depth);
     const parts = [], bays = Math.max(1, Math.min(8, Math.floor(width / profile.span)));
     const span = width / bays, pierWidth = Math.min(profile.pier, span * .16);
-    const box = (w, h, d, x, y, z = 0, topDepth = d) => {
-        const part = new THREE.BoxGeometry(w, h, d).toNonIndexed();
+    const box = (w, h, d, x, y, z = 0, topDepth = d, pier = false) => {
+        const part = pier ? createDungeonWallPier(w, h, d) : new THREE.BoxGeometry(w, h, d).toNonIndexed();
         const p = part.attributes.position;
         for (let i = 0; i < p.count; i++) if (p.getY(i) > 0) p.setZ(i, p.getZ(i) * topDepth / d);
         part.translate(x, y - height / 2, z); part.computeVertexNormals(); parts.push(part);
@@ -34,7 +35,7 @@ export function createElementalDungeonWallGeometry(type, width, height, depth, q
     for (let i = 0; i <= bays; i++) {
         const x = THREE.MathUtils.clamp(-width / 2 + i * span,
             -width / 2 + pierWidth / 2, width / 2 - pierWidth / 2);
-        box(pierWidth, upper - lower, depth * .88, x, (upper + lower) / 2);
+        box(pierWidth, upper - lower, depth * .88, x, (upper + lower) / 2, 0, depth * .88, true);
         box(pierWidth * .9, .28, depth * .96, x, lower + .18);
         box(pierWidth * .9, .25, depth * .96, x, upper - .16);
     }

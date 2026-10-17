@@ -1,13 +1,14 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { createDungeonWallPier } from './DungeonVigilGeometry.js';
 
 // One merged wall, entirely inside the original solid wall envelope. Blind
 // funerary arches are recesses, not doors or additions to the walkable floor.
 export function createCryptWallGeometry(width, height, depth) {
     if (width < 5 || height < 6) return new THREE.BoxGeometry(width, height, depth);
     const parts = [];
-    const addBox = (w, h, d, x, y, z) => {
-        const shape = new THREE.BoxGeometry(w, h, d).toNonIndexed();
+    const addBox = (w, h, d, x, y, z, pier = false) => {
+        const shape = pier ? createDungeonWallPier(w, h, d) : new THREE.BoxGeometry(w, h, d).toNonIndexed();
         shape.translate(x, y - height / 2, z); parts.push(shape);
     };
     addBox(width, height, depth * .62, 0, height / 2, 0);
@@ -19,7 +20,7 @@ export function createCryptWallGeometry(width, height, depth) {
     for (let i = 0; i <= bays; i++) {
         const x = THREE.MathUtils.clamp(-width / 2 + i * span,
             -width / 2 + pierWidth / 2, width / 2 - pierWidth / 2);
-        addBox(pierWidth, height - .65, depth * .96, x, height / 2, 0);
+        addBox(pierWidth, height - .65, depth * .96, x, height / 2, 0, true);
     }
     for (let bay = 0; bay < bays; bay++) {
         const x = -width / 2 + (bay + .5) * span;
