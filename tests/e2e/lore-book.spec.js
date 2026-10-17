@@ -37,6 +37,39 @@ for (const [width, height, mobile] of [[1280, 800, false], [390, 844, true]]) te
         await page.screenshot({ path: testInfo.outputPath('book-overview.png') });
 
         const search = book.getByRole('searchbox', { name: 'Search your memories' });
+        const indexedArticle = book.locator('article');
+        await activate(book.getByRole('button', { name: 'People', exact: true }));
+        await search.fill('Mara');
+        await activate(book.locator('[data-memory-id="people:mara"]'));
+        const readMemory = indexedArticle.getByRole('button', { name: "Read Mara's diary", exact: true });
+        await readMemory.focus();
+        await page.evaluate(() => {
+            const { ui, quests } = window.__loreBook;
+            ui.quest.updateJournal([...quests, { id: 'chronicle_saved_letter', completed: true, title: 'A saved letter', lore: 'Mara kept a written account.' }]);
+        });
+        await expect(readMemory).toBeFocused();
+        await page.evaluate(() => window.__loreBook.ui.quest.updateJournal(window.__loreBook.quests));
+        await activate(indexedArticle.getByRole('button', { name: "Read Mara's diary", exact: true }));
+        await expect(indexedArticle.getByRole('heading', { name: "Mara's diary", exact: true })).toBeFocused();
+        await expect(search).toHaveValue('');
+        await indexedArticle.getByRole('button', { name: 'Return to Mara', exact: true }).focus();
+        await page.evaluate(() => {
+            const { ui, quests } = window.__loreBook;
+            ui.quest.updateJournal([...quests, { id: 'chronicle_saved_name', completed: true, title: 'A signed account', lore: 'Mara Fen signed the account.' }]);
+        });
+        await expect(indexedArticle.getByRole('button', { name: 'Return to Mara Fen', exact: true })).toBeFocused();
+        await page.evaluate(() => window.__loreBook.ui.quest.updateJournal(window.__loreBook.quests));
+        await activate(indexedArticle.getByRole('button', { name: 'Return to Mara', exact: true }));
+        await expect(search).toHaveValue('Mara');
+        await expect(book.getByRole('button', { name: 'People', exact: true })).toHaveAttribute('aria-pressed', 'true');
+        await search.fill('');
+        await activate(book.getByRole('button', { name: 'Places', exact: true }));
+        await activate(book.locator('[data-memory-id="places:earth"]'));
+        await expect(indexedArticle).toContainText("Mara's diary");
+        await expect(indexedArticle).not.toContainText('UNSEEN ENDING');
+        expect(await book.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+        await page.screenshot({ path: testInfo.outputPath('book-people-places.png') });
+        await activate(book.getByRole('button', { name: 'All memories', exact: true }));
         await search.fill('Mara');
         const record = book.getByRole('navigation', { name: 'Recorded memories' }).getByRole('button').filter({ hasText: "Mara's diary" });
         await activate(record);
