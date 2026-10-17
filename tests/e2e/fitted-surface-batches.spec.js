@@ -15,6 +15,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) {
             const { Actor } = await import('/src/entities/Actor.js');
             const { applyActorStealthAppearance, restoreActorStealthAppearance } = await import('/src/entities/ActorStealthAppearance.js');
             const { renderFrameInterval } = await import('/tests/e2e/renderFrameInterval.js');
+            const { waitForGeometryOwner } = await import('/tests/e2e/geometry-owner-observation.js');
             document.getElementById('start-screen').style.display = 'none';
             const render = new RenderSystem(quality === 'low'); render.setGraphicsQuality(quality);
             await render.preloadEnvironment(); render.waterTexture = null;
@@ -49,10 +50,17 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) {
                 }
             };
             const compare = (type, label) => {
-                show(type, 'previous'); capture(); const before = capture(), repeat = capture();
-                show(type, 'candidate'); capture(); const after = capture();
-                return { type, label, baselineRepeat: delta(before.pixels, repeat.pixels), candidate: delta(before.pixels, after.pixels),
-                    previous: { calls: before.calls, triangles: before.triangles }, current: { calls: after.calls, triangles: after.triangles } };
+                // Compare fitted surface submissions with identical source
+                // geometry. Independently simplified merged/unmerged outfits
+                // are different inputs, not a batching equivalence control.
+                const geometry = render.actorGameplayGeometry.pass, enabled = geometry.enabled;
+                geometry.enabled = false;
+                try {
+                    show(type, 'previous'); capture(); const before = capture(), repeat = capture();
+                    show(type, 'candidate'); capture(); const after = capture();
+                    return { type, label, baselineRepeat: delta(before.pixels, repeat.pixels), candidate: delta(before.pixels, after.pixels),
+                        previous: { calls: before.calls, triangles: before.triangles }, current: { calls: after.calls, triangles: after.triangles } };
+                } finally { geometry.enabled = enabled; }
             };
             try {
                 for (const type of Object.keys(outfits)) for (const mode of ['previous', 'candidate']) {
@@ -96,6 +104,8 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) {
                     if (entry.root.userData.equipmentVisualMissing?.length) throw new Error('Mixed fit failed');
                 }
                 pose('Run', .3, Math.PI); for (const type of Object.keys(outfits)) reports.push(compare(type, 'mixed-back-run'));
+                const preparation = await waitForGeometryOwner(render);
+                if (render.actorGameplayGeometry.delivery.stats.rejected) throw Error('Geometry work rejected');
                 const elapsedNow = performance.now.bind(performance);
                 for (const [i, type] of Object.keys(outfits).entries()) for (const entry of actors.filter(entry => entry.type === type)) entry.root.position.x = (i - 1.5) * 4;
                 pose('CombatIdle', .3, 0);
@@ -114,9 +124,9 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) {
                 }
                 show(null, 'candidate'); capture();
                 const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
-                return { quality, reports, uniformCounts, timings, previewPNG: copy.toDataURL('image/png'),
+                return { quality, reports, uniformCounts, timings, preparation, sourceGeometryComparisons: true, previewPNG: copy.toDataURL('image/png'),
                     renderer: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER),
-                    scope: 'Supplied four-class rigs/fitted fourteen-slot outfits under production lighting/composer; fixed sampled poses, no connected party/busy fight/device certificate.' };
+                    scope: 'Exact fitted surface comparisons use original source geometry with production lighting/composer; ABBA observations use fully settled default prepared geometry. Independent prepared color-batch comparisons have separate coverage. No connected party/busy fight/device certificate.' };
             } finally { for (const entry of actors) { entry.actor.dispose(); entry.root.removeFromParent(); } render.dispose(); }
         }, quality);
         await writeFile(testInfo.outputPath('candidate.png'), Buffer.from(result.previewPNG.split(',')[1], 'base64')); delete result.previewPNG;
@@ -124,6 +134,8 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) {
         await testInfo.attach('fitted-surface-comparison', { path: artifact, contentType: 'application/json' });
         console.log('[fitted-surface-timings]', JSON.stringify({ quality, timings: result.timings }));
         expect(result.renderer).not.toMatch(/SwiftShader|llvmpipe/i);
+        expect(result.sourceGeometryComparisons).toBe(true);
+        expect(result.preparation.valid).toBe(true); expect(result.preparation.restored).toBe(true);
         for (const entry of result.uniformCounts) {
             if (entry.mode === 'candidate') expect(entry.batches).toBeGreaterThan(0);
             else expect(entry.batches).toBe(0);
