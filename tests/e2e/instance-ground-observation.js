@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
+import { DARK_REALM_PATHS, DARK_REALM_MAIN_PATHS } from '../../src/data/darkRealmPopulation.js';
 
 // Optional read-only observations on existing authenticated routes. They grant
 // no equipment, progression, location, party membership or marker visibility.
@@ -26,6 +27,7 @@ export async function captureInstanceGrounding(page, testInfo, label, minimumAct
     const evidence = await page.evaluate(async () => {
         const THREE = await import('three');
         const game = window.game, render = game.renderSystem;
+        const streets = game.getInstanceEnvironmentGroup().getObjectByName('Dark Realm authored paths');
         const ids = new Set(game.uiManager.social.partyData?.members?.map(member => member.id) || []), floors = [];
         game.getInstanceEnvironmentGroup().traverse(part => {
             if (part.name === 'DungeonUnionFloor' || part.name === 'dark-realm-union-floor' ||
@@ -35,6 +37,8 @@ export async function captureInstanceGrounding(page, testInfo, label, minimumAct
         const actors = [game.player, ...game.remotePlayers.values()].filter(actor => actor === game.player || ids.has(actor.id));
         const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
         return { instance: game.currentInstanceId, type: game.currentInstanceType, quality: render.graphicsQuality,
+            darkStreets: streets && { meshes: streets.children.length,
+                ids: streets.children.flatMap(mesh => mesh.userData.worldPathIds || [mesh.userData.worldPathId]) },
             floors, overworldVisible: render.staticEnvironmentGroup.visible,
             calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles,
             renderer: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER),
@@ -54,6 +58,10 @@ export async function captureInstanceGrounding(page, testInfo, label, minimumAct
     expect(evidence.floors.length).toBeGreaterThan(0);
     expect(evidence.floors.every(floor => Math.abs(floor.y) < 1e-8)).toBe(true);
     expect(evidence.actors.length).toBeGreaterThanOrEqual(minimumActors);
+    if (process.env.EIDOLON_DARK_STREETS_REVIEW === '1' && evidence.type === 'dark_realm') {
+        expect(evidence.darkStreets.meshes).toBe(DARK_REALM_MAIN_PATHS.length);
+        expect(evidence.darkStreets.ids.sort()).toEqual(DARK_REALM_PATHS.map(path => path.id).sort());
+    }
     for (const actor of evidence.actors) {
         expect(actor.class).toBeTruthy(); expect(actor.fallback).toBe(false);
         expect(actor.equippedItems).toBe(14); expect(actor.equipmentMissing).toBe(0); expect(actor.equipmentFallback).toBe(0);
