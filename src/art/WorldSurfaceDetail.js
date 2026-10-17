@@ -68,11 +68,13 @@ vec3 eidolonSurface(vec3 p) {
     // the merged gaming floor. Thin seams and relief fade together at distance.
     float cloud = eidolonNoise(uv * .22 + vec2(17., 31.));
     vec2 drift = vec2(eidolonNoise(uv * .48), eidolonNoise(uv * .37 + vec2(23., 7.))) - .5;
-    float mineral = eidolonNoise(uv * vec2(.58, .31) + drift * 1.7);
-    float veinWidth = mix(.007, .018, cloud);
+    vec2 flow = vec2(dot(uv, vec2(.82, .57)), dot(uv, vec2(-.57, .82)));
+    float mineral = eidolonNoise(flow * vec2(.22, 1.5) + drift * .5);
+    float veinWidth = mix(.002, .006, cloud);
     float veinFootprint = max(fwidth(mineral), .001);
     float vein = (1. - smoothstep(veinWidth - veinFootprint, veinWidth * 2. + veinFootprint,
-        abs(mineral - .53))) * (1. - smoothstep(.045, .14, veinFootprint));
+        abs(mineral - .53))) * min(1., veinWidth / veinFootprint)
+        * (1. - smoothstep(.045, .14, veinFootprint));
     // Four-metre stone panels share their joints with the eight-metre physical
     // slabs. They add no geometry, collision, light source or texture allocation.
     vec2 panel = uv / 4.;
@@ -80,7 +82,7 @@ vec3 eidolonSurface(vec3 p) {
     vec2 footprint = max(fwidth(panel), vec2(.0001));
     vec2 inside = smoothstep(vec2(.0015) - footprint * .5, vec2(.004) + footprint * .5, edge);
     float joint = (1. - inside.x * inside.y) * (1. - smoothstep(.08, .25, max(footprint.x, footprint.y)));
-    return vec3(.89 + cloud * .12 + mineral * .06 - vein * .17 - joint * .13,
+    return vec3(.89 + cloud * .12 + mineral * .06 - vein * .12 - joint * .13,
         .3 + cloud * .08 + vein * .08 + joint * .18, -vein * .0005 - joint * .0015);
 #elif EIDOLON_SURFACE == 9
     // World-registered coarse canvas, including baked and instanced cloth.
