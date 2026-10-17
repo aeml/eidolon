@@ -1,6 +1,6 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
-Alpha 1.79.78 is prepared with verified standalone recovery points, selected
+Alpha 1.79.78 is deployed and verified with verified standalone recovery points, selected
 SSH transfer and an updated promise register. Operators can explicitly capture
 Mongo, private journals and the original immutable server image between updates.
 Standalone capture verifies its own new point and restores the same originally
@@ -28,7 +28,9 @@ not close final art, supported-device, feature-freeze or beta gates.
 [Standalone recovery](2026-10-17-standalone-recovery-qualification.md).
 [Selected transfer](2026-10-17-backup-transfer-qualification.md).
 Alpha 1.79.77 is accepted after its exact CI/deployment/public verification.
-This prepared release still requires its own exact CI and live acceptance. Full original game/
+All ten CI jobs pass. Fresh normal-TLS verification matches both78 identities, ready database, open registration, flat terrain and all393 asset pins at 2026-10-17T22:57:43.766027+00:00.
+[Acceptance](2026-10-17-release1-79-78-acceptance.md).
+Full original game/
 world/art/combat/audio/performance/device/security/operations/owner/F1-F5/beta/
 1.99 scope stays active. Human campaign/phone feedback and soak/stress remain
 deferred, not passed. Public access and earned progression are unchanged.
