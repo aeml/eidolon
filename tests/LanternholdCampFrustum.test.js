@@ -79,15 +79,18 @@ test('existing default, missing capability and empty placement paths retain inst
 
 test('world-generation uses the coherent residential ward with either renderer capability', async () => {
     const results = [];
-    for (const supported of [false, true]) {
+    for (const [quality, supported] of [['high', false], ['high', true], ['low', false], ['low', true], ['medium', false]]) {
         const scene = new THREE.Group(), collision = { addCollider: jest.fn(), addOrientedCollider: jest.fn(), addCircularCollider: jest.fn() };
-        await new WorldGenerator(scene, collision, { campInstanceFrustum: supported }).loadBuildings(0, 200);
+        const world = new WorldGenerator(scene, collision, { campInstanceFrustum: supported, graphicsQuality: quality });
+        await world.loadBuildings(0, 200);
         const field = scene.getObjectByName('Lanternhold residential wards');
         expect(field.userData.walkFootprints).toHaveLength(15);
-        expect(field.children.every(mesh => supported ? mesh.isBatchedMesh : mesh.isInstancedMesh)).toBe(true);
+        const clipped = supported || quality === 'low';
+        expect(field.children.every(mesh => clipped ? mesh.isBatchedMesh : mesh.isInstancedMesh)).toBe(true);
+        expect(world.campInstanceFrustum).toBe(supported);
         results.push({ colliders: collision.addCollider.mock.calls, oriented: collision.addOrientedCollider.mock.calls,
             circles: collision.addCircularCollider.mock.calls });
         release(field);
     }
-    expect(results[1]).toEqual(results[0]);
+    for (const result of results.slice(1)) expect(result).toEqual(results[0]);
 });

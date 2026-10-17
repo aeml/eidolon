@@ -1,0 +1,47 @@
+{
+  "source": "fe628b8216b579b9ccb7e9ded1b2fe47ca9928e1",
+  "base": "92241ff1fd5fdd3e91bae08b6af26784c1cfcc1a",
+  "status": "Qualified documentation candidate, unpublished; exact72 acceptance required before another release.",
+  "changes": [
+    "Garment row and independent armor/held overrides, applying/restoring appearances, learning owned looks and Veyra EP unlocks.",
+    "Journal Story/Contracts/tracker navigation, manual acceptance/claims, earned Lore Book search/categories and current task.",
+    "Device-local dragged window positions, separate desktop profiles, phone layout and reset control."
+  ],
+  "sourceReview": [
+    "src/ui/WardrobeUI.js",
+    "src/ui/CosmeticVendorUI.js",
+    "src/ui/LoreBook.js",
+    "src/ui/QuestUI.js",
+    "src/ui/UIManagerWindows.js",
+    "index.html#btn-reset-window-layout"
+  ],
+  "verification": {
+    "cpu": {
+      "session": 3997,
+      "exit": 0,
+      "checks": 391,
+      "suites": 2,
+      "seconds": 2.691
+    },
+    "layout": {
+      "session": 50844,
+      "exit": 0,
+      "cases": 2,
+      "seconds": 6.6,
+      "viewports": [
+        1280,
+        390
+      ],
+      "retries": 0,
+      "gpu": "Explicit --disable-gpu and SwiftShader; UI layout/keyboard/overflow only, not native or physical-device acceptance."
+    },
+    "notesAndFollowingHTMLByteExact": true
+  },
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-player-guide-refresh-20261017/.qa-player-guide-refresh",
+    "inventory": "evidence-inventory.json",
+    "files": 11,
+    "sha256": "9cca40f8f40963a6a4a071b54e9be073f9b056ccc6e53aee71a62619cd18abe4"
+  },
+  "limits": "Player-facing copy and existing layout only. No new native/gameplay/campaign/device/performance/beta/operations signoff. Full goal remains active; soak/stress and human campaign/phone feedback stay deferred."
+}
