@@ -48,3 +48,6 @@ The candidate remains isolated pending exact74deployment acceptance and selectio
 into a coherent subsequent milestone. Full class/combat/audio, world/art,
 performance, supported-device, operations, owner and beta/1.99 gates remain open.
 Human campaign/phone feedback and soak/stress remain deferred.
+
+Qualified source:`a9521da735f4b943865afec4253ee0d173802fef`. Closed11-file evidence inventory SHA-256:
+`6fc931ecfe7f072af519ecca0c674c7882088d4c456a3cc728630659fa930298`. Both original negative/fixture packets verified.
