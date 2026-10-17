@@ -1,5 +1,14 @@
 # Owner-added features: implementation and remaining acceptance
 
+Follow-up: the dedicated fresh-login tracking gap below is now qualified by
+source `2109597c895eb962b0bcd825770725040c840c05`: one actual disposable manual
+acceptance/tracking/fresh-login case, retry0, exact personal receipts and storage
+selection retained. Frozen10file inventory
+`2760d65ebdbb74c2750a8a445e2017cd4faa424f6c35e7d41a48fb5338b67389`.
+[Current assembly](2026-10-17-quest-map-and-entry-assembly.md) supersedes that
+earlier missing-evidence finding; deployment77 and final owner reviews remain open.
+The original audit and its byte-identity statements describe its recorded source/time.
+
 Read-only audit of master `b75b0d621320a2b99f03cdb0590d351ee6c8d221`.
 Observed2026-10-17T19:00:22.853Z; the states below describe that checkpoint,
 and later release acceptances take precedence.
