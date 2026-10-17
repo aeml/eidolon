@@ -133,7 +133,10 @@ export function createChronicleSiteModel(site, realm) {
         });
         root.add(clue);
     } else {
-        cylinder(1.9, 2.1, 0.18, stone);
+        // Dark Realm records stand on the authoritative Y0 floor. These
+        // nonblocking stone aprons must stay below ordinary Y.05 party rings.
+        // Other realms retain their existing presentation for separate review.
+        cylinder(1.9, 2.1, realm === 'dark' ? .03 : .18, stone).name = 'ChronicleSiteApron';
         switch (site.model) {
         case 'tide_lens': {
             cylinder(0.7, 1.15, 1.1, stone);

@@ -177,6 +177,9 @@ test('hardware dungeon and additive reviews retain a mandatory native release ga
     expect(native).toContain('tests/e2e/dark-realm-cutaway.spec.js');
     expect(native).toContain('Dark district high cutaway');
     expect(native).toContain('Dark district low cutaway');
+    expect(native).toContain('env EIDOLON_DARK_RECORD_MARKERS=1 node');
+    expect(native).toContain('tests/e2e/dark-record-markers.spec.js');
+    expect(native).toContain('all Dark Realm story sites preserve ordinary party markers');
     expect(native).toContain('tests/e2e/lanternhold-house-cutaway.spec.js');
     expect(native).toContain('Lanternhold high homes reveal');
     expect(native).toContain('Lanternhold low homes reveal');
