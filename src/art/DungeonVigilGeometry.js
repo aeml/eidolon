@@ -71,3 +71,36 @@ export function createDungeonCofferLid() {
     geometry.rotateY(Math.PI / 2); geometry.translate(-.48, 0, 0);
     return finish(geometry, 'vaulted-coffer-lid');
 }
+
+export function createDungeonAmbushPier() {
+    // Four recessed courses and a broken crown read as ruined architecture.
+    // Stay inside the old unit spike apron; one shared geometry/material keeps
+    // the room's existing batching and central encounter space intact.
+    const courses = [];
+    for (const [y, width, height] of [[-.39, .9, .22], [-.15, .54, .22], [.09, .36, .22], [.27, .18, .14]]) {
+        const course = createDungeonBevelBlock();
+        course.scale(width, height, width);
+        if (y > .2) {
+            const p = course.attributes.position;
+            for (let i = 0; i < p.count; i++) {
+                const vertexY = p.getY(i);
+                if (vertexY > 0) p.setY(i, vertexY - .035 * (p.getX(i) / width + .5));
+            }
+            course.computeVertexNormals();
+        }
+        course.translate(0, y, 0);
+        // Keep the upper corners inside the old taper even after the room
+        // leans/stretches the pier. A box's top corner otherwise extends past
+        // the cone apron although both local bounding boxes appear smaller.
+        const p = course.attributes.position;
+        for (let i = 0; i < p.count; i++) {
+            const taper = Math.min(1, (.5 - p.getY(i)) / width);
+            p.setXYZ(i, p.getX(i) * taper, p.getY(i), p.getZ(i) * taper);
+        }
+        course.computeVertexNormals();
+        courses.push(course);
+    }
+    const geometry = mergeGeometries(courses, false);
+    courses.forEach(course => course.dispose());
+    return finish(geometry, 'broken-watch-pier');
+}

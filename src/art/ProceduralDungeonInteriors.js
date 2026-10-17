@@ -9,7 +9,8 @@ import { createCryptWallGeometry } from './CryptWallGeometry.js';
 import { sampleElementalDungeonSurface } from './ElementalDungeonSurface.js';
 import { createElementalDungeonWallGeometry } from './ElementalDungeonWallGeometry.js';
 import { createDungeonVigilBase, createDungeonVigilShaft, createDungeonVigilCage,
-    createDungeonBevelBlock, createDungeonFontBasin, createDungeonCofferLid } from './DungeonVigilGeometry.js';
+    createDungeonBevelBlock, createDungeonFontBasin, createDungeonCofferLid,
+    createDungeonAmbushPier } from './DungeonVigilGeometry.js';
 import { createDungeonEntryWard } from './DungeonEntryWard.js';
 import { applyVerdantFloorPatina } from './VerdantFloorPatina.js';
 import { applyElementalFloorPatina } from './ElementalFloorPatina.js';
@@ -234,7 +235,7 @@ function createShapes(dungeonType, quality) {
         box: new THREE.BoxGeometry(1, 1, 1),
         cylinder6: new THREE.CylinderGeometry(0.5, 0.5, 1, 6),
         cylinder8: new THREE.CylinderGeometry(0.5, 0.5, 1, 8),
-        cone4: new THREE.ConeGeometry(0.5, 1, 4),
+        ambushPier: createDungeonAmbushPier(),
         cone6: new THREE.ConeGeometry(0.5, 1, 6),
         cofferLid: createDungeonCofferLid(),
         vigilInlay: new THREE.RingGeometry(0.486, 0.5, 48),
@@ -571,7 +572,7 @@ function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials, comp
     case 'ambush_chamber':
         for (let i = 0; i < 6; i += 1) {
             const angle = (i / 6) * Math.PI * 2;
-            addPart(root, `ambush:watch-spike:${i}`, shapes.cone4, i % 2 ? materials.shadow : materials.metal, {
+            addPart(root, `ambush:watch-pier:${i}`, shapes.ambushPier, materials.stone, {
                 position: [Math.cos(angle) * radius, 1.6, Math.sin(angle) * radius],
                 rotation: [0, 0, (i % 2 ? -1 : 1) * 0.18],
                 scale: [1.4, 3.2 + (i % 3), 1.4]
