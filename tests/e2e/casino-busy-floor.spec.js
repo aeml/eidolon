@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { cpus, loadavg } from 'node:os';
 import { collectBrowserFailures } from './helpers.js';
 
@@ -38,11 +40,24 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
             });
         }
     }
-    const output = execFileSync('go', ['test', './internal/game', '-run', '^TestCasinoBrowserFixtureCatalog$', '-count=1', '-v'],
-        { cwd: 'server', encoding: 'utf8', timeout: 120000 });
-    const line = output.split('\n').find(line => line.startsWith('[casino-fixture-catalog]'));
-    if (!line) throw new Error('Missing canonical casino table catalog');
-    const tables = JSON.parse(line.slice('[casino-fixture-catalog]'.length));
+    const prevalidated = process.env.EIDOLON_CASINO_PREVALIDATED_CATALOG === '1';
+    let catalog;
+    if (prevalidated) {
+        // The native visual container has no Go binary/network. Compare this
+        // fixed fixture with the canonical Go output on the host first.
+        catalog = readFileSync(new URL('../fixtures/casino-browser-catalog.json', import.meta.url), 'utf8');
+    } else {
+        const output = execFileSync('go', ['test', './internal/game', '-run', '^TestCasinoBrowserFixtureCatalog$', '-count=1', '-v'],
+            { cwd: 'server', encoding: 'utf8', timeout: 120000 });
+        const line = output.split('\n').find(line => line.startsWith('[casino-fixture-catalog]'));
+        if (!line) throw new Error('Missing canonical casino table catalog');
+        catalog = line.slice('[casino-fixture-catalog]'.length);
+    }
+    const tables = JSON.parse(catalog);
+    await testInfo.attach('casino-catalog-origin', { body: JSON.stringify({
+        source: prevalidated ? 'Fixed fixture; requires separate canonical Go parity receipt' : 'Canonical Go test output',
+        sha256: createHash('sha256').update(catalog).digest('hex'), tables: tables.length
+    }), contentType: 'application/json' });
     const failures = collectBrowserFailures(page, baseURL);
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
