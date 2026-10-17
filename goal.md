@@ -2279,3 +2279,30 @@ All ten CI jobs pass. Fresh normal-TLS verification matches both71 identities, r
 [Qualification](docs/plans/2026-10-17-instance-grounding-qualification.md).
 Broader world/art/game/performance/readiness/owner/beta gates remain open. Human
 pacing, physical-phone feedback and soak/stress remain deferred. Full goal active.
+
+## October17 Alpha1.79.72 preparation
+
+Alpha 1.79.72 is prepared with a coherent Dark Realm record-building and
+flagstone material pass. Fourteen existing shelter/archive/kiln sites gain bonded
+stone within their original wall envelopes. Documents, shelves, ferry supplies,
+seating, bedding and the unfinished celebration reinforce the existing accounts.
+Shallow paving preserves ordinary party markers; seventeen other record bases
+also sit below that marker plane. All38 Dark Realm records have required native
+marker coverage. Mixed-width neutral flagstones quiet the surrounding floor.
+Its material factory/map family, geometry, lighting and shadows remain unchanged
+relative to the qualified house-only candidate: all28 static native observations
+retain those prior draw/triangle totals. The new house stonework itself adds
+geometry within the original scene limits. Equipped High/Low HUD approaches and
+ownership/clearance checks qualify this scope. These are controlled presentation
+fixtures, not frame-time, physical-device or earned-progression acceptance.
+Modal exits synchronously release their own focused control, repairing the
+retained71 keyboard-remapping flaky finding. Native controls remain protected
+while open;54 focused checks and both unchanged keyboard browser cases pass.
+[Record qualification](docs/plans/2026-10-17-dark-record-architecture-qualification.md).
+[Material qualification](docs/plans/2026-10-17-dark-paving-material-qualification.md).
+[Marker qualification](docs/plans/2026-10-17-dark-record-marker-qualification.md).
+[Focus qualification](docs/plans/2026-10-17-modal-keyboard-focus-qualification.md).
+Public Alpha1.79.71 remains accepted until exact72 CI/deployment/public verification.
+Broader district/world composition, art/game/performance/readiness/owner/beta
+gates stay open. Human campaign/phone feedback and soak/stress remain deferred.
+Full original goal active; public access and progression rules are unchanged.
