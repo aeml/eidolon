@@ -1,6 +1,6 @@
 # Eidolon Engineering Roadmap
 
-Alpha 1.79.71 is prepared with Dark Realm/dungeon grounding, floor-finish and
+Alpha 1.79.71 is deployed and verified with Dark Realm/dungeon grounding, floor-finish and
 material-depth corrections, plus 32 side streets completing approaches to all
 38 existing Dark Realm records on the shared street/map layout. District batches preserve the
 original ten road meshes. Instance floors match authoritative player height;
@@ -12,7 +12,8 @@ class, collision, movement or reward rule changes. Bounded query-free static
 delivery observations persist independently of the browser reporter. Published
 garment source records preserve the supplied notices; final rights review remains
 open.
-Public 1.79.70 remains accepted until exact CI/deployment/public verification.
+All ten CI jobs pass. Fresh normal-TLS verification matches both71 identities, ready database, open registration, flat terrain and all378 asset pins at 2026-10-17T11:08:12.194414+00:00. Hosted browser results retain450 clean passes,13 skips and one keyboard-focus flaky case; its qualified repair is queued for72, not counted as a clean pass here.
+[Acceptance](plans/2026-10-17-release1-79-71-acceptance.md).
 [Qualification](plans/2026-10-17-instance-grounding-qualification.md).
 Broader world/art/game/performance/readiness/owner/beta gates remain open. Human
 pacing, physical-phone feedback and soak/stress remain deferred. Full goal active.
