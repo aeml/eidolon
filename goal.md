@@ -2148,3 +2148,13 @@ original performance and full game/readiness gates remain open. Public 1.79.66
 remains the accepted release until exact CI, deployments and public assets are
 verified. [Qualification](docs/plans/2026-10-16-west-lane-and-elemental-review.md).
 Human pacing/physical-phone feedback and soak/stress remain deferred.
+
+## October 17 Alpha 1.79.67 scoped acceptance
+
+Exact `8529f82d5c2acc47ba5b9b4c396ba09708137ce6` / [CI](https://github.com/aeml/eidolon/actions/runs/38978515934) passes all ten ordered jobs and live checks.
+Normal-TLS 366 pins/identities/database/open registration/flat terrain/analytics
+match at 2026-10-17T00:02:22.342936+00:00. Western paving and normal-input Fire/Air travel are accepted
+within scope. Moving draw peaks and all original performance and full game/
+readiness/owner/beta/cohort/1.99 gates remain open. Full goal active; human pacing,
+physical-phone feedback and soak/stress deferred.
+[Acceptance](docs/plans/2026-10-17-release1-79-67-acceptance.md).
