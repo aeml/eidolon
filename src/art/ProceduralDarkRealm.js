@@ -41,7 +41,9 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
     const origin = layout.rooms[0];
     root.position.set(origin.x, 0, origin.z);
     const paths = createWorldPathNetwork(DARK_REALM_PATHS, {name: 'Dark Realm', color: [124, 115, 121]});
-    paths.position.set(-origin.x, .085, -origin.z);
+    // Ribbon vertices already sit at Y.035. Keep the finished streets at Y.01
+    // above server-grounded paving and below ordinary actor markers.
+    paths.position.set(-origin.x, -.025, -origin.z);
     root.add(paths);
     getDarkRealmCampColliders(origin).forEach(box => collisionManager?.addCollider(box));
     getDarkRealmCourtColliders().forEach(box => collisionManager?.addCollider(box));
@@ -59,7 +61,7 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
         floor.name = 'dark-realm-union-floor';
         floor.userData.walkSurface = { ...rect };
         floor.rotation.x = -Math.PI / 2;
-        floor.position.set(x, .1, z);
+        floor.position.set(x, 0, z);
         floor.receiveShadow = true;
         root.add(floor);
     }
@@ -113,10 +115,11 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
     const courtMaterials = { stone, bronze, shadow, paper, cloth, timber };
     for (const site of DARK_REALM_COURTS) {
         const x = site.x - origin.x, z = site.z - origin.z;
-        // Broken paving inlays stay below ankle height; not extra walk floors.
+        // Floor finishes remain below ordinary party/hostile markers at Y.05/.06,
+        // including when crossing the broken paving; not extra walk floors.
         for (const side of [-1, 1]) for (let i = 0; i < 7; i++) {
-            block(bronze, [.25, .02, 1.7], [x + side * 5, .125, z + 3 + i * 3]);
-            block(stone, [3, .08, 1.5], [x + side * 9, .15, z + 11 + i * 1.7]);
+            block(bronze, [.25, .012, 1.7], [x + side * 5, .016, z + 3 + i * 3]);
+            block(stone, [3, .015, 1.5], [x + side * 9, .0225, z + 11 + i * 1.7]);
         }
         root.userData.landmarks.push({ kind: `court-${site.recipe}`, x: site.arrivalX, z: site.arrivalZ });
     }
@@ -131,7 +134,7 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
         const x = room.x - origin.x, z = room.z - origin.z;
         // Thin inlaid processional lines are decoration, not a second floor.
         for (const side of [-1, 1]) {
-            block(bronze, [1, .025, room.height - 20], [x + side * 15, .13, z]);
+            block(bronze, [1, .008, room.height - 20], [x + side * 15, .018, z]);
         }
         if (index === 0) {
             for (const [i, offset] of CAMP_LANTERNS.entries()) {
