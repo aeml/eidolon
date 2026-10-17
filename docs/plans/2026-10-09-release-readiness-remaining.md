@@ -22,6 +22,31 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
+## Alpha 1.79.73: prepared; deployment acceptance pending
+
+Alpha 1.79.73 is prepared with a coherent town/story-surface, Low housing
+and Player Guide milestone. Lanternhold's central court gains quieter mixed-width
+flagstones while retaining its material/map family, geometry, lighting and
+shadows. Water, Fire and Air story-site paving, house floors and reflective pool
+fills sit below ordinary markers; walls, interactions and magical ripples remain
+in place. All54 elemental story sites have required High/Low native marker
+coverage. Low residential clipping also works without native multi-draw, retaining
+all15homes and exact visible output. Five prepared native Low town views meet
+the original scene limits; cold-wide and close-camera/global performance findings
+remain open. Five Player Guide paragraphs explain garments, Journal/Lore Book
+tasks and device-local window positions. The assembly reuses exact qualified
+runtime and HTML bytes; unselected leaf-surface experiments are excluded.
+[Assembly qualification](2026-10-17-world-quality-assembly-qualification.md).
+[Court qualification](2026-10-17-town-court-material-qualification.md).
+[Elemental markers](2026-10-17-elemental-story-grounding-qualification.md).
+[Low fallback](2026-10-17-low-residential-fallback-findings.md).
+[Guide checks](2026-10-17-player-guide-new-features.json).
+[Close-camera finding](2026-10-17-close-camera-rendering-finding.md).
+Public Alpha1.79.72 remains accepted until exact73 CI/deployment/public verification.
+Broader world/art/game/audio/device/performance/operations/owner/F1-F5/beta/1.99
+scope stays active. Human campaign/phone feedback and soak/stress remain deferred.
+Public access, earned progression and supplied actor/equipment assets are unchanged.
+
 ## Alpha 1.79.72: deployed and verified within scoped acceptance
 
 Alpha 1.79.72 is deployed and verified with a coherent Dark Realm record-building and
