@@ -84,7 +84,9 @@ export function createChronicleSiteModel(site, realm) {
     if (house) {
         if (darkMasonry) {
             mesh(createDarkRecordMasonry(), stone).name = 'Dark record masonry';
-        } else if (site.model !== 'ruined_house') box(7.2, 0.12, 6.2, stone, 0, 0.01, -0.5);
+        } else if (site.model !== 'ruined_house') {
+            box(7.2, .03, 6.2, stone, 0, .015, -.5).name = 'ChronicleSiteFloor';
+        }
         // Roofless and open towards +Z: the book remains visible from the road.
         // Only the actual three walls block walking, never the foundation.
         wall(7, 2.2, 0.45, 0, -3.3);
@@ -133,10 +135,9 @@ export function createChronicleSiteModel(site, realm) {
         });
         root.add(clue);
     } else {
-        // Dark Realm records stand on the authoritative Y0 floor. These
+        // Inspectable records stand at the authoritative ground height. These
         // nonblocking stone aprons must stay below ordinary Y.05 party rings.
-        // Other realms retain their existing presentation for separate review.
-        cylinder(1.9, 2.1, realm === 'dark' ? .03 : .18, stone).name = 'ChronicleSiteApron';
+        cylinder(1.9, 2.1, .03, stone).name = 'ChronicleSiteApron';
         switch (site.model) {
         case 'tide_lens': {
             cylinder(0.7, 1.15, 1.1, stone);

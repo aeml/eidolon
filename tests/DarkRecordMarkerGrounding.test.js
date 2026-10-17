@@ -29,13 +29,13 @@ test.each(sites)('$id retains its footprint and interaction identity below ordin
     model.dispose();
 });
 
-test.each(['water', 'fire', 'air'])('%s retains its existing apron height and ownership', realm => {
+test.each(['water', 'fire', 'air'])('%s grounds its apron below ordinary markers and retains ownership', realm => {
     const site = chronicleInvestigations.filter(chapter => chapter.realm === realm)
         .flatMap(chapter => chapter.sites).find(site => site.kind === 'inspect' && !houses.has(site.model));
     expect(site).toBeDefined();
     const model = createChronicleSiteModel(site, realm);
     const apron = model.mesh.getObjectByName('ChronicleSiteApron');
-    expect(new THREE.Box3().setFromObject(apron).max.y).toBeCloseTo(.18, 6);
+    expect(new THREE.Box3().setFromObject(apron).max.y).toBeCloseTo(.03, 6);
     let disposed = 0;
     apron.geometry.addEventListener('dispose', () => disposed++);
     model.dispose();
