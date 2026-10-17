@@ -22,18 +22,18 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
-## Alpha 1.79.68: prepared; deployment acceptance pending
+## Alpha 1.79.68: deployed and verified within scoped acceptance
 
-Alpha 1.79.68 is prepared with immutable rigid-part merging for ten generated
-Fire/Air enemy rigs, preserving contact anatomy, declared bounds, animations and
-cached resources. 534 focused checks, forty native image cases/1,200 views,
-twenty bounded cost cases and ordinary-input Fire/Air party/save checks qualify
-the scoped change. Moving draw peaks and the Air party frame median still exceed
-original targets; whole-game performance and all broader readiness gates remain
-open. Public 1.79.67 remains accepted until exact CI, deployment and public files
-are verified. [Qualification](2026-10-17-elemental-rigid-parts-qualification.md).
-The full original goal remains active. Human pacing/phone feedback and soak/stress
-remain deferred.
+Alpha 1.79.68 at `89f60d0a8` is deployed and verified within the ten generated
+Fire/Air rigid-rig scope. All ten CI jobs pass: 790 client suites / 12,263 tests,
+451 hosted browser passes / 13 skips, 140 native passes / one skip and live/
+recovery/rested-party checks. Normal-TLS 368 pins, both identities, ready database,
+open registration, flat terrain and analytics match at 2026-10-17T03:39:26.185328+00:00.
+[Acceptance](2026-10-17-release1-79-68-acceptance.md).
+Current-rig Fire/Air walks and party/save checks pass within scope; moving draw
+peaks of 492/360 and Air's 33.2 ms party median retain original performance
+findings. Broader game/readiness/owner/beta gates remain open. Human pacing,
+physical-phone feedback and soak/stress remain deferred. Full original goal active.
 
 ## Alpha 1.79.67: deployed and verified within scoped acceptance
 
@@ -405,6 +405,12 @@ review completed its route observations while retaining failed timing and cold
 triangle results; it is not a whole-world performance acceptance.
 
 ## Outstanding requirements and next evidence
+
+Post68 guarded High-only elemental instancing remains unselected. Two native
+High cases pass96views, but the first Djinn CPU windows regress despite lower
+draw calls; Roc timing is inconclusive. No unchanged timing retry was made.
+[Findings](2026-10-17-elemental-instance-unselected.md). A separate opt-in
+constructor surface prototype is still under review and is not deployed.
 
 Post66 native diagnosis rules out matrix-upload avoidance: all 3,238 existing
 written batch targets change, despite 3.75% equal individual writes. A fresh

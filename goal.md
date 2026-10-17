@@ -2171,3 +2171,14 @@ open. Public 1.79.67 remains accepted until exact CI, deployment and public file
 are verified. [Qualification](docs/plans/2026-10-17-elemental-rigid-parts-qualification.md).
 The full original goal remains active. Human pacing/phone feedback and soak/stress
 remain deferred.
+
+## October 17 Alpha 1.79.68 scoped acceptance
+
+Exact `89f60d0a8f010ea2f364516ba9fbaae8817440b3` / [CI](https://github.com/aeml/eidolon/actions/runs/38995447372) passes all ten ordered jobs and live checks.
+Normal-TLS 368 pins/identities/database/open registration/flat terrain/analytics
+match at 2026-10-17T03:39:26.185328+00:00. Ten generated Fire/Air rigid rigs and their scoped native/
+normal-input party/save checks are accepted. Moving 492/360 draw peaks and Air
+33.2 ms party median retain original performance findings. Full original game/
+readiness/owner/F1–F5/beta/cohort/1.99/handoff goal active. Human pacing, physical
+phone feedback and soak/stress remain deferred.
+[Acceptance](docs/plans/2026-10-17-release1-79-68-acceptance.md).

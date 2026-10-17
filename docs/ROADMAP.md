@@ -1,15 +1,15 @@
 # Eidolon Engineering Roadmap
 
-Alpha 1.79.68 is prepared with immutable rigid-part merging for ten generated
-Fire/Air enemy rigs, preserving contact anatomy, declared bounds, animations and
-cached resources. 534 focused checks, forty native image cases/1,200 views,
-twenty bounded cost cases and ordinary-input Fire/Air party/save checks qualify
-the scoped change. Moving draw peaks and the Air party frame median still exceed
-original targets; whole-game performance and all broader readiness gates remain
-open. Public 1.79.67 remains accepted until exact CI, deployment and public files
-are verified. [Qualification](plans/2026-10-17-elemental-rigid-parts-qualification.md).
-The full original goal remains active. Human pacing/phone feedback and soak/stress
-remain deferred.
+Alpha 1.79.68 at `89f60d0a8` is deployed and verified within the ten generated
+Fire/Air rigid-rig scope. All ten CI jobs pass: 790 client suites / 12,263 tests,
+451 hosted browser passes / 13 skips, 140 native passes / one skip and live/
+recovery/rested-party checks. Normal-TLS 368 pins, both identities, ready database,
+open registration, flat terrain and analytics match at 2026-10-17T03:39:26.185328+00:00.
+[Acceptance](plans/2026-10-17-release1-79-68-acceptance.md).
+Current-rig Fire/Air walks and party/save checks pass within scope; moving draw
+peaks of 492/360 and Air's 33.2 ms party median retain original performance
+findings. Broader game/readiness/owner/beta gates remain open. Human pacing,
+physical-phone feedback and soak/stress remain deferred. Full original goal active.
 
 
 Alpha 1.79.67 at `8529f82d5` is deployed and verified within the western
