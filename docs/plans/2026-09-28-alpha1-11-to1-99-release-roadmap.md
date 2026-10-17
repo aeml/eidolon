@@ -1,5 +1,18 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+Alpha 1.79.70 is prepared with arena/casino ground-marker corrections and
+scoped arena stone detail. The court matches server height zero, its inlays stay
+below party/hostile rings, and its own foundation replaces the underlying world
+ground while inside. Casino floor finishes preserve ordinary markers on both
+floors. 83 focused checks/six suites, full lint, native High/Low fitted-arena and
+public/VIP marker comparisons, and four-class actual practice duels qualify the
+scope. No movement, collision, ranked reward or wagering rule changes. Public
+1.79.69 remains accepted until exact CI, deployment and public files are verified.
+[Qualification](2026-10-17-arena-and-casino-grounding-qualification.md).
+Broader art/game/performance/readiness/beta gates remain open. Human pacing,
+physical-phone feedback and soak/stress remain deferred. Full original goal active.
+
+
 Alpha 1.79.69 at `b5cfd6d93` is deployed and verified within the casino
 material/indoor-atmosphere scope. All ten CI jobs pass: 790 client suites /
 12,265 tests, 451 hosted browser passes / 13 skips, 140 native passes / one skip and

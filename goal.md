@@ -2218,3 +2218,17 @@ median failures and all broader game/performance/final-art/readiness/owner/
 F1–F5/beta/cohort/1.99/handoff gates remain open. Human pacing, physical-phone
 feedback and soak/stress remain deferred. Full original goal active.
 [Acceptance](docs/plans/2026-10-17-release1-79-69-acceptance.md).
+
+## October 17 Alpha 1.79.70 preparation
+
+Alpha 1.79.70 is prepared with arena/casino ground-marker corrections and
+scoped arena stone detail. The court matches server height zero, its inlays stay
+below party/hostile rings, and its own foundation replaces the underlying world
+ground while inside. Casino floor finishes preserve ordinary markers on both
+floors. 83 focused checks/six suites, full lint, native High/Low fitted-arena and
+public/VIP marker comparisons, and four-class actual practice duels qualify the
+scope. No movement, collision, ranked reward or wagering rule changes. Public
+1.79.69 remains accepted until exact CI, deployment and public files are verified.
+[Qualification](docs/plans/2026-10-17-arena-and-casino-grounding-qualification.md).
+Broader art/game/performance/readiness/beta gates remain open. Human pacing,
+physical-phone feedback and soak/stress remain deferred. Full original goal active.
