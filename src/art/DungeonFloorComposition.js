@@ -7,11 +7,16 @@ export function getDungeonFloorCompositionPlan(identity) {
     if (identity === 'entry_gate') return 'nave';
     if (identity === 'boss_approach') return 'procession';
     if (identity === 'boss_lair') return 'arena';
+    if (identity === 'treasure_cache') return 'vault';
+    if (identity === 'restorative_shrine') return 'chapel';
+    if (identity === 'ambush_chamber') return 'broken-court';
+    if (identity === 'elite_guard') return 'guard';
+    if (identity === 'route_hall') return 'aisle';
     return 'court';
 }
 
 export function createDungeonFloorComposition(plan) {
-    if (!['nave', 'court', 'procession', 'arena'].includes(plan)) throw new TypeError(`Unknown dungeon floor composition: ${plan}`);
+    if (!['nave', 'court', 'procession', 'arena', 'vault', 'chapel', 'broken-court', 'guard', 'aisle'].includes(plan)) throw new TypeError(`Unknown dungeon floor composition: ${plan}`);
     const positions = [], uvs = [], colors = [];
     let stones = 0;
     const triangle = (a, b, c, shade) => {
@@ -53,6 +58,12 @@ export function createDungeonFloorComposition(plan) {
                 .map(([r, angle]) => [Math.cos(angle) * r, Math.sin(angle) * r]));
         }
     };
+    const frame = (x, z, halfX, halfZ, width, count) => {
+        for (const side of [-1, 1]) {
+            run(x + side * halfX, z - halfZ, x + side * halfX, z + halfZ, width, count);
+            run(x - halfX + width, z + side * halfZ, x + halfX - width, z + side * halfZ, width, count);
+        }
+    };
     if (plan === 'arena') {
         // Outside the existing radius17.4 buried dais, never over its surface.
         circuit(20.7, .8, 16);
@@ -67,6 +78,45 @@ export function createDungeonFloorComposition(plan) {
             run(side * 6.5, -23, side * 6.5, -8.5, 1, 4);
             run(side * 6.5, 8.5, side * 6.5, 23, 1, 4);
             run(-5.5, side * 20.3, 5.5, side * 20.3, .75, 3);
+        }
+    } else if (plan === 'vault') {
+        // An elongated coffer court and two side aisles, with a broad clear
+        // center for the existing reliquary paving and objective seal.
+        frame(0, 3.45, 12.5, 14.95, 1, 8);
+        for (const side of [-1, 1]) run(side * 19.8, -17.5, side * 19.8, 17.5, .9, 6);
+    } else if (plan === 'chapel') {
+        // Eight straight sanctuary courses surround the font. These are
+        // neutral masonry joints, not a luminous circular attack warning.
+        for (let edge = 0; edge < 8; edge++) {
+            const a = (edge + .5) * Math.PI / 4, b = (edge + 1.5) * Math.PI / 4;
+            const start = new THREE.Vector2(Math.cos(a), Math.sin(a)).multiplyScalar(14.2);
+            const end = new THREE.Vector2(Math.cos(b), Math.sin(b)).multiplyScalar(14.2);
+            const inset = end.clone().sub(start).normalize().multiplyScalar(.55);
+            run(start.x + inset.x, start.y + inset.y, end.x - inset.x, end.y - inset.y, 1, 3);
+        }
+        frame(0, 0, 19.8, 19.8, .8, 5);
+    } else if (plan === 'broken-court') {
+        // Disconnected corner galleries leave the ambush floor open. Short
+        // surviving returns make this a damaged court rather than another ring.
+        for (const x of [-1, 1]) for (const z of [-1, 1]) {
+            run(x * 8.9, z * 19.7, x * 19.2, z * 19.7, 1.05, 5);
+            run(x * 19.7, z * 8.9, x * 19.7, z * 18.7, 1.05, 5);
+            run(x * 8.9, z * 17, x * 8.9, z * 19.1, .8, 1);
+        }
+    } else if (plan === 'guard') {
+        // Four sentry courts frame the existing pylons; inset connecting
+        // courses stop short of their bases and keep the center unobstructed.
+        for (const x of [-1, 1]) for (const z of [-1, 1]) frame(x * 16.8, z * 16.8, 2.3, 2.3, .8, 2);
+        for (const side of [-1, 1]) {
+            run(-12.3, side * 16.8, 12.3, side * 16.8, .9, 3);
+            run(side * 16.8, -12.3, side * 16.8, 12.3, .9, 3);
+        }
+    } else if (plan === 'aisle') {
+        // Long parallel courses mark a passage without an arrow or a promise
+        // about which randomly oriented connection is the next exit.
+        for (const side of [-1, 1]) {
+            run(side * 10.1, -19.7, side * 10.1, 19.7, 1.2, 14);
+            for (const end of [-1, 1]) run(side * 11.5, end * 19.7, side * 19.5, end * 19.7, 1, 4);
         }
     } else {
         circuit(13, 1.05, 12);
