@@ -22,6 +22,19 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
+## Alpha 1.79.68: prepared; deployment acceptance pending
+
+Alpha 1.79.68 is prepared with immutable rigid-part merging for ten generated
+Fire/Air enemy rigs, preserving contact anatomy, declared bounds, animations and
+cached resources. 534 focused checks, forty native image cases/1,200 views,
+twenty bounded cost cases and ordinary-input Fire/Air party/save checks qualify
+the scoped change. Moving draw peaks and the Air party frame median still exceed
+original targets; whole-game performance and all broader readiness gates remain
+open. Public 1.79.67 remains accepted until exact CI, deployment and public files
+are verified. [Qualification](2026-10-17-elemental-rigid-parts-qualification.md).
+The full original goal remains active. Human pacing/phone feedback and soak/stress
+remain deferred.
+
 ## Alpha 1.79.67: deployed and verified within scoped acceptance
 
 Alpha 1.79.67 at `8529f82d5` is deployed and verified within the western

@@ -2158,3 +2158,16 @@ within scope. Moving draw peaks and all original performance and full game/
 readiness/owner/beta/cohort/1.99 gates remain open. Full goal active; human pacing,
 physical-phone feedback and soak/stress deferred.
 [Acceptance](docs/plans/2026-10-17-release1-79-67-acceptance.md).
+
+## October 17 Alpha 1.79.68 preparation
+
+Alpha 1.79.68 is prepared with immutable rigid-part merging for ten generated
+Fire/Air enemy rigs, preserving contact anatomy, declared bounds, animations and
+cached resources. 534 focused checks, forty native image cases/1,200 views,
+twenty bounded cost cases and ordinary-input Fire/Air party/save checks qualify
+the scoped change. Moving draw peaks and the Air party frame median still exceed
+original targets; whole-game performance and all broader readiness gates remain
+open. Public 1.79.67 remains accepted until exact CI, deployment and public files
+are verified. [Qualification](docs/plans/2026-10-17-elemental-rigid-parts-qualification.md).
+The full original goal remains active. Human pacing/phone feedback and soak/stress
+remain deferred.

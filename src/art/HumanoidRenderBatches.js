@@ -1,7 +1,7 @@
 import { Mesh, PropertyBinding } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
-// Only constructor-owned, immutable humanoid geometry belongs in this cache.
+// Only constructor-owned, immutable rigid rig geometry belongs in this cache.
 // Do not call this on live/equipped actors or imported/skinned models.
 const GEOMETRIES = new Map();
 
