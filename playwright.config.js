@@ -36,6 +36,9 @@ const hasCredentialedRoute = Boolean(
 // post-login game screenshots remain a separately reviewed visual artifact.
 if (hasCredentialedRoute) process.env.PLAYWRIGHT_NO_COPY_PROMPT = '1';
 
+// Long credentialed party routes can contain tens of thousands of input steps.
+// Keep those steps, errors and attachments while omitting repeated source-code
+// snippets, so the HTML data stays within the artifact sanitizer's size limits.
 export default defineConfig({
     testDir: './tests/e2e',
     fullyParallel: false,
@@ -47,8 +50,8 @@ export default defineConfig({
         timeout: 15_000
     },
     reporter: process.env.CI
-        ? [['line'], ['html', { open: 'never', outputFolder: 'playwright-report' }]]
-        : [['list'], ['html', { open: 'never', outputFolder: 'playwright-report' }]],
+        ? [['line'], ['html', { open: 'never', outputFolder: 'playwright-report', noSnippets: hasCredentialedRoute }]]
+        : [['list'], ['html', { open: 'never', outputFolder: 'playwright-report', noSnippets: hasCredentialedRoute }]],
     use: {
         ...devices['Desktop Chrome'],
         baseURL,
