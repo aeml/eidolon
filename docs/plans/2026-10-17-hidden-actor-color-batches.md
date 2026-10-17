@@ -77,3 +77,6 @@ one new suite and five cases in the existing color suite. No browser case is
 added. Full original world/art/game/audio/performance/device/operations/owner/
 beta/1.99 gates remain active. No frame-time speedup, native completion, beta or
 feature-freeze claim. Human campaign/phone feedback and soak/stress stay deferred.
+
+CPU/software-qualified source:`68d55c34fa2788ab18b766dcc39356f42e1f8516`. Closed16-file component
+inventory SHA-256:`529983bd467921f0090eb84c495cd50c70275f29a41178120182b956d33f3f2c`. Native integration remains pending.
