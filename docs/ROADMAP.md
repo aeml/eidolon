@@ -1,5 +1,31 @@
 # Eidolon Engineering Roadmap
 
+Alpha 1.79.77 is prepared with direct quest map guidance, steadier Lore Book
+reading, saved tracking verification and consistent dungeon entry finishes.
+Show quest on map temporarily focuses personally available work from the journal
+or Lore Book, including accepted optional tasks and Dark Realm turn-ins. Return
+to map restores prior search/filters/view without changing pins, waypoints,
+progress or rewards. Detail reading focus follows remaining work and manual
+turn-in; future unaccepted chapters remain hidden. The Player Guide explains it.
+All five dungeon entry arches share existing stone/iron maps and physical texture
+density, preserving non-UV geometry, bounds, shadows, collision, veil animation
+and retained GPU resources. No lighting/skeleton/shader experiment is selected.
+222distinct focused checks/eleven suites and eleven distinct component browser
+cases qualify the selection: two native entry cases with20RGBA source restorations,
+eight current-source DOM/Canvas2D desktop/touch cases, and one actual disposable
+manual quest acceptance/tracking/fresh-login case. Exact unchanged entry proof is
+reused; no whole combined native replay, physical-phone or frame-time pass is inferred.
+Original failures and observer/fixture corrections remain frozen. Full world/art/
+game/combat/audio/performance/device/security/operations/owner/F1-F5/beta/1.99 scope
+remains active. Sparse/repeating rooms, moving world/combat quality, original
+performance limits and final owner review remain open. Human campaign/phone
+feedback and soak/stress are deferred, not passed.
+[Assembly](plans/2026-10-17-quest-map-and-entry-assembly.md).
+[Quest guidance](plans/2026-10-17-direct-quest-map-guidance.md).
+Public Alpha1.79.76 remains accepted until exact77 CI/deployment/public verification.
+Public access, progression and supplied actor/equipment assets are unchanged.
+
+
 Alpha 1.79.76 is deployed and verified with character geometry preparation cleanup.
 The delivery schedules queued work only, cancels an empty queued pump and
 clears its handle on disposal. Active-worker deadlines, source and generation
