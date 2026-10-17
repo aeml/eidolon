@@ -82,6 +82,7 @@ test('shared casino entry, physical blackjack seats, paid hand, clean exit and V
     };
     await prepareCasinoAccount(page, credentials);
     await enter(page);
+    await page.screenshot({ path: testInfo.outputPath('connected-casino-entry.png') });
     await expect.poll(() => page.evaluate(() => window.game.casino.data.tables.filter(table => table.floor === 'public').length)).toBe(46);
     const initialGold = await readGold(page);
     const other = await context.newPage();
@@ -197,7 +198,9 @@ test('shared casino entry, physical blackjack seats, paid hand, clean exit and V
     expect(await tableNode.evaluate(node => node === document.querySelector('.blackjack-scene'))).toBe(true);
     await page.screenshot({ path: testInfo.outputPath('connected-blackjack-result.png') });
     await expect.poll(async () => (await readHand(page)).phase, { timeout: 40000 }).toBe('betting');
-    await page.getByLabel('Wager (Gold)').fill('200');
+    const nextWager = page.getByRole('spinbutton', { name: 'Wager (Gold)', exact: true });
+    await expect(nextWager).toHaveCount(1);
+    await nextWager.fill('200');
     await expect(page.getByRole('button', { name: 'Bet · 200 Gold', exact: true })).toBeEnabled();
     // Changing the next wager must not spend it. Leave normally and check the
     // camera/control state plus an actual reconnect, without fabricating cards.
