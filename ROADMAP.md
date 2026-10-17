@@ -1,6 +1,6 @@
 # Eidolon Roadmap
 
-Alpha 1.79.74 is prepared with earned People/Places browsing and woodland leaf
+Alpha 1.79.74 is deployed and verified with earned People/Places browsing and woodland leaf
 surface refinement. Lore indexes quote personal completed chapters, recorded
 discoveries and restoration accounts; unread sites, counts alone and future text
 do not unlock entries. Read/Return preserves the reader's search, selection and
@@ -18,7 +18,8 @@ their original budgets. No rejected renderer shortcut is included.
 [Leaf component review](docs/plans/2026-10-17-understory-surface-component-review.md).
 [Witness reading](docs/plans/2026-10-17-witness-reading-continuity.md).
 [Retained native findings](docs/plans/2026-10-17-close-camera-native-attribution.md).
-Public Alpha1.79.73 remains accepted until exact74 CI/deployment/public verification.
+All ten CI jobs pass. Fresh normal-TLS verification matches both74 identities, ready database, open registration, flat terrain and all385 asset pins at 2026-10-17T15:58:23.905124+00:00.
+[Acceptance](docs/plans/2026-10-17-release1-79-74-acceptance.md).
 Broader world/art/game/audio/device/performance/operations/owner/F1-F5/beta/1.99
 scope stays active. Human campaign/phone feedback and soak/stress remain deferred.
 Public access, earned progression and supplied actor/equipment assets are unchanged.
