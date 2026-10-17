@@ -55,15 +55,19 @@ test('fresh character accepts quests manually and retains tracking choices after
     const town = await page.evaluate(() => {
         const { collisionManager, player } = window.game;
         const blocked = (x, z) => Boolean(collisionManager.checkCollision(player.position.clone().set(x, 0, z), player.radius));
+        // Current town also has residential/portal colliders. Check the actual
+        // service footprints rather than an obsolete global collider count.
+        const serviceAnchors = [[-30, 200], [-22, 185], [-28, 218], [-28, 210]];
         return {
-            orientedShapes: collisionManager.orientedColliders.length,
+            missingServiceAnchors: serviceAnchors.filter(([x, z]) => !collisionManager.orientedColliders.some(({ matrix }) =>
+                Math.abs(matrix.elements[12] - x) < .01 && Math.abs(matrix.elements[14] - z) < .01)),
             tradingCornerBlocked: blocked(-14, 193),
             stashApproachBlocked: blocked(0, 180.5),
             hallWallBlocked: blocked(0, 177.5),
             cofferBlocked: blocked(0, 185)
         };
     });
-    expect(town).toEqual({ orientedShapes: 3, tradingCornerBlocked: false, stashApproachBlocked: false, hallWallBlocked: true, cofferBlocked: true });
+    expect(town).toEqual({ missingServiceAnchors: [], tradingCornerBlocked: false, stashApproachBlocked: false, hallWallBlocked: true, cofferBlocked: true });
 
     const storyId = await page.evaluate(() => window.game.player.quests.find(quest => quest.category === 'chronicle').id);
     await page.locator('#btn-menu-quest').click();
