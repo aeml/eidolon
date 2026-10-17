@@ -4,7 +4,7 @@ import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld,
 const credentials = credentialsFromEnvironment();
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 
-test('fresh character talks to distinct town givers and explicitly accepts the Chronicle', async ({ page, baseURL }) => {
+test('fresh character accepts quests manually and retains tracking choices after a fresh login', async ({ page, baseURL }, testInfo) => {
     test.skip(!credentials.username || !credentials.password || process.env.EIDOLON_E2E_REGISTER !== '1', 'Requires a fresh disposable QA character');
     test.setTimeout(180000);
     const failures = collectBrowserFailures(page, baseURL);
@@ -72,5 +72,53 @@ test('fresh character talks to distinct town givers and explicitly accepts the C
         };
     });
     expect(town).toEqual({ orientedShapes: 3, tradingCornerBlocked: false, stashApproachBlocked: false, hallWallBlocked: true, cofferBlocked: true });
+
+    const storyId = await page.evaluate(() => window.game.player.quests.find(quest => quest.category === 'chronicle').id);
+    await page.locator('#btn-menu-quest').click();
+    await expect(page.locator('#quest-journal')).toBeVisible();
+    // Use the actual journal controls; no direct tracking-state or storage writes.
+    const story = page.locator('#quest-journal').locator(`[data-quest-track="${storyId}"]`);
+    const daily = page.locator('#quest-journal [data-quest-track="daily_skeleton"]');
+    await page.getByRole('button', { name: 'All quests', exact: true }).click();
+    await daily.check(); await story.uncheck();
+    const before = await page.evaluate(() => {
+        const { player, uiManager } = window.game;
+        return { id: player.id, key: uiManager.quest.trackingStorageKey,
+            tracked: uiManager.quest.getTrackedObjectives().map(quest => quest.id),
+            stored: localStorage.getItem(uiManager.quest.trackingStorageKey),
+            quests: player.quests.map(({ id, accepted, completed, count, maxCount }) => ({ id, accepted, completed, count, maxCount })) };
+    });
+    expect(before.tracked).toContain('daily_skeleton'); expect(before.tracked).not.toContain(storyId);
+    expect(before.key).toBe(`eidolon.questTracking.v1:${before.id}`);
+    expect(JSON.parse(before.stored)).toContain('daily_skeleton'); expect(JSON.parse(before.stored)).not.toContain('story');
+    await page.locator('#btn-close-journal').click();
+
+    // Start a new document and authenticate the same saved character, without
+    // sending a second registration request to the disposable fixture.
+    const registration = process.env.EIDOLON_E2E_REGISTER;
+    process.env.EIDOLON_E2E_REGISTER = '0';
+    try { await loginAndEnterWorld(page, credentials); }
+    finally { process.env.EIDOLON_E2E_REGISTER = registration; }
+    const after = await page.evaluate(() => {
+        const { player, uiManager } = window.game;
+        return { id: player.id, key: uiManager.quest.trackingStorageKey,
+            tracked: uiManager.quest.getTrackedObjectives().map(quest => quest.id),
+            stored: localStorage.getItem(uiManager.quest.trackingStorageKey),
+            quests: player.quests.map(({ id, accepted, completed, count, maxCount }) => ({ id, accepted, completed, count, maxCount })) };
+    });
+    expect(after).toEqual(before);
+    await page.locator('#btn-menu-quest').click();
+    await page.getByRole('button', { name: 'All quests', exact: true }).click();
+    await expect(daily).toBeChecked(); await expect(story).not.toBeChecked();
+    await story.check(); await daily.uncheck();
+    await expect.poll(() => page.evaluate(() => window.game.uiManager.quest.getTrackedObjectives().map(quest => quest.id)))
+        .toEqual([storyId]);
+    expect(await page.evaluate(() => window.game.player.quests.map(({ id, accepted, completed, count, maxCount }) => ({ id, accepted, completed, count, maxCount })))).toEqual(before.quests);
+    await page.locator('#btn-close-journal').click();
+    await testInfo.attach('quest-tracking-fresh-login', { body: JSON.stringify({
+        sameCharacter: after.id === before.id, sameStorageKey: after.key === before.key,
+        selectedQuestIds: after.tracked, reversedQuestIds: [storyId], personalQuestReceiptsUnchanged: true,
+        scope: 'Actual disposable server, manual story/daily acceptance and journal tracking controls, fresh document/login of the same character. No grants, production users, campaign pacing, phone hardware or soak proof.'
+    }), contentType: 'application/json' });
     expect(failures, failures.join('\n')).toEqual([]);
 });
