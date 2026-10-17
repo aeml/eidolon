@@ -8,6 +8,114 @@ import { getPublicEventLocations, publicEventTime } from '../src/ui/PublicEventD
 
 const engine = () => ({ player: { id: 'me', level: 30, position: { x: 0, z: 200 } }, currentInstanceId: '', currentInstanceType: '' });
 
+function questFocusFixture() {
+    document.body.innerHTML = '<div id="quest-focus-map"><canvas></canvas></div>';
+    const ge = engine();
+    ge.player.quests = [{ id: 'daily_skeleton', title: 'Road patrol', type: 'KILL', target: 'Skeleton', accepted: true, maxCount: 10 }];
+    ge.uiManager = { quest: { getTrackedObjectives: () => [], buildObjectiveSummary: () => [] } };
+    const map = { gameEngine: ge, container: document.getElementById('quest-focus-map'), canvas: document.querySelector('canvas'),
+        cameraX: 0, cameraZ: 200, scale: .1, mapOffsetX: 0, mapOffsetY: 0, autoFitAtlas: true,
+        updateZoomLabel: jest.fn(), fitAtlasBounds: jest.fn(), _redrawIfVisible: jest.fn() };
+    return { ge, map, navigation: new AtlasNavigation(map) };
+}
+
+test('direct quest focus shows a target and restores atlas search and filters without changing tracked quests', () => {
+    const { ge, map, navigation } = questFocusFixture();
+    navigation.search.value = navigation.query = 'forge'; navigation.filters.delete('quests'); navigation.refresh(true);
+    expect(navigation.focusQuest('daily_skeleton')).toBe(true);
+    expect(navigation.questFocusId).toBe('daily_skeleton'); expect(navigation.query).toBe('');
+    expect(navigation.filters.has('quests')).toBe(true);
+    const selected = navigation.locations.find(p => p.id === navigation.selectedId);
+    expect(selected.questId).toBe('daily_skeleton'); expect(selected.category).toBe('quests');
+    expect(map.cameraX).toBe(selected.x); expect(map.cameraZ).toBe(selected.z);
+    expect(navigation.detail.querySelector('h3')).toBe(document.activeElement);
+    expect(ge.uiManager.quest.getTrackedObjectives()).toEqual([]);
+    navigation.clearQuestFocus();
+    expect(navigation.questFocusId).toBeNull(); expect(navigation.query).toBe('forge');
+    expect(navigation.search.value).toBe('forge'); expect(navigation.filters.has('quests')).toBe(false);
+    expect(navigation.locations.filter(p => p.questId)).toEqual([]);
+});
+
+test('unavailable quest focus leaves the current destination and viewport alone', () => {
+    const { map, navigation } = questFocusFixture();
+    navigation.query = navigation.search.value = 'forge'; const before = { cameraX: map.cameraX, cameraZ: map.cameraZ, scale: map.scale };
+    expect(navigation.focusQuest('missing')).toBe(false);
+    expect(navigation.questFocusId).toBeNull(); expect(navigation.query).toBe('forge');
+    expect({ cameraX: map.cameraX, cameraZ: map.cameraZ, scale: map.scale }).toEqual(before);
+});
+
+test('direct Dark Realm quest focus shows an untracked manual turn-in without changing progress or pins', () => {
+    const { ge, navigation } = questFocusFixture();
+    ge.currentInstanceId = 'dark-realm'; ge.currentInstanceType = 'dark_realm';
+    const quest = { id: 'chronicle_dark_shore_collectors', title: 'Shore collectors', category: 'chronicle',
+        accepted: true, completed: false, count: 3, maxCount: 3 };
+    ge.player.quests = [quest]; navigation.refresh();
+    const before = JSON.stringify(quest);
+    expect(navigation.locations.filter(p => p.questId)).toEqual([]);
+    expect(navigation.focusQuest(quest.id)).toBe(true);
+    expect(navigation.locations.find(p => p.id === navigation.selectedId)).toMatchObject({
+        questId: quest.id, instanceId: 'dark-realm', symbol: '?', name: 'Turn in · Shore collectors'
+    });
+    expect(JSON.stringify(quest)).toBe(before); expect(ge.uiManager.quest.getTrackedObjectives()).toEqual([]);
+    navigation.clearQuestFocus(); expect(navigation.locations.filter(p => p.questId)).toEqual([]);
+});
+
+test('quest focus chooses the unread site the player is already standing at', () => {
+    const { ge, navigation } = questFocusFixture();
+    const questId = 'chronicle_earth_returning_scar';
+    ge.player.quests = [{ id: questId, category: 'chronicle', type: 'INVESTIGATE', accepted: true, count: 1, maxCount: 3, investigationMask: 1 }];
+    const targets = getAtlasLocations(ge, { questId }).filter(p => p.category === 'quests' && p.questId === questId);
+    expect(targets.length).toBeGreaterThan(1);
+    const here = targets.at(-1); ge.player.position = { x: here.x, z: here.z };
+    expect(navigation.focusQuest(questId)).toBe(true); expect(navigation.selectedId).toBe(here.id);
+});
+
+test('recording the selected site advances focus to unread work and then to manual turn-in', () => {
+    const { ge, navigation } = questFocusFixture();
+    const quest = { id: 'chronicle_earth_returning_scar', category: 'chronicle', type: 'INVESTIGATE', accepted: true,
+        count: 0, maxCount: 3, investigationMask: 0 }; ge.player.quests = [quest];
+    const targets = getAtlasLocations(ge, { questId: quest.id }).filter(p => p.category === 'quests' && p.questId === quest.id);
+    ge.player.position = { x: targets[0].x, z: targets[0].z }; navigation.focusQuest(quest.id);
+    const first = navigation.selectedId; quest.investigationMask = 1; quest.count = 1; navigation.refresh();
+    expect(navigation.selectedId).not.toBe(first);
+    expect(document.activeElement).toBe(navigation.detail.querySelector('h3'));
+    expect(navigation.locations.find(p => p.id === navigation.selectedId).category).toBe('quests');
+    quest.investigationMask = 7; quest.count = 3; navigation.refresh();
+    expect(navigation.locations.find(p => p.id === navigation.selectedId).name).toContain('Turn in');
+    expect(quest.completed).not.toBe(true); expect(ge.uiManager.quest.getTrackedObjectives()).toEqual([]);
+});
+
+test('typing a location exits temporary quest focus without changing the typed case or caret', () => {
+    const { navigation } = questFocusFixture(); navigation.focusQuest('daily_skeleton');
+    navigation.search.value = 'Root'; navigation.search.setSelectionRange(2, 2);
+    navigation.search.dispatchEvent(new Event('input', { bubbles: true }));
+    expect(navigation.questFocusId).toBeNull(); expect(navigation.query).toBe('root');
+    expect(navigation.search.value).toBe('Root'); expect(navigation.search.selectionStart).toBe(2);
+});
+
+test('a deliberate different destination leaves quest focus and stays selected through later progress', () => {
+    const { ge, navigation } = questFocusFixture(); navigation.focusQuest('daily_skeleton');
+    const service = navigation.locations.find(p => p.category === 'services'); navigation.select(service.id);
+    ge.player.quests[0].count = 2; navigation.refresh();
+    expect(navigation.questFocusId).toBeNull(); expect(navigation.selectedId).toBe(service.id);
+});
+
+test('claimed completion retires temporary focus and restores the prior normal map state', () => {
+    const { ge, map, navigation } = questFocusFixture();
+    navigation.query = navigation.search.value = 'forge'; const scale = map.scale;
+    navigation.focusQuest('daily_skeleton'); ge.player.quests[0].completed = true; navigation.refresh();
+    expect(navigation.questFocusId).toBeNull(); expect(navigation.query).toBe('forge'); expect(map.scale).toBe(scale);
+    expect(navigation.questFocusNotice.hidden).toBe(true);
+});
+
+test('an instance transition clears quest focus without restoring the overworld viewport into the instance', () => {
+    const { ge, map, navigation } = questFocusFixture(); navigation.focusQuest('daily_skeleton');
+    ge.currentInstanceId = 'casino-shared'; ge.currentInstanceType = 'casino';
+    map.cameraX = 0; map.cameraZ = 132; map.scale = 1; navigation.refresh();
+    expect(navigation.questFocusId).toBeNull(); expect(navigation.selectedId).toBeNull();
+    expect([map.cameraX, map.cameraZ, map.scale]).toEqual([0, 132, 1]);
+});
+
 test('terrain legend explains actual Earth relief only in a raised overworld, never in flat or instance maps', () => {
     document.body.innerHTML = '<div id="map"><canvas></canvas></div>';
     const ge = engine(), map = { gameEngine: ge, container: document.getElementById('map'), canvas: document.querySelector('canvas') };

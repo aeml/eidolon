@@ -73,6 +73,17 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
             const referenceFloor = compareFloor && type === 'verdant_bastion_catacombs' ? referenceKit.floorMaterial(24, 24) : null;
             state.referenceFloorOwner = referenceFloor ? new THREE.Mesh(new THREE.BufferGeometry(), referenceFloor) : null;
             const currentState = current.getObjectByName(`DungeonRoomState:${type}:0`);
+            const ward = currentState.getObjectByName('DungeonEntryWard');
+            const wardFinishes = ['Masonry', 'Ironwork'].map(name => {
+                const material = ward.getObjectByName(`DungeonEntryWard:${name}`).material;
+                let shared;
+                current.traverse(part => {
+                    if (part.material !== material && part.material?.userData.dungeonPropSurface === material.userData.dungeonPropSurface)
+                        shared = part.material;
+                });
+                return { name, mapsShared: Boolean(shared) && ['map', 'normalMap', 'roughnessMap'].every(key => material[key] === shared[key]),
+                    textureSize: material.map?.image.width, vertexColors: material.vertexColors, emissiveIntensity: material.emissiveIntensity };
+            });
             const summary = { currentRoomIndex: 0, objectiveRoomIndex: 0 };
             applyDungeonRoomStatePresentation(currentState, { cleared: false }, summary);
             reference?.applyDungeonRoomStatePresentation(previous.getObjectByName(`DungeonRoomState:${type}:0`), { cleared: false }, summary);
@@ -112,7 +123,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
                 if (corrected?.distanceTo(p) > .01) blocked++;
             }
             const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
-            return { blocked, colliders, floorReference: Boolean(referenceFloor), floorPatina: floors[0][1].userData.verdantFloorPatina === true, rootBatches: rootBatches.length,
+            return { blocked, colliders, wardFinishes, floorReference: Boolean(referenceFloor), floorPatina: floors[0][1].userData.verdantFloorPatina === true, rootBatches: rootBatches.length,
                 rootTriangles: rootBatches.reduce((sum, part) => sum + (part.geometry.index?.count || part.geometry.attributes.position.count) / 3, 0),
                 equippedItems: hero.mesh.userData.equipmentVisualItemCount,
                 missing: hero.mesh.userData.equipmentVisualMissing?.length || 0, fallback: hero.mesh.userData.equipmentVisualFallback?.length || 0,
@@ -150,6 +161,9 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
         await writeFile(testInfo.outputPath('entry-ward-review.json'), JSON.stringify(reports, null, 2));
         expect(setup.gpu).not.toMatch(/swiftshader|llvmpipe|software/i);
         expect(setup.blocked).toBe(0); expect(setup.equippedItems).toBe(14); expect(setup.missing + setup.fallback).toBe(0);
+        expect(setup.wardFinishes).toEqual(['Masonry', 'Ironwork'].map(name => ({
+            name, mapsShared: true, textureSize: quality === 'low' ? 64 : 128, vertexColors: true, emissiveIntensity: 0
+        })));
         expect(setup.rootBatches).toBe(type === 'verdant_bastion_catacombs' ? 1 : 0);
         expect(setup.floorPatina).toBe(type === 'verdant_bastion_catacombs');
         expect(setup.rootTriangles).toBe(type === 'verdant_bastion_catacombs' ? (quality === 'high' ? 2880 : 864) : 0);

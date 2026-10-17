@@ -3,9 +3,9 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createDungeonBevelBlock } from './DungeonVigilGeometry.js';
 import { createDungeonVeilMaterial } from './DungeonVeilMaterial.js';
 
-// Room-owned decorative masonry. No colliders, click targets, lights, textures
-// or interaction state: the authoritative dungeon summary still drives readiness.
-export function createDungeonEntryWard(theme) {
+// Room-owned masonry borrows the kit's existing surface maps. The authoritative
+// dungeon summary still drives readiness and the physical doorway stays fixed.
+export function createDungeonEntryWard(theme, { surfaceMaterials = null } = {}) {
     const root = new THREE.Group();
     root.name = 'DungeonEntryWard';
     root.userData.visualOnly = true;
@@ -16,13 +16,30 @@ export function createDungeonEntryWard(theme) {
         if (source !== geometry) geometry.dispose();
         source.clearGroups();
         const colors = new Float32Array(source.attributes.position.count * 3);
+        const uvs = new Float32Array(source.attributes.position.count * 2);
+        const p = source.attributes.position;
         for (let i = 0; i < source.attributes.position.count; i++) {
-            const p = source.attributes.position;
             // Broad worn courses, never per-frame random glitter.
             const wear = .96 + .04 * Math.sin(p.getX(i) * 1.7 + p.getY(i) * 2.1);
             color.setScalar(shade * wear).toArray(colors, i * 3);
         }
+        // Give each physical triangle one dominant-axis chart. Smoothed vertex
+        // normals can straddle axes on bevels and collapse the texture area.
+        // Project in metres so individual courses and the wide threshold keep
+        // the same grain scale, without changing the silhouette or shading.
+        const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3();
+        for (let i = 0; i < p.count; i += 3) {
+            a.fromBufferAttribute(p, i); b.fromBufferAttribute(p, i + 1); c.fromBufferAttribute(p, i + 2);
+            const normal = b.sub(a).cross(c.sub(a));
+            const nx = Math.abs(normal.x), ny = Math.abs(normal.y), nz = Math.abs(normal.z);
+            const top = ny >= nx && ny >= nz, side = !top && nx >= nz;
+            for (let j = i; j < i + 3; j++) {
+                uvs[j * 2] = (side ? p.getZ(j) : p.getX(j)) / 1.2;
+                uvs[j * 2 + 1] = (top ? p.getZ(j) : p.getY(j)) / 1.2;
+            }
+        }
         source.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        source.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
         parts.push(source);
     };
     const block = (parts, x, y, z, width, height, depth, shade = 1) => {
@@ -68,10 +85,22 @@ export function createDungeonEntryWard(theme) {
     // Desaturate the regional stone palette; colored witchlight belongs in
     // the veil and existing vigils rather than a uniformly luminous green frame.
     const stoneColor = new THREE.Color(theme.palette.midtone).lerp(new THREE.Color(0x77736b), .72);
-    addBaked('DungeonEntryWard:Masonry', stoneParts, new THREE.MeshStandardMaterial({
-        color: stoneColor, vertexColors: true, roughness: .93, metalness: 0 }), true);
-    addBaked('DungeonEntryWard:Ironwork', metalParts, new THREE.MeshStandardMaterial({
-        color: 0x615b4b, vertexColors: true, roughness: .48, metalness: .68 }), false);
+    const finish = (material, role) => {
+        const shared = surfaceMaterials?.[role];
+        if (shared) {
+            for (const key of ['map', 'normalMap', 'roughnessMap']) material[key] = shared[key];
+            material.normalScale.copy(shared.normalScale);
+            material.emissive.copy(shared.emissive);
+            material.emissiveIntensity = shared.emissiveIntensity;
+            material.roughness = 1;
+            material.userData.dungeonPropSurface = role;
+        }
+        return material;
+    };
+    addBaked('DungeonEntryWard:Masonry', stoneParts, finish(new THREE.MeshStandardMaterial({
+        color: stoneColor, vertexColors: true, roughness: .93, metalness: 0 }), 'stone'), true);
+    addBaked('DungeonEntryWard:Ironwork', metalParts, finish(new THREE.MeshStandardMaterial({
+        color: 0x615b4b, vertexColors: true, roughness: .48, metalness: .68 }), 'metal'), false);
 
     const shape = new THREE.Shape();
     shape.moveTo(-2.83, .03); shape.lineTo(-2.83, 3.5);

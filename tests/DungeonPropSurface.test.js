@@ -48,7 +48,7 @@ test.each(['verdant_bastion_catacombs', 'molten_core', 'tempest_spire', 'abyssal
         expect(part.material.transparent).toBe(false); expect(part.material.flatShading).toBe(false);
         expect(part.material.emissiveIntensity).toBe(0);
     });
-    expect(materials.size).toBe(3); expect(textures.size).toBe(6);
+    expect(materials.size).toBe(5); expect(textures.size).toBe(6);
     expect(rooms[0].getObjectByName('entry:left-vigil:base').material).toBe(rooms[2].getObjectByName('shrine:basin').material);
     expect(rooms[0].getObjectByName('entry:left-vigil:shaft').material).toBe(rooms[1].getObjectByName('cache:coffer-lid').material);
     expect(kit.metrics().detailMaterials).toBe(type === 'verdant_bastion_catacombs' ? 8 : 7);

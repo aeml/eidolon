@@ -1,28 +1,20 @@
 import { expect, test } from '@playwright/test';
-import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, moveByGroundClick } from './helpers.js';
+import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, moveByGroundClick, projectEntity, zoomOutForPortal } from './helpers.js';
 
 const credentials = credentialsFromEnvironment();
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 
-test('fresh character talks to distinct town givers and explicitly accepts the Chronicle', async ({ page, baseURL }) => {
+test('fresh character accepts quests manually and retains tracking choices after a fresh login', async ({ page, baseURL }, testInfo) => {
     test.skip(!credentials.username || !credentials.password || process.env.EIDOLON_E2E_REGISTER !== '1', 'Requires a fresh disposable QA character');
     test.setTimeout(180000);
     const failures = collectBrowserFailures(page, baseURL);
     await loginAndEnterWorld(page, credentials);
-    await page.mouse.move(640, 320);
-    await page.mouse.wheel(0, 600);
+    await zoomOutForPortal(page);
     await expect.poll(() => page.evaluate(() => window.game?.remotePlayers?.get('story-wizard-1')?.questMarker?.visible)).toBe(true);
     expect(await page.evaluate(() => window.game.player.quests.find((quest) => quest.category === 'chronicle').accepted)).toBe(false);
     const talk = async (id) => {
-        const point = await page.evaluate((id) => {
-            const game = window.game;
-            const npc = game.remotePlayers.get(id);
-            const vector = npc.position.clone();
-            vector.y += 1.2;
-            vector.project(game.renderSystem.camera);
-            const rect = game.renderSystem.renderer.domElement.getBoundingClientRect();
-            return { x: rect.left + (vector.x + 1) * rect.width / 2, y: rect.top + (1 - vector.y) * rect.height / 2 };
-        }, id);
+        const point = await projectEntity(page, id);
+        expect(point?.visible, `Quest NPC ${id} must have an unobscured canvas hitbox`).toBe(true);
         await page.mouse.click(point.x, point.y);
         try {
             await expect(page.locator('#quest-window')).toBeVisible({ timeout: 20000 });
@@ -63,14 +55,66 @@ test('fresh character talks to distinct town givers and explicitly accepts the C
     const town = await page.evaluate(() => {
         const { collisionManager, player } = window.game;
         const blocked = (x, z) => Boolean(collisionManager.checkCollision(player.position.clone().set(x, 0, z), player.radius));
+        // Current town also has residential/portal colliders. Check the actual
+        // service footprints rather than an obsolete global collider count.
+        const serviceAnchors = [[-30, 200], [-22, 185], [-28, 218], [-28, 210]];
         return {
-            orientedShapes: collisionManager.orientedColliders.length,
+            missingServiceAnchors: serviceAnchors.filter(([x, z]) => !collisionManager.orientedColliders.some(({ matrix }) =>
+                Math.abs(matrix.elements[12] - x) < .01 && Math.abs(matrix.elements[14] - z) < .01)),
             tradingCornerBlocked: blocked(-14, 193),
             stashApproachBlocked: blocked(0, 180.5),
             hallWallBlocked: blocked(0, 177.5),
-            cofferBlocked: blocked(0, 185)
+            cofferBlocked: blocked(-28, 210)
         };
     });
-    expect(town).toEqual({ orientedShapes: 3, tradingCornerBlocked: false, stashApproachBlocked: false, hallWallBlocked: true, cofferBlocked: true });
+    expect(town).toEqual({ missingServiceAnchors: [], tradingCornerBlocked: false, stashApproachBlocked: false, hallWallBlocked: true, cofferBlocked: true });
+
+    const storyId = await page.evaluate(() => window.game.player.quests.find(quest => quest.category === 'chronicle').id);
+    await page.locator('#btn-menu-quest').click();
+    await expect(page.locator('#quest-journal')).toBeVisible();
+    // Use the actual journal controls; no direct tracking-state or storage writes.
+    const story = page.locator('#quest-journal').locator(`[data-quest-track="${storyId}"]`);
+    const daily = page.locator('#quest-journal [data-quest-track="daily_skeleton"]');
+    await page.getByRole('button', { name: 'All quests', exact: true }).click();
+    await daily.check(); await story.uncheck();
+    const before = await page.evaluate(() => {
+        const { player, uiManager } = window.game;
+        return { id: player.id, key: uiManager.quest.trackingStorageKey,
+            tracked: uiManager.quest.getTrackedObjectives().map(quest => quest.id),
+            stored: localStorage.getItem(uiManager.quest.trackingStorageKey),
+            quests: player.quests.map(({ id, accepted, completed, count, maxCount }) => ({ id, accepted, completed, count, maxCount })) };
+    });
+    expect(before.tracked).toContain('daily_skeleton'); expect(before.tracked).not.toContain(storyId);
+    expect(before.key).toBe(`eidolon.questTracking.v1:${before.id}`);
+    expect(JSON.parse(before.stored)).toContain('daily_skeleton'); expect(JSON.parse(before.stored)).not.toContain('story');
+    await page.locator('#btn-close-journal').click();
+
+    // Start a new document and authenticate the same saved character, without
+    // sending a second registration request to the disposable fixture.
+    const registration = process.env.EIDOLON_E2E_REGISTER;
+    process.env.EIDOLON_E2E_REGISTER = '0';
+    try { await loginAndEnterWorld(page, credentials); }
+    finally { process.env.EIDOLON_E2E_REGISTER = registration; }
+    const after = await page.evaluate(() => {
+        const { player, uiManager } = window.game;
+        return { id: player.id, key: uiManager.quest.trackingStorageKey,
+            tracked: uiManager.quest.getTrackedObjectives().map(quest => quest.id),
+            stored: localStorage.getItem(uiManager.quest.trackingStorageKey),
+            quests: player.quests.map(({ id, accepted, completed, count, maxCount }) => ({ id, accepted, completed, count, maxCount })) };
+    });
+    expect(after).toEqual(before);
+    await page.locator('#btn-menu-quest').click();
+    await page.getByRole('button', { name: 'All quests', exact: true }).click();
+    await expect(daily).toBeChecked(); await expect(story).not.toBeChecked();
+    await story.check(); await daily.uncheck();
+    await expect.poll(() => page.evaluate(() => window.game.uiManager.quest.getTrackedObjectives().map(quest => quest.id)))
+        .toEqual([storyId]);
+    expect(await page.evaluate(() => window.game.player.quests.map(({ id, accepted, completed, count, maxCount }) => ({ id, accepted, completed, count, maxCount })))).toEqual(before.quests);
+    await page.locator('#btn-close-journal').click();
+    await testInfo.attach('quest-tracking-fresh-login', { body: JSON.stringify({
+        sameCharacter: after.id === before.id, sameStorageKey: after.key === before.key,
+        selectedQuestIds: after.tracked, reversedQuestIds: [storyId], personalQuestReceiptsUnchanged: true,
+        scope: 'Actual disposable server, manual story/daily acceptance and journal tracking controls, fresh document/login of the same character. No grants, production users, campaign pacing, phone hardware or soak proof.'
+    }), contentType: 'application/json' });
     expect(failures, failures.join('\n')).toEqual([]);
 });

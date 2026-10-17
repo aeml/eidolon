@@ -96,3 +96,8 @@
     .mobile-mode .world-map-body #world-map-canvas { width: 0; height: 100%; }
     .mobile-mode .world-map-controls span { flex-basis: auto; }
 }
+.atlas-quest-focus { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 8px 0; }
+.atlas-quest-focus[hidden] { display: none; }
+.atlas-quest-focus p { flex: 1; margin: 0; color: #efd184; }
+.atlas-quest-focus button, .quest-map-action { min-height: 44px; }
+.quest-map-action { margin: 8px 0; }
