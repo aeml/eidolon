@@ -32,6 +32,25 @@ export function woodlandLeafLighting() {
     return ShaderChunk.lights_physical_pars_fragment.replace(DIFFUSE, LEAF_DIFFUSE);
 }
 
+// Surface detail composes with independent rooted-wind/batching hooks. Callers
+// supply coherent per-leaf UVs; this adds no texture, transparency or geometry.
+export function applyWoodlandLeafSurface(shader) {
+    shader.vertexShader = shader.vertexShader.replace('#include <common>',
+        '#include <common>\nvarying vec2 vEidolonLeafUV;')
+        .replace('#include <uv_vertex>', '#include <uv_vertex>\nvEidolonLeafUV = uv;');
+    shader.fragmentShader = shader.fragmentShader.replace('#include <common>',
+        `#include <common>\n${DETAIL}`)
+        .replace('#include <map_fragment>', /* glsl */`
+            #include <map_fragment>
+            float eidolonVeins = eidolonLeafVeins(vEidolonLeafUV);
+            diffuseColor.rgb *= mix(vec3(1.), vec3(.94, .98, .88), eidolonVeins);
+        `)
+        .replace('#include <roughnessmap_fragment>', /* glsl */`
+            #include <roughnessmap_fragment>
+            roughnessFactor = clamp(roughnessFactor - .12 + eidolonVeins * .06, .65, 1.);
+        `);
+}
+
 export function applyWoodlandLeafDetail(material) {
     if (!material?.isMeshStandardMaterial) throw new TypeError('Leaf detail requires a standard material');
     if (material.userData.woodlandLeafDetail) return material;
@@ -42,21 +61,8 @@ export function applyWoodlandLeafDetail(material) {
     material.userData.woodlandLeafDetail = true;
     material.customProgramCacheKey = () => 'eidolon-woodland-leaf-v1';
     material.onBeforeCompile = shader => {
-        shader.vertexShader = shader.vertexShader.replace('#include <common>',
-            '#include <common>\nvarying vec2 vEidolonLeafUV;')
-            .replace('#include <uv_vertex>', '#include <uv_vertex>\nvEidolonLeafUV = uv;');
-        shader.fragmentShader = shader.fragmentShader.replace('#include <common>',
-            `#include <common>\n${DETAIL}`)
-            .replace('#include <lights_physical_pars_fragment>', lighting)
-            .replace('#include <map_fragment>', /* glsl */`
-                #include <map_fragment>
-                float eidolonVeins = eidolonLeafVeins(vEidolonLeafUV);
-                diffuseColor.rgb *= mix(vec3(1.), vec3(.94, .98, .88), eidolonVeins);
-            `)
-            .replace('#include <roughnessmap_fragment>', /* glsl */`
-                #include <roughnessmap_fragment>
-                roughnessFactor = clamp(roughnessFactor - .12 + eidolonVeins * .06, .65, 1.);
-            `);
+        applyWoodlandLeafSurface(shader);
+        shader.fragmentShader = shader.fragmentShader.replace('#include <lights_physical_pars_fragment>', lighting);
     };
     material.needsUpdate = true;
     return material;

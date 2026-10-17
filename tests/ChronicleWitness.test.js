@@ -132,6 +132,39 @@ test.each(['near', 'far', 'dead', 'instance', 'removed', 'nonfinite'])('physical
     expect(open).toHaveBeenCalledTimes(scenario === 'near' ? 1 : 0);
 });
 
+test.each(['topic', 'outside', 'removed'])('witness reading focus survives changed topics: %s', scenario => {
+    document.body.innerHTML = '<div id="quest-window" style="display:none"><div class="window-header"><span></span><button id="witness-close">Close</button></div><div id="quest-list"></div></div>';
+    const evidence = { id: 'chronicle_earth_keepers_house', accepted: true, investigationMask: 1 };
+    const player = { id: 'reader', state: 'IDLE', quests: scenario === 'removed' ? [evidence] : [] };
+    const ui = new QuestUI({ getLastPlayer: () => player });
+    try {
+        ui.openWitnessConversation(CHRONICLE_WITNESSES[0].id);
+        const original = ui.questList.querySelector(`[data-witness-topic="${scenario === 'removed' ? 'door' : 'shelter'}"]`);
+        original.open = true;
+        const outside = document.getElementById('witness-close');
+        (scenario === 'outside' ? outside : original.querySelector('summary')).focus();
+        ui.questList.scrollTop = 42;
+        player.quests = scenario === 'removed' ? [] : [evidence];
+        ui.updateQuestWindow(player.quests);
+        if (scenario === 'outside') expect(document.activeElement).toBe(outside);
+        else if (scenario === 'topic') {
+            const replacement = ui.questList.querySelector('[data-witness-topic="shelter"]');
+            expect(document.activeElement).toBe(replacement.querySelector('summary'));
+            expect(replacement.open).toBe(true); expect(replacement).not.toBe(original);
+            expect(ui.questList.querySelector('[data-witness-topic="door"]')).not.toBeNull();
+        } else {
+            expect(ui.questList.querySelector('[data-witness-topic="door"]')).toBeNull();
+            expect(document.activeElement).toBe(ui.questList.querySelector('.quest-conversation__intro'));
+            expect(ui.questList.querySelector('[data-witness-topic="shelter"]').open).toBe(false);
+            player.quests = [evidence]; ui.updateQuestWindow(player.quests);
+            expect(document.activeElement).toBe(ui.questList.querySelector('.quest-conversation__intro'));
+            expect(ui.questList.querySelector('[data-witness-topic="door"]').open).toBe(false);
+        }
+        expect(ui.questList.scrollTop).toBe(42);
+        expect(ui.questList.querySelector('[data-quest-action]')).toBeNull();
+    } finally { ui.dispose(); document.body.replaceChildren(); }
+});
+
 test('witness reading survives quest refresh, never offers quest actions, and closes on character change', () => {
     document.body.innerHTML = '<div id="quest-window" style="display:none"><div class="window-header"><span></span></div><div id="quest-list"></div></div>';
     let player = { id: 'reader', state: 'IDLE', quests: [] };

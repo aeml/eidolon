@@ -33,6 +33,7 @@
 .lore-book__page h3 { font-size: 24px; }
 .lore-book__page h4 { color: #cbb68e; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; margin: 24px 0 10px; }
 .lore-book__page p { line-height: 1.8; }
+.lore-book__page > .menu-btn { min-height: 44px; max-width: 100%; margin-top: 12px; white-space: normal; text-align: left; }
 .lore-book :is(button, input, h3):focus-visible { outline: 2px solid #e2c792; outline-offset: 2px; }
 .lore-book button:hover { border-color: #d3b87e; }
 .mobile-mode .lore-book { font-size: 16px; }

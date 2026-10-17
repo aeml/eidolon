@@ -1,6 +1,32 @@
 import { createWoodlandUnderstoryGeometry } from '../src/art/WoodlandUnderstoryGeometry.js';
 import { createHash } from 'node:crypto';
 
+test.each([['bracken', 'high'], ['bracken', 'low'], ['sedge', 'high'], ['sedge', 'low']])(
+    '%s %s leaf fields stay continuous across ribbon faces and terminate at the midrib', (kind, quality) => {
+        const geometry = createWoodlandUnderstoryGeometry(kind, { quality });
+        try {
+            const { uv, position } = geometry.attributes;
+            expect(uv.itemSize).toBe(2); expect(uv.count).toBe(position.count);
+            expect([...uv.array].every(value => Number.isFinite(value) && value >= 0 && value <= 1)).toBe(true);
+            const sections = quality === 'low' ? 2 : 3;
+            const stride = kind === 'bracken' ? (quality === 'low' ? 177 : 183) : (quality === 'low' ? 9 : 15);
+            for (let start = 0; start < position.count; start += stride) {
+                for (let section = 0; section < sections - 1; section++) {
+                    // A shared left/right edge has exactly the same coordinates
+                    // on both triangles and on the following ribbon section.
+                    for (const [a, b] of [[2, 5], [2, 6], [4, 7]]) {
+                        const ia = start + section * 6 + a, ib = start + section * 6 + b;
+                        expect([position.getX(ia), position.getY(ia), position.getZ(ia)])
+                            .toEqual([position.getX(ib), position.getY(ib), position.getZ(ib)]);
+                        expect([uv.getX(ia), uv.getY(ia)]).toEqual([uv.getX(ib), uv.getY(ib)]);
+                    }
+                }
+                const tip = start + (sections - 1) * 6 + 2;
+                expect([uv.getX(tip), uv.getY(tip)]).toEqual([.5, 1]);
+            }
+        } finally { geometry.dispose(); }
+    });
+
 test.each([
     ['bracken', ['4c8030f5bc78bc441dfe72a78ea761b5aeefec4a7530145edc7d240311a63622',
         '99742c3399c4e9bd06b7d4994629f952bfa9aa5751fb72311692295059a460e8',

@@ -1594,7 +1594,7 @@
 .quest-dialogue__eyebrow { color: var(--quest-accent); font-size: 10px; letter-spacing: .12em; }
 .quest-dialogue__speech, .quest-dialogue__lore { color: #d4dce7; font-size: 13px; line-height: 1.75; }
 .quest-dialogue__speech { white-space: pre-line; }
-.quest-dialogue__lore summary { color: var(--quest-accent); cursor: pointer; }
+.quest-dialogue__lore summary { min-height: 44px; padding: 10px 0; color: var(--quest-accent); cursor: pointer; }
 .quest-dialogue__objective { border-top: 1px solid #ffffff18; padding-top: 12px; color: #f0dfb8; font-size: 13px; line-height: 1.5; }
 .quest-dialogue__reward, .quest-dialogue__status { color: #9ab7cf; font-size: 12px; line-height: 1.6; }
 .quest-dialogue .menu-btn { margin: 8px 8px 0 0; border-color: var(--quest-accent); }

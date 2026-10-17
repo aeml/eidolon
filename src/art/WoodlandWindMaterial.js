@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { createMotionPreference } from '../core/MotionPreference.js';
-import { woodlandLeafLighting } from './WoodlandLeafMaterial.js';
+import { applyWoodlandLeafSurface, woodlandLeafLighting } from './WoodlandLeafMaterial.js';
 
 // Maximum local-space displacement, including the small leaf flutter. The
 // largest (1.4x) plant still fits its existing 2.2m clearance envelope.
@@ -47,6 +47,7 @@ export function createWoodlandWindMaterial({ now = () => performance.now() / 100
         motion.value = motionPreference?.matches ? 0 : 1;
     };
     material.onBeforeCompile = shader => {
+        applyWoodlandLeafSurface(shader);
         shader.fragmentShader = shader.fragmentShader.replace('#include <lights_physical_pars_fragment>', lighting);
         shader.uniforms.woodlandTime = time;
         shader.uniforms.woodlandMotion = motion;
@@ -60,7 +61,7 @@ export function createWoodlandWindMaterial({ now = () => performance.now() / 100
             .replace('#include <begin_vertex>', `#include <begin_vertex>
                 transformed.xz += woodlandOffset * woodlandHeight * woodlandHeight;`);
     };
-    material.customProgramCacheKey = () => 'woodland-rooted-wind-leaf-v4';
+    material.customProgramCacheKey = () => 'woodland-rooted-wind-leaf-v5';
     material.userData.woodlandWind = true;
     return material;
 }
