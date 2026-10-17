@@ -1,6 +1,6 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
-Alpha 1.79.77 is prepared with direct quest map guidance, steadier Lore Book
+Alpha 1.79.77 is deployed and verified with direct quest map guidance, steadier Lore Book
 reading, saved tracking verification and consistent dungeon entry finishes.
 Show quest on map temporarily focuses personally available work from the journal
 or Lore Book, including accepted optional tasks and Dark Realm turn-ins. Return
@@ -10,10 +10,11 @@ turn-in; future unaccepted chapters remain hidden. The Player Guide explains it.
 All five dungeon entry arches share existing stone/iron maps and physical texture
 density, preserving non-UV geometry, bounds, shadows, collision, veil animation
 and retained GPU resources. No lighting/skeleton/shader experiment is selected.
-222distinct focused checks/eleven suites and eleven distinct component browser
-cases qualify the selection: two native entry cases with20RGBA source restorations,
+222distinct focused checks/eleven suites and thirteen distinct component browser
+cases qualify the corrected selection: two native entry cases with20RGBA source restorations,
 eight current-source DOM/Canvas2D desktop/touch cases, and one actual disposable
-manual quest acceptance/tracking/fresh-login case. Exact unchanged entry proof is
+manual quest acceptance/tracking/fresh-login case plus two native copied-floor
+cases covering all5themes inHigh/Low. Exact unchanged entry proof is
 reused; no whole combined native replay, physical-phone or frame-time pass is inferred.
 Original failures and observer/fixture corrections remain frozen. Full world/art/
 game/combat/audio/performance/device/security/operations/owner/F1-F5/beta/1.99 scope
@@ -21,8 +22,10 @@ remains active. Sparse/repeating rooms, moving world/combat quality, original
 performance limits and final owner review remain open. Human campaign/phone
 feedback and soak/stress are deferred, not passed.
 [Assembly](2026-10-17-quest-map-and-entry-assembly.md).
+[CI correction](2026-10-17-release1-79-77-ci-correction.md).
 [Quest guidance](2026-10-17-direct-quest-map-guidance.md).
-Public Alpha1.79.76 remains accepted until exact77 CI/deployment/public verification.
+All ten CI jobs pass. Fresh normal-TLS verification matches both77 identities, ready database, open registration, flat terrain and all393 asset pins at 2026-10-17T21:34:48.249899+00:00.
+[Acceptance](2026-10-17-release1-79-77-acceptance.md).
 Public access, progression and supplied actor/equipment assets are unchanged.
 
 
