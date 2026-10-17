@@ -57,7 +57,8 @@ The initial failed eleven-file diagnostic packet is independently frozen with
 inventory SHA256 `63f3a91f3d787fe9ddeb620cafc4123f642530ecfdc9866b3aa3ee7dd2a8c291`.
 Both manifests exclude processor stdout and unexecuted follow-up files.
 
-A separate initial/settled diagnostic is prepared, **not executed**. It observes
+At the time this closed component packet was created, a separate initial/settled
+diagnostic was prepared, **not executed**. It observes
 the existing actor geometry preparation queue and preserves the original limits;
 unfinished preparation is only a hypothesis for part of the remaining cost.
 Do not overwrite these closed packets, claim that hypothesis as a cause, or call
@@ -65,3 +66,38 @@ whole-game performance accepted. Finish that investigation before selecting this
 candidate. Exact72 deployment acceptance remains the prerequisite for another
 release; the full feature/art/device/operations/owner/beta/1.99 goal stays active,
 with human campaign/physical-phone feedback and soak/stress deferred.
+
+## Follow-up software census
+
+The separate initial/settled diagnostic subsequently passes once in 23.4 seconds
+on source `c4035ef992937947e1ae7d256b4f3e785f2c5065`, with identical runtime
+bytes to76bed42fd. Chrome explicitly disables GPU acceleration and reports
+SwiftShader; the native release job keeps exclusive GPU use. This is software
+submission evidence, not native/device/frame-time acceptance.
+
+Five initial and five settled court/wide observations compare the production
+clipped housing against a source-identical whole-field reference, restoring it
+within each observation. All ten source/restoration RGB comparisons are exact;
+the equipped actor, delivered Ilyra, scene and content remain present. The initial
+gathering view records28pending preparation jobs; the initial wide view records25.
+After the existing queue reaches0, it records23installed derivatives and6normal
+fallbacks, with no failures or rejected jobs. All five settled views fit the
+unchanged200draw/85,000triangle Low limits. Wide records191draws/78,881triangles,
+versus its same-observation whole-field reference173draws/100,353triangles.
+
+The initial wide observation records86,345triangles, not the separate native
+diagnostics'94,465. Preparation progresses between initial observations; they
+are not a fixed entirely unprepared baseline. These are separate mixer resets
+and static observation phases, not a paired frame-time benchmark or attribution
+of every cross-phase triangle to a single cause. The queue/installed-index
+evidence supports investigating preparation cost rather than removing scenery.
+Original cold limits and failures remain retained; no runtime preparation change
+has been made and no deferred gate is cleared.
+
+Closed software packet: nine files in
+`.qa-low-town-fallback/settled-software-inventory.json`, SHA256
+`ff255bb6d419c801b79190d652f9079defcd9036b98d0688fa8131b823f4eb20`.
+The earlier39/11closed packets remain byte-exact. Native execution of this same
+diagnostic is still pending release GPU availability; do not replay software or
+change its closed payloads. Candidate selection remains pending that review and
+the ordered exact72 deployment prerequisite.
