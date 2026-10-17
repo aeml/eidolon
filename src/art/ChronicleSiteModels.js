@@ -166,7 +166,7 @@ export function createChronicleSiteModel(site, realm) {
             break;
         case 'still_echo':
         case 'moving_echo':
-            cylinder(1.65, 1.65, 0.04, material(colors.glow, { metalness: 0.7, roughness: 0.18 }), 0, 0.2);
+            cylinder(1.65, 1.65, .02, material(colors.glow, { metalness: .7, roughness: .18 }), 0, .03).name = 'ChronicleEchoPool';
             for (let i = 0; i < 3; i++) ring(0.55 + i * 0.4, glow, 0.24 + i * (site.model === 'moving_echo' ? 0.16 : 0));
             break;
         case 'mooring_bell':

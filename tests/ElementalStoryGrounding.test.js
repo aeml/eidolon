@@ -36,3 +36,23 @@ test('grounding coverage includes all twenty-three elemental records and three b
     expect(cases.filter(({ site }) => ['flood_shelter', 'cold_kiln', 'observatory'].includes(site.model)).map(({ site }) => site.id))
         .toEqual(['dain_ledger', 'hessa_ledger', 'selen_journal']);
 });
+
+test.each(cases.filter(({ site }) => ['still_echo', 'moving_echo'].includes(site.model)))('$site.id keeps its reflective fill below markers and its magical ripple heights', ({ site, realm }) => {
+    const model = createChronicleSiteModel(site, realm);
+    const pool = model.mesh.getObjectByName('ChronicleEchoPool');
+    const bounds = new THREE.Box3().setFromObject(pool);
+    expect(bounds.min.y).toBeCloseTo(.02, 6); expect(bounds.max.y).toBeCloseTo(.04, 6);
+    expect(bounds.max.y).toBeLessThan(.05);
+    expect(bounds.min.x).toBeCloseTo(-1.65, 6); expect(bounds.max.x).toBeCloseTo(1.65, 6);
+    expect(bounds.min.z).toBeCloseTo(-1.65, 6); expect(bounds.max.z).toBeCloseTo(1.65, 6);
+    expect(pool.material.metalness).toBe(.7); expect(pool.material.roughness).toBe(.18);
+    expect(pool.material.depthTest).toBe(true); expect(pool.material.depthWrite).toBe(true);
+    expect(pool.material.transparent).toBe(false); expect(pool.material.opacity).toBe(1);
+    for (let index = 0; index < 3; index++) {
+        const ripple = model.mesh.children.find(part => part.geometry?.type === 'TorusGeometry'
+            && Math.abs(part.geometry.parameters.radius - (.55 + index * .4)) < 1e-6);
+        expect(ripple).toBeDefined();
+        expect(ripple.position.y).toBeCloseTo(.24 + index * (site.model === 'moving_echo' ? .16 : 0), 6);
+    }
+    model.dispose();
+});
