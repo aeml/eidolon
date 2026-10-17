@@ -40,8 +40,10 @@ for (const [width, height, mobile] of [[1280, 800, false], [390, 844, true]]) te
         const indexedArticle = book.locator('article');
         await activate(book.getByRole('button', { name: 'People', exact: true }));
         await search.fill('Mara');
-        await activate(book.locator('[data-memory-id="people:mara"]'));
-        await indexedArticle.getByRole('heading', { name: 'Mara', exact: true }).focus();
+        const person = book.locator('[data-memory-id="people:mara"]');
+        if (mobile) await person.tap();
+        else { await person.focus(); await page.keyboard.press('Enter'); }
+        await expect(indexedArticle.getByRole('heading', { name: 'Mara', exact: true })).toBeFocused();
         const readingScroll = await page.evaluate(() => {
             const list = window.__loreBook.ui.quest.journalList;
             list.scrollTop = Math.min(240, list.scrollHeight - list.clientHeight);
@@ -55,6 +57,7 @@ for (const [width, height, mobile] of [[1280, 800, false], [390, 844, true]]) te
         await expect(indexedArticle.getByRole('heading', { name: 'Mara Fen', exact: true })).toBeFocused();
         await expect(search).toHaveValue('Mara');
         expect(await page.evaluate(() => window.__loreBook.ui.quest.journalList.scrollTop)).toBe(readingScroll);
+        await indexedArticle.getByRole('heading', { name: 'Mara Fen', exact: true }).scrollIntoViewIfNeeded();
         await page.screenshot({ path: testInfo.outputPath('book-updated-reading-focus.jpg'), type: 'jpeg', quality: 90 });
         await page.evaluate(() => window.__loreBook.ui.quest.updateJournal(window.__loreBook.quests));
         await expect(indexedArticle.getByRole('heading', { name: 'Mara', exact: true })).toBeFocused();
