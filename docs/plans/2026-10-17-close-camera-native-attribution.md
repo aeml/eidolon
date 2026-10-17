@@ -60,3 +60,19 @@ Do not repeat these unchanged threshold, bounds or shadow-only proposals as
 performance fixes. Further work needs a different approach preserving close
 appearance and addressing both profiles. The full game, art, performance and
 release-readiness goal remains active.
+
+## Early backface removal is unsuitable for the supplied materials
+
+A separate read-only submission census finds that346518of348054submitted
+High skin triangles (99.56%) and110588of112124Low skin triangles (98.63%) use
+double-sided materials. These authored surfaces are not already discarded by
+GPU backface culling. The remaining small single-sided passes contribute at most
+768potential removable triangles in the observed pose. Both native cases fail
+their requirement for a substantial eligible submission; no material side or
+index was changed, and there is no unchanged retry. Before/observed/restored
+images and complete submission totals remain exact, all equipment is present,
+and canvases retire. This is evidence against applying an early-backface shortcut
+to these models, not a performance pass.
+
+Closed17-file packet SHA-256:
+`3230e8eda289a30bc8140b64337bd324351bd57580bd2ce5d8b7ed2b769a85aa`.
