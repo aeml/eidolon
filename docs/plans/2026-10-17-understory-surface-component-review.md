@@ -53,7 +53,17 @@ Original [findings](2026-10-17-understory-leaf-surface-findings.md) remain intac
 Visual inspection of the High/Low road and moving-HUD captures confirms a
 restrained surface finish; it is not final owner approval of the world art.
 
-Next: integrate in an owned detached tree, verify only the three leaf runtime
-paths differ from current master, and run the affected existing native lifetime
-and moving-HUD cases. Publish only after Alpha1.79.73 is accepted. Keep the full
-art, combat/audio, performance, device, operations and beta goal active.
+Combined source `1b6c49d2e21ffc5104d7c3054c7b9b9c03b71412` integrates corrected
+Alpha1.79.73 with exactly the three reviewed leaf runtime paths. All three
+affected existing native cases pass in44.4seconds: High/Low matted Earth thatch
+with moving full outfits/HUD, and shared geometry through partial retirement
+and repeated quality replacement. The original43CPU cases and full lint remain
+valid for the byte-exact leaf runtime/test inputs. The closed28-file integration
+packet has SHA-256
+`6b5e985de03a13a604e7232b0a24b359a8291acf09fe51e6b1611e6356b81d0f`.
+
+This component is selected for the next coherent milestone after exact73
+acceptance. It is not yet on master or published. The original close-camera
+cases still fail; no guard, source asset or visibility requirement was changed.
+Keep the full art, combat/audio, performance, device, operations and beta goal
+active.
