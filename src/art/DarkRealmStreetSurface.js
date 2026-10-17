@@ -16,25 +16,30 @@ function noise(u, v, cells) {
     return mix(mix(h(ix, iy), h(ix + 1, iy), f), mix(h(ix, iy + 1), h(ix + 1, iy + 1), f), g);
 }
 
-// One UV repeat is the existing24m floor span. Staggered dressed slabs replace
-// the old6m checker blocks. All signals are periodic, including row offsets;
+// One UV repeat is the existing24m floor span. Mixed-width flagstone courses
+// give the broad plazas a quieter surface than a uniform brick checker. All
+// signals are periodic, including row offsets and clipped stone corners;
 // no painted directional highlights, glowing fractures or displaced floors.
 export function sampleDarkRealmStreet(u, v) {
     u = wrap(u, 1); v = wrap(v, 1);
     const weather = noise(u, v, 4), mineral = noise(u, v, 16), grain = noise(u, v, 64);
-    const course = v * 12 + (noise(u + .3, v + .7, 8) - .5) * .07;
-    const row = Math.floor(course), y = course - row, rowSeed = hash(0, wrap(row, 12));
-    const x = u * 8 + (wrap(row, 12) % 2) * .5 + rowSeed * .45 + (noise(u, v, 8) - .5) * .12;
+    const course = v * 8 + (noise(u + .3, v + .7, 8) - .5) * .045;
+    const row = Math.floor(course), y = course - row, rowSeed = hash(0, wrap(row, 8));
+    const columns = [5, 8, 6, 8][wrap(row, 4)], span = 24 / columns;
+    const x = u * columns + (wrap(row, 8) % 2) * .5 + rowSeed * .45 + (noise(u, v, 8) - .5) * .08;
     const column = Math.floor(x), face = x - column;
-    const seed = hash(wrap(column, 8), wrap(row, 12));
-    const edge = Math.min(face * 3, (1 - face) * 3, y * 2, (1 - y) * 2);
+    const seed = hash(wrap(column, columns), wrap(row, 8));
+    const along = Math.min(face, 1 - face) * span, across = Math.min(y, 1 - y) * 3;
+    const edge = Math.min(along, across, along + across - .065);
     // Rounded/worn shoulders broaden a shallow joint enough to survive mipmaps.
     const coverage = smooth(.009, .055, edge + (mineral - .5) * .02);
     const rim = (1 - smooth(.055, .13, edge)) * coverage;
-    const tone = 64 + seed * 12 + weather * 8 + mineral * 7;
+    // Broad mineral weathering carries variation. Small differences between
+    // individual stones avoid a noisy checker behind actors and ground warnings.
+    const tone = 64 + seed * 5 + weather * 14 + mineral * 7;
     return {
-        color: [mix(61, tone + rim * 2, coverage), mix(60, tone - 2 + rim * 2, coverage),
-            mix(69, tone + 9 - weather * 5 + rim, coverage)],
+        color: [mix(56, tone + 4 + rim * 2, coverage), mix(55, tone + 2 + rim * 2, coverage),
+            mix(53, tone + rim, coverage)],
         height: coverage * (.018 + mineral * .004) + grain * .002,
         roughness: mix(.98, .81 + weather * .1 + grain * .04, coverage)
     };
