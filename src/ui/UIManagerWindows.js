@@ -316,6 +316,14 @@ class UIManagerWindowMethods {
         this.reflowVisibleWindows();
     }
 
+    hideWindowElement(element) {
+        // Hidden controls can retain focus until the browser's next layout.
+        // Release it synchronously so the next gameplay key is not swallowed
+        // by InputManager's native-control guard. Other windows keep focus.
+        if (element.contains(document.activeElement)) document.activeElement?.blur();
+        element.style.display = 'none';
+    }
+
     closeManagedWindow(id, { silent = false } = {}) {
         const details = this.inventory?.mobileDetails;
         if ((id === 'inventory' && details?.source?.type === 'inventory')
@@ -327,7 +335,7 @@ class UIManagerWindowMethods {
             if (id === 'settings') this.passwordChange?.clearFields();
             if (id === 'settings') this.recoveryEmail?.clearFields();
             if (id === 'trading') this.trading?.close();
-            layout.element.style.display = 'none';
+            this.hideWindowElement(layout.element);
             if (!silent && wasOpen) {
                 this.playUICue(AUDIO_CUES.uiClose);
             }
@@ -449,7 +457,7 @@ class UIManagerWindowMethods {
         if (element === this.settingsScreen) this.passwordChange?.clearFields();
         if (element === this.settingsScreen) this.recoveryEmail?.clearFields();
         if (element === this.reportScreen) this.report?.exportDownload?.close();
-        element.style.display = 'none';
+        this.hideWindowElement(element);
         this.playUICue(AUDIO_CUES.uiClose);
         this.syncStaticModalBackdrop();
         return true;
@@ -462,7 +470,7 @@ class UIManagerWindowMethods {
         let closedAny = false;
         this.getStaticModalWindows().forEach((windowElement) => {
             if (this.isElementVisible(windowElement)) {
-                windowElement.style.display = 'none';
+                this.hideWindowElement(windowElement);
                 closedAny = true;
             }
         });
@@ -496,13 +504,13 @@ class UIManagerWindowMethods {
             this.closeManagedGroup?.('primary');
             this.getStaticModalWindows().forEach((windowElement) => {
                 if (windowElement && windowElement !== element) {
-                    windowElement.style.display = 'none';
+                    this.hideWindowElement(windowElement);
                 }
             });
             element.style.display = openDisplay;
             this.playUICue(AUDIO_CUES.uiOpen);
         } else {
-            element.style.display = 'none';
+            this.hideWindowElement(element);
             this.playUICue(AUDIO_CUES.uiClose);
         }
 

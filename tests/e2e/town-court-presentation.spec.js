@@ -46,7 +46,7 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
             hero.mesh.position.copy(hero.position); render.entityGroup.add(hero.mesh);
             ui.updatePlayerStats(hero);
             const collision = new CollisionManager();
-            const world = new WorldGenerator(render.instanceEnvironmentGroup, collision, { graphicsQuality: mobile ? 'low' : 'high' });
+            const world = new WorldGenerator(render.instanceEnvironmentGroup, collision, { graphicsQuality: mobile ? 'low' : 'high', campInstanceFrustum: render.renderer.extensions.has('WEBGL_multi_draw') === true });
             await world.loadBuildings(0, 200);
             // Services are replicated entities in production, not buildings
             // owned by loadBuildings. Include them before judging town density.
