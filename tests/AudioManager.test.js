@@ -18,6 +18,7 @@ function createMockContext() {
                 gain: {
                     value: 1,
                     setValueAtTime: jest.fn(),
+                    linearRampToValueAtTime: jest.fn(),
                     exponentialRampToValueAtTime: jest.fn(),
                 },
             };
@@ -227,7 +228,7 @@ describe('AudioManager', () => {
         for (const bus of audio.busGains.values()) expect(bus.connect).toHaveBeenCalledWith(audio.masterGain);
         expect(audio.masterGain.gain.value).toBe(.45);
         expect(context.createdGains[2].connect).toHaveBeenCalledWith(audio.busGains.get('interface'));
-        expect(context.createdGains[4].connect).toHaveBeenCalledWith(audio.busGains.get('combat'));
+        expect(audio.dangerMix.destination('combat').connect).toHaveBeenCalledWith(audio.busGains.get('combat'));
         expect(new AudioManager().getBusVolumes()).toEqual({ combat: .7, interface: .2, ambience: 1 });
         audio.setBusVolume('combat', 0);
         expect(audio.busGains.get('combat').gain.value).toBe(0);
