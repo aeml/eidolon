@@ -2232,3 +2232,14 @@ scope. No movement, collision, ranked reward or wagering rule changes. Public
 [Qualification](docs/plans/2026-10-17-arena-and-casino-grounding-qualification.md).
 Broader art/game/performance/readiness/beta gates remain open. Human pacing,
 physical-phone feedback and soak/stress remain deferred. Full original goal active.
+
+## October 17 Alpha 1.79.70 scoped acceptance
+
+Exact `668c34652d820b75bf9d9f078adf5c903988f38c` /[CI](https://github.com/aeml/eidolon/actions/runs/39011041958) qualifies all ten jobs after one documented focused live-job repeat.
+Normal-TLS 370 pins/identities/database/open registration/flat terrain/analytics
+match at 2026-10-17T08:04:38.667797+00:00. Arena/casino ground-marker scope is accepted; native
+fitted-arena, public/VIP marker comparisons and actual four-class practice pass.
+Retained original performance findings and all broader game/performance/final-art/readiness/owner/
+F1–F5/beta/cohort/1.99/handoff gates remain open. Human pacing, physical-phone
+feedback and soak/stress remain deferred. Full original goal active.
+[Acceptance](docs/plans/2026-10-17-release1-79-70-acceptance.md).
