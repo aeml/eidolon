@@ -275,10 +275,11 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
                     const evidence = await page.evaluate(() => {
                         const render = window.__eidolonAnimationGalleryController.renderSystem;
                         const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
-                        return { zoom: render.zoom, cameraOffset: render.camera.position.clone().sub(render.cameraTarget).toArray(),
+                        return { zoom: render.currentZoom, cameraOffset: render.camera.position.clone().sub(render.cameraTarget).toArray(),
                             calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles,
                             renderer: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER) };
                     });
+                    expect(evidence.zoom).toBe(18);
                     expect(evidence.cameraOffset.map(value => Math.round(value))).toEqual([100, 100, 100]);
                     if (process.env.EIDOLON_E2E_REQUIRE_NATIVE_GPU === '1') expect(evidence.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
                     await testInfo.attach(`casino-play-zoom-${label}-${floor}-${quality}`, {
