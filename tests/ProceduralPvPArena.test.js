@@ -1,4 +1,5 @@
 import { createProceduralPvPArena } from '../src/art/ProceduralPvPArena.js';
+import { Box3 } from 'three';
 
 test('arena has one canonical floor, low boundaries and no invisible gameplay objects', () => {
     const layout = { walkRects: [{ x: 0, z: 0, width: 50.5, height: 34.5 }] };
@@ -8,6 +9,18 @@ test('arena has one canonical floor, low boundaries and no invisible gameplay ob
     expect(floors[0].geometry.parameters).toMatchObject({ width: 50.5, height: 34.5 });
     expect(floors[0].material.map.name).toContain('lanternhold-vigil-stone');
     expect(floors[0].material.map.repeat.toArray()).toEqual([50.5 / 12, 34.5 / 12]);
+    expect(floors[0].material.userData.worldSurfaceDetail).toBe('fortress');
+    const boundaries = arena.children.filter(mesh => mesh.name === 'PvPArenaBoundary');
+    expect(boundaries).toHaveLength(4);
+    for (const mesh of boundaries) {
+        const box = new Box3().setFromObject(mesh);
+        const width = mesh.position.x ? .5 : 51.5, depth = mesh.position.x ? 34.5 : .5;
+        expect(box.min.x).toBeCloseTo(mesh.position.x - width / 2, 5);
+        expect(box.max.x).toBeCloseTo(mesh.position.x + width / 2, 5);
+        expect(box.min.z).toBeCloseTo(mesh.position.z - depth / 2, 5);
+        expect(box.max.z).toBeCloseTo(mesh.position.z + depth / 2, 5);
+        expect(box.min.y).toBeCloseTo(0, 5); expect(box.max.y).toBeCloseTo(.7, 5);
+    }
     expect(arena.children.every(mesh => mesh.position.y < 3)).toBe(true);
     expect(arena.children.length).toBeLessThan(25);
     expect(layout.walkRects[0].width).toBe(50.5);
