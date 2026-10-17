@@ -1,6 +1,6 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
-Alpha 1.79.76 is prepared with character geometry preparation cleanup.
+Alpha 1.79.76 is deployed and verified with character geometry preparation cleanup.
 The delivery schedules queued work only, cancels an empty queued pump and
 clears its handle on disposal. Active-worker deadlines, source and generation
 guards remain covered by the existing tests.
@@ -14,7 +14,8 @@ High/Low; this is resource ownership proof, not frame-time or device acceptance.
 The exact accepted75 delivery reproduces the scheduled-callback finding in
 all eight observations. Its failure and a zero-test discovery error are retained.
 [Qualification](2026-10-17-geometry-preparation-quiescence.md).
-Public Alpha1.79.75 remains accepted until exact76 CI/deployment/public verification.
+All ten CI jobs pass. Fresh normal-TLS verification matches both76 identities, ready database, open registration, flat terrain and all389 asset pins at 2026-10-17T19:34:17.755523+00:00.
+[Acceptance](2026-10-17-release1-79-76-acceptance.md).
 Full world/art/game/combat/audio/device/performance/operations/owner/F1-F5/beta/
 1.99 scope remains active. Human campaign/phone feedback and soak/stress are deferred.
 Public access, progression and supplied actor/equipment assets are unchanged.
