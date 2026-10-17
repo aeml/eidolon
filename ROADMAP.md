@@ -1,6 +1,6 @@
 # Eidolon Roadmap
 
-Alpha 1.79.75 is prepared with clearer danger-warning audio and actor color
+Alpha 1.79.75 is deployed and verified with clearer danger-warning audio and actor color
 batch recovery after hidden equipment preparation or stealth restoration.
 Accepted generated warnings briefly soften ordinary combat and ambience using
 audio-clock gain envelopes, retaining player volumes and directional cues.
@@ -15,7 +15,8 @@ the warning envelope; human listening and busy-party performance remain open.
 [Assembly](docs/plans/2026-10-17-warning-audio-and-actor-batching-assembly.md).
 [Warning mix](docs/plans/2026-10-17-danger-audio-mix.md).
 [Hidden actors](docs/plans/2026-10-17-hidden-actor-color-batches.md).
-Public Alpha1.79.74 remains accepted until exact75 CI/deployment/public verification.
+All ten CI jobs pass. Fresh normal-TLS verification matches both75 identities, ready database, open registration, flat terrain and all388 asset pins at 2026-10-17T17:33:01.217826+00:00.
+[Acceptance](docs/plans/2026-10-17-release1-79-75-acceptance.md).
 Full world/art/game/combat/audio/device/performance/operations/owner/F1-F5/beta/
 1.99 scope remains active. Human campaign/phone feedback and soak/stress are deferred.
 Public access, progression and supplied actor/equipment assets are unchanged.
