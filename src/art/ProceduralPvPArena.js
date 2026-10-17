@@ -62,7 +62,9 @@ export function createProceduralPvPArena(layout) {
     const ring = (x, z, radius, material) => {
         const mesh = new THREE.Mesh(new THREE.RingGeometry(radius - 0.08, radius, 64), material);
         mesh.rotation.x = -Math.PI / 2;
-        mesh.position.set((rect.x || 0) + x, 0.115, (rect.z || 0) + z);
+        // Inlays sit above the floor and below player markers, including where
+        // players cross the court/team circles during a duel.
+        mesh.position.set((rect.x || 0) + x, 0.015, (rect.z || 0) + z);
         root.add(mesh);
     };
     ring(0, 0, 6, gold); ring(0, 0, 6.5, gold);

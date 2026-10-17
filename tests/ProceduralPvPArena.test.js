@@ -2,6 +2,31 @@ import { createProceduralPvPArena } from '../src/art/ProceduralPvPArena.js';
 import { Box3, Group, Raycaster, Vector3 } from 'three';
 import { Entity } from '../src/entities/Entity.js';
 
+test('decorative court and team inlays cannot cover party markers when players cross them', () => {
+    const arena = createProceduralPvPArena({ walkRects: [{ width: 50.5, height: 34.5 }] });
+    const actor = new Entity('arena-inlay-crossing'); actor.mesh = new Group();
+    actor.mesh.userData.bounds = { radius: 1.25 }; actor.setPartyHighlight(true);
+    const marker = actor.mesh.getObjectByName('PartyRing');
+    const inlays = arena.children.filter(part => part.geometry?.type === 'RingGeometry');
+    try {
+        expect(inlays).toHaveLength(4);
+        arena.updateMatrixWorld(true);
+        for (const inlay of inlays) {
+            const target = new Vector3(inlay.position.x + inlay.geometry.parameters.outerRadius - .04, .05, inlay.position.z);
+            actor.mesh.position.set(target.x - 1.1, 0, target.z); actor.mesh.updateMatrixWorld(true);
+            const hits = new Raycaster(new Vector3(target.x, 100, target.z), new Vector3(0, -1, 0)).intersectObjects([inlay, marker]);
+            expect(hits[0]?.object.name).toBe('PartyRing');
+            expect(inlay.position.y).toBeGreaterThan(0);
+            expect(inlay.position.y).toBeLessThan(marker.position.y);
+        }
+    } finally {
+        actor.setPartyHighlight(false);
+        const materials = new Set();
+        arena.traverse(part => { part.geometry?.dispose(); if (part.material) materials.add(part.material); });
+        materials.forEach(material => { material.map?.dispose(); material.dispose(); });
+    }
+});
+
 test('the canonical arena floor does not occlude an ordinary party marker at server height zero', () => {
     const arena = createProceduralPvPArena({ walkRects: [{ width: 50.5, height: 34.5 }] });
     const actor = new Entity('arena-marker-grounding'); actor.mesh = new Group();
