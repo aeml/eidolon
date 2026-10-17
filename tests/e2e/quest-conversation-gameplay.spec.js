@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, moveByGroundClick } from './helpers.js';
+import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, moveByGroundClick, projectEntity, zoomOutForPortal } from './helpers.js';
 
 const credentials = credentialsFromEnvironment();
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
@@ -9,20 +9,12 @@ test('fresh character accepts quests manually and retains tracking choices after
     test.setTimeout(180000);
     const failures = collectBrowserFailures(page, baseURL);
     await loginAndEnterWorld(page, credentials);
-    await page.mouse.move(640, 320);
-    await page.mouse.wheel(0, 600);
+    await zoomOutForPortal(page);
     await expect.poll(() => page.evaluate(() => window.game?.remotePlayers?.get('story-wizard-1')?.questMarker?.visible)).toBe(true);
     expect(await page.evaluate(() => window.game.player.quests.find((quest) => quest.category === 'chronicle').accepted)).toBe(false);
     const talk = async (id) => {
-        const point = await page.evaluate((id) => {
-            const game = window.game;
-            const npc = game.remotePlayers.get(id);
-            const vector = npc.position.clone();
-            vector.y += 1.2;
-            vector.project(game.renderSystem.camera);
-            const rect = game.renderSystem.renderer.domElement.getBoundingClientRect();
-            return { x: rect.left + (vector.x + 1) * rect.width / 2, y: rect.top + (1 - vector.y) * rect.height / 2 };
-        }, id);
+        const point = await projectEntity(page, id);
+        expect(point?.visible, `Quest NPC ${id} must have an unobscured canvas hitbox`).toBe(true);
         await page.mouse.click(point.x, point.y);
         try {
             await expect(page.locator('#quest-window')).toBeVisible({ timeout: 20000 });
