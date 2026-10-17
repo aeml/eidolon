@@ -303,7 +303,13 @@ export class WorldGenerator {
 
         // Trading House is now an Entity (loaded in MeshFactory) to handle interaction/collision better
 
-        const neighborhood = createLanternholdNeighborhood(cx, cz, { perInstanceFrustum: this.campInstanceFrustum, quality: this.graphicsQuality });
+        // Low town views cannot afford submitting every off-screen home.
+        // Stock BatchedMesh also clips on browsers without multi-draw, using
+        // ordinary draws for the visible instances. Keep other quality levels
+        // on their existing native-capability policy.
+        const neighborhood = createLanternholdNeighborhood(cx, cz, {
+            perInstanceFrustum: this.campInstanceFrustum || this.graphicsQuality === 'low', quality: this.graphicsQuality
+        });
         neighborhood.traverse((part) => {
             if (part.isMesh) {
                 MeshFactory.configureShadowCastingForObject(part, { stableFrontShadows: true });

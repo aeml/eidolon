@@ -74,12 +74,21 @@ for (const [quality, section, viewRange] of [
     await testInfo.attach('published-engine-identity', { body: JSON.stringify(metadata, null, 2), contentType: 'application/json' });
 });
 
-for (const quality of ['high', 'low']) test(`copied published ${quality} residential clipping preserves equipped town views and cleanup`, async ({ page }, testInfo) => {
+for (const [quality, forceFallback] of [['high', false], ['low', false], ['low', true]]) test(`copied published ${quality}${forceFallback ? ' without multi-draw' : ''} residential clipping preserves equipped town views and cleanup`, async ({ page }, testInfo) => {
     // Hosted software checks every view and ownership path. Native review also
     // advances eight walking poses per view; this fixture measures no FPS.
     const framesPerView = requiresHardwareWebGL() ? 8 : 1;
     const failures = collectBrowserFailures(page, origin);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    if (forceFallback) await page.addInitScript(() => {
+        for (const Context of [window.WebGLRenderingContext, window.WebGL2RenderingContext]) {
+            if (!Context) continue;
+            const getExtension = Context.prototype.getExtension;
+            Context.prototype.getExtension = function (name) {
+                return name === 'WEBGL_multi_draw' ? null : getExtension.call(this, name);
+            };
+        }
+    });
     await page.goto(origin, { waitUntil: 'networkidle' });
     try {
         const result = await page.evaluate(async ({ release, quality, framesPerView }) => {
@@ -93,6 +102,7 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} residen
             await render.preloadEnvironment();
             const supported = render.renderer.extensions.has('WEBGL_multi_draw');
             if (world.campInstanceFrustum !== supported) throw Error('Published world owner did not select actual camp capability');
+            const clipped = supported || quality === 'low';
             await world.createTownBase(0, 200, 100); await world.loadBuildings(0, 200);
             const field = render.instanceEnvironmentGroup.getObjectByName('Lanternhold residential wards');
             const hero = game.createRemotePlayer('Player', 'camp-equipped-fighter', 'Fighter');
@@ -105,7 +115,7 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} residen
             }])));
             await hero.mesh.userData.equipmentReady; render.add(hero.mesh); game.uiManager.showHUD();
             const reference = new THREE.Group();
-            if (supported) for (const batch of field.children) {
+            if (clipped) for (const batch of field.children) {
                 const mesh = new THREE.InstancedMesh(batch.geometry, batch.material, 15);
                 mesh.castShadow = batch.castShadow; mesh.receiveShadow = batch.receiveShadow;
                 for (let i = 0; i < 15; i++) {
@@ -124,7 +134,7 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} residen
             copy.width = canvas.width; copy.height = canvas.height;
             const context = copy.getContext('2d', { willReadFrequently: true });
             const capture = selected => {
-                field.visible = selected || !supported; reference.visible = !selected && supported;
+                field.visible = selected || !clipped; reference.visible = !selected && clipped;
                 render.render(); context.drawImage(canvas, 0, 0);
                 return { pixels: context.getImageData(0, 0, copy.width, copy.height).data,
                     calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles };
@@ -153,7 +163,7 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} residen
             }
             field.visible = true; reference.visible = false; render.render();
             const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
-            return { quality, framesPerView, supported, ownerEnabled: world.campInstanceFrustum, parts: field.children.length, camps: field.userData.instanceCount,
+            return { quality, framesPerView, supported, clipped, ownerEnabled: world.campInstanceFrustum, parts: field.children.length, camps: field.userData.instanceCount,
                 batchParts: field.children.filter(part => part.isBatchedMesh).length, rows,
                 hero: { quality: hero.mesh.userData.authoredQuality, items: hero.mesh.userData.equipmentVisualItemCount,
                     missing: hero.mesh.userData.equipmentVisualMissing.length, fallback: hero.mesh.userData.equipmentVisualFallback.length },
@@ -162,7 +172,8 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} residen
         await page.screenshot({ path: testInfo.outputPath(`camp-${quality}-selected.png`) });
         await page.evaluate(() => {
             const { game, field, reference } = window.__publishedCampReview;
-            field.visible = !game.worldGenerator.campInstanceFrustum; reference.visible = game.worldGenerator.campInstanceFrustum;
+            const clipped = game.worldGenerator.campInstanceFrustum || game.worldGenerator.graphicsQuality === 'low';
+            field.visible = !clipped; reference.visible = clipped;
             game.renderSystem.render();
         });
         await page.screenshot({ path: testInfo.outputPath(`camp-${quality}-reference.png`) });
@@ -180,17 +191,21 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} residen
         });
         await testInfo.attach('published-camp-clipping', { body: JSON.stringify({ ...result, cleanup, engineSHA256: metadata.engineSHA256,
             scope: `Current copied engine world owner, supplied fourteen-slot Fighter and real HUD. Three prepared town/camp views with ${3 * framesPerView} mixer updates per quality and same-pose whole-field reference. No server fight, continuous cadence, physical device or global performance acceptance.` }), contentType: 'application/json' });
-        expect(result).toMatchObject({ parts: 6, camps: 15, batchParts: result.supported ? 6 : 0, ownerEnabled: result.supported,
+        expect(result).toMatchObject({ parts: 6, camps: 15, clipped: result.supported || quality === 'low',
+            batchParts: result.clipped ? 6 : 0, ownerEnabled: result.supported,
             hero: { quality, items: 14, missing: 0, fallback: 0 } });
         expect(result.framesPerView).toBe(framesPerView);
         expect(result.rows).toHaveLength(3 * framesPerView);
         for (const row of result.rows) {
             expect(row.changedRGB, row.view).toBe(0); expect(row.unstableRGB, row.view).toBe(0);
-            expect(row.selected.calls).toBeLessThanOrEqual(row.reference.calls);
+            // Extension-free clipping trades one whole-field draw for a small
+            // number of visible-home draws; preserve the original Low budget.
+            expect(row.selected.calls).toBeLessThanOrEqual(result.supported || quality !== 'low' ? row.reference.calls : 200);
             expect(row.selected.triangles).toBeLessThanOrEqual(row.reference.triangles);
         }
-        expect(cleanup).toEqual(result.supported ? { batches: 6, geometry: 6, matrices: 6, indirection: 6 } : { batches: 0, geometry: 0, matrices: 0, indirection: 0 });
-        if (requiresHardwareWebGL()) { expect(result.supported).toBe(true); expect(result.gpu).not.toMatch(/SwiftShader|llvmpipe|software/i); }
+        expect(cleanup).toEqual(result.clipped ? { batches: 6, geometry: 6, matrices: 6, indirection: 6 } : { batches: 0, geometry: 0, matrices: 0, indirection: 0 });
+        if (forceFallback) expect(result.supported).toBe(false);
+        if (requiresHardwareWebGL()) { expect(result.supported).toBe(!forceFallback); expect(result.gpu).not.toMatch(/SwiftShader|llvmpipe|software/i); }
         expect(failures, failures.join('\n')).toEqual([]);
     } finally {
         await page.evaluate(() => {
