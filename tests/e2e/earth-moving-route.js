@@ -26,12 +26,31 @@ export async function captureEarthMovingRoute(page, testInfo) {
         const game = window.game, player = game?.player, render = game?.renderSystem;
         if (!player || game.isDestroyed || document.querySelector('#login-panel')?.getClientRects().length)
             throw new Error('Visual route must stay inside actual post-login gameplay');
+        const expectedFamilies = { SandstormDjinn: [63, 23], MagmaGolem: [80, 32], ScorchedWraith: [60, 23],
+            InfernalBehemoth: [49, 22], PhoenixSentinel: [78, 23], StormHarpy: [60, 33],
+            CloudElemental: [69, 23], ThunderRoc: [82, 23], TempestGiant: [83, 28], CycloneAvatar: [82, 24] };
+        const familyModels = {};
+        for (const actor of game.remotePlayers.values()) {
+            const root = actor.mesh, type = root?.userData.proceduralActorType;
+            if (!actor.isActive || !Object.hasOwn(expectedFamilies, type)) continue;
+            let attached = false;
+            for (let node = root; node; node = node.parent) {
+                if (!node.visible) break;
+                if (node === render.scene) { attached = true; break; }
+            }
+            if (!attached) continue;
+            const [sourceMeshes, drawMeshes] = expectedFamilies[type], batches = root.userData.humanoidRenderBatches;
+            const row = familyModels[type] ??= { roots: 0, sourceMeshes, drawMeshes, invalidRoots: 0, fallbackRoots: 0 };
+            row.roots++;
+            row.invalidRoots += Number(batches?.sourceMeshes !== sourceMeshes || batches?.drawMeshes !== drawMeshes);
+            row.fallbackRoots += Number(Boolean(root.userData.assetFallback));
+        }
         return { x: player.position.x, y: player.position.y, z: player.position.z,
             state: player.state, meshY: player.mesh.position.y, hp: player.stats.hp,
             terrain: game.terrainElevation?.sample(player.position.x, player.position.z) ?? 0,
             calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles,
             equippedItems: player.mesh.userData.equipmentVisualItemCount,
-            profile: game.terrainProfile, visibility: document.visibilityState };
+            profile: game.terrainProfile, visibility: document.visibilityState, familyModels };
     });
     const screenshot = async label => {
         const snapshot = await observe();
@@ -39,6 +58,9 @@ export async function captureEarthMovingRoute(page, testInfo) {
         expect(snapshot.profile).toBe(expectedProfile);
         expect(Math.abs(snapshot.y - snapshot.terrain)).toBeLessThan(.1);
         expect(Math.abs(snapshot.meshY - snapshot.terrain)).toBeLessThan(.15);
+        for (const [type, models] of Object.entries(snapshot.familyModels)) {
+            expect(models.invalidRoots, type).toBe(0); expect(models.fallbackRoots, type).toBe(0);
+        }
         observations.push({ label, elapsedMs: performance.now() - started, ...snapshot });
         await page.screenshot({ path: testInfo.outputPath(`${label}.png`) });
         if (process.env.EIDOLON_E2E_ROUTE_SUBMISSIONS === '1' &&
@@ -106,6 +128,9 @@ export async function captureEarthMovingRoute(page, testInfo) {
                     return state.state === 'IDLE' && Math.hypot(state.x - targetX, state.z - targetZ) < .6;
                 }, { timeout: 7000, message: 'Normal input must reach each route step before another click' }).toBe(true);
                 const state = await observe();
+                for (const [type, models] of Object.entries(state.familyModels)) {
+                    expect(models.invalidRoots, type).toBe(0); expect(models.fallbackRoots, type).toBe(0);
+                }
                 observations.push({ label: 'normal-input-step', elapsedMs: performance.now() - started, ...state });
             }
             await screenshot(label);
