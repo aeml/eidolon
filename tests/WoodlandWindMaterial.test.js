@@ -22,7 +22,7 @@ test('wind uses shared render uniforms and responds to live reduced motion witho
     expect(material.transparent).toBe(false);
     expect(material.depthWrite).toBe(true);
     expect(material.map).toBeNull();
-    expect(material.customProgramCacheKey()).toBe('woodland-rooted-wind-leaf-v4');
+    expect(material.customProgramCacheKey()).toBe('woodland-rooted-wind-leaf-v5');
     expect(shaders[0].vertexShader).toContain('direction *= min(woodlandStretch.x, woodlandStretch.y) / woodlandSafeStretch');
     // GLSL calls require batching helpers to be declared before the wind
     // function, including when Three emulates draw IDs without multi-draw.
