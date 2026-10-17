@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 // Shallow laid stone inside the former radius17.4 octagonal dais. The real
-// walk surface staysY=.1; grout reveals that surface rather than a void.
+// walk surface stays at server Y0; grout reveals that surface rather than a void.
 export function createDungeonDaisMasonry() {
     const radius = 17.4, cell = 5;
     const outline = Array.from({ length: 8 }, (_, i) => [Math.cos(i * Math.PI / 4) * radius, Math.sin(i * Math.PI / 4) * radius]);
