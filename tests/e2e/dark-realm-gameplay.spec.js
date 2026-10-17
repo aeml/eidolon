@@ -24,7 +24,10 @@ test('prepared expedition entrant discovers shore records, claims Ilyra’s rewa
     const catalog = JSON.parse(output.split('\n').find(line => line.startsWith('[party-fixture-catalog]')).slice(23));
     const chapter = darkRealmChapters[0];
     const index = catalog.quests.findIndex(q => q.id === chapter.id);
-    expect(index).toBe(29);
+    expect(index).toBeGreaterThan(0);
+    // Expansion chapters may precede the expedition. Seed only the current
+    // server catalog prefix, and prove every Dark Realm chapter stays unseeded.
+    expect(catalog.quests.slice(index).map(quest => quest.id)).toEqual(darkRealmChapters.map(quest => quest.id));
     // Prepared entry prerequisites ONLY. No Dark Realm discovery, reward,
     // completion, location, invulnerability or combat damage is fabricated.
     const prior = catalog.quests.slice(0, index).map(q => ({ id: q.id, accepted: true, completed: true,
