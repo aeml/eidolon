@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
+import { DARK_REALM_PATHS } from '../../src/data/darkRealmPopulation.js';
 
 const fixtures = JSON.parse(fs.readFileSync('tests/fixtures/production-dungeon-layouts.json', 'utf8'));
 const layouts = ['molten_core', 'earth_crystal_raid'].map(type => fixtures.find(f => f.dungeonType === type));
@@ -131,11 +132,16 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
             expect(state.destinations.some(p => ['forge', 'stash', 'molten_core'].includes(p.id))).toBe(false);
             if (type === 'dark_realm') {
                 expect(state.destinations.filter(p => p.id.startsWith('court-'))).toHaveLength(4);
-                expect(await page.evaluate(async () => {
+                const atlas = await page.evaluate(async () => {
                     const {getInstanceAtlas} = await import('/src/ui/InstanceAtlas.js');
                     const model = getInstanceAtlas(window.__interiorAtlas.engine);
-                    return {paths: model.paths.length, court: model.locations.find(p => p.id === 'court-shore')};
-                })).toMatchObject({paths: 10, court: {x: 39900, z: 40552, category: 'places'}});
+                    return {paths: model.paths.map(({ id, width, points }) => ({ id, width, points })),
+                        court: model.locations.find(p => p.id === 'court-shore')};
+                });
+                // The map must follow the shared scene routes, including the
+                // record side streets, rather than the former ten-road subset.
+                expect(atlas.paths).toEqual(DARK_REALM_PATHS.map(({ id, width, points }) => ({ id, width, points })));
+                expect(atlas.court).toMatchObject({x: 39900, z: 40552, category: 'places'});
             }
             for (const p of state.corners) {
                 expect(p.x).toBeGreaterThanOrEqual(0); expect(p.x).toBeLessThanOrEqual(state.width);
