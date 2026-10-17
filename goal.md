@@ -2207,3 +2207,14 @@ accepted until exact CI, deployment and public files are verified.
 [Qualification](docs/plans/2026-10-17-casino-interior-qualification.md).
 The full original goal remains active. Human pacing/phone feedback and soak/stress
 remain deferred.
+
+## October 17 Alpha 1.79.69 scoped acceptance
+
+Exact `b5cfd6d933cb0fdf3a159c83a483715c5c0537ee` /[CI](https://github.com/aeml/eidolon/actions/runs/39006091286) passes all ten ordered jobs and live checks.
+Normal-TLS 369 pins/identities/database/open registration/flat terrain/analytics
+match at 2026-10-17T06:27:37.443767+00:00. Casino material/indoor-atmosphere scope is accepted; native
+fitted-crowd and actual connected casino checks pass. Retained High full-hall
+median failures and all broader game/performance/final-art/readiness/owner/
+F1–F5/beta/cohort/1.99/handoff gates remain open. Human pacing, physical-phone
+feedback and soak/stress remain deferred. Full original goal active.
+[Acceptance](docs/plans/2026-10-17-release1-79-69-acceptance.md).
