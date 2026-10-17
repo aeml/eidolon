@@ -12,7 +12,7 @@ test.each(PARTY_ROLES)('%s prepared party has fourteen class-legal active slots'
         { ...base, level: 30, rarity: 'Common', stats: {}, maxStack: 1, statScaleVersion: 1 }]));
     const character = partyDungeonCharacter({ stats: {}, items }, [], className, 'fixture', 'common');
     for (const [slot, item] of Object.entries(character.equipment)) {
-        expect(canEquipItem(className, item, slot), `${className} ${slot}: ${item.name}`).toBe(true);
+        expect({ slot, name: item.name, legal: canEquipItem(className, item, slot) }).toMatchObject({ legal: true });
     }
     if (className === 'Rogue') expect(isDualWieldingRogue(className, character.equipment)).toBe(true);
 });
