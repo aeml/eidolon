@@ -245,6 +245,19 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
                 expect.soft(sample.medianMs).toBeLessThanOrEqual(quality === 'high' ? 25 : 20);
                 expect.soft(sample.p95Ms).toBeLessThanOrEqual(quality === 'high' ? 50 : 33.3);
             }
+            if (process.env.EIDOLON_CASINO_GAMEPLAY_ZOOM_REVIEW === '1') {
+                for (const [label, x, z] of [['tables', -28, 158], ['entry', 0, 194]]) {
+                    await page.evaluate(({ x, z, floor }) => {
+                        const gallery = window.__eidolonAnimationGalleryController, render = gallery.renderSystem;
+                        const focus = gallery.controls.target.clone().set(x, floor === 'vip' ? 8 : 0, z);
+                        render.setZoom(18);
+                        render.camera.position.copy(focus).add({ x: 20, y: 90, z: 85 });
+                        gallery.controls.target.copy(focus); gallery.controls.update();
+                        return new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+                    }, { x, z, floor });
+                    await page.screenshot({ path: testInfo.outputPath(`casino-play-zoom-${label}-${floor}-${quality}.png`) });
+                }
+            }
         }
     } finally {
         if (profile) await testInfo.attach('casino-frame-profiles', { body: JSON.stringify(profiles, null, 2), contentType: 'application/json' });
