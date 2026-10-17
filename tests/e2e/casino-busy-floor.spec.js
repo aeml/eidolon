@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { cpus, loadavg } from 'node:os';
 import { collectBrowserFailures } from './helpers.js';
 
@@ -21,8 +23,18 @@ if (process.env.EIDOLON_CASINO_SOFTWARE_REVIEW === '1') {
 test('equipped crowd remains readable on both casino floors at High and Low', async ({ page, baseURL }, testInfo) => {
     test.skip(process.env.EIDOLON_CASINO_FIXTURE_CATALOG !== '1', 'Explicit bounded busy-floor review');
     const profile = process.env.EIDOLON_CASINO_PROFILE === '1';
+    const profileOnly = process.env.EIDOLON_CASINO_PROFILE_ONLY;
     const cpuDiagnostic = process.env.EIDOLON_CASINO_CPU_PROFILE === '1';
     const baselineCommit = process.env.EIDOLON_CASINO_BASELINE_COMMIT;
+    const artReference = process.env.EIDOLON_CASINO_ART_REFERENCE_FILE;
+    if (profileOnly && !['high:public', 'high:vip', 'low:public', 'low:vip'].includes(profileOnly))
+        throw new Error('Casino profile view must name one existing quality/floor');
+    if (artReference) {
+        const source = readFileSync(artReference, 'utf8');
+        await page.route('**/src/art/ProceduralCasino.js*', route => route.fulfill({ body: source, contentType: 'text/javascript' }));
+        await testInfo.attach('casino-art-reference', { body: JSON.stringify({ file: artReference,
+            sha256: createHash('sha256').update(source).digest('hex'), scope: 'Immutable art source only; current scene, actors, camera, lighting and timing budgets retained.' }), contentType: 'application/json' });
+    }
     const baselineModulesServed = new Set();
     if (cpuDiagnostic && !profile) throw new Error('CPU diagnostic requires the casino frame profile');
     if (profile && process.env.EIDOLON_CASINO_SOFTWARE_REVIEW === '1') throw new Error('Casino performance requires hardware rendering');
@@ -38,11 +50,24 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
             });
         }
     }
-    const output = execFileSync('go', ['test', './internal/game', '-run', '^TestCasinoBrowserFixtureCatalog$', '-count=1', '-v'],
-        { cwd: 'server', encoding: 'utf8', timeout: 120000 });
-    const line = output.split('\n').find(line => line.startsWith('[casino-fixture-catalog]'));
-    if (!line) throw new Error('Missing canonical casino table catalog');
-    const tables = JSON.parse(line.slice('[casino-fixture-catalog]'.length));
+    const prevalidated = process.env.EIDOLON_CASINO_PREVALIDATED_CATALOG === '1';
+    let catalog;
+    if (prevalidated) {
+        // The native visual container has no Go binary/network. Compare this
+        // fixed fixture with the canonical Go output on the host first.
+        catalog = readFileSync(new URL('../fixtures/casino-browser-catalog.json', import.meta.url), 'utf8');
+    } else {
+        const output = execFileSync('go', ['test', './internal/game', '-run', '^TestCasinoBrowserFixtureCatalog$', '-count=1', '-v'],
+            { cwd: 'server', encoding: 'utf8', timeout: 120000 });
+        const line = output.split('\n').find(line => line.startsWith('[casino-fixture-catalog]'));
+        if (!line) throw new Error('Missing canonical casino table catalog');
+        catalog = line.slice('[casino-fixture-catalog]'.length);
+    }
+    const tables = JSON.parse(catalog);
+    await testInfo.attach('casino-catalog-origin', { body: JSON.stringify({
+        source: prevalidated ? 'Fixed fixture; requires separate canonical Go parity receipt' : 'Canonical Go test output',
+        sha256: createHash('sha256').update(catalog).digest('hex'), tables: tables.length
+    }), contentType: 'application/json' });
     const failures = collectBrowserFailures(page, baseURL);
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
@@ -135,9 +160,11 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
                 render.camera.top = 58; render.camera.bottom = -58;
                 render.camera.updateProjectionMatrix();
                 const focus = new THREE.Vector3(0, upstairs ? 8 : 0, 152);
-                render.camera.position.copy(focus).add(new THREE.Vector3(20, 90, 85));
+                render.cameraTarget.copy(focus);
+                render.camera.position.copy(focus).add(render.cameraOffset);
                 gallery.controls.target.copy(focus);
                 gallery.controls.update();
+                render.updateShadowFocus(focus);
                 const seated = models.filter(model => {
                         if (!model.mesh.visible) return false;
                         const pelvis = model.mesh.getObjectByName('pelvis'), thigh = model.mesh.getObjectByName('thigh_l');
@@ -180,7 +207,7 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
             expect(view.floors).toEqual({ public: floor === 'public', vip: floor === 'vip' });
             await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
             await page.screenshot({ path: testInfo.outputPath(`casino-crowd-${floor}-${quality}.png`) });
-            if (profile) {
+            if (profile && (!profileOnly || profileOnly === `${quality}:${floor}`)) {
                 // One diagnostic sample only. Profiler overhead means this run
                 // cannot establish timing acceptance, even if assertions pass.
                 const cpuSession = cpuDiagnostic && quality === 'low' && floor === 'public'
@@ -244,6 +271,36 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
                 // These are not network, device-wide or sustained FPS claims.
                 expect.soft(sample.medianMs).toBeLessThanOrEqual(quality === 'high' ? 25 : 20);
                 expect.soft(sample.p95Ms).toBeLessThanOrEqual(quality === 'high' ? 50 : 33.3);
+            }
+            if (process.env.EIDOLON_CASINO_GAMEPLAY_ZOOM_REVIEW === '1') {
+                for (const [label, x, z] of [['tables', -28, 158], ['entry', 0, 194]]) {
+                    await page.evaluate(({ x, z, floor }) => {
+                        const gallery = window.__eidolonAnimationGalleryController, render = gallery.renderSystem;
+                        const focus = gallery.controls.target.clone().set(x, floor === 'vip' ? 8 : 0, z);
+                        render.setZoom(18);
+                        gallery.controls.maxDistance = Math.max(gallery.controls.maxDistance, render.cameraOffset.length());
+                        render.cameraTarget.copy(focus);
+                        render.camera.position.copy(focus).add(render.cameraOffset);
+                        gallery.controls.target.copy(focus); gallery.controls.update();
+                        render.updateShadowFocus(focus);
+                        return new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+                    }, { x, z, floor });
+                    const evidence = await page.evaluate(() => {
+                        const render = window.__eidolonAnimationGalleryController.renderSystem;
+                        const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
+                        return { zoom: render.currentZoom, cameraOffset: render.camera.position.clone().sub(render.cameraTarget).toArray(),
+                            calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles,
+                            renderer: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER) };
+                    });
+                    expect(evidence.zoom).toBe(18);
+                    expect(evidence.cameraOffset.map(value => Math.round(value))).toEqual([100, 100, 100]);
+                    if (process.env.EIDOLON_E2E_REQUIRE_NATIVE_GPU === '1') expect(evidence.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
+                    await testInfo.attach(`casino-play-zoom-${label}-${floor}-${quality}`, {
+                        body: JSON.stringify({ quality, floor, label, ...evidence,
+                            scope: 'Controlled equipped crowd at standard gameplay camera offset/zoom18 and matching shadow focus. Separate actual authenticated casino checks own network, HUD and wagering evidence; counts are snapshots, not performance acceptance.' }), contentType: 'application/json'
+                    });
+                    await page.screenshot({ path: testInfo.outputPath(`casino-play-zoom-${label}-${floor}-${quality}.png`) });
+                }
             }
         }
     } finally {

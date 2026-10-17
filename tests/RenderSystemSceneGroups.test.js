@@ -3,6 +3,39 @@ import { jest } from '@jest/globals';
 import { RenderSystem } from '../src/core/RenderSystem.js';
 
 describe('RenderSystem scene groups', () => {
+    test('casino entry uses indoor light without outdoor particles and restores the actual realm on exit', () => {
+        const render = new RenderSystem(false), position = new THREE.Vector3(-2400, 8, 200);
+        render.initRealmParticles();
+        const lights = [render.ambientLight, render.keyLight, render.fillLight];
+        try {
+            render.setEnvironmentContext('overworld', position, true);
+            render.updateRealmParticles(1 / 60, position);
+            expect(render.currentRealm).toBe('fire'); expect(render._pMesh.visible).toBe(true);
+            expect(render.setEnvironmentContext('casino', position, true)).toBe('casino');
+            expect(render.staticEnvironmentGroup.visible).toBe(false);
+            expect(render.currentLighting.keyColor.getHex()).toBe(0xffdfb5);
+            expect(render.currentLighting.ambientIntensity).toBe(.82);
+            expect(render._pMesh.visible).toBe(false);
+            expect(render._pLife.every(life => life === 0)).toBe(true);
+            for (const quality of ['low', 'medium', 'high']) {
+                render.setGraphicsQuality(quality);
+                render.updateEnvironmentLighting(position, 1 / 60);
+                expect(render.getRealmForPosition(position)).toBe('casino');
+                expect(render._pMesh.visible).toBe(false);
+            }
+            expect([render.ambientLight, render.keyLight, render.fillLight]).toEqual(lights);
+            expect(render.setEnvironmentContext('overworld', position, true)).toBe('fire');
+            expect(render.environmentThemeOverride).toBeNull();
+            expect(render.staticEnvironmentGroup.visible).toBe(true);
+            render.updateRealmParticles(1 / 60, position);
+            expect(render._pMesh.visible).toBe(true);
+            expect(render.currentLighting.keyColor.getHex()).toBe(render.realmLightingPresets.fire.keyColor);
+            render.setGraphicsQuality('low');
+            render.setEnvironmentContext('casino', position, true);
+            render.setEnvironmentContext('overworld', position, true);
+            expect(render._pMesh.visible).toBe(false);
+        } finally { render.dispose(); }
+    });
     test('unchanged owned branches cache local composition while preserving manual child and actor world updates', () => {
         const render = new RenderSystem(false), foliage = new THREE.Group();
         foliage.userData = { proceduralFoliage: true, region: 'earth' };

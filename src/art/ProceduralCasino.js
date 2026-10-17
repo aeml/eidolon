@@ -8,16 +8,22 @@ import { addCasinoFacade, createCasinoHippedRoof } from './CasinoFacade.js';
 export function createCasinoInterior(scene, collision) {
     const root = new THREE.Group(); root.name = 'lanternhold-casino-interior';
     const m = materials();
+    applyWorldSurfaceDetail(m.wood, 'timber');
+    applyWorldSurfaceDetail(m.velvet, 'canvas');
     const floors = {};
     for (const [floor, y] of [['public', 0], ['vip', 8]]) {
         const group = new THREE.Group(); group.name = `casino-${floor}-floor`; group.position.y = y;
-        const palette = floor === 'vip' ? { ...m, velvet: new THREE.MeshStandardMaterial({ color: 0x34234e, roughness: .7 }),
+        const palette = floor === 'vip' ? { ...m, velvet: new THREE.MeshStandardMaterial({ color: 0x2d2141, roughness: .86 }),
             stone: new THREE.MeshStandardMaterial({ color: 0x667581, roughness: .32, metalness: .15 }) } : m;
+        applyWorldSurfaceDetail(palette.velvet, 'canvas');
+        applyWorldSurfaceDetail(palette.stone, 'fieldstone');
+        const marble = [floor === 'vip' ? 0x64717a : 0x59626b, floor === 'vip' ? 0x414650 : 0x444b50]
+            .map(color => applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color, roughness: .34 }), 'polished-marble'));
         box(group, 'marble-gaming-floor', palette.dark,
             [CASINO_INTERIOR_LAYOUT.width, .3, CASINO_INTERIOR_LAYOUT.depth], [0, -.15, CASINO_INTERIOR_LAYOUT.centerZ]);
         for (let x = -52; x <= 52; x += 8) for (let z = 100; z <= 204; z += 8) {
-            box(group, 'polished-marble-tile', ((x + z) / 8) % 2 ? palette.stone : palette.wood,
-                [7.88, .015, 7.88], [x, .012, z]);
+            box(group, 'polished-marble-tile', marble[((x + z) / 8) % 2 ? 0 : 1],
+                [7.985, .015, 7.985], [x, .012, z]);
         }
         box(group, 'central-velvet-walkway', palette.velvet, [8, .025, 104], [0, .035, 152]);
         for (const x of [-4.1, 4.1]) box(group, 'carpet-gilt-border', palette.gold, [.1, .025, 104], [x, .05, 152]);
@@ -60,7 +66,7 @@ export function createCasinoInterior(scene, collision) {
     return root;
 }
 
-const colors = { stone: 0x394453, dark: 0x17212d, gold: 0xb99a58, wood: 0x30231f, felt: 0x155453, velvet: 0x623647, light: 0xffcf78 };
+const colors = { stone: 0x394453, dark: 0x17212d, gold: 0xb99a58, wood: 0x30231f, felt: 0x155453, velvet: 0x4d2330, light: 0xffcf78 };
 
 function materials(keys = Object.keys(colors)) {
     return Object.fromEntries(keys.map(key => [key, new THREE.MeshStandardMaterial({ color: colors[key],
@@ -177,6 +183,9 @@ export function createCasinoFurniture(tables) {
     const publicFloor = new THREE.Group(), vipFloor = new THREE.Group();
     root.add(publicFloor, vipFloor); root.userData.publicFloor = publicFloor; root.userData.vipFloor = vipFloor;
     const m = materials(); const seats = [];
+    applyWorldSurfaceDetail(m.wood, 'timber');
+    applyWorldSurfaceDetail(m.felt, 'canvas');
+    applyWorldSurfaceDetail(m.velvet, 'canvas');
     for (const table of tables) {
         const unit = new THREE.Group(); unit.name = table.id; unit.position.y = table.y || 0;
         (table.floor === 'vip' ? vipFloor : publicFloor).add(unit);

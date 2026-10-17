@@ -2,7 +2,7 @@ import { MeshStandardMaterial, MeshBasicMaterial, ShaderLib } from 'three';
 import { applyWorldSurfaceDetail } from '../src/art/WorldSurfaceDetail.js';
 
 describe('world surface detail', () => {
-    test.each(['stone', 'slate', 'timber', 'fieldstone', 'bark', 'stratified-rock', 'fortress', 'weathered-masonry', 'canvas'])('%s retains standard lighting and supports transformed instances', surface => {
+    test.each(['stone', 'slate', 'timber', 'fieldstone', 'bark', 'stratified-rock', 'fortress', 'weathered-masonry', 'canvas', 'polished-marble'])('%s retains standard lighting and supports transformed instances', surface => {
         const material = new MeshStandardMaterial({ roughness: .91 });
         const color = material.color.clone();
         expect(applyWorldSurfaceDetail(material, surface)).toBe(material);
@@ -24,9 +24,9 @@ describe('world surface detail', () => {
     });
 
     test('surface variants cannot accidentally reuse one compiled shader', () => {
-        const keys = ['stone', 'slate', 'timber', 'fieldstone', 'bark', 'stratified-rock', 'fortress', 'weathered-masonry', 'canvas'].map(surface =>
+        const keys = ['stone', 'slate', 'timber', 'fieldstone', 'bark', 'stratified-rock', 'fortress', 'weathered-masonry', 'canvas', 'polished-marble'].map(surface =>
             applyWorldSurfaceDetail(new MeshStandardMaterial(), surface).customProgramCacheKey());
-        expect(new Set(keys).size).toBe(9);
+        expect(new Set(keys).size).toBe(10);
     });
 
     test('canvas uses physical filtered thread scales and continuous projection blending without UVs or new maps', () => {
