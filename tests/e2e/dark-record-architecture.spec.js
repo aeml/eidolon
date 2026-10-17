@@ -23,6 +23,10 @@ for (const quality of ['high', 'low']) test(`${quality}: Dark record rooms retai
         const THREE = await import('three');
         const { RenderSystem } = await import('/src/core/RenderSystem.js');
         const { Entity } = await import('/src/entities/Entity.js');
+        const { Fighter } = await import('/src/entities/Fighter.js');
+        const { UIManager } = await import('/src/ui/UIManager.js');
+        const { MeshFactory } = await import('/src/utils/MeshFactory.js');
+        const { BASE_ITEMS } = await import('/src/core/ItemSystem.js');
         const { createDarkRealmScene } = await import('/src/art/ProceduralDarkRealm.js');
         const { darkRealmFixture } = await import('/tests/darkRealmFixture.js');
         const { darkRealmChapters } = await import('/src/data/chronicleCatalog.js');
@@ -30,7 +34,25 @@ for (const quality of ['high', 'low']) test(`${quality}: Dark record rooms retai
         const { createChronicleSiteModel: reference } = await import('/src/art/ChronicleSiteModels.js?record-reference');
         document.getElementById('start-screen').style.display = 'none';
         const system = new RenderSystem(quality === 'low'); system.setGraphicsQuality(quality);
+        document.body.classList.toggle('mobile-mode', quality === 'low');
         await system.preloadEnvironment();
+        const ui = new UIManager(quality === 'low'), reader = new Fighter('record-room-reader');
+        reader.gameEngine = { renderSystem: system };
+        const body = await MeshFactory.createMeshForType('Fighter', { quality });
+        if (body.userData.authoredClass !== 'Fighter' || body.userData.assetFallback) throw Error('Record review requires the supplied Fighter');
+        reader.setMesh(body); reader.meshType = 'Fighter'; reader.setName('Expedition reader');
+        const slots = ['head', 'chest', 'legs', 'feet', 'gloves', 'shoulders', 'belt', 'mainHand', 'offHand', 'ring1', 'ring2', 'neck', 'trinket1', 'trinket2'];
+        const names = ['Iron Helm', 'Plate Mail', 'Plate Greaves', 'Iron Boots', 'Iron Gauntlets', 'Steel Pauldrons',
+            'Plated Girdle', 'Iron Sword', 'Wooden Shield', 'Ruby Ring', 'Silver Ring', 'Necklace', 'Amulet of Power', 'Orb of Mana'];
+        reader.syncEquipmentVisuals(Object.fromEntries(names.map((name, index) => {
+            const item = BASE_ITEMS.find(item => item.name === name);
+            if (!item) throw Error(`Missing record review gear ${name}`);
+            return [slots[index], { ...item, id: `record-${slots[index]}`, baseName: name, name, rarity: 'Rare',
+                level: 30, potency: 3, sockets: 0, gems: [], stats: {} }];
+        })));
+        await body.userData.equipmentReady;
+        reader.setPartyHighlight(true); system.entityGroup.add(body); body.visible = false;
+        ui.showHUD(); ui.toggleChat(true); ui.updatePlayerStats(reader);
         const stage = new THREE.Group(); system.instanceEnvironmentGroup.add(stage);
         createDarkRealmScene(stage, darkRealmFixture(), null, { quality });
         const actor = new Entity('record-floor-marker'); actor.mesh = new THREE.Group();
@@ -89,14 +111,36 @@ for (const quality of ['high', 'low']) test(`${quality}: Dark record rooms retai
                 retire(); marker.visible = false; row.restored = capture().memory;
                 return { row, referencePng, currentPng };
             },
+            async walk(id) {
+                retire(); const site = sites.find(site => site.id === id);
+                after = current(site, 'dark'); after.mesh.position.set(site.x, 0, site.z); stage.add(after.mesh);
+                actor.mesh.visible = false; reader.mesh.visible = true;
+                reader.playAnimation('Run', true, true);
+                const rows = []; let previous;
+                for (let index = 0; index < 90; index++) {
+                    const time = await new Promise(resolve => requestAnimationFrame(resolve));
+                    const dt = previous === undefined ? 1 / 60 : Math.min((time - previous) / 1000, .1);
+                    previous = time; reader.updateAnimationMixer(dt);
+                    reader.position.set(site.x - 1, 0, site.z + 8 - index * .05);
+                    reader.mesh.position.copy(reader.position);
+                    system.setZoom(18); system.setCameraTarget(reader.position);
+                    system.updateEnvironmentLighting(reader.position, dt); system.render();
+                    rows.push({ index, visibility: document.visibilityState, position: reader.mesh.position.toArray(),
+                        clipTime: reader.currentAction?.time, calls: system.renderer.info.render.calls,
+                        triangles: system.renderer.info.render.triangles });
+                }
+                return { id, rows, quality, class: body.userData.authoredClass, items: body.userData.equipmentVisualItemCount,
+                    missing: body.userData.equipmentVisualMissing?.length || 0, fallback: body.userData.equipmentVisualFallback?.length || 0 };
+            },
             dispose() {
                 retire(); actor.setPartyHighlight(false); actor.mesh.removeFromParent();
+                reader.setPartyHighlight(false); reader.dispose(); ui.dispose();
                 system.disposeObjectResources(stage); stage.removeFromParent();
                 const canvas = system.renderer.domElement; system.dispose(); return { canvasRetired: !canvas.isConnected };
             }
         };
     }, quality);
-    const rows = []; let cleanup;
+    const rows = [], motion = []; let cleanup;
     try {
         const ids = await page.evaluate(() => window.__darkRecordArchitecture.ids);
         expect(ids).toHaveLength(14);
@@ -113,11 +157,23 @@ for (const quality of ['high', 'low']) test(`${quality}: Dark record rooms retai
             expect(row.afterTriangles).toBeLessThanOrEqual(quality === 'high' ? 250000 : 85000);
             if (process.env.EIDOLON_E2E_REQUIRE_NATIVE_GPU === '1') expect(row.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
         }
+        for (const id of ['dark_ferry_manifest', 'dark_waiting_table', 'dark_architect_plan', 'dark_bakers_ledger']) {
+            const result = await page.evaluate(id => window.__darkRecordArchitecture.walk(id), id);
+            motion.push(result);
+            expect(result.class).toBe('Fighter'); expect(result.items).toBe(14);
+            expect(result.missing).toBe(0); expect(result.fallback).toBe(0);
+            expect(result.rows).toHaveLength(90);
+            expect(result.rows.every(row => row.visibility === 'visible' && row.position[1] === 0 && Number.isFinite(row.clipTime))).toBe(true);
+            expect(result.rows.every(row => row.calls <= (quality === 'high' ? 350 : 200) &&
+                row.triangles <= (quality === 'high' ? 250000 : 85000))).toBe(true);
+            expect(new Set(result.rows.map(row => row.clipTime)).size).toBeGreaterThan(1);
+            await page.screenshot({ path: testInfo.outputPath(`${quality}-${id}-equipped-hud.png`) });
+        }
         expect(referenceServed).toBe(true);
     } finally {
         cleanup = await page.evaluate(() => window.__darkRecordArchitecture.dispose());
-        await writeFile(testInfo.outputPath('record-architecture.json'), JSON.stringify({ quality, rows, cleanup,
-            scope: 'Paired static native component views at fourteen existing Dark Realm records, ordinary zoom18. Exact colliders and per-site GPU memory restoration; shallow floor/marker depth. No gameplay progression, frame timing, supported-device, capacity or final-art acceptance.' }, null, 2));
+        await writeFile(testInfo.outputPath('record-architecture.json'), JSON.stringify({ quality, rows, motion, cleanup,
+            scope: 'Paired native component views at fourteen existing Dark Realm records, ordinary zoom18. Four prepared fourteen-slot Fighter/production-HUD approaches per quality, 90 real RAF frames each. Exact colliders and per-site GPU memory restoration; shallow floor/marker depth. No authoritative travel/progression, frame-time, physical-device, capacity or final-art acceptance.' }, null, 2));
     }
     expect(cleanup.canvasRetired).toBe(true); expect(failures, failures.join('\n')).toEqual([]);
 });
