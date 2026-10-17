@@ -1,4 +1,5 @@
 import { DARK_REALM_WITNESSES } from './darkRealmWitnesses.js';
+import { DARK_REALM_RECORD_APPROACHES } from './darkRealmRecordApproaches.js';
 
 // Public meeting places around existing people, not new quests or vendors.
 // Positions derive from the canonical witness roster; their record unlocks and
@@ -27,7 +28,7 @@ export const DARK_REALM_COURT_SOLIDS = Object.freeze(DARK_REALM_COURTS.flatMap(s
 // Worn public streets, not auto-navigation or safe routes. The foundry road
 // bends around the existing delivery-seal record. Nexus ends at its threshold
 // records; actual private dungeon/raid entry remains with Lanternhold's Guide.
-export const DARK_REALM_PATHS = Object.freeze([
+export const DARK_REALM_MAIN_PATHS = Object.freeze([
     ['foothold-shore', [[40000,40775],[40000,40400]]],
     ['shore-archive', [[40000,40400],[39300,40400]]],
     ['archive-foundry', [[39300,40400],[39300,39700]]],
@@ -39,3 +40,6 @@ export const DARK_REALM_PATHS = Object.freeze([
     ['oren-approach', [[40000,39900],[40130,39900],[40130,39842]]],
     ['nexus-threshold-approach', [[40000,39700],[40000,39490]]]
 ].map(([id, points]) => Object.freeze({id, width: 6, points: Object.freeze(points.map(Object.freeze))})));
+
+// The scene and instance atlas share the same connected street layout.
+export const DARK_REALM_PATHS = Object.freeze([...DARK_REALM_MAIN_PATHS, ...DARK_REALM_RECORD_APPROACHES]);

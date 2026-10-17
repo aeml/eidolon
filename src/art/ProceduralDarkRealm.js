@@ -3,6 +3,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { buildDungeonSurfaceUnion } from '../world/dungeonSurfaceUnion.js';
 import { DUNGEON_FLOOR_TEXTURE_SPAN } from './ProceduralDungeonInteriors.js';
 import { DARK_REALM_COURTS, DARK_REALM_COURT_SOLIDS, DARK_REALM_PATHS } from '../data/darkRealmPopulation.js';
+import { DARK_REALM_RECORD_APPROACHES } from '../data/darkRealmRecordApproaches.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createWorldPathNetwork } from './ProceduralWorldPaths.js';
 import { createDarkRealmStreetMaterial } from './DarkRealmStreetSurface.js';
@@ -41,6 +42,21 @@ export function createDarkRealmScene(scene, layout, collisionManager = null, { q
     const origin = layout.rooms[0];
     root.position.set(origin.x, 0, origin.z);
     const paths = createWorldPathNetwork(DARK_REALM_PATHS, {name: 'Dark Realm', color: [124, 115, 121]});
+    // Local side streets borrow their existing district approach submission.
+    // Keep the connecting roads separate for culling, and retain every ribbon
+    // vertex/UV, shared material and foreground-overlay ordering.
+    for (const streetId of new Set(DARK_REALM_RECORD_APPROACHES.map(path => path.streetId))) {
+        const street = paths.children.find(mesh => mesh.userData.worldPathId === streetId);
+        const ids = new Set(DARK_REALM_RECORD_APPROACHES.filter(path => path.streetId === streetId).map(path => path.id));
+        const branches = paths.children.filter(mesh => ids.has(mesh.userData.worldPathId));
+        if (!street || !branches.length) continue;
+        const parts = [street, ...branches];
+        const geometry = mergeGeometries(parts.map(mesh => mesh.geometry), false);
+        for (const mesh of parts) mesh.geometry.dispose();
+        street.geometry = geometry;
+        street.userData.worldPathIds = parts.map(mesh => mesh.userData.worldPathId);
+        for (const mesh of branches) mesh.removeFromParent();
+    }
     // Ribbon vertices already sit at Y.035. Keep the finished streets at Y.01
     // above server-grounded paving and below ordinary actor markers.
     paths.position.set(-origin.x, -.025, -origin.z);
