@@ -495,7 +495,24 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.70`, **deployed and verified within scoped acceptance**.
+Current source version: `Alpha 1.79.71`, **prepared; deployment acceptance pending**.
+Alpha 1.79.71 is prepared with Dark Realm/dungeon grounding, floor-finish and
+material-depth corrections, plus 32 side streets completing approaches to all
+38 existing Dark Realm records on the shared street/map layout. District batches preserve the
+original ten road meshes. Instance floors match authoritative player height;
+paths, paving, entry thresholds and boss inlays preserve ordinary party/hostile
+markers. Crypt ground ownership restores on exit. Native High/Low comparisons
+and actual solo expedition/four-class dungeon routes qualify this scope. The
+prepared Rogue fixture now uses a class-legal secondary weapon; no gameplay
+class, collision, movement or reward rule changes. Bounded query-free static
+delivery observations persist independently of the browser reporter. Published
+garment source records preserve the supplied notices; final rights review remains
+open.
+Public 1.79.70 remains accepted until exact CI/deployment/public verification.
+[Qualification](docs/plans/2026-10-17-instance-grounding-qualification.md).
+Broader world/art/game/performance/readiness/owner/beta gates remain open. Human
+pacing, physical-phone feedback and soak/stress remain deferred. Full goal active.
+
 Alpha 1.79.70 at `668c34652` is deployed and verified within the arena/casino
 ground-marker scope. All ten jobs qualify after one documented live-job repeat: 791 client suites / 12,274 tests,
 451 hosted browser passes / 13 skips, 140 native passes / one skip and live checks.

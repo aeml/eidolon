@@ -22,7 +22,26 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
-## October 17 expedition candidate: private; gameplay qualification pending
+## Alpha 1.79.71: prepared; deployment acceptance pending
+
+Alpha 1.79.71 is prepared with Dark Realm/dungeon grounding, floor-finish and
+material-depth corrections, plus 32 side streets completing approaches to all
+38 existing Dark Realm records on the shared street/map layout. District batches preserve the
+original ten road meshes. Instance floors match authoritative player height;
+paths, paving, entry thresholds and boss inlays preserve ordinary party/hostile
+markers. Crypt ground ownership restores on exit. Native High/Low comparisons
+and actual solo expedition/four-class dungeon routes qualify this scope. The
+prepared Rogue fixture now uses a class-legal secondary weapon; no gameplay
+class, collision, movement or reward rule changes. Bounded query-free static
+delivery observations persist independently of the browser reporter. Published
+garment source records preserve the supplied notices; final rights review remains
+open.
+Public 1.79.70 remains accepted until exact CI/deployment/public verification.
+[Qualification](2026-10-17-instance-grounding-qualification.md).
+Broader world/art/game/performance/readiness/owner/beta gates remain open. Human
+pacing, physical-phone feedback and soak/stress remain deferred. Full goal active.
+
+## Historical expedition investigation — before selection
 
 Owned candidate `d1f6334b1` combines server-grounded dungeon/Dark Realm floors,
 shallow finishes, unbiased dungeon materials and 32 side streets leading to the
