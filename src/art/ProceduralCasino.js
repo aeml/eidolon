@@ -25,13 +25,15 @@ export function createCasinoInterior(scene, collision) {
             box(group, 'polished-marble-tile', marble[((x + z) / 8) % 2 ? 0 : 1],
                 [7.985, .015, 7.985], [x, .012, z]);
         }
-        box(group, 'central-velvet-walkway', palette.velvet, [8, .025, 104], [0, .035, 152]);
-        for (const x of [-4.1, 4.1]) box(group, 'carpet-gilt-border', palette.gold, [.1, .025, 104], [x, .05, 152]);
+        // These are floor finishes, not raised steps. Keep their full layered
+        // depth below ordinary party/target markers at actor Y+.05 on both floors.
+        box(group, 'central-velvet-walkway', palette.velvet, [8, .004, 104], [0, .023, 152]);
+        for (const x of [-4.1, 4.1]) box(group, 'carpet-gilt-border', palette.gold, [.1, .002, 104], [x, .026, 152]);
         for (const z of [110, 132, 154, 176, 198]) {
-            cylinder(group, 'fourfold-medallion-border', palette.gold, 2.7, .025, [0, .07, z]);
-            cylinder(group, 'fourfold-medallion', palette.dark, 2.5, .026, [0, .085, z]);
+            cylinder(group, 'fourfold-medallion-border', palette.gold, 2.7, .002, [0, .0275, z]);
+            cylinder(group, 'fourfold-medallion', palette.dark, 2.5, .002, [0, .029, z]);
             for (let i = 0; i < 4; i++) box(group, 'fourfold-inlay', palette.gold,
-                [.16, .025, 3.9], [0, .103, z]).rotation.y = i * Math.PI / 4;
+                [.16, .002, 3.9], [0, .031, z]).rotation.y = i * Math.PI / 4;
         }
         for (const x of [-56, 56]) box(group, 'perimeter-balustrade', palette.stone, [.7, 1.1, 112], [x, .55, 152]);
         for (const z of [96, 208]) box(group, 'perimeter-balustrade', palette.stone, [112, 1.1, .7], [0, .55, z]);
