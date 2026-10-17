@@ -1,5 +1,17 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+Alpha 1.79.67 at `8529f82d5` is deployed and verified within the western
+Lanternhold paving and ordinary-input Fire/Air approach scope. All ten CI jobs
+pass: 789 client suites / 12,080 tests, 451 hosted browser passes / 13 skips,
+100 native passes / one skip and live/recovery/rested-party checks. Normal-TLS
+366 pins, both identities, ready database, open registration, flat terrain and
+analytics match at 2026-10-17T00:02:22.342936+00:00.
+[Acceptance](2026-10-17-release1-79-67-acceptance.md).
+Moving draw peaks and original performance, broader art/game/readiness/owner/
+beta gates remain open. Human pacing/physical-phone feedback and soak/stress
+remain deferred. The full original goal remains active.
+
+
 ## Owner scope additions — October 15
 
 Beta readiness also requires [whole-outfit garments and distinct VIP models](2026-10-15-garment-catalog-and-full-outfits.md)

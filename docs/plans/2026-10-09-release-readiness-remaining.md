@@ -1,6 +1,6 @@
 # Release-readiness remaining work
 
-Current checkpoint: October 16, 2026. The full goal remains active. No feature
+Current checkpoint: October 17, 2026. The full goal remains active. No feature
 freeze, final modern-art acceptance, closed beta or launch has been declared.
 
 This register records current delivery states and next actions. The preceding
@@ -22,15 +22,18 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
-## Alpha 1.79.67: prepared; deployment acceptance pending
+## Alpha 1.79.67: deployed and verified within scoped acceptance
 
-Alpha 1.79.67 is prepared with western Lanternhold paving aligned to the clear
-service/residential lane and ordinary-input Fire/Air approach review. Native
-High/Low comparisons preserve draw/triangle counts and collision parity. The
-original performance and full game/readiness gates remain open. Public 1.79.66
-remains the accepted release until exact CI, deployments and public assets are
-verified. [Qualification](2026-10-16-west-lane-and-elemental-review.md).
-Human pacing/physical-phone feedback and soak/stress remain deferred.
+Alpha 1.79.67 at `8529f82d5` is deployed and verified within the western
+Lanternhold paving and ordinary-input Fire/Air approach scope. All ten CI jobs
+pass: 789 client suites / 12,080 tests, 451 hosted browser passes / 13 skips,
+100 native passes / one skip and live/recovery/rested-party checks. Normal-TLS
+366 pins, both identities, ready database, open registration, flat terrain and
+analytics match at 2026-10-17T00:02:22.342936+00:00.
+[Acceptance](2026-10-17-release1-79-67-acceptance.md).
+Moving draw peaks and original performance, broader art/game/readiness/owner/
+beta gates remain open. Human pacing/physical-phone feedback and soak/stress
+remain deferred. The full original goal remains active.
 
 ## Alpha 1.79.66: deployed and verified within scoped acceptance
 
@@ -393,8 +396,8 @@ triangle results; it is not a whole-world performance acceptance.
 Post66 native diagnosis rules out matrix-upload avoidance: all 3,238 existing
 written batch targets change, despite 3.75% equal individual writes. A fresh
 High party still records 33.3/50 ms frames. The eyebrow single-pass proposal also
-fails its exact-pixel criterion and remains isolated. No additional runtime is
-selected; original performance gates stay open.
+fails its exact-pixel criterion and remains isolated. No renderer experiment from these diagnoses is selected; original performance
+gates stay open.
 [Current findings and custody](2026-10-16-current-renderer-rejections.md).
 
 All rows below are open at the full requirement's scope, even where substantial
@@ -479,23 +482,20 @@ Low timing result or complete-case pass. These fresh scoped baseline windows do
 not erase the original route/cold/device failures. No runtime change is selected.
 [Rejection and retained evidence](2026-10-16-town-batching-rejection.md).
 
-Accepted63 now has a new moving review of the materially changed61/62Bastion
-stonework/roots: actual flat-profile travel, equipped Fighter and HUD,458recorded
-frames/49grounded fourteen-slot observations. Route timing sampling is off;
-original59FPS/cold failures remain. The existing subsequent four-class socket
-party/save check passes. The foundation still reads as one broad rounded slab;
-site-specific block construction is the next concrete art question, preserving
-the shared Abyssal default and original bounds/budgets. Broader final world art
-remains open. [Moving review](2026-10-16-current-bastion-moving-review.md).
+The accepted63 moving review recorded the 61/62 Bastion stonework and roots
+with an equipped Fighter and actual HUD: 458 frames and 49 grounded,
+fourteen-slot observations. Its broad rounded slab finding led to the bonded
+stone foundation delivered in accepted64 and retained through accepted67.
+[Earlier moving review](2026-10-16-current-bastion-moving-review.md).
 
-Local master now contains the qualified Bastion bonded-foundation construction:
-71 focused checks/six suites, four native reference/candidate cases and four
-native cutaway cases pass. Draws/material count and original bounds remain;
-all non-foundation source parts and the shared Abyssal shelf are exact. This is
-unpublished source for the next coherent world milestone, with broader normal-
-movement integration, synchronized release versions/notes and deployment still
-pending. Public63 remains unchanged. No original performance/final-art gate is
-closed. [Qualification](2026-10-16-bastion-bonded-foundation-qualification.md).
+The bonded footing is deployed and verified within scoped acceptance: 71
+focused checks/six suites, four paired native construction cases, four cutaway
+cases and normal-input equipped travel. Draw/material counts, original bounds,
+non-foundation source parts and the shared Abyssal shelf remain exact. The
+added foundation triangles and original performance/final-world-art gates remain
+recorded. [Accepted64](2026-10-16-release1-79-64-acceptance.md),
+[qualification](2026-10-16-bastion-bonded-foundation-qualification.md),
+[normal movement](2026-10-16-bonded-bastion-normal-movement.md).
 
 ## Retained performance limits and counterexamples
 

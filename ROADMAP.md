@@ -1,12 +1,15 @@
 # Eidolon Roadmap
 
-Alpha 1.79.67 is prepared with western Lanternhold paving aligned to the clear
-service/residential lane and ordinary-input Fire/Air approach review. Native
-High/Low comparisons preserve draw/triangle counts and collision parity. The
-original performance and full game/readiness gates remain open. Public 1.79.66
-remains the accepted release until exact CI, deployments and public assets are
-verified. [Qualification](docs/plans/2026-10-16-west-lane-and-elemental-review.md).
-Human pacing/physical-phone feedback and soak/stress remain deferred.
+Alpha 1.79.67 at `8529f82d5` is deployed and verified within the western
+Lanternhold paving and ordinary-input Fire/Air approach scope. All ten CI jobs
+pass: 789 client suites / 12,080 tests, 451 hosted browser passes / 13 skips,
+100 native passes / one skip and live/recovery/rested-party checks. Normal-TLS
+366 pins, both identities, ready database, open registration, flat terrain and
+analytics match at 2026-10-17T00:02:22.342936+00:00.
+[Acceptance](docs/plans/2026-10-17-release1-79-67-acceptance.md).
+Moving draw peaks and original performance, broader art/game/readiness/owner/
+beta gates remain open. Human pacing/physical-phone feedback and soak/stress
+remain deferred. The full original goal remains active.
 
 Alpha 1.79.66 at `ac430ab8b` is deployed and verified within the road
 name/aura ordering, flat markers, High actor material ownership and QA lifecycle
