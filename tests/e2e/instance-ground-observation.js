@@ -8,8 +8,10 @@ export async function captureInstanceGrounding(page, testInfo, label, minimumAct
     await expect.poll(() => page.evaluate(() => {
         const game = window.game, ids = new Set(game.uiManager.social.partyData?.members?.map(member => member.id) || []);
         return [game.player, ...game.remotePlayers.values()].filter(actor =>
-            (actor === game.player || ids.has(actor.id)) && actor.mesh?.userData.authoredClass && !actor.mesh.userData.assetFallback).length;
-    }), { message: 'Server-delivered party meshes must be ready for grounding observation' }).toBeGreaterThanOrEqual(minimumActors);
+            (actor === game.player || ids.has(actor.id)) && actor.mesh?.userData.authoredClass && !actor.mesh.userData.assetFallback &&
+            actor.mesh.userData.equipmentVisualItemCount === 14 && !actor.mesh.userData.equipmentVisualMissing?.length &&
+            !actor.mesh.userData.equipmentVisualFallback?.length).length;
+    }), { message: 'Server-delivered party meshes and complete outfits must be ready for grounding observation' }).toBeGreaterThanOrEqual(minimumActors);
     const evidence = await page.evaluate(async () => {
         const THREE = await import('three');
         const game = window.game, render = game.renderSystem;
@@ -55,6 +57,9 @@ export async function captureInstanceGrounding(page, testInfo, label, minimumAct
 
 export async function captureGroundingReturn(page, testInfo, label) {
     if (process.env.EIDOLON_INSTANCE_GROUND_REVIEW !== '1') return;
+    await expect.poll(() => page.evaluate(() => !window.game.currentInstanceId &&
+        window.game.renderSystem.staticEnvironmentGroup.visible && window.game.renderSystem.currentRealm === 'town'),
+    { message: 'Ordinary return must finish restoring town ground and atmosphere' }).toBe(true);
     const evidence = await page.evaluate(() => ({ instance: window.game.currentInstanceId,
         overworldVisible: window.game.renderSystem.staticEnvironmentGroup.visible,
         player: window.game.player.position.toArray(), realm: window.game.renderSystem.currentRealm }));
