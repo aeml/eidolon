@@ -7,6 +7,7 @@ import { openDungeonGuide } from './dungeon-guide.js';
 import { walkInvestigationWaypoints } from './chronicle-investigation-route.js';
 import { darkRealmChapters } from '../../src/data/chronicleCatalog.js';
 import { createInvestigationTravelDefense } from './fresh-investigation-combat.js';
+import { captureInstanceGrounding } from './instance-ground-observation.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off', actionTimeout: 20_000 });
 
@@ -32,6 +33,7 @@ test('prepared expedition entrant discovers shore records, claims Ilyra’s rewa
     await seedActor(page, credentials, character);
     await selectGraphicsThroughSettings(page, 'low');
     const beforeTravel = await createInvestigationTravelDefense(page);
+    let groundingEntry = 0;
     const enterRealm = async () => {
         await openDungeonGuide(page);
         expect(await page.locator('#dungeon-type-select option[value="umbral_nexus"]').count()).toBe(0);
@@ -40,6 +42,7 @@ test('prepared expedition entrant discovers shore records, claims Ilyra’s rewa
             scene: window.game.currentInstanceType, rooms: window.game.currentDungeonLayout?.rooms?.length,
             x: Math.round(window.game.player.position.x), z: Math.round(window.game.player.position.z) })))
             .toEqual({ instance: 'dark-realm', scene: 'dark_realm', rooms: 5, x: 40000, z: 40800 });
+        await captureInstanceGrounding(page, testInfo, `dark-camp-${++groundingEntry}`);
     };
     const openCampIlyra = async () => {
         await walkInvestigationWaypoints(page, [[40009, 40800]]);
@@ -110,6 +113,7 @@ test('prepared expedition entrant discovers shore records, claims Ilyra’s rewa
         expect((await readQuest()).completed).toBe(false);
         await page.screenshot({ path: testInfo.outputPath(`${site.id}.png`) });
         await page.locator('#btn-close-journal').click();
+        await captureInstanceGrounding(page, testInfo, `dark-record-${i}`);
         console.log(`[dark-expedition] recorded ${site.id} through ordinary travel and E inspection`);
     }
     await returnToTown(page, { allowRespawn: false });

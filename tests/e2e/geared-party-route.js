@@ -26,6 +26,7 @@ import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
 import { RAID_PARTY_ROLES, DARK_KING_RAID, raidPartyFixture } from '../raidPartyFixture.js';
 import { formAndEnterRaid, enterRaid } from './raid-party-entry.js';
 import { stepRaidVigilInput } from './raid-vigil-input.js';
+import { captureInstanceGrounding } from './instance-ground-observation.js';
 import { raidVigilSupportAnchor, raidVigilRecoveryAnchor, raidVigilEscortRecoveryAnchor } from '../raidVigilControls.js';
 import { assertDarkKingPhases } from '../darkKingPartyEvidence.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
@@ -706,6 +707,7 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
                     await expect(actor.page.locator('#dungeon-entrance-hint-name')).not.toHaveText('Dungeon Guide');
                 }
                 await tank.page.screenshot({ path: testInfo.outputPath('party-instance-entry.png') });
+                for (const actor of actors) await captureInstanceGrounding(actor.page, testInfo, `party-entry-${actor.className}`, roles.length);
                 await captureFinalePhase();
             },
             afterGroundStep: async () => {
