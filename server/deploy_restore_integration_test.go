@@ -29,6 +29,10 @@ func TestRestoreActualArchiveRejectsMixedStateAndReplacesOnlyEidolon(t *testing.
 	if err != nil {
 		t.Fatal(err)
 	}
+	operationLock, err := os.ReadFile("deploy/operation_lock.sh")
+	if err != nil {
+		t.Fatal(err)
+	}
 	root := t.TempDir()
 	project := fmt.Sprintf("eidolon-restore-proof-%d", time.Now().UnixNano())
 	t.Logf("owned_restore_project=%s", project)
@@ -64,7 +68,7 @@ volumes:
   target_data:
   source_data:
 `, project)
-	for name, data := range map[string][]byte{"compose.yml": []byte(compose), ".env": []byte("# Docker-only owned fixture\n"), "deploy/restore_mongo_archive.sh": script} {
+	for name, data := range map[string][]byte{"compose.yml": []byte(compose), ".env": []byte("# Docker-only owned fixture\n"), "deploy/restore_mongo_archive.sh": script, "deploy/operation_lock.sh": operationLock} {
 		if err := os.WriteFile(filepath.Join(root, name), data, 0600); err != nil {
 			t.Fatal(err)
 		}

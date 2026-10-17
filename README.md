@@ -495,7 +495,40 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.77`, **deployed and verified within scoped acceptance**.
+Current source version: `Alpha 1.79.78`, **prepared; deployment acceptance pending**.
+Alpha 1.79.78 is prepared with verified standalone recovery points, selected
+SSH transfer and an updated promise register. Operators can explicitly capture
+Mongo, private journals and the original immutable server image between updates.
+Standalone capture verifies its own new point and restores the same originally
+running container; ordinary stopped or absent services stay stopped or absent.
+Paused, transitional, ambiguous and unknown states refuse before capture, and
+unsafe restoration states refuse. Deployments, backups and Mongo restores share
+the existing operation lock. Completion follows selected-file/directory flushes;
+failed capture/verification retains partial files without a success receipt.
+Transfer selects an explicit completed set, pins SSH trust and verifies private
+receiver files before its completion receipt, without replacing existing points.
+447distinct focused checks/six suites,62restore guard scenarios in the actual
+Go1.27.2 application package and one owned network-none Docker snapshot/archive
+rehearsal qualify the selected assembly. An additional current-schema Mongo-only
+restore rehearsal preserves exact wallet/guild/rested/saved-dungeon state and
+scoped database replacement; normal login and matching image/journal recovery
+remain separate requirements. Actual private nonroot loopback SSH
+proof is separately scoped to synthetic data. Original failures are retained.
+No production recovery, external private-data transfer, automatic scheduling,
+retention policy or recovery-time objective is inferred. Destination/access,
+acceptable lost progress, restore time and retention remain owner decisions.
+The promise register adds garments, quest/Lore/window quality, centered garment
+slots and road layers while preserving all71prior rows; scoped delivery does
+not close final art, supported-device, feature-freeze or beta gates.
+[Assembly](docs/plans/2026-10-17-recovery-tooling-assembly.md).
+[Standalone recovery](docs/plans/2026-10-17-standalone-recovery-qualification.md).
+[Selected transfer](docs/plans/2026-10-17-backup-transfer-qualification.md).
+Alpha 1.79.77 is accepted after its exact CI/deployment/public verification.
+This prepared release still requires its own exact CI and live acceptance. Full original game/
+world/art/combat/audio/performance/device/security/operations/owner/F1-F5/beta/
+1.99 scope stays active. Human campaign/phone feedback and soak/stress remain
+deferred, not passed. Public access and earned progression are unchanged.
+
 Alpha 1.79.77 is deployed and verified with direct quest map guidance, steadier Lore Book
 reading, saved tracking verification and consistent dungeon entry finishes.
 Show quest on map temporarily focuses personally available work from the journal

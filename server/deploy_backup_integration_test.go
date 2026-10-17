@@ -28,7 +28,19 @@ func TestDeployUpgradeBackupPreservesPrivateStateAndRestartsOnFailure(t *testing
 	if err != nil {
 		t.Fatal(err)
 	}
+	operationLock, err := os.ReadFile("deploy/operation_lock.sh")
+	if err != nil {
+		t.Fatal(err)
+	}
+	standalone, err := os.ReadFile("deploy/create_recovery_point.sh")
+	if err != nil {
+		t.Fatal(err)
+	}
 	verifier, err := filepath.Abs("deploy/verify_upgrade_backup.sh")
+	if err != nil {
+		t.Fatal(err)
+	}
+	verifierContent, err := os.ReadFile(verifier)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -50,7 +62,11 @@ func TestDeployUpgradeBackupPreservesPrivateStateAndRestartsOnFailure(t *testing
 	}
 	journal := []byte("private pending snapshot fixture: health=17 mana=0 gold=1184 ep=83 casino:bet=-18 allowance=100\n")
 	files := map[string][]byte{
+		".env":                              []byte("# Explicitly owned Compose recovery fixture\n"),
 		"deploy/backup_before_upgrade.sh":   script,
+		"deploy/operation_lock.sh":          operationLock,
+		"deploy/create_recovery_point.sh":   standalone,
+		"deploy/verify_upgrade_backup.sh":   verifierContent,
 		"deploy/pin_previous_image.sh":      pinScript,
 		"logs/character-saves/pending.json": journal,
 		"compose.yml": []byte(fmt.Sprintf(`name: %s
@@ -273,6 +289,48 @@ if(d.casino_blackjack_tables.countDocuments({_id:"vip-blackjack","pending.curren
 print("owned restored resources, EP, membership, cosmetics, receipts, pending wager, schema and indexes match");'`
 	run(nil, "compose", "exec", "-T", "restore", "sh", "-c", query)
 	run(nil, "compose", "exec", "-T", "mongo", "sh", "-c", query)
+	// The mutable build tag already points at a different image. A standalone
+	// snapshot must restart the original container/image, not recreate the API.
+	run(nil, "compose", "start", "api")
+	standaloneBackup := func(rejectDump bool) ([]byte, error) {
+		command := exec.CommandContext(ctx, "bash", filepath.Join(root, "deploy/create_recovery_point.sh"))
+		command.Dir = root
+		reject := "0"
+		if rejectDump {
+			reject = "1"
+		}
+		command.Env = append(env, "PATH="+filepath.Join(root, "bin")+":"+os.Getenv("PATH"),
+			"BACKUP_TEST_REAL_DOCKER="+dockerPath, "BACKUP_TEST_REJECT_DUMP="+reject)
+		return command.CombinedOutput()
+	}
+	output, err := standaloneBackup(false)
+	if err != nil || !bytes.Contains(output, []byte("Verified standalone recovery point:")) {
+		t.Fatalf("standalone recovery point failed: %v\n%s", err, output)
+	}
+	var standalonePoint string
+	for _, line := range strings.Split(string(output), "\n") {
+		if strings.HasPrefix(line, "Verified standalone recovery point: ") {
+			standalonePoint = strings.TrimPrefix(line, "Verified standalone recovery point: ")
+		}
+	}
+	if standalonePoint == "" {
+		t.Fatal("standalone recovery point receipt missing")
+	}
+	verifyPoint(standalonePoint)
+	if string(run(nil, "compose", "ps", "-q", "api")) != apiID ||
+		string(run(nil, "inspect", "--format", "{{.Image}}", apiID)) != imageID ||
+		string(run(nil, "inspect", "--format", "{{.State.Running}}", apiID)) != "true" {
+		t.Fatal("standalone snapshot did not restore the original running API/image")
+	}
+	if output, err := standaloneBackup(true); err == nil || bytes.Contains(output, []byte("Verified standalone recovery point:")) {
+		t.Fatalf("standalone dump failure did not fail closed: %v\n%s", err, output)
+	}
+	if string(run(nil, "inspect", "--format", "{{.State.Running}}", apiID)) != "true" ||
+		string(run(nil, "inspect", "--format", "{{.Image}}", apiID)) != imageID {
+		t.Fatal("standalone dump failure did not restore the original API/image")
+	}
+	run(nil, "compose", "exec", "-T", "mongo", "sh", "-c", query)
+	run(nil, "compose", "stop", "api")
 	// Also exercise an installation with data but no previous API container.
 	// Remove only this test project's already-stopped placeholder, not its data.
 	run(nil, "compose", "rm", "-f", "api")
@@ -280,7 +338,7 @@ print("owned restored resources, EP, membership, cosmetics, receipts, pending wa
 		t.Fatalf("backup without a previous API failed: %v\n%s", err, output)
 	}
 	entries, err = os.ReadDir(filepath.Join(root, "backups"))
-	if err != nil || len(entries) != 3 {
+	if err != nil || len(entries) != 5 {
 		t.Fatal("missing no-previous-API recovery point", err)
 	}
 	foundNoAPI := false

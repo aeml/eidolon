@@ -167,7 +167,7 @@ func TestRestoreCoordinatedPointIntegrityBeforeDockerAccess(t *testing.T) {
 					t.Fatal(err)
 				}
 			}
-			for _, name := range []string{"restore_mongo_archive.sh", "verify_upgrade_backup.sh"} {
+			for _, name := range []string{"restore_mongo_archive.sh", "verify_upgrade_backup.sh", "operation_lock.sh"} {
 				data, err := os.ReadFile(filepath.Join("deploy", name))
 				if err != nil {
 					t.Fatal(err)

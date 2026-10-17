@@ -18,6 +18,10 @@ func TestRestoreArchiveRequiresExplicitStoppedTarget(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	operationLock, err := os.ReadFile("deploy/operation_lock.sh")
+	if err != nil {
+		t.Fatal(err)
+	}
 	for _, scenario := range []string{"success", "no-arguments", "no-confirmation", "no-privacy-plan", "unknown-privacy-plan", "unknown-replace-flag", "missing-archive", "bad-gzip", "missing-mongo", "mongo-lookup-failed", "running", "paused", "restarting", "created", "inspect-failed", "ambiguous-api", "api-lookup-failed", "missing-api", "missing-credentials", "probe-failed", "invalid-probe", "nonempty-target", "replace-target", "empty-dry-run-failed", "replace-dry-run-failed", "replace-drop-failed", "restore-failed", "verify-failed"} {
 		t.Run(scenario, func(t *testing.T) {
 			root := t.TempDir()
@@ -28,6 +32,7 @@ func TestRestoreArchiveRequiresExplicitStoppedTarget(t *testing.T) {
 			}
 			files := map[string]string{
 				"deploy/restore_mongo_archive.sh": string(script),
+				"deploy/operation_lock.sh":        string(operationLock),
 				".env":                            "touch env-executed\n", // Must be read by Compose, never sourced here.
 				"bin/docker": `#!/bin/bash
 set -eu

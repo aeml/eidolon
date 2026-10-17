@@ -49,6 +49,9 @@ if [ ! -f ".env" ]; then
   exit 1
 fi
 
+source "${SCRIPT_DIR}/operation_lock.sh"
+acquire_eidolon_operation_lock "${SERVER_DIR}"
+
 # Compose reads its own env file. Do not execute it as a host shell script or
 # put database credentials into host-side command arguments.
 mongo_id="$(docker compose ps --status running -q mongo)"

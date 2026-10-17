@@ -3,10 +3,12 @@ set -euo pipefail
 umask 077
 
 # Called after target preflight, before its migrations can run. This script never
-# restores data or removes a backup. The caller must serialize deployments.
+# restores data or removes a backup. Share the deployment/recovery operation lock.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SERVER_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 cd "${SERVER_DIR}"
+source "${SCRIPT_DIR}/operation_lock.sh"
+acquire_eidolon_operation_lock "${SERVER_DIR}"
 
 for required_command in docker gzip sha256sum mktemp sync; do
   command -v "${required_command}" >/dev/null || exit 1
@@ -30,6 +32,10 @@ api_was_running=false
 backup_complete=false
 recover_previous_api() {
   local backup_exit=$?
+  if [ "${backup_exit}" -ne 0 ] && [ "${backup_complete}" = false ]; then
+    # This directory was created by this invocation, never an older point.
+    rm -f -- "${backup_dir}/COMPLETE" || echo 'Could not clear completion marker; treat this failed point as unverified.' >&2
+  fi
   if [ "${backup_exit}" -ne 0 ] && [ "${api_was_running}" = true ] && [ "${backup_complete}" = false ]; then
     echo "Backup failed before migration; restarting the unchanged previous API." >&2
     docker start "${api_id}" >/dev/null || echo "Previous API restart failed; operator recovery is required." >&2
@@ -87,9 +93,12 @@ fi
   if [ -f previous-api.tar.gz ]; then sha256sum previous-api.tar.gz >> SHA256SUMS; fi
   sha256sum --check SHA256SUMS
 )
-sync -f "${backup_dir}"
+artifacts=("${backup_dir}/mongo.archive.gz" "${backup_dir}/logs.tar.gz"
+  "${backup_dir}/previous-image-id.txt" "${backup_dir}/SHA256SUMS")
+if [ -f "${backup_dir}/previous-api.tar.gz" ]; then artifacts+=("${backup_dir}/previous-api.tar.gz"); fi
+sync -- "${artifacts[@]}" "${backup_dir}"
 printf 'target_commit=%s\ncreated_utc=%s\n' "${EIDOLON_BUILD_COMMIT:-unknown}" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "${backup_dir}/COMPLETE"
-sync -f "${backup_dir}/COMPLETE"
+sync -- "${backup_dir}/COMPLETE" "${backup_dir}" "${backup_root}" "${SERVER_DIR}"
 backup_complete=true
 echo "Consistent pre-upgrade backup: ${backup_dir}"
 echo "Previous API remains stopped; the caller may now start the compatible target."

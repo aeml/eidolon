@@ -366,6 +366,46 @@ Same-format releases do not take this upgrade snapshot automatically. A manual
 upgrade must also run the backup script after a successful preflight and before
 `up -d`, with no concurrent deployment or game writer.
 
+### Create a standalone recovery point
+
+From the installed `server/` directory, an operator can explicitly create a
+coordinated snapshot without deploying a new server:
+
+```sh
+bash ./deploy/create_recovery_point.sh
+```
+
+This briefly stops an ordinary running API, captures Mongo, private journals
+and its immutable image through the same upgrade-backup path, verifies the
+new point, and restarts that exact container/image. Existing stopped or absent
+APIs stay stopped or absent. Paused, restarting, dead, removing, ambiguous and
+unknown original states refuse before capture. A changed or unexpected state
+during recovery also refuses; it never unpauses, recreates or migrates an API.
+The command requires the regular installed `.env` for Compose, but does not
+source it. It selects only the unique point created by its own invocation,
+without choosing the newest existing point or changing older points.
+
+Deployments, raw upgrade backups, standalone recovery creation and Mongo
+restores share `logs/deploy.lock`. A competing operation refuses before Docker
+access. A nested deployment backup reuses the inherited descriptor. Keep the
+lock file in place; deleting it while an operation runs breaks serialization.
+The lock covers these operator tools, not every possible external writer.
+
+The backup flushes selected files and directories before publishing `COMPLETE`
+and flushes that marker before success. A failed completion flush or failed
+standalone verification removes only the new point's marker and retains its
+partial files. Capture failures attempt to restore the original running API.
+A restart failure returns an error and retains the verified recovery files;
+restore availability explicitly rather than assuming the snapshot succeeded
+as an operation. Container running-state verification is not HTTP readiness:
+check the installed readiness endpoint and normal account access afterward.
+
+This command does not restore player data, transfer it off-machine, schedule
+snapshots or prune backups. Off-machine destination, retention, acceptable lost
+progress and recovery-time objectives remain separate owner decisions. Leave
+enough space for Mongo, journals and the complete previous image; same-format
+releases still do not take this snapshot automatically.
+
 ## Save-format upgrades and recovery
 
 Prepared Alpha1.73 advances the currently accepted schema17 to schema22 for
@@ -471,6 +511,45 @@ all selected restore archives must also use a regular path without symlink trave
 neither path restores journals/images or authorizes reopening game admission.
 Production restoration, off-machine destination, retention and recovery-time/
 recovery-point objectives still require their own operator decisions.
+
+### Transfer a selected recovery set over SSH
+
+After choosing an approved destination/access scope, copy one explicit completed
+point with the local `copy_upgrade_backup.sh` helper:
+
+```sh
+bash ./deploy/copy_upgrade_backup.sh \
+  /exact/backups/save-upgrade-YYYYMMDDTHHMMSSZ-XXXXXX \
+  backup-user@approved-backup-host /private/backup-root /exact/pinned-known-hosts 22
+```
+
+This is the full private Mongo/journal/previous-image recovery set. Both machines
+need Bash, GNU coreutils/tar and gzip; the sender also needs OpenSSH. The remote
+root must already exist, be owned by the receiving user with mode0700, and use
+a physical path without symlink traversal. Provide a trusted pinned known-hosts
+file. Authentication uses the SSH agent or default identity files; per-host SSH
+configuration, connection sharing and forwarding are disabled. New or changed
+host keys refuse; the tool never discovers or accepts a key automatically.
+
+The receiver extracts only fixed artifacts into a new private staging directory,
+checks pinned manifest/marker/verifier hashes, then verifies every artifact hash,
+gzip stream and previous-image pair. It flushes only the selected files and
+directories before publishing `COMPLETE` and the final directory. The normal
+restore verifier still requires `COMPLETE`; its `--pending-transfer` mode is only
+an integrity check used by the receiver before publication. It does not authorize
+a restore or make a partial transfer eligible for ordinary recovery.
+
+An existing destination point is never overwritten. Failed transfers retain
+private files for inspection, without a successful completion receipt. A failure
+at the final directory flush can leave that directory without `COMPLETE`; inspect
+it explicitly rather than assuming its name establishes recovery readiness.
+No backup is chosen automatically, pruned, restored or scheduled. Source points
+and game services are unchanged. Copy verification does not establish archive
+authenticity, at-rest protection, save/image compatibility or the chosen recovery
+objectives. Destination approval and the actual off-machine exercise remain
+separate from the qualified synthetic loopback transport.
+
+### Mongo-only recovery after explicit approval
 
 After explicit recovery approval, specify the exact archive and confirm the
 loss of subsequent progress. The default requires an empty `eidolon` database,

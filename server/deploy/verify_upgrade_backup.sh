@@ -3,10 +3,15 @@ set -euo pipefail
 
 # Read-only integrity check, not a restore, authenticity proof or permission to
 # reopen a writer. Only inspect the exact completed point selected by an operator.
-if [ "$#" -ne 1 ] || [ ! -d "$1" ] || [ -L "$1" ]; then
-  echo "Usage: $0 /exact/completed-upgrade-backup-directory" >&2
+if { [ "$#" -ne 1 ] && [ "$#" -ne 2 ]; } ||
+   { [ "$#" -eq 2 ] && [ "$2" != --pending-transfer ]; } || [ ! -d "$1" ] || [ -L "$1" ]; then
+  echo "Usage: $0 /exact/upgrade-backup-directory [--pending-transfer]" >&2
   exit 1
 fi
+completion_marker=COMPLETE
+# The receiver checks all bytes before publishing the ordinary COMPLETE marker.
+# Restore callers omit this flag and cannot consume an unfinished transfer.
+if [ "$#" -eq 2 ]; then completion_marker=COMPLETE.pending; fi
 for tool in sha256sum gzip realpath; do
   command -v "${tool}" >/dev/null || exit 1
 done
@@ -19,7 +24,7 @@ if [ "${selected}" != "${physical}" ]; then
   exit 1
 fi
 cd -- "${physical}"
-for name in COMPLETE SHA256SUMS mongo.archive.gz logs.tar.gz previous-image-id.txt; do
+for name in "${completion_marker}" SHA256SUMS mongo.archive.gz logs.tar.gz previous-image-id.txt; do
   if [ -L "${name}" ] || [ ! -f "${name}" ] || [ ! -r "${name}" ] || [ ! -s "${name}" ]; then
     echo "Incomplete or unsafe backup artifact: ${name}" >&2
     exit 1
