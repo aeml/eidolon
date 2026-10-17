@@ -325,7 +325,7 @@ function addRoomStateMesh(root, name, geometry, material, {
     return mesh;
 }
 
-export function createDungeonRoomStatePresentation(dungeonType, room, roomIndex, { worldSpace = false } = {}) {
+export function createDungeonRoomStatePresentation(dungeonType, room, roomIndex, { worldSpace = false, wardMaterials = null } = {}) {
     const theme = getRegionTheme(dungeonType);
     const identity = getDungeonRoomIdentityTag(room) || 'route_hall';
     const size = Math.max(40, Number(room.width) || 80);
@@ -407,7 +407,7 @@ export function createDungeonRoomStatePresentation(dungeonType, room, roomIndex,
 
     let exitPortal = null;
     if (room?.type === 'start') {
-        const ward = createDungeonEntryWard(theme);
+        const ward = createDungeonEntryWard(theme, { surfaceMaterials: wardMaterials });
         ward.position.z = -radius * .42;
         root.add(ward);
         exitPortal = ward.getObjectByName('DungeonExitPortal');
@@ -761,7 +761,7 @@ export function createProceduralDungeonInteriorKit(dungeonType, { quality = 'hig
             if (plan === 'arena' && !compositions.has('dais')) compositions.set('dais', createDungeonDaisMasonry());
             const source = buildRoomDressing(dungeonType, room, roomIndex, shapes, detailMaterials, compositions.get(plan), compositions.get('dais'));
             const result = optimized ? batchDressing(source) : source;
-            result.add(createDungeonRoomStatePresentation(dungeonType, room, roomIndex, { worldSpace: optimized }));
+            result.add(createDungeonRoomStatePresentation(dungeonType, room, roomIndex, { worldSpace: optimized, wardMaterials: detailMaterials }));
             return result;
         },
         metrics() {
