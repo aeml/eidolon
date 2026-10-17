@@ -4,6 +4,7 @@ import { createOpaqueSkinnedColorGeometry, groupOpaqueSkinnedColorMeshes,
 
 const owners = new WeakMap();
 const under = (node, ancestor) => { for (; node; node = node.parent) if (node === ancestor) return true; return false; };
+const visible = node => { for (; node; node = node.parent) if (!node.visible) return false; return true; };
 const attributeState = attribute => ({ attribute, array: attribute.isInterleavedBufferAttribute ? attribute.data.array : attribute.array,
     version: attribute.isInterleavedBufferAttribute ? attribute.data.version : attribute.version,
     offset: attribute.offset, stride: attribute.data?.stride, count: attribute.count,
@@ -124,6 +125,9 @@ export class OpaqueSkinnedColorBatches {
         const used = new Set();
         for (const [root, savedGroups] of this.roots) {
             if (!under(root, this.scene)) { this.unregister(root); continue; }
+            // A hidden initial/equip generation has no visible groups yet.
+            // Defer discovery instead of permanently caching that empty list.
+            if (!visible(root)) continue;
             const groups = savedGroups || groupOpaqueSkinnedColorMeshes(root);
             if (!savedGroups) this.roots.set(root, groups);
             for (const meshes of groups) {

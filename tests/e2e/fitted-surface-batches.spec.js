@@ -156,13 +156,14 @@ test('default fitted surface equip and normal pool release retain bounded GPU re
             Cleric: ['Iron Helm', 'Robes', 'Leather Pants', 'Iron Boots', 'Silk Gloves', 'Steel Pauldrons', 'Studded Belt', 'Cleric Mace', 'Wooden Shield']
         };
         const memory = () => ({ ...render.renderer.info.memory });
-        const cycle = async quality => {
+        const cycle = async (quality, warmOriginals = false) => {
             const actors = [];
             try {
                 for (const [i, type] of Object.keys(outfits).entries()) {
                     const root = await MeshFactory.createMeshForType(type, { quality });
                     const actor = new Actor(`surface-lifetime-${type}`, {}); actor.meshType = type; actor.setMesh(root);
-                    root.position.x = (i - 1.5) * 4; render.entityGroup.add(root); actors.push(actor);
+                    root.position.x = (i - 1.5) * 4; root.visible = false;
+                    render.entityGroup.add(root); actors.push(actor);
                     const gear = Object.fromEntries([...outfits[type], 'Necklace', 'Ruby Ring', 'Silver Ring', 'Amulet of Power', 'Orb of Mana'].map((name, index) => [slots[index], {
                         id: `${type}-${slots[index]}`, name, baseName: name, rarity: 'Rare',
                         slot: slots[index] === 'offHand' && type === 'Rogue' ? 'mainHand' : slots[index],
@@ -173,17 +174,34 @@ test('default fitted surface equip and normal pool release retain bounded GPU re
                     let batches = 0; root.traverse(mesh => { if (mesh.material?.userData.fittedSurfaceAttributes) batches++; });
                     if (!batches) throw new Error('Default production surface batching omitted');
                 }
+                // Loading/equipping under a hidden actor must defer discovery,
+                // then restore the same three paired Fighter eye surfaces.
+                render.render();
+                actors.forEach(actor => { actor.mesh.visible = true; });
+                if (warmOriginals) {
+                    // The normal model pool retains original eye geometry as
+                    // well as using color batches/prepared indices. Warm both
+                    // supported routes before measuring owned-generation leaks.
+                    const geometry = render.actorGameplayGeometry.pass, color = render.actorColorBatches.owner;
+                    const geometryEnabled = geometry.enabled, colorEnabled = color.enabled;
+                    geometry.enabled = color.enabled = false;
+                    try { render.render(); }
+                    finally { geometry.enabled = geometryEnabled; color.enabled = colorEnabled; }
+                }
                 for (let i = 0; i < 3; i++) render.render();
+                const fighter = actors.find(actor => actor.meshType === 'Fighter');
+                const fighterEyeBatches = [...render.actorColorBatches.owner.entries.values()].filter(entry => entry.root === fighter.mesh &&
+                    entry.meshes.every(mesh => /^Fighter_(?:Eye|Pupil|Iris)_[lr]$/.test(mesh.name))).length;
                 const allocated = memory(); actors.forEach(actor => actor.dispose()); actors.length = 0;
                 for (let i = 0; i < 2; i++) render.render();
-                return { quality, allocated, released: memory(), attachedActors: render.entityGroup.children.length };
+                return { quality, warmOriginals, fighterEyeBatches, allocated, released: memory(), attachedActors: render.entityGroup.children.length };
             } finally { actors.forEach(actor => actor.dispose()); }
         };
         try {
             // Asset/body rigs and their normal pools deliberately stay cached.
             // Warm both qualities first; each equip generation must release
             // its own union rigs/materials/buffers to that same retained state.
-            const warmup = [await cycle('high'), await cycle('low')];
+            const warmup = [await cycle('high', true), await cycle('low', true)];
             const baseline = memory(), cycles = [];
             for (const quality of ['high', 'low', 'high', 'low']) cycles.push(await cycle(quality));
             return { warmup, baseline, cycles, scope: 'Four complete outfits per cycle; generated gear releases, intentionally retained body/asset pools warmed for both qualities. High renderer/composer stays fixed while body/equipment detail changes.' };
@@ -192,6 +210,7 @@ test('default fitted surface equip and normal pool release retain bounded GPU re
     const artifact = testInfo.outputPath('lifetime.json'); await writeFile(artifact, JSON.stringify(result, null, 2));
     await testInfo.attach('fitted-surface-gpu-lifetime', { path: artifact, contentType: 'application/json' });
     for (const cycle of result.cycles) {
+        expect(cycle.fighterEyeBatches).toBe(3);
         expect(cycle.attachedActors).toBe(0); expect(cycle.released).toEqual(result.baseline);
         expect(cycle.allocated.textures).toBeGreaterThan(cycle.released.textures);
         expect(cycle.allocated.geometries).toBeGreaterThan(cycle.released.geometries);
