@@ -70,7 +70,7 @@ test('shared casino entry, physical blackjack seats, paid hand, clean exit and V
         // closed dialog. Select the entrance controller, not both components.
         const dialogue = target.locator('.casino-entry-dialogue:not(.cosmetic-vendor)');
         await expect(dialogue).toBeVisible().catch(async error => {
-            await target.screenshot({ path: '/tmp/eidolon-casino-door-diagnostic.png' });
+            await target.screenshot({ path: testInfo.outputPath('casino-door-diagnostic.png') });
             const detail = await target.evaluate(point => ({ position: window.game.player.position.toArray(),
                 pending: window.game.casino.pendingDoor, surface: document.elementFromPoint(point.x, point.y)?.outerHTML.slice(0, 250) }), door);
             throw new Error(`Casino door: ${JSON.stringify(detail)}`, { cause: error });
@@ -226,12 +226,16 @@ test('shared casino entry, physical blackjack seats, paid hand, clean exit and V
     await page.getByRole('button', { name: 'Talk to VIP Guard', exact: true }).click();
     const guardDialogue = page.locator('.casino-entry-dialogue:not(.cosmetic-vendor)');
     await expect(guardDialogue).toContainText('You must be a VIP to enter');
-    await page.screenshot({ path: '/tmp/eidolon-casino-guard-20260913.png' });
+    await page.screenshot({ path: testInfo.outputPath('connected-casino-guard.png') });
     await guardDialogue.getByRole('button', { name: 'Close', exact: true }).click();
-    await page.screenshot({ path: '/tmp/eidolon-casino-interior-20260913.png' });
+    await page.screenshot({ path: testInfo.outputPath('connected-casino-interior.png') });
     expect(await readGold(page)).toBe(expectedBalances[0]);
     expect(initialGold).toBe(balances[0]);
-    await page.keyboard.press('b');
+    // Native dialog dismissal restores button focus. Gameplay recall shortcuts
+    // intentionally remain guarded there; use the player's visible menu action.
+    await expect(page.getByRole('button', { name: 'Talk to VIP Guard', exact: true })).toBeFocused();
+    await page.keyboard.press('Escape');
+    await page.getByRole('button', { name: 'Return to Lanternhold (B)', exact: true }).click();
     await expect.poll(() => page.evaluate(() => window.game.currentInstanceType)).toBe('overworld');
     await expect.poll(() => page.evaluate(() => window.game.renderSystem.staticEnvironmentGroup.visible)).toBe(true);
     expect(await other.evaluate(() => window.game.currentInstanceId)).toBe('lanternhold-casino');
