@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, projectEntity } from './helpers.js';
+import { writeFile } from 'node:fs/promises';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 
@@ -16,6 +17,35 @@ const snapshot = page => page.evaluate(() => {
         profile: Object.fromEntries(['rating', 'wins', 'losses', 'honor', 'seasonPoints']
             .map(key => [key, profile[key] ?? (key === 'rating' ? 1000 : 0)])) };
 });
+
+async function captureArenaArt(page, testInfo, className, stage) {
+    if (process.env.EIDOLON_ARENA_ART_REVIEW !== '1') return;
+    const evidence = await page.evaluate(() => {
+        const game = window.game, render = game.renderSystem;
+        const arena = game.getInstanceEnvironmentGroup().getObjectByName('PvPArena');
+        const floor = arena?.getObjectByName('PvPArenaFloor');
+        const actors = [game.player, ...game.remotePlayers.values()].filter(actor => actor.mesh?.userData.authoredClass);
+        return { instanceType: game.currentInstanceType, quality: render.graphicsQuality,
+            floorY: floor?.position.y, floorSize: floor && [floor.geometry.parameters.width, floor.geometry.parameters.height],
+            foundation: Boolean(arena?.getObjectByName('PvPArenaFoundation')),
+            boundaries: arena?.children.filter(part => part.name === 'PvPArenaBoundary').length,
+            overworldVisible: render.staticEnvironmentGroup.visible,
+            calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles,
+            actors: actors.map(actor => ({ class: actor.mesh.userData.authoredClass,
+                y: actor.position.y, meshY: actor.mesh.position.y, fallback: Boolean(actor.mesh.userData.assetFallback),
+                equippedItems: actor.mesh.userData.equipmentVisualItemCount || 0 })) };
+    });
+    await writeFile(testInfo.outputPath(`arena-${className}-${stage}.json`), JSON.stringify({ ...evidence,
+        scope: 'Actual authenticated practice duel with two prepared fresh level1 accounts; ordinary UI, server admission, combat and restored origin. Snapshot counts, not frame timing. Current starter gear differs from the separate controlled fourteen-slot four-class scene.' }, null, 2));
+    await page.screenshot({ path: testInfo.outputPath(`arena-${className}-${stage}.png`) });
+    expect(evidence.instanceType).toBe('pvp_arena'); expect(evidence.floorY).toBe(0);
+    expect(evidence.floorSize).toEqual([50.5, 34.5]); expect(evidence.foundation).toBe(true);
+    expect(evidence.boundaries).toBe(4); expect(evidence.overworldVisible).toBe(false);
+    expect(evidence.actors.length).toBeGreaterThanOrEqual(2);
+    for (const actor of evidence.actors) {
+        expect(actor.y).toBe(0); expect(actor.meshY).toBeCloseTo(0, 5); expect(actor.fallback).toBe(false);
+    }
+}
 
 async function observeBasicReceipts(page) {
     await page.evaluate(() => {
@@ -100,6 +130,7 @@ for (const className of ['Fighter', 'Rogue', 'Wizard', 'Cleric']) {
                 expect(await actorPage.evaluate(() => window.game.currentInstanceType)).toBe('pvp_arena');
             }
             if (className === 'Fighter') await page.locator('body > canvas').screenshot({ path: testInfo.outputPath('arena-entry.png'), timeout: 15_000 });
+            await captureArenaArt(page, testInfo, className, 'entry');
             await observeBasicReceipts(page); await observeBasicReceipts(opponent);
             for (const [actorPage, targetId] of [[page, ids[1]], [opponent, ids[0]]]) {
                 let point;
@@ -112,6 +143,7 @@ for (const className of ['Fighter', 'Rogue', 'Wizard', 'Cleric']) {
             await expect.poll(async () => Math.min(...await Promise.all([page, opponent].map(p =>
                 p.evaluate(() => window.__duelCadence.hits.length)))), { timeout: 35_000 }).toBeGreaterThanOrEqual(5);
             const during = await Promise.all([snapshot(page), snapshot(opponent)]);
+            await captureArenaArt(page, testInfo, className, 'combat');
             // Capture the resource maximum and rested clock before assertions:
             // a bank expiring in the arena can change a full mana bar's number.
             console.log('[duel-resources]', JSON.stringify({ className, before, during }));

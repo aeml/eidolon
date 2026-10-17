@@ -1,5 +1,24 @@
 import * as THREE from 'three';
 import { createProceduralTerrainTexture } from './ProceduralRealmTerrain.js';
+import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
+
+// A shallow dressed cap inside the original box footprint. Orient its ridge
+// along the long axis so both pairs of court boundaries catch the same light.
+function courtStoneGeometry(width, height, depth) {
+    const alongX = width >= depth, thickness = Math.min(width, depth), length = Math.max(width, depth);
+    const bevel = Math.min(.09, height * .2, thickness * .22), shape = new THREE.Shape();
+    shape.moveTo(-thickness / 2, -height / 2);
+    shape.lineTo(thickness / 2, -height / 2);
+    shape.lineTo(thickness / 2, height / 2 - bevel);
+    shape.lineTo(thickness / 2 - bevel, height / 2);
+    shape.lineTo(-thickness / 2 + bevel, height / 2);
+    shape.lineTo(-thickness / 2, height / 2 - bevel);
+    shape.closePath();
+    const geometry = new THREE.ExtrudeGeometry(shape, { depth: length, bevelEnabled: false, steps: 1, curveSegments: 1 });
+    if (alongX) geometry.rotateY(Math.PI / 2).translate(-length / 2, 0, 0);
+    else geometry.translate(0, 0, -length / 2);
+    return geometry;
+}
 
 // A low-walled sparring court. The server owns the floor dimensions and movement
 // limits; markings are decorative inlays, never additional collision or loot.
@@ -13,27 +32,39 @@ export function createProceduralPvPArena(layout) {
     paving.repeat.set(rect.width / 12, rect.height / 12);
     const stone = new THREE.MeshStandardMaterial({ map: paving, color: 0xb5c2d6, roughness: 0.9 });
     const rim = new THREE.MeshStandardMaterial({ color: 0x66758a, roughness: 0.75 });
+    applyWorldSurfaceDetail(stone, 'fortress');
+    applyWorldSurfaceDetail(rim, 'fieldstone');
     const gold = new THREE.MeshStandardMaterial({ color: 0xc7ae72, roughness: 0.55, metalness: 0.3 });
+    // Support the low walls and corner beacons after the overworld terrain is
+    // hidden. The thin finishing surface stays at authoritative player Y0;
+    // the substrate stops one centimetre below it to avoid coplanar faces.
+    const foundation = new THREE.Mesh(new THREE.BoxGeometry(rect.width + 3.2, .6, rect.height + 3.2), rim);
+    foundation.name = 'PvPArenaFoundation';
+    foundation.position.set(rect.x || 0, -.31, rect.z || 0);
+    foundation.castShadow = true; foundation.receiveShadow = true; root.add(foundation);
     const floor = new THREE.Mesh(new THREE.PlaneGeometry(rect.width, rect.height), stone);
     floor.name = 'PvPArenaFloor';
     floor.rotation.x = -Math.PI / 2;
-    floor.position.set(rect.x || 0, 0.1, rect.z || 0);
+    floor.position.set(rect.x || 0, 0, rect.z || 0);
     floor.receiveShadow = true;
     root.add(floor);
-    const box = (width, height, depth, x, z, material = rim) => {
-        const mesh = new THREE.Mesh(new THREE.BoxGeometry(width, height, depth), material);
+    const box = (width, height, depth, x, z, material = rim, name = 'PvPArenaBeaconBase') => {
+        const mesh = new THREE.Mesh(courtStoneGeometry(width, height, depth), material);
+        mesh.name = name;
         mesh.position.set((rect.x || 0) + x, height / 2, (rect.z || 0) + z);
         mesh.castShadow = true; mesh.receiveShadow = true;
         root.add(mesh);
     };
     for (const sign of [-1, 1]) {
-        box(rect.width + 1, 0.7, 0.5, 0, sign * (rect.height / 2 + 0.25));
-        box(0.5, 0.7, rect.height, sign * (rect.width / 2 + 0.25), 0);
+        box(rect.width + 1, 0.7, 0.5, 0, sign * (rect.height / 2 + 0.25), rim, 'PvPArenaBoundary');
+        box(0.5, 0.7, rect.height, sign * (rect.width / 2 + 0.25), 0, rim, 'PvPArenaBoundary');
     }
     const ring = (x, z, radius, material) => {
         const mesh = new THREE.Mesh(new THREE.RingGeometry(radius - 0.08, radius, 64), material);
         mesh.rotation.x = -Math.PI / 2;
-        mesh.position.set((rect.x || 0) + x, 0.115, (rect.z || 0) + z);
+        // Inlays sit above the floor and below player markers, including where
+        // players cross the court/team circles during a duel.
+        mesh.position.set((rect.x || 0) + x, 0.015, (rect.z || 0) + z);
         root.add(mesh);
     };
     ring(0, 0, 6, gold); ring(0, 0, 6.5, gold);
