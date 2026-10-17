@@ -13,7 +13,10 @@ Transfer selects an explicit completed set, pins SSH trust and verifies private
 receiver files before its completion receipt, without replacing existing points.
 447distinct focused checks/six suites,62restore guard scenarios in the actual
 Go1.27.2 application package and one owned network-none Docker snapshot/archive
-rehearsal qualify the selected assembly. Actual private nonroot loopback SSH
+rehearsal qualify the selected assembly. An additional current-schema Mongo-only
+restore rehearsal preserves exact wallet/guild/rested/saved-dungeon state and
+scoped database replacement; normal login and matching image/journal recovery
+remain separate requirements. Actual private nonroot loopback SSH
 proof is separately scoped to synthetic data. Original failures are retained.
 No production recovery, external private-data transfer, automatic scheduling,
 retention policy or recovery-time objective is inferred. Destination/access,
@@ -24,14 +27,14 @@ not close final art, supported-device, feature-freeze or beta gates.
 [Assembly](docs/plans/2026-10-17-recovery-tooling-assembly.md).
 [Standalone recovery](docs/plans/2026-10-17-standalone-recovery-qualification.md).
 [Selected transfer](docs/plans/2026-10-17-backup-transfer-qualification.md).
-Current77 ordered acceptance and this release's own exact CI/deployment/public
-verification remain required before publication/acceptance. Full original game/
+Alpha 1.79.77 is accepted after its exact CI/deployment/public verification.
+This prepared release still requires its own exact CI and live acceptance. Full original game/
 world/art/combat/audio/performance/device/security/operations/owner/F1-F5/beta/
 1.99 scope stays active. Human campaign/phone feedback and soak/stress remain
 deferred, not passed. Public access and earned progression are unchanged.
 
 
-Alpha 1.79.77 is prepared with direct quest map guidance, steadier Lore Book
+Alpha 1.79.77 is deployed and verified with direct quest map guidance, steadier Lore Book
 reading, saved tracking verification and consistent dungeon entry finishes.
 Show quest on map temporarily focuses personally available work from the journal
 or Lore Book, including accepted optional tasks and Dark Realm turn-ins. Return
@@ -41,10 +44,11 @@ turn-in; future unaccepted chapters remain hidden. The Player Guide explains it.
 All five dungeon entry arches share existing stone/iron maps and physical texture
 density, preserving non-UV geometry, bounds, shadows, collision, veil animation
 and retained GPU resources. No lighting/skeleton/shader experiment is selected.
-222distinct focused checks/eleven suites and eleven distinct component browser
-cases qualify the selection: two native entry cases with20RGBA source restorations,
+222distinct focused checks/eleven suites and thirteen distinct component browser
+cases qualify the corrected selection: two native entry cases with20RGBA source restorations,
 eight current-source DOM/Canvas2D desktop/touch cases, and one actual disposable
-manual quest acceptance/tracking/fresh-login case. Exact unchanged entry proof is
+manual quest acceptance/tracking/fresh-login case plus two native copied-floor
+cases covering all5themes inHigh/Low. Exact unchanged entry proof is
 reused; no whole combined native replay, physical-phone or frame-time pass is inferred.
 Original failures and observer/fixture corrections remain frozen. Full world/art/
 game/combat/audio/performance/device/security/operations/owner/F1-F5/beta/1.99 scope
@@ -52,8 +56,10 @@ remains active. Sparse/repeating rooms, moving world/combat quality, original
 performance limits and final owner review remain open. Human campaign/phone
 feedback and soak/stress are deferred, not passed.
 [Assembly](docs/plans/2026-10-17-quest-map-and-entry-assembly.md).
+[CI correction](docs/plans/2026-10-17-release1-79-77-ci-correction.md).
 [Quest guidance](docs/plans/2026-10-17-direct-quest-map-guidance.md).
-Public Alpha1.79.76 remains accepted until exact77 CI/deployment/public verification.
+All ten CI jobs pass. Fresh normal-TLS verification matches both77 identities, ready database, open registration, flat terrain and all393 asset pins at 2026-10-17T21:34:48.249899+00:00.
+[Acceptance](docs/plans/2026-10-17-release1-79-77-acceptance.md).
 Public access, progression and supplied actor/equipment assets are unchanged.
 
 
