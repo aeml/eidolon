@@ -54,3 +54,26 @@ retention, acceptable lost progress and desired restore time remain owner policy
 decisions. Full original game/world/art/combat/audio/performance/device/security/
 operations/F1–F5/beta/1.99 scope stays active. Human campaign/phone feedback and
 soak/stress remain deferred, not passed.
+
+## Current-schema Mongo helper rehearsal
+
+After corrected 77 completed its native/live checks, the selected restore helper
+and new operation lock ran through the actual application package with Go 1.27.2
+at prepared source `ae62cbcda7d3a2725878ab657c42376f2fb9f851`. One owned,
+network-none Mongo 7.0.14 rehearsal passes in 29.33 seconds, with no host ports.
+The schema-25 archive preserves exact namespace/document/index sets, wallet
+checkpoints, guild-bank state/receipts, resources, Well Rested duration and saved
+dungeon progress. Current BSON models consume the restored data; the runtime
+recreates one remaining boss, retains cleared/rewarded rooms and enters at the
+cleared boss checkpoint without changing resources. Nonempty-target refusal and
+invalid-archive preflight preserve destination state; explicit Eidolon-only
+replacement removes newer ledger state and preserves an unrelated database.
+
+Independent cleanup checks find no owned containers or volumes. Frozen five-file
+evidence inventory:
+`/home/aeml/.local/share/eidolon-standalone-recovery-review-20261017/.qa-release78/current-schema-restore-proof/evidence.json`,
+SHA-256 `fc9588e47665dda01566ae4097f418bd73acebae761bbfde4116ffa6b1da99ac`.
+This extends the earlier compile-only helper evidence with a real isolated
+Mongo-only rehearsal. It uses synthetic records and does not prove authenticated
+login/expiry, a normal game-process restart, matching image/journal recovery,
+production restoration or an agreed recovery-time/recovery-point objective.
