@@ -2333,3 +2333,28 @@ All ten corrected-source CI jobs pass. Fresh normal-TLS verification matches bot
 Broader world/art/game/audio/device/performance/operations/owner/F1-F5/beta/1.99
 scope stays active. Human campaign/phone feedback and soak/stress remain deferred.
 Public access, earned progression and supplied actor/equipment assets are unchanged.
+
+## October17 Alpha1.79.74 preparation
+
+Alpha 1.79.74 is prepared with earned People/Places browsing and woodland leaf
+surface refinement. Lore indexes quote personal completed chapters, recorded
+discoveries and restoration accounts; unread sites, counts alone and future text
+do not unlock entries. Read/Return preserves the reader's search, selection and
+scroll; acknowledged updates preserve focused actions and personally learned
+names. Existing All memories, current tasks, manual handoffs and rewards remain.
+Witness topics retain focus, open answers and reading position as personal
+evidence changes. Removed topics recover focus within the conversation; outside
+focus stays put, and questions gain roomier touch targets.
+Grounded bracken/sedge use coherent leaf detail with unchanged plant positions,
+geometry counts, wind and canopy treatment. Ordinary native views and moving
+outfits retain their original limits; source/candidate close views still exceed
+their original budgets. No rejected renderer shortcut is included.
+[Assembly](docs/plans/2026-10-17-lore-and-leaf-assembly.md).
+[Lore qualification](docs/plans/2026-10-17-lore-people-and-places.md).
+[Leaf component review](docs/plans/2026-10-17-understory-surface-component-review.md).
+[Witness reading](docs/plans/2026-10-17-witness-reading-continuity.md).
+[Retained native findings](docs/plans/2026-10-17-close-camera-native-attribution.md).
+Public Alpha1.79.73 remains accepted until exact74 CI/deployment/public verification.
+Broader world/art/game/audio/device/performance/operations/owner/F1-F5/beta/1.99
+scope stays active. Human campaign/phone feedback and soak/stress remain deferred.
+Public access, earned progression and supplied actor/equipment assets are unchanged.

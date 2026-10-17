@@ -24,7 +24,7 @@ checks pass without weakening assertions. [Correction](2026-10-17-court-raster-r
 The earlier local patch-history packaging failure remains separately preserved;
 the existing archive generator restored508notes, all507prior entries byte-exact,
 with50lazy pages. Corrected6-case pagination and386-case version checks complete
-the459distinct focused release cases; repeat executions are not summed.
+the460distinct focused release cases; repeat executions are not summed.
 
 Release validation:800client suites /12393tests;452hosted browser passes /13skips;
 145native passes /1skip;11live passes /1skip. No failed/flaky cases. Both elemental
@@ -42,3 +42,11 @@ excluded. Never rerun frozen processors.
 The full original world/art/game/audio/performance/device/operations/owner/F1–F5/
 beta/1.99/handoff goal remains active. Human campaign/phone feedback and soak/stress
 remain deferred. This scoped acceptance does not approve feature freeze or beta.
+
+Local-count correction: the original frozen crosswalk recorded459. The six
+unchanged suite declarations enumerate386VersionPresentation,6pagination,
+26elemental,4asset,17Pages-runtime and21browser-plan cases:460total, matching
+the first run's458passes/two failures. The corrected6/386executions replace
+overlapping results; they do not remove a case. The original45-file packet is
+preserved unchanged, including its erroneous local-count field. Exact CI counts,
+all ten successful jobs and public deployment/asset acceptance are unaffected.
