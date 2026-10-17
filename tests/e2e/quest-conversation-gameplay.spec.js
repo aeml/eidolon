@@ -64,7 +64,7 @@ test('fresh character accepts quests manually and retains tracking choices after
             tradingCornerBlocked: blocked(-14, 193),
             stashApproachBlocked: blocked(0, 180.5),
             hallWallBlocked: blocked(0, 177.5),
-            cofferBlocked: blocked(0, 185)
+            cofferBlocked: blocked(-28, 210)
         };
     });
     expect(town).toEqual({ missingServiceAnchors: [], tradingCornerBlocked: false, stashApproachBlocked: false, hallWallBlocked: true, cofferBlocked: true });
