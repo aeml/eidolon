@@ -23,8 +23,18 @@ if (process.env.EIDOLON_CASINO_SOFTWARE_REVIEW === '1') {
 test('equipped crowd remains readable on both casino floors at High and Low', async ({ page, baseURL }, testInfo) => {
     test.skip(process.env.EIDOLON_CASINO_FIXTURE_CATALOG !== '1', 'Explicit bounded busy-floor review');
     const profile = process.env.EIDOLON_CASINO_PROFILE === '1';
+    const profileOnly = process.env.EIDOLON_CASINO_PROFILE_ONLY;
     const cpuDiagnostic = process.env.EIDOLON_CASINO_CPU_PROFILE === '1';
     const baselineCommit = process.env.EIDOLON_CASINO_BASELINE_COMMIT;
+    const artReference = process.env.EIDOLON_CASINO_ART_REFERENCE_FILE;
+    if (profileOnly && !['high:public', 'high:vip', 'low:public', 'low:vip'].includes(profileOnly))
+        throw new Error('Casino profile view must name one existing quality/floor');
+    if (artReference) {
+        const source = readFileSync(artReference, 'utf8');
+        await page.route('**/src/art/ProceduralCasino.js*', route => route.fulfill({ body: source, contentType: 'text/javascript' }));
+        await testInfo.attach('casino-art-reference', { body: JSON.stringify({ file: artReference,
+            sha256: createHash('sha256').update(source).digest('hex'), scope: 'Immutable art source only; current scene, actors, camera, lighting and timing budgets retained.' }), contentType: 'application/json' });
+    }
     const baselineModulesServed = new Set();
     if (cpuDiagnostic && !profile) throw new Error('CPU diagnostic requires the casino frame profile');
     if (profile && process.env.EIDOLON_CASINO_SOFTWARE_REVIEW === '1') throw new Error('Casino performance requires hardware rendering');
@@ -197,7 +207,7 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
             expect(view.floors).toEqual({ public: floor === 'public', vip: floor === 'vip' });
             await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
             await page.screenshot({ path: testInfo.outputPath(`casino-crowd-${floor}-${quality}.png`) });
-            if (profile) {
+            if (profile && (!profileOnly || profileOnly === `${quality}:${floor}`)) {
                 // One diagnostic sample only. Profiler overhead means this run
                 // cannot establish timing acceptance, even if assertions pass.
                 const cpuSession = cpuDiagnostic && quality === 'low' && floor === 'public'
@@ -268,6 +278,7 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
                         const gallery = window.__eidolonAnimationGalleryController, render = gallery.renderSystem;
                         const focus = gallery.controls.target.clone().set(x, floor === 'vip' ? 8 : 0, z);
                         render.setZoom(18);
+                        gallery.controls.maxDistance = Math.max(gallery.controls.maxDistance, render.cameraOffset.length());
                         render.cameraTarget.copy(focus);
                         render.camera.position.copy(focus).add(render.cameraOffset);
                         gallery.controls.target.copy(focus); gallery.controls.update();
