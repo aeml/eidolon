@@ -366,6 +366,46 @@ Same-format releases do not take this upgrade snapshot automatically. A manual
 upgrade must also run the backup script after a successful preflight and before
 `up -d`, with no concurrent deployment or game writer.
 
+### Create a standalone recovery point
+
+From the installed `server/` directory, an operator can explicitly create a
+coordinated snapshot without deploying a new server:
+
+```sh
+bash ./deploy/create_recovery_point.sh
+```
+
+This briefly stops an ordinary running API, captures Mongo, private journals
+and its immutable image through the same upgrade-backup path, verifies the
+new point, and restarts that exact container/image. Existing stopped or absent
+APIs stay stopped or absent. Paused, restarting, dead, removing, ambiguous and
+unknown original states refuse before capture. A changed or unexpected state
+during recovery also refuses; it never unpauses, recreates or migrates an API.
+The command requires the regular installed `.env` for Compose, but does not
+source it. It selects only the unique point created by its own invocation,
+without choosing the newest existing point or changing older points.
+
+Deployments, raw upgrade backups, standalone recovery creation and Mongo
+restores share `logs/deploy.lock`. A competing operation refuses before Docker
+access. A nested deployment backup reuses the inherited descriptor. Keep the
+lock file in place; deleting it while an operation runs breaks serialization.
+The lock covers these operator tools, not every possible external writer.
+
+The backup flushes selected files and directories before publishing `COMPLETE`
+and flushes that marker before success. A failed completion flush or failed
+standalone verification removes only the new point's marker and retains its
+partial files. Capture failures attempt to restore the original running API.
+A restart failure returns an error and retains the verified recovery files;
+restore availability explicitly rather than assuming the snapshot succeeded
+as an operation. Container running-state verification is not HTTP readiness:
+check the installed readiness endpoint and normal account access afterward.
+
+This command does not restore player data, transfer it off-machine, schedule
+snapshots or prune backups. Off-machine destination, retention, acceptable lost
+progress and recovery-time objectives remain separate owner decisions. Leave
+enough space for Mongo, journals and the complete previous image; same-format
+releases still do not take this snapshot automatically.
+
 ## Save-format upgrades and recovery
 
 Prepared Alpha1.73 advances the currently accepted schema17 to schema22 for
