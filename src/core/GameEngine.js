@@ -927,7 +927,14 @@ export class GameEngine {
 
     syncPlayerStatusClears(playerEntity, payload) {
         if (!playerEntity || !payload) return;
-        if (typeof payload.supportSurface === 'string') playerEntity.supportSurface = payload.supportSurface;
+        const supportTime = Number(payload._serverTimeMs) || 0;
+        if (typeof payload.supportSurface === 'string' &&
+            (!supportTime || supportTime >= (playerEntity.supportSurfaceServerTimeMs || 0))) {
+            const previousSupport = playerEntity.supportSurface;
+            playerEntity.supportSurface = payload.supportSurface;
+            if (supportTime) playerEntity.supportSurfaceServerTimeMs = supportTime;
+            if (playerEntity === this.player) this.syncLocalSupportHeight(payload, previousSupport);
+        }
 
         Object.entries(AUTHORITATIVE_STATUS_CLEAR_CONFIG).forEach(([payloadKey, clearStatus]) => {
             if (payload[payloadKey] === false) {
@@ -2209,6 +2216,7 @@ export class GameEngine {
         // Authoritative instance messages finish scenery/collision replacement.
         this.player.position.set(-1.25, 0, 200);
         this.player.supportSurface = '';
+        this.localRoofFallActive = false;
         this.player.targetPosition = null;
         this.player.state = 'IDLE';
         this.chunkManager.updateEntityChunk(this.player);

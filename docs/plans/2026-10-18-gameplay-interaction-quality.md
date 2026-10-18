@@ -106,6 +106,17 @@ compiles with five explicit API opt-in skips (no actual process pass). The clien
 leaf still passes101checks/five suites4.132s after aligning the scaled melee
 strike-center calculation with the server.
 
+Further network review reproduced full-state and delta packets leaving the
+local player suspended after an edge fall when horizontal drift was zero.
+The client now consumes server fall heights through the final fractional step
+and ground contact, follows pitched support at the predicted walking position,
+and preserves active jump presentation. A floor transition uses its server
+edge position; subsequent fall packets keep ordinary horizontal prediction.
+Scene/recall cleanup retires that fall owner. Existing server snapshot times
+prevent an older packet restoring a departed roof. Both reproduced failures
+remain retained.182related client checks/five suites4.989s pass after correction;
+connected/native proof remains required.
+
 These are CPU/race and controlled source checks, not connected visual acceptance.
 Actual mouse/touch jumps, rendered feet/slates, edges, network prediction,
 reconnect, floor changes, item custody and complete integrated gameplay remain

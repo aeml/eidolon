@@ -32,6 +32,7 @@ class GameEngineNetworkMessageMethods {
         const previousInstanceType = this.currentInstanceType || 'overworld';
         this.currentInstanceId = instanceId;
         if (this.player) this.player.supportSurface = '';
+        this.localRoofFallActive = false;
         this.currentInstanceType = type;
         if (this.movementNetworkState) {
             this.movementNetworkState.lastAcknowledgedServerPosition = null;

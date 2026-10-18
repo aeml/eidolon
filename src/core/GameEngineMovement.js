@@ -20,6 +20,29 @@ import { installPrototypeMethods } from './PrototypeInstaller.js';
 import { getOverworldGroundHeight, getActorCombatDistance, getFloorInteractionDistance } from './WorldGrounding.js';
 
 class GameEngineMovementMethods {
+    syncLocalSupportHeight(payload, previousSupport) {
+        const player = this.player;
+        if (!player || this.currentInstanceId || !this.townRoofField ||
+            payload.state === 'JUMPING' || player.state === 'JUMPING' || this.playerJumpState || !Number.isFinite(payload.y)) return;
+        if (player.supportSurface) {
+            this.localRoofFallActive = false;
+            const roof = this.townRoofField.sample(player.position.x, player.position.z, player.supportSurface);
+            if (roof) player.position.y = roof.y;
+            return;
+        }
+        const ground = getOverworldGroundHeight(this, player.position) ?? 0;
+        if (!previousSupport && !this.localRoofFallActive && player.position.y <= ground + .5) return;
+        // A floor transition owns its edge position as well as its height.
+        // Subsequent falling samples retain ordinary horizontal prediction.
+        if (previousSupport && Number.isFinite(payload.x) && Number.isFinite(payload.z)) {
+            player.position.x = payload.x; player.position.z = payload.z;
+        }
+        player.position.y = payload.y;
+        this.localRoofFallActive = payload.y > (getOverworldGroundHeight(this, player.position) ?? 0) + .001;
+        this.chunkManager?.updateEntityChunk?.(player);
+        this.renderSystem?.setCameraTarget?.(player.position);
+    }
+
     resolveRoofJumpLanding(end, start) {
         if (this.currentInstanceId || !this.townRoofField) return true;
         const ground = getOverworldGroundHeight(this, end) ?? 0;

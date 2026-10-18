@@ -15,6 +15,51 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => {
 });
 
 const { GameEngine } = await import('../src/core/GameEngine.js');
+const { getTownRoofField } = await import('../src/core/TownRoofs.js');
+
+test.each(['state', 'delta'])('roof edge falls consume vertical authority even with no horizontal %s correction', type => {
+    const engine = createEngineHarness();
+    engine.currentInstanceId = ''; engine.currentInstanceType = 'overworld';
+    engine.townRoofField = getTownRoofField();
+    engine.player.targetPosition = null; engine.player.state = 'IDLE'; engine.player.stats.hp = 100;
+    const roof = engine.townRoofField.sample(-74, 130);
+    expect(engine.townRoofField.sample(-74, 143.5)).toBeNull();
+    engine.player.position.set(-74, roof.y, 143.5);
+    engine.player.supportSurface = roof.id;
+    for (const [index, y] of [roof.y - 1, 3, .4, .1, 0].entries()) {
+        const actor = { id: 'player-1', instanceId: '', state: 'IDLE', health: 100,
+            x: -74, y, z: 143.5, supportSurface: '', _serverTimeMs: 2000 + index };
+        engine.handleServerMessage({ type, payload: type === 'state' ? { 'player-1': actor }
+            : { u: { 'player-1': actor }, r: [] } });
+        expect(engine.player.supportSurface).toBe('');
+        expect(engine.player.position.y).toBe(y);
+        expect(engine.player.position.x).toBe(-74);
+        expect(engine.player.position.z).toBe(143.5);
+    }
+    expect(engine.localRoofFallActive).toBe(false);
+    const stale = { id: 'player-1', instanceId: '', state: 'IDLE', health: 100,
+        x: -74, y: roof.y, z: 143.5, supportSurface: roof.id, _serverTimeMs: 1000 };
+    engine.handleServerMessage({ type, payload: type === 'state' ? { 'player-1': stale }
+        : { u: { 'player-1': stale }, r: [] } });
+    expect(engine.player.supportSurface).toBe('');
+    expect(engine.player.position.y).toBe(0);
+});
+
+test('roof support follows the predicted pitched position without flattening an active jump', () => {
+    const engine = createEngineHarness(); engine.currentInstanceId = '';
+    engine.townRoofField = getTownRoofField();
+    const center = engine.townRoofField.sample(-74, 130);
+    const step = engine.townRoofField.sample(-73, 130, center.id);
+    expect(Math.abs(center.y - step.y)).toBeGreaterThan(.1);
+    engine.player.position.set(-73, center.y, 130);
+    engine.player.supportSurface = center.id;
+    engine.syncPlayerStatusClears(engine.player, { supportSurface: center.id, y: center.y, state: 'IDLE' });
+    expect(engine.player.position.y).toBe(step.y);
+    engine.playerJumpState = { start: engine.player.position.clone(), end: new THREE.Vector3(-106, 0, 130) };
+    engine.player.position.y = 4;
+    engine.syncPlayerStatusClears(engine.player, { supportSurface: '', y: 0, state: 'IDLE' });
+    expect(engine.player.position.y).toBe(4);
+});
 
 test.each(['state', 'delta'])('public-name %s changes the name tag, not local account identity', type => {
     const engine = createEngineHarness();
