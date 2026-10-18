@@ -15,8 +15,9 @@ balance settings, not a claim that campaign equipment pacing is finalized.
 At level 10 and on returning level-10+ unspecialized characters, an accessible
 HUD reminder opens Skills directly on the specialization tab and focuses the
 first branch. It stays available until the authoritative selected branch arrives.
-It does not open a menu automatically. Existing free specialization switching
-and pre-10 preview/selection behavior are unchanged. Desktop and phone placement
+It does not open a menu automatically. The server and both menus enforce
+selection from level 10; previews remain available earlier. Switching remains
+free after the unlock. Existing saved branches are retained. Desktop and phone placement
 keeps the reminder clear of combat buttons. Session disposal removes its UI and
 prevents old buttons from reopening a later session's menu.
 
@@ -53,9 +54,11 @@ Validation so far:
   software rendering. Screenshots were reviewed, including combat-button
   separation and the six-option Journal layout. These are presentation fixtures,
   not campaign-earned completion, native GPU or physical-device acceptance.
-- The actual ordinary-login/Mongo/reconnect/claim integration passed in 9.68s
-  (Go race; 10.871s package time), across two real API processes and one owned
-  account. The turn-in reached level 10, six exact offers survived a cold server
+- The actual ordinary-login/Mongo/reconnect/claim integration passed in 9.05s
+  (Go race; 10.175s package time), across two real API processes and one owned
+  account. Ordinary branch selection was refused at level 9 and accepted at
+  level 10; the selected branch survived saving/relogin. The turn-in reached
+  level 10, six exact offers survived a cold server
   restart/fresh login, and the chosen item was saved exactly once. A replay was
   rejected; unrelated equipment and EP survived. Owned Mongo/processes were
   cleaned, and the actual synthetic credentials were scanned/redacted in fresh
@@ -69,6 +72,11 @@ Validation so far:
   ownership guard and missing investigation mask in the prepared ready quest.
   All three failures remain available with cleanup evidence; they are not counted
   as successful sessions. The corrected session had no automatic retries.
+- Final unlock alignment passed 361 Go race checks across class/branch/build
+  actions and 53 client checks in four suites. Two stronger browser cases also
+  verify locked previews at level 9 and enabled selection at level 10. The local
+  Jest command excludes only the owned private QA snapshot directory from module
+  lookup, avoiding its duplicate package manifest; repository/CI policy is unchanged.
 - The new presentation cases join the existing exact hosted-browser partition
   (469 discovered cases, no omissions or duplicates; 51 CI-policy checks in four
   suites passed). The actual quest session joins the CI server integration stage.

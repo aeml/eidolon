@@ -1604,7 +1604,11 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendBuildActionResult(requestID, true, "Specialization selected")
 			savePlayer(c) // Persist immediately
 		} else {
-			c.sendBuildActionResult(requestID, false, "Choose a valid specialization for your character")
+			message := "Choose a valid specialization for your character"
+			if player := world.GetEntityCopy(c.playerID); player != nil && player.Level < 10 {
+				message = "Specializations unlock at level 10. You can preview the branches in Skills."
+			}
+			c.sendBuildActionResult(requestID, false, message)
 		}
 
 	case MsgUnlockSkill:
