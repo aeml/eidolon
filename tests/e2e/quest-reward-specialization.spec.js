@@ -145,3 +145,71 @@ for (const [width, height] of [[1280, 900], [390, 844]]) {
         }
     });
 }
+
+for (const ready of [false, true]) {
+    test(`1280: quest ${ready ? 'turn-in' : 'acceptance'} survives held mouse and keyboard updates`, async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+        await page.setViewportSize({ width: 1280, height: 900 });
+        await page.goto('/', { waitUntil: 'networkidle' });
+        await page.evaluate(async ready => {
+            const { UIManager } = await import('/src/ui/UIManager.js');
+            document.getElementById('start-screen').style.display = 'none';
+            document.body.classList.remove('mobile-mode');
+            const ui = new UIManager(false);
+            const player = { id: 'conversation-control-fixture', subType: 'Fighter', meshType: 'Fighter', abilityName: 'Charge',
+                abilityCooldown: 0, xp: 0, xpToNextLevel: 1000, level: 30, selectedBranch: 'A',
+                position: { x: 20, z: 215 }, stats: { hp: 200, maxHp: 200, mana: 100, maxMana: 100 }, quests: [
+                    { id: 'chronicle_01_bell_below', category: 'chronicle', chapter: 1, title: 'The Bell That Rang Below',
+                        description: 'Help Ilyra save Eidolon.', type: 'KILL', target: 'Skeleton', accepted: ready,
+                        completed: false, count: ready ? 3 : 0, maxCount: 3, rewardXP: 500, rewardGold: 90 },
+                    { id: 'daily_skeleton', category: 'daily', title: 'Daily Hunt', accepted: true, completed: false, count: 0, maxCount: 3 }
+                ] };
+            window.__conversationControlFixture = { ui, player, calls: [] };
+            ui.quest.onAcceptQuest = id => window.__conversationControlFixture.calls.push({ kind: 'accept', id });
+            ui.quest.onCompleteQuest = id => window.__conversationControlFixture.calls.push({ kind: 'complete', id });
+            ui.showHUD(); ui.updatePlayerStats(player); ui.updateXP(player); ui.quest.toggleQuestWindow('story');
+            window.__conversationControlFixture.button = document.querySelector('#quest-window [data-quest-action]');
+        }, ready);
+        const action = page.locator(`#quest-window [data-quest-action="${ready ? 'Complete Quest' : 'Accept Quest'}"]`);
+        const expected = { kind: ready ? 'complete' : 'accept', id: 'chronicle_01_bell_below' };
+        let mouseHeld = false, spaceHeld = false;
+        const update = () => page.evaluate(() => {
+            const { ui, player } = window.__conversationControlFixture;
+            player.quests = JSON.parse(JSON.stringify(player.quests));
+            player.quests[1].count++;
+            ui.quest.updateQuestWindow(player.quests);
+        });
+        try {
+            await expect(action).toBeEnabled();
+            await action.scrollIntoViewIfNeeded();
+            const bounds = await action.boundingBox();
+            await page.mouse.move(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+            await page.mouse.down(); mouseHeld = true;
+            await update();
+            expect(await page.evaluate(() => window.__conversationControlFixture.calls)).toEqual([]);
+            await page.mouse.up(); mouseHeld = false;
+            await expect.poll(() => page.evaluate(() => window.__conversationControlFixture.calls), { timeout: 2000 }).toEqual([expected]);
+            expect(await page.evaluate(() => window.__conversationControlFixture.button === document.querySelector('#quest-window [data-quest-action]'))).toBe(true);
+            await expect(action).toBeDisabled();
+            await page.evaluate(() => window.__conversationControlFixture.ui.quest.handleQuestActionError('Move closer to Ilyra. Your quest is unchanged.'));
+            await expect(action).toBeEnabled();
+            await expect(page.locator('#quest-window [role="alert"]')).toContainText('quest is unchanged');
+            await page.screenshot({ path: testInfo.outputPath('quest-action-explicit-retry.png') });
+            await action.focus();
+            await page.keyboard.down('Space'); spaceHeld = true;
+            await update();
+            expect(await page.evaluate(() => window.__conversationControlFixture.calls)).toEqual([expected]);
+            await expect(action).toBeFocused();
+            await page.keyboard.up('Space'); spaceHeld = false;
+            await expect.poll(() => page.evaluate(() => window.__conversationControlFixture.calls), { timeout: 2000 }).toEqual([expected, expected]);
+            expect(await page.evaluate(() => window.__conversationControlFixture.button === document.querySelector('#quest-window [data-quest-action]'))).toBe(true);
+            expect(await page.evaluate(() => window.__conversationControlFixture.player.quests[0].completed)).toBe(false);
+            expect(failures, failures.join('\n')).toEqual([]);
+        } finally {
+            if (mouseHeld) await page.mouse.up();
+            if (spaceHeld) await page.keyboard.up('Space');
+            await page.evaluate(() => window.__conversationControlFixture?.ui.dispose());
+        }
+    });
+}
