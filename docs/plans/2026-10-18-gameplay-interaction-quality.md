@@ -74,13 +74,19 @@ placing an item on another floor. Roof pickup range includes vertical separation
 client loot grounding and pickup selection follow the same floor. Schema27
 adds a writer fence without backfilling ledgers or changing existing items.
 
-Three actual-process session cases are prepared for roof walk/jump/drop/pickup
+Four actual-process session cases are prepared for roof walk/jump/drop/pickup
 and cold recovery, recall deadline/movement cancellation, and inspected story
-evidence saved before acknowledgement and retained across restart. The roof
+evidence saved before acknowledgement and retained across restart. The fourth
+starts from a prepared retained partial quest-item pickup, then checks that a
+cancelled three-second pickup creates no reservation or grant; a real retry
+keeps the original expiry, saves the exact remaining quantity, survives restart
+and refuses replay. This fixture does not stand in for an earned enemy kill.
+The existing actual quest-reward case also explicitly rejects any interaction
+cast during ordinary manual NPC turn-in. The roof
 case can additionally exercise a real previous schema26 executable's preflight
 and startup refusal. These cases have not yet executed against Mongo/API;
-their opt-in skips are not connected qualification. Native motion, roof picking,
-fence/window presentation and the complete current content gate remain open.
+their opt-in skips are not connected qualification. Native motion, roof picking
+and fence/window presentation remain open.
 
 The current isolated roof/item source passes168focused Go-race outcomes across
 three packages (main6.248s, game13.945s, database1.104s), with six explicit
@@ -91,6 +97,14 @@ Go run remains a terminal negative: one now-corrected durability case plus its
 parent failed, and the game package reached its existing aggregate ten-minute
 deadline while actively constructing world/fence fixtures. No full-suite pass,
 deadline increase or unchanged retry is claimed.
+
+All17content groups subsequently passed in15.292s with7830tracked input hashes
+unchanged. The first external-symlink setup was correctly refused by the existing
+copied-geometry safeguard; an owned asset checkout corrected the setup without
+altering the validator or regenerating outputs. Final session preparation
+compiles with five explicit API opt-in skips (no actual process pass). The client
+leaf still passes101checks/five suites4.132s after aligning the scaled melee
+strike-center calculation with the server.
 
 These are CPU/race and controlled source checks, not connected visual acceptance.
 Actual mouse/touch jumps, rendered feet/slates, edges, network prediction,

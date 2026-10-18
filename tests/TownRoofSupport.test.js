@@ -50,6 +50,8 @@ test('ground versus roof melee uses vertical strike separation', () => {
     const a = { constructor: { name: 'Fighter' }, position: new Vector3(-74, 8, 130), supportSurface: 'town-home-0', scale: 1 };
     const b = { position: new Vector3(-74, 0, 130), scale: 1 };
     expect(getActorCombatDistance({}, a, b)).toBe(8);
+    b.scale = .5;
+    expect(getActorCombatDistance({}, a, b)).toBe(8);
     expect(field.sample(500, 500)).toBeNull();
 });
 

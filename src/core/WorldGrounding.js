@@ -30,8 +30,8 @@ export function getGroundAwareDistance(engine, from, to) {
 export function getActorCombatDistance(engine, attacker, target) {
     const className = attacker?.constructor?.name || attacker?.subType;
     if (['Wizard', 'Rogue'].includes(className) || (!attacker?.supportSurface && !target?.supportSurface)) return getGroundAwareDistance(engine, attacker.position, target.position);
-    const attackerY = attacker.position.y + 1.5 * (Number(attacker.scale) || 1);
-    const targetY = target.position.y + 1.5 * (Number(target.scale) || 1);
+    const attackerY = attacker.position.y + 1.5 * Math.max(1, Number(attacker.scale) || 1);
+    const targetY = target.position.y + 1.5 * Math.max(1, Number(target.scale) || 1);
     return Math.hypot(attacker.position.x - target.position.x, attacker.position.z - target.position.z, attackerY - targetY);
 }
 

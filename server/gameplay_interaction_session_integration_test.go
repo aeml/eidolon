@@ -38,6 +38,33 @@ type gameplaySessionObservation struct {
 	discovery game.ChronicleDiscoveryReceipt
 }
 
+func readImmediateQuestTurnIn(t *testing.T, conn *websocket.Conn, quests *[]game.Quest) {
+	t.Helper()
+	_ = conn.SetReadDeadline(time.Now().Add(10 * time.Second))
+	for {
+		kind, data, err := conn.ReadMessage()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if kind != websocket.TextMessage {
+			continue
+		}
+		var message Message
+		if err := json.Unmarshal(data, &message); err != nil {
+			t.Fatal(err)
+		}
+		if message.Type == "interaction_cast" || message.Type == MsgError {
+			t.Fatal("manual NPC turn-in gained an interaction cast or was rejected", message.Type, string(message.Payload))
+		}
+		if message.Type == MsgQuestUpdate {
+			if err := json.Unmarshal(message.Payload, quests); err != nil {
+				t.Fatal(err)
+			}
+			return
+		}
+	}
+}
+
 func gameplayRead(t *testing.T, conn *websocket.Conn, username string, o *gameplaySessionObservation, deadline time.Time) {
 	t.Helper()
 	_ = conn.SetReadDeadline(deadline)
@@ -369,6 +396,121 @@ func TestGameplayActualQuestObjectCastSavesDiscovery(t *testing.T) {
 	if !confirmed {
 		t.Fatal("cold process lost the inspected story evidence")
 	}
+	_ = conn.Close()
+	stop()
+}
+
+func TestGameplayActualQuestItemCancellationHasNoReservationAndSavedPickupReplays(t *testing.T) {
+	repo, uri, binary := resourceJournalIntegration(t)
+	fixture, password := resourceJournalFixture(t, repo)
+	fixture.X, fixture.Z = 20, 215
+	item := game.Item{ID: "chronicle-item-" + fixture.Name, Name: "Verdant Memory Seed", Type: game.ItemRelic,
+		Stack: 4, MaxStack: 8, Rarity: game.RarityUncommon}
+	encode := func(stack int) string {
+		copy := item
+		copy.Stack = stack
+		data, err := json.Marshal(copy)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return string(data)
+	}
+	// A prepared retained partial pickup represents one saved seed and three
+	// still on the ground. This does not claim a campaign kill or earned drop;
+	// every subsequent cancellation/pickup is an ordinary server command.
+	now := time.Now().UTC().Truncate(time.Millisecond)
+	op := database.GroundItemOperation{Version: 2, AccountOrdinal: 1,
+		ID: database.GroundItemOperationID("prepared-partial-" + fixture.Name), Kind: database.GroundItemPickup,
+		Username: fixture.Name, PlayerID: "player-" + fixture.Name, LootID: "prepared-quest-object-" + fixture.Name,
+		Generation: 1, BeforePayload: encode(4), MovedPayload: encode(1), RemainingPayload: encode(3),
+		LootOwnerID: "player-" + fixture.Name, X: fixture.X, Z: fixture.Z, CreatedAt: now, LootTime: now, LootCreatedAt: now}
+	op.Fingerprint, _ = database.GroundItemFingerprint(op)
+	if _, err := repo.PrepareGroundItemOperation(op); err != nil {
+		t.Fatal(err)
+	}
+	fixture.Inventory = []database.Item{{ID: item.ID, Name: item.Name, Type: string(item.Type), Rarity: string(item.Rarity), Stack: 1, MaxStack: 8}}
+	fixture.GroundAccountOrdinal, fixture.GroundAccountOperationID, fixture.GroundAccountFingerprint = 1, op.ID, op.Fingerprint
+	fixture.Quests = []database.Quest{
+		{ID: "chronicle_01_bell_below", Category: game.QuestCategoryChronicle, Type: "KILL", Target: "Skeleton", Count: 3, MaxCount: 3, Accepted: true, Completed: true},
+		{ID: game.ChronicleInvestigationCatalog()[0].ID, Category: game.QuestCategoryChronicle, Type: "INVESTIGATE", MaxCount: 1, Count: 1, InvestigationMask: 1, Accepted: true, Completed: true},
+		{ID: "chronicle_02_seeds_first_grove", Category: game.QuestCategoryChronicle, Type: "COLLECT", Target: item.Name,
+			Count: 1, MaxCount: 8, CollectionVersion: 2, Accepted: true},
+	}
+	if err := repo.SaveCharacter(fixture.Name, fixture); err != nil {
+		t.Fatal(err)
+	}
+	original, err := repo.CompleteGroundItemOperation(op.ID, op.Fingerprint)
+	if err != nil || original == nil {
+		t.Fatal("prepared partial custody", err)
+	}
+	dir := t.TempDir()
+	address, stop := compatStartServer(t, binary, uri, 745, "-save-journal-dir", dir)
+	conn, o := gameplayJoin(t, address, fixture, password)
+	gameplayWait(t, conn, fixture.Name, o, func() bool { return o.entities[op.LootID] != nil })
+	if o.entities[op.LootID].LootItem.Stack != 3 {
+		t.Fatal("retained ground object lost its exact remainder")
+	}
+	resourceSend(t, conn, MsgPickup, PickupPayload{LootID: op.LootID})
+	gameplayWait(t, conn, fixture.Name, o, func() bool {
+		return o.message == "interaction_cast" && o.cast.Kind == "quest_pickup" && o.cast.State == "started"
+	})
+	cancelledID := o.cast.ID
+	resourceSend(t, conn, MsgMove, MovePayload{MovementContext: o.context, X: fixture.X + .25, Z: fixture.Z, State: "MOVING", Sequence: 1})
+	gameplayWait(t, conn, fixture.Name, o, func() bool {
+		return o.message == "interaction_cast" && o.cast.ID == cancelledID && o.cast.State == "cancelled"
+	})
+	until := time.Now().Add(game.StationaryCastDuration + 200*time.Millisecond)
+	gameplayWait(t, conn, fixture.Name, o, func() bool {
+		if o.message == MsgInventory || o.message == "interaction_cast" && o.cast.ID == cancelledID && o.cast.State == "completed" {
+			t.Fatal("cancelled quest pickup granted an item")
+		}
+		return time.Now().After(until)
+	})
+	after, err := repo.LatestGroundItemOperation(op.LootID)
+	if err != nil || after == nil || !reflect.DeepEqual(after, original) {
+		t.Fatal("cancelled quest cast reserved a new durable intent", err)
+	}
+	started := time.Now()
+	resourceSend(t, conn, MsgPickup, PickupPayload{LootID: op.LootID})
+	gameplayWait(t, conn, fixture.Name, o, func() bool { return o.message == "interaction_cast" && o.cast.State == "started" })
+	id := o.cast.ID
+	gameplayWait(t, conn, fixture.Name, o, func() bool {
+		if o.message == MsgInventory {
+			t.Fatal("quest pickup inventory preceded cast completion")
+		}
+		return o.message == "interaction_cast" && o.cast.ID == id && o.cast.State == "completed"
+	})
+	if time.Since(started) < game.StationaryCastDuration {
+		t.Fatal("quest pickup completed before three seconds")
+	}
+	gameplayWait(t, conn, fixture.Name, o, func() bool { return o.message == MsgInventory })
+	picked, err := repo.LatestGroundItemOperation(op.LootID)
+	if err != nil || picked == nil || picked.Generation != 2 || picked.State != database.GroundItemComplete || picked.GroundPayload() != "" ||
+		!picked.AvailableAt.Equal(original.AvailableAt) || !picked.ExpiresAt.Equal(original.ExpiresAt) {
+		t.Fatal("quest cast changed lifetime, remainder or saved custody", err)
+	}
+	_ = conn.Close()
+	stop()
+	address, stop = compatStartServer(t, binary, uri, 746, "-save-journal-dir", dir)
+	conn, o = gameplayJoin(t, address, fixture, password)
+	if o.entities[op.LootID] != nil {
+		t.Fatal("cold process resurrected the collected quest object")
+	}
+	saved, err := repo.GetCharacter(fixture.Name, fixture.Name)
+	if err != nil || saved == nil {
+		t.Fatal(err)
+	}
+	count := 0
+	for _, owned := range saved.Inventory {
+		if owned.ID == item.ID {
+			count += owned.Stack
+		}
+	}
+	if count != 4 || !database.GroundItemCharacterReceiptMatches(saved, picked.GroundItemOperation) || saved.Gold != fixture.Gold || saved.EP != fixture.EP {
+		t.Fatal("cold quest pickup lost exact quantity/checkpoint or changed wallets")
+	}
+	resourceSend(t, conn, MsgPickup, PickupPayload{LootID: op.LootID})
+	resourceReadMessage(t, conn, MsgError, nil)
 	_ = conn.Close()
 	stop()
 }

@@ -94,7 +94,7 @@ func TestQuestItemRewardsActualTurnInReconnectAndSingleClaim(t *testing.T) {
 	}
 	resourceSend(t, connection, MsgCompleteQuest, CompleteQuestPayload{QuestID: reward.ID})
 	var quests []game.Quest
-	resourceReadMessage(t, connection, MsgQuestUpdate, &quests)
+	readImmediateQuestTurnIn(t, connection, &quests)
 	var offers []game.Item
 	for _, quest := range quests {
 		if quest.ID == reward.ID {
