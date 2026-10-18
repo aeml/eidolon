@@ -47,15 +47,28 @@ test('hosted dependency/browser installation has a bounded failure deadline, not
 });
 
 test('production character QA still waits on Go, Jest and the complete browser matrix', () => {
-    expect(predeploy).toContain('needs: [client-tests, server-tests, browser-smoke]');
-    expect(predeploy).toContain("if: github.repository == 'aeml/eidolon' &&");
-    expect(predeploy).toContain("(github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') &&");
-    expect(predeploy).toContain("(github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.full_stabilization == true))");
-    expect(predeploy).not.toContain('|| inputs.full_stabilization == true');
-    expect(predeploy).not.toContain('always()');
+    // Status functions on a job's admission can bypass failed dependencies.
+    // An always-running cleanup step inside that job cannot admit the job.
+    const admission = predeploy.split('\n    steps:')[0];
+    expect(admission).toContain('needs: [client-tests, server-tests, browser-smoke]');
+    expect(admission).toContain("if: github.repository == 'aeml/eidolon' &&");
+    expect(admission).toContain("(github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') &&");
+    expect(admission).toContain("(github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.full_stabilization == true))");
+    expect(admission).not.toContain('|| inputs.full_stabilization == true');
+    expect(admission).not.toContain('always()');
     const config = readFileSync('playwright.config.js', 'utf8');
     expect(config).toContain('fullyParallel: false');
     expect(config).toContain('workers: 1');
+});
+
+test('always-running native cleanup is confined to the owned browser cleanup step', () => {
+    const steps = predeploy.split('\n      - name:').slice(1);
+    const unconditional = steps.filter(step => /^        if:.*always\(\)/m.test(step));
+    expect(unconditional).toHaveLength(1);
+    expect(unconditional[0]).toContain('Clean owned browser network capsules');
+    expect(unconditional[0]).toContain('run: node scripts/cleanup-browser-network.mjs');
+    expect(unconditional[0]).not.toContain('playwright test');
+    expect(unconditional[0]).not.toContain('continue-on-error');
 });
 
 test('both publish jobs retain all hosted and native/input gates', () => {
