@@ -14,6 +14,10 @@ const proof = 'fixture-only-owner-proof';
 
 async function installFixture(page, baseURL) {
     const fixture = { requests: [], downloads: [], providerRequests: [], approved: false, reply: true };
+    // This production-host privacy contrast represents an ordinary browser.
+    // Keep analytics eligible so only the private-document boundary suppresses
+    // the routed provider. Automation exclusion has its own separate coverage.
+    await page.addInitScript(() => Object.defineProperty(navigator, 'webdriver', { get: () => false }));
     fixture.failures = collectBrowserFailures(page, origin);
     page.on('download', download => fixture.downloads.push(download));
     // Serve repository assets from loopback under the allowed production
@@ -94,6 +98,7 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
         const fixture = await installFixture(page, baseURL);
         await page.setViewportSize({ width, height });
         await page.goto(`${origin}/?eidolon-private=account`, { waitUntil: 'networkidle' });
+        expect(await page.evaluate(() => navigator.webdriver)).toBe(false);
         await expect(page).toHaveURL(`${origin}/`);
         expect(await page.evaluate(() => [window.__eidolonRecoverySensitivePage, Boolean(window.__eidolonGoogleTagInitialized)])).toEqual([true, false]);
         const { dialog, widget } = await signInAndOpen(page);
@@ -180,6 +185,7 @@ test('closed and disconnected account support discards pending files and rejects
     const fixture = await installFixture(page, baseURL);
     fixture.approved = true; fixture.reply = false;
     await page.goto(`${origin}/?eidolon-private=account`, { waitUntil: 'networkidle' });
+    expect(await page.evaluate(() => navigator.webdriver)).toBe(false);
     const { dialog, widget } = await signInAndOpen(page);
     await checkApproval(dialog);
     const password = widget.getByLabel('Current password', { exact: true });
@@ -214,6 +220,7 @@ test('closed and disconnected account support discards pending files and rejects
 test('already-tagged account support requires a fresh private document before export proof', async ({ page, baseURL }) => {
     const fixture = await installFixture(page, baseURL);
     await page.goto(`${origin}/`, { waitUntil: 'networkidle' });
+    expect(await page.evaluate(() => navigator.webdriver)).toBe(false);
     expect(await page.evaluate(() => Boolean(window.__eidolonGoogleTagInitialized))).toBe(true);
     expect(fixture.providerRequests).toEqual([{ origin: 'https://www.googletagmanager.com', path: '/gtag/js' }]);
     const { widget } = await signInAndOpen(page);
