@@ -42,6 +42,18 @@
     top: var(--phone-encounter-top); bottom: var(--phone-encounter-bottom);
     left: var(--phone-encounter-left); right: var(--phone-encounter-right);
 }
+/* Casting feedback stays in the world reservation above portrait thumb controls,
+   and between the two thumb columns in landscape and mirrored layouts. */
+.mobile-mode #interaction-cast {
+    left: var(--phone-encounter-left) !important;
+    right: var(--phone-encounter-right);
+    bottom: var(--phone-encounter-bottom) !important;
+    width: auto !important;
+    max-width: 346px;
+    margin-inline: auto;
+    box-sizing: border-box;
+    transform: none !important;
+}
 /* Brief combo feedback uses the lower edge of the encounter reservation,
    never a desktop-sized popup over the hero or a touch-intercepting surface. */
 .mobile-mode .combo-notification {
