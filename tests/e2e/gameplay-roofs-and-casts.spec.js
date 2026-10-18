@@ -59,9 +59,11 @@ async function enterPreparedCharacter(page, account, quality, { seedPreferences 
             if (own) observations.authority = { ...observations.authority, ...own,
                 x: own.x, y: own.y, z: own.z, state: own.state, supportSurface: own.supportSurface };
             const timing = observations.timings[observations.phase];
-            if (own?.state === 'JUMPING' && timing) timing.actualDestination = {
-                x: own.jumpTargetX, y: own.jumpTargetY, z: own.jumpTargetZ
-            };
+            if (own?.state === 'JUMPING' && timing) {
+                timing.authorityStartedAt ??= performance.now();
+                timing.actualDuration = own.jumpDuration;
+                timing.actualDestination = { x: own.jumpTargetX, y: own.jumpTargetY, z: own.jumpTargetZ };
+            }
             if (message.type === 'interaction_cast') observations.casts.push({ ...message.payload, at: performance.now() });
             return receive.call(this, message);
         };
@@ -75,8 +77,10 @@ async function enterPreparedCharacter(page, account, quality, { seedPreferences 
             if (!observations.active) return;
             const player = game.player, jump = game.playerJumpState, root = player?.mesh;
             const timing = observations.timings[observations.phase], destination = timing?.actualDestination;
-            if (root && timing && !timing.ended && !jump && observations.authority.state !== 'JUMPING' &&
-                Math.hypot(root.position.x - destination.x, root.position.y - destination.y, root.position.z - destination.z) < .05 &&
+            const renderedEndpoint = root && destination && Math.hypot(root.position.x - destination.x,
+                root.position.y - destination.y, root.position.z - destination.z) < .05;
+            if (renderedEndpoint && timing) timing.renderedEndpointAt ??= performance.now();
+            if (renderedEndpoint && timing && !timing.ended && !jump && observations.authority.state !== 'JUMPING' &&
                 Math.hypot(observations.authority.x - destination.x, observations.authority.z - destination.z) < .05) timing.ended = performance.now();
             if (root && observations.samples.length < 5000 && (jump || player.supportSurface || observations.phase === 'edge')) {
                 const progress = jump?.visualProgress ?? jump?.progress ?? 0;
