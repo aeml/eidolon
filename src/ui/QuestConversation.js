@@ -63,8 +63,61 @@ export function getIlyraCompletionReply(quest) {
         || 'Thank you. I have recorded your work in the Fourfold Chronicle. Speak to me when you are ready to continue.';
 }
 
+function updateDesktopQuestAction(ui) {
+    const controls = ui.desktopQuestConversationControls;
+    if (!controls?.detail?.isConnected) return;
+    const waiting = Boolean(ui.pendingQuestAction);
+    controls.detail.setAttribute('aria-busy', String(waiting));
+    if (controls.action) {
+        controls.action.disabled = waiting;
+        controls.action.textContent = waiting ? 'Waiting for reply…' : controls.label;
+    }
+    let error = controls.detail.querySelector('.quest-dialogue__error');
+    if (ui.questActionError) {
+        if (!error) {
+            error = document.createElement('p');
+            error.className = 'quest-dialogue__status quest-dialogue__error';
+            error.setAttribute('role', 'alert');
+            controls.detail.insertBefore(error, controls.detail.querySelector('.quest-dialogue__actions'));
+        }
+        error.textContent = ui.questActionError;
+    } else error?.remove();
+}
+
 export function renderQuestConversation(ui, quests) {
     const story = ui.questKind === 'story';
+    const offered = (quests || []).filter((quest) =>
+        (quest.category === 'chronicle' || Boolean(quest.id?.startsWith('chronicle_'))) === story && !quest.completed);
+    const current = story ? getCurrentChronicleQuest(offered) : null;
+    const eligible = story ? offered.filter(quest => quest.legacyOptional || quest.id === current?.id) : offered;
+    const selected = eligible.find((quest) => quest.id === ui.selectedQuestId) || (story ? current || eligible[0] : null);
+    const catchup = story ? offered.filter(quest => quest.legacyOptional) : [];
+    const introText = story ? ilyraGreeting(quests)
+        : '“Lanternhold needs steady hands. Choose your contracts, then return to me when the work is done.”';
+    // Pending/error feedback and other quests do not change the selected
+    // conversation. Keep its ancestors mounted so a held click or Space
+    // release still reaches the action the player deliberately pressed.
+    const player = ui.ctx.getLastPlayer?.();
+    const contentSignature = JSON.stringify([ui.questKind, player?.id, player?.characterId,
+        ui.completedDialogue ? null : [selected, current?.id, selected ? null : offered,
+            catchup.map(quest => [quest.id, ui.getQuestTitle(quest)])], introText,
+        ui.completedDialogue, hasCompletedDarkKing(quests),
+        !ui.completedDialogue && selected && ui.getQuestRewardLabel(selected),
+        ui.completedDialogue && ui.getQuestRewardLabel(ui.completedDialogue, { claimed: true })]);
+    if (!ui.questActions && ui.desktopQuestConversationSignature === contentSignature
+        && ui.desktopQuestConversationAnchor?.parentNode === ui.questList) {
+        if (story) {
+            appendQuestRewardChoices(ui, quests, ui.questList, 'conversation');
+            const rewards = ui.rewardChoiceRoots?.get('conversation');
+            if (rewards?.parentNode === ui.questList && ui.questList.firstChild !== rewards) {
+                ui.questList.insertBefore(rewards, ui.questList.firstChild);
+            }
+        }
+        updateDesktopQuestAction(ui);
+        return;
+    }
+    ui.desktopQuestConversationSignature = contentSignature;
+    ui.desktopQuestConversationControls = null;
     const aftermathOpen = new Set([...ui.questList.querySelectorAll('details[data-aftermath-topic][open]')].map(node => node.dataset.aftermathTopic));
     const aftermathFocus = document.activeElement?.matches('summary')
         ? document.activeElement.closest('[data-aftermath-topic]')?.dataset.aftermathTopic : null;
@@ -105,9 +158,8 @@ export function renderQuestConversation(ui, quests) {
         ui.questList.append(section);
         if (aftermathFocus) [...section.querySelectorAll('summary')].find(node => node.parentElement.dataset.aftermathTopic === aftermathFocus)?.focus({ preventScroll: true });
     };
-    const intro = text('p', story
-        ? ilyraGreeting(quests)
-        : '“Lanternhold needs steady hands. Choose your contracts, then return to me when the work is done.”', 'quest-conversation__intro');
+    const intro = text('p', introText, 'quest-conversation__intro');
+    ui.desktopQuestConversationAnchor = intro;
     ui.questList.appendChild(intro);
     if (ui.completedDialogue) {
         const quest = ui.completedDialogue;
@@ -125,12 +177,6 @@ export function renderQuestConversation(ui, quests) {
         ui.questList.appendChild(response);
         return;
     }
-    const offered = (quests || []).filter((quest) =>
-        (quest.category === 'chronicle' || Boolean(quest.id?.startsWith('chronicle_'))) === story && !quest.completed);
-    const current = story ? getCurrentChronicleQuest(offered) : null;
-    const eligible = story ? offered.filter(quest => quest.legacyOptional || quest.id === current?.id) : offered;
-    const selected = eligible.find((quest) => quest.id === ui.selectedQuestId) || (story ? current || eligible[0] : null);
-    const catchup = story ? offered.filter(quest => quest.legacyOptional) : [];
     if (catchup.length) {
         const list = text('details', '', 'quest-dialogue__lore');
         list.append(text('summary', `Other discoveries (${catchup.length}) · Optional catch-up lore`));
@@ -180,8 +226,11 @@ export function renderQuestConversation(ui, quests) {
     }
     detail.append(text('p', 'At level 100, XP becomes Resonance XP. Any XP left over when you reach the cap also goes into Resonance.', 'quest-dialogue__status'));
     const actions = text('div', '', 'quest-dialogue__actions');
+    ui.desktopQuestConversationControls = { detail, action: null, label: '' };
     if (!selected.accepted || ready) {
         const action = button(ready ? 'Complete Quest' : 'Accept Quest', (event) => {
+            if (ui.disposed || ui.pendingQuestAction
+                || (!ui.questList.contains(event.currentTarget) && !ui.questActions?.contains(event.currentTarget))) return;
             ui.questActionError = '';
             ui.questWindow.querySelector('.quest-dialogue__error')?.remove();
             ui.pendingQuestAction = { quest: { ...selected, rewardLabelAtTurnIn: ui.getQuestRewardLabel(selected) }, complete: ready };
@@ -193,6 +242,8 @@ export function renderQuestConversation(ui, quests) {
         });
         action.disabled = Boolean(ui.pendingQuestAction);
         if (action.disabled) action.textContent = 'Waiting for reply…';
+        ui.desktopQuestConversationControls.action = action;
+        ui.desktopQuestConversationControls.label = ready ? 'Complete Quest' : 'Accept Quest';
         actions.appendChild(action);
     } else detail.append(text('p', `Return to ${speaker} when your objectives are ready. Rewards are granted only when you click Complete Quest.`, 'quest-dialogue__status'));
     if (ui.questActionError) {
