@@ -38,6 +38,11 @@ func handleQuestConversation(client *Client, message Message) {
 		if advance != nil {
 			advancePayload, _ = json.Marshal(advance)
 		}
+	} else if message.Type == MsgClaimQuestItem {
+		if !world.PerformClaimQuestItem(client.playerID, request.QuestID, request.ItemID) {
+			client.sendError("Choose one of your pending quest rewards and make one free bag slot. Your choices are retained.")
+			return
+		}
 	} else {
 		return
 	}
@@ -55,7 +60,7 @@ func handleQuestConversation(client *Client, message Message) {
 	// Combat may have added more quest or bag progress while IO completed.
 	// Acknowledge this exact saved image; later live effects have their own
 	// coalesced-save feedback and must not appear confirmed by this turn-in.
-	if message.Type == MsgCompleteQuest {
+	if message.Type == MsgCompleteQuest || message.Type == MsgClaimQuestItem {
 		// Publish item consumption before the quest dialogue moves on.
 		bag, _ := json.Marshal(snapshot.Inventory)
 		client.sendSafe(createMessage(MsgInventory, bag))

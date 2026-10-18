@@ -1582,7 +1582,7 @@ func (c *Client) dispatchMessage(msg Message) {
 	case MsgRequestQuests:
 		c.handleQuestSnapshotRequest()
 
-	case MsgAcceptQuest, MsgCompleteQuest:
+	case MsgAcceptQuest, MsgCompleteQuest, MsgClaimQuestItem:
 		handleQuestConversation(c, msg)
 
 	case MsgForgeUpgrade, MsgForgePotency, MsgForgeSocket, MsgForgeInsertGem, MsgForgeCombineGem, MsgForgeRemoveGem:

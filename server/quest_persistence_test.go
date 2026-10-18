@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"reflect"
 	"sync"
 	"testing"
 	"time"
@@ -71,7 +72,7 @@ func TestAcceptedRewardQuoteBSONRefreshClaimAndReload(t *testing.T) {
 				player.Quests = append(player.Quests, questFromDatabase(entry))
 			}
 			w.GenerateDailyQuests(player.ID)
-			if reloaded := find(player); reloaded != q {
+			if reloaded := find(player); !reflect.DeepEqual(reloaded, q) {
 				t.Fatalf("saved receipt changed: %+v -> %+v", q, reloaded)
 			}
 			if _, ok := w.PerformCompleteQuest(player.ID, "daily_skeleton"); ok {

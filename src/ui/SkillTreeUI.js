@@ -54,12 +54,47 @@ export class SkillTreeUI {
         this.disposed = true;
         disposeOwnedEvents(this);
         this.mobile?.dispose();
+        this.specializationNotice?.remove();
+        this.specializationNotice = null;
         for (const [notification, timers] of this.comboNotifications) {
             timers.forEach(clearTimeout); notification.remove();
         }
         this.comboNotifications.clear();
         this.closeRespecMenu?.();
         this.closeRespecMenu = null;
+    }
+
+    updateSpecializationNotice(player) {
+        const eligible = !this.disposed && Number(player?.level) >= 10 && !player?.selectedBranch;
+        if (!eligible) {
+            this.specializationNotice?.remove();
+            this.specializationNotice = null;
+            return;
+        }
+        if (this.specializationNotice) return;
+        const notice = document.createElement('aside');
+        notice.className = 'specialization-unlock-notice';
+        notice.setAttribute('aria-label', 'Specialization unlocked');
+        const message = document.createElement('p');
+        message.setAttribute('role', 'status');
+        message.textContent = 'Level 10 unlocked specializations. Choose your combat path!';
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'menu-btn';
+        button.textContent = 'Choose specialization';
+        button.onclick = () => {
+            if (this.disposed) return;
+            this.skillTreeMode = 'skills';
+            if (!this.isOpen) this.toggle();
+            else {
+                const current = this.ctx.getLastPlayer();
+                this.renderSkillTree(current?.subType || current?.meshType || current?.constructor?.name);
+            }
+            this.skillTreeContent?.querySelector('[data-desktop-build-key^="branch:"], [data-build-action^="branch:"]')?.focus();
+        };
+        notice.append(message, button);
+        document.body.append(notice);
+        this.specializationNotice = notice;
     }
 
     /** Whether the skill tree window is currently visible. */

@@ -8,7 +8,15 @@ import (
 // Shared with the login path so saved collection contracts and bad-luck state
 // are exercised by a real database round-trip test, not a second test mapper.
 func questFromDatabase(q database.Quest) game.Quest {
+	var choices []game.Item
+	if len(q.RewardChoices) > 0 {
+		choices = make([]game.Item, len(q.RewardChoices))
+	}
+	for i, item := range q.RewardChoices {
+		choices[i] = gameItemFromDatabaseExact(item)
+	}
 	return game.Quest{
+		RewardChoiceLevel: q.RewardChoiceLevel, RewardChoices: choices, ClaimedRewardID: q.ClaimedRewardID,
 		ID: q.ID, Type: q.Type, Target: q.Target, Count: q.Count, MaxCount: q.MaxCount,
 		CollectionVersion: q.CollectionVersion, DropMisses: q.DropMisses,
 		InvestigationMask: q.InvestigationMask,

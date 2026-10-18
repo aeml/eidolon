@@ -335,7 +335,8 @@ func characterSnapshot(username string, entity *game.Entity, savedAt time.Time) 
 		char.Quests = make([]database.Quest, len(entity.Quests))
 		for i, q := range entity.Quests {
 			char.Quests[i] = database.Quest{
-				ID:                 q.ID,
+				ID:                q.ID,
+				RewardChoiceLevel: q.RewardChoiceLevel, RewardChoices: databaseItems(q.RewardChoices, false), ClaimedRewardID: q.ClaimedRewardID,
 				Type:               q.Type,
 				Target:             q.Target,
 				Count:              q.Count,

@@ -2521,3 +2521,6 @@ This prepared release still requires its own exact CI and live acceptance.
 Full original game/world/art/combat/audio/performance/device/security/operations/
 owner/F1-F5/beta/1.99 scope stays active. Human campaign/phone feedback and
 soak/stress remain deferred, not passed. Public access and earned progress stay.
+
+
+Owner addition (2026-10-18): at level 10, clearly announce specialization availability and open its selection menu; remind returning level-10+ unspecialized characters. Every couple of story quests, offer one choice of six saved random equipment items at the quest level, guaranteed green or better with boosted blue/orange chances. Pending choices must survive reconnects, full bags and save recovery without rerolls or duplicate claims. Implemented and locally qualified in the owned quest-item-choices worktree (58 client checks, 396 Go race regressions, two software browser cases, and one real API/Mongo/reconnect/single-claim integration). CI publication and verified deployment remain pending; see docs/plans/2026-10-18-specialization-unlock-and-quest-equipment-rewards.md.

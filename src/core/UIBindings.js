@@ -301,6 +301,9 @@ export class UIBindings {
         ui.quest.onCompleteQuest = (questId) => {
             engine.network.send('complete_quest', { questId });
         };
+        ui.quest.onClaimQuestItem = (questId, itemId) => {
+            engine.network.send('claim_quest_item', { questId, itemId });
+        };
         ui.quest.onRequestQuests = () => {
             engine.network.send('request_quests', {});
         };

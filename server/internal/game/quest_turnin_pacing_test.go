@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -96,7 +97,7 @@ func TestQuestExperienceSafetyPreservesPaidAndCappedRecords(t *testing.T) {
 			before := q
 			changed := boundQuestExperience(p, &q)
 			if completed || level == 100 {
-				if changed || q != before {
+				if changed || !reflect.DeepEqual(q, before) {
 					t.Fatal("historical/cap reward changed", fmt.Sprint(level, completed))
 				}
 			}

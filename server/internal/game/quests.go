@@ -5,6 +5,7 @@ import (
 	"log"
 	"math"
 	"math/bits"
+	"reflect"
 	"strings"
 	"time"
 )
@@ -42,6 +43,9 @@ func chronicleQuestCatalog() []Quest {
 	for i := range quests {
 		if level, percent, ok := chronicleRewardTerms(quests[i].ID); ok {
 			quests[i].RewardXP = contentExperiencePercent(level, percent)
+			if (i+1)%2 == 0 {
+				quests[i].RewardChoiceLevel = level
+			}
 		}
 		quests[i].RewardXPQuoted, quests[i].RewardGoldQuoted = true, true
 	}
@@ -274,6 +278,11 @@ func copyQuestDefinition(progress Quest, definition Quest) Quest {
 	}
 	definition.Count = progress.Count
 	definition.Completed = progress.Completed
+	if progress.RewardChoiceLevel > 0 || progress.Completed {
+		definition.RewardChoiceLevel = progress.RewardChoiceLevel
+	}
+	definition.RewardChoices = cloneItems(progress.RewardChoices)
+	definition.ClaimedRewardID = progress.ClaimedRewardID
 	definition.Accepted = progress.Accepted
 	definition.GrantedGold = progress.GrantedGold
 	definition.GrantedXP = progress.GrantedXP
@@ -308,7 +317,7 @@ func ensureChronicleLocked(player *Entity) bool {
 		existing := player.Quests[i]
 		repaired := copyQuestDefinition(existing, definition)
 		boundQuestExperience(player, &repaired)
-		if existing != repaired {
+		if !reflect.DeepEqual(existing, repaired) {
 			player.Quests[i] = repaired
 			changed = true
 		}
@@ -487,6 +496,9 @@ func (w *World) PerformCompleteQuestDeferred(playerID, questID string) (*Entity,
 			}
 			rebalanceUnpaidQuestExperience(player, q)
 			w.awardQuestRewardsLocked(player, q)
+			if q.RewardChoiceLevel > 0 && !q.LegacyOptional {
+				q.RewardChoices = generateQuestRewardChoices(q.RewardChoiceLevel)
+			}
 			if q.Category == QuestCategoryChronicle {
 				event := w.advanceChronicleLocked(player, i)
 				return player, &event, true
@@ -533,6 +545,9 @@ func (w *World) canDiscussQuestLocked(player *Entity, quest Quest) bool {
 func questSnapshot(player *Entity) []Quest {
 	quests := make([]Quest, len(player.Quests))
 	copy(quests, player.Quests)
+	for i := range quests {
+		quests[i].RewardChoices = cloneItems(player.Quests[i].RewardChoices)
+	}
 	return quests
 }
 

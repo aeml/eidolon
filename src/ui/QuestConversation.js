@@ -1,3 +1,4 @@
+import { appendQuestRewardChoices } from './QuestRewardChoices.js';
 import { chronicleExpeditions } from '../data/chronicleExpeditions.generated.js';
 import { getChronicleInvestigation, getCurrentChronicleQuest } from '../core/ChronicleInvestigation.js';
 import { chronicleHunts } from '../data/chronicleHunts.generated.js';
@@ -72,6 +73,7 @@ export function renderQuestConversation(ui, quests) {
     const heading = ui.questWindow?.querySelector('.window-header > span');
     if (heading) heading.textContent = story ? 'ARCHMAGE ILYRA · THE FOURFOLD CHRONICLE' : 'QUEST GIVER · DAILY CONTRACTS';
     ui.clearElement(ui.questList);
+    if (story) appendQuestRewardChoices(ui, quests, ui.questList, 'conversation');
     const text = (tag, content, className = '') => {
         const element = document.createElement(tag);
         element.textContent = content;

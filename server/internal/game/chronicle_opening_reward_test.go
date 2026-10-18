@@ -1,6 +1,9 @@
 package game
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func TestChronicleOpeningRewardBudget(t *testing.T) {
 	q := chronicleQuestCatalog()[0]
@@ -38,7 +41,7 @@ func TestChronicleOpeningRewardPreservesAcceptedQuotes(t *testing.T) {
 				t.Fatalf("changed contract or receipt: old=%+v refreshed=%+v", old, q)
 			}
 			ensureChronicleLocked(p)
-			if *questByID(t, p, old.ID) != q {
+			if !reflect.DeepEqual(*questByID(t, p, old.ID), q) {
 				t.Fatal("repeated refresh changed contract")
 			}
 		})

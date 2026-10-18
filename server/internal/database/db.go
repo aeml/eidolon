@@ -231,6 +231,9 @@ type DungeonRoomProgress struct {
 }
 
 type Quest struct {
+	RewardChoiceLevel  int    `bson:"reward_choice_level,omitempty"`
+	RewardChoices      []Item `bson:"reward_choices,omitempty"`
+	ClaimedRewardID    string `bson:"claimed_reward_id,omitempty"`
 	ID                 string `bson:"id"`
 	Type               string `bson:"type"` // "KILL" or "COLLECT"
 	Target             string `bson:"target"`

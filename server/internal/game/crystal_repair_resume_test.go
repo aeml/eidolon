@@ -3,6 +3,7 @@ package game
 import (
 	"encoding/json"
 	"fmt"
+	"reflect"
 	"testing"
 )
 
@@ -93,7 +94,7 @@ func TestCrystalVigilReadinessRequiresTheActualAcceptedRepair(t *testing.T) {
 			if got := hasFinishedCrystalVigil(player, definition); got != tc.want {
 				t.Fatalf("readiness=%v, want %v", got, tc.want)
 			}
-			if player.Quests[0] != quest || player.Gold != 0 || player.Experience != 0 {
+			if !reflect.DeepEqual(player.Quests[0], quest) || player.Gold != 0 || player.Experience != 0 {
 				t.Fatal("readiness inspection mutated the character")
 			}
 		})
@@ -160,7 +161,7 @@ func TestRestoredRaidPreservesReadyUnclaimedCrystalRepair(t *testing.T) {
 							t.Fatalf("reconstructed world lost the completed crystal: %+v", crystal)
 						}
 					}
-					if player.Gold != 0 || player.Experience != 0 || player.Quests[0] != quest {
+					if player.Gold != 0 || player.Experience != 0 || !reflect.DeepEqual(player.Quests[0], quest) {
 						t.Fatal("restoring the raid changed quest progress or granted a reward")
 					}
 					if HasCompletedChronicleQuest(player, definition.RestoredQuest) != completed {

@@ -1,4 +1,5 @@
 import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
+import { appendQuestRewardChoices } from './QuestRewardChoices.js';
 import { renderQuestConversation } from './QuestConversation.js';
 import { getFinaleExitGuidance } from './FinaleGuidance.js';
 import { appendChronicleRecap } from './ChronicleRecap.js';
@@ -69,6 +70,7 @@ export class QuestUI {
         this.onAcceptQuest = null;
         this.onCompleteQuest = null;
         this.onRequestQuests = null;
+        this.onClaimQuestItem = null;
 
         // --- Event listeners ---
         if (this.btnCloseQuest) ownedEvent(this, this.btnCloseQuest, 'click', () => this.toggleQuestWindow());
@@ -84,6 +86,9 @@ export class QuestUI {
         this.disposed = true;
         disposeOwnedEvents(this);
         this.loreBook?.dispose();
+        for (const root of this.rewardChoiceRoots?.values() || []) root.remove();
+        this.rewardChoiceRoots?.clear();
+        this.rewardChoiceSelections?.clear();
         this.journalNavigation?.remove();
         this.questJournal?.classList.remove('is-lore-book');
         this.questActions?.remove();
@@ -123,6 +128,7 @@ export class QuestUI {
             // Reopening requests authoritative state and permits a safe retry
             // if a previous connection lost its acknowledgement.
             this.pendingQuestAction = null;
+            this.pendingRewardClaim = null;
             this.selectedQuestId = null;
             this.completedDialogue = null;
             this.questActionError = '';
@@ -137,6 +143,11 @@ export class QuestUI {
     /** Toggle the quest journal. */
     toggleJournal() {
         const isHidden = this.questJournal.style.display === 'none' || this.questJournal.style.display === '';
+        if (isHidden) {
+            this.pendingRewardClaim = null;
+            this.questActionError = '';
+            this.onRequestQuests?.();
+        }
         if (isHidden && !this.ctx.toggleManagedWindow) {
             this.ctx.closePrimaryHudMenus?.({ except: 'journal' });
         }
@@ -988,6 +999,8 @@ export class QuestUI {
 
     updateQuestWindow(quests) {
         if (!this.questList) return;
+        this.acknowledgeRewardClaim(quests);
+        const rewardFocus = this.questList.contains(document.activeElement) ? { item: document.activeElement.dataset.rewardItem, claim: document.activeElement.dataset.rewardClaim } : null;
         const pending = this.pendingQuestAction;
         const acknowledged = pending && quests?.find((quest) => quest.id === pending.quest.id && (pending.complete ? quest.completed : quest.accepted));
         if (acknowledged) {
@@ -998,7 +1011,7 @@ export class QuestUI {
             renderWitnessConversation(this, quests);
             return;
         }
-        const signature = JSON.stringify([this.questKind, this.selectedQuestId, quests, this.completedDialogue?.id, Boolean(this.pendingQuestAction), this.questActionError, Number(this.ctx.getLastPlayer?.()?.level) >= MAX_PLAYER_LEVEL]);
+        const signature = JSON.stringify([this.questKind, this.selectedQuestId, quests, this.completedDialogue?.id, Boolean(this.pendingQuestAction), this.pendingRewardClaim, this.questActionError, Number(this.ctx.getLastPlayer?.()?.level) >= MAX_PLAYER_LEVEL]);
         if (signature === this.questWindowSignature) return;
         this.questWindowSignature = signature;
         const offered = (quests || []).filter(q => !q.completed &&
@@ -1032,6 +1045,7 @@ export class QuestUI {
             for (const obsolete of remaining) obsolete.remove();
         }
         this.questList.scrollTop = acknowledged ? 0 : scroll;
+        this.restoreRewardFocus(this.questList, rewardFocus);
         if (loreFocused && !acknowledged) this.questList.querySelector('details > summary')?.focus({ preventScroll: true });
         if (acknowledged && this.isQuestWindowOpen) {
             const focusTarget = this.ctx.isMobile ? this.questList.querySelector('h3') : this.questList.querySelector('button:not(:disabled)');
@@ -1042,11 +1056,36 @@ export class QuestUI {
         }
     }
 
+    restoreRewardFocus(parent, focus) {
+        if (!focus?.item && !focus?.claim) return;
+        [...parent?.querySelectorAll('[data-reward-item], [data-reward-claim]') || []]
+            .find(control => focus.item ? control.dataset.rewardItem === focus.item : control.dataset.rewardClaim === focus.claim)?.focus({ preventScroll: true });
+    }
+
+    acknowledgeRewardClaim(quests) {
+        if (this.pendingRewardClaim && quests?.some(q => q.id === this.pendingRewardClaim.questId && q.claimedRewardId)) {
+            this.pendingRewardClaim = null;
+            this.questActionError = '';
+        }
+    }
+
+    claimQuestItem(questId, itemId) {
+        if (this.disposed || this.pendingRewardClaim || !this.onClaimQuestItem) return;
+        this.pendingRewardClaim = { questId, itemId };
+        this.questActionError = '';
+        const quests = this.ctx.getLastPlayer?.()?.quests || [];
+        this.updateQuestWindow(quests);
+        this.updateJournal(quests);
+        this.onClaimQuestItem(questId, itemId);
+    }
+
     handleQuestActionError(message) {
-        if (!this.pendingQuestAction) return;
+        if (!this.pendingQuestAction && !this.pendingRewardClaim) return;
+        this.pendingRewardClaim = null;
         this.pendingQuestAction = null;
         this.questActionError = String(message);
         this.updateQuestWindow(this.ctx.getLastPlayer()?.quests || []);
+        this.updateJournal(this.ctx.getLastPlayer()?.quests || []);
     }
 
     // ================================================================
@@ -1256,6 +1295,8 @@ export class QuestUI {
     }
 
     updateJournal(quests) {
+        this.acknowledgeRewardClaim(quests);
+        const rewardFocus = this.journalList?.contains(document.activeElement) ? { item: document.activeElement.dataset.rewardItem, claim: document.activeElement.dataset.rewardClaim } : null;
         const loreFocus = this.loreBook?.element.contains(document.activeElement) ? document.activeElement : null;
         const loreScroll = this.loreBook && this.loreBook.identity === this.journalIdentity ? {
             index: this.loreBook.index.scrollTop, article: this.loreBook.article.scrollTop,
@@ -1276,6 +1317,7 @@ export class QuestUI {
         const focusedDiscovery = document.activeElement?.closest?.('details[data-discovery-id]')?.dataset.discoveryId;
         const restoreReading = () => {
             this.applyJournalView();
+            this.restoreRewardFocus(this.journalList, rewardFocus);
             if (this.journalView === 'lore' && loreFocus) {
                 const key = loreFocus.dataset.loreAction ? 'loreAction' : loreFocus.dataset.memoryId ? 'memoryId' : null;
                 const replacement = key && [...this.loreBook.element.querySelectorAll('button')]
@@ -1334,6 +1376,7 @@ export class QuestUI {
         trackingHint.dataset.journalShared = 'true';
         this.journalList.appendChild(trackingHint);
 
+        appendQuestRewardChoices(this, quests, this.journalList, 'journal');
         const hasActiveChronicle = this.renderChronicleSection(quests, existingRecords, existingRecap);
 
         const repeatableLadder = this.buildRepeatableLadderSummary(quests);

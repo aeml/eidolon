@@ -3,6 +3,7 @@ package game
 import (
 	"fmt"
 	"math"
+	"reflect"
 	"strings"
 	"sync"
 	"testing"
@@ -182,7 +183,7 @@ func TestChronicleCollectionMigrationHonorsAcceptedContract(t *testing.T) {
 			!repaired.Accepted || repaired.Completed != complete || !strings.Contains(repaired.ObjectiveText, "Recover 4 ") {
 			t.Fatalf("migration rewrote an accepted contract: %+v", repaired)
 		}
-		if copyQuestDefinition(repaired, definition) != repaired {
+		if !reflect.DeepEqual(copyQuestDefinition(repaired, definition), repaired) {
 			t.Fatal("migration is not idempotent")
 		}
 	}

@@ -31,6 +31,9 @@ const (
 )
 
 type Quest struct {
+	RewardChoiceLevel  int    `json:"rewardChoiceLevel,omitempty"`
+	RewardChoices      []Item `json:"rewardChoices,omitempty"`
+	ClaimedRewardID    string `json:"claimedRewardId,omitempty"`
 	ID                 string `json:"id"`
 	Type               string `json:"type"` // "KILL" or "COLLECT"
 	Target             string `json:"target"`
@@ -1138,6 +1141,9 @@ func (w *World) GetEntityCopy(id string) *Entity {
 	if e.Quests != nil {
 		newE.Quests = make([]Quest, len(e.Quests))
 		copy(newE.Quests, e.Quests)
+		for i := range newE.Quests {
+			newE.Quests[i].RewardChoices = cloneItems(e.Quests[i].RewardChoices)
+		}
 	}
 	if e.HitList != nil {
 		newE.HitList = make(map[string]bool)
@@ -1149,6 +1155,9 @@ func (w *World) GetEntityCopy(id string) *Entity {
 }
 
 func cloneItems(items []Item) []Item {
+	if items == nil {
+		return nil
+	}
 	cloned := make([]Item, len(items))
 	for index, item := range items {
 		cloned[index] = cloneItem(item)

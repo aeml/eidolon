@@ -177,6 +177,7 @@ var inboundMessagePolicies = map[string]messagePolicy{
 	MsgRequestQuests:        policy(accessCharacter, 1<<10, 10, 10*time.Second),
 	MsgAcceptQuest:          policy(accessCharacter, 2<<10, 10, 10*time.Second),
 	MsgCompleteQuest:        policy(accessCharacter, 2<<10, 10, 10*time.Second),
+	MsgClaimQuestItem:       policy(accessCharacter, 2<<10, 10, 10*time.Second),
 	MsgChronicleInspect:     policy(accessCharacter, 2<<10, 20, 10*time.Second),
 	MsgSelectBranch:         policy(accessCharacter, 2<<10, 10, 10*time.Second),
 	MsgUnlockSkill:          policy(accessCharacter, 2<<10, 10, 10*time.Second),

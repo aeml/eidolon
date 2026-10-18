@@ -17,5 +17,6 @@ export function formatQuestRewards(quest, player, { claimed = false } = {}) {
     if (gold) parts.push(`${gold.toLocaleString()} gold`);
     if (xp) parts.push(`${xp.toLocaleString()} XP`);
     if (resonance) parts.push(`${resonance.toLocaleString()} Resonance XP`);
+    if (!claimed && quest?.rewardChoiceLevel > 0 && !quest?.legacyOptional) parts.push(`Choose 1 of 6 items · level ${quest.rewardChoiceLevel} · green or better`);
     return parts.join(' · ') || 'No reward';
 }

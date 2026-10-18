@@ -2,6 +2,7 @@ package game
 
 import (
 	"encoding/json"
+	"reflect"
 	"testing"
 	"time"
 )
@@ -96,7 +97,7 @@ func TestCrystalSanctumSnapshotDoesNotInventRestorationFromBossOrWrongQuest(t *t
 			if crystal == nil || crystal["stage"] != want {
 				t.Fatalf("%s: got %+v, want %s", mode, crystal, want)
 			}
-			if player.Quests[0] != quest || player.Gold != 0 || player.Experience != 0 {
+			if !reflect.DeepEqual(player.Quests[0], quest) || player.Gold != 0 || player.Experience != 0 {
 				t.Fatal("visual snapshot mutated progress or bypassed manual turn-in")
 			}
 		})

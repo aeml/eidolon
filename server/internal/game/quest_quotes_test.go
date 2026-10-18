@@ -1,6 +1,9 @@
 package game
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func TestAcceptedQuestQuoteSurvivesCatalogChange(t *testing.T) {
 	for _, category := range []string{QuestCategoryDaily, QuestCategoryChronicle} {
@@ -19,7 +22,7 @@ func TestAcceptedQuestQuoteSurvivesCatalogChange(t *testing.T) {
 				if updated.GrantedGold != 19 || updated.GrantedXP != 20 || updated.GrantedResonanceXP != 21 || updated.Accepted != old.Accepted || updated.Completed != completed {
 					t.Fatalf("receipt/state rewritten: %+v", updated)
 				}
-				if twice := copyQuestDefinition(updated, definition); twice != updated {
+				if twice := copyQuestDefinition(updated, definition); !reflect.DeepEqual(twice, updated) {
 					t.Fatal("refresh not idempotent")
 				}
 				old.Accepted, old.Completed = false, false

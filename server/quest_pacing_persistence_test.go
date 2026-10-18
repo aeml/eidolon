@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 	"time"
 
@@ -70,7 +71,7 @@ func TestPostBastionRewardRebalanceBSONClaimAndReload(t *testing.T) {
 					p.Quests = append(p.Quests, questFromDatabase(q))
 				}
 				w.GenerateDailyQuests(p.ID)
-				if p.Quests[0] != receipt {
+				if !reflect.DeepEqual(p.Quests[0], receipt) {
 					t.Fatal("paid historical receipt changed on reload")
 				}
 				if _, ok := w.PerformCompleteQuest(p.ID, quote.ID); ok || p.Gold != 802 {

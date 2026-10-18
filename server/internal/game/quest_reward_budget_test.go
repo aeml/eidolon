@@ -1,6 +1,7 @@
 package game
 
 import (
+	"reflect"
 	"testing"
 	"time"
 )
@@ -108,7 +109,7 @@ func TestBalancedStoryQuotesRetainProgressAndPaidReceipts(t *testing.T) {
 					refreshed.GrantedGold != 12 || refreshed.GrantedResonanceXP != 13 {
 					t.Fatalf("lost saved state %s: %+v", definition.ID, refreshed)
 				}
-				if copyQuestDefinition(refreshed, definition) != refreshed {
+				if !reflect.DeepEqual(copyQuestDefinition(refreshed, definition), refreshed) {
 					t.Fatal("rebalance is not idempotent")
 				}
 			}

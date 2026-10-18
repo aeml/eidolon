@@ -73,7 +73,7 @@ func TestBossVictoryCharacterPureRefusalsAndLaterQuestProgress(t *testing.T) {
 			}
 			beforeGold, beforeXP, beforeQuest := player.Gold, player.Experience, player.Quests[0]
 			beforeInventory, beforeQueue := cloneItems(player.Inventory), append([]string(nil), player.PendingBossLoot...)
-			if _, changed, err := player.ApplyBossVictoryCharacterEffect(op); err == nil || changed || player.Gold != beforeGold || player.Experience != beforeXP || player.Quests[0] != beforeQuest || !reflect.DeepEqual(beforeInventory, player.Inventory) || !reflect.DeepEqual(beforeQueue, player.PendingBossLoot) {
+			if _, changed, err := player.ApplyBossVictoryCharacterEffect(op); err == nil || changed || player.Gold != beforeGold || player.Experience != beforeXP || !reflect.DeepEqual(player.Quests[0], beforeQuest) || !reflect.DeepEqual(beforeInventory, player.Inventory) || !reflect.DeepEqual(beforeQueue, player.PendingBossLoot) {
 				t.Fatal("refusal partially changed owned boss value")
 			}
 		})

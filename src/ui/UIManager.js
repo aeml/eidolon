@@ -694,6 +694,7 @@ export class UIManager {
     updatePlayerStats(player) {
         if (!player) return;
         this.lastPlayerRef = player;
+        this.skillTree?.updateSpecializationNotice(player);
         this.wardrobe?.refreshPlayer();
         this.cosmeticVendor?.refreshPlayer();
         const signature = this.serializePlayerStats(player);

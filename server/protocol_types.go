@@ -221,6 +221,7 @@ const (
 	MsgRequestQuests            = "request_quests"
 	MsgAcceptQuest              = "accept_quest"
 	MsgCompleteQuest            = "complete_quest"
+	MsgClaimQuestItem           = "claim_quest_item"
 	MsgChronicleInspect         = "chronicle_inspect"
 	MsgChronicleDiscovery       = "chronicle_discovery"
 	MsgMovementContext          = "movement_context"
@@ -579,6 +580,7 @@ type AcceptQuestPayload struct {
 
 type CompleteQuestPayload struct {
 	QuestID string `json:"questId"`
+	ItemID  string `json:"itemId,omitempty"`
 }
 
 type EquipPayload struct {
