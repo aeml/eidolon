@@ -83,3 +83,89 @@ test('reward keyboard focus survives journal updates and retired choices cannot 
     expect(ui.onClaimQuestItem).not.toHaveBeenCalled();
     expect(document.querySelector('.quest-reward-choices')).toBeNull();
 });
+
+test('selecting a reward keeps the same radio and confirmation controls through fresh journal snapshots', () => {
+    const { ui, player } = setup();
+    ui.updateJournal(player.quests);
+    const input = document.querySelector('#journal-list [data-reward-item="item-2"]');
+    const confirm = document.querySelector('#journal-list [data-reward-claim]');
+    input.click(); confirm.focus();
+    ui.updateJournal(JSON.parse(JSON.stringify(player.quests)));
+    expect(document.querySelector('#journal-list [data-reward-claim]')).toBe(confirm);
+    expect(document.querySelector('#journal-list [data-reward-item="item-2"]')).toBe(input);
+    expect(document.activeElement).toBe(confirm);
+    expect(ui.onClaimQuestItem).not.toHaveBeenCalled();
+    confirm.click();
+    expect(ui.onClaimQuestItem).toHaveBeenCalledTimes(1);
+    expect(ui.onClaimQuestItem).toHaveBeenCalledWith('chronicle_earned', 'item-2');
+});
+
+test('unrelated quest progress keeps selected conversation reward controls mounted', () => {
+    const { ui, player } = setup();
+    player.quests.push({ id: 'daily-hunt', title: 'Daily hunt', accepted: true, count: 0, maxCount: 5, type: 'KILL' });
+    ui.updateQuestWindow(player.quests);
+    const input = document.querySelector('#quest-list [data-reward-item="item-1"]');
+    const confirm = document.querySelector('#quest-list [data-reward-claim]');
+    input.click(); confirm.focus();
+    player.quests[1].count = 1;
+    ui.updateQuestWindow(player.quests);
+    expect(document.querySelector('#quest-list [data-reward-claim]')).toBe(confirm);
+    expect(document.querySelector('#quest-list [data-reward-item="item-1"]')).toBe(input);
+    expect(input.checked).toBe(true);
+    expect(document.activeElement).toBe(confirm);
+    expect(ui.onClaimQuestItem).not.toHaveBeenCalled();
+});
+
+test('claiming and a rejected save update existing controls without rerolling or sending twice', () => {
+    const { ui, player, choices } = setup();
+    ui.updateJournal(player.quests);
+    const input = document.querySelector('#journal-list [data-reward-item="item-4"]');
+    input.click();
+    const confirm = document.querySelector('#journal-list [data-reward-claim]');
+    confirm.click();
+    expect(document.querySelector('#journal-list [data-reward-claim]')).toBe(confirm);
+    expect(confirm.disabled).toBe(true);
+    expect(input.disabled).toBe(true);
+    confirm.click();
+    expect(ui.onClaimQuestItem).toHaveBeenCalledTimes(1);
+    ui.handleQuestActionError('Make one free bag slot. Your choices are retained.');
+    expect(document.querySelector('#journal-list [data-reward-claim]')).toBe(confirm);
+    expect(document.querySelector('#journal-list [data-reward-item="item-4"]')).toBe(input);
+    expect(input.checked).toBe(true);
+    expect(input.disabled).toBe(false);
+    expect(confirm.disabled).toBe(false);
+    expect(player.quests[0].rewardChoices).toEqual(choices);
+    expect(document.querySelector('#journal-list [role="alert"]').textContent).toContain('free bag slot');
+    expect(ui.onClaimQuestItem).toHaveBeenCalledTimes(1);
+    confirm.click();
+    expect(ui.onClaimQuestItem).toHaveBeenCalledTimes(2);
+});
+
+test('reward selection synchronizes existing Journal and conversation controls without claiming', () => {
+    const { ui, player } = setup();
+    ui.updateJournal(player.quests);
+    ui.updateQuestWindow(player.quests);
+    const journal = document.querySelector('#journal-list [data-reward-item="item-3"]');
+    const conversation = document.querySelector('#quest-list [data-reward-item="item-3"]');
+    journal.click();
+    expect(conversation.checked).toBe(true);
+    expect(document.querySelector('#quest-list [data-reward-claim]').textContent).toBe('Claim Reward 3');
+    conversation.click();
+    expect(journal.checked).toBe(true);
+    expect(ui.onClaimQuestItem).not.toHaveBeenCalled();
+});
+
+test('a reward claimed elsewhere retires its old controls before they can send a stale claim', () => {
+    const { ui, player } = setup();
+    ui.updateJournal(player.quests);
+    const input = document.querySelector('#journal-list [data-reward-item="item-2"]');
+    input.click();
+    const confirm = document.querySelector('#journal-list [data-reward-claim]');
+    expect(confirm.disabled).toBe(false);
+    player.quests[0].claimedRewardId = 'item-2';
+    player.quests[0].rewardChoices = [];
+    ui.updateJournal(player.quests);
+    confirm.click();
+    expect(ui.onClaimQuestItem).not.toHaveBeenCalled();
+    expect(document.querySelector('.quest-reward-choices')).toBeNull();
+});
