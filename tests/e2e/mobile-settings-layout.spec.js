@@ -379,3 +379,88 @@ for (const [width, height] of [[360, 800], [390, 844], [844, 390]]) {
         expect(failures, failures.join('\n')).toEqual([]);
     });
 }
+
+test('local movement contacts render distinct quiet surfaces and obey master and effects mute', async ({ page, baseURL }, testInfo) => {
+    const failures = collectBrowserFailures(page, baseURL);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto('/', { waitUntil: 'networkidle' });
+    const results = await page.evaluate(async () => {
+        const { AudioManager } = await import('/src/audio/AudioManager.js');
+        const { WORLD_REGIONS, getOverworldRegion } = await import('/src/data/worldGeography.js');
+        const results = [];
+        const configurations = ['town', 'earth', 'water', 'fire', 'air'].map(region => ({ region, enabled: true, master: 1, effects: 1 }));
+        configurations.push({ region: 'town', enabled: false, master: 1, effects: 1 },
+            { region: 'town', enabled: true, master: 0, effects: 1 },
+            { region: 'town', enabled: true, master: 1, effects: 0 });
+        for (const configuration of configurations) {
+            const context = new OfflineAudioContext(2, 24000, 48000);
+            const audio = new AudioManager({ context, now: () => 1000, storage: { getItem: () => null, setItem: () => {} } });
+            try {
+                audio.setEnabled(configuration.enabled); audio.setVolume(configuration.master); audio.setBusVolume('combat', configuration.effects);
+                const region = WORLD_REGIONS[configuration.region];
+                const action = { time: 0, getClip: () => ({ duration: 1 }) };
+                const actor = { state: 'MOVING', currentAnimationName: 'Run', currentAction: action,
+                    position: { x: region.maxX - 20, z: (region.minZ + region.maxZ) / 2 } };
+                const engine = { player: actor };
+                audio.footsteps.update(engine, .1);
+                actor.position.x += .3; action.time = .3; audio.footsteps.update(engine, .1);
+                actor.position.x += .3; action.time = .6;
+                const played = audio.footsteps.update(engine, .1), voices = audio.activeTones.size;
+                const buffer = await context.startRendering(), data = buffer.getChannelData(0);
+                let peak = 0, squares = 0, tailPeak = 0;
+                for (let i = 0; i < data.length; i++) {
+                    if (!Number.isFinite(data[i])) throw Error('Invalid footstep sample');
+                    peak = Math.max(peak, Math.abs(data[i])); squares += data[i] * data[i];
+                    if (i >= 12000) tailPeak = Math.max(tailPeak, Math.abs(data[i]));
+                }
+                const retired = audio.activeTones.size === 0;
+                // Retain the actual rendered PCM for later listening review.
+                // Anonymous synthesized samples contain no microphone/session audio.
+                let wavBase64 = null;
+                if (played) {
+                    const bytes = new Uint8Array(44 + buffer.length * 4), view = new DataView(bytes.buffer);
+                    const text = (offset, value) => { for (let i = 0; i < value.length; i++) bytes[offset + i] = value.charCodeAt(i); };
+                    text(0, 'RIFF'); view.setUint32(4, bytes.length - 8, true); text(8, 'WAVE'); text(12, 'fmt ');
+                    view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, 2, true);
+                    view.setUint32(24, buffer.sampleRate, true); view.setUint32(28, buffer.sampleRate * 4, true);
+                    view.setUint16(32, 4, true); view.setUint16(34, 16, true); text(36, 'data'); view.setUint32(40, bytes.length - 44, true);
+                    for (let i = 0; i < buffer.length; i++) for (let channel = 0; channel < 2; channel++) {
+                        const sample = Math.max(-1, Math.min(1, buffer.getChannelData(channel)[i]));
+                        view.setInt16(44 + (i * 2 + channel) * 2, Math.round(sample * (sample < 0 ? 32768 : 32767)), true);
+                    }
+                    let binary = '';
+                    for (let i = 0; i < bytes.length; i += 8192) binary += String.fromCharCode(...bytes.subarray(i, i + 8192));
+                    wavBase64 = btoa(binary);
+                }
+                audio.dispose();
+                results.push({ ...configuration, wavBase64, resolvedRegion: getOverworldRegion(actor.position.x, actor.position.z), played, voices, peak, rms: Math.sqrt(squares / data.length), tailPeak,
+                    retired, disposed: audio.disposed, actorReleased: audio.footsteps.actor === null,
+                    noiseReleased: audio.contactNoiseBuffer === null, contextReleased: audio.context === null });
+            } finally { audio.dispose(); }
+        }
+        return results;
+    });
+    for (const result of results) {
+        if (result.wavBase64) {
+            const path = testInfo.outputPath(`footstep-${result.region}.wav`);
+            await writeFile(path, Buffer.from(result.wavBase64, 'base64'));
+            await testInfo.attach(`footstep-${result.region}`, { path, contentType: 'audio/wav' });
+        }
+        delete result.wavBase64;
+    }
+    await testInfo.attach('movement-contact-samples', { body: JSON.stringify({ results,
+        scope: 'Actual AudioManager/FootstepAudio signal, controls and cleanup; synthetic locomotion clocks, not listening or whole-game movement acceptance.' }), contentType: 'application/json' });
+    expect(results).toHaveLength(8);
+    for (const result of results) expect(result.resolvedRegion).toBe(result.region);
+    expect(new Set(results.slice(0, 5).map(result => result.rms.toFixed(8))).size).toBe(5);
+    for (const result of results.slice(0, 5)) {
+        expect(result.played).toBe(true); expect(result.voices).toBe(2);
+        expect(result.rms).toBeGreaterThan(.00001); expect(result.peak).toBeLessThan(.04);
+    }
+    for (const result of results.slice(5)) {
+        expect(result.played).toBe(false); expect(result.voices).toBe(0); expect(result.peak).toBe(0);
+    }
+    for (const result of results) expect(result).toMatchObject({ tailPeak: 0, retired: true, disposed: true,
+        actorReleased: true, noiseReleased: true, contextReleased: true });
+    expect(failures).toEqual([]);
+});

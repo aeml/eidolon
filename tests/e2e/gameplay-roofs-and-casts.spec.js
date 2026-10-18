@@ -13,7 +13,8 @@ test.afterEach(async ({ page }, testInfo) => {
             const o = window.__gameplayInteractions;
             if (!o) return null;
             o.restore();
-            return { identity: o.identity, samples: o.samples, casts: o.casts, timings: o.timings, authority: o.authority };
+            return { identity: o.identity, samples: o.samples, casts: o.casts, timings: o.timings, authority: o.authority,
+                audio: o.audio, inputs: o.inputs, restored: o.restored };
         });
     } catch { /* A failed startup may never create an observable game context. */ }
     if (observations) await testInfo.attach('terminal-input-observations', {
@@ -51,7 +52,20 @@ async function enterPreparedCharacter(page, account, quality, { seedPreferences 
     return page.evaluate(() => {
         const game = window.game, renderer = game.renderSystem.renderer, gl = renderer.getContext();
         const debug = gl.getExtension('WEBGL_debug_renderer_info');
-        const observations = { authority: {}, casts: [], samples: [], timings: {}, destinations: {}, phase: '', active: true };
+        const observations = { authority: {}, casts: [], samples: [], audio: [], inputs: [], timings: {}, destinations: {}, phase: '', active: true };
+        const audio = game.audioManager, play = audio.play;
+        const observedPlay = function (cue, options) {
+            const played = play.call(this, cue, options);
+            if (cue === 'movement.footstep' && observations.audio.length < 256) {
+                observations.audio.push({ phase: observations.phase, at: performance.now(), played,
+                    state: game.player.state, surface: options?.surface, context: this.context?.state,
+                    x: game.player.position.x, y: game.player.position.y, z: game.player.position.z,
+                    airborne: Boolean(game.playerJumpState || game.localRoofFallActive || game.player.jumpVisualState || game.player.jumpLandingVisual),
+                    correction: Boolean(game.playerCorrectionVisualState) });
+            }
+            return played;
+        };
+        audio.play = observedPlay;
         const receive = game.handleServerMessage;
         game.handleServerMessage = function (message) {
             const updates = message.type === 'state' ? message.payload : message.type === 'delta' ? message.payload?.u : null;
@@ -97,7 +111,14 @@ async function enterPreparedCharacter(page, account, quality, { seedPreferences 
             requestAnimationFrame(sample);
         };
         requestAnimationFrame(sample);
-        observations.restore = () => { observations.active = false; game.handleServerMessage = receive; document.removeEventListener('mousedown', clicked, true); };
+        observations.restore = () => {
+            if (!observations.active) return;
+            observations.active = false;
+            observations.restored = { audio: audio.play === observedPlay };
+            if (audio.play === observedPlay) audio.play = play;
+            game.handleServerMessage = receive;
+            document.removeEventListener('mousedown', clicked, true);
+        };
         window.__gameplayInteractions = observations;
         observations.identity = { renderer: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER),
             quality: game.renderSystem.graphicsQuality, class: playerClass(game), items: game.player.mesh.userData.equipmentVisualItemCount };
@@ -150,7 +171,21 @@ async function moveTo(page, x, z, phase) {
     }, { x, z, phase });
     const point = await projectPoint(page, { x, y, z });
     expect(point.canvas).toBe(true);
+    await page.evaluate(({ x, y, z, point, phase }) => {
+        const game = window.game, hit = game.inputManager.getGroundIntersectionFromEvent({ clientX: point.x, clientY: point.y });
+        window.__gameplayInteractions.inputs.push({ phase, stage: 'before', at: performance.now(), intended: { x, y, z },
+            screen: { x: point.x, y: point.y }, ground: hit ? { x: hit.x, y: hit.y, z: hit.z } : null,
+            player: { x: game.player.position.x, y: game.player.position.y, z: game.player.position.z },
+            hovered: game.hoveredEntity?.id || null, pending: game.pendingInteraction?.id || null });
+    }, { x, y, z, point, phase });
     await page.mouse.click(point.x, point.y);
+    await page.evaluate(phase => {
+        const game = window.game, target = game.player.targetPosition;
+        window.__gameplayInteractions.inputs.push({ phase, stage: 'after', at: performance.now(),
+            target: target ? { x: target.x, y: target.y, z: target.z } : null,
+            pending: game.pendingInteraction?.id || null, state: game.player.state,
+            blockedStops: game.player.movementMetrics?.blockedStops || 0 });
+    }, phase);
     await expect.poll(() => page.evaluate(({ x, z }) => {
         const game = window.game, own = window.__gameplayInteractions.authority;
         return Math.hypot(game.player.position.x - x, game.player.position.z - z) < .5 &&
@@ -214,7 +249,7 @@ for (const [index, characterClass] of ['Fighter', 'Cleric', 'Rogue', 'Wizard'].e
         expect(accounts[index]?.characterClass).toBe(characterClass);
         const failures = collectBrowserFailures(page, baseURL);
         const identity = await enterPreparedCharacter(page, accounts[index], 'high');
-        let beforeReload = { samples: [], casts: [], timings: {} }, lowIdentity;
+        let beforeReload = { samples: [], casts: [], audio: [], inputs: [], timings: {} }, lowIdentity;
         expect(identity.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
         expect(identity.items).toBe(14);
         await jumpTo(page, -74, 130, 'up');
@@ -225,7 +260,8 @@ for (const [index, characterClass] of ['Fighter', 'Cleric', 'Rogue', 'Wizard'].e
             await page.screenshot({ path: testInfo.outputPath('Fighter-high-close-roof.png') });
             beforeReload = await page.evaluate(() => {
                 const o = window.__gameplayInteractions; o.restore();
-                return { identity: o.identity, samples: o.samples, casts: o.casts, timings: o.timings, authority: o.authority };
+                return { identity: o.identity, samples: o.samples, casts: o.casts, timings: o.timings, authority: o.authority,
+                    audio: o.audio, inputs: o.inputs, restored: o.restored };
             });
             await testInfo.attach('before-quality-reload-observations', {
                 body: JSON.stringify(beforeReload), contentType: 'application/json'
@@ -281,11 +317,20 @@ for (const [index, characterClass] of ['Fighter', 'Cleric', 'Rogue', 'Wizard'].e
         }
         const observations = await page.evaluate(() => {
             const o = window.__gameplayInteractions; o.restore();
-            return { samples: o.samples, casts: o.casts, authority: o.authority, timings: o.timings };
+            return { samples: o.samples, casts: o.casts, authority: o.authority, timings: o.timings,
+                audio: o.audio, inputs: o.inputs, restored: o.restored };
         });
         observations.samples = [...beforeReload.samples, ...observations.samples];
         observations.casts = [...beforeReload.casts, ...observations.casts];
+        observations.audio = [...beforeReload.audio, ...observations.audio];
+        observations.inputs = [...beforeReload.inputs, ...observations.inputs];
         observations.timings = { ...beforeReload.timings, ...observations.timings };
+        expect(observations.restored.audio).toBe(true);
+        if (index === 0) expect(beforeReload.restored.audio).toBe(true);
+        expect(observations.audio.some(contact => contact.played && contact.context === 'running'),
+            'Real copied-game movement must play contacts through its ordinary audio owner').toBe(true);
+        expect(observations.audio.every(contact => contact.state === 'MOVING' && !contact.airborne && !contact.correction),
+            'Jumping, roof falls and corrections must remain silent').toBe(true);
         for (const phase of ['up', 'return-up', 'down']) {
             const moving = observations.samples.filter(s => s.phase === phase && s.jump && s.progress > .05 && s.progress < .95);
             expect(moving.length, `${phase} must contain genuine moving native frames`).toBeGreaterThanOrEqual(10);

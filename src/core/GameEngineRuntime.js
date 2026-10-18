@@ -923,6 +923,10 @@ class GameEngineRuntimeMethods {
             }
         }
 
+        // Contact audio observes the final collision-resolved movement, so
+        // held input against a wall and jump/correction steps stay silent.
+        this.audioManager?.footsteps?.update(this, dt);
+
         // Network Update
         this.sendPlayerMovementIfNeeded(dt);
 

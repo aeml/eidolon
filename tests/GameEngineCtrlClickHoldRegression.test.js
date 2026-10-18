@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { InputManager } from '../src/core/InputManager.js';
+import { FootstepAudio, FOOTSTEP_CUE } from '../src/audio/FootstepAudio.js';
 import { EARTH_ELEVATION as field } from '../src/data/worldElevation.js';
 
 jest.unstable_mockModule('../src/proto/state_pb.js', () => {
@@ -128,6 +129,19 @@ function createEngineHarness() {
 }
 
 describe('GameEngine ctrl-click hold regression', () => {
+    test('ordinary runtime contact audio observes resolved movement and stays silent against collision', () => {
+        const engine = createEngineHarness(), play = jest.fn(() => true);
+        engine.inputManager.isMouseDown = false; engine.player.state = 'MOVING';
+        engine.audioManager = { footsteps: new FootstepAudio({ play }) };
+        engine.chunkManager.update.mockImplementation(() => { engine.player.position.x += 1; });
+        for (let i = 0; i < 4; i++) engine.update(.1);
+        expect(play).toHaveBeenCalledTimes(1);
+        expect(play).toHaveBeenCalledWith(FOOTSTEP_CUE, { surface: 'earth', sequence: 0 });
+        engine.chunkManager.update.mockImplementation(() => {});
+        for (let i = 0; i < 8; i++) engine.update(.1);
+        expect(play).toHaveBeenCalledTimes(1);
+    });
+
     test.each(['destroyed', 'replaced-player', 'replaced-mesh', 'changed-instance'])('a delayed ground attack cannot affect a %s session owner', reason => {
         jest.useFakeTimers({ now: 50_000 });
         const engine = createEngineHarness();

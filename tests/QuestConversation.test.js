@@ -13,6 +13,58 @@ beforeEach(() => {
     document.body.innerHTML = '<div id="quest-window"><div class="window-header"><span></span></div><div id="quest-list"></div></div><div id="quest-journal"><div id="journal-list"></div></div><div id="objectives-panel"><div class="objectives-panel__header"></div><div id="objectives-list"></div></div>';
 });
 
+test.each([false, true])('desktop %s-ready quest action stays mounted through an unrelated authoritative update', ready => {
+    const player = { id: 'conversation-reader', level: 30, quests: [
+        story({ accepted: ready, count: ready ? 3 : 0 }), daily({ accepted: true })
+    ] };
+    const ui = new QuestUI({ getLastPlayer: () => player });
+    ui.questKind = 'story';
+    ui.onAcceptQuest = jest.fn();
+    ui.onCompleteQuest = jest.fn();
+    ui.updateQuestWindow(player.quests);
+    const label = ready ? 'Complete Quest' : 'Accept Quest';
+    const action = document.querySelector(`[data-quest-action="${label}"]`);
+    action.focus();
+    player.quests = JSON.parse(JSON.stringify(player.quests));
+    player.quests[1].count++;
+    ui.updateQuestWindow(player.quests);
+    expect(document.querySelector(`[data-quest-action="${label}"]`)).toBe(action);
+    expect(document.activeElement).toBe(action);
+    expect(action.isConnected).toBe(true);
+    action.click();
+    expect(ready ? ui.onCompleteQuest : ui.onAcceptQuest).toHaveBeenCalledTimes(1);
+    expect(ready ? ui.onAcceptQuest : ui.onCompleteQuest).not.toHaveBeenCalled();
+    expect(player.quests[0].completed).toBe(false);
+    expect(action.disabled).toBe(true);
+});
+
+test.each([false, true])('desktop %s-ready quest rejection keeps the same explicit retry control', ready => {
+    const player = { id: 'conversation-reader', level: 30, quests: [story({ accepted: ready, count: ready ? 3 : 0 })] };
+    const ui = new QuestUI({ getLastPlayer: () => player });
+    ui.questKind = 'story';
+    ui.onAcceptQuest = jest.fn();
+    ui.onCompleteQuest = jest.fn();
+    ui.updateQuestWindow(player.quests);
+    const label = ready ? 'Complete Quest' : 'Accept Quest';
+    const action = document.querySelector(`[data-quest-action="${label}"]`);
+    action.focus();
+    action.click();
+    player.quests = JSON.parse(JSON.stringify(player.quests));
+    ui.updateQuestWindow(player.quests);
+    expect(document.querySelector(`[data-quest-action="${label}"]`)).toBe(action);
+    expect(action.disabled).toBe(true);
+    ui.handleQuestActionError('Move closer to Ilyra.');
+    expect(document.querySelector(`[data-quest-action="${label}"]`)).toBe(action);
+    expect(document.activeElement).toBe(action);
+    expect(action.disabled).toBe(false);
+    expect(document.querySelector('.quest-dialogue__error')?.textContent).toBe('Move closer to Ilyra.');
+    expect(ready ? ui.onCompleteQuest : ui.onAcceptQuest).toHaveBeenCalledTimes(1);
+    action.click();
+    expect(ready ? ui.onCompleteQuest : ui.onAcceptQuest).toHaveBeenCalledTimes(2);
+    expect(document.querySelector('.quest-dialogue__error')).toBeNull();
+    expect(player.quests[0].completed).toBe(false);
+});
+
 test('wizard accepts and completes only by click, waits for acknowledgement, then holds authored dialogue', () => {
     const player = { quests: [story()], position: { x: 20, z: 200 }, level: 1 };
     const ui = new QuestUI({ getLastPlayer: () => player });

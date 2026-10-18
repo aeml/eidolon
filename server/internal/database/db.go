@@ -329,6 +329,17 @@ func New(uri string) (*DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	// The constructor owns the client until the fully migrated DB is handed
+	// off. Release monitor/pool connections on every later error, including a
+	// failed Ping; its expired connection context cannot own that cleanup.
+	clientHandedOff := false
+	defer func() {
+		if !clientHandedOff {
+			cleanupCtx, cleanupCancel := context.WithTimeout(context.Background(), 5*time.Second)
+			defer cleanupCancel()
+			_ = client.Disconnect(cleanupCtx)
+		}
+	}()
 
 	// Ping the database
 	if err := client.Ping(ctx, nil); err != nil {
@@ -366,9 +377,9 @@ func New(uri string) (*DB, error) {
 	migrationCtx, migrationCancel := context.WithTimeout(context.Background(), 45*time.Second)
 	defer migrationCancel()
 	if err := database.RunMigrations(migrationCtx); err != nil {
-		_ = client.Disconnect(context.Background())
 		return nil, err
 	}
+	clientHandedOff = true
 	return database, nil
 }
 

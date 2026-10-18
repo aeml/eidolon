@@ -76,3 +76,140 @@ for (const [width, height] of [[1280, 900], [390, 844]]) {
         expect(failures, failures.join('\n')).toEqual([]);
     });
 }
+
+for (const [width, height] of [[1280, 900], [390, 844]]) {
+    test(`${width}: reward confirmation survives pressed-pointer updates`, async ({ page, baseURL, context }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+        await page.setViewportSize({ width, height });
+        await page.goto('/', { waitUntil: 'networkidle' });
+        await page.evaluate(async mobile => {
+            const { UIManager } = await import('/src/ui/UIManager.js');
+            document.getElementById('start-screen').style.display = 'none';
+            document.body.classList.toggle('mobile-mode', mobile);
+            const ui = new UIManager(mobile);
+            const choices = Array.from({ length: 6 }, (_, i) => ({ id: `offer-${i}`, name: `Saved reward ${i}`,
+                rarity: ['Uncommon', 'Rare', 'Legendary'][i % 3], level: 12, slot: 'chest', stats: { defense: 10 + i } }));
+            const player = { id: 'reward-control-fixture', subType: 'Fighter', meshType: 'Fighter', abilityName: 'Charge',
+                abilityCooldown: 0, xp: 0, xpToNextLevel: 1000, level: 12, selectedBranch: 'A',
+                position: { x: 20, z: 215 }, stats: { hp: 200, maxHp: 200, mana: 100, maxMana: 100 },
+                quests: [{ id: 'chronicle_earned', title: 'Earned chapter', category: 'chronicle', completed: true,
+                    accepted: true, rewardChoiceLevel: 12, rewardChoices: choices }] };
+            window.__rewardControlFixture = { ui, player, claims: [] };
+            ui.quest.onClaimQuestItem = (questId, itemId) => window.__rewardControlFixture.claims.push({ questId, itemId });
+            ui.showHUD(); ui.updatePlayerStats(player); ui.updateXP(player); ui.quest.toggleJournal();
+        }, width < 600);
+        const journal = page.locator('#quest-journal');
+        const input = journal.locator('[data-reward-item="offer-2"]');
+        const confirm = journal.locator('[data-reward-claim="chronicle_earned"]');
+        let touch, pressed = false;
+        try {
+            await input.check();
+            await expect(confirm).toHaveText('Claim Saved reward 2');
+            await confirm.scrollIntoViewIfNeeded();
+            await page.evaluate(() => { window.__rewardControlFixture.button = document.querySelector('#journal-list [data-reward-claim]'); });
+            const bounds = await confirm.boundingBox(), x = bounds.x + bounds.width / 2, y = bounds.y + bounds.height / 2;
+            if (width < 600) {
+                touch = await context.newCDPSession(page);
+                await touch.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] });
+            } else { await page.mouse.move(x, y); await page.mouse.down(); }
+            pressed = true;
+            await page.evaluate(() => { const { ui, player } = window.__rewardControlFixture; ui.quest.updateJournal(JSON.parse(JSON.stringify(player.quests))); });
+            expect(await page.evaluate(() => window.__rewardControlFixture.button === document.querySelector('#journal-list [data-reward-claim]'))).toBe(true);
+            expect(await page.evaluate(() => window.__rewardControlFixture.claims)).toEqual([]);
+            if (touch) await touch.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+            else await page.mouse.up();
+            pressed = false;
+            await expect.poll(() => page.evaluate(() => window.__rewardControlFixture.claims)).toEqual([{ questId: 'chronicle_earned', itemId: 'offer-2' }]);
+            await expect(confirm).toBeDisabled();
+            await page.evaluate(() => window.__rewardControlFixture.ui.quest.handleQuestActionError('Make one free bag slot. Your choices are retained.'));
+            await expect(confirm).toBeEnabled(); await expect(input).toBeChecked();
+            expect(await page.evaluate(() => window.__rewardControlFixture.button === document.querySelector('#journal-list [data-reward-claim]'))).toBe(true);
+            await expect(journal.getByRole('alert')).toContainText('free bag slot');
+            await page.screenshot({ path: testInfo.outputPath('reward-retry-retains-controls.png') });
+            if (touch) {
+                const next = await confirm.boundingBox(), point = { x: next.x + next.width / 2, y: next.y + next.height / 2 };
+                await touch.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [point] });
+                await touch.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+            } else { await confirm.focus(); await page.keyboard.press('Space'); }
+            await expect.poll(() => page.evaluate(() => window.__rewardControlFixture.claims.length)).toBe(2);
+            expect(await page.evaluate(() => window.__rewardControlFixture.claims.every(claim => claim.questId === 'chronicle_earned' && claim.itemId === 'offer-2'))).toBe(true);
+            expect(failures, failures.join('\n')).toEqual([]);
+        } finally {
+            if (pressed) {
+                if (touch) await touch.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+                else await page.mouse.up();
+            }
+            await touch?.detach();
+            await page.evaluate(() => window.__rewardControlFixture?.ui.dispose());
+        }
+    });
+}
+
+for (const ready of [false, true]) {
+    test(`1280: quest ${ready ? 'turn-in' : 'acceptance'} survives held mouse and keyboard updates`, async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+        await page.setViewportSize({ width: 1280, height: 900 });
+        await page.goto('/', { waitUntil: 'networkidle' });
+        await page.evaluate(async ready => {
+            const { UIManager } = await import('/src/ui/UIManager.js');
+            document.getElementById('start-screen').style.display = 'none';
+            document.body.classList.remove('mobile-mode');
+            const ui = new UIManager(false);
+            const player = { id: 'conversation-control-fixture', subType: 'Fighter', meshType: 'Fighter', abilityName: 'Charge',
+                abilityCooldown: 0, xp: 0, xpToNextLevel: 1000, level: 30, selectedBranch: 'A',
+                position: { x: 20, z: 215 }, stats: { hp: 200, maxHp: 200, mana: 100, maxMana: 100 }, quests: [
+                    { id: 'chronicle_01_bell_below', category: 'chronicle', chapter: 1, title: 'The Bell That Rang Below',
+                        description: 'Help Ilyra save Eidolon.', type: 'KILL', target: 'Skeleton', accepted: ready,
+                        completed: false, count: ready ? 3 : 0, maxCount: 3, rewardXP: 500, rewardGold: 90 },
+                    { id: 'daily_skeleton', category: 'daily', title: 'Daily Hunt', accepted: true, completed: false, count: 0, maxCount: 3 }
+                ] };
+            window.__conversationControlFixture = { ui, player, calls: [] };
+            ui.quest.onAcceptQuest = id => window.__conversationControlFixture.calls.push({ kind: 'accept', id });
+            ui.quest.onCompleteQuest = id => window.__conversationControlFixture.calls.push({ kind: 'complete', id });
+            ui.showHUD(); ui.updatePlayerStats(player); ui.updateXP(player); ui.quest.toggleQuestWindow('story');
+            window.__conversationControlFixture.button = document.querySelector('#quest-window [data-quest-action]');
+        }, ready);
+        const action = page.locator(`#quest-window [data-quest-action="${ready ? 'Complete Quest' : 'Accept Quest'}"]`);
+        const expected = { kind: ready ? 'complete' : 'accept', id: 'chronicle_01_bell_below' };
+        let mouseHeld = false, spaceHeld = false;
+        const update = () => page.evaluate(() => {
+            const { ui, player } = window.__conversationControlFixture;
+            player.quests = JSON.parse(JSON.stringify(player.quests));
+            player.quests[1].count++;
+            ui.quest.updateQuestWindow(player.quests);
+        });
+        try {
+            await expect(action).toBeEnabled();
+            await action.scrollIntoViewIfNeeded();
+            const bounds = await action.boundingBox();
+            await page.mouse.move(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+            await page.mouse.down(); mouseHeld = true;
+            await update();
+            expect(await page.evaluate(() => window.__conversationControlFixture.calls)).toEqual([]);
+            await page.mouse.up(); mouseHeld = false;
+            await expect.poll(() => page.evaluate(() => window.__conversationControlFixture.calls), { timeout: 2000 }).toEqual([expected]);
+            expect(await page.evaluate(() => window.__conversationControlFixture.button === document.querySelector('#quest-window [data-quest-action]'))).toBe(true);
+            await expect(action).toBeDisabled();
+            await page.evaluate(() => window.__conversationControlFixture.ui.quest.handleQuestActionError('Move closer to Ilyra. Your quest is unchanged.'));
+            await expect(action).toBeEnabled();
+            await expect(page.locator('#quest-window [role="alert"]')).toContainText('quest is unchanged');
+            await page.screenshot({ path: testInfo.outputPath('quest-action-explicit-retry.png') });
+            await action.focus();
+            await page.keyboard.down('Space'); spaceHeld = true;
+            await update();
+            expect(await page.evaluate(() => window.__conversationControlFixture.calls)).toEqual([expected]);
+            await expect(action).toBeFocused();
+            await page.keyboard.up('Space'); spaceHeld = false;
+            await expect.poll(() => page.evaluate(() => window.__conversationControlFixture.calls), { timeout: 2000 }).toEqual([expected, expected]);
+            expect(await page.evaluate(() => window.__conversationControlFixture.button === document.querySelector('#quest-window [data-quest-action]'))).toBe(true);
+            expect(await page.evaluate(() => window.__conversationControlFixture.player.quests[0].completed)).toBe(false);
+            expect(failures, failures.join('\n')).toEqual([]);
+        } finally {
+            if (mouseHeld) await page.mouse.up();
+            if (spaceHeld) await page.keyboard.up('Space');
+            await page.evaluate(() => window.__conversationControlFixture?.ui.dispose());
+        }
+    });
+}

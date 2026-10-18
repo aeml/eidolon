@@ -2,6 +2,23 @@ import { test, expect } from '@playwright/test';
 import { GARMENT_MODELS } from '../../src/assets/garments.generated.js';
 import { collectBrowserFailures } from './helpers.js';
 
+test.afterEach(async ({ page }, testInfo) => {
+    if (page.isClosed()) return;
+    let audit;
+    try {
+        audit = await page.evaluate(() => {
+            const audit = window.__outfitInspectionAudit;
+            if (!audit) return null;
+            audit.restore();
+            return { draws: audit.draws, restored: audit.restored };
+        });
+    } catch { return; /* Failed startup may have no observable page context. */ }
+    if (audit) {
+        await testInfo.attach('outfit-held-visibility', { body: JSON.stringify(audit), contentType: 'application/json' });
+        expect(audit.restored).toBe(true);
+    }
+});
+
 for (const outfit of Object.values(GARMENT_MODELS.outfits)) for (const quality of ['high', 'low']) test(`${outfit.name} vendor preview compares and applies independently ${quality}`, async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL), requests = [];
     page.on('request', request => { if (request.url().includes('/assets/garments/')) requests.push(request.url()); });
@@ -43,6 +60,50 @@ for (const outfit of Object.values(GARMENT_MODELS.outfits)) for (const quality o
         return gl.getParameter(debug ? debug.UNMASKED_RENDERER_WEBGL : gl.RENDERER);
     });
     if (process.env.EIDOLON_E2E_REQUIRE_NATIVE_GPU === '1') expect(renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
+    await page.evaluate(() => {
+        const preview = window.__garmentPreview.ui.preview, renderer = preview.renderer, original = renderer.render;
+        const audit = { draws: [], active: true };
+        const observed = function (...args) {
+            const held = [];
+            preview.model.traverse(part => {
+                if (['mainHand', 'offHand'].includes(part.userData.slot) &&
+                    (part.userData.authoredEquipment || part.userData.equipmentVisual)) {
+                    held.push({ slot: part.userData.slot, visible: part.visible });
+                }
+            });
+            if (audit.draws.length < 128) audit.draws.push({ hidden: !preview.heldGearVisible, held });
+            return original.apply(this, args);
+        };
+        renderer.render = observed;
+        audit.restore = () => {
+            if (!audit.active) return;
+            audit.active = false; audit.restored = renderer.render === observed;
+            if (audit.restored) renderer.render = original;
+        };
+        window.__outfitInspectionAudit = audit;
+    });
+    const hideHeld = dialog.getByRole('button', { name: 'Hide held gear in preview', exact: true });
+    await expect(hideHeld).toHaveAttribute('aria-pressed', 'false');
+    await hideHeld.click(); await expect(hideHeld).toHaveAttribute('aria-pressed', 'true');
+    const hiddenDraw = await page.evaluate(() => window.__outfitInspectionAudit.draws.at(-1));
+    expect(hiddenDraw.hidden).toBe(true);
+    expect(new Set(hiddenDraw.held.map(part => part.slot))).toEqual(new Set(['mainHand', 'offHand']));
+    expect(hiddenDraw.held.every(part => !part.visible)).toBe(true);
+    expect(await page.evaluate(() => {
+        let restored = true;
+        window.__garmentPreview.ui.preview.model.traverse(part => {
+            if (['mainHand', 'offHand'].includes(part.userData.slot) &&
+                (part.userData.authoredEquipment || part.userData.equipmentVisual) && !part.visible) restored = false;
+        });
+        return restored;
+    })).toBe(true);
+    await dialog.locator('.character-preview-stage').screenshot({ path: testInfo.outputPath('unobstructed-outfit-preview.png') });
+    await hideHeld.click(); await expect(hideHeld).toHaveAttribute('aria-pressed', 'false');
+    expect((await page.evaluate(() => window.__outfitInspectionAudit.draws.at(-1))).held.every(part => part.visible)).toBe(true);
+    await hideHeld.focus(); await page.keyboard.press('Space');
+    await expect(hideHeld).toHaveAttribute('aria-pressed', 'true');
+    await page.keyboard.press('Space'); await expect(hideHeld).toHaveAttribute('aria-pressed', 'false');
+    await page.evaluate(() => window.__outfitInspectionAudit.restore());
     const pose = dialog.getByRole('combobox', { name: 'Preview pose', exact: true });
     const moment = dialog.getByRole('slider', { name: 'Moment in pose', exact: true });
     await expect(pose).toBeEnabled(); await expect(moment).toBeEnabled();
