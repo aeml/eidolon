@@ -294,6 +294,44 @@ test('copied published engine renders contact foley and releases its audio resou
         scope: 'Actual copied/versioned engine audio owner with OfflineAudioContext and synthetic confirmed physical cue. Signal and cleanup proof, not a server fight or listening approval.' }), contentType: 'application/json' });
 });
 
+test('copied published engine renders movement contacts and retires its footstep owner', async ({ page }, testInfo) => {
+    const failures = collectBrowserFailures(page, origin);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto(origin, { waitUntil: 'networkidle' });
+    const result = await page.evaluate(async release => {
+        const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
+        const game = new GameEngine('Fighter', false, true, '', 'footstep-bundle-fixture', null, 'flat-v1');
+        const audio = game.audioManager;
+        try {
+            const context = new OfflineAudioContext(2, 16000, 48000);
+            audio.context = context; audio.setVolume(1); audio.setEnabled(true); audio.setBusVolume('combat', 1);
+            const action = { time: 0, getClip: () => ({ duration: 1 }) };
+            const actor = { position: { x: 0, z: 200 }, state: 'MOVING', currentAnimationName: 'Run', currentAction: action };
+            const movement = { player: actor };
+            audio.footsteps.update(movement, .1);
+            actor.position.x += .3; action.time = .3; audio.footsteps.update(movement, .1);
+            actor.position.x += .3; action.time = .6;
+            const played = audio.footsteps.update(movement, .1), voices = audio.activeTones.size;
+            const noiseVoices = [...audio.activeTones].filter(voice => voice.oscillator instanceof AudioBufferSourceNode).length;
+            const buffer = await context.startRendering(), data = buffer.getChannelData(0);
+            const peak = data.reduce((maximum, value) => Math.max(maximum, Math.abs(value)), 0);
+            const tailPeak = data.slice(12000).reduce((maximum, value) => Math.max(maximum, Math.abs(value)), 0);
+            const activeAfter = audio.activeTones.size;
+            game.destroy();
+            return { played, voices, noiseVoices, peak, tailPeak, activeAfter, disposed: audio.disposed,
+                actorReleased: audio.footsteps.actor === null, noiseReleased: audio.contactNoiseBuffer === null,
+                contextReleased: audio.context === null };
+        } finally { game.destroy(); }
+    }, release);
+    expect(result).toMatchObject({ played: true, voices: 2, noiseVoices: 1, tailPeak: 0, activeAfter: 0,
+        disposed: true, actorReleased: true, noiseReleased: true, contextReleased: true });
+    expect(result.peak).toBeGreaterThan(.0001); expect(result.peak).toBeLessThan(.04);
+    expect(failures).toEqual([]);
+    await testInfo.attach('published-movement-contact', { body: JSON.stringify({ ...result, engineSHA256: metadata.engineSHA256,
+        bundledModules: metadata.bundledModules,
+        scope: 'Copied/versioned actual engine audio owner with synthetic movement clock; signal/cleanup, not listening or a networked walk.' }), contentType: 'application/json' });
+});
+
 test('published login recovers one interrupted engine download and constructs only one engine', async ({ page }, testInfo) => {
     const requests = [];
     await page.route('**/src/core/GameEngine.bundle.js?*', route => {

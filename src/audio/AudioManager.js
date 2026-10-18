@@ -2,6 +2,7 @@ import { WorldAmbience } from './WorldAmbience.js';
 import { ABILITY_CAST_PROFILES, getAbilityCastProfile } from './AbilityCastProfiles.js';
 import { createCombatImpactCue } from './CombatImpactProfiles.js';
 import { DangerAudioMix } from './DangerAudioMix.js';
+import { FootstepAudio, FOOTSTEP_CUE, createFootstepCue } from './FootstepAudio.js';
 
 const DEFAULT_VOLUME = 0.45;
 const CUE_COOLDOWN_MS = 45;
@@ -28,6 +29,7 @@ export const AUDIO_CUES = Object.freeze({
     rogueCast: 'ability.rogue',
     wizardCast: 'ability.wizard',
     clericCast: 'ability.cleric',
+    footstep: FOOTSTEP_CUE,
     jumpStart: 'movement.jump.start',
     jumpLand: 'movement.jump.land',
     casinoSpin: 'casino.spin',
@@ -83,6 +85,7 @@ export const AUDIO_CUE_ASSETS = Object.freeze({
     [AUDIO_CUES.rogueCast]: generatedCombatCue,
     [AUDIO_CUES.wizardCast]: generatedCombatCue,
     [AUDIO_CUES.clericCast]: generatedCombatCue,
+    [AUDIO_CUES.footstep]: createCueAsset('movement', 'footstep'),
     [AUDIO_CUES.jumpStart]: createCueAsset('movement', 'jump-start'),
     [AUDIO_CUES.jumpLand]: createCueAsset('movement', 'jump-land'),
 });
@@ -115,6 +118,7 @@ export class AudioManager {
         this.busVolumes = Object.fromEntries(AUDIO_BUSES.map(bus =>
             [bus, this.readStoredNumber(`eidolon.audioBus.${bus}`, 1, 0, 1)]));
         this.ambience = new WorldAmbience(this);
+        this.footsteps = new FootstepAudio(this);
         this.observedContext = null;
         this.onContextStateChange = () => {
             if (this.disposed) return;
@@ -416,6 +420,7 @@ export class AudioManager {
     }
 
     createCue(cueName, options = {}) {
+        if (cueName === AUDIO_CUES.footstep) return createFootstepCue(options);
         if (cueName === AUDIO_CUES.combatHit) {
             const impactCue = createCombatImpactCue(options);
             if (impactCue) return impactCue;
@@ -580,6 +585,7 @@ export class AudioManager {
         this.observedContext?.removeEventListener?.('statechange', this.onContextStateChange);
         this.observedContext = null;
         this.ambience.dispose();
+        this.footsteps.reset();
         this.dangerMix.dispose();
         if (this.masterGain) this.masterGain.gain.value = 0;
         this.stopTones();
