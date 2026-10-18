@@ -11,6 +11,35 @@ function offers() {
     return COSMETIC_CATALOGUE.map(offer => ({ ...offer, appearance: { baseName: offer.name, rarity: 'Common', slot: offer.kind === 'outfit' ? 'outfit' : resolveEquipmentVisualDescriptor({ name: offer.base }).slot } }));
 }
 
+test('armor inspection can hide held gear, compare looks and return to weapon inspection without changing authority', () => {
+    const { ui, preview, player, send } = fixture();
+    preview.setHeldGearVisible = jest.fn();
+    const original = JSON.stringify(player), calls = send.mock.calls.length;
+    try {
+        ui.select(offers().find(offer => offer.id === 'winterthorn-revel-v1'));
+        expect(ui.inspectOutfit.hidden).toBe(false); expect(ui.inspectOutfit.getAttribute('aria-pressed')).toBe('false');
+        ui.inspectOutfit.click(); expect(preview.setHeldGearVisible).toHaveBeenLastCalledWith(false);
+        expect(ui.inspectOutfit.getAttribute('aria-pressed')).toBe('true');
+        ui.compare.click(); expect(preview.setHeldGearVisible).toHaveBeenLastCalledWith(false);
+        ui.select(offers().find(offer => offer.id === 'skyweaver-tome-v1'));
+        expect(ui.inspectOutfit.hidden).toBe(true); expect(preview.setHeldGearVisible).toHaveBeenLastCalledWith(true);
+        expect(send).toHaveBeenCalledTimes(calls); expect(JSON.stringify(player)).toBe(original);
+    } finally { ui.dispose(); }
+});
+
+test('armor inspection resets on reopen and retained controls cannot act for a replaced owner', () => {
+    const { ui, preview, player, changePlayer } = fixture(); preview.setHeldGearVisible = jest.fn();
+    const armor = offers().find(offer => offer.id === 'winterthorn-revel-v1');
+    try {
+        ui.select(armor); ui.inspectOutfit.click(); ui.close(); ui.open();
+        ui.handleResult({ playerID: player.id, success: true, pending: false, ep: 75, catalogue: offers(), collection: {} });
+        ui.select(armor); expect(preview.setHeldGearVisible).toHaveBeenLastCalledWith(true);
+        const count = preview.setHeldGearVisible.mock.calls.length;
+        changePlayer('replacement-owner'); ui.inspectOutfit.click();
+        expect(preview.setHeldGearVisible).toHaveBeenCalledTimes(count);
+    } finally { ui.dispose(); }
+});
+
 function fixture() {
     let player = { id: 'player-hero', subType: 'Fighter', level: 70, state: 'IDLE', position: { x: 12, z: 185 },
         equipment: { chest: { id: 'real-armor', name: 'Plate Mail', slot: 'chest', type: 'ARMOR', stats: { defense: 99 } } }, appearances: {} };
