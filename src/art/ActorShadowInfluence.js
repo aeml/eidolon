@@ -12,7 +12,8 @@ const connectedVisible = (root, scene) => {
     }
     return false;
 };
-const finiteBox = box => !box.isEmpty() && [...box.min.toArray(), ...box.max.toArray()].every(Number.isFinite);
+const finiteBox = box => !box.isEmpty() && Number.isFinite(box.min.x) && Number.isFinite(box.min.y) &&
+    Number.isFinite(box.min.z) && Number.isFinite(box.max.x) && Number.isFinite(box.max.y) && Number.isFinite(box.max.z);
 const affine = matrix => matrix.elements.every(Number.isFinite) && matrix.elements[3] === 0 &&
     matrix.elements[7] === 0 && matrix.elements[11] === 0 && matrix.elements[15] === 1;
 
