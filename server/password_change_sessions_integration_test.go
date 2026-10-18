@@ -65,7 +65,7 @@ func TestPasswordChangeActualConnectedSessions(t *testing.T) {
 		t.Fatal("forged username changed another account", err)
 	}
 	probe := credentialSocket(t, address)
-	resourceSend(t, probe, MsgResumeSession, map[string]string{"token": oldToken})
+	resourceSend(t, probe, MsgResumeSession, map[string]string{"token": oldToken, "gameplayProtocol": gameplayProtocol})
 	credentialExpectError(t, probe, "invalid or expired")
 	probe.Close()
 	owner.Close()

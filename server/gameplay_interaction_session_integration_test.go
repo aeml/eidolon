@@ -153,7 +153,7 @@ func gameplayJoin(t *testing.T, address string, fixture *database.Character, pas
 	t.Cleanup(func() { _ = conn.Close() })
 	resourceSend(t, conn, MsgLogin, map[string]string{"username": fixture.Name, "password": password})
 	resourceReadMessage(t, conn, "login_success", nil)
-	resourceSend(t, conn, MsgJoin, JoinPayload{Type: fixture.Class})
+	resourceSend(t, conn, MsgJoin, JoinPayload{Type: fixture.Class, GameplayProtocol: gameplayProtocol})
 	o := &gameplaySessionObservation{}
 	gameplayWait(t, conn, fixture.Name, o, func() bool { return o.joined && o.contextSeen && o.self != nil })
 	// New entity admission deliberately fences movement for its first second.

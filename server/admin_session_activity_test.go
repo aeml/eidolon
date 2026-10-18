@@ -205,7 +205,7 @@ func TestResumeActivityFailurePreservesOriginalDisconnectedTime(t *testing.T) {
 		t.Fatal(err)
 	}
 	c := &Client{send: make(chan []byte, 10)}
-	payload, _ := json.Marshal(map[string]string{"token": token})
+	payload, _ := json.Marshal(map[string]string{"token": token, "gameplayProtocol": gameplayProtocol})
 	c.dispatchMessage(Message{Type: MsgResumeSession, Payload: payload})
 	e := world.GetEntity("player-audit-resume")
 	if e == nil || !e.Disconnected || !e.DisconnectedAt.Equal(disconnectedAt) || c.playerID != "" || c.username != "" {

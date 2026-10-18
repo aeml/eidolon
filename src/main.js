@@ -3,6 +3,7 @@ import { registerAssetServiceWorker } from './assets/ServiceWorkerBoot.js';
 import { ensureGameStylesReady } from './assets/StylesheetBoot.js';
 import { resolveServerAddress } from './core/serverAddress.js';
 import { showSessionRecoveryLogin } from './ui/SessionRecovery.js';
+import { acceptsGameplayProtocol, GAME_UPDATE_MESSAGE } from './core/GameplayProtocol.js';
 import { LoginModerationUI } from './ui/LoginModerationUI.js';
 import { credentialTokenChange } from './core/CredentialToken.js';
 import { PublicEmailRecoveryUI } from './ui/EmailRecoveryUI.js';
@@ -153,6 +154,7 @@ const bootLogin = async () => {
     
     let authSocket = null;
     let isAuthenticated = false;
+    let gameplayCompatible = false;
     let loginModeration = null;
     let publicEmailRecovery = null;
     let serverTerrainProfile = 'flat-v1';
@@ -359,6 +361,7 @@ const bootLogin = async () => {
                 }
                 
                 const data = msg.payload;
+                gameplayCompatible = acceptsGameplayProtocol(data);
                 serverTerrainProfile = data.terrainProfile || 'flat-v1';
                 authStatus.textContent = data.message || "Logged in!";
                 authStatus.style.color = '#4CAF50';
@@ -368,6 +371,12 @@ const bootLogin = async () => {
                 if (data.resumeToken) {
                     try { localStorage.setItem('eidolon_resume_token', data.resumeToken); } catch (_) { /* Storage may be unavailable. */ }
                 }
+                if (!gameplayCompatible) {
+                    showSessionRecoveryLogin({ message: GAME_UPDATE_MESSAGE, reloadRequired: true });
+                    return;
+                }
+                const reloadButton = document.getElementById('session-reload-game');
+                if (reloadButton) { reloadButton.hidden = true; reloadButton.onclick = null; }
                 
                 // Hide login panel
                 if (loginPanel) loginPanel.style.display = 'none';
@@ -477,6 +486,10 @@ const bootLogin = async () => {
                 authStatus.style.color = '#ff4444';
                 return;
             }
+            if (!gameplayCompatible) {
+                showSessionRecoveryLogin({ message: GAME_UPDATE_MESSAGE, reloadRequired: true });
+                return;
+            }
 
             console.log(`User selected: ${type}, Multiplayer: ${isMultiplayer}`);
             if (gameStartupStatus) {
@@ -543,6 +556,7 @@ const bootLogin = async () => {
                     sessionResumeToken = null;
                     try { localStorage.removeItem('eidolon_resume_token'); } catch (_) { /* Storage may be unavailable. */ }
                     isAuthenticated = false;
+                    gameplayCompatible = false;
                     finishAuthRequest();
                     sessionGame.network.dispose();
                     const previousAuthSocket = authSocket; authSocket = null;
@@ -550,7 +564,8 @@ const bootLogin = async () => {
                     sessionGame.destroy();
                     window.game = null;
                     handleMobileMediaChange();
-                    showSessionRecoveryLogin({ message: reason?.kind === 'moderation' ? reason.message : undefined });
+                    showSessionRecoveryLogin({ message: ['moderation', 'update'].includes(reason?.kind) ? reason.message : undefined,
+                        reloadRequired: reason?.kind === 'update' });
                     publicEmailRecovery?.connectionState('closed');
                 };
             }

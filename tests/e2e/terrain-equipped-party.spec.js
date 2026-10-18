@@ -376,7 +376,7 @@ test(`single native renderer observes three live equipped party socket peers on 
             send(peer, 'login', { username: account.username, password: account.password });
             const login = await waitMessage(peer, 'login_success');
             expect(login.terrainProfile).toBe(partyTerrainProfile);
-            send(peer, 'join', { type: account.characterClass });
+            send(peer, 'join', { type: account.characterClass, gameplayProtocol: 'stationary-actions-roofs-v1' });
             await waitMessage(peer, 'quest_update');
             // Real user-visible invitation, accepted by a real authenticated peer.
             await page.locator('#party-invite-input').fill(account.username);

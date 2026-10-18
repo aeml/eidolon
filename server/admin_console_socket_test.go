@@ -228,7 +228,7 @@ func TestAdminConsoleActualSessionsAndHistoryRestart(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer resumed.Close()
-	resourceSend(t, resumed, MsgResumeSession, map[string]string{"token": token})
+	resourceSend(t, resumed, MsgResumeSession, map[string]string{"token": token, "gameplayProtocol": gameplayProtocol})
 	resourceReadMessage(t, resumed, MsgResumeSession, nil)
 	resourceReadMessage(t, resumed, MsgQuestUpdate, nil)
 	resourceCloseAndWait(t, repo, resumed, member)

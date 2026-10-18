@@ -24,7 +24,7 @@ for (const mode of ['verify', 'reset', 'setup']) {
             socket.onMessage(data => {
                 const message = JSON.parse(data);
                 if (message.type === 'login') {
-                    socket.send(JSON.stringify({ type: 'login_success', payload: { hasCharacter: true, characterType: 'Fighter', resumeToken: 'b'.repeat(64) } }));
+                    socket.send(JSON.stringify({ type: 'login_success', payload: { gameplayProtocol: 'stationary-actions-roofs-v1', hasCharacter: true, characterType: 'Fighter', resumeToken: 'b'.repeat(64) } }));
                     return;
                 }
                 const action = mode === 'verify' ? 'confirm_recovery_email' : mode === 'reset' ? 'complete_password_recovery' : 'set_recovery_email';
@@ -89,7 +89,7 @@ for (const mode of ['invited-desktop', 'invited-phone', 'existing-login', 'requi
                 if (message.type === 'login') {
                     logins++;
                     expect(message.payload.invitation === undefined).toBe(true);
-                    socket.send(JSON.stringify({ type: 'login_success', payload: { hasCharacter: true, characterType: 'Fighter', resumeToken: 'b'.repeat(64) } }));
+                    socket.send(JSON.stringify({ type: 'login_success', payload: { gameplayProtocol: 'stationary-actions-roofs-v1', hasCharacter: true, characterType: 'Fighter', resumeToken: 'b'.repeat(64) } }));
                 }
                 if (message.type !== 'register') return;
                 registrations++;

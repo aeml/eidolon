@@ -246,7 +246,7 @@ func testSlotsActualSocketSpinResumeAndRestart(t *testing.T, vip, preparedBonus 
 		t.Fatal(err)
 	}
 	defer resumed.Close()
-	resourceSend(t, resumed, MsgResumeSession, map[string]string{"token": token})
+	resourceSend(t, resumed, MsgResumeSession, map[string]string{"token": token, "gameplayProtocol": gameplayProtocol})
 	resourceReadMessage(t, resumed, MsgResumeSession, nil)
 	view := readSlotSocket(t, resumed, func(v slotSocketPresence) bool { return v.YourSeat != nil && v.Slots != nil && v.Slots.Available })
 	if view.YourSeat.SessionID != seated.YourSeat.SessionID || view.Slots.Session.Revision != expectedRevision || view.Slots.Balance != expectedBalance || view.Slots.Gold != saved.Gold {

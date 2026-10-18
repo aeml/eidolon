@@ -173,7 +173,7 @@ func TestWellRestedActualLiveResumeAndHandoff(t *testing.T) {
 	}
 	t.Cleanup(func() { resumed.Close() })
 	resumeStarted := time.Now()
-	resourceSend(t, resumed, MsgResumeSession, map[string]string{"token": token})
+	resourceSend(t, resumed, MsgResumeSession, map[string]string{"token": token, "gameplayProtocol": gameplayProtocol})
 	var reply struct {
 		PlayerID    string `json:"playerID"`
 		ResumeToken string `json:"resumeToken"`
@@ -236,7 +236,7 @@ func TestWellRestedActualTownBoundaryMovement(t *testing.T) {
 	t.Cleanup(func() { conn.Close() })
 	resourceSend(t, conn, MsgLogin, map[string]string{"username": name, "password": password})
 	resourceReadMessage(t, conn, "login_success", nil)
-	resourceSend(t, conn, MsgJoin, JoinPayload{Type: fixture.Class})
+	resourceSend(t, conn, MsgJoin, JoinPayload{Type: fixture.Class, GameplayProtocol: gameplayProtocol})
 	var movement struct {
 		Context string `json:"movementContext"`
 	}

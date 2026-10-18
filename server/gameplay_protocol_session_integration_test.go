@@ -59,9 +59,9 @@ func TestGameplayActualCachedClientRequiresUpdateWithoutLosingCharacterOrToken(t
 	login := func(connection *websocket.Conn) string {
 		t.Helper()
 		resourceSend(t, connection, MsgLogin, map[string]string{"username": fixture.Name, "password": password})
-		var accepted struct{ ResumeToken string }
+		var accepted struct{ ResumeToken, GameplayProtocol string }
 		resourceReadMessage(t, connection, "login_success", &accepted)
-		if accepted.ResumeToken == "" {
+		if accepted.ResumeToken == "" || accepted.GameplayProtocol != "stationary-actions-roofs-v1" {
 			t.Fatal("ordinary authentication did not issue a resume token")
 		}
 		return accepted.ResumeToken

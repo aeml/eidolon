@@ -46,7 +46,7 @@ test.describe('visual polish entry flow', () => {
         await page.routeWebSocket(/\/ws(?:\?|$)/, (socket) => {
             socket.onMessage((message) => {
                 if (JSON.parse(String(message)).type !== 'login') return;
-                socket.send(JSON.stringify({ type: 'login_success', payload: {
+                socket.send(JSON.stringify({ type: 'login_success', payload: { gameplayProtocol: 'stationary-actions-roofs-v1',
                     hasCharacter: returning, characterType: 'Fighter', message: 'Presentation fixture'
                 } }));
             });

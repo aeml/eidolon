@@ -41,6 +41,7 @@ type AuthPayload struct {
 
 type JoinPayload struct {
 	Type string `json:"type"`
+	GameplayProtocol string `json:"gameplayProtocol"`
 }
 
 type MovePayload struct {
@@ -180,7 +181,7 @@ func main() {
 
 		// 3. Join Game
 		log.Printf("Joining Game as Fighter...")
-		sendJSON(c, MsgJoin, JoinPayload{Type: "Fighter"})
+		sendJSON(c, MsgJoin, JoinPayload{Type: "Fighter", GameplayProtocol: "stationary-actions-roofs-v1"})
 		time.Sleep(1 * time.Second)
 
 		// 4. Move Loop

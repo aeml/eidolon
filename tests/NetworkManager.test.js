@@ -7,6 +7,7 @@
  */
 
 import { jest } from '@jest/globals';
+import { GAMEPLAY_PROTOCOL, GAME_UPDATE_MESSAGE } from '../src/core/GameplayProtocol.js';
 
 const decodeStateEnvelopeMock = jest.fn(() => ({ full: null, delta: null }));
 
@@ -22,6 +23,35 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => ({
 }));
 
 const { NetworkManager } = await import('../src/core/NetworkManager.js');
+
+test('initial world entry declares stationary-action and roof capability', () => {
+    const socket = makeMockSocket(), network = new NetworkManager(socket);
+    network.connect('Fighter');
+    expect(socket.sent).toEqual([{ type: 'join', payload: { type: 'Fighter', gameplayProtocol: GAMEPLAY_PROTOCOL } }]);
+    network.dispose();
+});
+
+test.each([undefined, 'future-protocol'])('incompatible resume %s requests reload before accepting token or state', gameplayProtocol => {
+    const socket = makeMockSocket(), network = new NetworkManager(socket);
+    network.setupListeners(); network._reconnecting = true;
+    const failed = jest.fn(), resumed = jest.fn();
+    network.onReconnectFailed = failed; network.onResumeSuccess = resumed;
+    network.messageQueue.push({ type: 'state' });
+    socket.simulateMessage({ type: 'resume_session', payload: { gameplayProtocol, resumeToken: 'unaccepted' } });
+    expect(failed).toHaveBeenCalledWith({ kind: 'update', message: GAME_UPDATE_MESSAGE });
+    expect(resumed).not.toHaveBeenCalled();
+    expect(network.messageQueue).toEqual([]);
+    expect(network.socket).toBeNull();
+});
+
+test('server update denial uses reload recovery without a moderation notice', () => {
+    const socket = makeMockSocket(), network = new NetworkManager(socket);
+    const failed = jest.fn();
+    network.setupListeners(); network.onReconnectFailed = failed;
+    socket.simulateMessage({ type: 'world_access_denied', payload: { code: 'client_update_required', message: GAME_UPDATE_MESSAGE } });
+    expect(failed).toHaveBeenCalledWith({ kind: 'update', message: GAME_UPDATE_MESSAGE });
+    expect(network.socket).toBeNull();
+});
 
 test('a closed connection reports recovery through in-game callbacks, never a browser alert', () => {
     const network = new NetworkManager(null);
@@ -157,7 +187,7 @@ test('socket replacement releases prior transport handlers but preserves applica
         expect(socket.onmessage).toBeNull(); expect(socket.onclose).toBeNull(); expect(socket.onerror).toBeNull();
         expect(socket.onopen).toBe(applicationOpen);
         network.socket.simulateOpen();
-        expect(network.socket.sent[0]).toEqual({ type: 'resume_session', payload: { token: 'fixture-token' } });
+        expect(network.socket.sent[0]).toEqual({ type: 'resume_session', payload: { gameplayProtocol: GAMEPLAY_PROTOCOL, token: 'fixture-token' } });
     } finally { network.destroy(); }
 });
 
@@ -185,7 +215,7 @@ test.each(['flat-v1', 'earth-elevation-v1', 'earth-elevation-rocks-v1'])('sessio
     const failed = jest.fn(), success = jest.fn();
     network.onReconnectFailed = failed;
     network.onResumeSuccess = success;
-    socket.simulateMessage({ type: 'resume_session', payload: { resumeToken: 'replacement',
+    socket.simulateMessage({ type: 'resume_session', payload: { gameplayProtocol: GAMEPLAY_PROTOCOL, resumeToken: 'replacement',
         terrainProfile: profile === 'flat-v1' ? 'earth-elevation-v1' : 'flat-v1' } });
     expect(failed).toHaveBeenCalledTimes(1);
     expect(success).not.toHaveBeenCalled();
@@ -198,7 +228,7 @@ test.each([undefined, 'flat-v1'])('legacy/flat resume profile %s stays compatibl
     network.expectedTerrainProfile = 'flat-v1';
     network.setupListeners();
     network.onResumeSuccess = jest.fn();
-    socket.simulateMessage({ type: 'resume_session', payload: { resumeToken: 'replacement', terrainProfile } });
+    socket.simulateMessage({ type: 'resume_session', payload: { gameplayProtocol: GAMEPLAY_PROTOCOL, resumeToken: 'replacement', terrainProfile } });
     expect(network.onResumeSuccess).toHaveBeenCalledWith('replacement');
     expect(network.messageQueue[0].type).toBe('resume_session');
     network.dispose();
@@ -574,7 +604,7 @@ describe('NetworkManager — resume_session server message', () => {
         const onResumeSuccess = jest.fn();
         nm.onResumeSuccess = onResumeSuccess;
 
-        sock.simulateMessage({ type: 'resume_session', payload: { resumeToken: 'tok123' } });
+        sock.simulateMessage({ type: 'resume_session', payload: { gameplayProtocol: GAMEPLAY_PROTOCOL, resumeToken: 'tok123' } });
 
         expect(onResumeSuccess).toHaveBeenCalledWith('tok123');
         const msgs = nm.drainMessages();
@@ -588,7 +618,7 @@ describe('NetworkManager — resume_session server message', () => {
         nm._reconnecting = true;
         nm.setupListeners();
 
-        sock.simulateMessage({ type: 'resume_session', payload: { resumeToken: 'abc' } });
+        sock.simulateMessage({ type: 'resume_session', payload: { gameplayProtocol: GAMEPLAY_PROTOCOL, resumeToken: 'abc' } });
 
         expect(nm._reconnecting).toBe(false);
         expect(nm._reconnectAttempts).toBe(0);
@@ -601,7 +631,7 @@ describe('NetworkManager — resume_session server message', () => {
         nm.onResumeSuccess = null;
 
         expect(() => {
-            sock.simulateMessage({ type: 'resume_session', payload: { resumeToken: 'tok' } });
+            sock.simulateMessage({ type: 'resume_session', payload: { gameplayProtocol: GAMEPLAY_PROTOCOL, resumeToken: 'tok' } });
         }).not.toThrow();
     });
 });
@@ -721,7 +751,7 @@ describe('NetworkManager — _doReconnect', () => {
         newSock.simulateOpen();
 
         expect(newSock.sent).toHaveLength(1);
-        expect(newSock.sent[0]).toMatchObject({ type: 'resume_session', payload: { token: 'token-abc' } });
+        expect(newSock.sent[0]).toMatchObject({ type: 'resume_session', payload: { gameplayProtocol: GAMEPLAY_PROTOCOL, token: 'token-abc' } });
     });
 
     test('calls onReconnectFailed when token is null on open', () => {
@@ -887,7 +917,7 @@ describe('NetworkManager — onConnectionStateChange', () => {
         nm.setupListeners();
 
         // Simulate successful resume ack
-        sock.simulateMessage({ type: 'resume_session', payload: { resumeToken: 'new-tok' } });
+        sock.simulateMessage({ type: 'resume_session', payload: { gameplayProtocol: GAMEPLAY_PROTOCOL, resumeToken: 'new-tok' } });
         expect(states).toContain('connected');
         expect(nm._reconnecting).toBe(false);
     });
@@ -966,7 +996,7 @@ describe('NetworkManager — 0.36.4 second-drop and state-reapplication', () => 
         const nm = new NetworkManager(sock);
         nm.setupListeners();
 
-        sock.simulateMessage({ type: 'resume_session', payload: { resumeToken: 'fresh-tok' } });
+        sock.simulateMessage({ type: 'resume_session', payload: { gameplayProtocol: GAMEPLAY_PROTOCOL, resumeToken: 'fresh-tok' } });
 
         const msgs = nm.drainMessages();
         expect(msgs.some(m => m.type === 'resume_session')).toBe(true);
@@ -985,7 +1015,7 @@ describe('NetworkManager — 0.36.4 second-drop and state-reapplication', () => 
         expect(nm._reconnectAttempts).toBe(1);
 
         // Resume ack → counter resets to 0, reconnecting flag cleared.
-        sock.simulateMessage({ type: 'resume_session', payload: { resumeToken: 'tok2' } });
+        sock.simulateMessage({ type: 'resume_session', payload: { gameplayProtocol: GAMEPLAY_PROTOCOL, resumeToken: 'tok2' } });
         expect(nm._reconnectAttempts).toBe(0);
         expect(nm._reconnecting).toBe(false);
 
@@ -1013,7 +1043,7 @@ describe('NetworkManager — 0.36.4 second-drop and state-reapplication', () => 
         sock.simulateClose();
         expect(states).toContain('reconnecting');
 
-        sock.simulateMessage({ type: 'resume_session', payload: { resumeToken: 'tok2' } });
+        sock.simulateMessage({ type: 'resume_session', payload: { gameplayProtocol: GAMEPLAY_PROTOCOL, resumeToken: 'tok2' } });
         expect(states).toContain('connected');
         expect(nm._reconnecting).toBe(false);
 

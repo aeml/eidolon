@@ -23,7 +23,7 @@ test.describe('startup failure diagnostic phases', () => {
                 ` }));
             await page.routeWebSocket(/\/ws(?:\?|$)/, socket => socket.onMessage(data => {
                 if (JSON.parse(data).type === 'login') socket.send(JSON.stringify({
-                    type: 'login_success', payload: { hasCharacter: true, characterType: 'Fighter' }
+                    type: 'login_success', payload: { gameplayProtocol: 'stationary-actions-roofs-v1', hasCharacter: true, characterType: 'Fighter' }
                 }));
             }));
             await page.goto('/', { waitUntil: 'domcontentloaded' });
@@ -189,7 +189,7 @@ test('real Firefox returns to login with in-page guidance when the graphics cont
         await page.routeWebSocket(/\/ws(?:\?|$)/, socket => {
             socket.onMessage(message => {
                 const packet = JSON.parse(message);
-                if (packet.type === 'login') socket.send(JSON.stringify({ type: 'login_success', payload: { hasCharacter: false } }));
+                if (packet.type === 'login') socket.send(JSON.stringify({ type: 'login_success', payload: { gameplayProtocol: 'stationary-actions-roofs-v1', hasCharacter: false } }));
             });
         });
         await page.goto(baseURL, { waitUntil: 'domcontentloaded' });

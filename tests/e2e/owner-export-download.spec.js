@@ -36,7 +36,7 @@ async function installFixture(page, baseURL) {
         socket.onMessage(raw => {
             const message = JSON.parse(raw);
             fixture.requests.push(message);
-            if (message.type === 'login') socket.send(JSON.stringify({ type: 'login_success', payload: {
+            if (message.type === 'login') socket.send(JSON.stringify({ type: 'login_success', payload: { gameplayProtocol: 'stationary-actions-roofs-v1',
                 message: 'Authenticated synthetic fixture', hasCharacter: true,
                 characterType: 'Wizard', terrainProfile: 'flat-v1'
             } }));

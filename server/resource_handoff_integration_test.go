@@ -72,7 +72,7 @@ func resourceLoginCharacter(t *testing.T, address, username, password, class str
 	if login.ResumeToken == "" {
 		t.Fatal("login omitted resume token")
 	}
-	resourceSend(t, conn, MsgJoin, JoinPayload{Type: class})
+	resourceSend(t, conn, MsgJoin, JoinPayload{Type: class, GameplayProtocol: gameplayProtocol})
 	resourceReadMessage(t, conn, MsgQuestUpdate, nil)
 	return conn, login.ResumeToken
 }
@@ -139,7 +139,7 @@ func TestResourceActualLiveHandoff(t *testing.T) {
 	}
 	// Repeated Join must retain the active cooldown and only normal town healing.
 	for i := 0; i < 2; i++ {
-		resourceSend(t, first, MsgJoin, JoinPayload{Type: "Wizard"})
+		resourceSend(t, first, MsgJoin, JoinPayload{Type: "Wizard", GameplayProtocol: gameplayProtocol})
 		var cooldowns struct {
 			Cooldowns map[string]float64 `json:"cooldowns"`
 		}

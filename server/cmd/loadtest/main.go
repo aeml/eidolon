@@ -873,7 +873,8 @@ func runAssignedBot(id int, urlStr string, cred BotCredentials, assignment botAs
 	}
 
 	joinPayload := map[string]string{
-		"type": randomArchetype,
+		"type":             randomArchetype,
+		"gameplayProtocol": "stationary-actions-roofs-v1",
 	}
 	joinStart := time.Now()
 	if send(c, "join", joinPayload) != nil {

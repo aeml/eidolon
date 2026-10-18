@@ -149,7 +149,7 @@ func TestAdminModerationActualSessionsAndRestart(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer resumed.Close()
-	resourceSend(t, resumed, MsgResumeSession, map[string]string{"token": token})
+	resourceSend(t, resumed, MsgResumeSession, map[string]string{"token": token, "gameplayProtocol": gameplayProtocol})
 	denied(resumed, database.ModerationRequireNameChange)
 	help := loginHelp()
 	checkNotices(help, "socket-notices-0001", 2)
@@ -187,7 +187,7 @@ func TestAdminModerationActualSessionsAndRestart(t *testing.T) {
 	defer stop()
 	help = loginHelp()
 	checkNotices(help, "socket-notices-0004", 2)
-	resourceSend(t, help, MsgJoin, JoinPayload{Type: "Wizard"})
+	resourceSend(t, help, MsgJoin, JoinPayload{Type: "Wizard", GameplayProtocol: gameplayProtocol})
 	denied(help, database.ModerationSuspend)
 	staff, _ = resourceLoginCharacter(t, address, operator, operator+"-test-password", "Fighter")
 	state, err = repo.ReadAccountChatModeration(preview.AccountID)

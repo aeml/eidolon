@@ -219,3 +219,38 @@ Review normal equipped gameplay in motion, entry and return, roof-to-roof jumps,
 edges, high/low views and ordinary mouse/touch input. Keep the full roadmap,
 art, performance, persistence and beta gates open until their actual evidence
 exists.
+
+## Cached-client admission and current recovery qualification
+
+The deployed1.79.80 client still teleports optimistically on recall. An actual
+pre-guard socket test reproduced its admission into the new cast/roof world
+(session50: one failed case, one disposable server/account, complete cleanup).
+Current join/resume requests now declare `stationary-actions-roofs-v1`; the
+server refuses absent/unknown capabilities before world entry or resume-token
+lookup/consumption. It uses the previous client's existing world-access response
+with a readable reload instruction. Authentication/account help remain available;
+this creates no moderation record. Login and resume acknowledgements advertise
+the capability so a newly loaded page also refuses an older rolling-deploy
+server. Compatible patch releases keep reconnects. The new page offers a deliberate
+Reload game button and retires it during ordinary recovery. Current fixtures
+explicitly declare support; the genuine legacy packets remain unchanged.
+
+82client checks/three suites pass, including missing/unknown login and resume
+capabilities, token/state rejection, initial join declaration, normal reconnect,
+moderation recovery, and reload-button lifecycle. Focused Go-race session,
+identity, password-rotation and token checks pass; lint passes. The actual
+corrected cached-client/reused-token route still requires execution.
+
+API41 passed the six original gameplay cases with the1.2second flight cap. Its
+new snapshot case failed before dump/restore because the fixture asked for100
+projection rows from a50-row API; this was a fixture error, not waived production
+validation. The fixture now asks for50. The failed attempt retained13owned server
+logs/eight disposable accounts, and removed both capped Mongo containers with
+protected inputs unchanged. No private archive was reached. API41/native42 are
+superseded; the next attempt must pass all eight actual cases, including snapshot
+recovery and cached-client refusal, before the six native gameplay routes run.
+Alpha1.79.80 CI is now terminal success and the public frontend/backend agree;
+its owner recorded the experimental Fighter acceptance separately.
+
+This component remains isolated and unpublished. No full native, physical-phone,
+production backup, campaign or beta acceptance is implied. Soak/stress is deferred.

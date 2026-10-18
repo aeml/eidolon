@@ -32,7 +32,7 @@ func TestSessionIdentityActualSocketsRejectReplacementAccount(t *testing.T) {
 	owner := credentialSocket(t, address)
 	resourceSend(t, owner, MsgLogin, AuthPayload{Username: name, Password: password})
 	token := credentialExpectLogin(t, owner)
-	resourceSend(t, owner, MsgJoin, JoinPayload{Type: "Wizard"})
+	resourceSend(t, owner, MsgJoin, JoinPayload{Type: "Wizard", GameplayProtocol: gameplayProtocol})
 	wellRestedReadActor(t, owner, name, func(entity *statepb.Entity) bool { return entity.Health > 0 })
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -64,7 +64,7 @@ func TestSessionIdentityActualSocketsRejectReplacementAccount(t *testing.T) {
 	// transport closes. Refusal occurs before recovery/session installation.
 	owner.Close()
 	resume := credentialSocket(t, address)
-	resourceSend(t, resume, MsgResumeSession, map[string]string{"token": token})
+	resourceSend(t, resume, MsgResumeSession, map[string]string{"token": token, "gameplayProtocol": gameplayProtocol})
 	credentialExpectError(t, resume, "Session identity changed or is unavailable")
 	row, err = users.FindOne(ctx, bson.M{"_id": replacement.ID}).DecodeBytes()
 	if err != nil || sha256.Sum256(row) != before {

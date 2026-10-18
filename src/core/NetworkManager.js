@@ -4,6 +4,7 @@
 
 import { eidolon as eidolonProto } from '../proto/state_pb.js';
 import { credentialTokenChange } from './CredentialToken.js';
+import { GAMEPLAY_PROTOCOL, GAME_UPDATE_MESSAGE, acceptsGameplayProtocol } from './GameplayProtocol.js';
 
 const INCOMING_STATE_COMPACTION_THRESHOLD = 64;
 const INCOMING_STATE_RETAIN_LIMIT = 9;
@@ -100,7 +101,7 @@ export class NetworkManager {
     connect(playerType) {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
             this.setupListeners();
-            this.send('join', { type: playerType });
+            this.send('join', { type: playerType, gameplayProtocol: GAMEPLAY_PROTOCOL });
             return;
         }
 
@@ -156,6 +157,13 @@ export class NetworkManager {
                 if (msg.type === 'time') {
                     this.latestServerTime = JSON.stringify(msg.payload);
                 } else if (msg.type === 'resume_session') {
+                    if (!acceptsGameplayProtocol(msg.payload)) {
+                        const fail = this.onReconnectFailed;
+                        this.onConnectionStateChange?.('lost');
+                        this.dispose();
+                        fail?.({ kind: 'update', message: GAME_UPDATE_MESSAGE });
+                        return;
+                    }
                     // A changed server surface requires a fresh scene, not a
                     // resume into geometry from the previous deployment.
                     if (this.expectedTerrainProfile && (msg.payload?.terrainProfile || 'flat-v1') !== this.expectedTerrainProfile) {
@@ -185,7 +193,7 @@ export class NetworkManager {
                     this._reconnecting = false;
                     this.onConnectionStateChange?.('lost');
                     this.dispose();
-                    fail?.({ kind: 'moderation', message: typeof msg.payload?.message === 'string'
+                    fail?.({ kind: msg.payload?.code === 'client_update_required' ? 'update' : 'moderation', message: typeof msg.payload?.message === 'string'
                         ? msg.payload.message.slice(0, 2048) : 'World access is restricted. Log in and open Account help.' });
                 } else if (msg.type === 'error' && this._reconnecting) {
                     // Server rejected the resume token.
@@ -408,7 +416,7 @@ export class NetworkManager {
             // Wire full message / close / error listeners, then send the resume request.
             this.setupListeners();
             console.log('Socket open; sending resume_session…');
-            this.send('resume_session', { token });
+            this.send('resume_session', { token, gameplayProtocol: GAMEPLAY_PROTOCOL });
         };
 
         newSocket.onclose = () => {

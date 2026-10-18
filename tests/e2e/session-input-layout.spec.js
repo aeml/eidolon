@@ -15,7 +15,7 @@ async function prepareEntry(page, failFirstLoad = false) {
         }` }));
     await page.routeWebSocket(/\/ws(?:\?|$)/, socket => socket.onMessage(data => {
         if (JSON.parse(data).type === 'login') socket.send(JSON.stringify({ type: 'login_success',
-            payload: { hasCharacter: true, characterType: 'Fighter' } }));
+            payload: { gameplayProtocol: 'stationary-actions-roofs-v1', hasCharacter: true, characterType: 'Fighter' } }));
     }));
 }
 

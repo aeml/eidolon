@@ -382,7 +382,7 @@ func compatLoginAndDisconnect(t *testing.T, address, username, password, class s
 			t.Fatal("ordinary compatibility login/join rejected")
 		}
 		if message.Type == "login_success" {
-			send("join", map[string]string{"type": class})
+			send("join", map[string]string{"type": class, "gameplayProtocol": gameplayProtocol})
 		}
 		if message.Type == "quest_update" {
 			return

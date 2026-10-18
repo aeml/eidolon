@@ -201,7 +201,7 @@ func TestPasswordChangeResumeWaitsForAccountBeforeConsumingToken(t *testing.T) {
 	release := func() { releaseOnce.Do(unlock) }
 	defer release()
 	resuming := &Client{prioritySend: make(chan []byte, 4)}
-	payload, _ := json.Marshal(map[string]string{"token": oldToken})
+	payload, _ := json.Marshal(map[string]string{"token": oldToken, "gameplayProtocol": gameplayProtocol})
 	done := make(chan struct{})
 	go func() { defer close(done); resuming.dispatchMessage(Message{Type: MsgResumeSession, Payload: payload}) }()
 	// Confirm the actual dispatcher is queued for this account, not just that

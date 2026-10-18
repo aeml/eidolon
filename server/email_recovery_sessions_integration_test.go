@@ -198,7 +198,7 @@ func testEmailRecoveryActualConnectedSessions(t *testing.T, invitationMode bool)
 		}
 	}
 	probe := credentialSocket(t, address)
-	resourceSend(t, probe, MsgResumeSession, map[string]string{"token": oldToken})
+	resourceSend(t, probe, MsgResumeSession, map[string]string{"token": oldToken, "gameplayProtocol": gameplayProtocol})
 	credentialExpectError(t, probe, "invalid or expired")
 	probe.Close()
 	old := credentialSocket(t, address)

@@ -148,7 +148,7 @@ func TestArenaActualDisconnectPenaltySurvivesResumeAndRestart(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() { resumed.Close() })
-	resourceSend(t, resumed, MsgResumeSession, map[string]string{"token": tokens[0]})
+	resourceSend(t, resumed, MsgResumeSession, map[string]string{"token": tokens[0], "gameplayProtocol": gameplayProtocol})
 	var reply struct {
 		PlayerID    string `json:"playerID"`
 		ResumeToken string `json:"resumeToken"`

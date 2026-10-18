@@ -19,7 +19,7 @@ async function enterPublishedFixture(page) {
     await page.routeWebSocket(/\/ws(?:\?|$)/, socket => {
         socket.onMessage(data => {
             if (JSON.parse(data).type === 'login') socket.send(JSON.stringify({
-                type: 'login_success', payload: { hasCharacter: true, characterType: 'Fighter', terrainProfile: 'flat-v1' }
+                type: 'login_success', payload: { gameplayProtocol: 'stationary-actions-roofs-v1', hasCharacter: true, characterType: 'Fighter', terrainProfile: 'flat-v1' }
             }));
         });
     });

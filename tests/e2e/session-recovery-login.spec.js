@@ -32,7 +32,7 @@ for (const blockedStorage of [false, true]) test(`failed resume returns to usabl
             const message = JSON.parse(data);
             if (message.type === 'login') {
                 logins++;
-                socket.send(JSON.stringify({ type: 'login_success', payload: {
+                socket.send(JSON.stringify({ type: 'login_success', payload: { gameplayProtocol: 'stationary-actions-roofs-v1',
                     hasCharacter: true, characterType: 'Fighter', resumeToken: 'fixture-resume-only' } }));
             }
             if (message.type === 'resume_session') {

@@ -36,7 +36,7 @@ for (const mode of ['closed-help', 'world-handoff', 'blocked-storage', 'uncertai
             activeSocket = socket;
             socket.onMessage(data => {
                 const message = JSON.parse(data);
-                if (message.type === 'login') socket.send(JSON.stringify({ type: 'login_success', payload: {
+                if (message.type === 'login') socket.send(JSON.stringify({ type: 'login_success', payload: { gameplayProtocol: 'stationary-actions-roofs-v1',
                     hasCharacter: true, characterType: 'Fighter', resumeToken: 'a'.repeat(64)
                 } }));
                 if (message.type === 'change_password') {

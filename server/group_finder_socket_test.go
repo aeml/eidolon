@@ -157,7 +157,7 @@ func TestGroupFinderActualSocketsConsentPrivacyAndReady(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer resumed.Close()
-	resourceSend(t, resumed, MsgResumeSession, map[string]string{"token": tokens[1]})
+	resourceSend(t, resumed, MsgResumeSession, map[string]string{"token": tokens[1], "gameplayProtocol": gameplayProtocol})
 	var reply struct {
 		PlayerID string `json:"playerID"`
 		Token    string `json:"resumeToken"`

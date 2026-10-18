@@ -29,7 +29,7 @@ func groundSocketFirstScene(t *testing.T, address, username, password, lootID st
 	t.Cleanup(func() { _ = conn.Close() })
 	resourceSend(t, conn, MsgLogin, map[string]string{"username": username, "password": password})
 	resourceReadMessage(t, conn, "login_success", nil)
-	resourceSend(t, conn, MsgJoin, JoinPayload{Type: "Wizard"})
+	resourceSend(t, conn, MsgJoin, JoinPayload{Type: "Wizard", GameplayProtocol: gameplayProtocol})
 	_ = conn.SetReadDeadline(time.Now().Add(10 * time.Second))
 	joined, full := false, false
 	for !joined || !full {

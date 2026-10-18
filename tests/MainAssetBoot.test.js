@@ -141,6 +141,32 @@ describe('asset persistence boot wiring', () => {
         expect(patchNotesScreen.style.display).toBe('none');
     });
 
+    test.each([undefined, 'future-protocol'])('incompatible login %s stays readable and cannot construct a game', async gameplayProtocol => {
+        buildStartDom(); installBrowserMocks(); window.game = null;
+        const sockets = [];
+        class MockWebSocket {
+            static OPEN = 1;
+            constructor() { this.readyState = 1; sockets.push(this); }
+            send() {}
+        }
+        Object.defineProperty(globalThis, 'WebSocket', { configurable: true, value: MockWebSocket });
+        await import('../src/main.js');
+        window.dispatchEvent(new Event('DOMContentLoaded')); await Promise.resolve();
+        document.getElementById('btn-login').click();
+        sockets[0].onmessage({ data: JSON.stringify({ type: 'login_success', payload: {
+            gameplayProtocol, hasCharacter: true, characterType: 'Fighter'
+        } }) });
+        expect(document.getElementById('auth-status').textContent).toContain('Reload');
+        expect(document.getElementById('login-panel').style.display).toBe('');
+        expect(document.getElementById('play-container').style.display).toBe('none');
+        expect(document.getElementById('session-reload-game').hidden).toBe(false);
+        document.querySelector('.class-btn').click();
+        document.getElementById('btn-play-character').click();
+        await new Promise(resolve => setTimeout(resolve, 0));
+        expect(mockConstructionCount).toBe(0);
+        expect(window.game).toBeNull();
+    });
+
     test('rapid entry clicks construct one engine while its import is pending', async () => {
         buildStartDom(); installBrowserMocks(); window.game = null;
         const sockets = [];
@@ -153,7 +179,7 @@ describe('asset persistence boot wiring', () => {
         await import('../src/main.js');
         window.dispatchEvent(new Event('DOMContentLoaded')); await Promise.resolve();
         document.getElementById('btn-login').click();
-        sockets[0].onmessage({ data: JSON.stringify({ type: 'login_success', payload: { hasCharacter: false } }) });
+        sockets[0].onmessage({ data: JSON.stringify({ type: 'login_success', payload: { gameplayProtocol: 'stationary-actions-roofs-v1', hasCharacter: false } }) });
         document.querySelector('.class-btn').click();
         document.querySelector('.class-btn').click();
         await new Promise(resolve => setTimeout(resolve, 0));
@@ -176,7 +202,7 @@ describe('asset persistence boot wiring', () => {
             await import('../src/main.js');
             window.dispatchEvent(new Event('DOMContentLoaded')); await Promise.resolve();
             document.getElementById('btn-login').click();
-            sockets[0].onmessage({ data: JSON.stringify({ type: 'login_success', payload: { hasCharacter: false } }) });
+            sockets[0].onmessage({ data: JSON.stringify({ type: 'login_success', payload: { gameplayProtocol: 'stationary-actions-roofs-v1', hasCharacter: false } }) });
             Object.defineProperty(window, 'innerWidth', { configurable: true, value: joined });
             document.querySelector('.class-btn').click();
             await new Promise(resolve => setTimeout(resolve, 0));
@@ -206,7 +232,7 @@ describe('asset persistence boot wiring', () => {
             await import('../src/main.js');
             window.dispatchEvent(new Event('DOMContentLoaded')); await Promise.resolve();
             document.getElementById('btn-login').click();
-            sockets[0].onmessage({ data: JSON.stringify({ type: 'login_success', payload: { hasCharacter: false } }) });
+            sockets[0].onmessage({ data: JSON.stringify({ type: 'login_success', payload: { gameplayProtocol: 'stationary-actions-roofs-v1', hasCharacter: false } }) });
             document.querySelector('.class-btn').click();
             await new Promise(resolve => setTimeout(resolve, 0));
             expect(document.getElementById('auth-status').textContent).toBe(GRAPHICS_UNAVAILABLE_MESSAGE);
@@ -250,7 +276,7 @@ describe('asset persistence boot wiring', () => {
         sockets[0].onmessage({
             data: JSON.stringify({
                 type: 'login_success',
-                payload: {
+                payload: { gameplayProtocol: 'stationary-actions-roofs-v1',
                     hasCharacter: true,
                     characterType: 'Fighter',
                     message: 'Logged in!'
@@ -301,7 +327,7 @@ describe('asset persistence boot wiring', () => {
         sockets[0].onmessage({
             data: JSON.stringify({
                 type: 'login_success',
-                payload: {
+                payload: { gameplayProtocol: 'stationary-actions-roofs-v1',
                     hasCharacter: false,
                     message: 'Logged in!'
                 }
@@ -397,13 +423,13 @@ describe('asset persistence boot wiring', () => {
             expect(sockets).toHaveLength(2);
             sockets[1].readyState = 1; sockets[1].onopen();
             expect(sockets[1].sent).toEqual(sockets[0].sent);
-            sockets[1].onmessage({ data: JSON.stringify({ type: 'login_success', payload: {
+            sockets[1].onmessage({ data: JSON.stringify({ type: 'login_success', payload: { gameplayProtocol: 'stationary-actions-roofs-v1',
                 hasCharacter: true, characterType: 'Cleric', message: 'Logged in!'
             } }) });
             // Late errors from the replaced socket must not erase success.
             sockets[0].onerror(new Event('error'));
             sockets[0].onopen();
-            sockets[0].onmessage({ data: JSON.stringify({ type: 'login_success', payload: {
+            sockets[0].onmessage({ data: JSON.stringify({ type: 'login_success', payload: { gameplayProtocol: 'stationary-actions-roofs-v1',
                 hasCharacter: true, characterType: 'Rogue', message: 'Old reply'
             } }) });
             sockets[1].close();
@@ -487,7 +513,7 @@ describe('asset persistence boot wiring', () => {
         sockets[0].onmessage({
             data: JSON.stringify({
                 type: 'login_success',
-                payload: {
+                payload: { gameplayProtocol: 'stationary-actions-roofs-v1',
                     hasCharacter: false,
                     message: 'Logged in!'
                 }
@@ -528,7 +554,7 @@ describe('asset persistence boot wiring', () => {
         sockets[0].onmessage({
             data: JSON.stringify({
                 type: 'login_success',
-                payload: {
+                payload: { gameplayProtocol: 'stationary-actions-roofs-v1',
                     hasCharacter: false,
                     message: 'Logged in!'
                 }
@@ -574,7 +600,7 @@ describe('asset persistence boot wiring', () => {
         sockets[0].onmessage({
             data: JSON.stringify({
                 type: 'login_success',
-                payload: {
+                payload: { gameplayProtocol: 'stationary-actions-roofs-v1',
                     hasCharacter: false,
                     message: 'Logged in!'
                 }
@@ -620,7 +646,7 @@ describe('asset persistence boot wiring', () => {
         sockets[0].onmessage({
             data: JSON.stringify({
                 type: 'login_success',
-                payload: {
+                payload: { gameplayProtocol: 'stationary-actions-roofs-v1',
                     hasCharacter: false,
                     message: 'Logged in!'
                 }

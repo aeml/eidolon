@@ -126,16 +126,16 @@ func TestCredentialActualFreshConnectionsAndTakeover(t *testing.T) {
 		t.Fatal("takeover did not rotate the token")
 	}
 	probe := credentialSocket(t, address)
-	resourceSend(t, probe, MsgResumeSession, map[string]string{"token": oldToken})
+	resourceSend(t, probe, MsgResumeSession, map[string]string{"token": oldToken, "gameplayProtocol": gameplayProtocol})
 	credentialExpectError(t, probe, "Session token invalid or expired")
-	resourceSend(t, probe, MsgResumeSession, map[string]string{"token": currentToken})
+	resourceSend(t, probe, MsgResumeSession, map[string]string{"token": currentToken, "gameplayProtocol": gameplayProtocol})
 	credentialExpectError(t, probe, "Session token invalid or expired")
 	probe.Close() // A bearer cannot displace the still-live owner or burn its token.
 	blocked := credentialSocket(t, address)
 	login(blocked, name, legacyPassword)
 	credentialExpectError(t, blocked, "Too many attempts for this account")
 	blocked.Close()
-	resourceSend(t, owner, MsgJoin, JoinPayload{Type: "Fighter"})
+	resourceSend(t, owner, MsgJoin, JoinPayload{Type: "Fighter", GameplayProtocol: gameplayProtocol})
 	wellRestedReadActor(t, owner, name, func(entity *statepb.Entity) bool { return entity.Health > 0 })
 	owner.Close()
 
@@ -166,7 +166,7 @@ func TestCredentialActualFreshConnectionsAndTakeover(t *testing.T) {
 	resumed := credentialSocket(t, address)
 	var reply Message
 	for attempt := 0; attempt < 8; attempt++ {
-		resourceSend(t, resumed, MsgResumeSession, map[string]string{"token": currentToken})
+		resourceSend(t, resumed, MsgResumeSession, map[string]string{"token": currentToken, "gameplayProtocol": gameplayProtocol})
 		reply = credentialControlReply(t, resumed)
 		if reply.Type == MsgResumeSession {
 			break
@@ -185,7 +185,7 @@ func TestCredentialActualFreshConnectionsAndTakeover(t *testing.T) {
 	}
 	wellRestedReadActor(t, resumed, name, func(entity *statepb.Entity) bool { return entity.Health > 0 })
 	stale := credentialSocket(t, address)
-	resourceSend(t, stale, MsgResumeSession, map[string]string{"token": currentToken})
+	resourceSend(t, stale, MsgResumeSession, map[string]string{"token": currentToken, "gameplayProtocol": gameplayProtocol})
 	credentialExpectError(t, stale, "Session token invalid or expired")
 	stale.Close()
 	resumed.Close()

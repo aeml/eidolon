@@ -96,7 +96,7 @@ func TestResourceActualTokenResumeAndDeathRecovery(t *testing.T) {
 					t.Fatal(err)
 				}
 				t.Cleanup(func() { resumed.Close() })
-				resourceSend(t, resumed, MsgResumeSession, map[string]string{"token": token})
+				resourceSend(t, resumed, MsgResumeSession, map[string]string{"token": token, "gameplayProtocol": gameplayProtocol})
 				var reply struct {
 					PlayerID    string `json:"playerID"`
 					ResumeToken string `json:"resumeToken"`
@@ -113,7 +113,7 @@ func TestResourceActualTokenResumeAndDeathRecovery(t *testing.T) {
 					t.Fatal(err)
 				}
 				t.Cleanup(func() { replay.Close() })
-				resourceSend(t, replay, MsgResumeSession, map[string]string{"token": token})
+				resourceSend(t, replay, MsgResumeSession, map[string]string{"token": token, "gameplayProtocol": gameplayProtocol})
 				var rejection string
 				resourceReadMessage(t, replay, MsgError, &rejection)
 				if !strings.Contains(rejection, "Session token invalid or expired") {

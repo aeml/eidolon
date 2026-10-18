@@ -70,7 +70,7 @@ func TestAuthDispatchClosedOrRetiredRecipientCannotConsumeResumeToken(t *testing
 			} else {
 				recipient.retired.Store(true)
 			}
-			payload, _ := json.Marshal(map[string]string{"token": token})
+			payload, _ := json.Marshal(map[string]string{"token": token, "gameplayProtocol": gameplayProtocol})
 			recipient.dispatchMessage(Message{Type: MsgResumeSession, Payload: payload})
 			if recipient.username != "" || len(recipient.send) != 0 {
 				t.Fatal("unavailable recipient entered the resume path")

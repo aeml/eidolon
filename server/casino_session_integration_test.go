@@ -117,7 +117,7 @@ func TestCasinoActualSocketsResumeAndRestart(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer resumed.Close()
-	resourceSend(t, resumed, MsgResumeSession, map[string]string{"token": token})
+	resourceSend(t, resumed, MsgResumeSession, map[string]string{"token": token, "gameplayProtocol": gameplayProtocol})
 	resourceReadMessage(t, resumed, MsgResumeSession, nil)
 	resumedPresence := casinoReadPresence(t, resumed, func(p game.CasinoPresence) bool { return p.YourSeat != nil })
 	if resumedPresence.YourSeat.SessionID != first.YourSeat.SessionID || resumedPresence.YourSeat.Ready {

@@ -1,4 +1,23 @@
 import { showSessionRecoveryLogin } from '../src/ui/SessionRecovery.js';
+import { jest } from '@jest/globals';
+
+test('update recovery offers one deliberate reload and retires it on ordinary recovery', () => {
+    document.body.innerHTML = '<div id="login-panel"><input id="auth-password" value="secret"><input id="auth-username"><div id="auth-status"></div></div>';
+    const reload = jest.fn();
+    showSessionRecoveryLogin({ message: 'Reload to continue your saved character.', reloadRequired: true, reload });
+    const button = document.getElementById('session-reload-game');
+    expect(button.hidden).toBe(false);
+    expect(button.textContent).toBe('Reload game');
+    expect(document.activeElement).toBe(button);
+    expect(reload).not.toHaveBeenCalled();
+    button.click();
+    expect(reload).toHaveBeenCalledTimes(1);
+    expect(document.getElementById('auth-password').value).toBe('');
+    showSessionRecoveryLogin();
+    expect(button.hidden).toBe(true);
+    button.click();
+    expect(reload).toHaveBeenCalledTimes(1);
+});
 
 test('failed session restores the login ancestor, hides stale character controls and clears only the password', () => {
     document.body.innerHTML = `<div id="start-screen" class="hidden" style="display:none">

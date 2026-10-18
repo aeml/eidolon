@@ -73,7 +73,7 @@ func TestTerrainActualSavedSessionsAcrossProfileChanges(t *testing.T) {
 			if login.TerrainProfile != profile {
 				t.Fatalf("phase%d/%s negotiated the wrong terrain", phase, fixture.Class)
 			}
-			resourceSend(t, connection, MsgJoin, JoinPayload{Type: fixture.Class})
+			resourceSend(t, connection, MsgJoin, JoinPayload{Type: fixture.Class, GameplayProtocol: gameplayProtocol})
 			resourceReadMessage(t, connection, MsgQuestUpdate, nil)
 			actor := wellRestedReadActor(t, connection, fixture.Name, func(*statepb.Entity) bool { return true })
 			saved := resourceCloseAndWait(t, repo, connection, fixture.Name)

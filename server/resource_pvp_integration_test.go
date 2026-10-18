@@ -118,7 +118,7 @@ func TestResourceActualPvPForfeitAndShutdownRecovery(t *testing.T) {
 						}
 						mana -= 30
 					}
-					resourceSend(t, connection, MsgJoin, JoinPayload{Type: classes[i]})
+					resourceSend(t, connection, MsgJoin, JoinPayload{Type: classes[i], GameplayProtocol: gameplayProtocol})
 					resourceReadMessage(t, connection, MsgQuestUpdate, nil)
 					if scene := resourceReadScene(t, connection); scene.InstanceID != firstScene.InstanceID {
 						t.Fatal("repeat Join escaped PvP")

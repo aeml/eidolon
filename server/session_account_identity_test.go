@@ -107,7 +107,7 @@ func TestSessionIdentityResumeRefusalDoesNotConsumeTokenOrAdmitRecipient(t *test
 	}
 	owner.markTransportClosedAt(time.Now())
 	recipient := &Client{send: make(chan []byte, 4)}
-	payload, _ := json.Marshal(map[string]string{"token": token})
+	payload, _ := json.Marshal(map[string]string{"token": token, "gameplayProtocol": gameplayProtocol})
 	recipient.dispatchMessage(Message{Type: MsgResumeSession, Payload: payload})
 	if recipient.username != "" || !clientAccountID(recipient).IsZero() || recipient.playerID != "" {
 		t.Fatal("rejected recipient partially admitted")

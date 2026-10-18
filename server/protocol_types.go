@@ -473,7 +473,8 @@ type AuthPayload struct {
 }
 
 type JoinPayload struct {
-	Type string `json:"type"` // Class type
+	Type             string `json:"type"` // Class type
+	GameplayProtocol string `json:"gameplayProtocol"`
 }
 
 type MovePayload struct {

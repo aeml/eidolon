@@ -8,7 +8,7 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
         await page.routeWebSocket(/\/ws(?:\?.*)?$/, socket => {
             socket.onMessage(raw => {
                 const message = JSON.parse(raw); requests.push(message);
-                if (message.type === 'login') socket.send(JSON.stringify({ type: 'login_success', payload: { message: 'Authenticated fixture', hasCharacter: true, characterType: 'Wizard', terrainProfile: 'flat-v1' } }));
+                if (message.type === 'login') socket.send(JSON.stringify({ type: 'login_success', payload: { gameplayProtocol: 'stationary-actions-roofs-v1', message: 'Authenticated fixture', hasCharacter: true, characterType: 'Wizard', terrainProfile: 'flat-v1' } }));
                 if (message.type === 'moderation_notice') socket.send(JSON.stringify({ type: 'moderation_notice_result', payload: { requestId: message.payload.requestId, success: true, notices: [{ kind: 'suspend', id: 'd'.repeat(64), reason: 'Public explanation for this prepared fixture.', startedAt: '2026-10-02T01:00:00Z', expiresAt: '2026-10-02T02:00:00Z' }, { kind: 'require_name_change', id: 'c'.repeat(64), reason: 'Choose a corrected public name.', startedAt: '2026-10-02T01:00:00Z', expiresAt: '0001-01-01T00:00:00Z' }] } }));
                 if (message.type === 'public_name_correction') socket.send(JSON.stringify({ type: 'public_name_correction_result', payload: { id: message.payload.id, success: true, final: true, message: 'Confirmed name correction recorded; other restrictions remain.' } }));
                 if (message.type === 'report') socket.send(JSON.stringify({ type: 'report_result', payload: { requestId: message.payload.requestId, success: true, reportId: 'e'.repeat(24) } }));

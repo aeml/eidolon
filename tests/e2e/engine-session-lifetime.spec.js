@@ -197,6 +197,7 @@ for (const quality of ['high', 'low']) test(`${quality}: three transport recover
             if (message.payload.token !== `fixture-token-${resumes}`) protocolFailures.push('Incorrect resume token');
             resumes++;
             transport.send(JSON.stringify({ type: 'resume_session', payload: {
+                gameplayProtocol: 'stationary-actions-roofs-v1',
                 resumeToken: `fixture-token-${resumes}`, terrainProfile: 'flat-v1' } }));
             transport.send(JSON.stringify({ type: 'enter_instance', payload: {
                 instanceId: `lifetime-arena-${resumes}`, type: 'pvp_arena',

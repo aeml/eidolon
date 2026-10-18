@@ -245,7 +245,7 @@ func TestPublicEventActualPartyFullClear(t *testing.T) {
 		// Start the sole reader before join so initial state and the movement
 		// context cannot be discarded while waiting for an unrelated UI message.
 		probes[i] = watchPublicEventSocket(conn, ids[i])
-		resourceSend(t, conn, MsgJoin, JoinPayload{Type: "Wizard"})
+		resourceSend(t, conn, MsgJoin, JoinPayload{Type: "Wizard", GameplayProtocol: gameplayProtocol})
 		arenaAwait(t, 10*time.Second, func() bool {
 			p := probes[i]
 			p.mu.Lock()
