@@ -13,7 +13,9 @@ test('component notices are readable without JavaScript, fonts, media or account
     expect(document.querySelector('meta[name="viewport"]').content).toContain('width=device-width');
     expect(document.querySelectorAll('main h1')).toHaveLength(1);
     expect([...document.querySelectorAll('section')].map(section => section.getAttribute('aria-labelledby'))).toEqual(['project', 'runtime', 'typeface', 'characters']);
-    expect(document.querySelectorAll('script,iframe,img,video,audio,form,link')).toHaveLength(0);
+    expect(document.querySelectorAll('script,iframe,img,video,audio,form,link:not([rel="icon"])')).toHaveLength(0);
+    expect(document.querySelectorAll('link[rel="icon"]')).toHaveLength(1);
+    expect(document.querySelector('link[rel="icon"]').getAttribute('href')).toBe('data:,');
     expect(source).not.toMatch(/url\(|@import|on(?:click|load|error)\s*=/i);
     expect(Buffer.byteLength(source)).toBeLessThan(6000);
 });
