@@ -49,6 +49,22 @@ func normalizedGroundItem(item Item) Item {
 	return item
 }
 
+// Hydrating a returning character migrates its saved stat scale; an immutable
+// ground remainder retains its original payload. Compare that one known
+// migration on copies, without rewriting either item or any ledger bytes.
+// Two legacy items still require exact legacy metadata, and unknown versions
+// remain incompatible. ID and quantity are intentionally separate custody data.
+func sameGroundStackMetadata(left, right Item) bool {
+	left, right = normalizedGroundItem(left), normalizedGroundItem(right)
+	if left.StatScaleVersion == 0 && right.StatScaleVersion == ItemStatScaleVersion {
+		NormalizeItemStatScale(&left)
+	} else if right.StatScaleVersion == 0 && left.StatScaleVersion == ItemStatScaleVersion {
+		NormalizeItemStatScale(&right)
+	}
+	left.ID, right.ID, left.Stack, right.Stack = "", "", 0, 0
+	return reflect.DeepEqual(left, right)
+}
+
 func groundDropSourceSlot(player *Entity, moved Item) (int, error) {
 	selected := -1
 	for index, item := range player.Inventory {
@@ -180,9 +196,7 @@ func placeGroundItem(inventory []Item, item Item, splitID string) ([]Item, int) 
 			if current.ID == "" || current.Stack < 1 || current.MaxStack != item.MaxStack || current.Stack >= current.MaxStack {
 				continue
 			}
-			left, right := normalizedGroundItem(*current), normalizedGroundItem(item)
-			left.ID, right.ID, left.Stack, right.Stack = "", "", 0, 0
-			if !reflect.DeepEqual(left, right) {
+			if !sameGroundStackMetadata(*current, item) {
 				continue
 			}
 			amount := min(remaining, current.MaxStack-current.Stack)
@@ -234,9 +248,7 @@ func planInventoryItemPlacement(player *Entity, item Item, splitID string) ([]It
 		if current.ID != item.ID {
 			return nil
 		}
-		left, right := normalizedGroundItem(current), normalizedGroundItem(item)
-		left.ID, right.ID, left.Stack, right.Stack = "", "", 0, 0
-		if item.MaxStack <= 1 || !reflect.DeepEqual(left, right) {
+		if item.MaxStack <= 1 || !sameGroundStackMetadata(current, item) {
 			return ErrGroundItemIdentity
 		}
 		ownedOriginal = true

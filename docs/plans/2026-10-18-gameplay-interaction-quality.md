@@ -84,9 +84,20 @@ and refuses replay. This fixture does not stand in for an earned enemy kill.
 The existing actual quest-reward case also explicitly rejects any interaction
 cast during ordinary manual NPC turn-in. The roof
 case can additionally exercise a real previous schema26 executable's preflight
-and startup refusal. These cases have not yet executed against Mongo/API;
-their opt-in skips are not connected qualification. Native motion, roof picking
-and fence/window presentation remain open.
+and startup refusal. The first actual attempt failed before gameplay because
+the launcher supplied the Git source as its build identity while the unchanged
+readiness helper requires the executable basename. That failure is retained.
+With the launcher identity corrected, five of six actual cases passed in59.055s,
+including roof/drop cold recovery, recall cancellation, saved discovery, ordinary
+ground recovery and immediate NPC turn-in/reward choice. The remaining partial
+quest pickup exposed a real reconnect defect: bag hydration migrates stat scale
+while a retained ground remainder keeps its immutable old payload. Stack
+compatibility now compares the known migration on copies, retaining original
+ledger/fingerprint bytes and rejecting changed affixes, descriptions and unknown
+versions. The reproduced three CPU failures and actual negative are retained.
+The unchanged actual case and related custody checks must pass after correction;
+five passing cases do not qualify the complete feature. Native motion, roof
+picking and fence/window presentation remain open.
 
 The current isolated roof/item source passes168focused Go-race outcomes across
 three packages (main6.248s, game13.945s, database1.104s), with six explicit
