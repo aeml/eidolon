@@ -63,7 +63,7 @@ test('production character QA still waits on Go, Jest and the complete browser m
 
 test('always-running native cleanup is confined to the owned browser cleanup step', () => {
     const steps = predeploy.split('\n      - name:').slice(1);
-    const unconditional = steps.filter(step => /^        if:.*always\(\)/m.test(step));
+    const unconditional = steps.filter(step => /^ {8}if:.*always\(\)/m.test(step));
     expect(unconditional).toHaveLength(1);
     expect(unconditional[0]).toContain('Clean owned browser network capsules');
     expect(unconditional[0]).toContain('run: node scripts/cleanup-browser-network.mjs');
