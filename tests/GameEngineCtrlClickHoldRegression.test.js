@@ -306,7 +306,7 @@ describe('GameEngine ctrl-click hold regression', () => {
         engine.update(.1);
         expect(engine.uiManager.closeForWorldInteraction).toHaveBeenCalledTimes(mobile ? 1 : 0);
         expect(engine.player.position.x).toBeCloseTo(mobile ? .5 : 0);
-        if (!mobile) expect(engine.renderSystem.cameraTarget.x).toBeLessThan(0);
+        if (!mobile) expect(engine.renderSystem.setCameraTarget.mock.calls.at(-1)[0].x).toBeLessThan(0);
     });
     test('manual phone movement cancels pursuit before queued actions and actor movement, preserving selection and new casts', () => {
         const engine = createEngineHarness();

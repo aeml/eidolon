@@ -98,6 +98,21 @@ before movement; three-second casts for quest objects only, excluding NPC
 turn-ins as explicitly clarified; actual melee contact range; landing, walking
 and jumping down on town roofs; and a town-style Earth boundary fence.
 
+## Additional owner requirements — October18, 2026
+
+Complete the [specialization unlock and quest equipment rewards](docs/plans/2026-10-18-specialization-unlock-and-quest-equipment-rewards.md):
+at level10 explain the specialization unlock and guide the player to its menu;
+regular quest rewards offer six random quest-level items, with a green minimum
+and improved blue/orange chances.
+
+Complete the [gameplay interaction pass](docs/plans/2026-10-18-gameplay-interaction-quality.md):
+town recall takes approximately three seconds and movement cancels it; clicking
+outside windows closes them before world movement; quest objects use stationary
+three-second casts, with NPC acceptance and turn-in immediate; melee requires
+actual contact range; players can land, walk and jump down from town roofs; and
+the Earth boundary uses the town-style fence. Preserve dragged menu positions,
+ordinary controls, returning saves and item custody across those changes.
+
 ## Working method
 
 - Implement coherent milestone-sized improvements. Avoid dozens of tiny

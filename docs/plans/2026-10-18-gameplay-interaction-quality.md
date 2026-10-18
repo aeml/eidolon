@@ -95,9 +95,13 @@ while a retained ground remainder keeps its immutable old payload. Stack
 compatibility now compares the known migration on copies, retaining original
 ledger/fingerprint bytes and rejecting changed affixes, descriptions and unknown
 versions. The reproduced three CPU failures and actual negative are retained.
-The unchanged actual case and related custody checks must pass after correction;
-five passing cases do not qualify the complete feature. Native motion, roof
-picking and fence/window presentation remain open.
+The unchanged six-case actual successor now passes in74.140s with no skips:
+twelve real owned server processes, seven fresh synthetic accounts, saved-state
+restart/replay and previous25/26 writer refusals of27. Credential scans and
+owned Mongo/port/input cleanup pass.110related focused Go-race checks also pass,
+with two explicit opt-in skips. These do not claim an earned campaign or native
+visual acceptance. Native motion, roof picking and fence/window presentation
+remain open.
 
 The current isolated roof/item source passes168focused Go-race outcomes across
 three packages (main6.248s, game13.945s, database1.104s), with six explicit
@@ -138,7 +142,19 @@ clicks and real window dragging check character/bag dismissal and remembered
 positions. Jump observations retain the original1.5second click-to-confirmed-
 rendered-landing requirement. The owned launcher uses one browser with sequential
 contexts, no retries and stops at its first failure. These are prepared checks,
-not executed native or physical-device acceptance.
+not physical-device acceptance. Initial native25 reached an equipped Fighter
+on the slate roof, but its fixture incorrectly expected Low actor meshes to
+replace owned High meshes without the supported reload. Native27 follows normal
+Settings/relogin and restores the saved pitched roof with the actual Low body;
+its next failure incorrectly pressed desktopW (camera pan) to move the player.
+Both failures and reviewed close High/Low screenshots remain retained; final
+arc-clock assertions and the complete routes were not reached. The corrected
+fixture uses ordinary ground-click movement for cancellation and retains frame
+observations even on failure. Runtime dismissal now distinguishes phone movement
+from desktop camera pan.74client checks/four suites2.083s pass after the reproduced
+camera-window failure and a corrected mock-camera assertion. Original jump,
+deadline, moving-frame, saved-state and authoritative cancellation requirements
+remain unchanged; the complete native successor still must pass.
 
 These are CPU/race and controlled source checks, not connected visual acceptance.
 Actual mouse/touch jumps, rendered feet/slates, edges, network prediction,
