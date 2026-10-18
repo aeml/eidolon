@@ -117,6 +117,18 @@ prevent an older packet restoring a departed roof. Both reproduced failures
 remain retained.182related client checks/five suites4.989s pass after correction;
 connected/native proof remains required.
 
+Six opt-in actual native routes are now prepared: four equipped class roof
+routes through normal mouse/keyboard jumps, pitched walking, edge falls and
+recall cancellation; a phone-sized touch Use/cancellation/discovery route; and
+a High/Low Earth-boundary view checking actual timber/iron/lantern draws and
+retired legacy actor meshes. The Fighter roof route additionally switches
+High/Low through Settings and reviews close/overview zoom. Normal outside-world
+clicks and real window dragging check character/bag dismissal and remembered
+positions. Jump observations retain the original1.5second click-to-confirmed-
+rendered-landing requirement. The owned launcher uses one browser with sequential
+contexts, no retries and stops at its first failure. These are prepared checks,
+not executed native or physical-device acceptance.
+
 These are CPU/race and controlled source checks, not connected visual acceptance.
 Actual mouse/touch jumps, rendered feet/slates, edges, network prediction,
 reconnect, floor changes, item custody and complete integrated gameplay remain
