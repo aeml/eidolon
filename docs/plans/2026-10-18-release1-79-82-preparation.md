@@ -1,8 +1,10 @@
 # Alpha1.79.82 preparation: outfitter poses, item inspection and dungeon stonework
 
 This isolated candidate follows selected master17a5862eca203373d9e004d25fbbfb71f5d5458b.
-It is prepared, not merged into master, pushed or deployed. Alpha1.79.81 must
-complete its own CI/deployment/public acceptance first. This preparation does
+It is prepared, not merged into master, pushed or deployed. Alpha1.79.81 has
+completed its own CI/deployment/public acceptance; its documentation is merged
+into this candidate. [Accepted81](2026-10-18-release1-79-81-acceptance.md).
+This preparation does
 not declare beta, feature freeze, final art or the full goal complete.
 
 The player feature is Veyra's Pose/Moment appearance inspection, with stable
@@ -24,6 +26,17 @@ original six failures and additional deliberate-inspection failure are retained
 separately from the earlier784-check assembly. No saved data or server protocol
 changes. This closes the demonstrated inspection bugs, not the wider F2 review.
 [Item-text qualification](2026-10-18-inventory-tooltip-text-boundary.md).
+
+The first assembled native controller stops before browser/account preparation
+because the original constructor shares ten seconds between connection and all
+27schema migrations. All six gameplay cases remain unexecuted in that attempt;
+its original failure and cleanup are frozen. The selected constructor correction
+keeps the ten-second connection limit and gives migration preparation a separate
+45second bound. Twelve related checks and two actual cold-fault CI-wrapper cases
+pass. One runtime file exactly matches qualified433b332d5; schema/data/gameplay
+rules and every original movement/jump deadline remain unchanged. The next
+assembled native attempt must exercise this corrected source; it is not yet a pass.
+[Startup qualification](2026-10-18-database-startup-budget-qualification.md).
 
 Selected world art adds softly shaped wall piers and separates elemental wall
 mineral albedo from colored room lighting. Four source files exactly match the
@@ -75,12 +88,13 @@ After item-inspection selection and the added current-release bullet,
 386release-presentation checks pass in3.08seconds; all516prior raw entry strings
 were reread and remain exact. This is an incremental check, not another run of
 the earlier784-check assembly.
-Model assets, dependency versions, schema27 and stationary-action protocol
-remain the selected81 inputs. No paid generation is performed. The original
+Model assets, package dependency versions, schema27 and stationary-action protocol
+remain the selected81 inputs. The new isolated CI startup fixture uses the same
+Mongo7.0.14 version as its local qualification. No paid generation is performed. The original
 qualified UI history is retained under
 `refs/archive/20261018-garment-pose-qualification`.
 
-Before publication, accept81, wait until all workflows are terminal before any
+Before publication, retain81acceptance and wait until all workflows are terminal before any
 local GPU qualification, rebuild the final copied candidate, finish appropriate
 assembled native gameplay/preview/connected checks and preserve original input/
 performance findings. Then merge selected work into master, fetch/ordinarily
