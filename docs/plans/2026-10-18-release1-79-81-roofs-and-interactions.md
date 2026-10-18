@@ -70,9 +70,10 @@ All six accounts retain gear, bag, wallet and their expected saved handoff.
 Owned databases/ports are cleaned and protected source inputs are unchanged.
 
 [Scoped receipt](2026-10-18-release1-79-81-local-qualification.json).
-Earth High/Low and phone cast/diary captures were reviewed. The phone cast panel
-overlaps portions of action controls; joystick cancellation remains accessible
-and passes. Retain that layout refinement for the mobile polish work before beta.
+Earth High/Low and phone cast/diary captures were reviewed. The original c41 phone
+capture exposes overlap with portions of the action controls while cancellation
+still passes. The selected phone correction above resolves that layout in eight
+browser cases and a subsequent actual connected cast/cancel/retry/save route.
 This selects the implementation for ordinary master publication; full exact
 CI/public deployment acceptance remains required. It is not physical-device,
 whole-game performance, earned-campaign, production backup-policy or beta approval.
