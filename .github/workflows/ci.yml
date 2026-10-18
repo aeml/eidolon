@@ -141,7 +141,7 @@ jobs:
           EIDOLON_WEEKLY_DISPOSABLE_DATABASE=1 MONGO_URI=mongodb://127.0.0.1:27017 EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestWeeklyRaid(Mongo|Production)' -count=1 -timeout=120s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestEmailRecoveryActual(Connected|Invitation)Sessions$' -count=1 -timeout=90s
           # Four living cases now require three-second recall casts. Preserve
-          # the original45s work allowance plus those12mandatory cast seconds.
+          # the original 45s work allowance plus those 12 mandatory cast seconds.
           # Socket deadlines and all recall/resource assertions remain unchanged.
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestResourceActualTokenResumeAndDeathRecovery$' -count=1 -timeout=57s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestTerrainActual(SavedSessionsAcrossProfileChanges|HealthMatchesLoginProfile)$' -count=1 -timeout=120s
