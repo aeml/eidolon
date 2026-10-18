@@ -22,13 +22,19 @@ original five-second limit, with stronger source-integrity checks. Earlier
 failed runs remain failures. [Recovery budget](2026-10-18-release1-79-81-recovery-watchdog.md).
 [Publication fixture](2026-10-18-release1-79-81-publication-escape-fixture.md).
 
-The latest executable/test source is `966d5639a917919dea813b39a3162e506aa8dfca`.
-[Its own CI](https://github.com/aeml/eidolon/actions/runs/39122629755), native
-pipeline and deployed-asset verification remain required. The intermediate
-pending run `39121209266` was canceled without starting jobs after the newer
-push. No manual rerun or cancellation is used. The public version
-remains 80; 81 is not accepted merely because focused checks pass.
-
+The earlier source `966d5639a917919dea813b39a3162e506aa8dfca` passed all five
+hosted jobs in [CI39122629755](https://github.com/aeml/eidolon/actions/runs/39122629755),
+then failed native release smoke because its portal fixture still expected
+instant recall during a jump. A disposable reproduction confirms the server
+correctly cancels that moving cast. The corrected route verifies cancellation,
+landing and a fresh three-second recall; all four enabled release-smoke cases
+pass, and the existing separately selected long-jump case remains skipped.
+[Qualification](2026-10-18-dungeon-stationary-recall-qualification.md).
+The selected QA corrections also inspect encoded JSON reporter attachments
+before artifact publication. The corrected81 source still requires its own
+complete CI, deployment and public-asset verification. Earlier failures remain
+failures; no manual retry, cancellation or acceptance waiver is used. The public
+version remains80.
 The complete original roadmap remains active: final world/character/garment art,
 combat/audio polish, campaign and device validation, original performance
 budgets, security, operations, feature freeze, closed beta and the 1.99 handoff.
