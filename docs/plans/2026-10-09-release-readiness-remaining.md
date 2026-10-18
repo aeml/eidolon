@@ -80,13 +80,18 @@ characters. Every second main-story chapter offers six different quest-level
 items:55% green,35% blue,10% orange per item. Exact offers survive turn-in saves and
 reconnects. Explicit claims journal the bag and receipt before feedback; full bags
 retain choices, and replay cannot award a second item. Daily/optional catch-up
-payouts and completed older receipts are retained.20 runtime paths qualify through
+payouts and completed older receipts are retained.22 runtime paths qualify through
 58 client checks/seven suites,396 Go-race regressions, two software-browser
 presentation cases and one real API/Mongo/ordinary-login/reconnect/single-claim
 session. Three session setup negatives remain retained; the corrected session
-passes in 9.68s with no automatic retry. Schema 26 fences older writers without
+passes in 9.05s with no automatic retry. Schema 26 fences older writers without
 backfilling rewards. The actual schema-25 executable refuses the newer database
 without changing saved offers or bags;45 schema/quest race checks pass.
+The final unlock alignment enforces level 10 in both menus and on the server,
+keeps earlier previews and existing branches, and passes361 Go race checks,
+53 client checks/four suites and two stronger desktop/phone browser cases.
+Ordinary login requests reject a level-9 selection, accept it at level 10, and
+preserve the chosen branch alongside saved quest offers through reconnect.
 51 CI-policy checks/four suites and the
 469-case exact hosted partition pass. One UI module and two permanent browser
 cases are added. This is not native GPU, campaign pacing or physical-device
