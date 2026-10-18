@@ -1,10 +1,15 @@
 import { createReadStream } from 'node:fs';
-import { readFile, stat } from 'node:fs/promises';
+import { readFile, realpath, stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const repoRoot = path.resolve(process.env.EIDOLON_STATIC_ROOT || path.join(path.dirname(fileURLToPath(import.meta.url)), '..'));
+// Keep prepared test inputs separate from the immutable copied game. This
+// opt-in namespace cannot replace the client entrypoint or any game module.
+const testRoot = process.env.EIDOLON_STATIC_TEST_ROOT
+    ? await realpath(path.resolve(process.env.EIDOLON_STATIC_TEST_ROOT))
+    : null;
 const host = process.env.HOST || '127.0.0.1';
 const port = Number.parseInt(process.env.PORT || '4173', 10);
 const indexPath = path.join(repoRoot, 'index.html');
@@ -35,20 +40,30 @@ const mimeTypes = new Map([
 
 function resolveRequestPath(requestUrl) {
     const pathname = decodeURIComponent(new URL(requestUrl, `http://${host}:${port}`).pathname);
-    const requestedPath = pathname === '/' ? '/index.html' : pathname;
-    const resolved = path.resolve(repoRoot, `.${requestedPath}`);
-    if (resolved !== repoRoot && !resolved.startsWith(`${repoRoot}${path.sep}`)) return null;
-    return resolved;
+    const testFixture = Boolean(testRoot && pathname.startsWith('/tests/'));
+    const root = testFixture ? testRoot : repoRoot;
+    const requestedPath = testFixture ? pathname.slice('/tests'.length) : pathname === '/' ? '/index.html' : pathname;
+    const filePath = path.resolve(root, `.${requestedPath}`);
+    if (filePath !== root && !filePath.startsWith(`${root}${path.sep}`)) return null;
+    return { filePath, testFixture };
 }
 
 const server = createServer(async (request, response) => {
-    const filePath = resolveRequestPath(request.url || '/');
-    if (!filePath) {
+    const resolved = resolveRequestPath(request.url || '/');
+    if (!resolved) {
         response.writeHead(403).end('Forbidden');
         return;
     }
+    const { filePath, testFixture } = resolved;
 
     try {
+        if (testFixture) {
+            const actual = await realpath(filePath);
+            if (!actual.startsWith(`${testRoot}${path.sep}`)) {
+                response.writeHead(403).end('Forbidden');
+                return;
+            }
+        }
         const fileStat = await stat(filePath);
         if (!fileStat.isFile()) throw new Error('Not a file');
         if (filePath === indexPath && webSocketOverride) {
