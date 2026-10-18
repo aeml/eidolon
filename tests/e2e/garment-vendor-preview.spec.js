@@ -8,7 +8,7 @@ for (const outfit of Object.values(GARMENT_MODELS.outfits)) for (const quality o
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.setViewportSize({ width: quality === 'low' ? 390 : 1280, height: 900 });
     await page.goto('/', { waitUntil: 'networkidle' });
-    const expectedVersion = await page.evaluate(async ({ quality, outfit }) => {
+    const expected = await page.evaluate(async ({ quality, outfit }) => {
         const { CosmeticVendorUI } = await import('/src/ui/CosmeticVendorUI.js');
         const { COSMETIC_CATALOGUE } = await import('/src/data/cosmetics.generated.js');
         const { GARMENT_MODELS } = await import('/src/assets/garments.generated.js');
@@ -27,7 +27,7 @@ for (const outfit of Object.values(GARMENT_MODELS.outfits)) for (const quality o
         const offer = { ...source, appearance: { baseName: source.name, rarity: 'Common', slot: 'outfit' } };
         ui.open(); ui.handleResult({ playerID: player.id, success: true, pending: false, ep: 75, catalogue: [offer], collection: { [`${offer.name}|Common`]: offer.appearance } });
         window.__garmentPreview = { ui, player, sent, original: JSON.stringify(gear) };
-        return GARMENT_MODELS.outfits[source.name].models[actorClass][quality].sha256.slice(0, 16);
+        return { version: GARMENT_MODELS.outfits[source.name].models[actorClass][quality].sha256.slice(0, 16), actorClass };
     }, { quality, outfit: { id: outfit.id, name: outfit.name } });
     const dialog = page.getByRole('dialog');
     await expect.poll(() => page.evaluate(() => window.__garmentPreview.ui.preview?.model?.userData.equipmentVisualGarment)).toBe(outfit.id);
@@ -38,6 +38,11 @@ for (const outfit of Object.values(GARMENT_MODELS.outfits)) for (const quality o
         const preview = window.__garmentPreview.ui.preview;
         await preview.modelReady; await preview.model.userData.equipmentReady;
     });
+    const renderer = await page.evaluate(() => {
+        const gl = window.__garmentPreview.ui.preview.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
+        return gl.getParameter(debug ? debug.UNMASKED_RENDERER_WEBGL : gl.RENDERER);
+    });
+    if (process.env.EIDOLON_E2E_REQUIRE_NATIVE_GPU === '1') expect(renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
     const pose = dialog.getByRole('combobox', { name: 'Preview pose', exact: true });
     const moment = dialog.getByRole('slider', { name: 'Moment in pose', exact: true });
     await expect(pose).toBeEnabled(); await expect(moment).toBeEnabled();
@@ -54,10 +59,12 @@ for (const outfit of Object.values(GARMENT_MODELS.outfits)) for (const quality o
             return { state: preview.previewPose, clip: clip.name, fraction: action.time / clip.duration,
                 garment: model.userData.equipmentVisualGarment, missing: model.userData.equipmentVisualMissing || [],
                 fallback: model.userData.assetFallback || false,
+                actorClass: model.userData.authoredClass, quality: model.userData.authoredQuality,
                 cameraFinite: preview.camera.projectionMatrix.elements.every(Number.isFinite) };
         });
         expect(sample.fraction).toBeCloseTo(.35, 5); expect(sample.garment).toBe(outfit.id);
         expect(sample.missing).toEqual([]); expect(sample.fallback).toBe(false); expect(sample.cameraFinite).toBe(true);
+        expect(sample.actorClass).toBe(expected.actorClass); expect(sample.quality).toBe(quality);
         poseSamples.push(sample);
         if (state === 'Attack') await dialog.locator('.character-preview-stage').screenshot({ path: testInfo.outputPath('attack-pose-preview.png') });
     }
@@ -70,7 +77,7 @@ for (const outfit of Object.values(GARMENT_MODELS.outfits)) for (const quality o
     await moment.press('Home'); await expect(moment).toHaveValue('0');
     expect(await page.evaluate(() => window.__garmentPreview.sent.length)).toBe(sentBeforePoses);
     expect(await page.evaluate(() => JSON.stringify(window.__garmentPreview.player.equipment) === window.__garmentPreview.original && Object.keys(window.__garmentPreview.player.appearances).length === 0)).toBe(true);
-    await testInfo.attach('garment-preview-poses', { body: JSON.stringify({ choices, poseSamples,
+    await testInfo.attach('garment-preview-poses', { body: JSON.stringify({ renderer, choices, poseSamples,
         scope: 'Existing real class/garment preview, static on-demand poses and keyboard endpoints; no live combat, full garment-motion or physical-device acceptance.' }), contentType: 'application/json' });
     await dialog.getByRole('button', { name: 'Show equipped look', exact: true }).click();
     await expect.poll(() => page.evaluate(() => window.__garmentPreview.ui.preview.model.userData.equipmentVisualGarment)).toBe('');
@@ -81,7 +88,7 @@ for (const outfit of Object.values(GARMENT_MODELS.outfits)) for (const quality o
     await dialog.getByRole('button', { name: 'Apply complete outfit', exact: true }).click();
     expect(await page.evaluate(() => window.__garmentPreview.sent.at(-1))).toEqual({ type: 'select_appearance', payload: { slot: 'outfit', key: `${outfit.name}|Common` } });
     expect(await page.evaluate(() => JSON.stringify(window.__garmentPreview.player.equipment) === window.__garmentPreview.original && Object.keys(window.__garmentPreview.player.appearances).length === 0)).toBe(true);
-    expect(requests.some(url => url.includes(`v=${expectedVersion}`))).toBe(true);
+    expect(requests.some(url => url.includes(`v=${expected.version}`))).toBe(true);
     expect(await dialog.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
     await page.evaluate(() => {
         const { ui, player } = window.__garmentPreview;
