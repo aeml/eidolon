@@ -208,35 +208,114 @@ test.describe('dedicated QA character', () => {
         expect(failures, failures.join('\n')).toEqual([]);
     });
 
-    test('enters and exits a dungeon through the allowlisted QA waypoint', async ({ page, baseURL }) => {
+    test('enters and exits a dungeon through the allowlisted QA waypoint', async ({ page, baseURL }, testInfo) => {
         test.skip(process.env.EIDOLON_E2E_PORTAL_ONLY !== '1', 'Enable for focused portal QA');
         test.setTimeout(600_000);
         const failures = collectBrowserFailures(page, baseURL);
         await loginAndEnterWorld(page, credentials);
         await ensureDungeonReadyLevel(page);
-        await enterAndExitDungeon(page);
-        await enterAndExitDungeon(page, { beforeExit: async () => {
-            // Re-enter through the real portal, then recall during a real
-            // Ctrl-click jump instead of invoking a scene change directly.
-            await expect.poll(() => page.evaluate(() => Boolean(
-                window.game?.currentDungeonLayout &&
-                window.game?.collisionManager?.dungeonWalkableRects?.length
-            )), { timeout: 15_000 }).toBe(true);
-            let target;
-            await expect.poll(async () => {
-                target = await projectGroundOffset(page, 10, 0);
-                return Boolean(target?.canvas);
-            }, { timeout: 15_000, message: 'dungeon camera must settle on a visible jump destination' }).toBe(true);
-            await page.keyboard.down('Control');
-            try {
-                await page.mouse.click(target.x, target.y);
-            } finally {
-                await page.keyboard.up('Control');
-            }
-            await page.waitForFunction(() => Boolean(
-                window.game?.playerJumpState || window.game?.player?.state === 'JUMPING'
-            ), null, { timeout: 3_000 });
-        } });
-        expect(failures, failures.join('\n')).toEqual([]);
+        await page.evaluate(() => {
+            const game = window.game;
+            const events = [];
+            const record = event => {
+                if (events.length < 64) events.push({ ...event, at: performance.now(),
+                    instance: game.currentInstanceType, position: game.player.position.toArray(),
+                    jumping: Boolean(game.playerJumpState || game.player.state === 'JUMPING') });
+            };
+            const send = game.network.send;
+            const receive = game.handleServerMessage;
+            game.network.send = function (type, payload, ...rest) {
+                if (type === 'recall') record({ type: 'request', context: payload?.movementContext });
+                return send.call(this, type, payload, ...rest);
+            };
+            game.handleServerMessage = function (message, ...rest) {
+                if (message.type === 'interaction_cast' && message.payload?.kind === 'recall') {
+                    const { id, target: context, state, duration } = message.payload;
+                    record({ type: 'cast', id, context, state, duration });
+                } else if (message.type === 'error') record({ type: 'error', message: message.payload });
+                return receive.call(this, message, ...rest);
+            };
+            window.__dungeonRecallAudit = { events, stop() {
+                game.network.send = send;
+                game.handleServerMessage = receive;
+                return { events, restored: game.network.send === send && game.handleServerMessage === receive };
+            } };
+        });
+        let audit;
+        try {
+            await enterAndExitDungeon(page);
+            await enterAndExitDungeon(page, { beforeExit: async () => {
+                // A stationary recall cannot bypass an actual Ctrl-click jump.
+                // Try B in flight, verify its cancellation/rejection, then retry
+                // after landing through the same ordinary three-second cast.
+                await expect.poll(() => page.evaluate(() => Boolean(
+                    window.game?.currentDungeonLayout &&
+                    window.game?.collisionManager?.dungeonWalkableRects?.length
+                )), { timeout: 15_000 }).toBe(true);
+                let target;
+                await expect.poll(async () => {
+                    target = await projectGroundOffset(page, 10, 0);
+                    return Boolean(target?.canvas);
+                }, { timeout: 15_000, message: 'dungeon camera must settle on a visible jump destination' }).toBe(true);
+                await page.keyboard.down('Control');
+                try {
+                    await page.mouse.click(target.x, target.y);
+                } finally {
+                    await page.keyboard.up('Control');
+                }
+                await page.waitForFunction(() => Boolean(
+                    window.game?.playerJumpState || window.game?.player?.state === 'JUMPING'
+                ), null, { timeout: 3_000 });
+                const instance = await page.evaluate(() => window.game.currentInstanceType);
+                const firstEvent = await page.evaluate(() => window.__dungeonRecallAudit.events.length);
+                await page.keyboard.press('b');
+                await expect.poll(() => page.evaluate(offset => {
+                    const events = window.__dungeonRecallAudit.events.slice(offset);
+                    return events.some(event => event.type === 'cast' && ['cancelled', 'rejected'].includes(event.state));
+                }, firstEvent), { timeout: 3_000, message: 'Recall requested in flight must be cancelled or rejected by the server' }).toBe(true);
+                const attempt = await page.evaluate(offset => window.__dungeonRecallAudit.events.slice(offset), firstEvent);
+                const request = attempt.find(event => event.type === 'request');
+                expect(request?.jumping, 'The real B key must reach recall while the player is airborne').toBe(true);
+                const casts = attempt.filter(event => event.type === 'cast' && event.context === request.context);
+                expect(casts.some(event => event.state === 'completed')).toBe(false);
+                if (casts.some(event => event.state === 'cancelled')) {
+                    const started = casts.find(event => event.state === 'started');
+                    expect(started?.duration).toBe(3);
+                    expect(casts.find(event => event.state === 'cancelled')?.id).toBe(started.id);
+                } else {
+                    expect(casts.map(event => event.state)).toEqual(['rejected']);
+                    await expect(page.locator('.action-error-notice')).toContainText('Stand still before starting this cast');
+                }
+                await expect.poll(() => page.evaluate(() => Boolean(
+                    !window.game.playerJumpState && window.game.player.state === 'IDLE' && !window.game.pendingTownRecall
+                )), { timeout: 3_000 }).toBe(true);
+                // Wait beyond the cancelled cast's deadline. Its stale timer must
+                // never teleport the player once the jump has landed.
+                await page.waitForTimeout(3_100);
+                expect(await page.evaluate(() => window.game.currentInstanceType)).toBe(instance);
+                await expect(page.locator('#interaction-cast')).toBeHidden();
+            } });
+        } finally {
+            audit = await page.evaluate(() => window.__dungeonRecallAudit.stop());
+            await testInfo.attach('dungeon-stationary-recall', { body: JSON.stringify(audit), contentType: 'application/json' });
+        }
+        expect(audit.restored).toBe(true);
+        const requests = audit.events.filter(event => event.type === 'request');
+        const completed = audit.events.filter(event => event.type === 'cast' && event.state === 'completed');
+        expect(requests).toHaveLength(3);
+        expect(completed).toHaveLength(2);
+        for (const completion of completed) {
+            const request = requests.find(event => event.context === completion.context);
+            expect(request.jumping).toBe(false);
+            expect(completion.at - request.at, 'Each successful recall keeps the full three-second cast').toBeGreaterThanOrEqual(3_000);
+        }
+        // Only a proven rejection of the deliberately airborne request may
+        // contribute the corresponding console error. All other failures stay fatal.
+        const rejections = audit.events.filter(event => event.type === 'cast' && event.state === 'rejected');
+        const standingErrors = failures.filter(message => message.startsWith('console: Server Error: Stand still before starting this cast ['));
+        expect(standingErrors).toHaveLength(rejections.length);
+        expect(audit.events.filter(event => event.type === 'error').map(event => event.message))
+            .toEqual(rejections.map(() => 'Stand still before starting this cast'));
+        expect(failures.filter(message => !standingErrors.includes(message)), failures.join('\n')).toEqual([]);
     });
 });
