@@ -102,8 +102,11 @@ func TestGameplayActualCachedClientRequiresUpdateWithoutLosingCharacterOrToken(t
 	if err != nil || !reflect.DeepEqual(saved, after) {
 		t.Fatal("refused cached resume changed saved progress", err)
 	}
-	// A refusal must not consume the single-use bearer token. Only the current
-	// protocol may claim the live entity and rotate that same token.
+	// The existing denial writer closes the old transport after flushing its
+	// readable instruction. A new compatible transport must still be able to
+	// claim the live entity and rotate the same unconsumed single-use token.
+	_ = resumed.Close()
+	resumed = open()
 	resourceSend(t, resumed, MsgResumeSession, map[string]string{"token": token, "gameplayProtocol": "stationary-actions-roofs-v1"})
 	var reply struct{ ResumeToken, GameplayProtocol string }
 	resourceReadMessage(t, resumed, MsgResumeSession, &reply)

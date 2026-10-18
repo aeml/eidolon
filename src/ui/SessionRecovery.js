@@ -15,9 +15,12 @@ export function showSessionRecoveryLogin({ message, reloadRequired = false, relo
     if (reloadRequired && !reloadButton && login) {
         reloadButton = document.createElement('button');
         reloadButton.id = 'session-reload-game';
+        reloadButton.className = 'auth-btn auth-btn--fill';
         reloadButton.type = 'button';
         reloadButton.textContent = 'Reload game';
-        login.append(reloadButton);
+        const status = document.getElementById('auth-status');
+        if (status?.parentElement === login) status.after(reloadButton);
+        else login.append(reloadButton);
     }
     if (reloadButton) {
         reloadButton.hidden = !reloadRequired;

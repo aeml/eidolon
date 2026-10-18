@@ -215,14 +215,30 @@ func TestGameplayActualRoofSnapshotRestoresPlayableCustody(t *testing.T) {
 	stop()
 	character, err = restored.GetCharacter(fixture.Name, fixture.Name)
 	pickup, pickupErr := restored.LatestGroundItemOperation(sourceRecord.LootID)
-	if err != nil || pickupErr != nil || character == nil || pickup == nil || pickup.State != database.GroundItemComplete ||
-		pickup.Generation != 2 || pickup.GroundPayload() != "" || !database.GroundItemCharacterReceiptMatches(character, pickup.GroundItemOperation) ||
-		!pickup.AvailableAt.Equal(sourceRecord.AvailableAt) || !pickup.ExpiresAt.Equal(sourceRecord.ExpiresAt) ||
-		character.Gold != saved.Gold || character.EP != saved.EP || character.Class != saved.Class ||
-		character.Level != saved.Level || character.XP != saved.XP || character.ProgressionVersion != saved.ProgressionVersion ||
-		!reflect.DeepEqual(character.Stats, saved.Stats) || !reflect.DeepEqual(character.Equipment, saved.Equipment) ||
-		math.Abs(character.Y-fixture.Y) > .001 {
-		t.Fatal("restored ordinary pickup changed progression, equipment, floor, wallets, lifetime or durable completion", err, pickupErr)
+	if err != nil || pickupErr != nil || character == nil || pickup == nil {
+		t.Fatal("restored ordinary pickup missing saved custody", err, pickupErr)
+	}
+	checks := map[string]bool{
+		"completed":      pickup.State == database.GroundItemComplete,
+		"generation":     pickup.Generation == 2,
+		"groundConsumed": pickup.GroundPayload() == "",
+		"receipt":        database.GroundItemCharacterReceiptMatches(character, pickup.GroundItemOperation),
+		"availableAt":    pickup.AvailableAt.Equal(sourceRecord.AvailableAt),
+		"expiresAt":      pickup.ExpiresAt.Equal(sourceRecord.ExpiresAt),
+		"gold":           character.Gold == saved.Gold, "EP": character.EP == saved.EP,
+		"class": character.Class == saved.Class, "level": character.Level == saved.Level,
+		"XP": character.XP == saved.XP, "progression": character.ProgressionVersion == saved.ProgressionVersion,
+		"stats":     reflect.DeepEqual(character.Stats, saved.Stats),
+		"equipment": reflect.DeepEqual(character.Equipment, saved.Equipment),
+		"roofY":     math.Abs(character.Y-fixture.Y) <= .001,
+	}
+	for field, equal := range checks {
+		if !equal {
+			t.Errorf("restored ordinary pickup changed %s", field)
+		}
+	}
+	if t.Failed() {
+		t.FailNow()
 	}
 	count := 0
 	for _, owned := range character.Inventory {
