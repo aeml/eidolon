@@ -495,7 +495,7 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.81`, **prepared; verification and deployment pending**.
+Current source version: `Alpha 1.79.82`, **prepared; verification and deployment pending**.
 This milestone adds stationary recall and quest-object casts, outside-click window
 closing, close melee reach, walkable town roofs with saved item floors, and the
 Earth Realm's town-style fence. Cached clients receive a readable reload instruction.
