@@ -141,3 +141,86 @@ for (const [width, mobile] of [[1280, false], [390, true]]) test.describe(`Quest
         expect(failures, failures.join('\n')).toEqual([]);
     });
 });
+
+for (const [width, mobile] of [[1280, false], [390, true]]) test.describe(`Tracker press continuity ${width}`, () => {
+    test.use({ viewport: { width, height: 844 }, hasTouch: mobile, isMobile: mobile });
+    test('progress preserves held objective and navigation presses', async ({ page, baseURL }) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        await page.route('**/src/main.js*', route => route.fulfill({ contentType: 'text/javascript', body: '' }));
+        await page.goto('/', { waitUntil: 'networkidle' });
+        await page.evaluate(async mobile => {
+            const { UIManager } = await import('/src/ui/UIManager.js');
+            const { InputManager } = await import('/src/core/InputManager.js');
+            const THREE = await import('three');
+            document.getElementById('start-screen').style.display = 'none';
+            document.body.classList.toggle('mobile-mode', mobile);
+            const player = { id: 'tracker-press-reader', level: 30, position: { x: 0, y: 0, z: 200 },
+                rotation: { x: 0, y: 0, z: 0, w: 1 }, inventory: [], quests: [
+                    { id: 'daily_skeleton', title: 'Road patrol', type: 'KILL', target: 'Skeleton', accepted: true, count: 0, maxCount: 100 },
+                    { id: 'daily_imp', title: 'Ember patrol', type: 'KILL', target: 'Imp', accepted: true, count: 0, maxCount: 100 }
+                ] };
+            const ui = new UIManager(mobile), input = new InputManager(new THREE.OrthographicCamera(), new THREE.Scene(),
+                document.getElementById('world-map-canvas'));
+            if (mobile) input.setupMobileControls();
+            const engine = window.game = { isMobile: mobile, player, uiManager: ui, inputManager: input,
+                currentInstanceId: '', currentInstanceType: 'overworld', chunkManager: { getActiveEntities: () => [] } };
+            ui.lastPlayerRef = player; ui.showHUD(); ui.quest.updateJournal(player.quests);
+            const state = window.__trackerPress = { ui, input, engine, opens: 0, reads: 0, mutations: [], worldActions: [],
+                summary: player.quests.map(quest => ({ id: quest.id, title: quest.title, badge: 'Daily',
+                    progressLabel: '0 / 100', progressPct: 0, hint: 'Return to the quest giver' })) };
+            for (const name of ['onClick', 'onRightClick', 'onSpace', 'onTeleport', 'onHotbar']) input.subscribe(name, () => state.worldActions.push(name));
+            for (const name of ['onAcceptQuest', 'onCompleteQuest', 'onClaimQuestItem']) ui.quest[name] = () => state.mutations.push(name);
+            ui.quest.onRequestQuests = () => state.reads++;
+            const open = ui.quest.openTrackedObjective.bind(ui.quest);
+            ui.quest.openTrackedObjective = objective => { state.opens++; return open(objective); };
+            ui.quest.loadTrackingPreferences(); ui.quest.trackedQuestKeys = new Set(player.quests.map(quest => quest.id));
+            ui.quest.renderObjectivesPanel(state.summary); state.saved = JSON.stringify(player);
+        }, mobile);
+        const update = () => page.evaluate(async () => {
+            const state = window.__trackerPress, quest = state.engine.player.quests[1]; quest.count++;
+            state.summary[1] = { ...state.summary[1], progressLabel: `${quest.count} / 100`, progressPct: quest.count };
+            state.ui.quest.renderObjectivesPanel(state.summary); state.saved = JSON.stringify(state.engine.player);
+            await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        });
+        const pressAcrossUpdate = async target => {
+            await target.scrollIntoViewIfNeeded(); const box = await target.boundingBox(); expect(box).toBeTruthy();
+            const point = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+            const session = mobile ? await page.context().newCDPSession(page) : null;
+            try {
+                if (mobile) await session.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ ...point, id: 0 }] });
+                else { await page.mouse.move(point.x, point.y); await page.mouse.down(); }
+                try { await update(); }
+                finally {
+                    if (mobile) await session.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+                    else await page.mouse.up();
+                }
+            } finally { await session?.detach(); }
+        };
+        try {
+            await pressAcrossUpdate(page.getByRole('button', { name: 'Open journal: Road patrol · 0 / 100', exact: true }));
+            await expect(page.locator('#quest-journal')).toBeVisible();
+            expect(await page.evaluate(() => window.__trackerPress.opens)).toBe(1);
+            await page.locator('#btn-close-journal').click(); await expect(page.locator('#quest-journal')).toBeHidden();
+            const navigation = mobile ? page.getByRole('button', { name: 'Show next tracked objective', exact: true })
+                : page.getByRole('button', { name: 'Track quests · Journal (J)', exact: true });
+            if (mobile) {
+                await pressAcrossUpdate(navigation);
+                await expect(page.locator('#objectives-list .objective-entry__title')).toHaveText('Ember patrol');
+            }
+            const reads = await page.evaluate(() => window.__trackerPress.reads);
+            await navigation.focus(); await page.keyboard.down('Space');
+            try { await update(); } finally { await page.keyboard.up('Space'); }
+            if (mobile) await expect(page.locator('#objectives-list .objective-entry__title')).toHaveText('Road patrol');
+            else await expect(page.locator('#quest-journal')).toBeVisible();
+            expect(await page.evaluate(() => {
+                const state = window.__trackerPress, target = state.ui.quest.objectivesList.querySelector('button');
+                const before = state.opens; state.ui.quest.dispose(); target?.click();
+                return { opens: state.opens, before, reads: state.reads, mutations: state.mutations, worldActions: state.worldActions,
+                    playerUnchanged: JSON.stringify(state.engine.player) === state.saved };
+            })).toEqual({ opens: 1, before: 1, reads: reads + (mobile ? 0 : 1), mutations: [], worldActions: [], playerUnchanged: true });
+            expect(failures, failures.join('\n')).toEqual([]);
+        } finally {
+            await page.evaluate(() => { window.__trackerPress?.input.dispose(); window.__trackerPress?.ui.dispose(); delete window.game; });
+        }
+    });
+});

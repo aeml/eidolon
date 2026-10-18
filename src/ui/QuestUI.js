@@ -1,6 +1,7 @@
 import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { appendQuestRewardChoices } from './QuestRewardChoices.js';
 import { renderQuestConversation } from './QuestConversation.js';
+import { QuestTracker } from './QuestTracker.js';
 import { getFinaleExitGuidance } from './FinaleGuidance.js';
 import { appendChronicleRecap } from './ChronicleRecap.js';
 import { LoreBook } from './LoreBook.js';
@@ -45,6 +46,7 @@ export class QuestUI {
         this.journalList = document.getElementById('journal-list');
         this.objectivesPanel = document.getElementById('objectives-panel');
         this.objectivesList = document.getElementById('objectives-list');
+        this.tracker = new QuestTracker(this);
         if (this.objectivesList && !ctx.isMobile) {
             this.objectivesList.tabIndex = 0;
             this.objectivesList.setAttribute('role', 'region');
@@ -85,6 +87,7 @@ export class QuestUI {
         if (this.disposed) return;
         this.disposed = true;
         disposeOwnedEvents(this);
+        this.tracker?.dispose();
         this.loreBook?.dispose();
         for (const root of this.rewardChoiceRoots?.values() || []) root.remove();
         this.rewardChoiceRoots?.clear();
@@ -92,7 +95,6 @@ export class QuestUI {
         this.journalNavigation?.remove();
         this.questJournal?.classList.remove('is-lore-book');
         this.questActions?.remove();
-        this.objectivesPanel?.querySelector('.phone-objectives-controls')?.remove();
     }
 
     /** Whether the quest NPC window is visible. */
@@ -900,101 +902,7 @@ export class QuestUI {
     }
 
     renderObjectivesPanel(summary) {
-        if (!this.objectivesPanel || !this.objectivesList) return;
-
-        this.activeQuestSummary = Array.isArray(summary) ? summary : [];
-        const trackedObjectives = this.getTrackedObjectives();
-        const phoneIndex = Math.max(0, trackedObjectives.findIndex(objective => this.questTrackingKey(objective) === this.phoneObjectiveKey));
-        const visibleObjectives = this.ctx.isMobile ? trackedObjectives.slice(phoneIndex, phoneIndex + 1) : trackedObjectives;
-        const signature = JSON.stringify([this.activeQuestSummary, trackedObjectives, this.trackingStorageKey, this.ctx.isMobile, phoneIndex]);
-        if (this.objectiveSignature === signature) return;
-        this.objectiveSignature = signature;
-        const scrollTop = this.objectivesList.scrollTop;
-        this.objectivesPanel.style.display = this.activeQuestSummary.length > 0 ? 'flex' : 'none';
-        this.clearElement(this.objectivesList);
-        this.objectivesPanel.querySelector('.objectives-panel__more')?.remove();
-        this.objectivesPanel.querySelector('.phone-objectives-controls')?.remove();
-        this.objectivesPanel.querySelector('.objective-guidance')?.remove();
-
-        const heading = this.objectivesPanel.querySelector('.objectives-panel__header');
-        if (heading) heading.textContent = this.ctx.isMobile && trackedObjectives.length
-            ? `TRACKED · ${phoneIndex + 1} / ${trackedObjectives.length}` : `TRACKED · ${trackedObjectives.length}`;
-        visibleObjectives.forEach((objective, index) => {
-            const isQuest = (this.lastJournalQuests || []).some(quest => quest?.id === objective.id);
-            const interactive = this.ctx.isMobile || isQuest;
-            const item = document.createElement(interactive ? 'button' : 'div');
-            item.className = `objective-entry ${objective.routeTone ? `is-${objective.routeTone}` : ''}`.trim();
-            item.title = [objective.title, objective.completed ? 'Ready' : objective.progressLabel, objective.hint].filter(Boolean).join(' · ');
-            if (interactive) {
-                item.type = 'button';
-                item.setAttribute('aria-label', `Open journal: ${objective.title} · ${objective.completed ? 'Ready' : objective.progressLabel || ''}`);
-                item.addEventListener('click', () => this.openTrackedObjective(objective));
-            }
-            const header = document.createElement('div');
-            header.className = 'objective-entry__header';
-
-            const titleWrap = document.createElement('span');
-            titleWrap.className = 'objective-entry__title-wrap';
-
-            if (objective.badge) {
-                const badge = document.createElement('span');
-                badge.className = `objective-entry__badge ${objective.badgeClass || ''}`.trim();
-                badge.textContent = objective.badge;
-                titleWrap.appendChild(badge);
-            }
-
-            const title = document.createElement('span');
-            title.className = 'objective-entry__title';
-            title.textContent = objective.title;
-            titleWrap.appendChild(title);
-
-            const status = document.createElement('span');
-            status.className = `objective-entry__status ${objective.completed ? 'is-complete' : ''}`.trim();
-            status.textContent = objective.completed ? 'Ready' : objective.progressLabel;
-
-            header.appendChild(titleWrap);
-            header.appendChild(status);
-
-            const progress = document.createElement('div');
-            progress.className = 'objective-entry__progress';
-            const progressFill = document.createElement('div');
-            progressFill.className = `objective-entry__progress-fill ${objective.completed ? 'is-complete' : ''}`.trim();
-            progressFill.style.width = `${Math.max(0, Math.min(100, Number(objective.progressPct) || 0))}%`;
-            progress.appendChild(progressFill);
-
-            const hint = document.createElement('div');
-            hint.className = 'objective-entry__hint';
-            hint.textContent = objective.completed && objective.badgeClass !== 'is-exit'
-                ? `${objective.hint} · ${objective.rewardLabel || this.getQuestRewardLabel(objective)}` : objective.hint;
-
-            item.appendChild(header);
-            item.appendChild(progress);
-            item.appendChild(hint);
-            if (!this.ctx.isMobile && index === 0 && !objective.badge?.startsWith('Story') && objective.badge !== 'Daily') this.renderObjectiveGuidance(objective, item);
-            this.objectivesList.appendChild(item);
-        });
-        const more = document.createElement('button');
-        more.type = 'button';
-        more.className = 'objectives-panel__more';
-        more.textContent = this.ctx.isMobile ? 'Journal' : 'Track quests · Journal (J)';
-        more.addEventListener('click', () => this.toggleJournal());
-        if (this.activeQuestSummary.length && this.ctx.isMobile) {
-            const controls = document.createElement('div'); controls.className = 'phone-objectives-controls';
-            if (!visibleObjectives.length) controls.appendChild(more);
-            if (trackedObjectives.length > 1) {
-                const next = document.createElement('button'); next.type = 'button'; next.className = 'phone-objectives-next';
-                next.textContent = '›'; next.setAttribute('aria-label', 'Show next tracked objective');
-                next.title = `${phoneIndex + 1} of ${trackedObjectives.length} tracked objectives`;
-                next.onclick = () => {
-                    this.phoneObjectiveKey = this.questTrackingKey(trackedObjectives[(phoneIndex + 1) % trackedObjectives.length]);
-                    this.renderObjectivesPanel(this.activeQuestSummary);
-                    this.objectivesPanel.querySelector('.phone-objectives-next')?.focus({ preventScroll: true });
-                };
-                controls.appendChild(next);
-            }
-            this.objectivesPanel.appendChild(controls);
-        } else if (this.activeQuestSummary.length) this.objectivesPanel.appendChild(more);
-        this.objectivesList.scrollTop = scrollTop;
+        this.tracker.update(summary);
     }
 
     // ================================================================
