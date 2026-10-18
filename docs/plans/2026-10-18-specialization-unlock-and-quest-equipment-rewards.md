@@ -33,6 +33,11 @@ that player's completed, unclaimed quest. The same saved post-image contains the
 exact bag addition, selected-item receipt and removed alternatives. Feedback
 publishes that saved bag before the quest receipt. Failed or lost saves use the
 existing character journal recovery; no second item or currency award is issued.
+Schema 26 records a compatibility marker before admitting new quest custody.
+It does not rewrite characters or backfill rewards. Schema-25 server executables
+refuse the newer database before writes, preventing a rollback from erasing
+pending offers or claim receipts. Use a compatible server or a verified matching
+recovery set; do not downgrade the database marker to force an older writer.
 Quest/item copies own nested stat maps. Existing scalar quest equality assertions
 now use complete deep equality because quests contain item slices; their original
 assertions and fixtures are otherwise retained.
@@ -48,14 +53,18 @@ Validation so far:
   software rendering. Screenshots were reviewed, including combat-button
   separation and the six-option Journal layout. These are presentation fixtures,
   not campaign-earned completion, native GPU or physical-device acceptance.
-- The actual ordinary-login/Mongo/reconnect/claim integration passed in 11.40s
-  (Go race; 12.505s package time), across two real API processes and one owned
+- The actual ordinary-login/Mongo/reconnect/claim integration passed in 9.68s
+  (Go race; 10.871s package time), across two real API processes and one owned
   account. The turn-in reached level 10, six exact offers survived a cold server
   restart/fresh login, and the chosen item was saved exactly once. A replay was
   rejected; unrelated equipment and EP survived. Owned Mongo/processes were
   cleaned, and the actual synthetic credentials were scanned/redacted in fresh
   retained logs. Mongo had a 1-CPU/512-MiB cap; Go used two processors and a
   384-MiB soft memory target. This was one functional session, not soak/stress.
+- The actual previous schema-25 executable refused schema 26 through its normal
+  read-only schema preflight. The same real Mongo quest and bag custody stayed
+  exact. A further 45 schema/quest checks in two Go race packages passed (three
+  integration skips in that invocation). The marker does no value backfill.
 - Retained setup negatives exposed the next-chapter-only catalog, binary health
   ownership guard and missing investigation mask in the prepared ready quest.
   All three failures remain available with cleanup evidence; they are not counted

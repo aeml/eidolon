@@ -245,3 +245,12 @@ func TestRunMigrationsIsIdempotentAndBuildsQueryIndexes(t *testing.T) {
 		}
 	}
 }
+
+func TestSchemaMigrationCatalogFencesSavedQuestEquipmentChoices(t *testing.T) {
+	if CurrentSchemaVersion < 26 || len(schemaMigrations) < 26 || schemaMigrations[25].Name != "saved_quest_equipment_choices" {
+		t.Fatal("older full-character writers must not erase saved quest offers or claimed-item receipts")
+	}
+	if err := schemaMigrations[25].Apply(context.Background(), nil); err != nil {
+		t.Fatal("quest writer fence must not backfill or rewrite player rewards", err)
+	}
+}

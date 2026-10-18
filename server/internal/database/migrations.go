@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const CurrentSchemaVersion = 25
+const CurrentSchemaVersion = 26
 
 type schemaMigration struct {
 	Version int
@@ -113,6 +113,9 @@ var schemaMigrations = []schemaMigration{
 	// Existing signed receipts and pending V1 table intents remain untouched.
 	// Older full-character writers must not erase the compact casino heads.
 	{Version: 25, Name: "versioned_casino_wallet_checkpoints", Apply: func(context.Context, *DB) error { return nil }},
+	// Older full-character writers omit pending quest offers and claim receipts.
+	// Fence them without backfilling rewards or rewriting existing characters.
+	{Version: 26, Name: "saved_quest_equipment_choices", Apply: func(context.Context, *DB) error { return nil }},
 }
 
 // RunMigrations applies every missing migration in ascending version order.

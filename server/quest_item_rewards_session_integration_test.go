@@ -1,8 +1,14 @@
 package main
 
 import (
+	"context"
+	"os"
+	"os/exec"
+	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
+	"time"
 
 	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
@@ -92,6 +98,33 @@ func TestQuestItemRewardsActualTurnInReconnectAndSingleClaim(t *testing.T) {
 		if item.Level != reward.RewardChoiceLevel || item.Rarity == game.RarityCommon {
 			t.Fatal("invalid quest-level rarity", item.Level, item.Rarity)
 		}
+	}
+	// The new marker is published before a quest can issue new persisted value.
+	version, err := repo.SchemaVersion(t.Context())
+	if err != nil || version != 26 {
+		t.Fatal("quest custody is not fenced from older writers", version, err)
+	}
+	if previous := os.Getenv("EIDOLON_QUEST_PREVIOUS_BINARY"); previous != "" {
+		if !filepath.IsAbs(previous) {
+			t.Fatal("previous writer must be an explicitly owned absolute binary")
+		}
+		before, err := repo.GetDirectTradeCharacter(fixture.Name, fixture.Name)
+		if err != nil {
+			t.Fatal(err)
+		}
+		ctx, cancel := context.WithTimeout(t.Context(), 10*time.Second)
+		output, oldError := exec.CommandContext(ctx, previous, "--check-schema", "--mongo-uri", uri).CombinedOutput()
+		cancel()
+		if oldError == nil || !strings.Contains(string(output), "database schema 26 is newer than this server supports (25)") {
+			t.Fatalf("previous writer did not refuse newer quest custody: %v %s", oldError, output)
+		}
+		after, err := repo.GetDirectTradeCharacter(fixture.Name, fixture.Name)
+		if err != nil || !reflect.DeepEqual(before.Quests, after.Quests) || !reflect.DeepEqual(before.Inventory, after.Inventory) {
+			t.Fatal("previous writer preflight changed quest/bag custody", err)
+		}
+		t.Log("PREVIOUS_WRITER_SCHEMA25_REFUSED_SCHEMA26_WITHOUT_QUEST_OR_BAG_WRITES")
+	} else {
+		t.Log("Previous-writer executable proof not enabled; current schema marker remains checked")
 	}
 	_ = connection.Close()
 	stop()
