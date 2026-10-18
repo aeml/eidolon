@@ -42,6 +42,7 @@ type EntitySnapshot struct {
 	SafeZoneID                 string
 	Mana                       int
 	State                      string
+	SupportSurface             string
 	Level                      int
 	Scale                      float64
 	BodyRadius                 float64

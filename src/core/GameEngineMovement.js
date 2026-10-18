@@ -17,9 +17,31 @@ import {
     POINTER_RAYCAST_INTERVAL
 } from './GameEngineRuntimeConstants.js';
 import { installPrototypeMethods } from './PrototypeInstaller.js';
-import { getOverworldGroundHeight } from './WorldGrounding.js';
+import { getOverworldGroundHeight, getActorCombatDistance, getFloorInteractionDistance } from './WorldGrounding.js';
 
 class GameEngineMovementMethods {
+    resolveRoofJumpLanding(end, start) {
+        if (this.currentInstanceId || !this.townRoofField) return true;
+        const ground = getOverworldGroundHeight(this, end) ?? 0;
+        const roof = this.townRoofField.sample(end.x, end.z);
+        end.y = roof?.y ?? ground;
+        return !roof || end.y - start.y <= this.getJumpArcHeight(Math.hypot(end.x - start.x, end.z - start.z));
+    }
+
+    usesRoofJump(start, end) {
+        if (this.currentInstanceId || !this.townRoofField) return false;
+        return [start, end].some(point => {
+            if (!point) return false;
+            const roof = this.townRoofField.sample(point.x, point.z);
+            return roof && Math.abs(point.y - roof.y) < .35;
+        });
+    }
+
+    getJumpFloorHeight(start, end, position, progress) {
+        if (this.usesRoofJump(start, end)) return THREE.MathUtils.lerp(start.y, end.y, progress);
+        return getOverworldGroundHeight(this, position) ?? THREE.MathUtils.lerp(start.y, end.y, progress);
+    }
+
     handlePrimaryClick(event = null) {
         if (!this.player) return false;
         this.uiManager?.closeForWorldInteraction?.();
@@ -141,6 +163,7 @@ class GameEngineMovementMethods {
             this.collisionManager.constrainToDungeonWalkableArea(end, this.player.radius || 0);
         }
         end.y = getOverworldGroundHeight(this, end) ?? end.y;
+        if (!this.resolveRoofJumpLanding(end, this.player.position)) return false;
 
         if (this.playerJumpState) {
             this.playerQueuedJump = true;
@@ -187,8 +210,9 @@ class GameEngineMovementMethods {
         if (this.collisionManager?.constrainToDungeonWalkableArea) {
             this.collisionManager.constrainToDungeonWalkableArea(end, this.player.radius || 0);
         }
-        start.y = getOverworldGroundHeight(this, start) ?? start.y;
+        if (!this.usesRoofJump(start, start)) start.y = getOverworldGroundHeight(this, start) ?? start.y;
         end.y = getOverworldGroundHeight(this, end) ?? end.y;
+        if (!this.resolveRoofJumpLanding(end, this.player.position)) return false;
 
         const travelDistance = Math.hypot(end.x - start.x, end.z - start.z);
         const duration = this.getJumpTravelDuration(travelDistance);
@@ -384,8 +408,7 @@ class GameEngineMovementMethods {
             : (isSameJump && hasAuthoritativeTrajectory ? previousVisualProgress : authoritativeProgress);
         const inferredHeight = this.getJumpArcHeight(travelDistance);
         const height = getJumpScalarField('jumpHeight', existingJump?.height ?? inferredHeight);
-        const baseY = getOverworldGroundHeight(this, currentPosition)
-            ?? THREE.MathUtils.lerp(start.y, end.y, entity === this.player ? progress : authoritativeProgress);
+        const baseY = this.getJumpFloorHeight(start, end, currentPosition, entity === this.player ? progress : authoritativeProgress);
         const computedArcHeight = Math.sin(progress * Math.PI) * height;
         const replicatedArcHeight = Math.max(0, (pData.y ?? currentPosition.y) - baseY);
         const visualHeight = entity === this.player
@@ -580,7 +603,9 @@ class GameEngineMovementMethods {
             const displayTarget = this.getAuthoritativeJumpDisplayTarget(this.player, jump) || this.player.position;
             if (jump.hasAuthoritativeTrajectory) jump.displayPosition.copy(displayTarget);
             else jump.displayPosition.lerp(displayTarget, 1 - Math.pow(0.65, Math.max(0, dt) * 60));
-            jump.displayPosition.y = getOverworldGroundHeight(this, jump.displayPosition) ?? this.player.position.y;
+            jump.displayPosition.y = this.usesRoofJump(jump.start, jump.end)
+                ? this.getJumpFloorHeight(jump.start, jump.end, jump.displayPosition, this.getJumpVisualProgress(jump))
+                : getOverworldGroundHeight(this, jump.displayPosition) ?? this.player.position.y;
             this.playerJumpVisualHeight = jump.visualHeight || 0;
             this.renderSystem?.setCameraTarget?.(jump.displayPosition);
             if (jump.landingPending && this.getJumpVisualProgress(jump) >= 1 - 1e-6) this.clearAuthoritativeJumpState(this.player);
@@ -594,7 +619,7 @@ class GameEngineMovementMethods {
         const progress = jump.visualProgress ?? this.getJumpVisualProgress(jump);
 
         this.player.position.lerpVectors(jump.start, jump.end, progress);
-        this.player.position.y = getOverworldGroundHeight(this, this.player.position) ?? jump.start.y;
+        this.player.position.y = this.getJumpFloorHeight(jump.start, jump.end, this.player.position, progress);
         this.playerJumpVisualHeight = jump.visualHeight || 0;
         this.chunkManager?.updateEntityChunk?.(this.player);
         this.renderSystem?.setCameraTarget?.(this.player.position);
@@ -602,6 +627,7 @@ class GameEngineMovementMethods {
         if (progress >= 1) {
             this.player.position.copy(jump.end);
             this.player.position.y = jump.end.y;
+            if (this.townRoofField && !this.currentInstanceId) this.player.supportSurface = this.townRoofField.sample(jump.end.x, jump.end.z)?.id || '';
             this.playerJumpState = null;
             this.player.clearJumpAnimation?.();
             this.playerJumpVisualHeight = 0;
@@ -710,7 +736,7 @@ class GameEngineMovementMethods {
         if (jumpState.takeoffOffset) {
             position.addScaledVector(jumpState.takeoffOffset, 1 - THREE.MathUtils.smoothstep(jumpState.elapsed || 0, 0, .12));
         }
-        position.y = getOverworldGroundHeight(this, position) ?? position.y;
+        position.y = this.getJumpFloorHeight(jumpState.start, jumpState.end, position, clampedProgress);
         return position;
     }
 
@@ -863,8 +889,15 @@ class GameEngineMovementMethods {
             return;
         }
 
-        const ground = getOverworldGroundHeight(this, entity.mesh.position);
-        if (ground !== null) entity.mesh.position.y = ground;
+        if (this.usesRoofJump(jumpState.start, jumpState.end)) {
+            entity.mesh.position.y = this.getJumpFloorHeight(jumpState.start, jumpState.end,
+                entity.mesh.position, this.getJumpVisualProgress(jumpState));
+        } else {
+            const roof = !this.currentInstanceId && entity.supportSurface
+                && this.townRoofField?.sample(entity.mesh.position.x, entity.mesh.position.z, entity.supportSurface);
+            const ground = roof ? roof.y : getOverworldGroundHeight(this, entity.mesh.position);
+            if (ground !== null) entity.mesh.position.y = ground;
+        }
         const visualHeight = jumpState.visualHeight ?? 0;
         entity.mesh.position.y += visualHeight;
 
@@ -1168,8 +1201,9 @@ class GameEngineMovementMethods {
         this.abilityController.pendingAbilitySkill = null;
 
         // Check if already in range to avoid unnecessary movement start
-        const dist = new THREE.Vector2(this.player.position.x, this.player.position.z)
-            .distanceTo(new THREE.Vector2(entity.position.x, entity.position.z));
+        const dist = this.isHostileActorTarget(entity)
+            ? getActorCombatDistance(this, this.player, entity)
+            : getFloorInteractionDistance(this.player, entity);
 
         const range = this.getInteractionRangeForEntity(entity);
 

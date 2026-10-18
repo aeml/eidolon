@@ -58,6 +58,7 @@ export class CollisionManager {
     }
 
     clear() {
+        this.roofField = null;
         this.casinoInterior = false;
         this.casinoVIPFloor = false;
         this.casinoNavigation = false;
@@ -285,6 +286,8 @@ export class CollisionManager {
         const collidersLen = this.colliders.length;
         for (let i = 0; i < collidersLen; i++) {
             const box = this.colliders[i];
+            const roof = box.roofSupport && this.roofField?.sample(TEMP_VEC3.x, TEMP_VEC3.z, box.roofSupport);
+            if (roof && TEMP_VEC3.y >= roof.y - .25) continue;
             if (box.intersectsSphere(TEMP_SPHERE)) {
                 collided = true;
                 
@@ -352,6 +355,8 @@ export class CollisionManager {
 
         // Resolve in each building's local frame, not its oversized rotated AABB.
         for (const collider of this.orientedColliders) {
+            const roof = collider.roofSupport && this.roofField?.sample(TEMP_VEC3.x, TEMP_VEC3.z, collider.roofSupport);
+            if (roof && TEMP_VEC3.y >= roof.y - .25) continue;
             TEMP_POINT.copy(TEMP_VEC3).applyMatrix4(collider.inverse);
             TEMP_CLOSEST.setFromMatrixScale(collider.matrix);
             const localRadius = radius / Math.min(Math.abs(TEMP_CLOSEST.x), Math.abs(TEMP_CLOSEST.z));

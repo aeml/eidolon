@@ -61,6 +61,7 @@ func (w *World) GetState() map[string]*Entity {
 			SpawnX:            v.SpawnX,
 			SpawnZ:            v.SpawnZ,
 			State:             v.State,
+			SupportSurface:    v.SupportSurface,
 			LastMoveSequence:  v.LastMoveSequence,
 			LastAttackTime:    v.LastAttackTime,
 			AttackCooldown:    v.AttackCooldown,

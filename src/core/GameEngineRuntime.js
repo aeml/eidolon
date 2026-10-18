@@ -27,7 +27,7 @@ import { installPrototypeMethods } from './PrototypeInstaller.js';
 import { NameplatePresentation } from './NameplatePresentation.js';
 import { LootLabelPresentation } from './LootLabelPresentation.js';
 import { worldAmbienceKey } from '../audio/WorldAmbience.js';
-import { getGroundAwareDistance } from './WorldGrounding.js';
+import { getActorCombatDistance, getGroundedActorHeight, getFloorInteractionDistance } from './WorldGrounding.js';
 import { EnemyCorpsePresentation } from '../entities/EnemyCorpsePresentation.js';
 import { clearEngineSceneOwnership } from './SceneOwnership.js';
 const isContactShadowActor = entity => entity instanceof Actor;
@@ -541,7 +541,7 @@ class GameEngineRuntimeMethods {
                 } else if (this.inputManager.keys.shift) {
                     this.movePlayerToPointerGround();
                 } else if (this.hoveredEntity && this.hoveredEntity instanceof Actor && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
-                    const dist = getGroundAwareDistance(this, this.player.position, this.hoveredEntity.position);
+                    const dist = getActorCombatDistance(this, this.player, this.hoveredEntity);
                     const range = this.getBasicAttackRangeForEntity(this.hoveredEntity);
 
                     if (dist < range) {
@@ -598,9 +598,9 @@ class GameEngineRuntimeMethods {
                 } else {
                     // 2. Calculate Distance & Range
                     // Optimization: Avoid Vector2 allocation
-                    const dx = this.player.position.x - this.pendingInteraction.position.x;
-                    const dz = this.player.position.z - this.pendingInteraction.position.z;
-                    const dist = Math.sqrt(dx * dx + dz * dz);
+                    const dist = this.isHostileActorTarget(this.pendingInteraction)
+                        ? getActorCombatDistance(this, this.player, this.pendingInteraction)
+                        : getFloorInteractionDistance(this.player, this.pendingInteraction);
 
                     let range = this.getInteractionRangeForEntity(this.pendingInteraction);
 
@@ -846,6 +846,8 @@ class GameEngineRuntimeMethods {
                     const moveVec = moveDir.multiplyScalar(speed * dt);
 
                     const nextPos = this.player.position.clone().add(moveVec);
+                    const supportHeight = getGroundedActorHeight(this.player, nextPos);
+                    if (supportHeight !== null) nextPos.y = supportHeight;
 
                     if (this.collisionManager) {
                         const correctedPos = this.collisionManager.checkCollision(nextPos, this.player.radius, this.player.position);

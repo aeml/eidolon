@@ -4318,6 +4318,7 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [markWeaknessFactor] Entity markWeaknessFactor
              * @property {Object.<string,eidolon.state.EquipmentAppearance.$Properties>|null} [appearances] Entity appearances
              * @property {number|null} [spellFocusCharges] Entity spellFocusCharges
+             * @property {string|null} [supportSurface] Entity supportSurface
              * @property {number|null} [jumpStartX] Entity jumpStartX
              * @property {number|null} [jumpStartY] Entity jumpStartY
              * @property {number|null} [jumpStartZ] Entity jumpStartZ
@@ -5318,6 +5319,14 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.spellFocusCharges = 0;
 
             /**
+             * Entity supportSurface.
+             * @member {string} supportSurface
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.supportSurface = "";
+
+            /**
              * Entity jumpStartX.
              * @member {number} jumpStartX
              * @memberof eidolon.state.Entity
@@ -5688,6 +5697,8 @@ export const eidolon = $root.eidolon = (() => {
                     }
                 if (message.spellFocusCharges != null && $Object.hasOwnProperty.call(message, "spellFocusCharges") && message.spellFocusCharges !== 0)
                     writer.uint32(/* id 128, wireType 0 =*/1024).int32(message.spellFocusCharges);
+                if (message.supportSurface != null && $Object.hasOwnProperty.call(message, "supportSurface") && message.supportSurface !== "")
+                    writer.uint32(/* id 129, wireType 2 =*/1034).string(message.supportSurface);
                 if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
                     for (let i = 0; i < message.$unknowns.length; ++i)
                         writer.raw(message.$unknowns[i]);
@@ -6878,6 +6889,15 @@ export const eidolon = $root.eidolon = (() => {
                                 delete message.spellFocusCharges;
                             continue;
                         }
+                    case 129: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.supportSurface = value;
+                            else
+                                delete message.supportSurface;
+                            continue;
+                        }
                     case 81: {
                             if (wireType !== 5)
                                 break;
@@ -7403,6 +7423,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.spellFocusCharges != null && $Object.hasOwnProperty.call(message, "spellFocusCharges"))
                     if (!$util.isInteger(message.spellFocusCharges))
                         return "spellFocusCharges: integer expected";
+                if (message.supportSurface != null && $Object.hasOwnProperty.call(message, "supportSurface"))
+                    if (!$util.isString(message.supportSurface))
+                        return "supportSurface: string expected";
                 if (message.jumpStartX != null && $Object.hasOwnProperty.call(message, "jumpStartX"))
                     if (typeof message.jumpStartX !== "number")
                         return "jumpStartX: number expected";
@@ -7882,6 +7905,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (object.spellFocusCharges != null)
                     if ($Number(object.spellFocusCharges) !== 0)
                         message.spellFocusCharges = object.spellFocusCharges | 0;
+                if (object.supportSurface != null)
+                    if (typeof object.supportSurface !== "string" || object.supportSurface.length)
+                        message.supportSurface = $String(object.supportSurface);
                 if (object.jumpStartX != null)
                     if (!$Object.is($Number(object.jumpStartX), 0))
                         message.jumpStartX = $Number(object.jumpStartX);
@@ -8074,6 +8100,7 @@ export const eidolon = $root.eidolon = (() => {
                     object.zealPower = 0;
                     object.markWeaknessFactor = 0;
                     object.spellFocusCharges = 0;
+                    object.supportSurface = "";
                 }
                 if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     object.id = message.id;
@@ -8380,6 +8407,8 @@ export const eidolon = $root.eidolon = (() => {
                 }
                 if (message.spellFocusCharges != null && $Object.hasOwnProperty.call(message, "spellFocusCharges"))
                     object.spellFocusCharges = message.spellFocusCharges;
+                if (message.supportSurface != null && $Object.hasOwnProperty.call(message, "supportSurface"))
+                    object.supportSurface = message.supportSurface;
                 return object;
             };
 

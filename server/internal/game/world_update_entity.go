@@ -941,13 +941,17 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			e.X = e.JumpStartX + (e.JumpTargetX-e.JumpStartX)*progress
 			e.Z = e.JumpStartZ + (e.JumpTargetZ-e.JumpStartZ)*progress
 			baseY := e.JumpStartY
-			if ground, ok := w.overworldGroundHeight(e.InstanceID, e.X, e.Z); ok {
+			if e.SupportSurface != "" || e.jumpTargetSupport != "" {
+				baseY += (e.JumpTargetY - e.JumpStartY) * progress
+			} else if ground, ok := w.overworldGroundHeight(e.InstanceID, e.X, e.Z); ok {
 				baseY = ground
 			}
 			e.Y = baseY + math.Sin(progress*math.Pi)*e.JumpHeight
 			if progress >= 1 {
 				e.X = e.JumpTargetX
 				e.Y = e.JumpTargetY
+				e.SupportSurface = e.jumpTargetSupport
+				e.jumpTargetSupport = ""
 				e.Z = e.JumpTargetZ
 				e.State = "IDLE"
 				e.jumpStartedAt = time.Time{}
@@ -960,6 +964,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			return
 		}
 		// Fighter Charge
+		w.updateRoofFallLocked(e, dt)
 		if e.IsCharging {
 			e.ChargeTargetX, e.ChargeTargetZ = w.stopRockMovement(e, e.ChargeTargetX, e.ChargeTargetZ)
 			dx := e.ChargeTargetX - e.X

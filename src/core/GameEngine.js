@@ -1,11 +1,13 @@
 import * as THREE from 'three';
+import { getTownRoofField } from './TownRoofs.js';
+import { getHeroBasicAttackReach } from './BasicAttackReach.js';
 import { canEquipItem } from './EquipmentSlots.js';
 import { syncWellRested } from './WellRested.js';
 import { getTrackedActorBuffs } from './TrackedActorBuffs.js';
 import { RenderSystem } from './RenderSystem.js';
 import { InputManager } from './InputManager.js';
 import { bindingLabel } from './KeyboardBindings.js';
-import { intersectEngineGround } from './WorldGrounding.js';
+import { intersectEngineGround, getActorCombatDistance } from './WorldGrounding.js';
 import { resolveWorldElevationProfile } from '../data/worldElevation.js';
 import { ChunkManager, isAlwaysResidentEntityType } from './ChunkManager.js';
 import { CollisionManager } from './CollisionManager.js';
@@ -457,6 +459,7 @@ export class GameEngine {
 
     constructor(playerType, isMobile = false, isMultiplayer = true, serverAddress = '', username = '', socket = null, terrainProfile = 'flat-v1') {
         this.terrainElevation = resolveWorldElevationProfile(terrainProfile);
+        this.townRoofField = getTownRoofField();
         this.terrainProfile = terrainProfile || 'flat-v1';
         this.isMobile = isMobile;
         this.isMultiplayer = true;
@@ -476,6 +479,7 @@ export class GameEngine {
 
         this.chunkManager = new ChunkManager(this.renderSystem.entityGroup);
         this.collisionManager = new CollisionManager();
+        this.collisionManager.roofField = this.townRoofField;
         this.audioManager = new AudioManager();
         this.uiManager = new UIManager(this.isMobile, { audioManager: this.audioManager });
         this.uiManager.onPhoneMenuOpen = () => {
@@ -923,6 +927,7 @@ export class GameEngine {
 
     syncPlayerStatusClears(playerEntity, payload) {
         if (!playerEntity || !payload) return;
+        if (typeof payload.supportSurface === 'string') playerEntity.supportSurface = payload.supportSurface;
 
         Object.entries(AUTHORITATIVE_STATUS_CLEAR_CONFIG).forEach(([payloadKey, clearStatus]) => {
             if (payload[payloadKey] === false) {
@@ -1780,8 +1785,7 @@ export class GameEngine {
 
     getBasicAttackRangeForPlayer(player = this.player) {
         if (!player) return 0;
-        if (player instanceof Wizard || player instanceof Rogue) return 16.0;
-        return 4.0;
+        return getHeroBasicAttackReach(player.constructor?.name || player.subType || '', player, null);
     }
 
     getEffectiveCombatTarget() {
@@ -1863,8 +1867,8 @@ export class GameEngine {
         if (!player || !entity || !entity.position) return null;
 
         const skillName = this.abilityController?.getAbilityIntentSkillName?.() || player.abilityName || null;
-        const distance = player.position.distanceTo(entity.position);
-        const basicAttackRange = this.getBasicAttackRangeForPlayer(player);
+        const distance = getActorCombatDistance(this, player, entity);
+        const basicAttackRange = this.getBasicAttackRangeForEntity(entity);
         const abilityRange = this.abilityController?.getAbilityIntentRange?.(skillName)
             || this.abilityController?.getAbilityCastRange?.(skillName)
             || 0;
@@ -2204,6 +2208,7 @@ export class GameEngine {
         // Preserve the existing B-key handoff for both keyboard and menu use.
         // Authoritative instance messages finish scenery/collision replacement.
         this.player.position.set(-1.25, 0, 200);
+        this.player.supportSurface = '';
         this.player.targetPosition = null;
         this.player.state = 'IDLE';
         this.chunkManager.updateEntityChunk(this.player);

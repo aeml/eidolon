@@ -1615,6 +1615,17 @@ func (w *World) startPlayerJump(id string, x, y, z float64, context *string) boo
 	// 1.5-second total for command, replication and rendering latency.
 	duration := math.Max(0.46, math.Min(1.3, travelDistance/13.5))
 	height := math.Max(6.5, math.Min(16.5, travelDistance*0.38+4.2))
+	landingSupport := ""
+	if e.InstanceID == "" {
+		ground, _ := w.overworldGroundHeight(e.InstanceID, x, z)
+		y = ground
+		if id, roof, ok := townRoofs.sample(x, z, ""); ok {
+			if roof-e.Y > height {
+				return false
+			}
+			landingSupport, y = id, roof
+		}
+	}
 
 	e.TargetX = x
 	e.TargetZ = z
@@ -1624,6 +1635,9 @@ func (w *World) startPlayerJump(id string, x, y, z float64, context *string) boo
 	e.JumpStartZ = e.Z
 	e.JumpTargetX = x
 	e.JumpTargetY = y
+	e.jumpTargetSupport = landingSupport
+	e.roofFalling = false
+	e.roofFallVelocity = 0
 	e.JumpTargetZ = z
 	e.JumpDuration = duration
 	e.JumpElapsed = 0

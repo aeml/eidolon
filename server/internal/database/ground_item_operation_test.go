@@ -27,6 +27,68 @@ func groundOperationFixture(kind string) GroundItemOperation {
 	return op
 }
 
+func TestGroundItemRoofFormatPreservesHistoricalFingerprints(t *testing.T) {
+	// Golden hashes generated with the actual pre-roof struct at66d54b808.
+	want := map[string]string{
+		"1drop":   "2af36c7604ebea97b9592914e8dffe3c600c8282f82cd18321d57804417856eb",
+		"1pickup": "ae6bd2a0a87e46e992bd99507378390e557d3849d767dd209b8df218f2ad39df",
+		"2drop":   "bca67dbec92d5989bd02ae7a2e1e1cbe1cb5571ff0e402085bdf56cb8c2a1657",
+		"2pickup": "1101315a9ded586ff5c3b927770990926e8a777d4741a3ef3dd458aea0b42cdf",
+	}
+	for _, version := range []int{1, 2} {
+		for _, kind := range []string{GroundItemDrop, GroundItemPickup} {
+			op := groundOperationFixture(kind)
+			op.Version = version
+			if version == 2 {
+				op.AccountOrdinal = 1
+			}
+			op.Fingerprint, _ = GroundItemFingerprint(op)
+			key := string(rune('0'+version)) + kind
+			if op.Fingerprint != want[key] || op.Validate() != nil {
+				t.Fatal("historical ledger fingerprint changed", key, op.Fingerprint)
+			}
+		}
+	}
+}
+
+func TestGroundItemRoofFloorIsFrozenAcrossBSONAndCheckpointReplay(t *testing.T) {
+	op := groundOperationFixture(GroundItemDrop)
+	op.Version, op.AccountOrdinal, op.InstanceID = 3, 1, ""
+	op.Y, op.SupportSurface = 9.28, "town-home-0"
+	op.Fingerprint, _ = GroundItemFingerprint(op)
+	encoded, err := bson.Marshal(op)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var restored GroundItemOperation
+	if err := bson.Unmarshal(encoded, &restored); err != nil || restored.Validate() != nil || restored != op {
+		t.Fatal("roof ledger lost exact persisted floor", err)
+	}
+	character := &Character{Name: op.Username, GroundAccountOrdinal: 1,
+		GroundAccountOperationID: op.ID, GroundAccountFingerprint: op.Fingerprint}
+	if !GroundItemCharacterReceiptMatches(character, restored) {
+		t.Fatal("roof format lost the ordered saved checkpoint")
+	}
+	for _, mode := range []string{"height", "floor", "old-version", "instance", "nan"} {
+		changed := restored
+		switch mode {
+		case "height":
+			changed.Y++
+		case "floor":
+			changed.SupportSurface = "other-floor"
+		case "old-version":
+			changed.Version = 2
+		case "instance":
+			changed.InstanceID = "dungeon_fixture"
+		case "nan":
+			changed.Y = math.NaN()
+		}
+		if changed.Validate() == nil || GroundItemCharacterReceiptMatches(character, changed) {
+			t.Fatal("changed roof authority accepted", mode)
+		}
+	}
+}
+
 func TestGroundItemOperationConservationFingerprintAndPrivateSavedReceipt(t *testing.T) {
 	for _, kind := range []string{GroundItemDrop, GroundItemPickup} {
 		t.Run(kind, func(t *testing.T) {

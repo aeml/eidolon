@@ -39,7 +39,7 @@ import { applyEquipmentVisuals, clearEquipmentVisuals } from '../art/EquipmentVi
 import { equipmentWithAppearances } from '../core/EquipmentAppearance.js';
 import { ActorHitReaction } from './ActorHitReaction.js';
 import { ActorMovingCastGait } from './ActorMovingCastGait.js';
-import { getGroundAwareDistance, getGroundedActorHeight } from '../core/WorldGrounding.js';
+import { getGroundAwareDistance, getGroundedActorHeight, getActorCombatDistance } from '../core/WorldGrounding.js';
 import { absorbOfflineArcaneShield, addOfflineDamageReflection, clearOfflineArcaneShield, expireOfflineArcaneShield, flushOfflineArcaneShieldReaction } from '../skills/offlineArcaneShield.js';
 
 // Optimization: Reusable temporary objects to avoid GC
@@ -1471,6 +1471,8 @@ export class Actor extends Entity {
 
                 // Proposed new position - use temp vector
                 TEMP_VEC3.copy(this.position).add(this.velocity);
+                const supportHeight = getGroundedActorHeight(this, TEMP_VEC3);
+                if (supportHeight !== null) TEMP_VEC3.y = supportHeight;
                 
                 // Check Collision
                 if (collisionManager) {
@@ -1703,7 +1705,7 @@ export class Actor extends Entity {
 
     attack(target, onHit = null) {
         const meleeHero = ['Fighter', 'Cleric'].includes(this.constructor.name);
-        const inMeleeRange = () => target?.position && Math.hypot(target.position.x - this.position.x, target.position.z - this.position.z)
+        const inMeleeRange = () => target?.position && getActorCombatDistance(this.gameEngine, this, target)
             <= getHeroBasicAttackReach(this.constructor.name, this, target);
         if (meleeHero && !inMeleeRange()) return false;
         if (this.state === 'DEAD') return false;
@@ -1854,6 +1856,7 @@ export class Actor extends Entity {
     }
 
     respawn(x, z) {
+        this.supportSurface = '';
         this.teleportPhaseTimer = 0;
         this.invulnerabilityTimer = 0;
         this.invulnerableActive = false;

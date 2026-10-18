@@ -269,6 +269,8 @@ message Entity {
   map<string, EquipmentAppearance> appearances = 127;
   // Remaining paid Focus casts, including Reservoir's split bonus.
   int32 spell_focus_charges = 128;
+  // Server-owned walkable roof; empty on terrain/instance floors.
+  string support_surface = 129;
 
   // Authoritative jump replication
   float jump_start_x = 81;

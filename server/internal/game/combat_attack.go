@@ -46,6 +46,7 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 	attackerType := attacker.Type
 	attackerSubType := attacker.SubType
 	attackerX, attackerZ := attacker.X, attacker.Z
+	attackerY, attackerRoof := attacker.Y, attacker.SupportSurface != "" || attacker.roofFalling
 	attackerScale := attacker.Scale
 	attackerRadius := attacker.ReplicatedBodyRadius()
 	attackCooldown := attacker.AttackCooldown
@@ -64,6 +65,7 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 	targetInstanceID := target.InstanceID
 	targetType := target.Type
 	targetX, targetZ := target.X, target.Z
+	targetY, targetRoof := target.Y, target.SupportSurface != "" || target.roofFalling
 	targetScale := target.Scale
 	targetRadius := target.ReplicatedBodyRadius()
 	target.Mu.RUnlock()
@@ -84,6 +86,10 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 	dx := attackerX - targetX
 	dz := attackerZ - targetZ
 	dist := math.Sqrt(dx*dx + dz*dz)
+	if (attackerRoof || targetRoof) && !(attackerType == TypePlayer && (attackerSubType == "Wizard" || attackerSubType == "Rogue")) {
+		dy := attackerY + 1.5*math.Max(1, attackerScale) - targetY - 1.5*math.Max(1, targetScale)
+		dist = math.Sqrt(dx*dx + dz*dz + dy*dy)
+	}
 
 	attackRange := basicAttackReach(attackerType, attackerSubType, attackerScale, targetScale, attackerRadius, targetRadius)
 
@@ -161,6 +167,7 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 	}
 	impactX, impactZ, impactScale := att.X, att.Z, att.Scale
 	impactRadius := att.ReplicatedBodyRadius()
+	impactY, impactRoof := att.Y, att.SupportSurface != "" || att.roofFalling
 	cloakBonus := att.CloakNextAttackBonus
 	if att.Type == TypePlayer && cloakBonus > 0 {
 		att.CloakNextAttackBonus = 0
@@ -184,7 +191,12 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 	// Every melee swing must still reach its target at impact. Ranged hero
 	// basics and separately telegraphed abilities retain their existing rules.
 	melee := attackerSnapshot.Type != TypePlayer || (attackerSnapshot.SubType != "Wizard" && attackerSnapshot.SubType != "Rogue")
-	if melee && math.Hypot(tgt.X-impactX, tgt.Z-impactZ) >
+	impactDistance := math.Hypot(tgt.X-impactX, tgt.Z-impactZ)
+	if melee && (impactRoof || tgt.SupportSurface != "" || tgt.roofFalling) {
+		dy := impactY + 1.5*math.Max(1, impactScale) - tgt.Y - 1.5*math.Max(1, tgt.Scale)
+		impactDistance = math.Hypot(impactDistance, dy)
+	}
+	if melee && impactDistance >
 		basicAttackReach(attackerSnapshot.Type, attackerSnapshot.SubType, impactScale, tgt.Scale, impactRadius, tgt.ReplicatedBodyRadius()) {
 		tgt.Mu.Unlock()
 		return

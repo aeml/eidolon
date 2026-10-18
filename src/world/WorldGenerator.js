@@ -274,7 +274,11 @@ export class WorldGenerator {
                 mesh.updateMatrixWorld(true);
                 const walkCollider = getLanternholdWalkCollider(mesh);
                 if (walkCollider) this.collisionManager.addOrientedCollider(walkCollider);
-                else this.collisionManager.addCollider(new THREE.Box3().setFromObject(mesh));
+                else {
+                    const collider = new THREE.Box3().setFromObject(mesh);
+                    if (mesh.userData.structureId === 'trading_post') collider.roofSupport = 'town-market';
+                    this.collisionManager.addCollider(collider);
+                }
             }
             return true;
         };
@@ -285,9 +289,11 @@ export class WorldGenerator {
         // The town building is a facade; its clickable door leads to a shared scene.
         this.collisionManager.addCollider(new THREE.Box3().setFromCenterAndSize(new THREE.Vector3(cx, 2.4, cz - 21.65), new THREE.Vector3(5, 4.8, .5)));
         for (const wall of casino.userData.casinoWalls) {
-            this.collisionManager.addCollider(new THREE.Box3().setFromCenterAndSize(
+            const collider = new THREE.Box3().setFromCenterAndSize(
                 new THREE.Vector3(cx + wall.position[0], wall.position[1], cz - 30 + wall.position[2]),
-                new THREE.Vector3(...wall.size)));
+                new THREE.Vector3(...wall.size));
+            collider.roofSupport = 'town-casino';
+            this.collisionManager.addCollider(collider);
         }
         setupBuilding(
             createProceduralLanternholdStructure('trading_post', { optimized: true }),
@@ -318,9 +324,10 @@ export class WorldGenerator {
         });
         if (!shouldAttach()) return false;
         this.scene.add(neighborhood);
-        for (const home of neighborhood.userData.walkFootprints) {
+        for (const [index, home] of neighborhood.userData.walkFootprints.entries()) {
             const matrix = new THREE.Matrix4().makeRotationY(home.rotation).setPosition(home.x, .025, home.z);
             this.collisionManager.addOrientedCollider({
+                roofSupport: `town-home-${index}`,
                 box: new THREE.Box3(new THREE.Vector3(-home.width / 2, -2, -home.depth / 2),
                     new THREE.Vector3(home.width / 2, home.height, home.depth / 2)),
                 matrix, inverse: matrix.clone().invert()

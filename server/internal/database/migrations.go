@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const CurrentSchemaVersion = 26
+const CurrentSchemaVersion = 27
 
 type schemaMigration struct {
 	Version int
@@ -116,6 +116,9 @@ var schemaMigrations = []schemaMigration{
 	// Older full-character writers omit pending quest offers and claim receipts.
 	// Fence them without backfilling rewards or rewriting existing characters.
 	{Version: 26, Name: "saved_quest_equipment_choices", Apply: func(context.Context, *DB) error { return nil }},
+	// Older writers cannot replay version3 roof deliveries or retain their
+	// floor metadata. Fence them without rewriting existing item ledgers.
+	{Version: 27, Name: "ground_item_roof_support", Apply: func(context.Context, *DB) error { return nil }},
 }
 
 // RunMigrations applies every missing migration in ascending version order.

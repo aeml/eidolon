@@ -27,26 +27,30 @@ const (
 type GroundItemOperation struct {
 	// Version2 uses a contiguous account checkpoint instead of adding one
 	// character-side map entry forever. Omit zero to preserve legacy hashes.
-	AccountOrdinal   int64     `bson:"account_ordinal,omitempty" json:",omitempty"`
-	Version          int       `bson:"version"`
-	ID               string    `bson:"_id"`
-	Kind             string    `bson:"kind"`
-	Username         string    `bson:"username"`
-	PlayerID         string    `bson:"player_id"`
-	LootID           string    `bson:"loot_id"`
-	Generation       int64     `bson:"generation"`
-	BeforePayload    string    `bson:"before_payload"`
-	MovedPayload     string    `bson:"moved_payload"`
-	RemainingPayload string    `bson:"remaining_payload"`
-	InstanceID       string    `bson:"instance_id"`
-	LootOwnerID      string    `bson:"loot_owner_id"`
-	LootPartyID      string    `bson:"loot_party_id"`
-	X                float64   `bson:"x"`
-	Z                float64   `bson:"z"`
-	CreatedAt        time.Time `bson:"created_at"`
-	LootTime         time.Time `bson:"loot_time,omitempty"`
-	LootCreatedAt    time.Time `bson:"loot_created_at,omitempty"`
-	Fingerprint      string    `bson:"fingerprint"`
+	AccountOrdinal   int64   `bson:"account_ordinal,omitempty" json:",omitempty"`
+	Version          int     `bson:"version"`
+	ID               string  `bson:"_id"`
+	Kind             string  `bson:"kind"`
+	Username         string  `bson:"username"`
+	PlayerID         string  `bson:"player_id"`
+	LootID           string  `bson:"loot_id"`
+	Generation       int64   `bson:"generation"`
+	BeforePayload    string  `bson:"before_payload"`
+	MovedPayload     string  `bson:"moved_payload"`
+	RemainingPayload string  `bson:"remaining_payload"`
+	InstanceID       string  `bson:"instance_id"`
+	LootOwnerID      string  `bson:"loot_owner_id"`
+	LootPartyID      string  `bson:"loot_party_id"`
+	X                float64 `bson:"x"`
+	Z                float64 `bson:"z"`
+	// Version3 binds a roof projection to its authoritative floor. Omitted
+	// zeros preserve every existing version1/2 JSON fingerprint byte for byte.
+	Y              float64   `bson:"y,omitempty" json:",omitempty"`
+	SupportSurface string    `bson:"support_surface,omitempty" json:",omitempty"`
+	CreatedAt      time.Time `bson:"created_at"`
+	LootTime       time.Time `bson:"loot_time,omitempty"`
+	LootCreatedAt  time.Time `bson:"loot_created_at,omitempty"`
+	Fingerprint    string    `bson:"fingerprint"`
 }
 
 func GroundItemOperationID(nonce string) string {
@@ -92,8 +96,13 @@ func (op GroundItemOperation) Validate() error {
 	id := strings.TrimPrefix(op.ID, groundItemPrefix)
 	_, idErr := hex.DecodeString(id)
 	fingerprint, err := GroundItemFingerprint(op)
-	validVersion := op.Version == 1 && op.AccountOrdinal == 0 || op.Version == 2 && op.AccountOrdinal > 0
-	if !validVersion || !strings.HasPrefix(op.ID, groundItemPrefix) || len(id) != 64 || idErr != nil ||
+	validVersion := op.Version == 1 && op.AccountOrdinal == 0 || op.UsesAccountCheckpoint() && op.AccountOrdinal > 0
+	validFloor := op.Y == 0 && op.SupportSurface == ""
+	if op.Version == 3 {
+		validFloor = op.InstanceID == "" && boundedActivityText(op.SupportSurface, 128, true) &&
+			!math.IsNaN(op.Y) && !math.IsInf(op.Y, 0) && math.Abs(op.Y) < 1e7
+	}
+	if !validVersion || !validFloor || !strings.HasPrefix(op.ID, groundItemPrefix) || len(id) != 64 || idErr != nil ||
 		!boundedActivityText(op.Username, 256, true) || op.PlayerID != "player-"+op.Username ||
 		!boundedActivityText(op.LootID, 512, true) || !boundedActivityText(op.InstanceID, 512, false) ||
 		!boundedActivityText(op.LootOwnerID, 512, false) || !boundedActivityText(op.LootPartyID, 512, false) ||
@@ -146,7 +155,7 @@ func GroundItemCharacterReceiptMatches(character *Character, op GroundItemOperat
 	if character == nil || op.Validate() != nil || character.Name != op.Username {
 		return false
 	}
-	if op.Version == 2 {
+	if op.UsesAccountCheckpoint() {
 		if previous, found := character.ItemDeliveryReceipts[op.ID]; found && previous != op.Fingerprint {
 			return false
 		}
@@ -166,7 +175,11 @@ func GroundItemCheckpointValid(ordinal int64, id, fingerprint string) bool {
 // Only a canonical immutable version2 ledger record may use this proof. Its
 // unique account ordinal and strict contiguous saved application establish all
 // preceding deliveries; the current head additionally checks exact identity.
+func (op GroundItemOperation) UsesAccountCheckpoint() bool {
+	return op.Version == 2 || op.Version == 3
+}
+
 func GroundItemCheckpointMatches(ordinal int64, id, fingerprint string, op GroundItemOperation) bool {
-	return op.Version == 2 && op.AccountOrdinal > 0 && GroundItemCheckpointValid(ordinal, id, fingerprint) &&
+	return op.UsesAccountCheckpoint() && op.AccountOrdinal > 0 && GroundItemCheckpointValid(ordinal, id, fingerprint) &&
 		(ordinal > op.AccountOrdinal || ordinal == op.AccountOrdinal && id == op.ID && fingerprint == op.Fingerprint)
 }

@@ -264,6 +264,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		SafeZoneID:                 e.SafeZoneID,
 		Mana:                       e.Mana,
 		State:                      e.State,
+		SupportSurface:             e.SupportSurface,
 		Level:                      e.Level,
 		Scale:                      e.Scale,
 		BodyRadius:                 e.ReplicatedBodyRadius(),
@@ -363,6 +364,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	csafeZoneID := current.SafeZoneID
 	cmana := current.Mana
 	cstate := current.State
+	csupportSurface := current.SupportSurface
 	clevel := current.Level
 	cscale := current.Scale
 	cbodyRadius := current.ReplicatedBodyRadius()
@@ -655,7 +657,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	}
 
 	// State changes are always significant
-	if cstate != last.State {
+	if cstate != last.State || csupportSurface != last.SupportSurface {
 		return true
 	}
 	if cstate == "JUMPING" && math.Abs(cjumpProgress-last.JumpProgress) > 0.01 {
@@ -1369,6 +1371,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		JumpStartZ:                 float32(e.JumpStartZ),
 		JumpTargetX:                float32(e.JumpTargetX),
 		JumpTargetY:                float32(e.JumpTargetY),
+		SupportSurface:             e.SupportSurface,
 		JumpTargetZ:                float32(e.JumpTargetZ),
 		JumpDuration:               float32(e.JumpDuration),
 		JumpHeight:                 float32(e.JumpHeight),

@@ -189,6 +189,10 @@ type Entity struct {
 	SpawnX            float64 `json:"-"`
 	SpawnZ            float64 `json:"-"`
 	State             string  `json:"state"` // IDLE, MOVING, ATTACKING, DEAD
+	SupportSurface    string  `json:"supportSurface" bson:"-"`
+	jumpTargetSupport string
+	roofFalling       bool
+	roofFallVelocity  float64
 	// LastMoveSequence acknowledges the newest ordered client movement sample
 	// processed by the server, including speed/discontinuity rejections. Returning
 	// the unchanged position with that acknowledgement corrects denied predictions
@@ -1016,6 +1020,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		SpawnX:                   e.SpawnX,
 		SpawnZ:                   e.SpawnZ,
 		State:                    e.State,
+		SupportSurface:           e.SupportSurface,
 		LastAttackTime:           e.LastAttackTime,
 		AttackCooldown:           e.AttackCooldown,
 		LastAbilityTime:          e.LastAbilityTime,
@@ -1219,6 +1224,7 @@ func (w *World) copyEntity(v *Entity) *Entity {
 		SafeZoneID:        v.SafeZoneID,
 		Level:             v.Level,
 		State:             v.State,
+		SupportSurface:    v.SupportSurface,
 		LastMoveSequence:  v.LastMoveSequence,
 		Scale:             v.Scale,
 		BodyRadius:        v.ReplicatedBodyRadius(),

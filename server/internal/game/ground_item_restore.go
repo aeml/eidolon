@@ -39,6 +39,12 @@ func (w *World) RestoreGroundItemProjection(record database.GroundItemRecord, sa
 	if err != nil {
 		return err
 	}
+	floor := &Entity{}
+	if active && payload != "" {
+		if err := restoreGroundItemFloor(floor, record.GroundItemOperation); err != nil {
+			return err
+		}
+	}
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 	if previous, found := w.groundItemPublished[record.LootID]; found {
@@ -56,6 +62,7 @@ func (w *World) RestoreGroundItemProjection(record database.GroundItemRecord, sa
 		}
 		if loot.Type != TypeLoot || loot.LootItem == nil || loot.InstanceID != record.InstanceID ||
 			loot.X != record.X || loot.Z != record.Z || loot.LootOwnerID != record.LootOwnerID || loot.LootPartyID != record.LootPartyID ||
+			(record.Version == 3 && active && payload != "" && (loot.Y != floor.Y || loot.SupportSurface != floor.SupportSurface)) ||
 			!loot.LootTime.UTC().Truncate(time.Millisecond).Equal(record.AvailableAt) || !loot.CreatedAt.UTC().Truncate(time.Millisecond).Equal(birth) ||
 			loot.GroundItemGeneration > generation || (loot.GroundItemReservation != "" && (loot.GroundItemReservation != record.ID || loot.GroundReservationHash != record.Fingerprint)) {
 			return errors.New("ground item projection identity or reservation changed")
@@ -91,6 +98,9 @@ func (w *World) RestoreGroundItemProjection(record database.GroundItemRecord, sa
 		loot = &Entity{ID: record.LootID, Type: TypeLoot, X: record.X, Y: .5, Z: record.Z,
 			InstanceID: record.InstanceID, CreatedAt: birth, LootTime: record.AvailableAt,
 			LootOwnerID: record.LootOwnerID, LootPartyID: record.LootPartyID, GroundItemOrigin: record.ID}
+		if record.Version == 3 {
+			loot.Y, loot.SupportSurface = floor.Y, floor.SupportSurface
+		}
 		w.groundLootLocked(loot)
 		w.Entities[record.LootID] = loot
 		w.Grid.Add(loot)

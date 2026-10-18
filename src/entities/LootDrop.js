@@ -180,7 +180,9 @@ export class LootDrop extends Entity {
     }
 
     update(dt) {
-        const ground = getOverworldGroundHeight(this.gameEngine, this.position);
+        const roof = !this.gameEngine?.currentInstanceId && this.supportSurface
+            && this.gameEngine?.townRoofField?.sample(this.position.x, this.position.z, this.supportSurface);
+        const ground = roof ? roof.y : getOverworldGroundHeight(this.gameEngine, this.position);
         if (ground !== null) this.position.y = ground + .5;
         if (Date.now() - this.creationTime >= this.maxLifetime) {
             this.isActive = false;

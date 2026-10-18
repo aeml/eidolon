@@ -97,12 +97,33 @@ func (w *World) groundActorLocked(e *Entity) {
 	if (e.Type != TypePlayer && e.Type != TypeEnemy && !(e.Type == TypeNPC && (e.SubType == "AvengingSeraph" || e.SubType == "ChronicleSite"))) || e.State == "JUMPING" {
 		return
 	}
+	if e.Type == TypePlayer && e.InstanceID == "" {
+		if e.SupportSurface != "" {
+			if _, height, ok := townRoofs.sample(e.X, e.Z, e.SupportSurface); ok {
+				e.Y = height
+				return
+			}
+			e.SupportSurface = ""
+			e.roofFalling = true
+			e.roofFallVelocity = 0
+		}
+		if e.roofFalling {
+			return
+		}
+	}
 	if height, ok := w.overworldGroundHeight(e.InstanceID, e.X, e.Z); ok {
 		e.Y = height
 	}
 }
 
 func (w *World) groundActorAtEntryLocked(e *Entity) {
+	if e.Type == TypePlayer && e.InstanceID == "" && e.State != "JUMPING" {
+		if id, height, ok := townRoofs.sample(e.X, e.Z, ""); ok && math.Abs(e.Y-height) < .25 {
+			e.SupportSurface = id
+			e.Y = height
+			return
+		}
+	}
 	w.groundActorLocked(e)
 	// A saved raised-ground height is not an owned floor in a flat world.
 	// Normalize only overworld player admission/restore, not normal frame work.
@@ -117,6 +138,13 @@ func (w *World) groundActorAtEntryLocked(e *Entity) {
 func (w *World) groundLootLocked(e *Entity) {
 	if e.Type != TypeLoot {
 		return
+	}
+	if e.InstanceID == "" {
+		if id, height, ok := townRoofs.sample(e.X, e.Z, ""); ok && math.Abs(e.Y-height-.5) < .25 {
+			e.SupportSurface = id
+			e.Y = height + .5
+			return
+		}
 	}
 	if e.InstanceID == "" && len(w.rockSolids) > 0 {
 		point := recoverRockPosition(w.rockSolids, rockPoint{e.X, e.Z}, .5)

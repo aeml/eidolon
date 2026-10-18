@@ -87,6 +87,9 @@ func freezeGroundItemPlan(player *Entity, loot *Entity, kind string, moved, rema
 		LootOwnerID: loot.LootOwnerID, LootPartyID: loot.LootPartyID, X: loot.X, Z: loot.Z,
 		LootTime: loot.LootTime.UTC().Truncate(time.Millisecond), LootCreatedAt: loot.CreatedAt.UTC().Truncate(time.Millisecond),
 		CreatedAt: time.Now().UTC().Truncate(time.Millisecond)}
+	if loot.SupportSurface != "" {
+		op.Version, op.Y, op.SupportSurface = 3, loot.Y, loot.SupportSurface
+	}
 	if kind == database.GroundItemPickup {
 		if loot.GroundItemGeneration == math.MaxInt64 {
 			return op, errors.New("ground item generation exhausted")
@@ -143,6 +146,16 @@ func (w *World) PrepareDurableInventoryDrop(playerID string, slot int, itemID st
 	}
 	loot := &Entity{ID: "loot-drop-" + uuid.NewString(), Type: TypeLoot, LootItem: &item,
 		X: player.X, Y: .5, Z: player.Z, InstanceID: player.InstanceID}
+	if player.SupportSurface != "" {
+		if player.State == "JUMPING" || player.roofFalling {
+			return database.GroundItemOperation{}, errors.New("land before dropping an item from a roof")
+		}
+		if id, height, ok := townRoofs.sample(player.X, player.Z, player.SupportSurface); ok {
+			loot.Y, loot.SupportSurface = height+.5, id
+		} else {
+			return database.GroundItemOperation{}, errors.New("roof support unavailable")
+		}
+	}
 	// Resolve physical grounding before freezing coordinates. Repositioning a
 	// later publication out of a rock must not disagree with its durable ledger.
 	w.groundLootLocked(loot)
@@ -308,7 +321,12 @@ func (w *World) prepareDurableGroundPickup(playerID, lootID string, castID uint6
 		}
 	}
 	dx, dz := player.X-loot.X, player.Z-loot.Z
-	if distance := dx*dx + dz*dz; math.IsNaN(distance) || math.IsInf(distance, 0) || distance >= 36 {
+	distance := dx*dx + dz*dz
+	if player.SupportSurface != "" || loot.SupportSurface != "" || player.roofFalling {
+		dy := player.Y - (loot.Y - .5)
+		distance += dy * dy
+	}
+	if math.IsNaN(distance) || math.IsInf(distance, 0) || distance >= 36 {
 		return database.GroundItemOperation{}, errors.New("loot out of range")
 	}
 	item := normalizedGroundItem(*loot.LootItem)
@@ -388,7 +406,7 @@ func (player *Entity) ApplyGroundItemCharacterEffect(op database.GroundItemOpera
 	if player == nil || player.Type != TypePlayer || player.Name != op.Username || player.ID != op.PlayerID {
 		return false, ErrGroundItemIdentity
 	}
-	if op.Version == 2 {
+	if op.UsesAccountCheckpoint() {
 		if previous, found := player.ItemDeliveryReceipts[op.ID]; found && previous != op.Fingerprint {
 			return false, ErrGroundItemIdentity
 		}
@@ -430,7 +448,7 @@ func (player *Entity) ApplyGroundItemCharacterEffect(op database.GroundItemOpera
 		}
 	}
 	player.Inventory = inventory
-	if op.Version == 2 {
+	if op.UsesAccountCheckpoint() {
 		player.GroundAccountOrdinal, player.GroundAccountOperationID, player.GroundAccountFingerprint = op.AccountOrdinal, op.ID, op.Fingerprint
 	} else {
 		if player.ItemDeliveryReceipts == nil {
@@ -498,6 +516,9 @@ func (w *World) CompleteGroundItemProjection(op database.GroundItemOperation, sa
 		loot = &Entity{ID: op.LootID, Type: TypeLoot, LootItem: &before,
 			X: op.X, Y: .5, Z: op.Z, InstanceID: op.InstanceID,
 			CreatedAt: availableAt, LootTime: availableAt, GroundItemOrigin: op.ID}
+		if err := restoreGroundItemFloor(loot, op); err != nil {
+			return err
+		}
 		w.groundLootLocked(loot)
 		w.Entities[loot.ID] = loot
 		w.Grid.Add(loot)

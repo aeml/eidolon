@@ -163,7 +163,7 @@ func (db *DB) PrepareGroundItemOperation(op GroundItemOperation) (*GroundItemRec
 		}
 		return stored, nil
 	}
-	if op.Version == 2 {
+	if op.UsesAccountCheckpoint() {
 		// A new immutable decision may only extend the ACTUALLY saved head.
 		// Existing decisions above remain resolvable after an unknown reply.
 		character, err := db.GetDirectTradeCharacter(op.Username, op.Username)
@@ -201,6 +201,7 @@ func (db *DB) PrepareGroundItemOperation(op GroundItemOperation) (*GroundItemRec
 		}
 		if previous.Generation == math.MaxInt64 || op.Generation != previous.Generation+1 || previous.GroundPayload() == "" ||
 			op.BeforePayload != previous.GroundPayload() || op.InstanceID != previous.InstanceID || op.X != previous.X || op.Z != previous.Z ||
+			op.Y != previous.Y || op.SupportSurface != previous.SupportSurface ||
 			op.LootOwnerID != previous.LootOwnerID || op.LootPartyID != previous.LootPartyID || !op.LootCreatedAt.Equal(birth) {
 			return nil, ErrGroundItemConflict
 		}

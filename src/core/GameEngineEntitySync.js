@@ -4,7 +4,7 @@ import { LootDrop } from '../entities/LootDrop.js';
 import { Projectile } from '../entities/Projectile.js';
 import { AUDIO_CUES } from '../audio/AudioManager.js';
 import { installPrototypeMethods } from './PrototypeInstaller.js';
-import { getOverworldGroundHeight } from './WorldGrounding.js';
+import { getOverworldGroundHeight, getFloorInteractionDistance } from './WorldGrounding.js';
 
 class GameEngineEntitySyncMethods {
     applyPositionHacks(pData) {
@@ -145,6 +145,7 @@ class GameEngineEntitySyncMethods {
      * @param {Object} pData  Entity payload from server
      */
     syncRemoteEntity(remoteEntity, pData) {
+        if (typeof pData.supportSurface === 'string') remoteEntity.supportSurface = pData.supportSurface;
         if (pData.type !== undefined) {
             remoteEntity.serverEntityType = pData.type;
             remoteEntity.terrainGrounded = pData.type === 'Player' || pData.type === 'Enemy' ||
@@ -397,9 +398,7 @@ class GameEngineEntitySyncMethods {
 
     canAttemptLootPickup(entity) {
         if (!this.player || !this.isLootEntity(entity) || !entity?.isActive || !entity?.position) return false;
-        const dx = this.player.position.x - entity.position.x;
-        const dz = this.player.position.z - entity.position.z;
-        return Math.sqrt(dx * dx + dz * dz) <= this.getLootPickupRadius(entity);
+        return getFloorInteractionDistance(this.player, entity) <= this.getLootPickupRadius(entity);
     }
 
     formatLootPickupMessage(entity) {
@@ -458,9 +457,7 @@ class GameEngineEntitySyncMethods {
         for (const entity of this.activeEntitiesCache) {
             if (!this.isLootEntity(entity) || !entity.isActive || this.recentlyPickedUpLoot.has(entity.id)) continue;
             if (excludeDropped && this.droppedInventoryItemIds?.has(entity.item?.id)) continue;
-            const dx = this.player.position.x - entity.position.x;
-            const dz = this.player.position.z - entity.position.z;
-            const dist = Math.sqrt(dx * dx + dz * dz);
+            const dist = getFloorInteractionDistance(this.player, entity);
             if (dist <= nearestDistance) {
                 nearest = entity;
                 nearestDistance = dist;

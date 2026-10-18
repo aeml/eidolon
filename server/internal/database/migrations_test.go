@@ -254,3 +254,12 @@ func TestSchemaMigrationCatalogFencesSavedQuestEquipmentChoices(t *testing.T) {
 		t.Fatal("quest writer fence must not backfill or rewrite player rewards", err)
 	}
 }
+
+func TestSchemaMigrationCatalogFencesGroundItemRoofSupport(t *testing.T) {
+	if CurrentSchemaVersion < 27 || len(schemaMigrations) < 27 || schemaMigrations[26].Name != "ground_item_roof_support" {
+		t.Fatal("older item writers must not discard retained roof floors")
+	}
+	if err := schemaMigrations[26].Apply(context.Background(), nil); err != nil {
+		t.Fatal("roof floor fence must not rewrite historical ledgers", err)
+	}
+}

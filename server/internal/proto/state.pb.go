@@ -1033,6 +1033,8 @@ type Entity struct {
 	Appearances map[string]*EquipmentAppearance `protobuf:"bytes,127,rep,name=appearances,proto3" json:"appearances,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Remaining paid Focus casts, including Reservoir's split bonus.
 	SpellFocusCharges int32 `protobuf:"varint,128,opt,name=spell_focus_charges,json=spellFocusCharges,proto3" json:"spell_focus_charges,omitempty"`
+	// Server-owned walkable roof; empty on terrain/instance floors.
+	SupportSurface string `protobuf:"bytes,129,opt,name=support_surface,json=supportSurface,proto3" json:"support_surface,omitempty"`
 	// Authoritative jump replication
 	JumpStartX    float32 `protobuf:"fixed32,81,opt,name=jump_start_x,json=jumpStartX,proto3" json:"jump_start_x,omitempty"`
 	JumpStartY    float32 `protobuf:"fixed32,82,opt,name=jump_start_y,json=jumpStartY,proto3" json:"jump_start_y,omitempty"`
@@ -1910,6 +1912,13 @@ func (x *Entity) GetSpellFocusCharges() int32 {
 	return 0
 }
 
+func (x *Entity) GetSupportSurface() string {
+	if x != nil {
+		return x.SupportSurface
+	}
+	return ""
+}
+
 func (x *Entity) GetJumpStartX() float32 {
 	if x != nil {
 		return x.JumpStartX
@@ -2071,7 +2080,7 @@ const file_state_proto_rawDesc = "" +
 	"\n" +
 	"StatsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\x92*\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xbc*\n" +
 	"\x06Entity\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
 	"\vinstance_id\x18\x02 \x01(\tR\n" +
@@ -2207,7 +2216,8 @@ const file_state_proto_rawDesc = "" +
 	"zeal_power\x18} \x01(\x02R\tzealPower\x120\n" +
 	"\x14mark_weakness_factor\x18~ \x01(\x02R\x12markWeaknessFactor\x12H\n" +
 	"\vappearances\x18\x7f \x03(\v2&.eidolon.state.Entity.AppearancesEntryR\vappearances\x12/\n" +
-	"\x13spell_focus_charges\x18\x80\x01 \x01(\x05R\x11spellFocusCharges\x12 \n" +
+	"\x13spell_focus_charges\x18\x80\x01 \x01(\x05R\x11spellFocusCharges\x12(\n" +
+	"\x0fsupport_surface\x18\x81\x01 \x01(\tR\x0esupportSurface\x12 \n" +
 	"\fjump_start_x\x18Q \x01(\x02R\n" +
 	"jumpStartX\x12 \n" +
 	"\fjump_start_y\x18R \x01(\x02R\n" +

@@ -98,6 +98,7 @@ export function getLanternholdWalkCollider(mesh) {
     if (!footprint) return null;
     mesh.updateMatrixWorld(true);
     return {
+        roofSupport: { blacksmith: 'town-smithy', trading_house: 'town-auction' }[mesh.userData.structureId],
         box: new THREE.Box3(new THREE.Vector3(-footprint[0] / 2, -2, -footprint[1] / 2), new THREE.Vector3(footprint[0] / 2, 30, footprint[1] / 2)),
         matrix: mesh.matrixWorld.clone(), inverse: mesh.matrixWorld.clone().invert()
     };
