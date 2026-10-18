@@ -318,7 +318,8 @@ test.describe('touch quest objects', () => {
         const identity = await enterPreparedCharacter(page, accounts[4], 'low');
         expect(identity.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
         const quest = () => page.evaluate(() => window.game.player.quests.find(q => q.id === 'chronicle_earth_keepers_house'));
-        expect((await quest()).investigationMask).toBe(0);
+        expect((await quest()).investigationMask ?? 0).toBe(0);
+        expect((await quest()).count).toBe(0);
         await page.locator('#btn-mobile-interact').tap();
         await expect(page.locator('#interaction-cast')).toBeVisible();
         await page.screenshot({ path: testInfo.outputPath('phone-quest-cast.png') });
@@ -333,7 +334,8 @@ test.describe('touch quest objects', () => {
         await move();
         await expect(page.locator('#interaction-cast')).toBeHidden();
         await expect.poll(() => page.evaluate(() => window.__gameplayInteractions.casts.at(-1)?.state)).toBe('cancelled');
-        expect((await quest()).investigationMask).toBe(0);
+        expect((await quest()).investigationMask ?? 0).toBe(0);
+        expect((await quest()).count).toBe(0);
         const started = Date.now();
         await page.locator('#btn-mobile-interact').tap();
         await expect(page.locator('#interaction-cast')).toBeVisible();

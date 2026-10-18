@@ -268,3 +268,25 @@ expected generation: a fresh drop is0 and its first pickup is1. The fixture
 now requires the exact next generation and one account-checkpoint advancement.
 Its corrected actual route still needs to run. Negative runs and cleanup remain
 retained; no production custody validation or transport policy was weakened.
+
+The corrected API63 run passes all eight actual cases without skips in88.210s
+onc01c7781472fd59cb45d6f108d4cf366c6a2c101. It uses15owned server processes and
+nine disposable accounts, restores a real14424-byte gzip archive and two private
+journal files, preserves exact item/progression/equipment/wallet/floor/expiry
+custody, and advances the restored pickup generation/checkpoint exactly once.
+Both Mongo containers were removed and all protected inputs remained unchanged.
+The25-file receipt inventory hashes to7860dea76edd2e896cd58318f212a383459af217cc02b6902d71ed3b4bff3a0e.
+Private archive bytes remain outside workspace/upload roots; this is not owner
+approval of production backup destination, retention, RPO/RTO or handoff.
+
+Native64 passes all four class roof/walk/eave/jump/recall cases, including the
+original1500ms landing gate and the Fighter's real Low preference/relogin and
+dragged-window flows. High/Low close roof captures were reviewed. Its phone case
+stopped before interaction because the fixture incorrectly required an explicit
+zero investigation mask: the ordinary JSON omits that zero field. The fixture
+now accepts the omitted zero representation and additionally requires Count0
+before/after cancellation. The Earth case did not run. The complete route remains
+failed until its corrected successor passes. Driver64 terminated with143 after
+the Go/browser failure; its owned Mongo cleanup was recovered after exact
+container identity verification, with source inputs unchanged and ports free.
+No cause for the driver's termination is established.
