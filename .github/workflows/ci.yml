@@ -199,6 +199,9 @@ jobs:
           EIDOLON_OWNER_EXPORT_TEST_MONGO_URI: mongodb://127.0.0.1:27017
         run: go test -race . ./internal/database -run '^TestCharacter(Bound|JournalAccountIdentity|JournalRejectsMixedIdentity)' -count=1 -timeout=45s
 
+      - name: Verify bounded cold database startup and connection deadlines
+        run: bash scripts/run-db-startup-qa.sh
+
       - name: Run Go tests with coverage
         working-directory: server
         run: |
