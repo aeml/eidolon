@@ -34,6 +34,15 @@ retries. Game inventory rules and all original pickup assertions stay unchanged.
 D2's completed CI and both deployments remain recorded, but its configured live
 retry kept it unaccepted; the original failure stays frozen without a waiver.
 [Loot correction](2026-10-18-release1-79-79-loot-readiness-correction.md).
+The fourth corrected source's client job exhausted a reused Jest worker's4GB
+heap after803suites/12,517tests passed; four combo-notification cases never ran.
+The test harness now retires workers between completed suites after768MB idle
+heap use. A controlled four-suite/two-worker probe proves actual process recycling;
+the original combo/engine-lifetime suites pass all11cases with coverage. Every
+original Jest field, assertion, coverage threshold and concurrency policy stays.
+Game runtime/assets/server, both fixture corrections, version and notes remain.
+This source needs a fresh full pipeline; the failed client result is not waived.
+[Worker lifetime](2026-10-18-release1-79-79-jest-worker-lifetime.md).
 This prepared release still requires its own exact CI and live acceptance.
 Full original game/world/art/combat/audio/performance/device/security/operations/
 owner/F1-F5/beta/1.99 scope stays active. Human campaign/phone feedback and
