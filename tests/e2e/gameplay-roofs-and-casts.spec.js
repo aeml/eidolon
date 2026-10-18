@@ -158,10 +158,13 @@ async function outsideWindowMove(page, selector, key, testInfo) {
     await page.keyboard.press(key);
     const window = page.locator(selector);
     await expect(window).toBeVisible();
+    const original = await window.boundingBox();
     const header = await window.locator('.window-header').boundingBox();
     await page.mouse.move(header.x + 60, header.y + 14);
     await page.mouse.down(); await page.mouse.move(header.x + 120, header.y + 54, { steps: 5 }); await page.mouse.up();
     const remembered = await window.boundingBox();
+    expect(Math.hypot(remembered.x - original.x, remembered.y - original.y),
+        'A real drag must move the window before persistence is qualified').toBeGreaterThan(1);
     await page.screenshot({ path: testInfo.outputPath(`${key}-window-before-outside-click.png`) });
     const point = await page.evaluate(() => {
         const game = window.game, canvas = game.renderSystem.renderer.domElement, rect = canvas.getBoundingClientRect();
@@ -196,6 +199,8 @@ async function outsideWindowMove(page, selector, key, testInfo) {
     await page.keyboard.press(key); await expect(window).toBeVisible();
     const restored = await window.boundingBox();
     expect(restored.x).toBeCloseTo(remembered.x, 0); expect(restored.y).toBeCloseTo(remembered.y, 0);
+    await testInfo.attach(`${key}-window-layout`, { body: JSON.stringify({ original, dragged: remembered,
+        restored, worldClick: point }), contentType: 'application/json' });
     await window.locator('.close-btn').first().click();
 }
 
