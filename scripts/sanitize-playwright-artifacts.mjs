@@ -1,4 +1,4 @@
-import { readdir, readFile, writeFile } from 'node:fs/promises';
+import { lstat, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import utilsBundle from 'playwright-core/lib/utilsBundle';
 
@@ -29,6 +29,7 @@ async function filesBelow(candidate) {
         entries = await readdir(candidate, { withFileTypes: true });
     } catch (error) {
         if (error.code === 'ENOENT') return [];
+        if (error.code === 'ENOTDIR' && (await lstat(candidate)).isFile()) return [candidate];
         throw error;
     }
 

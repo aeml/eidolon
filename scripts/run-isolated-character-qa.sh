@@ -11,6 +11,7 @@ for runtime_file in vendor/manifest.json vendor/three/build/three.module.js vend
 done
 
 source "${BASH_SOURCE[0]%/*}/qa-stage-timing.sh"
+source "${BASH_SOURCE[0]%/*}/qa-evidence.sh"
 
 readonly QA_RUN_ID="${EIDOLON_ISOLATED_QA_RUN_ID:-$(openssl rand -hex 5)}"
 readonly MONGO_CONTAINER="eidolon-isolated-qa-mongo-${QA_RUN_ID}"
@@ -1262,7 +1263,7 @@ esac
 qa_status=$?
 set -e
 
-node scripts/sanitize-playwright-artifacts.mjs
+sanitize_isolated_qa_evidence "$@"
 if [ "${qa_status}" -ne 0 ]; then
   echo "Isolated character QA failed." >&2
   exit "${qa_status}"
