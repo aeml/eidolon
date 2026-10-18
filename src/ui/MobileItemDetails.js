@@ -142,7 +142,7 @@ export class MobileItemDetails {
         for (const gem of item.gems || []) {
             if (gem) line(`◆ ${this.inventory._getGemQualityInfo(gem)?.name || gem.quality || ''} ${this.inventory._getGemTypeInfo(gem)?.name || gem.type || ''}`);
         }
-        const set = SET_DEFINITIONS[item.setId];
+        const set = Object.hasOwn(SET_DEFINITIONS, item.setId) ? SET_DEFINITIONS[item.setId] : null;
         if (set) {
             const count = Object.entries(this.inventory._getLastPlayer()?.equipment || {})
                 .filter(([slot, equipped]) => isActiveEquipment(slot, equipped) && equipped.setId === item.setId).length;
@@ -151,7 +151,7 @@ export class MobileItemDetails {
                 line(`${pieces} pieces (${count >= pieces ? 'active' : 'inactive'}): ${this.inventory.formatSetBonus(set[`bonus${pieces}`])}`);
             }
         }
-        const effect = UNIQUE_EFFECTS[item.uniqueEffect];
+        const effect = Object.hasOwn(UNIQUE_EFFECTS, item.uniqueEffect) ? UNIQUE_EFFECTS[item.uniqueEffect] : null;
         if (effect) { line(effect.name, 'phone-item-section'); line(effect.description); }
     }
 

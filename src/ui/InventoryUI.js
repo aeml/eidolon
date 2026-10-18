@@ -9,6 +9,11 @@ import { renderEquipmentComparison } from './EquipmentComparison.js';
 import { orderedItemStatKeys } from './ItemStatOrder.js';
 import { isEquippableItem, isActiveEquipment, itemFitsEquipmentSlot, canEquipItem, getEquipmentTypeLabel, classAllowsEquipment } from '../core/EquipmentSlots.js';
 
+// Item/legacy metadata is text. Only the surrounding tooltip layout is HTML.
+const tooltipText = value => String(value ?? '').replace(/[&<>"']/g,
+    character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
+const catalogueEntry = (catalogue, key) => Object.hasOwn(catalogue, key) ? catalogue[key] : null;
+
 /**
  * InventoryUI — handles inventory grid, equipment slots, shop/gamble,
  * stash, item tooltips, drag-and-drop, split-stack, buyback, and sell logic.
@@ -121,23 +126,23 @@ export class InventoryUI {
     _getGemTypeInfo(itemOrGem) {
         if (!itemOrGem) return null;
         const gemType = itemOrGem.gemType || itemOrGem.type;
-        return GEM_TYPES[gemType] || GEM_TYPES[String(gemType || '').toUpperCase()] || null;
+        return catalogueEntry(GEM_TYPES, gemType) || catalogueEntry(GEM_TYPES, String(gemType || '').toUpperCase());
     }
     _getGemQualityInfo(itemOrGem) {
         if (!itemOrGem) return null;
         const gemQuality = itemOrGem.gemQuality || itemOrGem.quality;
-        return GEM_QUALITIES[gemQuality] || GEM_QUALITIES[String(gemQuality || '').toUpperCase()] || null;
+        return catalogueEntry(GEM_QUALITIES, gemQuality) || catalogueEntry(GEM_QUALITIES, String(gemQuality || '').toUpperCase());
     }
     _getGemTooltipHeader(item) {
         const gemType = this._getGemTypeInfo(item);
         const gemQuality = this._getGemQualityInfo(item);
         if (!gemType || !gemQuality) return '';
-        return `<div style="margin-bottom: 6px;"><span style="color: ${gemQuality.color}; font-weight: bold;">${gemQuality.name}</span> <span style="color: ${gemType.color}; font-weight: bold;">${gemType.name}</span> <span style="color: #aaa;">Gem</span></div>`;
+        return `<div style="margin-bottom: 6px;"><span style="color: ${gemQuality.color}; font-weight: bold;">${tooltipText(gemQuality.name)}</span> <span style="color: ${gemType.color}; font-weight: bold;">${tooltipText(gemType.name)}</span> <span style="color: #aaa;">Gem</span></div>`;
     }
     _formatSocketedGemLine(gem) {
         const gemType = this._getGemTypeInfo(gem) || { name: gem?.type || 'Gem', color: '#fff' };
         const gemQuality = this._getGemQualityInfo(gem) || { name: gem?.quality || 'Unknown', color: '#fff' };
-        return `<div><span style="color: ${gemQuality.color}; font-weight: bold;">◆ ${gemQuality.name}</span> <span style="color: ${gemType.color};">${gemType.name}</span></div>`;
+        return `<div><span style="color: ${gemQuality.color}; font-weight: bold;">◆ ${tooltipText(gemQuality.name)}</span> <span style="color: ${gemType.color};">${tooltipText(gemType.name)}</span></div>`;
     }
     _getGemSlotStyle(item) {
         const gemQuality = this._getGemQualityInfo(item);
@@ -1335,18 +1340,18 @@ export class InventoryUI {
             levelColor = '#ff0000';
         }
 
-        let desc = `<div style="color: #aaa; font-style: italic; margin-bottom: 5px;">${item.rarity.name} ${item.type} (${slotName}) - <span style="color: ${levelColor}">Lvl ${item.level}</span></div>`;
+        let desc = `<div style="color: #aaa; font-style: italic; margin-bottom: 5px;">${tooltipText(item.rarity.name)} ${tooltipText(item.type)} (${tooltipText(slotName)}) - <span style="color: ${levelColor}">Lvl ${tooltipText(item.level)}</span></div>`;
         desc += this._equipmentTypeTooltip(item, player);
         if (isGemItem) desc += this._getGemTooltipHeader(item);
 
         if (item.stack > 1) {
-            desc += `<div style="color: #fff; margin-bottom: 5px;">Stack Size: ${item.stack} / ${item.maxStack || 1000}</div>`;
+            desc += `<div style="color: #fff; margin-bottom: 5px;">Stack Size: ${tooltipText(item.stack)} / ${tooltipText(item.maxStack || 1000)}</div>`;
         }
 
         if (item.stats) {
             for (const stat of this.getOrderedItemStatKeys(item.stats)) {
                 const val = item.stats[stat];
-                desc += `<div style="color: #fff;">+${val} ${this._formatStatName(stat)}</div>`;
+                desc += `<div style="color: #fff;">+${tooltipText(val)} ${tooltipText(this._formatStatName(stat))}</div>`;
             }
         }
 
@@ -1370,7 +1375,7 @@ export class InventoryUI {
         }
 
         // Set Item Info
-        if (item.setId && SET_DEFINITIONS[item.setId]) {
+        if (item.setId && catalogueEntry(SET_DEFINITIONS, item.setId)) {
             const setDef = SET_DEFINITIONS[item.setId];
             desc += `<div style="color: #00ff00; margin-top: 8px; border-top: 1px solid #333; padding-top: 5px;">`;
             desc += `<div style="font-weight: bold;">${setDef.name}</div>`;
@@ -1394,7 +1399,7 @@ export class InventoryUI {
                     const isActive = equippedCount >= bl.pieces;
                     const color = isActive ? '#00ff00' : '#555';
                     const bonusText = this.formatSetBonus(bl.bonus);
-                    desc += `<div style="color: ${color};">(${bl.pieces}) ${bonusText}</div>`;
+                    desc += `<div style="color: ${color};">(${bl.pieces}) ${tooltipText(bonusText)}</div>`;
                 }
             }
 
@@ -1403,7 +1408,7 @@ export class InventoryUI {
         }
 
         // Unique Effect
-        if (item.uniqueEffect && UNIQUE_EFFECTS[item.uniqueEffect]) {
+        if (item.uniqueEffect && catalogueEntry(UNIQUE_EFFECTS, item.uniqueEffect)) {
             const effect = UNIQUE_EFFECTS[item.uniqueEffect];
             desc += `<div style="color: ${effect.color}; margin-top: 8px; border-top: 1px solid #333; padding-top: 5px;">`;
             desc += `<div style="font-weight: bold;">★ ${effect.name}</div>`;
@@ -1423,12 +1428,12 @@ export class InventoryUI {
 
         const starterGuidance = this._buildStarterItemGuidance(item, player);
         if (starterGuidance) {
-            desc += `<div style="color: #8fb7d9; margin-top: 10px; border-top: 1px solid #33485a; padding-top: 6px;">${starterGuidance}</div>`;
+            desc += `<div style="color: #8fb7d9; margin-top: 10px; border-top: 1px solid #33485a; padding-top: 6px;">${tooltipText(starterGuidance)}</div>`;
         }
 
         const compareHint = this._buildCompareHint(item, player);
         if (compareHint && !this.compareMode) {
-            desc += `<div style="color: #c8d6e8; margin-top: 6px;">${compareHint}</div>`;
+            desc += `<div style="color: #c8d6e8; margin-top: 6px;">${tooltipText(compareHint)}</div>`;
         }
 
         // Equip Button on Mobile
@@ -1494,14 +1499,14 @@ export class InventoryUI {
                 this.compareTooltipTitle.textContent = equippedItem.name;
                 this.compareTooltipTitle.style.color = compareGemQuality?.color || equippedItem.rarity.color;
 
-                let compDesc = `<div style="color: #aaa; font-style: italic; margin-bottom: 5px;">${equippedItem.rarity.name} ${equippedItem.type} (${slotName}) - Lvl ${equippedItem.level}</div>`;
+                let compDesc = `<div style="color: #aaa; font-style: italic; margin-bottom: 5px;">${tooltipText(equippedItem.rarity.name)} ${tooltipText(equippedItem.type)} (${tooltipText(slotName)}) - Lvl ${tooltipText(equippedItem.level)}</div>`;
                 compDesc += this._equipmentTypeTooltip(equippedItem, player);
                 if (this._isGemItem(equippedItem)) compDesc += this._getGemTooltipHeader(equippedItem);
 
                 if (equippedItem.stats) {
                     for (const stat of this.getOrderedItemStatKeys(equippedItem.stats)) {
                         const val = equippedItem.stats[stat];
-                        compDesc += `<div style="color: #fff;">+${val} ${this._formatStatName(stat)}</div>`;
+                        compDesc += `<div style="color: #fff;">+${tooltipText(val)} ${tooltipText(this._formatStatName(stat))}</div>`;
                     }
                 }
 
@@ -1514,14 +1519,14 @@ export class InventoryUI {
                     }
                 }
 
-                if (equippedItem.setId && SET_DEFINITIONS[equippedItem.setId]) {
+                if (equippedItem.setId && catalogueEntry(SET_DEFINITIONS, equippedItem.setId)) {
                     const setDef = SET_DEFINITIONS[equippedItem.setId];
                     compDesc += `<div style="color: #00ff00; margin-top: 8px; border-top: 1px solid #333; padding-top: 5px;">`;
                     compDesc += `<div style="font-weight: bold;">${setDef.name}</div>`;
                     compDesc += `</div>`;
                 }
 
-                if (equippedItem.uniqueEffect && UNIQUE_EFFECTS[equippedItem.uniqueEffect]) {
+                if (equippedItem.uniqueEffect && catalogueEntry(UNIQUE_EFFECTS, equippedItem.uniqueEffect)) {
                     const effect = UNIQUE_EFFECTS[equippedItem.uniqueEffect];
                     compDesc += `<div style="color: ${effect.color}; margin-top: 8px; border-top: 1px solid #333; padding-top: 5px;">`;
                     compDesc += `<div style="font-weight: bold;">★ ${effect.name}</div>`;

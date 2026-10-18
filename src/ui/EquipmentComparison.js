@@ -2,7 +2,7 @@ import { isActiveEquipment } from '../core/EquipmentSlots.js';
 import { UNIQUE_EFFECTS } from '../core/ItemSystem.js';
 
 export function itemStatTotals(item) {
-    const totals = {};
+    const totals = Object.create(null);
     for (const source of [item?.stats, ...(item?.gems || []).map(gem => gem?.stats)]) {
         for (const [stat, value] of Object.entries(source || {})) {
             if (Number.isFinite(Number(value))) totals[stat] = (totals[stat] || 0) + Number(value);
@@ -31,12 +31,12 @@ export function renderEquipmentComparison(host, candidate, comparison, player, f
     const note = text => { const row = document.createElement('p'); row.textContent = text; panel.append(row); };
     if (comparison.inactiveItem) note(`Stored item is inactive: ${comparison.inactiveItem.name || 'legacy equipment'}. Its stats are not counted.`);
     if (candidate.uniqueEffect !== comparison.equippedItem?.uniqueEffect) {
-        const label = key => UNIQUE_EFFECTS[key]?.name || key;
+        const label = key => Object.hasOwn(UNIQUE_EFFECTS, key) ? UNIQUE_EFFECTS[key].name : key;
         if (comparison.equippedItem?.uniqueEffect) note(`Loses special effect: ${label(comparison.equippedItem.uniqueEffect)}.`);
         if (candidate.uniqueEffect) note(`Gains special effect: ${label(candidate.uniqueEffect)}.`);
     }
     for (const setID of new Set([candidate.setId, comparison.equippedItem?.setId].filter(Boolean))) {
-        const definition = sets[setID]; if (!definition) continue;
+        const definition = Object.hasOwn(sets, setID) ? sets[setID] : null; if (!definition) continue;
         const count = Object.entries(player.equipment || {}).filter(([slot, item]) => isActiveEquipment(slot, item) && item?.setId === setID).length;
         const after = count - Number(comparison.equippedItem?.setId === setID) + Number(candidate.setId === setID);
         for (const pieces of [2, 4, 6]) {

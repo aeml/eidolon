@@ -42,6 +42,13 @@ test('item metadata and unknown stat keys/values stay text on both comparison pa
     expect(JSON.stringify(f.player)).toBe(before);
 });
 
+test('unrecognized saved type and slot strings remain literal in the metadata row', () => {
+    const f = fixture({ candidate: gear('legacy', { slot: probe, type: probe }) });
+    f.ui.showItemTooltip(f.candidate, 20, 20);
+    expect(f.main.querySelector('[data-tooltip-probe]')).toBeNull();
+    expect(f.main.textContent).toContain(probe);
+});
+
 test('unknown socket descriptions stay literal in the item and equipped comparison', () => {
     const gem = { type: probe, quality: probe };
     const f = fixture({ equipped: gear('old', { gems: [gem] }), candidate: gear('new', { gems: [gem] }), compare: true });
@@ -54,21 +61,33 @@ test('unknown socket descriptions stay literal in the item and equipped comparis
 
 test('prototype-named legacy definitions do not crash or become catalogue entries', () => {
     const f = fixture({ candidate: gear('old', { setId: '__proto__', uniqueEffect: 'constructor',
-        gems: [{ type: 'constructor', quality: '__proto__' }] }) });
+        gems: [{ type: 'constructor', quality: '__proto__' }] }), compare: true });
     expect(() => f.ui.showItemTooltip(f.candidate, 20, 20)).not.toThrow();
     expect(f.main.textContent).toContain('constructor');
     expect(f.main.textContent).toContain('__proto__');
+    expect(f.main.textContent).not.toContain('undefined');
+    expect(f.secondary.textContent).toContain('Gains special effect: constructor.');
+});
+
+test('deliberate item inspection ignores inherited set/effect entries and keeps metadata literal', () => {
+    const f = fixture({ candidate: gear('legacy-inspection', { setId: '__proto__', uniqueEffect: 'constructor',
+        rarity: { ...RARITY.RARE, name: probe }, gems: [{ type: probe, quality: probe }] }) });
+    expect(() => f.ui.mobileDetails.describe(f.main, f.candidate)).not.toThrow();
+    expect(f.main.querySelector('[data-tooltip-probe]')).toBeNull();
+    expect(f.main.textContent).toContain(probe);
     expect(f.main.textContent).not.toContain('undefined');
 });
 
 test('socket/stat totals preserve own prototype-named keys as numbers without changing the prototype', () => {
     const item = JSON.parse('{"stats":{"__proto__":5,"constructor":7},"gems":[{"stats":{"__proto__":2,"constructor":3}}]}');
     const before = JSON.stringify(item);
+    const prototypeKeys = Object.getOwnPropertyNames(Object.prototype), constructor = Object.prototype.constructor;
     const totals = itemStatTotals(item);
     expect(Object.hasOwn(totals, '__proto__')).toBe(true);
     expect(totals.__proto__).toBe(7); expect(totals.constructor).toBe(10);
     expect(JSON.stringify(item)).toBe(before);
-    expect(Object.prototype).not.toHaveProperty('damage');
+    expect(Object.getOwnPropertyNames(Object.prototype)).toEqual(prototypeKeys);
+    expect(Object.prototype.constructor).toBe(constructor);
 });
 
 test('canonical stat, set, unique and gem formatting remains readable in both panels', () => {
