@@ -495,7 +495,13 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.80`, **live; release verification passed**.
+Current source version: `Alpha 1.79.81`, **prepared; verification and deployment pending**.
+This milestone adds stationary recall and quest-object casts, outside-click window
+closing, close melee reach, walkable town roofs with saved item floors, and the
+Earth Realm's town-style fence. Cached clients receive a readable reload instruction.
+See [the release plan](docs/plans/2026-10-18-release1-79-81-roofs-and-interactions.md).
+
+Latest verified live release: `Alpha 1.79.80`.
 All ten jobs passed in [CI 39106396060](https://github.com/aeml/eidolon/actions/runs/39106396060).
 Public client/server identities match deployed source `f5401eb714d52055ce2fda52091a540109da6197`;
 both pilot model hashes and native-GPU public rendering were verified.

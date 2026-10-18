@@ -19,6 +19,9 @@ import {
 import { installPrototypeMethods } from './PrototypeInstaller.js';
 import { getOverworldGroundHeight, getActorCombatDistance, getFloorInteractionDistance } from './WorldGrounding.js';
 
+const KNOWN_JUMP_FLIGHT_CAPS = [1.1, 1.2, 1.3];
+const isKnownJumpFlightCap = value => KNOWN_JUMP_FLIGHT_CAPS.some(cap => Math.abs(value - cap) < 1e-6);
+
 class GameEngineMovementMethods {
     syncLocalSupportHeight(payload, previousSupport) {
         const player = this.player;
@@ -337,14 +340,11 @@ class GameEngineMovementMethods {
         const positionTolerance = 0.35;
         const durationTolerance = 0.075;
         const existingDuration = Number.isFinite(existingJump.duration) ? existingJump.duration : duration;
-        // The immediately previous server cap was1.3s. Its acceptance of a new
-        // client's1.2s prediction is still the same flight; preserve the shown
-        // pose and takeoff animation while adopting its authoritative duration.
-        // Duration crosses the protocol as float32, including the old cap.
-        const capMigration = existingJump.hasAuthoritativeTrajectory !== true && (
-            Math.abs(existingDuration - 1.2) < 1e-6 && Math.abs(duration - 1.3) < 1e-6 ||
-            Math.abs(existingDuration - 1.3) < 1e-6 && Math.abs(duration - 1.2) < 1e-6
-        );
+        // Preserve the shown pose while a pending prediction accepts a known
+        // earlier flight cap. Float32 encoding must not replay takeoff. Already
+        // authoritative or arbitrary duration changes retain the normal tolerance.
+        const capMigration = existingJump.hasAuthoritativeTrajectory !== true
+            && isKnownJumpFlightCap(existingDuration) && isKnownJumpFlightCap(duration);
         return existingJump.start.distanceTo(start) <= positionTolerance
             && existingJump.end.distanceTo(end) <= positionTolerance
             && (Math.abs(existingDuration - duration) <= durationTolerance || capMigration);
@@ -731,7 +731,7 @@ class GameEngineMovementMethods {
         const safeDistance = Math.max(0, Number(distance) || 0);
         // Reserve 0.3 seconds of the requested 1.5-second total for command,
         // replication and rendering latency. Match the server flight cap.
-        return Math.max(0.46, Math.min(1.2, safeDistance / 13.5));
+        return Math.max(0.46, Math.min(1.1, safeDistance / 13.5));
     }
 
     getJumpArcHeight(distance = 0) {

@@ -1,5 +1,14 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+Current checkpoint: Alpha1.79.80 is deployed and accepted within its experimental
+Fighter scope. [Live acceptance](2026-10-18-release1-79-80-meshy-fighter.md).
+Alpha1.79.81 is prepared with the owner's recall, quest-object, window, melee,
+roof and Earth-fence corrections, plus readable cached-client recovery. Its final
+API/native/CI/deployment gates remain pending. [Release plan](2026-10-18-release1-79-81-roofs-and-interactions.md).
+The full original roadmap, final art, performance, operations, owner and beta gates
+remain active; human feedback and soak/stress remain deferred. Earlier preparation
+and failed-pipeline records below retain their historical scope.
+
 Alpha 1.79.79 is prepared with specialization guidance, saved quest equipment
 choices, distinct room-purpose masonry and ruined
 ambush piers across the five dungeon themes. Treasure vaults, shrine chapels,

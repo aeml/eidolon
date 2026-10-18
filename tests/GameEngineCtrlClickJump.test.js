@@ -152,7 +152,7 @@ describe('GameEngine ctrl-click jump', () => {
         }));
         expect(engine.player.playAnimation).not.toHaveBeenCalledWith('Run');
         const duration = engine.playerJumpState.duration;
-        expect(duration).toBeGreaterThanOrEqual(1.2);
+        expect(duration).toBe(1.1);
 
         engine.updatePlayerJump(duration / 2);
         engine.applyPlayerJumpVisuals();
@@ -190,7 +190,7 @@ describe('GameEngine ctrl-click jump', () => {
         expect(shortDuration).toBe(0.46);
     });
 
-    test.each([[3, 0.46], [15.525, 1.15], [17.28, 1.2], [20.25, 1.2], [27, 1.2], [54, 1.2], [135, 1.2]])('jump prediction lands %s units away within %s seconds', (distance, duration) => {
+    test.each([[3, 0.46], [13.5, 1], [14.85, 1.1], [15.525, 1.1], [17.28, 1.1], [20.25, 1.1], [27, 1.1], [54, 1.1], [135, 1.1]])('jump prediction lands %s units away within %s seconds', (distance, duration) => {
         const engine = createEngineHarness();
         const destination = new THREE.Vector3(distance, 0, 0);
 

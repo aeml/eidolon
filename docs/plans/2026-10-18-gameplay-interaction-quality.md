@@ -311,3 +311,23 @@ The original worktree's full client run continues against its unchanged source.
 A fresh native successor must verify the actual initial-entry fence and all
 original roof/cast/window requirements. Existing hosted CI now also runs the
 five new ordinary socket cases and the desktop/phone reload UI checks.
+
+Native74 reaches the corrected startup but retains a real Cleric up-jump miss:
+1505.6ms against the unchanged1500ms gate. Its rendered endpoint appears at
+1221.4ms and authoritative confirmation arrives later; no threshold is waived.
+The22-file negative receipt hashes toebd7664e8321674473bedba38607f7f8b6ec2417d8eb5444a0199b067f51c8a0.
+Cleanup/scans completed. Maximum server/client flight is now1.1seconds, leaving
+400ms for input, replication and rendered confirmation. Short hops and accepted
+distance/height rules remain unchanged; pending1.2/1.3 float32 cap acceptances
+preserve the shown pose and takeoff animation.122client checks/four suites and
+28Go-race outcomes pass. Release consistency/pagination passes392checks/two
+suites after the retained one-test staging mismatch was corrected across all
+version defaults. Full lint, shell syntax and all17generated content groups pass.
+Alpha1.79.81 retains516notes with ten initial entries and51lazy archive pages.
+
+The original-tree full client run completed:811suites/12584tests passed, with
+one suite/seven old four-unit armor fixtures failing. Those positions are
+corrected in the isolated release tree;65focused startup/armor/scenery checks
+pass with every damage assertion retained. This does not claim a current full
+CI pass. The final exact-version eight-case API and six-case native routes remain
+required before milestone selection and normal master publication.

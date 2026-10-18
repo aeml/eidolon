@@ -2592,3 +2592,19 @@ and deployment acceptance.
 [Fixture correction](docs/plans/2026-10-18-level10-legacy-branch-fixture.md).
 
 Owner addition (2026-10-18): at level 10, clearly announce specialization availability and open its selection menu; remind returning level-10+ unspecialized characters. Every couple of story quests, offer one choice of six saved random equipment items at the quest level, guaranteed green or better with boosted blue/orange chances. Pending choices must survive reconnects, full bags and save recovery without rerolls or duplicate claims. Implemented and locally qualified in the owned quest-item-choices worktree (58 client checks, 396 Go race regressions, two software browser cases, and one real API/Mongo/reconnect/single-claim integration). CI publication and verified deployment remain pending; see docs/plans/2026-10-18-specialization-unlock-and-quest-equipment-rewards.md.
+
+## October18 Alpha1.79.81 preparation
+
+The owned release tree stages the six requested gameplay interaction changes and
+compatible-client admission. Eight actual API cases pass on the prior1.2-second
+flight source, including schema27 archive/journal restoration and saved roof item
+custody. Native checks reproduced and corrected initial-entry Earth construction;
+the next run retained a real1505.6ms jump-confirmation miss. Maximum flight is now
+1.1seconds with the original1500ms native requirement intact. Known1.2/1.3 float32
+acceptances preserve pending pose/takeoff; short-hop and floor/range rules remain.
+The final exact-version API/native/CI/live qualification is pending. Old full-client
+verification continues against its unchanged owned tree; seven old armor fixture
+positions are corrected in the release tree with their damage assertions retained.
+This is staged implementation, not deployment or completed beta readiness. The
+full original game/art/performance/operations/owner/F1–F5/beta/1.99 scope stays
+active. Human campaign/device feedback and soak/stress remain deferred, not passed.
