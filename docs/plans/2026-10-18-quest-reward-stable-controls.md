@@ -48,3 +48,22 @@ Its13entry CPU/source inventory is frozen at
 SHA256`a8ebfd2af7c931b256bfac8bdfc646bc8dd460e52b13b4e5105eca1ea0eb972f`.
 The full original game/world/art/gameplay/audio/device/security/operations/
 owner/F1–F5/beta/1.99goal remains active; soak/stress remains deferred.
+
+## Actual input counterexample and parent preservation
+
+The unchangedfbdfsource fails the new desktop native case at control identity;
+the phone case is unrun after the explicit first-failure stop. The initial
+bb5df9795candidate passes the two original cases and the new phone-touch case,
+but the desktop held mouse press produces no claim after the Journal refresh.
+Its same-node assertion passes: removing/reinserting the whole reward section
+still cancels mouse activation. All raw results remain retained, with no retry
+or relaxed input/assertion/deadline.
+
+Two MutationObserver regressions reproduce the Journal/conversation parent
+detach. Refresh now keeps that reward section continuously attached, rebuilds
+its siblings and preserves the original prelude reading order. Conversation
+retention applies only to the story surface; claiming/removing the last reward
+still retires its controls. Generic clearing of other windows retains its
+original behavior, including absent containers. Three focused quest/reward/
+navigation suites pass44checks; changed-file lint passes. The corrected native
+four-case run is required before selecting this component.

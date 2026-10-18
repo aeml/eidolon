@@ -169,3 +169,35 @@ test('a reward claimed elsewhere retires its old controls before they can send a
     expect(ui.onClaimQuestItem).not.toHaveBeenCalled();
     expect(document.querySelector('.quest-reward-choices')).toBeNull();
 });
+
+test('the Journal reward section remains attached throughout a snapshot refresh', () => {
+    const { ui, player } = setup();
+    ui.updateJournal(player.quests);
+    const parent = document.getElementById('journal-list');
+    const section = parent.querySelector('.quest-reward-choices');
+    const observer = new MutationObserver(() => {});
+    observer.observe(parent, { childList: true });
+    ui.updateJournal(JSON.parse(JSON.stringify(player.quests)));
+    const detached = observer.takeRecords().some(record => [...record.removedNodes].includes(section));
+    observer.disconnect();
+    expect(detached).toBe(false);
+    expect(section.previousElementSibling.classList.contains('quest-tracking-hint')).toBe(true);
+    expect(ui.onClaimQuestItem).not.toHaveBeenCalled();
+});
+
+test('the conversation reward section remains attached when unrelated quest progress changes', () => {
+    const { ui, player } = setup();
+    player.quests.push({ id: 'daily-hunt', accepted: true, count: 0, maxCount: 5, type: 'KILL' });
+    ui.updateQuestWindow(player.quests);
+    const parent = document.getElementById('quest-list');
+    const section = parent.querySelector('.quest-reward-choices');
+    const observer = new MutationObserver(() => {});
+    observer.observe(parent, { childList: true });
+    player.quests[1].count = 1;
+    ui.updateQuestWindow(player.quests);
+    const detached = observer.takeRecords().some(record => [...record.removedNodes].includes(section));
+    observer.disconnect();
+    expect(detached).toBe(false);
+    expect(parent.firstElementChild).toBe(section);
+    expect(ui.onClaimQuestItem).not.toHaveBeenCalled();
+});

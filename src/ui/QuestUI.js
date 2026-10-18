@@ -337,8 +337,10 @@ export class QuestUI {
         return formatQuestRewards(quest, this.ctx.getLastPlayer?.(), options);
     }
 
-    clearElement(element) {
-        element?.replaceChildren();
+    clearElement(element, retainedChild = null) {
+        if (retainedChild && retainedChild.parentNode === element) {
+            for (const child of [...element.childNodes]) if (child !== retainedChild) child.remove();
+        } else element?.replaceChildren();
     }
 
     createMessage(text, styles = {}) {
@@ -1350,11 +1352,16 @@ export class QuestUI {
         this.lastJournalQuests = quests;
         this.renderObjectivesPanel(this.buildObjectiveSummary(quests));
         this.updateJournalNavigation(quests);
-        this.clearElement(this.journalList);
+        // A mouse press belongs to a continuously attached element. Reusing
+        // its node after detaching the whole section still cancels the click.
+        const rewardRoot = this.rewardChoiceRoots?.get('journal');
+        this.clearElement(this.journalList, rewardRoot);
+        const appendPrelude = node => this.journalList.insertBefore(node,
+            rewardRoot?.parentNode === this.journalList ? rewardRoot : null);
         if (this.journalList) {
             this.loreBook ||= new LoreBook(this);
             this.loreBook.update(quests, this.journalIdentity);
-            this.journalList.append(this.loreBook.element);
+            appendPrelude(this.loreBook.element);
         }
         const resetSnapshot = this.getDailyResetSnapshot();
 
@@ -1368,13 +1375,13 @@ export class QuestUI {
         infoDiv.style.borderBottom = '1px solid #444';
         infoDiv.style.paddingBottom = '10px';
         infoDiv.textContent = resetSnapshot.statusLine;
-        this.journalList.appendChild(infoDiv);
+        appendPrelude(infoDiv);
         const trackingHint = this.createMessage(this.ctx.isMobile
             ? 'Choose “Track on screen” below; use › on the tracker to cycle quests. Story tracking follows new chapters.'
             : 'Choose “Track on screen” on any quest. Scroll the left tracker to see all your selections. Story tracking follows the next chapter.');
         trackingHint.className = 'quest-tracking-hint';
         trackingHint.dataset.journalShared = 'true';
-        this.journalList.appendChild(trackingHint);
+        appendPrelude(trackingHint);
 
         appendQuestRewardChoices(this, quests, this.journalList, 'journal');
         const hasActiveChronicle = this.renderChronicleSection(quests, existingRecords, existingRecap);
