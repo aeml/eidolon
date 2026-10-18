@@ -13,7 +13,7 @@ test.afterEach(async ({ page }, testInfo) => {
             const o = window.__gameplayInteractions;
             if (!o) return null;
             o.restore();
-            return { samples: o.samples, casts: o.casts, timings: o.timings, authority: o.authority };
+            return { identity: o.identity, samples: o.samples, casts: o.casts, timings: o.timings, authority: o.authority };
         });
     } catch { /* A failed startup may never create an observable game context. */ }
     if (observations) await testInfo.attach('terminal-input-observations', {
@@ -56,6 +56,10 @@ async function enterPreparedCharacter(page, account, quality) {
             const own = updates?.[game.player.id];
             if (own) observations.authority = { ...observations.authority, ...own,
                 x: own.x, y: own.y, z: own.z, state: own.state, supportSurface: own.supportSurface };
+            const timing = observations.timings[observations.phase];
+            if (own?.state === 'JUMPING' && timing) timing.actualDestination = {
+                x: own.jumpTargetX, y: own.jumpTargetY, z: own.jumpTargetZ
+            };
             if (message.type === 'interaction_cast') observations.casts.push({ ...message.payload, at: performance.now() });
             return receive.call(this, message);
         };
@@ -68,7 +72,7 @@ async function enterPreparedCharacter(page, account, quality) {
         const sample = () => {
             if (!observations.active) return;
             const player = game.player, jump = game.playerJumpState, root = player?.mesh;
-            const timing = observations.timings[observations.phase], destination = observations.destinations[observations.phase];
+            const timing = observations.timings[observations.phase], destination = timing?.actualDestination;
             if (root && timing && !timing.ended && !jump && observations.authority.state !== 'JUMPING' &&
                 Math.hypot(root.position.x - destination.x, root.position.y - destination.y, root.position.z - destination.z) < .05 &&
                 Math.hypot(observations.authority.x - destination.x, observations.authority.z - destination.z) < .05) timing.ended = performance.now();
@@ -79,6 +83,7 @@ async function enterPreparedCharacter(page, account, quality) {
                     : roof?.y;
                 observations.samples.push({ phase: observations.phase, at: performance.now(), jump: Boolean(jump),
                     quality: game.renderSystem.graphicsQuality,
+                    x: player.position.x, z: player.position.z, meshX: root.position.x, meshZ: root.position.z,
                     y: player.position.y, meshY: root.position.y, floor: player.supportSurface || '',
                     progress, error: Number.isFinite(expected) ? Math.abs(root.position.y - expected) : null,
                     visible: document.visibilityState === 'visible' });
@@ -88,8 +93,9 @@ async function enterPreparedCharacter(page, account, quality) {
         requestAnimationFrame(sample);
         observations.restore = () => { observations.active = false; game.handleServerMessage = receive; document.removeEventListener('mousedown', clicked, true); };
         window.__gameplayInteractions = observations;
-        return { renderer: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER),
+        observations.identity = { renderer: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER),
             quality: game.renderSystem.graphicsQuality, class: playerClass(game), items: game.player.mesh.userData.equipmentVisualItemCount };
+        return observations.identity;
         function playerClass(game) { return game.player.mesh.userData.authoredClass; }
     });
 }
@@ -146,7 +152,7 @@ async function moveTo(page, x, z, phase) {
     }, { x, z })).toBe(true);
 }
 
-async function outsideWindowMove(page, selector, key) {
+async function outsideWindowMove(page, selector, key, testInfo) {
     await page.keyboard.press(key);
     const window = page.locator(selector);
     await expect(window).toBeVisible();
@@ -154,13 +160,28 @@ async function outsideWindowMove(page, selector, key) {
     await page.mouse.move(header.x + 60, header.y + 14);
     await page.mouse.down(); await page.mouse.move(header.x + 120, header.y + 54, { steps: 5 }); await page.mouse.up();
     const remembered = await window.boundingBox();
+    await page.screenshot({ path: testInfo.outputPath(`${key}-window-before-outside-click.png`) });
     const point = await page.evaluate(() => {
         const game = window.game, canvas = game.renderSystem.renderer.domElement, rect = canvas.getBoundingClientRect();
-        for (const [dx, dz] of [[-24, 20], [24, 20], [-28, -15], [28, -15]]) {
-            const p = game.player.position.clone().add({ x: dx, y: 0, z: dz }); p.y = 0;
+        // Plan before input: retain the full window/HUD and choose one exposed
+        // ground point with a clear complete path. Never retry failed movement.
+        for (const distance of [8, 12, 18, 24, 32, 40, 48]) for (let direction = 0; direction < 16; direction++) {
+            const dx = Math.cos(direction * Math.PI / 8) * distance, dz = Math.sin(direction * Math.PI / 8) * distance;
+            const start = game.player.position, p = start.clone().add({ x: dx, y: 0, z: dz }); p.y = 0;
             const projected = p.clone().project(game.renderSystem.camera);
             const x = rect.left + (projected.x + 1) * rect.width / 2, y = rect.top + (1 - projected.y) * rect.height / 2;
-            if (document.elementFromPoint(x, y) === canvas) return { x, y, before: game.player.position.toArray() };
+            if (projected.z < -1 || projected.z > 1 || document.elementFromPoint(x, y) !== canvas) continue;
+            const hit = game.inputManager.getGroundIntersectionFromEvent({ clientX: x, clientY: y });
+            if (!hit || hit.distanceTo(p) > .01) continue;
+            let previous = start.clone(), clear = true;
+            const steps = Math.ceil(distance / .25);
+            for (let step = 1; step <= steps; step++) {
+                const next = start.clone().add({ x: dx * step / steps, y: 0, z: dz * step / steps });
+                const corrected = game.collisionManager.checkCollision(next, game.player.radius, previous);
+                if (corrected && corrected.distanceTo(next) > .00001) { clear = false; break; }
+                previous = next;
+            }
+            if (clear) return { x, y, world: p.toArray(), before: start.toArray() };
         }
         return null;
     });
@@ -193,7 +214,7 @@ for (const [index, characterClass] of ['Fighter', 'Cleric', 'Rogue', 'Wizard'].e
             await page.screenshot({ path: testInfo.outputPath('Fighter-high-close-roof.png') });
             beforeReload = await page.evaluate(() => {
                 const o = window.__gameplayInteractions; o.restore();
-                return { samples: o.samples, casts: o.casts, timings: o.timings, authority: o.authority };
+                return { identity: o.identity, samples: o.samples, casts: o.casts, timings: o.timings, authority: o.authority };
             });
             await testInfo.attach('before-quality-reload-observations', {
                 body: JSON.stringify(beforeReload), contentType: 'application/json'
@@ -243,8 +264,8 @@ for (const [index, characterClass] of ['Fighter', 'Cleric', 'Rogue', 'Wizard'].e
         expect(Date.now() - started).toBeGreaterThanOrEqual(3000);
         await expect(page.locator('#interaction-cast')).toBeHidden();
         if (index === 0) {
-            await outsideWindowMove(page, '#character-sheet', 'c');
-            await outsideWindowMove(page, '#inventory-screen', 'i');
+            await outsideWindowMove(page, '#character-sheet', 'c', testInfo);
+            await outsideWindowMove(page, '#inventory-screen', 'i', testInfo);
         }
         const observations = await page.evaluate(() => {
             const o = window.__gameplayInteractions; o.restore();
@@ -258,6 +279,9 @@ for (const [index, characterClass] of ['Fighter', 'Cleric', 'Rogue', 'Wizard'].e
             expect(moving.length, `${phase} must contain genuine moving native frames`).toBeGreaterThanOrEqual(10);
             expect(moving.every(s => s.visible && s.error < .08)).toBe(true);
             const clock = observations.timings[phase];
+            const intended = phase === 'down' ? { x: -106, z: 130 } : { x: -74, z: 130 };
+            expect(Math.hypot(clock?.actualDestination?.x - intended.x, clock?.actualDestination?.z - intended.z),
+                `${phase} actual native pointer must retain the intended roof/ground destination`).toBeLessThan(.2);
             expect(clock?.ended - clock?.started, `${phase} retains the existing1.5second input-to-landing requirement`).toBeLessThanOrEqual(1500);
             expect(clock.ended - clock.started).toBeGreaterThan(400);
         }
