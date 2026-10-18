@@ -169,7 +169,7 @@ func TestGameplayActualRoofSnapshotRestoresPlayableCustody(t *testing.T) {
 			sourceRecord = &projection[index]
 		}
 	}
-	if sourceRecord == nil || sourceRecord.Version != 3 || sourceRecord.State != database.GroundItemComplete || sourceRecord.SupportSurface != roof {
+	if sourceRecord == nil || sourceRecord.Version != 3 || sourceRecord.Kind != database.GroundItemDrop || sourceRecord.Generation != 0 || sourceRecord.State != database.GroundItemComplete || sourceRecord.SupportSurface != roof {
 		t.Fatal("snapshot lacks the saved version3 roof drop")
 	}
 	// Private account archives stay outside the workspace and uploaded evidence.
@@ -220,7 +220,8 @@ func TestGameplayActualRoofSnapshotRestoresPlayableCustody(t *testing.T) {
 	}
 	checks := map[string]bool{
 		"completed":      pickup.State == database.GroundItemComplete,
-		"generation":     pickup.Generation == 2,
+		"generation":     pickup.Generation == sourceRecord.Generation+1,
+		"accountOrdinal": pickup.AccountOrdinal == saved.GroundAccountOrdinal+1,
 		"groundConsumed": pickup.GroundPayload() == "",
 		"receipt":        database.GroundItemCharacterReceiptMatches(character, pickup.GroundItemOperation),
 		"availableAt":    pickup.AvailableAt.Equal(sourceRecord.AvailableAt),

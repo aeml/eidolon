@@ -254,3 +254,17 @@ its owner recorded the experimental Fighter acceptance separately.
 
 This component remains isolated and unpublished. No full native, physical-phone,
 production backup, campaign or beta acceptance is implied. Soak/stress is deferred.
+
+The first guarded eight-case run passed the original six cases and failed the
+two new fixtures. The denial writer intentionally closes a transport after its
+readable message; the cached-client fixture now opens a compatible connection
+and reuses the same retained token. That actual route passes in7.04seconds.
+Two anonymous system-Chrome reload flows pass at1280/390px in4.5seconds, with
+a real requested navigation, no premature world entry and normal login after
+the server capability matches. This is viewport coverage, not physical-phone
+qualification. The snapshot diagnostic run reached archive/restore, retained
+all progression/gear/wallet/floor/expiry/receipt checks, and isolated the wrong
+expected generation: a fresh drop is0 and its first pickup is1. The fixture
+now requires the exact next generation and one account-checkpoint advancement.
+Its corrected actual route still needs to run. Negative runs and cleanup remain
+retained; no production custody validation or transport policy was weakened.
