@@ -573,6 +573,17 @@ Full original game/world/art/combat/audio/performance/device/security/operations
 owner/F1-F5/beta/1.99 scope stays active. Human campaign/phone feedback and
 soak/stress remain deferred, not passed. Public access and earned progress stay.
 
+
+
+The first quest/specialization pipeline cd98 failed its legacy branch-selection
+fixture, which still expected a level-one character to select a branch. Client
+and all hosted browser checks passed; native and deployment jobs skipped.
+The corrected fixture preserves its original malformed-request and legacy
+receipt assertions, adds a level9 refusal, and selects at level10.34focused
+Go race checks pass, with five explicit opt-in skips. Runtime rules and all
+original failures remain retained; this correction needs its own complete CI
+and deployment acceptance.
+[Fixture correction](docs/plans/2026-10-18-level10-legacy-branch-fixture.md).
 Alpha 1.79.78 is deployed and verified with verified standalone recovery points, selected
 SSH transfer and an updated promise register. Operators can explicitly capture
 Mongo, private journals and the original immutable server image between updates.
