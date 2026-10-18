@@ -53,6 +53,90 @@ describe('journal lore reading', () => {
     });
     afterEach(() => { ui.dispose(); document.body.replaceChildren(); });
 
+    test('lore progress keeps the book and current actions continuously attached', () => {
+        const book = ui.loreBook;
+        const current = book.overview.querySelector('[data-lore-action="current"]');
+        const map = book.overview.querySelector('[data-lore-action="map"]');
+        const observer = new MutationObserver(() => {});
+        observer.observe(ui.journalList, { childList: true, subtree: true });
+        player.quests = player.quests.map(q => q.id === investigation.id ? { ...q, count: 2 } : q);
+        ui.updateJournal(player.quests);
+        const removed = observer.takeRecords().flatMap(record => [...record.removedNodes]); observer.disconnect();
+        expect(removed.some(node => node === book.element || node.contains?.(book.element))).toBe(false);
+        expect(removed.some(node => node === current || node.contains?.(current))).toBe(false);
+        expect(book.overview.querySelector('[data-lore-action="current"]')).toBe(current);
+        expect(book.overview.querySelector('[data-lore-action="map"]')).toBe(map);
+        expect(book.overview.textContent).toContain(`2 / ${investigation.sites.length}`);
+        current.click(); expect(ui.journalView).toBe('story');
+        expect(ui.onAcceptQuest).not.toHaveBeenCalled(); expect(ui.onCompleteQuest).not.toHaveBeenCalled();
+    });
+
+    test('earning another memory retains the existing navigation button and pressed target', () => {
+        const book = ui.loreBook, button = book.index.querySelector('button'), id = button.dataset.memoryId;
+        button.focus();
+        player.quests.push({ id: 'chronicle_02_second_note', category: 'chronicle', chapter: 2,
+            title: 'The second note', accepted: true, completed: true, lore: 'Another promise remembered.' });
+        ui.updateJournal(player.quests);
+        expect(book.index.querySelector(`[data-memory-id="${id}"]`)).toBe(button);
+        expect(document.activeElement).toBe(button);
+        button.click(); expect(book.selected).toBe(id);
+        expect(book.index.children).toHaveLength(3);
+    });
+
+    test('side-task progress retains its action while removal retires captured callbacks', () => {
+        player.quests.push({ id: 'daily_patrol', title: 'Road patrol', accepted: true, count: 1, maxCount: 3 });
+        ui.updateJournal(player.quests);
+        const book = ui.loreBook, button = book.overview.querySelector('[data-lore-action="task:daily_patrol"]');
+        player.quests = player.quests.map(q => q.id === 'daily_patrol' ? { ...q, count: 2 } : q);
+        ui.updateJournal(player.quests);
+        expect(book.overview.querySelector('[data-lore-action="task:daily_patrol"]')).toBe(button);
+        expect(button.textContent).toContain('2 / 3');
+        const callback = button.onclick;
+        player.quests = player.quests.filter(q => q.id !== 'daily_patrol'); ui.updateJournal(player.quests);
+        const open = jest.spyOn(ui, 'openTrackedObjective');
+        callback.call(button, new MouseEvent('click')); expect(open).not.toHaveBeenCalled();
+    });
+
+    test('changing reader or disposing retires captured lore navigation callbacks', () => {
+        const book = ui.loreBook, button = book.overview.querySelector('[data-lore-action="current"]');
+        const callback = button.onclick;
+        player = { id: 'another-reader', quests: records() }; ui.updateJournal(player.quests); ui.setJournalView('lore');
+        callback.call(button, new MouseEvent('click')); expect(ui.journalView).toBe('lore');
+        const current = book.overview.querySelector('[data-lore-action="current"]'), pending = current.onclick;
+        const navigation = jest.spyOn(ui, 'setJournalView'); ui.dispose();
+        pending.call(current, new MouseEvent('click')); expect(navigation).not.toHaveBeenCalled();
+    });
+
+    test('a changed current chapter retires its old action instead of redirecting an unfinished press', () => {
+        const book = ui.loreBook, previous = book.overview.querySelector('[data-lore-action="current"]');
+        const pending = previous.onclick;
+        player.quests = player.quests.map(q => q.id === investigation.id ? { ...q, completed: true } : q);
+        player.quests.push({ id: 'chronicle_02_second_note', category: 'chronicle', chapter: 3,
+            title: 'The next accepted chapter', accepted: true, count: 0, maxCount: 1 });
+        ui.updateJournal(player.quests); ui.setJournalView('lore');
+        const current = book.overview.querySelector('[data-lore-action="current"]');
+        expect(current).not.toBe(previous); expect(current.dataset.loreTarget).toBe('chronicle_02_second_note');
+        pending.call(previous, new MouseEvent('click')); expect(ui.journalView).toBe('lore');
+        current.click(); expect(ui.journalView).toBe('story');
+    });
+
+    test('enriching an earned person keeps its existing Read action and return path', () => {
+        const book = ui.loreBook;
+        book.filters.querySelector('[data-lore-filter="people"]').click();
+        book.index.querySelector('[data-memory-id="people:ilyra"]').click();
+        const read = book.article.querySelector('[data-lore-action="memory:chapter:chronicle_01_bell_below"]');
+        read.focus();
+        player.quests.push({ id: 'chronicle_02_second_note', category: 'chronicle', chapter: 2,
+            title: 'Another Ilyra account', accepted: true, completed: true, lore: 'Ilyra remembers another promise.' });
+        ui.updateJournal(player.quests);
+        expect(book.article.querySelector('[data-lore-action="memory:chapter:chronicle_01_bell_below"]')).toBe(read);
+        expect(document.activeElement).toBe(read);
+        read.click(); expect(book.selected).toBe('chapter:chronicle_01_bell_below');
+        book.article.querySelector('[data-lore-action="return:people:ilyra"]').click();
+        expect(book.selected).toBe('people:ilyra'); expect(book.category).toBe('people');
+        expect(ui.onAcceptQuest).not.toHaveBeenCalled(); expect(ui.onCompleteQuest).not.toHaveBeenCalled();
+    });
+
     test.each(['lore', 'story'])('quest map action in %s preserves focus through progress and never accepts, claims or toggles tracking', view => {
         ui.dispose(); const showQuestOnMap = jest.fn();
         ui = new QuestUI({ getLastPlayer: () => player, showQuestOnMap });
@@ -201,21 +285,21 @@ describe('journal lore reading', () => {
     test('a newly earned memory retains keyboard focus on the existing recorded-memory navigation button', () => {
         const book = ui.loreBook, old = book.index.querySelector('button'), id = old.dataset.memoryId;
         const replace = book.index.replaceChildren.bind(book.index);
-        // jsdom has no layout; reproduce the browser's lost scroll range while
-        // replacing a long navigation list, then require its saved restoration.
+        // jsdom has no layout; simulate a clamped reading offset and require
+        // restoration while the same navigation target stays attached.
         const mutation = jest.spyOn(book.index, 'replaceChildren').mockImplementation((...nodes) => {
             replace(...nodes); book.index.scrollTop = 0;
         });
         const clear = ui.clearElement.bind(ui);
-        const detach = jest.spyOn(ui, 'clearElement').mockImplementation(element => {
-            clear(element);
+        const detach = jest.spyOn(ui, 'clearElement').mockImplementation((element, retained) => {
+            clear(element, retained);
             if (element === ui.journalList) book.index.scrollTop = 0;
         });
         old.focus(); book.index.scrollTop = 123;
         player.quests.push({ id: 'chronicle_02_second_note', category: 'chronicle', chapter: 2,
             title: 'The second note', accepted: true, completed: true, lore: 'Another promise remembered.' });
         const before = JSON.stringify(player.quests); ui.updateJournal(player.quests);
-        expect(document.activeElement.dataset.memoryId).toBe(id); expect(document.activeElement).not.toBe(old);
+        expect(document.activeElement.dataset.memoryId).toBe(id); expect(document.activeElement).toBe(old);
         expect(book.index.scrollTop).toBe(123); mutation.mockRestore(); detach.mockRestore();
         expect(book.index.children).toHaveLength(3);
         expect(JSON.stringify(player.quests)).toBe(before);

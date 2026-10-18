@@ -160,6 +160,6 @@ test.each(['reference', 'return'])('%s action remains focused when personal evid
         const expected = mode === 'reference' ? 'Read The open door' : 'Return to Mara Fen';
         const replacement = [...book.article.querySelectorAll('button')].find(button => button.textContent === expected);
         expect(replacement).toBeDefined(); expect(document.activeElement).toBe(replacement);
-        expect(replacement).not.toBe(action);
+        expect(replacement).toBe(action); expect(action.isConnected).toBe(true);
     } finally { ui.dispose(); document.body.replaceChildren(); }
 });

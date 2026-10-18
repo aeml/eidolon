@@ -53,6 +53,67 @@ function node(tag, text = '', className = '') {
     const result = document.createElement(tag); result.textContent = text; result.className = className; return result;
 }
 
+function retireLoreActions(root) {
+    root.onclick = null;
+    for (const child of root.querySelectorAll?.('[data-lore-action], [data-memory-id]') || []) child.onclick = null;
+}
+
+function guardLoreAction(book, callback) {
+    const epoch = book.readerEpoch;
+    return function(event) {
+        if (book.disposed || book.ui.disposed || book.readerEpoch !== epoch ||
+            !this.isConnected || !book.element.contains(this)) return;
+        callback.call(this, event);
+    };
+}
+
+function prepareLoreActions(book, root) {
+    if (root.onclick) root.onclick = guardLoreAction(book, root.onclick);
+    for (const child of root.children || []) prepareLoreActions(book, child);
+}
+
+// These sections contain text and navigation buttons. Keep existing targets
+// attached while patching progress or adding earned records; removing and then
+// restoring a focused node still cancels a native click already in progress.
+function syncLoreChildren(book, parent, children) {
+    const key = child => child.dataset?.loreAction ? `action:${child.dataset.loreAction}:${child.dataset.loreTarget || ''}`
+        : child.dataset?.memoryId ? `memory:${child.dataset.memoryId}`
+            : `${child.nodeType}:${child.nodeName}:${child.className || ''}`;
+    const existing = new Map();
+    for (const child of parent.childNodes) {
+        const name = key(child);
+        if (!existing.has(name)) existing.set(name, []);
+        existing.get(name).push(child);
+    }
+    const desired = children.map(fresh => {
+        const old = existing.get(key(fresh))?.shift();
+        const target = old || fresh;
+        if (!old) prepareLoreActions(book, fresh);
+        if (old && old !== fresh) {
+            if (fresh.nodeType === 3) {
+                if (old.nodeValue !== fresh.nodeValue) old.nodeValue = fresh.nodeValue;
+            } else {
+                for (const name of old.getAttributeNames()) if (!fresh.hasAttribute(name)) old.removeAttribute(name);
+                for (const name of fresh.getAttributeNames()) {
+                    if (old.getAttribute(name) !== fresh.getAttribute(name)) old.setAttribute(name, fresh.getAttribute(name));
+                }
+                syncLoreChildren(book, old, [...fresh.childNodes]);
+            }
+        }
+        if (fresh.nodeType === 1 && old && old !== fresh) {
+            target.onclick = fresh.onclick ? guardLoreAction(book, fresh.onclick) : null;
+        }
+        return target;
+    });
+    const retained = new Set(desired);
+    for (const old of [...parent.childNodes]) if (!retained.has(old)) { retireLoreActions(old); old.remove(); }
+    let cursor = parent.firstChild;
+    for (const child of desired) {
+        if (child === cursor) cursor = cursor.nextSibling;
+        else parent.insertBefore(child, cursor);
+    }
+}
+
 export class LoreBook {
     constructor(ui) {
         this.ui = ui;
@@ -91,8 +152,13 @@ export class LoreBook {
     }
 
     update(quests, identity) {
+        if (this.disposed) return;
         const sameReader = identity === this.identity && Boolean(this.model);
         if (!sameReader) {
+            this.readerEpoch = (this.readerEpoch || 0) + 1;
+            for (const section of [this.overview, this.index, this.article]) {
+                retireLoreActions(section); section.replaceChildren();
+            }
             this.identity = identity; this.search.value = ''; this.category = 'all'; this.selected = null; this.readingReturn = null;
             this.indexSignature = this.pageSignature = this.overviewSignature = null;
         }
@@ -116,6 +182,7 @@ export class LoreBook {
                 node('p', !current.accepted ? 'Not yet accepted' : ready ? 'Ready to turn in · Return to Ilyra' : `${current.count || 0} / ${current.maxCount || 0} · In progress`, 'lore-book__status'));
             const quest = node('button', 'Open current quest', 'menu-btn'); quest.type = 'button';
             quest.dataset.loreAction = 'current';
+            quest.dataset.loreTarget = current.id;
             quest.onclick = () => this.ui.setJournalView('story');
             now.append(quest);
             const map = this.ui.createQuestMapControl?.(current);
@@ -147,7 +214,7 @@ export class LoreBook {
         const summary = node('section', '', 'lore-book__recap');
         summary.append(node('h3', 'Story so far'));
         for (const line of recap.length ? recap : ['Your story is still being written. Completed chapters and discoveries will be collected here as you make them.']) summary.append(node('p', line));
-        this.overview.replaceChildren(now, summary);
+        syncLoreChildren(this, this.overview, [now, summary]);
     }
 
     renderLibrary({ preserveIndexScroll = false } = {}) {
@@ -165,7 +232,7 @@ export class LoreBook {
         if (signature !== this.indexSignature) {
             this.indexSignature = signature;
             const scroll = preserveIndexScroll ? this.index.scrollTop : 0;
-            this.index.replaceChildren(...matches.map(entry => {
+            syncLoreChildren(this, this.index, matches.map(entry => {
                 const button = node('button'); button.type = 'button'; button.dataset.memoryId = entry.id;
                 button.append(node('span', { chapters: 'CHAPTER', discoveries: 'DISCOVERY', people: 'PERSON', places: 'PLACE' }[entry.kind], 'lore-book__eyebrow'),
                     node('strong', entry.title), node('small', entry.context));
@@ -190,42 +257,51 @@ export class LoreBook {
         const titleFocused = document.activeElement === title;
         title.textContent = entry?.title || (this.model.entries.length ? 'No matching memories' : 'The first page awaits');
         title.tabIndex = -1;
-        this.article.replaceChildren(title);
-        if (titleFocused) title.focus({ preventScroll: true });
+        const content = [title];
         if (!entry) {
-            this.article.append(node('p', this.model.entries.length
+            content.push(node('p', this.model.entries.length
                 ? 'Try another name or phrase, or choose All memories.'
                 : 'Complete a chapter or record a discovery to add it to your book. Unvisited places and future outcomes stay unrevealed.'));
+            syncLoreChildren(this, this.article, content);
+            if (titleFocused) title.focus({ preventScroll: true });
             return;
         }
-        this.article.append(node('p', entry.context, 'lore-book__status'));
+        content.push(node('p', entry.context, 'lore-book__status'));
         if (returnEntry) {
             const back = node('button', `Return to ${returnEntry.title}`, 'menu-btn'); back.type = 'button';
             back.dataset.loreAction = `return:${returnEntry.id}`;
+            back.dataset.loreTarget = entry.id;
             back.onclick = () => {
                 const saved = this.readingReturn; this.readingReturn = null;
                 this.search.value = saved.query; this.category = saved.category; this.selected = saved.selected;
                 this.renderLibrary(); this.index.scrollTop = saved.scroll;
                 this.article.querySelector('h3')?.focus({ preventScroll: true });
             };
-            this.article.append(back);
+            content.push(back);
         }
         for (const section of entry.sections) {
-            this.article.append(node('h4', section.title));
-            for (const paragraph of section.paragraphs) this.article.append(node('p', paragraph));
+            content.push(node('h4', section.title));
+            for (const paragraph of section.paragraphs) content.push(node('p', paragraph));
             if (section.memoryId && this.model.entries.some(memory => memory.id === section.memoryId)) {
                 const read = node('button', `Read ${section.title}`, 'menu-btn'); read.type = 'button';
                 read.dataset.loreAction = `memory:${section.memoryId}`;
+                read.dataset.loreTarget = entry.id;
                 read.onclick = () => {
                     this.readingReturn = { selected: this.selected, query: this.search.value, category: this.category, scroll: this.index.scrollTop };
                     this.search.value = ''; this.category = 'all'; this.selected = section.memoryId;
                     this.renderLibrary(); this.article.querySelector('h3')?.focus({ preventScroll: true });
                     this.article.scrollIntoView?.({ block: 'nearest' });
                 };
-                this.article.append(read);
+                content.push(read);
             }
         }
+        syncLoreChildren(this, this.article, content);
+        if (titleFocused) title.focus({ preventScroll: true });
     }
 
-    dispose() { disposeOwnedEvents(this); this.element.remove(); }
+    dispose() {
+        if (this.disposed) return;
+        this.disposed = true; this.readerEpoch = (this.readerEpoch || 0) + 1;
+        retireLoreActions(this.element); disposeOwnedEvents(this); this.element.remove();
+    }
 }
