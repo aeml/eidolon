@@ -2495,7 +2495,12 @@ Original geometry/observer failures and superseded accounting remain retained.
 [Assembly](docs/plans/2026-10-17-room-masonry-assembly.md).
 This is a bounded masonry improvement; sparse room architecture/dressing and
 final modern art remain open. Alpha1.79.78 is accepted after its own exact
-CI/deployment/public verification. This prepared release still requires its own exact CI and live acceptance.
+CI/deployment/public verification. The native wardrobe fixture now waits for exact intended real gear on both
+clients when a full outfit hides an equipment change. One focused Fighter case
+passes all nine phases with zero retries; game runtime and cosmetic rules remain
+unchanged. Both earlier failed CI attempts stay frozen, with deployments skipped.
+[Wardrobe correction](docs/plans/2026-10-18-release1-79-79-wardrobe-readiness-correction.md).
+This prepared release still requires its own exact CI and live acceptance.
 Full original game/world/art/combat/audio/performance/device/security/operations/
 owner/F1-F5/beta/1.99 scope stays active. Human campaign/phone feedback and
 soak/stress remain deferred, not passed. Public access and earned progress stay.
