@@ -102,3 +102,14 @@ and private actual-Nginx checker in mandatory hosted CI. Eight certificate/
 control cases pass. Installed host activation remains pending administrator
 execution; X10/F2 is not closed.
 [Acceptance](2026-10-16-release1-79-62-acceptance.md).
+
+October18 scoped QA-artifact finding: the isolated wrapper sanitized default
+directories while the actual connected run configured different HTML/JSON/CLI
+outputs. Decoded reports retained issued disposable fixture credentials. The
+qualified82candidate now sanitizes those configured roots inside the credential-
+owning wrapper and supports an exact regular JSON file without scanning neighbors.
+28privacy checks and actual copied-report correction pass; original private
+evidence remains unchanged. Published game/server bytes and completed46native
+functional cases are unchanged by this artifact-only fix. Its release CI/live
+acceptance remains pending; this does not certify all historical artifacts or F2.
+[Qualification](2026-10-18-isolated-qa-output-privacy.md).

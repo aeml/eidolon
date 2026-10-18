@@ -22,7 +22,7 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
-## Current delivery: accepted Alpha1.79.81; next polish milestone isolated
+## Current delivery: accepted Alpha1.79.81; next polish milestone qualified
 
 Alpha1.79.80's opt-in Meshy Fighter pilot is deployed and verified; the supplied
 four-class presentation remains the default. Its fitting/art limitations remain.
@@ -40,10 +40,16 @@ hand/full-body selection are delivered; final collection/all-motion/device
 approval remains open. Quest/Lore Book and remembered-window foundations are
 delivered; broader usability and visual quality remain open.
 
-The isolated82candidate adds outfitter pose/moment inspection, pinned-header
+The selected82milestone adds outfitter pose/moment inspection, pinned-header
 and item-inspection corrections, qualified wall stonework and scalar shadow
-checks. It is not merged, pushed or deployed. Latest assembled native held,
-connected pose and original six-input qualification remain pending. Separate
+checks, separate bounded DB startup and configured QA-report sanitization.
+It is qualified for publication, not deployed/accepted. All46assembled native
+cases pass: six original input/save cases,36outfit/held previews and four actual
+connected class wardrobes with private pose isolation. The report handoff fix
+passes28privacy checks and actual copied-report verification; original evidence
+and all516prior note strings remain unchanged.
+[Qualification](2026-10-18-release1-79-82-qualification.md).
+Its own CI/deployment/public-byte acceptance is still required. Separate
 movement audio, rejected renderer experiments and the unexecuted legacy-jump
 fixture are excluded. Original failure/owner/playtest/soak deferrals remain.
 

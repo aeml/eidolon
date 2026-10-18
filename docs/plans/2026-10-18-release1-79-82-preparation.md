@@ -1,11 +1,12 @@
 # Alpha1.79.82 preparation: outfitter poses, item inspection and dungeon stonework
 
-This isolated candidate follows selected master17a5862eca203373d9e004d25fbbfb71f5d5458b.
-It is prepared, not merged into master, pushed or deployed. Alpha1.79.81 has
+This preparation record follows selected master17a5862eca203373d9e004d25fbbfb71f5d5458b.
+The milestone is now qualified for publication. Alpha1.79.81 has
 completed its own CI/deployment/public acceptance; its documentation is merged
 into this candidate. [Accepted81](2026-10-18-release1-79-81-acceptance.md).
 This preparation does
 not declare beta, feature freeze, final art or the full goal complete.
+[Final assembled qualification](2026-10-18-release1-79-82-qualification.md).
 
 The player feature is Veyra's Pose/Moment appearance inspection, with stable
 main/offhand strikes, supported states, held endpoints, comparison continuity,
@@ -34,8 +35,9 @@ its original failure and cleanup are frozen. The selected constructor correction
 keeps the ten-second connection limit and gives migration preparation a separate
 45second bound. Twelve related checks and two actual cold-fault CI-wrapper cases
 pass. One runtime file exactly matches qualified433b332d5; schema/data/gameplay
-rules and every original movement/jump deadline remain unchanged. The next
-assembled native attempt must exercise this corrected source; it is not yet a pass.
+rules and every original movement/jump deadline remain unchanged. The corrected
+e05assembled native attempt now passes all six original cases and saved custody;
+the original setup failure remains frozen, with zero browser cases executed.
 [Startup qualification](2026-10-18-database-startup-budget-qualification.md).
 
 Selected world art adds softly shaped wall piers and separates elemental wall
@@ -61,12 +63,14 @@ Evidence and limits:
 - Original outfit inspector:24native AMD/RADV cases,290static pose samples,
   retries0/skips0. Four matching class outfits and eight Fighter universal
   previews; this does not prove every universal on every class/all moving poses.
-- Held extension:12CPU-only browser cases/292samples, fourteen prepared gear
-  entries and matching outfits, retries0/skips0. Native validation remains open.
+- Held extension:12CPU-only browser cases/292samples originally qualify fourteen
+  prepared gear entries and matching outfits. The latest assembled native12cases
+  now pass the same292samples with retries0/skips0.
 - Header correction: two reproduced failures, then two changed-source passes
-  and48samples. CPU-only; latest native UI layout remains required.
+  and48samples. Latest assembled native held cases also pass the corrected layout.
 - Existing four connected class wardrobe identities now include actual bundled
-  pose-isolation checks. They are prepared/linted/enumerated, not yet executed.
+  pose-isolation checks. All four now pass with nine wardrobe phases each and
+  unchanged live actors during private pose inspection.
 - At8508787c6b0723f51c30594f3114f15c7109961b,784focused checks/21suites pass in
   141.28s, including all selected geometry/material/preview/wardrobe/ownership,
   privacy, enrollment, helper and release-presentation rules. A harmless local
@@ -79,6 +83,16 @@ Evidence and limits:
   This predates the header correction and latest connected-test additions. Rebuild
   the exact final source before using it as an assembled/publication qualification.
   It also predates the selected item-inspection fixes and latest patch-note text.
+  That reconstructable owned copy was retired after retaining its complete file
+  inventory/source history and obtaining a successful replacement. Current e05
+  builds520modules/4,915,528bytes and passes six actual bundled gameplay cases,
+  36native preview cases and four actual bundled connected cases.
+
+The connected reports revealed a custom-output sanitation handoff gap. Artifact-
+only successor174356bf1preserves all game/server bytes and qualifies configured
+HTML/JSON/CLI roots through28privacy checks,32enrollment checks and actual copied
+report correction. Original private evidence remains unchanged.
+[Output privacy](2026-10-18-isolated-qa-output-privacy.md).
 
 The twelve synchronized release locations use1.79.82. There are517cumulative
 notes, ten initially and51lazy pages; all516prior entry strings remain byte-exact,
@@ -94,11 +108,10 @@ Mongo7.0.14 version as its local qualification. No paid generation is performed.
 qualified UI history is retained under
 `refs/archive/20261018-garment-pose-qualification`.
 
-Before publication, retain81acceptance and wait until all workflows are terminal before any
-local GPU qualification, rebuild the final copied candidate, finish appropriate
-assembled native gameplay/preview/connected checks and preserve original input/
-performance findings. Then merge selected work into master, fetch/ordinarily
-merge remote changes, push once and verify its own complete CI, deployment and
+Before publication, retain81acceptance and all46native functional results,
+rebuild the exact final copied candidate and preserve original input/performance
+findings. Merge selected work into master, fetch/ordinarily merge remote changes,
+push once and verify its own complete CI, deployment and
 served assets. Do not silently accept the separate unexecuted legacy jump fix
 or failed movement-audio source. Final world/art/all-motion/device/campaign,
 security/operations, owner, beta and1.99requirements remain open. Human feedback
