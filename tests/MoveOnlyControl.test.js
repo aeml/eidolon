@@ -41,6 +41,16 @@ test('normal clicks still interact with the pointed-at entity', () => {
     expect(engine.player.move).not.toHaveBeenCalled();
 });
 
+test('the same world click dismisses windows before its movement command', () => {
+    const engine = setup();
+    let open = true;
+    engine.uiManager.closeForWorldInteraction = jest.fn(() => { open = false; });
+    engine.player.move.mockImplementation(() => expect(open).toBe(false));
+    expect(engine.handlePrimaryClick({ shiftKey: true })).toBe(true);
+    expect(engine.uiManager.closeForWorldInteraction).toHaveBeenCalledTimes(1);
+    expect(engine.player.move).toHaveBeenCalledTimes(1);
+});
+
 test('Ctrl-click jump keeps priority when Shift is also held', () => {
     const engine = setup();
     engine.handlePrimaryClick({ ctrlKey: true, shiftKey: true });

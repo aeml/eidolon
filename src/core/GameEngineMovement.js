@@ -1,6 +1,6 @@
+import { getHeroBasicAttackReach } from './BasicAttackReach.js';
 import * as THREE from 'three';
 import { PORTAL_INTERACTION_RANGE } from './ResonancePortalState.js';
-import { CONSTANTS } from './Constants.js';
 import { AUDIO_CUES } from '../audio/AudioManager.js';
 import { Actor } from '../entities/Actor.js';
 import { DwarfSalesman } from '../entities/DwarfSalesman.js';
@@ -22,6 +22,8 @@ import { getOverworldGroundHeight } from './WorldGrounding.js';
 class GameEngineMovementMethods {
     handlePrimaryClick(event = null) {
         if (!this.player) return false;
+        this.uiManager?.closeForWorldInteraction?.();
+        this.uiManager?.chatInput?.blur();
         if (this.casino?.handlePrimaryClick(event)) return true;
         if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen || this.uiManager.reportScreen.style.display === 'block') return false;
 
@@ -1386,12 +1388,7 @@ class GameEngineMovementMethods {
 
     getBasicAttackRangeForEntity(entity) {
         const className = this.player?.constructor?.name || this.player?.subType || '';
-        let range = CONSTANTS.BASIC_ATTACK_RANGES[className] ?? 4.0;
-        const attackerScale = Number(this.player?.scale) || 1;
-        const targetScale = Number(entity?.scale) || 1;
-        if (attackerScale > 1) range += (attackerScale - 1) * 1.5;
-        if (targetScale > 1) range += (targetScale - 1) * 1.5;
-        return range;
+        return getHeroBasicAttackReach(className, this.player, entity);
     }
 
 }

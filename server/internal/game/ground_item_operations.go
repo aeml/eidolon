@@ -257,16 +257,40 @@ func planInventoryItemPlacement(player *Entity, item Item, splitID string) ([]It
 // release it after the shared store proves this exact intent never existed.
 // An ambiguous prepare remains reserved and does not expire or permit pickup.
 func (w *World) PrepareDurableGroundPickup(playerID, lootID string) (database.GroundItemOperation, error) {
+	return w.prepareDurableGroundPickup(playerID, lootID, 0, false)
+}
+
+func (w *World) ValidateQuestObjectPickup(playerID, lootID string) error {
+	_, err := w.prepareDurableGroundPickup(playerID, lootID, 0, true)
+	return err
+}
+
+func (w *World) CompleteQuestObjectPickupCast(playerID, lootID string, castID uint64) (database.GroundItemOperation, error) {
+	if castID == 0 {
+		return database.GroundItemOperation{}, errors.New("Cast cancelled")
+	}
+	return w.prepareDurableGroundPickup(playerID, lootID, castID, false)
+}
+
+func (w *World) prepareDurableGroundPickup(playerID, lootID string, castID uint64, validateOnly bool) (database.GroundItemOperation, error) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 	player, loot := w.Entities[playerID], w.Entities[lootID]
 	if player == nil || player.Type != TypePlayer || loot == nil || loot.Type != TypeLoot || loot.LootItem == nil {
 		return database.GroundItemOperation{}, errors.New("character or loot unavailable")
 	}
-	player.Mu.RLock()
-	defer player.Mu.RUnlock()
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
 	loot.Mu.Lock()
 	defer loot.Mu.Unlock()
+	if (validateOnly || castID != 0) && !IsChronicleQuestItem(*loot.LootItem) {
+		return database.GroundItemOperation{}, errors.New("Not a quest object")
+	}
+	if castID != 0 {
+		if err := consumeStationaryCastLocked(player, castID, "quest_pickup", lootID, time.Now()); err != nil {
+			return database.GroundItemOperation{}, err
+		}
+	}
 	if loot.LootTime.IsZero() || !time.Now().Before(loot.LootTime.Add(time.Minute)) {
 		return database.GroundItemOperation{}, errors.New("ground loot expired or has no availability time")
 	}
@@ -295,6 +319,9 @@ func (w *World) PrepareDurableGroundPickup(playerID, lootID string) (database.Gr
 	}
 	if remainder == item.Stack {
 		return database.GroundItemOperation{}, ErrGroundItemFull
+	}
+	if validateOnly {
+		return database.GroundItemOperation{}, nil
 	}
 	moved := cloneItem(item)
 	moved.Stack -= remainder

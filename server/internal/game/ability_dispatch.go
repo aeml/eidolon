@@ -105,6 +105,9 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 	abilityCommitted := false
 	authoritativeCooldown := time.Duration(0)
 	setCooldown := func(duration time.Duration) {
+		player.Mu.Lock()
+		cancelStationaryCastLocked(player)
+		player.Mu.Unlock()
 		duration = effectiveAbilityCooldown(player, skillName, duration)
 		if duration > 0 {
 			player.Cooldowns[skillName] = time.Now().Add(duration)

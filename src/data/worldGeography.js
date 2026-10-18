@@ -31,3 +31,23 @@ export function getRegionWallSegments(region) {
 }
 
 export const WORLD_BOUNDARY_SEGMENTS = Object.freeze(WORLD_GEOGRAPHY.regions.flatMap(getRegionWallSegments));
+
+// Match the authoritative segment grid and strict gap endpoints, including
+// corner identity replacement. Spanning the gate with one mesh closes it.
+export function getRegionFencePosts(region) {
+    const posts = new Map();
+    for (const wall of region.walls) {
+        const vertical = wall.side === 'west' || wall.side === 'east';
+        const min = vertical ? region.minZ : region.minX;
+        const max = vertical ? region.maxZ : region.maxX;
+        const fixed = vertical ? (wall.side === 'west' ? region.minX : region.maxX)
+            : (wall.side === 'north' ? region.minZ : region.maxZ);
+        for (let p = min; p <= max; p += WORLD_GEOGRAPHY.fenceStep) {
+            if (wall.gap && p > wall.gap[0] && p < wall.gap[1]) continue;
+            const x = vertical ? fixed : p, z = vertical ? p : fixed;
+            const gate = Boolean(wall.gap && wall.gap.some(edge => Math.abs(p - edge) < WORLD_GEOGRAPHY.fenceStep));
+            posts.set(`${x}:${z}`, [x, z, vertical ? Math.PI / 2 : 0, gate]);
+        }
+    }
+    return [...posts.values()];
+}

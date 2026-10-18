@@ -9,6 +9,7 @@ import (
 
 	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
+	"eidolon-server/internal/lifecycle"
 )
 
 func questProgressFixture(t *testing.T, blocked ...int) (*Client, *game.Entity, *coalescedSaveCommitter) {
@@ -236,6 +237,22 @@ func TestQuestProgressDeliveryMenuAndInvestigationRepliesRequireSavedEvidence(t 
 			unlock()
 			backgroundCharacterWork.SealWhenIdle()
 			messages := drainSentMessages(client.prioritySend)
+			if investigate {
+				filtered := messages[:0]
+				for _, message := range messages {
+					if message.Type == "interaction_cast" {
+						var cast struct {
+							State string `json:"state"`
+						}
+						if err := json.Unmarshal(message.Payload, &cast); err != nil || cast.State == "completed" {
+							t.Fatal("failed save acknowledged a completed discovery cast", err)
+						}
+						continue
+					}
+					filtered = append(filtered, message)
+				}
+				messages = filtered
+			}
 			if len(messages) != 1 || messages[0].Type != MsgError {
 				t.Fatal("explicit read/inspection bypassed the saved-evidence barrier", messages)
 			}
@@ -245,6 +262,11 @@ func TestQuestProgressDeliveryMenuAndInvestigationRepliesRequireSavedEvidence(t 
 			committer.mu.Lock()
 			committer.fail = nil
 			committer.mu.Unlock()
+			// The first barrier wait sealed the fixture's work group. The live
+			// server still accepts retries; give this real second cast admission.
+			if investigate {
+				backgroundCharacterWork = &lifecycle.Group{}
+			}
 			unlock = lockCharacterWork(client.username)
 			if investigate {
 				client.handleChronicleInspection(payload)
@@ -252,7 +274,31 @@ func TestQuestProgressDeliveryMenuAndInvestigationRepliesRequireSavedEvidence(t 
 				client.handleQuestSnapshotRequest()
 			}
 			unlock()
+			if investigate {
+				backgroundCharacterWork.SealWhenIdle()
+			}
 			messages = drainSentMessages(client.prioritySend)
+			if investigate {
+				filtered := messages[:0]
+				completed := false
+				for _, message := range messages {
+					if message.Type == "interaction_cast" {
+						var cast struct {
+							State string `json:"state"`
+						}
+						if err := json.Unmarshal(message.Payload, &cast); err != nil {
+							t.Fatal(err)
+						}
+						completed = completed || cast.State == "completed"
+						continue
+					}
+					filtered = append(filtered, message)
+				}
+				if !completed {
+					t.Fatal("saved inspection omitted its completed cast")
+				}
+				messages = filtered
+			}
 			if len(messages) != 1 && !investigate || investigate && len(messages) != 2 || messages[0].Type != MsgQuestUpdate ||
 				investigate && messages[1].Type != MsgChronicleDiscovery {
 				t.Fatal("saved reread omitted its ordered quest/evidence replies", messages)

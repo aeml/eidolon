@@ -149,6 +149,7 @@ func (sm *SpatialMap) nearbyType(x, z, radius float64, instanceID string, kind E
 }
 
 type World struct {
+	stationaryCastGeneration uint64 // World.Mu; never reused when a character reconnects/replaces its entity.
 	// Cast handlers use World.Mu and their own target-lock boundaries. Frame
 	// workers release World.Mu and use actor locks, so the complete cast must
 	// finish before workers can inspect or mutate its caster and recipients.
@@ -1535,6 +1536,9 @@ func (w *World) updatePlayerMovementAt(id string, x, y, z, rotation float64, sta
 	e.X = x
 	e.Y = y
 	e.Z = z
+	if x != oldX || z != oldZ || state == "MOVING" {
+		cancelStationaryCastLocked(e)
+	}
 	w.groundActorLocked(e)
 	e.Rotation = rotation
 	if sequence > 0 {
@@ -1615,6 +1619,7 @@ func (w *World) startPlayerJump(id string, x, y, z float64, context *string) boo
 	e.TargetX = x
 	e.TargetZ = z
 	e.JumpStartX = e.X
+	cancelStationaryCastLocked(e)
 	e.JumpStartY = e.Y
 	e.JumpStartZ = e.Z
 	e.JumpTargetX = x

@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
 import { installUIManagerWindows } from '../src/ui/UIManagerWindows.js';
+import { disposeOwnedEvents } from '../src/ui/OwnedEvents.js';
 
 class Layout {
     isElementVisible(element) { return Boolean(element && element.style.display !== 'none'); }
@@ -61,6 +62,34 @@ test('a dragged store retains its position without a bag companion', () => {
     shop.dataset.draggedWindow = 'true';
     ui.openManagedWindow('shop'); ui.closeManagedWindow('shop'); ui.openManagedWindow('shop');
     expect(position(shop)).toEqual(['422px', '176px']);
+});
+
+test('world dismissal closes paired windows and quest reading without losing their positions', () => {
+    const ui = fixture(), character = ui.characterSheet, bag = ui.inventory.inventoryScreen;
+    character.dataset.draggedWindow = bag.dataset.draggedWindow = 'true';
+    ui.openManagedWindow('character'); ui.openManagedWindow('inventory');
+    const saved = [position(character), position(bag)];
+    ui.quest = { closeQuestWindow: jest.fn(), closeJournal: jest.fn() };
+    ui.closeForWorldInteraction();
+    expect(ui.getOpenWindowIds()).toEqual([]);
+    expect(ui.quest.closeQuestWindow).toHaveBeenCalled();
+    expect(ui.quest.closeJournal).toHaveBeenCalled();
+    ui.openManagedWindow('character'); ui.openManagedWindow('inventory');
+    expect([position(character), position(bag)]).toEqual(saved);
+});
+
+test('native dialog backdrop clicks dismiss outside its bounds, keep inside controls and retire with the UI', () => {
+    const ui = fixture(); ui.setupWorldWindowDismissal();
+    const dialog = document.createElement('dialog'); dialog.open = true;
+    dialog.getBoundingClientRect = () => ({ left: 100, top: 100, right: 300, bottom: 300 });
+    dialog.close = jest.fn(); document.body.append(dialog);
+    dialog.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true, clientX: 150, clientY: 150 }));
+    expect(dialog.close).not.toHaveBeenCalled();
+    dialog.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true, clientX: 400, clientY: 150 }));
+    expect(dialog.close).toHaveBeenCalledTimes(1);
+    disposeOwnedEvents(ui);
+    dialog.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true, clientX: 400, clientY: 150 }));
+    expect(dialog.close).toHaveBeenCalledTimes(1);
 });
 
 test('a default companion still gets positioned when only the other panel was moved', () => {

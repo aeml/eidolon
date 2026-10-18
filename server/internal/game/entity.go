@@ -195,6 +195,7 @@ type Entity struct {
 	// without replaying them. Stale/context-mismatched samples never advance it.
 	LastMoveSequence uint64 `json:"-"`
 	networkMovement  movementBudget
+	stationaryCast   stationaryCast
 	// Recovery context separates fresh post-recall movement from packets sent
 	// before recovery. It is session state, not a secret or persisted build choice.
 	MovementContext      string `json:"-"`

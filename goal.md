@@ -85,6 +85,19 @@ the story so far and current task; remembered dragged menu positions after
 close/reopen; and coherent visual polish for character, bags, stores and related
 menus. Build on existing Chronicle/quest functionality and preserve progression.
 
+## Additional owner requirements — October18, 2026
+
+At level10, explain specialization unlock and guide players into the selection
+menu. Every couple of main-story quests should offer a choice of six random
+quest-level equipment items, guaranteed green minimum with better blue/orange
+odds. Preserve saved offers, single selection and returning character custody.
+
+Complete the [gameplay interaction corrections](docs/plans/2026-10-18-gameplay-interaction-quality.md):
+three-second town recall cancelled by movement; outside-click window dismissal
+before movement; three-second casts for quest objects only, excluding NPC
+turn-ins as explicitly clarified; actual melee contact range; landing, walking
+and jumping down on town roofs; and a town-style Earth boundary fence.
+
 ## Working method
 
 - Implement coherent milestone-sized improvements. Avoid dozens of tiny

@@ -33,6 +33,17 @@ import { clearEngineSceneOwnership } from './SceneOwnership.js';
 const isContactShadowActor = entity => entity instanceof Actor;
 
 class GameEngineRuntimeMethods {
+    adoptEnvironmentFences() {
+        const environment = this.getInstanceEnvironmentGroup();
+        if (!environment?.getObjectByName) return;
+        const roots = ['TownFence', 'EarthFence'].map(name => environment.getObjectByName(name)).filter(Boolean);
+        for (const fence of this.remotePlayers?.values() || []) {
+            if (!(fence instanceof Fence) || fence.environmentOwned) continue;
+            const data = { x: fence.position.x, z: fence.position.z, rotation: fence.fenceYaw, scale: fence.scale };
+            if (roots.some(root => ownsPerimeterFence(root, data))) fence.adoptEnvironmentPerimeter();
+        }
+    }
+
     updateRemoteCorpsePresentation(dt) {
         this.remotePlayers.forEach(entity => {
             if (entity.state !== 'DEAD') return;
@@ -151,6 +162,7 @@ class GameEngineRuntimeMethods {
         this.casino?.beforeUpdate(dt);
         this.publicEvents?.update(dt);
         this.frameCount++;
+        if (this.player && this.inputManager?.getMovementDirection?.().lengthSq() > 0) this.uiManager?.closeForWorldInteraction?.();
         this.inputManager?.touchAbilityAim?.update();
         this.activeWorldGenerator?.updateDungeonPresentation?.(dt, this.renderSystem?.graphicsQuality);
         this.activeWorldGenerator?.updateTownPresentation?.(dt, this.player?.position);
@@ -332,8 +344,9 @@ class GameEngineRuntimeMethods {
                     remoteEntity.serverAuthoritativeLifetime = true;
                 } else if (pData.type === 'Fence') {
                     const perimeter = this.getInstanceEnvironmentGroup().getObjectByName('TownFence');
+                    const earthPerimeter = this.getInstanceEnvironmentGroup().getObjectByName('EarthFence');
                     remoteEntity = new Fence(pData.id, pData.x, pData.z, pData.rotation || 0,
-                        { environmentOwned: ownsPerimeterFence(perimeter, pData) });
+                        { environmentOwned: ownsPerimeterFence(perimeter, pData) || ownsPerimeterFence(earthPerimeter, pData) });
                     // Add to collision manager
                     const box = new THREE.Box3();
 

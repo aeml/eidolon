@@ -1,3 +1,4 @@
+import { InteractionCastUI } from './InteractionCastUI.js';
 import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { RARITY } from '../core/ItemSystem.js';
 import { readPreference } from './PreferenceStorage.js';
@@ -112,6 +113,7 @@ export class UIManager {
         this.btnCloseCharacter = document.getElementById('btn-close-character');
         this.btnRespawn = document.getElementById('btn-respawn');
         this.btnRecall = document.getElementById('btn-recall');
+        this.interactionCast = new InteractionCastUI(this.uiLayer || document.body);
 
         // Skill Tree UI (extracted module)
         this.skillTree = new SkillTreeUI({
@@ -568,6 +570,7 @@ export class UIManager {
         const btnCloseWorldMap = document.getElementById('btn-close-world-map');
         if (btnCloseWorldMap) ownedEvent(this, btnCloseWorldMap, 'click', () => this.toggleWorldMap());
         this.setupAudioInteractionCues();
+        this.setupWorldWindowDismissal();
 
         // Event Delegation for Stat Buttons & Tooltips
         ownedEvent(this, this.statsContent, 'click', (e) => {
@@ -652,7 +655,7 @@ export class UIManager {
         disposeOwnedEvents(this);
         for (const name of ['quest', 'skillTree', 'phoneMenu', 'keyboardSettings', 'phoneSettings',
             'forge', 'trading', 'directTrade', 'wardrobe', 'epWallet', 'cosmeticVendor', 'admin',
-            'inventory', 'report', 'playtest', 'social', 'pvp', 'chat', 'passwordChange', 'recoveryEmail', 'actionErrorNotice']) {
+            'inventory', 'interactionCast', 'report', 'playtest', 'social', 'pvp', 'chat', 'passwordChange', 'recoveryEmail', 'actionErrorNotice']) {
             const child = this[name];
             if (!child) continue;
             disposeOwnedEvents(child);

@@ -7,10 +7,16 @@ import (
 )
 
 // Shared admission/impact reach, including the visible bodies of large actors.
-func basicAttackReach(kind EntityType, subtype string, scale, targetScale float64) float64 {
+func basicAttackReach(kind EntityType, subtype string, scale, targetScale float64, bodyRadii ...float64) float64 {
 	reach := 3.0
 	if kind == TypePlayer {
-		reach = 4
+		if subtype != "Wizard" && subtype != "Rogue" {
+			attackerRadius, targetRadius := baseActorVisualRadius*math.Max(1, scale), baseActorVisualRadius*math.Max(1, targetScale)
+			if len(bodyRadii) == 2 {
+				attackerRadius, targetRadius = bodyRadii[0], bodyRadii[1]
+			}
+			return attackerRadius + targetRadius + .5
+		}
 		if subtype == "Wizard" || subtype == "Rogue" {
 			reach = 16
 		}
@@ -41,6 +47,7 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 	attackerSubType := attacker.SubType
 	attackerX, attackerZ := attacker.X, attacker.Z
 	attackerScale := attacker.Scale
+	attackerRadius := attacker.ReplicatedBodyRadius()
 	attackCooldown := attacker.AttackCooldown
 	lastAttackTime := attacker.LastAttackTime
 	attacker.Mu.RUnlock()
@@ -58,6 +65,7 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 	targetType := target.Type
 	targetX, targetZ := target.X, target.Z
 	targetScale := target.Scale
+	targetRadius := target.ReplicatedBodyRadius()
 	target.Mu.RUnlock()
 	if targetBlocked || attackerInstanceID != targetInstanceID {
 		return 0, false
@@ -77,7 +85,7 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 	dz := attackerZ - targetZ
 	dist := math.Sqrt(dx*dx + dz*dz)
 
-	attackRange := basicAttackReach(attackerType, attackerSubType, attackerScale, targetScale)
+	attackRange := basicAttackReach(attackerType, attackerSubType, attackerScale, targetScale, attackerRadius, targetRadius)
 
 	if dist > attackRange {
 		return 0, false
@@ -99,6 +107,7 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		return 0, false
 	}
 	attacker.LastAttackTime = time.Now()
+	cancelStationaryCastLocked(attacker)
 	attacker.State = "ATTACKING"
 	delay := time.Duration(float64(attacker.AttackCooldown) * 0.35)
 	missChance := attacker.AccuracyReduction
@@ -151,6 +160,7 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 		return
 	}
 	impactX, impactZ, impactScale := att.X, att.Z, att.Scale
+	impactRadius := att.ReplicatedBodyRadius()
 	cloakBonus := att.CloakNextAttackBonus
 	if att.Type == TypePlayer && cloakBonus > 0 {
 		att.CloakNextAttackBonus = 0
@@ -171,12 +181,11 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 		tgt.Mu.Unlock()
 		return
 	}
-	// Enemy melee is avoidable during its wind-up. A legal attack start must
-	// not reserve damage against a player who has since escaped its reach.
-	// Player attacks, projectiles and separately telegraphed boss abilities
-	// retain their existing resolution rules.
-	if attackerSnapshot.Type == TypeEnemy && math.Hypot(tgt.X-impactX, tgt.Z-impactZ) >
-		basicAttackReach(attackerSnapshot.Type, attackerSnapshot.SubType, impactScale, tgt.Scale) {
+	// Every melee swing must still reach its target at impact. Ranged hero
+	// basics and separately telegraphed abilities retain their existing rules.
+	melee := attackerSnapshot.Type != TypePlayer || (attackerSnapshot.SubType != "Wizard" && attackerSnapshot.SubType != "Rogue")
+	if melee && math.Hypot(tgt.X-impactX, tgt.Z-impactZ) >
+		basicAttackReach(attackerSnapshot.Type, attackerSnapshot.SubType, impactScale, tgt.Scale, impactRadius, tgt.ReplicatedBodyRadius()) {
 		tgt.Mu.Unlock()
 		return
 	}

@@ -30,6 +30,12 @@ func TestTownRecoveryContextAdmitsFreshMovementAndRejectsDepartedPackets(t *test
 				}
 			}
 			client.handleMessage(Message{Type: action, Payload: json.RawMessage(`{"movementContext":"new-recovery"}`)})
+			if action == MsgRecall {
+				for _, message := range waitForCastEffects(t, client, MsgMovementContext) {
+					raw, _ := json.Marshal(message)
+					client.send <- raw
+				}
+			}
 			assertRecoveryContextMessage(t, client, "new-recovery")
 			client.handleMessage(Message{Type: MsgMove, Payload: json.RawMessage(`{"x":80,"z":200,"state":"MOVING","sequence":20,"movementContext":"old-recovery"}`)})
 			if got := world.GetEntityCopy(player.ID); got.X != -1.25 || got.Z != 200 {

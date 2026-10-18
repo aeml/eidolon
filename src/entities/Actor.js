@@ -1,3 +1,4 @@
+import { getHeroBasicAttackReach } from '../core/BasicAttackReach.js';
 import * as THREE from 'three';
 import { Entity } from './Entity.js';
 import { calculateSetBonuses, getEquippedUniqueEffects, getGemStats, UNIQUE_EFFECTS } from '../core/ItemSystem.js';
@@ -1701,6 +1702,10 @@ export class Actor extends Entity {
     }
 
     attack(target, onHit = null) {
+        const meleeHero = ['Fighter', 'Cleric'].includes(this.constructor.name);
+        const inMeleeRange = () => target?.position && Math.hypot(target.position.x - this.position.x, target.position.z - this.position.z)
+            <= getHeroBasicAttackReach(this.constructor.name, this, target);
+        if (meleeHero && !inMeleeRange()) return false;
         if (this.state === 'DEAD') return false;
         if (target && target.state === 'DEAD') return false; // Don't attack dead targets
         
@@ -1758,7 +1763,7 @@ export class Actor extends Entity {
 
         // Deal damage after a delay
         this.attackTimer = this.scheduleTask(() => {
-            if (this.state === 'DEAD') return;
+            if (this.state === 'DEAD' || meleeHero && !inMeleeRange()) return;
 
             if (target && target.stats.hp > 0) {
                 let baseDmg = Math.max(1, this.stats.damage - getOfflineBasicAttackArmor(this, target));

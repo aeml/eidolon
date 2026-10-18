@@ -1,6 +1,9 @@
 package main
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"errors"
+)
 
 func (c *Client) handleChronicleInspection(raw json.RawMessage) {
 	if c.playerID == "" || world == nil {
@@ -20,30 +23,40 @@ func (c *Client) handleChronicleInspection(raw json.RawMessage) {
 		c.sendError("Choose a nearby Chronicle discovery to investigate.")
 		return
 	}
-	discovery, err := world.InspectChronicleSite(c.playerID, request.EntityID)
-	if err != nil {
+	if err := world.ValidateChronicleInspection(c.playerID, request.EntityID); err != nil {
 		c.sendError(err.Error())
 		return
+	}
+	c.startStationaryCast("chronicle_inspect", request.EntityID, func(castID uint64) error {
+		return c.completeChronicleInspection(request.EntityID, castID, persistent)
+	})
+}
+
+func (c *Client) completeChronicleInspection(entityID string, castID uint64, persistent bool) error {
+	discovery, err := world.CompleteChronicleInspectionCast(c.playerID, entityID, castID)
+	if err != nil {
+		return err
 	}
 	sequence := questProgressSaveSequence(c)
 	player := world.GetEntityCopy(c.playerID)
 	if player == nil {
-		return
+		return errors.New("player unavailable")
 	}
 	if persistent {
 		if err := persistCharacterSnapshot(c.username, characterSnapshotForSave(c.username, player)); err != nil {
-			c.sendError("Discovery save pending. Your evidence is retained for recovery; please retry shortly.")
-			return
+			return errors.New("Discovery save pending. Your evidence is retained for recovery; please retry shortly.")
 		}
 		if !currentCharacterConnection(c) {
-			return
+			return errors.New("Cast cancelled")
 		}
 		markQuestProgressSaved(c, sequence)
 	}
 	// Even a reread resends its exact saved snapshot. Do not expose later live
 	// discoveries as confirmed while this command's save is waiting.
+	c.sendStationaryCast(castID, "chronicle_inspect", entityID, "completed")
 	quests, _ := json.Marshal(player.Quests)
 	c.sendSafe(createMessage(MsgQuestUpdate, quests))
 	receipt, _ := json.Marshal(discovery)
 	c.sendSafe(createMessage(MsgChronicleDiscovery, receipt))
+	return nil
 }

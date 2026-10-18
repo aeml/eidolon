@@ -5,6 +5,37 @@ import { WindowLayoutPreferences } from './WindowLayoutPreferences.js';
 import { EnemyHealthBars } from './EnemyHealthBars.js';
 
 class UIManagerWindowMethods {
+    setupWorldWindowDismissal() {
+        ownedEvent(this, document, 'pointerdown', event => {
+            const dialog = event.target;
+            if (!dialog?.matches?.('dialog[open]')) return;
+            const rect = dialog.getBoundingClientRect();
+            if (event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom) return;
+            if (dialog.__closeMenu) dialog.__closeMenu();
+            else dialog.close();
+        }, true);
+    }
+
+    closeForWorldInteraction() {
+        const openIds = this.getOpenWindowIds();
+        // Retire window-owned drafts/focus using their normal close paths.
+        // Layout coordinates belong to the window and survive this dismissal.
+        this.quest?.closeQuestWindow?.();
+        this.quest?.closeJournal?.();
+        this.skillTree?.close?.();
+        this.social?.close?.();
+        this.forge?.close?.();
+        this.trading?.close?.();
+        this.inventory?.hideSplitWindow?.();
+        this.inventory?.mobileDetails?.close?.();
+        this.cosmeticVendor?.close?.();
+        if (this.directTrade?.canAct?.()) this.directTrade.onCancel?.(this.directTrade.trade.id);
+        this.directTrade?.close?.();
+        for (const id of openIds) this.closeManagedWindow(id, { silent: true });
+        this.closeAllStaticModals();
+        if (this.isElementVisible(this.escMenu)) this.hideWindowElement(this.escMenu);
+    }
+
     updateEnemyBars(entities, camera, hoveredEntity, isAltPressed, targetEntity = null) {
         this.enemyHealthBars ||= new EnemyHealthBars(this.uiLayer, this.floatingBars, this.isMobile);
         this.enemyHealthBars.reconcile(entities, hoveredEntity, isAltPressed, targetEntity);

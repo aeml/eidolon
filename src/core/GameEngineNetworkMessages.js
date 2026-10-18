@@ -162,6 +162,8 @@ class GameEngineNetworkMessageMethods {
             if (!isCurrentTransition()) return;
             await worldGen.createTown(0, 200, 100, { shouldAttach: isCurrentTransition });
             if (!isCurrentTransition()) return;
+            worldGen.createEarthPerimeter?.({ shouldAttach: isCurrentTransition });
+            this.adoptEnvironmentFences?.();
             await worldGen.createOverworldStructures({ shouldAttach: isCurrentTransition });
         }
         if (!isCurrentTransition()) return;
@@ -754,6 +756,25 @@ class GameEngineNetworkMessageMethods {
             }
         } else if (msg.type === 'trading_refresh') {
             this.uiManager.trading.handleSearch();
+        } else if (msg.type === 'interaction_cast') {
+            const cast = msg.payload;
+            this.uiManager?.interactionCast?.handle(cast);
+            if (cast?.state === 'started' && cast.kind === 'chronicle_inspect' && this.pendingChronicleInspection?.entityId === cast.target) this.pendingChronicleInspection.castId = cast.id;
+            if (cast?.state === 'started' && cast.kind === 'quest_pickup') {
+                const pickup = this.pendingLootPickups?.get(cast.target);
+                if (pickup) pickup.castId = cast.id;
+            }
+            if (cast?.kind === 'recall' && cast.state === 'completed') this.completeTownRecall(cast.target);
+            if (cast?.kind === 'recall' && ['cancelled', 'rejected'].includes(cast.state) && this.pendingTownRecall?.movementContext === cast.target) this.pendingTownRecall = null;
+            if (cast?.kind === 'chronicle_inspect' && cast.state === 'cancelled' && this.pendingChronicleInspection?.entityId === cast.target &&
+                (this.pendingChronicleInspection.castId == null || this.pendingChronicleInspection.castId === cast.id)) this.pendingChronicleInspection = null;
+            if (cast?.kind === 'quest_pickup' && cast.state === 'cancelled') {
+                const pickup = this.pendingLootPickups?.get(cast.target);
+                if (pickup && (pickup.castId == null || pickup.castId === cast.id)) {
+                    clearTimeout(pickup.expiryTimer);
+                    this.pendingLootPickups.delete(cast.target);
+                }
+            }
         } else if (msg.type === 'movement_context') {
             const context = msg.payload?.movementContext;
             if (typeof context === 'string' && context.length <= 64) {

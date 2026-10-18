@@ -25,7 +25,7 @@ func TestChronicleInspectionDispatchAcknowledgesOnlyAuthoritativePersonalEvidenc
 		// A forged credit count is ignored; only the real authored object counts.
 		payload, _ := json.Marshal(map[string]interface{}{"entityId": site.EntityID, "count": 999, "completed": true})
 		client.handleMessage(Message{Type: MsgChronicleInspect, Payload: payload})
-		messages := drainSentMessages(client.send)
+		messages := waitForCastEffects(t, client, MsgChronicleDiscovery)
 		if len(messages) != 2 || messages[0].Type != MsgQuestUpdate || messages[1].Type != MsgChronicleDiscovery {
 			t.Fatalf("missing ordered quest/reading acknowledgement: %+v", messages)
 		}
@@ -90,7 +90,7 @@ func TestChronicleInspectionUsesPrecedingValidatedMovement(t *testing.T) {
 	move, _ := json.Marshal(MovePayload{X: site.X, Z: site.Z + 4.95, State: "IDLE", Sequence: 1})
 	client.handleMessage(Message{Type: MsgMove, Payload: move})
 	client.handleMessage(Message{Type: MsgChronicleInspect, Payload: inspect})
-	messages := drainSentMessages(client.send)
+	messages := waitForCastEffects(t, client, MsgChronicleDiscovery)
 	if len(messages) != 2 || messages[0].Type != MsgQuestUpdate || messages[1].Type != MsgChronicleDiscovery {
 		t.Fatalf("preceding ordinary movement must reach inspection before range check: %+v", messages)
 	}

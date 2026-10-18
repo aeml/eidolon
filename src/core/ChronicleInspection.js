@@ -40,9 +40,10 @@ export function requestChronicleInspection(engine, entity) {
     // Interaction runs before the frame's ordinary movement send. Deliver the
     // latest predicted step first so the server can validate it before checking
     // inspection range; do not enlarge the range or grant local discovery credit.
+    engine.prepareStationaryInteraction?.();
     engine.sendPlayerMovementIfNeeded?.(0, { flush: true });
     engine.pendingChronicleInspection = {
-        entityId: entity.id, playerId: player.id, instanceId, expiresAt: Date.now() + 5000
+        entityId: entity.id, playerId: player.id, instanceId, expiresAt: Date.now() + 10000
     };
     engine.network.send('chronicle_inspect', { entityId: entity.id });
     return true;

@@ -598,6 +598,7 @@ class GameEngineEntitySyncMethods {
         // Keep the item and inventory unchanged until authoritative inventory
         // confirms success. An unconfirmed request becomes retryable after its
         // existing pending deadline; repeated interaction ticks do not resend it.
+        if (entity.item?.id?.startsWith('chronicle-item-')) this.prepareStationaryInteraction?.();
         this.network.send('pickup', { lootId: lootId });
 
         return true;

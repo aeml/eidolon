@@ -223,10 +223,10 @@ export const CONSTANTS = {
         }
     },
     BASIC_ATTACK_RANGES: Object.freeze({
-        Fighter: 4.0,
+        Fighter: 3.0,
         Rogue: 16.0,
         Wizard: 16.0,
-        Cleric: 4.0
+        Cleric: 3.0
     }),
     ABILITY_CONFIG: {
         Fighter: {

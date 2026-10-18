@@ -342,7 +342,7 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(seen).toEqual([{ level: 41, materials: [2] }]);
     });
 
-    test.each(['Fighter', 'Rogue', 'Wizard', 'Cleric'])('living %s recall clears pursuit and buffered travel before another frame', className => {
+    test.each(['Fighter', 'Rogue', 'Wizard', 'Cleric'])('living %s recall waits for authority before arrival and clears old combat intent', className => {
         const engine = createEngineHarness();
         engine.player.state = 'ATTACKING';
         engine.player.stats.hp = 100;
@@ -364,7 +364,15 @@ describe('GameEngine multiplayer respawn sync', () => {
         engine.network = { send: jest.fn() };
         engine.syncTownRecoveryGuidance = jest.fn();
 
+        const originalPosition = engine.player.position.clone();
         engine.requestTownRecall();
+        expect(engine.player.position).toEqual(originalPosition);
+        const context = engine.pendingTownRecall.movementContext;
+        engine.requestTownRecall();
+        expect(engine.network.send).toHaveBeenCalledTimes(1);
+        engine.completeTownRecall('unrelated-context');
+        expect(engine.player.position).toEqual(originalPosition);
+        engine.completeTownRecall(context);
 
         expect(engine.pendingInteraction).toBeNull();
         expect(engine.mobileCombatTarget).toBeNull();
@@ -399,6 +407,35 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.state).toBe(state);
         expect(engine.player.stats.hp).toBe(0);
         expect(engine.chunkManager.updateEntityChunk).not.toHaveBeenCalled();
+    });
+
+    test('stale cast cancellation cannot retire a newer discovery or quest pickup', () => {
+        const engine = createEngineHarness();
+        engine.uiManager.interactionCast = { handle: jest.fn() };
+        const discovery = { entityId: 'site', castId: 2 };
+        const pickup = { castId: 4 };
+        engine.pendingChronicleInspection = discovery;
+        engine.pendingLootPickups = new Map([['loot', pickup]]);
+        engine.handleServerMessage({ type: 'interaction_cast', payload: { kind: 'chronicle_inspect', target: 'site', id: 1, state: 'cancelled' } });
+        engine.handleServerMessage({ type: 'interaction_cast', payload: { kind: 'quest_pickup', target: 'loot', id: 3, state: 'cancelled' } });
+        expect(engine.pendingChronicleInspection).toBe(discovery);
+        expect(engine.pendingLootPickups.get('loot')).toBe(pickup);
+        engine.handleServerMessage({ type: 'interaction_cast', payload: { kind: 'chronicle_inspect', target: 'site', id: 2, state: 'cancelled' } });
+        engine.handleServerMessage({ type: 'interaction_cast', payload: { kind: 'quest_pickup', target: 'loot', id: 4, state: 'cancelled' } });
+        expect(engine.pendingChronicleInspection).toBeNull();
+        expect(engine.pendingLootPickups.has('loot')).toBe(false);
+    });
+
+    test('a rejected recall makes the request retryable without predicting arrival', () => {
+        const engine = createEngineHarness(); engine.network = { send: jest.fn() };
+        const position = engine.player.position.clone();
+        engine.requestTownRecall();
+        const target = engine.pendingTownRecall.movementContext;
+        engine.handleServerMessage({ type: 'interaction_cast', payload: { kind: 'recall', target, id: 0, state: 'rejected' } });
+        expect(engine.pendingTownRecall).toBeNull();
+        expect(engine.player.position).toEqual(position);
+        engine.requestTownRecall();
+        expect(engine.network.send).toHaveBeenCalledTimes(2);
     });
 
     test('dead recall gives non-blocking recovery guidance without changing death state', () => {

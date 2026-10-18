@@ -40,3 +40,26 @@ test('environment-owned fence never requests a legacy mesh; remote-only fences s
         expect(outer.mesh).not.toBeNull();
     } finally { loader.mockRestore(); }
 });
+
+test('a perimeter arriving after the actor retires both loaded and pending legacy rectangles', async () => {
+    let resolve;
+    const loader = jest.spyOn(MeshFactory, 'createMeshForType').mockImplementation(() => new Promise(done => { resolve = done; }));
+    const release = jest.spyOn(MeshFactory, 'releaseMesh').mockImplementation(() => {});
+    try {
+        const pending = new Fence('early-realm', 1000, 112, Math.PI / 2);
+        pending.adoptEnvironmentPerimeter();
+        const stale = new THREE.Group(); resolve(stale);
+        await Promise.resolve(); await Promise.resolve();
+        expect(pending.isActive).toBe(true);
+        expect(pending.mesh).toBeNull();
+        expect(pending.meshType).toBeNull();
+        expect(release).toHaveBeenCalledWith('Fence', stale);
+        const loaded = new Fence('loaded-realm', 1000, 116, Math.PI / 2);
+        loaded.mesh = new THREE.Group();
+        const scene = new THREE.Scene(); scene.add(loaded.mesh);
+        loaded.adoptEnvironmentPerimeter();
+        expect(scene.children).toHaveLength(0);
+        expect(loaded.isActive).toBe(true);
+        expect(loaded.mesh).toBeNull();
+    } finally { loader.mockRestore(); release.mockRestore(); }
+});

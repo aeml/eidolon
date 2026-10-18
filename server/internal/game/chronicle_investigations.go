@@ -5,6 +5,7 @@ import (
 	"math"
 	"math/bits"
 	"strings"
+	"time"
 )
 
 type ChronicleDiscoveryReceipt struct {
@@ -54,6 +55,18 @@ func (w *World) InspectChronicleSite(playerID, entityID string) (ChronicleDiscov
 	return w.recordChronicleDiscovery(playerID, entityID, false)
 }
 
+func (w *World) ValidateChronicleInspection(playerID, entityID string) error {
+	_, err := w.recordChronicleDiscoveryMode(playerID, entityID, false, true, 0)
+	return err
+}
+
+func (w *World) CompleteChronicleInspectionCast(playerID, entityID string, castID uint64) (ChronicleDiscoveryReceipt, error) {
+	if castID == 0 {
+		return ChronicleDiscoveryReceipt{}, errors.New("Cast cancelled")
+	}
+	return w.recordChronicleDiscoveryMode(playerID, entityID, false, false, castID)
+}
+
 // RecordChronicleInvestigationKill is for authoritative combat, not a client
 // claim. It still checks the real defeated enemy, position and accepted quest.
 func (w *World) RecordChronicleInvestigationKill(playerID, entityID string) (ChronicleDiscoveryReceipt, error) {
@@ -61,6 +74,10 @@ func (w *World) RecordChronicleInvestigationKill(playerID, entityID string) (Chr
 }
 
 func (w *World) recordChronicleDiscovery(playerID, entityID string, combat bool) (ChronicleDiscoveryReceipt, error) {
+	return w.recordChronicleDiscoveryMode(playerID, entityID, combat, false, 0)
+}
+
+func (w *World) recordChronicleDiscoveryMode(playerID, entityID string, combat, validateOnly bool, castID uint64) (ChronicleDiscoveryReceipt, error) {
 	chapter, site, index, found := investigationSite(entityID)
 	if !found {
 		return ChronicleDiscoveryReceipt{}, errors.New("Unknown Chronicle discovery")
@@ -87,6 +104,11 @@ func (w *World) recordChronicleDiscovery(playerID, entityID string, combat bool)
 	object.Mu.RUnlock()
 	player.Mu.Lock()
 	defer player.Mu.Unlock()
+	if castID != 0 {
+		if err := consumeStationaryCastLocked(player, castID, "chronicle_inspect", entityID, time.Now()); err != nil {
+			return ChronicleDiscoveryReceipt{}, err
+		}
+	}
 	if player.State == "DEAD" || player.Health <= 0 || player.InstanceID != chapter.InstanceID || objectInstance != chapter.InstanceID ||
 		(chapter.InstanceID == DarkRealmInstanceID && !DarkRealmEntryAllowed(player)) {
 		return ChronicleDiscoveryReceipt{}, errors.New("This discovery is not available here")
@@ -126,6 +148,9 @@ func (w *World) recordChronicleDiscovery(playerID, entityID string, combat bool)
 			if prerequisite.ID == site.Requires && quest.InvestigationMask&(1<<requiredIndex) == 0 {
 				return ChronicleDiscoveryReceipt{}, errors.New("Investigate the earlier evidence first")
 			}
+		}
+		if validateOnly {
+			return ChronicleDiscoveryReceipt{}, nil
 		}
 		quest.InvestigationMask = (quest.InvestigationMask | bit) & ((1 << len(chapter.Sites)) - 1)
 		quest.Count = bits.OnesCount32(quest.InvestigationMask)

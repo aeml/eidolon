@@ -1229,6 +1229,8 @@ export class GameEngine {
             // Preserve compatibility with lightweight/custom generators.
             await this.worldGenerator.createTown(0, 200, 100);
             if (this.isDestroyed) return;
+            this.worldGenerator.createEarthPerimeter?.();
+            this.adoptEnvironmentFences?.();
             await this.worldGenerator.createOverworldStructures();
             if (this.isDestroyed) return;
         }
@@ -1254,6 +1256,7 @@ export class GameEngine {
         this.inputManager.subscribe('onManualMovement', () => this.cancelMobilePursuit());
 
         this.inputManager.subscribe('onRightClick', () => {
+            this.uiManager?.closeForWorldInteraction?.();
             this.abilityController.performAbility();
         });
 
@@ -2159,16 +2162,34 @@ export class GameEngine {
         return this.activeBuffs;
     }
 
+    prepareStationaryInteraction() {
+        if (!this.player) return;
+        this.uiManager?.closeForWorldInteraction?.();
+        this.cancelMobilePursuit();
+        this.clearCombatIntentState();
+        this.inputManager?.clearInputState?.();
+        this.player.targetPosition = null;
+        this.player.velocity?.set?.(0, 0, 0);
+        if (this.player.state !== 'JUMPING' && this.player.state !== 'DEAD') this.player.state = 'IDLE';
+        this.sendPlayerMovementIfNeeded?.(0, { flush: true });
+    }
+
     requestTownRecall() {
         if (!this.player) return;
-        this.network.send('recall', { movementContext: crypto.randomUUID() });
-        // The server requires explicit Respawn for a dead actor. Keep the
-        // dungeon and death presentation intact while that rejection arrives.
-        if (this.player.state === 'DEAD' || this.player.stats?.hp <= 0) return;
-        const previousX = this.player.position.x;
-        const previousZ = this.player.position.z;
-        // Overworld-to-town recall does not receive enter_instance. Clear the
-        // old pursuit now, or its next frame can walk straight back into combat.
+        if (this.pendingTownRecall?.playerId === this.player.id && this.pendingTownRecall.expiresAt > Date.now()) return;
+        const movementContext = crypto.randomUUID();
+        if (this.player.state !== 'DEAD' && this.player.stats?.hp > 0) this.prepareStationaryInteraction();
+        this.pendingTownRecall = { movementContext, playerId: this.player.id,
+            expiresAt: Date.now() + 10000,
+            previousX: this.player.position.x, previousZ: this.player.position.z };
+        this.network.send('recall', { movementContext });
+    }
+
+    completeTownRecall(movementContext) {
+        const request = this.pendingTownRecall;
+        if (!request || request.movementContext !== movementContext || request.playerId !== this.player?.id) return;
+        this.pendingTownRecall = null;
+        const { previousX, previousZ } = request;
         this.cancelMobilePursuit();
         this.clearCombatIntentState();
         this.inputManager?.clearInputState?.();

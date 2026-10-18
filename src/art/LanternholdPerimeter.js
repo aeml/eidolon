@@ -13,8 +13,8 @@ export function ownsPerimeterFence(root, data) {
 
 // Weathered timber and iron, inside the existing fence collision envelope.
 // Unbatched construction is a rendering reference, not the runtime path.
-export function createLanternholdPerimeter(cx, cz, width, depth, { batched = true, multiDraw = true } = {}) {
-    const root = new THREE.Group(); root.name = 'TownFence';
+export function createLanternholdPerimeter(cx, cz, width, depth, { batched = true, multiDraw = true, segments = null, name = 'TownFence' } = {}) {
+    const root = new THREE.Group(); root.name = name;
     root.userData.fenceSegments = [];
     const materials = {
         timber: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x554b3a,
@@ -93,16 +93,20 @@ export function createLanternholdPerimeter(cx, cz, width, depth, { batched = tru
         colliders.push(new THREE.Box3().setFromCenterAndSize(new THREE.Vector3(x, 4, z),
             new THREE.Vector3(Math.abs(c) > .1 ? 4.5 : 1, 8, Math.abs(s) > .1 ? 4.5 : 1)));
     };
-    for (const z of [cz - depth / 2, cz + depth / 2]) {
-        for (let x = cx - width / 2; x <= cx + width / 2; x += 4) {
-            const offset = Math.abs(x - cx); if (offset < 10) continue;
-            segment(x, z, 0, offset < 14, Math.round((x - cx + width / 2) / 4));
+    if (segments) {
+        segments.forEach(([x, z, yaw, gate], index) => segment(x, z, yaw, gate, index));
+    } else {
+        for (const z of [cz - depth / 2, cz + depth / 2]) {
+            for (let x = cx - width / 2; x <= cx + width / 2; x += 4) {
+                const offset = Math.abs(x - cx); if (offset < 10) continue;
+                segment(x, z, 0, offset < 14, Math.round((x - cx + width / 2) / 4));
+            }
         }
-    }
-    for (const x of [cx - width / 2, cx + width / 2]) {
-        for (let z = cz - depth / 2; z <= cz + depth / 2; z += 4) {
-            const offset = Math.abs(z - cz); if (offset < 10) continue;
-            segment(x, z, Math.PI / 2, offset < 14, Math.round((z - cz + depth / 2) / 4));
+        for (const x of [cx - width / 2, cx + width / 2]) {
+            for (let z = cz - depth / 2; z <= cz + depth / 2; z += 4) {
+                const offset = Math.abs(z - cz); if (offset < 10) continue;
+                segment(x, z, Math.PI / 2, offset < 14, Math.round((z - cz + depth / 2) / 4));
+            }
         }
     }
     const cells = new Map();

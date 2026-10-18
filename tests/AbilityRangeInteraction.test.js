@@ -16,10 +16,10 @@ describe('Ability range interaction', () => {
     });
 
     test.each([
-        ['Fighter', 4],
+        ['Fighter', 3],
         ['Rogue', 16],
         ['Wizard', 16],
-        ['Cleric', 4]
+        ['Cleric', 3]
     ])('keeps %s basic-attack click and chase range aligned with the server at %sm', (className, expectedRange) => {
         const engine = Object.create(GameEngine.prototype);
         engine.player = {
@@ -43,7 +43,7 @@ describe('Ability range interaction', () => {
     test('mirrors the server scale allowance for large basic-attack participants', () => {
         const engine = Object.create(GameEngine.prototype);
         engine.player = { constructor: { name: 'Fighter' }, scale: 2 };
-        expect(engine.getBasicAttackRangeForEntity({ scale: 3 })).toBe(8.5);
+        expect(engine.getBasicAttackRangeForEntity({ scale: 3 })).toBe(6.75);
     });
 
     test('ability controller chases only to the fireball cast edge', () => {

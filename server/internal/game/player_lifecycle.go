@@ -68,6 +68,17 @@ func (w *World) PerformRespawn(playerID string, contexts ...string) error {
 }
 
 func (w *World) PerformRecall(playerID string, contexts ...string) error {
+	return w.performRecall(playerID, 0, contexts...)
+}
+
+func (w *World) CompleteRecallCast(playerID string, castID uint64, context string) error {
+	if castID == 0 {
+		return errors.New("Cast cancelled")
+	}
+	return w.performRecall(playerID, castID, context)
+}
+
+func (w *World) performRecall(playerID string, castID uint64, contexts ...string) error {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 	if w.HasPvPMatch(playerID) {
@@ -90,6 +101,12 @@ func (w *World) PerformRecall(playerID string, contexts ...string) error {
 	if player.State == "DEAD" || player.Health <= 0 {
 		player.Mu.Unlock()
 		return errors.New("use Respawn to recover in Lanternhold before recalling")
+	}
+	if castID != 0 {
+		if err := consumeStationaryCastLocked(player, castID, "recall", context, time.Now()); err != nil {
+			player.Mu.Unlock()
+			return err
+		}
 	}
 	oldInstanceID := player.InstanceID
 	defer func() {
@@ -125,6 +142,7 @@ func (w *World) PerformRecall(playerID string, contexts ...string) error {
 // Scene changes invalidate destinations and motion from the departed instance.
 // Keep cooldowns and buffs intact; changing scenes is not an ability reset.
 func resetSceneMovementLocked(player *Entity) {
+	cancelStationaryCastLocked(player)
 	player.CasinoSeat = nil
 	player.RecoveryContextReady = false
 	clearWhirlwindLocked(player)

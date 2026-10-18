@@ -1477,33 +1477,21 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 
-		// Check if in instance before recall resets it
-		p := world.GetEntity(c.playerID)
-		wasInInstance := p != nil && p.InstanceID != ""
-
-		if err := world.PerformRecall(c.playerID, recovery.MovementContext); err != nil {
-			c.sendError(err.Error())
-			return
-		}
-		sendMovementContext(c)
-
-		if wasInInstance {
-			log.Printf("Recall: Sending return to overworld for %s", c.playerID)
-			// Send "return to overworld" message
-			resp := map[string]interface{}{
-				"instanceId": "",
-				"type":       "overworld",
+		c.startStationaryCast("recall", recovery.MovementContext, func(castID uint64) error {
+			p := world.GetEntityCopy(c.playerID)
+			wasInInstance := p != nil && p.InstanceID != ""
+			if err := world.CompleteRecallCast(c.playerID, castID, recovery.MovementContext); err != nil {
+				return err
 			}
-			payloadBytes, _ := json.Marshal(resp)
-			msg := Message{
-				Type:    MsgEnterInstance,
-				Payload: payloadBytes,
+			c.sendStationaryCast(castID, "recall", recovery.MovementContext, "completed")
+			sendMovementContext(c)
+			if wasInInstance {
+				payload, _ := json.Marshal(map[string]interface{}{"instanceId": "", "type": "overworld"})
+				c.sendSafe(createMessage(MsgEnterInstance, payload))
+				autoSetSocialStatus(c, c.playerID, "available")
 			}
-			b, _ := json.Marshal(msg)
-			c.sendSafe(b)
-			// Auto-revert social status: available (0.37.4)
-			autoSetSocialStatus(c, c.playerID, "available")
-		}
+			return nil
+		})
 
 	case MsgReport:
 		c.handleReport(msg.Payload)

@@ -61,20 +61,48 @@ func handleGroundItemPickup(client *Client, message Message) {
 	if !groundItemCommandReady(client) {
 		return
 	}
-	op, err := world.PrepareDurableGroundPickup(client.playerID, payload.LootID)
-	if err != nil {
-		client.sendError(err.Error())
+	loot := world.GetEntityCopy(payload.LootID)
+	if loot != nil && loot.LootItem != nil && game.IsChronicleQuestItem(*loot.LootItem) {
+		if err := world.ValidateQuestObjectPickup(client.playerID, payload.LootID); err != nil {
+			client.sendError(err.Error())
+			return
+		}
+		client.startStationaryCast("quest_pickup", payload.LootID, func(id uint64) error {
+			if !groundItemCommandReady(client) {
+				return errors.New("Quest object pickup cannot be confirmed yet. Retry shortly")
+			}
+			return completeGroundItemPickup(client, payload.LootID, id)
+		})
 		return
+	}
+	if err := completeGroundItemPickup(client, payload.LootID, 0); err != nil {
+		client.sendError(err.Error())
+	}
+}
+
+func completeGroundItemPickup(client *Client, lootID string, castID uint64) error {
+	var op database.GroundItemOperation
+	var err error
+	if castID != 0 {
+		op, err = world.CompleteQuestObjectPickupCast(client.playerID, lootID, castID)
+	} else {
+		op, err = world.PrepareDurableGroundPickup(client.playerID, lootID)
+	}
+	if err != nil {
+		return err
 	}
 	if _, err := prepareAndCompleteGroundItemLocked(op); err != nil {
 		if errors.Is(err, game.ErrGroundItemFull) {
-			client.sendError("Your pickup is reserved. Free bag space by selling or stashing items; it will finish automatically.")
+			return errors.New("Your pickup is reserved. Free bag space by selling or stashing items; it will finish automatically.")
 		} else {
-			client.sendError("Pickup/save pending or rejected. Your item is retained for recovery; retry shortly.")
+			return errors.New("Pickup/save pending or rejected. Your item is retained for recovery; retry shortly.")
 		}
-		return
+	}
+	if castID != 0 {
+		client.sendStationaryCast(castID, "quest_pickup", lootID, "completed")
 	}
 	sendConfirmedGroundInventory(client)
+	return nil
 }
 
 func sendConfirmedGroundInventory(client *Client) {

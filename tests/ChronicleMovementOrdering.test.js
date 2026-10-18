@@ -23,7 +23,7 @@ test.each(['MOVING', 'IDLE'])('inspection flushes its newest validated movement 
     expect(requestChronicleInspection(engine, site)).toBe(true);
     expect(engine.network.send.mock.calls.map(([type]) => type)).toEqual(['move', 'chronicle_inspect']);
     expect(accepted).toEqual([true]);
-    expect(engine.network.send.mock.calls[0][1]).toMatchObject({ z: 4.95, sequence: 2, state });
+    expect(engine.network.send.mock.calls[0][1]).toMatchObject({ z: 4.95, sequence: 2, state: 'IDLE' });
     // A reread does not flood unchanged movement packets or forge new credit.
     engine.network.send.mockClear();
     requestChronicleInspection(engine, site);
