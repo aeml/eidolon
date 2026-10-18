@@ -25,7 +25,8 @@ rewriting URLs, intercepting TLS or recording payloads. The configured backend
 IP mapping remains limited to the two existing backend hostnames.
 
 DevTools messages use separate binary pipes with backpressure. Neither relay
-parses or logs them. The launch preserves the caller's CPU affinity, priority and the
+parses or logs them, and Docker logging is disabled so the daemon does not
+retain the stdout channel. The launch preserves the caller's CPU affinity, priority and the
 existing Chrome flags, request deadlines, browser failure collection and test
 retry policy. Interface changes inside the browser's namespace still produce
 normal Chrome network errors.

@@ -84,7 +84,7 @@ try {
     if (!cpus) throw new Error('Missing caller CPU affinity');
     const nodeRoot = dirname(dirname(realpathSync(process.execPath)));
     const capsuleScript = fileURLToPath(new URL('./qa-browser-capsule.mjs', import.meta.url));
-    const args = ['create', '--interactive', '--init', '--name', name, ...labelArgs,
+    const args = ['create', '--interactive', '--init', '--log-driver', 'none', '--name', name, ...labelArgs,
         '--network', network, '--user', `${process.getuid()}:${process.getgid()}`, '--cpuset-cpus', cpus,
         '--group-add', String(statSync('/dev/dri/renderD128').gid), '--device', '/dev/dri/renderD128',
         ...bind(profile, profile, false), ...bind(downloads, downloads, false), ...bind(root, '/data/db', false),
