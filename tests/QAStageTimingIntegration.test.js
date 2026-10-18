@@ -131,6 +131,8 @@ function runGate(failureIndex = 0) {
         source "$1"
         qa_command_count=0
         qa_failure_index="$2"
+        source "$3"
+        shift 3
         record_command() {
             qa_command_count=$((qa_command_count + 1))
             printf '[qa-command] %s\\n' "$*"
@@ -143,9 +145,13 @@ function runGate(failureIndex = 0) {
         set +e
         ${all}
         ${finish}
-    `, 'qa-gate', path.resolve('scripts/qa-stage-timing.sh'), String(failureIndex)],
-    { encoding: 'utf8', timeout: 5000 });
+    `, 'qa-gate', path.resolve('scripts/qa-stage-timing.sh'), String(failureIndex), path.resolve('scripts/qa-evidence.sh')],
+    { encoding: 'utf8', timeout: 5000, env: {
+        ...process.env, PLAYWRIGHT_HTML_OUTPUT_DIR: '', PLAYWRIGHT_JSON_OUTPUT_FILE: ''
+    } });
 }
+
+const defaultScan = `${path.resolve('scripts/sanitize-playwright-artifacts.mjs')} playwright-report test-results`;
 
 test('full gate retains every required command once, in order, with distinct timings', () => {
     const result = runGate();
@@ -156,7 +162,7 @@ test('full gate retains every required command once, in order, with distinct tim
         { stage, event: 'start' },
         { stage, event: 'end', status: 0, seconds: expect.any(Number) }
     ]));
-    expect(events(result.stdout, '[scan] ')).toEqual(['scripts/sanitize-playwright-artifacts.mjs']);
+    expect(events(result.stdout, '[scan] ')).toEqual([defaultScan]);
     expect(result.stdout.trim().endsWith('[cleanup] completed')).toBe(true);
 });
 
@@ -169,7 +175,7 @@ test.each(stages.map((stage, index) => [stage, index + 1]))(
         const timings = events(result.stdout, '[qa-stage] ').map(line => JSON.parse(line));
         expect(timings).toHaveLength(failureIndex * 2);
         expect(timings.at(-1)).toMatchObject({ stage, event: 'end', status: 19 });
-        expect(events(result.stdout, '[scan] ')).toEqual(['scripts/sanitize-playwright-artifacts.mjs']);
+        expect(events(result.stdout, '[scan] ')).toEqual([defaultScan]);
         expect(result.stderr).toContain('Isolated character QA failed.');
         expect(result.stdout.trim().endsWith('[cleanup] completed')).toBe(true);
     }
