@@ -129,7 +129,11 @@ export function drawAtlasWaypoint(ctx, point, center, radius, label) {
 
 export class AtlasNavigation {
     constructor(map) {
+        map.navigation?.dispose?.();
         this.map = map; this.engine = map.gameEngine;
+        map.navigation = this;
+        this.listeners = new AbortController();
+        this.locationRows = new Map();
         this.filters = new Set(Object.keys(ATLAS_CATEGORIES));
         this.query = ''; this.selectedId = null; this.waypoint = null;
         this.questFocusId = null; this.questFocusReturn = null;
@@ -151,49 +155,53 @@ export class AtlasNavigation {
         this.detail = this.root.querySelector('.atlas-detail');
         this.status = this.root.querySelector('output');
         this.clear = this.root.querySelector('[data-atlas-clear]');
+        this.waypointRow = this.root.querySelector('.atlas-waypoint-row');
         const controls = map.container.querySelector('.world-map-controls');
         if (controls) {
             controls.querySelector('.atlas-waypoint-row')?.remove();
             controls.prepend(this.root.querySelector('.atlas-waypoint-row'));
         }
-        this.search.oninput = () => {
+        this.bindControl(this.search, 'input', () => {
             this.restoreQuestFocus({ viewport: false, search: false });
             this.query = this.search.value.trim().toLocaleLowerCase();
             this.root.querySelector('details').open = true; this.refresh(true);
-        };
+        });
         this.questFocusNotice = document.createElement('div'); this.questFocusNotice.className = 'atlas-quest-focus';
         this.questFocusNotice.hidden = true;
         this.questFocusLabel = document.createElement('p'); this.questFocusLabel.setAttribute('role', 'status');
         const returnToMap = document.createElement('button'); returnToMap.type = 'button'; returnToMap.className = 'menu-btn';
-        returnToMap.textContent = 'Return to map'; returnToMap.onclick = () => this.clearQuestFocus({ focusSearch: true });
+        returnToMap.textContent = 'Return to map';
+        this.bindControl(returnToMap, 'click', () => this.clearQuestFocus({ focusSearch: true }));
         this.questFocusNotice.append(this.questFocusLabel, returnToMap); this.root.prepend(this.questFocusNotice);
         const filters = this.root.querySelector('.atlas-filters');
         for (const [id, category] of Object.entries(ATLAS_CATEGORIES)) {
             const label = document.createElement('label'), input = document.createElement('input');
             input.type = 'checkbox'; input.checked = true; input.dataset.atlasCategory = id;
-            input.onchange = () => {
+            this.bindControl(input, 'change', () => {
                 const checked = input.checked; this.restoreQuestFocus({ viewport: false });
                 if (checked) this.filters.add(id); else this.filters.delete(id);
                 this.refresh(true); map._redrawIfVisible();
-            };
+            });
             label.append(input, ` ${category.symbol} ${category.name}`); filters.append(label);
         }
-        this.root.querySelector('[data-atlas-overview]').onclick = () => map.showWorldOverview();
-        this.clear.onclick = () => {
+        this.bindControl(this.root.querySelector('[data-atlas-overview]'), 'click', () => map.showWorldOverview());
+        this.bindControl(this.clear, 'click', () => {
             this.waypoint = null; this.refresh(true); map._redrawIfVisible();
             // Disabling the focused button otherwise drops keyboard focus out
             // of the atlas, letting the next key reach character controls.
             map.canvas.focus();
-        };
-        for (const event of ['pointerdown', 'mousedown', 'touchstart', 'click', 'wheel']) {
-            this.root.addEventListener(event, e => e.stopPropagation());
+        });
+        for (const event of ['pointerdown', 'mousedown', 'touchstart', 'touchmove', 'touchend', 'click', 'wheel']) {
+            this.root.addEventListener(event, e => e.stopPropagation(), { signal: this.listeners.signal });
         }
         this.refresh(true);
     }
 
     refresh(force = false) {
+        if (this.disposed || this.map.disposed) return;
         const space = atlasSpaceKey(this.engine);
         if (this.space && this.space !== space) {
+            this.retireLocationRows();
             this.restoreQuestFocus({ viewport: false });
             this.selectedId = null; this.query = ''; this.search.value = '';
         }
@@ -216,13 +224,28 @@ export class AtlasNavigation {
             const readingDetail = this.detail.contains(focused);
             this.signature = signature;
             const visible = this.locations.filter(p => this.filters.has(p.category) && `${p.name} ${p.purpose}`.toLocaleLowerCase().includes(this.query));
-            this.results.replaceChildren();
+            const visibleIds = new Set(visible.map(p => p.id));
+            for (const [id, entry] of this.locationRows) if (!visibleIds.has(id)) {
+                entry.button.onclick = null; entry.row.remove(); this.locationRows.delete(id);
+            }
+            // Keep unchanged press targets attached; only obsolete rows or
+            // the empty-state text retire when authoritative locations change.
+            for (const child of [...this.results.childNodes]) if (child.nodeType !== 1) child.remove();
+            let cursor = this.results.firstChild;
             for (const p of visible) {
-                const row = document.createElement('div'); row.setAttribute('role', 'listitem');
-                const button = document.createElement('button'); button.type = 'button';
-                button.textContent = `${p.symbol || ATLAS_CATEGORIES[p.category].symbol} ${p.name}`;
+                let entry = this.locationRows.get(p.id);
+                if (!entry) {
+                    const row = document.createElement('div'); row.setAttribute('role', 'listitem');
+                    const button = document.createElement('button'); button.type = 'button'; row.append(button);
+                    this.bindControl(button, 'click', () => this.select(p.id), { space });
+                    entry = { row, button }; this.locationRows.set(p.id, entry);
+                }
+                const { row, button } = entry;
+                const text = `${p.symbol || ATLAS_CATEGORIES[p.category].symbol} ${p.name}`;
+                if (button.textContent !== text) button.textContent = text;
                 button.setAttribute('aria-pressed', String(this.selectedId === p.id));
-                button.onclick = () => this.select(p.id); row.append(button); this.results.append(row);
+                if (row === cursor) cursor = cursor.nextSibling;
+                else this.results.insertBefore(row, cursor);
             }
             if (!visible.length) this.results.textContent = isOverworldAtlas(this.engine) ? 'No matching known locations.' : 'Current instance map. Overworld destinations return when you leave this instance.';
             this.renderDetail();
@@ -238,6 +261,7 @@ export class AtlasNavigation {
     }
 
     select(id) {
+        if (this.disposed || this.map.disposed || this.space !== atlasSpaceKey(this.engine)) return;
         const location = this.locations.find(p => p.id === id);
         if (!location) return;
         if (this.questFocusId && (location.questId !== this.questFocusId || location.category !== 'quests')) this.restoreQuestFocus({ viewport: false });
@@ -248,6 +272,7 @@ export class AtlasNavigation {
     }
 
     positionOnLocation(location) {
+        this.map.syncAtlasSpace?.();
         this.map.autoFitAtlas = false;
         this.map.cameraX = location.x; this.map.cameraZ = location.z;
         this.map.mapOffsetX = 0; this.map.mapOffsetY = 0;
@@ -257,6 +282,10 @@ export class AtlasNavigation {
     }
 
     focusQuest(questId) {
+        if (this.disposed || this.map.disposed) return false;
+        if (this.space !== atlasSpaceKey(this.engine)) {
+            this.map.syncAtlasSpace?.(); this.refresh(true);
+        }
         const targets = getAtlasLocations(this.engine, { questId }).filter(p => p.category === 'quests' && p.questId === questId);
         if (!targets.length) return false;
         const target = this.nearestQuestTarget(targets);
@@ -273,11 +302,14 @@ export class AtlasNavigation {
     }
 
     restoreQuestFocus({ viewport = true, search = true } = {}) {
+        if (this.disposed || this.map.disposed) return false;
         if (!this.questFocusReturn) return false;
         const saved = this.questFocusReturn; this.questFocusReturn = null; this.questFocusId = null;
         this.query = saved.query; if (search) this.search.value = saved.search;
         this.filters = new Set(saved.filters); this.selectedId = saved.selectedId;
-        if (viewport) { Object.assign(this.map, saved.viewport); this.map.updateZoomLabel?.(); }
+        if (viewport && this.space === atlasSpaceKey(this.engine)) {
+            Object.assign(this.map, saved.viewport); this.map.updateZoomLabel?.();
+        }
         return true;
     }
 
@@ -289,19 +321,56 @@ export class AtlasNavigation {
     }
 
     renderDetail() {
+        if (this.disposed || this.map.disposed) return;
         const p = this.locations.find(p => p.id === this.selectedId);
-        this.detail.replaceChildren(); this.detail.hidden = !p;
+        const key = p ? JSON.stringify([this.space, p.id]) : null;
+        this.detail.hidden = !p;
+        if (this.detailParts && this.detailKey !== key) {
+            this.detailParts.waypoint.onclick = null; this.detail.replaceChildren(); this.detailParts = null;
+        }
+        this.detailKey = key;
         if (!p) return;
-        const title = document.createElement('h3'), copy = document.createElement('p'), availability = document.createElement('p');
-        title.textContent = p.name; copy.textContent = p.purpose;
-        title.tabIndex = -1;
-        availability.textContent = `${p.availability} · ${Math.round(p.x)}, ${Math.round(p.z)}`;
-        const waypoint = document.createElement('button'); waypoint.type = 'button'; waypoint.textContent = 'Set personal waypoint';
-        waypoint.onclick = () => {
-            this.waypoint = { id: p.id, name: p.name, x: p.x, z: p.z, instanceId: p.instanceId, spaceKey: atlasSpaceKey(this.engine) };
-            this.refresh(); this.map._redrawIfVisible();
+        if (!this.detailParts) {
+            const title = document.createElement('h3'), copy = document.createElement('p'), availability = document.createElement('p');
+            title.tabIndex = -1;
+            const waypoint = document.createElement('button'); waypoint.type = 'button'; waypoint.textContent = 'Set personal waypoint';
+            this.bindControl(waypoint, 'click', () => {
+                const current = this.locations.find(location => location.id === p.id);
+                if (!current || this.selectedId !== p.id) return;
+                this.waypoint = { id: current.id, name: current.name, x: current.x, z: current.z,
+                    instanceId: current.instanceId, spaceKey: this.space };
+                this.refresh(); this.map._redrawIfVisible();
+            }, { space: this.space });
+            this.detailParts = { title, copy, availability, waypoint };
+            this.detail.append(title, copy, availability, waypoint);
+        }
+        const { title, copy, availability } = this.detailParts;
+        if (title.textContent !== p.name) title.textContent = p.name;
+        if (copy.textContent !== p.purpose) copy.textContent = p.purpose;
+        const status = `${p.availability} · ${Math.round(p.x)}, ${Math.round(p.z)}`;
+        if (availability.textContent !== status) availability.textContent = status;
+    }
+
+    bindControl(element, type, callback, { space } = {}) {
+        element[`on${type}`] = event => {
+            if (this.disposed || this.map.disposed || this.map.navigation !== this ||
+                this.engine !== this.map.gameEngine || !this.root.isConnected || !element.isConnected ||
+                (space !== undefined && space !== atlasSpaceKey(this.engine))) return;
+            callback(event);
         };
-        this.detail.append(title, copy, availability, waypoint);
+    }
+
+    retireLocationRows() {
+        for (const { row, button } of this.locationRows.values()) { button.onclick = null; row.remove(); }
+        this.locationRows.clear();
+    }
+
+    dispose() {
+        if (this.disposed) return;
+        this.disposed = true; this.listeners.abort(); this.retireLocationRows();
+        this.search.oninput = null; this.clear.onclick = null;
+        for (const control of this.root.querySelectorAll('button, input')) { control.onclick = null; control.onchange = null; }
+        this.root.remove(); this.waypointRow.remove();
     }
 }
 

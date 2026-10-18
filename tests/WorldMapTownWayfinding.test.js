@@ -1,5 +1,6 @@
 import { WorldMap } from '../src/ui/WorldMap.js';
 import { TOWN_SERVICE_POINTS } from '../src/ui/townServiceConfig.js';
+import { darkRealmFixture } from './darkRealmFixture.js';
 
 describe('WorldMap town wayfinding', () => {
     const originalGetContext = HTMLCanvasElement.prototype.getContext;
@@ -15,6 +16,8 @@ describe('WorldMap town wayfinding', () => {
             fillRect: () => {},
             strokeRect: () => {},
             transform: () => {},
+            translate: () => {},
+            rotate: () => {},
             drawImage: () => {},
             measureText: text => ({ width: String(text).length * 7 }),
             beginPath: () => {},
@@ -156,6 +159,59 @@ describe('WorldMap town wayfinding', () => {
         expect(map.mapOffsetX).toBe(-60); expect(oldMap.mapOffsetX).toBe(0);
         expect(document.querySelectorAll('.atlas-navigation')).toHaveLength(1);
         expect(document.querySelectorAll('.atlas-waypoint-row')).toHaveLength(1);
+    });
+
+    test('disposing the map removes atlas controls and retires captured waypoint input', () => {
+        const map = new WorldMap({ player: { id: 'me', level: 30, position: { x: 0, z: 200 } } });
+        const navigation = map.navigation;
+        navigation.select('forge');
+        const button = navigation.detail.querySelector('button'), pending = button.onclick;
+        const row = navigation.waypointRow;
+        map.dispose(); map.dispose();
+        expect(navigation.root.isConnected).toBe(false); expect(row.isConnected).toBe(false);
+        pending.call(button, new MouseEvent('click')); expect(navigation.waypoint).toBeNull();
+        expect(navigation.focusQuest('daily_skeleton')).toBe(false);
+    });
+
+    test.each(['mousedown', 'touchend'])('%s on the waypoint toolbar stays out of world input', type => {
+        const map = new WorldMap({ player: { id: 'me', level: 30, position: { x: 0, z: 200 } } });
+        map.navigation.select('forge'); map.navigation.detail.querySelector('button').click();
+        let reachedWorld = 0;
+        const listen = () => { reachedWorld++; };
+        window.addEventListener(type, listen);
+        try {
+            map.navigation.clear.dispatchEvent(new Event(type, { bubbles: true }));
+            expect(reachedWorld).toBe(0);
+        } finally { window.removeEventListener(type, listen); map.dispose(); }
+    });
+
+    test('disposing the map retires the zoom toolbar and captured zoom callback', () => {
+        const map = new WorldMap({ player: { id: 'me', level: 30, position: { x: 0, z: 200 } } });
+        const button = map.container.querySelector('[data-map-zoom="in"]'), pending = button.onclick;
+        const scale = map.scale;
+        map.dispose(); pending.call(button, new MouseEvent('click'));
+        expect(map.scale).toBe(scale); expect(button.isConnected).toBe(false);
+    });
+
+    test('new-scene quest focus stays centered after the map initializes that instance', () => {
+        const engine = { currentInstanceId: '', currentInstanceType: '', player: {
+            id: 'me', level: 100, position: { x: 0, z: 200 }, quests: [
+                { id: 'daily_skeleton', title: 'Road patrol', type: 'KILL', target: 'Skeleton', accepted: true, maxCount: 10 }
+            ]
+        } };
+        const map = new WorldMap(engine), nav = map.navigation;
+        nav.focusQuest('daily_skeleton');
+        engine.currentInstanceId = 'dark-realm'; engine.currentInstanceType = 'dark_realm';
+        engine.currentDungeonLayout = darkRealmFixture();
+        engine.player.position = { x: 40000, z: 40800 };
+        engine.player.quests = [{ id: 'chronicle_dark_shore_collectors', title: 'Shore collectors', category: 'chronicle',
+            accepted: true, count: 3, maxCount: 3 }];
+        const before = JSON.stringify(engine.player);
+        expect(nav.focusQuest('chronicle_dark_shore_collectors')).toBe(true);
+        const selected = nav.locations.find(location => location.id === nav.selectedId);
+        expect(selected.questId).toBe('chronicle_dark_shore_collectors');
+        expect([map.cameraX, map.cameraZ, map.autoFitAtlas]).toEqual([selected.x, selected.z, false]);
+        expect(JSON.stringify(engine.player)).toBe(before); map.dispose();
     });
 
     test('selected service takes marker priority while crowded labels remain in the location list', () => {
