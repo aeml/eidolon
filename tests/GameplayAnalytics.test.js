@@ -122,6 +122,35 @@ describe('GA4 production bootstrap', () => {
         expect(win.dataLayer).toBeUndefined();
     });
 
+    test('automated production browsers never initialize the provider or enqueue QA events', () => {
+        const { win, doc } = browser('play.eidolonrealms.com');
+        win.navigator = { webdriver: true };
+        initializeAnalytics('game', win, doc)('gameplay_start', { player_class: 'Wizard' });
+        initializeAnalytics('website', win, doc)('play_click', { cta_location: 'hero' });
+        expect(doc.head.appendChild).not.toHaveBeenCalled();
+        expect(win.dataLayer).toBeUndefined();
+        expect(win.gtag).toBeUndefined();
+        expect(win.__eidolonGoogleTagInitialized).toBeUndefined();
+    });
+
+    test.each([false, undefined, 'true'])('ordinary production analytics remains enabled for webdriver=%s', webdriver => {
+        const { win, doc } = browser('play.eidolonrealms.com');
+        win.navigator = { webdriver };
+        initializeAnalytics('game', win, doc)('gameplay_start', { player_class: 'Wizard' });
+        expect(doc.head.appendChild).toHaveBeenCalledTimes(1);
+        expect([...win.dataLayer[2]]).toEqual(['event', 'gameplay_start', expect.objectContaining({ player_class: 'Wizard' })]);
+    });
+
+    test('an existing emitter stops enqueueing events when automation is detected', () => {
+        const { win, doc } = browser('play.eidolonrealms.com');
+        win.navigator = { webdriver: false };
+        const send = initializeAnalytics('game', win, doc);
+        win.navigator.webdriver = true;
+        send('gameplay_start', { player_class: 'Wizard' });
+        expect(win.dataLayer).toHaveLength(2);
+        expect(doc.head.appendChild).toHaveBeenCalledTimes(1);
+    });
+
     test.each(['eidolonrealms.com', 'play.eidolonrealms.com'])('shares the tag and cookie scope on %s without URL secrets', host => {
         const { win, doc } = browser(host);
         const surface = host.startsWith('play.') ? 'game' : 'website';

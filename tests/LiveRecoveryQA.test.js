@@ -26,6 +26,22 @@ const invoke = (overrides = {}) => spawnSync('bash', ['-c', `
 });
 const runs = result => result.stdout.split('\n').filter(line => line.startsWith('RUN '));
 
+test('the live persistent-character command preserves failures without automatically replaying gameplay', () => {
+    const workflow = readFileSync('.github/workflows/ci.yml', 'utf8');
+    const step = workflow.split('- name: Run live anonymous and persistent-character QA')[1].split('\n      - name:')[0];
+    const command = step.match(/run: sg render -c '([^']+)'/)[1];
+    const result = spawnSync('bash', ['-c', 'npx() { printf "%s\\n" "$@"; return 23; }; eval "$1"', 'live-command-harness', command], {
+        encoding: 'utf8', timeout: 5000
+    });
+    expect(result.status).toBe(23);
+    expect(result.stdout.trim().split('\n')).toEqual([
+        'playwright', 'test', '--retries=0',
+        ...['anonymous', 'authenticated', 'regional-dungeon-gameplay', 'verdant-dungeon-gameplay', 'movement-smoothness']
+            .map(name => `tests/e2e/${name}.spec.js`)
+    ]);
+    expect(step).not.toMatch(/continue-on-error:|if:/);
+});
+
 test('ordinary resource socket matrix runs in the existing disposable CI step', () => {
     const workflow = readFileSync('.github/workflows/ci.yml', 'utf8');
     const step = workflow.split('- name: Verify ordinary item, social, duel and administration sockets')[1]
