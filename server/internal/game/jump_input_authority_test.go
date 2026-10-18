@@ -112,3 +112,45 @@ func TestRealtimeJumpLandsOnElapsedTimeDespiteDelayedFrames(t *testing.T) {
 		t.Fatal("jump did not land at the accepted point on time")
 	}
 }
+
+func TestNetworkJumpLandsAtEndpointAcrossSubdivisions(t *testing.T) {
+	for _, distance := range []float64{3, 13.5, 27} {
+		for _, steps := range []int{3, 8, 16, 60, 120} {
+			t.Run(fmt.Sprintf("distance-%g/steps-%d", distance, steps), func(t *testing.T) {
+				p := newTestPlayer("split-clock", "Fighter")
+				p.InstanceID = "jump-split-clock"
+				w := newPvPTestWorld(p)
+				if !w.StartPlayerJumpWithContext(p.ID, distance, 999, 0, "") {
+					t.Fatal("jump rejected")
+				}
+				duration := p.JumpDuration
+				for step := 1; step <= steps; step++ {
+					w.Update(duration / float64(steps))
+					if step < steps && p.State != "JUMPING" {
+						t.Fatal("jump landed before its accepted duration", step, steps)
+					}
+				}
+				if p.State != "IDLE" || p.X != distance || p.Y != 0 || p.Z != 0 || p.JumpProgress != 1 || p.JumpElapsed != duration {
+					t.Fatalf("split clock missed exact landing: state=%s elapsed=%.17g duration=%.17g progress=%.17g x=%.17g", p.State, p.JumpElapsed, duration, p.JumpProgress, p.X)
+				}
+			})
+		}
+		t.Run(fmt.Sprintf("distance-%g/not-early", distance), func(t *testing.T) {
+			p := newTestPlayer("not-early", "Fighter")
+			p.InstanceID = "jump-split-clock"
+			w := newPvPTestWorld(p)
+			if !w.StartPlayerJumpWithContext(p.ID, distance, 999, 0, "") {
+				t.Fatal("jump rejected")
+			}
+			duration := p.JumpDuration
+			w.Update(duration - 1e-6)
+			if p.State != "JUMPING" {
+				t.Fatal("jump landed a microsecond early")
+			}
+			w.Update(1e-6)
+			if p.State != "IDLE" || p.X != distance || p.JumpElapsed != duration {
+				t.Fatal("jump failed its final microsecond")
+			}
+		})
+	}
+}

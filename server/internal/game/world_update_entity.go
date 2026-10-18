@@ -929,6 +929,12 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				// simulation frames. A delayed/older frame cannot rewind it.
 				elapsed = math.Max(e.JumpElapsed, frameTimes[0].Sub(e.jumpStartedAt).Seconds())
 			}
+			// Subdivided simulation ticks can sum a few floating-point bits
+			// short of the duration. Canonicalize that arithmetic residue;
+			// this is far smaller than the live clock's nanosecond resolution.
+			if elapsed < jumpDuration && jumpDuration-elapsed <= 1e-12 {
+				elapsed = jumpDuration
+			}
 			e.JumpElapsed = math.Min(jumpDuration, elapsed)
 			progress := e.JumpElapsed / jumpDuration
 			if progress < 0 {
