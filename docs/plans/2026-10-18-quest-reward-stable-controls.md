@@ -67,3 +67,28 @@ still retires its controls. Generic clearing of other windows retains its
 original behavior, including absent containers. Three focused quest/reward/
 navigation suites pass44checks; changed-file lint passes. The corrected native
 four-case run is required before selecting this component.
+
+## Qualified component — October18
+
+Corrected runtime708043b82 passes44checks/three suites in2.524s and all four
+actual Chrome cases in11.239s, with zero retries, flakes or skips. The original
+specialization/reward cases remain intact. Held desktop mouse and virtual-phone
+touch releases each send exactly one chosen claim after an actual UI refresh;
+keyboard Space and a second virtual touch explicitly retry the same choice only
+after rejection. Reviewed desktop/phone captures retain readable selection,
+confirmation and error text, reachable controls and the original reading order.
+
+The initial negative and first native desktop counterexample remain retained.
+The final59entry component inventory is frozen at
+SHA256`fbfa908154fbabd657ab751baa10b6192654d47ec2b52bdbd8950fbd4d65c92e`.
+The earlier ten-case test source is retained exactly frombb5df9795 after adding
+parent-preservation regressions. Its original13entry packet is unchanged;
+the three-entry source-retirement supplement and explicit relocation receipt
+are frozen at
+SHA256`0688d4a836498083a9c9ab607ff350b9843b2256babe22a07247e7affb283954`.
+
+Selected for isolated next-milestone integration. It is not merged into master,
+deployed or whole-game accepted. The combined movement/audio/preview source
+still needs its complete native input/save/inspection run after82acceptance,
+then its own release pipeline and public-byte verification. Deferred physical
+playtests, final UI review and all original full-game gates stay open.
