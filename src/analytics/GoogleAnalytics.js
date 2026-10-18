@@ -44,7 +44,7 @@ function eventParameters(surface, name, parameters) {
 
 /** One tag and cookie scope for the public website and game; no QA traffic. */
 export function initializeAnalytics(surface, win = window, doc = document) {
-    if (!['game', 'website'].includes(surface) || sensitivePage(win)) return () => {};
+    if (!['game', 'website'].includes(surface) || sensitivePage(win) || win.navigator?.webdriver === true) return () => {};
     if (!PRODUCTION_HOSTS.has(win.location.hostname)) return () => {};
     let referrer = '';
     try { referrer = doc.referrer ? new URL(doc.referrer).origin + '/' : ''; } catch { /* Invalid referrer. */ }
@@ -74,7 +74,7 @@ export function initializeAnalytics(surface, win = window, doc = document) {
     }
     return (name, parameters = {}) => {
         try {
-            if (sensitivePage(win) || !PRODUCTION_HOSTS.has(win.location.hostname)) return;
+            if (sensitivePage(win) || win.navigator?.webdriver === true || !PRODUCTION_HOSTS.has(win.location.hostname)) return;
             const safe = eventParameters(surface, name, parameters);
             // Repeat safe page context rather than inheriting a location/title
             // that provider-owned automatic history events may have changed.

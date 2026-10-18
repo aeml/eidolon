@@ -22,7 +22,7 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
-## Current delivery: accepted Alpha1.79.81; next polish milestone qualified
+## Current delivery: accepted Alpha1.79.81; deployed82needs live-check correction
 
 Alpha1.79.80's opt-in Meshy Fighter pilot is deployed and verified; the supplied
 four-class presentation remains the default. Its fitting/art limitations remain.
@@ -52,6 +52,28 @@ and all516prior note strings remain unchanged.
 Its own CI/deployment/public-byte acceptance is still required. Separate
 movement audio, rejected renderer experiments and the unexecuted legacy-jump
 fixture are excluded. Original failure/owner/playtest/soak deferrals remain.
+
+Corrected source48cf reached both deployments with nine successful jobs, but
+CI39137868646 failed its final live job. Anonymous QA recorded seven passes,
+one skip and one flaky analytics-network retry. The first recovery group
+recorded one pass and one failure: natural expiry/reentry assertions completed,
+then the strict browser collector rejected a geometry-shard ERR_ABORTED. The
+subsequent rested-party group never ran. Public frontend/backend identities
+match48cf/Alpha1.79.82 with a ready database;82remains unaccepted.
+
+An isolated correction now excludes automated browsers from analytics, as the
+existing collection contract intended.45focused checks/two suites and eight
+actual Chrome source/published-bundle contrasts qualify the change.30workflow
+checks/three suites and386version/history checks pass. Live persistent-character
+QA now explicitly uses zero retries and preserves its original file union and
+failure status. A separate unchanged-worker probe
+reproduces the1500ms shard timeout for eight supplied class/quality bodies and
+returns all sixteen normal/delayed outputs exactly equal to the canonical
+catalog. It does not prove the failed live worker's output or waive its strict
+failure. Geometry algorithms, transport/deadline policy, browser failure
+collection and all gameplay assertions remain unchanged. The selected analytics
+correction requires its own full CI/deployment/public acceptance.
+[Live diagnosis](2026-10-18-release1-79-82-live-check-diagnosis.md).
 
 The first82CI client job failed57cases in two suites: the gate integration
 fixture omitted the extracted evidence helper, and the floor-patina fixture
