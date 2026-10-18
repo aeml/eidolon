@@ -1592,7 +1592,6 @@ export async function exerciseCombatAndLoot(page, { storeSpare } = {}) {
     // death overlay intentionally intercepts every menu click while active.
     await recoverThroughDeathScreen(page);
     await disableAutoLootThroughSettings(page);
-    const storedItems = await freePersistentQALootSlot(page, { storeSpare });
 
     let abilityWasUsed = false;
 
@@ -1652,6 +1651,11 @@ export async function exerciseCombatAndLoot(page, { storeSpare } = {}) {
         throw new Error(`The primary ability never entered cooldown after bounded real right-clicks: ${JSON.stringify(abilityDiagnostic)}`);
     }
 
+    // The ability encounter and already-earned deliveries can fill a slot
+    // freed before combat. Prepare the authoritative bag after that encounter,
+    // before the deterministic loot kill. A stash fallback can return to town;
+    // the following waypoint then reacquires the ordinary combat position.
+    const storedItems = await freePersistentQALootSlot(page, { storeSpare });
     await useEncounterQAWaypoint(page);
 
     await page.keyboard.press('Enter');
