@@ -108,7 +108,7 @@ test('AudioManager routes footsteps through ordinary effects and existing mute c
 });
 
 
-test.each(['playerJumpState', 'playerCorrectionVisualState'])('%s prevents logical correction from sounding like walking', field => {
+test.each(['playerJumpState', 'playerCorrectionVisualState', 'localRoofFallActive'])('%s prevents airborne or corrected motion from sounding like walking', field => {
     const { tick, audio, engine } = fixture();
     tick(.3); engine[field] = {};
     expect(tick(.6)).toBe(false); expect(audio.play).not.toHaveBeenCalled();

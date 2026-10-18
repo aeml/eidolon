@@ -43,7 +43,7 @@ export class FootstepAudio {
         this.x = position.x; this.z = position.z;
         const blocked = arriving || !Number.isFinite(dt) || dt <= 0 || dt > .25 ||
             distance > Math.max(3, 25 * dt) || distance < .0001 ||
-            actor.state !== 'MOVING' || engine.playerJumpState || engine.playerCorrectionVisualState || actor.jumpVisualState || actor.jumpLandingVisual ||
+            actor.state !== 'MOVING' || engine.playerJumpState || engine.localRoofFallActive || engine.playerCorrectionVisualState || actor.jumpVisualState || actor.jumpLandingVisual ||
             actor.stunTimer > 0 || actor.rootTimer > 0 || actor.frozenTimer > 0 ||
             actor.teleportPhaseTimer > 0 || actor.isCharging || actor.isWhirlwinding;
         if (blocked) { this.distance = 0; this.elapsed = 0; this.phase = null; this.action = null; return false; }
