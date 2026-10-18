@@ -22,7 +22,31 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
-## Current delivery: accepted Alpha1.79.81; deployed82needs live-check correction
+## Current delivery: accepted Alpha1.79.82; selected83 locally qualified
+
+Alpha1.79.82source2a19has all ten own CI jobs, both deployments, live checks,
+matching normal-TLS identities and exact public-file verification.
+[Acceptance](2026-10-18-release1-79-82-acceptance.md). Earlier failed/cancelled82
+attempts below remain historical counterexamples, not the current delivery state.
+
+Selected83adds stable quest/reward/Lore/Atlas/tracker/party controls, improved
+private outfit/held previews, grounded footsteps, startup client cleanup,
+connected-player appearance preparation and versioned credits/source links.
+All73distinct required local native cases have passing exact-runtime evidence:
+six original gameplay/save cases,63UI cases and four corrected party cases.
+The missing private fixture, recording-policy rejection and pre-browser cwd
+setup failure remain recorded. No timed gameplay route was replayed or original
+limit relaxed. Entry/input CPU365/20suites and credits/publisher/routing53/four
+suites pass, alongside two native credits layouts. Final coherent-source
+validation, merge/push, own full CI/deploy/live/public acceptance remain due.
+[Qualification](2026-10-18-release1-79-83-qualification.md).
+
+No final art, whole-world performance, earned human campaign, listening,
+physical-device, rights/operational owner, F1–F5, beta or1.99gate is closed by
+this scoped qualification. Soak/stress testing remains deferred until features
+are nearly complete. The full original scope and every open row below remain.
+
+## Historical Alpha1.79.82 preparation and retained failed attempts
 
 Alpha1.79.80's opt-in Meshy Fighter pilot is deployed and verified; the supplied
 four-class presentation remains the default. Its fitting/art limitations remain.

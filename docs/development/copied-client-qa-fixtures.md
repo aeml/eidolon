@@ -20,3 +20,17 @@ publication's original inventory before and after the run. Fixture delivery
 does not prove campaign progression, authenticated instance admission, physical
 phone usability or visual acceptance. Browser failure collection, native-GPU
 requirements and all original test assertions still apply.
+
+## Assembled UI fixture handoff
+
+Atlas/quest scenarios import `tests/darkRealmFixture.js`; the party layout
+scenario also imports `tests/groundInputProjection.js`. Copy both exact source
+files into the owned `EIDOLON_STATIC_TEST_ROOT` namespace and pin their hashes.
+Do not expose the repository test tree in the game publication or substitute
+those files for game modules. Audit the selected specs for additional browser
+fixture imports before starting a copied-client run.
+
+A private Playwright config must restore the original absolute `testDir` and
+`webServer.cwd`. Disable automatic trace/video when its evidence is combined
+with credentialed gameplay. Preserve failed raw recordings privately; a text
+credential scan cannot certify their compressed traffic or pixels.

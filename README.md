@@ -495,20 +495,27 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.82`, **prepared; verification and deployment pending**.
-This milestone adds stationary recall and quest-object casts, outside-click window
-closing, close melee reach, walkable town roofs with saved item floors, and the
-Earth Realm's town-style fence. Cached clients receive a readable reload instruction.
-See [the release plan](docs/plans/2026-10-18-release1-79-81-roofs-and-interactions.md).
+Current source version: `Alpha 1.79.83`, **prepared; verification and deployment pending**.
+This milestone improves quest/reward, Lore Book, Atlas, tracker and party control
+continuity; garment preview framing; grounded movement audio; prepared connected
+entry; startup ownership cleanup; and credits with matching editable source links.
+Local runtime qualification covers 73 distinct native cases; publication, own CI,
+live checks and exact public verification remain required.
+[Selected scope and qualification](docs/plans/2026-10-18-release1-79-83-qualification.md).
 
-Latest verified live release: `Alpha 1.79.80`.
-All ten jobs passed in [CI 39106396060](https://github.com/aeml/eidolon/actions/runs/39106396060).
-Public client/server identities match deployed source `f5401eb714d52055ce2fda52091a540109da6197`;
-both pilot model hashes and native-GPU public rendering were verified.
-The experimental Meshy Fighter is available through `?fighterModel=meshy`, with
-High/Low browser exports, six generated/base motions, existing equipment
-attachment and skill gestures. Use a Fighter character; omit the query to return
-to the current appearance. Shoulder deformation and grips remain under review.
+Latest verified live release: `Alpha 1.79.82`, source
+`2a19ff3fcb642d5abd199d4ba3f775facae21a02`.
+All ten jobs passed in [CI39160640094](https://github.com/aeml/eidolon/actions/runs/39160640094),
+with both deployments, live checks and exact public-file verification.
+[Accepted82](docs/plans/2026-10-18-release1-79-82-acceptance.md).
+Recall/quest-object casts, outside-click window closing, close melee contact,
+walkable town roofs and the shared Earth fence are retained from accepted81.
+Final world/art, performance, human campaign/listening/phone feedback, operational
+owner decisions, feature freeze and beta remain open.
+
+The accepted Alpha 1.79.80 Meshy Fighter pilot remains opt-in through `?fighterModel=meshy`.
+The supplied four-class presentation stays the default. Pilot shoulder deformation
+and grips remain under review; neither pilot nor current previews certify final art.
 
 The preceding 1.79.79 content includes specialization guidance, saved quest equipment
 choices, distinct room-purpose masonry and ruined

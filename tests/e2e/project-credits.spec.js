@@ -39,7 +39,8 @@ for (const viewport of [{ width: 1280, height: 800 }, { width: 390, height: 844 
 
         await page.evaluate(() => {
             document.getElementById('start-screen').style.display = 'none';
-            document.getElementById('help-screen').style.display = 'block';
+            document.body.classList.toggle('mobile-mode', innerWidth < 900);
+            document.getElementById('help-screen').style.display = 'flex';
         });
         await page.locator('#help-credits-guide summary').click();
         const help = page.locator('#help-credits-guide a');

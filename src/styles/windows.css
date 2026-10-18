@@ -1653,3 +1653,15 @@
 .mobile-mode .shop-purchase-status { font-size: 16px; }
 
 .mobile-mode .shop-sell-button { font-size: 16px; }
+
+/* Credits links are local to the new Help reference, including visited state. */
+#help-credits-guide a,
+#help-credits-guide a:visited {
+    color: #e7c77f;
+    text-underline-offset: 3px;
+}
+#help-credits-guide a:focus-visible {
+    outline: 2px solid #e7c77f;
+    outline-offset: 3px;
+    border-radius: 2px;
+}
