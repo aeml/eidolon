@@ -200,3 +200,86 @@ for (const [width, mobile] of [[1280, false], [390, true]]) test.describe(`Retur
         expect(failures, failures.join('\n')).toEqual([]);
     });
 });
+
+for (const [width, mobile] of [[1280, false], [390, true]]) test.describe(`Lore book input continuity ${width}`, () => {
+    test.use({ viewport: { width, height: 844 }, hasTouch: mobile, isMobile: mobile });
+    test('held navigation presses survive progress and newly earned memories', async ({ page, baseURL }) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+        await page.goto('/', { waitUntil: 'networkidle' });
+        // Prepared personal UI receipts, not earned campaign or save proof.
+        await page.evaluate(async mobile => {
+            const { UIManager } = await import('/src/ui/UIManager.js');
+            const { getChronicleInvestigation } = await import('/src/core/ChronicleInvestigation.js');
+            const chapter = getChronicleInvestigation('chronicle_earth_returning_scar');
+            document.getElementById('start-screen').style.display = 'none';
+            document.body.classList.toggle('mobile-mode', mobile);
+            const ui = new UIManager(mobile);
+            const quests = [
+                { id: 'chronicle_01_bell_below', category: 'chronicle', chapter: 1, title: 'The Bell Below',
+                    accepted: true, completed: true, lore: 'Lanternhold remembers its missing note.' },
+                { id: chapter.id, category: 'chronicle', chapter: 2, title: chapter.title, type: 'INVESTIGATE',
+                    accepted: true, count: 1, maxCount: chapter.sites.length, investigationMask: 2,
+                    objectiveText: 'Read the altered roots at the stone circle.' }
+            ];
+            ui.lastPlayerRef = { id: 'lore-continuity-reader', quests };
+            ui.showHUD(); ui.quest.toggleJournal(); ui.quest.setJournalView('lore');
+            const state = window.__loreContinuity = { ui, quests, actions: [], navigations: 0 };
+            ui.quest.onAcceptQuest = id => state.actions.push(['accept', id]);
+            ui.quest.onCompleteQuest = id => state.actions.push(['complete', id]);
+            ui.quest.onClaimQuestItem = (...args) => state.actions.push(['reward', ...args]);
+            const navigate = ui.quest.setJournalView.bind(ui.quest);
+            ui.quest.setJournalView = (...args) => { state.navigations++; return navigate(...args); };
+        }, mobile);
+        const book = page.getByRole('region', { name: 'Lore book', exact: true });
+        const activate = locator => mobile ? locator.tap() : locator.click();
+        const update = async mode => page.evaluate(async mode => {
+            const state = window.__loreContinuity;
+            if (mode === 'memory') state.quests.push({ id: 'chronicle_02_second_note', category: 'chronicle', chapter: 3,
+                title: 'Another Ilyra account', accepted: true, completed: true, lore: 'Ilyra remembers another promise.' });
+            else state.quests = state.quests.map(q => q.id === 'chronicle_earth_returning_scar' ? { ...q, count: q.count + 1 } : q);
+            state.ui.lastPlayerRef.quests = state.quests;
+            state.ui.quest.updateJournal(state.quests);
+            state.saved = JSON.stringify(state.quests);
+            await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        }, mode);
+        const pressAcrossUpdate = async (target, mode) => {
+            await target.scrollIntoViewIfNeeded();
+            const box = await target.boundingBox(); expect(box).toBeTruthy();
+            const point = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+            const session = mobile ? await page.context().newCDPSession(page) : null;
+            try {
+                if (mobile) await session.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ ...point, id: 0 }] });
+                else { await page.mouse.move(point.x, point.y); await page.mouse.down(); }
+                try { await update(mode); }
+                finally {
+                    if (mobile) await session.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+                    else await page.mouse.up();
+                }
+            } finally { await session?.detach(); }
+        };
+        try {
+            await expect(book).toBeVisible();
+            const current = book.getByRole('button', { name: 'Open current quest', exact: true });
+            await pressAcrossUpdate(current, 'progress');
+            await expect(page.locator('[data-journal-view="story"]')).toHaveAttribute('aria-pressed', 'true');
+            expect(await page.evaluate(() => window.__loreContinuity.navigations)).toBe(1);
+
+            await activate(page.getByRole('button', { name: 'Lore Book', exact: true }));
+            const beforeKeyboard = await page.evaluate(() => window.__loreContinuity.navigations);
+            await current.focus(); await page.keyboard.down('Space');
+            try { await update('progress'); } finally { await page.keyboard.up('Space'); }
+            await expect(page.locator('[data-journal-view="story"]')).toHaveAttribute('aria-pressed', 'true');
+            expect(await page.evaluate(() => window.__loreContinuity.navigations)).toBe(beforeKeyboard + 1);
+
+            await activate(page.getByRole('button', { name: 'Lore Book', exact: true }));
+            const memory = book.locator('[data-memory-id="chapter:chronicle_01_bell_below"]');
+            await pressAcrossUpdate(memory, 'memory');
+            await expect(book.locator('article').getByRole('heading', { name: 'The Bell Below', exact: true })).toBeFocused();
+            expect(await page.evaluate(() => window.__loreContinuity.ui.quest.loreBook.selected)).toBe('chapter:chronicle_01_bell_below');
+            expect(await page.evaluate(() => window.__loreContinuity.actions)).toEqual([]);
+            expect(await page.evaluate(() => JSON.stringify(window.__loreContinuity.quests) === window.__loreContinuity.saved)).toBe(true);
+            expect(failures, failures.join('\n')).toEqual([]);
+        } finally { await page.evaluate(() => window.__loreContinuity?.ui.dispose()); }
+    });
+});

@@ -338,8 +338,10 @@ export class QuestUI {
     }
 
     clearElement(element, retainedChild = null) {
-        if (retainedChild && retainedChild.parentNode === element) {
-            for (const child of [...element.childNodes]) if (child !== retainedChild) child.remove();
+        const retained = new Set((Array.isArray(retainedChild) ? retainedChild : [retainedChild])
+            .filter(child => child && child.parentNode === element));
+        if (retained.size) {
+            for (const child of [...element.childNodes]) if (!retained.has(child)) child.remove();
         } else element?.replaceChildren();
     }
 
@@ -1297,6 +1299,7 @@ export class QuestUI {
     }
 
     updateJournal(quests) {
+        if (this.disposed) return;
         this.acknowledgeRewardClaim(quests);
         const rewardFocus = this.journalList?.contains(document.activeElement) ? { item: document.activeElement.dataset.rewardItem, claim: document.activeElement.dataset.rewardClaim } : null;
         const loreFocus = this.loreBook?.element.contains(document.activeElement) ? document.activeElement : null;
@@ -1355,13 +1358,14 @@ export class QuestUI {
         // A mouse press belongs to a continuously attached element. Reusing
         // its node after detaching the whole section still cancels the click.
         const rewardRoot = this.rewardChoiceRoots?.get('journal');
-        this.clearElement(this.journalList, rewardRoot);
+        const retainedLore = this.loreBook?.identity === this.journalIdentity ? this.loreBook?.element : null;
+        this.clearElement(this.journalList, [rewardRoot, retainedLore]);
         const appendPrelude = node => this.journalList.insertBefore(node,
             rewardRoot?.parentNode === this.journalList ? rewardRoot : null);
         if (this.journalList) {
             this.loreBook ||= new LoreBook(this);
             this.loreBook.update(quests, this.journalIdentity);
-            appendPrelude(this.loreBook.element);
+            if (this.loreBook.element.parentNode !== this.journalList) appendPrelude(this.loreBook.element);
         }
         const resetSnapshot = this.getDailyResetSnapshot();
 
