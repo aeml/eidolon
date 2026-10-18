@@ -56,6 +56,70 @@ function redactText(buffer) {
     return changed;
 }
 
+// JSON reporter bodies are base64, unlike the HTML reporter's text bodies.
+// Decode only that known report shape; keep binary images outside text claims.
+function sanitizeJSONReporter(buffer, nesting = 0, budget = { bytes: 0, bodies: 0, nodes: 0 }) {
+    budget.bytes += buffer.length;
+    if (nesting > 8 || budget.bytes > 64 * 1024 * 1024) throw new Error('JSON report exceeds the evidence bound');
+    let report;
+    try { report = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(buffer)); }
+    catch { throw new Error('Invalid JSON report data'); }
+    if (!report || !Array.isArray(report.suites) || !report.config || !report.stats)
+        return { buffer, changed: redactText(buffer) };
+    let changed = false;
+    const encodedBodies = new WeakSet();
+    const text = value => {
+        const bytes = Buffer.from(value);
+        if (!redactText(bytes)) return value;
+        changed = true; return bytes.toString('utf8');
+    };
+    function visit(value, depth = 0) {
+        if (++budget.nodes > 1_000_000 || depth > 128) throw new Error('JSON report structure exceeds the evidence bound');
+        if (typeof value === 'string') return text(value);
+        if (!value || typeof value !== 'object') return value;
+        if (Array.isArray(value.attachments)) for (const attachment of value.attachments) {
+            if (!attachment || attachment.body === undefined || attachment.body === null) continue;
+            if (++budget.bodies > 4096 || typeof attachment.body !== 'string' || typeof attachment.contentType !== 'string')
+                throw new Error('Invalid inline report attachment');
+            const mime = attachment.contentType.split(';')[0].trim().toLowerCase();
+            encodedBodies.add(attachment);
+            if (['image/png', 'image/jpeg', 'image/webp', 'image/gif'].includes(mime)) continue;
+            const json = /^application\/(?:[a-z0-9.+-]+\+)?json$/.test(mime);
+            if (!json && !mime.startsWith('text/')) throw new Error('Unsupported inline report attachment');
+            const encoded = attachment.body;
+            if (encoded.length > Math.ceil(16 * 1024 * 1024 / 3) * 4 ||
+                encoded.length % 4 !== 0 || !/^[A-Za-z0-9+/]*={0,2}$/.test(encoded))
+                throw new Error('Invalid or oversized inline report encoding');
+            const decoded = Buffer.from(encoded, 'base64');
+            if (decoded.toString('base64') !== encoded || decoded.length > 16 * 1024 * 1024)
+                throw new Error('Invalid or oversized inline report encoding');
+            try { new TextDecoder('utf-8', { fatal: true }).decode(decoded); }
+            catch { throw new Error('Invalid inline report text'); }
+            let result;
+            if (json) {
+                result = sanitizeJSONReporter(decoded, nesting + 1, budget);
+                try { JSON.parse(result.buffer.toString('utf8')); }
+                catch { throw new Error('Invalid sanitized inline JSON'); }
+            } else {
+                budget.bytes += decoded.length;
+                if (budget.bytes > 64 * 1024 * 1024) throw new Error('JSON report exceeds the evidence bound');
+                result = { buffer: decoded, changed: redactText(decoded) };
+            }
+            if (result.changed) { attachment.body = result.buffer.toString('base64'); changed = true; }
+        }
+        for (const [key, member] of Object.entries(value)) {
+            const sanitized = key === 'body' && encodedBodies.has(value) ? member : visit(member, depth + 1);
+            const name = Array.isArray(value) ? key : text(key);
+            if (name !== key && Object.hasOwn(value, name)) throw new Error('Redacted JSON report key collision');
+            if (name !== key) delete value[key];
+            Object.defineProperty(value, name, { value: sanitized, enumerable: true, writable: true, configurable: true });
+        }
+        return value;
+    }
+    visit(report);
+    return { buffer: changed ? Buffer.from(JSON.stringify(report)) : buffer, changed };
+}
+
 // The pinned Playwright HTML reporter embeds a ZIP of JSON data in a template.
 // Read entries serially and rebuild the archive, preserving valid compression
 // and checksums. Never edit compressed bytes or extract paths onto the disk.
@@ -125,6 +189,7 @@ async function sanitizeContents(file, buffer) {
     if (/\.(zip|webm|mp4)$/i.test(file) || buffer.subarray(0, 4).equals(Buffer.from([0x50, 0x4b, 3, 4]))) {
         throw new Error('Unexpected recording/archive in credentialed evidence; automatic recordings must stay disabled');
     }
+    if (/\.json$/i.test(file)) return sanitizeJSONReporter(buffer);
     if (!/\.html?$/i.test(file)) return { buffer, changed: redactText(buffer) };
     const source = buffer.toString('utf8');
     const pattern = /(<template\b[^>]*\bid=["']playwrightReportBase64["'][^>]*>data:application\/zip;base64,)([A-Za-z0-9+/=\r\n]*)(<\/template>)/g;

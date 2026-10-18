@@ -83,6 +83,60 @@ function sanitize(root, credentials = true) {
     });
 }
 
+function jsonReport(attachments) {
+    return { config: {}, suites: [{ specs: [{ tests: [{ results: [{ status: 'failed', attachments }] }] }] }],
+        errors: [], stats: { expected: 0, unexpected: 1 } };
+}
+
+function inlineJSON(value) {
+    return { name: 'observations', contentType: 'application/json', body: Buffer.from(JSON.stringify(value)).toString('base64') };
+}
+
+test.each([false, true])('JSON reporter inline bodies are decoded and sanitized (nested report: %s)', nested => {
+    const root = fixture(), secret = { detail: password, position: { x: -112, z: 130 } };
+    const attachment = inlineJSON(nested ? jsonReport([inlineJSON(secret)]) : secret);
+    const original = JSON.stringify(jsonReport([attachment]));
+    expect(original).not.toContain(password);
+    const filename = path.join(root, 'results.json'); writeFileSync(filename, original);
+    const result = sanitize(root); expect(result.status).toBe(0);
+    const sanitized = readFileSync(filename, 'utf8'), parsed = JSON.parse(sanitized);
+    expect(parsed.stats.unexpected).toBe(1);
+    let body = JSON.parse(Buffer.from(parsed.suites[0].specs[0].tests[0].results[0].attachments[0].body, 'base64').toString());
+    if (nested) body = JSON.parse(Buffer.from(body.suites[0].specs[0].tests[0].results[0].attachments[0].body, 'base64').toString());
+    expect(body.detail).toMatch(/^\*+$/); expect(body.position).toEqual(secret.position);
+    expect(result.stdout + result.stderr).not.toContain(password);
+    expect(sanitize(root).status).toBe(0); expect(readFileSync(filename, 'utf8')).toBe(sanitized);
+});
+
+test('inline text is sanitized while binary image bodies remain byte-identical', () => {
+    const root = fixture(), image = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]).toString('base64');
+    const value = jsonReport([
+        { name: 'text', contentType: 'text/plain; charset=utf-8', body: Buffer.from(`before ${password} after`).toString('base64') },
+        { name: 'image', contentType: 'image/png', body: image }
+    ]);
+    const filename = path.join(root, 'results.json'); writeFileSync(filename, JSON.stringify(value));
+    expect(sanitize(root).status).toBe(0);
+    const attachments = JSON.parse(readFileSync(filename, 'utf8')).suites[0].specs[0].tests[0].results[0].attachments;
+    expect(Buffer.from(attachments[0].body, 'base64').toString()).toMatch(/^before \*+ after$/);
+    expect(attachments[1].body).toBe(image);
+});
+
+test.each(['bad-base64', 'noncanonical-base64', 'invalid-utf8', 'invalid-json', 'oversized', 'deep-report', 'archive'])('unsafe inline %s evidence fails without editing the report or exposing credentials', kind => {
+    const root = fixture(); let attachment = inlineJSON({ detail: password });
+    if (kind === 'bad-base64') attachment.body = 'invalid!';
+    if (kind === 'noncanonical-base64') attachment.body = 'e31=';
+    if (kind === 'invalid-utf8') attachment.body = Buffer.from([255, 0]).toString('base64');
+    if (kind === 'invalid-json') attachment.body = Buffer.from(`{"detail":${password}`).toString('base64');
+    if (kind === 'oversized') { attachment.contentType = 'text/plain'; attachment.body = Buffer.alloc(17 * 1024 * 1024, 'x').toString('base64'); }
+    if (kind === 'deep-report') for (let i = 0; i < 9; i++) attachment = inlineJSON(jsonReport([attachment]));
+    if (kind === 'archive') attachment.contentType = 'application/zip';
+    const filename = path.join(root, 'results.json'), original = JSON.stringify(jsonReport([attachment]));
+    writeFileSync(filename, original);
+    const result = sanitize(root); expect(result.status).not.toBe(0);
+    expect(readFileSync(filename, 'utf8')).toBe(original);
+    expect(result.stdout + result.stderr).not.toContain(password);
+});
+
 test('compressed and JSON-escaped credentials are removed without corrupting the report ZIP', async () => {
     const root = fixture();
     const original = report(await archive('report.json', JSON.stringify({ status: 'failed', detail: password })));
@@ -172,14 +226,15 @@ test('credentialed HTML keeps passed and failed steps and attachments without du
         export default { ...config, testDir: ${JSON.stringify(root)}, testMatch: 'case.spec.mjs',
             webServer: undefined, retries: 0, workers: 1,
             outputDir: ${JSON.stringify(path.join(root, 'results'))},
-            reporter: [['html', { ...html, outputFolder: ${JSON.stringify(reportDir)} }]] };
+            reporter: [['html', { ...html, outputFolder: ${JSON.stringify(reportDir)} }],
+                ['json', { outputFile: ${JSON.stringify(path.join(reportDir, 'results.json'))} }]] };
     `);
     writeFileSync(path.join(root, 'case.spec.mjs'), `
         import { test, expect } from ${JSON.stringify(testURL)};
         test('passed evidence', async ({}, info) => {
             for (let index = 0; index < 1000; index++)
                 await test.step('poll ' + index, async () => expect(index).toBeLessThan(1000));
-            await info.attach('result', { body: JSON.stringify({ reward: 'claimed' }), contentType: 'application/json' });
+            await info.attach('result', { body: JSON.stringify({ reward: 'claimed', detail: process.env.EIDOLON_E2E_PASSWORD }), contentType: 'application/json' });
         });
         test('failed evidence', async () => {
             await test.step('failing step', async () => { throw new Error(process.env.EIDOLON_E2E_PASSWORD); });
@@ -203,6 +258,10 @@ test('credentialed HTML keeps passed and failed steps and attachments without du
     expect(passed.status).toBe('passed');
     expect(failed.status).toBe('failed');
     expect(passed.attachments.find(entry => entry.name === 'result').body).toContain('claimed');
+    const json = JSON.parse(readFileSync(path.join(reportDir, 'results.json'), 'utf8'));
+    const resultBody = json.suites[0].specs.find(spec => spec.title === 'passed evidence').tests[0].results[0]
+        .attachments.find(attachment => attachment.name === 'result').body;
+    expect(JSON.parse(Buffer.from(resultBody, 'base64').toString())).toEqual({ reward: 'claimed', detail: expect.stringMatching(/^\*+$/) });
     expect(failed.errors).toHaveLength(1);
     expect(failed.errors[0].message).not.toContain(password);
     let count = 0;
