@@ -19,6 +19,8 @@ const nonAuthoredMigrationBridges = new Set([
 // exceptions. All four supplied classes are integrated; retired unrelated
 // actor/environment assets stay banned by the original zero-payload limits.
 const stagedCharacterExports = new Set([
+    'assets/archetypes/Fighter/meshy-pilot-high.glb',
+    'assets/archetypes/Fighter/meshy-pilot-low.glb',
     'assets/npcs/ilyra/ilyra-archmage.glb',
     'assets/archetypes/Fighter/fighter.glb',
     'assets/archetypes/Fighter/fighter-runtime-high.glb',
@@ -91,6 +93,10 @@ const MAX_LEGACY_MODEL_COUNT = 0;
 const MAX_LEGACY_MODEL_BYTES = 0;
 const MAX_RUNTIME_GLB_TOKENS = 1;
 const auditedAssetReferenceAllowlist = new Map([
+    // Owner-approved October 18 Meshy pilot: exactly two hashed derivatives.
+    ['src/art/MeshyFighter.js', new Set(['./assets/archetypes/Fighter/meshy-pilot-high.glb', './assets/archetypes/Fighter/meshy-pilot-low.glb'])],
+    ['src/assets/assetManifest.js', new Set(['./assets/archetypes/Fighter/meshy-pilot-high.glb', './assets/archetypes/Fighter/meshy-pilot-low.glb'])],
+    ['scripts/prepare-meshy-fighter.mjs', new Set(['assets/archetypes/Fighter/meshy-pilot-${quality}.glb'])],
     ['src/art/AuthoredIlyra.js', new Set(['./assets/npcs/ilyra/ilyra-archmage.glb'])],
     ['src/assets/garments.generated.js', [...garmentModels.map(model => model.file),
         ...garmentSources.map(source => source.path), ...Object.keys(GARMENT_ASSET_VERSIONS)]],

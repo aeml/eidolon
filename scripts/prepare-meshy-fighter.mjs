@@ -10,7 +10,7 @@ import sharp from 'sharp';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const source = process.argv[2];
-if (!source) throw new Error('Usage: node scripts/prepare-meshy-fighter.mjs <original Fighter-pilot.glb>');
+if (!source) throw new Error('Usage: node scripts/prepare-meshy-fighter.mjs <original-pilot>');
 const sourceHash = createHash('sha256').update(await readFile(source)).digest('hex');
 if (sourceHash !== '7d7069c066504dde217992a9990b6aa5cb2816d00497f539f46959312105251a') throw new Error('Unreviewed Meshy source');
 const names = { Hips: 'pelvis', Spine02: 'spine_01', Spine01: 'spine_02', Spine: 'spine_03', neck: 'neck_01', Head: 'head',

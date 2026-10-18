@@ -51,3 +51,9 @@ owned Docker cleanup and credential/artifact policies.
 The existing full CI and deployment gates remain required. Deployment acceptance
 requires matching public frontend/backend commit identities and a live check of
 the experimental Fighter path. Prepared source alone is not a live-tested claim.
+
+The first CI attempt (39105575312) found three unchanged asset-inventory
+assertions that omitted the new approved pilot. The correction names exactly
+the two pilot files, their runtime/import modules and cache hashes; the retired
+asset payload limits remain zero. All other 12,534 Jest checks passed in that
+attempt. The corrected source must complete its own CI and live verification.
