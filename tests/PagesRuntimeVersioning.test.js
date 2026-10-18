@@ -22,6 +22,51 @@ function parseGLTF(data) {
 }
 
 describe('Pages runtime release versioning', () => {
+    test('published project credits pin all four marked source and license links without JavaScript', () => {
+        const source = fs.readFileSync(path.join(repoRoot, 'assets/notices/index.html'), 'utf8');
+        const published = rewriteHtml(source, release);
+        expect(published).toContain(`https://github.com/aeml/eidolon/tree/${release}`);
+        for (const name of ['LICENSE', 'ASSET-LICENSE', 'NOTICE']) {
+            expect(published).toContain(`https://github.com/aeml/eidolon/blob/${release}/${name}`);
+        }
+        expect(published).not.toContain('/master');
+        expect(published).not.toContain('<script');
+        expect(published).toContain('href="../../vendor/three/LICENSE"');
+        expect(published).toContain('href="../fonts/OFL.txt"');
+    });
+
+    test('source-link republishing is idempotent and preserves historical or third-party citations', () => {
+        const next = 'ab'.repeat(20);
+        const historical = `https://github.com/aeml/eidolon/blob/${'11'.repeat(20)}/NOTICE`;
+        const source = `<a data-eidolon-project-source href="https://github.com/aeml/eidolon/tree/master">Source</a>
+            <a href="${historical}">History</a>
+            <a data-eidolon-project-source href="https://github.com/other/project/blob/master/LICENSE">Other</a>
+            <a data-eidolon-project-source href="https://github.com/aeml/eidolon/blob/master/package.json">Unmarked path</a>`;
+        const published = rewriteHtml(rewriteHtml(source, release), next);
+        expect(published).toContain(`href="https://github.com/aeml/eidolon/tree/${next}"`);
+        expect(rewriteHtml(published, next)).toBe(published);
+        expect(published).toContain(`href="${historical}"`);
+        expect(published).toContain('href="https://github.com/other/project/blob/master/LICENSE"');
+        expect(published).toContain('href="https://github.com/aeml/eidolon/blob/master/package.json"');
+    });
+
+    test('login and in-game notices links follow the build without rewriting unrelated HTML destinations', () => {
+        const source = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
+        const published = rewriteHtml(source, release);
+        expect([...published.matchAll(new RegExp(`href="assets/notices/index\\.html\\?release=${release}"`, 'g'))]).toHaveLength(2);
+        const links = '<a href="/assets/notices/index.html?lang=en&release=old#project">Credits</a><a href="assets/other/index.html">Other</a>';
+        const rewritten = rewriteHtml(links, release);
+        expect(rewritten).toContain(`href="/assets/notices/index.html?lang=en&release=${release}#project"`);
+        expect(rewritten).toContain('href="assets/other/index.html"');
+    });
+
+    test('development or dirty release labels never invent an immutable source commit', () => {
+        const source = '<a data-eidolon-project-source href="https://github.com/aeml/eidolon/tree/master">Source</a>';
+        for (const label of ['development', `${release}-dirty`, 'main', '../other']) {
+            expect(rewriteHtml(source, label)).toBe(source);
+        }
+    });
+
     test('bundles published styles in source order with versioned fonts, unchanged data URLs and no source edits', async () => {
         const root = fs.mkdtempSync(path.join(os.tmpdir(), 'eidolon-pages-styles-'));
         try {

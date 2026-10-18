@@ -40,9 +40,12 @@ The supplied class provenance and source-component notices remain alongside
 [Cleric](../archetypes/Cleric/PROVENANCE.md). Those records distinguish the
 MakeHuman source components from project-specific additions.
 
-This source record adds no license grant for Eidolon-specific designs, supplied
-equipment or derived garments. The owner's project/art licensing choice and
-the final shipped-catalog rights review remain open. Matching hashes establish
-file identity, not redistribution rights. See the
+The repository's [ASSET-LICENSE](../../ASSET-LICENSE) states the terms for
+project-authored visual assets and editable art sources; code in the generators
+uses the separate [software license](../../LICENSE). Supplied components retain
+their own notices. This source record adds no new grant or independent rights
+verification for supplied equipment or derived garments. The final
+shipped-catalog rights review remains open. Matching hashes establish file
+identity, not redistribution rights. See the
 [content provenance inventory](https://github.com/aeml/eidolon/blob/master/docs/art/CONTENT_PROVENANCE.md) for the
 broader notice scope.

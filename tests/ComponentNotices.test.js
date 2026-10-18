@@ -12,7 +12,7 @@ test('component notices are readable without JavaScript, fonts, media or account
     expect(document.documentElement.lang).toBe('en');
     expect(document.querySelector('meta[name="viewport"]').content).toContain('width=device-width');
     expect(document.querySelectorAll('main h1')).toHaveLength(1);
-    expect(document.querySelectorAll('section')).toHaveLength(3);
+    expect([...document.querySelectorAll('section')].map(section => section.getAttribute('aria-labelledby'))).toEqual(['project', 'runtime', 'typeface', 'characters']);
     expect(document.querySelectorAll('script,iframe,img,video,audio,form,link')).toHaveLength(0);
     expect(source).not.toMatch(/url\(|@import|on(?:click|load|error)\s*=/i);
     expect(Buffer.byteLength(source)).toBeLessThan(6000);
@@ -22,6 +22,14 @@ test('local notice links resolve to shipped source files or the two prepared ven
     const vendor = new Map([['vendor/three/LICENSE', 'three'], ['vendor/protobuf/LICENSE', 'protobufjs']]);
     for (const anchor of document.querySelectorAll('a')) {
         const target = new URL(anchor.href);
+        if (anchor.closest('section[aria-labelledby="project"]')) {
+            expect(target.origin).toBe('https://github.com');
+            expect(target.pathname).toMatch(/^\/aeml\/eidolon\/(?:tree\/master|blob\/master\/(?:LICENSE|ASSET-LICENSE|NOTICE))$/);
+            expect(anchor.hasAttribute('data-eidolon-project-source')).toBe(true);
+            expect(anchor.target).toBe('_blank');
+            expect(anchor.rel.split(/\s+/)).toEqual(expect.arrayContaining(['noopener', 'noreferrer']));
+            continue;
+        }
         expect(target.origin).toBe('https://example.invalid');
         expect(target.search).toBe('');
         expect(target.hash).toBe('');
@@ -34,6 +42,24 @@ test('local notice links resolve to shipped source files or the two prepared ven
     const prepare = readFileSync(path.join(root, 'scripts/prepare-client.mjs'), 'utf8');
     expect(prepare).toContain("path.join(threeSource, 'LICENSE')");
     expect(prepare).toContain("path.join(nodeModules, 'protobufjs', 'LICENSE')");
+});
+
+test('project credits retain the committed attribution and separate software/art terms', () => {
+    const project = document.querySelector('section[aria-labelledby="project"]');
+    const attribution = 'Eidolon by Robert Mendola, original developer and maintainer';
+    expect(readFileSync(path.join(root, 'NOTICE'), 'utf8')).toContain(attribution);
+    expect(project.textContent).toContain(attribution);
+    expect(project.textContent).toContain('GNU AGPL version 3 only');
+    expect(project.textContent).toContain('Eidolon Asset Share-Alike License 1.0');
+    expect(project.querySelectorAll('a')).toHaveLength(4);
+    for (const name of ['LICENSE', 'ASSET-LICENSE', 'NOTICE']) expect(existsSync(path.join(root, name))).toBe(true);
+    const game = new JSDOM(readFileSync(path.join(root, 'index.html'), 'utf8')).window.document;
+    const help = game.querySelector('#help-credits-guide');
+    expect(help.tagName).toBe('DETAILS');
+    expect(help.closest('#help-screen')).not.toBeNull();
+    expect(help.open).toBe(false);
+    expect(help.querySelector('a')?.getAttribute('href')).toBe('assets/notices/index.html');
+    expect(help.querySelector('a')?.rel.split(/\s+/)).toEqual(expect.arrayContaining(['noopener', 'noreferrer']));
 });
 
 test('all four supplied class provenance and original CC0 notices remain linked', () => {

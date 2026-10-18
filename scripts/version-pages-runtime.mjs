@@ -83,15 +83,21 @@ export function rewriteCss(source, release) {
 }
 
 export function rewriteHtml(source, release) {
+    // Only explicitly marked project links follow a new publication. Historical
+    // citations and third-party source/license references keep their own URLs.
+    if (/^[a-f0-9]{40}$/.test(release)) {
+        source = source.replace(
+            /(<a\b(?=[^>]*\bdata-eidolon-project-source(?:\s|=|>))[^>]*\bhref\s*=\s*["'])(https:\/\/github\.com\/aeml\/eidolon\/(?:tree\/(?:master|[a-f0-9]{40})|blob\/(?:master|[a-f0-9]{40})\/(?:LICENSE|ASSET-LICENSE|NOTICE)))(["'])/gi,
+            (_match, prefix, specifier, suffix) => `${prefix}${specifier.replace(/(\/(?:tree|blob)\/)(?:master|[a-f0-9]{40})(?=\/|$)/, (_ref, base) => base + release)}${suffix}`
+        );
+    }
     return source.replace(
         /(\b(?:src|href)\s*=\s*["'])([^"']+)(["'])/gi,
-        (match, prefix, specifier, suffix) => versionMatchedSpecifier(
-            prefix,
-            specifier,
-            suffix,
-            release,
-            { allowDocumentRelative: true, extensions: ['.js', '.css'] }
-        )
+        (match, prefix, specifier, suffix) => {
+            const notices = /^(?:\.\/|\/)?assets\/notices\/index\.html(?:[?#]|$)/.test(specifier);
+            return versionMatchedSpecifier(prefix, specifier, suffix, release,
+                { allowDocumentRelative: true, extensions: notices ? ['.html'] : ['.js', '.css'] });
+        }
     );
 }
 

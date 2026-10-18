@@ -2,9 +2,12 @@
 
 This inventory records supplied notices retained from the accepted Alpha1.79.2
 checkout and the current delivered runtime selection. It is not independent upstream legal verification, a complete license
-review or permission to relicense project-specific work. There is no root
-project-license file in this snapshot; the owner's project/art licensing choice
-and the final1.86/1.96 notice review remain open.
+review or permission to relicense supplied work. The repository's
+[LICENSE](../../LICENSE) and [NOTICE](../../NOTICE) identify AGPL-3.0-only for
+project-authored software, scripts and text. [ASSET-LICENSE](../../ASSET-LICENSE)
+sets the separate terms for project-authored visual/audio assets and editable
+art sources. These existing project terms do not establish rights in supplied
+inputs; the final1.86/1.96 shipped-catalog rights review remains open.
 
 | Shipped component | Supplied source/notice | Publication path and remaining scope |
 | --- | --- | --- |
