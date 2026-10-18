@@ -5,6 +5,7 @@ import { applyEquipmentVisuals, clearEquipmentVisuals } from '../art/EquipmentVi
 import { equipmentWithAppearances } from '../core/EquipmentAppearance.js';
 import { createProceduralReflectionEnvironment } from '../art/ProceduralReflectionEnvironment.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
+import { CharacterPoseControls, PREVIEW_POSES } from './CharacterPoseControls.js';
 
 const FACTORIES = Object.freeze({ Fighter: createProceduralFighter, Rogue: createProceduralRogue, Wizard: createProceduralWizard, Cleric: createProceduralCleric });
 const INITIAL_YAW = -0.28;
@@ -13,7 +14,7 @@ const INITIAL_YAW = -0.28;
 export class CharacterPreview {
     constructor(host, { createRenderer = (options) => new THREE.WebGLRenderer(options),
         loadFighter = (quality) => MeshFactory.createMeshForType('Fighter', { quality }),
-        loadCharacter = (type, quality) => MeshFactory.createMeshForType(type, { quality }) } = {}) {
+        loadCharacter = (type, quality) => MeshFactory.createMeshForType(type, { quality }), inspectPoses = false } = {}) {
         this.host = host;
         this.createRenderer = createRenderer;
         this.loadFighter = loadFighter;
@@ -24,6 +25,8 @@ export class CharacterPreview {
         this.host.dataset.previewFocus = 'character';
         this.signature = '';
         this.disposed = false;
+        this.previewPose = 'Idle'; this.previewPoseProgress = null;
+        if (inspectPoses) this.poseControls = new CharacterPoseControls(host, (state, fraction) => this.setPreviewPose(state, fraction));
         this.onClick = (event) => {
             const control = event.target.closest('[data-preview-turn]');
             if (!control || !this.host.contains(control)) return;
@@ -99,6 +102,7 @@ export class CharacterPreview {
             this.previewMixer?.stopAllAction();
             this.previewMixer?.uncacheRoot(this.model);
             this.previewMixer = null;
+            this.poseControls?.sync([], this.previewPose, 0);
             clearEquipmentVisuals(this.model);
             this.model?.userData.disposeInstance?.();
             this.model?.removeFromParent();
@@ -134,13 +138,42 @@ export class CharacterPreview {
         this.render();
     }
 
+    getPoseClip(state) {
+        if (!this.model) return null;
+        const data = this.model.userData;
+        // The delivered dual-wield bank owns explicit left-hand strikes.
+        // Inspection keeps the selected stroke stable while scrubbing, rather
+        // than consuming the live actor resolver's alternating-attack state.
+        const name = state === 'OffhandAttack'
+            ? data.dualWield && `${data.offhandWeaponProfile}_Attack_Left`
+            : data.resolveAnimationName?.(state, { currentName: state }) || state;
+        return data.animations?.find(clip => clip.name === name && clip.duration > 0 && Number.isFinite(clip.duration));
+    }
+
     syncWeaponPose() {
         if (!this.previewMixer) return;
-        const name = this.model.userData.resolveAnimationName?.('Idle') || 'Idle';
-        const idle = this.model.userData.animations?.find(clip => clip.name === name);
-        if (!idle) return;
+        const choices = this.poseControls ? PREVIEW_POSES.filter(([state]) => this.getPoseClip(state)) : [];
+        if (this.poseControls && !choices.some(([state]) => state === this.previewPose)) {
+            this.previewPose = 'Idle'; this.previewPoseProgress = null;
+        }
+        const clip = this.getPoseClip(this.previewPose);
+        if (!clip) { this.poseControls?.sync([], 'Idle', 0); return; }
         this.previewMixer.stopAllAction(); this.model.userData.resetRestPose?.();
-        this.previewMixer.clipAction(idle).reset().play(); this.previewMixer.setTime(.25);
+        const action = this.previewMixer.clipAction(clip).reset();
+        if (this.poseControls) { action.setLoop(THREE.LoopOnce, 1); action.clampWhenFinished = true; }
+        action.play();
+        const time = this.previewPoseProgress === null ? Math.min(.25, clip.duration) : this.previewPoseProgress * clip.duration;
+        this.previewMixer.setTime(time);
+        this.poseControls?.sync(choices, this.previewPose, time / clip.duration);
+    }
+
+    setPreviewPose(state, fraction) {
+        if (this.disposed || !this.previewMixer || !this.poseControls || !Number.isFinite(fraction) ||
+            !PREVIEW_POSES.some(([value]) => value === state)) return false;
+        if (!this.getPoseClip(state)) return false;
+        this.previewPose = state; this.previewPoseProgress = Math.max(0, Math.min(1, fraction));
+        this.focusDirection = null; this.focusUp = null;
+        this.syncWeaponPose(); this.render(); return true;
     }
 
     renderAfterEquipment(model, request) {
@@ -162,7 +195,7 @@ export class CharacterPreview {
         if (this.focusSlot) this.model.traverse(part => {
             if (!focused && part.userData.authoredEquipment && part.userData.slot === this.focusSlot) focused = part;
         });
-        const bounds = new THREE.Box3().setFromObject(focused || this.model);
+        const bounds = new THREE.Box3().setFromObject(focused || this.model, Boolean(this.poseControls));
         const center = bounds.getCenter(new THREE.Vector3());
         const size = bounds.getSize(new THREE.Vector3());
         const aspect = stage.clientWidth / stage.clientHeight;
@@ -206,6 +239,7 @@ export class CharacterPreview {
         this.previewMixer?.stopAllAction();
         this.previewMixer?.uncacheRoot(this.model);
         this.observer?.disconnect();
+        this.poseControls?.dispose();
         this.host.removeEventListener('click', this.onClick);
         clearEquipmentVisuals(this.model);
         this.model?.userData.disposeInstance?.();

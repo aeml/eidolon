@@ -10,7 +10,7 @@ const node = (tag, text, className) => {
 };
 
 export class CosmeticVendorUI {
-    constructor({ getPlayer, send, createPreview = host => new CharacterPreview(host) }) {
+    constructor({ getPlayer, send, createPreview = host => new CharacterPreview(host, { inspectPoses: true }) }) {
         this.getPlayer = getPlayer; this.send = send; this.createPreview = createPreview;
         this.disposed = false; this.ready = false; this.catalogueEpoch = 0;
         this.catalogue = []; this.collection = {};

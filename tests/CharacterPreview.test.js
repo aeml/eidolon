@@ -4,7 +4,7 @@ import { CharacterPreview } from '../src/ui/CharacterPreview.js';
 import { BASE_ITEMS, RARITY } from '../src/core/ItemSystem.js';
 import { EQUIPMENT_RENDER_SLOTS } from '../src/art/ProceduralEquipment.js';
 
-function fixture() {
+function fixture(inspectPoses = false) {
     document.body.innerHTML = `<div id="preview">
         <div class="character-preview-label"></div>
         <div class="character-preview-stage"><span class="character-preview-status"></span></div>
@@ -18,7 +18,7 @@ function fixture() {
     const createRenderer = jest.fn(() => renderer);
     const loadFighter = jest.fn(() => new Promise(() => {}));
     const loadCharacter = jest.fn(() => new Promise(() => {}));
-    const preview = new CharacterPreview(host, { createRenderer, loadFighter, loadCharacter });
+    const preview = new CharacterPreview(host, { createRenderer, loadFighter, loadCharacter, inspectPoses });
     const player = { subType: 'Fighter', level: 7, equipment: { head: { id: 'helm', name: 'Iron Helm', rarity: 'COMMON' } } };
     return { host, stage, renderer, createRenderer, preview, player, loadFighter, loadCharacter };
 }
@@ -210,4 +210,90 @@ test('an inspection render error cannot leave the character or other equipment h
     expect(() => preview.setFocusSlot('offHand')).toThrow('lost render context');
     expect(body.visible).toBe(true); expect(hidden.visible).toBe(false); expect(face.visible).toBe(true);
     preview.dispose();
+});
+
+async function poseFixture() {
+    const f = fixture(true);
+    const { createProceduralFighter } = await import('../src/art/ProceduralHumanoid.js');
+    const model = createProceduralFighter();
+    model.userData.animations = [['Idle', .1], ['Run', 1], ['Attack', .5], ['Sword_Attack', .4], ['Dagger_Attack', -.6]]
+        .map(([name, end]) => new THREE.AnimationClip(name, 1, [
+            new THREE.NumberKeyframeTrack('Rig_Head.rotation[z]', [0, 1], [0, end])
+        ]));
+    f.preview.loadFighter = () => Promise.resolve(model);
+    f.preview.update(f.player); await f.preview.modelReady; await model.userData.equipmentReady;
+    await Promise.resolve();
+    return { ...f, model, head: model.getObjectByName('Rig_Head') };
+}
+
+test('store pose controls stay disabled until loading, without changing ordinary character portraits', async () => {
+    const f = fixture(true);
+    expect(f.preview.poseControls.pose.disabled).toBe(true);
+    expect(f.preview.poseControls.moment.disabled).toBe(true);
+    expect(f.host.nextElementSibling).toBe(f.preview.poseControls.root);
+    f.preview.dispose(); expect(document.querySelector('.character-pose-controls')).toBeNull();
+    const ordinary = fixture(); ordinary.preview.update(ordinary.player);
+    expect(ordinary.preview.poseControls).toBeUndefined();
+    expect(document.querySelector('.character-pose-controls')).toBeNull(); ordinary.preview.dispose();
+});
+
+test('pose input samples actual tracks and clamps the end without wrapping to the start', async () => {
+    const f = await poseFixture();
+    try {
+        const controls = f.preview.poseControls;
+        expect([...controls.pose.options].map(option => option.value)).toEqual(['Idle', 'Run', 'Attack']);
+        controls.pose.value = 'Run'; controls.pose.dispatchEvent(new Event('change'));
+        expect(f.head.rotation.z).toBeCloseTo(.35);
+        controls.moment.value = '100'; controls.moment.dispatchEvent(new Event('input'));
+        expect(f.head.rotation.z).toBeCloseTo(1);
+        expect(controls.moment.getAttribute('aria-valuetext')).toBe('100 percent of Running');
+        controls.moment.value = '0'; controls.moment.dispatchEvent(new Event('input'));
+        expect(f.head.rotation.z).toBeCloseTo(0);
+        expect(f.preview.setPreviewPose('missing', .5)).toBe(false);
+        expect(f.preview.setPreviewPose('Run', NaN)).toBe(false);
+        const count = f.renderer.render.mock.calls.length;
+        f.preview.update({ ...f.player, health: 20, xp: 800 });
+        expect(f.renderer.render).toHaveBeenCalledTimes(count);
+    } finally { f.preview.dispose(); }
+});
+
+test('garment or equipment refresh preserves the chosen pose and moment without touching real gear', async () => {
+    const f = await poseFixture();
+    try {
+        f.preview.setPreviewPose('Attack', .8);
+        f.player.equipment.head.potency = 4;
+        const actual = JSON.stringify(f.player.equipment);
+        f.preview.update(f.player); await f.model.userData.equipmentReady;
+        expect(f.preview.previewPose).toBe('Attack'); expect(f.head.rotation.z).toBeCloseTo(.4);
+        expect(f.preview.poseControls.moment.value).toBe('80');
+        expect(JSON.stringify(f.player.equipment)).toBe(actual);
+    } finally { f.preview.dispose(); }
+});
+
+test('dual wield inspection keeps its main-hand stroke stable and exposes the delivered offhand strike', async () => {
+    const f = await poseFixture();
+    try {
+        const { prepareWeaponMotions } = await import('../src/art/AuthoredWeaponMotions.js');
+        prepareWeaponMotions(f.model, f.model);
+        Object.assign(f.model.userData, { weaponProfile: 'Sword', offhandWeaponProfile: 'Dagger', dualWield: true });
+        f.preview.syncWeaponPose();
+        f.preview.setPreviewPose('Attack', .2); expect(f.head.rotation.z).toBeCloseTo(.08);
+        f.preview.setPreviewPose('Attack', .8); expect(f.head.rotation.z).toBeCloseTo(.32);
+        expect(f.preview.getPoseClip('Attack').name).toBe('Sword_Attack');
+        expect(f.preview.setPreviewPose('OffhandAttack', .5)).toBe(true);
+        expect(f.head.rotation.z).toBeCloseTo(-.3);
+        expect(f.preview.poseControls.pose.value).toBe('OffhandAttack');
+    } finally { f.preview.dispose(); }
+});
+
+test('disposed pose controls cannot redraw or be revived by late model loads', async () => {
+    const f = fixture(true); let resolve;
+    f.preview.loadFighter = () => new Promise(done => { resolve = done; });
+    const { createProceduralFighter } = await import('../src/art/ProceduralHumanoid.js');
+    f.preview.update(f.player); await Promise.resolve();
+    const controls = f.preview.poseControls, renders = f.renderer.render.mock.calls.length;
+    f.preview.dispose(); resolve(createProceduralFighter()); await f.preview.modelReady;
+    controls.pose.dispatchEvent(new Event('change')); controls.moment.dispatchEvent(new Event('input'));
+    expect(document.querySelector('.character-pose-controls')).toBeNull();
+    expect(f.renderer.render).toHaveBeenCalledTimes(renders); expect(f.preview.setPreviewPose('Run', .5)).toBe(false);
 });

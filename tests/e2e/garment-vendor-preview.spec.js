@@ -34,10 +34,48 @@ for (const outfit of Object.values(GARMENT_MODELS.outfits)) for (const quality o
     await expect(dialog.getByRole('button', { name: 'Apply complete outfit', exact: true })).toBeEnabled();
     await dialog.locator('.character-preview-stage').scrollIntoViewIfNeeded();
     await dialog.screenshot({ path: testInfo.outputPath('selected-garment-preview.png') });
+    await page.evaluate(async () => {
+        const preview = window.__garmentPreview.ui.preview;
+        await preview.modelReady; await preview.model.userData.equipmentReady;
+    });
+    const pose = dialog.getByRole('combobox', { name: 'Preview pose', exact: true });
+    const moment = dialog.getByRole('slider', { name: 'Moment in pose', exact: true });
+    await expect(pose).toBeEnabled(); await expect(moment).toBeEnabled();
+    const choices = await pose.locator('option').evaluateAll(options => options.map(option => option.value));
+    expect(choices).toEqual(expect.arrayContaining(['Idle', 'Run', 'Attack']));
+    const sentBeforePoses = await page.evaluate(() => window.__garmentPreview.sent.length);
+    const poseSamples = [];
+    for (const state of choices) {
+        await pose.selectOption(state);
+        const sample = await page.evaluate(() => {
+            const preview = window.__garmentPreview.ui.preview, model = preview.model;
+            const clip = preview.getPoseClip(preview.previewPose), action = preview.previewMixer.existingAction(clip);
+            return { state: preview.previewPose, clip: clip.name, fraction: action.time / clip.duration,
+                garment: model.userData.equipmentVisualGarment, missing: model.userData.equipmentVisualMissing || [],
+                fallback: model.userData.assetFallback || false,
+                cameraFinite: preview.camera.projectionMatrix.elements.every(Number.isFinite) };
+        });
+        expect(sample.fraction).toBeCloseTo(.35, 5); expect(sample.garment).toBe(outfit.id);
+        expect(sample.missing).toEqual([]); expect(sample.fallback).toBe(false); expect(sample.cameraFinite).toBe(true);
+        poseSamples.push(sample);
+        if (state === 'Attack') await dialog.locator('.character-preview-stage').screenshot({ path: testInfo.outputPath('attack-pose-preview.png') });
+    }
+    await pose.selectOption('Run'); await moment.focus(); await moment.press('End');
+    await expect(moment).toHaveValue('100');
+    expect(await page.evaluate(() => {
+        const p = window.__garmentPreview.ui.preview, clip = p.getPoseClip('Run');
+        return p.previewMixer.existingAction(clip).time / clip.duration;
+    })).toBeCloseTo(1, 5);
+    await moment.press('Home'); await expect(moment).toHaveValue('0');
+    expect(await page.evaluate(() => window.__garmentPreview.sent.length)).toBe(sentBeforePoses);
+    expect(await page.evaluate(() => JSON.stringify(window.__garmentPreview.player.equipment) === window.__garmentPreview.original && Object.keys(window.__garmentPreview.player.appearances).length === 0)).toBe(true);
+    await testInfo.attach('garment-preview-poses', { body: JSON.stringify({ choices, poseSamples,
+        scope: 'Existing real class/garment preview, static on-demand poses and keyboard endpoints; no live combat, full garment-motion or physical-device acceptance.' }), contentType: 'application/json' });
     await dialog.getByRole('button', { name: 'Show equipped look', exact: true }).click();
     await expect.poll(() => page.evaluate(() => window.__garmentPreview.ui.preview.model.userData.equipmentVisualGarment)).toBe('');
     await dialog.getByRole('button', { name: 'Show selected cosmetic', exact: true }).click();
     await expect.poll(() => page.evaluate(() => window.__garmentPreview.ui.preview.model.userData.equipmentVisualGarment)).toBe(outfit.id);
+    await expect(pose).toHaveValue('Run'); await expect(moment).toHaveValue('0');
     await dialog.getByRole('button', { name: 'Rotate preview right', exact: true }).click();
     await dialog.getByRole('button', { name: 'Apply complete outfit', exact: true }).click();
     expect(await page.evaluate(() => window.__garmentPreview.sent.at(-1))).toEqual({ type: 'select_appearance', payload: { slot: 'outfit', key: `${outfit.name}|Common` } });
