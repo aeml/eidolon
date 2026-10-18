@@ -50,3 +50,11 @@ The changed source now requires the original complete six-case actual gameplay
 gate; its prior failure and all original thresholds remain. This component does
 not close whole-game performance, art/device/readiness or beta gates, and is not
 yet deployed. Pending81 must be accepted before another release is published.
+
+A subsequent isolated82 assembly selects this exact scalar-only component with
+the independently qualified outfitter pose UI, on current master17a5862ec.
+Its live shadow code is byte-identical to2a061903a; no movement-audio code is
+selected there. This does not accept the failed audio integration, close its
+full six-case gate, or waive the original game/input/performance findings.
+The assembly remains unpublished pending81 acceptance and its own required
+qualification/deployment. See [82 preparation](2026-10-18-release1-79-82-preparation.md).
