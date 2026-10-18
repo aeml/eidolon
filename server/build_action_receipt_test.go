@@ -131,7 +131,16 @@ func TestBuildRequestValidationAndLegacyCompatibility(t *testing.T) {
 	world = game.NewWorld(nil)
 	client := newAutoStatusClient("legacy-build")
 	player := newAutoStatusPlayer(client.playerID, "Builder", "available")
+	player.Level = 9
 	world.AddEntity(player)
+	client.handleMessage(Message{Type: MsgSelectBranch, Payload: json.RawMessage(`{"branch":"B"}`)})
+	if player.SelectedBranch != "" {
+		t.Fatal("legacy request bypassed level-10 specialization unlock")
+	}
+	if messages := drainSentMessages(client.send); len(messages) != 1 || messages[0].Type != MsgError || !strings.Contains(string(messages[0].Payload), "level 10") {
+		t.Fatalf("locked legacy request must explain specialization unlock: %+v", messages)
+	}
+	player.Level = 10
 	for _, payload := range []string{`{"branch":"B","requestId":42}`, `{"branch":"B","requestId":"` + strings.Repeat("x", 65) + `"}`} {
 		client.handleMessage(Message{Type: MsgSelectBranch, Payload: json.RawMessage(payload)})
 		if player.SelectedBranch != "" {
