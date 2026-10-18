@@ -254,6 +254,8 @@ for (const actorClass of Object.keys(classLooks)) test(`${actorClass}: purchased
             await vendor.locator(`[data-offer-id="${id}"]`).click();
             if (index === 0) {
                 await expect.poll(() => page.evaluate(() => window.game.player.state)).toBe('IDLE');
+                await expect.poll(() => page.evaluate(() => window.game.player.currentAnimationName)).toMatch(/^(Idle|CombatIdle)$/);
+                await expect.poll(() => page.evaluate(() => window.game.uiManager.cosmeticVendor.preview?.model?.userData.equipmentVisualGarment)).toBe(outfitID);
                 const before = await renderedAppearance(page);
                 const ownAnimation = await page.evaluate(() => window.game.player.currentAnimationName);
                 expect(['Idle', 'CombatIdle']).toContain(ownAnimation);
