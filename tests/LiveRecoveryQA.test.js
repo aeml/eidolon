@@ -33,7 +33,7 @@ test('ordinary resource socket matrix runs in the existing disposable CI step', 
     expect(step).toBeDefined();
     expect(step).toContain("EIDOLON_RESOURCE_DISPOSABLE_DATABASE: '1'");
     expect(step).toContain('EIDOLON_RESOURCE_MONGO_URI: mongodb://127.0.0.1:27017');
-    expect(step).toContain('EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run \'^TestResourceActualTokenResumeAndDeathRecovery$\' -count=1 -timeout=45s');
+    expect(step).toContain('EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run \'^TestResourceActualTokenResumeAndDeathRecovery$\' -count=1 -timeout=57s');
     expect(step).not.toMatch(/continue-on-error:|if:/);
 });
 
