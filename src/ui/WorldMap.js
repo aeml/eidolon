@@ -223,6 +223,9 @@ export class WorldMap {
         this.disposed = true;
         if (this.resizeFrame) cancelAnimationFrame(this.resizeFrame);
         this.listeners.abort();
+        this.navigation?.dispose();
+        for (const button of this.controls?.querySelectorAll('button') || []) button.onclick = null;
+        this.controls?.remove();
         this.resizeObserver?.disconnect();
         this.cartography?.dispose();
         if (this.container.__eidolonWorldMap === this) delete this.container.__eidolonWorldMap;
@@ -230,6 +233,7 @@ export class WorldMap {
 
     setupInteraction() {
         const controls = document.createElement('div');
+        this.controls = controls;
         controls.className = 'world-map-controls';
         controls.setAttribute('aria-label', 'Map controls');
         controls.innerHTML = `<button type="button" data-map-zoom="out" aria-label="Zoom map out">−</button>
@@ -240,10 +244,12 @@ export class WorldMap {
         this.container.querySelector('.world-map-controls')?.remove();
         this.container.append(controls);
         this.zoomLabel = controls.querySelector('output');
-        controls.querySelector('[data-map-zoom="out"]').onclick = () => this.setMapScale(this.scale / 1.25);
-        controls.querySelector('[data-map-zoom="in"]').onclick = () => this.setMapScale(this.scale * 1.25);
-        controls.querySelector('[data-map-center]').onclick = () => this.centerOnPlayer();
-        for (const event of ['pointerdown', 'touchstart', 'click']) controls.addEventListener(event, e => e.stopPropagation());
+        controls.querySelector('[data-map-zoom="out"]').onclick = () => { if (!this.disposed) this.setMapScale(this.scale / 1.25); };
+        controls.querySelector('[data-map-zoom="in"]').onclick = () => { if (!this.disposed) this.setMapScale(this.scale * 1.25); };
+        controls.querySelector('[data-map-center]').onclick = () => { if (!this.disposed) this.centerOnPlayer(); };
+        for (const event of ['pointerdown', 'mousedown', 'touchstart', 'touchmove', 'touchend', 'click', 'wheel']) {
+            this.listen(controls, event, e => e.stopPropagation());
+        }
         this.listen(this.canvas, 'wheel', (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -541,13 +547,11 @@ export class WorldMap {
     // Main draw
     // -----------------------------------------------------------------------
 
-    draw(player) {
-        if (!player || !this.ctx) return;
-        const ctx = this.ctx;
-        this.navigation?.refresh();
-        const w = this.canvas.width;
-        const h = this.canvas.height;
+    // Settle a new area's initial fit before an explicit destination overrides
+    // it. The next draw must not replace the player's newly selected quest view.
+    syncAtlasSpace(player = this.gameEngine?.player) {
         const space = atlasSpaceKey(this.gameEngine), interior = getInstanceAtlas(this.gameEngine);
+        if (!player) return interior;
         if (this.lastAtlasSpace !== space || (interior?.bounds && !this.lastAtlasHadBounds)) {
             if (interior?.bounds) this.fitAtlasBounds(interior.bounds);
             else {
@@ -558,6 +562,16 @@ export class WorldMap {
             this.lastAtlasSpace = space;
         }
         this.lastAtlasHadBounds = Boolean(interior?.bounds);
+        return interior;
+    }
+
+    draw(player) {
+        if (!player || !this.ctx) return;
+        const ctx = this.ctx;
+        this.navigation?.refresh();
+        const w = this.canvas.width;
+        const h = this.canvas.height;
+        const interior = this.syncAtlasSpace(player);
         const cx = w / 2;
         const cy = h / 2;
         const w2s = this._makeWorldToScreen(cx, cy);

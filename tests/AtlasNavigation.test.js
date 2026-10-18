@@ -19,6 +19,92 @@ function questFocusFixture() {
     return { ge, map, navigation: new AtlasNavigation(map) };
 }
 
+test('unrelated progress keeps location and waypoint press targets attached and focused', () => {
+    const { ge, navigation } = questFocusFixture();
+    const forge = navigation.locations.find(location => location.id === 'forge');
+    const find = () => [...navigation.results.querySelectorAll('button')].find(button => button.textContent.endsWith(forge.name));
+    const location = find(); navigation.select(forge.id);
+    const waypoint = navigation.detail.querySelector('button'); waypoint.focus();
+    const observer = new MutationObserver(() => {}); observer.observe(navigation.root, { childList: true, subtree: true });
+    ge.player.level++; navigation.refresh();
+    const removed = observer.takeRecords().flatMap(record => [...record.removedNodes]); observer.disconnect();
+    expect(find()).toBe(location); expect(navigation.detail.querySelector('button')).toBe(waypoint);
+    expect(document.activeElement).toBe(waypoint);
+    expect(removed.some(node => node === waypoint || node.contains?.(waypoint) || node === location || node.contains?.(location))).toBe(false);
+    waypoint.click(); expect(navigation.waypoint).toMatchObject({ id: forge.id, x: forge.x, z: forge.z });
+});
+
+test('changing the selected target retires captured waypoint actions', () => {
+    const { navigation } = questFocusFixture();
+    navigation.select('forge'); const button = navigation.detail.querySelector('button'), pending = button.onclick;
+    navigation.select('stash'); pending.call(button, new MouseEvent('click'));
+    expect(navigation.waypoint).toBeNull();
+    navigation.detail.querySelector('button').click(); expect(navigation.waypoint.id).toBe('stash');
+});
+
+test.each(['disposed', 'replaced', 'instance'])('%s map controls cannot apply a pending old waypoint', mode => {
+    const { ge, map, navigation } = questFocusFixture(); map.navigation = navigation;
+    navigation.select('forge'); const button = navigation.detail.querySelector('button'), pending = button.onclick;
+    if (mode === 'disposed') map.disposed = true;
+    else if (mode === 'replaced') map.navigation = new AtlasNavigation(map);
+    else { ge.currentInstanceId = 'another-instance'; ge.currentInstanceType = 'dungeon'; }
+    pending.call(button, new MouseEvent('click')); expect(navigation.waypoint).toBeNull();
+});
+
+test('a filtered-out location cannot apply a captured selection callback', () => {
+    const { map, navigation } = questFocusFixture();
+    const name = navigation.locations.find(location => location.id === 'forge').name;
+    const button = [...navigation.results.querySelectorAll('button')].find(button => button.textContent.endsWith(name));
+    const pending = button.onclick;
+    navigation.query = 'stash'; navigation.refresh();
+    const before = [map.cameraX, map.cameraZ, map.scale];
+    pending.call(button, new MouseEvent('click'));
+    expect(navigation.selectedId).toBeNull(); expect([map.cameraX, map.cameraZ, map.scale]).toEqual(before);
+});
+
+test('a stale canvas marker cannot select overworld coordinates after an instance change', () => {
+    const { ge, map, navigation } = questFocusFixture();
+    const before = [map.cameraX, map.cameraZ, map.scale];
+    ge.currentInstanceId = 'another-instance'; ge.currentInstanceType = 'dungeon';
+    navigation.select('forge');
+    expect(navigation.selectedId).toBeNull(); expect([map.cameraX, map.cameraZ, map.scale]).toEqual(before);
+    navigation.refresh(); expect(navigation.locations.some(location => location.id === 'forge')).toBe(false);
+});
+
+test('a retained event waypoint uses the latest published position without moving the player', () => {
+    const { ge, navigation } = questFocusFixture();
+    ge.publicEvents = { data: { id: 'ward-1', phase: 'announced', site: {
+        title: 'Roadward', x: 40, z: -20, realm: 'earth', level: 30
+    } } };
+    navigation.refresh(); navigation.select('public-event-ward-1');
+    const button = navigation.detail.querySelector('button');
+    ge.publicEvents.data.site = { ...ge.publicEvents.data.site, x: 50, z: -30 };
+    navigation.refresh(); expect(navigation.detail.querySelector('button')).toBe(button);
+    const before = JSON.stringify(ge);
+    button.click(); expect(navigation.waypoint).toMatchObject({ id: 'public-event-ward-1', x: 50, z: -30 });
+    expect(JSON.stringify(ge)).toBe(before);
+});
+
+test('returning from old quest focus cannot restore an overworld viewport into a new instance', () => {
+    const { ge, map, navigation } = questFocusFixture(); navigation.focusQuest('daily_skeleton');
+    ge.currentInstanceId = 'dark-realm'; ge.currentInstanceType = 'dark_realm';
+    map.cameraX = 700; map.cameraZ = 300; map.scale = .25;
+    navigation.clearQuestFocus();
+    expect([map.cameraX, map.cameraZ, map.scale]).toEqual([700, 300, .25]);
+    expect(navigation.questFocusId).toBeNull();
+});
+
+test('direct quest focus after a scene change retires the old context before choosing the new target', () => {
+    const { ge, navigation } = questFocusFixture(); navigation.focusQuest('daily_skeleton');
+    ge.currentInstanceId = 'dark-realm'; ge.currentInstanceType = 'dark_realm';
+    ge.player.quests = [{ id: 'chronicle_dark_shore_collectors', title: 'Shore collectors', category: 'chronicle',
+        accepted: true, count: 3, maxCount: 3 }];
+    expect(navigation.focusQuest('chronicle_dark_shore_collectors')).toBe(true);
+    expect(navigation.questFocusId).toBe('chronicle_dark_shore_collectors');
+    expect(navigation.locations.find(location => location.id === navigation.selectedId))
+        .toMatchObject({ questId: 'chronicle_dark_shore_collectors', category: 'quests', instanceId: 'dark-realm' });
+});
+
 test('direct quest focus shows a target and restores atlas search and filters without changing tracked quests', () => {
     const { ge, map, navigation } = questFocusFixture();
     navigation.search.value = navigation.query = 'forge'; navigation.filters.delete('quests'); navigation.refresh(true);

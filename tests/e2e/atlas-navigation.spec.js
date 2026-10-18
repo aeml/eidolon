@@ -208,3 +208,102 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
         expect(failures, failures.join('\n')).toEqual([]);
     });
 }
+
+for (const [width, mobile] of [[1280, false], [390, true]]) test.describe(`Atlas input continuity ${width}`, () => {
+    test.use({ viewport: { width, height: 844 }, hasTouch: mobile, isMobile: mobile });
+    test('held location and waypoint presses survive unrelated progress', async ({ page, baseURL }) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        await page.route('**/src/main.js*', route => route.fulfill({ contentType: 'text/javascript', body: '' }));
+        await page.goto('/', { waitUntil: 'networkidle' });
+        // Prepared map state, not campaign progression or instance admission.
+        await page.evaluate(async mobile => {
+            const { WorldMap } = await import('/src/ui/WorldMap.js');
+            document.getElementById('start-screen').style.display = 'none';
+            document.body.classList.toggle('mobile-mode', mobile);
+            const engine = { isMobile: mobile, currentInstanceId: '', currentInstanceType: '',
+                player: { id: 'atlas-continuity-reader', level: 30, position: { x: 0, z: 200 }, rotation: { x: 0, y: 0, z: 0, w: 1 } },
+                uiManager: { partyData: { members: [] } }, chunkManager: { getActiveEntities: () => [] },
+                inputManager: { clearInputState() {} } };
+            const map = new WorldMap(engine); engine.worldMap = map; map.toggle();
+            const state = window.__atlasContinuity = { engine, map, selections: 0, waypointWrites: 0, worldEvents: [] };
+            const select = map.navigation.select.bind(map.navigation);
+            map.navigation.select = (...args) => { state.selections++; return select(...args); };
+            let waypoint = map.navigation.waypoint;
+            Object.defineProperty(map.navigation, 'waypoint', { get: () => waypoint,
+                set: value => { state.waypointWrites++; waypoint = value; } });
+            state.listeners = new AbortController();
+            for (const type of ['pointerdown', 'mousedown', 'click', 'touchstart', 'touchend', 'keydown']) {
+                window.addEventListener(type, () => state.worldEvents.push(type), { signal: state.listeners.signal });
+            }
+        }, mobile);
+        const update = () => page.evaluate(async () => {
+            const state = window.__atlasContinuity;
+            state.engine.player.level++; state.map.navigation.refresh();
+            state.savedPlayer = JSON.stringify(state.engine.player);
+            await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        });
+        const pressAcrossUpdate = async target => {
+            await target.scrollIntoViewIfNeeded();
+            const box = await target.boundingBox(); expect(box).toBeTruthy();
+            const point = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+            const session = mobile ? await page.context().newCDPSession(page) : null;
+            try {
+                if (mobile) await session.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ ...point, id: 0 }] });
+                else { await page.mouse.move(point.x, point.y); await page.mouse.down(); }
+                try { await update(); }
+                finally {
+                    if (mobile) await session.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+                    else await page.mouse.up();
+                }
+            } finally { await session?.detach(); }
+        };
+        try {
+            const search = page.getByRole('searchbox', { name: 'Find a known location' });
+            await search.fill('forge');
+            await pressAcrossUpdate(page.getByRole('button', { name: '■ Forge', exact: true }));
+            await expect(page.getByRole('heading', { name: 'Forge', exact: true })).toBeFocused();
+            expect(await page.evaluate(() => window.__atlasContinuity.selections)).toBe(1);
+            const mark = page.getByRole('button', { name: 'Set personal waypoint', exact: true });
+            await pressAcrossUpdate(mark);
+            expect(await page.evaluate(() => window.__atlasContinuity.waypointWrites)).toBe(1);
+            expect(await page.evaluate(() => window.__atlasContinuity.map.navigation.waypoint)).toMatchObject({ id: 'forge', x: -28, z: 218 });
+
+            const clear = page.getByRole('button', { name: 'Clear waypoint', exact: true });
+            if (mobile) await clear.tap(); else await clear.click();
+            const beforeKeyboard = await page.evaluate(() => window.__atlasContinuity.waypointWrites);
+            await mark.focus(); await page.keyboard.down('Space');
+            try { await update(); } finally { await page.keyboard.up('Space'); }
+            expect(await page.evaluate(() => window.__atlasContinuity.waypointWrites)).toBe(beforeKeyboard + 1);
+            expect(await page.evaluate(() => JSON.stringify(window.__atlasContinuity.engine.player) === window.__atlasContinuity.savedPlayer)).toBe(true);
+            expect(await page.evaluate(() => window.__atlasContinuity.worldEvents)).toEqual([]);
+
+            const retired = await page.evaluate(async () => {
+                const { darkRealmFixture } = await import('/tests/darkRealmFixture.js');
+                const state = window.__atlasContinuity, nav = state.map.navigation;
+                const old = nav.detail.querySelector('button'), pending = old.onclick, writes = state.waypointWrites;
+                nav.select('stash'); pending.call(old, new MouseEvent('click'));
+                const selectionRetired = state.waypointWrites === writes;
+                state.engine.player.quests = [{ id: 'daily_skeleton', title: 'Road patrol', type: 'KILL', target: 'Skeleton',
+                    accepted: true, count: 0, maxCount: 10 }];
+                nav.focusQuest('daily_skeleton');
+                state.engine.currentInstanceId = 'dark-realm'; state.engine.currentInstanceType = 'dark_realm';
+                state.engine.currentDungeonLayout = darkRealmFixture();
+                state.engine.player.level = 100; state.engine.player.position = { x: 40000, z: 40800 };
+                state.engine.player.quests = [{ id: 'chronicle_dark_shore_collectors', title: 'Shore collectors', category: 'chronicle',
+                    accepted: true, completed: false, count: 3, maxCount: 3 }];
+                const saved = JSON.stringify(state.engine.player);
+                const focused = nav.focusQuest('chronicle_dark_shore_collectors');
+                const selected = nav.locations.find(location => location.id === nav.selectedId);
+                const contextRetained = focused && nav.questFocusId === 'chronicle_dark_shore_collectors'
+                    && selected?.instanceId === 'dark-realm' && state.map.cameraX === selected.x && state.map.cameraZ === selected.z
+                    && !state.map.autoFitAtlas && JSON.stringify(state.engine.player) === saved;
+                const latest = nav.detail.querySelector('button'), afterDispose = latest.onclick;
+                state.map.dispose(); afterDispose.call(latest, new MouseEvent('click'));
+                return { selectionRetired, contextRetained, disposalRetired: state.waypointWrites === writes,
+                    controlsRemoved: !nav.root.isConnected && document.querySelectorAll('.atlas-waypoint-row').length === 0 };
+            });
+            expect(retired).toEqual({ selectionRetired: true, contextRetained: true, disposalRetired: true, controlsRemoved: true });
+            expect(failures, failures.join('\n')).toEqual([]);
+        } finally { await page.evaluate(() => { window.__atlasContinuity?.listeners.abort(); window.__atlasContinuity?.map.dispose(); }); }
+    });
+});
