@@ -360,7 +360,12 @@ func New(uri string) (*DB, error) {
 		guildRuns:                  db.Collection("guild_dungeon_runs"),
 	}
 	database.characters = newMongoCharacterRepository(database.users)
-	if err := database.RunMigrations(ctx); err != nil {
+	// Connection discovery/ping must not consume schema preparation's budget.
+	// Keep startup bounded within the deployment readiness window while allowing
+	// a cold database to create the complete catalogue of indexes and fences.
+	migrationCtx, migrationCancel := context.WithTimeout(context.Background(), 45*time.Second)
+	defer migrationCancel()
+	if err := database.RunMigrations(migrationCtx); err != nil {
 		_ = client.Disconnect(context.Background())
 		return nil, err
 	}
