@@ -167,6 +167,7 @@ for (const [index, characterClass] of ['Fighter', 'Cleric', 'Rogue', 'Wizard'].e
         expect(accounts[index]?.characterClass).toBe(characterClass);
         const failures = collectBrowserFailures(page, baseURL);
         const identity = await enterPreparedCharacter(page, accounts[index], 'high');
+        let beforeReload = { samples: [], casts: [], timings: {} }, lowIdentity;
         expect(identity.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
         expect(identity.items).toBe(14);
         await jumpTo(page, -74, 130, 'up');
@@ -175,10 +176,29 @@ for (const [index, characterClass] of ['Fighter', 'Cleric', 'Rogue', 'Wizard'].e
         if (index === 0) {
             await zoomThroughWheel(page, 10);
             await page.screenshot({ path: testInfo.outputPath('Fighter-high-close-roof.png') });
+            beforeReload = await page.evaluate(() => {
+                const o = window.__gameplayInteractions; o.restore();
+                return { samples: o.samples, casts: o.casts, timings: o.timings, authority: o.authority };
+            });
             await page.keyboard.press('Escape'); await page.locator('#btn-settings').click();
+            let prompt = '';
+            page.once('dialog', async dialog => { prompt = dialog.message(); await dialog.dismiss(); });
             await page.locator('#graphics-quality').selectOption('low');
+            expect(prompt).toContain('need a reload');
             await page.locator('#btn-close-settings-header').click(); await page.locator('#btn-resume').click();
-            await expect.poll(() => page.evaluate(() => window.game.player.mesh.userData.authoredQuality)).toBe('low');
+            await expect.poll(() => page.evaluate(() => window.game.renderSystem.graphicsQuality)).toBe('low');
+            // Supported Settings deliberately retains owned actors until reload.
+            // Ordinary navigation/login must restore the saved pitched roof.
+            lowIdentity = await enterPreparedCharacter(page, accounts[index], 'low');
+            expect(lowIdentity.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
+            await expect.poll(() => page.evaluate(before => {
+                const player = window.game.player;
+                return player.supportSurface === before.supportSurface &&
+                    Math.hypot(player.position.x - before.x, player.position.z - before.z) < .1 &&
+                    Math.abs(player.position.y - before.y) < .03;
+            }, beforeReload.authority)).toBe(true);
+            await page.evaluate(() => { window.__gameplayInteractions.phase = 'roof-walk'; });
+            await zoomThroughWheel(page, 10);
             expect(await page.evaluate(() => window.game.player.mesh.userData.equipmentVisualItemCount)).toBe(14);
             await page.screenshot({ path: testInfo.outputPath('Fighter-low-close-roof.png') });
             await zoomThroughWheel(page, 30);
@@ -211,6 +231,9 @@ for (const [index, characterClass] of ['Fighter', 'Cleric', 'Rogue', 'Wizard'].e
             const o = window.__gameplayInteractions; o.restore();
             return { samples: o.samples, casts: o.casts, authority: o.authority, timings: o.timings };
         });
+        observations.samples = [...beforeReload.samples, ...observations.samples];
+        observations.casts = [...beforeReload.casts, ...observations.casts];
+        observations.timings = { ...beforeReload.timings, ...observations.timings };
         for (const phase of ['up', 'return-up', 'down']) {
             const moving = observations.samples.filter(s => s.phase === phase && s.jump && s.progress > .05 && s.progress < .95);
             expect(moving.length, `${phase} must contain genuine moving native frames`).toBeGreaterThanOrEqual(10);
@@ -225,7 +248,7 @@ for (const [index, characterClass] of ['Fighter', 'Cleric', 'Rogue', 'Wizard'].e
         const falling = observations.samples.filter(s => s.phase === 'edge' && !s.floor && s.y > .2);
         expect(falling.length).toBeGreaterThanOrEqual(5);
         expect(falling.some(s => s.meshY < 6)).toBe(true);
-        await testInfo.attach('roof-input-observations', { body: JSON.stringify({ identity, ...observations,
+        await testInfo.attach('roof-input-observations', { body: JSON.stringify({ identity, lowIdentity, ...observations,
             scope: 'Prepared saved14slot character, actual password login/input/replication/native draws. No performance, natural progression, stress or physical-device claim.' }), contentType: 'application/json' });
         expect(failures, failures.join('\n')).toEqual([]);
     });
@@ -306,6 +329,7 @@ test('Earth boundary draws timber, iron and lanterns in High/Low without legacy 
     const high = await capture();
     await page.screenshot({ path: testInfo.outputPath('earth-timber-fence-high.png') });
     await page.keyboard.press('Escape'); await page.locator('#btn-settings').click();
+    page.once('dialog', dialog => dialog.dismiss());
     await page.locator('#graphics-quality').selectOption('low');
     await page.locator('#btn-close-settings-header').click(); await page.locator('#btn-resume').click();
     await expect.poll(() => page.evaluate(() => window.game.renderSystem.graphicsQuality)).toBe('low');
