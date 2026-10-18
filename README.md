@@ -495,13 +495,16 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.80`, **prepared; deployment acceptance pending**.
+Current source version: `Alpha 1.79.80`, **live; release verification passed**.
+All ten jobs passed in [CI 39106396060](https://github.com/aeml/eidolon/actions/runs/39106396060).
+Public client/server identities match deployed source `f5401eb714d52055ce2fda52091a540109da6197`;
+both pilot model hashes and native-GPU public rendering were verified.
 The experimental Meshy Fighter is available through `?fighterModel=meshy`, with
 High/Low browser exports, six generated/base motions, existing equipment
 attachment and skill gestures. Use a Fighter character; omit the query to return
 to the current appearance. Shoulder deformation and grips remain under review.
 
-Alpha 1.79.79 is prepared with specialization guidance, saved quest equipment
+The preceding 1.79.79 content includes specialization guidance, saved quest equipment
 choices, distinct room-purpose masonry and ruined
 ambush piers across the five dungeon themes. Treasure vaults, shrine chapels,
 broken ambush galleries, sentry courts and parallel passage aisles replace five

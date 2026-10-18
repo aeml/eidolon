@@ -63,3 +63,23 @@ generated reaction on its next frame. The pilot now retains that clip for its
 bounded reaction window, then returns to idle. Browser coverage advances the
 actual Actor update through both phases; movement/attack selection remains free
 to take over. This correction supersedes the queued intermediate source.
+
+## Live acceptance — October 18, 2026
+
+All ten jobs passed in [CI 39106396060](https://github.com/aeml/eidolon/actions/runs/39106396060).
+The frontend release manifest and backend health endpoint both report
+`Alpha 1.79.80`, commit `f5401eb714d52055ce2fda52091a540109da6197`;
+backend status is `ok` and database readiness is `ready`.
+
+Both public GLBs match their complete SHA-256 hashes and exact byte sizes in the
+pilot manifest. The public play link was independently checked with system
+Chrome on the AMD Vulkan renderer. High/Low skin independence, equipment,
+eleven available base/gesture poses, hit retention/recovery, unchanged actor
+position, and pool reuse passed without browser exceptions or asset HTTP errors.
+The public fixture pins its entry modules to the deployed release, matching the
+published modules' versioned sibling imports.
+
+The pipeline additionally passed its live account/persistence, movement,
+regional and Verdant dungeon, town recovery, and rest-state routes. This accepts
+the opt-in alpha deployment; the shoulder/hand/fitting art caveats above remain.
+Documentation acceptance commits do not change the deployed runtime identity.
