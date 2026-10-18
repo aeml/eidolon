@@ -218,8 +218,11 @@ func TestGameplayActualRoofSnapshotRestoresPlayableCustody(t *testing.T) {
 	if err != nil || pickupErr != nil || character == nil || pickup == nil || pickup.State != database.GroundItemComplete ||
 		pickup.Generation != 2 || pickup.GroundPayload() != "" || !database.GroundItemCharacterReceiptMatches(character, pickup.GroundItemOperation) ||
 		!pickup.AvailableAt.Equal(sourceRecord.AvailableAt) || !pickup.ExpiresAt.Equal(sourceRecord.ExpiresAt) ||
-		character.Gold != saved.Gold || character.EP != saved.EP {
-		t.Fatal("restored ordinary pickup changed wallets, lifetime or durable completion", err, pickupErr)
+		character.Gold != saved.Gold || character.EP != saved.EP || character.Class != saved.Class ||
+		character.Level != saved.Level || character.XP != saved.XP || character.ProgressionVersion != saved.ProgressionVersion ||
+		!reflect.DeepEqual(character.Stats, saved.Stats) || !reflect.DeepEqual(character.Equipment, saved.Equipment) ||
+		math.Abs(character.Y-fixture.Y) > .001 {
+		t.Fatal("restored ordinary pickup changed progression, equipment, floor, wallets, lifetime or durable completion", err, pickupErr)
 	}
 	count := 0
 	for _, owned := range character.Inventory {

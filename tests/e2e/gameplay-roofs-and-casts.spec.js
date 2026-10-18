@@ -21,11 +21,13 @@ test.afterEach(async ({ page }, testInfo) => {
     });
 });
 
-async function enterPreparedCharacter(page, account, quality) {
-    await page.addInitScript(quality => {
-        localStorage.setItem('eidolon.graphicsQuality', quality);
-        localStorage.setItem('eidolon.cameraZoom', '30');
-        localStorage.setItem('eidolon.phoneCameraZoom', '30');
+async function enterPreparedCharacter(page, account, quality, { seedPreferences = true } = {}) {
+    if (seedPreferences) await page.addInitScript(quality => {
+        // Initial preparation only. A later normal Settings/relogin flow must
+        // consume its own saved preference, never a new injected Low setting.
+        if (!localStorage.getItem('eidolon.graphicsQuality')) localStorage.setItem('eidolon.graphicsQuality', quality);
+        if (!localStorage.getItem('eidolon.cameraZoom')) localStorage.setItem('eidolon.cameraZoom', '30');
+        if (!localStorage.getItem('eidolon.phoneCameraZoom')) localStorage.setItem('eidolon.phoneCameraZoom', '30');
     }, quality);
     await openGame(page, { attempts: 1 });
     await page.locator('#auth-username').fill(account.username);
@@ -226,9 +228,10 @@ for (const [index, characterClass] of ['Fighter', 'Cleric', 'Rogue', 'Wizard'].e
             expect(prompt).toContain('need a reload');
             await page.locator('#btn-close-settings-header').click(); await page.locator('#btn-resume').click();
             await expect.poll(() => page.evaluate(() => window.game.renderSystem.graphicsQuality)).toBe('low');
+            expect(await page.evaluate(() => localStorage.getItem('eidolon.graphicsQuality'))).toBe('low');
             // Supported Settings deliberately retains owned actors until reload.
             // Ordinary navigation/login must restore the saved pitched roof.
-            lowIdentity = await enterPreparedCharacter(page, accounts[index], 'low');
+            lowIdentity = await enterPreparedCharacter(page, accounts[index], 'low', { seedPreferences: false });
             expect(lowIdentity.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
             await expect.poll(() => page.evaluate(before => {
                 const player = window.game.player;

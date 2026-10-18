@@ -195,6 +195,14 @@ retention, RPO/RTO or operator handoff. API41 and native42 supersede the unexecu
 API39/native40 controls and require seven actual API passes before native input
 qualification. Active self-hosted CI still owns the shared GPU host.
 
+Snapshot checks also retain base progression and equipped metadata after the
+restored ordinary pickup. Final preparation compiles with an explicit opt-in
+skip. The native quality-reload fixture now seeds preferences only on first
+entry, requires Settings to store Low, and reloads without injecting another
+Low setting. Earlier High/Low roof views verify those bodies/floors, but do not
+independently qualify saved quality preferences. The successor must prove that
+through the ordinary UI as well as complete the original movement/timing gates.
+
 These are CPU/race and controlled source checks, not connected visual acceptance.
 Actual mouse/touch jumps, rendered feet/slates, edges, network prediction,
 reconnect, floor changes, item custody and complete integrated gameplay remain
