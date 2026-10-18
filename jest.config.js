@@ -1,6 +1,9 @@
 export default {
     testEnvironment: 'jsdom',
     transform: {},
+    // Release accumulated VM/module contexts between completed suites.
+    // Individual tests, coverage and worker concurrency keep their policies.
+    workerIdleMemoryLimit: '768MB',
     moduleNameMapper: {
         '^three$': '<rootDir>/node_modules/three/build/three.module.js',
         '^three/addons/(.*)$': '<rootDir>/node_modules/three/examples/jsm/$1'
@@ -12,7 +15,7 @@ export default {
     testPathIgnorePatterns: [
         '<rootDir>/tests/e2e/'
     ],
-    
+
     // Coverage configuration
     collectCoverageFrom: [
         'src/**/*.js',
