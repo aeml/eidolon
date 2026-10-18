@@ -18,7 +18,7 @@ test.each(families)('%s keeps floor mineral albedo readable without brightening 
     expect(maximum).toBeLessThan(132);
 });
 
-test('every High/Low wall map retains its exact predecessor bytes', () => {
+test('every High/Low wall retains the qualified mineral maps without floor patina', () => {
     const digest = createHash('sha256');
     for (const type of families) for (const quality of ['high', 'low']) {
         const wall = createProceduralDungeonInteriorKit(type, { quality }).wallMaterial(24, 24);
@@ -26,7 +26,9 @@ test('every High/Low wall map retains its exact predecessor bytes', () => {
         expect(wall.onBeforeCompile).toBe(Material.prototype.onBeforeCompile);
         expect(wall.userData.elementalFloorPatina).toBeUndefined();
     }
-    expect(digest.digest('hex')).toBe('7c491260b14bd3a3cfd91bee9ed391354665adab33e271449175e0ffbbd120e0');
+    // Wall albedo was deliberately qualified at 2f9e3f783; the floor shader
+    // must leave those maps and the wall's ordinary shader hook intact.
+    expect(digest.digest('hex')).toBe('ae2f04d600534bece9ecb1522cb78f5aca56adcc14cbccc22da79444995727c8');
 });
 
 test('floor variants share existing maps and stay distinct from each other and Verdant', () => {

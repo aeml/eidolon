@@ -53,6 +53,15 @@ Its own CI/deployment/public-byte acceptance is still required. Separate
 movement audio, rejected renderer experiments and the unexecuted legacy-jump
 fixture are excluded. Original failure/owner/playtest/soak deferrals remain.
 
+The first82CI client job failed57cases in two suites: the gate integration
+fixture omitted the extracted evidence helper, and the floor-patina fixture
+retained the predecessor wall-albedo digest. Both reproduce locally. Corrected
+fixtures pass79cases/four suites;64independent map comparisons prove exact
+qualified wall bytes and unchanged non-albedo/floor channels. Runtime/assets/
+server/tools/versions/notes remain identical. The original failure is retained;
+the corrected source needs its own complete pipeline and public acceptance.
+[CI correction](2026-10-18-release1-79-82-ci-expectation-correction.md).
+
 ## Historical October18 Alpha1.79.79 preparation and retained failed attempts
 
 Alpha 1.79.79 is prepared with specialization guidance, saved quest equipment
