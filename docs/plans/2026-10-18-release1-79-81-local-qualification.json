@@ -1,0 +1,95 @@
+{
+  "at": "2026-10-18T09:25:35.719130+00:00",
+  "version": "Alpha 1.79.81",
+  "qualifiedRuntimeSource": "c41b1859c786593e45a432ebf1c935aa317e1dc2",
+  "published": false,
+  "api": {
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0,
+    "goRaceSeconds": 87.837,
+    "servers": 15,
+    "accounts": 9,
+    "proofFiles": 25,
+    "proofSHA256": "eec38941f59216f98e0820e939a711fd7896ff8d900dacfb176b8836d2ed1ed9",
+    "schema27ArchiveJournalRestore": true,
+    "privateArchiveBytesExcluded": true,
+    "oldSchema25And26WritersRefuse": true,
+    "cachedClientRefusalPreservesCharacterAndToken": true,
+    "cleanupComplete": true
+  },
+  "native": {
+    "passed": 6,
+    "failed": 0,
+    "skipped": 0,
+    "goRaceSeconds": 166.052,
+    "browserSeconds": 155.809,
+    "accounts": 6,
+    "proofFiles": 29,
+    "proofSHA256": "e5e68accde9853db0149ed87889d9c3d00bf879190aa8cd86ddb6ee9e303f2de",
+    "renderer": "AMD RADV RENOIR via system Chrome/Vulkan",
+    "jumpTotalMinMs": 1174.8,
+    "jumpTotalMaxMs": 1412.1,
+    "unchangedNativeDeadlineMs": 1500,
+    "serverClientMaxFlightSeconds": 1.1,
+    "HighLowSavedRoofAndPreferences": true,
+    "actualDraggedWindowDismissReopen": true,
+    "phoneQuestUseCancelRetrySavedDiary": true,
+    "EarthHighLowTimberIronAmberDraws": {
+      "high": [
+        6,
+        6,
+        6
+      ],
+      "low": [
+        3,
+        3,
+        3
+      ]
+    },
+    "EarthLegacyActorsRetired": true,
+    "EarthOwnerRetainedAcrossOverworldRecall": true,
+    "sixAccountsRetainGearBagWalletAndSavedHandoff": true,
+    "capturesReviewed": [
+      "Earth timber/iron/lantern boundary High/Low",
+      "phone cast/cancel UI",
+      "phone saved diary record"
+    ],
+    "cleanupComplete": true
+  },
+  "prequalification": {
+    "files": 14,
+    "proofSHA256": "7167c32b2bcd346c731ca2c0aae0052eaa83b3bf924781b7a33fc27b6d425e41",
+    "startupArmorChecks": 65,
+    "flightClientChecks": 122,
+    "flightGoRaceOutcomes": 28,
+    "ciPolicyChecks": 57,
+    "browserDiscoveredExactUnion": 473,
+    "versionPaginationChecks": 392,
+    "generatedContentGroups": 17,
+    "lint": true,
+    "shellSyntax": true,
+    "patchEntries": 516,
+    "lazyPages": 51,
+    "countsOverlap": true
+  },
+  "priorFullClient": {
+    "previousFlightCap": 1.2,
+    "passed": 12584,
+    "failed": 7,
+    "suitesPassed": 811,
+    "suitesFailed": 1,
+    "correctedArmorFixturesQualifiedSeparately": true,
+    "currentWholeCIPass": false
+  },
+  "remaining": [
+    "Full exact publication CI and public deployment verification",
+    "Phone cast panel overlaps portions of action controls at390px; joystick cancellation passes; retain for mobile UI polish before beta",
+    "Full roadmap final art/performance/physical-device/human campaign/operations/owner/beta gates"
+  ],
+  "deferred": [
+    "Soak/stress until features nearly complete",
+    "Human campaign and physical-device feedback"
+  ],
+  "goalComplete": false
+}

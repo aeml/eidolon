@@ -52,3 +52,22 @@ No later release may precede that deployment verification. Keep public access
 unchanged. Final art, whole-game performance, human/device feedback, production
 backup policy/owner handoff, beta approval and the remaining roadmap remain open.
 Soak/stress remain deferred.
+
+## Local candidate qualification
+
+The exact Alpha1.79.81 runtime c41b1859c passes all eight actual API cases
+(87.837s) and the complete six-case native route (166.052s Go-race; one browser,
+six sequential equipped accounts). All12up/return/down clocks meet the original
+1500ms gate; the maximum is1412.1ms. The real phone cast/cancel/retry earns and
+saves the diary, and the actual Earth timber/iron/amber meshes submit in High/Low
+without orange legacy actors. Earth ownership survives normal overworld recall.
+All six accounts retain gear, bag, wallet and their expected saved handoff.
+Owned databases/ports are cleaned and protected source inputs are unchanged.
+
+[Scoped receipt](2026-10-18-release1-79-81-local-qualification.json).
+Earth High/Low and phone cast/diary captures were reviewed. The phone cast panel
+overlaps portions of action controls; joystick cancellation remains accessible
+and passes. Retain that layout refinement for the mobile polish work before beta.
+This selects the implementation for ordinary master publication; full exact
+CI/public deployment acceptance remains required. It is not physical-device,
+whole-game performance, earned-campaign, production backup-policy or beta approval.
