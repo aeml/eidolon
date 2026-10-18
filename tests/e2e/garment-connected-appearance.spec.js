@@ -99,6 +99,13 @@ async function registerReturningFixture(page, credentials, observer = false) {
     } catch { throw new Error('Could not seed disposable returning garment fixture'); }
     await page.bringToFront();
     await loginAndEnterWorld(page, credentials);
+    if (process.env.EIDOLON_E2E_STATIC_ROOT) {
+        const resources = await page.evaluate(() => performance.getEntriesByType('resource').map(entry => entry.name));
+        expect(resources.some(url => /\/core\/GameEngine\.bundle\.js\?release=/.test(url)),
+            'Connected wardrobe must load the copied publication engine').toBe(true);
+        expect(resources.some(url => /\/core\/GameEngine\.js(?:\?|$)/.test(url)),
+            'Copied publication must not fall back to the raw development graph').toBe(false);
+    }
 }
 
 const renderedAppearance = (page, id = null) => page.evaluate(id => {

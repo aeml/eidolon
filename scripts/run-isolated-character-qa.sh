@@ -39,6 +39,7 @@ mongo_created=false
 api_created=false
 image_created=false
 party_checkpoint_attempted=false
+published_client_parent=
 
 capture_party_qa_checkpoint() {
   case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
@@ -83,6 +84,9 @@ cleanup_isolated_qa() {
   fi
   if [ "${image_created}" = true ]; then
     docker image rm "${SERVER_IMAGE}" >/dev/null 2>&1 || true
+  fi
+  if [[ -n "${published_client_parent}" ]]; then
+    rm -rf -- "${published_client_parent}"
   fi
 }
 
@@ -154,6 +158,18 @@ if [[ "${QA_NETWORK_MODE}" == private-smoke ]]; then
   api_network_args=(--network "container:${MONGO_CONTAINER}")
   api_addr="127.0.0.1:${QA_PORT}"
   mongo_bind=--bind_ip=127.0.0.1
+fi
+
+# Connected wardrobe checks exercise the same lazy bundled engine and pinned
+# imports as Pages. Preserve the raw source server for explicit module fixtures.
+prepare_garment_publication() {
+  if [[ -z "${published_client_parent}" ]]; then
+    published_client_parent="$(mktemp -d "${TMPDIR:-/tmp}/eidolon-connected-client-XXXXXXXX")"
+    node scripts/prepare-published-client.mjs "${published_client_parent}/site" "${qa_build_commit}"
+  fi
+}
+if [[ "${EIDOLON_ISOLATED_QA_ROUTE:-all}" == garment-connected-appearance ]]; then
+  prepare_garment_publication
 fi
 
 export EIDOLON_E2E_WS_URL="ws://127.0.0.1:${QA_PORT}/ws"
@@ -386,9 +402,11 @@ run_forge_socket_appearance() {
 }
 
 run_garment_connected_appearance() {
+  prepare_garment_publication
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-garment-owner" \
     EIDOLON_E2E_USERNAME_SECONDARY="${QA_USERNAME_BASE}-garment-observer" EIDOLON_E2E_PASSWORD_SECONDARY="${QA_PASSWORD}" \
     EIDOLON_E2E_SOCKET_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_SOCKET_MONGO_PORT="${mongo_port}" \
+    EIDOLON_E2E_STATIC_ROOT="${published_client_parent}/site" \
     npx playwright test --retries=0 --output=test-results/garment-connected-appearance tests/e2e/garment-connected-appearance.spec.js "$@"
 }
 

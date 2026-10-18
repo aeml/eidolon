@@ -4,7 +4,7 @@ import { createServer } from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const repoRoot = path.resolve(process.env.EIDOLON_STATIC_ROOT || path.join(path.dirname(fileURLToPath(import.meta.url)), '..'));
 const host = process.env.HOST || '127.0.0.1';
 const port = Number.parseInt(process.env.PORT || '4173', 10);
 const indexPath = path.join(repoRoot, 'index.html');

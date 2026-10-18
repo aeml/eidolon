@@ -73,6 +73,9 @@ export default defineConfig({
         env: {
             ...process.env,
             PORT: String(localServerPort),
+            ...(process.env.EIDOLON_E2E_STATIC_ROOT
+                ? { EIDOLON_STATIC_ROOT: process.env.EIDOLON_E2E_STATIC_ROOT }
+                : {}),
             ...(process.env.EIDOLON_E2E_WS_URL
                 ? { EIDOLON_STATIC_WS_URL: process.env.EIDOLON_E2E_WS_URL }
                 : {})
