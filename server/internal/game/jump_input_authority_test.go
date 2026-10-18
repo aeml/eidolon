@@ -62,7 +62,7 @@ func TestNetworkJumpKeepsServerLandingHeightAndCannotRestartMidFlight(t *testing
 }
 
 func TestNetworkJumpTravelReservesLatencyWithinOnePointFiveSeconds(t *testing.T) {
-	for _, flight := range []struct{ distance, duration float64 }{{3, .46}, {17.28, 1.28}, {20.25, 1.3}, {27, 1.3}, {54, 1.3}, {135, 1.3}} {
+	for _, flight := range []struct{ distance, duration float64 }{{3, .46}, {15.525, 1.15}, {17.28, 1.2}, {20.25, 1.2}, {27, 1.2}, {54, 1.2}, {135, 1.2}} {
 		distance, wantDuration := flight.distance, flight.duration
 		t.Run(fmt.Sprintf("distance-%g", distance), func(t *testing.T) {
 			p := newTestPlayer("distance-jumper", "Fighter")
@@ -83,7 +83,7 @@ func TestNetworkJumpTravelReservesLatencyWithinOnePointFiveSeconds(t *testing.T)
 			if math.Abs(p.X-distance*.25/wantDuration) > 1e-9 || p.State != "JUMPING" {
 				t.Fatalf("jump did not follow accepted duration: x=%g state=%s", p.X, p.State)
 			}
-			w.Update(wantDuration - .25)
+			w.Update(p.JumpDuration - .25)
 			if p.State != "IDLE" || p.X != distance || p.Z != 0 || p.Y != 0 || p.JumpProgress != 1 {
 				t.Fatalf("jump failed to land at the canonical destination: x=%g y=%g z=%g state=%s progress=%g", p.X, p.Y, p.Z, p.State, p.JumpProgress)
 			}
@@ -95,19 +95,19 @@ func TestRealtimeJumpLandsOnElapsedTimeDespiteDelayedFrames(t *testing.T) {
 	p := newTestPlayer("realtime-jumper", "Fighter")
 	p.InstanceID = "jump-clock-test"
 	w := newPvPTestWorld(p)
-	if !w.StartPlayerJumpWithContext(p.ID, 135, 999, 0, "") || p.JumpDuration != 1.3 {
-		t.Fatal("long jump did not use the 1.3-second flight cap")
+	if !w.StartPlayerJumpWithContext(p.ID, 135, 999, 0, "") || p.JumpDuration != 1.2 {
+		t.Fatal("long jump did not use the 1.2-second flight cap")
 	}
 	started := p.jumpStartedAt
 	w.UpdateRealtime(.033, started.Add(time.Second))
-	if math.Abs(p.X-135/1.3) > 1e-9 || p.State != "JUMPING" {
+	if math.Abs(p.X-135/1.2) > 1e-9 || p.State != "JUMPING" {
 		t.Fatal("delayed frame slowed the flight", p.X, p.State)
 	}
 	w.UpdateRealtime(.033, started.Add(500*time.Millisecond))
-	if math.Abs(p.X-135/1.3) > 1e-9 {
+	if math.Abs(p.X-135/1.2) > 1e-9 {
 		t.Fatal("older clock rewound the jump", p.X)
 	}
-	w.UpdateRealtime(.033, started.Add(1300*time.Millisecond))
+	w.UpdateRealtime(.033, started.Add(1200*time.Millisecond))
 	if p.X != 135 || p.Y != 0 || p.State != "IDLE" || !p.jumpStartedAt.IsZero() {
 		t.Fatal("jump did not land at the accepted point on time")
 	}

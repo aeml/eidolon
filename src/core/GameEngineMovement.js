@@ -337,9 +337,17 @@ class GameEngineMovementMethods {
         const positionTolerance = 0.35;
         const durationTolerance = 0.075;
         const existingDuration = Number.isFinite(existingJump.duration) ? existingJump.duration : duration;
+        // The immediately previous server cap was1.3s. Its acceptance of a new
+        // client's1.2s prediction is still the same flight; preserve the shown
+        // pose and takeoff animation while adopting its authoritative duration.
+        // Duration crosses the protocol as float32, including the old cap.
+        const capMigration = existingJump.hasAuthoritativeTrajectory !== true && (
+            Math.abs(existingDuration - 1.2) < 1e-6 && Math.abs(duration - 1.3) < 1e-6 ||
+            Math.abs(existingDuration - 1.3) < 1e-6 && Math.abs(duration - 1.2) < 1e-6
+        );
         return existingJump.start.distanceTo(start) <= positionTolerance
             && existingJump.end.distanceTo(end) <= positionTolerance
-            && Math.abs(existingDuration - duration) <= durationTolerance;
+            && (Math.abs(existingDuration - duration) <= durationTolerance || capMigration);
     }
 
     shouldPreservePredictedPlayerAttack(nextState) {
@@ -721,9 +729,9 @@ class GameEngineMovementMethods {
 
     getJumpTravelDuration(distance = 0) {
         const safeDistance = Math.max(0, Number(distance) || 0);
-        // Reserve 0.2 seconds of the requested 1.5-second total for command,
+        // Reserve 0.3 seconds of the requested 1.5-second total for command,
         // replication and rendering latency. Match the server flight cap.
-        return Math.max(0.46, Math.min(1.3, safeDistance / 13.5));
+        return Math.max(0.46, Math.min(1.2, safeDistance / 13.5));
     }
 
     getJumpArcHeight(distance = 0) {

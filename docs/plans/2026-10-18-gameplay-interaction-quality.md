@@ -156,6 +156,30 @@ camera-window failure and a corrected mock-camera assertion. Original jump,
 deadline, moving-frame, saved-state and authoritative cancellation requirements
 remain unchanged; the complete native successor still must pass.
 
+Native32's four preset outside-click targets were all covered by the full
+window/HUD, so no dismissal input executed. The fixture now plans one exposed
+ground target and its complete clear path before a single click. Landing clocks
+use the exact ordinary protobuf jump endpoint, retaining the original.05rendered
+arrival tolerance and.2native pointer-intent check. This avoids comparing rounded
+native clicks with an unreachable unrounded projected point. Frame observations,
+hardware identities and pre-reload data survive failures.
+
+Native34 reached the pitched-roof/Low-reload/eave/jump/recall and both real dragged
+Character/Bag outside-click/reopen checks, then failed the unchanged total-latency
+gate: the first High jump took1547.9ms. Low return-up1221.7ms and down1480.3ms are
+retained; five other cases did not run. The complete native milestone failed.
+
+Maximum client/server flight is now1.2seconds, reserving.3seconds of the owner's
+1.5second total for input, replication and rendering; short hops, distance,
+height and geometry authority retain their rules. Acceptance of the previous
+server's float32-encoded1.3second cap preserves an already shown predicted pose
+and animation. The original two reproduced pose/animation failures, their real
+float32 counterparts, and initial test-preparation failures are retained.
+The corrected source passes125client checks/four suites4.172s,26Go-race outcomes
+without skips2.314s, and changed-file lint. The earlier six-case actual API pass
+was before this latency change; exact-source API and complete native successors
+remain required. No deadline, moving-frame or saved-state requirement changed.
+
 These are CPU/race and controlled source checks, not connected visual acceptance.
 Actual mouse/touch jumps, rendered feet/slates, edges, network prediction,
 reconnect, floor changes, item custody and complete integrated gameplay remain

@@ -190,7 +190,7 @@ describe('GameEngine ctrl-click jump', () => {
         expect(shortDuration).toBe(0.46);
     });
 
-    test.each([[3, 0.46], [17.28, 1.28], [20.25, 1.3], [27, 1.3], [54, 1.3], [135, 1.3]])('jump prediction lands %s units away within %s seconds', (distance, duration) => {
+    test.each([[3, 0.46], [15.525, 1.15], [17.28, 1.2], [20.25, 1.2], [27, 1.2], [54, 1.2], [135, 1.2]])('jump prediction lands %s units away within %s seconds', (distance, duration) => {
         const engine = createEngineHarness();
         const destination = new THREE.Vector3(distance, 0, 0);
 
@@ -199,7 +199,7 @@ describe('GameEngine ctrl-click jump', () => {
         engine.updatePlayerJump(0.25);
         expect(engine.player.position.x).toBeCloseTo(distance * 0.25 / duration, 9);
         expect(engine.player.state).toBe('JUMPING');
-        engine.updatePlayerJump(duration - 0.25);
+        engine.updatePlayerJump(engine.playerJumpState.duration - 0.25);
         expect(engine.player.state).toBe('IDLE');
         expect(engine.player.position.x).toBeCloseTo(distance, 9);
         expect(engine.player.position.y).toBe(0);

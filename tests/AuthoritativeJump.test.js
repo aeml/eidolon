@@ -131,7 +131,7 @@ function createEngineHarness() {
 describe('authoritative jump flow', () => {
     const trajectoryPacket = (progress) => ({ state: 'JUMPING', x: 27 * progress, y: Math.sin(progress * Math.PI) * 10, z: 0,
         jumpStartX: 0, jumpStartY: 0, jumpStartZ: 0, jumpTargetX: 27, jumpTargetY: 0, jumpTargetZ: 0,
-        jumpDuration: 1.3, jumpHeight: 10, jumpProgress: progress });
+        jumpDuration: Math.fround(1.3), jumpHeight: 10, jumpProgress: progress });
 
     test('jump takes over a rendered movement correction without replaying it after landing', () => {
         const engine = createEngineHarness();
@@ -254,7 +254,7 @@ describe('authoritative jump flow', () => {
         expect(actor.mesh.quaternion.angleTo(actor.rotation)).toBeLessThan(.001);
     });
 
-    test.each([15, 20, 30, 60, 144])('a long jump reserves network latency with 1.3-second flight at %i rendered frames per second', fps => {
+    test.each([15, 20, 30, 60, 144])('a long jump reserves network latency with 1.2-second flight at %i rendered frames per second', fps => {
         const engine = createEngineHarness();
         engine.lastTime = 0;
         engine.accumulator = 0;
@@ -277,9 +277,9 @@ describe('authoritative jump flow', () => {
             }
             if (consoleError.mock.calls.length) throw consoleError.mock.calls[0][1];
             expect(consoleError).not.toHaveBeenCalled();
-            expect(initialState.elapsed).toBe(1.3);
-            expect(engine.lastTime).toBeGreaterThanOrEqual(1.3);
-            expect(engine.lastTime).toBeLessThanOrEqual(1.3 + 1 / fps + 1e-9);
+            expect(initialState.elapsed).toBe(1.2);
+            expect(engine.lastTime).toBeGreaterThanOrEqual(1.2);
+            expect(engine.lastTime).toBeLessThanOrEqual(1.2 + 1 / fps + 1e-9);
             expect(engine.playerJumpState).toBeNull();
             expect(engine.player.position.x).toBe(27);
             expect(movementTicks.every(dt => dt === 1 / 60)).toBe(true);
@@ -1233,8 +1233,8 @@ describe('authoritative jump flow', () => {
             end: expect.any(THREE.Vector3)
         }));
         // Metadata-free observers use the same flight cap as prediction.
-        expect(remoteEntity.jumpVisualState.duration).toBeCloseTo(1.3, 5);
-        expect(remoteEntity.jumpVisualState.progress).toBeCloseTo(0.6 / 1.3, 5);
+        expect(remoteEntity.jumpVisualState.duration).toBeCloseTo(1.2, 5);
+        expect(remoteEntity.jumpVisualState.progress).toBeCloseTo(0.6 / 1.2, 5);
         expect(remoteEntity.jumpVisualState.visualHeight).toBeGreaterThan(5);
 
         engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);
