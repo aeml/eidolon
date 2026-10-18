@@ -180,6 +180,21 @@ without skips2.314s, and changed-file lint. The earlier six-case actual API pass
 was before this latency change; exact-source API and complete native successors
 remain required. No deadline, moving-frame or saved-state requirement changed.
 
+A seventh actual-process case is prepared for schema27 snapshot recovery. It
+creates an ordinary saved roof drop, stops its writer, takes a real Mongo gzip
+archive and copies the stopped private journal, restores into a distinct fresh
+disposable Mongo, then logs in and picks up the exact restored item through the
+ordinary protocol. It checks full saved-character/ledger equality before login,
+roof floors in the first scene, exact item metadata, wallet/checkpoint custody,
+original expiry and the untouched source database. Ownership checks require the
+launcher's paired loopback containers, each capped at1CPU/512MiB. The launcher
+owns cleanup even if the test process is interrupted. Private account archives
+stay outside the workspace/upload roots. This case compiles with one explicit
+opt-in skip; it has not run, and does not qualify production backup destination,
+retention, RPO/RTO or operator handoff. API41 and native42 supersede the unexecuted
+API39/native40 controls and require seven actual API passes before native input
+qualification. Active self-hosted CI still owns the shared GPU host.
+
 These are CPU/race and controlled source checks, not connected visual acceptance.
 Actual mouse/touch jumps, rendered feet/slates, edges, network prediction,
 reconnect, floor changes, item custody and complete integrated gameplay remain
