@@ -1,6 +1,6 @@
 # Release-readiness remaining work
 
-Current checkpoint: October 17, 2026. The full goal remains active. No feature
+Current checkpoint: October 18, 2026. The full goal remains active. No feature
 freeze, final modern-art acceptance, closed beta or launch has been declared.
 
 This register records current delivery states and next actions. The preceding
@@ -22,7 +22,32 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
-## Alpha 1.79.79: prepared; deployment acceptance pending
+## Current delivery: accepted Alpha1.79.81; next polish milestone isolated
+
+Alpha1.79.80's opt-in Meshy Fighter pilot is deployed and verified; the supplied
+four-class presentation remains the default. Its fitting/art limitations remain.
+[Accepted80](2026-10-18-release1-79-80-meshy-fighter.md).
+Alpha1.79.81 now has all ten CI jobs, both deployments, live gameplay/recovery,
+matching normal-TLS identities and exact public-asset verification. Recall and
+quest objects cast for three seconds, movement cancels, outside clicks close
+windows, melee contact is enforced, nineteen town roofs support walking/jumping,
+and Earth uses the town-style fence. NPC quest acceptance/turn-in stays immediate.
+[Accepted81](2026-10-18-release1-79-81-acceptance.md).
+
+Level10specialization guidance and durable one-of-six quest equipment choices
+are delivered. The eighteen requested distinct garment designs and independent
+hand/full-body selection are delivered; final collection/all-motion/device
+approval remains open. Quest/Lore Book and remembered-window foundations are
+delivered; broader usability and visual quality remain open.
+
+The isolated82candidate adds outfitter pose/moment inspection, pinned-header
+and item-inspection corrections, qualified wall stonework and scalar shadow
+checks. It is not merged, pushed or deployed. Latest assembled native held,
+connected pose and original six-input qualification remain pending. Separate
+movement audio, rejected renderer experiments and the unexecuted legacy-jump
+fixture are excluded. Original failure/owner/playtest/soak deferrals remain.
+
+## Historical October18 Alpha1.79.79 preparation and retained failed attempts
 
 Alpha 1.79.79 is prepared with specialization guidance, saved quest equipment
 choices, distinct room-purpose masonry and ruined
