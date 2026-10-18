@@ -23,6 +23,14 @@ test('desktop hotbar preserves the hovered actor identity as well as its positio
     });
 });
 
+test.each(['hotbar', 'primary'])('loading-time %s input cannot request or predict an ability', kind => {
+    const { engine, controller, player } = fixture(); engine.inputManager.inputEnabled = false;
+    if (kind === 'hotbar') controller.performHotbarAbility(0);
+    else controller.performAbility(null, 'Shadow Lunge');
+    expect(engine.network.send).not.toHaveBeenCalled(); expect(player.useSkill).not.toHaveBeenCalled();
+    expect(controller.pendingAbilityTarget).toBeNull(); expect(controller.inputBuffer).toEqual([]);
+});
+
 test('a ground hotbar cast remains an explicit ground cast', () => {
     const { engine, controller } = fixture();
     engine.hoveredEntity = null;

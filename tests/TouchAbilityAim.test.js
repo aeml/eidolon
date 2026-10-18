@@ -40,6 +40,14 @@ describe('phone skill drag aiming', () => {
     });
     afterEach(() => input.dispose());
 
+    test('loading-time touch and native button clicks cannot start an aim or cast', () => {
+        input.setInputEnabled(false);
+        touch('touchstart', finger(), button); touch('touchend', finger()); button.click();
+        expect(aim.gesture).toBeNull(); expect(aim.preview.visible).toBe(false);
+        expect(engine.abilityController.performAbility).not.toHaveBeenCalled();
+        expect(engine.abilityController.performHotbarAbility).not.toHaveBeenCalled();
+    });
+
     test('tap casts exactly once on release, never on press or compatibility click', () => {
         const legacy = jest.fn();
         input.subscribe('onRightClick', legacy);

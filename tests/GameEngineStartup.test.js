@@ -3,6 +3,10 @@ import { jest } from '@jest/globals';
 jest.unstable_mockModule('../src/proto/state_pb.js', () => ({
     eidolon: { state: { StateEnvelope: { decode: jest.fn() } } }
 }));
+const prepareConnectedPlayerView = jest.fn(async () => true);
+jest.unstable_mockModule('../src/core/ConnectedViewPreparation.js', () => ({
+    prepareConnectedPlayerView, cancelConnectedPlayerView: jest.fn()
+}));
 const { GameEngine } = await import('../src/core/GameEngine.js');
 const { MeshFactory } = await import('../src/utils/MeshFactory.js');
 
@@ -17,7 +21,7 @@ function harness() {
         worldGenerator: { createTownBase: jest.fn(async () => {}), createEarthPerimeter: jest.fn(() => true) },
         adoptEnvironmentFences: jest.fn(),
         chunkManager: { update: jest.fn() },
-        inputManager: { subscribe: jest.fn() },
+        inputManager: { subscribe: jest.fn(), setInputEnabled: jest.fn() },
         startDeferredOverworldScenery: jest.fn(async () => true),
         connectToServer: jest.fn(), loop: jest.fn()
     });
@@ -27,6 +31,7 @@ function harness() {
 
 beforeEach(() => {
     jest.useFakeTimers();
+    prepareConnectedPlayerView.mockReset().mockResolvedValue(true);
     jest.spyOn(MeshFactory, 'preloadAllModels').mockResolvedValue({ failures: [] });
 });
 afterEach(() => {
@@ -57,6 +62,9 @@ test('ready startup keeps required assets and controls, without a fabricated sil
     expect(progress.mock.calls.some(([, text]) => text.includes('silicon'))).toBe(false);
     expect(engine.connectToServer).toHaveBeenCalledTimes(1);
     expect(engine.loop).toHaveBeenCalledWith(0);
+    expect(prepareConnectedPlayerView).toHaveBeenCalledWith(engine);
+    expect(engine.connectToServer.mock.invocationCallOrder[0]).toBeLessThan(prepareConnectedPlayerView.mock.invocationCallOrder[0]);
+    expect(engine.inputManager.setInputEnabled.mock.calls).toEqual([[false], [true]]);
 });
 
 test('initial renderer work keeps the loading stage active before controls and server entry', async () => {
@@ -142,10 +150,46 @@ test.each(['town', 'structures'])('the compatible generator path also stops afte
     expect(engine.loop).not.toHaveBeenCalled();
 });
 
-test('a session cancelled by the ready callback cannot send a stale join', async () => {
+test('a session cancelled by the pre-join callback cannot send a stale join', async () => {
     const engine = harness();
-    const task = engine.loadGame(value => { if (value === 100) engine.isDestroyed = true; });
+    const task = engine.loadGame(value => { if (value === 99) engine.isDestroyed = true; });
     await jest.runAllTimersAsync(); await task;
     expect(engine.connectToServer).not.toHaveBeenCalled();
     expect(engine.loop).not.toHaveBeenCalled();
+});
+
+test('connected appearance preparation holds Ready and controls until completion', async () => {
+    const engine = harness(), progress = jest.fn(); let complete;
+    prepareConnectedPlayerView.mockReturnValue(new Promise(resolve => { complete = resolve; }));
+    const task = engine.loadGame(progress); await jest.runAllTimersAsync();
+    expect(progress.mock.calls.at(-1)).toEqual([99, 'Preparing your character...']);
+    expect(engine.inputManager.setInputEnabled.mock.calls).toEqual([[false]]);
+    expect(engine.connectToServer).toHaveBeenCalledTimes(1); expect(engine.loop).toHaveBeenCalledWith(0);
+    complete(true); await task;
+    expect(progress).toHaveBeenLastCalledWith(100, 'Ready!');
+    expect(engine.inputManager.setInputEnabled.mock.calls).toEqual([[false], [true]]);
+});
+
+test('a fresh load cannot borrow a previous authoritative player-state marker', async () => {
+    const engine = harness(); engine._initialPlayerStateReceived = true;
+    engine.connectToServer.mockImplementation(() => expect(engine._initialPlayerStateReceived).toBe(false));
+    const task = engine.loadGame(); await jest.runAllTimersAsync(); await task;
+    expect(engine.connectToServer).toHaveBeenCalledTimes(1);
+});
+
+test('cancelled connected appearance never re-enables controls or reports Ready', async () => {
+    const engine = harness(), progress = jest.fn(); let complete;
+    prepareConnectedPlayerView.mockReturnValue(new Promise(resolve => { complete = resolve; }));
+    const task = engine.loadGame(progress); await jest.runAllTimersAsync();
+    engine.isDestroyed = true; complete(false); await task;
+    expect(progress.mock.calls.some(([value]) => value === 100)).toBe(false);
+    expect(engine.inputManager.setInputEnabled.mock.calls).toEqual([[false]]);
+});
+
+test('an interrupted connected view cannot silently report successful startup', async () => {
+    const engine = harness(), progress = jest.fn(); prepareConnectedPlayerView.mockResolvedValue(false);
+    const task = engine.loadGame(progress), rejected = expect(task).rejects.toThrow('character view was interrupted');
+    await jest.runAllTimersAsync(); await rejected;
+    expect(progress.mock.calls.some(([value]) => value === 100)).toBe(false);
+    expect(engine.inputManager.setInputEnabled.mock.calls).toEqual([[false]]);
 });

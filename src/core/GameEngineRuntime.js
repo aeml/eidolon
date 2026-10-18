@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { cancelConnectedPlayerView } from './ConnectedViewPreparation.js';
 import { getProjectileImpactRadius } from '../skills/abilityRadii.js';
 import { Actor } from '../entities/Actor.js';
 import { DungeonNPC } from '../entities/DungeonNPC.js';
@@ -109,6 +110,7 @@ class GameEngineRuntimeMethods {
         if (this.isDestroyed) return;
         console.log("GameEngine: Destroying instance...");
         this.isDestroyed = true;
+        cancelConnectedPlayerView(this);
         for (const timer of this.pendingAttackTimers || []) clearTimeout(timer);
         this.pendingAttackTimers?.clear();
         this.network?.destroy?.();

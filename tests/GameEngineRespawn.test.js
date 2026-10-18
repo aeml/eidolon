@@ -17,6 +17,21 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => {
 const { GameEngine } = await import('../src/core/GameEngine.js');
 const { getTownRoofField } = await import('../src/core/TownRoofs.js');
 
+test('connected-entry readiness requires a matching local snapshot after its equipment is applied', () => {
+    const engine = createEngineHarness();
+    engine.currentInstanceId = 'current-dungeon'; engine.currentInstanceType = 'crypt';
+    engine._initialPlayerStateReceived = false;
+    engine.handleServerMessage({ type: 'state', payload: {} });
+    expect(engine._firstStateReceived).toBe(true); expect(engine._initialPlayerStateReceived).toBe(false);
+    const actor = { id: 'player-1', instanceId: 'old-dungeon', state: 'IDLE', health: 100, x: 0, y: 0, z: 0, equipment: {} };
+    engine.handleServerMessage({ type: 'state', payload: { 'player-1': actor } });
+    expect(engine._initialPlayerStateReceived).toBe(false);
+    engine.player.syncEquipmentVisuals = jest.fn(() => expect(engine._initialPlayerStateReceived).toBe(false));
+    engine.handleServerMessage({ type: 'state', payload: { 'player-1': { ...actor, instanceId: 'current-dungeon' } } });
+    expect(engine.player.syncEquipmentVisuals).toHaveBeenCalledTimes(1);
+    expect(engine.player.equipment).toEqual({}); expect(engine._initialPlayerStateReceived).toBe(true);
+});
+
 test.each(['state', 'delta'])('roof edge falls consume vertical authority even with no horizontal %s correction', type => {
     const engine = createEngineHarness();
     engine.currentInstanceId = ''; engine.currentInstanceType = 'overworld';

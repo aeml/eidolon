@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { prepareConnectedPlayerView, cancelConnectedPlayerView } from './ConnectedViewPreparation.js';
 import { getTownRoofField } from './TownRoofs.js';
 import { getHeroBasicAttackReach } from './BasicAttackReach.js';
 import { canEquipItem } from './EquipmentSlots.js';
@@ -1113,6 +1114,9 @@ export class GameEngine {
 
     async loadGame(onProgress) {
         if (this.isDestroyed) return;
+        this.inputManager?.setInputEnabled?.(false);
+        cancelConnectedPlayerView(this);
+        this._initialPlayerStateReceived = false;
         console.log(`Initializing GameEngine with player type: ${this.playerType}`);
 
         if (onProgress) onProgress(10, "Creating Player...");
@@ -1364,12 +1368,21 @@ export class GameEngine {
 
         // Entry follows actual startup work, not a guessed GPU readiness delay.
         // This does not claim deferred assets or future shaders are all warmed.
-        if (onProgress) onProgress(100, "Ready!");
+        if (onProgress) onProgress(99, 'Joining world...');
         if (this.isDestroyed) return;
 
         this.connectToServer();
 
         this.loop(0);
+        if (this.isMultiplayer) {
+            if (onProgress) onProgress(99, 'Preparing your character...');
+            if (this.isDestroyed) return;
+            const prepared = await prepareConnectedPlayerView(this);
+            if (this.isDestroyed) return;
+            if (!prepared) throw new Error('Your character view was interrupted. Please try again.');
+        }
+        this.inputManager?.setInputEnabled?.(true);
+        if (onProgress) onProgress(100, 'Ready!');
     }
 
     startDeferredOverworldScenery() {

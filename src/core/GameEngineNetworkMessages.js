@@ -1267,6 +1267,8 @@ class GameEngineNetworkMessageMethods {
                             this.uiManager.inventory?.updateEquipmentRecovery?.(this.player);
                         }
 
+                        this._initialPlayerStateReceived = true;
+
                         if (Object.prototype.hasOwnProperty.call(pData, 'quests')) {
                             this.player.quests = Array.isArray(pData.quests) ? pData.quests : [];
                             this.uiManager.updateQuestWindow?.(this.player.quests);

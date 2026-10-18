@@ -9,6 +9,8 @@ export class InputManager {
         this.camera = camera;
         this.scene = scene;
         this.canvas = canvas;
+        this.inputEnabled = true;
+        this.suppressedKeys = new Set();
         this.pinchState = null;
         this.worldTapState = null;
         this.raycaster = new THREE.Raycaster();
@@ -122,6 +124,7 @@ export class InputManager {
             };
 
             const handleJoystick = (touch) => {
+                if (this.inputEnabled === false) return;
                 const rect = zone.getBoundingClientRect();
                 const centerX = rect.left + rect.width / 2;
                 const centerY = rect.top + rect.height / 2;
@@ -150,6 +153,7 @@ export class InputManager {
             };
 
             const onZoneTouchStart = (e) => {
+                if (this.inputEnabled === false) return;
                 e.preventDefault();
                 if (joystickTouchId !== null) return;
                 const touch = e.changedTouches[0];
@@ -190,6 +194,7 @@ export class InputManager {
                 const handler = (e) => {
                     e.preventDefault();
                     e.stopPropagation(); // Prevent click-through
+                    if (this.inputEnabled === false) return;
                     this.callbacks[callbackName].forEach(cb => cb());
                 };
                 this._registerListener(btn, 'touchstart', handler, { passive: false });
@@ -220,6 +225,7 @@ export class InputManager {
         );
         const onPinchStart = (e) => {
             this.pinchState = null;
+            if (this.inputEnabled === false) return;
             if (e.defaultPrevented || !canvasPair(e.touches)) return;
             const distance = distanceOf(e.touches);
             if (!Number.isFinite(distance) || distance <= 0) return;
@@ -256,6 +262,7 @@ export class InputManager {
         // or interrupting a gesture must never produce a synthetic combat click.
         const canvasTouches = event => Array.from(event.touches).filter(touch => touch.target === this.canvas);
         this._registerListener(window, 'touchstart', event => {
+            if (this.inputEnabled === false) return;
             if (canvasTouches(event).length !== 1 || event.defaultPrevented) {
                 this.worldTapState = null;
                 return;
@@ -292,6 +299,7 @@ export class InputManager {
 
     getMovementDirection() {
         const dir = new THREE.Vector3(0, 0, 0);
+        if (this.inputEnabled === false) return dir;
         
         // Keyboard
         if (this.keys.w) { dir.x -= 1; dir.z -= 1; }
@@ -321,6 +329,9 @@ export class InputManager {
     }
 
     onKeyDown(e) {
+        const physicalKey = (e.key || '').toLowerCase();
+        if (this.inputEnabled === false) { this.suppressedKeys.add(physicalKey); return; }
+        if (this.suppressedKeys?.has(physicalKey)) return;
         const activeElement = document.activeElement;
         // Typing, select navigation and native button activation belong to UI,
         // regardless of the player's remapping. Escape remains a fixed exit.
@@ -370,6 +381,7 @@ export class InputManager {
 
     onKeyUp(e) {
         const key = (e.key || '').toLowerCase();
+        this.suppressedKeys?.delete(key);
         for (const action of KEYBOARD_ACTIONS) {
             if (action.held && key === this.keyboardBindings[action.id]) this.keys[action.held] = false;
         }
@@ -380,6 +392,7 @@ export class InputManager {
     }
 
     onMouseMove(event) {
+        if (this.inputEnabled === false) return;
         this.pointerOverCanvas = event.target?.tagName === 'CANVAS';
         this.updateMouseFromEvent(event);
         
@@ -388,6 +401,7 @@ export class InputManager {
     }
 
     onWheel(event) {
+        if (this.inputEnabled === false) return;
         // Only zoom if hovering over the game canvas
         if (event.target.tagName === 'CANVAS') {
             event.preventDefault();
@@ -398,6 +412,7 @@ export class InputManager {
     }
 
     onMouseDown(event) {
+        if (this.inputEnabled === false) return;
         // Only handle clicks on the canvas (ignore UI)
         this.pointerOverCanvas = event.target?.tagName === 'CANVAS';
         if (!this.pointerOverCanvas) return;
@@ -460,6 +475,11 @@ export class InputManager {
         this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     }
 
+    setInputEnabled(enabled) {
+        this.inputEnabled = Boolean(enabled);
+        this.clearInputState();
+    }
+
     clearInputState() {
         this.touchAbilityAim?.cancel();
         this.resetJoystick?.();
@@ -495,6 +515,8 @@ export class InputManager {
     dispose() {
         if (this.disposed) return;
         this.disposed = true;
+        this.inputEnabled = false;
+        this.suppressedKeys.clear();
         const mobileUI = document.getElementById('mobile-ui');
         if (mobileUI?.__eidolonInputOwner === this) {
             mobileUI.style.display = 'none';

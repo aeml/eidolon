@@ -84,6 +84,7 @@ export class TouchAbilityAim {
     }
 
     canCast() {
+        if (this.engine.inputManager?.inputEnabled === false) return false;
         const { player, uiManager: ui, playerJumpState } = this.engine;
         if (this.engine.isMultiplayer && (this.engine.network?.socket?.readyState !== 1 || this.engine.network?._reconnecting)) return false;
         if (ui?.getOpenWindowIds?.().length || document.activeElement?.closest('input, textarea, select, [contenteditable="true"]')) return false;
