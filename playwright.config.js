@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 import { existsSync } from 'node:fs';
+import { isolatedBrowserLaunchOptions } from './scripts/qa-browser-launch-options.mjs';
 import {
     backendOriginBrowserArgs,
     hardwareWebGLBrowserArgs
@@ -57,13 +58,13 @@ export default defineConfig({
         baseURL,
         headless: process.env.EIDOLON_E2E_HEADLESS !== '0',
         ignoreHTTPSErrors: false,
-        launchOptions: {
+        launchOptions: isolatedBrowserLaunchOptions({
             executablePath: useSystemChrome ? systemChrome : undefined,
             args: [
                 ...browserGraphicsArgs,
                 ...backendResolverArgs
             ]
-        },
+        }),
         screenshot: hasCredentialedRoute ? 'off' : 'only-on-failure',
         trace: hasCredentialedRoute ? 'off' : 'retain-on-failure',
         video: hasCredentialedRoute ? 'off' : 'retain-on-failure'

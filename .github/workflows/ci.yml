@@ -296,6 +296,7 @@ jobs:
     if: github.repository == 'aeml/eidolon' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.full_stabilization == true))
     env:
       EIDOLON_E2E_WEB_PORT: '41873'
+      EIDOLON_E2E_ISOLATE_CHROME: '1'
       EIDOLON_ISOLATED_QA_PORT: '18085'
       EIDOLON_ISOLATED_QA_NETWORK_MODE: 'host'
     steps:
@@ -412,6 +413,10 @@ jobs:
             native-visual-evidence/
           if-no-files-found: ignore
           retention-days: 7
+
+      - name: Clean owned browser network capsules
+        if: ${{ always() }}
+        run: node scripts/cleanup-browser-network.mjs
 
   release-inputs:
     name: Validate Production QA Inputs
@@ -709,6 +714,7 @@ jobs:
     # without rewriting every live QA step; no health-only substitute for gameplay.
     env:
       EIDOLON_E2E_BASE_URL: ${{ vars.EIDOLON_LIVE_BASE_URL || 'https://play.eidolonrealms.com' }}
+      EIDOLON_E2E_ISOLATE_CHROME: '1'
       EIDOLON_E2E_WS_URL: ${{ vars.EIDOLON_LIVE_WS_URL || 'wss://server.eidolonrealms.com/ws' }}
       EIDOLON_E2E_HEALTH_URL: ${{ vars.EIDOLON_LIVE_HEALTH_URL || 'https://server.eidolonrealms.com/healthz' }}
     steps:
@@ -805,3 +811,7 @@ jobs:
             test-results/
           if-no-files-found: ignore
           retention-days: 14
+
+      - name: Clean owned browser network capsules
+        if: ${{ always() }}
+        run: node scripts/cleanup-browser-network.mjs

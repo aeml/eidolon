@@ -1,6 +1,7 @@
 import { chromium } from '@playwright/test';
 import { accessSync, constants } from 'node:fs';
 import { hardwareWebGLBrowserArgs } from '../tests/e2e/browserLaunchPolicy.js';
+import { isolatedBrowserLaunchOptions } from './qa-browser-launch-options.mjs';
 
 const executablePath = process.env.EIDOLON_E2E_BROWSER_PATH || '/usr/bin/google-chrome';
 try {
@@ -9,11 +10,11 @@ try {
     throw new Error(`System Chrome is not executable at ${executablePath}`);
 }
 
-const browser = await chromium.launch({
+const browser = await chromium.launch(isolatedBrowserLaunchOptions({
     executablePath,
     headless: true,
     args: hardwareWebGLBrowserArgs()
-});
+}));
 
 try {
     const page = await browser.newPage();
