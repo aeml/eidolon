@@ -162,7 +162,9 @@ class GameEngineRuntimeMethods {
         this.casino?.beforeUpdate(dt);
         this.publicEvents?.update(dt);
         this.frameCount++;
-        if (this.player && this.inputManager?.getMovementDirection?.().lengthSq() > 0) this.uiManager?.closeForWorldInteraction?.();
+        // Desktop WASD pans the camera. Only the phone joystick is character
+        // movement here; desktop ground clicks dismiss through their owner.
+        if (this.isMobile && this.player && this.inputManager?.getMovementDirection?.().lengthSq() > 0) this.uiManager?.closeForWorldInteraction?.();
         this.inputManager?.touchAbilityAim?.update();
         this.activeWorldGenerator?.updateDungeonPresentation?.(dt, this.renderSystem?.graphicsQuality);
         this.activeWorldGenerator?.updateTownPresentation?.(dt, this.player?.position);

@@ -5,6 +5,22 @@ test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 const enabled = process.env.EIDOLON_E2E_GAMEPLAY_INTERACTIONS === '1';
 const accounts = JSON.parse(process.env.EIDOLON_GAMEPLAY_BROWSER_ACCOUNTS || '[]');
 
+test.afterEach(async ({ page }, testInfo) => {
+    if (!enabled || page.isClosed()) return;
+    let observations;
+    try {
+        observations = await page.evaluate(() => {
+            const o = window.__gameplayInteractions;
+            if (!o) return null;
+            o.restore();
+            return { samples: o.samples, casts: o.casts, timings: o.timings, authority: o.authority };
+        });
+    } catch { /* A failed startup may never create an observable game context. */ }
+    if (observations) await testInfo.attach('terminal-input-observations', {
+        body: JSON.stringify(observations), contentType: 'application/json'
+    });
+});
+
 async function enterPreparedCharacter(page, account, quality) {
     await page.addInitScript(quality => {
         localStorage.setItem('eidolon.graphicsQuality', quality);
@@ -153,7 +169,6 @@ async function outsideWindowMove(page, selector, key) {
     await expect(window).toBeHidden();
     await expect.poll(() => page.evaluate(before => Math.hypot(window.game.player.position.x - before[0],
         window.game.player.position.z - before[2]), point.before)).toBeGreaterThan(.5);
-    await page.keyboard.down('w'); await page.waitForTimeout(50); await page.keyboard.up('w');
     await expect.poll(() => page.evaluate(() => window.game.player.targetPosition === null)).toBe(true);
     await page.keyboard.press(key); await expect(window).toBeVisible();
     const restored = await window.boundingBox();
@@ -179,6 +194,9 @@ for (const [index, characterClass] of ['Fighter', 'Cleric', 'Rogue', 'Wizard'].e
             beforeReload = await page.evaluate(() => {
                 const o = window.__gameplayInteractions; o.restore();
                 return { samples: o.samples, casts: o.casts, timings: o.timings, authority: o.authority };
+            });
+            await testInfo.attach('before-quality-reload-observations', {
+                body: JSON.stringify(beforeReload), contentType: 'application/json'
             });
             await page.keyboard.press('Escape'); await page.locator('#btn-settings').click();
             let prompt = '';
@@ -212,7 +230,8 @@ for (const [index, characterClass] of ['Fighter', 'Cleric', 'Rogue', 'Wizard'].e
         await jumpTo(page, -106, 130, 'down');
         await page.keyboard.press('b');
         await expect(page.locator('#interaction-cast')).toBeVisible();
-        await page.keyboard.down('w'); await page.waitForTimeout(150); await page.keyboard.up('w');
+        // Desktop WASD pans; an ordinary ground click actually moves the body.
+        await moveTo(page, -112, 130, 'recall-cancel');
         await expect(page.locator('#interaction-cast')).toBeHidden();
         await expect.poll(() => page.evaluate(() => window.__gameplayInteractions.casts.at(-1)?.state)).toBe('cancelled');
         const started = Date.now();
