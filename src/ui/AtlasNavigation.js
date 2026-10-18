@@ -191,7 +191,7 @@ export class AtlasNavigation {
             // of the atlas, letting the next key reach character controls.
             map.canvas.focus();
         });
-        for (const event of ['pointerdown', 'mousedown', 'touchstart', 'click', 'wheel']) {
+        for (const event of ['pointerdown', 'mousedown', 'touchstart', 'touchmove', 'touchend', 'click', 'wheel']) {
             this.root.addEventListener(event, e => e.stopPropagation(), { signal: this.listeners.signal });
         }
         this.refresh(true);

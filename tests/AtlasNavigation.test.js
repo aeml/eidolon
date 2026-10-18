@@ -19,6 +19,17 @@ function questFocusFixture() {
     return { ge, map, navigation: new AtlasNavigation(map) };
 }
 
+test.each(['touchmove', 'touchend'])('%s on the location directory stays out of world input', type => {
+    const { navigation } = questFocusFixture();
+    let reachedWorld = 0;
+    const listen = () => { reachedWorld++; };
+    window.addEventListener(type, listen);
+    try {
+        navigation.results.querySelector('button').dispatchEvent(new Event(type, { bubbles: true }));
+        expect(reachedWorld).toBe(0);
+    } finally { window.removeEventListener(type, listen); navigation.dispose(); }
+});
+
 test('unrelated progress keeps location and waypoint press targets attached and focused', () => {
     const { ge, navigation } = questFocusFixture();
     const forge = navigation.locations.find(location => location.id === 'forge');
