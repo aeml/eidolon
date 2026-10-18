@@ -9,11 +9,20 @@ function node(tag, text, className = '') {
     return result;
 }
 
+function updateChoiceControls(ui) {
+    for (const root of ui.rewardChoiceRoots.values()) {
+        for (const update of root.rewardChoiceUpdates || []) update();
+    }
+}
+
 // Keep offers and selection mounted across frequent character/journal updates.
 export function appendQuestRewardChoices(ui, quests, parent, surface) {
     if (!parent || ui.disposed) return;
     const pending = (quests || []).filter(q => q.completed && !q.claimedRewardId && q.rewardChoices?.length);
-    if (!pending.length) return;
+    if (!pending.length) {
+        ui.rewardChoiceRoots?.get(surface)?.remove();
+        return;
+    }
     ui.rewardChoiceSelections ||= new Map();
     ui.rewardChoiceRoots ||= new Map();
     let root = ui.rewardChoiceRoots.get(surface);
@@ -26,10 +35,15 @@ export function appendQuestRewardChoices(ui, quests, parent, surface) {
         });
         ui.rewardChoiceRoots.set(surface, root);
     }
-    const signature = JSON.stringify([pending, ui.pendingRewardClaim, ui.questActionError, pending.map(q => ui.rewardChoiceSelections.get(q.id))]);
+    // Selection, claim status and unrelated quest progress update the existing
+    // controls. Replacing a pressed button can discard its pointer release.
+    const signature = JSON.stringify(pending.map(q => [q.id, q.title, q.rewardChoices]));
     if (root.rewardSignature !== signature) {
-        const focusedItem = root.contains(document.activeElement) ? document.activeElement.dataset.rewardItem : null;
+        const focused = root.contains(document.activeElement) ? {
+            item: document.activeElement.dataset.rewardItem, claim: document.activeElement.dataset.rewardClaim
+        } : null;
         root.replaceChildren(node('h3', 'Choose your quest reward'), node('p', 'Pick ONE of six items for each reward. These rolls are saved. Make one free bag slot; claim here or in the Journal whenever you are ready.'));
+        root.rewardChoiceUpdates = [];
         for (const quest of pending) {
             const group = node('fieldset', '');
             group.append(node('legend', quest.title || quest.id));
@@ -37,7 +51,12 @@ export function appendQuestRewardChoices(ui, quests, parent, surface) {
             const confirm = node('button', 'Choose an item first', 'menu-btn quest-reward-choices__confirm');
             confirm.type = 'button';
             confirm.dataset.rewardClaim = quest.id;
-            const updateConfirm = () => {
+            const inputs = [];
+            const updateControls = () => {
+                for (const input of inputs) {
+                    input.checked = ui.rewardChoiceSelections.get(quest.id) === input.value;
+                    input.disabled = Boolean(ui.pendingRewardClaim);
+                }
                 const item = quest.rewardChoices.find(item => item.id === ui.rewardChoiceSelections.get(quest.id));
                 confirm.disabled = !item || Boolean(ui.pendingRewardClaim);
                 confirm.textContent = ui.pendingRewardClaim?.questId === quest.id ? 'Saving reward…' : item ? `Claim ${item.name}` : 'Choose an item first';
@@ -50,9 +69,12 @@ export function appendQuestRewardChoices(ui, quests, parent, surface) {
                 input.name = `quest-reward-${surface}-${quest.id}`;
                 input.value = item.id;
                 input.dataset.rewardItem = item.id;
-                input.checked = ui.rewardChoiceSelections.get(quest.id) === item.id;
-                input.disabled = Boolean(ui.pendingRewardClaim);
-                input.addEventListener('change', () => { ui.rewardChoiceSelections.set(quest.id, item.id); updateConfirm(); });
+                inputs.push(input);
+                input.addEventListener('change', () => {
+                    if (ui.disposed || !root.isConnected || !root.contains(input)) return;
+                    ui.rewardChoiceSelections.set(quest.id, item.id);
+                    updateChoiceControls(ui);
+                });
                 const copy = node('span', '', 'quest-reward-choice__copy');
                 copy.append(node('strong', item.name), node('small', `${item.rarity} · Level ${item.level} · ${SLOT_NAMES[item.slot] || readable(item.slot)}`));
                 for (const [stat, value] of Object.entries(item.stats || {})) copy.append(node('small', `${readable(stat)}: +${value}`));
@@ -60,18 +82,29 @@ export function appendQuestRewardChoices(ui, quests, parent, surface) {
                 label.append(input, copy);
                 grid.append(label);
             }
-            confirm.onclick = () => ui.claimQuestItem(quest.id, ui.rewardChoiceSelections.get(quest.id));
-            updateConfirm();
+            confirm.onclick = () => {
+                if (!root.isConnected || !root.contains(confirm)) return;
+                ui.claimQuestItem(quest.id, ui.rewardChoiceSelections.get(quest.id));
+            };
+            root.rewardChoiceUpdates.push(updateControls);
+            updateControls();
             group.append(grid, confirm);
             root.append(group);
         }
-        if (ui.questActionError) {
-            const error = node('p', ui.questActionError, 'quest-dialogue__error');
+        root.rewardSignature = signature;
+        parent.append(root);
+        if (focused?.item || focused?.claim) [...root.querySelectorAll('input, button')]
+            .find(control => focused.item ? control.dataset.rewardItem === focused.item : control.dataset.rewardClaim === focused.claim)?.focus({ preventScroll: true });
+    } else if (root.parentNode !== parent) parent.append(root);
+    updateChoiceControls(ui);
+    root.setAttribute('aria-busy', String(Boolean(ui.pendingRewardClaim)));
+    let error = root.querySelector('.quest-dialogue__error');
+    if (ui.questActionError) {
+        if (!error) {
+            error = node('p', '', 'quest-dialogue__error');
             error.setAttribute('role', 'alert');
             root.append(error);
         }
-        root.rewardSignature = signature;
-        parent.append(root);
-        if (focusedItem) [...root.querySelectorAll('input')].find(input => input.value === focusedItem)?.focus({ preventScroll: true });
-    } else parent.append(root);
+        error.textContent = ui.questActionError;
+    } else error?.remove();
 }

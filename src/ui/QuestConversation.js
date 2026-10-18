@@ -72,7 +72,7 @@ export function renderQuestConversation(ui, quests) {
     ui.questWindow?.classList.toggle('is-story', story);
     const heading = ui.questWindow?.querySelector('.window-header > span');
     if (heading) heading.textContent = story ? 'ARCHMAGE ILYRA · THE FOURFOLD CHRONICLE' : 'QUEST GIVER · DAILY CONTRACTS';
-    ui.clearElement(ui.questList);
+    ui.clearElement(ui.questList, story ? ui.rewardChoiceRoots?.get('conversation') : null);
     if (story) appendQuestRewardChoices(ui, quests, ui.questList, 'conversation');
     const text = (tag, content, className = '') => {
         const element = document.createElement(tag);
