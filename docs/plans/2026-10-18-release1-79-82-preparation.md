@@ -1,4 +1,4 @@
-# Alpha1.79.82 preparation: outfitter poses and dungeon stonework
+# Alpha1.79.82 preparation: outfitter poses, item inspection and dungeon stonework
 
 This isolated candidate follows selected master17a5862eca203373d9e004d25fbbfb71f5d5458b.
 It is prepared, not merged into master, pushed or deployed. Alpha1.79.81 must
@@ -14,6 +14,16 @@ ownership, EP and gameplay combat rules remain the existing server rules.
 The character portrait's centered garment row retains its behavior.
 [Outfit component](2026-10-18-garment-pose-inspection.md).
 [Held coverage and header correction](2026-10-18-held-garment-pose-qualification.md).
+
+Item inspection now displays saved metadata, comparison hints and unknown gem
+descriptions literally. Unknown inherited set/effect identifiers no longer
+interrupt hover or deliberate inspection, and stat/socket totals retain own
+numeric keys. Three runtime files and nine regressions exactly match qualified
+component1aea5739a127bf05f1094c048c1a9ed5f6c1c2cc. Its63checks/eight suites,
+original six failures and additional deliberate-inspection failure are retained
+separately from the earlier784-check assembly. No saved data or server protocol
+changes. This closes the demonstrated inspection bugs, not the wider F2 review.
+[Item-text qualification](2026-10-18-inventory-tooltip-text-boundary.md).
 
 Selected world art adds softly shaped wall piers and separates elemental wall
 mineral albedo from colored room lighting. Four source files exactly match the
@@ -55,11 +65,16 @@ Evidence and limits:
   SHA256 `28b738eaf5aa3a9ba5df513fbd8c400f3d82a5f0f2624d529731c57b80a95f03`.
   This predates the header correction and latest connected-test additions. Rebuild
   the exact final source before using it as an assembled/publication qualification.
+  It also predates the selected item-inspection fixes and latest patch-note text.
 
 The twelve synchronized release locations use1.79.82. There are517cumulative
 notes, ten initially and51lazy pages; all516prior entry strings remain byte-exact,
 serialized-array SHA256
 `22814e2f6f4d6febd8e61cc67f94d3c7ae300b783e5295e221efad7370cbc5d0`.
+After item-inspection selection and the added current-release bullet,
+386release-presentation checks pass in3.08seconds; all516prior raw entry strings
+were reread and remain exact. This is an incremental check, not another run of
+the earlier784-check assembly.
 Model assets, dependency versions, schema27 and stationary-action protocol
 remain the selected81 inputs. No paid generation is performed. The original
 qualified UI history is retained under
