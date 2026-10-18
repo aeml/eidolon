@@ -496,7 +496,8 @@ Notes:
 ## Project Status
 
 Current source version: `Alpha 1.79.79`, **prepared; deployment acceptance pending**.
-Alpha 1.79.79 is prepared with distinct room-purpose masonry and ruined
+Alpha 1.79.79 is prepared with specialization guidance, saved quest equipment
+choices, distinct room-purpose masonry and ruined
 ambush piers across the five dungeon themes. Treasure vaults, shrine chapels,
 broken ambush galleries, sentry courts and parallel passage aisles replace five
 uses of the same court plan. Entry, approach and arena floor attributes remain
@@ -511,7 +512,7 @@ Exact client/model trees permit scoped evidence reuse in the combined assembly.
 The floor plans add232,320cached CPU bytes per fully populated kit; the pier
 adds10,096cached CPU bytes and624baked triangles per ambush room. Native views
 remove two High/one Low submissions, with the additional High shadow triangles
-recorded. No new texture, material, module or permanent browser case is added.
+recorded. The masonry component adds no texture, material, module or permanent browser case.
 Original geometry/observer failures and superseded accounting remain retained.
 [Component](docs/art/2026-10-17-dungeon-masonry-and-ambush-piers.md).
 [Assembly](docs/plans/2026-10-17-room-masonry-assembly.md).
@@ -539,6 +540,29 @@ original Jest field, assertion, coverage threshold and concurrency policy stays.
 Game runtime/assets/server, both fixture corrections, version and notes remain.
 This source needs a fresh full pipeline; the failed client result is not waived.
 [Worker lifetime](docs/plans/2026-10-18-release1-79-79-jest-worker-lifetime.md).
+The fifth source005/CI39092994270 passes804client suites/12,521tests,
+server and hosted browser jobs, plus146native cases. One Fighter wardrobe case
+fails before engine startup after220module downloads report ERR_NETWORK_CHANGED;
+its other three class cases pass. One native case stays skipped. Deployment and
+live jobs are skipped; the failure is retained and no unchanged-source rerun or
+acceptance waiver is used. The current candidate adds the owner's requested
+level-10 specialization notice and one-of-six quest equipment rewards.
+The reminder opens the correct Skills tab for new and returning unspecialized
+characters. Every second main-story chapter offers six different quest-level
+items:55% green,35% blue,10% orange per item. Exact offers survive turn-in saves and
+reconnects. Explicit claims journal the bag and receipt before feedback; full bags
+retain choices, and replay cannot award a second item. Daily/optional catch-up
+payouts and completed older receipts are retained.20 runtime paths qualify through
+58 client checks/seven suites,396 Go-race regressions, two software-browser
+presentation cases and one real API/Mongo/ordinary-login/reconnect/single-claim
+session. Three session setup negatives remain retained; the corrected session
+passes in 9.68s with no automatic retry. Schema 26 fences older writers without
+backfilling rewards. The actual schema-25 executable refuses the newer database
+without changing saved offers or bags;45 schema/quest race checks pass.
+51 CI-policy checks/four suites and the
+469-case exact hosted partition pass. One UI module and two permanent browser
+cases are added. This is not native GPU, campaign pacing or physical-device
+acceptance. [Quest and specialization](docs/plans/2026-10-18-specialization-unlock-and-quest-equipment-rewards.md).
 This prepared release still requires its own exact CI and live acceptance.
 Full original game/world/art/combat/audio/performance/device/security/operations/
 owner/F1-F5/beta/1.99 scope stays active. Human campaign/phone feedback and
