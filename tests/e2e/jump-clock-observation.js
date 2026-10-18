@@ -31,6 +31,7 @@ export async function measureJumpWallClock({ publishedRelease = null } = {}) {
             const start = performance.now();
             game.lastTime = start / 1000;
             if (!game.startPlayerJump(new THREE.Vector3(27, 0, 0))) throw Error('Jump did not start');
+            const acceptedDurationMs = game.playerJumpState.duration * 1000;
             let frames = 0, previous = start, maxFrameGapMs = 0;
             await new Promise((resolve, reject) => {
                 const sample = now => {
@@ -46,11 +47,14 @@ export async function measureJumpWallClock({ publishedRelease = null } = {}) {
                 };
                 requestAnimationFrame(sample);
             });
-            samples.push({ fps, frames, elapsedMs: performance.now() - start, maxFrameGapMs,
+            samples.push({ fps, frames, acceptedDurationMs, elapsedMs: performance.now() - start, maxFrameGapMs,
                 positionError: game.player.position.distanceTo(new THREE.Vector3(27, 0, 0)),
                 renderError: game.player.mesh.position.distanceTo(new THREE.Vector3(27, 0, 0)) });
         }
-        return { samples, errors };
+        const gl = game.renderSystem.renderer.getContext();
+        const debug = gl.getExtension('WEBGL_debug_renderer_info');
+        const renderer = gl.getParameter(debug ? debug.UNMASKED_RENDERER_WEBGL : gl.RENDERER);
+        return { samples, errors, renderer };
     } finally {
         console.error = originalError;
         game.isDestroyed = false;
