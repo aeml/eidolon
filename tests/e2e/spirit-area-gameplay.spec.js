@@ -1,6 +1,6 @@
 import { devices, expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, openGame } from './helpers.js';
-import { backendOriginBrowserArgs, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
+import { qaChromeLaunchOptions, backendOriginBrowserArgs, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 
 test.use({viewport:{width:390,height:844},hasTouch:true,isMobile:true,userAgent:devices['Pixel 7'].userAgent,
     actionTimeout:12_000,trace:'off',screenshot:'off',video:'off'});
@@ -67,8 +67,8 @@ test('trained spirit rings preserve cherubs and reach a late observer without pr
     const rune=page.locator('[data-build-action="rune:spirits_expanded"]');await rune.scrollIntoViewIfNeeded();await rune.tap();
     await expect.poll(()=>page.evaluate(()=>window.game.player.skillRunes?.['Spirit Guardians'])).toBe('spirits_expanded');
     await page.locator('#btn-close-skills').tap();await cast({expanded:true});
-    const second=await browser.browserType().launch({executablePath:process.env.EIDOLON_E2E_BROWSER_PATH||undefined,
-        headless:process.env.EIDOLON_E2E_HEADLESS!=='0',args:[...hardwareWebGLBrowserArgs(),...backendOriginBrowserArgs(process.env.EIDOLON_E2E_BACKEND_ORIGIN_IP)]});
+    const second=await browser.browserType().launch(qaChromeLaunchOptions({executablePath:process.env.EIDOLON_E2E_BROWSER_PATH||undefined,
+        headless:process.env.EIDOLON_E2E_HEADLESS!=='0',args:[...hardwareWebGLBrowserArgs(),...backendOriginBrowserArgs(process.env.EIDOLON_E2E_BACKEND_ORIGIN_IP)]}));
     try{
         const context=await second.newContext({ baseURL }),observer=await context.newPage(),observerFailures=collectBrowserFailures(observer,baseURL);
         // Use the same complete runtime readiness/recovery as ordinary login.

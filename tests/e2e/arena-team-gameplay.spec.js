@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 import { partyDungeonCharacter, requireIsolatedPartyFixture } from '../partyDungeonFixture.js';
 import { seedActor } from './geared-party-route.js';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, projectEntity } from './helpers.js';
-import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
+import { qaChromeLaunchOptions, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 const arenaState = page => page.evaluate(() => window.game.uiManager.pvp.state);
@@ -31,8 +31,8 @@ test('two real parties play ranked rounds and see their personal results', async
         for (let index = 0; index < 4; index++) {
             let actorPage = page;
             if (index) {
-                const extra = await browser.browserType().launch({ executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || '/usr/bin/google-chrome',
-                    headless: true, args: hardwareWebGLBrowserArgs() });
+                const extra = await browser.browserType().launch(qaChromeLaunchOptions({ executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || '/usr/bin/google-chrome',
+                    headless: true, args: hardwareWebGLBrowserArgs() }));
                 ownedBrowsers.push(extra);
                 actorPage = await (await extra.newContext({ baseURL, viewport: { width: 1280, height: 720 } })).newPage();
             }

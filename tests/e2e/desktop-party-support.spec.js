@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, projectGroundOffset } from './helpers.js';
-import { backendOriginBrowserArgs, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
+import { qaChromeLaunchOptions, backendOriginBrowserArgs, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 
 test.use({ viewport: { width: 1280, height: 720 }, trace: 'off', screenshot: 'off', video: 'off' });
 
@@ -42,11 +42,11 @@ test('desktop party selection directs real support casts despite a different cur
     await page.keyboard.press('Escape');
     await expect(skills).toBeHidden();
 
-    const second = await browser.browserType().launch({
+    const second = await browser.browserType().launch(qaChromeLaunchOptions({
         executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || undefined,
         headless: process.env.EIDOLON_E2E_HEADLESS !== '0',
         args: [...hardwareWebGLBrowserArgs(), ...backendOriginBrowserArgs(process.env.EIDOLON_E2E_BACKEND_ORIGIN_IP)]
-    });
+    }));
     try {
         const ally = await (await second.newContext({ baseURL, viewport: { width: 1280, height: 720 } })).newPage();
         const allyFailures = collectBrowserFailures(ally, baseURL);

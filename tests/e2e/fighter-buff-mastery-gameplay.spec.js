@@ -1,7 +1,7 @@
 import { devices, expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld } from './helpers.js';
 import { installFighterBuffObserver } from './fighter-buff-observer.js';
-import { backendOriginBrowserArgs, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
+import { qaChromeLaunchOptions, backendOriginBrowserArgs, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 
 const buffs = [
     { skill: 'Berserker Edge', id: 'berserker_edge', talent: 'FTR_19', base: 1.5, seconds: 15,
@@ -139,9 +139,9 @@ test('Fighter buff Masteries have paid, saved strength and visible High/Low owne
     await outsideStableStats(); await quality('low');
     for (const buff of buffs) await cast(buff, 5, 'low');
 
-    const second = await browser.browserType().launch({ executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || '/usr/bin/google-chrome',
+    const second = await browser.browserType().launch(qaChromeLaunchOptions({ executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || '/usr/bin/google-chrome',
         headless: process.env.EIDOLON_E2E_HEADLESS !== '0',
-        args: [...hardwareWebGLBrowserArgs(), ...backendOriginBrowserArgs(process.env.EIDOLON_E2E_BACKEND_ORIGIN_IP)] });
+        args: [...hardwareWebGLBrowserArgs(), ...backendOriginBrowserArgs(process.env.EIDOLON_E2E_BACKEND_ORIGIN_IP)] }));
     try {
         const context = await second.newContext({ ...devices['Pixel 7'], viewport: { width: 390, height: 844 }, baseURL });
         const ally = await context.newPage(), allyFailures = collectBrowserFailures(ally, baseURL);

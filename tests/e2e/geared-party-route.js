@@ -29,7 +29,7 @@ import { stepRaidVigilInput } from './raid-vigil-input.js';
 import { captureInstanceGrounding } from './instance-ground-observation.js';
 import { raidVigilSupportAnchor, raidVigilRecoveryAnchor, raidVigilEscortRecoveryAnchor } from '../raidVigilControls.js';
 import { assertDarkKingPhases } from '../darkKingPartyEvidence.js';
-import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
+import { qaChromeLaunchOptions, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { claimChapterAndContinue, readChronicleChapter, openIlyra } from './chronicle-earth-route.js';
 import { verifyFreshWaterHandoff } from './chronicle-water-handoff.js';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, openGame,
@@ -232,8 +232,8 @@ export async function runGearedPartyRoute({ page, browser, baseURL }, testInfo, 
         for (const [index, className] of roles.entries()) {
             let actorPage = page;
             if (index) {
-                const extra = await browser.browserType().launch({ executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || '/usr/bin/google-chrome',
-                    headless: true, args: hardwareWebGLBrowserArgs() });
+                const extra = await browser.browserType().launch(qaChromeLaunchOptions({ executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || '/usr/bin/google-chrome',
+                    headless: true, args: hardwareWebGLBrowserArgs() }));
                 ownedBrowsers.push(extra);
                 actorPage = await (await extra.newContext({ baseURL, viewport: { width: 1280, height: 720 } })).newPage();
             }

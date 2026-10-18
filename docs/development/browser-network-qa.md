@@ -8,6 +8,14 @@ and live release jobs enable this option; hosted browser jobs keep their
 existing launch policy. Local visual stages already using
 `run-native-visual-qa.sh` keep that runner's private loopback environment.
 
+Independent Chrome peers and per-file `test.use` launch overrides use
+`qaChromeLaunchOptions` from `tests/e2e/browserLaunchPolicy.js`. Explicit
+launches do not inherit the common config's executable, so they must opt into
+the same wrapper. Each peer remains a separate browser process and owns its
+own profile/download directory. Without isolation enabled, the helper returns
+the original options unchanged. Firefox-specific probes retain their separate
+launch policy.
+
 The container borrows the installed Chrome, Node runtime, libraries, fonts,
 certificate files and Vulkan drivers read-only. It receives only its owned
 profile, browser home and download directory as writable mounts, plus the

@@ -1,3 +1,4 @@
+import { qaChromeLaunchOptions } from './browserLaunchPolicy.js';
 import { expect, test } from '@playwright/test';
 import { existsSync } from 'node:fs';
 import { acquireLootPointer, acquireCombatLootPointer, clickLootPointer, projectEntity, settlePointerRaycast } from './helpers.js';
@@ -5,10 +6,10 @@ import { aimDungeonCombatTarget } from '../dungeonTargetInput.js';
 import { armManualLootClickObservation } from './loot-pointer-observation.js';
 
 // Input/geometry only: no rendered game or GPU contention with live QA.
-test.use({ launchOptions: {
+test.use({ launchOptions: qaChromeLaunchOptions({
     executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || (existsSync('/usr/bin/google-chrome') ? '/usr/bin/google-chrome' : undefined),
     args: ['--disable-gpu', '--disable-webgl', '--disable-software-rasterizer']
-} });
+}) });
 
 test.beforeEach(async ({ page }) => {
     await page.route('**/src/main.js', route => route.fulfill({ contentType: 'text/javascript', body: '' }));

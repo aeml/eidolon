@@ -1,6 +1,6 @@
 import {devices,expect,test} from '@playwright/test';
 import {collectBrowserFailures,credentialsFromEnvironment,loginAndEnterWorld} from './helpers.js';
-import {backendOriginBrowserArgs,hardwareWebGLBrowserArgs} from './browserLaunchPolicy.js';
+import { qaChromeLaunchOptions,backendOriginBrowserArgs,hardwareWebGLBrowserArgs} from './browserLaunchPolicy.js';
 
 test.use({viewport:{width:390,height:844},hasTouch:true,isMobile:true,userAgent:devices['Pixel 7'].userAgent,
     actionTimeout:12_000,trace:'off',screenshot:'off',video:'off'});
@@ -10,8 +10,8 @@ test('Cleric cone, Beacon and normal Mass Revival casts render their accepted tr
     test.skip(process.env.EIDOLON_E2E_REGISTER!=='1','Requires isolated disposable Cleric');
     const credentials=credentialsFromEnvironment(),failures=collectBrowserFailures(page,baseURL);
     await loginAndEnterWorld(page,credentials);
-    const second=await browser.browserType().launch({executablePath:process.env.EIDOLON_E2E_BROWSER_PATH||undefined,
-        headless:process.env.EIDOLON_E2E_HEADLESS!=='0',args:[...hardwareWebGLBrowserArgs(),...backendOriginBrowserArgs(process.env.EIDOLON_E2E_BACKEND_ORIGIN_IP)]});
+    const second=await browser.browserType().launch(qaChromeLaunchOptions({executablePath:process.env.EIDOLON_E2E_BROWSER_PATH||undefined,
+        headless:process.env.EIDOLON_E2E_HEADLESS!=='0',args:[...hardwareWebGLBrowserArgs(),...backendOriginBrowserArgs(process.env.EIDOLON_E2E_BACKEND_ORIGIN_IP)]}));
     try{
     const context=await second.newContext({...devices['Pixel 7'],viewport:{width:390,height:844},baseURL});
     const observer=await context.newPage(),observerFailures=collectBrowserFailures(observer,baseURL);

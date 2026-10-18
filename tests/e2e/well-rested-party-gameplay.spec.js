@@ -1,6 +1,6 @@
 import { devices, expect, test } from './static-delivery-test.js';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld } from './helpers.js';
-import { backendOriginBrowserArgs, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
+import { qaChromeLaunchOptions, backendOriginBrowserArgs, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { profileGameplayScene } from './scene-performance.js';
 import { restedAuraMeetsBudget } from '../restedAuraEvidence.js';
 
@@ -40,10 +40,10 @@ test('two real rested party members retain readable phone auras at High and Low 
     const credentials = credentialsFromEnvironment();
     const failures = collectBrowserFailures(page, baseURL);
     await loginAndEnterWorld(page, credentials);
-    const second = await browser.browserType().launch({
+    const second = await browser.browserType().launch(qaChromeLaunchOptions({
         executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || '/usr/bin/google-chrome',
         headless: true, args: [...hardwareWebGLBrowserArgs(),
-            ...backendOriginBrowserArgs(process.env.EIDOLON_E2E_BACKEND_ORIGIN_IP)] });
+            ...backendOriginBrowserArgs(process.env.EIDOLON_E2E_BACKEND_ORIGIN_IP)] }));
     try {
         const allyContext = await second.newContext({ ...devices['Pixel 7'], viewport: { width: 390, height: 844 }, baseURL });
         const ally = await allyContext.newPage();
