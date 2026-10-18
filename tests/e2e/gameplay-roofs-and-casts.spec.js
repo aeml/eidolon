@@ -25,6 +25,11 @@ async function enterPreparedCharacter(page, account, quality) {
             !root.userData.assetFallback && !root.userData.equipmentVisualFallback?.length &&
             !root.userData.equipmentVisualMissing?.length);
     }, { characterClass: account.characterClass, quality })).toBe(true);
+    expect(process.env.EIDOLON_E2E_STATIC_ROOT, 'Native gameplay qualification requires a copied publication').toBeTruthy();
+    const resources = await page.evaluate(() => performance.getEntriesByType('resource').map(entry => entry.name));
+    expect(resources.some(url => /\/core\/GameEngine\.bundle\.js\?release=/.test(url)),
+        'Native inputs must exercise the published engine').toBe(true);
+    expect(resources.some(url => /\/core\/GameEngine\.js(?:\?|$)/.test(url))).toBe(false);
     return page.evaluate(() => {
         const game = window.game, renderer = game.renderSystem.renderer, gl = renderer.getContext();
         const debug = gl.getExtension('WEBGL_debug_renderer_info');
