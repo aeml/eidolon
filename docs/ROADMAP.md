@@ -1,5 +1,45 @@
 # Eidolon Engineering Roadmap
 
+## Current checkpoint — October 18, 2026
+
+Alpha 1.79.80 is the verified live frontend/backend, with database ready. Its
+experimental Fighter appearance is opt-in. [Acceptance](plans/2026-10-18-release1-79-80-meshy-fighter.md).
+
+Alpha 1.79.81 is merged and pushed to master, including three-second recall and
+quest-object casts, outside-click window dismissal, melee contact, walkable
+roofs and the town-style Earth fence. NPC quest acceptance and turn-in remain
+immediate. The phone cast panel is also clear of the movement/action controls.
+[Release plan](plans/2026-10-18-release1-79-81-roofs-and-interactions.md).
+[Phone qualification](plans/2026-10-18-mobile-cast-control-layout.md).
+
+Local evidence includes eight API/Mongo cases, six connected native gameplay
+cases on the original runtime, the subsequent jump-endpoint/clock corrections,
+and the selected phone-layout checks. Later corrections retain their separate
+source and evidence scopes. The aggregate recovery fixture now budgets the four
+required living-character recall casts; all eight original cases pass unchanged.
+The publication escape fixture avoids unrelated vendor copying and keeps its
+original five-second limit, with stronger source-integrity checks. Earlier
+failed runs remain failures. [Recovery budget](plans/2026-10-18-release1-79-81-recovery-watchdog.md).
+[Publication fixture](plans/2026-10-18-release1-79-81-publication-escape-fixture.md).
+
+The latest executable/test source is `966d5639a917919dea813b39a3162e506aa8dfca`.
+[Its own CI](https://github.com/aeml/eidolon/actions/runs/39122629755), native
+pipeline and deployed-asset verification remain required. The intermediate
+pending run `39121209266` was canceled without starting jobs after the newer
+push. No manual rerun or cancellation is used. The public version
+remains 80; 81 is not accepted merely because focused checks pass.
+
+The complete original roadmap remains active: final world/character/garment art,
+combat/audio polish, campaign and device validation, original performance
+budgets, security, operations, feature freeze, closed beta and the 1.99 handoff.
+Movement-audio follow-up remains isolated because its full native gate is
+incomplete. Human feedback and soak/stress remain deferred, not passed. Backup
+destination and recovery objectives, final visual review, and beta/release
+decisions remain owner-dependent. Existing class assets are
+already supplied; no replacement delivery is requested.
+
+## Historical preparation and qualification
+
 Alpha 1.79.79 is prepared with specialization guidance, saved quest equipment
 choices, distinct room-purpose masonry and ruined
 ambush piers across the five dungeon themes. Treasure vaults, shrine chapels,
