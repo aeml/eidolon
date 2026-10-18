@@ -156,15 +156,18 @@ test.describe('copied published analytics', () => {
         await versionPagesRuntime(root, 'analyticsfixture20261016');
     });
     test.afterAll(async () => { if (root) await rm(root, { recursive: true, force: true }); });
-    for (const mode of ['public', 'invitation', 'recovery']) test(`closed module graph and private-link policy: ${mode}`, async ({ page }) => {
+    for (const mode of ['public', 'invitation', 'recovery', 'automation']) test(`closed module graph and private-link policy: ${mode}`, async ({ page }) => {
         const production = 'https://play.eidolonrealms.com';
         const failures = collectBrowserFailures(page, production);
         let providerRequests = 0, oldModuleRequests = 0, bundleRequests = 0;
         await page.setViewportSize({ width: mode === 'invitation' ? 390 : 1280, height: 844 });
-        await page.addInitScript(() => {
+        await page.addInitScript(mode => {
+            // Private-link tests must keep analytics otherwise eligible; the
+            // separate automation contrast uses Chrome's real webdriver flag.
+            if (mode !== 'automation') Object.defineProperty(navigator, 'webdriver', { get: () => false });
             window.__analyticsFixtureTime = 0;
             Object.defineProperty(performance, 'now', { configurable: true, value: () => window.__analyticsFixtureTime });
-        });
+        }, mode);
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         await page.route('https://www.googletagmanager.com/**', route => {
             providerRequests++;
@@ -186,10 +189,14 @@ test.describe('copied published analytics', () => {
         const fragment = mode === 'invitation' ? `#invite=v1.eyJ1c2VybmFtZSI6IkFub24ifQ.${'A'.repeat(43)}` :
             mode === 'recovery' ? `#eidolon-recovery=reset&account=private-owner&token=${'a'.repeat(64)}` : '';
         await page.goto(production + '/' + fragment, { waitUntil: 'networkidle' });
+        expect(await page.evaluate(() => navigator.webdriver)).toBe(mode === 'automation');
         await page.bringToFront();
         await expect.poll(() => bundleRequests).toBe(1);
         expect(oldModuleRequests).toBe(0);
-        if (mode !== 'public') {
+        if (mode === 'automation') {
+            expect(await page.evaluate(() => Boolean(window.__eidolonRecoverySensitivePage))).toBe(false);
+            expect(providerRequests).toBe(0);
+        } else if (mode !== 'public') {
             expect(await page.evaluate(() => location.hash === '' && window.__eidolonRecoverySensitivePage === true)).toBe(true);
             expect(providerRequests).toBe(0);
         } else await expect.poll(() => providerRequests).toBe(1);

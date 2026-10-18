@@ -43,7 +43,7 @@ delivered; broader usability and visual quality remain open.
 The selected82milestone adds outfitter pose/moment inspection, pinned-header
 and item-inspection corrections, qualified wall stonework and scalar shadow
 checks, separate bounded DB startup and configured QA-report sanitization.
-It is qualified for publication, not deployed/accepted. All46assembled native
+Its game/runtime portion is deployed at48cf, but unaccepted. All46assembled native
 cases pass: six original input/save cases,36outfit/held previews and four actual
 connected class wardrobes with private pose isolation. The report handoff fix
 passes28privacy checks and actual copied-report verification; original evidence
@@ -74,6 +74,20 @@ failure. Geometry algorithms, transport/deadline policy, browser failure
 collection and all gameplay assertions remain unchanged. The selected analytics
 correction requires its own full CI/deployment/public acceptance.
 [Live diagnosis](2026-10-18-release1-79-82-live-check-diagnosis.md).
+
+The analytics correctionfbdf's ownCI39146181314 passed814client suites/
+12628checks, but Browser3's already-tagged private-export fixture failed before
+its conversation: the new automation guard correctly kept the tag unloaded.
+The remaining three hosted prerequisites were explicitly canceled after that
+deterministic failure, preserving partial evidence; five downstream jobs never
+ran. No canceled job is passed or accepted, and no unchanged-source rerun was
+requested. Ordinary-browser privacy contrasts now explicitly set webdriverfalse;
+a separate real webdrivertrue case covers automation without a private marker.
+All original privacy/public-event assertions remain. Eight actual Chrome cases
+pass in28.366s, zero retries/flakes/skips. Runtime/assets/versions/workflow/notes
+remain unchanged. The corrected source still needs full ownCI/live/public
+acceptance before the next feature release.
+[Fixture qualification](2026-10-18-production-analytics-fixture-qualification.md).
 
 The first82CI client job failed57cases in two suites: the gate integration
 fixture omitted the extracted evidence helper, and the floor-patina fixture
