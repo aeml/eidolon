@@ -115,6 +115,13 @@ for (const model of Object.values(HELD_GARMENT_MODELS)) for (const quality of ['
         expect(await page.evaluate(() => window.__heldPreview.ui.preview.camera.top)).toBe(posedFullHeight);
         await expect(pose).toHaveValue('Run'); await expect(moment).toHaveValue('0');
         expect(await page.evaluate(() => window.__heldPreview.ui.preview.model.userData.equipmentVisualGarment)).toBe(expected.outfitID);
+        const pinnedHeader = await dialog.evaluate(element => {
+            element.scrollTop = element.scrollHeight;
+            const rect = element.getBoundingClientRect(), header = element.querySelector(':scope > header').getBoundingClientRect();
+            return { scroll: element.scrollTop, topGap: header.top - rect.top - Number.parseFloat(getComputedStyle(element).borderTopWidth) };
+        });
+        expect(pinnedHeader.scroll).toBeGreaterThan(0);
+        expect(Math.abs(pinnedHeader.topGap), 'The sticky header must cover the top padding while the outfit list scrolls').toBeLessThan(.5);
         await dialog.screenshot({ path: testInfo.outputPath('held-pose-controls.png') });
         await testInfo.attach('held-preview-poses', { body: JSON.stringify({ renderer, expected, choices, samples,
             scope: 'Six held looks, correct supplied class and matching full outfit, fourteen prepared real gear entries, static focus/full-character poses, pointer slider and keyboard endpoints. No authenticated purchase, remote/live-motion, physical-device or final art acceptance.' }), contentType: 'application/json' });
