@@ -103,6 +103,7 @@ test.each([[20, false, 80], [20, true, 85], [3, true, 100], [200, false, 1]])(
     'actual basic impact uses armor %s, melt=%s, expected=%s', (armor, melt, expected) => {
         const f = fixture(), fighter = new Fighter('armor-fighter');
         try {
+            fighter.position.z = 2;
             f.target.stats.defense = armor;
             if (melt) f.cast();
             fighter.stats.damage = 100; fighter.lastAttackTime = 0;
@@ -119,6 +120,7 @@ test.each([[20, false, 80], [20, true, 85], [3, true, 100], [200, false, 1]])(
 test.each([false, true])('wind-up uses armor at impact, expired=%s, before critical and shield absorption', expired => {
     const f = fixture(), fighter = new Fighter('armor-critical-fighter');
     try {
+        fighter.position.z = 2;
         f.cast();
         fighter.stats.damage = 100; fighter.stats.critChanceBonus = 1; fighter.lastAttackTime = 0;
         f.target.shieldHP = 50;
@@ -152,6 +154,7 @@ test.each([NaN, Infinity, -20])('invalid armor %s cannot poison damage', defense
 test('low variance cannot round an armor-reduced basic hit below the server minimum', () => {
     const f = fixture(), fighter = new Fighter('minimum-armor-fighter');
     try {
+        fighter.position.z = 2;
         Math.random.mockReturnValue(0);
         fighter.stats.damage = 1; fighter.stats.critChanceBonus = 0; fighter.lastAttackTime = 0;
         const callbacks = [];

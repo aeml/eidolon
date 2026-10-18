@@ -1236,6 +1236,8 @@ export class GameEngine {
         if (typeof this.worldGenerator.createTownBase === 'function') {
             await this.worldGenerator.createTownBase(0, 200, 100);
             if (this.isDestroyed) return;
+            this.worldGenerator.createEarthPerimeter?.();
+            this.adoptEnvironmentFences?.();
             void this.startDeferredOverworldScenery();
         } else {
             // Preserve compatibility with lightweight/custom generators.

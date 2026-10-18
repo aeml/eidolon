@@ -290,3 +290,24 @@ failed until its corrected successor passes. Driver64 terminated with143 after
 the Go/browser failure; its owned Mongo cleanup was recovered after exact
 container identity verification, with source inputs unchanged and ports free.
 No cause for the driver's termination is established.
+
+Native68 passes five browser cases, including the phone's actual Use cast,
+joystick cancellation with Count0, retry, visible saved diary and movement
+dismissal. Its Earth predicate fails: the real staged initial-entry branch
+called createTownBase and deferred scenery but omitted createEarthPerimeter;
+only the lightweight fallback and instance-return path built it. This is a
+production startup omission, not a waived predicate. Its28-file negative
+inventory hashes toa2fcfb93747c6419ae2367556cc7e2d34ae0cca9408f837f90284c83f15eab20.
+Cleanup and bounded run-artifact scans completed normally. Native64's recovered
+26-file negative inventory hashes to21150649695e91e233d6a2c64d5c98534af123603c33df86a42ce1abcb4d7e78.
+
+The release worktree adds Earth construction/adoption to normal initial entry
+before preparing the first view and connecting. The strengthened startup test
+reproduces that missing call (one failure/ten passes), and65checks/five suites
+pass after correction. Destroyed startup still attaches nothing. The older
+armor-focused Fighter fixtures now stand two units from their four-unit beam
+target; all damage, expiry, critical, shield and minimum-hit assertions remain.
+The original worktree's full client run continues against its unchanged source.
+A fresh native successor must verify the actual initial-entry fence and all
+original roof/cast/window requirements. Existing hosted CI now also runs the
+five new ordinary socket cases and the desktop/phone reload UI checks.

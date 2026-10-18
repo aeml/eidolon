@@ -14,7 +14,8 @@ function harness() {
         addEntity: jest.fn(), syncDeathScreen: jest.fn(),
         uiBindings: { bindSessionCallbacks: jest.fn() },
         renderSystem: { preloadEnvironment: jest.fn(async () => {}), prepareInitialView: jest.fn(async () => true) },
-        worldGenerator: { createTownBase: jest.fn(async () => {}) },
+        worldGenerator: { createTownBase: jest.fn(async () => {}), createEarthPerimeter: jest.fn(() => true) },
+        adoptEnvironmentFences: jest.fn(),
         chunkManager: { update: jest.fn() },
         inputManager: { subscribe: jest.fn() },
         startDeferredOverworldScenery: jest.fn(async () => true),
@@ -42,6 +43,12 @@ test('ready startup keeps required assets and controls, without a fabricated sil
         phase: 'startup', playerType: 'Fighter', concurrency: 2, timeoutMs: 30000
     }));
     expect(engine.worldGenerator.createTownBase).toHaveBeenCalledWith(0, 200, 100);
+    expect(engine.worldGenerator.createEarthPerimeter).toHaveBeenCalledTimes(1);
+    expect(engine.adoptEnvironmentFences).toHaveBeenCalledTimes(1);
+    expect(engine.worldGenerator.createEarthPerimeter.mock.invocationCallOrder[0])
+        .toBeLessThan(engine.adoptEnvironmentFences.mock.invocationCallOrder[0]);
+    expect(engine.adoptEnvironmentFences.mock.invocationCallOrder[0])
+        .toBeLessThan(engine.renderSystem.prepareInitialView.mock.invocationCallOrder[0]);
     expect(engine.renderSystem.prepareInitialView).toHaveBeenCalledTimes(1);
     expect(engine.renderSystem.prepareInitialView.mock.invocationCallOrder[0]).toBeLessThan(engine.connectToServer.mock.invocationCallOrder[0]);
     expect(engine.startDeferredOverworldScenery).toHaveBeenCalledTimes(1);
@@ -98,6 +105,8 @@ test.each(['environment', 'models', 'town'])('cancelling while %s is loading doe
     if (stage === 'environment') expect(MeshFactory.preloadAllModels).not.toHaveBeenCalled();
     if (stage !== 'town') expect(engine.worldGenerator.createTownBase).not.toHaveBeenCalled();
     expect(engine.startDeferredOverworldScenery).not.toHaveBeenCalled();
+    expect(engine.worldGenerator.createEarthPerimeter).not.toHaveBeenCalled();
+    expect(engine.adoptEnvironmentFences).not.toHaveBeenCalled();
     expect(engine.inputManager.subscribe).not.toHaveBeenCalled();
     expect(engine.connectToServer).not.toHaveBeenCalled();
     expect(engine.loop).not.toHaveBeenCalled();
