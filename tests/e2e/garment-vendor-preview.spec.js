@@ -43,6 +43,7 @@ for (const outfit of Object.values(GARMENT_MODELS.outfits)) for (const quality o
     await expect(pose).toBeEnabled(); await expect(moment).toBeEnabled();
     const choices = await pose.locator('option').evaluateAll(options => options.map(option => option.value));
     expect(choices).toEqual(expect.arrayContaining(['Idle', 'Run', 'Attack']));
+    if (outfit.id === 'nightglass-cowl-v1') expect(choices).toContain('OffhandAttack');
     const sentBeforePoses = await page.evaluate(() => window.__garmentPreview.sent.length);
     const poseSamples = [];
     for (const state of choices) {
@@ -82,6 +83,11 @@ for (const outfit of Object.values(GARMENT_MODELS.outfits)) for (const quality o
     expect(await page.evaluate(() => JSON.stringify(window.__garmentPreview.player.equipment) === window.__garmentPreview.original && Object.keys(window.__garmentPreview.player.appearances).length === 0)).toBe(true);
     expect(requests.some(url => url.includes(`v=${expectedVersion}`))).toBe(true);
     expect(await dialog.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+    await page.evaluate(() => {
+        const { ui, player } = window.__garmentPreview;
+        ui.handleResult({ playerID: player.id, success: true, pending: false, ep: 75, catalogue: [], collection: {} });
+    });
+    await expect(dialog.getByRole('group', { name: 'Appearance poses', exact: true })).toHaveCount(0);
     await page.evaluate(() => window.__garmentPreview.ui.dispose());
     await expect(dialog).toHaveCount(0);
     expect(failures, failures.join('\n')).toEqual([]);

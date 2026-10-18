@@ -172,6 +172,7 @@ export class CosmeticVendorUI {
         this.compare.disabled = !offer;
         this.previewHost.hidden = !offer;
         if (!offer) {
+            this.preview?.dispose(); this.preview = null;
             this.title.textContent = 'Choose a look'; this.description.textContent = '';
             this.inspect.hidden = true; this.buy.disabled = true; this.apply.disabled = true; return;
         }
