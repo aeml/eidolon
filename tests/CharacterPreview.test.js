@@ -23,6 +23,96 @@ function fixture(inspectPoses = false) {
     return { host, stage, renderer, createRenderer, preview, player, loadFighter, loadCharacter };
 }
 
+function inspectionModel(preview) {
+    preview.model.removeFromParent();
+    const model = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.BoxGeometry(1, 2, .5), new THREE.MeshBasicMaterial());
+    const sword = new THREE.Mesh(new THREE.BoxGeometry(.1, 10, .1), body.material);
+    sword.position.y = 7; Object.assign(sword.userData, { authoredEquipment: true, slot: 'mainHand' });
+    const shield = new THREE.Mesh(new THREE.BoxGeometry(4, 4, .3), body.material);
+    shield.position.set(2, 2, .7); Object.assign(shield.userData, { equipmentVisual: true, slot: 'offHand' });
+    model.add(body, sword, shield); preview.scene.add(model); preview.model = model;
+    return { body, sword, shield, dispose: () => { for (const part of [body, sword, shield]) part.geometry.dispose(); body.material.dispose(); } };
+}
+
+test('outfit inspection hides both held visuals only during its draw and preserves live gear', () => {
+    const { preview, player, renderer } = fixture(true);
+    preview.update(player);
+    const parts = inspectionModel(preview), original = JSON.stringify(player);
+    const liveShield = parts.shield.clone(); player.mesh = new THREE.Group(); player.mesh.add(liveShield);
+    try {
+        renderer.render.mockImplementation(() => {
+            expect(parts.sword.visible).toBe(false); expect(parts.shield.visible).toBe(false);
+            expect(parts.body.visible).toBe(true); expect(liveShield.visible).toBe(true);
+        });
+        expect(preview.setHeldGearVisible(false)).toBe(true);
+        expect(parts.sword.visible).toBe(true); expect(parts.shield.visible).toBe(true);
+        renderer.render.mockImplementation(() => { expect(parts.sword.visible).toBe(true); expect(parts.shield.visible).toBe(true); });
+        preview.setHeldGearVisible(true);
+        delete player.mesh; expect(JSON.stringify(player)).toBe(original);
+    } finally { preview.dispose(); parts.dispose(); }
+});
+
+test('hidden held gear leaves the visible body readable and completely inside the inspection frame', () => {
+    const { preview, player } = fixture(true); preview.update(player);
+    const parts = inspectionModel(preview);
+    try {
+        preview.setHeldGearVisible(false); preview.camera.updateMatrixWorld(true);
+        const top = new THREE.Vector3(0, 1, 0).project(preview.camera).y;
+        const bottom = new THREE.Vector3(0, -1, 0).project(preview.camera).y;
+        expect((top - bottom) / 2).toBeGreaterThan(.7);
+        for (const x of [-.5, .5]) for (const y of [-1, 1]) for (const z of [-.25, .25]) {
+            const point = new THREE.Vector3(x, y, z).applyMatrix4(preview.model.matrixWorld).project(preview.camera);
+            expect(Math.abs(point.x)).toBeLessThan(1); expect(Math.abs(point.y)).toBeLessThan(1);
+        }
+    } finally { preview.dispose(); parts.dispose(); }
+});
+
+test('a failed inspection draw restores prior held visibility, including already hidden parts', () => {
+    const { preview, player, renderer } = fixture(true); preview.update(player);
+    const parts = inspectionModel(preview); parts.shield.visible = false;
+    try {
+        renderer.render.mockImplementation(() => { expect(parts.sword.visible).toBe(false); throw new Error('owned draw failure'); });
+        expect(() => preview.setHeldGearVisible(false)).toThrow('owned draw failure');
+        expect(parts.sword.visible).toBe(true); expect(parts.shield.visible).toBe(false);
+    } finally { preview.dispose(); parts.dispose(); }
+});
+
+test('ordinary character portraits retain their framing and do not expose outfit hiding', () => {
+    const { preview, player, renderer } = fixture(); preview.update(player);
+    const parts = inspectionModel(preview);
+    try {
+        parts.sword.visible = false; parts.shield.visible = false;
+        preview.render(); const before = renderer.render.mock.calls.length;
+        expect(preview.setHeldGearVisible(false)).toBe(false);
+        expect(renderer.render).toHaveBeenCalledTimes(before);
+        expect(preview.camera.top).toBeGreaterThan(3);
+    } finally { preview.dispose(); parts.dispose(); }
+});
+
+test('inspection bounds follow actual skin deformation and instance transforms while skipping hidden visuals', () => {
+    const { preview } = fixture(true), root = new THREE.Group();
+    const geometry = new THREE.BoxGeometry(1, 1, 1), material = new THREE.MeshBasicMaterial();
+    const count = geometry.getAttribute('position').count;
+    geometry.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(new Uint16Array(count * 4), 4));
+    geometry.setAttribute('skinWeight', new THREE.Float32BufferAttribute(Float32Array.from({ length: count * 4 }, (_, i) => i % 4 === 0 ? 1 : 0), 4));
+    const body = new THREE.SkinnedMesh(geometry, material), bone = new THREE.Bone();
+    body.add(bone); body.bind(new THREE.Skeleton([bone])); bone.position.y = 3;
+    const instances = new THREE.InstancedMesh(geometry, material, 2);
+    instances.setMatrixAt(0, new THREE.Matrix4().makeTranslation(-10, 0, 0));
+    instances.setMatrixAt(1, new THREE.Matrix4().makeTranslation(10, 0, 0));
+    root.add(body, instances); root.updateMatrixWorld(true);
+    try {
+        const all = preview.inspectionBounds(root);
+        expect(all.min.x).toBe(-10.5); expect(all.max.x).toBe(10.5); expect(all.max.y).toBe(3.5);
+        instances.visible = false;
+        const visible = preview.inspectionBounds(root);
+        expect(visible.min.toArray()).toEqual([-.5, 2.5, -.5]);
+        expect(visible.max.toArray()).toEqual([.5, 3.5, .5]);
+        expect(bone.position.y).toBe(3); expect(instances.visible).toBe(false);
+    } finally { preview.dispose(); geometry.dispose(); material.dispose(); body.skeleton.dispose(); }
+});
+
 test('creates graphics lazily and redraws gear changes, not health or XP ticks', () => {
     const { host, renderer, createRenderer, preview, player } = fixture();
     expect(createRenderer).not.toHaveBeenCalled();

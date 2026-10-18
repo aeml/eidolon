@@ -47,6 +47,11 @@ export class CosmeticVendorUI {
             this.inspectHeld = !this.inspectHeld; this.renderPreview();
         });
         this.inspect.hidden = true;
+        this.inspectOutfit = this.button('Hide held gear in preview', () => {
+            if (!this.canAct() || this.inspectOutfit.hidden) return;
+            this.hideHeldGear = !this.hideHeldGear; this.renderPreview();
+        });
+        this.inspectOutfit.hidden = true; this.inspectOutfit.setAttribute('aria-pressed', 'false');
         this.compare = this.button('Show equipped look', () => { if (!this.canAct()) return; this.showOriginal = !this.showOriginal; this.renderPreview(); });
         this.buy = this.button('Unlock cosmetic', () => this.reviewPurchase());
         this.apply = this.button('Apply owned look', () => {
@@ -62,7 +67,7 @@ export class CosmeticVendorUI {
             if (this.canAct() && this.pendingID) this.send('buy_cosmetic', { id: this.pendingID, priceEP: this.pendingPrice, confirmed: true });
         }); this.retry.hidden = true;
         this.status = node('p', '', 'cosmetic-status'); this.status.setAttribute('role', 'status'); this.status.setAttribute('aria-live', 'polite');
-        details.append(this.title, this.description, this.previewHost, this.inspect, this.compare, this.buy, this.apply, this.confirmation, this.retry);
+        details.append(this.title, this.description, this.previewHost, this.inspect, this.inspectOutfit, this.compare, this.buy, this.apply, this.confirmation, this.retry);
         body.append(browser, details);
         this.root.append(header, this.balance, intro, body, this.status);
         document.body.append(this.root);
@@ -90,6 +95,7 @@ export class CosmeticVendorUI {
         this.offerCards = []; this.search.disabled = true; this.category.disabled = true;
         this.results.textContent = 'Loading collection…'; this.empty.hidden = true; this.previewHost.hidden = true;
         this.inspectHeld = false; this.inspect.hidden = true; this.inspect.textContent = 'Inspect held look'; this.inspect.setAttribute('aria-pressed', 'false');
+        this.hideHeldGear = false; this.inspectOutfit.hidden = true; this.inspectOutfit.setAttribute('aria-pressed', 'false');
         this.preview?.dispose(); this.preview = null;
         this.balance.textContent = 'Loading your EP balance…'; this.title.textContent = 'Select a cosmetic'; this.description.textContent = '';
         this.compare.disabled = true; this.retry.hidden = true;
@@ -204,6 +210,10 @@ export class CosmeticVendorUI {
         const held = ['mainHand', 'offHand'].includes(slot);
         this.inspect.hidden = !held;
         if (!held) this.inspectHeld = false;
+        this.inspectOutfit.hidden = slot !== 'outfit';
+        if (slot !== 'outfit') this.hideHeldGear = false;
+        this.inspectOutfit.setAttribute('aria-pressed', String(Boolean(this.hideHeldGear)));
+        this.preview.setHeldGearVisible?.(!this.hideHeldGear);
         this.preview.update(model);
         this.preview.setFocusSlot?.(held && this.inspectHeld ? slot : null);
         this.inspect.textContent = this.inspectHeld ? 'Show full character' : 'Inspect held look';
