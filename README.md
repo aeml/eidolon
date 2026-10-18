@@ -522,6 +522,14 @@ clients when a full outfit hides an equipment change. One focused Fighter case
 passes all nine phases with zero retries; game runtime and cosmetic rules remain
 unchanged. Both earlier failed CI attempts stay frozen, with deployments skipped.
 [Wardrobe correction](docs/plans/2026-10-18-release1-79-79-wardrobe-readiness-correction.md).
+The dedicated loot fixture now prepares ordinary bag capacity after its ability
+encounter and before its guaranteed loot kill. A controlled native comparison
+reproduces the old full-bag refusal, then verifies the corrected real pickup,
+original gear, owned stash item, equipment, EP and saved fresh login with zero
+retries. Game inventory rules and all original pickup assertions stay unchanged.
+D2's completed CI and both deployments remain recorded, but its configured live
+retry kept it unaccepted; the original failure stays frozen without a waiver.
+[Loot correction](docs/plans/2026-10-18-release1-79-79-loot-readiness-correction.md).
 This prepared release still requires its own exact CI and live acceptance.
 Full original game/world/art/combat/audio/performance/device/security/operations/
 owner/F1-F5/beta/1.99 scope stays active. Human campaign/phone feedback and
