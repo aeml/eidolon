@@ -7,6 +7,8 @@ import { ILYRA_MODEL_PATH } from '../art/AuthoredIlyra.js';
 const DEFAULT_ASSET_VERSION = '2026-09-04-11';
 
 const ASSET_VERSION_OVERRIDES = {
+    './assets/archetypes/Fighter/meshy-pilot-high.glb': 'c2134a3299b86fb8',
+    './assets/archetypes/Fighter/meshy-pilot-low.glb': 'd8dec66b03eaef83',
     ...AUTHORED_ASSET_VERSIONS,
     ...GARMENT_ASSET_VERSIONS,
     ...HELD_GARMENT_ASSET_VERSIONS,

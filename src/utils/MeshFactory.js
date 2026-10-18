@@ -4,6 +4,7 @@ import { MeshCatalog } from './MeshCatalog.js';
 import { resolveAssetPath } from '../assets/assetManifest.js';
 import { clearEquipmentVisuals } from '../art/EquipmentVisuals.js';
 import { createAuthoredCharacter, isAuthoredPlayerClass } from '../art/AuthoredCharacters.js';
+import { createMeshyFighter, isMeshyFighterSelected, MESHY_FIGHTER_PATHS } from '../art/MeshyFighter.js';
 import { createAuthoredIlyraInstance, ILYRA_MODEL_PATH } from '../art/AuthoredIlyra.js';
 import {
     createProceduralFighter,
@@ -731,11 +732,14 @@ export class MeshFactory {
 
     static async createMeshForType(type, { quality } = {}) {
         if (isAuthoredPlayerClass(type)) {
-            const detail = this.getFighterQuality(quality), poolKey = `${type}:${detail}`;
+            const detail = this.getFighterQuality(quality), meshy = type === 'Fighter' && isMeshyFighterSelected();
+            const poolKey = `${type}:${detail}${meshy ? ':meshy' : ''}`;
             const reused = this.getPooledMesh(poolKey);
             if (reused) return reused;
             try {
-                const fighter = await createAuthoredCharacter(type, detail, (path, timeout) => this.loadModelWithTimeout(path, timeout));
+                const fighter = meshy
+                    ? createMeshyFighter(await this.loadModelWithTimeout(MESHY_FIGHTER_PATHS[detail], 15000), { quality: detail })
+                    : await createAuthoredCharacter(type, detail, (path, timeout) => this.loadModelWithTimeout(path, timeout));
                 fighter.userData.meshPoolKey = poolKey;
                 return fighter;
             } catch (error) {

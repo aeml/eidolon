@@ -2565,4 +2565,15 @@ owner/F1-F5/beta/1.99 scope stays active. Human campaign/phone feedback and
 soak/stress remain deferred, not passed. Public access and earned progress stay.
 
 
+
+The first quest/specialization pipeline cd98 failed its legacy branch-selection
+fixture, which still expected a level-one character to select a branch. Client
+and all hosted browser checks passed; native and deployment jobs skipped.
+The corrected fixture preserves its original malformed-request and legacy
+receipt assertions, adds a level9 refusal, and selects at level10.34focused
+Go race checks pass, with five explicit opt-in skips. Runtime rules and all
+original failures remain retained; this correction needs its own complete CI
+and deployment acceptance.
+[Fixture correction](docs/plans/2026-10-18-level10-legacy-branch-fixture.md).
+
 Owner addition (2026-10-18): at level 10, clearly announce specialization availability and open its selection menu; remind returning level-10+ unspecialized characters. Every couple of story quests, offer one choice of six saved random equipment items at the quest level, guaranteed green or better with boosted blue/orange chances. Pending choices must survive reconnects, full bags and save recovery without rerolls or duplicate claims. Implemented and locally qualified in the owned quest-item-choices worktree (58 client checks, 396 Go race regressions, two software browser cases, and one real API/Mongo/reconnect/single-claim integration). CI publication and verified deployment remain pending; see docs/plans/2026-10-18-specialization-unlock-and-quest-equipment-rewards.md.
