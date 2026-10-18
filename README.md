@@ -495,7 +495,12 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.79`, **prepared; deployment acceptance pending**.
+Current source version: `Alpha 1.79.80`, **prepared; deployment acceptance pending**.
+The experimental Meshy Fighter is available through `?fighterModel=meshy`, with
+High/Low browser exports, six generated/base motions, existing equipment
+attachment and skill gestures. Use a Fighter character; omit the query to return
+to the current appearance. Shoulder deformation and grips remain under review.
+
 Alpha 1.79.79 is prepared with specialization guidance, saved quest equipment
 choices, distinct room-purpose masonry and ruined
 ambush piers across the five dungeon themes. Treasure vaults, shrine chapels,

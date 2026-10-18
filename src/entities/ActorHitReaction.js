@@ -41,6 +41,11 @@ export class ActorHitReaction {
         const fraction = amount / Math.max(1, Number(actor.stats?.maxHp) || 100);
         this.angle = (.055 + Math.min(.045, fraction * .3)) * mass;
         this.elapsed = 0;
+        const clip = actor.mesh.userData.hitReactionAnimation;
+        if (clip && actor.state === 'IDLE' && !actor.currentAbilityAnimation && actor.playAnimation(clip, false, true)) {
+            actor.currentAction.setEffectiveTimeScale(actor.currentAction.getClip().duration / DURATION);
+            this.angle = 0;
+        }
         return true;
     }
 

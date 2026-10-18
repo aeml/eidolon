@@ -233,7 +233,7 @@ capture_isolated_service_failure() {
 docker build \
   --build-arg GO_VERSION=1.27.2 \
   --build-arg "BUILD_COMMIT=${qa_build_commit}" \
-  --build-arg "BUILD_VERSION=Alpha 1.79.79" \
+  --build-arg "BUILD_VERSION=Alpha 1.79.80" \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 
@@ -696,6 +696,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   jump-speed)
     EIDOLON_E2E_JUMP_TIMING=1 npx playwright test --retries=0 tests/e2e/authenticated.spec.js --grep "long Ctrl-click jump"
+    ;;
+  meshy-fighter)
+    EIDOLON_E2E_CLASS=Fighter EIDOLON_E2E_MESHY_PLAYTEST=1 npx playwright test --retries=0 tests/e2e/meshy-fighter.spec.js
     ;;
   release-smoke)
     if [[ "${QA_NETWORK_MODE}" == private-smoke ]]; then

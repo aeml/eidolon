@@ -15,6 +15,22 @@ function fixture(factory = createProceduralSkeleton) {
 }
 
 describe('directional body impact presentation', () => {
+    test('a delivered hit clip plays while idle without interrupting attacks or movement', () => {
+        const { actor, reaction, source } = fixture(createProceduralFighter);
+        const clip = new THREE.AnimationClip('HitReaction', 2, []);
+        actor.animations.HitReaction = actor.mixer.clipAction(clip);
+        actor.mesh.userData.hitReactionAnimation = 'HitReaction';
+        actor.state = 'IDLE';
+        expect(reaction.play(source, 10)).toBe(true);
+        expect(actor.currentAction).toBe(actor.animations.HitReaction);
+        expect(actor.currentAction.getEffectiveTimeScale()).toBeCloseTo(2 / .28);
+        reaction.update(.3);
+        actor.state = 'ATTACKING'; actor.playAnimation('Attack', false, true);
+        const attack = actor.currentAction;
+        reaction.play(source, 10);
+        expect(actor.currentAction).toBe(attack);
+        actor.dispose();
+    });
     test('authored rigs recoil as a whole without separating skeleton and skin siblings', () => {
         const mesh = new THREE.Group(), visual = new THREE.Group(), rig = new THREE.Group(), skin = new THREE.Group();
         visual.name = 'FighterVisualRig';

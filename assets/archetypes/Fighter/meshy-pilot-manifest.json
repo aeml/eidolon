@@ -1,0 +1,29 @@
+{
+  "provider": "Meshy API",
+  "sourceHash": "7d7069c066504dde217992a9990b6aa5cb2816d00497f539f46959312105251a",
+  "variants": {
+    "high": {
+      "path": "./assets/archetypes/Fighter/meshy-pilot-high.glb",
+      "bytes": 2971296,
+      "sha256": "c2134a3299b86fb8baa3e2144fd27299e547cc72643e1c171f03a6843117b362"
+    },
+    "low": {
+      "path": "./assets/archetypes/Fighter/meshy-pilot-low.glb",
+      "bytes": 1362368,
+      "sha256": "d8dec66b03eaef83dcfdf62e7e6c772a1e0b2d0c5f101ee6e7048c9e973c0aec"
+    }
+  },
+  "generated": "2026-10-18",
+  "modelTask": "01a14db9-f0a2-735b-bbe8-60a4e27f9350",
+  "rigTask": "01a14dbb-e927-74be-996c-606dd61e39f7",
+  "animations": [
+    "Idle",
+    "Walk",
+    "Run",
+    "Attack",
+    "HitReaction",
+    "Death"
+  ],
+  "licenseSource": "https://help.meshy.ai/en/articles/10137554-what-is-the-ownership-of-the-generated-models",
+  "note": "Original prompted paid-API asset; derived units, bone names, in-place motion and browser textures. Experimental shoulder/hand deformation remains under review."
+}
