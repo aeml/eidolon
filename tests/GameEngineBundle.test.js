@@ -183,7 +183,13 @@ test('bundled copied add-ons retain the shared Three identity and exact license'
 
 test.each(['version', 'entry-link', 'nested-link', 'escape'])('unsafe %s add-on input cannot alter the publication entry', async kind => {
     const root = await fixture();
-    await copyVendor(root);
+    if (kind === 'escape') {
+        // This rejection happens before loading an add-on. Keep the real
+        // manifest/license admission, without copying the unrelated add-on tree.
+        await mkdir(path.join(root, 'vendor/three/examples/jsm'), { recursive: true });
+        for (const name of ['manifest.json', 'three/LICENSE'])
+            await cp(path.join('vendor', name), path.join(root, 'vendor', name));
+    } else await copyVendor(root);
     const addon = 'three/addons/geometries/RoundedBoxGeometry.js';
     await writeFile(path.join(root, 'src/core/GameEngine.js'),
         `import {RoundedBoxGeometry} from '${kind === 'escape' ? 'three/addons/../../../../src/core/GameEngine.js' : addon}'; export class GameEngine {geometry(){return new RoundedBoxGeometry()}}`);
@@ -198,6 +204,9 @@ test.each(['version', 'entry-link', 'nested-link', 'escape'])('unsafe %s add-on 
         await rm(filename); await symlink(path.join(process.cwd(), 'vendor/three/examples/jsm/utils/BufferGeometryUtils.js'), filename);
     }
     const original = await readFile(path.join(root, 'src/main.js'), 'utf8');
+    const originalEngine = await readFile(path.join(root, 'src/core/GameEngine.js'), 'utf8');
     await expect(bundleGameEngine(root)).rejects.toThrow(kind === 'version' ? 'vendor version' : kind === 'escape' ? 'Unsupported Three' : 'must be copied');
     expect(await readFile(path.join(root, 'src/main.js'), 'utf8')).toBe(original);
+    expect(await readFile(path.join(root, 'src/core/GameEngine.js'), 'utf8')).toBe(originalEngine);
+    await expect(readFile(path.join(root, 'src/core/GameEngine.bundle.js'))).rejects.toMatchObject({ code: 'ENOENT' });
 });
