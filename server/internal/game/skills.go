@@ -16,11 +16,11 @@ func (w *World) PerformSelectBranch(playerID, branch string) (*Entity, bool) {
 	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
-	if !ok {
+	if !ok || player.Level < 10 {
 		return nil, false
 	}
 
-	// Allow switching branches freely
+	// Specializations unlock at level 10; switching is then free.
 	if branch != "A" && branch != "B" && branch != "C" {
 		return nil, false
 	}

@@ -404,7 +404,8 @@ export class SkillTreeUI {
                 const selectBtn = document.createElement('button');
                 selectBtn.type = 'button';
                 selectBtn.dataset.desktopBuildKey = `branch:${branchKey}`;
-                selectBtn.textContent = "Select Spec";
+                selectBtn.textContent = playerLevel < 10 ? "Unlocks at level 10" : "Select Spec";
+                selectBtn.disabled = playerLevel < 10;
                 selectBtn.style.marginLeft = "10px";
                 selectBtn.onclick = () => {
                     if (this.onSelectBranch) {

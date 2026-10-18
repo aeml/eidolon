@@ -58,3 +58,23 @@ test('retired specialization reminder cannot reopen a new session window', () =>
     oldButton.click();
     expect(ui.toggle).not.toHaveBeenCalled();
 });
+
+
+test.each([false, true])('level10 selection is enforced in the %s phone presentation', mobile => {
+    const { player } = setup(9);
+    const ui = new SkillTreeUI({ isMobile: mobile, getLastPlayer: () => player });
+    ui.onSelectBranch = jest.fn();
+    ui.skillTreeWindow.style.display = 'flex';
+    ui.renderSkillTree('Fighter');
+    const controls = () => [...document.querySelectorAll('[data-desktop-build-key^="branch:"], [data-build-action^="branch:"]')];
+    expect(controls()).toHaveLength(3);
+    for (const button of controls()) { expect(button.disabled).toBe(true); button.click(); }
+    expect(ui.onSelectBranch).not.toHaveBeenCalled();
+    player.level = 10;
+    ui.renderSkillTree('Fighter');
+    expect(controls().every(button => !button.disabled)).toBe(true);
+    controls()[0].click();
+    expect(ui.onSelectBranch).toHaveBeenCalledTimes(1);
+    expect(ui.onSelectBranch.mock.calls[0][0]).toBe('A');
+    ui.dispose();
+});

@@ -70,6 +70,15 @@ func TestQuestItemRewardsActualTurnInReconnectAndSingleClaim(t *testing.T) {
 	dir := t.TempDir()
 	address, stop := compatStartServer(t, binary, uri, 738, "-save-journal-dir", dir)
 	connection := resourceOpenCharacter(t, address, fixture.Name, password)
+	var buildReceipt struct {
+		OK      bool   `json:"ok"`
+		Message string `json:"message"`
+	}
+	resourceSend(t, connection, MsgSelectBranch, map[string]string{"branch": "B", "requestId": "before-level10"})
+	resourceReadMessage(t, connection, "build_action", &buildReceipt)
+	if buildReceipt.OK || !strings.Contains(buildReceipt.Message, "level 10") {
+		t.Fatal("ordinary level9 specialization selection was admitted")
+	}
 	var before []game.Quest
 	resourceSend(t, connection, MsgRequestQuests, struct{}{})
 	resourceReadMessage(t, connection, MsgQuestUpdate, &before)
@@ -98,6 +107,11 @@ func TestQuestItemRewardsActualTurnInReconnectAndSingleClaim(t *testing.T) {
 		if item.Level != reward.RewardChoiceLevel || item.Rarity == game.RarityCommon {
 			t.Fatal("invalid quest-level rarity", item.Level, item.Rarity)
 		}
+	}
+	resourceSend(t, connection, MsgSelectBranch, map[string]string{"branch": "B", "requestId": "at-level10"})
+	resourceReadMessage(t, connection, "build_action", &buildReceipt)
+	if !buildReceipt.OK {
+		t.Fatal("ordinary level10 specialization selection was rejected", buildReceipt.Message)
 	}
 	// The new marker is published before a quest can issue new persisted value.
 	version, err := repo.SchemaVersion(t.Context())
@@ -129,7 +143,7 @@ func TestQuestItemRewardsActualTurnInReconnectAndSingleClaim(t *testing.T) {
 	_ = connection.Close()
 	stop()
 	saved, err := repo.GetDirectTradeCharacter(fixture.Name, fixture.Name)
-	if err != nil || saved == nil || saved.Level != 10 || saved.XP != 0 {
+	if err != nil || saved == nil || saved.Level != 10 || saved.XP != 0 || saved.SelectedBranch != "B" {
 		t.Fatal("prepared level9 turn-in did not reach specialization unlock", err)
 	}
 	address, stop = compatStartServer(t, binary, uri, 739, "-save-journal-dir", dir)

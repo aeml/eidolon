@@ -20,6 +20,11 @@ for (const [width, height] of [[1280, 900], [390, 844]]) {
             window.__unlockFixture = { ui, player, claims: [] };
         }, width < 600);
         await expect(page.locator('.specialization-unlock-notice')).toHaveCount(0);
+        await page.evaluate(() => window.__unlockFixture.ui.toggleSkillTree());
+        const previewBranches = page.locator('[data-desktop-build-key^="branch:"], [data-build-action^="branch:"]');
+        await expect(previewBranches).toHaveCount(3);
+        for (const button of await previewBranches.all()) await expect(button).toBeDisabled();
+        await page.evaluate(() => window.__unlockFixture.ui.skillTree.close());
         await page.evaluate(() => { const { ui, player } = window.__unlockFixture; player.level = 10; ui.updatePlayerStats(player); ui.updateXP(player); });
         const notice = page.getByRole('complementary', { name: 'Specialization unlocked' });
         await expect(notice).toBeVisible();

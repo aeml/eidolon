@@ -134,7 +134,7 @@ export class MobileSkillTree {
         const tree = CONSTANTS.SKILL_TREES[this.classType];
         if (!tree) return;
         content.append(el('h2', `${this.classType} specializations`),
-            el('p', 'Choose a specialization. Its skills unlock automatically at levels 10, 20, 30 and 40 and fill your combat bar. Switching specializations is free.'));
+            el('p', 'Choose a specialization at level 10. Its skills unlock automatically at levels 10, 20, 30 and 40 and fill your combat bar. Switching specializations is free.'));
         this.card(content, tree.Tier1.name, tree.Tier1.desc).append(el('p', 'Starting ability · Always available', 'phone-build-meta'));
         const identity = this.owner.getClassIdentityCopy(this.classType);
         for (const key of ['A', 'B', 'C']) {
@@ -142,9 +142,9 @@ export class MobileSkillTree {
             const selected = player.selectedBranch === key;
             const section = el('section', '', 'phone-build-branch'); section.dataset.branch = key;
             section.append(el('h3', branch.name + (selected ? ' · Active' : '')), el('p', identity.branchRoles?.[key]?.role));
-            this.button(section, `branch:${key}`, selected ? 'Active specialization' : `Choose ${branch.name}`, () =>
+            this.button(section, `branch:${key}`, selected ? 'Active specialization' : player.level < 10 ? 'Unlocks at level 10' : `Choose ${branch.name}`, () =>
                 this.request(`branch:${key}`, branch.name, p => p.selectedBranch === key,
-                    this.owner.onSelectBranch && (id => this.owner.onSelectBranch(key, id))), selected);
+                    this.owner.onSelectBranch && (id => this.owner.onSelectBranch(key, id))), selected || player.level < 10);
             for (let tier = 2; tier <= 5; tier++) {
                 const skill = branch[`Tier${tier}`];
                 if (!skill) continue;
