@@ -219,12 +219,18 @@ for (const actorClass of Object.keys(classLooks)) test(`${actorClass}: purchased
         let remaining = 100;
         // An outfit renders seven modeled body sections and two real held
         // slots. Real rings/neck/trinkets remain equipped but are suppressed.
-        const check = async (name, garment, held = hands, items = garment ? 9 : 14) => {
+        const withoutSlot = slot => Object.fromEntries(Object.entries(original.equipment).filter(([key]) => key !== slot));
+        const check = async (name, garment, held = hands, items = garment ? 9 : 14, equipment = original.equipment) => {
             const model = { ready: true, actorClass, garment, held, items, missing: [], fallback: [],
                 heldBySlot: Object.fromEntries(Object.entries(handIDs).filter(([, id]) => held.includes(id))
                     .map(([slot, id]) => [slot, [id]])) };
             await expect.poll(() => renderedAppearance(page)).toMatchObject({ ...model, appearances: expected, gold: 1234, level: 30, xp: 0 });
             await expect.poll(() => renderedAppearance(observer, ownerID)).toMatchObject({ ...model, appearances: expected });
+            // Body gear can change without changing a full outfit's visual
+            // signature or item count. Wait for the intended real gear on both
+            // clients; equality alone could accept two stale snapshots.
+            await expect.poll(async () => (await renderedAppearance(page)).equipment).toEqual(equipment);
+            await expect.poll(async () => (await renderedAppearance(observer, ownerID)).equipment).toEqual(equipment);
             const local = await renderedAppearance(page), remote = await renderedAppearance(observer, ownerID);
             expect(local.appearances).toEqual(expected);
             expect(remote.appearances).toEqual(expected);
@@ -274,7 +280,7 @@ for (const actorClass of Object.keys(classLooks)) test(`${actorClass}: purchased
         await page.screenshot({ path: testInfo.outputPath('confirmed-character-garments.png') });
         // Removing real gear under an outfit must not create a cosmetic weapon.
         await page.locator('#slot-mainhand').click();
-        await check('empty-real-weapon', outfitID, [handIDs.offHand], 8);
+        await check('empty-real-weapon', outfitID, [handIDs.offHand], 8, withoutSlot('mainHand'));
         if (!await page.locator('#inventory-screen').isVisible()) await page.keyboard.press('i');
         const index = await page.evaluate(() => window.game.player.inventory.findIndex(item => item?.id === 'garment-connected-mainHand'));
         expect(index).toBeGreaterThanOrEqual(0);
@@ -319,9 +325,9 @@ for (const actorClass of Object.keys(classLooks)) test(`${actorClass}: purchased
         await check('saved-selection-relogin', outfitID);
         await expectPrivateWallet(page, remaining);
         await page.locator('#slot-chest').click();
-        await check('real-chest-removed-under-outfit', outfitID);
+        await check('real-chest-removed-under-outfit', outfitID, hands, 9, withoutSlot('chest'));
         await chooseAppearance(page, 'outfit', ''); delete expected.outfit;
-        await check('clear-outfit-restores-current-gear-and-retained-looks', '', hands, 13);
+        await check('clear-outfit-restores-current-gear-and-retained-looks', '', hands, 13, withoutSlot('chest'));
         if (!await page.locator('#inventory-screen').isVisible()) await page.keyboard.press('i');
         const chest = await page.evaluate(() => window.game.player.inventory.findIndex(item => item?.id === 'garment-connected-chest'));
         expect(chest).toBeGreaterThanOrEqual(0);
