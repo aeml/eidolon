@@ -192,6 +192,101 @@ describe('desktop party support selection', () => {
         expect(ui.onPartyPromote).toHaveBeenCalledWith('ally');
         expect(ui.selectedSupportTargetId).toBeNull();
     });
+    test('health snapshots keep healing and leader controls continuously attached', () => {
+        const { ui, ctx } = createSocialUI();
+        ctx.getLastPlayer.mockReturnValue({ id: 'self' });
+        ui.updateParty(data());
+        const target = ui.partyList.querySelector('[data-party-support-target="ally"]');
+        const row = target.closest('.party-member');
+        const kick = row.querySelector('[title="Kick"]'), promote = row.querySelector('[title="Promote"]');
+        const clear = ui.partyList.querySelector('.party-support-mode');
+        const mutations = new MutationObserver(() => {});
+        mutations.observe(ui.partyList, { childList: true, subtree: true });
+        try {
+            kick.focus(); ui.partyList.scrollTop = 80;
+            const next = data(); next.members[1].hp = 35;
+            ui.updateParty(next);
+            expect(ui.partyList.querySelector('[data-party-support-target="ally"]')).toBe(target);
+            expect(target.closest('.party-member')).toBe(row);
+            expect(row.querySelector('[title="Kick"]')).toBe(kick);
+            expect(row.querySelector('[title="Promote"]')).toBe(promote);
+            expect(document.activeElement).toBe(kick); expect(ui.partyList.scrollTop).toBe(80);
+            expect(target.querySelector('.party-hp-fill').style.width).toBe('35%');
+            const controls = [target, kick, promote, clear];
+            expect(mutations.takeRecords().flatMap(record => [...record.removedNodes])
+                .filter(node => controls.some(control => node === control || node.contains(control)))).toEqual([]);
+        } finally { mutations.disconnect(); ui.dispose(); }
+    });
+    test.each(['departure', 'party', 'character', 'dispose', 'replacement'])('%s retires old roster actions', reason => {
+        const { ui, ctx } = createSocialUI();
+        ctx.getLastPlayer.mockReturnValue({ id: 'self' });
+        ui.onPartyKick = jest.fn(); ui.onPartyPromote = jest.fn();
+        const party = data(); ui.updateParty(party);
+        const target = ui.partyList.querySelector('[data-party-support-target="ally"]');
+        const kick = ui.partyList.querySelector('[aria-label="Kick Tank from party"]');
+        const promote = ui.partyList.querySelector('[aria-label="Promote Tank to party leader"]');
+        let replacement;
+        if (reason === 'departure') { party.members.pop(); ui.updateParty(party); }
+        if (reason === 'party') { party.partyId = 'replacement-party'; ui.updateParty(party); }
+        if (reason === 'character') ctx.getLastPlayer.mockReturnValue({ id: 'replacement-character' });
+        if (reason === 'dispose') ui.dispose();
+        if (reason === 'replacement') { replacement = createSocialUI().ui; }
+        target.click(); kick.click(); promote.click();
+        expect(ui.selectedSupportTargetId).toBeNull();
+        expect(ui.onPartyKick).not.toHaveBeenCalled(); expect(ui.onPartyPromote).not.toHaveBeenCalled();
+        ui.dispose(); replacement?.dispose();
+    });
+    test('revoked leadership retires actions and a returned leader gets fresh controls', () => {
+        const { ui, ctx } = createSocialUI(); ctx.getLastPlayer.mockReturnValue({ id: 'self' });
+        ui.onPartyKick = jest.fn(); ui.onPartyPromote = jest.fn();
+        const party = data(); ui.updateParty(party);
+        const kick = ui.partyList.querySelector('[aria-label="Kick Tank from party"]');
+        party.leaderId = 'ally'; ui.updateParty(party); kick.click();
+        expect(ui.onPartyKick).not.toHaveBeenCalled();
+        party.leaderId = 'self'; ui.updateParty(party); kick.click();
+        expect(ui.onPartyKick).not.toHaveBeenCalled();
+        const current = ui.partyList.querySelector('[aria-label="Kick Tank from party"]');
+        expect(current).not.toBe(kick); current.click();
+        expect(ui.onPartyKick).toHaveBeenCalledTimes(1); expect(ui.onPartyKick).toHaveBeenCalledWith('ally');
+        ui.dispose();
+    });
+    test('unchanged rows remain mounted when members join, rename and change roster order', () => {
+        const { ui, ctx } = createSocialUI(); ctx.getLastPlayer.mockReturnValue({ id: 'self' });
+        const party = data(); ui.updateParty(party);
+        const target = ui.partyList.querySelector('[data-party-support-target="ally"]');
+        const row = target.closest('.party-member');
+        party.members.push({ id: 'new', name: 'Wizard', hp: 80, maxHp: 100 });
+        party.members[1].name = 'Renamed Tank'; ui.updateParty(party);
+        expect(target.isConnected).toBe(true); expect(target.closest('.party-member')).toBe(row);
+        expect(target.getAttribute('aria-label')).toBe('Select Renamed Tank for healing');
+        party.members.reverse(); ui.updateParty(party);
+        expect([...ui.partyList.querySelectorAll('[data-party-support-target]')].map(button => button.dataset.partySupportTarget))
+            .toEqual(['', 'new', 'ally', 'self']);
+        target.click(); expect(ui.selectedSupportTargetId).toBe('ally'); ui.dispose();
+    });
+    test('a returned member gets fresh controls and cannot reactivate its removed callbacks', () => {
+        const { ui, ctx } = createSocialUI(); ctx.getLastPlayer.mockReturnValue({ id: 'self' });
+        ui.onPartyKick = jest.fn(); const party = data(); ui.updateParty(party);
+        const old = ui.partyList.querySelector('[data-party-support-target="ally"]');
+        const action = old.onclick, kick = ui.partyList.querySelector('[title="Kick"]');
+        const member = party.members.pop(); ui.updateParty(party);
+        party.members.push(member); ui.updateParty(party);
+        action.call(old); kick.onclick.call(kick);
+        expect(ui.selectedSupportTargetId).toBeNull(); expect(ui.onPartyKick).not.toHaveBeenCalled();
+        const current = ui.partyList.querySelector('[data-party-support-target="ally"]');
+        expect(current).not.toBe(old); current.click(); expect(ui.selectedSupportTargetId).toBe('ally'); ui.dispose();
+    });
+    test('captured healing and clear callbacks cannot bypass a downed target or a changed character', () => {
+        const { ui, ctx } = createSocialUI(); ctx.getLastPlayer.mockReturnValue({ id: 'self' });
+        const party = data(); ui.updateParty(party);
+        const target = ui.partyList.querySelector('[data-party-support-target="ally"]');
+        party.members[1].hp = 0; ui.updateParty(party); target.onclick.call(target);
+        expect(ui.selectedSupportTargetId).toBeNull();
+        party.members[1].hp = 50; ui.updateParty(party); target.click();
+        const clear = ui.partyList.querySelector('.party-support-mode');
+        ctx.getLastPlayer.mockReturnValue({ id: 'other-character' }); clear.onclick.call(clear);
+        expect(ui.selectedSupportTargetId).toBe('ally'); ui.dispose();
+    });
 });
 
 describe('SocialUI.updateFriendList', () => {

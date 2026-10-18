@@ -4,6 +4,7 @@ import { GroupFinderUI } from './GroupFinderUI.js';
 import { socialSafetyActions, socialSafetySettings } from './SocialSafetyUI.js';
 import { PhonePartyUI } from './PhonePartyUI.js';
 import { PARTY_REWARD_DETAILS, PARTY_REWARD_SUMMARY } from './PartyRewardGuidance.js';
+import { renderPartyRoster } from './PartyRoster.js';
 
 /**
  * Social UI module — handles the social (online players) window,
@@ -15,6 +16,7 @@ import { PARTY_REWARD_DETAILS, PARTY_REWARD_SUMMARY } from './PartyRewardGuidanc
 export class SocialUI {
     dispose() {
         this.disposed = true;
+        this.clearPartyRoster();
         disposeOwnedEvents(this);
         this.hidePartyRequest();
         this.groupFinder?.setActive(false);
@@ -36,6 +38,8 @@ export class SocialUI {
         this.supportTargetPlayerId = null;
         this.supportTargetPartyId = null;
         this.supportTargetButtons = new Map();
+        this.partyRows = new Map();
+        this.partyRosterEpoch = 0;
         this.inParty = false;
         this.currentInviter = null;
         this.currentSocialStatus = 'available';
@@ -72,6 +76,7 @@ export class SocialUI {
         // --- Party DOM refs ---
         this.partyPanel = document.getElementById('party-panel');
         this.partyList = document.getElementById('party-list');
+        if (this.partyList) this.partyList._partyOwner = this;
         this.partyInviteInput = document.getElementById('party-invite-input');
         this.btnInviteParty = document.getElementById('btn-invite-party');
 		this.btnTradePlayer = document.getElementById('btn-trade-player');
@@ -381,10 +386,25 @@ export class SocialUI {
         document.body.classList.toggle('party-roster-visible', visible);
     }
 
+    clearPartyRoster() {
+        this.partyRosterEpoch++;
+        this.partyRows.clear(); this.supportTargetButtons.clear();
+        this.supportModeButton = null;
+        if (this.partyList?._partyOwner === this) this.partyList.replaceChildren();
+    }
+
+    isPartyRosterCurrent(epoch) {
+        return !this.disposed && this.partyRosterEpoch === epoch && this.partyList?._partyOwner === this
+            && this.partyList.isConnected && this.supportTargetPartyId === this.partyData?.partyId
+            && this.supportTargetPlayerId === (this.ctx.getLastPlayer()?.id || null);
+    }
+
     updateParty(partyData) {
+        if (this.disposed || (this.partyList && this.partyList._partyOwner !== this)) return;
         const playerId = this.ctx.getLastPlayer()?.id || null;
         if (this.supportTargetPartyId !== partyData?.partyId || this.supportTargetPlayerId !== playerId) {
             this.selectedSupportTargetId = null;
+            this.clearPartyRoster();
         }
         this.supportTargetPlayerId = playerId;
         this.supportTargetPartyId = partyData?.partyId;
@@ -437,26 +457,7 @@ export class SocialUI {
         }
 
         this.setPartyPanelVisible(true);
-        const focusedSupportId = this.partyList.contains(document.activeElement)
-            ? document.activeElement?.dataset?.partySupportTarget : undefined;
-        this.partyList.replaceChildren();
-
         const members = partyData.members || [];
-        const selectedSupport = members.find(member => member.id === this.selectedSupportTargetId);
-        const clearSupport = this.supportModeButton || document.createElement('button');
-        clearSupport.type = 'button';
-        clearSupport.className = 'party-support-mode';
-        clearSupport.dataset.partySupportTarget = '';
-        clearSupport.textContent = selectedSupport ? `Clear healing target · ${selectedSupport.name}` : 'Healing: cursor aim';
-        clearSupport.title = 'Select a party member below to direct Healing Light or Divine Intervention. Clear to use cursor aiming again.';
-        if (!this.supportModeButton) {
-            clearSupport.addEventListener('click', () => {
-                this.selectedSupportTargetId = null;
-                this.updateParty(this.partyData);
-            });
-            this.supportModeButton = clearSupport;
-        }
-        this.partyList.appendChild(clearSupport);
         const leaderId = partyData.leaderId;
         const player = this.ctx.getLastPlayer();
         const myId = player ? player.id : null;
@@ -482,115 +483,7 @@ export class SocialUI {
             panelGuidance.textContent = `${amILeader ? 'Leader view' : 'Party member'} · ${PARTY_REWARD_SUMMARY} Up to +${maxGoldPoolBonusPct}% eligible-party Gold pool, not personal XP.`;
         }
 
-        members.forEach(member => {
-            const div = document.createElement('div');
-            div.className = 'party-member';
-			div.classList.toggle('party-member--ready', !!member.ready);
-
-            const hpPercent = (member.hp / member.maxHp) * 100;
-            const isLeader = member.isLeader;
-            const isMe = member.id === myId;
-			const combatRole = member.role || 'damage';
-			const roleLabel = `${combatRole}${isLeader ? ' • Leader' : isMe ? ' • You' : ''}${member.ready ? ' • Ready' : ''}`;
-
-            let info = this.supportTargetButtons.get(member.id);
-            if (!info) {
-                info = document.createElement('button');
-                info.addEventListener('click', () => {
-                    this.selectedSupportTargetId = member.id;
-                    this.updateParty(this.partyData);
-                });
-                this.supportTargetButtons.set(member.id, info);
-            }
-            info.replaceChildren();
-            info.type = 'button';
-            info.className = 'party-member-info party-support-target';
-            info.dataset.partySupportTarget = member.id;
-            info.disabled = !(member.hp > 0);
-            info.setAttribute('aria-label', `Select ${member.name} for healing`);
-            info.setAttribute('aria-pressed', String(member.id === this.selectedSupportTargetId));
-            info.title = 'Select for Healing Light and Divine Intervention; does not cast or change your attack target.';
-
-            const nameRow = document.createElement('div');
-            nameRow.className = 'party-name';
-
-            if (isLeader) {
-                const leaderIcon = document.createElement('span');
-                leaderIcon.className = 'party-leader-icon';
-                leaderIcon.textContent = '★';
-                nameRow.appendChild(leaderIcon);
-                nameRow.appendChild(document.createTextNode(' '));
-            }
-
-            nameRow.appendChild(document.createTextNode(member.name));
-
-            const meta = document.createElement('span');
-            meta.style.color = '#aaa';
-            meta.style.fontSize = '10px';
-            meta.textContent = ` (Lvl ${member.level} ${member.class})`;
-            nameRow.appendChild(meta);
-
-            const hpBar = document.createElement('div');
-            hpBar.className = 'party-hp-bar';
-
-            const hpFill = document.createElement('div');
-            hpFill.className = 'party-hp-fill';
-            hpFill.style.width = `${Math.max(0, Math.min(100, hpPercent))}%`;
-            hpBar.appendChild(hpFill);
-
-            info.appendChild(nameRow);
-            info.appendChild(hpBar);
-            div.appendChild(info);
-
-            const metaRow = document.createElement('div');
-            metaRow.className = 'party-member-meta';
-
-            const role = document.createElement('span');
-            role.className = 'party-member-role';
-            role.textContent = roleLabel;
-
-            metaRow.appendChild(role);
-            info.appendChild(metaRow);
-
-            if (amILeader && !isMe) {
-                const actions = document.createElement('div');
-                actions.className = 'party-actions';
-
-                const kickButton = document.createElement('button');
-                kickButton.className = 'party-btn';
-                kickButton.type = 'button';
-                kickButton.title = 'Kick';
-                kickButton.setAttribute('aria-label', `Kick ${member.name} from party`);
-                kickButton.textContent = 'K';
-                kickButton.addEventListener('click', () => {
-                    this.onPartyKick?.(member.id);
-                });
-
-                const promoteButton = document.createElement('button');
-                promoteButton.className = 'party-btn';
-                promoteButton.type = 'button';
-                promoteButton.title = 'Promote';
-                promoteButton.setAttribute('aria-label', `Promote ${member.name} to party leader`);
-                promoteButton.textContent = 'P';
-                promoteButton.addEventListener('click', () => {
-                    this.onPartyPromote?.(member.id);
-                });
-
-                actions.appendChild(kickButton);
-                actions.appendChild(promoteButton);
-                div.appendChild(actions);
-            }
-
-            this.partyList.appendChild(div);
-        });
-        for (const id of this.supportTargetButtons.keys()) {
-            if (!members.some(member => member.id === id)) this.supportTargetButtons.delete(id);
-        }
-        // Live roster refreshes must not steal keyboard focus from its controls.
-        if (focusedSupportId !== undefined) {
-            [...this.partyList.querySelectorAll('[data-party-support-target]')]
-                .find(button => button.dataset.partySupportTarget === focusedSupportId && !button.disabled)?.focus({ preventScroll: true });
-        }
+        renderPartyRoster(this, members, myId, leaderId);
     }
 
     showPartyRequest(inviterName, invitationId, context = '', displayName = inviterName) {
