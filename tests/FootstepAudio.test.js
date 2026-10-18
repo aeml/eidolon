@@ -1,6 +1,9 @@
 import { jest } from '@jest/globals';
 import { FootstepAudio, FOOTSTEP_CUE, createFootstepCue } from '../src/audio/FootstepAudio.js';
 import { AudioManager, AUDIO_CUES } from '../src/audio/AudioManager.js';
+import * as THREE from 'three';
+import { Actor } from '../src/entities/Actor.js';
+import { createProceduralFighter, createProceduralRogue, createProceduralWizard, createProceduralCleric } from '../src/art/ProceduralHumanoid.js';
 
 function fixture(animated = true) {
     const audio = { play: jest.fn(() => true) }, tracker = new FootstepAudio(audio);
@@ -59,6 +62,56 @@ test('moving casts follow their lower-body clock rather than the casting action'
     tick(.7); actor.movingCastGait.time = .3; tick(.8);
     actor.movingCastGait.time = .6; expect(tick(.9)).toBe(true);
     expect(audio.play).toHaveBeenCalledTimes(1);
+});
+
+test.each([
+    ['Fighter', createProceduralFighter, 'Guardian Roar'],
+    ['Rogue', createProceduralRogue, 'Cloak & Vanish'],
+    ['Wizard', createProceduralWizard, 'Arcane Shield'],
+    ['Cleric', createProceduralCleric, 'Spirit Guardians']
+])('%s real moving-cast stride produces contacts without changing the actor or cast', (type, factory, skill) => {
+    const make = () => {
+        const actor = new Actor('audio-moving-cast', { STATS: {
+            STRENGTH: 5, INTELLIGENCE: 5, DEXTERITY: 6, WISDOM: 5, STAMINA: 5
+        } });
+        actor.meshType = type; actor.setMesh(factory({ batch: true }));
+        actor.state = 'MOVING'; actor.targetPosition = new THREE.Vector3(100, 0, 0);
+        actor.stats.speed = 6; actor.scaleAnimSpeed = true;
+        actor.playAnimation('Run'); actor.update(.15, null, null, null);
+        actor.playAbilityAnimation(skill, { duration: 1 });
+        return actor;
+    };
+    const actor = make(), baseline = make(), contacts = [], thighAngles = [];
+    let elapsed = 0;
+    const tracker = new FootstepAudio({ play: jest.fn(() => { contacts.push(elapsed); return true; }) });
+    const engine = { player: actor, currentInstanceId: 'audio-room', currentInstanceType: 'verdant_bastion_catacombs' };
+    const action = actor.currentAction;
+    try {
+        tracker.update(engine, 1 / 60);
+        for (let frame = 0; frame < 45; frame++) {
+            elapsed += 1 / 60;
+            actor.update(1 / 60, null, null, null); baseline.update(1 / 60, null, null, null);
+            tracker.update(engine, 1 / 60);
+            expect(actor.currentAction).toBe(action);
+            expect(actor.currentAbilityAnimation.skillName).toBe(skill);
+            expect(actor.movingCastGait.active).toBe(true);
+            expect(actor.position.toArray()).toEqual(baseline.position.toArray());
+            expect(actor.currentAction.time).toBe(baseline.currentAction.time);
+            for (const name of ['Rig_ThighRight', 'Rig_UpperArmRight', 'Rig_Chest', 'Equipment_MainHand']) {
+                const actual = actor.mesh.getObjectByName(name), expected = baseline.mesh.getObjectByName(name);
+                expect(actual.rotation.toArray()).toEqual(expected.rotation.toArray());
+                expect(actual.position.toArray()).toEqual(expected.position.toArray());
+            }
+            thighAngles.push(actor.mesh.getObjectByName('Rig_ThighRight').rotation.x);
+        }
+        expect(actor.position.x).toBeGreaterThan(4);
+        expect(Math.max(...thighAngles) - Math.min(...thighAngles)).toBeGreaterThan(.5);
+        expect(contacts.length).toBeGreaterThan(0);
+        expect(contacts.length).toBeLessThanOrEqual(4);
+        for (let index = 1; index < contacts.length; index++) {
+            expect(contacts[index] - contacts[index - 1]).toBeGreaterThanOrEqual(.16);
+        }
+    } finally { tracker.reset(); actor.dispose(); baseline.dispose(); }
 });
 
 test('procedural fallback uses actual distance and all paths produce at most one contact per update', () => {
