@@ -24,7 +24,9 @@ describe('directional body impact presentation', () => {
         expect(reaction.play(source, 10)).toBe(true);
         expect(actor.currentAction).toBe(actor.animations.HitReaction);
         expect(actor.currentAction.getEffectiveTimeScale()).toBeCloseTo(2 / .28);
+        expect(actor.mesh.userData.hitReactionClipActive).toBe(true);
         reaction.update(.3);
+        expect(actor.mesh.userData.hitReactionClipActive).toBe(false);
         actor.state = 'ATTACKING'; actor.playAnimation('Attack', false, true);
         const attack = actor.currentAction;
         reaction.play(source, 10);

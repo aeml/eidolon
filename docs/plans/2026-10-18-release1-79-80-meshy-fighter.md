@@ -57,3 +57,9 @@ assertions that omitted the new approved pilot. The correction names exactly
 the two pilot files, their runtime/import modules and cache hashes; the retired
 asset payload limits remain zero. All other 12,534 Jest checks passed in that
 attempt. The corrected source must complete its own CI and live verification.
+
+Final pre-publication review also caught the normal idle tick replacing the
+generated reaction on its next frame. The pilot now retains that clip for its
+bounded reaction window, then returns to idle. Browser coverage advances the
+actual Actor update through both phases; movement/attack selection remains free
+to take over. This correction supersedes the queued intermediate source.

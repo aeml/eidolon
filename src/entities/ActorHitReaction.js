@@ -45,6 +45,7 @@ export class ActorHitReaction {
         if (clip && actor.state === 'IDLE' && !actor.currentAbilityAnimation && actor.playAnimation(clip, false, true)) {
             actor.currentAction.setEffectiveTimeScale(actor.currentAction.getClip().duration / DURATION);
             this.angle = 0;
+            actor.mesh.userData.hitReactionClipActive = true;
         }
         return true;
     }
@@ -57,6 +58,7 @@ export class ActorHitReaction {
             this.elapsed = Math.min(DURATION, this.elapsed + Math.max(0, dt));
         }
         if (this.elapsed >= DURATION) {
+            this.actor.mesh.userData.hitReactionClipActive = false;
             this.pivot.quaternion.identity();
             return;
         }
@@ -68,6 +70,7 @@ export class ActorHitReaction {
     }
 
     dispose() {
+        if (this.actor.mesh) this.actor.mesh.userData.hitReactionClipActive = false;
         if (!this.pivot) return;
         this.pivot.quaternion.identity();
         this.pivot.parent?.add(this.rig);

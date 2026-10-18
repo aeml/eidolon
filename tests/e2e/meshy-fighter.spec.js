@@ -49,6 +49,10 @@ test('Meshy play link delivers independently skinned High/Low Fighters with equi
         actors[0].state = 'IDLE'; actors[0].playAnimation('Idle', true, true);
         actors[0].playHitReaction(new THREE.Vector3(-8, 0, 0), 10);
         const hitClip = actors[0].currentAction.getClip().name;
+        actors[0].update(.1);
+        const hitSurvivesIdleUpdate = actors[0].currentAction.getClip().name === 'HitReaction';
+        actors[0].update(.3);
+        const hitRecovered = actors[0].currentAction.getClip().name === 'Idle';
         const unchangedPosition = position.equals(actors[0].position);
         const root = actors[0].mesh;
         actors[0].dispose();
@@ -58,12 +62,13 @@ test('Meshy play link delivers independently skinned High/Low Fighters with equi
         actors[1].playAnimation('Idle', true, true); actors[1].updateAnimationMixer(.1); renderer.render(scene, camera);
         window.meshyAlphaReview = { renderer, actors };
         const gl = renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
-        return { independent, snapshots, equipment, hitClip, unchangedPosition, poolCorrect, bones: first.skeleton.bones.length,
+        return { independent, snapshots, equipment, hitClip, hitSurvivesIdleUpdate, hitRecovered, unchangedPosition, poolCorrect, bones: first.skeleton.bones.length,
             gpu: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : 'not exposed' };
     });
     expect(result.independent).toBe(true); expect(result.bones).toBe(24);
     expect(result.equipment.every(entry => entry.supported && entry.items === 3 && !entry.missing.length)).toBe(true);
     expect(result.hitClip).toBe('HitReaction'); expect(result.unchangedPosition).toBe(true); expect(result.poolCorrect).toBe(true);
+    expect(result.hitSurvivesIdleUpdate).toBe(true); expect(result.hitRecovered).toBe(true);
     if (requiresHardwareWebGL()) {
         expect(result.gpu).toMatch(/AMD|Radeon|NVIDIA|Intel/i);
         expect(result.gpu).not.toMatch(/SwiftShader|llvmpipe|software/i);

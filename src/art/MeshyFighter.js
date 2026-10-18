@@ -47,9 +47,11 @@ export function createMeshyFighter(gltf, { quality = 'high' } = {}) {
         basicAttackContactTime: sourceClips.get('Attack').duration * .45,
         lowerBodyAnimationTracks: ['pelvis.position', ...['thigh', 'calf', 'foot', 'ball'].flatMap(bone => ['l', 'r'].map(side => `${bone}_${side}.quaternion`))]
     });
+    root.userData.resolveAnimationName = name => root.userData.hitReactionClipActive && ['Idle', 'CombatIdle'].includes(name) ? 'HitReaction' : name;
     const pose = [];
     scene.traverse(part => pose.push({ part, position: part.position.clone(), quaternion: part.quaternion.clone(), scale: part.scale.clone() }));
     root.userData.resetRestPose = root.userData.resetPose = () => {
+        root.userData.hitReactionClipActive = false;
         for (const saved of pose) { saved.part.position.copy(saved.position); saved.part.quaternion.copy(saved.quaternion); saved.part.scale.copy(saved.scale); }
         root.updateMatrixWorld(true);
     };
