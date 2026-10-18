@@ -159,7 +159,7 @@ func TestGameplayActualRoofSnapshotRestoresPlayableCustody(t *testing.T) {
 	if err != nil || saved == nil {
 		t.Fatal("source saved character", err)
 	}
-	projection, err := repo.GroundItemProjectionPage("", time.Now(), 100)
+	projection, err := repo.GroundItemProjectionPage("", time.Now(), 50)
 	if err != nil {
 		t.Fatal(err)
 	}
