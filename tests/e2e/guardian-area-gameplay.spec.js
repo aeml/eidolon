@@ -1,6 +1,6 @@
 import { devices, expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, openGame } from './helpers.js';
-import { backendOriginBrowserArgs, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
+import { qaChromeLaunchOptions, backendOriginBrowserArgs, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true,
     userAgent: devices['Pixel 7'].userAgent, actionTimeout: 12_000, trace: 'off', screenshot: 'off', video: 'off' });
@@ -77,8 +77,8 @@ test('trained Guardian Embrace heals on the server and shows its persistent radi
     // A separate Chrome process avoids starving two WebGL loops on one GPU
     // scheduler. This observer connects only after the next aura is cast, so
     // its active geometry must arrive in state, not the missed cast event.
-    const secondBrowser=await browser.browserType().launch({executablePath:process.env.EIDOLON_E2E_BROWSER_PATH||undefined,
-        headless:process.env.EIDOLON_E2E_HEADLESS!=='0',args:[...hardwareWebGLBrowserArgs(),...backendOriginBrowserArgs(process.env.EIDOLON_E2E_BACKEND_ORIGIN_IP)]});
+    const secondBrowser=await browser.browserType().launch(qaChromeLaunchOptions({executablePath:process.env.EIDOLON_E2E_BROWSER_PATH||undefined,
+        headless:process.env.EIDOLON_E2E_HEADLESS!=='0',args:[...hardwareWebGLBrowserArgs(),...backendOriginBrowserArgs(process.env.EIDOLON_E2E_BACKEND_ORIGIN_IP)]}));
     try {
         const observerContext=await secondBrowser.newContext({ baseURL });
         const observer=await observerContext.newPage();

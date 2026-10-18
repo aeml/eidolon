@@ -1,9 +1,10 @@
+import { qaChromeLaunchOptions } from './browserLaunchPolicy.js';
 import { test, expect } from '@playwright/test';
 
 // Presentation fixture only: real component/window layout, synthetic responses.
 // Authorization is covered separately by the server tests, not by this fixture.
-test.use({ launchOptions: { executablePath: '/usr/bin/google-chrome',
-    args: ['--disable-gpu', '--disable-webgl', '--disable-software-rasterizer'] } });
+test.use({ launchOptions: qaChromeLaunchOptions({ executablePath: '/usr/bin/google-chrome',
+    args: ['--disable-gpu', '--disable-webgl', '--disable-software-rasterizer'] }) });
 
 for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 }, { width: 844, height: 390 }]) {
     test(`administration is scrollable and bounded at ${viewport.width}x${viewport.height}`, async ({ page }, testInfo) => {

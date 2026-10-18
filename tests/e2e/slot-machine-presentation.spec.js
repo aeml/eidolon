@@ -1,7 +1,8 @@
+import { qaChromeLaunchOptions } from './browserLaunchPolicy.js';
 import { expect, test } from '@playwright/test';
 
 // Prepared presentation snapshots, not connected wagers or a physical-phone check.
-test.use({ launchOptions: { args: ['--disable-gpu'] } });
+test.use({ launchOptions: qaChromeLaunchOptions({ args: ['--disable-gpu'] }) });
 test('phone slot controls explain wagers, retain free stakes and pause queued spins for bonus choices', async ({ page }, testInfo) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.route('**/src/main.js', route => route.fulfill({ contentType: 'text/javascript', body: '' }));

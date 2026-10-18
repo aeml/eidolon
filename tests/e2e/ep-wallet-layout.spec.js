@@ -1,7 +1,8 @@
+import { qaChromeLaunchOptions } from './browserLaunchPolicy.js';
 import { expect, test } from '@playwright/test';
 
 // Prepared wallet replies, not actual currency settlement or physical-phone QA.
-test.use({ launchOptions: { args: ['--disable-gpu'] } });
+test.use({ launchOptions: qaChromeLaunchOptions({ args: ['--disable-gpu'] }) });
 for (const width of [390, 1440]) test(`EP wallet confirmation is usable at ${width}px`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
     await page.route('**/src/main.js', route => route.fulfill({ contentType: 'text/javascript', body: '' }));

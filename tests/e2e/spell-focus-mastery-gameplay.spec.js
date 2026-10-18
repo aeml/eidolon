@@ -1,7 +1,7 @@
 import { devices, expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld,
     projectEntity, projectNearestHostile, useEncounterQAWaypoint } from './helpers.js';
-import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
+import { qaChromeLaunchOptions, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true,
     userAgent: devices['Pixel 7'].userAgent, trace: 'off', screenshot: 'off', video: 'off' });
@@ -87,8 +87,8 @@ test('paid Focus training survives login and amplifies exactly one real spell on
     await branch.scrollIntoViewIfNeeded(); await branch.tap();
     await expect.poll(() => page.evaluate(() => window.game.player.hotbar.includes('Spell Focus'))).toBe(true);
     await page.locator('#btn-close-skills').tap();
-    const peerBrowser = await browser.browserType().launch({ executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || '/usr/bin/google-chrome',
-        headless: true, args: hardwareWebGLBrowserArgs() });
+    const peerBrowser = await browser.browserType().launch(qaChromeLaunchOptions({ executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || '/usr/bin/google-chrome',
+        headless: true, args: hardwareWebGLBrowserArgs() }));
     let desktopContext, desktopOwner;
     try {
         const peer = await (await peerBrowser.newContext({ ...devices['Desktop Chrome'], baseURL })).newPage();

@@ -7,7 +7,7 @@ import { RAID_PARTY_ROLES, DARK_KING_RAID } from '../raidPartyFixture.js';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, openGame } from './helpers.js';
 import { claimChapterAndContinue, openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { leaveEarnedParty } from './earned-earth-continuation.js';
-import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
+import { qaChromeLaunchOptions, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 
 test.use({ viewport: { width: 1280, height: 720 }, trace: 'off', screenshot: 'off', video: 'off' });
 
@@ -59,8 +59,8 @@ test('actual raid survivors manually claim once and retain their story handoff a
         for (const [index, role] of RAID_PARTY_ROLES.entries()) {
             let actorPage = page;
             if (index) {
-                const extra = await browser.browserType().launch({ executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || '/usr/bin/google-chrome',
-                    headless: true, args: hardwareWebGLBrowserArgs() });
+                const extra = await browser.browserType().launch(qaChromeLaunchOptions({ executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || '/usr/bin/google-chrome',
+                    headless: true, args: hardwareWebGLBrowserArgs() }));
                 ownedBrowsers.push(extra);
                 actorPage = await (await extra.newContext({ baseURL, viewport: { width: 1280, height: 720 } })).newPage();
             }

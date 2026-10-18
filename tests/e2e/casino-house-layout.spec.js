@@ -1,10 +1,11 @@
+import { qaChromeLaunchOptions } from './browserLaunchPolicy.js';
 import { expect, test } from '@playwright/test';
 
 // Presentation fixture only. Money and restart recovery use disposable Mongo;
 // this fixture does not claim a connected, funded multiplayer session.
 // Do not load the 3D game for a DOM/CSS-only review. This suite also runs without
 // GPU acceleration, independently of the native-rendered venue acceptance.
-test.use({ launchOptions: { args: ['--disable-gpu'] } });
+test.use({ launchOptions: qaChromeLaunchOptions({ args: ['--disable-gpu'] }) });
 for (const width of [390, 844, 1440]) for (const kind of ['roulette', 'baccarat']) {
     test(`${kind} shared table layout at ${width}px`, async ({ page }, testInfo) => {
         await page.setViewportSize({ width, height: width === 390 ? 844 : width === 844 ? 390 : 1000 });

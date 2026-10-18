@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, enterDungeon, loginAndEnterWorld, returnToTown } from './helpers.js';
-import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
+import { qaChromeLaunchOptions, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 
 test.use({ viewport: { width: 1280, height: 720 }, trace: 'off', screenshot: 'off', video: 'off' });
 
@@ -15,10 +15,10 @@ test('four real party members repeatedly recall and individually resume through 
         for (const [index, role] of ['Fighter', 'Cleric', 'Wizard', 'Rogue'].entries()) {
             let actorPage = page;
             if (index) {
-                const extra = await browser.browserType().launch({
+                const extra = await browser.browserType().launch(qaChromeLaunchOptions({
                     executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || '/usr/bin/google-chrome',
                     headless: true, args: hardwareWebGLBrowserArgs()
-                });
+                }));
                 ownedBrowsers.push(extra);
                 actorPage = await (await extra.newContext({ baseURL, viewport: { width: 1280, height: 720 } })).newPage();
             }

@@ -22,7 +22,7 @@ import {
 } from './helpers.js';
 import { captureActualSceneRenderDiagnosis } from './actual-scene-render-diagnosis.js';
 import { captureEarthMovingRoute } from './earth-moving-route.js';
-import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
+import { qaChromeLaunchOptions, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { profileGameplayScene } from './scene-performance.js';
 import { profileWorldGpuTime } from './world-gpu-observation.js';
 import { comparePartyRingFrames } from './party-ring-comparison.js';
@@ -144,8 +144,8 @@ test(`connected equipped four-class party shares ${partyTerrainLabel} ground, fi
         for (const [index, account] of accounts.entries()) {
             let target = page;
             if (index) {
-                const extra = await browser.browserType().launch({ executablePath: '/usr/bin/google-chrome',
-                    headless: true, args: hardwareWebGLBrowserArgs() });
+                const extra = await browser.browserType().launch(qaChromeLaunchOptions({ executablePath: '/usr/bin/google-chrome',
+                    headless: true, args: hardwareWebGLBrowserArgs() }));
                 ownedBrowsers.push(extra);
                 target = await (await extra.newContext({ baseURL, viewport })).newPage();
             }

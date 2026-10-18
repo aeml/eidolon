@@ -1,12 +1,13 @@
+import { qaChromeLaunchOptions } from './browserLaunchPolicy.js';
 import { expect, test } from '@playwright/test';
 import { existsSync } from 'node:fs';
 
 // This fixture renders HTML/CSS only. Do not compete with an active native
 // dungeon session for the GPU or silently turn it into a second game client.
-test.use({ launchOptions: {
+test.use({ launchOptions: qaChromeLaunchOptions({
     executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || (existsSync('/usr/bin/google-chrome') ? '/usr/bin/google-chrome' : undefined),
     args: ['--disable-gpu', '--disable-webgl', '--disable-software-rasterizer']
-} });
+}) });
 
 for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 }, { width: 844, height: 390 }]) {
     test(`Vigil tracker distinguishes pending repair from personal turn-in at ${viewport.width}x${viewport.height}`, async ({ page }, testInfo) => {

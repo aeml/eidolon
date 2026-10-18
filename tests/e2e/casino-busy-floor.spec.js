@@ -1,3 +1,4 @@
+import { qaChromeLaunchOptions } from './browserLaunchPolicy.js';
 import { expect, test } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
@@ -15,7 +16,7 @@ function hostCpuSnapshot() {
 // Optional bounded visual-only review while native GPU gameplay QA owns the
 // renderer. Software screenshots are not native performance evidence.
 if (process.env.EIDOLON_CASINO_SOFTWARE_REVIEW === '1') {
-    test.use({ launchOptions: { args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] } });
+    test.use({ launchOptions: qaChromeLaunchOptions({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] }) });
 }
 
 // Controlled rendering only. Retain the separate connected wagering evidence;

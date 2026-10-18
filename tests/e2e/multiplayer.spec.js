@@ -2,7 +2,7 @@ import { expect, test } from './static-delivery-test.js';
 import { CONSTANTS } from '../../src/core/Constants.js';
 import { captureGameplayVisual } from './gameplay-visual-capture.js';
 import { exercisePartyDungeonResume } from './party-dungeon-route.js';
-import {
+import { qaChromeLaunchOptions,
     backendOriginBrowserArgs,
     hardwareWebGLBrowserArgs
 } from './browserLaunchPolicy.js';
@@ -452,14 +452,14 @@ test.describe('two-account multiplayer', () => {
         expect(primary.username !== secondary.username).toBe(true);
         // Use an actual second Chrome process so two WebGL render loops cannot
         // starve one another inside a shared browser process/GPU scheduler.
-        const secondBrowser = await browser.browserType().launch({
+        const secondBrowser = await browser.browserType().launch(qaChromeLaunchOptions({
             executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || undefined,
             headless: process.env.EIDOLON_E2E_HEADLESS !== '0',
             args: [
                 ...hardwareWebGLBrowserArgs(),
                 ...backendOriginBrowserArgs(process.env.EIDOLON_E2E_BACKEND_ORIGIN_IP)
             ]
-        });
+        }));
         const firstContext = await browser.newContext();
         const secondContext = await secondBrowser.newContext();
         const firstPage = await firstContext.newPage();

@@ -1,7 +1,7 @@
 import { devices, expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld } from './helpers.js';
 import { aimAtGroundPoint } from './ground-aim.js';
-import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
+import { qaChromeLaunchOptions, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { selectPreparedRune } from './prepared-rune-input.js';
 import { installTeleportNativeObserver } from './teleport-native-observer.js';
 import { teleportNativeDestination } from './teleport-native-route.js';
@@ -34,8 +34,8 @@ test('paid Teleport training has matching endpoint boundaries and finite Phase p
         .getByRole('button', { name: 'Select Spec' }).click();
     await expect.poll(() => page.evaluate(() => window.game.player.hotbar.indexOf('Teleport'))).toBeGreaterThanOrEqual(0);
     await page.locator('#btn-close-skills').click();
-    const otherBrowser = await browser.browserType().launch({ executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || '/usr/bin/google-chrome',
-        headless: true, args: hardwareWebGLBrowserArgs() });
+    const otherBrowser = await browser.browserType().launch(qaChromeLaunchOptions({ executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || '/usr/bin/google-chrome',
+        headless: true, args: hardwareWebGLBrowserArgs() }));
     try {
         const peer = await (await otherBrowser.newContext({ ...devices['Desktop Chrome'], baseURL })).newPage();
         const peerFailures = collectBrowserFailures(peer, baseURL);

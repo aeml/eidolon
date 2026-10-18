@@ -1,4 +1,16 @@
 import { isIP } from 'node:net';
+import { isolatedBrowserLaunchOptions } from '../../scripts/qa-browser-launch-options.mjs';
+
+// Explicit peer processes and per-file launch overrides do not inherit the
+// executable chosen in playwright.config.js. Apply the same opt-in isolation
+// without changing ordinary/hosted launches or sharing peers in one process.
+export function qaChromeLaunchOptions(options, env = process.env) {
+    if (env.EIDOLON_E2E_ISOLATE_CHROME !== '1') return options;
+    return isolatedBrowserLaunchOptions({
+        ...options,
+        executablePath: options.executablePath || env.EIDOLON_E2E_BROWSER_PATH || '/usr/bin/google-chrome'
+    }, env);
+}
 
 export function hardwareWebGLBrowserArgs() {
     return [

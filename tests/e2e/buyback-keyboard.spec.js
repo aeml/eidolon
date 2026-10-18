@@ -1,8 +1,9 @@
+import { qaChromeLaunchOptions } from './browserLaunchPolicy.js';
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
 // This suite verifies native DOM/keyboard behavior, without a WebGL workload.
-test.use({ launchOptions: { args: ['--disable-gpu'] } });
+test.use({ launchOptions: qaChromeLaunchOptions({ args: ['--disable-gpu'] }) });
 
 for (const [width, mobile] of [[1280, false], [390, true]]) {
     test(`${width}px merchant buyback keeps keyboard intent, visible prices and item identity through refresh`, async ({ page, baseURL }, testInfo) => {

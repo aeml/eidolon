@@ -1,6 +1,6 @@
 import { devices, expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, moveByGroundClick, projectGroundOffset } from './helpers.js';
-import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
+import { qaChromeLaunchOptions, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { installTimeWarpObserver } from './time-warp-observer.js';
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true,
@@ -33,8 +33,8 @@ test('Time Warp training reaches a walked ally beyond the original radius and ex
     await expect.poll(() => page.evaluate(() => window.game.player.hotbar.indexOf('Time Warp'))).toBeGreaterThanOrEqual(0);
     await page.locator('#btn-close-skills').tap();
 
-    const peerBrowser = await browser.browserType().launch({ executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || '/usr/bin/google-chrome',
-        headless: true, args: hardwareWebGLBrowserArgs() });
+    const peerBrowser = await browser.browserType().launch(qaChromeLaunchOptions({ executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || '/usr/bin/google-chrome',
+        headless: true, args: hardwareWebGLBrowserArgs() }));
     try {
         // BrowserType's test defaults include this spec's phone user agent and
         // touch mode even for a separately launched browser. Override the full
