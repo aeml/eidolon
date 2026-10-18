@@ -30,7 +30,7 @@ func startupBudgetMongo(t *testing.T) (*mongo.Client, string) {
 	t.Cleanup(func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		_ = client.Database("admin").RunCommand(ctx, bson.M{"configureFailPoint": "failCommand", "mode": "off"}).Err()
+		_ = client.Database("admin").RunCommand(ctx, bson.D{{Key: "configureFailPoint", Value: "failCommand"}, {Key: "mode", Value: "off"}}).Err()
 		_ = client.Disconnect(ctx)
 	})
 	if err := client.Ping(t.Context(), nil); err != nil {
@@ -43,9 +43,9 @@ func TestDBStartupSeparatesConnectionAndMigrationBudgets(t *testing.T) {
 	control, uri := startupBudgetMongo(t)
 	// Two real six-second commands are each valid work. Their sum exceeds
 	// the ten-second connection budget before any browser/account preparation.
-	if err := control.Database("admin").RunCommand(t.Context(), bson.M{
-		"configureFailPoint": "failCommand", "mode": bson.M{"times": 2},
-		"data": bson.M{"failCommands": bson.A{"ping", "createIndexes"}, "blockConnection": true, "blockTimeMS": 6000},
+	if err := control.Database("admin").RunCommand(t.Context(), bson.D{
+		{Key: "configureFailPoint", Value: "failCommand"}, {Key: "mode", Value: bson.M{"times": 2}},
+		{Key: "data", Value: bson.M{"failCommands": bson.A{"ping", "createIndexes"}, "blockConnection": true, "blockTimeMS": 6000}},
 	}).Err(); err != nil {
 		t.Fatal(err)
 	}
@@ -68,9 +68,9 @@ func TestDBStartupSeparatesConnectionAndMigrationBudgets(t *testing.T) {
 
 func TestDBStartupRetainsConnectionDeadline(t *testing.T) {
 	control, uri := startupBudgetMongo(t)
-	if err := control.Database("admin").RunCommand(t.Context(), bson.M{
-		"configureFailPoint": "failCommand", "mode": bson.M{"times": 1},
-		"data": bson.M{"failCommands": bson.A{"ping"}, "blockConnection": true, "blockTimeMS": 12000},
+	if err := control.Database("admin").RunCommand(t.Context(), bson.D{
+		{Key: "configureFailPoint", Value: "failCommand"}, {Key: "mode", Value: bson.M{"times": 1}},
+		{Key: "data", Value: bson.M{"failCommands": bson.A{"ping"}, "blockConnection": true, "blockTimeMS": 12000}},
 	}).Err(); err != nil {
 		t.Fatal(err)
 	}
