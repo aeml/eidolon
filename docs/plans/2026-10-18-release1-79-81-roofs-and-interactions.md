@@ -1,6 +1,11 @@
 # Alpha 1.79.81 — roofs and deliberate interactions
 
 Prepared, not deployed. The latest accepted live runtime is Alpha1.79.80/f5401eb7.
+The final selected cast feedback also keeps phone controls exposed in portrait,
+landscape and mirrored layouts. Eight anonymous layout cases and a separate
+actual connected phone cast/cancel/retry/save case qualify that correction;
+the full current pipeline/deployment remain pending.
+[Mobile layout qualification](2026-10-18-mobile-cast-control-layout.md).
 This milestone completes the owner's six gameplay corrections as a coherent batch;
 it does not close the full beta/release-readiness roadmap.
 
