@@ -201,6 +201,7 @@ for (const actorClass of Object.keys(classLooks)) test(`${actorClass}: purchased
     other.username += `-${actorClass.toLowerCase()}`;
     expect(Boolean(owner.username && owner.password && other.username && other.password)).toBe(true);
     const failures = collectBrowserFailures(page, baseURL), phases = [];
+    let poseInspection;
     await registerReturningFixture(page, owner);
     const ownerID = await page.evaluate(() => window.game.player.id);
     const context = await browser.newContext({ baseURL });
@@ -251,6 +252,35 @@ for (const actorClass of Object.keys(classLooks)) test(`${actorClass}: purchased
         const vendor = page.getByRole('dialog', { name: 'Veyra’s cosmetic wardrobe' });
         for (const [index, [id, name, slot, price]] of offers.entries()) {
             await vendor.locator(`[data-offer-id="${id}"]`).click();
+            if (index === 0) {
+                await expect.poll(() => page.evaluate(() => window.game.player.state)).toBe('IDLE');
+                const before = await renderedAppearance(page);
+                const ownAnimation = await page.evaluate(() => window.game.player.currentAnimationName);
+                expect(['Idle', 'CombatIdle']).toContain(ownAnimation);
+                const pose = vendor.getByRole('combobox', { name: 'Preview pose', exact: true });
+                const moment = vendor.getByRole('slider', { name: 'Moment in pose', exact: true });
+                await expect(pose).toBeEnabled(); await pose.selectOption('Run');
+                await moment.focus(); await moment.press('End'); await expect(moment).toHaveValue('100');
+                poseInspection = await page.evaluate(() => {
+                    const game = window.game, preview = game.uiManager.cosmeticVendor.preview;
+                    const clip = preview.getPoseClip('Run');
+                    return { independent: preview.model !== game.player.mesh,
+                        actorClass: preview.model.userData.authoredClass,
+                        garment: preview.model.userData.equipmentVisualGarment,
+                        fraction: preview.previewMixer.existingAction(clip).time / clip.duration,
+                        liveState: game.player.state, liveAnimation: game.player.currentAnimationName,
+                        position: game.player.position.toArray(), missing: preview.model.userData.equipmentVisualMissing || [],
+                        fallback: preview.model.userData.equipmentVisualFallback || [] };
+                });
+                expect(poseInspection).toMatchObject({ independent: true, actorClass, garment: outfitID,
+                    liveState: 'IDLE', liveAnimation: ownAnimation, missing: [], fallback: [] });
+                expect(poseInspection.fraction).toBeCloseTo(1, 5);
+                await moment.press('Home'); await expect(moment).toHaveValue('0');
+                const after = await renderedAppearance(page);
+                for (const key of ['equipment', 'appearances', 'stats', 'signature', 'garment', 'gold', 'level', 'xp'])
+                    expect(after[key], `Inspecting the private pose must preserve the live ${key}`).toEqual(before[key]);
+                await attachJSON(testInfo, 'outfitter-live-pose-isolation', poseInspection);
+            }
             await vendor.getByRole('button', { name: `Unlock for ${price} EP`, exact: true }).click();
             await vendor.getByRole('button', { name: 'Confirm EP purchase', exact: true }).click();
             remaining -= price;
@@ -346,7 +376,7 @@ for (const actorClass of Object.keys(classLooks)) test(`${actorClass}: purchased
         expect((await renderedAppearance(page)).equipment).toEqual(original.equipment);
         expect(failures, failures.join('\n')).toEqual([]);
         expect(remoteFailures, remoteFailures.join('\n')).toEqual([]);
-        await attachJSON(testInfo, 'rendered-wardrobe-phases', { renderer, actorClass, scope: 'Prepared returning class-specific real gear/outfit/hands, actual local/observer models and normal UI/socket/save paths. High/savedLow, legal Rogue offhand weapon, returning/cleared sessions; not earned EP, all-pose/old-binary/physical-device/frame-time or final owner art qualification.', phases });
+        await attachJSON(testInfo, 'rendered-wardrobe-phases', { renderer, actorClass, scope: 'Prepared returning class-specific real gear/outfit/hands, actual local/observer models and normal UI/socket/save paths. High/savedLow, legal Rogue offhand weapon, returning/cleared sessions; not earned EP, all-pose/old-binary/physical-device/frame-time or final owner art qualification.', poseInspection, phases });
     } catch (error) {
         const readiness = async current => current && !current.isClosed() ? current.evaluate(() => {
             const game = window.game;
