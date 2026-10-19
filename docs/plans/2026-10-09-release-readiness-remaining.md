@@ -29,8 +29,8 @@ results and Rules-popup drag closure are corrected in an isolated candidate.
 Forty-three source browser cases, 48 unit checks and 455 release/history checks
 pass, with all 520 prior raw note strings preserved in 521 cumulative entries.
 The affected house suite passes its 21 checks again after the stage change.
-Copied-engine qualification, complete own CI and exact public deployment remain
-pending. [Qualification](2026-10-19-casino-poker-result-clarity.md).
+Eighteen exact-commit copied-engine checks also pass. Complete own CI and exact
+public deployment remain pending. [Qualification](2026-10-19-casino-poker-result-clarity.md).
 This does not close the full casino owner assessment or another readiness gate.
 
 ## Current delivery: accepted Alpha 1.79.85

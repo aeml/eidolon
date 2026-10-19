@@ -503,8 +503,9 @@ retain the original wager owner's name. Rules popups preserve their last visible
 position when closed during a drag. Large top-bar-draggable casino windows and
 saved placement remain delivered. Forty-three focused source browser checks,
 48 unit checks and changed JavaScript lint pass; the affected house suite also
-passes its 21 checks after the shared-stage change. Copied-publication, own full
-CI and public deployment acceptance remain pending.
+passes its 21 checks after the shared-stage change. Eighteen exact-commit
+copied-engine checks and 455 release/history checks pass. Own full CI and public
+deployment acceptance remain pending.
 [Qualification](docs/plans/2026-10-19-casino-poker-result-clarity.md).
 
 Latest verified live release: `Alpha 1.79.85`, source

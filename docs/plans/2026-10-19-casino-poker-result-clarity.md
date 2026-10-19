@@ -54,9 +54,15 @@ new roulette clock/foreground checks, six-seat Baccarat geometry/cards/status,
 Gold/EP poker losses/even/profit, native popup closure during drag, and existing
 history/deal/phone keyboard/placement/positive results. All 43 pass in 1.7 minutes, with zero failed, flaky, skipped or retried
 cases. Screenshot review includes both roulette spin sizes and Baccarat desktop/
-landscape cards, status and timer. Eighteen corresponding copied-publication checks are prepared against
-an actual bundled GameEngine/UIManager with hardware WebGL identity checks;
-they have not run yet.
+landscape cards, status and timer. Eighteen corresponding copied-publication checks pass in 59 seconds against
+an actual bundled GameEngine/UIManager in System Chrome153, without failures,
+flakes, skips or retries. The renderer reports hardware AMD Radeon RADV RENOIR
+through ANGLE/Vulkan. The exact copied source is
+`08b635b37a89942c7692fb028bcc4064c64e2a94`; the owned 530-module bundle is
+4,968,467 bytes. Geometry worker, precomputed index shards and analytics hashes
+remain unchanged. All 455 release/history/workflow checks pass. The cumulative
+521 notes preserve all 520 prior raw entry strings with 52 lazy pages. Private
+report hashes are retained in `release86-prepush-qualification.json`.
 
 Private original failures, diagnostics, source hashes and terminal reports are
 under `.qa-casino-experience/` in the owned casino worktree. Source DOM/browser

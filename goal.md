@@ -2743,8 +2743,9 @@ popups retain visible position through native keyboard closure during a drag.
 Forty-three focused source browser cases pass without retries/failures/flakes/
 skips; selected unit qualification passes 48 checks and the changed house stage
 passes all 21 affected checks again. All 520 prior raw patch-note entry strings
-remain identical, with 521 cumulative entries and 52 lazy pages. Copied bundled
-engine checks, own complete CI and exact deployment acceptance remain required.
+remain identical, with 521 cumulative entries and 52 lazy pages. Eighteen exact-
+commit copied bundled-engine checks and all 455 release/history checks pass.
+Own complete CI and exact deployment acceptance remain required.
 [Qualification](docs/plans/2026-10-19-casino-poker-result-clarity.md).
 The complete game, owner casino assessment and beta gates remain open. Soak/
 stress stays deferred.
