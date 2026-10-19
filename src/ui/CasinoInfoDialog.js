@@ -19,6 +19,7 @@ export class CasinoInfoDialog {
         this.closeButton.onclick = () => this.close();
         this.root.__closeMenu = restore => this.close(restore);
         this.root.addEventListener('close', () => this.restoreFocus());
+        this.root.addEventListener('cancel', event => { event.preventDefault(); this.close(); });
         for (const type of ['pointerdown','pointerup','click','wheel','keydown','keyup']) this.root.addEventListener(type, event => {
             event.stopPropagation();
             if (type !== 'click' || event.target !== this.root) return;
@@ -40,7 +41,7 @@ export class CasinoInfoDialog {
         if (target?.isConnected && !target.closest('[hidden]')) target.focus({preventScroll:true});
     }
     close(restore = true) {
-        this.layout.stopDrag(false);
+        this.layout.stopDrag(restore);
         if (!restore) this.returnFocus = null;
         if (this.root.open) { if (this.root.close) this.root.close(); else this.root.removeAttribute('open'); }
         this.restoreFocus();

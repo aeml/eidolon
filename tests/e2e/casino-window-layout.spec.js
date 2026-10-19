@@ -93,3 +93,30 @@ for (const [width, height] of [[320,740],[390,844],[844,390],[1440,900]]) for (c
         expect(failures, failures.join('\n')).toEqual([]);
     });
 }
+
+for(const key of ['Escape','Enter']) test(`closing a Rules popup with ${key} during a drag remembers its last visible position`,async({page})=>{
+    await page.setViewportSize({width:1440,height:900});
+    await page.route('**/src/main.js',r=>r.fulfill({contentType:'text/javascript',body:''}));
+    await page.route('**/src/analytics/game.js',r=>r.fulfill({contentType:'text/javascript',body:''}));
+    await page.goto('/',{waitUntil:'networkidle'});
+    await page.evaluate(prepareCasinoReview,{game:'baccarat'});
+    const trigger=page.locator('.casino-session-header').getByRole('button',{name:'Rules',exact:true});
+    await trigger.click();
+    const popup=page.getByRole('dialog',{name:'Baccarat rules',exact:true});
+    const title=await popup.locator('h2').boundingBox();
+    await page.mouse.move(title.x+10,title.y+10);await page.mouse.down();
+    await page.mouse.move(title.x+46,title.y+30,{steps:5});await page.mouse.up();
+    const first=await popup.boundingBox(),again=await popup.locator('h2').boundingBox();
+    await page.mouse.move(again.x+10,again.y+10);await page.mouse.down();
+    await page.mouse.move(again.x+50,again.y+26,{steps:5});
+    const moved=await popup.boundingBox();expect(moved.x).toBeGreaterThan(first.x+30);
+    if(key === 'Enter') await expect(popup.getByRole('button',{name:'Close popup',exact:true})).toBeFocused();
+    await page.keyboard.press(key);await expect(popup).toBeHidden();await page.mouse.up();
+    await trigger.click();await expect(popup).toBeVisible();
+    const restored=await popup.boundingBox();expect(restored.x).toBeCloseTo(moved.x,0);expect(restored.y).toBeCloseTo(moved.y,0);
+    const nextTitle=await popup.locator('h2').boundingBox();
+    await page.mouse.move(nextTitle.x+80,nextTitle.y+10,{steps:5});
+    const idle=await popup.boundingBox();expect(idle.x).toBeCloseTo(restored.x,0);expect(idle.y).toBeCloseTo(restored.y,0);
+    expect(await page.evaluate(()=>window.__controllerReview.sent)).toEqual([]);
+    await page.evaluate(()=>window.__controllerReview.c.dispose());
+});

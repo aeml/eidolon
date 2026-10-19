@@ -2729,3 +2729,22 @@ work stays isolated until its own browser/publication qualification and release.
 The full original goal, complete owner casino assessment, physical phones,
 final art/performance, human campaign/listening, operations/rights, F1–F5 and
 beta/1.99 remain open. No soak/stress is resumed.
+
+
+## October 19 prepared Alpha 1.79.86
+
+The isolated casino follow-up separates six house seats, Baccarat cards/scores
+and timers; roulette spins use a larger foreground wheel and a separate clock/
+skip footer. Reconnecting status remains readable. Earlier saved wagers retain
+their owner's name after a chair changes occupants. Poker summaries distinguish
+returns from net profit/loss and celebrate only known profitable outcomes. Rules
+popups retain visible position through native keyboard closure during a drag.
+
+Forty-three focused source browser cases pass without retries/failures/flakes/
+skips; selected unit qualification passes 48 checks and the changed house stage
+passes all 21 affected checks again. All 520 prior raw patch-note entry strings
+remain identical, with 521 cumulative entries and 52 lazy pages. Copied bundled
+engine checks, own complete CI and exact deployment acceptance remain required.
+[Qualification](docs/plans/2026-10-19-casino-poker-result-clarity.md).
+The complete game, owner casino assessment and beta gates remain open. Soak/
+stress stays deferred.

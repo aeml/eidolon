@@ -77,7 +77,8 @@ for (const [width,height,textScale] of [[320,740,125],[390,844,125],[844,390,125
         for (const [revision,phase] of ['betting','revealing','complete'].entries()) {
             await page.evaluate(({phase,revision}) => {
                 const f=window.__controllerReview, {c,payload}=f;
-                const v={...payload.house,phase,tableVersion:String(revision+2),
+                payload.occupants=payload.occupants.map(p=>({...p,connected:!(phase === 'revealing' && p.seat === 2)}));
+                const v={...payload.house,phase,tableVersion:String(revision+2),serverNow:new Date().toISOString(),
                     players:payload.occupants.map(p=>({...p,wagers:[{spot:'player',amount:20}],paid:phase === 'complete',payout:0})),
                     revealAt:new Date(Date.now()+6000).toISOString(),nextRoundAt:new Date(Date.now()+30000).toISOString()};
                 if (phase === 'revealing') v.dealt={player:[0,3,1],banker:[9,2]};
@@ -105,7 +106,10 @@ for (const [width,height,textScale] of [[320,740,125],[390,844,125],[844,390,125
                         index.top < c.top-1 || index.bottom > c.bottom+1 || pip.bottom > c.bottom+1 || pip.top < c.top-1 ||
                         pip.left < c.left-1 || pip.right > c.right+1 || overlap) clippedFaces.push(card.getAttribute('aria-label'));
                 }
-                return {regions,overlaps,clippedFaces,bounds:{left:bounds.left,right:bounds.right,top:bounds.top,bottom:bounds.bottom},
+                const center=root.querySelector('.card-table-center'),cs=getComputedStyle(center),rs=getComputedStyle(root);
+                const cr=center.getBoundingClientRect();
+                return {regions,overlaps,clippedFaces,layout:{display:rs.display,rows:rs.gridTemplateRows,
+                    center:{top:cr.top,bottom:cr.bottom,height:cs.height,position:cs.position,transform:cs.transform,inset:cs.inset,containerType:cs.containerType,alignSelf:cs.alignSelf}},bounds:{left:bounds.left,right:bounds.right,top:bounds.top,bottom:bounds.bottom},
                     scrollHeight:root.scrollHeight,clientHeight:root.clientHeight,horizontalOverflow:root.scrollWidth-root.clientWidth};
             });
             await testInfo.attach(`baccarat-${phase}-geometry`,{body:Buffer.from(JSON.stringify(geometry,null,2)),contentType:'application/json'});
@@ -122,7 +126,16 @@ for (const [width,height,textScale] of [[320,740,125],[390,844,125],[844,390,125
             for(const selector of ['.card-table-clock','.baccarat-result-hand.player','.baccarat-result-hand.banker','.baccarat-outcome',
                 ...Array.from({length:6},(_,i)=>`.card-table-seat[data-position="${i}"] .card-table-seat-name`)]) {
                 const region=page.locator(`.house-game ${selector}`); await region.scrollIntoViewIfNeeded();
+                if(selector === '.card-table-clock') await testInfo.attach(`baccarat-${phase}-clock-scroll`,{body:Buffer.from(JSON.stringify(await region.evaluate(n=>{
+                    const parents=[];for(let a=n;a;a=a.parentElement){const r=a.getBoundingClientRect(),s=getComputedStyle(a);parents.push({kind:a.className,top:r.top,bottom:r.bottom,scrollTop:a.scrollTop,clientHeight:a.clientHeight,scrollHeight:a.scrollHeight,overflow:s.overflow,scrollMargin:s.scrollMargin});}return parents;
+                }))),contentType:'application/json'});
                 await expect(region).toBeInViewport({ratio:1});
+            }
+            if(phase === 'revealing') {
+                const warning=page.locator('.house-game .card-table-seat[data-seat="2"] .card-table-seat-status');
+                await expect(warning).toHaveText('Reconnecting');await warning.scrollIntoViewIfNeeded();
+                await expect(warning).toBeInViewport({ratio:1});
+                expect(await warning.evaluate(n=>n.scrollWidth-n.clientWidth)).toBeLessThanOrEqual(1);
             }
             await expect(page.locator('.baccarat-theatre [data-card]')).toHaveCount(phase === 'betting' ? 0 : phase === 'revealing' ? 5 : 6);
         }
@@ -152,7 +165,8 @@ for (const [width,height,textScale] of [[320,740,125],[390,844,125],[844,390,125
                 payload.occupants.forEach(p => { p.tableId = tableId; });
                 const members = payload.occupants.slice(0,3).map((p,i) => ({ ...p,buyIn:i === 2 ? shortContribution : buyIn }));
                 payload.poker = { ...payload.poker, tableId, currency, tableVersion:String(multiple), phase:'complete',
-                    roundId:`side-${currency}-${multiple}`, players:members, balance:1000-buyIn+payout, minBuyIn:unit, buyInStep:unit,
+                    roundId:`side-${currency}-${multiple}`, players:members, balance:1000-buyIn+payout, minBuyIn:unit, buyInStep:unit, maxBuyIn:currency === 'ep' ? 100 : 100000,
+                    smallBlind:currency === 'ep' ? 1 : 5,bigBlind:currency === 'ep' ? 2 : 10,
                     serverNow:new Date().toISOString(), nextRoundAt:new Date(Date.now()+30000).toISOString(),
                     round:{ phase:'complete', revision:10, street:'river', board:[1,16,4,47,36], buttonSeat:0, actions:[], showdown:true,
                         pots:[{amount:shortContribution*3,winners:['guest-2']},{amount:payout,winners:['hero']}],

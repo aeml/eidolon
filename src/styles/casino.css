@@ -310,10 +310,7 @@ body .casino-session .card-table-scene { background: radial-gradient(ellipse at 
 .roulette-ball-track i { position: absolute; left: 50%; top: 50%; width: max(5px, calc(var(--wheel-size) * .028)); height: max(5px, calc(var(--wheel-size) * .028)); margin: -1.4%; border-radius: 50%; transform: translateY(calc(var(--wheel-size) * var(--ball-radius, .46) * -1)); background: radial-gradient(circle at 30% 25%, white, #f2e6c9 45%, #9b845c); box-shadow: 1px 2px 3px #000b, 0 0 4px #fff5; }
 .roulette-outcome { color: #ffedbd; font-variant-numeric: tabular-nums; }
 .house-result.revealing .roulette-wheel { animation: none; }
-.house-game .card-table-scene:has(.roulette-theatre.close-up) .card-table-center { width: 90%; height: 68%; top: 45%; z-index: 3; }
 .house-game .card-table-scene:has(.roulette-theatre.close-up) .card-table-seat { opacity: .24; }
-.house-game .card-table-scene:has(.roulette-theatre.close-up) .card-table-clock { top: 87%; z-index: 4; }
-.house-game .card-table-scene:has(.roulette-theatre.close-up) .card-table-dealer { top: 11%; }
 .roulette-theatre.close-up { --wheel-size: min(420px, calc(100cqh - 78px), calc(100cqw - 20px)); }
 .casino-session .casino-skip-animation { min-height: 32px; margin: 0; padding: 4px 10px; font-size: calc(11 * var(--casino-text-unit, 1px)); background: #152b36; border-color: #8b9f9a; }
 .casino-skip-animation[hidden] { display: none; }
@@ -360,17 +357,6 @@ html[data-reduced-motion="true"] .baccarat-theatre .blackjack-card.dealt { anima
 }
 /* House hands need room for all six cards; seated players remain visible in
    two rails rather than sharing the same horizontal band as the deal. */
-.house-game[data-game="baccarat"] .card-table-center { width: 92%; height: 32%; top: 48%; }
-.house-game[data-game="baccarat"] .card-table-seat { width: 29%; height: 20%; }
-.house-game[data-game="baccarat"] .card-table-seat[data-position="0"] { left: 17%; top: 88%; }
-.house-game[data-game="baccarat"] .card-table-seat[data-position="1"] { left: 17%; top: 12%; }
-.house-game[data-game="baccarat"] .card-table-seat[data-position="2"] { left: 50%; top: 12%; }
-.house-game[data-game="baccarat"] .card-table-seat[data-position="3"] { left: 83%; top: 12%; }
-.house-game[data-game="baccarat"] .card-table-seat[data-position="4"] { left: 83%; top: 88%; }
-.house-game[data-game="baccarat"] .card-table-seat[data-position="5"] { left: 50%; top: 88%; }
-.house-game[data-game="baccarat"] .card-table-dealer { top: 27%; }
-.house-game[data-game="baccarat"] .card-table-dealer-portrait { display: none; }
-.house-game[data-game="baccarat"] .card-table-clock { top: 71%; }
 .house-game[data-game="baccarat"] .baccarat-theatre { gap: 10px; }
 .house-game[data-game="baccarat"] .baccarat-result-hand { padding: 8px; border-radius: 14px; }
 .house-game[data-game="baccarat"] .baccarat-result-hand > strong { font-size: clamp(calc(14 * var(--casino-text-unit, 1px)), 3cqw, calc(20 * var(--casino-text-unit, 1px))); white-space: nowrap; }
@@ -387,8 +373,6 @@ body .casino-session .house-game[data-game="baccarat"] .baccarat-cards .blackjac
 body .casino-session .baccarat-cards .casino-card { min-width: 36px; width: 36px; height: 50px; }
 .baccarat-cards .casino-card-index { font-size: calc(12 * var(--casino-text-unit, 1px)); }
 .baccarat-cards .casino-card-pip { font-size: calc(24 * var(--casino-text-unit, 1px)); }
-.house-game[data-game="baccarat"] .casino-table-ribbon { top: 24%; left: 15%; width: 70%; }
-.house-game[data-game="baccarat"] .card-table-dealer { top: 30%; }
 @media (max-height: 500px) {
     .casino-card-index { top: 2px; left: 1px; font-size: calc(8 * var(--casino-text-unit, 1px)); }
     .casino-card-pip { right: 2px; bottom: 1px; font-size: calc(14 * var(--casino-text-unit, 1px)); }
@@ -633,3 +617,102 @@ body.mobile-mode[data-phone-keyboard="true"] .casino-session > :is(.house-game, 
 }
 /* Editors use the phone's base size even when nearby table labels compact. */
 .mobile-mode :is(.casino-session, .casino-info-dialog) :is(input, select) { font-size: var(--phone-menu-text-size, 16px); }
+
+/* House games keep seats outside a shared result-and-clock stage. Short
+   viewports scroll inside the table; captions never share absolute bands. */
+body .casino-session .house-game .card-table-scene {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: max-content minmax(max-content, 1fr) max-content;
+    gap: 4px; padding: 6px; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; scroll-padding-block: 10px;
+}
+.house-game :is(.casino-table-ribbon, .card-table-dealer) { display: none; }
+body .casino-session .house-game .card-table-seat {
+    position: relative; inset: auto; transform: none; width: 100%; height: auto;
+    min-height: min-content; max-width: none; max-height: none; padding: 3px; overflow: hidden;
+}
+.house-game .card-table-avatar { display: none; }
+.house-game .card-table-seat-name { margin-top: 0; font-size: clamp(calc(11 * var(--casino-text-unit, 1px)), 1.8cqw, calc(13 * var(--casino-text-unit, 1px))); line-height: 1.2; }
+.house-game .card-table-seat-status { display: block; width: 100%; white-space: normal; overflow: visible; font-size: clamp(calc(10 * var(--casino-text-unit, 1px)), 1.5cqw, calc(12 * var(--casino-text-unit, 1px))); line-height: 1.2; }
+.house-game .card-table-seat-hands { flex: 0 0 auto; max-height: none; overflow: visible; font-size: clamp(calc(10 * var(--casino-text-unit, 1px)), 1.5cqw, calc(12 * var(--casino-text-unit, 1px))); line-height: 1.2; }
+.house-game .card-table-seat-hands small { display: block; font: inherit; }
+.house-game .card-table-seat[data-position="1"] { grid-area: 1 / 1; }
+.house-game .card-table-seat[data-position="2"] { grid-area: 1 / 2; }
+.house-game .card-table-seat[data-position="3"] { grid-area: 1 / 3; }
+.house-game .card-table-seat[data-position="0"] { grid-area: 3 / 1; }
+.house-game .card-table-seat[data-position="5"] { grid-area: 3 / 2; }
+.house-game .card-table-seat[data-position="4"] { grid-area: 3 / 3; }
+.house-table-stage {
+    position: relative; grid-area: 2 / 1 / 3 / 4; min-width: 0; min-height: max-content;
+    display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px;
+}
+body .casino-session .house-game .card-table-center {
+    position: relative; inset: auto; transform: none; flex: 0 0 auto;
+    width: 100%; height: auto; min-height: 0; container-type: normal; align-self: stretch;
+}
+.house-game .house-result { height: auto; display: block; }
+body .casino-session .house-game .card-table-clock {
+    position: relative; inset: auto; transform: none; flex: 0 0 auto;
+    align-self: center; width: fit-content; min-width: 0; max-width: 100%; box-sizing: border-box;
+    display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px 8px; padding: 3px 8px;
+}
+.house-game .card-table-clock strong { font-size: calc(18 * var(--casino-text-unit, 1px)); }
+.house-game[data-game="roulette"] .roulette-theatre {
+    height: auto; --wheel-size: min(290px, max(64px, calc(100cqh - 160px)), calc(100cqw - 8px));
+}
+@media (max-height: 500px) and (min-width: 820px) {
+    body .casino-session .house-game .card-table-scene {
+        grid-template-columns: 22% minmax(0, 1fr) 22%; grid-template-rows: repeat(3, minmax(max-content, 1fr));
+        gap: 3px; padding: 4px;
+    }
+    .house-game .card-table-seat[data-position="0"] { grid-area: 3 / 1; }
+    .house-game .card-table-seat[data-position="1"] { grid-area: 2 / 1; }
+    .house-game .card-table-seat[data-position="2"] { grid-area: 1 / 1; }
+    .house-game .card-table-seat[data-position="3"] { grid-area: 1 / 3; }
+    .house-game .card-table-seat[data-position="4"] { grid-area: 2 / 3; }
+    .house-game .card-table-seat[data-position="5"] { grid-area: 3 / 3; }
+    .house-table-stage { grid-area: 1 / 2 / 4 / 3; }
+}
+/* During the actual spin/landing the wheel owns the table viewport, with
+   a separate footer for the clock and the optional animation skip. */
+.house-game[data-game="roulette"] .card-table-scene:has(.roulette-theatre.close-up) {
+    --roulette-footer-height: max(44px, calc(36 * var(--casino-text-unit, 1px)));
+    --roulette-skip-width: calc(110 * var(--casino-text-unit, 1px)); overflow: hidden;
+}
+.house-game[data-game="roulette"] .card-table-scene:has(.roulette-theatre.close-up) > .house-table-stage {
+    position: absolute; inset: 6px; grid-area: auto; min-height: 0;
+    display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) var(--roulette-footer-height);
+    gap: 8px; align-items: stretch; z-index: 3;
+}
+body .casino-session .house-game[data-game="roulette"] .card-table-scene:has(.roulette-theatre.close-up) .card-table-center {
+    grid-area: 1 / 1; height: 100%; align-self: stretch; container-type: size;
+}
+.house-game[data-game="roulette"] .card-table-scene:has(.roulette-theatre.close-up) :is(.house-result, .roulette-theatre) { height: 100%; }
+.house-game[data-game="roulette"] .roulette-theatre.close-up {
+    position: relative; --wheel-size: min(480px, calc(100cqh - 8px), calc(100cqw - 8px));
+}
+.house-game[data-game="roulette"] .roulette-theatre.close-up .roulette-outcome,
+.house-game[data-game="roulette"] .card-table-scene:has(.roulette-theatre.close-up) .card-table-clock > span {
+    position: absolute; width: 1px; height: 1px; margin: 0; padding: 0; overflow: hidden; clip-path: inset(50%);
+}
+.house-game[data-game="roulette"] .roulette-theatre.close-up .casino-skip-animation {
+    position: absolute; right: 0; bottom: calc(-1 * (var(--roulette-footer-height) + 8px));
+    width: var(--roulette-skip-width); height: var(--roulette-footer-height); min-height: var(--roulette-footer-height); box-sizing: border-box;
+}
+body .casino-session .house-game[data-game="roulette"] .card-table-scene:has(.roulette-theatre.close-up) .card-table-clock {
+    grid-area: 2 / 1; justify-self: start; align-self: center; height: var(--roulette-footer-height);
+    width: calc(100% - var(--roulette-skip-width) - 8px); max-width: none; z-index: 4;
+}
+.house-game[data-game="roulette"] .card-table-scene[data-phase="settling"]:has(.roulette-theatre.close-up) .card-table-clock > span {
+    position: static; width: auto; height: auto; overflow: visible; clip-path: none; line-height: 1.2;
+}
+.house-game[data-game="roulette"] .card-table-scene[data-phase="settling"]:has(.roulette-theatre.close-up) .card-table-clock > strong { display: none; }
+.house-game[data-game="baccarat"] .baccarat-theatre { height: auto; gap: 4px; }
+.house-game[data-game="baccarat"] .baccarat-result-hand { container-type: inline-size; padding: 4px; }
+.house-game[data-game="baccarat"] .baccarat-result-hand > strong { font-size: clamp(calc(14 * var(--casino-text-unit, 1px)), 2vw, calc(20 * var(--casino-text-unit, 1px))); white-space: nowrap; line-height: 1.2; }
+body .casino-session .house-game[data-game="baccarat"] .baccarat-cards .casino-card {
+    --baccarat-card-width: clamp(32px, 28cqw, 72px);
+    flex: 0 0 var(--baccarat-card-width); width: var(--baccarat-card-width); min-width: 32px;
+    height: max(calc(42 * var(--casino-text-unit, 1px)), calc(var(--baccarat-card-width) * 1.45)); margin: 2px 1px;
+}
+.house-game[data-game="baccarat"] .baccarat-cards .casino-card-index { font-size: clamp(calc(10 * var(--casino-text-unit, 1px)), 10cqw, calc(18 * var(--casino-text-unit, 1px))); }
+.house-game[data-game="baccarat"] .baccarat-cards .casino-card-pip { font-size: clamp(calc(17 * var(--casino-text-unit, 1px)), 18cqw, calc(44 * var(--casino-text-unit, 1px))); }

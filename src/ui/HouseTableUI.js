@@ -24,6 +24,8 @@ export class HouseTableUI {
         this.table = new CardTableScene('roulette');
         this.display = node('div', '', 'house-result'); this.table.center.append(this.display);
         this.celebration = new CasinoCelebration(this.table.center);
+        this.stage = node('div', '', 'house-table-stage');
+        this.stage.append(this.table.center, this.table.clock); this.table.root.append(this.stage);
         this.phase = node('p', '', 'casino-round-phase'); this.phase.setAttribute('role', 'status');
         this.summary = node('p'); this.summary.setAttribute('role', 'status');
         this.stakeLabel = node('label', 'Wager (Gold) ');
@@ -115,6 +117,9 @@ export class HouseTableUI {
         this.buildChips(view);
         this.renderResult(view);
         const continuing = previous?.roundId === view.roundId && previous?.tableId === view.tableId && previous?.currency === view.currency && previous?.game === view.game;
+        if (view.game === 'roulette' && view.phase === 'revealing' && (!continuing || previous.phase !== 'revealing')) {
+            this.table.root.scrollTop = 0;
+        }
         if (continuing && view.available && view.phase === 'revealing') {
             if (previous.phase === 'betting') this.sound(view.game === 'roulette' ? 'spin' : 'stop');
             const count = (view.dealt?.player.length || 0) + (view.dealt?.banker.length || 0);
@@ -124,8 +129,11 @@ export class HouseTableUI {
         for (const seat of this.table.seats) {
             seat.hands.replaceChildren();
             const member = view.players?.find(p => p.seat === Number(seat.root.dataset.seat));
+            const occupant = presence.occupants?.find(p => p.seat === Number(seat.root.dataset.seat));
+            const earlier = presence.occupants && occupant?.playerId !== member?.playerId;
+            const owner = earlier && member ? `${member.playerId === playerID ? 'Your' : `${member.name || 'Player'}’s`} earlier wager · ` : '';
             if (member) seat.hands.append(node('small', Array.isArray(member.wagers) ?
-                `${goldText(sum(member.wagers))} ${currency} staked${member.paid ? ` · ${goldText(member.payout)} returned` : ''}` : 'Wager details unavailable'));
+                `${owner}${goldText(sum(member.wagers))} ${currency} staked${member.paid ? ` · ${goldText(member.payout)} returned` : ''}` : 'Wager details unavailable'));
         }
         if (view.phase === 'complete' && this.own?.paid && Array.isArray(this.own.wagers) && this.celebrated !== view.roundId) {
             this.celebrated = view.roundId;

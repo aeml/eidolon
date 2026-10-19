@@ -495,17 +495,17 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.85`, **deployed and verified within scoped acceptance**.
-This milestone improves casino phone text sizing and keyboard layouts. Larger
-menu text keeps game titles, controls and all six blackjack hand totals readable;
-editing wager and auto-spin fields keeps them above the modeled keyboard bounds.
-Saved placement and wager drafts survive table updates, with concise play-time
-labels retaining their full accessible explanations. The milestone also corrects
-a reproduced pending-player identity race in casino notifications. Complete own
-CI, both deployments, live checks and exact public verification pass. Further
-compact table spacing, poker result clarity, physical-phone and complete owner
-casino assessment remain open.
-[Acceptance](docs/plans/2026-10-19-release1-79-85-acceptance.md).
+Current source version: `Alpha 1.79.86`, **prepared; deployment acceptance pending**.
+This milestone separates house seats, Baccarat hands and timers, enlarges the
+foreground roulette spin, and keeps reconnect status readable on short screens.
+Poker shows the return and net result before celebrating; reused house chairs
+retain the original wager owner's name. Rules popups preserve their last visible
+position when closed during a drag. Large top-bar-draggable casino windows and
+saved placement remain delivered. Forty-three focused source browser checks,
+48 unit checks and changed JavaScript lint pass; the affected house suite also
+passes its 21 checks after the shared-stage change. Copied-publication, own full
+CI and public deployment acceptance remain pending.
+[Qualification](docs/plans/2026-10-19-casino-poker-result-clarity.md).
 
 Latest verified live release: `Alpha 1.79.85`, source
 `6d35618229979e24fa9808e242e8200421b71cfa`.

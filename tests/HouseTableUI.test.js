@@ -9,6 +9,25 @@ const view = (game = 'roulette', currency = 'gold') => ({
     spots: [{ id: 'red', label: 'Red', multiplier: 2 }, { id: 'split:1-2', label: 'Split 1/2', multiplier: 18 }]
 });
 
+test.each(['roulette','baccarat'])('%s keeps an earlier wager separate from the new chair occupant', game=>{
+    const send=jest.fn(),ui=new HouseTableUI(send);
+    try {
+        const state={...view(game),phase:'complete',nextRoundAt:new Date(Date.now()+30000).toISOString(),
+            players:[{playerId:'old-patron',name:'Old patron',seat:0,wagers:[{spot:game === 'roulette' ? 'red' : 'banker',amount:20}],paid:true,payout:game === 'roulette' ? 40 : 39}]};
+        if(game === 'roulette')state.number=32;
+        else state.baccarat={player:[2,3],banker:[2,4],playerTotal:7,bankerTotal:8,winner:'banker'};
+        ui.update(state,'new-patron',{yourSeat:{seat:0,sessionId:'new-chair-session'},
+            occupants:[{playerId:'new-patron',name:'New patron',seat:0,connected:true}]});
+        expect(ui.table.seats[0].name.textContent).toBe('New patron · You');
+        expect(ui.table.seats[0].status.textContent).toBe('Waiting for next hand');
+        expect(ui.table.seats[0].hands.textContent).toContain('Old patron');
+        expect(ui.table.seats[0].hands.textContent).toContain('earlier wager');
+        expect(ui.table.seats[0].hands.textContent).toContain('20 Gold staked');
+        expect(ui.celebration.active).toBe(false);
+        expect(send).not.toHaveBeenCalled();
+    } finally {ui.dispose();}
+});
+
 test.each(['roulette', 'baccarat'].flatMap(game => [undefined, null, {}].map(wagers => [game, wagers])))('%s retains seats without inventing a wager or win from unavailable details (%p)', (game, wagers) => {
     const send = jest.fn(), ui = new HouseTableUI(send), state = view(game);
     try {
