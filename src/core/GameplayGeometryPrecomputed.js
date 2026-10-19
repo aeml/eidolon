@@ -35,7 +35,10 @@ export function createGameplayGeometryLookup(spec, { fetcher = (...args) => fetc
                     if (offset + chunk.value.byteLength > bytes.length) throw Error('Oversized precomputed response');
                     bytes.set(chunk.value, offset); offset += chunk.value.byteLength;
                 }
-            } finally { await reader.cancel(); }
+            } finally {
+                try { await reader.cancel(); }
+                catch { /* An errored stream also rejects cancel. Preserve the read error and its recovery classification. */ }
+            }
             if (offset !== bytes.length || hex(await crypto.subtle.digest('SHA-256', bytes)) !== shard.sha256) throw Error('Precomputed content identity mismatch');
             return bytes;
         } finally { clearTimeout(timeout); }

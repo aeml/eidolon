@@ -9,7 +9,7 @@ const modulePath = '/src/core/GameEngine.bundle.js';
 const workerPath = '/src/core/ActorGameplayGeometryWorker.28b738eaf5aa3a9b.js';
 const binaryPath = '/assets/gameplay-geometry/indices.51e1054c0867a1e5.bin';
 
-test('geometry worker recovers one timed-out shard with exact indices and retains the canceled delivery evidence', async ({ page }, testInfo) => {
+for (const stage of ['headers', 'body']) test(`geometry worker recovers one timed-out shard at ${stage} with exact indices and retains the canceled delivery evidence`, async ({ page }, testInfo) => {
     const [key, row] = Object.entries(catalog.entries)[0], shard = catalog.shards[row.shard];
     const files = new Map();
     for (const name of ['src/core/GameplayGeometryPrecomputed.js', 'src/core/GameplayGeometryFingerprint.js',
@@ -31,6 +31,7 @@ test('geometry worker recovers one timed-out shard with exact indices and retain
         } else if (files.has(request.url)) {
             response.setHeader('Content-Type', request.url.endsWith('.js') ? 'text/javascript' : 'application/octet-stream');
             if (request.url === path && ++attempts === 1) {
+                if (stage === 'body') response.flushHeaders();
                 const timer = setTimeout(() => { timers.delete(timer); response.end(files.get(path)); }, 2000);
                 timers.add(timer); response.once('close', () => { clearTimeout(timer); timers.delete(timer); });
             } else response.end(files.get(request.url));

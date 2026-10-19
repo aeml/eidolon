@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import committedCatalog from '../src/data/gameplayGeometryPrecomputed.js';
 import { decodeIndices } from '../src/core/GameplayGeometryIndexCodec.js';
 import { webcrypto } from 'node:crypto';
+import { ReadableStream } from 'node:stream/web';
 import { jest } from '@jest/globals';
 import { createHash } from 'node:crypto';
 import { createGameplayGeometryLookup } from '../src/core/GameplayGeometryPrecomputed.js';
@@ -68,12 +69,14 @@ test('two bounded timeouts abort both requests and subsequent lookups fall back 
     expect(await lookup(f.key, 'body', f.source)).toBeNull(); expect(f.fetcher).toHaveBeenCalledTimes(2);
 });
 
-test.each(['timeout', 'network', 'stream'])('one transient %s failure recovers exact data and concurrent lookups share the recovery', async mode => {
+test.each(['timeout', 'network', 'stream', 'stream-cancel'])('one transient %s failure recovers exact data and concurrent lookups share the recovery', async mode => {
     const f = fixture(); let firstSignal;
     f.fetcher.mockImplementationOnce((_url, { signal }) => {
         firstSignal = signal;
         if (mode === 'timeout') return new Promise((_, reject) => signal.addEventListener('abort', () => reject(Error('aborted')), { once: true }));
         if (mode === 'network') return Promise.reject(new TypeError('Failed to fetch'));
+        if (mode === 'stream-cancel') return Promise.resolve({ ok: true, headers: { get: () => null },
+            body: new ReadableStream({ start(controller) { controller.error(new TypeError('Connection reset')); } }) });
         return Promise.resolve({ ok: true, headers: { get: () => null }, body: { getReader: () => ({
             read: async () => { throw new TypeError('Connection reset'); }, cancel: async () => {}
         }) } });

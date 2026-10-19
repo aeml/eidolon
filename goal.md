@@ -2793,3 +2793,17 @@ browser retries. The worker regression verifies exact committed indices after
 an actual timeout and retains the failed request evidence. New copied-source,
 own CI and public verification still gate86 acceptance. Accepted85/full game
 owner/performance/device/operations/beta gates remain unchanged. No soak/stress.
+
+
+## October19 reader-cleanup follow-up pending
+
+The original5c5540fed CI remains active and its823 client suites/12,829 checks
+pass. A native ReadableStream regression proves that cancel() rejects after a
+failed read and hides the transport-recovery classification. The isolated fix
+preserves the original error; all53 focused unit checks/two suites pass. The
+expanded browser check requires real body-timeout recovery with exact committed
+indices and two requests. Browser/copied-source/new own CI/public qualification
+remain pending; current5c acceptance is held. Preserve its original CI unchanged,
+wait for all workflows idle before heavy work, then publish the corrected86
+source only after qualification. Accepted85/full game and owner/beta gates stay
+open. No soak/stress.

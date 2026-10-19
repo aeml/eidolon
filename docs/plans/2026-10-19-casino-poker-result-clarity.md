@@ -141,3 +141,23 @@ unpublished copied build had a wrong source argument; it was rejected before
 any browser qualification, and the fresh copied tree above pins the actual
 commit. Its setup classification is retained separately from product failures.
 New complete own CI and exact deployment proof remain required.
+
+
+## Reader-cleanup follow-up under qualification
+
+Review while source5c5540fed runs its original CI finds a real stream edge case:
+when a native ReadableStream read rejects, reader.cancel() rejects with the same
+stored error. Cleanup replaces the transient-error wrapper, preventing the one
+bounded recovery attempt during body delivery. A native-stream unit baseline
+fails once against the selected source and is retained. The isolated correction
+preserves the read error through best-effort cleanup; all53 focused unit checks/
+two suites pass. Exact length/hash/index checks and request/owner limits remain.
+
+The browser regression now separately delays response headers and response body.
+The body case flushes HTTP200 headers, stalls the payload past1500ms and requires
+exact verified output and exactly two requests, retaining the canceled request.
+Browser execution and a fresh exact copied publication remain pending while the
+original CI uses the shared host. Current5c is not accepted even if its CI passes;
+its complete original result and deployment identities will be retained before
+publishing a new corrected source. No workflow is retried or cancelled, and no
+local browser/build/archive work starts while any repository workflow is live.
