@@ -625,7 +625,10 @@ body .casino-session .house-game .card-table-scene {
     grid-template-rows: max-content minmax(max-content, 1fr) max-content;
     gap: 4px; padding: 6px; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; scroll-padding-block: 10px;
 }
-.house-game :is(.casino-table-ribbon, .card-table-dealer) { display: none; }
+.house-game .casino-table-ribbon { display: none; }
+/* The host stays visible in the controls, away from hands and the clock. */
+.house-game .card-table-dealer { position: static; transform: none; display: block; width: auto; text-align: left; margin: 0 0 4px; }
+.house-game .card-table-dealer-portrait { display: none; }
 body .casino-session .house-game .card-table-seat {
     position: relative; inset: auto; transform: none; width: 100%; height: auto;
     min-height: min-content; max-width: none; max-height: none; padding: 3px; overflow: hidden;

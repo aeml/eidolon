@@ -1,8 +1,13 @@
 # Casino table layout and result clarity
 
 This isolated follow-up extends accepted Alpha 1.79.85, source
-`6d35618229979e24fa9808e242e8200421b71cfa`. Prepared Alpha 1.79.86 has not deployed; it requires its own
-complete CI and public verification.
+`6d35618229979e24fa9808e242e8200421b71cfa`. Alpha 1.79.86 has not deployed. Original source `ddbd001ca` failed
+[CI39253417949](https://github.com/aeml/eidolon/actions/runs/39253417949): six
+existing house-table cases correctly reject the hidden House dealer label.
+The corrected candidate restores that label in the controls, apart from the
+cards/timer stage. Original failure and CI-configured retries remain retained;
+this is a product regression, not a flaky test or fixture waiver. Complete new
+qualification and own CI/public verification remain required.
 
 House games arrange six seats around a shared result-and-clock stage. Labels,
 funded stakes, reconnect status, Baccarat hands and the timer occupy separate
@@ -71,3 +76,12 @@ final owner casino assessment, performance or whole-game acceptance. No odds,
 currencies, schema/protocol, server settlement or art assets change. Local
 compiler/browser/archive work requires all repository workflows idle. Soak and
 stress remain deferred until feature completion approaches.
+
+
+The original 43/18 passing sets did not include the six anonymous house-table
+cases; their scopes are retained and do not qualify the dealer correction. The
+expanded source matrix has 49 cases, including every original failing case, and
+both real-controller house groups now explicitly require visible dealer text.
+The corrected constructor passes all 21 HouseTableUI checks on Node24 and
+changed JavaScript lint. The source matrix and exact copied-engine rerun wait
+for all repository workflows to become idle. The failed original86 run is never restarted/cancelled.

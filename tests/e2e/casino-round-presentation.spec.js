@@ -17,6 +17,7 @@ for (const [width,height,textScale] of [[320,740,125],[390,844,125],[844,390,125
                 players:f.payload.occupants.map(p=>({...p,wagers:[{spot:'red',amount:20}],paid:false,payout:0}))};
             f.c.updateState(f.payload);
         });
+        await expect(page.locator('.house-game .card-table-dealer')).toBeVisible();
         const clock=page.locator('.house-game .card-table-clock');
         const checkClock=async phase=>{
             await clock.scrollIntoViewIfNeeded();await expect(clock).toBeInViewport({ratio:1});
@@ -85,6 +86,7 @@ for (const [width,height,textScale] of [[320,740,125],[390,844,125],[844,390,125
                 if (phase === 'complete') v.baccarat={player:[0,3,1],banker:[9,2,4],playerTotal:7,bankerTotal:8,winner:'banker'};
                 payload.house=v; c.updateState(payload); c.house.table.root.scrollTop=0;
             }, {phase,revision});
+            await expect(page.locator('.house-game .card-table-dealer')).toBeVisible();
             // Inspect settled layout after the intended card arrival motion.
             await page.waitForTimeout(450);
             const geometry=await page.evaluate(() => {

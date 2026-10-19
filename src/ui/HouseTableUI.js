@@ -58,6 +58,7 @@ export class HouseTableUI {
         this.rulesDialog = new CasinoInfoDialog('Roulette rules'); this.rules = this.rulesDialog.button;
         this.rulesText = node('p'); this.rulesDialog.body.append(this.rulesText);
         this.controls = node('div', '', 'card-table-controls');
+        this.controls.append(this.table.dealer);
         const toolbar = node('div', '', 'house-wager-toolbar'); toolbar.append(this.stakeLabel, this.adjustments, builderLabel);
         this.controls.append(this.phase, this.summary, toolbar, this.chips, this.board, this.slip, this.confirm, this.undo, this.clear, this.repeat, this.rules);
         this.history = new HouseHistory(this.controls);
