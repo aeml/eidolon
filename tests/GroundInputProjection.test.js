@@ -100,6 +100,32 @@ test('an expanded panel can shrink a nine-unit escape to2.25 unless projection i
         .toMatchObject({ canvas: false, scale: 1 });
 });
 
+test('minimum-aware jump planning finds an eight-unit point between the recorded quarter and half samples', () => {
+    const distance = Math.hypot(30, -8);
+    const boundary = projectGroundOffsetInPage({ deltaX: 30 * 8.1 / distance, deltaZ: -8 * 8.1 / distance, allowScaling: false });
+    document.elementFromPoint = x => ({ tagName: x <= boundary.x ? 'CANVAS' : 'ASIDE' });
+    const coarse = projectGroundOffsetInPage({ deltaX: 30, deltaZ: -8 });
+    expect(coarse).toMatchObject({ canvas: true, scale: .25 });
+    expect(distance * coarse.scale).toBeLessThan(8);
+    const planned = projectGroundOffsetInPage({ deltaX: 30, deltaZ: -8, minimumDistance: 8 });
+    expect(planned.canvas).toBe(true);
+    expect(distance * planned.scale).toBeGreaterThanOrEqual(8);
+    expect(distance * planned.scale).toBeLessThanOrEqual(8.1);
+    const strict = projectGroundOffsetInPage({ deltaX: 30 * planned.scale, deltaZ: -8 * planned.scale, allowScaling: false });
+    expect(strict).toMatchObject({ canvas: true, scale: 1 });
+});
+
+test('a visible prefix below the requested minimum remains unavailable to the planner', () => {
+    const distance = Math.hypot(30, -8);
+    const boundary = projectGroundOffsetInPage({ deltaX: 30 * 7.9 / distance, deltaZ: -8 * 7.9 / distance, allowScaling: false });
+    document.elementFromPoint = x => ({ tagName: x <= boundary.x ? 'CANVAS' : 'ASIDE' });
+    expect(projectGroundOffsetInPage({ deltaX: 30, deltaZ: -8, minimumDistance: 8 }).canvas).toBe(false);
+});
+
+test('a whole requested vector below the planning minimum cannot become a smaller jump', () => {
+    expect(projectGroundOffsetInPage({ deltaX: 5, deltaZ: 0, minimumDistance: 8 })).toBeNull();
+});
+
 test('hidden ground, invalid vectors and sub-unit steps cannot become movement input', () => {
     expect(planVisibleGroundStepInPage({ dx: .5, dz: 0 })).toBeNull();
     expect(planVisibleGroundStepInPage({ dx: NaN, dz: 3 })).toBeNull();

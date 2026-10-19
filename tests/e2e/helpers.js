@@ -667,7 +667,7 @@ export async function jumpByGroundClick(page, deltaX, deltaZ) {
 // Execution still rechecks that entire chosen destination, never silently
 // shortens a hop, and must prove directional server movement and landing.
 export async function planVisibleGroundJump(page, deltaX, deltaZ, minimumDistance = 8) {
-    const target = await projectGroundOffset(page, deltaX, deltaZ);
+    const target = await projectGroundOffset(page, deltaX, deltaZ, { minimumDistance });
     const scale = target?.scale;
     if (!target?.canvas || !Number.isFinite(scale) || scale <= 0 || scale > 1 ||
         Math.hypot(deltaX, deltaZ) * scale < minimumDistance) {

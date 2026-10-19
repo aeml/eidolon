@@ -16,20 +16,27 @@ for (const stage of ['headers', 'body']) test(`geometry worker recovers one time
         'src/core/GameplayGeometryIndexCodec.js', 'src/data/gameplayGeometryPrecomputed.js', shard.url.slice(6)]) {
         files.set('/' + name, await readFile(new URL('../../' + name, import.meta.url)));
     }
-    const path = '/' + shard.url.slice(6), timers = new Set(); let attempts = 0;
+    const path = '/' + shard.url.slice(6), timers = new Set(), serverRequests = []; let attempts = 0, proof;
     const server = createServer((request, response) => {
+        // Keep cancellation recovery independent of pooled-socket reuse.
+        // Both application fetches and server requests must still total two.
+        response.setHeader('Connection', 'close');
         if (request.url === '/fixture') {
             response.setHeader('Content-Type', 'text/html'); response.end('<!doctype html><link rel="icon" href="data:,">');
         } else if (request.url === '/probe-worker.js') {
             response.setHeader('Content-Type', 'text/javascript');
-            response.end(`import { gameplayGeometryPrecomputed } from '/src/core/GameplayGeometryPrecomputed.js';
+            response.end(`import { createGameplayGeometryLookup } from '/src/core/GameplayGeometryPrecomputed.js';
+                import catalog from '/src/data/gameplayGeometryPrecomputed.js';
+                let fetches = 0;
+                const gameplayGeometryPrecomputed = createGameplayGeometryLookup(catalog, {fetcher:(...args)=>{fetches++;return fetch(...args);}});
                 const row = ${JSON.stringify(row)};
                 const source = { index:new Uint32Array(row.sourceIndexCount), attributes:{position:{itemSize:3,array:new Float32Array(row.vertices*3)}} };
                 const [a,b] = await Promise.all([gameplayGeometryPrecomputed('${key}',row.kind,source),gameplayGeometryPrecomputed('${key}',row.kind,source)]);
                 const digest = async result => result && [...new Uint8Array(await crypto.subtle.digest('SHA-256',result.indices))].map(v=>v.toString(16).padStart(2,'0')).join('');
-                postMessage({precomputed:a?.precomputed === true && b?.precomputed === true,hashes:[await digest(a),await digest(b)]});`);
+                postMessage({precomputed:a?.precomputed === true && b?.precomputed === true,hashes:[await digest(a),await digest(b)],fetches});`);
         } else if (files.has(request.url)) {
             response.setHeader('Content-Type', request.url.endsWith('.js') ? 'text/javascript' : 'application/octet-stream');
+            if (request.url === path) serverRequests.push({ method: request.method, connection: request.socket.remotePort });
             if (request.url === path && ++attempts === 1) {
                 if (stage === 'body') response.flushHeaders();
                 const timer = setTimeout(() => { timers.delete(timer); response.end(files.get(path)); }, 2000);
@@ -42,12 +49,12 @@ for (const stage of ['headers', 'body']) test(`geometry worker recovers one time
     const failures = collectBrowserFailures(page, origin);
     try {
         await page.goto(origin + '/fixture');
-        const result = await page.evaluate(() => new Promise((resolve, reject) => {
+        proof = await page.evaluate(() => new Promise((resolve, reject) => {
             const worker = new Worker('/probe-worker.js', {type:'module'});
             worker.onmessage = event => { worker.terminate(); resolve(event.data); };
             worker.onerror = event => { worker.terminate(); reject(Error(event.message)); };
         }));
-        expect(result).toEqual({precomputed:true,hashes:[row.sha256,row.sha256]});
+        expect(proof).toEqual({precomputed:true,hashes:[row.sha256,row.sha256],fetches:2});
         expect(attempts).toBe(2);
         await expect.poll(() => evidence.snapshot().requests.filter(r => r.path === path && r.outcome === 'finished').length).toBe(1);
         const observed = evidence.snapshot();
@@ -55,8 +62,9 @@ for (const stage of ['headers', 'body']) test(`geometry worker recovers one time
         expect(observed.failures[0]).toMatchObject({path,code:'net::ERR_ABORTED'});
         expect(observed.requests.filter(r => r.path === path)).toHaveLength(2);
         expect(failures, failures.join('\n')).toEqual([]);
-        await testInfo.attach('recovered-geometry-delivery', {body:JSON.stringify(observed),contentType:'application/json'});
     } finally {
+        await testInfo.attach('recovered-geometry-delivery', {body:JSON.stringify({ ...evidence.snapshot(),
+            applicationFetches:proof?.fetches, serverRequests }),contentType:'application/json'});
         evidence.dispose(); for (const timer of timers) clearTimeout(timer);
         server.closeAllConnections(); await new Promise(resolve => server.close(resolve));
     }

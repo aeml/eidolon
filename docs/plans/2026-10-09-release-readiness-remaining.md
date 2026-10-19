@@ -40,6 +40,11 @@ fixture flake and an unrecovered1500ms geometry-data timeout in live QA. Both
 receive bounded transport corrections, with eight focused browser and52 unit
 checks passing. New copied publication/CI/public proof remain required. No
 failure is waived; accepted85 remains the baseline.
+Later source5c passes client823/12829, hosted564/14 and native184/2, but Live QA
+finds a coarse7.762-unit projection below its unchanged8-unit minimum. The new
+minimum-aware planner and stream-cleanup correction pass80 units/four suites
+and5 browser cases without retries/failures/flakes/exclusions. New own CI and
+exact copied/public proof remain required.
 No full owner casino assessment or another readiness gate closes here.
 
 ## Current delivery: accepted Alpha 1.79.85

@@ -161,3 +161,47 @@ original CI uses the shared host. Current5c is not accepted even if its CI passe
 its complete original result and deployment identities will be retained before
 publishing a new corrected source. No workflow is retried or cancelled, and no
 local browser/build/archive work starts while any repository workflow is live.
+
+
+## Live route-planner correction and final local checks
+
+Source5c5540fed ends CI39275253270 with nine successful jobs and a failed live
+job. Client823/12829, hosted564/14 exclusions and native184/2 exclusions pass
+without failed/flaky browser outcomes. Live reports7 passes,1 exclusion and1
+failure; later live steps never run. The failure occurs before pointer input:
+for the requested(30,-8) town-exit vector, the coarse projector chooses a visible
+quarter-step of7.762 units, below the unchanged8-unit planning minimum. The
+failed route's static-delivery evidence has zero failures and zero active loads.
+Its digest-verified original live artifact and terminal logs remain retained.
+
+A native Three projection baseline reproduces the gap with visible ground up
+to8.1 units: the old planner still selects7.762. Minimum-aware planning now
+samples the valid interval down to the requested minimum and rejects anything
+shorter. Ordinary coarse projections retain their existing behavior. The jump
+executor still rechecks the complete destination and requires real Ctrl-click,
+directional authoritative movement and landing. No8-unit minimum, arrival,
+collision rule or observation deadline is lowered. A real browser HUD/canvas
+fixture verifies the same narrow gap and strict full-destination projection;
+it is planning evidence, not earned server movement proof.
+
+All80 focused unit checks/four suites and changed-file lint pass. All five
+browser checks pass with zero failures, retries, flakes or exclusions, including
+the planner and actual header/body timeout recovery. Both delivery cases return
+exact verified committed indices to concurrent callers, make exactly two
+application fetches and two server requests, and retain the canceled request.
+
+The first body probe returns correct indices but observes three server requests;
+that failed report is retained. Its exact extra-request cause was not captured
+because the owned attachment originally followed the assertion. Diagnostic
+accounting now runs in finally and records application fetches and connections;
+a separate native body run passes with two fetches/two requests. The disposable
+server now closes connections to keep this timeout probe independent of pooled
+socket reuse. The original two-request assertion remains, alongside the new
+two-application-fetch assertion; neither the provider limit nor test assertions
+are relaxed. The final five-case report passes with that controlled fixture.
+
+The reader-cleanup correction preserves the original failed read through
+best-effort cancel(), keeping the1500ms per-attempt and30s owner limits and all
+content/index checks. New exact copied-source qualification, complete own CI,
+both deployed identities and exact public proof remain required. No game input,
+melee/camera rules, server settlement, schema/protocol, models or odds change.

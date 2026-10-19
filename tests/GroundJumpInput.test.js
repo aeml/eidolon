@@ -54,7 +54,7 @@ test('route planning chooses a visible prefix first, then execution rechecks its
     const planner = { evaluate: jest.fn().mockResolvedValue({ canvas: true, scale: .5, x: 400, y: 300 }) };
     const step = await planVisibleGroundJump(planner, 30, -8);
     expect(step).toEqual({ deltaX: 15, deltaZ: -4 });
-    expect(planner.evaluate.mock.calls[0][1]).toEqual({ deltaX: 30, deltaZ: -8 });
+    expect(planner.evaluate.mock.calls[0][1]).toEqual({ deltaX: 30, deltaZ: -8, minimumDistance: 8 });
     const page = pageFor({ canvas: true, scale: 1, x: 400, y: 300 });
     await jumpByGroundClick(page, step.deltaX, step.deltaZ);
     expect(page.evaluate.mock.calls[1][1]).toEqual({ deltaX: 15, deltaZ: -4, allowScaling: false });

@@ -509,7 +509,10 @@ original86 CI correctly rejected a hidden dealer label and did not deploy.
 The deployed corrected UI then passes full client/native checks, but its own CI
 retains one privacy-fixture flake and an unrecovered geometry-data timeout in
 live QA. Both have bounded transport corrections under validation;85 remains
-the latest accepted release. No soak/stress testing is resumed.
+the latest accepted release. A later run passes client, hosted and native QA,
+but Live QA finds a coarse jump-planning gap. The isolated correction preserves
+the eight-unit minimum and strict real-input/landing checks. No soak/stress
+testing is resumed.
 [Qualification](docs/plans/2026-10-19-casino-poker-result-clarity.md).
 
 Latest verified live release: `Alpha 1.79.85`, source

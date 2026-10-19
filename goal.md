@@ -2807,3 +2807,23 @@ remain pending; current5c acceptance is held. Preserve its original CI unchanged
 wait for all workflows idle before heavy work, then publish the corrected86
 source only after qualification. Accepted85/full game and owner/beta gates stay
 open. No soak/stress.
+
+
+## October19 live route-planner correction qualified locally
+
+Original5c CI39275253270 has9successful jobs and a failed Live job: client823/
+12829, hosted564/14 exclusions and native184/2 pass without failures/flakes.
+Live7/1 exclusion/1failure stops before a jump because coarse projection returns
+7.762 units for an unchanged8-unit minimum; later live steps remain unrun. The
+failed route has no asset-delivery failures. Original logs and digest-verified
+raw live artifact are retained. A native Three baseline reproduces the gap;
+minimum-aware planning finds a visible>=8-unit destination without lowering the
+minimum or changing strict full Ctrl-click/directional server/landing checks.
+The actual browser fixture covers the narrow8.1-unit boundary. Reader cleanup
+preserves the native failed-read classification for bounded body recovery.
+All80 focused unit checks/four suites and5 browser cases pass, zero browser
+retries/failures/flakes/exclusions. A first body probe's extra HTTP request is
+retained; controlled fresh connections and application/server accounting keep
+both original two-request and new two-fetch assertions. New exact copied-source,
+own CI and public verification still gate86 acceptance. Full game/owner/beta
+remain open; no soak/stress.

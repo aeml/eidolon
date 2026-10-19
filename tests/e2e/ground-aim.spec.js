@@ -1,5 +1,33 @@
 import { expect, test } from '@playwright/test';
 import { aimAtGroundPoint } from './ground-aim.js';
+import { planVisibleGroundJump, projectGroundOffset } from './helpers.js';
+
+test('jump planner finds a full eight-unit visible prefix between coarse samples', async ({ page }) => {
+    await page.route('**/jump-projection-fixture', route => route.fulfill({ contentType: 'text/html', body:
+        '<!doctype html><link rel="icon" href="data:,"><script type="importmap">{"imports":{"three":"/vendor/three/build/three.module.js"}}</script><canvas style="position:fixed;inset:0;width:100%;height:100%"></canvas><aside id="fixture-hud" style="position:fixed;top:0;right:0;bottom:0;background:#17242d">HUD</aside>' }));
+    await page.goto('/jump-projection-fixture');
+    await page.evaluate(async () => {
+        const THREE = await import('three');
+        const player = { position: new THREE.Vector3(109.197509765625, 0, 212.4868927001953) };
+        const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, .1, 1000);
+        camera.position.copy(player.position).add(new THREE.Vector3(0, 40, 40));
+        camera.lookAt(player.position); camera.updateMatrixWorld(true);
+        window.game = { player, renderSystem: { camera }, inputManager: { groundPlane: new THREE.Plane(new THREE.Vector3(0, 1, 0), 0) } };
+        const distance = Math.hypot(30, -8);
+        const boundary = player.position.clone().add(new THREE.Vector3(30 * 8.1 / distance, 0, -8 * 8.1 / distance)).project(camera);
+        document.getElementById('fixture-hud').style.left = `${(boundary.x + 1) * innerWidth / 2}px`;
+    });
+    const coarse = await projectGroundOffset(page, 30, -8);
+    expect(coarse).toMatchObject({ canvas: true, scale: .25 });
+    expect(Math.hypot(30, -8) * coarse.scale).toBeLessThan(8);
+    const step = await planVisibleGroundJump(page, 30, -8);
+    expect(Math.hypot(step.deltaX, step.deltaZ)).toBeGreaterThanOrEqual(8);
+    expect(Math.hypot(step.deltaX, step.deltaZ)).toBeLessThanOrEqual(8.1);
+    expect(await projectGroundOffset(page, step.deltaX, step.deltaZ, { allowScaling: false }))
+        .toMatchObject({ canvas: true, scale: 1 });
+    // Planning is not server movement proof. The ordinary live journey still
+    // requires a real full Ctrl-click, directional movement and landing.
+});
 
 // Browser-input/engine-intent fixture, not collision, combat or server proof.
 // Real keyboard/mouse events feed production InputManager and GameEngine.update;
