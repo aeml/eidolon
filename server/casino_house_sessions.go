@@ -18,6 +18,72 @@ import (
 )
 
 const houseRevealTime = 6 * time.Second
+const houseHistoryLimit = 40
+
+type houseRoundResult struct {
+	RoundID    string               `json:"roundId"`
+	FinishedAt time.Time            `json:"finishedAt"`
+	Number     *int                 `json:"number,omitempty"`
+	Baccarat   *game.BaccaratResult `json:"baccarat,omitempty"`
+}
+
+// A public projection of cards already dealt, never the future cards or winner.
+type houseBaccaratDeal struct {
+	Player      []int `json:"player"`
+	Banker      []int `json:"banker"`
+	PlayerTotal int   `json:"playerTotal"`
+	BankerTotal int   `json:"bankerTotal"`
+}
+
+func houseDealtCards(s *houseTableState, now time.Time) *houseBaccaratDeal {
+	if s.Game != "baccarat" || s.Baccarat == nil || s.Phase != "revealing" {
+		return nil
+	}
+	elapsed := now.Sub(s.RevealAt.Add(-houseRevealTime))
+	count := int(elapsed / time.Second)
+	if count < 0 {
+		count = 0
+	}
+	result := &houseBaccaratDeal{Player: []int{}, Banker: []int{}}
+	dealt := 0
+	for i := 0; i < 3; i++ {
+		for _, side := range []string{"player", "banker"} {
+			cards, target := s.Baccarat.Player, &result.Player
+			if side == "banker" {
+				cards, target = s.Baccarat.Banker, &result.Banker
+			}
+			if i >= len(cards) {
+				continue
+			}
+			if dealt < count {
+				*target = append(*target, cards[i])
+			}
+			dealt++
+		}
+	}
+	total := func(cards []int) int {
+		n := 0
+		for _, card := range cards {
+			if card%13 < 9 {
+				n += card%13 + 1
+			}
+		}
+		return n % 10
+	}
+	result.PlayerTotal, result.BankerTotal = total(result.Player), total(result.Banker)
+	return result
+}
+
+func houseCompletedHistory(s *houseTableState) []houseRoundResult {
+	history := append([]houseRoundResult{}, s.History...)
+	if s.Phase == "complete" {
+		history = append(history, houseRoundResult{s.RoundID, s.FinishedAt, s.Number, s.Baccarat})
+	}
+	if len(history) > houseHistoryLimit {
+		history = history[len(history)-houseHistoryLimit:]
+	}
+	return history
+}
 
 // Both games have a shared betting clock and automatic outcomes, not per-seat
 // turns. The existing durable table intent + character receipt owns all money.
@@ -40,6 +106,7 @@ type houseTableState struct {
 	Players    []houseParticipant   `json:"players"`
 	Number     *int                 `json:"number,omitempty"`
 	Baccarat   *game.BaccaratResult `json:"baccarat,omitempty"`
+	History    []houseRoundResult   `json:"history,omitempty"`
 }
 type houseCacheEntry struct {
 	record       *database.BlackjackTableRecord
@@ -49,6 +116,49 @@ type houseCacheEntry struct {
 
 var houseMu sync.Mutex
 var houseCache = map[string]houseCacheEntry{}
+var housePresentationVersions = map[string]string{}
+
+// The floor poll is deliberately slow. Push only changed public house views
+// to the currently seated audience so a one-second deal is actually observed
+// one card at a time. No per-card writes, random draws or funding actions.
+func notifyHousePresentation(now time.Time) {
+	changed := map[string]bool{}
+	houseMu.Lock()
+	for id, entry := range houseCache {
+		if !entry.available || entry.record == nil {
+			continue
+		}
+		s, err := decodeHouseState(entry.record)
+		if err != nil {
+			continue
+		}
+		count := 0
+		if dealt := houseDealtCards(s, now); dealt != nil {
+			count = len(dealt.Player) + len(dealt.Banker)
+		}
+		key := fmt.Sprintf("%d:%d", entry.record.Version, count)
+		if housePresentationVersions[id] != key {
+			changed[id] = true
+			housePresentationVersions[id] = key
+		}
+	}
+	houseMu.Unlock()
+	if len(changed) == 0 || world == nil {
+		return
+	}
+	sessionsMu.Lock()
+	audience := make([]*Client, 0, len(activeSessions))
+	for _, client := range activeSessions {
+		audience = append(audience, client)
+	}
+	sessionsMu.Unlock()
+	for _, client := range audience {
+		p := world.GetEntityCopy(client.playerID)
+		if p != nil && !p.Disconnected && p.InstanceID == game.CasinoInstanceID && p.CasinoSeat != nil && changed[p.CasinoSeat.TableID] {
+			sendCasinoState(client)
+		}
+	}
+}
 
 func houseRules(kind string) string {
 	switch kind {
@@ -85,6 +195,26 @@ func decodeHouseState(record *database.BlackjackTableRecord) (*houseTableState, 
 	id, err := hex.DecodeString(s.RoundID)
 	if err != nil || len(id) != 16 || s.Game != table.Game || s.Rules != houseRules(table.Game) || s.DealAt.IsZero() || len(s.Players) > 6 {
 		return nil, bad
+	}
+	if len(s.History) > houseHistoryLimit {
+		return nil, bad
+	}
+	seenRounds := map[string]bool{s.RoundID: true}
+	var previous time.Time
+	for _, result := range s.History {
+		id, err := hex.DecodeString(result.RoundID)
+		if err != nil || len(id) != 16 || seenRounds[result.RoundID] || result.FinishedAt.IsZero() || result.FinishedAt.Before(previous) || result.FinishedAt.After(s.DealAt) {
+			return nil, bad
+		}
+		if s.Game == "roulette" {
+			if result.Number == nil || game.RouletteColor(*result.Number) == "" || result.Baccarat != nil {
+				return nil, bad
+			}
+		} else if result.Number != nil || result.Baccarat.Validate() != nil {
+			return nil, bad
+		}
+		seenRounds[result.RoundID] = true
+		previous = result.FinishedAt
 	}
 	players, seats := map[string]bool{}, map[int]bool{}
 	allPaid := len(s.Players) > 0
@@ -419,8 +549,10 @@ func tickHouseTables(now time.Time, ids ...string) error {
 			}
 		case "complete":
 			if !now.Before(s.FinishedAt.Add(casinoResultPause)) {
+				history := houseCompletedHistory(s)
 				s, err = newHouseLobby(s.Game, now)
 				if err == nil {
+					s.History = history
 					err = advanceHouseLocked(r, s)
 				}
 			}
@@ -503,6 +635,8 @@ type houseTableView struct {
 	Players      []houseParticipantView `json:"players"`
 	Number       *int                   `json:"number,omitempty"`
 	Baccarat     *game.BaccaratResult   `json:"baccarat,omitempty"`
+	Dealt        *houseBaccaratDeal     `json:"dealt,omitempty"`
+	History      []houseRoundResult     `json:"history"`
 	Spots        []game.RouletteSpot    `json:"spots,omitempty"`
 }
 
@@ -530,6 +664,8 @@ func houseViewFor(owner string) *houseTableView {
 	v.Available, v.Processing = true, entry.pendingOwner != ""
 	v.TableVersion = strconv.FormatInt(entry.record.Version, 10)
 	v.RoundID, v.Phase, v.DealAt, v.RevealAt = s.RoundID, s.Phase, s.DealAt, s.RevealAt
+	v.Dealt = houseDealtCards(s, v.ServerNow)
+	v.History = houseCompletedHistory(s)
 	if s.Game == "roulette" {
 		v.Spots = game.RouletteSpots()
 	}

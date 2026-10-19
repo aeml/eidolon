@@ -1,41 +1,58 @@
 import { CardTableScene } from './CardTableScene.js';
 import { CasinoTableOrdering } from './CasinoTableOrdering.js';
 import { CasinoCelebration, goldText } from './CasinoCelebration.js';
+import { RoulettePresentation } from './RoulettePresentation.js';
+import { BaccaratPresentation } from './BaccaratPresentation.js';
+import { HouseHistory } from './HouseHistory.js';
 
 const node = (tag, text = '', className = '') => {
     const element = document.createElement(tag); element.textContent = text; element.className = className; return element;
 };
 const sum = wagers => (wagers || []).reduce((total, wager) => total + wager.amount, 0);
 const red = new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);
-const wheelOrder = [0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
 
 export class HouseTableUI {
-    constructor(send) {
+    constructor(send, sound = () => {}) {
+        this.sound = sound;
         this.ordering = new CasinoTableOrdering();
         this.send = send; this.currency = 'Gold'; this.draft = new Map();
         this.root = node('div', '', 'house-game'); this.root.hidden = true;
         this.table = new CardTableScene('roulette');
         this.display = node('div', '', 'house-result'); this.table.center.append(this.display);
         this.celebration = new CasinoCelebration(this.table.center);
+        this.phase = node('p', '', 'casino-round-phase'); this.phase.setAttribute('role', 'status');
         this.summary = node('p'); this.summary.setAttribute('role', 'status');
         this.stakeLabel = node('label', 'Wager (Gold) ');
-        this.stake = node('input'); this.stake.type = 'number'; this.stake.value = '20'; this.stakeLabel.append(this.stake);
+        this.stake = node('input'); this.stake.type = 'number'; this.stake.inputMode = 'numeric'; this.stake.value = '20'; this.stakeLabel.append(this.stake);
         this.adjustments = node('div', '', 'casino-bet-adjustments');
         for (const [label, factor] of [['½', .5], ['2×', 2]]) this.adjustments.append(this.button(label, () => {
             const step = Number(this.stake.step), minimum = Number(this.stake.min);
             this.stake.value = String(Math.max(minimum, Math.min(Number(this.stake.max), Math.floor(Number(this.stake.value) * factor / step) * step)));
         }));
+        this.chips = node('div', '', 'casino-chip-rack'); this.chips.setAttribute('aria-label', 'Choose chip value');
         const builderLabel = node('label', 'Build multiple bets ');
         this.builder = node('input'); this.builder.type = 'checkbox'; builderLabel.prepend(this.builder);
-        this.builder.onchange = () => { this.draft.clear(); this.refreshControls(); };
+        this.builder.onchange = () => { this.draft.clear(); this.draftSteps = []; this.refreshControls(); };
         this.board = node('div', '', 'house-betting-board');
         this.slip = node('p', '', 'house-bet-slip');
         this.confirm = this.button('Place bets', () => this.placeWagers(this.draftWagers())); this.confirm.className = 'casino-primary';
-        this.clear = this.button('Clear slip', () => { this.draft.clear(); this.refreshControls(); });
+        this.clear = this.button('Clear slip', () => { this.draft.clear(); this.draftSteps = []; this.refreshControls(); });
+        this.undo = this.button('Undo chip', () => {
+            if (!this.canBet()) return;
+            const step = this.draftSteps?.pop();
+            if (step) { const amount = this.draft.get(step.spot) - step.amount; if (amount) this.draft.set(step.spot, amount); else this.draft.delete(step.spot); }
+            this.refreshControls();
+        });
+        this.repeat = this.button('Reuse last slip', () => {
+            if (!this.canBet() || !this.lastSlip?.wagers.length) return;
+            this.builder.checked = true; this.draft = new Map(this.lastSlip.wagers.map(w => [w.spot, w.amount]));
+            this.draftSteps = this.lastSlip.wagers.map(w => ({ ...w })); this.refreshControls();
+        });
         this.rules = node('details'); this.rules.append(node('summary', 'Rules & stakes')); this.rulesText = node('p'); this.rules.append(this.rulesText);
         this.controls = node('div', '', 'card-table-controls');
         const toolbar = node('div', '', 'house-wager-toolbar'); toolbar.append(this.stakeLabel, this.adjustments, builderLabel);
-        this.controls.append(this.summary, toolbar, this.board, this.slip, this.confirm, this.clear, this.rules);
+        this.controls.append(this.phase, this.summary, toolbar, this.chips, this.board, this.slip, this.confirm, this.undo, this.clear, this.repeat, this.rules);
+        this.history = new HouseHistory(this.controls);
         this.root.append(this.table.root, this.controls);
         this.table.onExpire = () => this.refreshControls();
     }
@@ -47,23 +64,26 @@ export class HouseTableUI {
     update(view, playerID, presence = {}) {
         if (this.disposed) return;
         if (!this.ordering.accept(view, playerID, presence.yourSeat)) view = this.view;
+        const previous = this.view;
         this.view = view; this.playerID = playerID; this.root.hidden = !view;
         if (!view) {
             this.pending = false; this.roundId = null; this.boardKey = null; this.boardEpoch = null;
-            this.draft.clear(); this.table.clear(); this.celebration.clear(); return;
+            this.draft.clear(); this.draftSteps = []; this.presentation?.dispose(); this.presentation = null; this.presentationKind = null; this.table.clear(); this.celebration.clear(); return;
         }
         this.presence = presence;
+        const slipScope = JSON.stringify([view.tableId, view.game, view.currency, playerID, presence.yourSeat?.sessionId]);
+        if (this.slipScope !== slipScope) { this.lastSlip = null; this.slipScope = slipScope; }
         const currency = view.currency === 'ep' ? 'EP' : 'Gold';
         const changedGame = this.kind !== view.game || this.currency !== currency;
         if (changedGame || this.roundId !== view.roundId) {
-            this.pending = false; this.draft.clear(); this.celebration.clear(); this.resultKey = null;
+            this.pending = false; this.draft.clear(); this.draftSteps = []; this.celebration.clear(); this.resultKey = null;
         }
         this.kind = view.game; this.currency = currency; this.roundId = view.roundId;
         this.stake.min = String(view.minBet); this.stake.max = String(view.maxBet); this.stake.step = String(view.betStep);
         if (changedGame || !Number.isFinite(Number(this.stake.value))) this.stake.value = this.stake.min;
         this.stakeLabel.firstChild.nodeValue = `Wager (${currency}) `;
         this.own = view.players?.find(p => p.playerId === playerID);
-        if (this.own) this.draft.clear();
+        if (Array.isArray(this.own?.wagers)) { this.lastSlip = { wagers: this.own.wagers.map(w => ({ ...w })) }; this.draft.clear(); this.draftSteps = []; }
         if (this.own || view.phase !== 'betting') this.pending = false;
         this.table.root.setAttribute('aria-label', `${this.kind === 'roulette' ? 'Roulette' : 'Baccarat'} table and seats`);
         this.table.update(view, playerID, presence);
@@ -79,7 +99,19 @@ export class HouseTableUI {
         this.rulesText.textContent = (this.kind === 'roulette' ? 'Single zero. Straight pays 35:1 profit; split 17:1; street/trio 11:1; corner/first four 8:1; six-line 5:1; dozen/column 2:1; other outside bets 1:1. Zero loses outside bets.' :
             'Eight decks reshuffled each round. Player pays 1:1; Banker pays 1:1 less 5% commission; Tie pays 8:1. Ties return Player/Banker stakes. Natural 8/9 stops the deal; other draws are automatic.') +
             ` Total bets: ${view.minBet}–${goldText(view.maxBet)} ${currency}, in steps of ${view.betStep}. Confirmed slips cannot change until next round. Leaving or disconnecting does not cancel a confirmed bet.`;
+        this.phase.textContent = { betting: 'Bets open', revealing: this.kind === 'roulette' ? 'Ball in play' : 'Cards on the table', settling: 'Round result · saving payouts', complete: 'Round complete' }[view.phase] || 'Synchronizing table';
+        this.phase.dataset.phase = view.phase;
+        this.root.dataset.game = this.kind;
+        this.history.update(view);
+        this.buildChips(view);
         this.renderResult(view);
+        const continuing = previous?.roundId === view.roundId && previous?.tableId === view.tableId && previous?.currency === view.currency && previous?.game === view.game;
+        if (continuing && view.available && view.phase === 'revealing') {
+            if (previous.phase === 'betting') this.sound(view.game === 'roulette' ? 'spin' : 'stop');
+            const count = (view.dealt?.player.length || 0) + (view.dealt?.banker.length || 0);
+            const before = (previous.dealt?.player.length || 0) + (previous.dealt?.banker.length || 0);
+            if (count > before) this.sound('stop');
+        }
         for (const seat of this.table.seats) {
             seat.hands.replaceChildren();
             const member = view.players?.find(p => p.seat === Number(seat.root.dataset.seat));
@@ -89,8 +121,8 @@ export class HouseTableUI {
         if (view.phase === 'complete' && this.own?.paid && Array.isArray(this.own.wagers) && this.celebrated !== view.roundId) {
             this.celebrated = view.roundId;
             const profit = this.own.payout - sum(this.own.wagers);
-            if (profit > 0) this.celebration.show('YOU WON', `+${goldText(profit)} ${currency}`,
-                `${this.kind === 'roulette' ? `Number ${view.number}` : `${view.baccarat?.winner} wins`}. ${goldText(this.own.payout)} returned.`, null, 5000);
+            if (profit > 0) { this.sound('win'); this.celebration.show('YOU WON', `+${goldText(profit)} ${currency}`,
+                `${this.kind === 'roulette' ? `Number ${view.number}` : `${view.baccarat?.winner} wins`}. ${goldText(this.own.payout)} returned.`, null, 5000); }
         }
         this.refreshControls();
     }
@@ -132,7 +164,8 @@ export class HouseTableUI {
         }
         if (!this.builder.checked) { this.placeWagers([{ spot, amount }]); return; }
         if (sum(this.draftWagers()) + amount > Math.min(view.balance, view.maxBet)) { this.summary.textContent = 'The complete slip exceeds your balance or the table limit.'; return; }
-        this.draft.set(spot, (this.draft.get(spot) || 0) + amount); this.refreshControls();
+        this.draft.set(spot, (this.draft.get(spot) || 0) + amount);
+        (this.draftSteps ||= []).push({ spot, amount }); this.refreshControls();
     }
 
     placeWagers(wagers) {
@@ -149,10 +182,17 @@ export class HouseTableUI {
         const allowed = this.canBet();
         this.spotButtons?.forEach(b => {
             b.disabled = !allowed;
+            const amount = this.draft.get(b.dataset.spot) || this.own?.wagers?.find?.(w => w.spot === b.dataset.spot)?.amount || 0;
+            b.dataset.amount = amount ? goldText(amount) : '';
+            b.setAttribute('aria-pressed', String(Boolean(amount)));
             b.classList.toggle('selected', this.draft.has(b.dataset.spot) || Boolean(Array.isArray(this.own?.wagers) && this.own.wagers.some(w => w.spot === b.dataset.spot)));
         });
         if (this.combinationBet) this.combinationBet.disabled = !allowed;
-        this.confirm.hidden = this.clear.hidden = !this.builder.checked;
+        this.confirm.hidden = this.clear.hidden = this.undo.hidden = !this.builder.checked;
+        this.undo.disabled = !allowed || !this.draftSteps?.length;
+        this.repeat.hidden = !this.lastSlip; this.repeat.disabled = !allowed;
+        this.chips.querySelectorAll('button').forEach(b => { b.disabled = !allowed; b.setAttribute('aria-pressed', String(b.dataset.value === this.stake.value)); });
+        this.adjustments.querySelectorAll('button').forEach(b => { b.disabled = !allowed; });
         this.confirm.disabled = !allowed || !this.draft.size; this.clear.disabled = !allowed;
         this.slip.hidden = !this.builder.checked && !this.own;
         this.slip.textContent = this.own ? Array.isArray(this.own.wagers) ? `${this.own.wagers.length} betting spots · ${goldText(sum(this.own.wagers))} ${this.currency} confirmed for this round` : 'Wager details unavailable. Refresh the table before placing another bet.' :
@@ -165,28 +205,26 @@ export class HouseTableUI {
         this.pending = false; this.summary.textContent = error.error || 'Wager rejected. Review the table.'; this.refreshControls();
     }
 
-    renderResult(view) {
-        const key = JSON.stringify([view.roundId, view.phase, view.number, view.baccarat]);
-        if (key === this.resultKey) return; this.resultKey = key;
-        this.display.replaceChildren(); this.display.classList.toggle('revealing', view.phase === 'revealing');
-        if (view.game === 'roulette') {
-            const wheel = node('div', '', 'roulette-wheel');
-            for (const [index, n] of wheelOrder.entries()) {
-                const marker = node('span', String(n), `roulette-pocket ${n === 0 ? 'zero' : red.has(n) ? 'red' : 'black'}`);
-                marker.style.setProperty('--angle', `${index * 360 / 37}deg`); marker.classList.toggle('winner', n === view.number); wheel.append(marker);
-            }
-            this.display.append(wheel, node('strong', Number.isInteger(view.number) ? `${view.number} · ${view.number === 0 ? 'Green' : red.has(view.number) ? 'Red' : 'Black'}` : view.phase === 'revealing' ? 'Spinning…' : 'Place your bets'));
-        } else {
-            for (const [side, label] of [['player','Player'], ['banker','Banker']]) {
-                const hand = node('div', '', 'baccarat-result-hand'); hand.append(node('strong', `${label}${view.baccarat ? ` · ${view.baccarat[`${side}Total`]}` : ''}`));
-                for (const card of view.baccarat?.[side] || [-1,-1]) {
-                    const suit = Math.floor(card / 13);
-                    hand.append(node('span', card < 0 ? '✦' : `${['A','2','3','4','5','6','7','8','9','10','J','Q','K'][card % 13]}${['♣','♦','♥','♠'][suit]}`, `blackjack-card${suit === 1 || suit === 2 ? ' red' : ''}`));
-                }
-                this.display.append(hand);
-            }
-            if (view.baccarat) this.display.append(node('strong', view.baccarat.winner === 'tie' ? 'Tie' : `${view.baccarat.winner} wins`));
+    buildChips(view) {
+        const key = JSON.stringify([view.currency, view.minBet, view.maxBet, view.betStep]);
+        if (key === this.chipKey) return; this.chipKey = key; this.chips.replaceChildren();
+        for (const value of [...new Set([1, 5, 25, 100].map(n => Math.min(view.maxBet, view.minBet * n)))]) {
+            const b = this.button(goldText(value), () => {
+                if (!this.canBet()) return; this.stake.value = String(value); this.refreshControls();
+            });
+            b.dataset.value = String(value); b.setAttribute('aria-label', `Choose ${value} ${this.currency} chip`); this.chips.append(b);
         }
+        this.stake.oninput = () => this.refreshControls();
+    }
+
+    renderResult(view) {
+        this.display.classList.toggle('revealing', view.phase === 'revealing');
+        if (this.presentationKind !== view.game) {
+            this.presentation?.dispose(); this.display.replaceChildren();
+            this.presentation = view.game === 'roulette' ? new RoulettePresentation(this.display) : new BaccaratPresentation(this.display);
+            this.presentationKind = view.game;
+        }
+        this.presentation.update(view, JSON.stringify([view.tableId, view.currency, view.roundId, this.playerID, this.presence?.yourSeat?.sessionId]));
     }
 
     dispose() { this.update(null); this.disposed = true; this.root.remove(); }

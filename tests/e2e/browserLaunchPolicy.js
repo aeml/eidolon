@@ -5,7 +5,10 @@ import { isolatedBrowserLaunchOptions } from '../../scripts/qa-browser-launch-op
 // executable chosen in playwright.config.js. Apply the same opt-in isolation
 // without changing ordinary/hosted launches or sharing peers in one process.
 export function qaChromeLaunchOptions(options, env = process.env) {
-    if (env.EIDOLON_E2E_ISOLATE_CHROME !== '1') return options;
+    // A per-file args override replaces the config's launchOptions object.
+    // Preserve an explicitly selected browser in the private native capsule.
+    const configured = options.executablePath || env.EIDOLON_E2E_BROWSER_PATH;
+    if (env.EIDOLON_E2E_ISOLATE_CHROME !== '1') return configured ? { ...options, executablePath: configured } : options;
     return isolatedBrowserLaunchOptions({
         ...options,
         executablePath: options.executablePath || env.EIDOLON_E2E_BROWSER_PATH || '/usr/bin/google-chrome'

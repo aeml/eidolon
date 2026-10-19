@@ -10,6 +10,7 @@ export class SlotMachineUI {
         this.root = node('section', '', 'slot-game'); this.root.hidden = true; this.root.setAttribute('aria-label', 'Elemental slot machine');
         this.summary = node('p'); this.summary.setAttribute('role', 'status');
         this.lore = node('p', '', 'slot-lore');
+        this.heading = node('h3', '', 'slot-machine-title');
         this.grid = node('div', '', 'slot-grid'); this.grid.setAttribute('aria-label', 'Five reels, three rows');
         this.cells = Array.from({ length: 5 }, () => []);
         for (let row = 0; row < 3; row++) for (let reel = 0; reel < 5; reel++) {
@@ -17,6 +18,16 @@ export class SlotMachineUI {
             icon.alt = ''; cell.append(icon, label); this.grid.append(cell); this.cells[reel][row] = { cell, icon, label };
         }
         this.result = node('p', '', 'slot-result');
+        this.result.setAttribute('role', 'status');
+        this.skip = this.button('Skip reel animation', () => {
+            if (!this.animating || !this.view?.session?.last) return;
+            const last = this.view.session.last;
+            this.clearAnimation(); this.showStage(last.stages.at(-1), last.stages.length - 1, last.stages.length);
+            this.showResult(last); this.resultSound(last); this.celebrateResult(last); this.refreshControls(); this.scheduleAuto();
+        });
+        this.skip.className = 'casino-skip-animation'; this.skip.hidden = true;
+        this.breakdown = node('details', '', 'slot-breakdown'); this.breakdown.hidden = true;
+        this.breakdown.append(node('summary', 'Spin breakdown')); this.winLines = node('div'); this.breakdown.append(this.winLines);
         this.controls = node('div', '', 'slot-controls');
         const stakeLabel = node('label', 'Bet amount · Gold'); this.stakeLabel = stakeLabel; this.stake = node('input');
         this.stake.type = 'number'; this.stake.inputMode = 'numeric'; this.stake.min = '20'; this.stake.max = '40'; this.stake.step = '20'; this.stake.value = '20';
@@ -54,7 +65,7 @@ export class SlotMachineUI {
         this.sidebar = node('div', '', 'slot-sidebar'); this.stage = node('div', '', 'slot-stage');
         this.betHelp = node('p', '', 'slot-bet-help');
         this.sidebar.append(this.summary, this.modes, this.controls, this.betHelp, this.autoControls, this.autoStatus, this.risk);
-        this.stage.append(this.lore, this.grid, this.result, this.bonus);
+        this.stage.append(this.heading, this.lore, this.grid, this.skip, this.result, this.breakdown, this.bonus);
         this.celebration = new CasinoCelebration(this.stage);
         this.root.append(this.sidebar, this.stage, this.rules);
         this.setMode(false);
@@ -70,6 +81,7 @@ export class SlotMachineUI {
     clearAnimation() {
         this.timers.forEach(clearTimeout); this.timers = []; clearInterval(this.reelTimer);
         this.animating = false; this.grid.classList.remove('spinning');
+        this.skip.hidden = true;
         this.grid.querySelectorAll('.rolling').forEach(cell => cell.classList.remove('rolling'));
     }
 
@@ -112,6 +124,7 @@ export class SlotMachineUI {
         if (this.pending && s.revision !== this.pending.revision && !view.processing) { this.pending = null; clearTimeout(this.pendingTimer); }
         this.summary.textContent = `${view.balance ?? view.gold} ${this.currency} · ${s.freeSpins} free spins saved${view.processing ? ' · Saving settlement…' : ''}`;
         this.lore.textContent = machine.lore;
+        this.heading.textContent = machine.name || `${machine.theme[0].toUpperCase()}${machine.theme.slice(1)} reels`;
         if (s.freeSpins || s.bonus) this.stake.value = String(s.bet);
         if (this.machineID !== `${view.currency || 'gold'}:${machine.theme}`) { this.machineID = `${view.currency || 'gold'}:${machine.theme}`; this.buildRules(machine, view.lines); }
         const changed = !previous?.available || changedCurrency || previous.session.revision !== s.revision || previous.machine.theme !== machine.theme;
@@ -176,6 +189,7 @@ export class SlotMachineUI {
 
     startReels(landed) {
         this.animating = true; this.grid.classList.add('spinning');
+        this.skip.hidden = !landed; this.breakdown.hidden = true;
         this.result.textContent = landed ? 'Reels spinning…' : 'Spinning · waiting for the saved result…';
         if (prefersReducedMotion()) return;
         const stopped = new Set(); let tick = 0;
@@ -208,6 +222,21 @@ export class SlotMachineUI {
     }
 
     showResult(last) {
+        this.breakdown.hidden = false; this.winLines.replaceChildren();
+        last.stages.forEach((stage, index) => {
+            const heading = node('p', `${index ? `Cascade ${index}` : 'Opening reels'} · ${goldText(stage.payout)} ${this.currency} returned`);
+            this.winLines.append(heading);
+            for (const win of stage.wins || []) {
+                const revision = this.view.session.revision, machineID = this.machineID;
+                const b = this.button(`Line ${win.line + 1} · ${win.count} matching · ${goldText(win.payout)} ${this.currency}`, () => {
+                    if (this.disposed || !this.view || this.animating || this.pending || this.view.session.revision !== revision || this.machineID !== machineID) return;
+                    this.showGrid(stage.grid);
+                    for (let reel = 0; reel < win.count; reel++) this.cells[reel][this.view.lines[win.line][reel]].cell.classList.add('win');
+                });
+                this.winLines.append(b);
+            }
+            if (!stage.wins?.length) this.winLines.append(node('p', 'No paying line in this stage.'));
+        });
         this.result.textContent = `${last.stages.some(stage => stage.jackpot) ? 'JACKPOT · ' : ''}${last.payout} ${this.currency} returned${last.bonusPayout ? ` + ${last.bonusPayout} bonus ${this.currency}` : ''}${last.freeAwarded ? ` · ${last.freeAwarded} free spins awarded` : ''}. ${last.free ? 'Free spin: no stake charged.' : `Stake: ${this.view.session.bet} ${this.currency}.`}`;
         if (!last.free && last.bonusPicked < 0) {
             const net = (last.payout || 0) - this.view.session.bet;

@@ -1030,6 +1030,7 @@ func main() {
 		if err := tickHouseTables(time.Now()); err != nil {
 			log.Printf("Roulette/baccarat settlement remains pending: %v", err)
 		}
+		notifyHousePresentation(time.Now())
 	})
 
 	// Hub

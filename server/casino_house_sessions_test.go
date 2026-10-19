@@ -33,7 +33,7 @@ func TestHouseTransferRecomputesWagerAndRejectsOutcomeTampering(t *testing.T) {
 		if err := validateHouseTransfer(r, s); err != nil {
 			t.Fatal("valid wager", kind, err)
 		}
-		for _, mutation := range []string{"amount", "owner", "currency", "id", "deadline", "outcome"} {
+		for _, mutation := range []string{"amount", "owner", "currency", "id", "deadline", "outcome", "history"} {
 			copyRecord := *r
 			op := *r.Pending
 			copyRecord.Pending = &op
@@ -49,6 +49,14 @@ func TestHouseTransferRecomputesWagerAndRejectsOutcomeTampering(t *testing.T) {
 				op.ID = "casino:forged:wager"
 			case "deadline":
 				candidate.DealAt = candidate.DealAt.Add(time.Second)
+			case "history":
+				n := 0
+				prior := houseRoundResult{RoundID: "00000000000000000000000000000001", FinishedAt: now.Add(-time.Second), Number: &n}
+				if kind == "baccarat" {
+					prior.Number = nil
+					prior.Baccarat = &game.BaccaratResult{Player: []int{7, 12}, Banker: []int{8, 12}, PlayerTotal: 8, BankerTotal: 9, Winner: "banker"}
+				}
+				candidate.History = []houseRoundResult{prior}
 			case "outcome":
 				zero := 0
 				candidate.Number = &zero
@@ -242,6 +250,9 @@ func TestHouseMongoSharedRoundsAndReplay(t *testing.T) {
 				view := houseViewFor(clients[1].playerID)
 				if view.Phase != "betting" || view.RoundID == s.RoundID || len(view.Players) != 0 || !view.DealAt.After(s.FinishedAt) {
 					t.Fatal("next round waited for wager", view)
+				}
+				if len(view.History) != 1 || view.History[0].RoundID != s.RoundID {
+					t.Fatal("completed round lost after cache loss and rollover", view.History)
 				}
 				deadline := view.DealAt
 				if err := tickHouseTables(deadline, id); err != nil {

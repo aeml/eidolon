@@ -1,15 +1,15 @@
+import { casinoCard } from './CasinoCard.js';
 import { CasinoCelebration, goldText } from './CasinoCelebration.js';
 import { CardTableScene } from './CardTableScene.js';
 import { CasinoTableOrdering } from './CasinoTableOrdering.js';
 
-const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
-const suits = ['♣', '♦', '♥', '♠'];
 const element = (tag, text = '', className = '') => {
     const node = document.createElement(tag); node.textContent = text; node.className = className; return node;
 };
 
 export class PokerTableUI {
-    constructor(send) {
+    constructor(send, sound = () => {}) {
+        this.sound = sound;
         this.ordering = new CasinoTableOrdering();
         this.send = send; this.currency = 'Gold';
         this.root = element('div', '', 'poker-game'); this.root.hidden = true;
@@ -29,7 +29,7 @@ export class PokerTableUI {
             this.stake.onchange();
         }));
         this.lobby.insertBefore(adjustments, this.buy); this.buy.className = 'casino-primary';
-        this.table = new CardTableScene('poker'); this.felt = this.table.root; this.felt.classList.add('poker-felt');
+        this.table = new CardTableScene('poker', sound); this.felt = this.table.root; this.felt.classList.add('poker-felt');
         this.table.onExpire = () => this.setDisabled(true);
         this.board = element('div', '', 'poker-board'); this.board.setAttribute('aria-label', 'Community cards');
         this.pots = element('div', '', 'poker-pots'); this.players = this.table.root;
@@ -47,12 +47,7 @@ export class PokerTableUI {
     }
 
     button(text, action) { const b = element('button', text); b.type = 'button'; b.onclick = action; return b; }
-    card(value) {
-        const hidden = !Number.isInteger(value) || value < 0 || value >= 52;
-        const label = hidden ? 'Hidden card' : `${ranks[value % 13]}${suits[Math.floor(value / 13)]}`;
-        const card = element('span', hidden ? '✦' : label, `blackjack-card${hidden ? ' back' : [1, 2].includes(Math.floor(value / 13)) ? ' red' : ''}`);
-        card.setAttribute('aria-label', label); return card;
-    }
+    card(value) { return casinoCard(value); }
 
     update(view, playerID, presence = {}) {
         if (!this.ordering.accept(view, playerID, presence.yourSeat)) view = this.view;
@@ -140,6 +135,7 @@ export class PokerTableUI {
             const own = round?.players.find(p => p.playerId === playerID);
             const won = round?.pots.some(p => !p.uncalled && p.winners?.includes(playerID));
             if (own && won) {
+                this.sound('win');
                 const net = own.payout - (funded?.buyIn || 0);
                 this.celebration.show('YOU WON', `${goldText(own.payout)} ${this.currency} returned`,
                     `${round.showdown === false ? 'Everyone else folded' : own.bestHand || own.hand || 'Winning hand'}. Net ${net >= 0 ? '+' : '−'}${goldText(Math.abs(net))} ${this.currency} after your buy-in.`, null, 5000);

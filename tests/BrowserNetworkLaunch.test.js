@@ -41,6 +41,13 @@ test('peer and explicit override options are unchanged when isolation is disable
     expect(qaChromeLaunchOptions(options, { EIDOLON_E2E_ISOLATE_CHROME: '0' })).toBe(options);
 });
 
+test('per-file args overrides preserve an explicitly configured private-capsule browser', () => {
+    const options = { args: ['--disable-gpu'] };
+    expect(qaChromeLaunchOptions(options, { EIDOLON_E2E_BROWSER_PATH: '/selected/chrome' }))
+        .toEqual({ ...options, executablePath: '/selected/chrome' });
+    expect(options).toEqual({ args: ['--disable-gpu'] });
+});
+
 test.each([
     [{ executablePath: '/explicit/chrome' }, { EIDOLON_E2E_BROWSER_PATH: '/configured/chrome' }, '/explicit/chrome'],
     [{}, { EIDOLON_E2E_BROWSER_PATH: '/configured/chrome' }, '/configured/chrome'],

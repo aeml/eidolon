@@ -126,6 +126,14 @@ history. Use the clarity and ease of established casino interfaces as direction
 for an original Eidolon design. Preserve the existing Gold/EP separation,
 cosmetic-only EP utility, shared-table authority, wagering and payout rules,
 saved settlement and reconnect behavior; no real-money commerce is introduced.
+The whole casino must be a polished, exciting and enjoyable part of Eidolon,
+including slots, roulette, baccarat, blackjack and poker. Roulette must zoom into
+the wheel at spin time, visibly launch the ball, show its orbit and bounces, and
+land on the server-confirmed pocket. Apply the same quality of round staging,
+readable controls and rewarding feedback throughout the games, with reduced
+motion and safe lifecycle handling. The owner's quality target exceeds the
+comfort and presentation of established online casinos; this remains an open
+acceptance requirement until the finished experience is reviewed.
 
 ## Working method
 

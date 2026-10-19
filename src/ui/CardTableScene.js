@@ -5,16 +5,19 @@ const node = (tag, text = '', className = '') => {
 // One persistent table, not a different lobby/hand screen. Seat identities come
 // from physical presence; only server-provided cards enter the hand containers.
 export class CardTableScene {
-    constructor(kind) {
+    constructor(kind, sound = () => {}) {
+        this.sound = sound;
         this.root = node('div', '', `card-table-scene ${kind}-scene`);
         this.root.setAttribute('aria-label', `${{ poker: 'Poker', blackjack: 'Blackjack', roulette: 'Roulette', baccarat: 'Baccarat' }[kind] || 'Casino'} table and seats`);
+        this.roundLabel = node('div', '', 'casino-table-ribbon');
+        this.roundLabel.setAttribute('role', 'status');
         this.dealer = node('section', '', 'card-table-dealer');
         this.dealer.append(node('span', '✦', 'card-table-dealer-portrait'), node('strong', 'House dealer'));
         this.dealerCards = node('div', '', 'card-table-dealer-cards'); this.dealer.append(this.dealerCards);
         this.center = node('div', '', 'card-table-center');
         this.clock = node('div', '', 'card-table-clock'); this.clock.setAttribute('role', 'timer');
         this.clockLabel = node('span'); this.clockValue = node('strong'); this.clock.append(this.clockLabel, this.clockValue);
-        this.root.append(this.dealer, this.center, this.clock);
+        this.root.append(this.roundLabel, this.dealer, this.center, this.clock);
         this.seats = Array.from({ length: 6 }, (_, seat) => {
             const root = node('section', '', 'card-table-seat'); root.dataset.seat = String(seat);
             const avatar = node('span', '◇', 'card-table-avatar');
@@ -27,7 +30,17 @@ export class CardTableScene {
     }
 
     update(view, playerID, presence = {}) {
+        const previous = this.view;
+        if (previous && previous.roundId === view.roundId && previous.currency === view.currency && view.available && !view.processing) {
+            const cards = v => JSON.stringify([v.round?.dealer, v.round?.dealerHidden, v.round?.board, v.round?.players?.map(p => [p.cards, p.hands?.map(h => h.cards)])]);
+            if (cards(previous) !== cards(view) && view.phase === 'playing') this.sound('stop');
+        }
         this.view = view;
+        this.root.dataset.phase = view.phase;
+        this.roundLabel.textContent = !view.available ? 'Synchronizing table' : view.processing ? 'Saving table progress' :
+            view.phase === 'betting' ? 'Choose your wager' : view.phase === 'playing' ?
+                `${view.round?.street || 'Hand in play'}${view.round?.turnPlayerId === playerID ? ' · Your turn' : ''}` :
+                view.phase === 'revealing' ? 'Bets closed · Watch the table' : view.phase === 'complete' ? 'Results saved' : 'Settling the hand';
         this.turnName = presence.occupants?.find(p => p.playerId === view.round?.turnPlayerId)?.name ||
             view.players?.find(p => p.playerId === view.round?.turnPlayerId)?.name || 'Player';
         const ownSeat = presence.yourSeat?.seat ?? view.players?.find(p => p.playerId === playerID)?.seat ?? 0;
@@ -86,5 +99,5 @@ export class CardTableScene {
         if (this.expired && !wasExpired) this.onExpire?.();
     }
 
-    clear() { clearInterval(this.interval); this.interval = null; this.clockKey = null; this.expired = false; }
+    clear() { this.view = null; clearInterval(this.interval); this.interval = null; this.clockKey = null; this.expired = false; }
 }

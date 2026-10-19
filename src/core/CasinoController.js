@@ -23,10 +23,12 @@ export class CasinoController {
         this.ready = this.button('Ready at table', () => this.send({ action: 'ready', ready: !this.data.yourSeat?.ready,
             revision: this.data.preparation?.[this.data.yourSeat?.tableId]?.revision }));
         this.leave = this.button('Leave table', () => this.requestLeave());
-        this.blackjack = new BlackjackTableUI(payload => this.send(payload));
-        this.poker = new PokerTableUI(payload => this.send(payload));
-        this.house = new HouseTableUI(payload => this.send(payload));
-        this.slots = new SlotMachineUI(payload => this.send(payload), sound => this.engine.playAudioCue?.({ spin: AUDIO_CUES.casinoSpin, stop: AUDIO_CUES.uiClick, win: AUDIO_CUES.casinoWin, bonus: AUDIO_CUES.casinoBonus, jackpot: AUDIO_CUES.casinoJackpot }[sound]));
+        const sound = cue => this.engine.playAudioCue?.({ spin: AUDIO_CUES.casinoSpin, stop: AUDIO_CUES.uiClick,
+            win: AUDIO_CUES.casinoWin, bonus: AUDIO_CUES.casinoBonus, jackpot: AUDIO_CUES.casinoJackpot }[cue]);
+        this.blackjack = new BlackjackTableUI(payload => this.send(payload), sound);
+        this.poker = new PokerTableUI(payload => this.send(payload), sound);
+        this.house = new HouseTableUI(payload => this.send(payload), sound);
+        this.slots = new SlotMachineUI(payload => this.send(payload), sound);
         this.header = document.createElement('header'); this.header.className = 'casino-session-header';
         this.header.append(this.heading, this.leave);
         this.status.className = 'casino-session-status'; this.roster.className = 'casino-session-roster';

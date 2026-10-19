@@ -1,9 +1,8 @@
+import { casinoCard } from './CasinoCard.js';
 import { CasinoCelebration, blackjackCount, goldText } from './CasinoCelebration.js';
 import { CardTableScene } from './CardTableScene.js';
 import { CasinoTableOrdering } from './CasinoTableOrdering.js';
 
-const labels = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
-const suits = ['♣', '♦', '♥', '♠'];
 
 function node(tag, text, className) {
     const element = document.createElement(tag);
@@ -13,7 +12,8 @@ function node(tag, text, className) {
 }
 
 export class BlackjackTableUI {
-    constructor(send) {
+    constructor(send, sound = () => {}) {
+        this.sound = sound;
         this.ordering = new CasinoTableOrdering();
         this.send = send; this.currency = 'Gold';
         this.root = node('div', '', 'blackjack-game'); this.root.hidden = true;
@@ -38,7 +38,7 @@ export class BlackjackTableUI {
             this.stake.oninput();
         }));
         this.betBox.insertBefore(this.adjustments, this.bet); this.bet.className = 'casino-primary';
-        this.table = new CardTableScene('blackjack'); this.cards = this.table.root; this.cards.classList.add('blackjack-hands');
+        this.table = new CardTableScene('blackjack', sound); this.cards = this.table.root; this.cards.classList.add('blackjack-hands');
         this.table.onExpire = () => this.root.querySelectorAll('button, input').forEach(control => { control.disabled = true; });
         this.actions = node('div', '', 'blackjack-actions');
         this.controls = node('div', '', 'card-table-controls');
@@ -125,8 +125,8 @@ export class BlackjackTableUI {
                 this.celebrationRound = view.roundId;
                 const hands = round.players.find(p => p.playerId === playerID)?.hands || [];
                 const returned = hands.reduce((sum, h) => sum + h.payout, 0), staked = hands.reduce((sum, h) => sum + h.bet, 0);
-                if (returned > staked) this.celebration.show('YOU WON', `+${goldText(returned - staked)} ${this.currency}`,
-                    `${hands.map(h => h.outcome === 'blackjack' ? 'Blackjack' : `${blackjackCount(h.cards)} (${h.outcome})`).join(' · ')}. ${goldText(returned)} returned, ${goldText(staked)} staked.`, null, 5000);
+                if (returned > staked) { this.sound('win'); this.celebration.show('YOU WON', `+${goldText(returned - staked)} ${this.currency}`,
+                    `${hands.map(h => h.outcome === 'blackjack' ? 'Blackjack' : `${blackjackCount(h.cards)} (${h.outcome})`).join(' · ')}. ${goldText(returned)} returned, ${goldText(staked)} staked.`, null, 5000); }
             }
         }
         this.actions.querySelectorAll('button').forEach(button => { button.disabled = !this.canAct(); });
@@ -135,11 +135,8 @@ export class BlackjackTableUI {
     hand(title, cards, hidden, active = false, target) {
         const row = node('div', '', `blackjack-hand${active ? ' current' : ''}`);
         const caption = node('p', title); caption.title = title; row.append(caption);
-        for (const card of cards || []) {
-            const suit = Math.floor(card / 13);
-            row.append(node('span', `${labels[card % 13]}${suits[suit]}`, `blackjack-card${suit === 1 || suit === 2 ? ' red' : ''}`));
-        }
-        if (hidden) { const back = node('span', '✦', 'blackjack-card back'); back.setAttribute('aria-label', 'Dealer hidden card'); row.append(back); }
+        for (const card of cards || []) row.append(casinoCard(card));
+        if (hidden) row.append(casinoCard(-1, 'Dealer hidden card'));
         row.append(node('strong', `${hidden ? 'Showing' : 'Total'}: ${blackjackCount(cards)}`, 'casino-hand-value'));
         target?.append(row);
     }

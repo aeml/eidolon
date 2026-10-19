@@ -226,6 +226,9 @@ func TestHouseActualSocketsSharedRoundAndReconnect(t *testing.T) {
 			complete := readHouseSocket(t, conns[1], func(v houseSocketPresence) bool {
 				return v.House != nil && v.House.RoundID == shared.House.RoundID && v.House.Phase == "complete" && !v.House.Processing
 			})
+			if len(complete.House.History) == 0 || complete.House.History[len(complete.House.History)-1].RoundID != shared.House.RoundID {
+				t.Fatal("shared result missing from public recent history")
+			}
 			outcomes := complete.House.Players
 			resourceCloseAndWait(t, repo, conns[1], names[1])
 			stop()
