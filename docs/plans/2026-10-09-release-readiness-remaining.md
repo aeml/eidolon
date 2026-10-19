@@ -31,8 +31,9 @@ and fit maximum-stake returns. Poker net results, earlier wager attribution
 and popup drag closure are corrected. Final source qualification passes 49
 browser cases and 57 unit checks; all 520 prior raw notes remain exact in 521
 entries. Original86 CI retains six genuine hidden-dealer failures and did not
-deploy. Corrected exact copied-engine checks, new complete own CI and exact
-public verification remain required.
+deploy. All 18 exact-commit copied-engine and 455 release/history/workflow
+checks pass too. New complete own CI and exact public verification remain
+required.
 [Qualification](2026-10-19-casino-poker-result-clarity.md).
 No full owner casino assessment or another readiness gate closes here.
 

@@ -2769,3 +2769,9 @@ checks pass; final exact compiled qualification and new own CI/deployment remain
 required. All520 prior raw note strings stay exact in521entries/52lazy pages.
 [Qualification](docs/plans/2026-10-19-casino-poker-result-clarity.md).
 The full game and owner/beta gates remain open; no soak/stress is resumed.
+
+The corrected exact copied source `8bb3340d4` passes all 18 current bundled-
+engine cases, with hardware AMD RADV RENOIR reported in every case. All 455
+release/history/workflow checks also pass. This qualifies the local milestone;
+new own CI, both deployments, live checks and exact public proof still gate
+acceptance. The failed original86 and its actual browser reports are retained.

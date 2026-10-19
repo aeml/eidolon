@@ -502,8 +502,9 @@ follow the ball landing. House win messages keep the cards visible and fit large
 returns in narrow controls. Poker distinguishes returns from net profit/loss,
 and reused chairs retain the earlier wager owner's name. Rules popups remember
 position through closure during a drag. Large top-bar-draggable windows remain.
-Forty-nine source browser cases and 57 focused unit checks pass; final copied-
-engine qualification, complete new own CI and deployment remain required. The
+Forty-nine source browser cases, 57 focused unit checks, 18 exact-commit
+copied-engine checks and 455 release/history checks pass. Complete new own CI
+and deployment remain required. The
 original86 CI correctly rejected a hidden dealer label and did not deploy.
 [Qualification](docs/plans/2026-10-19-casino-poker-result-clarity.md).
 

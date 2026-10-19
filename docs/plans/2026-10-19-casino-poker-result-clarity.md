@@ -60,9 +60,15 @@ landscape roulette wins, plus phone/desktop winning Baccarat hands. Node24
 qualification passes 57 checks / three suites, including nine new deferred-win,
 skip, reduced-motion and lifecycle cases. Changed JavaScript lint passes.
 All 520 prior raw note strings remain identical in 521 entries and 52 lazy pages.
-Release/history/workflow qualification previously passes 455 checks / seven
-suites; unchanged proof inputs retain that scope, with the latest note checked
-again separately. Final exact-commit copied-engine qualification remains pending.
+Final release/history/workflow qualification passes 455 checks / seven suites;
+six patch-history checks also pass separately after the latest note. The final
+exact-commit copied publication at `8bb3340d4c9202866b9d87bbb1eb7f84fbfc5524`
+passes exactly 18 current cases in 67 seconds, with zero failures, flakes, skips
+or retries. System Chrome153 reports hardware AMD Radeon RADV RENOIR through
+ANGLE/Vulkan in all 18 engine checks. Its 530-module bundle is 4,968,872 bytes;
+worker, precomputed-index and analytics hashes stay unchanged. Private hashes
+and scope are in `release86-corrected-prepush-qualification.json`. New complete
+own CI and exact public deployment verification remain required.
 
 Retained failures include the original Baccarat overlap and roulette clock
 hit-testing, intermediate grid/card/scroll clipping, native popup position loss,
