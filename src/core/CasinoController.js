@@ -313,7 +313,7 @@ export class CasinoController {
         if (this.active) {
             // World clicks dismiss the table through its ordinary server-owned
             // leave path. Movement stays blocked until the seat is released.
-            if (event?.button === 0 && Number.isFinite(event.clientX) && !this.panel.contains(event.target)
+            if (event && (event.button == null || event.button === 0) && Number.isFinite(event.clientX) && !this.panel.contains(event.target)
                 && !document.querySelector('.casino-info-dialog[open]')) this.requestLeave();
             return true;
         }

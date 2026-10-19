@@ -158,3 +158,8 @@ integration group passes62checks/two suites with lint. Phone and landscape
 windows retain the92%size as well, leaving actual room to drag rather than
 clamping a full-viewport window to a single immovable position. The pending
 20-case browser review now requires vertical drag at compact sizes too.
+
+The world-dismissal guard also accepts the existing mobile touch callback,
+which supplies coordinates without a mouse-button field. Both mouse and touch
+keep movement locked until seat release; the focused group passes63checks.
+All changed JavaScript passes lint after the final control/compact-layout edits.
