@@ -130,3 +130,14 @@ old single attempt; it fails and is retained, then explicitly advances both
 New copied-publication qualification, complete own CI and exact public proof
 are required before acceptance. This correction changes the generated worker's
 content hash; the older unchanged-worker statement above applies only to8bb.
+
+The exact copied source `dd50b6f935db50108d0829a580e6dfd8dfe6a5ee` now passes all18 current
+bundled-engine checks without retries, failures, flakes or exclusions. All18
+report hardware AMD RADV RENOIR. The530-module engine remains4,968,872bytes;
+its rebuilt worker is `5b1cb28ca70ae0f89f1a65bd6a45173df443d56dd5a781a7f63aabb031fe08a9`.
+Precomputed data and analytics remain byte-identical. All455 release/history/
+workflow checks pass and all520 prior raw notes remain identical. An initial
+unpublished copied build had a wrong source argument; it was rejected before
+any browser qualification, and the fresh copied tree above pins the actual
+commit. Its setup classification is retained separately from product failures.
+New complete own CI and exact deployment proof remain required.
