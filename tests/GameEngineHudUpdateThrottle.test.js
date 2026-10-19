@@ -112,6 +112,26 @@ describe('GameEngine render-time HUD throttling', () => {
         } finally { tree.dispose(); }
     });
 
+    test.each([[0, 8, 3], [8, 0, 5]])('jump camera keeps its displayed floor between height %s and %s', (startY, endY, displayedY) => {
+        const engine = createEngineHarness();
+        engine.cameraLocked = true;
+        engine.player.mesh = new THREE.Group();
+        engine.playerJumpState = { serverDriven: true,
+            start: new THREE.Vector3(0, startY, 0), end: new THREE.Vector3(12, endY, 0),
+            displayPosition: new THREE.Vector3(6, displayedY, 0) };
+        const targets = [];
+        engine.renderSystem.setCameraTarget = target => targets.push(target.clone());
+        // Server snapshots may lead the displayed path; the camera must not
+        // alternate between that height and the jump update's displayed floor.
+        for (const [authorityY, arc] of [[endY, 4], [startY, 7], [endY, 2]]) {
+            engine.player.position.y = authorityY;
+            engine.player.mesh.position.set(6, displayedY + arc, 0);
+            engine.render(1);
+        }
+        expect(targets.map(target => target.y)).toEqual([displayedY, displayedY, displayedY]);
+        expect(targets.every(target => target.x === 6 && target.z === 0)).toBe(true);
+    });
+
     test.each([false, true])('service range hint follows movement without another pointer event (mobile=%s)', isMobile => {
         const engine = createEngineHarness();
         engine.isMobile = isMobile;

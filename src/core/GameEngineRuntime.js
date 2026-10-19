@@ -983,7 +983,12 @@ class GameEngineRuntimeMethods {
             this._renderCameraTarget.copy(this.player.mesh.position);
             // Jump squash/stretch is presentation-only; following its vertical
             // arc would make every landing shake the whole screen.
-            this._renderCameraTarget.y = this.player.position.y;
+            // The jump update follows its displayed floor. Authoritative
+            // snapshots can lead that display between different heights;
+            // switching back here makes the camera bob between both floors.
+            this._renderCameraTarget.y = this.playerJumpState?.serverDriven
+                ? this.playerJumpState.displayPosition?.y ?? this.player.position.y
+                : this.player.position.y;
             this.renderSystem.setCameraTarget(this._renderCameraTarget);
         }
 
