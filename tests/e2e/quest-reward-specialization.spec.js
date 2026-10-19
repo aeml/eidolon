@@ -11,13 +11,23 @@ for (const [width, height] of [[1280, 900], [390, 844]]) {
         await page.goto('/', { waitUntil: 'networkidle' });
         await page.evaluate(async mobile => {
             const { UIManager } = await import('/src/ui/UIManager.js');
+            const { GameEngine } = await import('/src/core/GameEngine.js');
             document.getElementById('start-screen').style.display = 'none';
             document.body.classList.toggle('mobile-mode', mobile);
             const ui = new UIManager(mobile);
             const player = { id: 'unlock-fixture', subType: 'Fighter', meshType: 'Fighter', abilityName: 'Charge', abilityCooldown: 0, xp: 0, xpToNextLevel: 1000, level: 9, position: { x: 20, z: 215 }, stats: { hp: 200, maxHp: 200, mana: 100, maxMana: 100 }, selectedBranch: '', quests: [] };
-            ui.showHUD();
-            ui.updatePlayerStats(player); ui.updateXP(player);
-            window.__unlockFixture = { ui, player, claims: [] };
+            // Exercise the actual render-time HUD throttle. Calling
+            // updatePlayerStats directly would hide a stale reminder bug.
+            const engine = Object.assign(Object.create(GameEngine.prototype), {
+                player, uiManager: ui, isMobile: mobile, frameCount: 1,
+                chunkManager: { getActiveEntities: () => [] },
+                renderSystem: { camera: {}, render() {} }, inputManager: { keys: { alt: false } },
+                applyPlayerJumpVisuals() {}, applyPlayerCorrectionVisuals() {},
+                worldMap: { isVisible: () => false }
+            });
+            ui.showHUD(); engine.render(1);
+            window.__unlockFixture = { ui, player, engine, claims: [], branches: [] };
+            ui.skillTree.onSelectBranch = branch => window.__unlockFixture.branches.push(branch);
         }, width < 600);
         await expect(page.locator('.specialization-unlock-notice')).toHaveCount(0);
         await page.evaluate(() => window.__unlockFixture.ui.toggleSkillTree());
@@ -25,7 +35,7 @@ for (const [width, height] of [[1280, 900], [390, 844]]) {
         await expect(previewBranches).toHaveCount(3);
         for (const button of await previewBranches.all()) await expect(button).toBeDisabled();
         await page.evaluate(() => window.__unlockFixture.ui.skillTree.close());
-        await page.evaluate(() => { const { ui, player } = window.__unlockFixture; player.level = 10; ui.updatePlayerStats(player); ui.updateXP(player); });
+        await page.evaluate(() => { const { player, engine } = window.__unlockFixture; player.level = 10; engine.render(1); });
         const notice = page.getByRole('complementary', { name: 'Specialization unlocked' });
         await expect(notice).toBeVisible();
         const reminder = await notice.boundingBox();
@@ -41,9 +51,13 @@ for (const [width, height] of [[1280, 900], [390, 844]]) {
         const branch = page.locator('[data-desktop-build-key="branch:A"], [data-build-action="branch:A"]');
         await expect(branch).toBeVisible();
         await expect(branch).toBeFocused();
+        await branch.click();
+        expect(await page.evaluate(() => window.__unlockFixture.branches)).toEqual(['A']);
+        await expect(notice).toBeVisible();
         await page.evaluate(() => {
-            const { ui, player } = window.__unlockFixture;
-            player.selectedBranch = 'A'; ui.updatePlayerStats(player); ui.updateXP(player); ui.skillTree.close();
+            const { ui, player, engine } = window.__unlockFixture;
+            player.selectedBranch = 'A'; engine.render(1); ui.skillTree.close();
+            engine.lastRenderHudSignature = ''; engine.render(1);
             const choices = Array.from({ length: 6 }, (_, i) => ({ id: `offer-${i}`, name: ['Verdant Sword', 'Keeper’s Shield', 'Grovebound Robes', 'Rainwoven Hood', 'Amber Ring', 'Rootheart Amulet'][i], rarity: ['Uncommon', 'Rare', 'Legendary'][i % 3], level: 12, slot: ['mainHand', 'offHand', 'chest', 'head', 'ring', 'neck'][i], stats: { defense: 10 + i, vitality: 5 + i } }));
             player.quests = [{ id: 'chronicle_earned', category: 'chronicle', title: 'The Keeper’s House', completed: true, accepted: true, rewardChoiceLevel: 12, rewardChoices: choices }];
             ui.quest.onClaimQuestItem = (questId, itemId) => window.__unlockFixture.claims.push({ questId, itemId });

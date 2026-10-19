@@ -113,6 +113,20 @@ actual contact range; players can land, walk and jump down from town roofs; and
 the Earth boundary uses the town-style fence. Preserve dragged menu positions,
 ordinary controls, returning saves and item custody across those changes.
 
+## Additional owner requirements — October 19, 2026
+
+Remove the level-10 "Choose specialization" reminder after the server confirms
+a specialization, and keep it absent for returning specialized characters.
+Investigate and correct camera shake when jumping between higher and lower
+surfaces, preserving authoritative movement, roof support and ordinary controls.
+
+Improve the interface and play flow across all casino games. Baccarat must
+reveal each card in sequence, show hand scores and provide readable recent-round
+history. Use the clarity and ease of established casino interfaces as direction
+for an original Eidolon design. Preserve the existing Gold/EP separation,
+cosmetic-only EP utility, shared-table authority, wagering and payout rules,
+saved settlement and reconnect behavior; no real-money commerce is introduced.
+
 ## Working method
 
 - Implement coherent milestone-sized improvements. Avoid dozens of tiny

@@ -18,6 +18,8 @@ const { GameEngine } = await import('../src/core/GameEngine.js');
 const { Skeleton } = await import('../src/entities/Skeleton.js');
 const { QuestNPC } = await import('../src/entities/QuestNPC.js');
 const { Fighter } = await import('../src/entities/Fighter.js');
+const { UIManager } = await import('../src/ui/UIManager.js');
+const { SkillTreeUI } = await import('../src/ui/SkillTreeUI.js');
 
 function createEngineHarness() {
     const engine = Object.create(GameEngine.prototype);
@@ -72,6 +74,44 @@ function createEngineHarness() {
 }
 
 describe('GameEngine render-time HUD throttling', () => {
+    test.each([false, true])('specialization reminder follows confirmed build changes without resource changes (mobile=%s)', isMobile => {
+        document.body.innerHTML = '<div id="skill-tree-window" style="display:none"><div id="skill-tree-content"></div></div>';
+        const engine = createEngineHarness();
+        const tree = new SkillTreeUI({ isMobile, getLastPlayer: () => engine.player });
+        engine.player.subType = 'Fighter';
+        engine.player.level = 9;
+        engine.player.selectedBranch = '';
+        engine.uiManager.serializePlayerStats = UIManager.prototype.serializePlayerStats;
+        engine.uiManager.updatePlayerStats.mockImplementation(player => tree.updateSpecializationNotice(player));
+        const resources = { ...engine.player.stats };
+        try {
+            engine.render(1);
+            expect(document.querySelector('.specialization-unlock-notice')).toBeNull();
+            engine.player.level = 10;
+            engine.render(1);
+            const notice = document.querySelector('.specialization-unlock-notice');
+            expect(notice).not.toBeNull();
+            // A request alone does not confirm a choice; keep guidance until
+            // the authoritative branch arrives, even when resources stay full.
+            tree.onSelectBranch = jest.fn(); tree.toggle();
+            document.querySelector('[data-desktop-build-key="branch:A"], [data-build-action="branch:A"]').click();
+            expect(tree.onSelectBranch).toHaveBeenCalledTimes(1);
+            engine.render(1);
+            expect(document.querySelector('.specialization-unlock-notice')).toBe(notice);
+            engine.player.selectedBranch = 'A';
+            engine.render(1);
+            expect(document.querySelector('.specialization-unlock-notice')).toBeNull();
+            expect(engine.player.stats).toEqual(resources);
+            const updates = engine.uiManager.updatePlayerStats.mock.calls.length;
+            engine.render(1); engine.render(1);
+            expect(engine.uiManager.updatePlayerStats).toHaveBeenCalledTimes(updates);
+            // Reconnecting a specialized character must not restore guidance.
+            engine.lastRenderHudSignature = '';
+            engine.render(1);
+            expect(document.querySelector('.specialization-unlock-notice')).toBeNull();
+        } finally { tree.dispose(); }
+    });
+
     test.each([false, true])('service range hint follows movement without another pointer event (mobile=%s)', isMobile => {
         const engine = createEngineHarness();
         engine.isMobile = isMobile;

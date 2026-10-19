@@ -4,6 +4,12 @@ import { installPrototypeMethods } from '../core/PrototypeInstaller.js';
 import { WindowLayoutPreferences } from './WindowLayoutPreferences.js';
 import { EnemyHealthBars } from './EnemyHealthBars.js';
 
+function applyWindowStyles(element, values) {
+    for (const [key, value] of Object.entries(values)) {
+        if (element.style[key] !== value) element.style[key] = value;
+    }
+}
+
 class UIManagerWindowMethods {
     setupWorldWindowDismissal() {
         ownedEvent(this, document, 'pointerdown', event => {
@@ -232,11 +238,8 @@ class UIManagerWindowMethods {
 
     prepareWindowForLayout(element) {
         if (!element) return;
-        element.style.position = 'fixed';
-        element.style.margin = '0';
-        element.style.right = 'auto';
-        element.style.bottom = 'auto';
-        element.style.transformOrigin = 'center center';
+        applyWindowStyles(element, { position: 'fixed', margin: '0px', right: 'auto', bottom: 'auto',
+            transformOrigin: 'center center' });
     }
 
     centerWindow(element) {
@@ -245,9 +248,17 @@ class UIManagerWindowMethods {
             return;
         }
         this.prepareWindowForLayout(element);
-        element.style.left = '50%';
-        element.style.top = '50%';
-        element.style.transform = 'translate(-50%, -50%)';
+        if (!this.isElementVisible(element)) {
+            applyWindowStyles(element, { left: '50%', top: '50%', transform: 'translate(-50%, -50%)' });
+            return;
+        }
+        // Compute the final position directly. Temporarily switching a live
+        // panel to a translated percentage position can interrupt a native
+        // key activation while a ResizeObserver refreshes its contents.
+        const rect = element.getBoundingClientRect();
+        const left = Math.max(12, Math.round((window.innerWidth - rect.width) / 2));
+        const top = Math.max(12, Math.round((window.innerHeight - rect.height) / 2));
+        applyWindowStyles(element, { left: `${left}px`, top: `${top}px`, transform: 'none' });
     }
 
     placeWindowPair(primaryElement, companionElement) {
@@ -299,12 +310,8 @@ class UIManagerWindowMethods {
             top = margin;
         }
 
-        element.style.position = 'fixed';
-        element.style.left = `${Math.round(left)}px`;
-        element.style.top = `${Math.round(top)}px`;
-        element.style.right = 'auto';
-        element.style.bottom = 'auto';
-        element.style.transform = 'none';
+        applyWindowStyles(element, { position: 'fixed', left: `${Math.round(left)}px`, top: `${Math.round(top)}px`,
+            right: 'auto', bottom: 'auto', transform: 'none' });
     }
 
     openManagedWindow(id, { keepCompanion = false, silent = false } = {}) {

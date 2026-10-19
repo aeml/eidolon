@@ -35,6 +35,20 @@ function fixture() {
 }
 const position = element => [element.style.left, element.style.top];
 
+test('reflow leaves an already placed journal stable while reading or holding a key', async () => {
+    const ui = fixture();
+    ui.quest = { questJournal: panel() };
+    ui.registerWindowLayouts(); ui.openManagedWindow('journal');
+    const journal = ui.quest.questJournal, before = journal.style.cssText;
+    const observer = new MutationObserver(() => {});
+    observer.observe(journal, { attributes: true, attributeFilter: ['style'], attributeOldValue: true });
+    try {
+        ui.reflowVisibleWindows();
+        expect(journal.style.cssText).toBe(before);
+        expect(observer.takeRecords()).toHaveLength(0);
+    } finally { observer.disconnect(); ui.windowLayoutObserver?.disconnect(); }
+});
+
 test('character and bag keep independent dragged positions through closing, reopening and content reflow', () => {
     const ui = fixture(), character = ui.characterSheet, bag = ui.inventory.inventoryScreen;
     character.dataset.draggedWindow = bag.dataset.draggedWindow = 'true';

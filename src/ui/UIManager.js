@@ -731,7 +731,12 @@ export class UIManager {
             player?.abilityManaCost ?? 0,
             stats.manaCostReduction ?? 0,
             getAbilityManaCost(player, player?.abilityName, player?.abilityManaCost ?? 0),
-            player?.subType || player?.meshType || ''
+            player?.subType || player?.meshType || '',
+            // The specialization reminder shares this throttled HUD update.
+            // Level/build changes must refresh it even with full resources.
+            player?.id || '',
+            player?.level ?? 0,
+            player?.selectedBranch || ''
         ].join('|');
     }
 
