@@ -151,6 +151,7 @@ export class CasinoController {
         if (!seat) return;
         const table = tables.find(table => table.id === seat.tableId);
         this.heading.textContent = table?.name || 'Casino table';
+        this.heading.title = this.heading.textContent;
         const occupants = this.data.occupants.filter(occupant => occupant.tableId === seat.tableId);
         const ready = occupants.filter(occupant => occupant.connected && occupant.ready).length;
         const preparation = this.data.preparation[seat.tableId];

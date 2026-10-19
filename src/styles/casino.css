@@ -421,6 +421,7 @@ body .casino-session:is(.has-slots, .has-blackjack, .has-poker, .has-house):not(
 .casino-session .casino-session-header h2 { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: clamp(18px, 2vw, 26px); }
 .casino-session-header button { flex-shrink: 0; }
 .casino-window-drag-handle { cursor: grab; touch-action: none; user-select: none; }
+.casino-window-drag-handle::before { content: '⠿'; flex: 0 0 auto; color: #c7b580; font: 20px/1 system-ui; }
 [data-window-dragging] .casino-window-drag-handle { cursor: grabbing; }
 .casino-window-drag-handle:focus-visible { outline: 2px solid #f5d88f; outline-offset: -2px; border-radius: 8px; }
 .casino-session .casino-play-controls { flex: 0 0 auto; display: flex; flex-wrap: nowrap; align-items: center; gap: 8px; margin-bottom: 8px; padding: 4px 0; font-size: 12px; }
