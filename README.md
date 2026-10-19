@@ -511,11 +511,12 @@ retains one privacy-fixture flake and an unrecovered geometry-data timeout in
 live QA. Both have bounded transport corrections under validation;85 remains
 the latest accepted release. A later run passes client, hosted and native QA,
 but Live QA finds a coarse jump-planning gap. The isolated correction preserves
-the eight-unit minimum and strict real-input/landing checks. Its next CI stops
-on a browser fixture that retires its worker before trace body capture. An
-SDK-default headless reproduction fails; the fixture correction passes all five
-focused checks with recordings enabled and strict request limits unchanged.
-New full CI and deployed proof remain pending. No soak/stress testing is resumed.
+the eight-unit minimum and strict real-input/landing checks. Two further CI
+runs retain an unexpected third GET in a traced browser fixture; worker lifetime
+alone is insufficient. A controlled CDP comparison validates matching the public
+cache header. Five focused and all 34 exact layout-stage cases now pass with
+recordings enabled, no retries and strict request limits unchanged. New full CI
+and deployed proof remain pending. No soak/stress testing is resumed.
 [Qualification](docs/plans/2026-10-19-casino-poker-result-clarity.md).
 
 Latest verified live release: `Alpha 1.79.85`, source

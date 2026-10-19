@@ -2842,3 +2842,19 @@ remain. Runtime/build inputs match qualified9d, so existing80 unit/455 release/
 18 copied-engine hardware checks apply. New full own CI/deployment/public proof
 remain required. Owner feedback on the live presentation is positive. This does
 not complete the full game or beta gates. No soak/stress.
+
+
+## October19 public-cache fixture correction qualified locally
+
+The lifetime-only d562/CI39295983719 also fails the body fixture on initial and
+configured retry: exact bytes/indices and two application fetches pass, but
+server requests total three. Four jobs pass and five later jobs are skipped;
+no deployment occurs. Its digest-verified raw archive and inline attachments
+are retained. A controlled CDP resource-retrieval experiment proves no-store
+adds a third network GET while public max-age=600 keeps exactly two. The fixture
+now matches that public header. Five focused recorded-headless cases and all34
+exact Browser3 layout-stage cases pass without retries/failures/flakes/skips;
+the scopes overlap. Runtime/build inputs are unchanged from qualified9d, with
+80 unit/four suites and18 copied-engine hardware cases still applicable. New
+full CI/deployment/public proof remains required; full-game/beta gates remain
+open and no soak/stress is resumed.

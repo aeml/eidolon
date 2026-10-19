@@ -247,3 +247,44 @@ New original full CI, both deployments, live checks and exact public proof still
 gate release acceptance. The owner reports that the current casino presentation
 “all looks much better now”; full-game/beta and other readiness gates remain
 open. Soak/stress remains deferred.
+
+
+## Match public cache behavior for trace resource retrieval
+
+The lifetime-only correction `d5624ace7858447d6fea786223e6889c0d363b62`
+also fails original [CI39295983719](https://github.com/aeml/eidolon/actions/runs/39295983719):
+four jobs pass, Browser3 fails and five downstream jobs are skipped. It does
+not deploy. Both failed body attempts return exact indices in two application
+fetches, but the server still sees three requests. Captured raw-body equality
+passes as well. Original terminal logs, the digest-verified raw archive and
+inline attachments are retained. The earlier five-case local pass did not
+establish hosted reliability; worker lifetime alone was insufficient.
+
+A fresh normal-TLS HEAD of the public committed shard returns max-age=600.
+The disposable fixture had no freshness header. A controlled two-case private
+CDP experiment explicitly invokes Playwright's Network.loadNetworkResource
+fallback command. With no-store it makes a third physical GET; with the public
+max-age=600 it returns the same exact bytes from cache while server requests
+stay at two. Both cases retain two application fetches, two observed browser
+requests and the original canceled-request evidence. Automatic recording is off
+only in this controlled diagnostic, so the explicit command is isolated. The
+original hosted inspector-empty-body trigger was not recorded directly.
+
+The selected correction adds only the public cache header to the fixture's
+shard responses. Full qualification keeps CI trace/video settings enabled,
+SDK-default Headless Shell149, exact byte/index checks and strict two-application/
+two-server-request assertions. All five focused cases pass, followed by all34
+cases in the exact Browser3 layout file group/shard sequence, without retries,
+failures, flakes or exclusions. The latter takes4.6minutes in the private
+two-CPU namespace; it is local functional evidence, not the hosted runner or a
+world-performance result. These browser scopes overlap and are not summed.
+
+Runtime/build inputs remain identical to qualified9d; its80 focused checks/
+four suites and18 copied-engine hardware cases remain valid after input-byte
+comparison. New original full CI, both deployments, live checks and exact
+public proof still gate release acceptance. No request/test/owner timeout,
+observer policy or assertion is relaxed. Full-game/beta gates remain open and
+soak/stress remains deferred.
+
+All455 release/history/workflow checks in seven suites pass freshly after this
+fixture/documentation correction; changed-file lint is clean.

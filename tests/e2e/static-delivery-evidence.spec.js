@@ -35,6 +35,9 @@ for (const stage of ['headers', 'body']) test(`geometry worker recovers one time
                 const digest = async result => result && [...new Uint8Array(await crypto.subtle.digest('SHA-256',result.indices))].map(v=>v.toString(16).padStart(2,'0')).join('');
                 postMessage({precomputed:a?.precomputed === true && b?.precomputed === true,hashes:[await digest(a),await digest(b)],fetches});`);
         } else if (files.has(request.url)) {
+            // Match the public shard's freshness. Tracing may retrieve its
+            // completed body through the browser cache after the worker read.
+            if (request.url === path) response.setHeader('Cache-Control', 'max-age=600');
             response.setHeader('Content-Type', request.url.endsWith('.js') ? 'text/javascript' : 'application/octet-stream');
             if (request.url === path) serverRequests.push({ method: request.method, connection: request.socket.remotePort });
             if (request.url === path && ++attempts === 1) {
