@@ -32,7 +32,8 @@ export class CasinoController {
         this.house = new HouseTableUI(payload => this.send(payload), sound);
         this.slots = new SlotMachineUI(payload => this.send(payload), sound);
         this.header = document.createElement('header'); this.header.className = 'casino-session-header';
-        this.header.append(this.heading, this.leave);
+        this.headerActions = document.createElement('div'); this.headerActions.className = 'casino-session-header-actions';
+        this.headerActions.append(this.leave); this.header.append(this.heading, this.headerActions);
         this.status.className = 'casino-session-status'; this.roster.className = 'casino-session-roster';
         this.playControls = new CasinoPlayControls(reason => this.slots.stopAuto(reason));
         this.panel.append(this.header, this.status, this.playControls.root, this.roster, this.ready, this.blackjack.root, this.slots.root, this.poker.root, this.house.root);
@@ -141,7 +142,7 @@ export class CasinoController {
         if (rulesOwner !== this.rulesOwner) {
             if (this.rulesOwner) (this.rulesOwner === this.slots ? this.slots.sidebar : this.rulesOwner.controls).append(this.rulesOwner.rulesDialog.button);
             this.rulesOwner = rulesOwner;
-            if (rulesOwner) this.header.insertBefore(rulesOwner.rulesDialog.button, this.leave);
+            if (rulesOwner) this.headerActions.insertBefore(rulesOwner.rulesDialog.button, this.leave);
         }
         this.ready.hidden = isBlackjack || isSlots || isPoker || isHouse;
         this.roster.hidden = Boolean(isSlots || isBlackjack || isPoker || isHouse);

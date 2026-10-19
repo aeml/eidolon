@@ -4,11 +4,11 @@
 .slot-game[data-theme="fire"] { --slot-accent: #ffad6e; }
 .slot-game[data-theme="water"] { --slot-accent: #90d9ef; }
 .slot-game[data-theme="air"] { --slot-accent: #c4b7ff; }
-.slot-lore { color: #c5c7c5; font-style: italic; font-size: 12px; }
+.slot-lore { color: #c5c7c5; font-style: italic; font-size: calc(12 * var(--casino-text-unit, 1px)); }
 .slot-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; padding: 8px; border: 2px solid var(--slot-accent); border-radius: 12px; background: #0e1520; box-shadow: inset 0 0 18px #000; }
 .slot-cell { min-width: 0; text-align: center; padding: 3px; border: 1px solid transparent; border-radius: 8px; }
 .slot-cell img { display: block; width: 100%; aspect-ratio: 1; }
-.slot-cell span { display: block; font-size: 10px; line-height: 1.1; min-height: 22px; overflow-wrap: anywhere; color: #e8e4d5; }
+.slot-cell span { display: block; font-size: calc(10 * var(--casino-text-unit, 1px)); line-height: 1.1; min-height: 22px; overflow-wrap: anywhere; color: #e8e4d5; }
 .slot-cell.win { border-color: #ffe6a1; box-shadow: 0 0 9px #ebc376aa; }
 .slot-cell.wild span, .slot-cell.scatter span { color: var(--slot-accent); font-weight: 700; }
 .slot-cell { overflow: hidden; }
@@ -19,16 +19,16 @@
 .slot-controls select, .slot-controls input { min-height: 44px; background: #17212d; color: #fff1c2; border: 1px solid var(--slot-accent); border-radius: 5px; padding: 6px; font: inherit; }
 .slot-controls { margin-block: 8px; }
 .slot-controls input { width: 80px; }
-.slot-auto-status { font-size: 12px; color: #d3dccb; }
+.slot-auto-status { font-size: calc(12 * var(--casino-text-unit, 1px)); color: #d3dccb; }
 .slot-confirm, .slot-bonus { border: 1px solid var(--slot-accent); border-radius: 8px; padding: 10px; margin-block: 10px; }
 .slot-bonus button { display: block; width: 100%; margin-block: 6px; }
-.slot-game details { margin-top: 10px; font-size: 12px; }
+.slot-game details { margin-top: 10px; font-size: calc(12 * var(--casino-text-unit, 1px)); }
 .slot-game summary { cursor: pointer; min-height: 44px; align-content: center; }
-.slot-game table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.slot-game table { width: 100%; border-collapse: collapse; font-size: calc(11 * var(--casino-text-unit, 1px)); }
 .slot-game td, .slot-game th { padding: 5px 3px; text-align: left; border-bottom: 1px solid #79857344; }
 .slot-game ol { columns: 2; padding-left: 20px; }
 @media (prefers-reduced-motion: reduce) { .slot-cell.rolling img { animation: none; } }
-@media (max-width: 600px) { .slot-grid { gap: 2px; padding: 4px; } .slot-cell { padding: 1px; } .slot-cell span { font-size: 9px; } }
+@media (max-width: 600px) { .slot-grid { gap: 2px; padding: 4px; } .slot-cell { padding: 1px; } .slot-cell span { font-size: calc(9 * var(--casino-text-unit, 1px)); } }
 
 .slot-game { display: grid; grid-template-columns: minmax(240px, 290px) minmax(0, 1fr); gap: 20px; }
 .slot-game[hidden], .slot-game [hidden], .slot-game .slot-controls[hidden] { display: none; }
@@ -42,15 +42,15 @@
     animation: casino-reveal .6s ease-out;
 }
 .slot-stage .slot-bonus[hidden] { display: none; }
-.slot-bonus h3 { font-size: clamp(20px, 2.5vw, 34px); margin: 8px 0; color: #ffdfa0; }
+.slot-bonus h3 { font-size: clamp(calc(20 * var(--casino-text-unit, 1px)), 2.5vw, calc(34 * var(--casino-text-unit, 1px))); margin: 8px 0; color: #ffdfa0; }
 .slot-bonus-kicker { letter-spacing: .15em; font-weight: bold; color: var(--slot-accent); }
 @media (max-width: 700px) { .slot-stage:has(.slot-bonus:not([hidden])) { min-height: 440px; } .slot-stage .slot-bonus { padding: 12px; } }
 .slot-game > details { grid-column: 1 / -1; }
 .slot-sidebar .slot-controls { display: grid; grid-template-columns: 1fr; }
-.slot-sidebar label { display: grid; gap: 6px; font-size: 13px; color: #d2dfeb; }
+.slot-sidebar label { display: grid; gap: 6px; font-size: calc(13 * var(--casino-text-unit, 1px)); color: #d2dfeb; }
 .slot-sidebar input { box-sizing: border-box; width: 100%; min-width: 0; }
 .slot-sidebar .slot-controls button { margin: 0; }
-.slot-bet-help { font-size: 12px; color: #b9c9d3; }
+.slot-bet-help { font-size: calc(12 * var(--casino-text-unit, 1px)); color: #b9c9d3; }
 .slot-stage .slot-grid { max-width: 670px; margin-inline: auto; }
 .slot-stage .slot-cell img { max-height: min(15dvh, 115px); }
 @media (max-width: 700px) {

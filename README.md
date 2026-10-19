@@ -495,15 +495,15 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.84`, **deployed and verified within its scoped milestone**.
-This milestone expands all five casino windows, adds remembered top-bar dragging
-and separate Rules/reference popups, stages roulette ball motion and baccarat
-card reveals/history, improves card faces, slot symbols and result feedback, and keeps the jump camera
-on the displayed floor between different heights.
-Focused client, phone/desktop and copied-publication checks pass. The corrected
-source also passes complete own CI, both deployments, live checks and exact
-normal-TLS public verification.
-[Casino scope and qualification](docs/plans/2026-10-19-casino-round-experience.md).
+Current source version: `Alpha 1.79.85`, **prepared; verification and deployment pending**.
+This milestone improves casino phone text sizing and keyboard layouts. Larger
+menu text keeps game titles, controls and all six blackjack hand totals readable;
+editing wager and auto-spin fields keeps them above the modeled keyboard bounds.
+Saved placement and wager drafts survive table updates, with concise play-time
+labels retaining their full accessible explanations. The focused 72-case browser
+matrix and 286 unit checks pass; assembled publication and complete own CI/public
+verification are still required. Physical phone and owner casino assessment remain
+open. See the current release-readiness register.
 
 Latest verified live release: `Alpha 1.79.84`, source
 `b410683fae3c020c8b3872f0c1cf3cb45cefd8d3`.

@@ -59,6 +59,10 @@ export class CasinoPlayControls {
         if (!this.paused && seconds === 0) this.pausePlay('Your play-time limit is reached. New play paused.');
         const text = this.paused ? this.reason : seconds === null ? 'No timer' : `New play stops in ${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
         if (this.status.textContent !== text) this.status.textContent = text;
+        if (this.status.getAttribute('aria-label') !== text) this.status.setAttribute('aria-label', text);
+        if (this.status.title !== text) this.status.title = text;
+        const brief = this.paused ? 'Paused' : seconds === null ? 'No timer' : `◷ ${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+        if (this.status.dataset.brief !== brief) this.status.dataset.brief = brief;
         this.pause.hidden = Boolean(this.paused); this.resume.hidden = !this.paused;
     }
 

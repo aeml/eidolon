@@ -14,6 +14,12 @@ export class ViewportLayout {
             if (this.disposed) return;
             if (ui.isMobile) this.updateKeyboardBounds();
             ui.reflowVisibleWindows();
+            if (ui.isMobile && document.body.dataset.phoneKeyboard === 'true') {
+                const editor = document.activeElement;
+                if (editor?.closest('.casino-session, .casino-info-dialog')) {
+                    editor.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
+                }
+            }
         };
         listen(window, 'resize', this.refresh);
         listen(window.visualViewport, 'resize', this.refresh);
@@ -40,6 +46,9 @@ export class ViewportLayout {
     }
 
     clearKeyboardBounds() {
+        if (document.body.dataset.phoneKeyboard === 'true') {
+            for (const panel of document.querySelectorAll('.casino-session')) panel.scrollTop = 0;
+        }
         delete document.body.dataset.phoneKeyboard;
         document.body.style.removeProperty('--phone-visible-height');
         document.body.style.removeProperty('--phone-visible-top');

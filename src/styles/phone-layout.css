@@ -5,7 +5,7 @@
 
 /* Only active while a native editor has a keyboard-sized visual viewport.
    World zoom/camera framing is not changed; closing it restores existing UI. */
-body.mobile-mode[data-phone-keyboard="true"] :is(.window, .generated-menu, #dungeon-menu) {
+body.mobile-mode[data-phone-keyboard="true"] :is(.window, .generated-menu, #dungeon-menu, .casino-session, .casino-info-dialog) {
     position: fixed !important;
     top: calc(var(--phone-visible-top, 0px) + var(--phone-top)) !important;
     left: 50% !important;

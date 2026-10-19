@@ -2,11 +2,13 @@ import { expect, test } from '@playwright/test';
 
 // Presentation and public-projection fixtures; durable outcomes/settlement are
 // covered by the Go tests against disposable Mongo, never earned by this setup.
-for (const width of [390, 844, 1440]) test(`roulette ball launch, close-up and exact landing at ${width}px`, async ({ page }, testInfo) => {
+for (const [width,textScale] of [[390,100],[844,100],[1440,100],[390,125],[844,125]]) test(`roulette ball launch, close-up and exact landing at ${width}px (${textScale}%)`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: width === 844 ? 390 : 900 });
     await page.route('**/src/main.js', r => r.fulfill({ contentType: 'text/javascript', body: '' }));
     await page.route('**/src/analytics/game.js', r => r.fulfill({ contentType: 'text/javascript', body: '' }));
     await page.goto('/', { waitUntil: 'networkidle' });
+    // Project the phone preference; actual UIManager loading is covered separately.
+    if(textScale>100) await page.evaluate(scale=>{document.body.classList.add('mobile-mode');document.documentElement.style.setProperty('--phone-menu-text-size',`${16*scale/100}px`);},textScale);
     await page.evaluate(async () => {
         const { HouseTableUI } = await import('/src/ui/HouseTableUI.js');
         document.getElementById('start-screen').style.display = 'none';
@@ -47,11 +49,13 @@ for (const width of [390, 844, 1440]) test(`roulette ball launch, close-up and e
     await page.evaluate(() => window.__round.ui.dispose());
 });
 
-for (const width of [390, 1440]) test(`baccarat deals visible cards with live scores and a bead history at ${width}px`, async ({ page }, testInfo) => {
+for (const [width,textScale] of [[390,100],[1440,100],[390,125]]) test(`baccarat deals visible cards with live scores and a bead history at ${width}px (${textScale}%)`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: 900 });
     await page.route('**/src/main.js', r => r.fulfill({ contentType: 'text/javascript', body: '' }));
     await page.route('**/src/analytics/game.js', r => r.fulfill({ contentType: 'text/javascript', body: '' }));
     await page.goto('/', { waitUntil: 'networkidle' });
+    // Project the phone preference; actual UIManager loading is covered separately.
+    if(textScale>100) await page.evaluate(scale=>{document.body.classList.add('mobile-mode');document.documentElement.style.setProperty('--phone-menu-text-size',`${16*scale/100}px`);},textScale);
     await page.evaluate(async () => {
         const { HouseTableUI } = await import('/src/ui/HouseTableUI.js');
         document.getElementById('start-screen').style.display = 'none';
@@ -82,11 +86,13 @@ for (const width of [390, 1440]) test(`baccarat deals visible cards with live sc
     await page.evaluate(() => window.__baccarat.ui.dispose());
 });
 
-for (const width of [390, 1440]) for (const theme of ['earth', 'water', 'fire', 'air']) test(`${theme} slots show a skippable saved spin and inspectable paylines at ${width}px`, async ({ page }, testInfo) => {
+for (const [width,textScale] of [[390,100],[1440,100],[390,125]]) for (const theme of ['earth', 'water', 'fire', 'air']) test(`${theme} slots show a skippable saved spin and inspectable paylines at ${width}px (${textScale}%)`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: 900 });
     await page.route('**/src/main.js', r => r.fulfill({ contentType: 'text/javascript', body: '' }));
     await page.route('**/src/analytics/game.js', r => r.fulfill({ contentType: 'text/javascript', body: '' }));
     await page.goto('/', { waitUntil: 'networkidle' });
+    // Project the phone preference; actual UIManager loading is covered separately.
+    if(textScale>100) await page.evaluate(scale=>{document.body.classList.add('mobile-mode');document.documentElement.style.setProperty('--phone-menu-text-size',`${16*scale/100}px`);},textScale);
     await page.evaluate(async theme => {
         const { SlotMachineUI } = await import('/src/ui/SlotMachineUI.js');
         document.getElementById('start-screen').style.display = 'none';
