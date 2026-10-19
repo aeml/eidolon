@@ -2709,3 +2709,23 @@ are race-enabled, with fresh isolated Mongo fixtures and original deadlines.
 Own CI, deployment and public verification remain required. The full original
 goal, owner casino assessment, human/device/listening, final art/performance,
 operations/rights, F1–F5 and beta/1.99 remain open. Soak/stress remains deferred.
+
+## October 19 accepted Alpha 1.79.85
+
+Source `6d35618229979e24fa9808e242e8200421b71cfa` passes original CI39238762515,
+all ten jobs, both deployments and live checks. Counts are 823 client suites /
+12,807 checks, 544 hosted, 184 native and 11 live passes, with 14/2/1 existing exclusions
+and zero failed/flaky browser outcomes. Normal-TLS identities and 441 public pins
+match the exact own artifact; 110 unchanged GLB proofs retain accepted84 custody
+after current-artifact byte comparison. Frozen four-file inventory SHA-256 is
+52e612f2ab9326813404a8ce1773956c7215142c2692a6043883256ada655367.
+[Acceptance](docs/plans/2026-10-19-release1-79-85-acceptance.md).
+
+The milestone delivers the prepared phone fit and corrected pending-player
+identity race. Original failed85 CI and both reproduced failures remain retained.
+Later screenshot review finds compact Baccarat overlap and roulette timer
+occlusion; poker side-pot net-result feedback also needs correction. Follow-up
+work stays isolated until its own browser/publication qualification and release.
+The full original goal, complete owner casino assessment, physical phones,
+final art/performance, human campaign/listening, operations/rights, F1–F5 and
+beta/1.99 remain open. No soak/stress is resumed.
