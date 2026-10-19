@@ -9,6 +9,85 @@ const view = (game = 'roulette', currency = 'gold') => ({
     spots: [{ id: 'red', label: 'Red', multiplier: 2 }, { id: 'split:1-2', label: 'Split 1/2', multiplier: 18 }]
 });
 
+// Legal saved outside-bet results, with the ball still completing its visual
+// landing. Server funding/settlement remains covered by the socket suites.
+function rouletteLandingReview(currency = 'gold') {
+    const sound = jest.fn(), send = jest.fn(), ui = new HouseTableUI(send, sound);
+    const stake = currency === 'ep' ? 1 : 20, tableId = `${currency === 'ep' ? 'vip' : 'public'}-roulette`;
+    const own = { playerId:'hero', name:'You', seat:0, wagers:[{spot:'red',amount:stake}], paid:false, payout:0 };
+    const state = { ...view('roulette',currency), tableId, tableVersion:'2', phase:'revealing', balance:100-stake,
+        revealAt:new Date(Date.now()+6000).toISOString(), players:[own] };
+    const presence = { yourSeat:{tableId,seat:0,sessionId:'landing-seat'}, occupants:[{playerId:'hero',name:'You',seat:0,connected:true}] };
+    const complete = { ...state, tableVersion:'3', phase:'complete', number:32, balance:100+stake,
+        nextRoundAt:new Date(Date.now()+12000).toISOString(), players:[{...own,paid:true,payout:stake*2}] };
+    ui.update(state,'hero',presence);
+    return { ui, sound, send, complete, presence };
+}
+
+test.each(['gold','ep'])('roulette shows a saved %s win after the known ball landing, once across repeated polls', currency=>{
+    jest.useFakeTimers(); const f=rouletteLandingReview(currency), {ui,sound,complete,presence}=f;
+    try {
+        ui.update(complete,'hero',presence); expect(ui.presentation.landing).toBeTruthy();
+        expect(ui.celebration.active).toBe(false);
+        expect(sound.mock.calls.filter(([cue])=>cue === 'win')).toHaveLength(0);
+        jest.advanceTimersByTime(400); ui.update(complete,'hero',presence);
+        expect(ui.celebration.active).toBe(false);
+        jest.advanceTimersByTime(1250);
+        expect(ui.presentation.root.classList.contains('close-up')).toBe(false);
+        expect(ui.celebration.active).toBe(true); ui.update(complete,'hero',presence);
+        expect(sound.mock.calls.filter(([cue])=>cue === 'win')).toHaveLength(1);
+        expect(f.send).not.toHaveBeenCalled();
+    } finally {ui.dispose();jest.useRealTimers();}
+});
+
+test.each(['gold','ep'])('skipping roulette reveals the saved %s win as soon as its result arrives', currency=>{
+    jest.useFakeTimers(); const f=rouletteLandingReview(currency), {ui,sound,complete,presence}=f;
+    try {
+        ui.presentation.skip.click(); expect(ui.celebration.active).toBe(false);
+        expect(sound.mock.calls.filter(([cue])=>cue === 'win')).toHaveLength(0);
+        ui.update(complete,'hero',presence);
+        expect(ui.presentation.root.classList.contains('close-up')).toBe(false);
+        expect(ui.celebration.active).toBe(true); jest.advanceTimersByTime(1800);
+        expect(sound.mock.calls.filter(([cue])=>cue === 'win')).toHaveLength(1);
+        expect(f.send).not.toHaveBeenCalled();
+    } finally {ui.dispose();jest.useRealTimers();}
+});
+
+test.each(['gold','ep'])('reduced motion shows the saved %s roulette win without waiting for an animation', currency=>{
+    jest.useFakeTimers(); const before=document.documentElement.dataset.reducedMotion;
+    document.documentElement.dataset.reducedMotion='true';
+    const f=rouletteLandingReview(currency), {ui,sound,complete,presence}=f;
+    try {
+        ui.update(complete,'hero',presence);
+        expect(ui.presentation.root.classList.contains('close-up')).toBe(false);
+        expect(ui.celebration.active).toBe(true);
+        expect(sound.mock.calls.filter(([cue])=>cue === 'win')).toHaveLength(1);
+        expect(f.send).not.toHaveBeenCalled();
+    } finally {
+        ui.dispose();jest.useRealTimers();
+        if(before === undefined) delete document.documentElement.dataset.reducedMotion;
+        else document.documentElement.dataset.reducedMotion=before;
+    }
+});
+
+test.each(['leaving','unavailable','next round'])('roulette suppresses a deferred win after %s', change=>{
+    jest.useFakeTimers(); const f=rouletteLandingReview(), {ui,sound,complete,presence}=f;
+    try {
+        ui.update(complete,'hero',presence); expect(ui.celebration.active).toBe(false);
+        if(change === 'leaving') ui.update(null,'hero',presence);
+        else if(change === 'unavailable') ui.update({...complete,available:false},'hero',presence);
+        else ui.update({...view(),tableId:complete.tableId,tableVersion:'4',roundId:'next-round'},'hero',presence);
+        jest.advanceTimersByTime(1800);
+        expect(ui.celebration.active).toBe(false);
+        expect(sound.mock.calls.filter(([cue])=>cue === 'win')).toHaveLength(0);
+        if(change === 'unavailable') {
+            ui.update(complete,'hero',presence); expect(ui.celebration.active).toBe(true);
+            expect(sound.mock.calls.filter(([cue])=>cue === 'win')).toHaveLength(1);
+        }
+        expect(f.send).not.toHaveBeenCalled();
+    } finally {ui.dispose();jest.useRealTimers();}
+});
+
 test.each(['roulette','baccarat'])('%s keeps an earlier wager separate from the new chair occupant', game=>{
     const send=jest.fn(),ui=new HouseTableUI(send);
     try {

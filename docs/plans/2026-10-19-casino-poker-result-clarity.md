@@ -1,87 +1,87 @@
 # Casino table layout and result clarity
 
-This isolated follow-up extends accepted Alpha 1.79.85, source
-`6d35618229979e24fa9808e242e8200421b71cfa`. Alpha 1.79.86 has not deployed. Original source `ddbd001ca` failed
+Alpha 1.79.86 extends accepted85 at `6d35618229979e24fa9808e242e8200421b71cfa`.
+It has not deployed. Original source `ddbd001ca` failed
 [CI39253417949](https://github.com/aeml/eidolon/actions/runs/39253417949): six
-existing house-table cases correctly reject the hidden House dealer label.
-The corrected candidate restores that label in the controls, apart from the
-cards/timer stage. Original failure and CI-configured retries remain retained;
-this is a product regression, not a flaky test or fixture waiver. Complete new
-qualification and own CI/public verification remain required.
+existing house-table cases correctly rejected the hidden House dealer label.
+That run ends with four successful jobs, one failed job and five skipped jobs;
+client 823 suites / 12,815 checks and server/Go/race pass. Hosted reports retain
+419 passes, seven existing exclusions, six failures and 144 unrun cases. Both
+initial and configured retry attempts fail; these are not flaky passes. No
+manual retry or cancellation occurs. Complete new own CI/public verification
+remains required.
 
 House games arrange six seats around a shared result-and-clock stage. Labels,
 funded stakes, reconnect status, Baccarat hands and the timer occupy separate
 content areas, with owned scrolling on short screens. Larger proportional cards
 keep the ten-rank index and suit within their faces. Short landscape layouts
-place seats on side rails. Scroll padding keeps content clear of the table's
-beveled clipping boundary. Roulette's actual spin uses the foreground table
-viewport, with a larger wheel and a separate timer/skip footer; entering that
-phase resets inspected-seat scroll once, without resetting ordinary polls.
-The known server result, physical landing math and deadlines retain their rules.
+place seats on side rails. Scroll padding clears the beveled clipping boundary.
+The dealer label stays visible in the controls. Roulette's actual spin uses a
+larger foreground wheel and separate clock/skip footer; entering it resets
+inspected-seat scroll once, without resetting ordinary polls.
 
-The public release's house layout genuinely failed the new Baccarat overlap and
-roulette clock hit-testing probes. These original failures remain retained.
-Intermediate corrections exposed an undersized grid row, clipped card indices,
-a square desktop card and a landscape scroll boundary. The first combined
-43-case run retained 18 passes, one genuine timer clipping failure and 24 unrun
-cases. A focused diagnostic reproduced that failure; adding scroll padding
-passes the same full-visibility assertion across all three hand phases. No
-assertions, timeouts or failure reports were relaxed or overwritten.
+House win messages now occupy the controls, keeping the wheel and Baccarat cards
+visible. Roulette's saved positive result celebrates after the known ball's
+landing finishes. Skipping/reduced motion exposes a known result immediately;
+leaving, unavailable state and a new round suppress stale deferred feedback.
+Repeated polls produce one win cue. Maximum straight-up stakes and small wins
+remain readable; narrow controls stack the heading, amount and detail. No odds,
+server settlement, landing math, animation duration or game deadlines change.
 
-A reused house chair now attributes an earlier saved wager to its original
-player when the present occupant differs. Both games reproduce the old missing
-ownership caption. The new patron's name, connection state and waiting status
-remain current; wagers and settlement still belong to their original player.
+An earlier saved wager is attributed to its original player when the present
+chair occupant differs. Both house games reproduce the old missing ownership
+caption. The new patron's identity and connection state stay current; wagering
+and settlement retain their original owner.
 
 Poker can return a won side pot while the player loses money over the hand.
-The summary now shows the saved return, original buy-in and net result. A win
-sound/banner requires a known positive net and a won pot. Missing or zero buy-in
-data never invents profit. Four legal all-in baseline cases on pinned Node
-24.18.0 reproduce the old unexpected celebrations: C's aces win the main pot,
-A's kings beat B's queens in the side pot, with conserved whole 100-Gold/10-EP
-buy-ins and no chips left behind. Early simplified/invalid fixtures and a
-secondary Node18 baseline remain retained as superseded evidence, not legal
-complete-hand qualification. Exact exported old module bytes were restored to
-the selected fixed bytes after the primary baseline.
+The summary shows the saved return, original buy-in and net result. A win sound/
+banner requires known positive net and a won pot. Missing or zero buy-in never
+invents profit. Four legal all-in baseline cases on Node24.18.0 reproduce the old
+unexpected celebrations: C's aces win the main pot, A's kings beat B's queens
+in the side pot, with conserved whole 100-Gold/10-EP buy-ins and no chips left
+behind. Earlier simplified/invalid fixtures and a secondary Node18 baseline
+remain superseded evidence, not legal complete-hand qualification. Exact old
+exported module bytes were restored to the selected fixed bytes afterward.
 
-Rules popups save the last visible drag position when native Escape or Enter
-closes them while the pointer remains held. Both old behaviors lose 40px of
-horizontal placement in real browser reproductions. Explicit user close records
-the last visible position; forced teardown discards an active drag. No ghost
-pointer movement occurs after reopening. Existing large windows, pointer/touch/
-keyboard top-bar movement and remembered normal/compact coordinates remain.
+Rules popups save their last visible drag position when native Escape or Enter
+closes them while the pointer stays held. Both real browser baselines lose 40px
+of horizontal placement. User close records the visible position; forced
+teardown discards the active drag. No ghost movement occurs after reopening.
+Large windows and pointer/touch/keyboard top-bar movement retain remembered
+normal/compact coordinates.
 
-Pinned Node24 qualification passes 48 focused checks across HouseTableUI,
-PokerTableUI and CasinoWindowLayout; after adding the shared stage and phase
-scroll reset, all 21 HouseTableUI checks pass again. Changed JavaScript lint
-passes. The final source browser matrix covers 43 cases with retries disabled:
-new roulette clock/foreground checks, six-seat Baccarat geometry/cards/status,
-Gold/EP poker losses/even/profit, native popup closure during drag, and existing
-history/deal/phone keyboard/placement/positive results. All 43 pass in 1.7 minutes, with zero failed, flaky, skipped or retried
-cases. Screenshot review includes both roulette spin sizes and Baccarat desktop/
-landscape cards, status and timer. Eighteen corresponding copied-publication checks pass in 59 seconds against
-an actual bundled GameEngine/UIManager in System Chrome153, without failures,
-flakes, skips or retries. The renderer reports hardware AMD Radeon RADV RENOIR
-through ANGLE/Vulkan. The exact copied source is
-`08b635b37a89942c7692fb028bcc4064c64e2a94`; the owned 530-module bundle is
-4,968,467 bytes. Geometry worker, precomputed index shards and analytics hashes
-remain unchanged. All 455 release/history/workflow checks pass. The cumulative
-521 notes preserve all 520 prior raw entry strings with 52 lazy pages. Private
-report hashes are retained in `release86-prepush-qualification.json`.
+The final source matrix passes all 49 cases in 2.2 minutes with zero retries,
+failed/flaky outcomes or skips. It includes every original failing house case,
+roulette foreground/clock/win timing and maximum-stake labels, Baccarat six-seat
+geometry, visible winning cards, reconnect status, Gold/EP poker losing/even/
+profitable returns, popup closure during drag, existing deal/history, phone
+keyboard/placement and positive results. Screenshot review covers portrait and
+landscape roulette wins, plus phone/desktop winning Baccarat hands. Node24
+qualification passes 57 checks / three suites, including nine new deferred-win,
+skip, reduced-motion and lifecycle cases. Changed JavaScript lint passes.
+All 520 prior raw note strings remain identical in 521 entries and 52 lazy pages.
+Release/history/workflow qualification previously passes 455 checks / seven
+suites; unchanged proof inputs retain that scope, with the latest note checked
+again separately. Final exact-commit copied-engine qualification remains pending.
 
-Private original failures, diagnostics, source hashes and terminal reports are
-under `.qa-casino-experience/` in the owned casino worktree. Source DOM/browser
-projections and copied-engine integration are not earned play, physical-device,
-final owner casino assessment, performance or whole-game acceptance. No odds,
-currencies, schema/protocol, server settlement or art assets change. Local
-compiler/browser/archive work requires all repository workflows idle. Soak and
-stress remain deferred until feature completion approaches.
+Retained failures include the original Baccarat overlap and roulette clock
+hit-testing, intermediate grid/card/scroll clipping, native popup position loss,
+both wager attribution cases, the four legal poker cases, and two legal Gold/EP
+roulette cases where a saved win obscures the still-landing ball. A later narrow
+maximum-profit banner genuinely clips; stacking its text fixes the unchanged
+full-visibility assertion. No assertion, deadline or prior report is relaxed or
+overwritten. The original 43/18 passing sets missed the six anonymous house
+checks; they retain their original source and limited coverage. Dealer-only
+source `78675ad87` then passes 49 cases. Its copied check accidentally discovers
+18 archived fixtures alongside the 18 current cases: all 36 pass, while the
+18-count inventory assertion fails as a setup audit. Final discovery explicitly
+excludes that archive and lists exactly 18 current cases.
 
-
-The original 43/18 passing sets did not include the six anonymous house-table
-cases; their scopes are retained and do not qualify the dealer correction. The
-expanded source matrix has 49 cases, including every original failing case, and
-both real-controller house groups now explicitly require visible dealer text.
-The corrected constructor passes all 21 HouseTableUI checks on Node24 and
-changed JavaScript lint. The source matrix and exact copied-engine rerun wait
-for all repository workflows to become idle. The failed original86 run is never restarted/cancelled.
+Private hashes, exact old sources and reports remain under
+`.qa-casino-experience/` in the owned casino worktree; original failed CI logs
+remain in the owned master's `.qa-release86-house/`. Source DOM/browser checks
+and copied-engine projections do not establish earned play, physical-device,
+final owner casino assessment, performance or whole-game acceptance. No
+currency, schema/protocol, server authority or art assets change. Compiler/
+browser/archive work requires all repository workflows idle. Soak/stress stays
+deferred until feature completion approaches.

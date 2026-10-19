@@ -24,14 +24,17 @@ Every explicit requirement in those sources remains part of the completion audit
 
 ## Prepared follow-up: Alpha 1.79.86
 
-House table layout, roulette foreground spin, Baccarat cards/status, poker net
-results and Rules-popup drag closure are corrected in an isolated candidate.
-Forty-three source browser cases, 48 unit checks and 455 release/history checks
-pass, with all 520 prior raw note strings preserved in 521 cumulative entries.
-The affected house suite passes its 21 checks again after the stage change.
-Eighteen exact-commit copied-engine checks also pass. Complete own CI and exact
-public deployment remain pending. [Qualification](2026-10-19-casino-poker-result-clarity.md).
-This does not close the full casino owner assessment or another readiness gate.
+The corrected candidate retains dealer visibility, separates six house seats,
+Baccarat cards/status and timers, enlarges roulette spins, and celebrates its
+saved win after the ball lands. House win messages preserve card visibility
+and fit maximum-stake returns. Poker net results, earlier wager attribution
+and popup drag closure are corrected. Final source qualification passes 49
+browser cases and 57 unit checks; all 520 prior raw notes remain exact in 521
+entries. Original86 CI retains six genuine hidden-dealer failures and did not
+deploy. Corrected exact copied-engine checks, new complete own CI and exact
+public verification remain required.
+[Qualification](2026-10-19-casino-poker-result-clarity.md).
+No full owner casino assessment or another readiness gate closes here.
 
 ## Current delivery: accepted Alpha 1.79.85
 

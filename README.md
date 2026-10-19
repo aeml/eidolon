@@ -496,16 +496,15 @@ Notes:
 ## Project Status
 
 Current source version: `Alpha 1.79.86`, **prepared; deployment acceptance pending**.
-This milestone separates house seats, Baccarat hands and timers, enlarges the
-foreground roulette spin, and keeps reconnect status readable on short screens.
-Poker shows the return and net result before celebrating; reused house chairs
-retain the original wager owner's name. Rules popups preserve their last visible
-position when closed during a drag. Large top-bar-draggable casino windows and
-saved placement remain delivered. Forty-three focused source browser checks,
-48 unit checks and changed JavaScript lint pass; the affected house suite also
-passes its 21 checks after the shared-stage change. Eighteen exact-commit
-copied-engine checks and 455 release/history checks pass. Own full CI and public
-deployment acceptance remain pending.
+House seats, Baccarat cards and timers stay separate, with visible dealer and
+reconnect status. Roulette spins use a larger foreground wheel; saved wins
+follow the ball landing. House win messages keep the cards visible and fit large
+returns in narrow controls. Poker distinguishes returns from net profit/loss,
+and reused chairs retain the earlier wager owner's name. Rules popups remember
+position through closure during a drag. Large top-bar-draggable windows remain.
+Forty-nine source browser cases and 57 focused unit checks pass; final copied-
+engine qualification, complete new own CI and deployment remain required. The
+original86 CI correctly rejected a hidden dealer label and did not deploy.
 [Qualification](docs/plans/2026-10-19-casino-poker-result-clarity.md).
 
 Latest verified live release: `Alpha 1.79.85`, source

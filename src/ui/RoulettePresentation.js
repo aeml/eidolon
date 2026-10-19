@@ -92,6 +92,7 @@ export class RoulettePresentation {
         this.root.classList.remove('close-up'); this.skip.hidden = true;
         if (this.number !== null) this.paint(this.wheelAngle || 0, rouletteLanding(this.wheelAngle || 0, this.number), .36);
         this.ball.hidden = this.number === null;
+        if (this.number !== null) this.onResultVisible?.();
     }
 
     clear() {
@@ -101,5 +102,5 @@ export class RoulettePresentation {
         this.paint(0, 0, .46);
     }
 
-    dispose() { this.clear(); this.skip.onclick = null; this.root.remove(); }
+    dispose() { this.onResultVisible = null; this.clear(); this.skip.onclick = null; this.root.remove(); }
 }

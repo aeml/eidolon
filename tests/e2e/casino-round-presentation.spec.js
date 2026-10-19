@@ -1,6 +1,40 @@
 import { expect, test } from '@playwright/test';
 import { prepareCasinoReview } from './casinoPreparedController.js';
 
+// The whole message remains readable in its owned controls scroller.
+async function expectHouseWinReadable(page, testInfo, label) {
+    const win=page.locator('.house-game .casino-celebration');
+    await expect(win).toBeVisible(); await expect(win).toHaveCSS('opacity','1');
+    await win.scrollIntoViewIfNeeded();
+    await testInfo.attach(`${label}-win-bounds`,{body:Buffer.from(JSON.stringify(await win.evaluate(n=>{
+        const r=n.getBoundingClientRect(),parent=n.parentElement,p=parent.getBoundingClientRect();
+        return {win:{top:r.top,bottom:r.bottom,height:r.height},controls:{top:p.top,bottom:p.bottom,clientHeight:parent.clientHeight,scrollHeight:parent.scrollHeight,scrollTop:parent.scrollTop}};
+    }))),contentType:'application/json'});
+    await expect(win).toBeInViewport({ratio:1});
+    const geometry=await win.evaluate(n=>{
+        const bounds=n.getBoundingClientRect(),regions=[...n.querySelectorAll('h3,strong,p')].map(e=>{
+            const r=e.getBoundingClientRect();return {text:e.textContent,left:r.left,right:r.right,top:r.top,bottom:r.bottom,
+                horizontalOverflow:e.scrollWidth-e.clientWidth,verticalOverflow:e.scrollHeight-e.clientHeight};
+        }),clipped=[],overlaps=[],blocked=[];
+        for(const r of regions) {
+            if(r.left < bounds.left-1 || r.right > bounds.right+1 || r.top < bounds.top-1 || r.bottom > bounds.bottom+1 ||
+                r.horizontalOverflow > 1 || r.verticalOverflow > 1) clipped.push(r);
+            for(const x of [.2,.5,.8]) for(const y of [.2,.5,.8]) {
+                const hit=document.elementFromPoint(r.left+(r.right-r.left)*x,r.top+(r.bottom-r.top)*y);
+                if(!n.contains(hit)) blocked.push({text:r.text,element:hit?.className});
+            }
+        }
+        for(let i=0;i<regions.length;i++) for(let j=i+1;j<regions.length;j++) {
+            const a=regions[i],b=regions[j];
+            if(Math.min(a.right,b.right)-Math.max(a.left,b.left)>1 && Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>1) overlaps.push([a,b]);
+        }
+        return {regions,clipped,overlaps,blocked};
+    });
+    await testInfo.attach(`${label}-win-geometry`,{body:Buffer.from(JSON.stringify(geometry)),contentType:'application/json'});
+    expect(geometry.clipped).toEqual([]); expect(geometry.overlaps).toEqual([]); expect(geometry.blocked).toEqual([]);
+    return win;
+}
+
 // Presentation and public-projection fixtures; durable outcomes/settlement are
 // covered by the Go tests against disposable Mongo, never earned by this setup.
 for (const [width,height,textScale] of [[320,740,125],[390,844,125],[844,390,125],[1440,900,100]]) {
@@ -13,7 +47,7 @@ for (const [width,height,textScale] of [[320,740,125],[390,844,125],[844,390,125
         await page.evaluate(prepareCasinoReview,{game:'roulette',phone:width < 1000,textScale});
         await page.evaluate(()=>{
             const f=window.__controllerReview;
-            f.payload.house={...f.payload.house,tableVersion:'2',balance:980,
+            f.payload.house={...f.payload.house,tableVersion:'2',balance:999980,
                 players:f.payload.occupants.map(p=>({...p,wagers:[{spot:'red',amount:20}],paid:false,payout:0}))};
             f.c.updateState(f.payload);
         });
@@ -57,9 +91,34 @@ for (const [width,height,textScale] of [[320,740,125],[390,844,125],[844,390,125
             const f=window.__controllerReview;
             f.payload.house={...f.payload.house,tableVersion:'4',phase:'settling',number:32};f.c.updateState(f.payload);
         });
+        await checkClock('saving');
+        await page.evaluate(()=>{
+            const f=window.__controllerReview;
+            f.payload.house={...f.payload.house,tableVersion:'5',phase:'complete',balance:1000020,
+                serverNow:new Date().toISOString(),nextRoundAt:new Date(Date.now()+12000).toISOString(),
+                players:f.payload.house.players.map(p=>({...p,paid:true,payout:40}))};f.c.updateState(f.payload);
+        });
+        await expect(page.locator('.roulette-theatre')).toHaveClass(/close-up/);
+        await expect(page.locator('.house-game .casino-celebration')).toBeHidden();
         await expect(page.locator('.roulette-theatre')).not.toHaveClass(/close-up/);
         await expect(page.locator('.roulette-outcome')).toHaveText('32 · Red');
-        await checkClock('saving');
+        await expect(await expectHouseWinReadable(page,testInfo,'roulette-landed')).toContainText('+20 Gold');
+        await checkClock('next');
+        // A legal next round can pay the maximum straight-up stake. Keep the
+        // largest return/profit labels readable as well as the small win.
+        await page.evaluate(()=>{
+            const f=window.__controllerReview;
+            f.payload.house={...f.payload.house,tableVersion:'20',roundId:'large-readability',phase:'complete',balance:4500020,
+                serverNow:new Date().toISOString(),nextRoundAt:new Date(Date.now()+12000).toISOString(),
+                players:f.payload.occupants.map(p=>({...p,wagers:[{spot:'number:32',amount:100000}],paid:true,payout:3600000}))};f.c.updateState(f.payload);
+        });
+        await expect(await expectHouseWinReadable(page,testInfo,'roulette-large')).toContainText('+3,500,000 Gold');
+        await bowl.scrollIntoViewIfNeeded();await expect(bowl).toBeInViewport({ratio:1});
+        expect(await bowl.evaluate(n=>{
+            const r=n.getBoundingClientRect(),hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);return n.contains(hit);
+        })).toBe(true);
+        await checkClock('large-next');
+        await page.screenshot({path:testInfo.outputPath(`roulette-win-${width}.png`)});
         expect(await page.locator('.casino-session').evaluate(n=>n.scrollWidth-n.clientWidth)).toBeLessThanOrEqual(1);
         expect(await page.evaluate(()=>window.__controllerReview.sent)).toEqual([]);
         await page.evaluate(()=>{const f=window.__controllerReview;f.c.dispose();f.ui?.dispose();});
@@ -141,6 +200,20 @@ for (const [width,height,textScale] of [[320,740,125],[390,844,125],[844,390,125
             }
             await expect(page.locator('.baccarat-theatre [data-card]')).toHaveCount(phase === 'betting' ? 0 : phase === 'revealing' ? 5 : 6);
         }
+        await page.evaluate(()=>{
+            const f=window.__controllerReview;
+            f.payload.house={...f.payload.house,tableVersion:'20',roundId:'banker-win-review',balance:1019,
+                serverNow:new Date().toISOString(),nextRoundAt:new Date(Date.now()+12000).toISOString(),
+                players:f.payload.occupants.map(p=>({...p,wagers:[{spot:'banker',amount:20}],paid:true,payout:39}))};f.c.updateState(f.payload);
+        });
+        await expect(await expectHouseWinReadable(page,testInfo,'baccarat')).toContainText('+19 Gold');
+        for(const card of await page.locator('.baccarat-theatre [data-card]').all()) {
+            await card.scrollIntoViewIfNeeded();await expect(card).toBeInViewport({ratio:1});
+            expect(await card.evaluate(n=>{const r=n.getBoundingClientRect();return n.contains(document.elementFromPoint(r.left+r.width/2,r.top+r.height/2));})).toBe(true);
+        }
+        const resultClock=page.locator('.house-game .card-table-clock');await resultClock.scrollIntoViewIfNeeded();
+        await expect(resultClock).toBeInViewport({ratio:1});
+        await page.screenshot({path:testInfo.outputPath(`baccarat-win-${width}.png`)});
         expect(await page.evaluate(()=>window.__controllerReview.sent)).toEqual([]);
         await page.evaluate(()=>{const f=window.__controllerReview;f.c.dispose();f.ui?.dispose();});
         expect(failures).toEqual([]);

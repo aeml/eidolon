@@ -23,7 +23,6 @@ export class HouseTableUI {
         this.root = node('div', '', 'house-game'); this.root.hidden = true;
         this.table = new CardTableScene('roulette');
         this.display = node('div', '', 'house-result'); this.table.center.append(this.display);
-        this.celebration = new CasinoCelebration(this.table.center);
         this.stage = node('div', '', 'house-table-stage');
         this.stage.append(this.table.center, this.table.clock); this.table.root.append(this.stage);
         this.phase = node('p', '', 'casino-round-phase'); this.phase.setAttribute('role', 'status');
@@ -58,6 +57,7 @@ export class HouseTableUI {
         this.rulesDialog = new CasinoInfoDialog('Roulette rules'); this.rules = this.rulesDialog.button;
         this.rulesText = node('p'); this.rulesDialog.body.append(this.rulesText);
         this.controls = node('div', '', 'card-table-controls');
+        this.celebration = new CasinoCelebration(this.controls);
         this.controls.append(this.table.dealer);
         const toolbar = node('div', '', 'house-wager-toolbar'); toolbar.append(this.stakeLabel, this.adjustments, builderLabel);
         this.controls.append(this.phase, this.summary, toolbar, this.chips, this.board, this.slip, this.confirm, this.undo, this.clear, this.repeat, this.rules);
@@ -136,13 +136,22 @@ export class HouseTableUI {
             if (member) seat.hands.append(node('small', Array.isArray(member.wagers) ?
                 `${owner}${goldText(sum(member.wagers))} ${currency} staked${member.paid ? ` · ${goldText(member.payout)} returned` : ''}` : 'Wager details unavailable'));
         }
-        if (view.phase === 'complete' && this.own?.paid && Array.isArray(this.own.wagers) && this.celebrated !== view.roundId) {
-            this.celebrated = view.roundId;
-            const profit = this.own.payout - sum(this.own.wagers);
-            if (profit > 0) { this.sound('win'); this.celebration.show('YOU WON', `+${goldText(profit)} ${currency}`,
-                `${this.kind === 'roulette' ? `Number ${view.number}` : `${view.baccarat?.winner} wins`}. ${goldText(this.own.payout)} returned.`, null, 5000); }
-        }
+        this.celebrateSavedWin();
         this.refreshControls();
+    }
+
+    celebrateSavedWin() {
+        const view = this.view;
+        if (this.disposed || !view?.available || view.processing || view.phase !== 'complete' || !this.own?.paid ||
+            !Array.isArray(this.own.wagers) || this.celebrated === view.roundId ||
+            view.game === 'roulette' && this.presentation?.landing) return;
+        this.celebrated = view.roundId;
+        const profit = this.own.payout - sum(this.own.wagers);
+        if (profit > 0) {
+            this.sound('win'); this.celebration.show('YOU WON', `+${goldText(profit)} ${this.currency}`,
+                `${this.kind === 'roulette' ? `Number ${view.number}` : `${view.baccarat?.winner} wins`}. ${goldText(this.own.payout)} returned.`, null, 5000);
+            this.controls.scrollTop = 0;
+        }
     }
 
     buildBoard(view) {
@@ -251,6 +260,7 @@ export class HouseTableUI {
         if (this.presentationKind !== view.game) {
             this.presentation?.dispose(); this.display.replaceChildren();
             this.presentation = view.game === 'roulette' ? new RoulettePresentation(this.display) : new BaccaratPresentation(this.display);
+            if (view.game === 'roulette') this.presentation.onResultVisible = () => this.celebrateSavedWin();
             this.presentationKind = view.game;
         }
         this.presentation.update(view, JSON.stringify([view.tableId, view.currency, view.roundId, this.playerID, this.presence?.yourSeat?.sessionId]));

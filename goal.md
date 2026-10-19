@@ -2749,3 +2749,23 @@ Own complete CI and exact deployment acceptance remain required.
 [Qualification](docs/plans/2026-10-19-casino-poker-result-clarity.md).
 The complete game, owner casino assessment and beta gates remain open. Soak/
 stress stays deferred.
+
+
+## October 19 corrected Alpha 1.79.86 preparation
+
+Original CI39253417949 fails six anonymous house cases because the new layout
+hid the dealer label. Client823/12815, Go/race and two browser shards pass;
+419 hosted passes, seven existing exclusions, six failures and 144 unrun cases
+remain recorded. Five dependent jobs skip; that source does not deploy. No
+manual retry/cancellation erases the failure.
+
+The isolated correction restores the dealer in the controls and passes all six
+cases in a 49-case source matrix. Further review reproduces premature roulette
+win feedback in both currencies and shows Baccarat cards under the centered
+banner. Saved roulette wins now follow landing, with skip/reduced motion and
+lifecycle guards; house win messages sit beside visible cards and timers.
+Maximum-stake profit labels stack in narrow controls. Final source49 and unit57
+checks pass; final exact compiled qualification and new own CI/deployment remain
+required. All520 prior raw note strings stay exact in521entries/52lazy pages.
+[Qualification](docs/plans/2026-10-19-casino-poker-result-clarity.md).
+The full game and owner/beta gates remain open; no soak/stress is resumed.
