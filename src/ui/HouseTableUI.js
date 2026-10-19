@@ -29,6 +29,7 @@ export class HouseTableUI {
         for (const [label, factor] of [['½', .5], ['2×', 2]]) this.adjustments.append(this.button(label, () => {
             const step = Number(this.stake.step), minimum = Number(this.stake.min);
             this.stake.value = String(Math.max(minimum, Math.min(Number(this.stake.max), Math.floor(Number(this.stake.value) * factor / step) * step)));
+            this.refreshControls();
         }));
         this.chips = node('div', '', 'casino-chip-rack'); this.chips.setAttribute('aria-label', 'Choose chip value');
         const builderLabel = node('label', 'Build multiple bets ');

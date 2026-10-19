@@ -146,7 +146,7 @@ export class PokerTableUI {
 
     name(id) { return this.presence?.occupants?.find(p => p.playerId === id)?.name || this.view?.players?.find(p => p.playerId === id)?.name || 'Player'; }
     setDisabled(disabled) {
-        for (const control of this.root.querySelectorAll('button, input, select')) control.disabled = disabled;
+        for (const control of this.root.querySelectorAll('button:not(.casino-info-trigger), input, select')) control.disabled = disabled;
         for (const control of this.lobby.querySelectorAll('button, input')) control.disabled = disabled || this.view?.phase !== 'betting' || Boolean(this.view?.players?.some(p => p.playerId === this.playerID));
     }
     canAct() { return Boolean(this.view?.available && !this.view.processing && !this.pending && !this.table.expired); }

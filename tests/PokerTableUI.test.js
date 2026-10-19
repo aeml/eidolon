@@ -9,6 +9,16 @@ const playing = () => ({ ...lobby(), phase: 'playing', players: [{ playerId: 'A'
         { playerId: 'B', seat: 1, stack: 180, streetBet: 20, committed: 20, cards: [-1, -1] }]
 } });
 
+test('poker rules remain available while funded controls wait for synchronization', () => {
+    const ui = new PokerTableUI(jest.fn()); document.body.append(ui.root);
+    try {
+        ui.update({ ...lobby(), available:false }, 'A');
+        expect(ui.buy.disabled).toBe(true); expect(ui.rulesDialog.button.disabled).toBe(false);
+        ui.rulesDialog.button.click(); expect(ui.rulesDialog.root.open).toBe(true);
+        ui.update(null); expect(ui.rulesDialog.root.open).toBe(false);
+    } finally { ui.dispose(); }
+});
+
 test('a delayed lower revision cannot restore an earlier poker turn', () => {
     const send = jest.fn(), ui = new PokerTableUI(send);
     const newer = playing(); newer.round.revision = 2; newer.round.turnPlayerId = 'B'; newer.round.actions = [];
@@ -91,7 +101,9 @@ test('poker renders only provided cards, escapes names and preserves focus on un
     expect(ui.root.querySelector('img')).toBeNull(); expect(ui.root.textContent).toContain('<img src=x>');
     expect(ui.root.querySelectorAll('[aria-label="Hidden card"]')).toHaveLength(4);
     const input = ui.raise; input.focus(); input.value = '65'; ui.update(view, 'A'); expect(ui.raise).toBe(input); expect(document.activeElement).toBe(input); expect(input.value).toBe('65');
-    ui.update({ ...view, processing: true }, 'A'); expect([...ui.root.querySelectorAll('button')].every(b => b.disabled)).toBe(true);
+    ui.update({ ...view, processing: true }, 'A');
+    expect([...ui.root.querySelectorAll('button:not(.casino-info-trigger)')].every(b => b.disabled)).toBe(true);
+    expect(ui.rulesDialog.button.disabled).toBe(false);
     ui.update(view, 'A'); ui.choose('all_in'); ui.update(null, 'A'); expect(ui.root.hidden).toBe(true); expect(ui.pending).toBe(false); ui.dispose();
 });
 
