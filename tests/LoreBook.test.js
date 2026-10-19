@@ -53,6 +53,33 @@ describe('journal lore reading', () => {
     });
     afterEach(() => { ui.dispose(); document.body.replaceChildren(); });
 
+    test('Space releases exactly one reader action across progress, including repeated keydown', () => {
+        const button = ui.loreBook.overview.querySelector('[data-lore-action="current"]');
+        button.focus();
+        const down = new KeyboardEvent('keydown', { key: ' ', bubbles: true, cancelable: true });
+        button.dispatchEvent(down); expect(down.defaultPrevented).toBe(true);
+        button.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', repeat: true, bubbles: true, cancelable: true }));
+        player.quests[1].count++; ui.updateJournal(player.quests);
+        expect(ui.journalView).toBe('lore');
+        const navigate = jest.spyOn(ui, 'setJournalView');
+        button.dispatchEvent(new KeyboardEvent('keyup', { key: ' ', bubbles: true, cancelable: true }));
+        expect(ui.journalView).toBe('story'); expect(navigate).toHaveBeenCalledTimes(1);
+        button.dispatchEvent(new KeyboardEvent('keyup', { key: ' ', bubbles: true, cancelable: true }));
+        expect(navigate).toHaveBeenCalledTimes(1);
+    });
+
+    test('blur and a changed reader cancel held Space without navigating or spending', () => {
+        const button = ui.loreBook.overview.querySelector('[data-lore-action="current"]');
+        const press = () => { button.focus(); button.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true, cancelable: true })); };
+        press(); ui.loreBook.search.focus(); button.focus();
+        button.dispatchEvent(new KeyboardEvent('keyup', { key: ' ', bubbles: true, cancelable: true }));
+        expect(ui.journalView).toBe('lore');
+        press(); ui.loreBook.update(player.quests, 'different-reader');
+        button.dispatchEvent(new KeyboardEvent('keyup', { key: ' ', bubbles: true, cancelable: true }));
+        expect(ui.journalView).toBe('lore');
+        expect(ui.onCompleteQuest).not.toHaveBeenCalled(); expect(ui.onAcceptQuest).not.toHaveBeenCalled();
+    });
+
     test('lore progress keeps the book and current actions continuously attached', () => {
         const book = ui.loreBook;
         const current = book.overview.querySelector('[data-lore-action="current"]');

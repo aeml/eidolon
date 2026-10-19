@@ -146,15 +146,37 @@ export class LoreBook {
         this.element.append(heading, this.overview, tools, library);
         ownedEvent(this, this.search, 'input', () => { this.readingReturn = null; this.renderLibrary(); });
         ownedEvent(this, this.element, 'keydown', event => {
+            // Own Space activation for reader buttons. Mobile Chromium can
+            // cancel its pending native click when quest progress reflows the
+            // scrollable reader between keydown and keyup, even when the same
+            // connected button keeps focus. Enter and pointer activation keep
+            // their native behavior; a repeat, blur or reader change cannot
+            // activate a second or retired action.
+            const button = event.target.closest?.('button');
+            if (event.key === ' ' && button && this.element.contains(button)) {
+                event.preventDefault();
+                if (!event.repeat) this.spacePress = { button, epoch: this.readerEpoch };
+            }
             if (event.key !== 'Escape' && (event.target === this.search ||
                 [' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End'].includes(event.key))) event.stopPropagation();
         });
+        ownedEvent(this, this.element, 'keyup', event => {
+            if (event.key !== ' ') return;
+            const press = this.spacePress; this.spacePress = null;
+            if (!press) return;
+            event.preventDefault(); event.stopPropagation();
+            if (!this.disposed && !this.ui.disposed && press.epoch === this.readerEpoch &&
+                press.button === event.target && document.activeElement === press.button &&
+                press.button.isConnected && this.element.contains(press.button) && !press.button.disabled) press.button.click();
+        });
+        ownedEvent(this, this.element, 'focusout', () => { this.spacePress = null; });
     }
 
     update(quests, identity) {
         if (this.disposed) return;
         const sameReader = identity === this.identity && Boolean(this.model);
         if (!sameReader) {
+            this.spacePress = null;
             this.readerEpoch = (this.readerEpoch || 0) + 1;
             for (const section of [this.overview, this.index, this.article]) {
                 retireLoreActions(section); section.replaceChildren();
@@ -302,6 +324,7 @@ export class LoreBook {
     dispose() {
         if (this.disposed) return;
         this.disposed = true; this.readerEpoch = (this.readerEpoch || 0) + 1;
+        this.spacePress = null;
         retireLoreActions(this.element); disposeOwnedEvents(this); this.element.remove();
     }
 }
