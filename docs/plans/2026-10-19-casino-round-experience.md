@@ -149,3 +149,12 @@ The roulette board now groups dozens, outside choices and columns, with familiar
 1–18/19–36 and1st/2nd/3rd12labels. Red/black outside spots retain distinct colours.
 All choices still use the supplied server catalog identities. House/round
 qualification passes28checks/two suites with lint after that display-only change.
+
+
+Outside world clicks now dismiss a seated game through the existing leave
+request, preserving its seat token and blocking movement until the server's
+release arrives. Confirmed wagers still settle normally. The controller/play
+integration group passes62checks/two suites with lint. Phone and landscape
+windows retain the92%size as well, leaving actual room to drag rather than
+clamping a full-viewport window to a single immovable position. The pending
+20-case browser review now requires vertical drag at compact sizes too.

@@ -310,7 +310,14 @@ export class CasinoController {
 
     handlePrimaryClick(event) {
         if (this.disposed || this.engine.isDestroyed) return false;
-        if (this.active || this.dialogue.open) return true;
+        if (this.active) {
+            // World clicks dismiss the table through its ordinary server-owned
+            // leave path. Movement stays blocked until the seat is released.
+            if (event?.button === 0 && Number.isFinite(event.clientX) && !this.panel.contains(event.target)
+                && !document.querySelector('.casino-info-dialog[open]')) this.requestLeave();
+            return true;
+        }
+        if (this.dialogue.open) return true;
         if (!event || event.button > 0 || !Number.isFinite(event.clientX)) return false;
         const engine = this.engine;
         const rect = engine.renderSystem.renderer.domElement.getBoundingClientRect();

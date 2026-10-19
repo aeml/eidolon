@@ -11,6 +11,19 @@ const table = { id: 'public-blackjack', name: 'Lanternhold Blackjack', game: 'bl
     seats: [{ x: -4.3, z: 173.2, rotation: Math.PI, exitX: -4.3, exitZ: 174.4 }], minimumPlayers: 1 };
 const seat = { tableId: table.id, seat: 0, sessionId: 'private-token', exitX: -4.3, exitZ: 174.4, ready: false };
 
+test('a world click dismisses a seated window through the saved leave path without releasing movement early', () => {
+    const { engine, controller } = setup();
+    try {
+        controller.updateState({tables:[table],yourSeat:seat});
+        controller.handlePrimaryClick({button:0,clientX:10,target:controller.heading});
+        expect(engine.network.send).not.toHaveBeenCalled();
+        expect(controller.handlePrimaryClick({button:0,clientX:1,target:document.createElement('canvas')})).toBe(true);
+        expect(engine.network.send).toHaveBeenCalledWith('casino',{sessionId:seat.sessionId,action:'leave'});
+        expect(controller.active).toBe(true); expect(controller.panel.hidden).toBe(false);
+        controller.updateState({tables:[table],yourSeat:null}); expect(controller.active).toBe(false);
+    } finally {controller.dispose();}
+});
+
 test('ordinary world frames never recursively search for the absent casino interior', () => {
     const { engine, controller } = setup();
     engine.currentInstanceId = '';

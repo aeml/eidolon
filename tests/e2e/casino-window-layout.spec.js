@@ -80,6 +80,10 @@ for (const [width, height] of [[320,740],[390,844],[844,390],[1440,900]]) for (c
             const after=await panel.boundingBox(); expect(after.x).toBeGreaterThan(before.x+20);
             await page.evaluate(()=>{const f=window.__controllerReview;f.c.updateState({...f.payload,yourSeat:null});f.c.updateState(f.payload);});
             expect((await panel.boundingBox()).x).toBeCloseTo(after.x,0);
+        } else {
+            const before=await panel.boundingBox(), h=await panel.locator('.casino-session-header h2').boundingBox();
+            await page.mouse.move(h.x+4,h.y+8);await page.mouse.down();await page.mouse.move(h.x+4,h.y+22,{steps:5});await page.mouse.up();
+            expect((await panel.boundingBox()).y).toBeGreaterThan(before.y+5);
         }
         if (game==='slots') {
             await panel.getByRole('button',{name:'Auto',exact:true}).click();

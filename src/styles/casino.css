@@ -472,7 +472,7 @@ body .casino-session:is(.has-slots, .has-blackjack, .has-poker, .has-house):not(
     .casino-session .roulette-outside-board .wide-bet { grid-column: auto; }
 }
 @media (max-width: 700px) and (min-height: 501px) {
-    body .casino-session:is(.has-slots, .has-blackjack, .has-poker, .has-house):not([hidden]) { width: calc(100vw - 16px); height: calc(100dvh - 16px); padding: 8px; left: 8px; top: 8px; }
+    body .casino-session:is(.has-slots, .has-blackjack, .has-poker, .has-house):not([hidden]) { width: 92vw; height: 92dvh; padding: 8px; left: 4vw; top: 4dvh; }
     .casino-session .casino-session-header { gap: 6px; }
     .casino-session .casino-session-header h2 { font-size: 18px; }
     .casino-session .casino-session-header button { padding-inline: 8px; font-size: 12px; }
@@ -485,7 +485,7 @@ body .casino-session:is(.has-slots, .has-blackjack, .has-poker, .has-house):not(
     .casino-info-header { padding: 10px 12px; }
 }
 @media (max-height: 500px) {
-    body .casino-session:is(.has-slots, .has-blackjack, .has-poker, .has-house):not([hidden]) { width: calc(100vw - 16px); height: calc(100dvh - 16px); padding: 6px; left: 8px; top: 8px; }
+    body .casino-session:is(.has-slots, .has-blackjack, .has-poker, .has-house):not([hidden]) { width: 92vw; height: 92dvh; padding: 6px; left: 4vw; top: 4dvh; }
     .casino-session .casino-session-header { min-height: 40px; margin-bottom: 4px; padding-bottom: 4px; }
     .casino-session .casino-session-header h2 { font-size: 18px; }
     .casino-session .casino-session-header button { min-height: 36px; padding: 4px 8px; }
