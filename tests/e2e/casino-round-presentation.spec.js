@@ -1,7 +1,52 @@
 import { expect, test } from '@playwright/test';
+import { prepareCasinoReview } from './casinoPreparedController.js';
 
 // Presentation and public-projection fixtures; durable outcomes/settlement are
 // covered by the Go tests against disposable Mongo, never earned by this setup.
+for (const [width,height,textScale] of [[320,740,125],[390,844,125],[844,390,125],[1440,900,100]]) for (const currency of ['gold','ep']) {
+    test(`poker separates side-pot returns from net results at ${width}px (${currency}, ${textScale}%)`, async ({ page }, testInfo) => {
+        const failures = []; page.on('pageerror', error => failures.push(error.message));
+        await page.setViewportSize({ width, height });
+        await page.route('**/src/main.js', r => r.fulfill({ contentType: 'text/javascript', body: '' }));
+        await page.route('**/src/analytics/game.js', r => r.fulfill({ contentType: 'text/javascript', body: '' }));
+        await page.goto('/', { waitUntil: 'networkidle' });
+        await page.evaluate(prepareCasinoReview, { game:'poker', phone:width < 1000, textScale });
+        const summary = page.locator('.poker-game .card-table-controls > p[role="status"]');
+        for (const multiple of [1,2,3]) {
+            const outcome = await page.evaluate(({currency,multiple}) => {
+                const f = window.__controllerReview, { c, payload } = f;
+                const unit = currency === 'ep' ? 2 : 100, buyIn = unit * 2, payout = unit * multiple;
+                const shortContribution = buyIn - payout / 2, tableId = `${currency === 'ep' ? 'vip' : 'public'}-poker`;
+                payload.tables[0] = { ...payload.tables[0], id:tableId, currency, floor:currency === 'ep' ? 'vip' : 'public' };
+                payload.floor = payload.tables[0].floor; payload.yourSeat.tableId = tableId;
+                payload.occupants.forEach(p => { p.tableId = tableId; });
+                const members = payload.occupants.slice(0,3).map(p => ({ ...p, buyIn }));
+                payload.poker = { ...payload.poker, tableId, currency, tableVersion:String(multiple), phase:'complete',
+                    roundId:`side-${currency}-${multiple}`, players:members, balance:1000, minBuyIn:unit, buyInStep:unit,
+                    serverNow:new Date().toISOString(), nextRoundAt:new Date(Date.now()+30000).toISOString(),
+                    round:{ phase:'complete', revision:10, street:'river', board:[4,17,30,8,9], buttonSeat:0, actions:[], showdown:true,
+                        pots:[{amount:shortContribution*3,winners:['guest-2']},{amount:payout,winners:['hero']}],
+                        players:members.map((p,i) => ({ ...p, cards:i === 0 ? [13,14] : i === 1 ? [-1,-1] : [15,16],
+                            stack:i === 2 ? payout/2 : 0, committed:i === 2 ? shortContribution : buyIn,
+                            payout:i === 0 ? payout : i === 1 ? 0 : shortContribution*3+payout/2 })) } };
+                f.sounds = []; c.poker.sound = cue => f.sounds.push(cue); c.updateState(payload);
+                return { payout, buyIn, unit, currency:currency === 'ep' ? 'EP' : 'Gold' };
+            }, {currency,multiple});
+            await summary.scrollIntoViewIfNeeded();
+            await expect(summary).toBeInViewport({ratio:1});
+            await expect(summary).toContainText(`${outcome.payout} ${outcome.currency} returned from your ${outcome.buyIn} ${outcome.currency} buy-in`);
+            await expect(summary).toContainText(multiple === 1 ? `Net loss: ${outcome.unit}` : multiple === 2 ? 'No net profit or loss' : `Net profit: +${outcome.unit}`);
+            expect(await page.locator('.casino-session').evaluate(n => n.scrollWidth - n.clientWidth)).toBeLessThanOrEqual(1);
+            expect(await page.evaluate(() => window.__controllerReview.c.poker.celebration.active)).toBe(multiple === 3);
+            expect(await page.evaluate(() => window.__controllerReview.sounds.includes('win'))).toBe(multiple === 3);
+            await page.screenshot({path:testInfo.outputPath(`poker-${currency}-return-${multiple}-${width}.png`)});
+        }
+        expect(await page.evaluate(() => window.__controllerReview.sent)).toEqual([]);
+        await page.evaluate(() => { const f=window.__controllerReview; f.c.dispose(); f.ui?.dispose(); });
+        expect(failures).toEqual([]);
+    });
+}
+
 for (const [width,textScale] of [[390,100],[844,100],[1440,100],[390,125],[844,125]]) test(`roulette ball launch, close-up and exact landing at ${width}px (${textScale}%)`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: width === 844 ? 390 : 900 });
     await page.route('**/src/main.js', r => r.fulfill({ contentType: 'text/javascript', body: '' }));

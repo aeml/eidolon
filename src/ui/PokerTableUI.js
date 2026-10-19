@@ -86,6 +86,9 @@ export class PokerTableUI {
         const funded = view.players?.find(p => p.playerId === playerID);
         this.lobby.hidden = view.phase !== 'betting';
         const round = view.round;
+        const own = round?.players?.find(p => p.playerId === playerID);
+        const net = own && Number.isSafeInteger(own.payout) && own.payout >= 0 &&
+            Number.isSafeInteger(funded?.buyIn) && funded.buyIn > 0 ? own.payout - funded.buyIn : null;
         this.felt.hidden = false;
         const count = view.players?.length || 0;
         const waiting = count < 2 ? `Waiting for another real player · ${count}/2 minimum.` : 'Funded players are joining; waiting for the server to deal.';
@@ -94,6 +97,10 @@ export class PokerTableUI {
             : view.phase === 'complete' ? `Hand complete · ${goldText(this.balance)} ${this.currency} available. All cash-outs saved.`
                 : view.phase === 'settling' ? 'Hand complete · saving each player’s unspent stake and winnings…'
                     : `${round?.street || 'Dealing'} · ${goldText(this.balance)} ${this.currency} in your bag. ${round?.turnPlayerId === playerID ? 'Your turn.' : `${this.name(round?.turnPlayerId)} to act.`}`;
+        if (view.phase === 'complete' && !view.processing && net !== null) {
+            const result = net > 0 ? `Net profit: +${goldText(net)} ${this.currency}` : net < 0 ? `Net loss: ${goldText(-net)} ${this.currency}` : 'No net profit or loss';
+            this.summary.textContent += ` ${goldText(own.payout)} ${this.currency} returned from your ${goldText(funded.buyIn)} ${this.currency} buy-in. ${result}.`;
+        }
         if (changed) {
             this.board.replaceChildren(); this.pots.replaceChildren();
             if (controlsChanged) this.actions.replaceChildren();
@@ -133,11 +140,9 @@ export class PokerTableUI {
         this.setDisabled(Boolean(view.processing || this.pending || this.table.expired));
         if (view.available && !view.processing && view.phase === 'complete' && this.celebrationRound !== view.roundId) {
             this.celebrationRound = view.roundId;
-            const own = round?.players.find(p => p.playerId === playerID);
             const won = round?.pots.some(p => !p.uncalled && p.winners?.includes(playerID));
-            if (own && won) {
+            if (own && won && net > 0) {
                 this.sound('win');
-                const net = own.payout - (funded?.buyIn || 0);
                 this.celebration.show('YOU WON', `${goldText(own.payout)} ${this.currency} returned`,
                     `${round.showdown === false ? 'Everyone else folded' : own.bestHand || own.hand || 'Winning hand'}. Net ${net >= 0 ? '+' : '−'}${goldText(Math.abs(net))} ${this.currency} after your buy-in.`, null, 5000);
             }
