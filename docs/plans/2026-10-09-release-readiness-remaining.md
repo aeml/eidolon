@@ -56,9 +56,13 @@ retained. Current d2e9 includes the further explicit key-continuity correction;
 its own complete passing run and public verification, rather than a waiver or
 unchanged-source rerun, establish this scoped delivery acceptance.
 
-Casino presentation and large movable windows are isolated in a prepared84
-candidate; their new phone/desktop browser review is running. The height-changing
-jump-camera correction remains isolated pending native review. Neither candidate
+The prepared84candidate now combines locally qualified casino presentation,
+large movable windows and the height-changing jump-camera correction. Casino
+checks pass283cases/16suites, camera checks99/three suites and version/history/
+affected workflow policy455/seven suites. The45-case source UI matrix and24-case
+copied-publication matrix pass without retries, flakes or skips; two native
+High/Low camera cases pass after reproducing the old mismatch. Its own CI,
+deployment and public verification are still required. None of this candidate
 is included in accepted83. The original town-soil experiment remains unselected.
 No final art, whole-world performance, earned human campaign, listening, physical
 device, rights/operational owner, F1–F5, beta or1.99gate is closed. Soak/stress

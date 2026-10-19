@@ -2,8 +2,8 @@
 
 This isolated candidate prepares Alpha1.79.84. Accepted83at d2e957a2d has its
 own complete CI, both deployments, live checks and exact public verification.
-The casino candidate still needs selection, copied-publication review and its
-own CI/deployment/public verification. It does not complete the whole game or
+The assembled candidate has passed local and copied-publication review. Its
+own CI/deployment/public verification is still required. It does not complete the whole game or
 declare the owner's casino-quality target accepted.
 
 All five game windows occupy92%of the viewport. Top bars support pointer drag,
@@ -101,4 +101,10 @@ a visible jump arc and no update/render target displacement. It records60samples
 per direction. This is a prepared rendered presentation check, not earned route,
 wall-clock jump timing, physical-phone or performance acceptance. Both failing
 baseline cases and the original isolated CPU failures remain retained.
-Copied-publication review and the complete assembled release gates are next.
+The copied publication at source01f5e0fbd passes24additional browser cases with
+zero retries, flakes or skips:20actual copied window cases, two compiled casino
+controller cases and two native compiled High/Low camera cases. The assembled
+bundle contains530modules; its geometry worker and precomputed indices retain
+the accepted bytes. Version/history and affected workflow-policy checks pass
+455cases/seven suites; the519-entry notes retain all518prior entries exactly.
+The complete own CI, deployment and public artifact verification remain next.
