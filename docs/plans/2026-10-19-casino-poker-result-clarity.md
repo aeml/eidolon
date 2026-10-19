@@ -205,3 +205,13 @@ best-effort cancel(), keeping the1500ms per-attempt and30s owner limits and all
 content/index checks. New exact copied-source qualification, complete own CI,
 both deployed identities and exact public proof remain required. No game input,
 melee/camera rules, server settlement, schema/protocol, models or odds change.
+
+The exact copied source `9d34764040b8f690a9ae2a58e564c4249672aaab` passes all 18 current engine
+checks in 1.3 minutes, with hardware AMD RADV RENOIR reported in every case.
+Its 530-module engine is 4,968,872 bytes. The rebuilt worker is
+`835578df97d6ade3683f781b95caf5aa4fd9b71d047fa5353f7a83798ce0d04a` (179,747 bytes);
+precomputed data and analytics remain unchanged. All 455 release/history/
+workflow checks pass, and all 520 prior raw note strings remain identical in
+521 entries and 52 lazy pages. Both public identities of the unaccepted 5c
+source match over normal TLS with the database ready. The qualified correction
+now requires its own original CI and exact public verification.
