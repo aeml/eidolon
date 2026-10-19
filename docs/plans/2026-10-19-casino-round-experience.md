@@ -68,6 +68,11 @@ for the unchanged server history/reveal implementation;84changes its version
 default, not its money logic. Tests also reject transfer-forged history and
 check privacy, bounded decoding and changed-only audience notifications.
 
+The later original84CI found an EP socket fixture failure after the VIP walk.
+The earlier local pass does not waive that counterexample. See the
+[socket reader correction](2026-10-19-casino-socket-reader-correction.md) for the
+retained failure, reproduction and required new qualification/deployment.
+
 Retained failures include an initial browser-launch override, phone/landscape
 hand/clock overlaps, two later320px six-player hand clips, and an early socket
 fixture whose compiled health identity did not match its filename. Product

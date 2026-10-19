@@ -16,8 +16,10 @@ import (
 
 	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
+	statepb "eidolon-server/internal/proto"
 	"github.com/gorilla/websocket"
 	"go.mongodb.org/mongo-driver/mongo"
+	"google.golang.org/protobuf/proto"
 )
 
 type houseSocketPresence struct {
@@ -68,9 +70,48 @@ func readHouseSocket(t *testing.T, conn *websocket.Conn, match func(houseSocketP
 	return houseSocketPresence{}
 }
 
+// Consume real movement acknowledgements rather than leaving the raw fixture
+// sockets unread throughout the walk. ReadMessage also services ping/pong.
+func readHouseMovementAcknowledgement(t *testing.T, conn *websocket.Conn, playerID string, sequence uint64) {
+	t.Helper()
+	conn.SetReadDeadline(time.Now().Add(10 * time.Second))
+	for {
+		kind, data, err := conn.ReadMessage()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if kind == websocket.TextMessage {
+			var message Message
+			if json.Unmarshal(data, &message) != nil {
+				t.Fatal("bad VIP approach response")
+			}
+			if message.Type == MsgError {
+				t.Fatalf("VIP approach rejected: %s", message.Payload)
+			}
+			continue
+		}
+		if kind != websocket.BinaryMessage || len(data) < 5 || string(data[:4]) != "EDPB" {
+			t.Fatal("unexpected VIP movement state encoding")
+		}
+		var envelope statepb.StateEnvelope
+		if err := proto.Unmarshal(data[5:], &envelope); err != nil {
+			t.Fatal(err)
+		}
+		entities := envelope.GetFull().GetEntities()
+		if envelope.GetDelta() != nil {
+			entities = envelope.GetDelta().GetEntities()
+		}
+		for _, entity := range entities {
+			if entity.Id == playerID && entity.MoveSequence == sequence {
+				return
+			}
+		}
+	}
+}
+
 // Two real guests take the guard and walk the central aisle together. This is
 // ordinary authorized movement, not a client-height teleport or floor bypass.
-func approachHouseVIPSeats(t *testing.T, conns []*websocket.Conn, table game.CasinoTable) {
+func approachHouseVIPSeats(t *testing.T, conns []*websocket.Conn, table game.CasinoTable, names []string) {
 	t.Helper()
 	contexts := make([]string, len(conns))
 	for i, conn := range conns {
@@ -114,6 +155,9 @@ func approachHouseVIPSeats(t *testing.T, conns []*websocket.Conn, table game.Cas
 			for i, conn := range conns {
 				resourceSend(t, conn, MsgMove, MovePayload{MovementContext: contexts[i], Sequence: sequence, State: "RUNNING", Y: 8,
 					X: positions[i][0] + (targets[i][0]-positions[i][0])*fraction, Z: positions[i][1] + (targets[i][1]-positions[i][1])*fraction})
+			}
+			for i, conn := range conns {
+				readHouseMovementAcknowledgement(t, conn, "player-"+names[i], sequence)
 			}
 		}
 		positions = targets
@@ -186,13 +230,18 @@ func TestHouseActualSocketsSharedRoundAndReconnect(t *testing.T) {
 			journal := t.TempDir()
 			address, stop := compatStartServer(t, binary, uri, 701, "-save-journal-dir", journal)
 			defer stop()
+			defer func() {
+				if t.Failed() {
+					logHouseFixtureTransportCounters(t, address)
+				}
+			}()
 			conns := make([]*websocket.Conn, 2)
 			tokens := make([]string, 2)
 			for i, name := range names {
 				conns[i], _ = resourceLoginCharacter(t, address, name, name+"-local-only", "Fighter")
 			}
 			if tc.currency == "ep" {
-				approachHouseVIPSeats(t, conns, table)
+				approachHouseVIPSeats(t, conns, table, names)
 			}
 			for i, conn := range conns {
 				resourceSend(t, conn, MsgCasino, map[string]any{"action": "sit", "tableId": id, "seat": i})
