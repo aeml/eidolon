@@ -1,0 +1,61 @@
+# Specialization guidance and live window reflow
+
+Implementation source: `089abc50a92d0966242aabb1f8cb593f1bed3a19`, based on
+prepared Alpha1.79.83 source `470d9d92f916e52aa8c3de9379b3f273e10a6057`.
+This correction is locally qualified; its own complete CI and deployment
+acceptance are still required. Alpha1.79.82 remains the latest accepted release.
+
+The HUD refresh signature previously omitted level and specialization. With
+unchanged health/mana, reaching level10 could miss the reminder, or selecting a
+branch could leave it visible. The signature now includes player identity,
+level and the server-confirmed branch. Guidance stays while a request is pending,
+disappears after confirmation and stays absent for a returning specialized
+character. Server eligibility, build selection and respec rules are unchanged.
+
+Original CI39174889800 completed with one failed hosted-browser shard: the
+390px Lore Book Space press failed in both configured attempts. The client
+passed821suites/12781checks; server and the other two browser shards passed.
+Predeploy native, QA-input validation, both deployments and live QA were skipped.
+This failed run is retained and is not retried unchanged or counted as accepted.
+
+An isolated copy reproduces the phone failure in CI's Chromium149.0.7827.55.
+The action remains connected and focused through keydown/update/keyup, but no
+native click follows. Vanilla keyboard controls work in desktop and phone
+contexts; suppressing redundant focus does not resolve the game fixture.
+Additional layout-observation controls alter the outcome and are diagnostic
+only, not qualification or a timing-based fix.
+
+Window reflow was temporarily switching visible panels from their final pixel
+position to percentage centering with a translation, then clamping them back.
+Visible panels now compute their final centered position directly. Layout writes
+are idempotent; unchanged reflow does not rewrite their styles. Hidden defaults,
+dragged/saved coordinates, companion layouts and viewport clamping are retained.
+The original uninstrumented phone test now passes in the exact CI browser.
+
+Focused validation covers48HUD/specialization checks across three suites and
+19window/viewport/storage checks across three suites. The original level-only
+HUD regression and redundant-layout-write regression fail before their fixes.
+An initial HUD fixture omitted the class required to render branch controls;
+that setup failure is retained and corrected without changing product rules.
+
+Browser evidence includes nine uninstrumented CI-Chromium cases covering all
+six Lore Book cases and three remembered-window/reload/phone-reset cases, with
+zero retries, flakes or skips. Two System Chrome153 held-input cases also pass.
+The specialization/reward/conversation file passes all six CI-Chromium cases;
+its first two now exercise the actual GameEngine render throttle rather than
+calling the HUD update directly. These tests use prepared personal UI data and
+renderer/service stubs, not earned gameplay, a live server or physical phones.
+
+Private evidence lives in the owned specialization worktree's
+`.qa-specialization/`. Original CI logs, anonymous failure images and recordings
+remain private under the owned master's `.qa-release83/`; they are not sanitized
+recordings or a new successful release. Original73-case gameplay/UI and credits
+receipts keep their exact source labels; no timed gameplay route is replayed and
+no frame/clock limit is relaxed for this correction.
+
+The same prepared1.79.83 version retains518cumulative notes and every517prior
+entry. Camera shake across height-changing jumps and the casino-wide interface/
+play-flow pass, including sequential baccarat cards, scores and recent results,
+are newly recorded owner requirements and remain unfinished. The isolated town
+soil prototype is not selected. Full original world/art/gameplay/performance/
+operations/owner/F1–F5/beta/1.99scope remains open. Soak/stress remains deferred.

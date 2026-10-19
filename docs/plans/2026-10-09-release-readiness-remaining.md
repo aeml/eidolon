@@ -22,7 +22,7 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
-## Current delivery: accepted Alpha1.79.82; selected83 locally qualified
+## Current delivery: accepted Alpha1.79.82; corrected83 locally qualified
 
 Alpha1.79.82source2a19has all ten own CI jobs, both deployments, live checks,
 matching normal-TLS identities and exact public-file verification.
@@ -37,8 +37,14 @@ six original gameplay/save cases,63UI cases and four corrected party cases.
 The missing private fixture, recording-policy rejection and pre-browser cwd
 setup failure remain recorded. No timed gameplay route was replayed or original
 limit relaxed. Entry/input CPU365/20suites and credits/publisher/routing53/four
-suites pass, alongside two native credits layouts. Final coherent-source
-validation, merge/push, own full CI/deploy/live/public acceptance remain due.
+suites pass, alongside two native credits layouts. Source470d was merged and
+pushed, but its CI39174889800 failed the phone Lore Book held-Space case in both
+configured attempts. Client821suites/12781checks, server and two hosted browser
+shards passed; predeploy native, both deployments and live checks were skipped.
+Corrected source089abc50 fixes that live-window reflow and the owner's
+specialization-reminder refresh. Scoped CPU and exact CI-browser checks pass;
+the corrected source still requires its own complete CI/deploy/live/public
+acceptance. [Correction](2026-10-19-specialization-and-window-reflow-correction.md).
 [Qualification](2026-10-18-release1-79-83-qualification.md).
 
 No final art, whole-world performance, earned human campaign, listening,
