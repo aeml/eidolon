@@ -1,5 +1,12 @@
 # Casino table layout and result clarity
 
+Accepted at `4bfafdd62b81db2dd0037b33bf6947da8e811351` after original CI39301167062, both deployments, live QA and
+exact own-artifact public verification. [Acceptance](2026-10-19-release1-79-86-acceptance.md). The following
+records historical implementation, failures and qualification; pending labels
+describe those earlier checkpoints.
+
+## Historical preparation and qualification
+
 Alpha 1.79.86 extends accepted85 at `6d35618229979e24fa9808e242e8200421b71cfa`.
 The corrected UI deployed at `4beea1f26d1ae9fab846b6eddaf43fa9ebec0e46`,
 but its release is not accepted. Original source `ddbd001ca` failed

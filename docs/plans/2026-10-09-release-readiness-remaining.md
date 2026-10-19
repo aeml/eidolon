@@ -22,32 +22,26 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
-## Deployed UI with correction pending: Alpha 1.79.86
+## Current delivery: accepted Alpha 1.79.86
 
-The corrected candidate retains dealer visibility, separates six house seats,
-Baccarat cards/status and timers, enlarges roulette spins, and celebrates its
-saved win after the ball lands. House win messages preserve card visibility
-and fit maximum-stake returns. Poker net results, earlier wager attribution
-and popup drag closure are corrected. Final source qualification passes 49
-browser cases and 57 unit checks; all 520 prior raw notes remain exact in 521
-entries. Original86 CI retains six genuine hidden-dealer failures and did not
-deploy. All 18 exact-commit copied-engine and 455 release/history/workflow
-checks pass too. New complete own CI and exact public verification remain
-required.
-[Qualification](2026-10-19-casino-poker-result-clarity.md).
-The corrected UI deploys at4beea1f26, but CI39260318063 retains one privacy
-fixture flake and an unrecovered1500ms geometry-data timeout in live QA. Both
-receive bounded transport corrections, with eight focused browser and52 unit
-checks passing. New copied publication/CI/public proof remain required. No
-failure is waived; accepted85 remains the baseline.
-Later source5c passes client823/12829, hosted564/14 and native184/2, but Live QA
-finds a coarse7.762-unit projection below its unchanged8-unit minimum. The new
-minimum-aware planner and stream-cleanup correction pass80 units/four suites
-and5 browser cases without retries/failures/flakes/exclusions. New own CI and
-exact copied/public proof remain required.
-No full owner casino assessment or another readiness gate closes here.
+Source `4bfafdd62b81db2dd0037b33bf6947da8e811351` passes original [CI39301167062](https://github.com/aeml/eidolon/actions/runs/39301167062), both deployments and live
+checks: 823 client suites / 12,833 checks, 566 hosted, 184 native and 11 live
+passes, with 14/2/1 existing exclusions and zero failed/flaky browser outcomes.
+Exact normal-TLS public identities and 442 files match its own
+artifact; 110 unchanged GLBs retain accepted85 proof after byte
+comparison. All 520 prior raw notes remain identical in 521 entries / 52 pages.
+[Acceptance](2026-10-19-release1-79-86-acceptance.md).
 
-## Current delivery: accepted Alpha 1.79.85
+This corrects house layout/card/timer visibility, roulette landing feedback,
+poker net results, earlier wager ownership and popup closure during a drag.
+Large movable windows retain their size and remembered placement. One transient
+geometry recovery preserves 1500ms per attempt, the 30s owner and integrity
+checks, including failed reads. QA jump planning retains its eight-unit minimum
+and strict real-input/landing checks. All original/intermediate86 failures are
+retained. Art review for the whole game, world performance, human campaign/
+device/audio, operations/rights, F1–F5 and beta remain open. No soak/stress.
+
+## Previous accepted delivery: Alpha 1.79.85
 
 Source 6d35618229979e24fa9808e242e8200421b71cfa passes its original ten-job
 [CI39238762515](https://github.com/aeml/eidolon/actions/runs/39238762515), both
@@ -62,8 +56,8 @@ This delivers saved phone text sizing, keyboard-contained editors, stable normal
 placement and six-hand blackjack readability, plus a reproduced pending-player
 identity-race correction. Original failed85 CI remains retained. Later visual
 review identifies compact Baccarat label overlap and roulette clock occlusion;
-poker side-pot net-result clarity is also staged separately. Reproduce and
-correct these specific gaps next. No full owner casino, physical-device,
+poker side-pot net-result clarity also needed correction. Those specific gaps
+are corrected by accepted86. No full owner casino, physical-device,
 world art/performance, human campaign, operations/rights, F1–F5 or beta gate
 closes. The full game goal remains open; soak/stress stays deferred.
 

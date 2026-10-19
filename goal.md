@@ -2858,3 +2858,21 @@ the scopes overlap. Runtime/build inputs are unchanged from qualified9d, with
 80 unit/four suites and18 copied-engine hardware cases still applicable. New
 full CI/deployment/public proof remains required; full-game/beta gates remain
 open and no soak/stress is resumed.
+
+
+## October 19 Alpha 1.79.86 scoped deployment accepted
+
+Source `4bfafdd62b81db2dd0037b33bf6947da8e811351` passes original CI39301167062 all ten jobs, both deployments/live
+QA and exact artifact/public verification. Client 823/12833, hosted 566/14
+existing exclusions, native 184/2 and live 11/1 pass with zero failed/flaky
+browser outcomes. Frozen proof covers 442 fresh public pins
+and 110 unchanged GLBs with exact accepted85 byte comparison.
+All 520 prior raw notes remain identical in 521 entries / 52 pages. Casino
+large windows/top-bar movement, house card/timer layout, roulette landing
+feedback, poker net results, prior wager ownership and popup drag closure are
+delivered. One transient geometry recovery keeps 1500ms per attempt / 30s owner
+and exact integrity checks, including failed body reads. QA jump planning keeps
+its eight-unit minimum and strict real-input/landing checks. Every original
+failed86 outcome remains retained. [Acceptance](docs/plans/2026-10-19-release1-79-86-acceptance.md).
+This does not close the full game, remaining art review, performance, human
+campaign/listening/devices, operations/rights, F1–F5 or beta gates. No soak/stress.
