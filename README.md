@@ -495,7 +495,7 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.83`, **prepared; verification and deployment pending**.
+Current source version: `Alpha 1.79.84`, **prepared; verification and deployment pending**.
 This milestone improves quest/reward, Lore Book, Atlas, tracker and party control
 continuity; garment preview framing; grounded movement audio; prepared connected
 entry; startup ownership cleanup; and credits with matching editable source links.

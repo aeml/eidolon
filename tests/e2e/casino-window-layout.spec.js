@@ -23,6 +23,8 @@ for (const [width, height] of [[320,740],[390,844],[844,390],[1440,900]]) for (c
             const house = { tableId:table.id, tableVersion:'1', game, currency:'gold', phase:'betting', roundId:'review', available:true,
                 balance:1000,minBet:20,maxBet:100000,betStep:20,players:[],serverNow:new Date().toISOString(),dealAt:new Date(Date.now()+30000).toISOString(),
                 history:Array.from({length:37},(_,i)=> game==='roulette' ? {roundId:String(i), number:i} : {roundId:String(i),baccarat:{playerTotal:8,bankerTotal:6,winner:'player'}}) };
+            if (game==='roulette') house.spots=[...['red','black','odd','even','low','high','dozen-1','dozen-2','dozen-3','column-1','column-2','column-3']
+                .map(id=>({id,label:id,multiplier:id.includes('-')?3:2})),{id:'split:1-2',label:'Split 1/2',multiplier:18}];
             const payload = { tables:[table], floor:'public', yourSeat:{tableId:table.id,seat:0,sessionId:'prepared-seat',exitX:0,exitZ:173},
                 occupants:Array.from({length:6},(_,i)=>({tableId:table.id,playerId:i===0?'hero':`guest-${i}`,name:i===0?'You':`Lanternhold guest ${i}`,seat:i,connected:true})), house };
             if (game === 'blackjack') payload.blackjack = { ...house, gold:1000, players:[] };

@@ -11,6 +11,9 @@ const node = (tag, text = '', className = '') => {
 };
 const sum = wagers => (wagers || []).reduce((total, wager) => total + wager.amount, 0);
 const red = new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);
+const outsideLabels = { 'dozen-1':'1st 12', 'dozen-2':'2nd 12', 'dozen-3':'3rd 12',
+    low:'1–18', even:'Even', red:'Red', black:'Black', odd:'Odd', high:'19–36',
+    'column-1':'Column 1', 'column-2':'Column 2', 'column-3':'Column 3' };
 
 export class HouseTableUI {
     constructor(send, sound = () => {}) {
@@ -152,7 +155,13 @@ export class HouseTableUI {
             const numbers = node('div', '', 'roulette-number-board');
             for (let n = 0; n <= 36; n++) add(numbers, `number:${n}`, String(n), n === 0 ? 'zero' : red.has(n) ? 'red' : 'black');
             const outside = node('div', '', 'roulette-outside-board');
-            for (const spot of view.spots || []) if (!spot.id.includes(':')) add(outside, spot.id, spot.label);
+            const order = Object.keys(outsideLabels);
+            const spots = (view.spots || []).filter(spot => !spot.id.includes(':'));
+            spots.sort((a,b) => (order.includes(a.id) ? order.indexOf(a.id) : order.length) - (order.includes(b.id) ? order.indexOf(b.id) : order.length));
+            for (const spot of spots) {
+                const style = ['red','black'].includes(spot.id) ? spot.id : spot.id.startsWith('dozen-') || spot.id.startsWith('column-') ? 'wide-bet' : '';
+                add(outside, spot.id, outsideLabels[spot.id] || spot.label, style);
+            }
             this.combinationDialog = new CasinoInfoDialog('Roulette inside bets', 'Inside bets');
             const advanced = this.combinationDialog.body;
             this.combination = node('select'); this.combination.setAttribute('aria-label', 'Inside roulette combination');

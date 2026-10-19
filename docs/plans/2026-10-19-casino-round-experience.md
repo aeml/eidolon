@@ -136,3 +136,16 @@ suite path and an old assertion that also disabled Rules; that failure is
 retained. The corrected assertion still requires every funded button to remain
 disabled. Resetting a retired history view also clears its reader-follow scope,
 so reopening starts at the newest saved results.
+
+
+Prepared84now has synchronized client/server/container/deployment defaults and
+519cumulative notes; all518prior entries compare byte-for-byte equal to master
+d2. Version/history qualification passes392checks/two suites. An initial check
+correctly caught the deployment workflow's old version string; its retained
+failure is corrected in the isolated candidate. This preparation is not a push,
+deployment or acceptance, and83must be verified first.
+
+The roulette board now groups dozens, outside choices and columns, with familiar
+1–18/19–36 and1st/2nd/3rd12labels. Red/black outside spots retain distinct colours.
+All choices still use the supplied server catalog identities. House/round
+qualification passes28checks/two suites with lint after that display-only change.

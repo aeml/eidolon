@@ -439,6 +439,10 @@ body .casino-session:is(.has-slots, .has-blackjack, .has-poker, .has-house):not(
 .casino-session .roulette-number-board button { grid-column: var(--roulette-column); grid-row: var(--roulette-row); }
 .casino-session .roulette-number-board .zero { grid-column: 1; grid-row: 1 / 4; }
 .casino-session .roulette-number-board button { font-size: 12px; }
+.casino-session .roulette-outside-board { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.casino-session .roulette-outside-board .wide-bet { grid-column: span 2; }
+.casino-session .roulette-outside-board .red { background: #872f43; }
+.casino-session .roulette-outside-board .black { background: #14202e; }
 .casino-session .roulette-theatre { --wheel-size: min(290px, calc(100cqh - 30px), calc(100cqw - 8px)); }
 .casino-session .roulette-theatre.close-up { --wheel-size: min(480px, calc(100cqh - 78px), calc(100cqw - 20px)); }
 .casino-info-dialog { display: none; position: fixed; box-sizing: border-box; width: min(820px, calc(100vw - 24px)); max-width: calc(100vw - 16px); max-height: calc(100dvh - 24px); padding: 0;
@@ -464,6 +468,8 @@ body .casino-session:is(.has-slots, .has-blackjack, .has-poker, .has-house):not(
     .casino-session .roulette-number-board { grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: none; }
     .casino-session .roulette-number-board button { grid-column: auto; grid-row: auto; }
     .casino-session .roulette-number-board .zero { grid-column: 1 / -1; grid-row: auto; }
+    .casino-session .roulette-outside-board { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .casino-session .roulette-outside-board .wide-bet { grid-column: auto; }
 }
 @media (max-width: 700px) and (min-height: 501px) {
     body .casino-session:is(.has-slots, .has-blackjack, .has-poker, .has-house):not([hidden]) { width: calc(100vw - 16px); height: calc(100dvh - 16px); padding: 8px; left: 8px; top: 8px; }
