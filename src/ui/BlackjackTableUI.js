@@ -1,3 +1,4 @@
+import { CasinoInfoDialog } from './CasinoInfoDialog.js';
 import { casinoCard } from './CasinoCard.js';
 import { CasinoCelebration, blackjackCount, goldText } from './CasinoCelebration.js';
 import { CardTableScene } from './CardTableScene.js';
@@ -18,11 +19,12 @@ export class BlackjackTableUI {
         this.send = send; this.currency = 'Gold';
         this.root = node('div', '', 'blackjack-game'); this.root.hidden = true;
         this.summary = node('p'); this.summary.setAttribute('role', 'status');
-        this.rules = node('details'); this.rules.append(node('summary', 'Rules & stakes'));
-        this.rules.append(node('p', 'Six decks. Dealer stands on soft 17 and checks for blackjack. Blackjack pays 3:2 profit; other wins pay 1:1; pushes return your stake. Split 21 pays as an ordinary win.'));
-        this.stakeRules = node('p'); this.rules.append(this.stakeRules);
-        this.rules.append(node('p', 'You have 30 seconds per decision. A timeout stands your current hand and releases your chair. Confirmed wagers continue if you leave, time out or disconnect, and payouts are saved automatically. Betting windows run for 30 seconds without waiting for a first wager. After saved results, the next window opens automatically; no wager is placed for you.'));
-        this.rules.append(node('p', 'Rule-based estimate: about 0.41% house edge per opening wager with correct basic strategy and a fresh shoe. Choices and timeouts can increase losses; individual rounds vary. All splits and doubles can commit up to eight times your opening stake.'));
+        this.rulesDialog = new CasinoInfoDialog('Blackjack rules'); this.rules = this.rulesDialog.button;
+        const rules = this.rulesDialog.body;
+        rules.append(node('p', 'Six decks. Dealer stands on soft 17 and checks for blackjack. Blackjack pays 3:2 profit; other wins pay 1:1; pushes return your stake. Split 21 pays as an ordinary win.'));
+        this.stakeRules = node('p'); rules.append(this.stakeRules);
+        rules.append(node('p', 'You have 30 seconds per decision. A timeout stands your current hand and releases your chair. Confirmed wagers continue if you leave, time out or disconnect, and payouts are saved automatically. Betting windows run for 30 seconds without waiting for a first wager. After saved results, the next window opens automatically; no wager is placed for you.'));
+        rules.append(node('p', 'Rule-based estimate: about 0.41% house edge per opening wager with correct basic strategy and a fresh shoe. Choices and timeouts can increase losses; individual rounds vary. All splits and doubles can commit up to eight times your opening stake.'));
         this.betBox = node('div', '', 'blackjack-bet');
         const label = node('label', 'Wager (Gold) '); this.stakeLabel = label;
         this.stake = node('input'); this.stake.type = 'number'; this.stake.min = '20'; this.stake.max = '500'; this.stake.step = '20'; this.stake.value = '100';
@@ -39,7 +41,7 @@ export class BlackjackTableUI {
         }));
         this.betBox.insertBefore(this.adjustments, this.bet); this.bet.className = 'casino-primary';
         this.table = new CardTableScene('blackjack', sound); this.cards = this.table.root; this.cards.classList.add('blackjack-hands');
-        this.table.onExpire = () => this.root.querySelectorAll('button, input').forEach(control => { control.disabled = true; });
+        this.table.onExpire = () => this.root.querySelectorAll('button:not(.casino-info-trigger), input').forEach(control => { control.disabled = true; });
         this.actions = node('div', '', 'blackjack-actions');
         this.controls = node('div', '', 'card-table-controls');
         this.controls.append(this.summary, this.actions, this.betBox, this.rules);
@@ -59,7 +61,7 @@ export class BlackjackTableUI {
             Number.isSafeInteger(view.round?.revision) && Number.isSafeInteger(this.view.round?.revision) &&
             view.round.revision < this.view.round.revision) view = this.view;
         this.view = view; this.playerID = playerID; this.root.hidden = !view;
-        if (!view) { this.pendingKey = null; this.renderKey = null; this.table.clear(); this.celebration.clear(); return; }
+        if (!view) { this.rulesDialog.close(false); this.pendingKey = null; this.renderKey = null; this.table.clear(); this.celebration.clear(); return; }
         this.presence = presence; this.table.update(view, playerID, presence);
         const changedCurrency = this.currency !== (view.currency === 'ep' ? 'EP' : 'Gold');
         this.currency = view.currency === 'ep' ? 'EP' : 'Gold'; this.balance = view.balance ?? view.gold;
@@ -97,7 +99,7 @@ export class BlackjackTableUI {
         if (view.round) {
             const round = view.round;
             if (changed) {
-                this.hand('', round.dealer, round.dealerHidden, false, this.table.dealerCards);
+                this.hand('', round.dealer, round.dealerHidden, false, this.table.dealerCards, 'dealer');
                 for (const player of round.players || []) {
                     const participant = view.players.find(p => p.playerId === player.playerId);
                     for (const [index, hand] of player.hands.entries()) {
@@ -110,7 +112,7 @@ export class BlackjackTableUI {
                             bust: 'Bust', lose: 'Loss' }[hand.outcome] || hand.outcome;
                         const saved = view.phase === 'complete' && view.available && !view.processing;
                         const result = hand.outcome ? ` · ${outcome} · ${goldText(hand.payout)} ${this.currency} ${saved ? 'returned' : 'pending return'}` : '';
-                        this.hand(`${owner}${player.hands.length > 1 ? `Hand ${index + 1} · ` : ''}${goldText(hand.bet)} ${this.currency} staked${result}`, hand.cards, false, active, this.table.seats[seat]?.hands);
+                        this.hand(`${owner}${player.hands.length > 1 ? `Hand ${index + 1} · ` : ''}${goldText(hand.bet)} ${this.currency} staked${result}`, hand.cards, false, active, this.table.seats[seat]?.hands, `${player.playerId}:${index}`);
                     }
                 }
                 if (view.phase === 'playing' && round.turnPlayerId === playerID) {
@@ -132,10 +134,10 @@ export class BlackjackTableUI {
         this.actions.querySelectorAll('button').forEach(button => { button.disabled = !this.canAct(); });
     }
 
-    hand(title, cards, hidden, active = false, target) {
+    hand(title, cards, hidden, active = false, target, key = 'hand') {
         const row = node('div', '', `blackjack-hand${active ? ' current' : ''}`);
         const caption = node('p', title); caption.title = title; row.append(caption);
-        for (const card of cards || []) row.append(casinoCard(card));
+        for (const [index, card] of (cards || []).entries()) row.append(this.table.decorateCard(casinoCard(card), `${key}:${index}:${card}`));
         if (hidden) row.append(casinoCard(-1, 'Dealer hidden card'));
         row.append(node('strong', `${hidden ? 'Showing' : 'Total'}: ${blackjackCount(cards)}`, 'casino-hand-value'));
         target?.append(row);
@@ -176,5 +178,5 @@ export class BlackjackTableUI {
         this.pendingKey = null; this.pendingAction = null;
         this.update(this.view, this.playerID, this.presence); this.summary.textContent = error.error;
     }
-    dispose() { this.update(null); this.root.remove(); }
+    dispose() { this.rulesDialog.dispose(); this.update(null); this.root.remove(); }
 }

@@ -142,6 +142,7 @@ class UIManagerWindowMethods {
     resetWindowPositions() {
         this.windowLayoutPreferences ||= new WindowLayoutPreferences();
         this.windowLayoutPreferences.reset();
+        this.casino?.windowLayout?.reset();
         this.windowLayouts?.forEach(({ element }, id) => {
             if (!element || id === 'map') return;
             delete element.dataset.draggedWindow;

@@ -134,6 +134,13 @@ readable controls and rewarding feedback throughout the games, with reduced
 motion and safe lifecycle handling. The owner's quality target exceeds the
 comfort and presentation of established online casinos; this remains an open
 acceptance requirement until the finished experience is reviewed.
+Replace expanding disclosure sections in the game windows with clearly labelled
+Rules and reference buttons that open contained popups. Every game window must
+keep its content within its bounds, use polished typography and colours, occupy
+most of the screen, and move by dragging its top bar. Retain positions on reopen
+and keep resized windows reachable. These additional owner requirements remain
+open until the actual desktop/phone layouts and popup/drag interactions pass
+review.
 
 ## Working method
 

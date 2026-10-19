@@ -1,3 +1,4 @@
+import { CasinoInfoDialog } from './CasinoInfoDialog.js';
 import { casinoCard } from './CasinoCard.js';
 import { CasinoCelebration, goldText } from './CasinoCelebration.js';
 import { CardTableScene } from './CardTableScene.js';
@@ -35,19 +36,19 @@ export class PokerTableUI {
         this.pots = element('div', '', 'poker-pots'); this.players = this.table.root;
         this.table.center.append(this.board, this.pots);
         this.actions = element('div', '', 'poker-actions');
-        const rules = element('details'); rules.append(element('summary', 'Hold’em rules · stakes and leaving'));
+        this.rulesDialog = new CasinoInfoDialog('Hold’em rules'); const rules = this.rulesDialog.body;
         this.stakeRules = element('p'); rules.append(this.stakeRules);
         rules.append(element('p', 'No-limit Texas Hold’em: two private cards, five community cards, best five-card hand wins. The dealer button rotates between funded seats. Heads-up, the button posts the small blind and acts first before the flop, last afterward.'));
         rules.append(element('p', 'Raise to means your total bet on this street, not extra funds from your wallet. The minimum raise increases the current bet by at least the last full raise. A smaller all-in is allowed; it only reopens earlier players’ raises when the combined increase reaches their required full raise. A short call remains eligible only for its covered pots.'));
         rules.append(element('p', 'Turns last 30 seconds. A timeout checks for free or folds to a bet, then releases your chair. A remaining live stack folds after leaving; committed chips stay in their pots and unspent funds return when the hand settles. An all-in hand stays eligible. Disconnections reserve the seat for up to 60 seconds, but the turn timer keeps running. No bots take over.'));
         rules.append(element('p', 'Main and side pots settle separately. Uncalled stakes return to their owner. Ties split each pot; odd units go clockwise from the seat left of the dealer. All unspent stack and winnings return to your table-currency balance after the hand, even if you leave or disconnect. Folded cards remain private.'));
         this.controls = element('div', '', 'card-table-controls');
-        this.controls.append(this.summary, this.lobby, this.actions, rules);
+        this.controls.append(this.summary, this.lobby, this.actions, this.rulesDialog.button);
         this.root.append(this.felt, this.controls);
     }
 
     button(text, action) { const b = element('button', text); b.type = 'button'; b.onclick = action; return b; }
-    card(value) { return casinoCard(value); }
+    card(value, key) { return this.table.decorateCard(casinoCard(value), `${key}:${value}`); }
 
     update(view, playerID, presence = {}) {
         if (!this.ordering.accept(view, playerID, presence.yourSeat)) view = this.view;
@@ -59,7 +60,7 @@ export class PokerTableUI {
             Number.isSafeInteger(view.round?.revision) && Number.isSafeInteger(this.view.round?.revision) &&
             view.round.revision < this.view.round.revision) view = this.view;
         this.view = view; this.playerID = playerID; this.root.hidden = !view;
-        if (!view) { this.signature = null; this.controlsKey = null; this.pending = false; this.table.clear(); this.celebration?.clear(); return; }
+        if (!view) { this.rulesDialog.close(false); this.signature = null; this.controlsKey = null; this.pending = false; this.table.clear(); this.celebration?.clear(); return; }
         this.presence = presence; this.table.update(view, playerID, presence);
         if (!this.celebration) this.celebration = new CasinoCelebration(this.table.center);
         const changedCurrency = this.currency !== (view.currency === 'ep' ? 'EP' : 'Gold');
@@ -98,7 +99,7 @@ export class PokerTableUI {
             if (controlsChanged) this.actions.replaceChildren();
             for (const seat of this.table.seats) seat.hands.replaceChildren();
             for (let i = 0; i < 5; i++) {
-                if (round) this.board.append(this.card(round.board?.[i]));
+                if (round) this.board.append(this.card(round.board?.[i], `board:${i}`));
                 else this.board.append(element('span', '◇', 'card-table-board-placeholder'));
             }
             if (round) {
@@ -111,7 +112,7 @@ export class PokerTableUI {
                     if (presence.occupants && occupant?.playerId !== p.playerId) {
                         row.append(element('small', `${p.playerId === playerID ? 'Your' : `${this.name(p.playerId)}’s`} earlier hand`));
                     }
-                    const cards = element('div'); for (const value of p.cards || []) cards.append(this.card(value)); row.append(cards);
+                    const cards = element('div'); for (const [index, value] of (p.cards || []).entries()) cards.append(this.card(value, `${p.playerId}:${index}`)); row.append(cards);
                     if (p.bestHand || p.hand) row.append(element('strong', p.bestHand || p.hand, 'casino-hand-value'));
                     const saved = view.available && view.phase === 'complete' && !view.processing;
                     row.append(element('small', round.phase === 'complete' ? `${goldText(p.payout)} ${this.currency} ${saved ? 'returned' : 'pending return'}` : `${p.streetBet} bet · ${p.committed} total`));
@@ -173,5 +174,5 @@ export class PokerTableUI {
         this.pending = false; this.pendingAction = null;
         this.update(this.view, this.playerID, this.presence); this.summary.textContent = error.error;
     }
-    dispose() { this.update(null); this.root.remove(); }
+    dispose() { this.rulesDialog.dispose(); this.update(null); this.root.remove(); }
 }

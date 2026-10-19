@@ -4,6 +4,7 @@ import { BaccaratPresentation } from '../src/ui/BaccaratPresentation.js';
 import { HouseTableUI } from '../src/ui/HouseTableUI.js';
 import { HouseHistory } from '../src/ui/HouseHistory.js';
 import { casinoCard } from '../src/ui/CasinoCard.js';
+import { CardTableScene } from '../src/ui/CardTableScene.js';
 
 const state = (extra = {}) => ({ tableId: 'public-roulette', tableVersion: '1', game: 'roulette', currency: 'gold',
     phase: 'betting', available: true, balance: 1000, minBet: 20, maxBet: 100000, betStep: 20, roundId: 'r1',
@@ -117,4 +118,21 @@ test('leaving or changing currency retires roulette animation and outstanding ol
     ui.update(state({ phase: 'revealing' }), 'hero'); const motion = ui.presentation;
     expect(motion.frame).not.toBeNull(); ui.update(null); expect(motion.frame).toBeNull();
     ui.dispose(); jest.advanceTimersByTime(10000); expect(send).not.toHaveBeenCalled(); expect(jest.getTimerCount()).toBe(0);
+});
+
+
+test('table motion marks only new visible cards, without replaying old hands or exposing backs', () => {
+    const table = new CardTableScene('poker');
+    try {
+        table.update(state({ phase: 'playing' }), 'hero');
+        expect(table.decorateCard(casinoCard(7), 'hero:0:7').classList.contains('casino-card-arriving')).toBe(false);
+        table.update(state({ phase: 'playing' }), 'hero');
+        expect(table.decorateCard(casinoCard(7), 'hero:0:7').classList.contains('casino-card-arriving')).toBe(false);
+        expect(table.decorateCard(casinoCard(8), 'board:0:8').classList.contains('casino-card-arriving')).toBe(true);
+        expect(table.decorateCard(casinoCard(-1), 'guest:0:hidden').classList.contains('casino-card-arriving')).toBe(false);
+        document.documentElement.dataset.reducedMotion = 'true';
+        expect(table.decorateCard(casinoCard(9), 'board:1:9').classList.contains('casino-card-arriving')).toBe(false);
+        table.clear(); table.update(state({ phase: 'playing' }), 'hero');
+        expect(table.decorateCard(casinoCard(8), 'board:0:8').classList.contains('casino-card-arriving')).toBe(false);
+    } finally { table.clear(); }
 });

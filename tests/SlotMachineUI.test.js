@@ -328,3 +328,39 @@ test('Manual/Auto changes visibility and switching to Manual cancels future queu
     ui.auto.click(); expect(ui.autoRemaining).toBe(49); ui.manualMode.click();
     expect(ui.autoRemaining).toBe(0); expect(ui.spin.hidden).toBe(false); expect(ui.pending).toBeTruthy(); ui.dispose();
 });
+
+test('late ready slot snapshots cannot replace the newer saved result or replay its reels', () => {
+    jest.useFakeTimers(); const ui = new SlotMachineUI(jest.fn());
+    try {
+        const latest = resultView(3); ui.update(latest);
+        const result = ui.result.textContent;
+        ui.update(resultView(2));
+        expect(ui.view.session.revision).toBe(3); expect(ui.animating).toBe(false);
+        expect(ui.result.textContent).toBe(result);
+    } finally { ui.dispose(); jest.useRealTimers(); }
+});
+
+test('the saved slot revision fence survives unavailable feedback and clears only for a new machine or seat', () => {
+    const ui = new SlotMachineUI(jest.fn());
+    try {
+        const latest = resultView(3); ui.update(latest);
+        ui.update({ ...view, available: false }); ui.update(resultView(2));
+        expect(ui.view.available).toBe(false); expect(ui.spin.disabled).toBe(true);
+        ui.update(latest); expect(ui.view.session.revision).toBe(3); expect(ui.animating).toBe(false);
+        const water = { ...view, machine: { ...machine, theme: 'water' } };
+        ui.update(water); expect(ui.view.session.revision).toBe(1);
+        ui.update(null); ui.update(view); expect(ui.view.session.revision).toBe(1);
+    } finally { ui.dispose(); }
+});
+
+test('old saving feedback remains visible without replacing a newer slot result or lowering the revision fence', () => {
+    const ui = new SlotMachineUI(jest.fn());
+    try {
+        const latest = resultView(3); ui.update(latest);
+        ui.update({ ...resultView(1), processing: true });
+        expect(ui.view.processing).toBe(true); expect(ui.view.session.revision).toBe(3);
+        expect(ui.animating).toBe(false); ui.update(resultView(2));
+        expect(ui.view.processing).toBe(true); expect(ui.spin.disabled).toBe(true);
+        ui.update(latest); expect(ui.view.processing).toBe(false); expect(ui.view.session.revision).toBe(3);
+    } finally { ui.dispose(); }
+});

@@ -1,3 +1,5 @@
+import { CasinoWindowLayout } from '../ui/CasinoWindowLayout.js';
+import { WindowLayoutPreferences } from '../ui/WindowLayoutPreferences.js';
 import * as THREE from 'three';
 import { createCasinoFurniture, createCasinoFurnitureColliders, disposeCasinoObject } from '../art/ProceduralCasino.js';
 import { BlackjackTableUI } from '../ui/BlackjackTableUI.js';
@@ -36,6 +38,8 @@ export class CasinoController {
         this.panel.append(this.header, this.status, this.playControls.root, this.roster, this.ready, this.blackjack.root, this.slots.root, this.poker.root, this.house.root);
         for (const event of ['pointerdown', 'pointerup', 'click', 'wheel']) this.panel.addEventListener(event, e => e.stopPropagation());
         document.body.append(this.panel);
+        const positions = engine.uiManager ? (engine.uiManager.windowLayoutPreferences ||= new WindowLayoutPreferences()) : new WindowLayoutPreferences();
+        this.windowLayout = new CasinoWindowLayout(this.panel, this.header, positions);
         this.stairButton = this.button('Walk upstairs · VIP lounge', () => this.walkStairs());
         this.stairButton.className = 'casino-stair-action'; this.stairButton.hidden = true;
         for (const event of ['pointerdown', 'pointerup', 'click']) this.stairButton.addEventListener(event, e => e.stopPropagation());
@@ -43,7 +47,7 @@ export class CasinoController {
         this.dialogue = document.createElement('dialog'); this.dialogue.className = 'casino-entry-dialogue';
         document.body.append(this.dialogue);
         this.keyHandler = event => {
-            if (!this.active || event.key !== 'Escape') return;
+            if (!this.active || event.key !== 'Escape' || document.querySelector('.casino-info-dialog[open]')) return;
             event.preventDefault(); event.stopImmediatePropagation(); this.requestLeave();
         };
         document.addEventListener('keydown', this.keyHandler, true);
@@ -133,6 +137,12 @@ export class CasinoController {
         this.panel.classList.toggle('has-slots', Boolean(isSlots));
         this.blackjack.update(isBlackjack ? payload.blackjack : null, this.engine.player?.id, tablePresence);
         this.panel.classList.toggle('has-blackjack', isBlackjack);
+        const rulesOwner = isHouse ? this.house : isSlots ? this.slots : isPoker ? this.poker : isBlackjack ? this.blackjack : null;
+        if (rulesOwner !== this.rulesOwner) {
+            if (this.rulesOwner) (this.rulesOwner === this.slots ? this.slots.sidebar : this.rulesOwner.controls).append(this.rulesOwner.rulesDialog.button);
+            this.rulesOwner = rulesOwner;
+            if (rulesOwner) this.header.insertBefore(rulesOwner.rulesDialog.button, this.leave);
+        }
         this.ready.hidden = isBlackjack || isSlots || isPoker || isHouse;
         this.roster.hidden = Boolean(isSlots || isBlackjack || isPoker || isHouse);
         if (seat) this.lastSeat = seat;
@@ -171,12 +181,13 @@ export class CasinoController {
         this.active = true; this.blend = 0; this.pendingSeat = null;
         engine.cameraLocked = false;
         engine.clearCombatIntentState?.(); engine.inputManager?.clearInputState?.();
-        this.panel.hidden = false; document.body.classList.add('casino-seated'); this.leave.focus({ preventScroll: true });
+        this.panel.hidden = false; this.windowLayout.restore(); document.body.classList.add('casino-seated'); this.leave.focus({ preventScroll: true });
     }
 
     exitView() {
         this.slots.update(null);
         this.blackjack.update(null); this.poker.update(null); this.house.update(null);
+        this.windowLayout.stopDrag(false); this.playControls.info.close(false);
         this.active = false; this.panel.hidden = true; this.pendingSeat = null;
         document.body.classList.remove('casino-seated');
         const engine = this.engine, render = engine.renderSystem;
@@ -525,7 +536,7 @@ export class CasinoController {
         this.closeDoorDialogue();
         if (this.active) this.exitView();
         this.clearActorPresentation();
-        disposeCasinoObject(this.furniture); this.dialogue.remove(); this.panel.remove();
+        this.windowLayout.dispose(); disposeCasinoObject(this.furniture); this.dialogue.remove(); this.panel.remove();
         this.slots.dispose();
         this.blackjack.dispose();
         this.poker.dispose();

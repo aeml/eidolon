@@ -109,6 +109,8 @@ for (const width of [390, 1440]) for (const theme of ['earth', 'water', 'fire', 
             landed: grid, payout: 160, freeAwarded: 0, bonusPicked: -1, stages: [{ grid, payout: 160, wins: [{ line: 0, count: 5, symbol: 2, payout: 160 }] }] } } });
     });
     await page.getByRole('button', { name: 'Skip reel animation', exact: true }).click();
+    await page.evaluate(() => { const f = window.__slotReview; f.ui.update(f.v); });
+    expect(await page.evaluate(() => window.__slotReview.ui.view.session.revision)).toBe(2);
     await expect(page.locator('.slot-result')).toContainText('160 Gold returned');
     await expect(page.locator('.slot-result')).toContainText('Net profit: +140');
     await page.screenshot({ path: testInfo.outputPath(`${theme}-slot-result-${width}.png`) });

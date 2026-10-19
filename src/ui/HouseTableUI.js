@@ -1,3 +1,4 @@
+import { CasinoInfoDialog } from './CasinoInfoDialog.js';
 import { CardTableScene } from './CardTableScene.js';
 import { CasinoTableOrdering } from './CasinoTableOrdering.js';
 import { CasinoCelebration, goldText } from './CasinoCelebration.js';
@@ -48,7 +49,8 @@ export class HouseTableUI {
             this.builder.checked = true; this.draft = new Map(this.lastSlip.wagers.map(w => [w.spot, w.amount]));
             this.draftSteps = this.lastSlip.wagers.map(w => ({ ...w })); this.refreshControls();
         });
-        this.rules = node('details'); this.rules.append(node('summary', 'Rules & stakes')); this.rulesText = node('p'); this.rules.append(this.rulesText);
+        this.rulesDialog = new CasinoInfoDialog('Roulette rules'); this.rules = this.rulesDialog.button;
+        this.rulesText = node('p'); this.rulesDialog.body.append(this.rulesText);
         this.controls = node('div', '', 'card-table-controls');
         const toolbar = node('div', '', 'house-wager-toolbar'); toolbar.append(this.stakeLabel, this.adjustments, builderLabel);
         this.controls.append(this.phase, this.summary, toolbar, this.chips, this.board, this.slip, this.confirm, this.undo, this.clear, this.repeat, this.rules);
@@ -67,14 +69,17 @@ export class HouseTableUI {
         const previous = this.view;
         this.view = view; this.playerID = playerID; this.root.hidden = !view;
         if (!view) {
+            this.rulesDialog.close(false); this.combinationDialog?.close(false);
             this.pending = false; this.roundId = null; this.boardKey = null; this.boardEpoch = null;
-            this.draft.clear(); this.draftSteps = []; this.presentation?.dispose(); this.presentation = null; this.presentationKind = null; this.table.clear(); this.celebration.clear(); return;
+            this.draft.clear(); this.draftSteps = []; this.history.clear(); this.presentation?.dispose(); this.presentation = null; this.presentationKind = null; this.table.clear(); this.celebration.clear(); return;
         }
         this.presence = presence;
         const slipScope = JSON.stringify([view.tableId, view.game, view.currency, playerID, presence.yourSeat?.sessionId]);
         if (this.slipScope !== slipScope) { this.lastSlip = null; this.slipScope = slipScope; }
         const currency = view.currency === 'ep' ? 'EP' : 'Gold';
         const changedGame = this.kind !== view.game || this.currency !== currency;
+        if (changedGame) { this.rulesDialog.close(false); this.combinationDialog?.close(false); }
+        this.rulesDialog.setTitle(`${view.game === 'roulette' ? 'Roulette' : 'Baccarat'} rules`);
         if (changedGame || this.roundId !== view.roundId) {
             this.pending = false; this.draft.clear(); this.draftSteps = []; this.celebration.clear(); this.resultKey = null;
         }
@@ -128,12 +133,14 @@ export class HouseTableUI {
     }
 
     buildBoard(view) {
+        this.combinationDialog?.dispose(); this.combinationDialog = null;
         this.board.replaceChildren(); this.spotButtons = [];
         const epoch = Symbol('house-board'); this.boardEpoch = epoch;
         this.combination = null; this.combinationBet = null;
         const choose = spot => { if (this.boardEpoch === epoch) this.choose(spot); };
         const add = (parent, id, label, color = '') => {
             const b = this.button(label, () => choose(id)); b.dataset.spot = id; b.className = color;
+            if (id.startsWith('number:') && Number(id.slice(7)) > 0) { const n = Number(id.slice(7)); b.style.setProperty('--roulette-column', String(Math.floor((n - 1) / 3) + 2)); b.style.setProperty('--roulette-row', String(3 - (n - 1) % 3)); }
             b.setAttribute('aria-label', `Bet on ${label}`); this.spotButtons.push(b); parent.append(b);
         };
         if (view.game === 'baccarat') {
@@ -145,14 +152,16 @@ export class HouseTableUI {
             for (let n = 0; n <= 36; n++) add(numbers, `number:${n}`, String(n), n === 0 ? 'zero' : red.has(n) ? 'red' : 'black');
             const outside = node('div', '', 'roulette-outside-board');
             for (const spot of view.spots || []) if (!spot.id.includes(':')) add(outside, spot.id, spot.label);
-            const advanced = node('details'); advanced.append(node('summary', 'Inside combinations · splits, streets & corners'));
+            this.combinationDialog = new CasinoInfoDialog('Roulette inside bets', 'Inside bets');
+            const advanced = this.combinationDialog.body;
             this.combination = node('select'); this.combination.setAttribute('aria-label', 'Inside roulette combination');
             for (const spot of view.spots || []) if (spot.id.includes(':') && !spot.id.startsWith('number:')) {
                 const option = node('option', `${spot.label} · ${spot.multiplier - 1}:1`); option.value = spot.id; this.combination.append(option);
             }
             const combination = this.combination;
-            this.combinationBet = this.button('Bet combination', () => choose(combination.value));
-            advanced.append(this.combination, this.combinationBet); this.board.append(numbers, outside, advanced);
+            const dialog = this.combinationDialog;
+            this.combinationBet = this.button('Bet combination', () => { if (this.boardEpoch !== epoch) return; choose(combination.value); dialog.close(); });
+            advanced.append(node('p', 'Choose a split, street, corner or six-line bet. Uses the chip value shown on the table.'), this.combination, this.combinationBet); this.board.append(numbers, outside, this.combinationDialog.button);
         }
     }
 
@@ -227,5 +236,5 @@ export class HouseTableUI {
         this.presentation.update(view, JSON.stringify([view.tableId, view.currency, view.roundId, this.playerID, this.presence?.yourSeat?.sessionId]));
     }
 
-    dispose() { this.update(null); this.disposed = true; this.root.remove(); }
+    dispose() { this.rulesDialog.dispose(); this.combinationDialog?.dispose(); this.update(null); this.disposed = true; this.root.remove(); }
 }

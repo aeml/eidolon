@@ -1,3 +1,5 @@
+import { createMotionPreference } from '../core/MotionPreference.js';
+
 const node = (tag, text = '', className = '') => {
     const el = document.createElement(tag); el.textContent = text; el.className = className; return el;
 };
@@ -7,6 +9,7 @@ const node = (tag, text = '', className = '') => {
 export class CardTableScene {
     constructor(kind, sound = () => {}) {
         this.sound = sound;
+        this.motion = createMotionPreference(); this.seenCards = new Set();
         this.root = node('div', '', `card-table-scene ${kind}-scene`);
         this.root.setAttribute('aria-label', `${{ poker: 'Poker', blackjack: 'Blackjack', roulette: 'Roulette', baccarat: 'Baccarat' }[kind] || 'Casino'} table and seats`);
         this.roundLabel = node('div', '', 'casino-table-ribbon');
@@ -31,6 +34,10 @@ export class CardTableScene {
 
     update(view, playerID, presence = {}) {
         const previous = this.view;
+        const scope = JSON.stringify([view.tableId, view.currency, view.roundId, playerID, presence.yourSeat?.sessionId]);
+        this.animateNewCards = this.cardScope === scope && previous?.available && view.available && !view.processing;
+        if (this.cardScope !== scope) this.seenCards.clear();
+        this.cardScope = scope; this.dealOrdinal = 0;
         if (previous && previous.roundId === view.roundId && previous.currency === view.currency && view.available && !view.processing) {
             const cards = v => JSON.stringify([v.round?.dealer, v.round?.dealerHidden, v.round?.board, v.round?.players?.map(p => [p.cards, p.hands?.map(h => h.cards)])]);
             if (cards(previous) !== cards(view) && view.phase === 'playing') this.sound('stop');
@@ -99,5 +106,14 @@ export class CardTableScene {
         if (this.expired && !wasExpired) this.onExpire?.();
     }
 
-    clear() { this.view = null; clearInterval(this.interval); this.interval = null; this.clockKey = null; this.expired = false; }
+    decorateCard(card, key) {
+        const fresh = !this.seenCards.has(key); this.seenCards.add(key);
+        if (fresh && this.animateNewCards && !card.classList.contains('back') && !this.motion.matches) {
+            card.classList.add('casino-card-arriving');
+            card.style.setProperty('--deal-delay', `${Math.min(240, this.dealOrdinal++ * 35)}ms`);
+        }
+        return card;
+    }
+
+    clear() { this.view = null; this.cardScope = null; this.seenCards.clear(); clearInterval(this.interval); this.interval = null; this.clockKey = null; this.expired = false; }
 }

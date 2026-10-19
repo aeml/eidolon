@@ -28,12 +28,13 @@ for (const width of [390, 1440]) test(`${width}px: voluntary casino limit preser
     });
     const controls = page.getByRole('region', { name: 'Voluntary casino play controls' });
     await expect(controls.getByRole('button', { name: 'Take a break' })).toBeVisible();
-    await controls.getByText('Play-time limit & safety', { exact: true }).click();
-    await controls.getByLabel('Stop new play after').selectOption('15');
-    await controls.getByRole('button', { name: 'Apply time limit' }).click();
+    await controls.getByRole('button', { name: 'Play options', exact: true }).click();
+    const options = page.getByRole('dialog', { name: 'Play-time controls', exact: true });
+    await expect(options).toContainText('not an account lock');
+    await options.getByLabel('Stop new play after').selectOption('15');
+    await options.getByRole('button', { name: 'Apply time limit' }).click();
     await expect(controls).toContainText('15:00');
-    await expect(controls).toContainText('not an account lock');
-    await controls.getByText('Play-time limit & safety', { exact: true }).click();
+    await expect(options).toBeHidden();
     await page.evaluate(() => window.__casinoPlay.setClock(1)); await expect(controls).toContainText('14:59');
     await page.evaluate(() => window.__casinoPlay.setClock(2)); await expect(controls).toContainText('14:58');
     await page.evaluate(() => window.__casinoPlay.setClock(900)); await expect(controls).toContainText('limit is reached');

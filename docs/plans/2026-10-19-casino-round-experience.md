@@ -74,3 +74,48 @@ final public artifact/deployment, and assessing the complete casino experience
 against the owner's higher quality target. These tests do not establish human
 listening, physical-phone review, casino art/performance acceptance, or the full
 beta-readiness goal. Soak/stress remains deferred.
+
+## Further refinements awaiting browser review
+
+The working follow-up keeps roulette history at its newest result on opening
+and follows appended results only while the reader is already at the end.
+Scrolling back remains under the reader's control; leaving cancels its queued
+layout work. Blackjack and poker decorate newly visible cards with a short deal
+animation, while same-hand polls, hidden cards, reduced motion and reopened
+hands remain still. A bounded pot area keeps multiple side pots from spilling
+into the shared clock. These refinements still require browser review.
+
+A separate slot regression shows that an older ready snapshot can rewind a
+newer saved spin, including after unavailable/saving feedback. Three new cases
+fail before the correction. A machine/currency/seat-scoped highest saved revision
+now keeps the newer result while allowing current saving/unavailable feedback;
+only a matching/newer ready snapshot restores paid play. It does not change a
+server revision, wager or result. The slot/play-integration group passes56checks.
+Real-controller phone/landscape and final animation browser reviews are prepared
+but intentionally deferred while the prior release's CI is using this runner.
+
+## Large movable windows and reference popups
+
+The additional owner requests remove disclosure/triangle sections from all
+casino game windows. Rules move into the real controller's top bar; rules,
+inside roulette bets, spin breakdown, auto settings and visit options use
+separate contained native-dialog popups with close/Escape/focus handling.
+Opening rules or spin details stops unstarted slot auto-spins. Reading never
+changes a funded round's server clock. Slot references no longer push the
+primary stake and Spin action down the control panel.
+
+The game window occupies most of the viewport. Its top bar supports pointer
+dragging and keyboard movement, remembers positions through UIManager's shared
+presentation preferences, clamps after resize and participates in the existing
+reset command. Popup top bars are also movable and remember their placement
+for their UI lifetime. Closed popups are created off-document until opened;
+leaving or disposing closes them and releases all owned resize/drag listeners.
+
+The updated popup/layout group passes280checks/16client suites, including
+window clamping, keyboard position memory without erasing bag coordinates,
+popup focus restoration and teardown, table ordering and all game controls.
+Changed JavaScript lint passes. The new sizes, contained slot stage and actual
+controller/header/Rules/drag/phone behavior still need fresh browser review.
+The earlier23browser cases qualify the prior prepared layout, not these new
+window dimensions. The eight controller/phone cases and revised game/browser
+checks are prepared but not run while release83CI is live.
