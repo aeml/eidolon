@@ -41,6 +41,19 @@ owner assessment and larger phone-text/keyboard combinations remain follow-up
 work. No full-game, final-art, performance, human campaign/device/audio,
 operations/rights, F1–F5, or beta gate closes here. Soak/stress remains deferred.
 
+## Prepared Alpha 1.79.85 casino phone fit
+
+The isolated candidate adds saved phone text sizing, keyboard-contained editors,
+stable normal coordinates, full narrow-screen headers, concise accessible timer
+labels, and readable six-hand blackjack layouts. Qualification passes 72 source
+presentation cases, four decision-visibility cases, 29 exact-commit assembled
+publication cases, 286 unit checks / 17 suites, and 455 release/history/workflow
+checks / seven suites. All 519 prior note strings remain exact in 520 entries.
+Complete own CI, deployment, and public verification remain required. It is not
+part of accepted 84. [Qualification](2026-10-19-casino-phone-readability.md).
+The full original goal and every other open row below remain active; no beta,
+physical-device, final art/performance, human campaign/audio, or owner gate closes.
+
 ## Previous accepted delivery: Alpha1.79.83
 
 Source d2e957a2dc733053332010dc763cacde2cc51b27 passes its original ten-job

@@ -2684,3 +2684,19 @@ saved larger phone text and keyboard viewport combinations; their read-only
 audit is not yet a reproduced defect or selected runtime change. Owner casino
 assessment, final art/performance, human campaign/listening/physical devices,
 operations/rights, F1–F5 and beta/1.99 gates remain open. Soak/stress stays deferred.
+
+
+## October 19 prepared Alpha 1.79.85 casino phone fit
+
+The isolated candidate resolves the phone-text and keyboard gaps identified
+after accepted 84. It keeps editor fields inside visual keyboard bounds, preserves
+normal window coordinates/drafts, wraps full titles and actions, presents compact
+accessible timers, and keeps all six blackjack totals readable. Scoped local
+checks pass 72 source presentation cases, four funded-decision visibility cases,
+29 final copied-publication cases, 286 unit checks, and 455 release/history/workflow
+checks. Notes remain cumulative at 520 with all 519 prior strings exact.
+[Qualification and retained failures](docs/plans/2026-10-19-casino-phone-readability.md).
+
+Own CI, deployment and public verification remain required. The full original
+goal, owner casino assessment, human/device/listening, final art/performance,
+operations/rights, F1–F5 and beta/1.99 remain open. Soak/stress remains deferred.
