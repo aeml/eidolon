@@ -136,7 +136,7 @@ export class HouseTableUI {
         this.combinationDialog?.dispose(); this.combinationDialog = null;
         this.board.replaceChildren(); this.spotButtons = [];
         const epoch = Symbol('house-board'); this.boardEpoch = epoch;
-        this.combination = null; this.combinationBet = null;
+        this.combination = null; this.combinationBet = null; this.combinationHint = null;
         const choose = spot => { if (this.boardEpoch === epoch) this.choose(spot); };
         const add = (parent, id, label, color = '') => {
             const b = this.button(label, () => choose(id)); b.dataset.spot = id; b.className = color;
@@ -158,10 +158,10 @@ export class HouseTableUI {
             for (const spot of view.spots || []) if (spot.id.includes(':') && !spot.id.startsWith('number:')) {
                 const option = node('option', `${spot.label} · ${spot.multiplier - 1}:1`); option.value = spot.id; this.combination.append(option);
             }
-            const combination = this.combination;
+            const combination = this.combination; this.combinationHint = node('p'); this.combinationHint.setAttribute('role', 'status');
             const dialog = this.combinationDialog;
             this.combinationBet = this.button('Bet combination', () => { if (this.boardEpoch !== epoch) return; choose(combination.value); dialog.close(); });
-            advanced.append(node('p', 'Choose a split, street, corner or six-line bet. Uses the chip value shown on the table.'), this.combination, this.combinationBet); this.board.append(numbers, outside, this.combinationDialog.button);
+            advanced.append(node('p', 'Choose a split, street, corner or six-line bet. Uses the chip value shown on the table.'), this.combinationHint, this.combination, this.combinationBet); this.board.append(numbers, outside, this.combinationDialog.button);
         }
     }
 
@@ -197,6 +197,7 @@ export class HouseTableUI {
             b.classList.toggle('selected', this.draft.has(b.dataset.spot) || Boolean(Array.isArray(this.own?.wagers) && this.own.wagers.some(w => w.spot === b.dataset.spot)));
         });
         if (this.combinationBet) this.combinationBet.disabled = !allowed;
+        if (this.combinationHint) this.combinationHint.textContent = `${goldText(Number(this.stake.value) || 0)} ${this.currency} per chip · ${this.builder.checked ? 'Adds to your draft; Place bets confirms the total.' : 'Bet combination places this wager immediately.'}`;
         this.confirm.hidden = this.clear.hidden = this.undo.hidden = !this.builder.checked;
         this.undo.disabled = !allowed || !this.draftSteps?.length;
         this.repeat.hidden = !this.lastSlip; this.repeat.disabled = !allowed;

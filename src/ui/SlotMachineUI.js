@@ -57,7 +57,7 @@ export class SlotMachineUI {
         this.auto = this.button('Start auto spins', () => { this.startAuto(); if (this.pending || this.autoRemaining) this.autoDialog.close(); });
         this.auto.className = 'casino-primary';
         this.stop = this.button('Stop auto spins', () => this.stopAuto('Auto spins stopped. Any current spin still settles.'));
-        this.autoControls.append(this.auto); this.autoDialog.body.append(this.autoControls);
+        this.autoControls.append(this.auto); this.autoBudget = node('p'); this.autoDialog.body.append(this.autoControls, this.autoBudget);
         this.autoStatus = node('p', '', 'slot-auto-status'); this.autoStatus.setAttribute('role', 'status');
         this.risk = node('p', 'Spin places the displayed wager immediately. Each spin can lose its full stake.', 'slot-lore');
         this.visibilityHandler = () => { if (document.hidden) this.stopAuto('Auto spins stopped while the game is hidden.'); };
@@ -199,6 +199,9 @@ export class SlotMachineUI {
         this.autoDialog.button.hidden = !this.automaticMode || Boolean(this.autoRemaining);
         this.auto.textContent = `Start ${this.count.value || '…'} auto spins`;
         const count = Number(this.count.value), stake = Number(this.stake.value);
+        this.autoBudget.textContent = Number.isSafeInteger(count) && count > 0 && count <= 1000 && Number.isSafeInteger(stake) && stake > 0
+            ? `${count} selected spins · ${goldText(stake)} ${this.currency} per paid spin · up to ${goldText(count * stake)} ${this.currency} in total stakes. Saved free spins cost no ${this.currency} and count toward the queue.`
+            : 'Choose a valid spin count and stake.';
         this.risk.textContent = `Spin wagers immediately and can lose its full stake. Auto: ${Number.isInteger(count) && count > 0 && count <= 1000 ? `up to ${count * stake} ${this.currency} in total stakes` : 'choose 1–1000 spins'}; free spins cost no ${this.currency}. Winnings may fund later spins.`;
         if (this.autoRemaining) this.autoStatus.textContent = `${this.autoRemaining} spins left to start${s?.bonus ? ' · Auto spins paused for your bonus choice; resume after the saved reveal' : ''} · ${this.autoBet} ${this.currency} per paid spin. Stop keeps the current result.`;
         else if (!this.autoStatus.textContent) this.autoStatus.textContent = 'Free spins count toward the queue. No queued spins continue after leaving.';
