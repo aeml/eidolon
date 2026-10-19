@@ -495,20 +495,21 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.84`, **prepared; verification and deployment pending**.
+Current source version: `Alpha 1.79.84`, **deployed and verified within its scoped milestone**.
 This milestone expands all five casino windows, adds remembered top-bar dragging
 and separate Rules/reference popups, stages roulette ball motion and baccarat
 card reveals/history, improves card faces, slot symbols and result feedback, and keeps the jump camera
 on the displayed floor between different heights.
-Focused client and phone/desktop browser checks pass; copied-publication review,
-own CI, deployment and exact public verification remain required.
+Focused client, phone/desktop and copied-publication checks pass. The corrected
+source also passes complete own CI, both deployments, live checks and exact
+normal-TLS public verification.
 [Casino scope and qualification](docs/plans/2026-10-19-casino-round-experience.md).
 
-Latest verified live release: `Alpha 1.79.83`, source
-`d2e957a2dc733053332010dc763cacde2cc51b27`.
-All ten jobs passed in [CI39201585438](https://github.com/aeml/eidolon/actions/runs/39201585438),
+Latest verified live release: `Alpha 1.79.84`, source
+`b410683fae3c020c8b3872f0c1cf3cb45cefd8d3`.
+All ten jobs passed in [CI39215799158](https://github.com/aeml/eidolon/actions/runs/39215799158),
 with both deployments, live checks and exact public-file verification.
-[Accepted83](docs/plans/2026-10-19-release1-79-83-acceptance.md).
+[Accepted84](docs/plans/2026-10-19-release1-79-84-acceptance.md).
 Recall/quest-object casts, outside-click window closing, close melee contact,
 walkable town roofs and the shared Earth fence remain delivered from81.
 Final world/art, performance, human campaign/listening/phone feedback, operational
