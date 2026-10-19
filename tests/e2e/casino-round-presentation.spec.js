@@ -3,6 +3,71 @@ import { prepareCasinoReview } from './casinoPreparedController.js';
 
 // Presentation and public-projection fixtures; durable outcomes/settlement are
 // covered by the Go tests against disposable Mongo, never earned by this setup.
+for (const [width,height,textScale] of [[320,740,125],[390,844,125],[844,390,125],[1440,900,100]]) {
+    test(`baccarat seats, cards and clock stay distinct at ${width}px (${textScale}%)`, async ({ page }, testInfo) => {
+        const failures = []; page.on('pageerror', error => failures.push(error.message));
+        await page.setViewportSize({width,height});
+        await page.route('**/src/main.js', r => r.fulfill({contentType:'text/javascript',body:''}));
+        await page.route('**/src/analytics/game.js', r => r.fulfill({contentType:'text/javascript',body:''}));
+        await page.goto('/', {waitUntil:'networkidle'});
+        await page.evaluate(prepareCasinoReview, {game:'baccarat',phone:width < 1000,textScale});
+        for (const [revision,phase] of ['betting','revealing','complete'].entries()) {
+            await page.evaluate(({phase,revision}) => {
+                const f=window.__controllerReview, {c,payload}=f;
+                const v={...payload.house,phase,tableVersion:String(revision+2),
+                    players:payload.occupants.map(p=>({...p,wagers:[{spot:'player',amount:20}],paid:phase === 'complete',payout:0})),
+                    revealAt:new Date(Date.now()+6000).toISOString(),nextRoundAt:new Date(Date.now()+30000).toISOString()};
+                if (phase === 'revealing') v.dealt={player:[0,3,1],banker:[9,2]};
+                if (phase === 'complete') v.baccarat={player:[0,3,1],banker:[9,2,4],playerTotal:7,bankerTotal:8,winner:'banker'};
+                payload.house=v; c.updateState(payload); c.house.table.root.scrollTop=0;
+            }, {phase,revision});
+            // Inspect settled layout after the intended card arrival motion.
+            await page.waitForTimeout(450);
+            const geometry=await page.evaluate(() => {
+                const root=window.__controllerReview.c.house.table.root, bounds=root.getBoundingClientRect();
+                const regions=[...root.querySelectorAll('.casino-table-ribbon,.card-table-dealer,.baccarat-result-hand,.baccarat-outcome,.card-table-clock,.card-table-seat')]
+                    .filter(n=>getComputedStyle(n).display !== 'none' && n.getBoundingClientRect().width > 0)
+                    .map(n=>{const r=n.getBoundingClientRect();return {kind:n.className,seat:n.dataset.position,left:r.left,top:r.top,right:r.right,bottom:r.bottom};});
+                const overlaps=[];
+                for(let i=0;i<regions.length;i++) for(let j=i+1;j<regions.length;j++) {
+                    const a=regions[i],b=regions[j];
+                    if(Math.min(a.right,b.right)-Math.max(a.left,b.left) > 1 && Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top) > 1) overlaps.push([a,b]);
+                }
+                const clippedFaces=[];
+                for(const card of root.querySelectorAll('.baccarat-cards .casino-card:not(.back)')) {
+                    const c=card.getBoundingClientRect(), h=card.closest('.baccarat-result-hand').getBoundingClientRect();
+                    const index=card.querySelector('.casino-card-index').getBoundingClientRect(), pip=card.querySelector('.casino-card-pip').getBoundingClientRect();
+                    const overlap=Math.min(index.right,pip.right)-Math.max(index.left,pip.left) > 1 && Math.min(index.bottom,pip.bottom)-Math.max(index.top,pip.top) > 1;
+                    if(c.left < h.left-1 || c.right > h.right+1 || index.right > c.right+1 || index.left < c.left-1 ||
+                        index.top < c.top-1 || index.bottom > c.bottom+1 || pip.bottom > c.bottom+1 || pip.top < c.top-1 || overlap) clippedFaces.push(card.getAttribute('aria-label'));
+                }
+                return {regions,overlaps,clippedFaces,bounds:{left:bounds.left,right:bounds.right,top:bounds.top,bottom:bounds.bottom},
+                    scrollHeight:root.scrollHeight,clientHeight:root.clientHeight,horizontalOverflow:root.scrollWidth-root.clientWidth};
+            });
+            await testInfo.attach(`baccarat-${phase}-geometry`,{body:Buffer.from(JSON.stringify(geometry,null,2)),contentType:'application/json'});
+            await page.screenshot({path:testInfo.outputPath(`baccarat-spacing-${phase}-${width}.png`)});
+            expect(geometry.overlaps).toEqual([]);
+            expect(geometry.clippedFaces).toEqual([]);
+            expect(geometry.horizontalOverflow).toBeLessThanOrEqual(1);
+            for(const r of geometry.regions) {
+                expect(r.left).toBeGreaterThanOrEqual(geometry.bounds.left-1);
+                expect(r.right).toBeLessThanOrEqual(geometry.bounds.right+1);
+                expect(r.top).toBeGreaterThanOrEqual(geometry.bounds.top-1);
+                expect(r.bottom).toBeLessThanOrEqual(geometry.bounds.top+geometry.scrollHeight+1);
+            }
+            for(const selector of ['.card-table-clock','.baccarat-result-hand.player','.baccarat-result-hand.banker','.baccarat-outcome',
+                ...Array.from({length:6},(_,i)=>`.card-table-seat[data-position="${i}"] .card-table-seat-name`)]) {
+                const region=page.locator(`.house-game ${selector}`); await region.scrollIntoViewIfNeeded();
+                await expect(region).toBeInViewport({ratio:1});
+            }
+            await expect(page.locator('.baccarat-theatre [data-card]')).toHaveCount(phase === 'betting' ? 0 : phase === 'revealing' ? 5 : 6);
+        }
+        expect(await page.evaluate(()=>window.__controllerReview.sent)).toEqual([]);
+        await page.evaluate(()=>{const f=window.__controllerReview;f.c.dispose();f.ui?.dispose();});
+        expect(failures).toEqual([]);
+    });
+}
+
 for (const [width,height,textScale] of [[320,740,125],[390,844,125],[844,390,125],[1440,900,100]]) for (const currency of ['gold','ep']) {
     test(`poker separates side-pot returns from net results at ${width}px (${currency}, ${textScale}%)`, async ({ page }, testInfo) => {
         const failures = []; page.on('pageerror', error => failures.push(error.message));
@@ -15,20 +80,20 @@ for (const [width,height,textScale] of [[320,740,125],[390,844,125],[844,390,125
         for (const multiple of [1,2,3]) {
             const outcome = await page.evaluate(({currency,multiple}) => {
                 const f = window.__controllerReview, { c, payload } = f;
-                const unit = currency === 'ep' ? 2 : 100, buyIn = unit * 2, payout = unit * multiple;
-                const shortContribution = buyIn - payout / 2, tableId = `${currency === 'ep' ? 'vip' : 'public'}-poker`;
+                const unit = currency === 'ep' ? 10 : 100, buyIn = unit * (multiple === 2 ? 2 : 3);
+                const shortContribution = unit * (multiple === 1 ? 2 : 1), payout=2*(buyIn-shortContribution);
+                const tableId = `${currency === 'ep' ? 'vip' : 'public'}-poker`;
                 payload.tables[0] = { ...payload.tables[0], id:tableId, currency, floor:currency === 'ep' ? 'vip' : 'public' };
                 payload.floor = payload.tables[0].floor; payload.yourSeat.tableId = tableId;
                 payload.occupants.forEach(p => { p.tableId = tableId; });
-                const members = payload.occupants.slice(0,3).map(p => ({ ...p, buyIn }));
+                const members = payload.occupants.slice(0,3).map((p,i) => ({ ...p,buyIn:i === 2 ? shortContribution : buyIn }));
                 payload.poker = { ...payload.poker, tableId, currency, tableVersion:String(multiple), phase:'complete',
-                    roundId:`side-${currency}-${multiple}`, players:members, balance:1000, minBuyIn:unit, buyInStep:unit,
+                    roundId:`side-${currency}-${multiple}`, players:members, balance:1000-buyIn+payout, minBuyIn:unit, buyInStep:unit,
                     serverNow:new Date().toISOString(), nextRoundAt:new Date(Date.now()+30000).toISOString(),
-                    round:{ phase:'complete', revision:10, street:'river', board:[4,17,30,8,9], buttonSeat:0, actions:[], showdown:true,
+                    round:{ phase:'complete', revision:10, street:'river', board:[1,16,4,47,36], buttonSeat:0, actions:[], showdown:true,
                         pots:[{amount:shortContribution*3,winners:['guest-2']},{amount:payout,winners:['hero']}],
-                        players:members.map((p,i) => ({ ...p, cards:i === 0 ? [13,14] : i === 1 ? [-1,-1] : [15,16],
-                            stack:i === 2 ? payout/2 : 0, committed:i === 2 ? shortContribution : buyIn,
-                            payout:i === 0 ? payout : i === 1 ? 0 : shortContribution*3+payout/2 })) } };
+                        players:members.map((p,i) => ({ ...p,cards:i === 0 ? [12,25] : i === 1 ? [11,24] : [0,13],
+                            stack:0,streetBet:0,committed:p.buyIn,payout:i === 0 ? payout : i === 1 ? 0 : shortContribution*3 })) } };
                 f.sounds = []; c.poker.sound = cue => f.sounds.push(cue); c.updateState(payload);
                 return { payout, buyIn, unit, currency:currency === 'ep' ? 'EP' : 'Gold' };
             }, {currency,multiple});

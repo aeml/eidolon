@@ -9,23 +9,24 @@ const playing = () => ({ ...lobby(), phase: 'playing', players: [{ playerId: 'A'
         { playerId: 'B', seat: 1, stack: 180, streetBet: 20, committed: 20, cards: [-1, -1] }]
 } });
 
-test.each([['gold', 100, 'Net loss: 100 Gold'], ['gold', 200, 'No net profit or loss'],
-    ['ep', 2, 'Net loss: 2 EP'], ['ep', 4, 'No net profit or loss']])(
-    'winning a smaller poker side pot does not celebrate a losing or even hand (%s, %i returned)', (currency, payout, netText) => {
+test.each([['gold', 300, 200, 200, 'Net loss: 100 Gold'], ['gold', 200, 100, 200, 'No net profit or loss'],
+    ['ep', 30, 20, 20, 'Net loss: 10 EP'], ['ep', 20, 10, 20, 'No net profit or loss']])(
+    'winning a smaller poker side pot does not celebrate a losing or even hand (%s, %i buy-in)', (currency, stake, shortStake, payout, netText) => {
         const sound = jest.fn(), ui = new PokerTableUI(jest.fn(), sound);
         try {
-            const stake = currency === 'ep' ? 4 : 200, shortContribution = stake - payout / 2;
             const view = playing(); view.currency = currency; view.phase = 'complete';
+            view.balance=1000-stake+payout;
+            view.minBuyIn=currency === 'ep' ? 10 : 100; view.buyInStep=view.minBuyIn;
+            view.maxBuyIn=currency === 'ep' ? 100 : 100000;
             view.players = [{ ...view.players[0], buyIn: stake }, { ...view.players[1], buyIn: stake },
-                { playerId: 'C', seat: 2, name: 'Cora', buyIn: stake }];
-            // C wins the three-way main pot with a shorter commitment. A wins
-            // the separate heads-up side pot; unspent C stack also returns.
-            view.round = { ...view.round, phase: 'complete', revision: 2, showdown: true, actions: [],
-                pots: [{ amount: shortContribution * 3, winners: ['C'] }, { amount: payout, winners: ['A'] }],
-                players: [{ ...view.round.players[0], stack: 0, committed: stake, payout },
-                    { ...view.round.players[1], stack: 0, committed: stake, payout: 0 },
-                    { playerId: 'C', seat: 2, cards: [15,16], stack: payout / 2, committed: shortContribution,
-                        payout: shortContribution * 3 + payout / 2 }] };
+                { playerId: 'C', seat: 2, name: 'Cora', buyIn: shortStake }];
+            // Three legal all-ins: C's aces win the main pot; A's kings beat
+            // B's queens in the side pot. Every contribution equals its buy-in.
+            view.round = { ...view.round, phase: 'complete', street:'river', revision: 2, showdown: true, actions: [],board:[1,16,4,47,36],
+                pots: [{ amount: shortStake * 3, winners: ['C'] }, { amount: payout, winners: ['A'] }],
+                players: [{ ...view.round.players[0], cards:[12,25],stack:0,streetBet:0,committed:stake,payout },
+                    { ...view.round.players[1],cards:[11,24],stack:0,streetBet:0,committed:stake,payout:0 },
+                    { playerId:'C',seat:2,cards:[0,13],stack:0,streetBet:0,committed:shortStake,payout:shortStake*3 }] };
             ui.update(view, 'A');
             expect(ui.celebration.active).toBe(false);
             expect(sound).not.toHaveBeenCalledWith('win');
@@ -36,6 +37,19 @@ test.each([['gold', 100, 'Net loss: 100 Gold'], ['gold', 200, 'No net profit or 
             expect(sound).not.toHaveBeenCalledWith('win');
         } finally { ui.dispose(); }
     });
+
+test.each([undefined,0])('missing or invalid poker buy-in (%s) never implies a free win', buyIn => {
+    const sound=jest.fn(), ui=new PokerTableUI(jest.fn(),sound);
+    try {
+        const view=playing(); view.phase='complete'; view.players[0].buyIn=buyIn;
+        view.round={...view.round,phase:'complete',revision:2,actions:[],
+            pots:[{amount:200,winners:['A']}],players:[{...view.round.players[0],payout:200}]};
+        ui.update(view,'A');
+        expect(ui.summary.textContent).not.toContain('Net profit');
+        expect(ui.celebration.active).toBe(false);
+        expect(sound).not.toHaveBeenCalledWith('win');
+    } finally { ui.dispose(); }
+});
 
 test('poker rules remain available while funded controls wait for synchronization', () => {
     const ui = new PokerTableUI(jest.fn()); document.body.append(ui.root);
