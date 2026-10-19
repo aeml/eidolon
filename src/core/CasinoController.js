@@ -152,6 +152,8 @@ export class CasinoController {
         const table = tables.find(table => table.id === seat.tableId);
         this.heading.textContent = table?.name || 'Casino table';
         this.heading.title = this.heading.textContent;
+        this.heading.setAttribute('aria-label', this.heading.textContent);
+        this.heading.dataset.compactName = {blackjack:'Blackjack',poker:'Hold’em',roulette:'Roulette',baccarat:'Baccarat',slots:'Slots'}[table?.game] || 'Casino';
         const occupants = this.data.occupants.filter(occupant => occupant.tableId === seat.tableId);
         const ready = occupants.filter(occupant => occupant.connected && occupant.ready).length;
         const preparation = this.data.preparation[seat.tableId];

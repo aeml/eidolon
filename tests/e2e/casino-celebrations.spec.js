@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-for (const [width, height] of [[390, 844], [1280, 720], [1440, 1000], [844, 390]]) test(`casino hand labels and large win panels at ${width}px`, async ({ page }) => {
+for (const [width, height] of [[390, 844], [1280, 720], [1440, 1000], [844, 390]]) test(`casino hand labels and large win panels at ${width}px`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height });
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.goto('/', { waitUntil: 'networkidle' });
@@ -61,7 +61,8 @@ for (const [width, height] of [[390, 844], [1280, 720], [1440, 1000], [844, 390]
             clockClear: win.bottom <= clock.top + 1 || win.top >= clock.bottom - 1 };
     })).toEqual({ totalVisible: true, clockClear: true });
     expect(await page.locator('.casino-session').evaluate(n => n.scrollWidth - n.clientWidth)).toBeLessThanOrEqual(1);
-    await page.screenshot({ path: `/tmp/eidolon-blackjack-win-${width}.png` });
+    await expect.poll(()=>page.locator('.casino-card-arriving').evaluateAll(cards=>cards.every(card=>card.getAnimations().every(a=>a.playState==='finished')))).toBe(true);
+    await page.screenshot({ path: testInfo.outputPath(`blackjack-win-${width}.png`) });
     await page.evaluate(() => {
         const { blackjack, poker, panel, title } = window.__celebrations;
         blackjack.update(null); panel.className = 'casino-session has-poker'; title.textContent = 'Fourfold Hold’em';
@@ -88,7 +89,8 @@ for (const [width, height] of [[390, 844], [1280, 720], [1440, 1000], [844, 390]
         });
     })).toBe(true);
     expect(await page.locator('.casino-session').evaluate(n => n.scrollWidth - n.clientWidth)).toBeLessThanOrEqual(1);
-    await page.screenshot({ path: `/tmp/eidolon-poker-win-${width}.png` });
+    await expect.poll(()=>page.locator('.casino-card-arriving').evaluateAll(cards=>cards.every(card=>card.getAnimations().every(a=>a.playState==='finished')))).toBe(true);
+    await page.screenshot({ path: testInfo.outputPath(`poker-win-${width}.png`) });
     await page.getByRole('button', { name: 'Leave table', exact: true }).click();
     await expect(page.locator('.casino-session')).toBeHidden();
 });

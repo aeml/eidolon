@@ -81,8 +81,8 @@ export class BlackjackTableUI {
         this.stateKey = JSON.stringify([view.roundId, view.phase, view.round?.revision, own, playerID]);
         if (this.pendingKey !== this.stateKey) this.pendingKey = null;
         this.summary.textContent = !view.available ? 'Blackjack is temporarily unavailable; saved wagers are retained.' :
-            view.processing ? `Saving table funds… · ${this.balance} ${this.currency} available` :
-            `${this.balance} ${this.currency} available · ${view.phase === 'betting' ? own ? 'Your wager is confirmed.' : 'Betting is open.' :
+            view.processing ? `Saving table funds… · ${goldText(this.balance)} ${this.currency} available` :
+            `${goldText(this.balance)} ${this.currency} available · ${view.phase === 'betting' ? own ? 'Your wager is confirmed.' : 'Betting is open.' :
                 view.phase === 'settling' ? 'Saving payouts…' : view.phase === 'complete' ? 'Payouts saved. Next round shortly.' :
                     watchingEarlierSeat ? 'Watching your earlier wager; return to its seat to act.' : 'Round in progress.'}`;
         this.betBox.hidden = false;

@@ -16,7 +16,7 @@ export class SlotMachineUI {
         this.cells = Array.from({ length: 5 }, () => []);
         for (let row = 0; row < 3; row++) for (let reel = 0; reel < 5; reel++) {
             const cell = node('div', '', 'slot-cell'), icon = node('img'), label = node('span');
-            icon.alt = ''; cell.append(icon, label); this.grid.append(cell); this.cells[reel][row] = { cell, icon, label };
+            icon.alt = ''; cell.setAttribute('role','img'); cell.append(icon, label); this.grid.append(cell); this.cells[reel][row] = { cell, icon, label };
         }
         this.result = node('p', '', 'slot-result');
         this.result.setAttribute('role', 'status');
@@ -141,7 +141,7 @@ export class SlotMachineUI {
             this.stopAuto('Auto spins stopped while synchronizing.'); this.summary.textContent = 'Synchronizing saved machine progress…'; this.refreshControls(); return;
         }
         if (this.pending && s.revision !== this.pending.revision && !view.processing) { this.pending = null; clearTimeout(this.pendingTimer); }
-        this.summary.textContent = `${view.balance ?? view.gold} ${this.currency} · ${s.freeSpins} free spins saved${view.processing ? ' · Saving settlement…' : ''}`;
+        this.summary.textContent = `${goldText(view.balance ?? view.gold)} ${this.currency} · ${s.freeSpins} free spins saved${view.processing ? ' · Saving settlement…' : ''}`;
         this.lore.textContent = machine.lore;
         this.heading.textContent = machine.name || `${machine.theme[0].toUpperCase()}${machine.theme.slice(1)} reels`;
         if (s.freeSpins || s.bonus) this.stake.value = String(s.bet);
@@ -235,6 +235,7 @@ export class SlotMachineUI {
             const symbol = grid?.[reel]?.[row] ?? 0, { cell, icon, label } = this.cells[reel][row];
             cell.className = `slot-cell${symbol === 6 ? ' wild' : symbol === 7 ? ' scatter' : ''}`;
             icon.src = getSlotSymbolIcon(machine.theme, symbol); label.textContent = machine.symbols[symbol];
+            cell.setAttribute('aria-label', machine.symbols[symbol]); cell.title = machine.symbols[symbol];
         }
     }
 

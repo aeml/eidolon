@@ -543,3 +543,44 @@ body .casino-session .slot-stage:has(.slot-bonus:not([hidden])) { min-height: 0;
 .slot-stage > .casino-celebration p { min-height: 0; overflow-y: auto; font-size: 13px; line-height: 1.35; }
 .casino-session .slot-stage .slot-bonus { justify-content: safe center; }
 .casino-session .slot-stage .slot-bonus > * { flex-shrink: 0; }
+.casino-session.has-slots > .casino-session-status { flex-shrink: 0; margin: 0 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-table-center:has(.casino-celebration:not([hidden])) { z-index: 3; }
+.card-table-scene:has(.casino-celebration:not([hidden])) .card-table-clock { z-index: 4; }
+@media (max-width: 700px) {
+    .casino-session .casino-session-header h2[data-compact-name] { font-size: 0; }
+    .casino-session .casino-session-header h2[data-compact-name]::after { content: attr(data-compact-name); font: 700 18px/1.3 Georgia, serif; }
+}
+@media (max-width: 700px) and (min-height: 501px) {
+    .casino-session .slot-stage > .slot-lore { max-height: 1.4em; white-space: nowrap; text-overflow: ellipsis; }
+    .casino-session .slot-cell span { display: none; }
+    .casino-session .slot-cell img { height: 100%; }
+    .blackjack-scene .card-table-seat { width: 30%; height: 31%; padding: 2px; }
+    .blackjack-scene .card-table-seat[data-position="0"] { left: 17%; top: 84.5%; height: 31%; }
+    .blackjack-scene .card-table-seat[data-position="1"] { left: 17%; top: 15.5%; }
+    .blackjack-scene .card-table-seat[data-position="2"] { left: 50%; top: 15.5%; }
+    .blackjack-scene .card-table-seat[data-position="3"] { left: 83%; top: 15.5%; }
+    .blackjack-scene .card-table-seat[data-position="4"] { left: 83%; top: 84.5%; }
+    .blackjack-scene .card-table-seat[data-position="5"] { left: 50%; top: 84.5%; height: 31%; }
+    .blackjack-scene :is(.card-table-seat-name, .card-table-seat-status) { font-size: 10px; line-height: 1.1; margin-top: 0; }
+    body .casino-session .blackjack-scene .blackjack-hand p { font-size: 10px; line-height: 1.2; margin: 0; }
+    body .casino-session .blackjack-scene .card-table-seat .blackjack-card { min-width: 24px; height: 30px; margin: 1px; }
+    .blackjack-scene .card-table-seat .casino-card-index { left: 1px; top: 2px; font-size: 9px; }
+    .blackjack-scene .card-table-seat .casino-card-pip { right: 1px; bottom: 1px; font-size: 16px; }
+    .blackjack-scene .card-table-seat .casino-hand-value { font-size: 12px; line-height: 1.1; margin-top: 1px; }
+    body .casino-session .blackjack-scene .card-table-seat .blackjack-hand { margin: 0; }
+    .blackjack-scene .casino-table-ribbon { display: none; }
+    .blackjack-scene .card-table-dealer { top: 44%; width: 80%; }
+    .blackjack-scene .card-table-dealer-portrait { display: none; }
+    .blackjack-scene .card-table-dealer > strong { font-size: 11px; line-height: 1.15; }
+    .blackjack-scene .card-table-dealer .casino-hand-value { font-size: 12px; line-height: 1.15; margin-top: 2px; }
+    .blackjack-scene .card-table-center { top: 44%; height: 20%; }
+    .blackjack-scene .card-table-clock { top: 62.5%; padding: 2px 4px; }
+    .blackjack-scene .card-table-clock span { font-size: 10px; line-height: 1.1; }
+    .blackjack-scene .card-table-clock strong { font-size: 18px; line-height: 1.1; }
+    :is(.blackjack-scene, .poker-scene) .card-table-center:has(.casino-celebration:not([hidden])) { width: 90%; height: 32%; top: 40%; }
+    .poker-scene .card-table-center:has(.casino-celebration:not([hidden])) { top: 38%; }
+    .card-table-center .casino-celebration { padding: 6px; }
+    .card-table-center .casino-celebration h3 { font-size: 20px; margin: 2px; }
+    .card-table-center .casino-celebration strong { font-size: 18px; }
+    .card-table-center .casino-celebration p { font-size: 11px; line-height: 1.2; margin: 2px 0; }
+}

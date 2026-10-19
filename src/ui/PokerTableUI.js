@@ -90,10 +90,10 @@ export class PokerTableUI {
         const count = view.players?.length || 0;
         const waiting = count < 2 ? `Waiting for another real player · ${count}/2 minimum.` : 'Funded players are joining; waiting for the server to deal.';
         this.summary.textContent = view.processing ? `Saving table ${this.currency}… please wait.` : view.phase === 'betting'
-            ? `${this.balance} ${this.currency} available. ${waiting}${funded ? ` Your ${funded.buyIn} ${this.currency} buy-in is reserved.` : ''}`
-            : view.phase === 'complete' ? `Hand complete · ${this.balance} ${this.currency} available. All cash-outs saved.`
+            ? `${goldText(this.balance)} ${this.currency} available. ${waiting}${funded ? ` Your ${funded.buyIn} ${this.currency} buy-in is reserved.` : ''}`
+            : view.phase === 'complete' ? `Hand complete · ${goldText(this.balance)} ${this.currency} available. All cash-outs saved.`
                 : view.phase === 'settling' ? 'Hand complete · saving each player’s unspent stake and winnings…'
-                    : `${round?.street || 'Dealing'} · ${this.balance} ${this.currency} in your bag. ${round?.turnPlayerId === playerID ? 'Your turn.' : `${this.name(round?.turnPlayerId)} to act.`}`;
+                    : `${round?.street || 'Dealing'} · ${goldText(this.balance)} ${this.currency} in your bag. ${round?.turnPlayerId === playerID ? 'Your turn.' : `${this.name(round?.turnPlayerId)} to act.`}`;
         if (changed) {
             this.board.replaceChildren(); this.pots.replaceChildren();
             if (controlsChanged) this.actions.replaceChildren();

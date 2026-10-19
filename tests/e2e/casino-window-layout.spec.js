@@ -27,7 +27,12 @@ for (const [width, height] of [[320,740],[390,844],[844,390],[1440,900]]) for (c
                 .map(id=>({id,label:id,multiplier:id.includes('-')?3:2})),{id:'split:1-2',label:'Split 1/2',multiplier:18}];
             const payload = { tables:[table], floor:'public', yourSeat:{tableId:table.id,seat:0,sessionId:'prepared-seat',exitX:0,exitZ:173},
                 occupants:Array.from({length:6},(_,i)=>({tableId:table.id,playerId:i===0?'hero':`guest-${i}`,name:i===0?'You':`Lanternhold guest ${i}`,seat:i,connected:true})), house };
-            if (game === 'blackjack') payload.blackjack = { ...house, gold:1000, players:[] };
+            if (game === 'blackjack') {
+                const players=payload.occupants.map(p=>({...p,bet:20}));
+                payload.blackjack={...house,gold:1000,phase:'playing',players,
+                    round:{revision:1,dealer:[9],dealerHidden:true,turnPlayerId:'hero',turnHand:0,actions:['hit','stand'],
+                        deadline:house.dealAt,players:players.map(p=>({...p,hands:[{cards:[10,3],bet:20}]}))}};
+            }
             if (game === 'poker') payload.poker = { ...house, gold:1000, minBuyIn:100, maxBuyIn:100000, players:[] };
             if (game === 'slots') payload.slots = { available:true, currency:'gold', balance:1000, minBet:20, maxBet:100000, betStep:20,
                 machine:{theme:'earth',name:'Rootheart Reels',lore:'The four realms turn beneath the lanterns.',mechanic:'The roots carry each saved reward.',
@@ -44,12 +49,22 @@ for (const [width, height] of [[320,740],[390,844],[844,390],[1440,900]]) for (c
         expect(bounds.x).toBeGreaterThanOrEqual(0); expect(bounds.y).toBeGreaterThanOrEqual(0);
         expect(bounds.x + bounds.width).toBeLessThanOrEqual(width); expect(bounds.y + bounds.height).toBeLessThanOrEqual(height);
         await expect(panel.locator('details')).toHaveCount(0);
+        if (game==='blackjack') {
+            await expect(panel.locator('.card-table-seat .casino-hand-value')).toHaveCount(6);
+            expect(await panel.locator('.card-table-seat .casino-hand-value').evaluateAll(values=>values.flatMap(n=>{
+                const r=n.getBoundingClientRect(),clip=n.closest('.card-table-seat-hands').getBoundingClientRect();
+                return r.top>=clip.top-1&&r.bottom<=clip.bottom+1?[]:[{value:n.textContent,top:r.top,bottom:r.bottom,clipTop:clip.top,clipBottom:clip.bottom}];
+            }))).toEqual([]);
+        }
         if (['roulette','baccarat'].includes(game)) await page.locator('.casino-history').scrollIntoViewIfNeeded();
         if (game==='slots') {
             await expect(panel.getByRole('button',{name:'Spin · 20 Gold',exact:true})).toBeVisible();
             const grid=await panel.locator('.slot-grid').boundingBox(), stage=await panel.locator('.slot-stage').boundingBox();
             expect(grid.height).toBeGreaterThan(100);
             expect(grid.y + grid.height).toBeLessThanOrEqual(stage.y + stage.height);
+            expect(await panel.locator('.slot-cell img').evaluateAll(icons=>icons.every(n=>{
+                const r=n.getBoundingClientRect();return r.width>20&&r.height>20;
+            }))).toBe(true);
         }
         expect(await panel.evaluate(n=>n.scrollWidth-n.clientWidth)).toBeLessThanOrEqual(1);
         if(game==='roulette') await expect.poll(()=>page.locator('.casino-history ol').evaluate(n=>n.scrollWidth-n.clientWidth-n.scrollLeft)).toBeLessThanOrEqual(2);

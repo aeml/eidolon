@@ -1,165 +1,84 @@
-# Casino round experience candidate
+# Casino round experience and large movable windows
 
-This isolated candidate implements the October19 casino requirements across
-roulette, baccarat, blackjack, poker and all four elemental slot themes. It is
-not a deployed release or final acceptance of the owner's quality target.
-Alpha1.79.82 remains the last publicly verified release; the reader-key
-correction to prepared83 must pass and deploy before another release is sent.
+This isolated candidate prepares Alpha1.79.84. Accepted83at d2e957a2d has its
+own complete CI, both deployments, live checks and exact public verification.
+The casino candidate still needs selection, copied-publication review and its
+own CI/deployment/public verification. It does not complete the whole game or
+declare the owner's casino-quality target accepted.
 
-Roulette now has one persistent European wheel, coloured pockets, a visible
-orbiting ball, a close-up during the spin, and a decelerating bounce into the
-server-confirmed pocket. Repeated polls do not restart the animation. Reopening
-a finished round shows the saved outcome directly. Skip and reduced motion
-stop the presentation without guessing a result or changing the shared clock.
-Leaving, changing the table/currency/reader/seat or disposal retires motion.
+All five game windows occupy92%of the viewport. Top bars support pointer drag,
+keyboard movement, remembered wide/compact positions and viewport clamping.
+The main window shares existing menu preferences without erasing bag/character
+coordinates and participates in Reset window positions. Compact headers show
+clear game names while retaining the full table name for assistive technology
+and the title hint. Rules and long references use separate movable, contained
+popups; no game window uses disclosure triangles. Popups own focus, Escape,
+backdrop closing and disposal. Rules stay available during synchronization.
+Outside world clicks/taps use the existing server-owned leave request; movement
+stays locked until seat release and confirmed wagers still settle.
 
-Baccarat has a wider two-hand stage, visible scores, shared card faces and
-individual public card reveals. The server exposes only already-dealt cards
-through a separate public projection, without revealing the winner or future
-cards. The saved complete result and payout projection retain their original
-settlement boundary. The slow floor poll would group cards together, so the
-one-second house timer now sends only changed public presentations to currently
-seated house-table players. It never holds the house/session locks while
-looking up recipients or sending their views. Each card needs no database write
-and causes no additional draw, wager or settlement.
+Roulette uses a persistent European wheel with coloured pockets, visible ball
+launch/orbit, smooth close-up and decelerating bounces into the server-confirmed
+pocket. Repeated polls do not restart motion. Reopened completed rounds display
+the saved result. Skip/reduced motion never guess a result or change the clock.
+Chip values, selected amounts, undo/clear and manual slip reuse preserve explicit
+funding. The number board uses the standard three rows on wide screens, with
+readable dozens, outside ranges and columns. Currency/reader/table/seat changes
+clear draft/reuse custody.
 
-Recent house history contains up to40 completed shared rounds, including zero,
-ties and losses. It is saved in the existing durable table record when the next
-lobby replaces the completed round. Both the completed view and the next lobby
-show the same result exactly once; process-cache loss cannot erase it. History
-is specific to the physical table and its currency, not manufactured per-player
-wins. Baccarat uses a six-row bead display with readable accessible scores.
-Past results are descriptive; no odds or prediction is implied.
+Baccarat displays cards individually, live scores and saved results. Its public
+server projection contains only already-dealt cards, never future cards or the
+winner. The one-second house timer sends only changed public presentations to
+currently seated viewers, without holding house/session locks during world
+lookup or sending. No per-card database write, wager, random draw or settlement
+is introduced. Recent roulette/baccarat history contains at most40completed
+shared rounds, is saved during ordinary lobby rollover and survives restart.
+Complete and next-lobby views include the saved result exactly once. History is
+specific to the table/currency and never manufactured per player.
 
-House controls add chip denominations, visible amounts on selected spots, undo
-for unconfirmed chips and manual slip reuse. Reuse only copies a draft; explicit
-confirmation is still required to spend. Currency/table/reader/seat changes
-clear reuse custody. Existing single-click betting, pending fences, limits,
-rejection acknowledgements and durable transfer validation remain in place.
+Blackjack/poker share clearer accessible card faces and animate only newly
+visible cards. Reopened hands, hidden cards, repeated polls and reduced motion
+do not replay deals. Phone blackjack uses two seat rails so all six ordinary
+hand totals remain visible. Result banners sit above the seats with the clock
+still clear. Slots have realm-coloured stages, visible symbols on phones,
+known-result-only animation skipping, paying-line inspection and separate auto
+settings with explicit total stake information. Older ready snapshots cannot
+rewind a newer saved spin or reopen play after unavailable/saving feedback.
+Queues, free spins, bonus ownership, currencies, odds and durable payouts keep
+their existing rules. References stop unstarted auto spins without cancelling a
+current wager. No payment or real-money integration is introduced.
 
-The whole suite shares original brass/ink/felt styling, focus states, card
-faces, clear round phases and existing sound cues through the game's audio
-settings. Blackjack/poker turns, private cards, costs, split/side-pot rules and
-settlement are unchanged. Phone/landscape spacing keeps win panels, hand totals
-and clocks apart. Slots have realm-coloured stages, staggered existing reel
-stops, an optional skip for a known saved result, and per-stage paying-line
-inspection. Inspecting a line only changes presentation. Saved bonuses and
-free spins, stop/auto limits, manual paid play, result net amounts and voluntary
-play controls retain their authority and behavior.
+Private evidence is retained under `.qa-casino-experience/` in the owned casino
+worktree. Focused qualification passes283checks/16client suites, with changed
+JavaScript lint. Version/history checks pass392cases/two suites; all518prior
+note strings remain byte-identical in the519-entry cumulative history.
+The final Chromium149.0.7827.55 browser matrix passes45cases with zero retries,
+flakes or skips: all five real controller windows at320×740,390×844,844×390and
+1440×900; all four slot themes; roulette landing/motion; baccarat scores/history;
+blackjack/poker results; and voluntary funded-play controls. Compact and wide
+window/popup dragging, Escape, remembered placement and leaving are included.
+These are prepared DOM/CSS/public-projection fixtures, not earned play or
+physical-device certification. Final success images remain in the owned output.
 
-Private qualification is retained under `.qa-casino-experience/` in the owned
-casino worktree. The current evidence includes257checks/13client suites,
-23browser cases with no retries/flakes/skips in Chromium149.0.7827.55, and
-focused server/Mongo history, privacy and payout tests. Browser setup uses
-prepared UI/public projections rather than earned money or a connected venue;
-the separate real-socket/restart qualification also passes for shared Gold
-roulette and EP baccarat. It exercises two guests, duplicate bets, departed-player
-settlement and fresh-process wallet recovery; the completed public view must
-include the same saved round in recent history. All house tests pass against
-the disposable database with zero skips in that final run (134.1seconds).
-A final three-size roulette pass covers the smooth close-up/launch refinement.
+The earlier server qualification passes all house cases against disposable
+Mongo in134.1seconds, with zero skips in its final run. Two real guests exercise
+Gold roulette and EP baccarat, duplicate wagers, departure settlement,
+fresh-process wallet recovery and completed public history. It is reused only
+for the unchanged server history/reveal implementation;84changes its version
+default, not its money logic. Tests also reject transfer-forged history and
+check privacy, bounded decoding and changed-only audience notifications.
 
-Retained failures include a first local browser setup that failed to preserve
-the selected browser for per-file launch overrides; the helper now honors the
-explicit browser. Early phone blackjack and landscape hand/clock overlaps were
-fixed in product CSS, without changing assertions. The initial real-socket
-fixture used a binary whose health identity did not match its filename; its
-server started normally but the readiness helper correctly refused that build.
-The corrected fixture supplies the required build identity. No gameplay clock,
-performance budget, money rule, failure recording or successful count was
-relaxed to pass these checks.
+Retained failures include an initial browser-launch override, phone/landscape
+hand/clock overlaps, two later320px six-player hand clips, and an early socket
+fixture whose compiled health identity did not match its filename. Product
+spacing, card rails, symbol sizing and overlay order were corrected without
+relaxing geometry assertions or gameplay deadlines. The version check caught
+an old workflow version default, which was corrected. The initial poker Rules
+assertion was updated to preserve the new readable popup while still requiring
+every funded control to stay disabled. An erroneous suite path remains recorded
+as setup failure. Original evidence is not replaced by the final passing runs.
 
-Further work includes reviewing motion and audio in connected play, checking the
-final public artifact/deployment, and assessing the complete casino experience
-against the owner's higher quality target. These tests do not establish human
-listening, physical-phone review, casino art/performance acceptance, or the full
-beta-readiness goal. Soak/stress remains deferred.
-
-## Further refinements awaiting browser review
-
-The working follow-up keeps roulette history at its newest result on opening
-and follows appended results only while the reader is already at the end.
-Scrolling back remains under the reader's control; leaving cancels its queued
-layout work. Blackjack and poker decorate newly visible cards with a short deal
-animation, while same-hand polls, hidden cards, reduced motion and reopened
-hands remain still. A bounded pot area keeps multiple side pots from spilling
-into the shared clock. These refinements still require browser review.
-
-A separate slot regression shows that an older ready snapshot can rewind a
-newer saved spin, including after unavailable/saving feedback. Three new cases
-fail before the correction. A machine/currency/seat-scoped highest saved revision
-now keeps the newer result while allowing current saving/unavailable feedback;
-only a matching/newer ready snapshot restores paid play. It does not change a
-server revision, wager or result. The slot/play-integration group passes56checks.
-Real-controller phone/landscape and final animation browser reviews are prepared
-but intentionally deferred while the prior release's CI is using this runner.
-
-## Large movable windows and reference popups
-
-The additional owner requests remove disclosure/triangle sections from all
-casino game windows. Rules move into the real controller's top bar; rules,
-inside roulette bets, spin breakdown, auto settings and visit options use
-separate contained native-dialog popups with close/Escape/focus handling.
-Opening rules or spin details stops unstarted slot auto-spins. Reading never
-changes a funded round's server clock. Slot references no longer push the
-primary stake and Spin action down the control panel.
-
-The game window occupies most of the viewport. Its top bar supports pointer
-dragging and keyboard movement, remembers positions through UIManager's shared
-presentation preferences, clamps after resize and participates in the existing
-reset command. Popup top bars are also movable and remember their placement
-for their UI lifetime. Closed popups are created off-document until opened;
-leaving or disposing closes them and releases all owned resize/drag listeners.
-
-The updated popup/layout group passes280checks/16client suites, including
-window clamping, keyboard position memory without erasing bag coordinates,
-popup focus restoration and teardown, table ordering and all game controls.
-Changed JavaScript lint passes. The new sizes, contained slot stage and actual
-controller/header/Rules/drag/phone behavior still need fresh browser review.
-The earlier23browser cases qualify the prior prepared layout, not these new
-window dimensions. The eight controller/phone cases and revised game/browser
-checks are prepared but not run while release83CI is live.
-
-
-The final review fixture now covers all five actual controller windows at
-320×740,390×844,844×390 and1440×900 (20cases), including majority-screen bounds,
-Rules/reference containment, no disclosure sections, Escape without a leave
-request, desktop top-bar drag and remembered position on reopening. These cases
-remain prepared, not passed, while release83CI is live. The current master
-reader correction has been ordinarily merged into this isolated candidate.
-
-A small follow-up keeps poker Rules available during synchronization while all
-funded controls remain disabled, and refreshes roulette's selected chip/cost
-hint after stake shortcuts. Its focused house/poker/browser-plan group passes
-58checks/three suites with lint. The first invocation included a nonexistent
-suite path and an old assertion that also disabled Rules; that failure is
-retained. The corrected assertion still requires every funded button to remain
-disabled. Resetting a retired history view also clears its reader-follow scope,
-so reopening starts at the newest saved results.
-
-
-Prepared84now has synchronized client/server/container/deployment defaults and
-519cumulative notes; all518prior entries compare byte-for-byte equal to master
-d2. Version/history qualification passes392checks/two suites. An initial check
-correctly caught the deployment workflow's old version string; its retained
-failure is corrected in the isolated candidate. This preparation is not a push,
-deployment or acceptance, and83must be verified first.
-
-The roulette board now groups dozens, outside choices and columns, with familiar
-1–18/19–36 and1st/2nd/3rd12labels. Red/black outside spots retain distinct colours.
-All choices still use the supplied server catalog identities. House/round
-qualification passes28checks/two suites with lint after that display-only change.
-
-
-Outside world clicks now dismiss a seated game through the existing leave
-request, preserving its seat token and blocking movement until the server's
-release arrives. Confirmed wagers still settle normally. The controller/play
-integration group passes62checks/two suites with lint. Phone and landscape
-windows retain the92%size as well, leaving actual room to drag rather than
-clamping a full-viewport window to a single immovable position. The pending
-20-case browser review now requires vertical drag at compact sizes too.
-
-The world-dismissal guard also accepts the existing mobile touch callback,
-which supplies coordinates without a mouse-button field. Both mouse and touch
-keep movement locked until seat release; the focused group passes63checks.
-All changed JavaScript passes lint after the final control/compact-layout edits.
+Connected visual/audio review, actual public artifact/deployment verification
+and the owner's complete casino experience assessment remain open. No human
+listening, physical-phone, whole-world art/performance, campaign, operations,
+F1–F5 or beta/1.99gate is closed here. Soak/stress remains deferred.
