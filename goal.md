@@ -2666,3 +2666,21 @@ up/down presentation after reproducing the old camera mismatch. Neither feature
 is deployed yet: copied publication, own CI, deployment and public verification
 remain required. Casino comfort/art/audio assessment and the full original beta/
 world/performance/owner/F1–F5scope remain open; no soak/stress run is added.
+
+
+## October 19 Alpha 1.79.84 scoped delivery
+
+Source b410683fae3c020c8b3872f0c1cf3cb45cefd8d3 completes its original ten-job
+CI, both deployments, and live checks. Public normal-TLS identities match;
+438 current files match its exact artifact, with 110 unchanged GLB proofs reused
+only after current-artifact byte comparison. This selects the qualified casino
+presentation/windows and jump-camera work described at the earlier preparation
+checkpoint. The original 84 EP socket fixture failure remains retained, with
+a reproduced and race-qualified reader correction in the accepted source.
+[Acceptance](docs/plans/2026-10-19-release1-79-84-acceptance.md).
+
+The full original game goal remains active. Next casino verification includes
+saved larger phone text and keyboard viewport combinations; their read-only
+audit is not yet a reproduced defect or selected runtime change. Owner casino
+assessment, final art/performance, human campaign/listening/physical devices,
+operations/rights, F1–F5 and beta/1.99 gates remain open. Soak/stress stays deferred.

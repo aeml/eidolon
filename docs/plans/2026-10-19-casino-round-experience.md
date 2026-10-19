@@ -1,10 +1,10 @@
 # Casino round experience and large movable windows
 
-This isolated candidate prepares Alpha1.79.84. Accepted83at d2e957a2d has its
-own complete CI, both deployments, live checks and exact public verification.
-The assembled candidate has passed local and copied-publication review. Its
-own CI/deployment/public verification is still required. It does not complete the whole game or
-declare the owner's casino-quality target accepted.
+This plan records the selected Alpha 1.79.84 implementation and local
+qualification. Its corrected source now passes complete own CI, both deployments,
+live checks, and exact public verification.
+[Delivery acceptance](2026-10-19-release1-79-84-acceptance.md).
+The full game and the owner's complete casino-quality target remain open.
 
 All five game windows occupy92%of the viewport. Top bars support pointer drag,
 keyboard movement, remembered wide/compact positions and viewport clamping.
@@ -83,8 +83,9 @@ assertion was updated to preserve the new readable popup while still requiring
 every funded control to stay disabled. An erroneous suite path remains recorded
 as setup failure. Original evidence is not replaced by the final passing runs.
 
-Connected visual/audio review, actual public artifact/deployment verification
-and the owner's complete casino experience assessment remain open. No human
+Connected human visual/audio review and the owner's complete casino experience
+assessment remain open. Public artifact/deployment verification is accepted in
+the linked delivery receipt. No human
 listening, physical-phone, whole-world art/performance, campaign, operations,
 F1–F5 or beta/1.99gate is closed here. Soak/stress remains deferred.
 
@@ -112,4 +113,6 @@ controller cases and two native compiled High/Low camera cases. The assembled
 bundle contains530modules; its geometry worker and precomputed indices retain
 the accepted bytes. Version/history and affected workflow-policy checks pass
 455cases/seven suites; the519-entry notes retain all518prior entries exactly.
-The complete own CI, deployment and public artifact verification remain next.
+Complete own CI, both deployments and public artifact verification are now
+accepted in the linked delivery receipt. Earlier preparation labels above retain
+their original source and checkpoint scope.

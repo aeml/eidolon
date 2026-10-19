@@ -22,7 +22,26 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
-## Current delivery: accepted Alpha1.79.83
+## Current delivery: accepted Alpha 1.79.84
+
+Source b410683fae3c020c8b3872f0c1cf3cb45cefd8d3 passes its original ten-job
+[CI 39215799158](https://github.com/aeml/eidolon/actions/runs/39215799158), both
+deployments, and live checks. Own CI records 823 client suites / 12,807 checks,
+517 hosted, 184 native, and 11 live passes, with 14/2/1 existing exclusions and
+zero failed/flaky browser outcomes. Normal-TLS public identities match, and
+438 current files match the exact artifact; 110 unchanged GLBs retain accepted
+83 proof after current-artifact byte comparison. Notes remain cumulative at 519.
+[Acceptance](2026-10-19-release1-79-84-acceptance.md).
+
+This delivers the large movable casino windows, popups, round/card/slot/history
+presentation, and height-changing jump-camera correction. The original 84 EP
+socket fixture failure remains retained; its reader correction passes a before/
+after probe, race-enabled actual sockets, and the new complete own CI. Casino
+owner assessment and larger phone-text/keyboard combinations remain follow-up
+work. No full-game, final-art, performance, human campaign/device/audio,
+operations/rights, F1–F5, or beta gate closes here. Soak/stress remains deferred.
+
+## Previous accepted delivery: Alpha1.79.83
 
 Source d2e957a2dc733053332010dc763cacde2cc51b27 passes its original ten-job
 [CI39201585438](https://github.com/aeml/eidolon/actions/runs/39201585438), both
@@ -56,14 +75,14 @@ retained. Current d2e9 includes the further explicit key-continuity correction;
 its own complete passing run and public verification, rather than a waiver or
 unchanged-source rerun, establish this scoped delivery acceptance.
 
-The prepared84candidate now combines locally qualified casino presentation,
+The selected84milestone combines locally qualified casino presentation,
 large movable windows and the height-changing jump-camera correction. Casino
 checks pass283cases/16suites, camera checks99/three suites and version/history/
 affected workflow policy455/seven suites. The45-case source UI matrix and24-case
 copied-publication matrix pass without retries, flakes or skips; two native
-High/Low camera cases pass after reproducing the old mismatch. Its own CI,
-deployment and public verification are still required. None of this candidate
-is included in accepted83. The original town-soil experiment remains unselected.
+High/Low camera cases pass after reproducing the old mismatch. Its own complete
+CI, deployments and public verification are now accepted above. These additions
+were not included in accepted83. The original town-soil experiment remains unselected.
 No final art, whole-world performance, earned human campaign, listening, physical
 device, rights/operational owner, F1–F5, beta or1.99gate is closed. Soak/stress
 remains deferred until features are nearly complete. Every other open row below

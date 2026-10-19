@@ -8,7 +8,7 @@ The server job failed the real EP baccarat case with a connection reset while
 seating guests after the VIP walk; its Gold roulette case passed. The five
 remaining native/input/deployment/live jobs were skipped. The original run was
 neither cancelled nor retried, and its failure evidence is retained. This source
-was not deployed; accepted Alpha 1.79.83 remains the public baseline.
+was not deployed; Alpha 1.79.83 remained the accepted baseline at that checkpoint.
 
 The VIP approach wrote moves for both guests without reading either socket
 during its two legs. The catalog route includes 41.3 seconds of explicit sleeps,
@@ -48,3 +48,8 @@ history changes in this correction. Existing source/copy visual qualification
 retains its original source labels. A passing actual socket suite and a new
 complete source/CI/deployment/public verification are required before Alpha
 1.79.84 is accepted. Soak/stress remains deferred; the full game goal stays open.
+
+The corrected source b410683fae3c020c8b3872f0c1cf3cb45cefd8d3 subsequently passed
+its original complete CI, both deployments, live checks, and normal-TLS public
+identity/artifact verification. [Scoped 84 acceptance](2026-10-19-release1-79-84-acceptance.md)
+retains the original failed run and all broader open requirements.
