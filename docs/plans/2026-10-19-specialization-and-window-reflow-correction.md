@@ -2,8 +2,10 @@
 
 Implementation source: `089abc50a92d0966242aabb1f8cb593f1bed3a19`, based on
 prepared Alpha1.79.83 source `470d9d92f916e52aa8c3de9379b3f273e10a6057`.
-This correction is locally qualified; its own complete CI and deployment
-acceptance are still required. Alpha1.79.82 remains the latest accepted release.
+This correction is now included in accepted Alpha1.79.83 at d2e957a2d, with all
+ten own CI jobs, live checks and exact public-file verification.
+[Delivery acceptance](2026-10-19-release1-79-83-acceptance.md).
+The following evidence preserves each earlier source and failure label.
 
 The HUD refresh signature previously omitted level and specialization. With
 unchanged health/mana, reaching level10 could miss the reminder, or selecting a

@@ -22,46 +22,48 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
-## Current delivery: accepted Alpha1.79.82; corrected83 locally qualified
+## Current delivery: accepted Alpha1.79.83
 
-Both original83CI39174889800and corrected648CI39196355663failed the phone
-Lore held-Space assertion, with downstream deployment gates skipped. Those
-failures are retained. A further correction owns button Space activation until
-release, while fencing repeats, blur, retired readers and disposal. Runtime
-source811cef1cb passes56focused checks/3suites and the copied publication's15
-Lore/window/specialization/reward/conversation cases in Chromium149, with no
-browser retries, flakes or skips. It still needs its own full CI and deployment
-acceptance. Casino presentation work remains isolated and is not part of this
-release correction. See the [correction evidence](2026-10-19-specialization-and-window-reflow-correction.md).
+Source d2e957a2dc733053332010dc763cacde2cc51b27 passes its original ten-job
+[CI39201585438](https://github.com/aeml/eidolon/actions/runs/39201585438), both
+deployments and live checks. Own CI records821client suites/12,786checks,
+484hosted browser passes,184native passes and11live passes, with14/2/1excluded
+skips respectively and no failed or flaky browser outcomes. Normal-TLS public
+verification matches426files to its exact own-run artifact and reuses110unchanged
+GLB proofs only after exact current-artifact byte comparison. Both identities
+matchAlpha1.79.83/d2e9, with a ready database, open registration andflat-v1terrain.
+[Acceptance](2026-10-19-release1-79-83-acceptance.md).
 
+The milestone delivers stable quest/reward/Lore/Atlas/tracker/party controls,
+improved private outfit/held previews, grounded footsteps, startup cleanup,
+prepared connected-player appearance/input and version-matched credits/source
+links. Specialization guidance disappears on server confirmation and remains
+absent for returning specialized characters. Held Space activates reader buttons
+once on release, fenced against repeats, blur, retired readers and disposal.
 
-Alpha1.79.82source2a19has all ten own CI jobs, both deployments, live checks,
-matching normal-TLS identities and exact public-file verification.
-[Acceptance](2026-10-18-release1-79-82-acceptance.md). Earlier failed/cancelled82
-attempts below remain historical counterexamples, not the current delivery state.
+The original73distinct required local native cases retain their exact-runtime
+evidence: six gameplay/save cases,63UI cases and four corrected party cases.
+The missing fixture, recording-policy rejection and pre-browser setup failure
+remain recorded; no timed route was replayed or original limit relaxed. Entry/
+input CPU365/20suites, credits/publisher/routing53/four suites and scoped reader/
+specialization corrections retain their earlier qualification labels.
+[Original qualification](2026-10-18-release1-79-83-qualification.md).
+[Correction](2026-10-19-specialization-and-window-reflow-correction.md).
 
-Selected83adds stable quest/reward/Lore/Atlas/tracker/party controls, improved
-private outfit/held previews, grounded footsteps, startup client cleanup,
-connected-player appearance preparation and versioned credits/source links.
-All73distinct required local native cases have passing exact-runtime evidence:
-six original gameplay/save cases,63UI cases and four corrected party cases.
-The missing private fixture, recording-policy rejection and pre-browser cwd
-setup failure remain recorded. No timed gameplay route was replayed or original
-limit relaxed. Entry/input CPU365/20suites and credits/publisher/routing53/four
-suites pass, alongside two native credits layouts. Source470d was merged and
-pushed, but its CI39174889800 failed the phone Lore Book held-Space case in both
-configured attempts. Client821suites/12781checks, server and two hosted browser
-shards passed; predeploy native, both deployments and live checks were skipped.
-Corrected source089abc50 fixes that live-window reflow and the owner's
-specialization-reminder refresh. Scoped CPU and exact CI-browser checks pass;
-the corrected source still requires its own complete CI/deploy/live/public
-acceptance. [Correction](2026-10-19-specialization-and-window-reflow-correction.md).
-[Qualification](2026-10-18-release1-79-83-qualification.md).
+Original83CI39174889800and corrected648CI39196355663both failed the phone
+Lore held-Space assertion with downstream gates skipped. Those failures are
+retained. Current d2e9 includes the further explicit key-continuity correction;
+its own complete passing run and public verification, rather than a waiver or
+unchanged-source rerun, establish this scoped delivery acceptance.
 
-No final art, whole-world performance, earned human campaign, listening,
-physical-device, rights/operational owner, F1–F5, beta or1.99gate is closed by
-this scoped qualification. Soak/stress testing remains deferred until features
-are nearly complete. The full original scope and every open row below remain.
+Casino presentation and large movable windows are isolated in a prepared84
+candidate; their new phone/desktop browser review is running. The height-changing
+jump-camera correction remains isolated pending native review. Neither candidate
+is included in accepted83. The original town-soil experiment remains unselected.
+No final art, whole-world performance, earned human campaign, listening, physical
+device, rights/operational owner, F1–F5, beta or1.99gate is closed. Soak/stress
+remains deferred until features are nearly complete. Every other open row below
+and the full original scope remain active.
 
 ## Historical Alpha1.79.82 preparation and retained failed attempts
 
