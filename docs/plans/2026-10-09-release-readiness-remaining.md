@@ -22,7 +22,7 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
-## Prepared follow-up: Alpha 1.79.86
+## Deployed UI with correction pending: Alpha 1.79.86
 
 The corrected candidate retains dealer visibility, separates six house seats,
 Baccarat cards/status and timers, enlarges roulette spins, and celebrates its
@@ -35,6 +35,11 @@ deploy. All 18 exact-commit copied-engine and 455 release/history/workflow
 checks pass too. New complete own CI and exact public verification remain
 required.
 [Qualification](2026-10-19-casino-poker-result-clarity.md).
+The corrected UI deploys at4beea1f26, but CI39260318063 retains one privacy
+fixture flake and an unrecovered1500ms geometry-data timeout in live QA. Both
+receive bounded transport corrections, with eight focused browser and52 unit
+checks passing. New copied publication/CI/public proof remain required. No
+failure is waived; accepted85 remains the baseline.
 No full owner casino assessment or another readiness gate closes here.
 
 ## Current delivery: accepted Alpha 1.79.85

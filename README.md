@@ -495,7 +495,7 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.86`, **prepared; deployment acceptance pending**.
+Current source version: `Alpha 1.79.86`, **deployed UI; corrective validation pending**.
 House seats, Baccarat cards and timers stay separate, with visible dealer and
 reconnect status. Roulette spins use a larger foreground wheel; saved wins
 follow the ball landing. House win messages keep the cards visible and fit large
@@ -506,6 +506,10 @@ Forty-nine source browser cases, 57 focused unit checks, 18 exact-commit
 copied-engine checks and 455 release/history checks pass. Complete new own CI
 and deployment remain required. The
 original86 CI correctly rejected a hidden dealer label and did not deploy.
+The deployed corrected UI then passes full client/native checks, but its own CI
+retains one privacy-fixture flake and an unrecovered geometry-data timeout in
+live QA. Both have bounded transport corrections under validation;85 remains
+the latest accepted release. No soak/stress testing is resumed.
 [Qualification](docs/plans/2026-10-19-casino-poker-result-clarity.md).
 
 Latest verified live release: `Alpha 1.79.85`, source

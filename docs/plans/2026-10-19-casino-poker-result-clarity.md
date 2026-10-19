@@ -1,7 +1,8 @@
 # Casino table layout and result clarity
 
 Alpha 1.79.86 extends accepted85 at `6d35618229979e24fa9808e242e8200421b71cfa`.
-It has not deployed. Original source `ddbd001ca` failed
+The corrected UI deployed at `4beea1f26d1ae9fab846b6eddaf43fa9ebec0e46`,
+but its release is not accepted. Original source `ddbd001ca` failed
 [CI39253417949](https://github.com/aeml/eidolon/actions/runs/39253417949): six
 existing house-table cases correctly rejected the hidden House dealer label.
 That run ends with four successful jobs, one failed job and five skipped jobs;
@@ -91,3 +92,41 @@ final owner casino assessment, performance or whole-game acceptance. No
 currency, schema/protocol, server authority or art assets change. Compiler/
 browser/archive work requires all repository workflows idle. Soak/stress stays
 deferred until feature completion approaches.
+
+
+## Delivery correction after the deployed run
+
+[CI39260318063](https://github.com/aeml/eidolon/actions/runs/39260318063)
+ends with nine successful jobs and a failed live job. Client823/12824 and native
+184/2 existing exclusions pass. Hosted reports retain561 passes,14 exclusions
+and one flaky privacy fixture: its initial loopback asset GET resets, while its
+configured retry passes. Live reports retain nine passes, one exclusion and one
+failure; the later party check never runs. Town-rest expiry and reentry gameplay
+assertions pass, but a geometry shard GET aborts after1515ms without recovering.
+The worker stays alive. Static-delivery evidence retains the exact failed path,
+request timing and subsequent successful different-shard requests. Neither this
+failure nor the privacy flake is waived; accepted85 remains the baseline.
+
+The selected correction gives geometry shard GETs one recovery attempt for a
+transport TypeError or the lookup's own abort. Each attempt retains its1500ms
+limit, serialized queue and shared in-flight cache. The unchanged delivery owner
+still retires work at30seconds. HTTP status errors, length/hash/decoding errors
+and exhausted transport failures remain cached unavailable. Metadata validation,
+exact index output, dynamic fallback, algorithm and model data remain unchanged.
+
+The privacy fixture now permits one Playwright ECONNRESET retry for asset GETs
+only. HTTP503 stays visible and POST is never retried. A real socket-reset
+baseline reproduces the old failure. All five corrected privacy checks pass
+without test retries. All eight privacy/static-delivery browser checks then pass
+without retries, including a real dedicated worker using the product lookup and
+committed shard data: the first request exceeds1500ms, the second returns exact
+verified indices to concurrent callers, and the cancellation remains recorded.
+The existing browser failure collector reconciles only the successful same URL;
+no collection rule or ignore policy changes. Focused unit qualification passes
+52 checks/two suites. One intermediate fake-clock test still advances only the
+old single attempt; it fails and is retained, then explicitly advances both
+1500ms attempts with two abort assertions. No Jest/test timeout is enlarged.
+
+New copied-publication qualification, complete own CI and exact public proof
+are required before acceptance. This correction changes the generated worker's
+content hash; the older unchanged-worker statement above applies only to8bb.

@@ -60,12 +60,46 @@ test.each(['network', 'http', 'length', 'oversized', 'truncated', 'content-hash'
         expect(f.fetcher.mock.calls.length).toBeLessThanOrEqual(1);
     });
 
-test('the bounded timeout aborts the request and subsequent requests fall back immediately', async () => {
+test('two bounded timeouts abort both requests and subsequent lookups fall back immediately', async () => {
     const f = fixture(); let aborted = false;
     f.fetcher.mockImplementation((_url, { signal }) => new Promise((_, reject) => signal.addEventListener('abort', () => { aborted = true; reject(Error('aborted')); })));
     const lookup = f.make({ timeoutMs: 10 });
     expect(await lookup(f.key, 'body', f.source)).toBeNull(); expect(aborted).toBe(true);
-    expect(await lookup(f.key, 'body', f.source)).toBeNull(); expect(f.fetcher).toHaveBeenCalledTimes(1);
+    expect(await lookup(f.key, 'body', f.source)).toBeNull(); expect(f.fetcher).toHaveBeenCalledTimes(2);
+});
+
+test.each(['timeout', 'network', 'stream'])('one transient %s failure recovers exact data and concurrent lookups share the recovery', async mode => {
+    const f = fixture(); let firstSignal;
+    f.fetcher.mockImplementationOnce((_url, { signal }) => {
+        firstSignal = signal;
+        if (mode === 'timeout') return new Promise((_, reject) => signal.addEventListener('abort', () => reject(Error('aborted')), { once: true }));
+        if (mode === 'network') return Promise.reject(new TypeError('Failed to fetch'));
+        return Promise.resolve({ ok: true, headers: { get: () => null }, body: { getReader: () => ({
+            read: async () => { throw new TypeError('Connection reset'); }, cancel: async () => {}
+        }) } });
+    });
+    const lookup = f.make({ timeoutMs: 10 });
+    const [a, b] = await Promise.all([lookup(f.key, 'body', f.source), lookup(f.key, 'body', f.source)]);
+    expect(a.indices).toEqual(f.indices); expect(b.indices).toEqual(f.indices);
+    expect(firstSignal.aborted).toBe(mode === 'timeout');
+    expect(f.fetcher).toHaveBeenCalledTimes(2);
+    expect((await lookup(f.key, 'body', f.source)).indices).toEqual(f.indices);
+    expect(f.fetcher).toHaveBeenCalledTimes(2);
+});
+
+test('repeated network failure exhausts recovery once and stays cached', async () => {
+    const f = fixture(); f.fetcher.mockRejectedValue(new TypeError('Failed to fetch'));
+    const lookup = f.make();
+    expect(await lookup(f.key, 'body', f.source)).toBeNull();
+    expect(await lookup(f.key, 'body', f.source)).toBeNull(); expect(f.fetcher).toHaveBeenCalledTimes(2);
+});
+
+test('an HTTP error after a transient reset is preserved without a third attempt', async () => {
+    const f = fixture(); f.fetcher.mockRejectedValueOnce(new TypeError('Failed to fetch'));
+    f.fetcher.mockResolvedValue(response('', { status: 503 }));
+    const lookup = f.make();
+    expect(await lookup(f.key, 'body', f.source)).toBeNull();
+    expect(await lookup(f.key, 'body', f.source)).toBeNull(); expect(f.fetcher).toHaveBeenCalledTimes(2);
 });
 
 const previousSubtle = Object.getOwnPropertyDescriptor(globalThis.crypto, 'subtle');
@@ -154,10 +188,10 @@ test('a64KiBperSecond transfer completes a needed shard within1500ms while the m
             }) } };
         });
         const legacy = createGameplayGeometryLookup({ ...spec, schemaVersion: 1 }, { fetcher, baseURL: 'https://example.test/game/src/core/worker.js' });
-        const first = legacy(key, row.kind, source); await jest.advanceTimersByTimeAsync(1500); expect(await first).toBeNull(); expect(aborted).toEqual([777321]);
+        const first = legacy(key, row.kind, source); await jest.advanceTimersByTimeAsync(3000); expect(await first).toBeNull(); expect(aborted).toEqual([777321, 777321]);
         const modern = createGameplayGeometryLookup(spec, { fetcher, baseURL: 'https://example.test/game/src/core/worker.js' });
         const next = modern(key, row.kind, source); await jest.advanceTimersByTimeAsync(1500);
         expect((await next).indices).toEqual(decodeIndices(new Uint8Array(full.subarray(row.offset, row.offset + row.length)), row.count, row.vertices));
-        expect(aborted).toEqual([777321]); expect(fetcher).toHaveBeenCalledTimes(2);
+        expect(aborted).toEqual([777321, 777321]); expect(fetcher).toHaveBeenCalledTimes(3);
     } finally { jest.useRealTimers(); }
 });

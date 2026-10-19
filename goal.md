@@ -2775,3 +2775,21 @@ engine cases, with hardware AMD RADV RENOIR reported in every case. All 455
 release/history/workflow checks also pass. This qualifies the local milestone;
 new own CI, both deployments, live checks and exact public proof still gate
 acceptance. The failed original86 and its actual browser reports are retained.
+
+
+## October19 deployed86 transport correction
+
+Corrected UI4beea1f26 deploys but CI39260318063 is not accepted: client823/12824
+and native184/2 pass; hosted561/14/1 flaky privacy loopback GET; live9/1/1failed
+on an unrecovered geometry-shard abort at1515ms, with the later party route
+unrun. All rest-expiry/reentry gameplay assertions pass. Original failures and
+static-delivery timing/worker-lifetime evidence are retained. Geometry now has
+one transient-only recovery attempt, preserving1500ms per request,30s owner,
+serialization and exact content/index checks. HTTP/integrity/exhausted failures
+stay cached unavailable. The privacy fixture retries only one reset GET, never
+HTTP errors or writes. Its real old-default socket-reset baseline fails; all8
+privacy/static-delivery browser cases and52 focused unit checks pass without
+browser retries. The worker regression verifies exact committed indices after
+an actual timeout and retains the failed request evidence. New copied-source,
+own CI and public verification still gate86 acceptance. Accepted85/full game
+owner/performance/device/operations/beta gates remain unchanged. No soak/stress.

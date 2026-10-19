@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
+import { createServer } from 'node:http';
 import { collectBrowserFailures } from './helpers.js';
 
 // Real application boot and native Chrome downloads, with only synthetic
@@ -11,6 +12,15 @@ const reference = '0123456789abcdef01234567';
 const nextCursor = '0123456789abcdef01234560';
 const exportSummary = 'My approved data export — private download';
 const proof = 'fixture-only-owner-proof';
+
+async function fulfillRepositoryAsset(route, baseURL) {
+    const url = new URL(route.request().url());
+    // Only a reset asset GET may be repeated. Preserve HTTP errors and never
+    // repeat writes; Playwright's transport retry covers ECONNRESET only.
+    const response = await route.fetch({ url: new URL(url.pathname + url.search, baseURL).href,
+        maxRetries: route.request().method() === 'GET' ? 1 : 0 });
+    await route.fulfill({ response });
+}
 
 async function installFixture(page, baseURL) {
     const fixture = { requests: [], downloads: [], providerRequests: [], approved: false, reply: true };
@@ -26,8 +36,7 @@ async function installFixture(page, baseURL) {
     await page.route('**/*', async route => {
         const url = new URL(route.request().url());
         if (url.origin === origin) {
-            const response = await route.fetch({ url: new URL(url.pathname + url.search, baseURL).href });
-            await route.fulfill({ response });
+            await fulfillRepositoryAsset(route, baseURL);
         } else if (url.origin === new URL(baseURL).origin) {
             await route.continue();
         } else {
@@ -92,6 +101,62 @@ async function checkApproval(dialog) {
     await dialog.getByRole('button', { name: 'Check status', exact: true }).click();
     await expect(dialog.locator('#report-lookup-status')).toContainText('Review finished');
 }
+
+test('owner asset proxy retries only a reset GET and preserves HTTP errors', async ({ page }) => {
+    const attempts = new Map(), proxyErrors = [];
+    const server = createServer((request, response) => {
+        const key = `${request.method} ${request.url}`, count = (attempts.get(key) || 0) + 1;
+        attempts.set(key, count);
+        if (request.url === '/__owner-proxy-probe.css' && count === 1 || request.url === '/__owner-proxy-write') {
+            request.socket.destroy(); return;
+        }
+        if (request.url === '/__owner-proxy-http-error') {
+            response.writeHead(503, { 'Content-Type':'text/plain' }); response.end('Synthetic HTTP failure'); return;
+        }
+        response.writeHead(200, { 'Content-Type':'text/css' });
+        response.end('#asset-proxy-probe { color: rgb(20, 80, 160); }');
+    });
+    await new Promise((resolve, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', resolve); });
+    const local = `http://127.0.0.1:${server.address().port}`;
+    try {
+        await page.route('**/*', async route => {
+            const url = new URL(route.request().url());
+            if (url.origin !== origin) { await route.abort(); return; }
+            if (url.pathname === '/') {
+                await route.fulfill({ contentType:'text/html', body:'<!doctype html><html><head><link rel="icon" href="data:,"><link rel="stylesheet" href="/__owner-proxy-probe.css"></head><body><p id="asset-proxy-probe">Synthetic asset probe</p></body></html>' });
+                return;
+            }
+            try { await fulfillRepositoryAsset(route, local); }
+            catch (error) {
+                // This fault probe observes expected transport failures. The
+                // application fixture above does not catch or hide errors.
+                proxyErrors.push({ method:route.request().method(), path:url.pathname, message:error.message });
+                await route.abort('failed');
+            }
+        });
+        await page.goto(`${origin}/`, { waitUntil:'networkidle' });
+        expect(proxyErrors).toEqual([]);
+        expect(attempts.get('GET /__owner-proxy-probe.css')).toBe(2);
+        await expect(page.locator('#asset-proxy-probe')).toHaveCSS('color','rgb(20, 80, 160)');
+        expect(await page.evaluate(async () => {
+            const response = await fetch('/__owner-proxy-http-error');
+            return { status:response.status, text:await response.text() };
+        })).toEqual({ status:503, text:'Synthetic HTTP failure' });
+        expect(attempts.get('GET /__owner-proxy-http-error')).toBe(1);
+        expect(await page.evaluate(async () => {
+            try { await fetch('/__owner-proxy-write',{method:'POST',body:'synthetic fixture only'}); return false; }
+            catch { return true; }
+        })).toBe(true);
+        expect(attempts.get('POST /__owner-proxy-write')).toBe(1);
+        expect(proxyErrors).toHaveLength(1);
+        expect(proxyErrors[0]).toMatchObject({method:'POST',path:'/__owner-proxy-write'});
+        expect(proxyErrors[0].message).toMatch(/socket hang up|ECONNRESET/);
+    } finally {
+        await new Promise((resolve, reject) => {
+            server.close(error => error ? reject(error) : resolve()); server.closeAllConnections();
+        });
+    }
+});
 
 for (const [width, height] of [[1280, 800], [390, 844]]) {
     test(`private owner export needs approval, proof and native Save at ${width}x${height}`, async ({ page, baseURL }) => {

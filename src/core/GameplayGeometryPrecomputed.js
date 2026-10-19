@@ -4,6 +4,7 @@ import { decodeIndices } from './GameplayGeometryIndexCodec.js';
 const hex = bytes => [...new Uint8Array(bytes)].map(value => value.toString(16).padStart(2, '0')).join('');
 const identity = (spec, maximum) => Number.isSafeInteger(spec?.bytes) && spec.bytes > 0 && spec.bytes <= maximum &&
     /^[a-f0-9]{64}$/.test(spec.sha256) && spec.url === `../../assets/gameplay-geometry/indices.${spec.sha256.slice(0, 16)}.bin`;
+class TransientTransportError extends Error {}
 
 export function createGameplayGeometryLookup(spec, { fetcher = (...args) => fetch(...args), timeoutMs = 1500, baseURL = import.meta.url } = {}) {
     const loaded = new Map(); let disabled = false, queue = Promise.resolve();
@@ -15,15 +16,22 @@ export function createGameplayGeometryLookup(spec, { fetcher = (...args) => fetc
             shards.reduce((sum, shard) => sum + shard.bytes, 0) === spec.bytes));
     const load = async shard => {
         const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), timeoutMs);
+        const transport = async operation => {
+            try { return await operation(); }
+            catch (error) {
+                if (controller.signal.aborted || error instanceof TypeError) throw new TransientTransportError();
+                throw error;
+            }
+        };
         try {
-            const response = await fetcher(new URL(shard.url, baseURL), { signal: controller.signal });
+            const response = await transport(() => fetcher(new URL(shard.url, baseURL), { signal: controller.signal }));
             if (!response.ok || !response.body) throw Error('Precomputed response unavailable');
             const declared = response.headers.get('content-length');
             if (!response.headers.get('content-encoding') && declared !== null && Number(declared) !== shard.bytes) throw Error('Unexpected response length');
             const bytes = new Uint8Array(shard.bytes), reader = response.body.getReader(); let offset = 0;
             try {
                 for (;;) {
-                    const chunk = await reader.read(); if (chunk.done) break;
+                    const chunk = await transport(() => reader.read()); if (chunk.done) break;
                     if (offset + chunk.value.byteLength > bytes.length) throw Error('Oversized precomputed response');
                     bytes.set(chunk.value, offset); offset += chunk.value.byteLength;
                 }
@@ -37,7 +45,17 @@ export function createGameplayGeometryLookup(spec, { fetcher = (...args) => fetc
             // One bounded request at a time: first-needed body data need not
             // share its deadline/bandwidth with every queued equipment part.
             // The unchanged delivery owner still retires jobs at30seconds.
-            const pending = queue.then(() => disabled ? null : load(shard));
+            const pending = queue.then(async () => {
+                if (disabled) return null;
+                try { return await load(shard); }
+                catch (error) {
+                    // One recovery attempt for a timed-out/reset GET. Each
+                    // attempt keeps its1500ms limit; HTTP/content failures
+                    // remain unavailable and the owner's30s limit is unchanged.
+                    if (!(error instanceof TransientTransportError) || disabled) throw error;
+                    return load(shard);
+                }
+            });
             const settled = pending.catch(() => null);
             loaded.set(shard.sha256, settled); queue = settled;
         }
@@ -65,5 +83,5 @@ export function createGameplayGeometryLookup(spec, { fetcher = (...args) => fetc
 }
 
 // Worker-owned bounded caches and its request queue disappear when delivery
-// terminates the worker. Failed shards remain cached as unavailable; no retries.
+// terminates the worker. Exhausted failures remain cached as unavailable.
 export const gameplayGeometryPrecomputed = createGameplayGeometryLookup(catalog);
