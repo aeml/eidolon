@@ -495,21 +495,23 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.79.85`, **prepared; verification and deployment pending**.
+Current source version: `Alpha 1.79.85`, **deployed and verified within scoped acceptance**.
 This milestone improves casino phone text sizing and keyboard layouts. Larger
 menu text keeps game titles, controls and all six blackjack hand totals readable;
 editing wager and auto-spin fields keeps them above the modeled keyboard bounds.
 Saved placement and wager drafts survive table updates, with concise play-time
-labels retaining their full accessible explanations. The focused 72-case browser
-matrix and 286 unit checks pass. Another 29 assembled-publication cases pass;
-complete own CI, deployment and exact public verification remain required. Physical phone and owner casino assessment remain
-open. [Phone casino qualification](docs/plans/2026-10-19-casino-phone-readability.md).
+labels retaining their full accessible explanations. The milestone also corrects
+a reproduced pending-player identity race in casino notifications. Complete own
+CI, both deployments, live checks and exact public verification pass. Further
+compact table spacing, poker result clarity, physical-phone and complete owner
+casino assessment remain open.
+[Acceptance](docs/plans/2026-10-19-release1-79-85-acceptance.md).
 
-Latest verified live release: `Alpha 1.79.84`, source
-`b410683fae3c020c8b3872f0c1cf3cb45cefd8d3`.
-All ten jobs passed in [CI39215799158](https://github.com/aeml/eidolon/actions/runs/39215799158),
+Latest verified live release: `Alpha 1.79.85`, source
+`6d35618229979e24fa9808e242e8200421b71cfa`.
+All ten jobs passed in [CI39238762515](https://github.com/aeml/eidolon/actions/runs/39238762515),
 with both deployments, live checks and exact public-file verification.
-[Accepted84](docs/plans/2026-10-19-release1-79-84-acceptance.md).
+[Accepted85](docs/plans/2026-10-19-release1-79-85-acceptance.md).
 Recall/quest-object casts, outside-click window closing, close melee contact,
 walkable town roofs and the shared Earth fence remain delivered from81.
 Final world/art, performance, human campaign/listening/phone feedback, operational

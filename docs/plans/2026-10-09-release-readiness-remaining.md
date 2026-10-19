@@ -22,7 +22,27 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
-## Current delivery: accepted Alpha 1.79.84
+## Current delivery: accepted Alpha 1.79.85
+
+Source 6d35618229979e24fa9808e242e8200421b71cfa passes its original ten-job
+[CI39238762515](https://github.com/aeml/eidolon/actions/runs/39238762515), both
+deployments and live checks. Counts are 823 client suites / 12,807 checks,
+544 hosted, 184 native and 11 live passes, with 14/2/1 existing exclusions and
+zero failed/flaky browser outcomes. Normal-TLS public identities and 441 current
+files match the exact own-run artifact; 110 unchanged GLBs retain accepted84
+proof after current-artifact byte comparison. Notes remain cumulative at 520.
+[Acceptance](2026-10-19-release1-79-85-acceptance.md).
+
+This delivers saved phone text sizing, keyboard-contained editors, stable normal
+placement and six-hand blackjack readability, plus a reproduced pending-player
+identity-race correction. Original failed85 CI remains retained. Later visual
+review identifies compact Baccarat label overlap and roulette clock occlusion;
+poker side-pot net-result clarity is also staged separately. Reproduce and
+correct these specific gaps next. No full owner casino, physical-device,
+world art/performance, human campaign, operations/rights, F1–F5 or beta gate
+closes. The full game goal remains open; soak/stress stays deferred.
+
+## Previous accepted delivery: Alpha 1.79.84
 
 Source b410683fae3c020c8b3872f0c1cf3cb45cefd8d3 passes its original ten-job
 [CI 39215799158](https://github.com/aeml/eidolon/actions/runs/39215799158), both
@@ -41,7 +61,10 @@ owner assessment and larger phone-text/keyboard combinations remain follow-up
 work. No full-game, final-art, performance, human campaign/device/audio,
 operations/rights, F1–F5, or beta gate closes here. Soak/stress remains deferred.
 
-## Prepared Alpha 1.79.85 casino phone fit
+## Historical preparation: Alpha 1.79.85 casino phone fit
+
+This preparation checkpoint is now qualified within the accepted85 receipt
+above; its earlier pending labels retain their original scope.
 
 The isolated candidate adds saved phone text sizing, keyboard-contained editors,
 stable normal coordinates, full narrow-screen headers, concise accessible timer

@@ -1,10 +1,12 @@
 # Casino phone readability and keyboard fitting
 
-Prepared Alpha 1.79.85 extends accepted 84. Its selected implementation is
-`f61834a1a957099ad93aaabd55bd43444b6b2ec5`; complete own CI, deployment, and
-exact public verification remain required before this milestone is accepted.
-[Accepted 84](2026-10-19-release1-79-84-acceptance.md) remains the verified live
-baseline. This work does not complete the full game or the owner's casino target.
+Alpha 1.79.85 extends accepted 84 and now passes complete own CI, deployment and
+exact public verification at corrected source `6d3561822`.
+[Delivery acceptance](2026-10-19-release1-79-85-acceptance.md).
+The selected client implementation is `f61834a1a957099ad93aaabd55bd43444b6b2ec5`;
+local evidence below retains its original source labels. This work does not
+complete the full game or the owner's casino target. Later compact Baccarat/
+roulette spacing and poker result findings remain open in the acceptance receipt.
 
 The first complete source `8ce0fbb0` failed original CI39233368985 because of a
 real server identity race. Its client job and all three hosted browser shards
