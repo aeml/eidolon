@@ -2827,3 +2827,18 @@ retained; controlled fresh connections and application/server accounting keep
 both original two-request and new two-fetch assertions. New exact copied-source,
 own CI and public verification still gate86 acceptance. Full game/owner/beta
 remain open; no soak/stress.
+
+
+## October19 trace-fixture correction qualified locally
+
+Original eaac/CI39290576738 does not deploy: four jobs pass, Browser3 fails
+body-timeout HTTP request accounting on initial/configured retry, five later
+jobs are skipped. Exact indices and two application fetches pass. Original raw
+artifact and inline evidence are retained. A local SDK-default Headless Shell149
+probe with CI recordings reproduces the failure without retries. Keeping the
+fixture worker alive until exact response-body capture fixes all five focused
+browser checks with recording enabled; strict two-fetch/two-request assertions
+remain. Runtime/build inputs match qualified9d, so existing80 unit/455 release/
+18 copied-engine hardware checks apply. New full own CI/deployment/public proof
+remain required. Owner feedback on the live presentation is positive. This does
+not complete the full game or beta gates. No soak/stress.

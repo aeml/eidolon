@@ -215,3 +215,35 @@ workflow checks pass, and all 520 prior raw note strings remain identical in
 521 entries and 52 lazy pages. Both public identities of the unaccepted 5c
 source match over normal TLS with the database ready. The qualified correction
 now requires its own original CI and exact public verification.
+
+
+## Trace response capture before worker retirement
+
+Source `eaacf1d0bea2df347d7a204216259f2b620361f6` ends original
+[CI39290576738](https://github.com/aeml/eidolon/actions/runs/39290576738)
+with four successful jobs, one failed browser shard and five skipped downstream
+jobs. It does not deploy. Client823/12833, server checks and the other two
+browser shards pass. The body-timeout fixture fails both its initial execution
+and configured retry: exact indices and two application fetches pass, but the
+HTTP server sees three requests. Original logs and the digest-verified raw
+Browser3 artifact are retained, including inline owned delivery attachments.
+
+One local original-source probe reproduces that same failure with SDK-default
+Chromium Headless Shell149 and CI trace/video recording settings, with no test
+retry. Playwright1.61.1 can use Network.loadNetworkResource when the inspector
+returns an empty body for a response with positive Content-Length. The probe
+previously terminated its worker immediately upon receiving its result. The
+fixture now keeps the worker alive, captures and verifies the complete response
+bytes, then terminates it during cleanup. All five focused browser cases pass
+with the same headless browser and recording settings, without retries, failed/
+flaky outcomes or exclusions. Both recovery cases retain exactly two application
+fetches, two HTTP requests, exact concurrent output and the canceled-request
+evidence. No assertion or timeout is relaxed and recording remains enabled.
+
+This correction changes only the test fixture. Product/runtime/build inputs
+remain identical to qualified9d, whose80 focused checks/four suites,455 release
+checks/seven suites and18 exact copied-engine hardware cases remain applicable.
+New original full CI, both deployments, live checks and exact public proof still
+gate release acceptance. The owner reports that the current casino presentation
+“all looks much better now”; full-game/beta and other readiness gates remain
+open. Soak/stress remains deferred.

@@ -46,23 +46,33 @@ for (const stage of ['headers', 'body']) test(`geometry worker recovers one time
     });
     await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
     const origin = `http://127.0.0.1:${server.address().port}`, evidence = observeStaticDelivery(page, origin);
-    const failures = collectBrowserFailures(page, origin);
+    const failures = collectBrowserFailures(page, origin), responses = [];
+    const captureResponse = response => { if (response.url() === origin + path) responses.push(response); };
+    page.on('response', captureResponse);
     try {
         await page.goto(origin + '/fixture');
         proof = await page.evaluate(() => new Promise((resolve, reject) => {
-            const worker = new Worker('/probe-worker.js', {type:'module'});
-            worker.onmessage = event => { worker.terminate(); resolve(event.data); };
-            worker.onerror = event => { worker.terminate(); reject(Error(event.message)); };
+            const worker = window.geometryRecoveryWorker = new Worker('/probe-worker.js', {type:'module'});
+            worker.onmessage = event => resolve(event.data);
+            worker.onerror = event => reject(Error(event.message));
         }));
         expect(proof).toEqual({precomputed:true,hashes:[row.sha256,row.sha256],fetches:2});
-        expect(attempts).toBe(2);
         await expect.poll(() => evidence.snapshot().requests.filter(r => r.path === path && r.outcome === 'finished').length).toBe(1);
+        // Keep the dedicated worker alive until the recorder has its response
+        // body. Retiring it at postMessage can make tracing refetch the shard.
+        const recovered = responses.at(-1);
+        expect(recovered?.status()).toBe(200);
+        expect((await recovered.body()).equals(files.get(path))).toBe(true);
+        expect(attempts).toBe(2);
         const observed = evidence.snapshot();
         expect(observed.failures).toHaveLength(1);
         expect(observed.failures[0]).toMatchObject({path,code:'net::ERR_ABORTED'});
         expect(observed.requests.filter(r => r.path === path)).toHaveLength(2);
         expect(failures, failures.join('\n')).toEqual([]);
     } finally {
+        page.removeListener('response', captureResponse);
+        // Cleanup must preserve an earlier assertion/page failure.
+        await page.evaluate(() => window.geometryRecoveryWorker?.terminate()).catch(() => {});
         await testInfo.attach('recovered-geometry-delivery', {body:JSON.stringify({ ...evidence.snapshot(),
             applicationFetches:proof?.fetches, serverRequests }),contentType:'application/json'});
         evidence.dispose(); for (const timer of timers) clearTimeout(timer);
