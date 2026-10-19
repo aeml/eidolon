@@ -4,6 +4,69 @@ import { prepareCasinoReview } from './casinoPreparedController.js';
 // Presentation and public-projection fixtures; durable outcomes/settlement are
 // covered by the Go tests against disposable Mongo, never earned by this setup.
 for (const [width,height,textScale] of [[320,740,125],[390,844,125],[844,390,125],[1440,900,100]]) {
+    test(`roulette clock stays uncovered and its spin fills the table at ${width}px (${textScale}%)`,async({page},testInfo)=>{
+        const failures=[];page.on('pageerror',error=>failures.push(error.message));
+        await page.setViewportSize({width,height});
+        await page.route('**/src/main.js',r=>r.fulfill({contentType:'text/javascript',body:''}));
+        await page.route('**/src/analytics/game.js',r=>r.fulfill({contentType:'text/javascript',body:''}));
+        await page.goto('/',{waitUntil:'networkidle'});
+        await page.evaluate(prepareCasinoReview,{game:'roulette',phone:width < 1000,textScale});
+        await page.evaluate(()=>{
+            const f=window.__controllerReview;
+            f.payload.house={...f.payload.house,tableVersion:'2',balance:980,
+                players:f.payload.occupants.map(p=>({...p,wagers:[{spot:'red',amount:20}],paid:false,payout:0}))};
+            f.c.updateState(f.payload);
+        });
+        const clock=page.locator('.house-game .card-table-clock');
+        const checkClock=async phase=>{
+            await clock.scrollIntoViewIfNeeded();await expect(clock).toBeInViewport({ratio:1});
+            const blockers=await clock.evaluate(n=>{
+                const labels=[...n.querySelectorAll('strong,span')].filter(e=>{const r=e.getBoundingClientRect();return r.width>4&&r.height>4;});
+                if(!labels.length)return [{text:'No visible clock contents'}];
+                const hits=[];
+                for(const label of labels){const r=label.getBoundingClientRect();
+                    for(const x of [.2,.5,.8])for(const y of [.2,.5,.8]){
+                        const hit=document.elementFromPoint(r.left+r.width*x,r.top+r.height*y);
+                        if(!n.contains(hit))hits.push({x,y,element:hit?.className,text:hit?.textContent?.slice(0,80)});
+                    }
+                }
+                return hits;
+            });
+            await testInfo.attach(`roulette-${phase}-clock`,{body:Buffer.from(JSON.stringify(blockers)),contentType:'application/json'});
+            expect(blockers).toEqual([]);
+        };
+        await checkClock('betting');
+        const bowl=page.locator('.roulette-bowl'),before=await bowl.boundingBox();
+        await page.evaluate(()=>{
+            const f=window.__controllerReview;
+            f.payload.house={...f.payload.house,tableVersion:'3',phase:'revealing',serverNow:new Date().toISOString(),revealAt:new Date(Date.now()+6000).toISOString()};
+            f.c.updateState(f.payload);
+        });
+        await expect(page.locator('.roulette-theatre')).toHaveClass(/close-up/);
+        await page.waitForTimeout(600);
+        const spinning=await bowl.boundingBox();
+        expect(spinning.width).toBeGreaterThanOrEqual(Math.min(180,height/3));
+        expect(spinning.width).toBeGreaterThan(before.width*1.2);
+        await expect(bowl).toBeInViewport({ratio:1});
+        await expect(page.locator('.roulette-ball-track')).toBeVisible();
+        await expect(page.getByRole('button',{name:'Skip animation',exact:true})).toBeInViewport({ratio:1});
+        await checkClock('spinning');
+        await page.screenshot({path:testInfo.outputPath(`roulette-controller-spin-${width}.png`)});
+        await page.evaluate(()=>{
+            const f=window.__controllerReview;
+            f.payload.house={...f.payload.house,tableVersion:'4',phase:'settling',number:32};f.c.updateState(f.payload);
+        });
+        await expect(page.locator('.roulette-theatre')).not.toHaveClass(/close-up/);
+        await expect(page.locator('.roulette-outcome')).toHaveText('32 · Red');
+        await checkClock('saving');
+        expect(await page.locator('.casino-session').evaluate(n=>n.scrollWidth-n.clientWidth)).toBeLessThanOrEqual(1);
+        expect(await page.evaluate(()=>window.__controllerReview.sent)).toEqual([]);
+        await page.evaluate(()=>{const f=window.__controllerReview;f.c.dispose();f.ui?.dispose();});
+        expect(failures).toEqual([]);
+    });
+}
+
+for (const [width,height,textScale] of [[320,740,125],[390,844,125],[844,390,125],[1440,900,100]]) {
     test(`baccarat seats, cards and clock stay distinct at ${width}px (${textScale}%)`, async ({ page }, testInfo) => {
         const failures = []; page.on('pageerror', error => failures.push(error.message));
         await page.setViewportSize({width,height});
@@ -39,7 +102,8 @@ for (const [width,height,textScale] of [[320,740,125],[390,844,125],[844,390,125
                     const index=card.querySelector('.casino-card-index').getBoundingClientRect(), pip=card.querySelector('.casino-card-pip').getBoundingClientRect();
                     const overlap=Math.min(index.right,pip.right)-Math.max(index.left,pip.left) > 1 && Math.min(index.bottom,pip.bottom)-Math.max(index.top,pip.top) > 1;
                     if(c.left < h.left-1 || c.right > h.right+1 || index.right > c.right+1 || index.left < c.left-1 ||
-                        index.top < c.top-1 || index.bottom > c.bottom+1 || pip.bottom > c.bottom+1 || pip.top < c.top-1 || overlap) clippedFaces.push(card.getAttribute('aria-label'));
+                        index.top < c.top-1 || index.bottom > c.bottom+1 || pip.bottom > c.bottom+1 || pip.top < c.top-1 ||
+                        pip.left < c.left-1 || pip.right > c.right+1 || overlap) clippedFaces.push(card.getAttribute('aria-label'));
                 }
                 return {regions,overlaps,clippedFaces,bounds:{left:bounds.left,right:bounds.right,top:bounds.top,bottom:bounds.bottom},
                     scrollHeight:root.scrollHeight,clientHeight:root.clientHeight,horizontalOverflow:root.scrollWidth-root.clientWidth};
