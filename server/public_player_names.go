@@ -18,11 +18,24 @@ func activeClientByPublicName(input string) *Client {
 	sessionsMu.Lock()
 	defer sessionsMu.Unlock()
 	if c := activeSessions[input]; c != nil && !c.retired.Load() && !c.transportClosed.Load() {
+		if c.playerID == "" {
+			return nil
+		}
 		return c
 	}
 	var found *Client
 	for _, c := range activeSessions {
-		if c == nil || c.retired.Load() || c.transportClosed.Load() || (!strings.EqualFold(c.username, input) && !strings.EqualFold(clientPublicName(c), input)) {
+		if c == nil || c.retired.Load() || c.transportClosed.Load() {
+			continue
+		}
+		if c.playerID == "" {
+			// A pending account's stable key must not resolve to another alias.
+			if strings.EqualFold(c.username, input) {
+				return nil
+			}
+			continue
+		}
+		if !strings.EqualFold(c.username, input) && !strings.EqualFold(clientPublicName(c), input) {
 			continue
 		}
 		if found != nil {

@@ -116,14 +116,8 @@ func handleMsgCasino(client *Client, message Message) {
 	// Seating/floor/ready changes still refresh the complete physical audience.
 	presence := sendCasinoState(client)
 	peers, scoped := casinoActionPeers(request.Action, presence)
-	// Do not hold the session map while obtaining World.Mu for presence.
-	sessionsMu.Lock()
-	clients := make([]*Client, 0, len(activeSessions))
-	for _, observer := range activeSessions {
-		clients = append(clients, observer)
-	}
-	sessionsMu.Unlock()
-	for _, observer := range clients {
+	// Snapshot bound identities before obtaining World.Mu for presence.
+	for _, observer := range activeClientSnapshot() {
 		if observer == client || scoped && !peers[observer.playerID] {
 			continue
 		}

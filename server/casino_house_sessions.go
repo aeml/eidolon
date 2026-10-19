@@ -146,13 +146,7 @@ func notifyHousePresentation(now time.Time) {
 	if len(changed) == 0 || world == nil {
 		return
 	}
-	sessionsMu.Lock()
-	audience := make([]*Client, 0, len(activeSessions))
-	for _, client := range activeSessions {
-		audience = append(audience, client)
-	}
-	sessionsMu.Unlock()
-	for _, client := range audience {
+	for _, client := range activeClientSnapshot() {
 		p := world.GetEntityCopy(client.playerID)
 		if p != nil && !p.Disconnected && p.InstanceID == game.CasinoInstanceID && p.CasinoSeat != nil && changed[p.CasinoSeat.TableID] {
 			sendCasinoState(client)

@@ -6,6 +6,12 @@ exact public verification remain required before this milestone is accepted.
 [Accepted 84](2026-10-19-release1-79-84-acceptance.md) remains the verified live
 baseline. This work does not complete the full game or the owner's casino target.
 
+The first complete source `8ce0fbb0` failed original CI39233368985 because of a
+real server identity race. Its client job and all three hosted browser shards
+passed (544 browser passes, 14 existing exclusions, no failures or flakes).
+Deployment was skipped. The [identity correction](2026-10-19-casino-identity-binding-correction.md)
+retains that failure and qualifies a server-only repair before new own CI.
+
 Casino table and popup text follows saved phone menu text sizing. Editors use
 its base size; compact labels scale proportionally. Titles and their actions
 wrap as groups, keeping full game names readable. Play-time controls show short

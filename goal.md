@@ -2697,6 +2697,15 @@ checks pass 72 source presentation cases, four funded-decision visibility cases,
 checks. Notes remain cumulative at 520 with all 519 prior strings exact.
 [Qualification and retained failures](docs/plans/2026-10-19-casino-phone-readability.md).
 
+Original CI39233368985 failed a real pending-player identity race. Its client
+and all three hosted browser jobs passed (544 passes, 14 exclusions, no flakes);
+five dependent jobs were skipped and this source did not deploy. The server-only
+correction reproduces both original probe failures, then passes eight focused
+race checks, five original gameplay recovery cases, all 24 house cases and
+related notification/chat routing. Application and integration test binaries
+are race-enabled, with fresh isolated Mongo fixtures and original deadlines.
+[Correction and preserved evidence](docs/plans/2026-10-19-casino-identity-binding-correction.md).
+
 Own CI, deployment and public verification remain required. The full original
 goal, owner casino assessment, human/device/listening, final art/performance,
 operations/rights, F1–F5 and beta/1.99 remain open. Soak/stress remains deferred.

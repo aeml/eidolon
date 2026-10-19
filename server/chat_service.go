@@ -459,6 +459,8 @@ func appendBounded(history []ChatPayload, payload ChatPayload, limit int) []Chat
 	return history
 }
 
+// playerID is bound once under sessionsMu. Observe the nonempty binding while
+// holding that mutex so callers can safely read the immutable ID after unlock.
 func activeClientSnapshot() []*Client {
 	sessionsMu.Lock()
 	defer sessionsMu.Unlock()

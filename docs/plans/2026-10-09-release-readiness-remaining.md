@@ -51,6 +51,11 @@ publication cases, 286 unit checks / 17 suites, and 455 release/history/workflow
 checks / seven suites. All 519 prior note strings remain exact in 520 entries.
 Complete own CI, deployment, and public verification remain required. It is not
 part of accepted 84. [Qualification](2026-10-19-casino-phone-readability.md).
+The first 85 CI failed a real pending-player identity race; all 544 hosted cases
+passed with 14 existing exclusions and no flakes. A reproduced server-only
+correction passes race-enabled probes, original gameplay recovery and complete
+house socket cases. A new complete own CI and deployment remain required.
+[Retained failure and correction](2026-10-19-casino-identity-binding-correction.md).
 The full original goal and every other open row below remain active; no beta,
 physical-device, final art/performance, human campaign/audio, or owner gate closes.
 
