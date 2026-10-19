@@ -48,5 +48,5 @@ export class HouseHistory {
             this.list.scrollLeft = follow ? this.list.scrollWidth : scroll;
         });
     }
-    clear() { cancelAnimationFrame(this.frame); this.frame = null; this.key = null; }
+    clear() { cancelAnimationFrame(this.frame); this.frame = null; this.key = null; this.scope = null; }
 }

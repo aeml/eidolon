@@ -119,3 +119,20 @@ controller/header/Rules/drag/phone behavior still need fresh browser review.
 The earlier23browser cases qualify the prior prepared layout, not these new
 window dimensions. The eight controller/phone cases and revised game/browser
 checks are prepared but not run while release83CI is live.
+
+
+The final review fixture now covers all five actual controller windows at
+320×740,390×844,844×390 and1440×900 (20cases), including majority-screen bounds,
+Rules/reference containment, no disclosure sections, Escape without a leave
+request, desktop top-bar drag and remembered position on reopening. These cases
+remain prepared, not passed, while release83CI is live. The current master
+reader correction has been ordinarily merged into this isolated candidate.
+
+A small follow-up keeps poker Rules available during synchronization while all
+funded controls remain disabled, and refreshes roulette's selected chip/cost
+hint after stake shortcuts. Its focused house/poker/browser-plan group passes
+58checks/three suites with lint. The first invocation included a nonexistent
+suite path and an old assertion that also disabled Rules; that failure is
+retained. The corrected assertion still requires every funded button to remain
+disabled. Resetting a retired history view also clears its reader-follow scope,
+so reopening starts at the newest saved results.
