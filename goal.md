@@ -2637,3 +2637,17 @@ positions are corrected in the release tree with their damage assertions retaine
 This is staged implementation, not deployment or completed beta readiness. The
 full original game/art/performance/operations/owner/F1–F5/beta/1.99 scope stays
 active. Human campaign/device feedback and soak/stress remain deferred, not passed.
+
+
+## October19 Alpha1.79.83 scoped delivery
+
+Source d2e957a2dc733053332010dc763cacde2cc51b27 passes its own ten-job CI,
+both deployments and live gameplay/recovery. Normal-TLS identities match and
+426public files match its exact artifact;110unchanged GLBs retain verified byte
+identity with accepted82proof. This delivers the qualified quest/reader/window,
+preview/entry/footstep/credits and specialization-reminder corrections.
+[Acceptance](docs/plans/2026-10-19-release1-79-83-acceptance.md).
+The casino candidate's new majority-screen/draggable/popup layouts and the
+height-changing jump-camera candidate remain isolated pending visual selection.
+The full original goal, human/device/operations/art/performance/F1–F5/beta/1.99
+requirements and deferred soak/stress remain open.

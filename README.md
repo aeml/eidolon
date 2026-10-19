@@ -496,20 +496,20 @@ Notes:
 ## Project Status
 
 Current source version: `Alpha 1.79.84`, **prepared; verification and deployment pending**.
-This milestone improves quest/reward, Lore Book, Atlas, tracker and party control
-continuity; garment preview framing; grounded movement audio; prepared connected
-entry; startup ownership cleanup; and credits with matching editable source links.
-Local runtime qualification covers 73 distinct native cases; publication, own CI,
-live checks and exact public verification remain required.
-[Selected scope and qualification](docs/plans/2026-10-18-release1-79-83-qualification.md).
+This milestone expands all five casino windows, adds remembered top-bar dragging
+and separate Rules/reference popups, stages roulette ball motion and baccarat
+card reveals/history, and improves card faces, slot symbols and result feedback.
+Focused client and phone/desktop browser checks pass; copied-publication review,
+own CI, deployment and exact public verification remain required.
+[Casino scope and qualification](docs/plans/2026-10-19-casino-round-experience.md).
 
-Latest verified live release: `Alpha 1.79.82`, source
-`2a19ff3fcb642d5abd199d4ba3f775facae21a02`.
-All ten jobs passed in [CI39160640094](https://github.com/aeml/eidolon/actions/runs/39160640094),
+Latest verified live release: `Alpha 1.79.83`, source
+`d2e957a2dc733053332010dc763cacde2cc51b27`.
+All ten jobs passed in [CI39201585438](https://github.com/aeml/eidolon/actions/runs/39201585438),
 with both deployments, live checks and exact public-file verification.
-[Accepted82](docs/plans/2026-10-18-release1-79-82-acceptance.md).
+[Accepted83](docs/plans/2026-10-19-release1-79-83-acceptance.md).
 Recall/quest-object casts, outside-click window closing, close melee contact,
-walkable town roofs and the shared Earth fence are retained from accepted81.
+walkable town roofs and the shared Earth fence remain delivered from81.
 Final world/art, performance, human campaign/listening/phone feedback, operational
 owner decisions, feature freeze and beta remain open.
 
