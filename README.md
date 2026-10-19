@@ -498,7 +498,8 @@ Notes:
 Current source version: `Alpha 1.79.84`, **prepared; verification and deployment pending**.
 This milestone expands all five casino windows, adds remembered top-bar dragging
 and separate Rules/reference popups, stages roulette ball motion and baccarat
-card reveals/history, and improves card faces, slot symbols and result feedback.
+card reveals/history, improves card faces, slot symbols and result feedback, and keeps the jump camera
+on the displayed floor between different heights.
 Focused client and phone/desktop browser checks pass; copied-publication review,
 own CI, deployment and exact public verification remain required.
 [Casino scope and qualification](docs/plans/2026-10-19-casino-round-experience.md).

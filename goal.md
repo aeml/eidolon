@@ -2651,3 +2651,18 @@ The casino candidate's new majority-screen/draggable/popup layouts and the
 height-changing jump-camera candidate remain isolated pending visual selection.
 The full original goal, human/device/operations/art/performance/F1–F5/beta/1.99
 requirements and deferred soak/stress remain open.
+
+
+## October19 prepared Alpha1.79.84 owner-polish milestone
+
+The isolated candidate completes the casino presentation/window implementation:
+all five large movable games, remembered/clamped positions, separate Rules and
+reference popups, roulette launch/zoom/bounce, individually dealt baccarat cards,
+shared recent history, card/slot/feedback polish and safe lifecycle/custody.
+283focused client checks and45prepared browser cases pass. Actual disposable
+house sockets/restart qualification retains its unchanged server source label.
+The selected jump-camera correction passes99client checks and native High/Low
+up/down presentation after reproducing the old camera mismatch. Neither feature
+is deployed yet: copied publication, own CI, deployment and public verification
+remain required. Casino comfort/art/audio assessment and the full original beta/
+world/performance/owner/F1–F5scope remain open; no soak/stress run is added.

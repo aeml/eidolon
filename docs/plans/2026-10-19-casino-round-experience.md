@@ -82,3 +82,23 @@ Connected visual/audio review, actual public artifact/deployment verification
 and the owner's complete casino experience assessment remain open. No human
 listening, physical-phone, whole-world art/performance, campaign, operations,
 F1–F5 or beta/1.99gate is closed here. Soak/stress remains deferred.
+
+
+## Selected camera correction and assembled publication
+
+The same prepared84milestone also selects the earlier height-changing jump
+camera correction. Render previously replaced the jump update's displayed floor
+with the newer/staler authoritative player height, producing alternating camera
+targets. Render now retains the displayed floor for server-driven local jumps;
+physics, roof support, packets and jump deadlines remain unchanged.
+
+The integrated client group passes99checks/three suites, including the retained
+specialization reminder regressions after conflict resolution. A prepared native
+roof fixture reproduces0.878units of camera-target error before the correction
+in both qualities. The unchanged fixture then passes High and Low up/down
+transitions in14.5seconds on SystemChrome153.0.8010.36, requiring hardware WebGL,
+a visible jump arc and no update/render target displacement. It records60samples
+per direction. This is a prepared rendered presentation check, not earned route,
+wall-clock jump timing, physical-phone or performance acceptance. Both failing
+baseline cases and the original isolated CPU failures remain retained.
+Copied-publication review and the complete assembled release gates are next.
