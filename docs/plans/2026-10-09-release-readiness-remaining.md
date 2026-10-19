@@ -1,6 +1,6 @@
 # Release-readiness remaining work
 
-Current checkpoint: October 18, 2026. The full goal remains active. No feature
+Current checkpoint: October 19, 2026. The full goal remains active. No feature
 freeze, final modern-art acceptance, closed beta or launch has been declared.
 
 This register records current delivery states and next actions. The preceding
@@ -23,6 +23,17 @@ Authoritative scope remains the [goal](../../goal.md),
 Every explicit requirement in those sources remains part of the completion audit.
 
 ## Current delivery: accepted Alpha1.79.82; corrected83 locally qualified
+
+Both original83CI39174889800and corrected648CI39196355663failed the phone
+Lore held-Space assertion, with downstream deployment gates skipped. Those
+failures are retained. A further correction owns button Space activation until
+release, while fencing repeats, blur, retired readers and disposal. Runtime
+source811cef1cb passes56focused checks/3suites and the copied publication's15
+Lore/window/specialization/reward/conversation cases in Chromium149, with no
+browser retries, flakes or skips. It still needs its own full CI and deployment
+acceptance. Casino presentation work remains isolated and is not part of this
+release correction. See the [correction evidence](2026-10-19-specialization-and-window-reflow-correction.md).
+
 
 Alpha1.79.82source2a19has all ten own CI jobs, both deployments, live checks,
 matching normal-TLS identities and exact public-file verification.
