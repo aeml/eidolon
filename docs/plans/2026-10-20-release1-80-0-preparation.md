@@ -1,5 +1,13 @@
 # Alpha 1.80.0 feature-freeze candidate
 
+Current correction: original source `a4b905e4` / CI39352722710 fails the server
+public-monitor deadline classification and does not deploy. The
+[qualified monitor correction](2026-10-20-release1-80-0-monitor-deadline.md)
+adds a post-read cancellation check and six EOF-boundary cases, preserving all
+original limits. The preparation and metadata-only statements below describe
+the first candidate; the corrected candidate also contains that F2/P09 fix and
+requires its own complete pipeline. All first-run results remain retained.
+
 F1–F5 readiness is qualified in the [freeze review](2026-10-20-feature-freeze-review.md).
 The owner confirmed the [operating baseline](2026-10-20-freeze-operating-proposal.md)
 and reported no known rights issues, asking that unsubstantiated inputs remain

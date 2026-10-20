@@ -3,6 +3,9 @@
 Status: **F1–F5 readiness is qualified for the Alpha 1.80.0 candidate**.
 The owner confirmed the operating baseline and responsibility on October 20 and
 reports no known asset-rights issues, with unsubstantiated inputs to be flagged.
+The first candidate's server gate failed a public-monitor timeout classification;
+the [deadline correction](2026-10-20-release1-80-0-monitor-deadline.md) reproduces
+four cases, including a late false-ready result, and qualifies the scoped fix.
 The candidate still requires its own original CI, deployment and public checks
 before the 1.80 milestone is accepted. Public production remains accepted
 Alpha 1.79.86 until that ordered promotion; beta has not opened.
@@ -36,8 +39,10 @@ and [confirmed operating baseline](2026-10-20-freeze-operating-proposal.md).
 - The separate historical talent-consumer overlay passes unchanged on the
   baseline (Go 1.27.2/game package 1.158s), resolving the README's stale present-
   tense failure claim without changing skills, probes or assertions.
-- The 1.80 candidate changes release identity, cumulative notes and freeze/audit
-  documentation only. Its own release checks/CI/deployment remain mandatory;
+- The first 1.80 candidate changed release identity, cumulative notes and freeze/
+  audit documentation. The corrected candidate also enforces the existing public
+  monitor deadline after body reads, with six EOF-boundary regression cases.
+  Its own release checks/CI/deployment remain mandatory;
   baseline functional evidence does not substitute for promotion qualification.
 - No soak/stress, repeated full campaign, local GPU run, new dependencies, model
   replacement, production-data mutation or repository-setting change occurs.
@@ -50,7 +55,7 @@ and [confirmed operating baseline](2026-10-20-freeze-operating-proposal.md).
 | F2: threats and authority boundaries | Reviewed. Twelve current-source boundaries include invitations, garments, quest rewards/casts, roofs/melee, casino privacy/value and delivery guards; existing CI/race/socket scopes and failures remain. | Preserve the named 1.82 trust/repository policy and final threat review. No known critical authorization, dupe or save-loss defect may be dismissed as polish. No penetration certification is claimed. |
 | F3: population, service budget, alerts | Owner confirmed the existing server/Postmark, no additional recurring spend, up to 100 invitees without a 100-concurrent promise, best-effort incidents and no uptime/response guarantee. Alert recipients/settings remain approved. | Keep actual concurrency/headroom unqualified until the deferred near-completion workload passes. Original named successes/failures and shared-host constraints remain explicit. |
 | F4: privacy, administration and recovery owners | Owner and existing authorized admins now own support, moderation, incidents, account recovery and retention coordination. Existing manual privacy paths/settings and disabled erasure remain. | Detailed recovery objectives/off-machine destination and exercises remain assigned 1.81 work. Owner confirmation is not evidence of a rehearsed restore or staffed beta coverage. |
-| F5: content/dependency baseline and exceptions | Candidate baseline locked to the reviewed runtime/catalog and unchanged dependency graph. Only release identity, cumulative notes and documentation differ. Existing licenses/notices remain. | Record the candidate commit after commit creation and accept it only after its own CI/deployment/public checks. P01–P13 and the exception policy govern later changes; unsubstantiated rights/source inputs remain flagged 1.86/1.90 work. |
+| F5: content/dependency baseline and exceptions | Candidate baseline locked to the reviewed feature/catalog set and unchanged dependency graph. Changes are release identity, cumulative notes/documentation and the scoped F2/P09 public-monitor deadline correction. Existing licenses/notices remain. | Record the candidate commit after commit creation and accept it only after its own CI/deployment/public checks. P01–P13 and the exception policy govern later changes; unsubstantiated rights/source inputs remain flagged 1.86/1.90 work. |
 
 The owner answered both concrete questions: "Use this baseline; existing admins
 and I own support/operations" and "No known issues; flag anything your audit

@@ -12,8 +12,14 @@
     "talentConsumerOverlay": "Unchanged command passes Go1.27.2/game1.158s; no skill or probe changes.",
     "ownerDecision": "Existing shared server/Postmark, no new recurring spend, up to100invitees without concurrency/SLA guarantee, owner/existing admins own operations/support/moderation/recovery; existing retention unchanged. No known asset-rights issues; flag unsubstantiated inputs.",
     "scheduledWork": "P01-P13 in current review retain all original art/performance/device/campaign/operations/rights/beta gates; no waived promises.",
-    "candidateChanges": "Synchronized version/cumulative notes and freeze/audit documentation only; original dependency graph and gameplay/model/save rules unchanged.",
-    "limits": "No soak/stress, repeated full campaign, new local GPU run, beta/access/payment/admin settings or rights grant. Own original CI/deployment/public acceptance required before publishing a successor."
+    "candidateChanges": "Synchronized identity/cumulative notes, freeze/audit documentation and scoped F2/P09 public-monitor post-read deadline correction; original limits, dependency graph and gameplay/model/save rules unchanged.",
+    "limits": "No soak/stress, repeated full campaign, new local GPU run, beta/access/payment/admin settings or rights grant. Own original CI/deployment/public acceptance required before publishing a successor.",
+    "failedFirstCandidate": {
+      "source": "a4b905e4ef217621fa8dfd2bf1c4332c5739c0e4",
+      "run": 39352722710,
+      "cause": "Public monitor deadline wrongly classified as invalid response during race suite. Four jobs pass, server fails, five downstream jobs skipped; no deployment/retry/cancellation.",
+      "correction": "2026-10-20-release1-80-0-monitor-deadline.md"
+    }
   },
   "october8AcceptedSourceReconciliation": {
     "sourceCommit": "f9cbd41b2e5e0a9ca29dc19c07070658e57f0849",

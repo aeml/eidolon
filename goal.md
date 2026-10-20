@@ -19,7 +19,10 @@ and threat boundaries, the locked catalog/dependency baseline and finite
 scheduled work after freeze. The owner confirmed the operating baseline and
 reported no known rights issues; anything unsubstantiated stays flagged. All 17
 generated-content groups and the historical talent-consumer overlay pass.
-Candidate 1.80 changes release identity, cumulative notes and documentation only;
+First candidate a4b / CI39352722710 failed monitor deadline classification and
+did not deploy. The corrected candidate also includes the qualified F2/P09 EOF/
+deadline fix; no original limit/assertion is relaxed. Candidate 1.80 retains the
+frozen feature/dependency baseline and synchronized identity/notes;
 its own original CI/deployment/public checks remain mandatory before acceptance.
 Accepted 86 remains production until that promotion. No beta/access, spending,
 repository-setting or full goal-completion claim. Existing human/device and

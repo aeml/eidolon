@@ -10,8 +10,10 @@ The owner confirmed the [operating baseline](plans/2026-10-20-freeze-operating-p
 The existing talent-consumer overlay and all 17 generated-content groups pass.
 No skill/odds/reward/model/progression rules or dependency graph change.
 
-The candidate changes synchronized release identity, cumulative notes and freeze
-records; it still requires its own original CI, deployment and exact public
+The first candidate failed a public-monitor timeout classification and did not
+deploy. The corrected candidate adds a qualified post-read deadline check and six
+EOF-boundary cases without changing limits. It retains synchronized identity,
+cumulative notes and freeze records; it still requires its own original CI, deployment and exact public
 verification. Accepted Alpha 1.79.86 remains production until that promotion.
 Final art, human/device/audio review, original performance, recovery, capacity,
 rights and beta gates remain mandatory at their named milestones. No soak/stress,

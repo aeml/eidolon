@@ -81,10 +81,12 @@ func (p *publicProbe) body(ctx context.Context, endpoint string, limit int64) ([
 		return nil, "public_unavailable"
 	}
 	body, err := io.ReadAll(io.LimitReader(response.Body, limit+1))
+	// ReadAll treats EOF as success even if the response ended on cancellation.
+	// A late empty or complete body cannot outlive the shared probe deadline.
+	if ctx.Err() != nil {
+		return nil, "public_probe_timeout"
+	}
 	if err != nil {
-		if ctx.Err() != nil {
-			return nil, "public_probe_timeout"
-		}
 		return nil, "public_unavailable"
 	}
 	if int64(len(body)) > limit {

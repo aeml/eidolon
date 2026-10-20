@@ -301,3 +301,70 @@ func TestPublicMonitorLiveReadOnlyOptIn(t *testing.T) {
 	}
 	t.Logf("read-only public URL readiness passed for %s / %s; same-host vantage, not off-machine/all-device coverage", sample.Version, sample.Commit)
 }
+
+// A transport can end a canceled response with EOF rather than a read error.
+// io.ReadAll then succeeds, but an exhausted shared budget must neither become
+// a malformed-response report nor accept even a complete late health response.
+type publicDeadlineEOFTransport struct {
+	path     string
+	valid    bool
+	requests []string
+	closed   atomic.Int32
+}
+
+func (transport *publicDeadlineEOFTransport) RoundTrip(request *http.Request) (*http.Response, error) {
+	if err := request.Context().Err(); err != nil {
+		return nil, err
+	}
+	transport.requests = append(transport.requests, request.URL.Path)
+	body := map[string]string{"/": publicPageFixture, "/release.json": publicReleaseFixture, "/healthz": publicHealthFixture}[request.URL.Path]
+	late := request.URL.Path == transport.path
+	if late && !transport.valid {
+		body = ""
+	}
+	return &http.Response{StatusCode: http.StatusOK, Header: make(http.Header), Request: request,
+		Body: &publicDeadlineEOFBody{reader: strings.NewReader(body), ctx: request.Context(), late: late, closed: &transport.closed}}, nil
+}
+
+type publicDeadlineEOFBody struct {
+	reader *strings.Reader
+	ctx    context.Context
+	late   bool
+	closed *atomic.Int32
+}
+
+func (body *publicDeadlineEOFBody) Read(destination []byte) (int, error) {
+	if body.late {
+		body.late = false
+		<-body.ctx.Done()
+	}
+	return body.reader.Read(destination)
+}
+
+func (body *publicDeadlineEOFBody) Close() error { body.closed.Add(1); return nil }
+
+func TestPublicMonitorDeadlineEOFCannotReportInvalidOrReady(t *testing.T) {
+	for index, path := range []string{"/", "/release.json", "/healthz"} {
+		for _, valid := range []bool{false, true} {
+			name := path + map[bool]string{false: "/empty", true: "/valid"}[valid]
+			t.Run(name, func(t *testing.T) {
+				transport := &publicDeadlineEOFTransport{path: path, valid: valid}
+				probe, err := NewProbe("http://127.0.0.1/healthz", "", 250*time.Millisecond)
+				if err != nil {
+					t.Fatal(err)
+				}
+				probe.client = &http.Client{Transport: transport, Timeout: 250 * time.Millisecond}
+				if err := probe.ConfigurePublicEndpoints("https://frontend.example/release.json", "https://backend.example/healthz"); err != nil {
+					t.Fatal(err)
+				}
+				metrics, cause := probe.public.check(context.Background(), "abcdef1", "Alpha 1.79.8")
+				if cause != "public_probe_timeout" || metrics.BackendReady || metrics.IdentityMatch {
+					t.Fatalf("late EOF escaped the shared deadline: cause=%s metrics=%+v", cause, metrics)
+				}
+				if len(transport.requests) != index+1 || int(transport.closed.Load()) != index+1 {
+					t.Fatalf("continued past deadline or leaked response: requests=%v closed=%d", transport.requests, transport.closed.Load())
+				}
+			})
+		}
+	}
+}

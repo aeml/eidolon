@@ -33,11 +33,14 @@ and reports no known rights issues; unsubstantiated inputs remain flagged.
 
 All 17 generated-content groups and the separate unchanged talent-consumer
 overlay pass. Baseline public identity/readiness matches accepted 86. Candidate
-changes are release identity, cumulative notes and documentation only; it needs
+changes are release identity, cumulative notes/documentation and the qualified
+public-monitor EOF/deadline correction; it needs
 its own original CI/deployment/public checks before acceptance. No gameplay,
 model, dependency, save, beta/admission, spending or administrative policy change.
 No soak/stress, repeated campaign or new local GPU run. P01–P13 preserve every
 original quality, capacity, human, operational, rights and beta/release requirement.
+First candidate a4b / CI39352722710 fails monitor timeout classification with no
+deployment; the original failure is retained in the linked correction.
 Older pending labels below retain their dated scopes, not current gate status.
 
 ## Current delivery: accepted Alpha 1.79.86
