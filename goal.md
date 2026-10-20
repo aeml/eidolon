@@ -12,10 +12,10 @@ release gate is actually completed or explicitly resolved with the owner.
 
 ## Project and authoritative sources
 
-Current work — October 20: **Alpha 1.80.1 realm fence/ground correction accepted
-and deployed**. Exact source `6071ecadf4c6e7efcfeb4db0546bcb4c2d0a39f1`, original CI 39466732460, all ten jobs,
-both deployments/live QA and exact artifact/public verification pass.
-[Acceptance](docs/plans/2026-10-20-release1-80-1-acceptance.md). The accepted F1–F5 boundary, 85-promise/
+Current work — October 20: **Alpha 1.80.2 playable-shore/ocean correction
+accepted and deployed**. Exact source `b3889294cb3c0db234f54f854e6d7151865692b8`, original CI 39497820995, all ten
+jobs, both deployments/live QA and exact artifact/public verification pass.
+[Acceptance](docs/plans/2026-10-20-release1-80-2-acceptance.md). The accepted F1–F5 boundary, 85-promise/
 69-milestone review, confirmed operating baseline and thirteen mandatory remaining
 workgroups stay in force. Full game/1.99 and beta/launch gates remain open.
 Soak/stress and owner-assigned human/device feedback retain their deferrals.

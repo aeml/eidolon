@@ -1,8 +1,12 @@
 # Alpha 1.80.2 playable shores and ocean
 
+Accepted and deployed as Alpha 1.80.2, source `b3889294cb3c0db234f54f854e6d7151865692b8`, original CI 39497820995.
+[Exact acceptance](2026-10-20-release1-80-2-acceptance.md) records all ten jobs, deployments/live and public
+proof. The preparation below records the pre-promotion baseline.
+
 Prepared against accepted Alpha 1.80.1 source
 `6071ecadf4c6e7efcfeb4db0546bcb4c2d0a39f1` and documentation-only master
-`5e187643fabd7e6b6912e816db8d1334aaca97e1`. Deployment acceptance is pending.
+`5e187643fabd7e6b6912e816db8d1334aaca97e1`. Exact deployment acceptance is linked above.
 
 The ocean was reachable because overworld jumps had no playable-region guard,
 ordinary movement relied on finite-height fences and a large scene envelope,
@@ -53,6 +57,6 @@ Local qualification:
   water review are retained alongside final evidence; no CI retry/cancellation
   or soak/stress is substituted for an original result.
 
-Exact deployment receipts will be completed after CI and public verification.
+Exact deployment receipts are recorded in [acceptance](2026-10-20-release1-80-2-acceptance.md).
 This correction does not open beta, finish P01–P13, activate raised terrain or
 perform a soak/stress test. The broader game completion goal remains open.

@@ -497,17 +497,17 @@ Notes:
 ## Project Status
 
 Current source version: `Alpha 1.80.2`.
-Current verified live release: `Alpha 1.80.1`, source
-`6071ecadf4c6e7efcfeb4db0546bcb4c2d0a39f1`. Original [CI 39466732460](https://github.com/aeml/eidolon/actions/runs/39466732460) passes all ten jobs,
-both deployments/live QA and exact public verification. [Acceptance](docs/plans/2026-10-20-release1-80-1-acceptance.md).
-All four elemental realms use timber/iron fences with solid ground beneath the
-walls and outer posts; existing gates and server collision rules remain.
+Current verified live release: `Alpha 1.80.2`, source
+`b3889294cb3c0db234f54f854e6d7151865692b8`. Original [CI 39497820995](https://github.com/aeml/eidolon/actions/runs/39497820995) passes all ten jobs,
+both deployments/live QA and exact public verification. [Acceptance](docs/plans/2026-10-20-release1-80-2-acceptance.md).
+Movement stays on playable land, stranded saves recover inside the fences,
+and the ocean has animated reflective water and shoreline foam.
 
 F1–F5 feature freeze is accepted. The [freeze review](docs/plans/2026-10-20-feature-freeze-review.md)
 reconciles all 85 promises and 69 pre-freeze milestones, records the confirmed
 operating baseline and retains thirteen mandatory workgroups before beta/release.
-All 522 prior raw notes remain in the 523-entry history. Existing gameplay,
-models, wallets, progress and dependency rules remain unchanged. Open registration
+All 523 prior raw notes remain in the 524-entry history. Models, wallets,
+saved progress and dependencies are preserved; movement now stays on playable land. Open registration
 and flat-v1 terrain stay; beta has not opened and soak/stress remains deferred.
 The next scheduled milestone is 1.81 recovery readiness. Final art/performance,
 human campaign/listening, physical devices, operations/rights and beta/launch

@@ -2,11 +2,12 @@
 
 ## Current checkpoint — October 20, 2026
 
-Latest public patch: **Alpha 1.80.1**, source `6071ecadf4c6e7efcfeb4db0546bcb4c2d0a39f1` /
-original [CI 39466732460](https://github.com/aeml/eidolon/actions/runs/39466732460), all ten jobs, both deployments/live QA and exact
-public verification passed. The [realm fence/ground correction](docs/plans/2026-10-20-release1-80-1-acceptance.md)
-uses the new fence in all four realms and grounds the outer posts. It preserves
-the accepted feature boundary below and all remaining beta requirements.
+Latest public patch: **Alpha 1.80.2**, source `b3889294cb3c0db234f54f854e6d7151865692b8` /
+original [CI 39497820995](https://github.com/aeml/eidolon/actions/runs/39497820995), all ten jobs, both deployments/live QA and exact
+public verification passed. The [playable-shore/ocean correction](docs/plans/2026-10-20-release1-80-2-acceptance.md)
+keeps movement on canonical land and improves the ocean's water presentation.
+The [previous fence correction](docs/plans/2026-10-20-release1-80-1-acceptance.md),
+accepted feature boundary below and all remaining beta requirements remain.
 
 The **Alpha 1.80.0 feature freeze was accepted and deployed** at source
 `805e7219ce1d1595184ee030a115bdcb0ea00134` / original [CI 39356611063](https://github.com/aeml/eidolon/actions/runs/39356611063).

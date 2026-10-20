@@ -23,7 +23,15 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
-## Current delivery: accepted Alpha 1.80.1 realm fence/ground correction
+## Current delivery: accepted Alpha 1.80.2 playable shores/ocean correction
+
+Source `b3889294cb3c0db234f54f854e6d7151865692b8`, original [CI 39497820995](https://github.com/aeml/eidolon/actions/runs/39497820995), all ten jobs,
+both deployments/live QA and exact artifact/public proof pass.
+[Acceptance](2026-10-20-release1-80-2-acceptance.md) records bounded walking/jumps/movement abilities, saved
+shore recovery and animated reflective ocean water, retaining gateways, roofs,
+instance floors and the accepted feature boundary. P01–P13 remain open.
+
+## Previous delivery: accepted Alpha 1.80.1 realm fence/ground correction
 
 Source `6071ecadf4c6e7efcfeb4db0546bcb4c2d0a39f1` passes original [CI 39466732460](https://github.com/aeml/eidolon/actions/runs/39466732460), all ten jobs, both
 deployments/live QA and exact public verification. [Acceptance](2026-10-20-release1-80-1-acceptance.md) records
