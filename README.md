@@ -496,7 +496,7 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.80.0`.
+Current source version: `Alpha 1.80.1` (realm fence/ground correction; own release qualification pending).
 Current verified live release: `Alpha 1.80.0`, source
 `805e7219ce1d1595184ee030a115bdcb0ea00134`. Original [CI 39356611063](https://github.com/aeml/eidolon/actions/runs/39356611063) passes all ten jobs,
 both deployments/live QA and exact public verification. [Acceptance](docs/plans/2026-10-20-release1-80-0-acceptance.md).

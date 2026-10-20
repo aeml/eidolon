@@ -7,6 +7,7 @@ import { DwarfSalesman } from '../entities/DwarfSalesman.js';
 import { EnvironmentalHazard } from '../entities/EnvironmentalHazard.js';
 import { Fence } from '../entities/Fence.js';
 import { ownsPerimeterFence } from '../art/LanternholdPerimeter.js';
+import { REALM_FENCE_NAMES } from '../data/worldGeography.js';
 import { Forge } from '../entities/Forge.js';
 import { LootDrop } from '../entities/LootDrop.js';
 import { Projectile } from '../entities/Projectile.js';
@@ -31,13 +32,14 @@ import { worldAmbienceKey } from '../audio/WorldAmbience.js';
 import { getActorCombatDistance, getGroundedActorHeight, getFloorInteractionDistance } from './WorldGrounding.js';
 import { EnemyCorpsePresentation } from '../entities/EnemyCorpsePresentation.js';
 import { clearEngineSceneOwnership } from './SceneOwnership.js';
+const environmentFenceNames = ['TownFence', ...Object.values(REALM_FENCE_NAMES)];
 const isContactShadowActor = entity => entity instanceof Actor;
 
 class GameEngineRuntimeMethods {
     adoptEnvironmentFences() {
         const environment = this.getInstanceEnvironmentGroup();
         if (!environment?.getObjectByName) return;
-        const roots = ['TownFence', 'EarthFence'].map(name => environment.getObjectByName(name)).filter(Boolean);
+        const roots = environmentFenceNames.map(name => environment.getObjectByName(name)).filter(Boolean);
         for (const fence of this.remotePlayers?.values() || []) {
             if (!(fence instanceof Fence) || fence.environmentOwned) continue;
             const data = { x: fence.position.x, z: fence.position.z, rotation: fence.fenceYaw, scale: fence.scale };
@@ -347,10 +349,10 @@ class GameEngineRuntimeMethods {
                     remoteEntity.lifeTime = Number.POSITIVE_INFINITY;
                     remoteEntity.serverAuthoritativeLifetime = true;
                 } else if (pData.type === 'Fence') {
-                    const perimeter = this.getInstanceEnvironmentGroup().getObjectByName('TownFence');
-                    const earthPerimeter = this.getInstanceEnvironmentGroup().getObjectByName('EarthFence');
+                    const environment = this.getInstanceEnvironmentGroup();
+                    const environmentOwned = environmentFenceNames.some(name => ownsPerimeterFence(environment.getObjectByName(name), pData));
                     remoteEntity = new Fence(pData.id, pData.x, pData.z, pData.rotation || 0,
-                        { environmentOwned: ownsPerimeterFence(perimeter, pData) || ownsPerimeterFence(earthPerimeter, pData) });
+                        { environmentOwned });
                     // Add to collision manager
                     const box = new THREE.Box3();
 

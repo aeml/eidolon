@@ -165,7 +165,7 @@ class GameEngineNetworkMessageMethods {
             await worldGen.createTown(0, 200, 100, { shouldAttach: isCurrentTransition });
             if (!isCurrentTransition()) return;
             this.collisionManager.roofField = this.townRoofField;
-            worldGen.createEarthPerimeter?.({ shouldAttach: isCurrentTransition });
+            worldGen.createRealmPerimeters?.({ shouldAttach: isCurrentTransition });
             this.adoptEnvironmentFences?.();
             await worldGen.createOverworldStructures({ shouldAttach: isCurrentTransition });
         }

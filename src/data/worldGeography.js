@@ -2,6 +2,7 @@ import { WORLD_GEOGRAPHY } from './worldGeography.generated.js';
 
 export { WORLD_GEOGRAPHY };
 export const WORLD_REGIONS = Object.freeze(Object.fromEntries(WORLD_GEOGRAPHY.regions.map(r => [r.id, r])));
+export const REALM_FENCE_NAMES = Object.freeze({ earth: 'EarthFence', water: 'WaterFence', fire: 'FireFence', air: 'AirFence' });
 
 export function containsWorldPosition(region, x, z) {
     return Number.isFinite(x) && Number.isFinite(z) &&

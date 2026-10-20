@@ -63,3 +63,30 @@ test('a perimeter arriving after the actor retires both loaded and pending legac
         expect(loaded.mesh).toBeNull();
     } finally { loader.mockRestore(); release.mockRestore(); }
 });
+
+jest.unstable_mockModule('../src/proto/state_pb.js', () => ({
+    eidolon: { state: { StateEnvelope: { decode: jest.fn() } } }
+}));
+const { GameEngine } = await import('../src/core/GameEngine.js');
+
+test.each(['EarthFence', 'WaterFence', 'FireFence', 'AirFence'])('%s retires an already loaded replicated rectangle without losing the actor', async name => {
+    const load = jest.spyOn(MeshFactory, 'createMeshForType').mockResolvedValue(new THREE.Group());
+    const release = jest.spyOn(MeshFactory, 'releaseMesh').mockImplementation(() => {});
+    const actor = new Fence('replicated', 1000, 112, Math.PI / 2);
+    try {
+        await actor.ensureMesh();
+        const scene = new THREE.Group(), root = new THREE.Group(); root.name = name;
+        root.userData.fenceSegments = [[1000, 112, Math.PI / 2]];
+        scene.add(root, actor.mesh);
+        const oldMesh = actor.mesh;
+        GameEngine.prototype.adoptEnvironmentFences.call({
+            getInstanceEnvironmentGroup: () => scene, remotePlayers: new Map([[actor.id, actor]])
+        });
+        expect(actor.environmentOwned).toBe(true);
+        expect(actor.isActive).toBe(true);
+        expect(actor.mesh).toBeNull();
+        expect(actor.position.toArray()).toEqual([1000, 0, 112]);
+        expect(scene.children).toEqual([root]);
+        expect(release).toHaveBeenCalledWith('Fence', oldMesh);
+    } finally { actor.dispose(); load.mockRestore(); release.mockRestore(); }
+});

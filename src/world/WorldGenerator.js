@@ -40,7 +40,7 @@ import { createLanternholdStreetFurniture } from '../art/LanternholdStreetFurnit
 import { createLanternholdRoadCart } from '../art/LanternholdRoadCart.js';
 import { createLanternholdNeighborhood } from '../art/LanternholdNeighborhood.js';
 import { createLanternholdPerimeter } from '../art/LanternholdPerimeter.js';
-import { WORLD_REGIONS, getRegionFencePosts } from '../data/worldGeography.js';
+import { WORLD_REGIONS, REALM_FENCE_NAMES, getRegionFencePosts } from '../data/worldGeography.js';
 import {
     CRYSTAL_SANCTUM_DEFINITIONS,
     createProceduralCrystalSanctum
@@ -406,12 +406,15 @@ export class WorldGenerator {
         }
     }
 
-    createEarthPerimeter({ shouldAttach = () => true } = {}) {
+    createRealmPerimeters({ shouldAttach = () => true } = {}) {
         if (!shouldAttach()) return false;
-        if (!this.scene.getObjectByName('EarthFence')) {
-            const fence = createLanternholdPerimeter(0, 200, 2000, 1600, {
-                segments: getRegionFencePosts(WORLD_REGIONS.earth), name: 'EarthFence'
-            });
+        for (const [id, name] of Object.entries(REALM_FENCE_NAMES)) {
+            if (this.scene.getObjectByName(name)) continue;
+            const region = WORLD_REGIONS[id];
+            const fence = createLanternholdPerimeter((region.minX + region.maxX) / 2,
+                (region.minZ + region.maxZ) / 2, region.maxX - region.minX, region.maxZ - region.minZ, {
+                    segments: getRegionFencePosts(region), name
+                });
             for (const collider of fence.userData.walkColliders) this.collisionManager.addCollider(collider);
             this.scene.add(fence);
         }

@@ -2,8 +2,33 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { WORLD_REGIONS } from '../data/worldGeography.js';
 
-// Keep the shoreline inset behind fences, but carry the ground to the shared
-// realm boundary at open gates. A shared wall may be owned by the other realm.
+// Only exterior edges get a narrow footing beyond the fence centre. Shared
+// realm borders meet exactly; town already sits on the larger Earth surface.
+function footingBounds(region, inset) {
+    const adjacent = (side, edge) => Object.values(WORLD_REGIONS).some(other => other.id !== region.id && other.id !== 'town' && (
+        side === 'x'
+            ? (other.minX === edge || other.maxX === edge) && Math.min(region.maxZ, other.maxZ) > Math.max(region.minZ, other.minZ)
+            : (other.minZ === edge || other.maxZ === edge) && Math.min(region.maxX, other.maxX) > Math.max(region.minX, other.minX)));
+    const margin = region.id === 'town' ? 0 : inset;
+    return [region.minX - (adjacent('x', region.minX) ? 0 : margin),
+        region.minZ - (adjacent('z', region.minZ) ? 0 : margin),
+        region.maxX + (adjacent('x', region.maxX) ? 0 : margin),
+        region.maxZ + (adjacent('z', region.maxZ) ? 0 : margin)];
+}
+
+// At concave world corners two exterior footings can touch the same small
+// square. Keep one owner instead of overlapping coplanar realm materials.
+function subtractRectangle(a, b) {
+    const x0 = Math.max(a[0], b[0]), z0 = Math.max(a[1], b[1]);
+    const x1 = Math.min(a[2], b[2]), z1 = Math.min(a[3], b[3]);
+    if (x0 >= x1 || z0 >= z1) return [a];
+    return [[a[0], a[1], x0, a[3]], [x1, a[1], a[2], a[3]],
+        [x0, a[1], x1, z0], [x0, z1, x1, a[3]]].filter(r => r[0] < r[2] && r[1] < r[3]);
+}
+
+// Keep the canonical interior/elevation grid and UV scale, then cover its
+// border up to every fence line. Leaving only gateway patches exposed the
+// ocean beneath closed walls. Shared realms meet without overlapping ground.
 export function createRealmGroundGeometry(region, inset = 0.75, elevation = null) {
     const width = region.maxX - region.minX - inset * 2;
     const depth = region.maxZ - region.minZ - inset * 2;
@@ -24,25 +49,31 @@ export function createRealmGroundGeometry(region, inset = 0.75, elevation = null
         surface.computeVertexNormals();
     }
     const parts = [surface];
-    const seen = new Set();
-    for (const owner of Object.values(WORLD_REGIONS)) for (const wall of owner.walls) {
-        if (!wall.gap) continue;
-        const vertical = wall.side === 'west' || wall.side === 'east';
-        const at = vertical ? (wall.side === 'west' ? owner.minX : owner.maxX)
-            : (wall.side === 'north' ? owner.minZ : owner.maxZ);
-        const min = vertical ? region.minX : region.minZ;
-        const max = vertical ? region.maxX : region.maxZ;
-        if (at !== min && at !== max) continue;
-        const lo = Math.max(wall.gap[0], (vertical ? region.minZ : region.minX) + inset);
-        const hi = Math.min(wall.gap[1], (vertical ? region.maxZ : region.maxX) - inset);
-        const key = `${vertical}:${at}:${lo}:${hi}`;
-        if (lo >= hi || seen.has(key)) continue;
-        seen.add(key);
-        const middle = (lo + hi) / 2;
-        const edgeCenter = at + (at === min ? inset / 2 : -inset / 2);
-        const patch = new THREE.PlaneGeometry(vertical ? inset : hi - lo, vertical ? hi - lo : inset);
-        patch.translate((vertical ? edgeCenter : middle) - centerX, centerZ - (vertical ? middle : edgeCenter), 0);
-        parts.push(patch);
+    if (inset > 0) {
+        const [x0, z0, x1, z1] = footingBounds(region, inset);
+        const inner = [region.minX + inset, region.minZ + inset, region.maxX - inset, region.maxZ - inset];
+        let borders = [[x0, z0, x1, inner[1]], [x0, inner[3], x1, z1],
+            [x0, inner[1], inner[0], inner[3]], [inner[2], inner[1], x1, inner[3]]];
+        for (const other of Object.values(WORLD_REGIONS)) {
+            if (other.id === region.id) break;
+            if (other.id === 'town' || region.id === 'town') continue;
+            const prior = footingBounds(other, inset);
+            borders = borders.flatMap(border => subtractRectangle(border, prior));
+        }
+        // Tile cuts match RealmGroundMesh's 128m grid, retaining compact bounds
+        // for raised previews as well as the single flat production mesh.
+        for (const [minX, minZ, maxX, maxZ] of borders) {
+            for (let x = minX - centerX; x < maxX - centerX;) {
+                const nextX = Math.min(maxX - centerX, (Math.floor(x / 128) + 1) * 128);
+                for (let y = centerZ - maxZ; y < centerZ - minZ;) {
+                    const nextY = Math.min(centerZ - minZ, (Math.floor(y / 128) + 1) * 128);
+                    const patch = new THREE.PlaneGeometry(nextX - x, nextY - y);
+                    patch.translate((x + nextX) / 2, (y + nextY) / 2, 0);
+                    parts.push(patch); y = nextY;
+                }
+                x = nextX;
+            }
+        }
     }
     // Same UV origin/scale as the original rectangle, including normal and
     // roughness maps. Patches meet the inset edge; they do not overlay it.
