@@ -1,3 +1,4 @@
+import { constrainOverworldMovement } from './OverworldMovementBounds.js';
 import { getHeroBasicAttackReach } from './BasicAttackReach.js';
 import * as THREE from 'three';
 import { PORTAL_INTERACTION_RANGE } from './ResonancePortalState.js';
@@ -182,6 +183,7 @@ class GameEngineMovementMethods {
 
         const end = destination.clone();
         end.y = this.player.position.y;
+        if (!this.currentInstanceId) Object.assign(end, constrainOverworldMovement(this.player.position, end));
 
         this.collisionManager?.constrainRockMovementDestination?.(this.player.position, end, this.player.radius || 0);
 
@@ -230,6 +232,7 @@ class GameEngineMovementMethods {
         const start = this.player.position.clone();
         const end = destination.clone();
         end.y = start.y;
+        if (!this.currentInstanceId) Object.assign(end, constrainOverworldMovement(start, end));
 
         this.collisionManager?.constrainRockMovementDestination?.(start, end, this.player.radius || 0);
 

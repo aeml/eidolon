@@ -20,6 +20,8 @@ func TestChargeImpactDamageDoublesOnlyCanonicalCharge(t *testing.T) {
 			world := newTestWorld()
 			defer world.StopBackground()
 			fighter := newTestPlayer("charge-damage-source", "Fighter")
+			// Use an isolated scene: these synthetic coordinates are outside the overworld.
+			fighter.InstanceID = "ability_fixture"
 			fighter.X, fighter.Z = 50000, 50000
 			fighter.Level = 100
 			fighter.Damage = 100
@@ -28,7 +30,7 @@ func TestChargeImpactDamageDoublesOnlyCanonicalCharge(t *testing.T) {
 			fighter.UnlockedSkills = []string{testCase.skill}
 			fighter.SkillRunes = map[string]string{testCase.skill: testCase.runeID}
 			fighter.TalentRanks = testCase.talents
-			target := &Entity{ID: "charge-damage-target", Type: TypeEnemy, X: fighter.X + testCase.targetX,
+			target := &Entity{ID: "charge-damage-target", Type: TypeEnemy, InstanceID: fighter.InstanceID, X: fighter.X + testCase.targetX,
 				Z: fighter.Z, State: "IDLE", Health: 10000, MaxHealth: 10000}
 			world.AddEntity(fighter)
 			world.AddEntity(target)

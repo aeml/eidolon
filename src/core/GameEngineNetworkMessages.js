@@ -113,6 +113,7 @@ class GameEngineNetworkMessageMethods {
             )
         );
 
+        this.collisionManager.overworldBoundary = !instanceId;
         if (hasCanonicalDungeonWalkRects) {
             this.collisionManager.setDungeonWalkableGeometry(layout.walkRects);
         } else {

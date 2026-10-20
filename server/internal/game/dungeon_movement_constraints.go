@@ -87,8 +87,11 @@ func (w *World) constrainDungeonMovementDestination(entity *Entity, x, z float64
 	}
 	// The existing ability/jump destination entry point also owns candidate
 	// overworld cover. Ordinary AI target selection remains unconstrained here.
-	if entity != nil && entity.InstanceID == "" && len(w.rockSolids) > 0 {
-		x, z = w.stopRockMovement(entity, x, z)
+	if entity != nil && entity.InstanceID == "" {
+		x, z = constrainOverworldMovement(entity.X, entity.Z, x, z)
+		if len(w.rockSolids) > 0 {
+			x, z = w.stopRockMovement(entity, x, z)
+		}
 		return x, z, true
 	}
 	x, z, constrained := w.constrainDungeonTargetPosition(entity, x, z)

@@ -13,15 +13,18 @@ func TestClericCursorSupportSkipsUnavailableAllies(t *testing.T) {
 				t.Cleanup(w.StopBackground)
 				cleric := newTestPlayer("healer", "Cleric")
 				cleric.UnlockedSkills = []string{skill}
+				cleric.InstanceID = "ability_fixture" // Keep synthetic support targets in their own scene.
 				cleric.X, cleric.Z = 60000, 60000
 				w.AddEntity(cleric)
 				missing := newTestPlayer("unavailable", "Fighter")
+				missing.InstanceID = cleric.InstanceID
 				missing.X, missing.Z, missing.Health = 60003, 60000, 20
 				missing.Disconnected = unavailable == "disconnected"
 				if unavailable == "zero-health" {
 					missing.Health = 0 // Death receipt/state can lag behind zero HP.
 				}
 				ally := newTestPlayer("living-ally", "Rogue")
+				ally.InstanceID = cleric.InstanceID
 				ally.X, ally.Z, ally.Health = 60004, 60000, 20
 				w.AddEntity(missing)
 				w.AddEntity(ally)
@@ -50,10 +53,12 @@ func TestClericAreaHealingDoesNotHealUnavailableBystanders(t *testing.T) {
 				cleric.SkillRunes = nil
 				cleric.LastSkillUsed, cleric.LastSkillTime = "Divine Intervention", time.Now()
 			}
+			cleric.InstanceID = "ability_fixture" // Keep synthetic support targets in their own scene.
 			cleric.X, cleric.Z = 60000, 60000
 			w.AddEntity(cleric)
 			for i, state := range []string{"living", "disconnected", "zero-health"} {
 				ally := newTestPlayer(state, "Fighter")
+				ally.InstanceID = cleric.InstanceID
 				ally.X, ally.Z, ally.Health = 60001+float64(i), 60000, 20
 				ally.Disconnected = state == "disconnected"
 				if state == "zero-health" {

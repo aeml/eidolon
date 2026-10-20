@@ -169,7 +169,7 @@ func TestDungeonMovementDestinationKeepsLegacyAndRecoveryBehavior(t *testing.T) 
 		registered, canonical, constrained bool
 		fromX, targetX, wantX              float64
 	}{
-		{"overworld", "", false, false, false, 9, 21, 21},
+		{"overworld", "", false, false, true, 9, 21, 21},
 		{"pvp", "arena_1", false, false, false, 9, 21, 21},
 		{"missing layout", "dungeon_missing", false, false, false, 9, 21, 21},
 		{"legacy layout", "dungeon_legacy", true, false, false, 9, 21, 21},
@@ -177,7 +177,11 @@ func TestDungeonMovementDestinationKeepsLegacyAndRecoveryBehavior(t *testing.T) 
 		{"clip outside destination", "dungeon_edge", true, true, true, 9, 15, 10},
 	} {
 		t.Run(fixture.name, func(t *testing.T) {
-			const origin = 30000.0
+			origin := 30000.0
+			if fixture.instanceID == "" {
+				// Overworld policy uses real land.
+				origin = 0
+			}
 			w := newTestWorld()
 			p := newTestPlayer("movement-recovery", "Wizard")
 			p.InstanceID, p.X, p.Z = fixture.instanceID, origin+fixture.fromX, origin

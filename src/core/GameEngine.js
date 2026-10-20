@@ -480,6 +480,7 @@ export class GameEngine {
 
         this.chunkManager = new ChunkManager(this.renderSystem.entityGroup);
         this.collisionManager = new CollisionManager();
+        this.collisionManager.overworldBoundary = true;
         this.collisionManager.roofField = this.townRoofField;
         this.audioManager = new AudioManager();
         this.uiManager = new UIManager(this.isMobile, { audioManager: this.audioManager });

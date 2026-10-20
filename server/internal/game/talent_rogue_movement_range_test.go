@@ -31,10 +31,11 @@ func TestRogueTalentMovementRangeBoundaries(t *testing.T) {
 					w := newTestWorld()
 					p := newTestPlayer("rogue-range", "Rogue")
 					p.Level, p.TalentRanks["ROG_36"] = 100, tc.Rank
+					p.InstanceID = "ability_fixture" // Isolate range checks from overworld shore recovery.
 					p.X, p.Z = 60000, 60000
 					p.UnlockedSkills, p.SkillRunes = []string{tc.Skill}, map[string]string{tc.Skill: tc.Rune}
 					w.AddEntity(p)
-					target := &Entity{ID: "rogue-range-target", Type: TypeEnemy, X: p.X, Z: p.Z, Scale: 4,
+					target := &Entity{ID: "rogue-range-target", Type: TypeEnemy, InstanceID: p.InstanceID, X: p.X, Z: p.Z, Scale: 4,
 						Health: 10000, MaxHealth: 10000, State: "IDLE", Rotation: math.Pi / 2}
 					delta := -0.01
 					if outside {

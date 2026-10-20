@@ -191,6 +191,7 @@ func (w *World) recoverActorFromRocks(e *Entity) {
 // Entry/restore callers remove or update the spatial-grid entry after this
 // correction. Do not hide XZ changes inside the height-only grounding helper.
 func (w *World) recoverWorldEntryLocked(e *Entity) {
+	recoverOverworldPlayer(e)
 	w.recoverActorFromRocks(e)
 	w.groundActorAtEntryLocked(e)
 	e.rockRoute = nil

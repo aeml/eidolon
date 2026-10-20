@@ -128,17 +128,17 @@ func TestBroadcastDeliveryFiltersCapturedEffectsButKeepsSceneProgress(t *testing
 			id string
 			x  float64
 		}{
-			{"near", 300000}, {"edge", 300210},
-			{"far", 300250},
+			{"near", 0}, {"edge", 210},
+			{"far", 250},
 		} {
 			id := tc.id + scene
 			client := newAutoStatusClient(id)
-			world.AddEntity(&game.Entity{ID: id, Type: game.TypePlayer, InstanceID: scene, X: tc.x, Z: 300000})
+			world.AddEntity(&game.Entity{ID: id, Type: game.TypePlayer, InstanceID: scene, X: tc.x, Z: 0})
 			clients[client] = true
 		}
 	}
 	for _, scene := range []string{"", "dungeon_party_a"} {
-		warning := game.TelegraphEvent{SourceID: "already-removed-boss", InstanceID: scene, X: 300000, Z: 300000, Radius: 12}
+		warning := game.TelegraphEvent{SourceID: "already-removed-boss", InstanceID: scene, X: 0, Z: 0, Radius: 12}
 		telegraph, err := telegraphBroadcast(warning)
 		if err != nil {
 			t.Fatal(err)
@@ -153,7 +153,7 @@ func TestBroadcastDeliveryFiltersCapturedEffectsButKeepsSceneProgress(t *testing
 			for client := range clients {
 				actor := world.GetEntity(client.playerID)
 				want := 0
-				if actor.InstanceID == scene && actor.X <= 300212 {
+				if actor.InstanceID == scene && actor.X <= 212 {
 					want = 1
 				}
 				if got := len(drainSentMessages(client.send)); got != want {

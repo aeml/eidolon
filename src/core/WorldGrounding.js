@@ -1,3 +1,4 @@
+import { getOverworldRegion } from '../data/worldGeography.js';
 import { intersectWorldElevationRay } from '../data/worldElevation.js';
 import { Vector3 } from 'three';
 
@@ -10,7 +11,7 @@ export function intersectEngineGround(engine, ray, target, instancePlane) {
         : intersectWorldElevationRay(ray, groundHit, { field: engine.terrainElevation });
     const distance = ground ? ray.origin.distanceTo(groundHit) : Infinity;
     if (!engine.currentInstanceId && engine.townRoofField?.intersectRay(ray, target, distance)) return target;
-    return ground ? target.copy(groundHit) : null;
+    return ground && (engine.currentInstanceId || getOverworldRegion(groundHit.x, groundHit.z)) ? target.copy(groundHit) : null;
 }
 
 // An engine supplies an immutable elevation field only after the terrain

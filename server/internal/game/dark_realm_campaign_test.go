@@ -172,6 +172,7 @@ func TestDarkRealmInspectionRequiresActualSharedScene(t *testing.T) {
 	w := newTestWorld()
 	w.spawnChronicleInvestigationSites()
 	p := darkRealmEligiblePlayer("reader")
+	p.InstanceID = "inspection_other" // Same coordinates, actual different scene.
 	chapter := darkRealmChapters[0]
 	site := chapter.Sites[0]
 	p.X, p.Z = site.X, site.Z

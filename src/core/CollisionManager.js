@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { constrainOverworldMovement } from './OverworldMovementBounds.js';
 import { CONSTANTS } from './Constants.js';
 import { constrainCasinoWalk, inCasinoVenue } from './casinoNavigation.js';
 import { moveAroundRockSolids, stopAtRockSolids } from './RockCollision.js';
@@ -58,6 +59,7 @@ export class CollisionManager {
     }
 
     clear() {
+        this.overworldBoundary = false;
         this.roofField = null;
         this.casinoInterior = false;
         this.casinoVIPFloor = false;
@@ -423,6 +425,12 @@ export class CollisionManager {
 
         if (this.rockSolids.length && !this.dungeonWalkableRects.length && !this.casinoInterior && !this.casinoNavigation) {
             const point = moveAroundRockSolids(this.rockSolids, oldPosition || position, TEMP_VEC3, radius);
+            if (point.x !== TEMP_VEC3.x || point.z !== TEMP_VEC3.z) {
+                TEMP_VEC3.x = point.x; TEMP_VEC3.z = point.z; collided = true;
+            }
+        }
+        if (this.overworldBoundary) {
+            const point = constrainOverworldMovement(oldPosition || position, TEMP_VEC3);
             if (point.x !== TEMP_VEC3.x || point.z !== TEMP_VEC3.z) {
                 TEMP_VEC3.x = point.x; TEMP_VEC3.z = point.z; collided = true;
             }

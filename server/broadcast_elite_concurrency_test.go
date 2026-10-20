@@ -15,8 +15,8 @@ func TestBroadcastDeliveryDuringPeriodicElitePublication(t *testing.T) {
 	world = w
 	client := newAutoStatusClient("elite-periodic-viewer")
 	clients = map[*Client]bool{client: true}
-	w.AddEntity(&game.Entity{ID: client.playerID, Type: game.TypePlayer, X: 60000, Z: 60000, Health: 100, MaxHealth: 100, State: "IDLE"})
-	warning, err := telegraphBroadcast(game.TelegraphEvent{X: 60000, Z: 60000, Radius: 12})
+	w.AddEntity(&game.Entity{ID: client.playerID, Type: game.TypePlayer, X: 0, Z: 0, Health: 100, MaxHealth: 100, State: "IDLE"})
+	warning, err := telegraphBroadcast(game.TelegraphEvent{X: 0, Z: 0, Radius: 12})
 	if err != nil {
 		t.Fatal(err)
 	}

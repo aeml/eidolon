@@ -17,6 +17,9 @@ func TestAllLearnedClassKitsAtProgressionBreakpoints(t *testing.T) {
 					w := newTestWorld()
 					t.Cleanup(w.StopBackground)
 					p := preparedRoleBudgetPlayer(t, w, class, level)
+					w.Grid.Remove(p)
+					p.InstanceID = "ability_fixture" // Synthetic 60000 coordinates need a scene of their own.
+					w.Grid.Add(p)
 					if _, ok := w.PerformSelectBranch(p.ID, branch); !ok {
 						t.Fatal("normal branch selection rejected")
 					}
@@ -24,7 +27,7 @@ func TestAllLearnedClassKitsAtProgressionBreakpoints(t *testing.T) {
 					if len(p.UnlockedSkills) != wantCount {
 						t.Fatalf("wrong learned kit: %v", p.UnlockedSkills)
 					}
-					enemy := &Entity{ID: "kit-budget-enemy", Type: TypeEnemy, SubType: "Skeleton", State: "IDLE",
+					enemy := &Entity{ID: "kit-budget-enemy", Type: TypeEnemy, InstanceID: p.InstanceID, SubType: "Skeleton", State: "IDLE",
 						X: 60000, Z: 60002, Health: 1000000, MaxHealth: 1000000, BaseStats: Stats{Vitality: 100000}, CCImmune: true}
 					w.AddEntity(enemy)
 					startMana, totalCost := p.Mana, 0

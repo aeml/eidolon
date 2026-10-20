@@ -1300,6 +1300,7 @@ func (w *World) AddEntity(e *Entity) {
 		w.Grid.Remove(old)
 	}
 	w.Entities[e.ID] = e
+	recoverOverworldPlayer(e)
 	w.recoverActorFromRocks(e)
 	w.groundActorAtEntryLocked(e)
 	w.groundLootLocked(e)
@@ -1490,6 +1491,9 @@ func (w *World) updatePlayerMovementAt(id string, x, y, z, rotation float64, sta
 	}
 
 	if e.Type == TypePlayer {
+		if e.InstanceID == "" {
+			x, z = constrainOverworldMovement(e.X, e.Z, x, z)
+		}
 		if e.InstanceID == "" && len(w.rockSolids) > 0 {
 			if !finiteCoordinate(x) || !finiteCoordinate(y) || !finiteCoordinate(z) {
 				return false

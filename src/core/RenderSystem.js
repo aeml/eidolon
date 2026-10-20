@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { createOceanWaterMaterial } from '../art/OceanWaterMaterial.js';
+import { createVisualMotionClock } from './MotionPreference.js';
 import { createRendererWithGraphicsError } from './GraphicsStartup.js';
 import { prefersReducedMotion } from './MotionPreference.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -874,75 +876,13 @@ export class RenderSystem {
         if (params.get('waterShader') === '0') {
             return new THREE.MeshBasicMaterial({
                 map: texture,
-                color: 0x88ccff,
+                color: 0x255766,
                 transparent: false,
                 depthWrite: false
             });
         }
 
-        return new THREE.ShaderMaterial({
-            uniforms: {
-                uMap: { value: texture },
-                uTime: { value: 0 },
-                uFlowSpeed: { value: 0.03 },
-                uDistortion: { value: 0.025 },
-                uColorNear: { value: new THREE.Color(0x4d8bb0) },
-                uColorFar: { value: new THREE.Color(0x8ed0f0) },
-                uOpacity: { value: 1.0 }
-            },
-            vertexShader: `
-                varying vec2 vUv;
-                varying vec3 vWorldPos;
-                varying vec3 vNormalW;
-
-                void main() {
-                    vUv = uv;
-                    vec4 worldPos = modelMatrix * vec4(position, 1.0);
-                    vWorldPos = worldPos.xyz;
-                    vNormalW = normalize(mat3(modelMatrix) * normal);
-                    gl_Position = projectionMatrix * viewMatrix * worldPos;
-                }
-            `,
-            fragmentShader: `
-                uniform sampler2D uMap;
-                uniform float uTime;
-                uniform float uFlowSpeed;
-                uniform float uDistortion;
-                uniform vec3 uColorNear;
-                uniform vec3 uColorFar;
-                uniform float uOpacity;
-
-                varying vec2 vUv;
-                varying vec3 vWorldPos;
-                varying vec3 vNormalW;
-
-                void main() {
-                    vec2 flowA = vec2(uTime * uFlowSpeed, uTime * uFlowSpeed * 0.65);
-                    vec2 flowB = vec2(-uTime * uFlowSpeed * 0.42, uTime * uFlowSpeed * 0.31);
-                    vec2 sampleUvA = vUv * 6.0 + flowA;
-                    vec2 sampleUvB = vUv * 9.5 + flowB;
-
-                    float waveA = texture2D(uMap, sampleUvA).r;
-                    float waveB = texture2D(uMap, sampleUvB).g;
-                    float waves = (waveA * 0.6 + waveB * 0.4);
-
-                    vec2 distortUv = vUv * 4.0 + vec2(waveB, waveA) * uDistortion;
-                    vec3 baseTex = texture2D(uMap, distortUv).rgb;
-
-                    vec3 viewDir = normalize(cameraPosition - vWorldPos);
-                    float fresnel = pow(1.0 - max(dot(normalize(vNormalW), viewDir), 0.0), 2.0);
-
-                    vec3 waterColor = mix(uColorNear, uColorFar, fresnel);
-                    waterColor = mix(waterColor, baseTex, 0.35);
-                    waterColor += vec3(0.08, 0.14, 0.18) * waves;
-
-                    float alpha = min(1.0, uOpacity + fresnel * 0.08);
-                    gl_FragColor = vec4(waterColor, alpha);
-                }
-            `,
-            transparent: false,
-            depthWrite: false
-        });
+        return createOceanWaterMaterial(texture);
     }
 
     updateCameraProjection() {
@@ -1270,12 +1210,13 @@ export class RenderSystem {
     render() {
         this.sceneryVisibility?.update(this.instanceEnvironmentGroup, this.camera, this.sceneryFocus, performance.now() / 1000);
         if (this.waterTexture) {
-            const time = performance.now() * 0.0001;
+            this.waterMotionClock ||= createVisualMotionClock();
+            const time = this.waterMotionClock.update(performance.now() / 1000, 0).time;
             if (this.waterPlane && this.waterPlane.material && this.waterPlane.material.uniforms && this.waterPlane.material.uniforms.uTime) {
                 this.waterPlane.material.uniforms.uTime.value = time;
             } else {
-                this.waterTexture.offset.x = time;
-                this.waterTexture.offset.y = time;
+                this.waterTexture.offset.x = time * .003;
+                this.waterTexture.offset.y = time * .002;
             }
         }
         // Count the complete frame (shadow maps, world and post-processing),
