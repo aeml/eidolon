@@ -1,6 +1,6 @@
 # Release-readiness remaining work
 
-Current checkpoint: October 19, 2026. The full goal remains active. No feature
+Current checkpoint: October 20, 2026. The full goal remains active. No feature
 freeze, final modern-art acceptance, closed beta or launch has been declared.
 
 This register records current delivery states and next actions. The preceding
@@ -21,6 +21,24 @@ Authoritative scope remains the [goal](../../goal.md),
 [freeze preparation](2026-10-06-release1-80-freeze-preparation.json) and
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
+
+## Current freeze candidate — October 20
+
+The [feature-freeze review](2026-10-20-feature-freeze-review.md) qualifies F1–F5
+readiness for Alpha 1.80.0: all 85 retained promises, the 69 pre-freeze roadmap
+milestones, current source/regression anchors, twelve threat boundaries, the
+locked content/dependency baseline and thirteen finite scheduled workgroups.
+The owner confirmed the [operating baseline](2026-10-20-freeze-operating-proposal.md)
+and reports no known rights issues; unsubstantiated inputs remain flagged.
+
+All 17 generated-content groups and the separate unchanged talent-consumer
+overlay pass. Baseline public identity/readiness matches accepted 86. Candidate
+changes are release identity, cumulative notes and documentation only; it needs
+its own original CI/deployment/public checks before acceptance. No gameplay,
+model, dependency, save, beta/admission, spending or administrative policy change.
+No soak/stress, repeated campaign or new local GPU run. P01–P13 preserve every
+original quality, capacity, human, operational, rights and beta/release requirement.
+Older pending labels below retain their dated scopes, not current gate status.
 
 ## Current delivery: accepted Alpha 1.79.86
 

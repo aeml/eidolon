@@ -81,9 +81,15 @@ integration or membership restrictions as part of this requirement.
   the eight universal outfits; extend the manifest for new equipment families.
 - [ ] Match vendor/wardrobe previews to equipped local and remote appearances;
   retain current server-authoritative ownership and purchase behavior.
-- [ ] Review at gameplay and preview zoom, idle/run/attack/cast/dodge/death poses,
+- [ ] Review at gameplay and preview zoom, idle/run/attack/cast/jump/death poses,
   legal dual wielding, High/Low, swapping, pooling, reconnect and scene teardown.
   No floating pieces, exposed underlying armor, broken grips or missing models.
+
+  October20 terminology reconciliation: the supported movement action is jump;
+  the earlier word "dodge" did not identify a separate delivered animation or
+  owner-requested dodge mechanic. Review the existing jump, block and applicable
+  hit-reaction clips as well as the states above. This adds no movement mechanic
+  and waives no supported motion/fit review.
 - [x] Check representative equipped-party rendering/resource costs and bounded
   cleanup. Focused validation continues; soak remains deferred.
 - [ ] Complete owner visual review of the finished collection and record scoped

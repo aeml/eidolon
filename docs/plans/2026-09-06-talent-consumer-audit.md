@@ -1,5 +1,23 @@
 # Remaining talent consumers — reproduced September 6
 
+## Current-source result — October 20, 2026
+
+The unchanged `npm run audit:talent-consumers` command now passes on accepted
+Alpha 1.79.86 runtime `4bfafdd62b81db2dd0037b33bf6947da8e811351`, reviewed from
+owned master `72d1a98765a58cb787186daa3f2e7f27fb09ef28`, using Node 24 and Go
+1.27.2. The game-package test reports success in 1.158 seconds. All seven
+`TestPendingTalent` functions selected by the existing overlay execute under the
+unchanged command; no probe, assertion, rank, cost or geometry rule is removed.
+The temporary overlay is removed by the existing script. All five repository
+workflow-status queries were empty before this bounded local run.
+
+This supersedes the README's old present-tense claim that the audit still fails.
+The dated failures and repair records below remain historical evidence. This
+does not establish every talent/rune, rendered effect, human listening, class
+feel or balance. See the [freeze review](2026-10-20-feature-freeze-review.md).
+
+## Retained reproduction and repair history
+
 September11 next reproduced consumer: [Fighter duration](2026-09-11-fighter-duration-consumers.md).
 Actual paid Shield Slam with FTR_30/FTR_37 rank5 retains baseline stun duration,
 both with and without Concussion.78560 exits1/game2.092s with four trained

@@ -1,6 +1,23 @@
 # Eidolon Engineering Roadmap
 
-## Current checkpoint — October 18, 2026
+## Current checkpoint — October 20, 2026
+
+Alpha 1.80.0 is prepared as the feature-freeze candidate. All five freeze
+readiness gates are qualified in the [current review](plans/2026-10-20-feature-freeze-review.md):
+85 retained promises, 69 pre-freeze roadmap milestones, current threat boundaries,
+a locked content/dependency baseline and thirteen finite scheduled workgroups.
+The owner confirmed the [operating baseline](plans/2026-10-20-freeze-operating-proposal.md).
+The existing talent-consumer overlay and all 17 generated-content groups pass.
+No skill/odds/reward/model/progression rules or dependency graph change.
+
+The candidate changes synchronized release identity, cumulative notes and freeze
+records; it still requires its own original CI, deployment and exact public
+verification. Accepted Alpha 1.79.86 remains production until that promotion.
+Final art, human/device/audio review, original performance, recovery, capacity,
+rights and beta gates remain mandatory at their named milestones. No soak/stress,
+beta/access change, new paid service or repository administrative change occurs.
+
+## Historical checkpoint — October 18, 2026
 
 Alpha 1.79.80 is the verified live frontend/backend, with database ready. Its
 experimental Fighter appearance is opt-in. [Acceptance](plans/2026-10-18-release1-79-80-meshy-fighter.md).

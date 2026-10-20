@@ -12,6 +12,19 @@ release gate is actually completed or explicitly resolved with the owner.
 
 ## Project and authoritative sources
 
+Current work — October 20: qualify and publish the 1.80 feature-freeze candidate.
+The [current freeze review](docs/plans/2026-10-20-feature-freeze-review.md)
+reconciles all 85 promises and 69 pre-freeze roadmap milestones, current source
+and threat boundaries, the locked catalog/dependency baseline and finite
+scheduled work after freeze. The owner confirmed the operating baseline and
+reported no known rights issues; anything unsubstantiated stays flagged. All 17
+generated-content groups and the historical talent-consumer overlay pass.
+Candidate 1.80 changes release identity, cumulative notes and documentation only;
+its own original CI/deployment/public checks remain mandatory before acceptance.
+Accepted 86 remains production until that promotion. No beta/access, spending,
+repository-setting or full goal-completion claim. Existing human/device and
+soak/stress deferrals remain; all original quality/operational scope is retained.
+
 Repository: `/home/aeml/Github/eidolon`.
 
 Read the applicable `AGENTS.md` files, README, roadmap, art instructions, current

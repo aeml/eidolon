@@ -6,6 +6,24 @@ local successor work, not yet deployed. This review maps adversarial inputs to
 actual boundaries and retained evidence; it is not a penetration certificate,
 an assertion that no exploits exist, or approval to freeze/publish the game.
 
+## Current-source review — October 20
+
+The [1.80 freeze review](2026-10-20-feature-freeze-review.md#current-threats-and-remaining-risks)
+now reconciles these boundaries against accepted 86 source `4 bfafdd 62` and its unchanged
+master follow-up. It explicitly reviews the later invitation, quest reward/cast,
+roof/melee, garment, casino privacy/value and delivery/artifact changes. Current
+accepted whole-suite/race/actual-socket CI evidence retains its original scope;
+no duplicate broad run or blanket security certification occurs.
+
+X01 origin validation, X02 trusted SSH endpoint pinning and X10 artifact-publication
+privacy corrections are delivered in accepted releases; their earlier prepared/
+pending labels below are historical. Fresh read-only GitHub API still reports
+master unprotected and no rulesets, so X03 repository/runner policy remains 1.82 work.
+X04–X09 retain their named monitoring/recovery/art/rights/human/operating gates.
+The owner has now confirmed F3/F4 operating responsibility/budget; F5 has a
+locked candidate baseline. The candidate still requires its own release checks. No administrative setting, public admission, retention or asset license
+is changed by this review. Original threat descriptions and failures remain.
+
 ## Assets, actors and trust boundaries
 
 Protect account ownership and recovery links; exact character/item/Gold/EP

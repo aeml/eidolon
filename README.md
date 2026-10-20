@@ -445,11 +445,12 @@ Defensive hunt inputs only use actually unlocked skills. The default unequipped
 Skeleton baseline remains unchanged; neither path grants progress or changes
 the existing two-respawn bound. This comparison is not human-discovery evidence.
 
-`npm run audit:talent-consumers` runs separate paired-cast probes for still-open
-range and area talent consumers. It currently fails on those
-known defects; it is not a passing release gate. It uses a temporary Go build
-overlay and does not modify server source or saved characters. Evidence and
-next implementation requirements are in the
+`npm run audit:talent-consumers` runs separate historical paired-cast probes for
+talent consumers. The October 20 freeze review passes this audit on the accepted
+1.79.86 runtime with Go 1.27.2, superseding the former known-failure warning.
+It uses a temporary Go build overlay and changes no server source or saved
+characters. This is scoped cast/consumer evidence, not full class feel or balance
+approval. Original failures and their repairs remain in the
 [consumer audit](docs/plans/2026-09-06-talent-consumer-audit.md).
 
 The isolated `forge-guide` route seeds a new disposable local account before its
@@ -494,6 +495,10 @@ Notes:
 - Administrator access is a durable account role, separate from QA commands and character level. An exact username in `EIDOLON_ADMIN_BOOTSTRAP_USERNAMES` can type `/relevel` to persist the role without changing progression. The in-game Administration panel and confirmed, audited operations are described in [the administrator guide](docs/ADMINISTRATION.md).
 
 ## Project Status
+
+Current source version: `Alpha 1.80.0` (prepared feature-freeze candidate; own
+CI/deployment/public qualification pending). The [freeze review](docs/plans/2026-10-20-feature-freeze-review.md)
+records the qualified boundary and confirmed operating baseline.
 
 Current verified live release: `Alpha 1.79.86`, source
 `4bfafdd62b81db2dd0037b33bf6947da8e811351`. All ten jobs pass in

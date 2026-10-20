@@ -1,5 +1,31 @@
 # Supplied content provenance and notices
 
+## Current catalog review — October 20, 2026
+
+The [feature-freeze review](../plans/2026-10-20-feature-freeze-review.md)
+pins the accepted Alpha 1.79.86 source/catalog, lockfiles, license/notice files
+and the original Pages artifact receipt. Existing project code and asset
+licenses are committed choices; earlier statements below about an unchosen
+project license are historical. They do not require choosing those terms again.
+Separately supplied inputs still retain their own notices and source questions.
+
+The opt-in Meshy Fighter is also a shipped input, even though it is not the
+default character. Its [manifest](../../assets/archetypes/Fighter/meshy-pilot-manifest.json)
+records the provider, source hash, two derived model hashes, model/rig task IDs,
+declared paid-API origin and provider ownership-document URL. This is recorded
+provenance, not independent verification of the account/plan or source rights.
+Retain that source-specific question in the final shipped-catalog review; do
+not silently exclude the pilot from the catalog or label it CC0.
+
+Remaining 1.86/1.90 work is to substantiate any unknown input permissions,
+check matching editable/LFS source availability, and complete backend/build-tool
+transitive notices and the exact final artifact's notices. The current review
+does not relicense inputs or waive those requirements. The dated inventory below
+remains useful provenance and is not a current declaration that already
+published Credits or the existing project licenses are absent.
+
+## Retained component inventory
+
 This inventory records supplied notices retained from the accepted Alpha1.79.2
 checkout and the current delivered runtime selection. It is not independent upstream legal verification, a complete license
 review or permission to relicense supplied work. The repository's

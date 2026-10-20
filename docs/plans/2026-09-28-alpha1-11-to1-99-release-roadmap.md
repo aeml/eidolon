@@ -2169,15 +2169,21 @@ art approval or a closed-beta transition. Keep those distinctions when closing Q
 
 ### F — feature freeze at 1.80
 
-- [ ] Mandatory content/features implemented and reviewed against the promise
+October 20: all five readiness items below are qualified for the Alpha 1.80.0
+candidate by the [current review](2026-10-20-feature-freeze-review.md) and
+[confirmed operating baseline](2026-10-20-freeze-operating-proposal.md). Its own
+CI/deployment/public acceptance remains mandatory; A1/A2/Q/S/E/CB/R are not
+closed by these checkmarks. P01–P13 retain all scheduled requirements.
+
+- [x] Mandatory content/features implemented and reviewed against the promise
   register; remaining work is stabilization, support, approved commercial branch
   or identified launch-gate evidence, not missing foundational systems.
-- [ ] Threat model, serious exploit list and data/authority boundaries reviewed.
-- [ ] Supported population, hosting budget, service objectives and alert owners
+- [x] Threat model, serious exploit list and data/authority boundaries reviewed.
+- [x] Supported population, hosting budget, service objectives and alert owners
   chosen; capacity results have named workload and limits.
-- [ ] Privacy/retention, administration, moderation and account-recovery policies
+- [x] Privacy/retention, administration, moderation and account-recovery policies
   have owners and implementation paths; no unsupported compliance claims.
-- [ ] Launch content and dependency set frozen, with documented exception policy.
+- [x] Launch content and dependency set frozen, with documented exception policy.
 
 ### CB/RC1 and R — near-complete closed beta / release readiness (1.90 / 1.99)
 
