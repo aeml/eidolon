@@ -12,16 +12,14 @@ release gate is actually completed or explicitly resolved with the owner.
 
 ## Project and authoritative sources
 
-Current work — October 20: **Alpha 1.80.0 feature freeze accepted and deployed**.
-Exact source `805e7219ce1d1595184ee030a115bdcb0ea00134`, original CI 39356611063, all ten jobs,
+Current work — October 20: **Alpha 1.80.1 realm fence/ground correction accepted
+and deployed**. Exact source `6071ecadf4c6e7efcfeb4db0546bcb4c2d0a39f1`, original CI 39466732460, all ten jobs,
 both deployments/live QA and exact artifact/public verification pass.
-[Acceptance](docs/plans/2026-10-20-release1-80-0-acceptance.md) and the
-[freeze review](docs/plans/2026-10-20-feature-freeze-review.md) reconcile all 85
-promises and 69 pre-freeze milestones, the confirmed operating baseline and
-thirteen mandatory remaining workgroups. Full game/1.99 remains open; no beta
-activation, new spending, rights grant or unsupported performance/device claim.
-Soak/stress and owner-assigned human/device feedback keep their existing
-deferrals. Next scheduled milestone: 1.81 recovery readiness.
+[Acceptance](docs/plans/2026-10-20-release1-80-1-acceptance.md). The accepted F1–F5 boundary, 85-promise/
+69-milestone review, confirmed operating baseline and thirteen mandatory remaining
+workgroups stay in force. Full game/1.99 and beta/launch gates remain open.
+Soak/stress and owner-assigned human/device feedback retain their deferrals.
+Next scheduled milestone: 1.81 recovery readiness.
 
 Repository: `/home/aeml/Github/eidolon`.
 

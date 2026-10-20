@@ -496,15 +496,17 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.80.1` (realm fence/ground correction; own release qualification pending).
-Current verified live release: `Alpha 1.80.0`, source
-`805e7219ce1d1595184ee030a115bdcb0ea00134`. Original [CI 39356611063](https://github.com/aeml/eidolon/actions/runs/39356611063) passes all ten jobs,
-both deployments/live QA and exact public verification. [Acceptance](docs/plans/2026-10-20-release1-80-0-acceptance.md).
+Current source version: `Alpha 1.80.1`.
+Current verified live release: `Alpha 1.80.1`, source
+`6071ecadf4c6e7efcfeb4db0546bcb4c2d0a39f1`. Original [CI 39466732460](https://github.com/aeml/eidolon/actions/runs/39466732460) passes all ten jobs,
+both deployments/live QA and exact public verification. [Acceptance](docs/plans/2026-10-20-release1-80-1-acceptance.md).
+All four elemental realms use timber/iron fences with solid ground beneath the
+walls and outer posts; existing gates and server collision rules remain.
 
 F1–F5 feature freeze is accepted. The [freeze review](docs/plans/2026-10-20-feature-freeze-review.md)
 reconciles all 85 promises and 69 pre-freeze milestones, records the confirmed
 operating baseline and retains thirteen mandatory workgroups before beta/release.
-All 521 prior raw notes remain in the 522-entry history. Existing gameplay,
+All 522 prior raw notes remain in the 523-entry history. Existing gameplay,
 models, wallets, progress and dependency rules remain unchanged. Open registration
 and flat-v1 terrain stay; beta has not opened and soak/stress remains deferred.
 The next scheduled milestone is 1.81 recovery readiness. Final art/performance,

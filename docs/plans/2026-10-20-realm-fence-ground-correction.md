@@ -1,8 +1,12 @@
 # Alpha 1.80.1 realm fence and ground correction
 
+Accepted and deployed as Alpha 1.80.1, source `6071ecadf4c6e7efcfeb4db0546bcb4c2d0a39f1`, original CI 39466732460.
+[Exact acceptance](2026-10-20-release1-80-1-acceptance.md) records all ten successful jobs, deployment/live
+and public proof. The preparation below records its pre-promotion baseline.
+
 Prepared against accepted 1.80 source `805e7219ce1d1595184ee030a115bdcb0ea00134`
 and its documentation-only master follow-up `529161d785ffff85db7c7e0ef1a3376fd75a7b3f`.
-Own CI/deployment/public verification is still required before release acceptance.
+Its own CI/deployment/public qualification is recorded in the acceptance above.
 
 The owner reports ocean beneath Earth's perimeter and legacy orange rectangles
 around the other three realms. All four now use the existing weathered timber/

@@ -23,7 +23,23 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
-## Current delivery: accepted Alpha 1.80.0 feature freeze
+## Current delivery: accepted Alpha 1.80.1 realm fence/ground correction
+
+Source `6071ecadf4c6e7efcfeb4db0546bcb4c2d0a39f1` passes original [CI 39466732460](https://github.com/aeml/eidolon/actions/runs/39466732460), all ten jobs, both
+deployments/live QA and exact public verification. [Acceptance](2026-10-20-release1-80-1-acceptance.md) records
+823 client suites / 12,843 checks, 566 hosted, 185 native and 11 live passes,
+15/2/1 exclusions and zero failed/flaky browser outcomes. All 443 fresh public
+pins match the own-run artifact; 110 unchanged GLBs retain accepted1.80.0 TLS
+proof after current artifact-byte comparison.
+
+All four realms use the timber/iron fence, and ground covers every wall and
+exterior post footing. Shared gates, server geography/physics, dependencies,
+models and progress remain unchanged. All 522 old raw notes remain in 523
+entries/52 pages. This P01/P04 correction preserves the accepted F1–F5 boundary
+and all thirteen mandatory remaining workgroups. No beta activation or soak/
+stress. Next scheduled milestone: 1.81 recovery readiness.
+
+## Previous delivery: accepted Alpha 1.80.0 feature freeze
 
 Source `805e7219ce1d1595184ee030a115bdcb0ea00134` passes its original [CI 39356611063](https://github.com/aeml/eidolon/actions/runs/39356611063),
 all ten jobs, both deployments/live QA and exact public verification.
