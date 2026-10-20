@@ -1,6 +1,6 @@
 # 1.80 threat review and freeze exceptions
 
-Reviewed baseline: accepted Alpha1.79.0,
+Historical October 7 baseline: accepted Alpha1.79.0,
 `b5c3981e060d6dea3ef50c9c2b4abb37999856db`. The origin correction below is
 local successor work, not yet deployed. This review maps adversarial inputs to
 actual boundaries and retained evidence; it is not a penetration certificate,
@@ -8,9 +8,15 @@ an assertion that no exploits exist, or approval to freeze/publish the game.
 
 ## Current-source review — October 20
 
+The qualified boundary is now accepted in [Alpha 1.80.0](2026-10-20-release1-80-0-acceptance.md), including
+its own original CI/deployment/live/public proof. This supersedes candidate-
+pending labels in the dated preparation below; it does not certify final beta/
+launch security, repository protections or any other retained operational gate.
+
 The [1.80 freeze review](2026-10-20-feature-freeze-review.md#current-threats-and-remaining-risks)
-now reconciles these boundaries against accepted 86 source `4 bfafdd 62` and its unchanged
-master follow-up. It explicitly reviews the later invitation, quest reward/cast,
+initially reconciled these boundaries against accepted 86 source
+`4bfafdd62b81db2dd0037b33bf6947da8e811351` and its unchanged master follow-up.
+The scoped monitor correction now has its own accepted 1.80 pipeline. It explicitly reviews the later invitation, quest reward/cast,
 roof/melee, garment, casino privacy/value and delivery/artifact changes. Current
 accepted whole-suite/race/actual-socket CI evidence retains its original scope;
 no duplicate broad run or blanket security certification occurs.
@@ -21,7 +27,7 @@ pending labels below are historical. Fresh read-only GitHub API still reports
 master unprotected and no rulesets, so X03 repository/runner policy remains 1.82 work.
 X04–X09 retain their named monitoring/recovery/art/rights/human/operating gates.
 The owner has now confirmed F3/F4 operating responsibility/budget; F5 has a
-locked candidate baseline. The candidate still requires its own release checks. No administrative setting, public admission, retention or asset license
+locked accepted baseline with its own complete release qualification. No administrative setting, public admission, retention or asset license
 is changed by this review. Original threat descriptions and failures remain.
 
 ## Assets, actors and trust boundaries

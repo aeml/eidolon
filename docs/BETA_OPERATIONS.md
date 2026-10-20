@@ -1,5 +1,17 @@
 # Beta operations handoff — draft, not a beta announcement
 
+## October 20 feature-freeze baseline
+
+Alpha 1.80.0 is [accepted and deployed](plans/2026-10-20-release1-80-0-acceptance.md); beta has not opened.
+The owner confirmed existing shared hosting/Postmark, no new recurring spend,
+up to 100 invitees without a concurrent-capacity/SLA promise, and owner/existing
+authorized admins responsible for best-effort incidents, reports, moderation,
+account recovery and retention coordination. Current retention settings remain.
+[Confirmed baseline](plans/2026-10-20-freeze-operating-proposal.md).
+Staff coverage qualification, detailed recovery objectives/off-machine destination,
+capacity and all remaining candidate gates still precede beta admission. Older
+unassigned-owner labels below are historical; they do not erase this decision.
+
 October8 optional public-monitor preparation: startup-only HTTPS login-page,
 release-manifest and public-API checks are implemented, bounded and race-tested.
 A read-only four-GET check observes matching current1.79.8 public identities.

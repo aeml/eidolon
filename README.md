@@ -496,26 +496,20 @@ Notes:
 
 ## Project Status
 
-Current source version: `Alpha 1.80.0` (prepared feature-freeze candidate; own
-CI/deployment/public qualification pending). The [freeze review](docs/plans/2026-10-20-feature-freeze-review.md)
-records the qualified boundary and confirmed operating baseline.
+Current source version: `Alpha 1.80.0`.
+Current verified live release: `Alpha 1.80.0`, source
+`805e7219ce1d1595184ee030a115bdcb0ea00134`. Original [CI 39356611063](https://github.com/aeml/eidolon/actions/runs/39356611063) passes all ten jobs,
+both deployments/live QA and exact public verification. [Acceptance](docs/plans/2026-10-20-release1-80-0-acceptance.md).
 
-Current verified live release: `Alpha 1.79.86`, source
-`4bfafdd62b81db2dd0037b33bf6947da8e811351`. All ten jobs pass in
-[CI39301167062](https://github.com/aeml/eidolon/actions/runs/39301167062), with both deployments, live checks and exact public-file
-verification. Casino windows fill most of the screen, move by their top bars
-and remember placement. House cards/timers, roulette landing feedback, poker
-net results and popup drag closure are corrected. Transient geometry downloads
-have one bounded recovery attempt, including failures while reading the body.
-[Acceptance](docs/plans/2026-10-19-release1-79-86-acceptance.md).
-
-CI passes 823 client suites / 12,833 checks, 566 hosted browser cases, 184 native
-and 11 live cases, with 14/2/1 existing exclusions and zero failed/flaky browser
-outcomes. The exact artifact matches 442 current public files;
-110 unchanged GLBs retain accepted85 proof after byte comparison.
-Earlier failed86 runs remain retained. The full game and its art, performance,
-campaign, device, operational, feature freeze and beta readiness gates remain
-open. Soak/stress remains deferred.
+F1–F5 feature freeze is accepted. The [freeze review](docs/plans/2026-10-20-feature-freeze-review.md)
+reconciles all 85 promises and 69 pre-freeze milestones, records the confirmed
+operating baseline and retains thirteen mandatory workgroups before beta/release.
+All 521 prior raw notes remain in the 522-entry history. Existing gameplay,
+models, wallets, progress and dependency rules remain unchanged. Open registration
+and flat-v1 terrain stay; beta has not opened and soak/stress remains deferred.
+The next scheduled milestone is 1.81 recovery readiness. Final art/performance,
+human campaign/listening, physical devices, operations/rights and beta/launch
+acceptance remain open.
 
 The accepted Alpha 1.79.80 Meshy Fighter pilot remains opt-in through `?fighterModel=meshy`.
 The supplied four-class presentation stays the default. Pilot shoulder deformation

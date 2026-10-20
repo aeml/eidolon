@@ -1,5 +1,10 @@
 # Alpha 1.80.0 feature-freeze candidate
 
+Historical preparation record. The corrected source `805e7219ce1d1595184ee030a115bdcb0ea00134` is now
+[accepted as Alpha 1.80.0](2026-10-20-release1-80-0-acceptance.md) after its own original CI, deployment and public
+verification. Candidate-pending and accepted86 statements below describe the
+sequence before that promotion; both original CI outcomes remain preserved.
+
 Current correction: original source `a4b905e4` / CI39352722710 fails the server
 public-monitor deadline classification and does not deploy. The
 [qualified monitor correction](2026-10-20-release1-80-0-monitor-deadline.md)

@@ -1,7 +1,8 @@
 # Release-readiness remaining work
 
-Current checkpoint: October 20, 2026. The full goal remains active. No feature
-freeze, final modern-art acceptance, closed beta or launch has been declared.
+Current checkpoint: October 20, 2026. The full goal remains active. Feature
+freeze is accepted at Alpha 1.80.0; final modern-art acceptance, closed beta
+and launch remain open.
 
 This register records current delivery states and next actions. The preceding
 register at `e2880b4ee` is preserved byte-for-byte in the
@@ -22,28 +23,27 @@ Authoritative scope remains the [goal](../../goal.md),
 [threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
 Every explicit requirement in those sources remains part of the completion audit.
 
-## Current freeze candidate — October 20
+## Current delivery: accepted Alpha 1.80.0 feature freeze
 
-The [feature-freeze review](2026-10-20-feature-freeze-review.md) qualifies F1–F5
-readiness for Alpha 1.80.0: all 85 retained promises, the 69 pre-freeze roadmap
-milestones, current source/regression anchors, twelve threat boundaries, the
-locked content/dependency baseline and thirteen finite scheduled workgroups.
-The owner confirmed the [operating baseline](2026-10-20-freeze-operating-proposal.md)
-and reports no known rights issues; unsubstantiated inputs remain flagged.
+Source `805e7219ce1d1595184ee030a115bdcb0ea00134` passes its original [CI 39356611063](https://github.com/aeml/eidolon/actions/runs/39356611063),
+all ten jobs, both deployments/live QA and exact public verification.
+[Acceptance](2026-10-20-release1-80-0-acceptance.md) records 823 client suites / 12,833 checks,
+566 hosted, 184 native and 11 live passes with
+14/2/1 existing exclusions and zero failed/flaky
+browser outcomes. All 442 fresh pins match the exact artifact; 110 unchanged
+GLBs reuse accepted86 TLS proof after current artifact-byte comparison.
 
-All 17 generated-content groups and the separate unchanged talent-consumer
-overlay pass. Baseline public identity/readiness matches accepted 86. Candidate
-changes are release identity, cumulative notes/documentation and the qualified
-public-monitor EOF/deadline correction; it needs
-its own original CI/deployment/public checks before acceptance. No gameplay,
-model, dependency, save, beta/admission, spending or administrative policy change.
-No soak/stress, repeated campaign or new local GPU run. P01–P13 preserve every
-original quality, capacity, human, operational, rights and beta/release requirement.
-First candidate a4b / CI39352722710 fails monitor timeout classification with no
-deployment; the original failure is retained in the linked correction.
-Older pending labels below retain their dated scopes, not current gate status.
+The [review](2026-10-20-feature-freeze-review.md) closes the F1–F5 feature boundary,
+reconciles 85 promises/69 roadmap milestones and retains mandatory P01–P13 work.
+The owner confirmed operating responsibility/budget and reports no known rights
+issues; anything unsubstantiated remains flagged. Gameplay/model/save/dependency
+rules, existing accounts, open registration and flat-v1 terrain remain unchanged.
+All 521 old raw notes are preserved in 522 entries/52 lazy pages. No soak/stress,
+beta activation, new spending or repository administrative change. Full art,
+human/device/audio, original performance/capacity, operational/rights and beta/
+release gates remain open. The next scheduled work is 1.81 recovery readiness.
 
-## Current delivery: accepted Alpha 1.79.86
+## Previous delivery: accepted Alpha 1.79.86
 
 Source `4bfafdd62b81db2dd0037b33bf6947da8e811351` passes original [CI39301167062](https://github.com/aeml/eidolon/actions/runs/39301167062), both deployments and live
 checks: 823 client suites / 12,833 checks, 566 hosted, 184 native and 11 live
@@ -1011,7 +1011,9 @@ fails its exact-pixel criterion and remains isolated. No renderer experiment fro
 gates stay open.
 [Current findings and custody](2026-10-16-current-renderer-rejections.md).
 
-All rows below are open at the full requirement's scope, even where substantial
+The F1–F5 feature-freeze requirement is accepted in [Alpha 1.80.0](2026-10-20-release1-80-0-acceptance.md); its boundary and exception policy remain in force. It is no longer an open gate in this matrix.
+
+All remaining rows below are open at the full requirement's scope, even where substantial
 implementation and scoped acceptance exist. Reuse valid unchanged evidence and
 repair concrete gaps; do not rebuild delivered systems merely because final
 acceptance is incomplete.
@@ -1035,13 +1037,12 @@ acceptance is incomplete.
 | Whole-game performance | Meet original scene/frame limits under representative dynamic populations, equipped combat/parties, all declared profiles and supported devices. Historical failures below remain. Do not hide scenery, reduce plant populations, relax budgets or substitute isolated component samples. | Implementation |
 | Capacity and transport | Soak41failed with7reads/970664ms common 100-client coverage and priorityOverflow7; diagnose bounded priority-lane workload without weakening policy. Later48run38342666778 failed with a concurrent map access crash; the focused elite publication fix shipped in50. Capacity/transport qualification remains deferred by owner until features are nearly complete. [Evidence](2026-10-13-soak41-terminal-failure.json). | Implementation; service decisions owner |
 | Persistence and compatibility | Finish current fresh/returning saves, journal/value custody, migrations/old clients, reconnect and recovery/rollback evidence for the final candidate; preserve production accounts, characters and earned receipts. | Implementation |
-| Security and release trust | Finish F2 threat/boundary/exploit review and named exceptions. Trusted SSH pin/strict checking and repository/event/ref guards are installed. Fresh read-only API still reports master unprotected; agree remaining repository/runner policy before changing administrative settings. | Implementation and owner |
+| Security and release trust | Preserve the accepted F2 boundary; finish final changed-source threat/exploit review and named exceptions. Trusted SSH pin/strict checking and repository/event/ref guards are installed. Fresh read-only API still reports master unprotected; agree remaining repository/runner policy before changing administrative settings. | Implementation and owner |
 | Monitoring and public exposure | Qualify actual enabled alerts/probes and required public DNS/TLS/address-family paths; same-host API/DB checks do not cover whole-host failure. Preserve approved hosting/Postmark/recipients. IPv6/DDNS and off-machine coverage decisions remain explicit. | Implementation and owner |
 | Backup and recovery | Finish exact final save/migration/restore/rollback rehearsals within chosen recovery scope; resolve off-machine destination, RPO/RTO, storage/budget and ownership. No private-data export, destructive production rehearsal or invented recovery promise. | Implementation and owner |
-| Support, privacy and operations | Assign service objectives/budget, alert/support/moderation/incident/maintenance/content ownership and applicable retention/recovery policies. Complete operational 1.81–1.86 and 1.87–1.89 consolidation evidence. | Implementation and owner |
-| Asset/dependency rights and notices | Finish exact shipped catalog/provenance/license review, player notices/help/known issues and owner rights decisions. Supplied files or matching hashes do not grant rights. Preserve existing notices; do not invent licenses. | Implementation and owner |
-| Feature freeze F1–F5 | Prove every promised mandatory feature/content item, threat boundaries, supported population/service policy, privacy/admin/recovery ownership and frozen content/dependency catalog with exception process. None of F1–F5 is declared complete by this register. | Implementation and owner |
-| Near-complete beta at 1.90 | Complete preceding mandatory systems/art/usability/operations. Implement invitation-based new-account admission while retaining existing logins: signed exact-name invitations, private issuer, early URL/analytics privacy and persistent deployment guard are implemented and qualified in `2a2fc765d`, deployed inactive in scoped acceptedAlpha1.79.60. Real Mongo/socket replay/concurrency, existing login/recovery, native bootstrap and old-binary refusal pass. [Qualification](2026-10-16-beta-invitation-qualification.json). Activation and distribution are not approved; public access remains unchanged pending owner approval. Complete invitation preparation, chosen cohort capacity/support and integrated candidate approval. Preserve existing-account access/progress. No beta/admission change without owner approval. | Implementation and owner |
+| Support, privacy and operations | Apply the confirmed best-effort owner/admin responsibility, hosting/budget and current retention baseline; qualify actual staffing/coverage and remaining maintenance/content/recovery procedures. Complete operational 1.81–1.86 and 1.87–1.89 consolidation evidence. | Implementation and owner |
+| Asset/dependency rights and notices | Finish exact shipped catalog/provenance/license review, player notices/help/known issues and source-specific rights unknowns. Existing license choices and the owner’s no-known-issues report remain recorded. Supplied files or matching hashes do not grant rights. Preserve existing notices; do not invent licenses. | Implementation and owner |
+| Near-complete beta at 1.90 | Complete preceding mandatory systems/art/usability/operations. Qualify activation of the implemented invitation-based new-account admission while retaining existing logins: signed exact-name invitations, private issuer, early URL/analytics privacy and persistent deployment guard are implemented and qualified in `2a2fc765d`, deployed inactive in scoped acceptedAlpha1.79.60. Real Mongo/socket replay/concurrency, existing login/recovery, native bootstrap and old-binary refusal pass. [Qualification](2026-10-16-beta-invitation-qualification.json). Activation and distribution are not approved; public access remains unchanged pending owner approval. Complete invitation preparation, chosen cohort capacity/support and integrated candidate approval. Preserve existing-account access/progress. No beta/admission change without owner approval. | Implementation and owner |
 | Findings and qualification 1.91–1.98 | Collect actual cohort evidence, reproduce/fix blockers, and complete data/security/economy/capacity/device/privacy/operations/final-content signoffs. Preparation may proceed; missing beta evidence is not a pass. | Implementation and owner/cohort |
 | 1.99 and handoff | Prove every original requirement, final exact CI/live identity/assets/readiness/account smoke, support/monitor/recovery handoff and explicit owner go/no-go/public naming/carryover decision. No completion claim based on version or green CI. | Implementation and owner |
 
@@ -1177,8 +1178,9 @@ owner-deferred human pacing or physical-phone playtests.
 
 Continue implementation-owned work while external decisions are pending. Do
 not invent rights, retention, support, backup, access or launch decisions.
-Feature freeze, closed beta and release remain subject to the original gates
-and owner approval. The full original goal stays open.
+Preserve the accepted F1–F5 boundary and exception policy. Closed beta and
+release still require their original gates and owner approval. The full
+original goal stays open.
 
 ## October 15 — selected garment and merchant milestone
 

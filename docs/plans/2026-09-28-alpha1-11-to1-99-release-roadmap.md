@@ -2169,11 +2169,12 @@ art approval or a closed-beta transition. Keep those distinctions when closing Q
 
 ### F — feature freeze at 1.80
 
-October 20: all five readiness items below are qualified for the Alpha 1.80.0
-candidate by the [current review](2026-10-20-feature-freeze-review.md) and
-[confirmed operating baseline](2026-10-20-freeze-operating-proposal.md). Its own
-CI/deployment/public acceptance remains mandatory; A1/A2/Q/S/E/CB/R are not
-closed by these checkmarks. P01–P13 retain all scheduled requirements.
+October 20: all five items below are accepted for the deployed Alpha 1.80.0
+feature boundary. [Review](2026-10-20-feature-freeze-review.md),
+[confirmed operating baseline](2026-10-20-freeze-operating-proposal.md) and
+[exact release acceptance](2026-10-20-release1-80-0-acceptance.md) record the original own CI/deployment/public
+evidence. A1/A2/Q/S/E/CB/R and full1.99 are not closed by these checkmarks;
+P01–P13 retain every scheduled quality, operational and beta/release requirement.
 
 - [x] Mandatory content/features implemented and reviewed against the promise
   register; remaining work is stabilization, support, approved commercial branch

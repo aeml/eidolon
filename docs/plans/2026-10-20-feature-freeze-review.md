@@ -1,14 +1,10 @@
 # 1.80 feature-freeze review — October 20, 2026
 
-Status: **F1–F5 readiness is qualified for the Alpha 1.80.0 candidate**.
-The owner confirmed the operating baseline and responsibility on October 20 and
-reports no known asset-rights issues, with unsubstantiated inputs to be flagged.
-The first candidate's server gate failed a public-monitor timeout classification;
-the [deadline correction](2026-10-20-release1-80-0-monitor-deadline.md) reproduces
-four cases, including a late false-ready result, and qualifies the scoped fix.
-The candidate still requires its own original CI, deployment and public checks
-before the 1.80 milestone is accepted. Public production remains accepted
-Alpha 1.79.86 until that ordered promotion; beta has not opened.
+Status: **F1–F5 feature freeze accepted and deployed as Alpha 1.80.0**.
+Source `805e7219ce1d1595184ee030a115bdcb0ea00134` passes original CI 39356611063, all ten jobs,
+both deployments/live QA and exact artifact/public verification. The owner
+confirmed the operating baseline. [Release acceptance](2026-10-20-release1-80-0-acceptance.md) records the exact
+evidence and limits; P01–P13 remain mandatory and beta has not opened.
 
 This review supersedes stale pending implementation/deployment labels in earlier
 freeze preparation, not the original requirements or historical failed results.
@@ -18,7 +14,7 @@ See the [promise register](2026-09-28-1-11-gap-register.md),
 [roadmap F checklist](2026-09-28-alpha1-11-to1-99-release-roadmap.md#f--feature-freeze-at-180)
 and [confirmed operating baseline](2026-10-20-freeze-operating-proposal.md).
 
-## Reviewed source and valid evidence
+## Baseline reviewed before promotion
 
 - Owned master at review: `72d1a98765a58cb787186daa3f2e7f27fb09ef28`.
 - Accepted runtime: `4bfafdd62b81db2dd0037b33bf6947da8e811351`,
@@ -47,15 +43,15 @@ and [confirmed operating baseline](2026-10-20-freeze-operating-proposal.md).
 - No soak/stress, repeated full campaign, local GPU run, new dependencies, model
   replacement, production-data mutation or repository-setting change occurs.
 
-## F1–F5 result and release qualification
+## F1–F5 review and retained qualification conditions
 
-| Gate | Current result | Needed to close the freeze gate |
+| Gate | Accepted result | Retained limits and follow-up obligations |
 | --- | --- | --- |
-| F1: mandatory feature reconciliation | Ready. All 85 promises and the 69 pre-freeze roadmap milestones have current foundation/remaining-work assignments. No newly identified absent core gameplay system; the separate historical talent probe passes. | Freeze the reviewed feature set. P01–P13 retain all mandatory quality/duration/operational work and the already scheduled raised-terrain delivery; none is a waived promise or beta acceptance. Any actual missing foundation still blocks release. |
+| F1: mandatory feature reconciliation | Accepted. All 85 promises and the 69 pre-freeze roadmap milestones have current foundation/remaining-work assignments. No newly identified absent core gameplay system; the separate historical talent probe passes. | Keep the reviewed feature set frozen. P01–P13 retain all mandatory quality/duration/operational work and the already scheduled raised-terrain delivery; none is a waived promise or beta acceptance. Any actual missing foundation still blocks release. |
 | F2: threats and authority boundaries | Reviewed. Twelve current-source boundaries include invitations, garments, quest rewards/casts, roofs/melee, casino privacy/value and delivery guards; existing CI/race/socket scopes and failures remain. | Preserve the named 1.82 trust/repository policy and final threat review. No known critical authorization, dupe or save-loss defect may be dismissed as polish. No penetration certification is claimed. |
 | F3: population, service budget, alerts | Owner confirmed the existing server/Postmark, no additional recurring spend, up to 100 invitees without a 100-concurrent promise, best-effort incidents and no uptime/response guarantee. Alert recipients/settings remain approved. | Keep actual concurrency/headroom unqualified until the deferred near-completion workload passes. Original named successes/failures and shared-host constraints remain explicit. |
 | F4: privacy, administration and recovery owners | Owner and existing authorized admins now own support, moderation, incidents, account recovery and retention coordination. Existing manual privacy paths/settings and disabled erasure remain. | Detailed recovery objectives/off-machine destination and exercises remain assigned 1.81 work. Owner confirmation is not evidence of a rehearsed restore or staffed beta coverage. |
-| F5: content/dependency baseline and exceptions | Candidate baseline locked to the reviewed feature/catalog set and unchanged dependency graph. Changes are release identity, cumulative notes/documentation and the scoped F2/P09 public-monitor deadline correction. Existing licenses/notices remain. | Record the candidate commit after commit creation and accept it only after its own CI/deployment/public checks. P01–P13 and the exception policy govern later changes; unsubstantiated rights/source inputs remain flagged 1.86/1.90 work. |
+| F5: content/dependency baseline and exceptions | Accepted baseline locked to the reviewed feature/catalog set and unchanged dependency graph. Changes are release identity, cumulative notes/documentation and the scoped F2/P09 public-monitor deadline correction. Existing licenses/notices remain. | Source `805e7219ce1d1595184ee030a115bdcb0ea00134` is accepted by the linked own-run CI/deployment/public evidence. P01–P13 and the exception policy govern later changes; unsubstantiated rights/source inputs remain flagged 1.86/1.90 work. |
 
 The owner answered both concrete questions: "Use this baseline; existing admins
 and I own support/operations" and "No known issues; flag anything your audit
@@ -100,9 +96,10 @@ Original exit evidence and all inherited art/world/kit contracts remain required
 
 ## Current threats and remaining risks
 
-This is a source/evidence review. Existing accepted 86 whole-suite/race/actual-socket
-results remain the execution evidence because reviewed runtime is byte-identical;
-no fresh blanket security, fault-injection or anti-cheat certification is claimed.
+The initial source review used accepted 86 evidence for unchanged runtime. The
+scoped monitor correction now has its own complete accepted pipeline in the
+[1.80 receipt](2026-10-20-release1-80-0-acceptance.md). Named suites retain their limits; no blanket security,
+fault-injection or anti-cheat certification is claimed.
 
 | Boundary | Current control / checked regression anchor | Explicit limit / scheduled action |
 | --- | --- | --- |
@@ -131,7 +128,7 @@ in the meantime is a freeze/release blocker and must be fixed at discovery.
 | P01 | Modern world/atlas composition across town, four realms/borders, all instance families, Dark Realm, casino and PvP; meaningful navigation, interiors, materials/lighting and final location review. | Implementation; final owner visual review before 1.90. Preserve the full world/art contracts and actual HUD/moving equipped-player review. |
 | P02 | Final supplied actor/equipment/garment fit, grip, mixed/cosmetic/local/remote and supported-motion review across all classes/qualities. | Implementation; owner visual review before 1.90. Already delivered models remain; fix concrete clipping/readability findings rather than request new bodies or rebuild catalog blindly. |
 | P03 | Twelve-kit combat/role feel, final contact/action/danger/ambience audio review and human listening/busy-party mix; essential cues accessible under reduced effects/mute. | Implementation and human playtests before 1.90; retain 52 skills/156 runes, delivered audio integration and legal class rules. Fix concrete findings; API/mixer counters are not listening approval. |
-| P04 | Original dynamic/equipped-party frame/scene budgets and compatible raised-Earth production rollout. | Implementation at 1.87; current public flat-v 1 remains until qualified. Retain historical High 33.3–33.4/50–50.1 ms and worse route failures; no lower targets, hidden scenery or rejected experiment selection. |
+| P04 | Original dynamic/equipped-party frame/scene budgets and compatible raised-Earth production rollout. | Implementation at 1.87; current public `flat-v1` remains until qualified. Retain historical High 33.3–33.4/50–50.1 ms and worse route failures; no lower targets, hidden scenery or rejected experiment selection. |
 | P05 | Declared browsers/viewports/accessibility/keyboard/touch/settings and actual physical-phone party/dungeon usability/resource review. | Implementation and owner/cohort before 1.90. Human phone work remains explicitly deferred, not passed or silently removed from support scope. |
 | P06 | Earned story/level-band, economy/reward, party/raid/Vigil/finale and sparse-population PvP/event tuning from actual journeys. | Implementation and owner/cohort; preserve existing human campaign deferral. No automated 112-hour replacement or numerical forecast represented as human pacing proof. |
 | P07 | Exact final candidate fresh/returning save, journal/value custody, migration/old-client/reconnect and cross-feature compatibility. | Implementation at 1.88 and final candidate; preserve actual accounts/earned receipts and reuse valid unchanged evidence. |
@@ -140,16 +137,15 @@ in the meantime is a freeze/release blocker and must be fixed at discovery.
 | P10 | Repository/workflow/runner policy and final changed-source threat/exploit/exception review. | Implementation and owner at 1.82; current master unprotected/rulesets empty. Preserve strict endpoint pinning/current guards; do not alter administrative settings without the actual policy decision. |
 | P11 | Support/moderation/account-recovery/retention coordination, player help/known issues, content-update validation and exact shipped rights/notices review. Retain season/reset/reward/calendar procedure and audience/region decisions before relevant activation. | Implementation and owner at 1.84–1.86 and before 1.90. Existing license choices remain; source-specific unknowns include evidence for the Meshy paid-API pilot, original editable source/LFS availability and transitive/backend notices. No invented sublicense/rights certification. |
 | P12 | Free-operation/commercial branch decision and any separately authorized commercial qualification. | Owner at 1.89; current game has no real-money checkout. Do not build commerce, select prices/benefits or expand EP utility without authorization. |
-| P13 | Integrate exact candidate, resolve discovered blockers, approve cohort/support and then invitation admission. | Implementation and owner at 1.90. Invitations already coded/qualified/inactive; existing logins/progress stay.1.91–1.98 are beta findings/stabilization;1.99 is later release/handoff, not a prerequisite to start beta. |
+| P13 | Integrate exact candidate, resolve discovered blockers, approve cohort/support and then invitation admission. | Implementation and owner at 1.90. Invitations already coded/qualified/inactive; existing logins/progress stay. 1.91–1.98 are beta findings/stabilization;1.99 is later release/handoff, not a prerequisite to start beta. |
 
 ## Freeze rules
 
-F1–F5 readiness is now qualified for this candidate. Record the exact 1.80 source,
-content/dependency catalog and
-current issue list. Preserve cumulative notes and synchronized frontend/backend
+F1–F5 is accepted for source `805e7219ce1d1595184ee030a115bdcb0ea00134`. Preserve the reviewed
+content/dependency catalog, current issue list and [release receipt](2026-10-20-release1-80-0-acceptance.md). Preserve cumulative notes and synchronized frontend/backend
 versions, ordinary master integration and own CI/deployment/public acceptance.
-This milestone must earn its own complete pipeline and exact public identity;
-the accepted 86 pipeline is not a substitute.
+The milestone earned its own complete pipeline and exact public identity;
+the accepted 86 pipeline was not used as a substitute.
 
 Bug fixes, balancing, performance, supported-device work and the named P01–P13
 commitments continue with proportional source-specific verification. Every
@@ -163,10 +159,11 @@ device or operational requirement is removed by this review. Rejected/unselected
 worktrees stay isolated. A freeze is a feature boundary, not evidence of beta or
 launch readiness.
 
-## Catalog and evidence custody
+## Pre-promotion catalog and evidence custody
 
 Reviewed catalog: 8,257 tracked runtime/build/check inputs,
-602,881,376 Git-blob bytes, anchored at accepted runtime 4 bf.
+602,881,376 Git-blob bytes, anchored at accepted runtime
+`4bfafdd62b81db2dd0037b33bf6947da8e811351`.
 This is a Git input inventory, not expanded/LFS bytes, a new Pages artifact or
 all-public-file revalidation. Source catalog SHA256:
 `330cd82a6e4ac3bf34f32cde154752b13ef492b49f76c7970b1b122009123685`.
@@ -186,7 +183,7 @@ They contain no new player mutation, invitation roster, credentials or private
 save export. This is the locked input baseline for the candidate. The accepted freeze release
 commit and its own qualification are recorded separately after promotion.
 
-| Accepted runtime tree | Git tree |
+| Historical baseline runtime tree | Git tree |
 | --- | --- |
 | `assets` | `6b421f883e1bbc9ecbff86df83f818da2bea5af9` |
 | `src` | `2d42ed11d65081709460f44bdc164a3f36e56cc8` |

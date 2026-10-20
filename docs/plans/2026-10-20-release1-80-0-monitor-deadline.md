@@ -1,5 +1,10 @@
 # 1.80 public-monitor deadline correction
 
+Historical preparation record. The corrected source `805e7219ce1d1595184ee030a115bdcb0ea00134` is now
+[accepted as Alpha 1.80.0](2026-10-20-release1-80-0-acceptance.md) after its own original CI, deployment and public
+verification. Candidate-pending and accepted86 statements below describe the
+sequence before that promotion; both original CI outcomes remain preserved.
+
 The first feature-freeze candidate `a4b905e4ef217621fa8dfd2bf1c4332c5739c0e4`
 fails original [CI 39352722710](https://github.com/aeml/eidolon/actions/runs/39352722710)
 in the server race-enabled suite: `TestPublicMonitorSharedDeadlineAndShutdown`

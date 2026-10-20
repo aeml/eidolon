@@ -2,22 +2,19 @@
 
 ## Current checkpoint — October 20, 2026
 
-Alpha 1.80.0 is prepared as the feature-freeze candidate. All five freeze
-readiness gates are qualified in the [current review](docs/plans/2026-10-20-feature-freeze-review.md):
-85 retained promises, 69 pre-freeze roadmap milestones, current threat boundaries,
-a locked content/dependency baseline and thirteen finite scheduled workgroups.
-The owner confirmed the [operating baseline](docs/plans/2026-10-20-freeze-operating-proposal.md).
-The existing talent-consumer overlay and all 17 generated-content groups pass.
-No skill/odds/reward/model/progression rules or dependency graph change.
+**Alpha 1.80.0 feature freeze is accepted and deployed**, exact source
+`805e7219ce1d1595184ee030a115bdcb0ea00134` / original [CI 39356611063](https://github.com/aeml/eidolon/actions/runs/39356611063).
+All ten jobs, both deployments/live QA and exact artifact/public checks pass.
+[Acceptance](docs/plans/2026-10-20-release1-80-0-acceptance.md) records scope and exclusions.
 
-The first candidate failed a public-monitor timeout classification and did not
-deploy. The corrected candidate adds a qualified post-read deadline check and six
-EOF-boundary cases without changing limits. It retains synchronized identity,
-cumulative notes and freeze records; it still requires its own original CI, deployment and exact public
-verification. Accepted Alpha 1.79.86 remains production until that promotion.
-Final art, human/device/audio review, original performance, recovery, capacity,
-rights and beta gates remain mandatory at their named milestones. No soak/stress,
-beta/access change, new paid service or repository administrative change occurs.
+F1–F5 now define the frozen feature boundary. The [review](docs/plans/2026-10-20-feature-freeze-review.md)
+reconciles 85 promises and 69 pre-freeze milestones; the owner confirmed the
+operating baseline. The thirteen named workgroups retain all original art,
+performance, human/device/audio, recovery/capacity, rights and beta/launch gates.
+No gameplay, model, odds/reward, dependency or save rules change. Accounts,
+progress, open registration and flat-v1 terrain remain. No soak/stress or beta
+activation. Next: **1.81 recovery readiness**, followed by the already scheduled
+operations and consolidation work before 1.90 beta review.
 
 ## Historical checkpoint — October 18, 2026
 

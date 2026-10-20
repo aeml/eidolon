@@ -12,21 +12,16 @@ release gate is actually completed or explicitly resolved with the owner.
 
 ## Project and authoritative sources
 
-Current work — October 20: qualify and publish the 1.80 feature-freeze candidate.
-The [current freeze review](docs/plans/2026-10-20-feature-freeze-review.md)
-reconciles all 85 promises and 69 pre-freeze roadmap milestones, current source
-and threat boundaries, the locked catalog/dependency baseline and finite
-scheduled work after freeze. The owner confirmed the operating baseline and
-reported no known rights issues; anything unsubstantiated stays flagged. All 17
-generated-content groups and the historical talent-consumer overlay pass.
-First candidate a4b / CI39352722710 failed monitor deadline classification and
-did not deploy. The corrected candidate also includes the qualified F2/P09 EOF/
-deadline fix; no original limit/assertion is relaxed. Candidate 1.80 retains the
-frozen feature/dependency baseline and synchronized identity/notes;
-its own original CI/deployment/public checks remain mandatory before acceptance.
-Accepted 86 remains production until that promotion. No beta/access, spending,
-repository-setting or full goal-completion claim. Existing human/device and
-soak/stress deferrals remain; all original quality/operational scope is retained.
+Current work — October 20: **Alpha 1.80.0 feature freeze accepted and deployed**.
+Exact source `805e7219ce1d1595184ee030a115bdcb0ea00134`, original CI 39356611063, all ten jobs,
+both deployments/live QA and exact artifact/public verification pass.
+[Acceptance](docs/plans/2026-10-20-release1-80-0-acceptance.md) and the
+[freeze review](docs/plans/2026-10-20-feature-freeze-review.md) reconcile all 85
+promises and 69 pre-freeze milestones, the confirmed operating baseline and
+thirteen mandatory remaining workgroups. Full game/1.99 remains open; no beta
+activation, new spending, rights grant or unsupported performance/device claim.
+Soak/stress and owner-assigned human/device feedback keep their existing
+deferrals. Next scheduled milestone: 1.81 recovery readiness.
 
 Repository: `/home/aeml/Github/eidolon`.
 
