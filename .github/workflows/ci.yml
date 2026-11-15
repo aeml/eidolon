@@ -12,8 +12,9 @@ on:
       - 'ROADMAP.md'
       - 'goal.md'
       - 'docs/**/*.md'
+  # Stacked PRs need the same checks before their temporary base lands.
+  # Production deployment jobs still require a trusted master/main push.
   pull_request:
-    branches: [master, main]
   workflow_dispatch:
     inputs:
       full_stabilization:
@@ -55,7 +56,7 @@ jobs:
         run: npm run lint
 
       - name: Audit production and development dependencies
-        run: npm audit --audit-level=low
+        run: node scripts/audit-dependencies.mjs
 
       - name: Run tests with coverage
         run: npm test -- --coverage --coverageReporters=lcov --coverageReporters=text
@@ -93,7 +94,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
-          go-version: '1.27.2'
+          go-version: '1.27.4'
           cache-dependency-path: server/go.sum
 
       - name: Verify private Pages upstream certificate and routing fixtures
@@ -102,7 +103,7 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y --no-install-recommends nginx
           fi
-          GOTOOLCHAIN=go1.27.2 go run scripts/verify-pages-upstream-tls.go
+          GOTOOLCHAIN=go1.27.4 go run scripts/verify-pages-upstream-tls.go
 
       - name: Verify Go modules and reachable vulnerabilities
         working-directory: server
