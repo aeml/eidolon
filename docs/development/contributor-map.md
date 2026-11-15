@@ -26,7 +26,7 @@ npm test -- --runInBand --runTestsByPath tests/NetworkManager.test.js
 
 **Canonical/generated content:** npm run check:content checks 17 groups without repairing output. If a generator must run in write mode, review its changes alongside the input. Installation does not replace this check.
 
-**Client baseline:** npm run test:smoke, npm test, npm run lint and npm audit --audit-level=low are distinct checks. A focused subset is not a full-suite pass. See [package.json](../../package.json) for maintained route lists rather than duplicating them in another script.
+**Client baseline:** npm run test:smoke, npm test, npm run lint and node scripts/audit-dependencies.mjs are distinct checks. The [audit policy](ci-dependency-audits.md) documents the exact rejected-CVE handling. A focused subset is not a full-suite pass. See [package.json](../../package.json) for maintained route lists rather than duplicating them in another script.
 
 **Server rules:** from server/, choose an existing test by its actual Go test name; the complete checks are:
 
