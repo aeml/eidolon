@@ -1,3 +1,4 @@
+import suites from '../scripts/e2e-suites.json' with { type: 'json' };
 import { readFileSync } from 'node:fs';
 
 test('raised terrain QA uses explicit public selection without changing the flat default or legacy allowlist', () => {
@@ -111,8 +112,8 @@ test('talent economy retries cannot reuse purchased ranks', () => {
 
 test('anonymous CI retains exact cast aiming and covered-loot pointer regressions', () => {
     const commands = JSON.parse(readFileSync('package.json', 'utf8')).scripts;
-    expect(commands['test:e2e:anonymous']).toContain('tests/e2e/ground-aim.spec.js');
-    expect(commands['test:e2e:anonymous']).toContain('tests/e2e/loot-pointer.spec.js');
+    expect(suites.anonymous).toContain('tests/e2e/ground-aim.spec.js');
+    expect(suites.anonymous).toContain('tests/e2e/loot-pointer.spec.js');
 });
 
 test('local and CI isolated servers reserve disjoint API/database ports', () => {
@@ -142,7 +143,7 @@ test('phone chat coverage and Purifying retry keep the real player path', () => 
     expect(probe).toContain("await verifyCast(5, 0, 'low')");
     expect(probe).toContain("await verifyCast(5, 5, 'low')");
     expect(probe).toContain("await verifyCast(5, 5, 'high')");
-    expect(commands['test:e2e:anonymous']).toContain('tests/e2e/mobile-chat-layering.spec.js');
+    expect(suites.anonymous).toContain('tests/e2e/mobile-chat-layering.spec.js');
 });
 
 test('the full release gate retains Seraph gameplay and rendered fallback checks', () => {
@@ -150,8 +151,8 @@ test('the full release gate retains Seraph gameplay and rendered fallback checks
     const commands = JSON.parse(readFileSync('package.json', 'utf8')).scripts;
     expect(script).toContain('&&\n    run_qa_stage talent-duration run_talent_duration &&\n    run_qa_stage seraph run_seraph &&');
     expect(script).toContain('${QA_USERNAME_BASE}-seraph-retry1');
-    expect(commands['test:e2e:anonymous']).toContain('tests/e2e/offline-seraph-render.spec.js');
-    expect(commands['test:e2e:anonymous']).toContain('tests/e2e/summon-action-readability.spec.js');
+    expect(suites.anonymous).toContain('tests/e2e/offline-seraph-render.spec.js');
+    expect(suites.anonymous).toContain('tests/e2e/summon-action-readability.spec.js');
 });
 
 test('the full release gate includes saved Guardian Roar training without removing existing area routes', () => {
@@ -188,14 +189,14 @@ test('the full release gate retains saved Shield training and hostile absorption
 
 test('anonymous CI retains content-sized and long-list phone status coverage', () => {
     const commands = JSON.parse(readFileSync('package.json', 'utf8')).scripts;
-    expect(commands['test:e2e:anonymous']).toContain('tests/e2e/mobile-status-compact.spec.js');
-    expect(commands['test:e2e:anonymous']).toContain('tests/e2e/mobile-status-layout.spec.js');
+    expect(suites.anonymous).toContain('tests/e2e/mobile-status-compact.spec.js');
+    expect(suites.anonymous).toContain('tests/e2e/mobile-status-layout.spec.js');
 });
 
 test('the release gate retains rendered entrance cutaways and normal gameplay restoration', () => {
     const commands = JSON.parse(readFileSync('package.json', 'utf8')).scripts;
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
-    expect(commands['test:e2e:anonymous']).toContain('tests/e2e/entrance-visibility.spec.js');
+    expect(suites.anonymous).toContain('tests/e2e/entrance-visibility.spec.js');
     expect(script).toContain('&&\n    run_qa_stage shield-training run_shield_training &&\n    run_qa_stage entrance-visibility run_entrance_visibility &&');
     expect(script).toContain('${QA_USERNAME_BASE}-sight-retry1');
     expect(script).toContain('EIDOLON_E2E_SCENERY_VISIBILITY=1 npx playwright test tests/e2e/shield-training-gameplay.spec.js');
