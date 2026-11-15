@@ -62,7 +62,7 @@ for (const quality of ['high', 'low']) for (const rune of ['arcaneshield_reflect
             const button = (label, action) => { const node = document.createElement('button');node.textContent = label;Object.assign(node.style, { minHeight: '44px', fontSize: '14px', padding: '6px 10px' });node.onclick = action;controls.appendChild(node); };
             button('Cast Arcane Shield', () => owner.useAbility(owner.position.clone(), engine, 'Arcane Shield'));
             button('Strike shield', () => enemy.attack(owner));
-            button('Break shield', () => { owner.move(new THREE.Vector3(-1, 0, 0));q.attackLoop = setInterval(() => { if (owner.arcaneShieldActive) enemy.attack(owner);else clearInterval(q.attackLoop); }, 850); });
+            button('Break shield', () => { owner.move(new THREE.Vector3(-1, 0, 0));q.attackLoop = setInterval(() => { if (!owner.arcaneShieldActive) clearInterval(q.attackLoop);else if (!enemy.attackTimer) enemy.attack(owner); }, 850); });
             document.body.appendChild(controls);render.setCameraTarget(new THREE.Vector3(0, 0, 0));render.setZoom(15);
             let previous = performance.now();
             const frame = now => {

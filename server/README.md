@@ -3,12 +3,12 @@
 This is the authoritative multiplayer server for Eidolon, written in Go.
 
 ## Current runtime notes
-- Go module/toolchain version: `go 1.27.2` (1.79.10 security correction)
+- Go module/toolchain version: `go 1.27.4` (November 15 dependency correction)
 - Persistence: MongoDB
 - Networking: Gorilla WebSocket + protobuf state envelopes
 
 ## Prerequisites
-- Go 1.27.2
+- Go 1.27.4
 - MongoDB (local or Atlas)
 
 ## Run locally without TLS
