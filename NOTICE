@@ -24,7 +24,7 @@ Credit your own contributors too; do not imply Robert Mendola authored their
 work or endorses a fork.
 
 Project-authored visual and audio game assets and their editable sources,
-including assets/, output/models/, and art sources elsewhere in the repository,
+including assets/, art/source/, and art sources elsewhere in the repository,
 use ASSET-LICENSE. Code in those directories remains AGPL unless separately
 licensed. Separately identified third-party code, fonts, base meshes, and other
 material retain their own licenses. Preserve their notices. This notice grants

@@ -1,0 +1,77 @@
+[
+  {
+    "file": "art/source/equipment-production/weapons.blend",
+    "packedImages": 0,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "art/source/equipment-production/legendary-lineup.blend",
+    "packedImages": 41,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "art/source/fighter-production/fighter.blend",
+    "packedImages": 15,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "art/source/equipment-production/fighter-equipment.blend",
+    "packedImages": 15,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "art/source/equipment-production/revision-v2/fighter-animation-review.blend",
+    "packedImages": 15,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "art/source/wizard-production/wizard.blend",
+    "packedImages": 9,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "art/source/equipment-production/wizard-equipment.blend",
+    "packedImages": 9,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "art/source/equipment-production/revision-v2/wizard-animation-review.blend",
+    "packedImages": 9,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "art/source/cleric-production/cleric.blend",
+    "packedImages": 10,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "art/source/equipment-production/cleric-equipment.blend",
+    "packedImages": 10,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "art/source/equipment-production/revision-v2/cleric-animation-review.blend",
+    "packedImages": 10,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "art/source/rogue-production/rogue.blend",
+    "packedImages": 11,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "art/source/equipment-production/rogue-equipment.blend",
+    "packedImages": 11,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "art/source/equipment-production/revision-v2/rogue-animation-review.blend",
+    "packedImages": 11,
+    "externalImageDependencies": 0
+  },
+  {
+    "file": "art/source/class-bases/character-roster.blend",
+    "packedImages": 42,
+    "externalImageDependencies": 0
+  }
+]

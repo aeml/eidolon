@@ -181,7 +181,8 @@ describe('procedural art migration guard', () => {
     });
     test('only the exact audited wearable catalog and unchanged supplied sources authorize runtime copies', () => {
         const hash = bytes => createHash('sha256').update(bytes).digest('hex');
-        expect(hash(wearableManifestBytes)).toBe('55b7b7bbc27198911f4205af0f1aff85887e21540935cd5c0b05ff9e9cdcbbb1');
+        // Source-location metadata moved to art/source; audited model rows and bytes are unchanged.
+        expect(hash(wearableManifestBytes)).toBe('b77586da5f1e44e59b8f5d3ecb0086ac443e268679a4865d347065190fbefb6d');
         expect(hash(fs.readFileSync(path.join(assetsRoot, 'equipment/authored/manifest.json')))).toBe(wearableManifest.sourceManifestSHA256);
         expect(wearableManifest.sources).toHaveLength(252);
         expect(wearableRuntimeReferences).toHaveLength(504);

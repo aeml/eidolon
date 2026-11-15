@@ -38,7 +38,7 @@ server/.env
 coverage/
 
 # Local experiments, backups, downloaded authoring tools and QA scratch files.
-# The final Blender sources, equipment scripts and reviewer are explicitly tracked.
+# Checked-in Blender sources, equipment scripts and reviewer live in art/source/.
 output/
 
 # Explicit, staged worker build; generated output is not source.

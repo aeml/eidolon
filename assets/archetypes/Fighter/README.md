@@ -1,7 +1,7 @@
 # Fighter character export
 
 `fighter.glb` is the full-detail export of
-`output/models/fighter-production/fighter.blend` from the open Blender session.
+`art/source/fighter-production/fighter.blend` from the open Blender session.
 
 - 53-bone skinned rig, 12 animation clips, and `Blink_L` / `Blink_R` morphs.
 - 120,480 triangles; 1.90 m character height; glTF Y-up and forward +Z.
@@ -11,7 +11,7 @@
 The GLB is self-contained. Keep the imported scene root, skeleton and skinned
 meshes together. Use `SkeletonUtils.clone` for independent Three.js instances.
 The 43,405-triangle alternative remains at
-`output/models/fighter-production/fighter-lod1.glb`.
+`art/source/fighter-production/fighter-lod1.glb`.
 
 Since Alpha 1.54, the normal Fighter renderer and character preview use optimized
 High/Low copies derived from this source. Each character has an independent rig;
@@ -35,4 +35,4 @@ opening it in Blender.
 
 The anatomical source, skin and brows include MakeHuman/MPFB CC0 assets. See the
 included provenance and license files. Detailed validation and animation notes
-are in `output/models/fighter-production/README.md`.
+are in `art/source/fighter-production/README.md`.

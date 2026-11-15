@@ -24,10 +24,10 @@ weights, morphs, inverse bind matrices and textures are preserved.
 Editable packed Blender sources are tracked with Git LFS; review renders are
 delivery evidence. Fetch LFS sources before opening the following files:
 
-- `output/models/wizard-production/wizard.blend`
-- `output/models/cleric-production/cleric.blend`
-- `output/models/rogue-production/rogue.blend`
-- `output/models/class-bases/character-roster.blend`
+- `art/source/wizard-production/wizard.blend`
+- `art/source/cleric-production/cleric.blend`
+- `art/source/rogue-production/rogue.blend`
+- `art/source/class-bases/character-roster.blend`
 
 The class asset folders include provenance, the MakeHuman CC0 license,
 geometry/weight reports, sampled deformation checks, Khronos glTF validation,

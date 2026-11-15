@@ -31,35 +31,35 @@
       "height": 1.8992373943328857,
       "joints": 53,
       "reference": "assets/archetypes/Fighter/fighter.glb",
-      "blenderSource": "output/models/equipment-production/fighter-equipment.blend"
+      "blenderSource": "art/source/equipment-production/fighter-equipment.blend"
     },
     "Wizard": {
       "height": 1.8387871980667114,
       "joints": 53,
       "reference": "assets/archetypes/Wizard/wizard.glb",
-      "blenderSource": "output/models/equipment-production/wizard-equipment.blend"
+      "blenderSource": "art/source/equipment-production/wizard-equipment.blend"
     },
     "Cleric": {
       "height": 1.7284412384033203,
       "joints": 53,
       "reference": "assets/archetypes/Cleric/cleric.glb",
-      "blenderSource": "output/models/equipment-production/cleric-equipment.blend"
+      "blenderSource": "art/source/equipment-production/cleric-equipment.blend"
     },
     "Rogue": {
       "height": 1.678632140159607,
       "joints": 53,
       "reference": "assets/archetypes/Rogue/rogue.glb",
-      "blenderSource": "output/models/equipment-production/rogue-equipment.blend"
+      "blenderSource": "art/source/equipment-production/rogue-equipment.blend"
     }
   },
   "sources": {
-    "weapons": "output/models/equipment-production/weapons.blend",
-    "authoringScripts": "output/models/equipment-production",
-    "reviewer": "output/models/equipment-production/viewer.html",
+    "weapons": "art/source/equipment-production/weapons.blend",
+    "authoringScripts": "art/source/equipment-production",
+    "reviewer": "art/source/equipment-production/viewer.html",
     "documentation": "docs/art/EQUIPMENT_ASSETS.md",
-    "collectionPreview": "output/models/equipment-production/legendary-lineup.png",
+    "collectionPreview": "art/source/equipment-production/legendary-lineup.png",
     "motionProfiles": "assets/equipment/authored/motion-profiles.json",
-    "motionAuthoring": "output/models/equipment-production/revision-v2/{class}-animation-review.blend"
+    "motionAuthoring": "art/source/equipment-production/revision-v2/{class}-animation-review.blend"
   },
   "binding": {
     "fitted": "Use the matching character fit. Keep the mesh at the character scene root and bind joints by bone name to that character skeleton, preserving inverse bind matrices. Do not parent a skinned item to a socket.",
@@ -74,7 +74,7 @@
     "legs": "Hide Undershorts and seams for trousers/greaves. Keep them for skirts and robes. Mask covered leg/pelvis triangles for trousers/greaves.",
     "feet": "Mask covered feet/ankles for boots; retain the body for sandals.",
     "gloves": "Mask the underlying hands/fingers. Keep exposed forearms.",
-    "referenceImplementation": "output/models/equipment-production/viewer.js:updateCoverage"
+    "referenceImplementation": "art/source/equipment-production/viewer.js:updateCoverage"
   },
   "rendering": {
     "materials": "Embedded glTF metallic-roughness PBR materials with geometric trim and engraved/rune inlays.",
@@ -2588,10 +2588,10 @@
     "errors": 0,
     "warnings": 0,
     "maximumInverseBindMatrixError": 0,
-    "animationQA": "output/models/equipment-production/revision-v2/review-qa.json",
-    "finalFitQA": "output/models/equipment-production/revision-v2/review-qa.json",
-    "characterPreservation": "output/models/equipment-production/revision-v2/character-preservation.json",
-    "motionContinuity": "output/models/equipment-production/revision-v2/{class}-continuity.json"
+    "animationQA": "art/source/equipment-production/revision-v2/review-qa.json",
+    "finalFitQA": "art/source/equipment-production/revision-v2/review-qa.json",
+    "characterPreservation": "art/source/equipment-production/revision-v2/character-preservation.json",
+    "motionContinuity": "art/source/equipment-production/revision-v2/{class}-continuity.json"
   },
   "layeringRules": [
     {
