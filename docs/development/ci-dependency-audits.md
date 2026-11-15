@@ -25,6 +25,9 @@ and the Mongo driver's compression dependency uses klauspost/compress 1.20.2.
 The existing reachable-symbol govulncheck gate remains in place.
 
 These are tooling/dependency changes, not a new gameplay acceptance or deployment.
+The complete Go race suite has a twenty-minute per-package aggregate budget;
+its many world-construction fixtures exceed the default ten minutes under race
+instrumentation. Individual timeout assertions and all test cases remain intact.
 Run the full Jest suite, content checks, Go tests and browser checks after the
 lockfile or toolchain changes. The raw npm command still exits nonzero for the
 stale rejected advisory; use the wrapper to reproduce the CI decision.
