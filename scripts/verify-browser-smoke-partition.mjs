@@ -4,17 +4,17 @@ import { buildBrowserSmokePlan, browserSmokeBaselineFiles } from './browser-smok
 import { discoveredCaseIdentities, verifyDiscoveredPartition } from './browser-smoke-coverage.mjs';
 
 // Discovery only. Does not start a web server, browser or game account.
-const manifest = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+const catalog = JSON.parse(readFileSync(new URL('./e2e-suites.json', import.meta.url), 'utf8'));
 const discover = args => {
     const result = spawnSync(process.execPath, ['node_modules/@playwright/test/cli.js', ...args,
         '--list', '--reporter=json'], { encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
     if (result.error || result.status !== 0) throw new Error(`Browser discovery failed: ${result.error?.message || result.stderr}`);
     return discoveredCaseIdentities(JSON.parse(result.stdout));
 };
-const baseline = discover(['test', ...browserSmokeBaselineFiles(manifest)]);
+const baseline = discover(['test', ...browserSmokeBaselineFiles(catalog)]);
 const groups = [];
 for (const shard of [1, 2, 3]) {
-    for (const stage of buildBrowserSmokePlan(manifest, shard)) {
+    for (const stage of buildBrowserSmokePlan(catalog, shard)) {
         const cases = discover(stage.args);
         groups.push(cases);
         console.log(JSON.stringify({ shard, stage: stage.name, count: cases.length }));

@@ -49,7 +49,7 @@ func TestShutdownAdmissionRejectsCommandsAndWebSocketUpgrade(t *testing.T) {
 }
 
 func TestShutdownLoopsWaitForActiveTickAndNeverTickAfterStop(t *testing.T) {
-	loops := newServerLoops()
+	loops := lifecycle.NewWorkers()
 	entered, release, stopped := make(chan struct{}), make(chan struct{}), make(chan struct{})
 	var count atomic.Int32
 	loops.Every(time.Millisecond, func() {
@@ -64,7 +64,7 @@ func TestShutdownLoopsWaitForActiveTickAndNeverTickAfterStop(t *testing.T) {
 		t.Fatal("tick did not start")
 	}
 	go func() { loops.Stop(); close(stopped) }()
-	<-loops.ctx.Done()
+	<-loops.Context().Done()
 	select {
 	case <-stopped:
 		t.Fatal("stop returned during an active world tick")

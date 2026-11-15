@@ -1,10 +1,11 @@
+import suites from '../scripts/e2e-suites.json' with { type: 'json' };
 import fs from 'fs';
 import { readIndexWithPatchHistory } from './readIndexWithPatchHistory.js';
 import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.80.2';
+const currentVersion = '1.80.3';
 
 test('1.79.22 records scoped actor normal correctness without claiming final art or speedup', () => {
     const html = readIndexWithPatchHistory();
@@ -916,7 +917,7 @@ const finalCutoverAudit = fs.readFileSync(path.join(repoRoot, 'docs/art/FINAL_PR
 const migrationInventory = fs.readFileSync(path.join(repoRoot, 'docs/art/PROCEDURAL_MIGRATION_INVENTORY.md'), 'utf8');
 const releaseManifest = JSON.parse(fs.readFileSync(path.join(repoRoot, 'release.json'), 'utf8'));
 const browserStages = [1, 2, 3].flatMap(shard => buildBrowserSmokePlan(
-    JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')), shard));
+    suites, shard));
 const browserInterfaceFiles = browserStages.filter(stage => stage.name === 'interface').flatMap(stage => stage.files);
 const versionedRuntimeFiles = [
     '.github/workflows/ci.yml',
@@ -1514,14 +1515,14 @@ describe('version presentation', () => {
             'Know your opponent', 'Honest combat information', 'Readable action labels',
             'does not change quest requirements, rewards, leveling or drop rates']) expect(indexHtml).toContain(text);
         const scripts = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).scripts;
-        expect(scripts['test:e2e:interface'].split(/\s+/).slice(2)).toEqual(expect.arrayContaining([
+        expect(suites.interface.slice()).toEqual(expect.arrayContaining([
             'tests/e2e/journal-daily-presentation.spec.js',
             'tests/e2e/combat-action-preview.spec.js',
             'tests/e2e/desktop-action-readability.spec.js'
         ]));
         expect(versionedRuntimeFiles[0]).toContain('node scripts/run-browser-smoke.mjs');
         expect(browserInterfaceFiles.slice().sort())
-            .toEqual(scripts['test:e2e:interface'].split(/\s+/).slice(2).sort());
+            .toEqual(suites.interface.slice().sort());
     });
     test('adds standalone town recovery notes while preserving the prior persistence release', () => {
         expect(indexHtml).toContain('Alpha 1.0.58 (a reason to come home)');
@@ -1559,7 +1560,7 @@ describe('version presentation', () => {
         for (const heading of ['No phantom mana refill', 'Bars that stay within bounds',
             'Your resources stay yours']) expect(indexHtml).toContain(heading);
         const commands = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).scripts;
-        expect(commands['test:e2e:resource-hud']).toBe('playwright test tests/e2e/resource-hud.spec.js');
+        expect(commands['test:e2e:resource-hud']).toBe('node scripts/run-e2e-suite.mjs resource-hud');
         expect(versionedRuntimeFiles[0]).toContain('node scripts/run-browser-smoke.mjs ${{ matrix.shard }}');
         expect(browserStages.filter(stage => stage.name === 'resource-hud')).toHaveLength(1);
     });
@@ -1572,7 +1573,7 @@ describe('version presentation', () => {
     });
     test('runs crowd-name browser checks in both release verification routes', () => {
         const scripts = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).scripts;
-        expect(scripts['test:e2e:nameplates']).toBe('playwright test tests/e2e/nameplate-readability.spec.js');
+        expect(scripts['test:e2e:nameplates']).toBe('node scripts/run-e2e-suite.mjs nameplates');
         expect(versionedRuntimeFiles[0]).toContain('node scripts/run-browser-smoke.mjs ${{ matrix.shard }}');
         expect(browserStages.filter(stage => stage.name === 'nameplates')).toHaveLength(1);
         const isolated = versionedRuntimeFiles[5];

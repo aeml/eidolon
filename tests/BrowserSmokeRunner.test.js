@@ -5,16 +5,16 @@ import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
-const manifest = JSON.parse(readFileSync('package.json', 'utf8'));
+const manifest = JSON.parse(readFileSync('scripts/e2e-suites.json', 'utf8'));
 let directory;
 beforeEach(() => {
     directory = mkdtempSync(join(tmpdir(), 'eidolon-browser-runner-test-'));
     mkdirSync(join(directory, 'scripts'));
     mkdirSync(join(directory, 'node_modules/@playwright/test'), { recursive: true });
-    for (const name of ['run-browser-smoke.mjs', 'browser-smoke-plan.mjs']) {
+    for (const name of ['run-browser-smoke.mjs', 'browser-smoke-plan.mjs', 'e2e-suite-catalog.mjs', 'e2e-suites.json']) {
         copyFileSync(`scripts/${name}`, join(directory, 'scripts', name));
     }
-    writeFileSync(join(directory, 'package.json'), JSON.stringify(manifest));
+    writeFileSync(join(directory, 'package.json'), JSON.stringify({ type: 'module' }));
     // Exercise the real orchestration process, not a browser or fixture account.
     writeFileSync(join(directory, 'node_modules/@playwright/test/cli.js'), `
         import { appendFileSync } from 'node:fs';

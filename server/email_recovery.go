@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"eidolon-server/internal/database"
+	"eidolon-server/internal/lifecycle"
 )
 
 type emailRecoveryStore interface {
@@ -30,17 +31,15 @@ type emailRecoveryService struct {
 
 var accountRecovery *emailRecoveryService
 
-func newEmailRecoveryService(store emailRecoveryStore, mailer *recoveryMailer, loops *serverLoops) *emailRecoveryService {
+func newEmailRecoveryService(store emailRecoveryStore, mailer *recoveryMailer, loops *lifecycle.Workers) *emailRecoveryService {
 	if store == nil || mailer == nil {
 		return nil
 	}
-	s := &emailRecoveryService{store: store, mailer: mailer, queue: make(chan recoveryMailJob, 32), ctx: loops.ctx}
+	s := &emailRecoveryService{store: store, mailer: mailer, queue: make(chan recoveryMailJob, 32), ctx: loops.Context()}
 	// Fixed workers/queue: requests acknowledge before any account lookup and
 	// never launch one goroutine per email. Tokens exist only in bounded RAM.
 	for range 2 {
-		loops.wg.Add(1)
-		go func() {
-			defer loops.wg.Done()
+		loops.Go(func() {
 			for {
 				select {
 				case <-s.ctx.Done():
@@ -52,7 +51,7 @@ func newEmailRecoveryService(store emailRecoveryStore, mailer *recoveryMailer, l
 					s.deliver(job)
 				}
 			}
-		}()
+		})
 	}
 	return s
 }

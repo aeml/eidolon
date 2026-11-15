@@ -4,7 +4,7 @@ Use a clean checkout and read [CONTRIBUTING.md](../../CONTRIBUTING.md) before ed
 
 ## Prerequisites
 
-- Node.js 24 and npm 9+; [.nvmrc](../../.nvmrc) and [package.json](../../package.json) declare the supported runtime.
+- Node.js 24 and npm 11+; [.nvmrc](../../.nvmrc) and [package.json](../../package.json) declare the supported runtime.
 - Go 1.27.4, as declared in [server/go.mod](../../server/go.mod).
 - A separate local MongoDB instance. The repository's [Compose file](../../server/docker-compose.yml) pins Mongo 7.0.14. Database setup depends on your machine; use disposable development storage rather than a production URI.
 - Git LFS only when you need editable Blender sources. See the [art guide](../art/EQUIPMENT_ASSETS.md).

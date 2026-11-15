@@ -7,7 +7,7 @@ const predeploy = workflow.split('  predeploy-character:\n')[1].split('\n  relea
 
 test('nameplate and resource render coverage run once inside the required browser gate', () => {
     expect(browser.match(/node scripts\/run-browser-smoke.mjs/g)).toHaveLength(1);
-    const manifest = JSON.parse(readFileSync('package.json', 'utf8'));
+    const manifest = JSON.parse(readFileSync('scripts/e2e-suites.json', 'utf8'));
     const names = [1, 2, 3].flatMap(shard => buildBrowserSmokePlan(manifest, shard).map(stage => stage.name));
     expect(names.filter(name => name === 'nameplates')).toHaveLength(1);
     expect(names.filter(name => name === 'resource-hud')).toHaveLength(1);

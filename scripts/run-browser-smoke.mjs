@@ -6,8 +6,8 @@ const [shardArgument, mode, ...extra] = process.argv.slice(2);
 if (!/^[123]$/.test(shardArgument || '') || extra.length || (mode && mode !== '--plan')) {
     throw new Error('Usage: node scripts/run-browser-smoke.mjs <1|2|3> [--plan]');
 }
-const manifest = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
-const plan = buildBrowserSmokePlan(manifest, Number(shardArgument));
+const catalog = JSON.parse(readFileSync(new URL('./e2e-suites.json', import.meta.url), 'utf8'));
+const plan = buildBrowserSmokePlan(catalog, Number(shardArgument));
 if (mode === '--plan') {
     console.log(JSON.stringify(plan, null, 2));
 } else {
