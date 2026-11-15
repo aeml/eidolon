@@ -25,7 +25,7 @@ test('game typography is first-party and the DNS outage seam stays in required b
     expect(styles).toMatch(/font-weight:\s*400 900/);
     expect(styles).toMatch(/font-display:\s*swap/);
     expect(styles).toContain("../../assets/fonts/Cinzel-Variable.ttf");
-    const scripts = JSON.parse(readFileSync('package.json', 'utf8')).scripts;
-    expect(scripts['test:e2e:interface'].match(/tests\/e2e\/local-fonts\.spec\.js/g)).toHaveLength(1);
+    const suites = JSON.parse(readFileSync('scripts/e2e-suites.json', 'utf8'));
+    expect(suites.interface.filter(file => file === 'tests/e2e/local-fonts.spec.js')).toHaveLength(1);
     expect(readFileSync('scripts/serve-static.mjs', 'utf8')).toContain("['.ttf', 'font/ttf']");
 });

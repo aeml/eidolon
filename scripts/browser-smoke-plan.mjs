@@ -1,39 +1,29 @@
+import { suiteFiles } from './e2e-suite-catalog.mjs';
+
 const entrances = ['tests/e2e/entrance-visibility.spec.js'];
 const effects = ['tests/e2e/offline-seraph-render.spec.js',
     'tests/e2e/phone-encounter-composition.spec.js', 'tests/e2e/respawn-appearance.spec.js'];
 
-function scriptFiles(manifest, name) {
-    const command = manifest.scripts?.[`test:e2e:${name}`];
-    const tokens = command?.trim().split(/\s+/) || [];
-    const files = tokens.slice(2);
-    if (tokens[0] !== 'playwright' || tokens[1] !== 'test' || !files.length ||
-        files.some(file => !/^tests\/e2e\/[a-z0-9-]+\.spec\.js$/.test(file)) ||
-        new Set(files).size !== files.length) {
-        throw new Error(`Unsupported or missing browser coverage command: ${name}`);
-    }
-    return files;
-}
-
-function supplemental(manifest) {
+function supplemental(catalog) {
     return [
-        { name: 'nameplates', shard: 1, files: scriptFiles(manifest, 'nameplates') },
-        { name: 'resource-hud', shard: 1, files: scriptFiles(manifest, 'resource-hud') },
-        { name: 'crystal-art', shard: 2, files: scriptFiles(manifest, 'crystal-art') },
-        { name: 'privacy', shard: 3, files: scriptFiles(manifest, 'privacy') },
-        { name: 'interface', partitionFiles: true, files: scriptFiles(manifest, 'interface') }
+        { name: 'nameplates', shard: 1, files: suiteFiles(catalog, 'nameplates') },
+        { name: 'resource-hud', shard: 1, files: suiteFiles(catalog, 'resource-hud') },
+        { name: 'crystal-art', shard: 2, files: suiteFiles(catalog, 'crystal-art') },
+        { name: 'privacy', shard: 3, files: suiteFiles(catalog, 'privacy') },
+        { name: 'interface', partitionFiles: true, files: suiteFiles(catalog, 'interface') }
     ];
 }
 
-export function browserSmokeBaselineFiles(manifest) {
-    const files = [...scriptFiles(manifest, 'anonymous'), ...supplemental(manifest).flatMap(stage => stage.files)];
+export function browserSmokeBaselineFiles(catalog) {
+    const files = [...suiteFiles(catalog, 'anonymous'), ...supplemental(catalog).flatMap(stage => stage.files)];
     if (new Set(files).size !== files.length) throw new Error('Duplicate required browser coverage');
     return files;
 }
 
-export function buildBrowserSmokePlan(manifest, shard) {
+export function buildBrowserSmokePlan(catalog, shard) {
     if (!Number.isInteger(shard) || shard < 1 || shard > 3) throw new Error('Browser shard must be 1, 2 or 3');
-    browserSmokeBaselineFiles(manifest);
-    const anonymous = scriptFiles(manifest, 'anonymous');
+    browserSmokeBaselineFiles(catalog);
+    const anonymous = suiteFiles(catalog, 'anonymous');
     const renderFiles = [...entrances, ...effects];
     for (const file of renderFiles) {
         if (!anonymous.includes(file)) throw new Error(`Missing required rendering coverage: ${file}`);
@@ -50,7 +40,7 @@ export function buildBrowserSmokePlan(manifest, shard) {
         // The growing interface family used to run wholly on job2. Partition
         // whole files across the existing jobs: no duplicated suite setup or
         // splitting of serial/shared-state cases, and no coverage is removed.
-        ...supplemental(manifest).filter(stage => stage.partitionFiles || stage.shard === shard)
+        ...supplemental(catalog).filter(stage => stage.partitionFiles || stage.shard === shard)
             .map(stage => ({ ...stage, files: stage.partitionFiles
                 ? stage.files.filter((_, index) => index % 3 === shard - 1) : stage.files }))
     ];

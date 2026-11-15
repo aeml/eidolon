@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import { readFileSync } from 'node:fs';
 import { buildBrowserSmokePlan, browserSmokeBaselineFiles, runBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
-const manifest = JSON.parse(readFileSync('package.json', 'utf8'));
+const manifest = JSON.parse(readFileSync('scripts/e2e-suites.json', 'utf8'));
 
 test('each required shard separates expensive independent render families from ordinary file groups', () => {
     for (const shard of [1, 2, 3]) {
@@ -34,7 +34,7 @@ test('rotating render families preserves every partition exactly once across the
 });
 
 test('file families partition the unchanged local anonymous command exactly once', () => {
-    const original = manifest.scripts['test:e2e:anonymous'].split(/\s+/).slice(2).sort();
+    const original = manifest['anonymous'].slice().sort();
     const stages = buildBrowserSmokePlan(manifest, 1).slice(0, 3);
     const actual = stages.flatMap(stage => stage.files);
     expect(actual.slice().sort()).toEqual(original);
@@ -52,7 +52,7 @@ test('each supplemental file stays in exactly one required job', () => {
 
 test('the interface family balances whole files across all existing jobs without omissions or test-level splitting', () => {
     const stages = [1, 2, 3].map(shard => buildBrowserSmokePlan(manifest, shard).find(stage => stage.name === 'interface'));
-    const original = manifest.scripts['test:e2e:interface'].split(/\s+/).slice(2);
+    const original = manifest['interface'].slice();
     const actual = stages.flatMap(stage => stage.files);
     expect(actual.slice().sort()).toEqual(original.slice().sort());
     expect(new Set(actual).size).toBe(actual.length);
@@ -80,19 +80,19 @@ test('integrated desktop presentation checks run once in the existing interface 
 
 test('baseline preserves the complete current release workflow command union', () => {
     const files = ['anonymous', 'nameplates', 'resource-hud', 'crystal-art', 'privacy', 'interface']
-        .flatMap(name => manifest.scripts[`test:e2e:${name}`].split(/\s+/).slice(2));
+        .flatMap(name => manifest[name]);
     expect(browserSmokeBaselineFiles(manifest).slice().sort()).toEqual(files.slice().sort());
     expect(new Set(files).size).toBe(files.length);
 });
 
 test('interface additions follow the manifest into the sole required interface stage', () => {
-    const changed = { ...manifest, scripts: { ...manifest.scripts } };
+    const changed = JSON.parse(JSON.stringify(manifest));
     const added = 'tests/e2e/future-interface-coverage.spec.js';
-    changed.scripts['test:e2e:interface'] += ` ${added}`;
+    changed['interface'].push(added);
     const stages = [1, 2, 3].flatMap(shard => buildBrowserSmokePlan(changed, shard));
     expect(stages.filter(stage => stage.files.includes(added)).map(stage => stage.name)).toEqual(['interface']);
     expect(browserSmokeBaselineFiles(changed)).toContain(added);
-    delete changed.scripts['test:e2e:interface'];
+    delete changed['interface'];
     expect(() => buildBrowserSmokePlan(changed, 1)).toThrow('interface');
 });
 
@@ -106,13 +106,13 @@ test('native private downloads run once, without test sharding or duplicated fix
 
 test('expanded story crystal art remains mandatory once in the integrated browser gate', () => {
     const plans = [1, 2, 3].flatMap(shard => buildBrowserSmokePlan(manifest, shard));
-    const expected = manifest.scripts['test:e2e:crystal-art'].split(/\s+/).slice(2);
+    const expected = manifest['crystal-art'].slice();
     for (const file of expected) {
         expect(plans.filter(stage => stage.files.includes(file)).map(stage => stage.name)).toEqual(['crystal-art']);
         expect(browserSmokeBaselineFiles(manifest)).toContain(file);
     }
-    const changed = { ...manifest, scripts: { ...manifest.scripts } };
-    delete changed.scripts['test:e2e:crystal-art'];
+    const changed = JSON.parse(JSON.stringify(manifest));
+    delete changed['crystal-art'];
     expect(() => buildBrowserSmokePlan(changed, 2)).toThrow('crystal-art');
 });
 
@@ -121,10 +121,10 @@ test.each([0, 4, -1, 1.5, '1', NaN])('invalid shard %p fails closed', shard => {
 });
 
 test('unsupported shell arguments or missing required coverage fail before a browser starts', () => {
-    const changed = { ...manifest, scripts: { ...manifest.scripts } };
-    changed.scripts['test:e2e:anonymous'] += ' --grep smoke';
+    const changed = JSON.parse(JSON.stringify(manifest));
+    changed['anonymous'].push('--grep smoke');
     expect(() => buildBrowserSmokePlan(changed, 1)).toThrow();
-    changed.scripts['test:e2e:anonymous'] = manifest.scripts['test:e2e:anonymous'].replace('tests/e2e/entrance-visibility.spec.js', '');
+    changed['anonymous'] = manifest.anonymous.filter(file => file !== 'tests/e2e/entrance-visibility.spec.js');
     expect(() => buildBrowserSmokePlan(changed, 1)).toThrow('entrance-visibility');
 });
 
@@ -194,7 +194,7 @@ test('hardware dungeon and additive reviews retain a mandatory native release ga
 test('complete four-class garment gameplay remains a required native gate with unchanged case coverage', () => {
     const file = 'tests/e2e/full-outfit-garment.spec.js';
     expect(browserSmokeBaselineFiles(manifest)).not.toContain(file);
-    expect(manifest.scripts['test:e2e:authored-equipment'].split(/\s+/)).toContain(file);
+    expect(manifest['authored-equipment']).toContain(file);
     const workflow = readFileSync('.github/workflows/ci.yml', 'utf8');
     const step = workflow.split('- name:').find(step => step.startsWith(' Verify delivered class bodies and fitted equipment'));
     expect(step).toContain('npm run test:e2e:authored-equipment');
