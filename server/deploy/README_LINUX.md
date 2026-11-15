@@ -726,7 +726,7 @@ Disruptive reboot/recovery rehearsals require their own maintenance approval.
 From `server/`, with the `nginx` executable available:
 
 ```bash
-GOTOOLCHAIN=go1.27.2 GOMAXPROCS=2 go test -p 2 -race . \
+GOTOOLCHAIN=go1.27.4 GOMAXPROCS=2 go test -p 2 -race . \
   -run '^Test(TLSSetup|CanonicalNginxProxy|MigrationOrigins)' -count=1 -timeout=35s
 ```
 
