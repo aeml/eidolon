@@ -114,7 +114,7 @@ original and reduced hashes. Character quality selects fitted equipment quality;
 load failure uses the original and records `equipmentVisualFallback`. Explicit
 `root.userData.fittedEquipmentLOD = false` retains original-only diagnostics.
 This is staged work, not a production 1.87 or raised-world performance approval.
-See [integration checks](../plans/2026-10-08-wearable-integration-checks.json).
+See the retained [catalog provenance checks](../../tests/ProceduralArtMigrationGuard.test.js).
 
 Generate all copies into a new owned directory using
 `scripts/derive-wearable-catalog.mjs`, then import them with
@@ -123,7 +123,8 @@ Generate all copies into a new owned directory using
 `node scripts/generate-authored-equipment.mjs`. The importer validates all inputs
 before copying and refuses an existing runtime destination; do not remove a
 reviewed catalog just to bypass that guard. Preserve original Blender/GLB files
-and provenance. See the [copy workflow](../plans/2026-10-08-wearable-pilot-workflow.md).
+and provenance. The [derivation script](../../scripts/derive-wearable-catalog.mjs)
+and [importer](../../scripts/import-wearable-runtime.mjs) define that workflow.
 
 Standard equipment uses restrained iron, leather, wood and cloth materials.
 Legendary versions add crystal settings, raised trim, rune inlays, layered
