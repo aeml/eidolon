@@ -8,7 +8,7 @@ A browser action RPG by [Robert Mendola](https://mendola.tech): a JavaScript/Thr
 
 ## Quickstart
 
-Use **Node.js 24**, npm 9+, **Go 1.27.4**, and a separate local MongoDB instance. Do not use production accounts or storage for development. See [local setup](docs/development/local-development.md) for Windows commands and LF-preserving checkout, custom ports and database details.
+Use **Node.js 24**, npm 11+, **Go 1.27.4**, and a separate local MongoDB instance. Do not use production accounts or storage for development. See [local setup](docs/development/local-development.md) for Windows commands and LF-preserving checkout, custom ports and database details.
 
 From the repository root:
 
@@ -67,7 +67,7 @@ Full client tests use npm test. Server tests/build run from server/ with go test
 
 ## Project status
 
-Current source version: `Alpha 1.80.2`.
+Current source version: `Alpha 1.80.3`.
 
 The latest documented accepted release is **Alpha 1.80.2**, runtime source b3889294cb3c0db234f54f854e6d7151865692b8. This is a release record, not a live availability claim. [Acceptance](docs/plans/2026-10-20-release1-80-2-acceptance.md) · [remaining work](docs/plans/2026-10-09-release-readiness-remaining.md) · [roadmap](ROADMAP.md).
 
