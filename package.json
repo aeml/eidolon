@@ -66,6 +66,9 @@
     "test-exclude": "^7.0.0",
     "@istanbuljs/load-nyc-config": {
       "js-yaml": "4.3.2"
-    }
+    },
+    "markdown-it": "14.3.3",
+    "glob@>=9.0.0 <14.0.2": "14.0.6",
+    "minimatch@>=7.0.0 <11.0.1": "11.0.8"
   }
 }

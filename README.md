@@ -8,7 +8,7 @@ A browser action RPG by [Robert Mendola](https://mendola.tech): a JavaScript/Thr
 
 ## Quickstart
 
-Use **Node.js 24**, npm 9+, **Go 1.27.2**, and a separate local MongoDB instance. Do not use production accounts or storage for development. See [local setup](docs/development/local-development.md) for Windows commands and LF-preserving checkout, custom ports and database details.
+Use **Node.js 24**, npm 9+, **Go 1.27.4**, and a separate local MongoDB instance. Do not use production accounts or storage for development. See [local setup](docs/development/local-development.md) for Windows commands and LF-preserving checkout, custom ports and database details.
 
 From the repository root:
 
