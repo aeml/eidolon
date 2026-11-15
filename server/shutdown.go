@@ -20,40 +20,6 @@ var serverAdmission = &lifecycle.Group{}
 var serverStopping atomic.Bool
 var hubQuiesce = make(chan chan []*Client)
 
-// Only startup adds loops; shutdown cancels and joins them before world drain.
-type serverLoops struct {
-	ctx    context.Context
-	cancel context.CancelFunc
-	wg     sync.WaitGroup
-}
-
-func newServerLoops() *serverLoops {
-	ctx, cancel := context.WithCancel(context.Background())
-	return &serverLoops{ctx: ctx, cancel: cancel}
-}
-
-func (loops *serverLoops) Every(interval time.Duration, tick func()) {
-	loops.wg.Add(1)
-	go func() {
-		defer loops.wg.Done()
-		ticker := time.NewTicker(interval)
-		defer ticker.Stop()
-		for {
-			select {
-			case <-loops.ctx.Done():
-				return
-			case <-ticker.C:
-				if loops.ctx.Err() != nil {
-					return
-				}
-				tick()
-			}
-		}
-	}()
-}
-
-func (loops *serverLoops) Stop() { loops.cancel(); loops.wg.Wait() }
-
 // Every player is included, not just active sockets: completed background
 // refunds/rewards may have changed a disconnected character after its last save.
 func saveFinalCharacters() error {
@@ -138,7 +104,7 @@ func saveFinalCharacters() error {
 	return nil
 }
 
-func drainServer(loops *serverLoops) {
+func drainServer(loops *lifecycle.Workers) {
 	serverStopping.Store(true)
 	world.Trading.StopRefundDelivery()
 	log.Print("Shutdown drain: phase=admission")

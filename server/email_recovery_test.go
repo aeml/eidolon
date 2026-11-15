@@ -5,8 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"strings"
+	"sync"
 	"testing"
 	"time"
+
+	"eidolon-server/internal/lifecycle"
 )
 
 type fakeEmailRecoveryStore struct {
@@ -189,7 +192,7 @@ func TestEmailRecoveryProtocolAccessAndSharedAdmission(t *testing.T) {
 }
 
 func TestEmailRecoveryWorkersJoinShutdownAndDisableUnconfiguredMail(t *testing.T) {
-	loops := newServerLoops()
+	loops := lifecycle.NewWorkers()
 	if newEmailRecoveryService(&fakeEmailRecoveryStore{}, nil, loops) != nil {
 		t.Fatal("unconfigured provider exposed recovery")
 	}
@@ -206,6 +209,58 @@ func TestEmailRecoveryWorkersJoinShutdownAndDisableUnconfiguredMail(t *testing.T
 	}
 	if service.enqueue(recoveryMailJob{kind: "request", username: "owner"}) {
 		t.Fatal("stopped mail service admitted work")
+	}
+}
+
+type blockingRecoveryLookupStore struct {
+	fakeEmailRecoveryStore
+	entered chan struct{}
+	release chan struct{}
+}
+
+func (s *blockingRecoveryLookupStore) BeginPasswordRecovery(string, string, time.Time) (string, error) {
+	close(s.entered)
+	<-s.release
+	return "", nil // No recipient, so this fixture never sends mail.
+}
+
+func TestEmailRecoveryWorkerOwnershipJoinsInFlightLookup(t *testing.T) {
+	workers := lifecycle.NewWorkers()
+	store := &blockingRecoveryLookupStore{entered: make(chan struct{}), release: make(chan struct{})}
+	var release sync.Once
+	t.Cleanup(func() {
+		release.Do(func() { close(store.release) })
+		workers.Stop()
+	})
+	service := newEmailRecoveryService(store, &recoveryMailer{}, workers)
+	if !service.enqueue(recoveryMailJob{kind: "request", username: "owner"}) {
+		t.Fatal("owned worker did not accept its initial job")
+	}
+	select {
+	case <-store.entered:
+	case <-time.After(time.Second):
+		t.Fatal("lookup did not start")
+	}
+	stopped := make(chan struct{})
+	go func() { workers.Stop(); close(stopped) }()
+	select {
+	case <-workers.Context().Done():
+	case <-time.After(time.Second):
+		t.Fatal("shutdown did not cancel the worker owner")
+	}
+	select {
+	case <-stopped:
+		t.Fatal("shutdown abandoned an in-flight lookup")
+	default:
+	}
+	if service.enqueue(recoveryMailJob{kind: "request", username: "owner"}) {
+		t.Fatal("canceled worker owner admitted another job")
+	}
+	release.Do(func() { close(store.release) })
+	select {
+	case <-stopped:
+	case <-time.After(time.Second):
+		t.Fatal("shutdown did not join the completed lookup")
 	}
 }
 
