@@ -1,5 +1,9 @@
 # Contributing to Eidolon
 
+Start with the [local development guide](docs/development/local-development.md),
+[edit-here/test-here map](docs/development/contributor-map.md), and
+[documentation index](docs/README.md).
+
 Eidolon is open alpha. Preserve existing accounts, story/instance IDs, inventories,
 Gold/EP ownership and the server's authority. A working asset export or green
 unit test is not final art, gameplay, capacity or release approval. Changes ship
@@ -10,10 +14,15 @@ with cumulative notes and exact frontend/backend deployment checks.
 
 Fetch and reconcile current `master`; do not overwrite another contributor's
 work or use a force push. Use a clean, detached owned worktree for your own changes.
-Merge completed, validated work into `master` before declaring it done. Keep
-unfinished experiments isolated until reviewed and selected. Only `master`
-should remain as an active local or remote branch; archive obsolete histories
-and retire branch names after consolidation.
+By default, merge completed, validated work into `master` before declaring it
+done. Keep unfinished experiments isolated until reviewed and selected.
+Normally, `master` is the only long-lived local or remote branch. When the
+owner explicitly requests pull-request review, use a short-lived draft review
+branch and leave it unmerged for that review. The review request does not
+authorize merging or deployment, and does not waive validation or preservation
+requirements. Archive obsolete histories and retire branch names after
+authorized consolidation.
+
 Install the pinned dependencies with Node24 and `npm ci`. Do not copy production
 `.env`, credentials, player exports or logs into fixtures, commits or screenshots.
 Blender source files use Git LFS; fetch the relevant sources before editing.

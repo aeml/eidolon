@@ -1,0 +1,1059 @@
+# README before the navigation refresh
+
+Historical snapshot of [README.md at fe4fff6f28926e48537a207ca52b3467f63e2e56](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/README.md), preserved November 15, 2026. Relative document links below are pinned to that commit. Commands, release claims, paths and architectural limitations describe that earlier text, not a fresh verification or current operating instructions. In particular, its statements that the published client has no application bundle are superseded by the [current architecture](../ARCHITECTURE.md#source-and-published-client).
+
+For current entry points use the [documentation index](../README.md), [local development guide](../development/local-development.md) and [contributor map](../development/contributor-map.md). No canonical content or release evidence was relocated.
+
+---
+
+# EIDOLON
+
+[![CI](https://github.com/aeml/eidolon/actions/workflows/ci.yml/badge.svg)](https://github.com/aeml/eidolon/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/badge/coverage-report-blue)](https://play.eidolonrealms.com/coverage/)
+
+> Project by [Robert Mendola](https://mendola.tech)
+
+## Public website
+
+The standalone marketing website for **eidolonrealms.com** lives in [`website/`](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/website/README.md). For Cloudflare Pages, use root directory `website`, build command `npm run build`, and output directory `dist`. Build locally from the repository root with `npm --prefix website run build`. The website links players to **https://play.eidolonrealms.com** and builds independently of the game client and server.
+
+## Overview
+
+Eidolon is a browser-based realtime multiplayer action RPG and systems architecture project. The client is a vanilla JavaScript + Three.js browser application, while the backend is an authoritative Go game server that manages simulation, networking, and persistence.
+
+For portfolio purposes, the repo is best understood as a full-stack realtime systems project with a game front end:
+
+- browser client and server are cleanly separated
+- gameplay state is owned by the server, not trusted to the client
+- clients communicate over WebSockets
+- the server streams state with protobuf `StateEnvelope` messages using `EDPB` wire framing
+- MongoDB backs persistent character and social data
+- deployment includes Docker, MongoDB, Nginx, and TLS automation
+
+## Engineering Focus
+
+This project demonstrates backend and systems engineering work in a realtime interactive environment:
+
+- Server-authoritative simulation: movement, combat, dungeon progression, rewards, party flows, and reconnect behavior are enforced on the Go server.
+- Realtime communication: the browser sends player intent over WebSockets, while the server streams full and delta state updates back to clients.
+- Protocol design: the runtime uses a mixed transport model with JSON command messages and binary protobuf state replication.
+- Synchronization: the codebase includes client prediction/smoothing work, remote entity replication, reconnect/session resume, and connection-state handling.
+- Persistence: MongoDB is used for persistent game data, with tests around party persistence and session resume paths already in the repo.
+- Separation of concerns: the client owns rendering, input, HUD, and presentation; the server owns simulation, authority, validation, and canonical state.
+- Deployment and operations: the repo includes Docker-based server packaging, Docker Compose for app + Mongo, Nginx reverse proxy setup, and TLS provisioning scripts.
+- Scalable architecture direction: the current roadmap emphasizes decomposition of large runtime modules, protocol hardening, persistence hardening, and multiplayer soak validation.
+
+## Current Features
+
+- Realtime multiplayer action RPG gameplay with four player classes: Fighter, Rogue, Wizard, and Cleric.
+- Server-authoritative movement, combat, abilities, jumping, dungeon entry, and reward flow.
+- Four elemental overworld realms and Lanternhold, with five instanced dungeons: Verdant Bastion Catacombs, Abyssal Well, Molten Core, Tempest Spire, and the Umbral Nexus.
+- Ilyra's Fourfold Chronicle uses explicit quest acceptance and reward conversations. The regional dungeons lead to four crystal raids with three-wave repair defenses, followed by the Dark Realm raid and its four-phase Dark King encounter. Daily contracts remain optional and separate.
+- Persistent parties, Group Finder, friendships, guilds and calendars, stash, forge, player trading, and the Trading House.
+- Duels, 1v1 and 2v2 arenas, ranked seasons, and optional overworld PvP.
+- A shared two-floor Lanternhold Casino with physical seating, slots, blackjack, Hold’em, roulette, and baccarat. Each floor has 32 slot machines and 14 tables; stairs switch between separate public and VIP views.
+- Public casino wagers use Gold; VIP wagers use EP and pay only EP. EP can purchase cosmetics, never player power, and cannot be exchanged back to Gold. Payment integration is not implemented.
+- Town health/mana recovery and stored Well Rested time, equipment appearances, configurable quest tracking, and responsive touch controls.
+- Role-gated Administration with online-player views and activity history.
+- Reconnect and session-resume flow with exponential backoff on the client and resume-token handling on the server.
+- Protobuf full/delta state streaming for entity replication.
+- Browser-side asset caching through a service worker.
+- Client and server test coverage in CI, with coverage reports published to GitHub Pages.
+
+These are implemented systems, not a claim that every campaign or raid route has completed final integration QA. See the [current delivery and remaining acceptance record](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-09-release-readiness-remaining.md) for verified-live releases, outstanding encounter checks, and the deferred actual-phone party/dungeon check. Versioned player-facing patch notes are available from the login screen.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    Browser[Browser Client\nVanilla JS + Three.js] --> Input[Input + UI + Rendering]
+    Input --> NM[NetworkManager]
+    Browser --> SW[Service Worker Asset Cache]
+
+    NM -->|JSON player commands| WS[WebSocket /ws]
+    WS --> Server[Go Authoritative Server]
+    Server --> Sim[Simulation\nmovement combat dungeons parties]
+    Server --> Proto[Binary protobuf stream\nEDPB + StateEnvelope full/delta]
+    Server --> Json[JSON control messages\nlogin errors resume time]
+    Sim --> Mongo[(MongoDB persistence)]
+
+    Proto --> NM
+    Json --> NM
+
+    CI[GitHub Actions CI] --> Pages[GitHub Pages coverage site]
+    CI --> Deploy[SSH deploy workflow]
+    Deploy --> Host[Docker Compose + Nginx + TLS]
+    Host --> Server
+```
+
+Core runtime ownership:
+
+- `src/core/GameEngine.js`: main client runtime loop and authoritative state application.
+- `src/core/NetworkManager.js`: WebSocket lifecycle, JSON sends, protobuf decode, reconnect, and resume handling.
+- `src/core/RenderSystem.js`: rendering, camera, scenes, and visual presentation.
+- `src/core/AbilityController.js`: local ability orchestration and targeting.
+- `server/main.go`: WebSocket server, message handling, protocol flow, and state broadcast pipeline.
+- `server/internal/game/world.go`: authoritative world simulation and gameplay rules.
+- `server/internal/database/`: persistence layer backing stored runtime data.
+- `server/deploy/`: Docker, Compose, restore, Nginx, and TLS deployment scripts.
+
+The most backend-relevant pattern in the repo is the split between client intent and server state ownership. The browser sends actions such as `move`, `jump`, `attack`, `ability`, `party_*`, and `resume_session`; the server validates and applies those actions, then republishes canonical world state to all connected clients.
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Client | Vanilla JavaScript ES modules, Three.js `0.181.2` |
+| Networking | WebSockets |
+| State Protocol | JSON command messages, protobuf `StateEnvelope` replication with `EDPB` framing |
+| Server | Go `1.27.2`, Gorilla WebSocket, protobuf |
+| Persistence | MongoDB |
+| Asset Delivery | Static client files, service worker caching |
+| Deployment | Docker, Docker Compose, Nginx, Certbot TLS scripts |
+| Browser QA | Playwright `1.61.1`; system Chrome for character gameplay and pinned Chromium for hosted anonymous CI |
+| Validation | Jest, ESLint, Playwright, `go test`, `go build`, npm audit, GitHub Actions |
+
+## Local Development
+
+### Prerequisites
+
+- Node.js `24` (the supported release line) and npm `9+`
+- Go `1.27.2`
+- MongoDB
+
+### Run The Server
+
+From `server/`:
+
+```bash
+go run .
+```
+
+Default local WebSocket endpoint:
+
+- `ws://localhost:8080/ws`
+
+### Run The Client
+
+From the repo root:
+
+```bash
+npm ci
+npm run serve
+```
+
+Open:
+
+- `http://127.0.0.1:4173`
+
+If you want the browser client to connect to the local server instead of the production endpoint, update the configured server address in `index.html` as part of your local workflow.
+
+### Local Deployment Path
+
+The repo also includes a deployment-oriented server path under `server/`:
+
+```bash
+cp .env.example .env
+docker compose build api
+docker compose up -d
+```
+
+For Linux host deployment, see `server/deploy/README_LINUX.md`.
+
+## Character and equipment assets: integration guide
+
+The authored collection includes the Fighter, male Wizard, female Cleric and
+female Rogue bases, **252 fitted equipment/weapon models**, and four weapon-motion
+banks. Common, Uncommon and Rare share standard models; Legendary has separate
+geometry and emissive details. All 24 chest fits cover the chest, upper back,
+collar area and shoulders beneath separate pauldrons.
+
+**Current integration:** All four classes select their High/Low character GLBs
+on demand. Fitted equipment binds to the actor's existing skeleton, rigid weapons
+use the supplied grip transforms, and movement selects the equipped weapon's
+motion profile. Dual-wield Rogues alternate weapons. Procedural actors remain a
+load-failure fallback. Source Blender files and delivered exports are unchanged.
+
+### Inspect the delivery
+
+Run `npm ci` and `npm run serve`, then open
+<http://127.0.0.1:4173/output/models/equipment-production/viewer.html>.
+The viewer loads the actual exported models and demonstrates skin binding,
+coverage masks, weapon grips and animation selection. Rotate the character and
+compare Walk, Run, Attack and Block with different equipment.
+
+- [Character exports](https://github.com/aeml/eidolon/tree/fe4fff6f28926e48537a207ca52b3467f63e2e56/assets/archetypes/): each class has a full-detail source
+  GLB and `*-runtime-high.glb` / `*-runtime-low.glb` gameplay candidates.
+- [Equipment manifest](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/assets/equipment/authored/manifest.json): item IDs,
+  class fits, rarity mapping, file hashes, budgets and layering rules.
+- [Motion profiles](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/assets/equipment/authored/motion-profiles.json) and
+  [grip transforms](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/assets/equipment/authored/grip-transforms.json).
+- [Detailed equipment contract](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/art/EQUIPMENT_ASSETS.md) and
+  [character delivery notes](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/art/UNEQUIPPED_CLASS_BASES.md).
+
+Editable `.blend` sources are tracked with **Git LFS**. Install Git LFS and run
+`git lfs install` followed by `git lfs pull` to open them. Character sources are
+`output/models/{fighter,wizard,cleric,rogue}-production/{class}.blend` (lowercase
+class names). Equipment sources, the lineup scene and all four
+`revision-v2/{class}-animation-review.blend` motion libraries are under
+`output/models/equipment-production/`. Textures are packed. Runtime GLBs are
+ordinary Git files and do not require LFS at runtime.
+
+### Connect the assets to gameplay
+
+1. **Load the class and chosen quality on demand.** The authored path in
+   [`MeshFactory`](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/src/utils/MeshFactory.js) uses
+   [`AuthoredCharacters`](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/src/art/AuthoredCharacters.js) and the shared adapter in
+   [`AuthoredFighter`](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/src/art/AuthoredFighter.js).
+   Preserve the imported scene hierarchy and use `SkeletonUtils.clone` for each
+   actor. Each class has its own proportions and inverse bind matrices; share
+   geometry/textures, never live bones or mixers. Scale the complete visual root
+   to the game's existing actor height and keep gameplay collision dimensions.
+   Retain the procedural fallback and avoid preloading full-detail source GLBs.
+2. **Resolve equipment from the catalog.** Look up the base item in `manifest.items`,
+   map rarity through `manifest.rarityModels`, then select
+   `item.models[tier][className]` for wearables or `["universal"]` for weapons and
+   offhands. IDs represent base items, not an inventory instance's generated ID.
+   [`EquipmentVisuals`](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/src/art/EquipmentVisuals.js) routes authored actors to
+   [`FittedEquipment`](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/src/art/FittedEquipment.js). The older procedural Fighter
+   equipment adapter is retained for fallback and compatibility checks.
+3. **Bind armor to the actor's skeleton.** Match each imported skin joint by bone
+   name to that actor's bones, retain the item's supplied inverse bind matrices
+   and bind matrix, and add the skinned mesh beside the character meshes under
+   their common scene root. Discard the item's duplicate rig. Do not socket-parent
+   skinned armor or reuse the Fighter's inverse bind matrices for another class.
+   [`viewer.js`](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/output/models/equipment-production/viewer.js) implements this in
+   `loadEquipment`.
+4. **Apply coverage and layering.** Follow `manifest.coverage` and `layeringRules`,
+   using the viewer's `updateCoverage` as the reference. Headwear hides hair/scalp;
+   armor hides covered skin and the appropriate underclothes; robes suppress the
+   nested Silk Skirt. Compute masks separately for each body LOD. Mirror second
+   ring/trinket slots using the documented vertex, winding and joint remapping.
+5. **Attach weapons at the calibrated grip.** Parent the rigid GLB scene to
+   `socket_mainHand` or `socket_offHand`, then decompose that class/slot's
+   `grip-transforms.json` column-major `localMatrix` into local position, rotation
+   and scale. The matrix already includes fit scale. Preserve it while the hand
+   animation carries the weapon; do not add a second procedural weapon offset.
+6. **Select the weapon's motion bank.** Load `motions/{Class}.glb` once per class
+   and play its clips on the existing actor hierarchy. Resolve
+   `${profile}_${state}` for Idle, CombatIdle, Walk, Run, Attack and Block; fall
+   back to the supplied default class clips for other states. Use Sword for Iron
+   Sword, Dagger for Steel Dagger, Staff for Wooden Staff, Mace for Cleric Mace,
+   and Unarmed for an empty main hand. The viewer's `resolvedClip` also demonstrates
+   the supported left arm for dagger plus offhand; `setMotion` uses 180 ms fades.
+   Preserve attack contact at **14/30 seconds**, mapped to the existing gameplay
+   impact timing in [`Actor`](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/src/entities/Actor.js). Preserve class ability clip
+   routing and moving-cast leg masks when updating the authored class adapters.
+7. **Version, render and validate.** Add content-hash cache versions in
+   [`assetManifest.js`](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/src/assets/assetManifest.js), keep model loading lazy and
+   pool-safe, and support the supplied WebP textures and emissive-strength material
+   extension. Legendary halos require bloom. Exercise preview and gameplay,
+   equipment swaps during motion, mixed outfits, High/Low quality, independent
+   actors, moving casts and disposal. Adjust the explicit migration guard allowlist
+   when adding runtime routes; do not remove the guard. Equipment currently has
+   one authored LOD and no simulated cloth, so profile draw calls and memory before
+   expanding it to crowds or phones.
+
+Useful checks from the repository root:
+
+```bash
+node output/models/equipment-production/validate_equipment.mjs
+npm test -- --runInBand --roots tests --runTestsByPath tests/AuthoredFighter.test.js tests/ProceduralArtMigrationGuard.test.js tests/AssetVersioning.test.js
+npx playwright test tests/e2e/authored-fighter-pilot.spec.js
+```
+
+All four class adapters and the fitted equipment route are integrated. These
+instructions describe their current contract, not unfinished class enablement.
+Delivering new files alone does not validate their rig, equipment fit, animation,
+cache version or gameplay behavior; retain the fallback until that revision passes
+the applicable checks.
+
+### Authoring and validating content
+
+Use the Node 24 version declared in `package.json`. `npm ci` prepares ignored
+vendor runtimes; it does not regenerate tracked content. Run
+`npm run check:content` to compare committed outputs to their canonical inputs
+without repairing them. Missing/stale output or a delivered model hash mismatch
+fails locally and in CI. Generate deliberately, review the diff, and commit both
+the source and its outputs before checking again.
+
+Run these generators from the repository root (append `--check` for verification):
+
+| Canonical input | Explicit generation command |
+| --- | --- |
+| `server/internal/game/content/world-geography.json` and `world-locations.json` | `node scripts/generate-world-geography.mjs`; `node scripts/generate-world-locations.mjs` |
+| `world-elevation-recipe.json`, shared geography and location placements | `node scripts/generate-world-elevation.mjs` |
+| `docs/plans/2026-09-07-investigation-story-content.md` and `src/data/chronicleInvestigationSites.json` | `node scripts/generate-chronicle-investigations.mjs` |
+| Server `content/chronicle-hunts.json` and existing story anchors | `node scripts/generate-chronicle-hunts.mjs` |
+| Server `content/dark-realm-chronicle.json` | `node scripts/generate-dark-realm-chronicle.mjs` |
+| `src/data/earthOutcrops.js`, shared collision code, procedural location/foliage footprints and world readings | `node scripts/generate-earth-outcrops.mjs`; `node scripts/generate-world-population.mjs` |
+| Server `content/cosmetics.json` and `season-cosmetics.json` | `npm run generate:cosmetics` |
+| `assets/equipment/authored/` manifests, grips, motions and class runtime manifests/model bytes | `npm run generate:equipment` |
+| Actor, ability and attached-status visual manifests | `npm run docs:animations` |
+| Current geometry algorithms and supplied initial/four-class14-slot appearances | `npm run generate:gameplay-geometry` |
+
+The gameplay geometry generator uses local system Chrome (`EIDOLON_CHROME` can
+select another executable) and an isolated local fixture. It records exact index
+outputs without changing supplied vertex data. Its committed artifact is bound
+to the current algorithms and generator; `--check` validates it without launching
+a browser or rewriting files. Unknown or changed appearances and unavailable
+precomputed data use the existing bounded worker algorithms.
+
+Keep quest/site/class/base-item IDs, slot keys and authoritative enemy identifiers
+stable. Player-facing titles, acceptance/completion dialogue, summaries and lore
+belong in their structured text fields, not in save identities or translated
+enemy keys. This separation supports future localization; it is not a claim that
+translated UI or locale switching is implemented. Investigation authoring checks
+include placement/order; hunts check existing story anchors; Dark Realm chapters
+check objectives/discoveries. Deliberate additions must update affected count,
+budget, icon, visual and gameplay tests rather than weakening those checks.
+
+Cosmetic generation validates both EP-shop and earned-season offers before
+writing or checking. IDs and names must be unique across both catalogues, bases
+must resolve to equippable items, colors must be RGB integers, EP prices must be
+positive safe integers, and earned medals must be valid and unique. Closed offer
+fields reject gameplay stats and prevent priced earned rewards. Update that
+contract deliberately if introducing a new kind of cosmetic; this authoring gate
+does not replace server-owned eligibility, entitlement or payment enforcement.
+
+After changing items, check `ProceduralIcons` and the authored asset/slot tests;
+after changing story content, check the relevant Chronicle suite and authoritative
+quest rules. A generic icon or a manifest entry is not proof of an intentional
+visual or a playable quest. Equipment hash agreement does not prove deformation
+or animation fit. The generated animation inventory describes required coverage,
+not successful browser or live acceptance. Reuse compatible evidence and rerun
+changed dependencies or missing checks, not every long campaign for a text edit.
+
+Recurring public-event sites/scheduling remain authoritative in
+`server/internal/game/public_events.go`; season rules remain server-owned.
+Change those rules and their client descriptions together with focused boundary,
+reward and replay checks. Do not introduce test clock overrides, alter gates or
+reward economics implicitly, or assume updating cosmetic JSON changes a season.
+Generating candidate terrain/collision data likewise does not enable it in play.
+
+Asset deliveries must retain source, license and applicable notice files. Current
+class provenance is beside each model under `assets/archetypes/`; Ilyra's outfit
+is described in [its delivery notes](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/assets/npcs/ilyra/README.md), and Cinzel's
+source/license in `assets/fonts/SOURCE.txt` and `OFL.txt`. Installation copies the
+locked Three.js and protobuf runtime licenses into their vendor directories.
+These local declarations are not a complete legacy-asset/dependency rights audit
+or a license grant for original project work; do not invent a project-wide license.
+
+## Testing/Building
+
+Client validation from the repo root:
+
+```bash
+npm ci
+npm run check:content
+npm test
+npm run lint
+npm audit --audit-level=low
+npm run test:e2e:anonymous
+```
+
+Optional smoke subset:
+
+```bash
+npm run test:smoke
+```
+
+Full isolated character and animation QA (Docker and hardware-accelerated system Chrome required):
+
+```bash
+sg render -c 'npm run verify:browser-gpu'
+sg render -c 'npm run test:e2e:animations'
+sg render -c 'EIDOLON_ISOLATED_QA_ROUTE=movement npm run test:e2e:isolated'
+sg render -c 'npm run test:e2e:isolated'
+```
+
+The deterministic gallery renders every canonical base/rune presentation and every actor inventory entry at High and Low quality through production rendering code. The movement route uses real mouse input and frame-samples exact, sub-arrival, nearby, sustained, camera-follow, acknowledgement, and correction behavior. The isolated route builds a per-run temporary server image, creates uniquely suffixed Mongo/API containers, a private network, and disposable allowlisted characters. It executes the general character and movement routes, all four class locomotion/death and ability/rune matrices, and the two-browser remote-animation/movement matrix through visible input, then removes only the resources it created. It refuses resource collisions or an occupied port; override the default port with `EIDOLON_ISOLATED_QA_PORT`.
+
+Playwright's local static server uses port `4173` by default. Set `EIDOLON_E2E_WEB_PORT` when that port is already reserved by another service; the predeploy character gate uses dedicated port `41873`.
+
+Local isolated QA defaults to API port `18185`; CI explicitly reserves `18085`.
+Linux defaults to the existing host-network mode, with authenticated disposable
+Mongo on the adjacent port and both services bound to loopback. This avoids local
+Docker bridge/veth creation and deletion while another Chrome check is running.
+Other hosts retain bridge mode; `EIDOLON_ISOLATED_QA_NETWORK_MODE=bridge` explicitly
+selects it. Port-collision checks and exact-resource cleanup remain in place.
+Older queued releases still use API port `18085`, so keep local checks on `18185`.
+
+Fresh-progression measurements are separate from prepared-character functional QA:
+
+```bash
+sg render -c 'EIDOLON_ISOLATED_QA_ROUTE=fresh-opening EIDOLON_E2E_CLASS=Fighter npm run test:e2e:isolated'
+sg render -c 'EIDOLON_ISOLATED_QA_ROUTE=fresh-collection EIDOLON_E2E_CLASS=Wizard npm run test:e2e:isolated'
+sg render -c 'EIDOLON_ISOLATED_QA_ROUTE=fresh-hunt EIDOLON_E2E_CLASS=Wizard npm run test:e2e:isolated'
+sg render -c 'EIDOLON_ISOLATED_QA_ROUTE=fresh-ready EIDOLON_E2E_CLASS=Wizard npm run test:e2e:isolated'
+sg render -c 'EIDOLON_ISOLATED_QA_ROUTE=fresh-dungeon EIDOLON_E2E_CLASS=Wizard npm run test:e2e:isolated'
+```
+
+These optional routes create disposable level-one characters and earn progress
+through ordinary input, without level/item/quest/travel grants. Each extends the
+preceding route: opening Chronicle, natural collection, Skeleton contract, then
+Wizard equipment/point preparation and the Imp contract. `fresh-ready` currently
+supports Wizard preparation only and checks saved readiness for Verdant, not a
+dungeon clear. `fresh-dungeon` continues that same earned character through the
+town guide into Normal level-30 Verdant, requiring all rooms/bosses, recall,
+completed-run re-entry, manual story reward and saved Earth-raid access. It does
+not use the prepared dungeon route's level grant or protected entrance waypoint.
+The whole earned route retains its one-hour ceiling, damage-stall/death checks
+and browser-error assertions; a clean readiness checkpoint is recorded separately
+before dungeon entry. These routes use read-only world positions to assist navigation; passing
+does not prove human discovery, enjoyable pacing or physical-phone usability.
+Run only one local Eidolon Playwright route at a time. Recorded outcomes and
+limitations are in [fresh progression evidence](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/fresh-progression-evidence.md).
+
+Legacy equipment recovery has its own disposable-save regression route:
+
+```bash
+sg render -c 'EIDOLON_ISOLATED_QA_ROUTE=equipment-recovery npm run test:e2e:isolated'
+```
+
+This route registers a new empty account in the run-owned local Mongo instance,
+then seeds an old-style unsupported gem slot before its first world entry. It
+checks full-bag rejection, exact stack conservation, ordinary equip/recovery UI,
+saved database state and fresh-login persistence. It cannot target production
+and is not earned-progression or balance evidence. The full isolated suite also
+includes it under a separate disposable account. See the
+[equipment recovery record](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-09-06-equipment-recovery.md).
+
+Talent cast-cost/cooldown QA is available with
+`EIDOLON_ISOLATED_QA_ROUTE=talent-economy npm run test:e2e:isolated` (under the
+same system Chrome/render-group setup). It prepares a disposable level-100
+Wizard, buys ranks through the phone interface, checks server-confirmed spell
+cost/cooldown changes and repeats after fresh login in landscape. This functional
+route is included in full isolated QA; it does not measure earned progression.
+
+The `talent-healing` isolated route uses a prepared level-100 Cleric and the
+existing allowlisted low-health fixture, then selects the healer branch and buys
+five Healing Light Mastery ranks through the phone UI. It checks real mana use,
+exact heal events and visible floating numbers before/after purchase and after
+fresh login in landscape. This is functional spell verification, not earned
+progression. It is included in full isolated QA.
+
+The optional isolated route `EIDOLON_ISOLATED_QA_ROUTE=talent-duration` prepares a
+disposable Wizard at level 100, then uses phone touch controls to select a branch,
+buy Arcane Stability ranks and cast Arcane Shield. It checks server-reported
+20 → 25 second durations, survival past the old deadline, actual expiry and
+saved ranks after login/rotation. The phone Effects panel must show matching
+countdowns and expiry while still permitting normal Skill casts and chat access.
+It is a functional fixture, not earned progression. Anonymous smoke also covers
+crowded effect lists, native touch scrolling and unobstructed controls at four
+phone viewports; physical-device playability remains a separate gate.
+
+For the earned Wizard comparison, set `EIDOLON_E2E_FRESH_EARLY_PREPARATION=1`
+with isolated `fresh-hunt`, `fresh-ready` or `fresh-dungeon`. After the normal
+collection quest it equips eligible earned drops, spends up to five Intelligence
+points and available Fireball Mastery ranks, and selects the earned utility
+branch through ordinary menus. Later preparation fills remaining empty equipment
+slots and tops Mastery up to five without spending another five stat points.
+Defensive hunt inputs only use actually unlocked skills. The default unequipped
+Skeleton baseline remains unchanged; neither path grants progress or changes
+the existing two-respawn bound. This comparison is not human-discovery evidence.
+
+`npm run audit:talent-consumers` runs separate historical paired-cast probes for
+talent consumers. The October 20 freeze review passes this audit on the accepted
+1.79.86 runtime with Go 1.27.2, superseding the former known-failure warning.
+It uses a temporary Go build overlay and changes no server source or saved
+characters. This is scoped cast/consumer evidence, not full class feel or balance
+approval. Original failures and their repairs remain in the
+[consumer audit](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-09-06-talent-consumer-audit.md).
+
+The isolated `forge-guide` route seeds a new disposable local account before its
+first login, then checks real Forge purchases, immediate selected-item/material
+refresh, saved equipment and family-specific guide choices. It is included in
+full predeploy QA and cannot seed a production account. Run it with
+`EIDOLON_ISOLATED_QA_ROUTE=forge-guide npm run test:e2e:isolated` under the renderer
+group; its prepared gear/materials do not prove earned progression.
+
+The isolated `phone-inventory` route also checks ordinary town-stash interaction,
+explicit Store/Withdraw, and fresh-login persistence of the complete serialized
+item in portrait and landscape. It prepares a disposable level-30 functional
+fixture; this is not earned-progression or physical-phone evidence.
+
+The generated canonical inventory is [docs/ANIMATION_COVERAGE.md](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/ANIMATION_COVERAGE.md). Edit its source manifests and regenerate it; do not hand-edit its tables.
+
+Server validation from `server/`:
+
+```bash
+go test -race ./...
+go build -trimpath ./...
+```
+
+Notes:
+
+- `npm ci` runs `prepare:client`, which copies locked Three.js and protobuf runtimes into ignored `vendor/` and builds the local gameplay geometry worker. Publication gives that worker an immutable content hash. Production no longer depends on a runtime CDN.
+- The browser client remains static ES modules; there is no application bundle.
+- Local end-to-end runs can point the test-only static server at an isolated backend with `EIDOLON_E2E_WS_URL=ws://127.0.0.1:<port>/ws`; production HTML is never rewritten.
+- Credentialed browser QA uses `EIDOLON_E2E_USERNAME` and `EIDOLON_E2E_PASSWORD`. Set `EIDOLON_E2E_FULL_GAMEPLAY=1` only for a dedicated QA character that may level, fight, loot, and enter a dungeon. Optional `_SECONDARY` variables enable the two-browser route.
+- Credentialed Playwright traces, screenshots, and video are disabled so account identifiers and form inputs cannot enter artifacts. Playwright's automatic input-valued failure snapshot is also disabled for credentialed routes, and CI redacts then scans supplied credential values before upload. The anonymous route retains screenshots, traces, and video on failure.
+
+### Release verification
+
+- Client identity: `https://play.eidolonrealms.com/release.json`
+- Server readiness and identity: `https://server.eidolonrealms.com/healthz`
+- Both endpoints report the deployed Git commit. The deployment workflow polls until they match the pushed SHA, then runs the live Playwright suite.
+- Procedural cutover scope and closure gates: [docs/art/FINAL_PROCEDURAL_CUTOVER_AUDIT.md](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/art/FINAL_PROCEDURAL_CUTOVER_AUDIT.md)
+- Complete migration ledger: [docs/art/PROCEDURAL_MIGRATION_INVENTORY.md](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/art/PROCEDURAL_MIGRATION_INVENTORY.md)
+- Administration defaults to real players. Reserved automation prefixes and the exact `EIDOLON_TEST_USERNAMES` roster are excluded from online players, activity history, and daily login/session totals; choose Test accounts only or All players to inspect them. This classification grants no privileges and deletes no data. CI sets the explicit roster to its primary, secondary, and four class automation accounts.
+- `/level`, `/qa-waypoint <combat|encounter|verdant>`, `/qa-hazard <earth|water|fire|air|town>`, `/qa-loot-next`, `/qa-disconnect`, `/qa-animation-ready [low-health|persistent|near-death]`, and `/qa-protection off` are release-QA commands. They are disabled unless the authenticated username appears in the server's `EIDOLON_QA_USERNAMES` allowlist. The encounter waypoint chooses the live overworld enemy nearest the fixed combat anchor and places only the QA character eight metres toward that anchor; it neither spawns nor mutates the enemy and accepts no coordinates. The hazard pilgrimage accepts only four fixed canonical hazard centers plus Lanternhold, preserves hostile protection, and permits normal environmental damage for 45 seconds. Animation readiness restores bounded resources/cooldowns; `low-health` permits the Last Stand input path, `persistent` extends only the next Spirit Guardians activation/boost long enough to prove late-join reconstruction, and `near-death` clears prior ability protections before a real hostile death/respawn check. Protection can only be turned off after a bounded QA waypoint so death/respawn remains real server-authoritative gameplay.
+
+- Administrator access is a durable account role, separate from QA commands and character level. An exact username in `EIDOLON_ADMIN_BOOTSTRAP_USERNAMES` can type `/relevel` to persist the role without changing progression. The in-game Administration panel and confirmed, audited operations are described in [the administrator guide](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/ADMINISTRATION.md).
+
+## Project Status
+
+Current source version: `Alpha 1.80.2`.
+Current verified live release: `Alpha 1.80.2`, source
+`b3889294cb3c0db234f54f854e6d7151865692b8`. Original [CI 39497820995](https://github.com/aeml/eidolon/actions/runs/39497820995) passes all ten jobs,
+both deployments/live QA and exact public verification. [Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-20-release1-80-2-acceptance.md).
+Movement stays on playable land, stranded saves recover inside the fences,
+and the ocean has animated reflective water and shoreline foam.
+
+F1–F5 feature freeze is accepted. The [freeze review](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-20-feature-freeze-review.md)
+reconciles all 85 promises and 69 pre-freeze milestones, records the confirmed
+operating baseline and retains thirteen mandatory workgroups before beta/release.
+All 523 prior raw notes remain in the 524-entry history. Models, wallets,
+saved progress and dependencies are preserved; movement now stays on playable land. Open registration
+and flat-v1 terrain stay; beta has not opened and soak/stress remains deferred.
+The next scheduled milestone is 1.81 recovery readiness. Final art/performance,
+human campaign/listening, physical devices, operations/rights and beta/launch
+acceptance remain open.
+
+The accepted Alpha 1.79.80 Meshy Fighter pilot remains opt-in through `?fighterModel=meshy`.
+The supplied four-class presentation stays the default. Pilot shoulder deformation
+and grips remain under review; neither pilot nor current previews certify final art.
+
+The preceding 1.79.79 content includes specialization guidance, saved quest equipment
+choices, distinct room-purpose masonry and ruined
+ambush piers across the five dungeon themes. Treasure vaults, shrine chapels,
+broken ambush galleries, sentry courts and parallel passage aisles replace five
+uses of the same court plan. Entry, approach and arena floor attributes remain
+exact. Six plain ambush spikes become shared, bevelled stone courses with broken
+crowns, inside their former transformed bounds. Existing materials, batching,
+central encounter space, collisions, interactions and progression remain.
+79distinct focused checks/three suites qualify the component. Final-source native
+High/Low comparisons retain80exact source restorations,70unchanged room views,
+10changed ambush views, original scene caps and ten exact resource returns;
+two copied-build cases retain all five generated dungeon themes in both qualities.
+Exact client/model trees permit scoped evidence reuse in the combined assembly.
+The floor plans add232,320cached CPU bytes per fully populated kit; the pier
+adds10,096cached CPU bytes and624baked triangles per ambush room. Native views
+remove two High/one Low submissions, with the additional High shadow triangles
+recorded. The masonry component adds no texture, material, module or permanent browser case.
+Original geometry/observer failures and superseded accounting remain retained.
+[Component](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/art/2026-10-17-dungeon-masonry-and-ambush-piers.md).
+[Assembly](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-room-masonry-assembly.md).
+This is a bounded masonry improvement; sparse room architecture/dressing and
+final modern art remain open. Alpha1.79.78 is accepted after its own exact
+CI/deployment/public verification. The native wardrobe fixture now waits for exact intended real gear on both
+clients when a full outfit hides an equipment change. One focused Fighter case
+passes all nine phases with zero retries; game runtime and cosmetic rules remain
+unchanged. Both earlier failed CI attempts stay frozen, with deployments skipped.
+[Wardrobe correction](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-18-release1-79-79-wardrobe-readiness-correction.md).
+The dedicated loot fixture now prepares ordinary bag capacity after its ability
+encounter and before its guaranteed loot kill. A controlled native comparison
+reproduces the old full-bag refusal, then verifies the corrected real pickup,
+original gear, owned stash item, equipment, EP and saved fresh login with zero
+retries. Game inventory rules and all original pickup assertions stay unchanged.
+D2's completed CI and both deployments remain recorded, but its configured live
+retry kept it unaccepted; the original failure stays frozen without a waiver.
+[Loot correction](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-18-release1-79-79-loot-readiness-correction.md).
+The fourth corrected source's client job exhausted a reused Jest worker's4GB
+heap after803suites/12,517tests passed; four combo-notification cases never ran.
+The test harness now retires workers between completed suites after768MB idle
+heap use. A controlled four-suite/two-worker probe proves actual process recycling;
+the original combo/engine-lifetime suites pass all11cases with coverage. Every
+original Jest field, assertion, coverage threshold and concurrency policy stays.
+Game runtime/assets/server, both fixture corrections, version and notes remain.
+This source needs a fresh full pipeline; the failed client result is not waived.
+[Worker lifetime](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-18-release1-79-79-jest-worker-lifetime.md).
+The fifth source005/CI39092994270 passes804client suites/12,521tests,
+server and hosted browser jobs, plus146native cases. One Fighter wardrobe case
+fails before engine startup after220module downloads report ERR_NETWORK_CHANGED;
+its other three class cases pass. One native case stays skipped. Deployment and
+live jobs are skipped; the failure is retained and no unchanged-source rerun or
+acceptance waiver is used. The current candidate adds the owner's requested
+level-10 specialization notice and one-of-six quest equipment rewards.
+The reminder opens the correct Skills tab for new and returning unspecialized
+characters. Every second main-story chapter offers six different quest-level
+items:55% green,35% blue,10% orange per item. Exact offers survive turn-in saves and
+reconnects. Explicit claims journal the bag and receipt before feedback; full bags
+retain choices, and replay cannot award a second item. Daily/optional catch-up
+payouts and completed older receipts are retained.22 runtime paths qualify through
+58 client checks/seven suites,396 Go-race regressions, two software-browser
+presentation cases and one real API/Mongo/ordinary-login/reconnect/single-claim
+session. Three session setup negatives remain retained; the corrected session
+passes in 9.05s with no automatic retry. Schema 26 fences older writers without
+backfilling rewards. The actual schema-25 executable refuses the newer database
+without changing saved offers or bags;45 schema/quest race checks pass.
+The final unlock alignment enforces level 10 in both menus and on the server,
+keeps earlier previews and existing branches, and passes361 Go race checks,
+53 client checks/four suites and two stronger desktop/phone browser cases.
+Ordinary login requests reject a level-9 selection, accept it at level 10, and
+preserve the chosen branch alongside saved quest offers through reconnect.
+51 CI-policy checks/four suites and the
+469-case exact hosted partition pass. One UI module and two permanent browser
+cases are added. This is not native GPU, campaign pacing or physical-device
+acceptance. [Quest and specialization](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-18-specialization-unlock-and-quest-equipment-rewards.md).
+This prepared release still requires its own exact CI and live acceptance.
+Full original game/world/art/combat/audio/performance/device/security/operations/
+owner/F1-F5/beta/1.99 scope stays active. Human campaign/phone feedback and
+soak/stress remain deferred, not passed. Public access and earned progress stay.
+
+
+
+The first quest/specialization pipeline cd98 failed its legacy branch-selection
+fixture, which still expected a level-one character to select a branch. Client
+and all hosted browser checks passed; native and deployment jobs skipped.
+The corrected fixture preserves its original malformed-request and legacy
+receipt assertions, adds a level9 refusal, and selects at level10.34focused
+Go race checks pass, with five explicit opt-in skips. Runtime rules and all
+original failures remain retained; this correction needs its own complete CI
+and deployment acceptance.
+[Fixture correction](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-18-level10-legacy-branch-fixture.md).
+Alpha 1.79.78 is deployed and verified with verified standalone recovery points, selected
+SSH transfer and an updated promise register. Operators can explicitly capture
+Mongo, private journals and the original immutable server image between updates.
+Standalone capture verifies its own new point and restores the same originally
+running container; ordinary stopped or absent services stay stopped or absent.
+Paused, transitional, ambiguous and unknown states refuse before capture, and
+unsafe restoration states refuse. Deployments, backups and Mongo restores share
+the existing operation lock. Completion follows selected-file/directory flushes;
+failed capture/verification retains partial files without a success receipt.
+Transfer selects an explicit completed set, pins SSH trust and verifies private
+receiver files before its completion receipt, without replacing existing points.
+447distinct focused checks/six suites,62restore guard scenarios in the actual
+Go1.27.2 application package and one owned network-none Docker snapshot/archive
+rehearsal qualify the selected assembly. An additional current-schema Mongo-only
+restore rehearsal preserves exact wallet/guild/rested/saved-dungeon state and
+scoped database replacement; normal login and matching image/journal recovery
+remain separate requirements. Actual private nonroot loopback SSH
+proof is separately scoped to synthetic data. Original failures are retained.
+No production recovery, external private-data transfer, automatic scheduling,
+retention policy or recovery-time objective is inferred. Destination/access,
+acceptable lost progress, restore time and retention remain owner decisions.
+The promise register adds garments, quest/Lore/window quality, centered garment
+slots and road layers while preserving all71prior rows; scoped delivery does
+not close final art, supported-device, feature-freeze or beta gates.
+[Assembly](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-recovery-tooling-assembly.md).
+[Standalone recovery](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-standalone-recovery-qualification.md).
+[Selected transfer](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-backup-transfer-qualification.md).
+Alpha 1.79.77 is accepted after its exact CI/deployment/public verification.
+All ten CI jobs pass. Fresh normal-TLS verification matches both78 identities, ready database, open registration, flat terrain and all393 asset pins at 2026-10-17T22:57:43.766027+00:00.
+[Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-release1-79-78-acceptance.md).
+Full original game/
+world/art/combat/audio/performance/device/security/operations/owner/F1-F5/beta/
+1.99 scope stays active. Human campaign/phone feedback and soak/stress remain
+deferred, not passed. Public access and earned progression are unchanged.
+
+Alpha 1.79.77 is deployed and verified with direct quest map guidance, steadier Lore Book
+reading, saved tracking verification and consistent dungeon entry finishes.
+Show quest on map temporarily focuses personally available work from the journal
+or Lore Book, including accepted optional tasks and Dark Realm turn-ins. Return
+to map restores prior search/filters/view without changing pins, waypoints,
+progress or rewards. Detail reading focus follows remaining work and manual
+turn-in; future unaccepted chapters remain hidden. The Player Guide explains it.
+All five dungeon entry arches share existing stone/iron maps and physical texture
+density, preserving non-UV geometry, bounds, shadows, collision, veil animation
+and retained GPU resources. No lighting/skeleton/shader experiment is selected.
+222distinct focused checks/eleven suites and thirteen distinct component browser
+cases qualify the corrected selection: two native entry cases with20RGBA source restorations,
+eight current-source DOM/Canvas2D desktop/touch cases, and one actual disposable
+manual quest acceptance/tracking/fresh-login case plus two native copied-floor
+cases covering all5themes inHigh/Low. Exact unchanged entry proof is
+reused; no whole combined native replay, physical-phone or frame-time pass is inferred.
+Original failures and observer/fixture corrections remain frozen. Full world/art/
+game/combat/audio/performance/device/security/operations/owner/F1-F5/beta/1.99 scope
+remains active. Sparse/repeating rooms, moving world/combat quality, original
+performance limits and final owner review remain open. Human campaign/phone
+feedback and soak/stress are deferred, not passed.
+[Assembly](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-quest-map-and-entry-assembly.md).
+[CI correction](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-release1-79-77-ci-correction.md).
+[Quest guidance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-direct-quest-map-guidance.md).
+All ten CI jobs pass. Fresh normal-TLS verification matches both77 identities, ready database, open registration, flat terrain and all393 asset pins at 2026-10-17T21:34:48.249899+00:00.
+[Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-release1-79-77-acceptance.md).
+Public access, progression and supplied actor/equipment assets are unchanged.
+
+Alpha 1.79.76 is deployed and verified with character geometry preparation cleanup.
+The delivery schedules queued work only, cancels an empty queued pump and
+clears its handle on disposal. Active-worker deadlines, source and generation
+guards remain covered by the existing tests.
+Four new regressions fail against the original delivery; all89focused checks
+across3suites and changed-file lint pass. Actual native four-class fourteen-slot
+proof passes four settled equipment-release cycles and four synchronous queued
+cancellations, with zero roots/jobs/queue/active/scheduled work and no extra
+dispatch after cancellation. Every return preserves the retained128geometry/
+90texture pool. The renderer stays High while body/equipment assets alternate
+High/Low; this is resource ownership proof, not frame-time or device acceptance.
+The exact accepted75 delivery reproduces the scheduled-callback finding in
+all eight observations. Its failure and a zero-test discovery error are retained.
+[Qualification](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-geometry-preparation-quiescence.md).
+All ten CI jobs pass. Fresh normal-TLS verification matches both76 identities, ready database, open registration, flat terrain and all389 asset pins at 2026-10-17T19:34:17.755523+00:00.
+[Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-release1-79-76-acceptance.md).
+Full world/art/game/combat/audio/device/performance/operations/owner/F1-F5/beta/
+1.99 scope remains active. Human campaign/phone feedback and soak/stress are deferred.
+Public access, progression and supplied actor/equipment assets are unchanged.
+
+Alpha 1.79.75 is deployed and verified with clearer danger-warning audio and actor color
+batch recovery after hidden equipment preparation or stealth restoration.
+Accepted generated warnings briefly soften ordinary combat and ambience using
+audio-clock gain envelopes, retaining player volumes and directional cues.
+Hidden actors defer color-group discovery; existing appearance notifications
+restore eligible groups after stealth. Source, rig, material and lifetime guards
+remain. No skeleton-reuse experiment is selected.
+Three selected native production/lifetime cases retain132exact High/Low pose comparisons and
+four exact equipment-release cycles. The legacy High fitted-source comparison
+still fails identically in accepted74/current controls and remains open.
+Focused and software audio evidence checks
+the warning envelope; human listening and busy-party performance remain open.
+[Assembly](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-warning-audio-and-actor-batching-assembly.md).
+[Warning mix](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-danger-audio-mix.md).
+[Hidden actors](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-hidden-actor-color-batches.md).
+All ten CI jobs pass. Fresh normal-TLS verification matches both75 identities, ready database, open registration, flat terrain and all388 asset pins at 2026-10-17T17:33:01.217826+00:00.
+[Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-release1-79-75-acceptance.md).
+Full world/art/game/combat/audio/device/performance/operations/owner/F1-F5/beta/
+1.99 scope remains active. Human campaign/phone feedback and soak/stress are deferred.
+Public access, progression and supplied actor/equipment assets are unchanged.
+
+Alpha 1.79.74 is deployed and verified with earned People/Places browsing and woodland leaf
+surface refinement. Lore indexes quote personal completed chapters, recorded
+discoveries and restoration accounts; unread sites, counts alone and future text
+do not unlock entries. Read/Return preserves the reader's search, selection and
+scroll; acknowledged updates preserve focused actions and personally learned
+names. Existing All memories, current tasks, manual handoffs and rewards remain.
+Witness topics retain focus, open answers and reading position as personal
+evidence changes. Removed topics recover focus within the conversation; outside
+focus stays put, and questions gain roomier touch targets.
+Grounded bracken/sedge use coherent leaf detail with unchanged plant positions,
+geometry counts, wind and canopy treatment. Ordinary native views and moving
+outfits retain their original limits; source/candidate close views still exceed
+their original budgets. No rejected renderer shortcut is included.
+[Assembly](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-lore-and-leaf-assembly.md).
+[Lore qualification](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-lore-people-and-places.md).
+[Leaf component review](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-understory-surface-component-review.md).
+[Witness reading](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-witness-reading-continuity.md).
+[Retained native findings](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-close-camera-native-attribution.md).
+All ten CI jobs pass. Fresh normal-TLS verification matches both74 identities, ready database, open registration, flat terrain and all385 asset pins at 2026-10-17T15:58:23.905124+00:00.
+[Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-release1-79-74-acceptance.md).
+Broader world/art/game/audio/device/performance/operations/owner/F1-F5/beta/1.99
+scope stays active. Human campaign/phone feedback and soak/stress remain deferred.
+Public access, earned progression and supplied actor/equipment assets are unchanged.
+
+Alpha 1.79.73 is deployed and verified with a coherent town/story-surface, Low housing
+and Player Guide milestone. Lanternhold's central court gains quieter mixed-width
+flagstones while retaining its material/map family, geometry, lighting and
+shadows. Water, Fire and Air story-site paving, house floors and reflective pool
+fills sit below ordinary markers; walls, interactions and magical ripples remain
+in place. All54 elemental story sites have required High/Low native marker
+coverage. Low residential clipping also works without native multi-draw, retaining
+all15homes and exact visible output. Five prepared native Low town views meet
+the original scene limits; cold-wide and close-camera/global performance findings
+remain open. Five Player Guide paragraphs explain garments, Journal/Lore Book
+tasks and device-local window positions. The assembly reuses exact qualified
+runtime and HTML bytes; unselected leaf-surface experiments are excluded.
+[Assembly qualification](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-world-quality-assembly-qualification.md).
+[Court qualification](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-town-court-material-qualification.md).
+[Elemental markers](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-elemental-story-grounding-qualification.md).
+[Low fallback](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-low-residential-fallback-findings.md).
+[Guide checks](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-player-guide-new-features.json).
+[Close-camera finding](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-close-camera-rendering-finding.md).
+All ten corrected-source CI jobs pass. Fresh normal-TLS verification matches both73 identities, ready database, open registration, flat terrain and all380 asset pins at 2026-10-17T14:34:51.974410+00:00.
+[Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-release1-79-73-acceptance.md).
+Broader world/art/game/audio/device/performance/operations/owner/F1-F5/beta/1.99
+scope stays active. Human campaign/phone feedback and soak/stress remain deferred.
+Public access, earned progression and supplied actor/equipment assets are unchanged.
+
+Alpha 1.79.72 is deployed and verified with a coherent Dark Realm record-building and
+flagstone material pass. Fourteen existing shelter/archive/kiln sites gain bonded
+stone within their original wall envelopes. Documents, shelves, ferry supplies,
+seating, bedding and the unfinished celebration reinforce the existing accounts.
+Shallow paving preserves ordinary party markers; seventeen other record bases
+also sit below that marker plane. All38 Dark Realm records have required native
+marker coverage. Mixed-width neutral flagstones quiet the surrounding floor.
+Its material factory/map family, geometry, lighting and shadows remain unchanged
+relative to the qualified house-only candidate: all28 static native observations
+retain those prior draw/triangle totals. The new house stonework itself adds
+geometry within the original scene limits. Equipped High/Low HUD approaches and
+ownership/clearance checks qualify this scope. These are controlled presentation
+fixtures, not frame-time, physical-device or earned-progression acceptance.
+Modal exits synchronously release their own focused control, repairing the
+retained71 keyboard-remapping flaky finding. Native controls remain protected
+while open;54 focused checks and both unchanged keyboard browser cases pass.
+[Record qualification](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-dark-record-architecture-qualification.md).
+[Material qualification](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-dark-paving-material-qualification.md).
+[Marker qualification](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-dark-record-marker-qualification.md).
+[Focus qualification](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-modal-keyboard-focus-qualification.md).
+All ten CI jobs pass. Fresh normal-TLS verification matches both72 identities, ready database, open registration, flat terrain and all380 asset pins at 2026-10-17T12:51:20.503638+00:00.
+[Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-release1-79-72-acceptance.md).
+Broader district/world composition, art/game/performance/readiness/owner/beta
+gates stay open. Human campaign/phone feedback and soak/stress remain deferred.
+Full original goal active; public access and progression rules are unchanged.
+
+Alpha 1.79.71 is deployed and verified with Dark Realm/dungeon grounding, floor-finish and
+material-depth corrections, plus 32 side streets completing approaches to all
+38 existing Dark Realm records on the shared street/map layout. District batches preserve the
+original ten road meshes. Instance floors match authoritative player height;
+paths, paving, entry thresholds and boss inlays preserve ordinary party/hostile
+markers. Crypt ground ownership restores on exit. Native High/Low comparisons
+and actual solo expedition/four-class dungeon routes qualify this scope. The
+prepared Rogue fixture now uses a class-legal secondary weapon; no gameplay
+class, collision, movement or reward rule changes. Bounded query-free static
+delivery observations persist independently of the browser reporter. Published
+garment source records preserve the supplied notices; final rights review remains
+open.
+All ten CI jobs pass. Fresh normal-TLS verification matches both71 identities, ready database, open registration, flat terrain and all378 asset pins at 2026-10-17T11:08:12.194414+00:00. Hosted browser results retain450 clean passes,13 skips and one keyboard-focus flaky case; its qualified repair is queued for72, not counted as a clean pass here.
+[Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-release1-79-71-acceptance.md).
+[Qualification](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-instance-grounding-qualification.md).
+Broader world/art/game/performance/readiness/owner/beta gates remain open. Human
+pacing, physical-phone feedback and soak/stress remain deferred. Full goal active.
+
+Alpha 1.79.70 at `668c34652` is deployed and verified within the arena/casino
+ground-marker scope. All ten jobs qualify after one documented live-job repeat: 791 client suites / 12,274 tests,
+451 hosted browser passes / 13 skips, 140 native passes / one skip and live checks.
+Normal-TLS 370 pins, both identities, ready database, open registration, flat
+terrain and analytics match at 2026-10-17T08:04:38.667797+00:00.
+[Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-release1-79-70-acceptance.md).
+Native High/Low fitted-arena views and public/VIP marker comparisons, plus actual
+four-class practice duels, qualify the scope. Broader art/game/performance/
+readiness/owner/beta gates remain open. Human pacing/physical-phone feedback and
+soak/stress remain deferred. Full original goal active.
+
+Alpha 1.79.69 at `b5cfd6d93` is deployed and verified within the casino
+material/indoor-atmosphere scope. All ten CI jobs pass: 790 client suites /
+12,265 tests, 451 hosted browser passes / 13 skips, 140 native passes / one skip and
+live/recovery/rested-party checks. Normal-TLS 369 pins, both identities, ready
+database, open registration, flat terrain and analytics match at 2026-10-17T06:27:37.443767+00:00.
+[Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-release1-79-69-acceptance.md).
+Native fitted-crowd views and actual connected casino entry/settlement/reconnect/
+guard/menu-recall checks pass within scope. High full-hall medians remain failed
+for both prior/candidate art; broader game/performance/final-art/readiness/owner/
+beta gates stay open. Human pacing/phone feedback and soak/stress remain deferred.
+Full original goal active.
+
+Alpha 1.79.68 at `89f60d0a8` is deployed and verified within the ten generated
+Fire/Air rigid-rig scope. All ten CI jobs pass: 790 client suites / 12,263 tests,
+451 hosted browser passes / 13 skips, 140 native passes / one skip and live/
+recovery/rested-party checks. Normal-TLS 368 pins, both identities, ready database,
+open registration, flat terrain and analytics match at 2026-10-17T03:39:26.185328+00:00.
+[Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-release1-79-68-acceptance.md).
+Current-rig Fire/Air walks and party/save checks pass within scope; moving draw
+peaks of 492/360 and Air's 33.2 ms party median retain original performance
+findings. Broader game/readiness/owner/beta gates remain open. Human pacing,
+physical-phone feedback and soak/stress remain deferred. Full original goal active.
+
+Alpha 1.79.67 at `8529f82d5` is deployed and verified within the western
+Lanternhold paving and ordinary-input Fire/Air approach scope. All ten CI jobs
+pass: 789 client suites / 12,080 tests, 451 hosted browser passes / 13 skips,
+100 native passes / one skip and live/recovery/rested-party checks. Normal-TLS
+366 pins, both identities, ready database, open registration, flat terrain and
+analytics match at 2026-10-17T00:02:22.342936+00:00.
+[Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-17-release1-79-67-acceptance.md).
+Moving draw peaks and original performance, broader art/game/readiness/owner/
+beta gates remain open. Human pacing/physical-phone feedback and soak/stress
+remain deferred. The full original goal remains active.
+
+Alpha 1.79.66 at `ac430ab8b` is deployed and verified within the road
+name/aura ordering, flat markers, High actor material ownership and QA lifecycle
+scope. All ten CI jobs pass: 789 client suites / 12,075 tests, 451 hosted
+browser passes / 13 skips, 98 native passes / one skip and first-attempt live,
+recovery and rested-party checks. Normal-TLS 366 pins, both identities, ready
+database, open registration, flat terrain and analytics match at 2026-10-16T21:00:17.637704+00:00.
+[Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-16-release1-79-66-acceptance.md).
+The initial workflow parsing failure is retained with its block-scalar correction
+and regression check. High shader churn correction is not whole-game FPS
+acceptance; Low/Medium retain borrowed materials after inconclusive Low cost data.
+Original performance, art/game/readiness/owner/beta gates remain open. Installed
+host TLS/logging needs an administrator. Human pacing, physical-phone feedback
+and soak/stress remain deferred. Full original goal active.
+
+Alpha 1.79.65 at `9b7419700` is deployed and verified within the Abyssal
+quay, grounded moorings, shell crowns and ordinary-input Water integration scope.
+All ten CI jobs pass: 787 client suites / 12,054 tests, 451 hosted browser
+passes / 13 skips, 92 native passes / one skip and first-attempt live/recovery/party
+checks. Normal-TLS 363 asset pins, both identities, ready database, open registration,
+flat terrain and analytics match at 2026-10-16T17:29:43.935838+00:00.
+[Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-16-release1-79-65-acceptance.md).
+The separate High-party 33.3/49.9 ms frame finding remains above retained 20/33.4 ms
+limits. Original performance, broader art/game/readiness and owner gates stay open.
+Installed-host TLS/logging activation needs an administrator. Human pacing,
+physical-phone feedback and soak/stress remain deferred. Full original goal active.
+
+Alpha 1.79.64 at `50983561a` is deployed and verified within the bonded
+Bastion footing, wardrobe return, phone form text and four-class saved-session
+scope. All ten CI jobs pass: 785 client suites / 12,046 tests,
+451 hosted browser passes / 13 skips, 92 native passes / one skip and first-attempt
+live/recovery/party checks. Fresh normal-TLS 362 asset pins, both identities,
+ready database, open registration and flat terrain match at 2026-10-16T15:39:02.254518+00:00.
+[Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-16-release1-79-64-acceptance.md).
+The town-batching regression remains rejected and isolated. Original performance
+findings and broader game/readiness gates remain open. Installed-host TLS/logging
+activation needs an administrator. Human pacing, physical-phone feedback and
+soak/stress remain deferred. The full goal remains active.
+
+Previous published release: `Alpha 1.79.63`, **deployed and verified within scoped acceptance**.
+Alpha 1.79.63 at `dc9e686b8` is deployed and verified within the actual native
+wardrobe and query-free Pages delivery-diagnostics scope. All ten CI jobs pass:
+785 client suites / 12,044 tests, 451 hosted browser passes / 13 skips, 89 native passes / one
+skip and first-attempt live/recovery/party passes. Fresh normal-TLS 362 asset pins,
+both identities, ready database, open registration and flat terrain match at 2026-10-16T12:18:22.987413+00:00.
+[Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-16-release1-79-63-acceptance.md).
+Installed-host TLS/logging activation remains pending an administrator; template
+publication does not change the live Nginx file. Earlier transport findings,
+original performance failures and full game/readiness gates remain open. Human
+pacing/physical-phone feedback and soak/stress remain deferred. Full goal active.
+
+Previously accepted version: `Alpha 1.79.62`, **deployed and verified within scoped acceptance**.
+Alpha 1.79.62 at `8a4a5ca88` is deployed and verified within the Bastion
+cap/root, phone garment text, saved-session wardrobe and secure-template scope.
+All ten CI jobs pass:785client suites/12044tests,451hosted browser passes/13skips,
+88native passes/one skip and first-attempt live/recovery/party passes. Fresh
+normal-TLS362asset pins, both identities, readyDB, open registration and flat
+terrain match at2026-10-16T10:26:30.161423+00:00. [Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-16-release1-79-62-acceptance.md).
+Installed host TLS activation remains pending an administrator; template
+publication does not change the live Nginx file. Earlier transport findings and
+the full original game/readiness gates remain open. Human pacing/physical-phone
+feedback and soak/stress remain deferred.
+
+Previously accepted version: `Alpha 1.79.61`, **deployed and verified within scoped acceptance**.
+Alpha 1.79.61 at `a60c8e916` is deployed and verified within the Bastion
+entrance and analytics startup scope. All ten CI jobs pass: 785 client suites /
+12,042 tests; 451 hosted browser passes / 13 skips; 88 native passes / one skip;
+and first-attempt live, recovery and party passes. Fresh normal-TLS checks match
+359 asset pins, both identities, a ready database, open registration and flat
+terrain at 2026-10-16T08:18:03.708942+00:00.
+[Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-16-release1-79-61-acceptance.md).
+Earlier transport failures and full original game/readiness gates remain open.
+Soak/stress and human pacing/physical-phone feedback remain deferred.
+
+
+Previously accepted version: `Alpha 1.79.60`, **deployed and verified within its scoped
+acceptance**, at runtime `800f3acef`: guild draft/calendar/menu continuity and
+inactive private-beta invitation preparation. All ten ordered CI jobs pass;
+783client suites/12025tests,448hosted browser passes/13skips and88native passes/
+one skip. Live retained one configured geometry-load retry. Normal-TLS356pins
+match after one targeted read reconciles an initial HTTP408; transport findings
+remain open. Alpha signup stays open. [Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-16-release1-79-60-acceptance.md).
+[Invitation guide](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/operations/beta-invitations.md). Full original quality/
+readiness gates remain open; soak/stress remains deferred.
+
+Historical documentation-push observation at `d1a04f16b`:
+its redeployment passed both deployments, but live recovery retained an HTTP408
+module-load failure. Fresh normal-TLS351asset/identity checks pass; that later
+workflow is not fully accepted. [Finding](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-16-receipt59-redeployment-finding.md).
+
+**Alpha 1.79.59 was fully accepted**, at runtime
+source `2c4cbb4c9`: centered garment slots beneath the character preview and
+clearer returning Lore Book task/finale context with preserved reading focus/
+scroll. All ten ordered CI jobs pass; normal-TLS reads match both identities,
+ready database and all351public asset pins. Original quality/readiness gates
+remain open; soak/stress remains deferred.
+[Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-16-release1-79-59-acceptance.md).
+[Qualification](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-16-character-garment-row-qualification.md).
+
+**Alpha 1.79.58 is deployed and verified**, at runtime source `4f5b2e57f`:
+all eight universal outfits, searchable/category-filtered Veyra collection,
+retained store scroll/focus and coordinated service-window polish. The requested
+minimum18distinct modeled looks is implemented. All ten ordered CI jobs pass;
+normal-TLS public reads match both identities, ready database and all350asset
+pins. Final owner collection/art review and broader quality/readiness gates remain open.
+[Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-16-release1-79-58-acceptance.md).
+[Qualification](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-16-universal-garment-qualification.json).
+
+**Alpha 1.79.55 is deployed and verified** at `1c936dfc6`: searchable earned
+Lore Book, direct quest tracking and clearer manual quest review. All ten CI jobs
+pass, including both deployments/live checks. Normal-TLS public reads match both
+identities, the ready database and all227 asset pins.
+[Acceptance](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-15-release1-79-55-acceptance.md).
+[Preparation](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-15-release1-79-55-preparation.json).
+
+The preceding54milestone is independently
+[accepted](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-15-release1-79-54-acceptance.md).
+
+**Alpha 1.79.53 is deployed and verified**, at runtime source `99eefb64d`.
+All ten CI jobs passed, including native graphics, both deployments and live
+character/recovery checks. Independent normal-TLS reads match both release
+identities, the ready database and all 213 pinned public assets. Earlier
+candidate failures and their corrections remain in the
+[acceptance record](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-15-release1-79-53-acceptance.md).
+The [current work register](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-09-release-readiness-remaining.md)
+retains the full outstanding scope and earlier failures.
+
+The class pass implements three optional runes for each of 52 learned skills
+(156 choices across twelve specializations). It repairs paid casts, delayed
+impacts, offline effects, support auras, saved builds and phone skill messages.
+The [class review](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-09-28-class-kit-rework.md#october-14-implementation-checkpoint)
+describes each branch and the limits of its implementation evidence.
+
+The game remains in open alpha. Feature freeze, closed beta and full release
+have not been declared. Outstanding work includes:
+
+- Cohesive world, terrain, actor/equipment, effects and audio presentation,
+  reviewed in moving gameplay with the equipped characters and HUD.
+- Full-outfit garments and distinct VIP weapon/offhand models, four class looks
+  and eight universal outfits; [new cosmetic scope](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-15-garment-catalog-and-full-outfits.md).
+- Improved quest tracking, acceptance/turn-in, a navigable lore book and polished
+  menus; [interface scope and first window fix](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-10-15-quest-lore-and-window-quality.md).
+- Representative gameplay performance within the original scene/frame budgets;
+  crowded-town and connected-frame failures remain open. Raised terrain is
+  still disabled in production.
+- Human class balance, solo/party roles, campaign pacing and finale feedback,
+  plus the owner-deferred physical-phone party/dungeon playtest.
+- Final cross-system integration, returning-save/recovery and security review,
+  supported device/population policy, rights/notices and operational ownership.
+- The original F1–F5, closed-beta and release/handoff gates, including the owner's
+  decisions about access, support, backup objectives and release approval.
+
+**Soak and stress tests are deferred until features are nearly complete**, at
+the owner's request for the shared host. Automatic soak scheduling is disabled;
+prior failures remain recorded and capacity is not certified. Focused tests,
+race checks and ordinary release verification continue.
+
+The [full roadmap](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md),
+[promise register](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-09-28-1-11-gap-register.md),
+[modern-art contract](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/art/2026-09-28-modern-arpg-closed-beta.md) and
+[world/atlas contract](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/plans/2026-09-28-world-population-and-atlas.md)
+retain the complete scope. Existing accounts, characters, progression and public
+access are preserved. Prior dated checkpoints remain in their linked receipts
+and [the preceding README](https://github.com/aeml/eidolon/blob/2f5b4ad71d4cbd5709a199d51bc4529b8d28228a/README.md#project-status);
+historical acceptance does not establish current whole-game readiness.
+
+Patch notes show the latest ten entries at startup. Older ten-entry pages load
+only through **Load more notes**. To add a release, insert its note at the top
+of the history in `index.html`, synchronize versions, and run
+`node scripts/paginate-patch-notes.mjs`. The script preserves the archive.
+The import map must appear before any module or module preload (including
+analytics); the private recovery-link scrub must still run before analytics.
+Login registers the cache worker without importing the 3D asset catalog.
+For local Firefox QA, use port4173 or4192, not its restricted port4190.
+
+## Media TODO
+
+Existing screenshots live under `docs/media/`:
+
+- `docs/media/gameplay-overworld.png`
+- `docs/media/dungeon-run.png`
+
+Still useful to add:
+
+- combat screenshot showing targeting, damage readability, and hotbar usage
+- dungeon screenshot showing objective guidance, party state, and reward summary UI
+- short gameplay GIF showing movement, combat, loot, and menu responsiveness
+
+## License
+
+Eidolon's software is licensed under [GNU AGPL v3 only](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/LICENSE)
+(`AGPL-3.0-only`). Project-authored game assets use the separate
+[Eidolon Asset Share-Alike License v1.0](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/ASSET-LICENSE), requiring editable
+source sharing for distributed or publicly hosted assets and adapted asset
+collections, including integrated new and replacement models and animations.
+See [NOTICE](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/NOTICE) for scope and attribution to Robert Mendola, the original
+developer and maintainer. Existing third-party licenses remain in force.
+
+Translation, modification, regional hosting, and commercial forks are permitted.
+AGPL requires corresponding source access for users of modified network versions;
+upstream submissions are welcome but optional. See [licensing and fork
+policy](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/LICENSING.md) for software, asset, and payment integration details.
+Official Eidolon accepts only cosmetic monetization; independent forks may
+choose differently under the licenses.
