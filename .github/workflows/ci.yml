@@ -218,7 +218,9 @@ jobs:
 
       - name: Run Go race detector
         working-directory: server
-        run: go test -race ./...
+        # The complete game package exceeds Go's default ten-minute aggregate
+        # budget under race instrumentation; individual test deadlines stay put.
+        run: go test -race -timeout=20m ./...
 
       - name: Verify disposable upgrade backup and restore
         working-directory: server
