@@ -11,7 +11,8 @@ test('documentation-only pushes skip publishing without filtering required PR ch
     expect(push).toContain('branches: [master, main]');
     expect(ci.match(/paths-ignore:/g)).toHaveLength(1);
     const otherTriggers = ci.split('\n  pull_request:\n')[1].split('\npermissions:')[0];
-    expect(otherTriggers).toContain('branches: [master, main]');
+    const pullRequest = otherTriggers.split('  workflow_dispatch:')[0];
+    expect(pullRequest).not.toMatch(/branches(?:-ignore)?:/);
     expect(otherTriggers).toContain('workflow_dispatch:');
     expect(otherTriggers).not.toMatch(/paths(?:-ignore)?:/);
 });
