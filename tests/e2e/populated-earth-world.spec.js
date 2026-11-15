@@ -6,12 +6,12 @@ import { collectBrowserFailures } from './helpers.js';
 // Bounded production-renderer scene review, not campaign or network coverage.
 for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, width] of [['high', 1280], ['low', 390]])
 for (const review of elemental === 'earth' ? ['presentation'] : ['presentation',
-    ...Array.from({ length: quality === 'high' ? (elemental === 'air' ? 3 : 4) : 1 }, (_, index) => index)]) {
-    // Each high-quality software-rendered case uploads/draws at most four
-    // distinct cover sites through all twelve continuous switch phases.
+    ...Array.from({ length: quality === 'high' ? (elemental === 'air' ? 5 : 4) : 1 }, (_, index) => index)]) {
+    // Each Air high-quality software case draws two cover sites; Water/Fire draw
+    // four. Every site still runs all twelve continuous switch phases.
     // The disjoint cases cover every original site, with no removed checks
     // or increased timeout. Low-quality cases retain their complete review.
-    test(`populated ${elemental === 'air' ? 'Air' : elemental === 'water-fire' ? 'Water and Fire' : 'Earth and town'}: ${quality} at ${width}px${review === 'presentation' ? '' : ` quality switches${quality === 'high' ? (elemental === 'air' && review === 2 ? ' passage cells' : ` cover batch ${review + 1}`) : ''}`}`, async ({ page, baseURL }, testInfo) => {
+    test(`populated ${elemental === 'air' ? 'Air' : elemental === 'water-fire' ? 'Water and Fire' : 'Earth and town'}: ${quality} at ${width}px${review === 'presentation' ? '' : ` quality switches${quality === 'high' ? (elemental === 'air' && review === 4 ? ' passage cells' : ` cover batch ${review + 1}`) : ''}`}`, async ({ page, baseURL }, testInfo) => {
         // Trusted release CI runs these High graphics cases (including Air passages) as
         // a required native-GPU predeploy step. Other branches/local runs keep
         // their ordinary coverage; presentation and Low reviews stay hosted.
@@ -255,11 +255,12 @@ for (const review of elemental === 'earth' ? ['presentation'] : ['presentation',
                     if (covers.length !== (elemental === 'air' ? 8 : 16)) throw new Error('Missing production cover beds');
                     if (elemental === 'air' && roadside.length !== 86) throw new Error('Missing cell-batched Air passage dressing');
                     covers.sort((a, b) => a.mesh.userData.elementalGroundCover.site.id.localeCompare(b.mesh.userData.elementalGroundCover.site.id));
-                    const coverBatches = quality === 'high' ? covers.length / 4 : 1;
-                    const drawnCovers = quality === 'high' ? covers.slice(review * 4, (review + 1) * 4) : covers;
-                    const passageReview = elemental === 'air' && (quality !== 'high' || review === 2);
+                    const bedsPerCase = elemental === 'air' ? 2 : 4;
+                    const coverBatches = quality === 'high' ? covers.length / bedsPerCase : 1;
+                    const drawnCovers = quality === 'high' ? covers.slice(review * bedsPerCase, (review + 1) * bedsPerCase) : covers;
+                    const passageReview = elemental === 'air' && (quality !== 'high' || review === 4);
                     const passageViews = passageReview ? ['air-travel-stands', 'air-east-passage', 'air-west-passage'] : [];
-                    if (!Number.isInteger(coverBatches) || drawnCovers.length !== (quality === 'high' ? (elemental === 'air' && review === 2 ? 0 : 4) : covers.length) ||
+                    if (!Number.isInteger(coverBatches) || drawnCovers.length !== (quality === 'high' ? (passageReview ? 0 : bedsPerCase) : covers.length) ||
                         new Set(covers.map(original => original.mesh.userData.elementalGroundCover.site.id)).size !== covers.length) {
                         throw new Error('Incomplete or overlapping regional cover partition');
                     }
@@ -615,10 +616,10 @@ for (const review of elemental === 'earth' ? ['presentation'] : ['presentation',
                 expect(swaps.partsPerCell).toBe(elemental === 'air' ? 3 : 4);
                 expect(swaps.batchCount).toBe(swaps.partsPerCell * swaps.cells);
                 expect(swaps.coverBeds).toBe(elemental === 'air' ? 8 : 16);
-                expect(swaps.coverBatches).toBe(quality === 'high' ? (elemental === 'air' ? 2 : 4) : 1);
-                expect(swaps.drawnCoverIds).toHaveLength(quality === 'high' ? (elemental === 'air' && review === 2 ? 0 : 4) : swaps.coverBeds);
+                expect(swaps.coverBatches).toBe(quality === 'high' ? 4 : 1);
+                expect(swaps.drawnCoverIds).toHaveLength(quality === 'high' ? (elemental === 'air' ? (review === 4 ? 0 : 2) : 4) : swaps.coverBeds);
                 expect(new Set(swaps.drawnCoverIds).size).toBe(swaps.drawnCoverIds.length);
-                expect(swaps.drawnPassageViews).toEqual(elemental === 'air' && (quality !== 'high' || review === 2)
+                expect(swaps.drawnPassageViews).toEqual(elemental === 'air' && (quality !== 'high' || review === 4)
                     ? ['air-travel-stands', 'air-east-passage', 'air-west-passage'] : []);
                 expect(swaps.phases).toHaveLength(12);
                 expect(swaps.afterRepeat).toEqual(swaps.beforeRepeat);

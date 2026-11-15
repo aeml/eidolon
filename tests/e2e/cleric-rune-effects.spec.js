@@ -16,6 +16,7 @@ for (const [quality, reducedMotion] of [['high', false], ['low', false], ['low',
     await page.goto('/', { waitUntil: 'networkidle' });
         const initial = await page.evaluate(async quality => {
             const THREE = await import('three');
+            const { advancePreparedSimulation } = await import('/tests/e2e/prepared-simulation.js');
             const { RenderSystem } = await import('/src/core/RenderSystem.js');
             const { GameEngine } = await import('/src/core/GameEngine.js');
             const { ChunkManager } = await import('/src/core/ChunkManager.js');
@@ -76,12 +77,20 @@ for (const [quality, reducedMotion] of [['high', false], ['low', false], ['low',
             let previous = performance.now();
             const frame = now => {
                 if (quality === 'low' && now - previous < 1000 / 15) { q.frame = requestAnimationFrame(frame);return; }
-                const dt = Math.min(.1, (now - previous) / 1000);previous = now;q.elapsed += dt;
-                engine.chunkManager.update(owner, dt, engine.collisionManager, engine.floatingTextManager, engine);
-                for (const record of q.spawned) if (!record.entity.isActive && record.retiredAt === undefined) record.retiredAt = q.elapsed;
+                // Hold the prepared simulation while async assets and active
+                // screenshots are inspected; render speed cannot consume life.
+                const seconds = q.reviewRetirement ? 1 : 0;
+                if (!seconds) engine.chunkManager.update(owner, 0, engine.collisionManager, engine.floatingTextManager, engine);
+                advancePreparedSimulation(seconds, dt => {
+                    q.elapsed += dt;
+                    engine.chunkManager.update(owner, dt, engine.collisionManager, engine.floatingTextManager, engine);
+                    for (const record of q.spawned) if (!record.entity.isActive && record.retiredAt === undefined) record.retiredAt = q.elapsed;
+                    for (const effect of engine.effects) effect.update(dt);engine.effects = engine.effects.filter(effect => effect.isActive);
+                    engine.floatingTextManager.update(dt);
+                });
+                previous = now;
                 for (const entity of engine.chunkManager.getActiveEntities()) entity.render(1);
-                for (const effect of engine.effects) effect.update(dt);engine.effects = engine.effects.filter(effect => effect.isActive);
-                engine.floatingTextManager.update(dt);ui.updatePlayerStats(owner);ui.updateHotbarCooldowns(owner);render.render();q.frame = requestAnimationFrame(frame);
+                ui.updatePlayerStats(owner);ui.updateHotbarCooldowns(owner);render.render();q.frame = requestAnimationFrame(frame);
             };
             window.__clericEffects = q;q.renderFrame = frame;q.frame = requestAnimationFrame(frame);
             const gl = render.renderer.getContext(), ext = gl.getExtension('WEBGL_debug_renderer_info');
@@ -94,7 +103,12 @@ for (const [quality, reducedMotion] of [['high', false], ['low', false], ['low',
         await page.getByRole('button', { name: skill, exact: true }).click();
         await page.waitForTimeout(150);
     }
-    await expect.poll(() => page.evaluate(() => window.__clericEffects.spawned.filter(r => r.entity.constructor.name === 'AvengingSeraph' && r.entity.mesh?.parent).length)).toBe(1);
+    await expect.poll(() => page.evaluate(() => {
+        const q = window.__clericEffects;
+        return { attached: q.spawned.filter(r => r.entity.constructor.name === 'AvengingSeraph' && r.entity.mesh?.parent).length,
+            elapsed: q.elapsed, spawns: q.spawned.map(r => ({ type: r.entity.constructor.name,
+                active: r.entity.isActive, remaining: r.entity.summonRemaining, mesh: Boolean(r.entity.mesh) })) };
+    })).toMatchObject({ attached: 1 });
     const active = await page.evaluate(() => {
         const q = window.__clericEffects;
         q.zoneVisual = q.owner.consecratedZone.visual;q.spiritVisual = q.owner.spiritEffect;
@@ -110,7 +124,9 @@ for (const [quality, reducedMotion] of [['high', false], ['low', false], ['low',
     }
     expect(active.radius).toBe(30);expect(active.visualRadius).toBe(30);expect(active.sanctuary).toBe(true);expect(active.summonHealth).toBe(active.expectedHealth);
     await page.screenshot({ path: testInfo.outputPath(`cleric-runes-${quality}.png`) });
-    // The capped simulation clock can run slower on software WebGL.
+    // Advance the prepared scene in bounded real entity updates after capturing
+    // its active visuals. Software-GPU speed must not determine timer coverage.
+    await page.evaluate(() => { window.__clericEffects.reviewRetirement = true; });
     await expect.poll(() => page.evaluate(() => {
         const q = window.__clericEffects;return !q.owner.spiritsActive && !q.owner.consecratedZone && !q.seraph.isActive;
     }), { timeout: requiresHardwareWebGL() ? 22000 : 90000 }).toBe(true);
