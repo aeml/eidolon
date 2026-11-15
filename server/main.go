@@ -26,6 +26,7 @@ import (
 
 	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
+	"eidolon-server/internal/lifecycle"
 	"eidolon-server/internal/operations"
 	"eidolon-server/internal/registrationinvites"
 
@@ -656,7 +657,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Account recovery configuration is invalid: ", err)
 	}
-	loops := newServerLoops()
+	loops := lifecycle.NewWorkers()
 	accountRecovery = newEmailRecoveryService(db, recoveryMailer, loops)
 
 	// Sweep goroutine: remove disconnected player entities whose resume window
