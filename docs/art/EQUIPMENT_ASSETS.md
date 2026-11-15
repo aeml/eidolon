@@ -22,6 +22,9 @@ share the standard model. Legendary uses the embellished model; Eidolic may reus
 that geometry with the existing violet rarity accent. Materials and currencies
 have no wearable model.
 
+See [source layout and retention rules](SOURCE_LAYOUT.md) before moving, deleting,
+or regenerating authoring files.
+
 ## Files
 
 - `assets/equipment/authored/manifest.json`: authoritative item-to-model mapping,
@@ -33,10 +36,10 @@ have no wearable model.
   transforms for all four bodies, in glTF/Three.js column-major matrix order.
 - `assets/equipment/authored/motion-profiles.json` and `motions/{Class}.glb`:
   four skeletal motion banks with Sword, Dagger, Staff, Mace and Unarmed profiles.
-- `output/models/equipment-production/weapons.blend`: editable weapon collection.
-- `output/models/equipment-production/{fighter,wizard,cleric,rogue}-equipment.blend`:
+- `art/source/equipment-production/weapons.blend`: editable weapon collection.
+- `art/source/equipment-production/{fighter,wizard,cleric,rogue}-equipment.blend`:
   editable armor/accessory collections with their reference characters.
-- `output/models/equipment-production/viewer.html`: local interactive review tool.
+- `art/source/equipment-production/viewer.html`: local interactive review tool.
 
 There are **72 designs, 252 model GLBs and 4 motion banks**. The 30 wearable designs in each tier
 have four separate body fits; the six rigid weapon/offhand designs are shared.
@@ -54,7 +57,7 @@ $env:PORT='4189'
 node scripts/serve-static.mjs
 ```
 
-Open `http://127.0.0.1:4189/output/models/equipment-production/viewer.html`.
+Open `http://127.0.0.1:4189/art/source/equipment-production/viewer.html`.
 Select a character, armor family, rarity and movement clip. The individual-piece
 controls allow mixed outfits and accessory inspection. The viewer uses the real
 GLBs, character skeletons, embedded materials, and bloom. It is separate from the
@@ -111,7 +114,7 @@ original and reduced hashes. Character quality selects fitted equipment quality;
 load failure uses the original and records `equipmentVisualFallback`. Explicit
 `root.userData.fittedEquipmentLOD = false` retains original-only diagnostics.
 This is staged work, not a production 1.87 or raised-world performance approval.
-See [integration checks](../plans/2026-10-08-wearable-integration-checks.json).
+See the retained [catalog provenance checks](../../tests/ProceduralArtMigrationGuard.test.js).
 
 Generate all copies into a new owned directory using
 `scripts/derive-wearable-catalog.mjs`, then import them with
@@ -120,7 +123,8 @@ Generate all copies into a new owned directory using
 `node scripts/generate-authored-equipment.mjs`. The importer validates all inputs
 before copying and refuses an existing runtime destination; do not remove a
 reviewed catalog just to bypass that guard. Preserve original Blender/GLB files
-and provenance. See the [copy workflow](../plans/2026-10-08-wearable-pilot-workflow.md).
+and provenance. The [derivation script](../../scripts/derive-wearable-catalog.mjs)
+and [importer](../../scripts/import-wearable-runtime.mjs) define that workflow.
 
 Standard equipment uses restrained iron, leather, wood and cloth materials.
 Legendary versions add crystal settings, raised trim, rune inlays, layered
@@ -149,7 +153,7 @@ is `assets/equipment/authored/validation-summary.json`.
 `viewer-qa.mjs` loads all three complete outfit families in both tiers on all
 four characters, then samples bind pose, Walk, Run, Attack, Block and Hit at
 multiple times, checking for invalid or exploding skin coordinates. Results are
-saved to `output/models/equipment-production/animation-qa.json`. Three accessory
+saved to `art/source/equipment-production/animation-qa.json`. Three accessory
 combinations in each tier on every character also exercise all fitted rings,
 necklaces and trinkets against the Attack pose. This numerical
 check complements the front, angled and rear Blender renders and viewer
@@ -172,7 +176,7 @@ source/review artifacts. The pre-revision character/source files and the live
 Blender scene remain local backups under `revision-v2/before/`; they are excluded
 from the published package. The preservation report records that local comparison.
 
-Authoring scripts in `output/models/equipment-production` rebuild meshes through
+Authoring scripts in `art/source/equipment-production` rebuild meshes through
 Blender 5.2. `inventory.mjs` reads the actual game catalog, `armor.py` fits against
 the delivered body and underclothes, and `weapons.py` authors the rigid pieces.
 The live Blender MCP addon was used for initial access; bulk exports and renders
@@ -183,9 +187,9 @@ pinned development dependency. Blender authoring scripts resolve the checkout
 from their own location and require Blender 5.2. For example:
 
 ```bash
-blender --background --python output/models/equipment-production/rebuild_chests_v2.py
-node output/models/equipment-production/validate_equipment.mjs
-node output/models/equipment-production/package_assets.mjs
+blender --background --python art/source/equipment-production/rebuild_chests_v2.py
+node art/source/equipment-production/validate_equipment.mjs
+node art/source/equipment-production/package_assets.mjs
 ```
 
 These rebuild commands overwrite the corresponding final exports and sources;

@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "sourceManifestSHA256": "4117c60435a68a31699f9aec9553215f6196cb2008cb887a64e8e8c2a6d9fd0f",
+  "sourceManifestSHA256": "fa48264b7b6ca2314a71405fc4cdc532089e4968b2e6824c9f3e22dc718964c7",
   "tools": {
     "gltfTransform": "4.5.1",
     "meshoptimizer": "1.2.0"

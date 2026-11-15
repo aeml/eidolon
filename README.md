@@ -67,7 +67,7 @@ Full client tests use npm test. Server tests/build run from server/ with go test
 
 ## Project status
 
-Current source version: `Alpha 1.80.3`.
+Current source version: `Alpha 1.80.4`.
 
 The latest documented accepted release is **Alpha 1.80.2**, runtime source b3889294cb3c0db234f54f854e6d7151865692b8. This is a release record, not a live availability claim. [Acceptance](docs/plans/2026-10-20-release1-80-2-acceptance.md) · [remaining work](docs/plans/2026-10-09-release-readiness-remaining.md) · [roadmap](ROADMAP.md).
 

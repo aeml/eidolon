@@ -25,7 +25,7 @@ skill animation mappings and in-game performance still need integration testing.
 The Cleric braid and Rogue ponytail follow head/neck/back skinning; they have no
 physics simulation.
 
-Editable source: `output/models/cleric-production/cleric.blend` tracked with Git LFS. Run `git lfs pull` before opening it; textures are packed.
+Editable source: `art/source/cleric-production/cleric.blend` tracked with Git LFS. Run `git lfs pull` before opening it; textures are packed.
 Local anatomical checkpoints and backup renders are excluded from the delivery.
 
 See `character-report.json`, `deformation-validation.json`, the runtime manifest
