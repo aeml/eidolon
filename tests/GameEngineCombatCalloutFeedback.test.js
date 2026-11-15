@@ -25,7 +25,8 @@ const gameEngineSource = [
     'GameEngineNetworkMessages.js',
     'GameEngineEntitySync.js',
     'GameEngineMovement.js',
-    'GameEngineRuntime.js'
+    'GameEngineRuntime.js',
+    'RemoteSupportEffects.js'
 ].map((name) => fs.readFileSync(path.join(repoRoot, 'src/core', name), 'utf8')).join('\n');
 
 describe('GameEngine encounter callouts', () => {
