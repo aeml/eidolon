@@ -1,9 +1,12 @@
 name: Bounded live Gold provenance diagnostic
 
 on:
-  push:
-    branches: [work/gold-provenance-diagnostic-20261010]
-    paths: [.github/workflows/live-gold-provenance.yml]
+  workflow_dispatch:
+    inputs:
+      expected_commit:
+        description: Exact 40-character commit already deployed on both components
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -14,7 +17,7 @@ concurrency:
 
 jobs:
   observe:
-    if: github.repository == 'aeml/eidolon'
+    if: github.event_name == 'workflow_dispatch' && github.repository == 'aeml/eidolon' && github.ref == 'refs/heads/master'
     runs-on: [self-hosted, linux, x64, eidolon-live-browser]
     timeout-minutes: 10
     env:
@@ -25,8 +28,9 @@ jobs:
       EIDOLON_E2E_PASSWORD: ${{ secrets.EIDOLON_E2E_PASSWORD }}
       EIDOLON_E2E_CLASS: ${{ secrets.EIDOLON_E2E_CLASS }}
       EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
+      EIDOLON_E2E_ISOLATE_CHROME: '1'
       EIDOLON_E2E_BACKEND_ORIGIN_IP: ${{ secrets.EIDOLON_E2E_BACKEND_ORIGIN_IP }}
-      EIDOLON_EXPECTED_COMMIT: 77859697a71329facd0584a95167c80eac392398
+      EIDOLON_EXPECTED_COMMIT: ${{ inputs.expected_commit }}
       EIDOLON_E2E_GOLD_PROVENANCE_ONCE: '1'
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
