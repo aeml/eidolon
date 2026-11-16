@@ -71,7 +71,7 @@ Full client tests use npm test. Server tests/build run from server/ with go test
 
 Current source version: `Alpha 1.80.5`.
 
-The latest documented accepted release is **Alpha 1.80.4**, runtime source dd4ca9337d2d57d9b1a7c9c66ac76d8512e22245. This is a release record, not a live availability claim. [Acceptance](docs/records/releases/1.80.4/2026-11-16-acceptance.md) · [remaining work](docs/plans/release-readiness.md) · [roadmap](ROADMAP.md).
+The latest documented accepted release is **Alpha 1.80.5**, runtime source 981cba7249c0a7dea7d36829e555cf585875a0f4. This is a release record, not a live availability claim. [Acceptance](docs/records/releases/1.80.5/2026-11-16-acceptance.md) · [remaining work](docs/plans/release-readiness.md) · [roadmap](ROADMAP.md).
 
 The game remains open alpha. F1–F5 feature freeze is recorded as accepted; beta/launch gates and P01–P13 remain open. Soak/stress and owner-assigned human/device checks retain their documented deferrals. Versioned player patch notes are in the login screen.
 
