@@ -1,6 +1,7 @@
+import { readReferenceSource, rebaseReferenceImports } from '../support/rendering/reference-modules.js';
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from '../support/browser/helpers.js';
-import { execFileSync } from 'node:child_process';
+
 import { writeFile } from 'node:fs/promises';
 
 test.use({ hasTouch: true, isMobile: true, actionTimeout: 12_000 });
@@ -9,9 +10,9 @@ test('confirmed damage types render distinct short impacts and quieter periodic 
     const compare = process.env.EIDOLON_E2E_IMPACT_AUDIO_COMPARE === '1';
     if (compare) {
         for (const name of ['AudioManager', 'CombatImpactProfiles']) {
-            const body = execFileSync('git', ['show', `d7c1dfc7:src/audio/${name}.js`], { encoding: 'utf8' })
+            const body = readReferenceSource(`d7c1dfc7:src/audio/${name}.js`)
                 .replace('./CombatImpactProfiles.js', './CombatImpactProfilesReference.js');
-            await page.route(`**/src/audio/${name}Reference.js`, route => route.fulfill({ contentType: 'text/javascript', body }));
+            await page.route(`**/src/audio/${name}Reference.js`, route => route.fulfill({ contentType: 'text/javascript', body: rebaseReferenceImports(body, `d7c1dfc7:src/audio/${name}.js`) }));
         }
     }
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});

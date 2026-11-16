@@ -1,4 +1,5 @@
-import { execFileSync } from 'node:child_process';
+import { readReferenceSource, rebaseReferenceImports } from '../support/rendering/reference-modules.js';
+
 import { writeFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from '../support/browser/helpers.js';
@@ -8,8 +9,8 @@ import { collectBrowserFailures } from '../support/browser/helpers.js';
 for (const [quality, width] of [['high', 1280], ['low', 390]]) {
     test(`swept-volume culling preserves foliage color and incoming shadows: ${quality}`, async ({ page, baseURL }, testInfo) => {
         test.skip(process.env.EIDOLON_E2E_FOLIAGE_PROJECTION_COMPARE !== '1', 'Explicit private predecessor comparison');
-        const previous = execFileSync('git', ['show', '5c4998e9:src/core/rendering/shadows/FoliageShadowInfluence.js'], { encoding: 'utf8' });
-        await page.route('**/src/core/FoliageShadowInfluenceReference.js', route => route.fulfill({ body: previous, contentType: 'text/javascript' }));
+        const previous = readReferenceSource('5c4998e9:src/core/rendering/shadows/FoliageShadowInfluence.js');
+        await page.route('**/src/core/FoliageShadowInfluenceReference.js', route => route.fulfill({ body: rebaseReferenceImports(previous, '5c4998e9:src/core/rendering/shadows/FoliageShadowInfluence.js'), contentType: 'text/javascript' }));
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         const failures = collectBrowserFailures(page, baseURL);
         await page.setViewportSize({ width, height: 844 });

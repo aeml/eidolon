@@ -1,12 +1,13 @@
-import { execFileSync } from 'node:child_process';
+import { readReferenceSource, rebaseReferenceImports } from '../support/rendering/reference-modules.js';
+
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from '../support/browser/helpers.js';
 
 test('direct foliage visitor retains exact previous color and shadow pixels across qualities and realms', async ({ page, baseURL }, testInfo) => {
     test.skip(process.env.EIDOLON_E2E_FOLIAGE_VISITOR_COMPARE !== '1', 'Explicit private comparison requires the recorded predecessor source');
     const restorationComparison = process.env.EIDOLON_E2E_FOLIAGE_RESTORE_COMPARE === '1';
-    const previous = execFileSync('git', ['show', `${restorationComparison ? '5d0ccb54' : 'd04aa7c6'}:src/core/rendering/shadows/FoliageShadowInfluence.js`], { encoding: 'utf8' });
-    await page.route('**/src/core/FoliageShadowInfluenceReference.js', route => route.fulfill({ body: previous, contentType: 'text/javascript' }));
+    const previous = readReferenceSource(`${restorationComparison ? '5d0ccb54' : 'd04aa7c6'}:src/core/rendering/shadows/FoliageShadowInfluence.js`);
+    await page.route('**/src/core/FoliageShadowInfluenceReference.js', route => route.fulfill({ body: rebaseReferenceImports(previous, `${restorationComparison ? '5d0ccb54' : 'd04aa7c6'}:src/core/rendering/shadows/FoliageShadowInfluence.js`), contentType: 'text/javascript' }));
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     const failures = collectBrowserFailures(page, baseURL);
     await page.setViewportSize({ width: 1100, height: 844 });

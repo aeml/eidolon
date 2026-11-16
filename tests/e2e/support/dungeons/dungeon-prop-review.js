@@ -1,16 +1,17 @@
+import { readReferenceSource, rebaseReferenceImports } from '../rendering/reference-modules.js';
 import { writeFile } from 'node:fs/promises';
-import { execFileSync } from 'node:child_process';
+
 import { expect } from '@playwright/test';
 
 export async function prepareDungeonPropReference(page) {
     if (process.env.EIDOLON_E2E_DUNGEON_PAVING_COMPARE === '1') {
-        const source = execFileSync('git', ['show', 'f3adbbf0:src/art/environment/dungeons/ProceduralDungeonInteriors.js'], { encoding: 'utf8' });
-        await page.route('**/src/art/DungeonPavingInteriorsReference.js', route => route.fulfill({ body: source, contentType: 'text/javascript' }));
+        const source = readReferenceSource('f3adbbf0:src/art/environment/dungeons/ProceduralDungeonInteriors.js');
+        await page.route('**/src/art/DungeonPavingInteriorsReference.js', route => route.fulfill({ body: rebaseReferenceImports(source, 'f3adbbf0:src/art/environment/dungeons/ProceduralDungeonInteriors.js'), contentType: 'text/javascript' }));
     }
     if (process.env.EIDOLON_E2E_DUNGEON_PROP_COMPARE !== '1') return;
     const revision = process.env.EIDOLON_E2E_DUNGEON_PROP_REFERENCE || '9ff955b4';
-    const source = execFileSync('git', ['show', `${revision}:src/art/environment/dungeons/ProceduralDungeonInteriors.js`], { encoding: 'utf8' });
-    await page.route('**/src/art/DungeonPropInteriorsReference.js', route => route.fulfill({ body: source, contentType: 'text/javascript' }));
+    const source = readReferenceSource(`${revision}:src/art/environment/dungeons/ProceduralDungeonInteriors.js`);
+    await page.route('**/src/art/DungeonPropInteriorsReference.js', route => route.fulfill({ body: rebaseReferenceImports(source, `${revision}:src/art/environment/dungeons/ProceduralDungeonInteriors.js`), contentType: 'text/javascript' }));
 }
 
 // A bounded prepared art review in the actual generated layout, not gameplay

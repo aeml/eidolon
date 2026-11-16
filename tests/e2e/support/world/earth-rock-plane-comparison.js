@@ -1,10 +1,9 @@
-import { execFileSync } from 'node:child_process';
-
+import { readReferenceSource, rebaseReferenceImports } from '../rendering/reference-modules.js';
 // Private art control: immutable pre-change geometry, with the current lights,
 // materials, supplied outfit, HUD and camera. No runtime switch is published.
 export async function prepareRockPlaneComparison(page) {
-    const body = execFileSync('git', ['show', 'a8890a8406feafc70fdb9f9c3c490195224bfef9:src/art/environment/earth/EarthOutcrops.js'], { encoding: 'utf8' });
-    await page.route('**/src/art/EarthOutcropsReference.js', route => route.fulfill({ body, contentType: 'text/javascript' }));
+    const body = readReferenceSource('a8890a8406feafc70fdb9f9c3c490195224bfef9:src/art/environment/earth/EarthOutcrops.js');
+    await page.route('**/src/art/EarthOutcropsReference.js', route => route.fulfill({ body: rebaseReferenceImports(body, 'a8890a8406feafc70fdb9f9c3c490195224bfef9:src/art/environment/earth/EarthOutcrops.js'), contentType: 'text/javascript' }));
 }
 
 export async function installRockPlaneComparison(page) {

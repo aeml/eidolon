@@ -29,3 +29,11 @@ This is local structural qualification, not production acceptance. The mandatory
 ## First hosted candidate
 
 [Initial run 43785385307](https://github.com/aeml/eidolon/actions/runs/43785385307) at `62a8ec84175e33026de9d88651b540ad8bd7336c` retained two failures in the static-delivery browser fixture: a computed URL still assumed its earlier directory depth. Deployment was blocked. The fixture now uses the repository-root path helper; all four static-delivery cases pass in native System Chrome with zero retries. An AST audit reviewed every computed `new URL(..., import.meta.url)` in tracked JavaScript and found no other unresolved relocation. No production code or test assertion changed in this correction.
+
+## Historical rendering comparison correction
+
+[Run 43786291574](https://github.com/aeml/eidolon/actions/runs/43786291574) at `c02c7542b27e7c35f8717e787dd94fa867cbc09a` passed all five hosted jobs: all three browser shards, all 830 Jest suites / 12,890 tests, and the full server gates. It was deliberately held during native QA before deployment when the broader audit found historical comparison routes outside default CI that still used the former source layout.
+
+Eighteen QA files now use one reference-module helper. It reads the original module from its recorded Git tree and rebases only parsed import/export locations to the current source tree. Virtual comparison modules retain their original namespace; ambiguous filenames fail. Parsing is lazy and uses the already-declared ESLint development dependency. Default browser checks do not fetch historical source.
+
+Qualification preserves the executable AST of 40 actual pinned modules. Native System Chrome import checks loaded all 40 dependency graphs and the two-module virtual Birch pair with zero retries. The helper's eight regression cases use a disposable local Git repository, so shallow CI checkouts need no old project commits. The focused tooling/release run passed 194 suites / 2,592 tests. Playwright discovery remains identical for all 1,066 original cases, with the same 583-case smoke partition. The added helper suite raises full Jest discovery to 831 suites / 12,898 cases. No production client/server code, assertion, exclusion, timeout or retry policy changes in this correction.

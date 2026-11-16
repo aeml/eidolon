@@ -1,5 +1,6 @@
+import { readReferenceSource, rebaseReferenceImports } from '../support/rendering/reference-modules.js';
 import { devices, expect, test } from '@playwright/test';
-import { execFileSync } from 'node:child_process';
+
 import { collectBrowserFailures } from '../support/browser/helpers.js';
 
 const baseline = process.env.EIDOLON_E2E_ACTION_BASELINE === '1';
@@ -11,8 +12,8 @@ for (const [width, height] of [[390, 844], [844, 390], [568, 320]]) {
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         if (baseline) {
             // Exact preserved pre-change renderer. Same text, colors, actors and camera.
-            const before = execFileSync('git', ['show', 'c6145c35dc935ae197ca643ce1a3dfe75416fcd1:src/ui/hud/FloatingTextManager.js'], {encoding: 'utf8'});
-            await page.route('**/src/ui/hud/FloatingTextManager.js', route => route.fulfill({body: before, contentType: 'text/javascript'}));
+            const before = readReferenceSource('c6145c35dc935ae197ca643ce1a3dfe75416fcd1:src/ui/hud/FloatingTextManager.js');
+            await page.route('**/src/ui/hud/FloatingTextManager.js', route => route.fulfill({body: rebaseReferenceImports(before, 'c6145c35dc935ae197ca643ce1a3dfe75416fcd1:src/ui/hud/FloatingTextManager.js'), contentType: 'text/javascript'}));
         }
         await page.setViewportSize({width, height});
         await page.goto('/', {waitUntil: 'networkidle'});
