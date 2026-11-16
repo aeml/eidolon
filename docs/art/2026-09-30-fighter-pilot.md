@@ -4,7 +4,7 @@ September 30, 2026. The owner delivered a rigged, underclothes-only Fighter in
 commit `da02a2a5b35e70b8b890873d36adcf2804433281`. It was preserved by the fresh
 remote merge before the 1.53 push. The normal factory and character preview now
 select derived, independent rigs on demand in the
-[accepted Alpha 1.54 release](../plans/2026-09-30-release1-54-acceptance.md).
+[accepted Alpha 1.54 release](../records/releases/1.54/2026-09-30-acceptance.md).
 This is scoped integration acceptance, not final modern-art or full-world
 performance approval.
 
@@ -34,7 +34,7 @@ integration and derivation rather than asking the owner to produce more assets.
 
 ## Verified runtime preparation
 
-The reproducible `scripts/derive-fighter-runtime.mjs` uses pinned glTF Transform
+The reproducible `scripts/art/derive-fighter-runtime.mjs` uses pinned glTF Transform
 4.5.1 SDK functions to weld, resample, selectively simplify, resize and encode
 WebP textures, followed by CLI validation. Its development dependencies are
 locked in the repository rather than loaded through another worktree.

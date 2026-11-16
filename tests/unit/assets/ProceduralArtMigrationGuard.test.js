@@ -1,0 +1,320 @@
+import fs from 'fs';
+import path from 'path';
+import { createHash } from 'node:crypto';
+import { HELD_GARMENT_MODELS, HELD_GARMENT_ASSET_VERSIONS } from '../../../src/assets/heldGarments.generated.js';
+import { GARMENT_MODELS, GARMENT_ASSET_VERSIONS } from '../../../src/assets/garments.generated.js';
+
+const repoRoot = path.resolve(process.cwd());
+const assetsRoot = path.join(repoRoot, 'assets');
+const legacyModelExtensions = new Set(['.dae', '.fbx', '.glb', '.gltf', '.obj']);
+const authoredRasterExtensions = new Set(['.png', '.jpg', '.jpeg', '.webp', '.gif', '.bmp', '.tga']);
+const runtimeRoots = ['src', 'scripts'];
+const runtimeFiles = ['index.html', 'sw.js'];
+const nonAuthoredMigrationBridges = new Set([
+    'assets/plants/birch.glb',
+    'assets/plants/pine.glb',
+    'assets/plants/willow.glb'
+]);
+// Owner-requested character deliveries and their runtime candidates are explicit
+// exceptions. All four supplied classes are integrated; retired unrelated
+// actor/environment assets stay banned by the original zero-payload limits.
+const stagedCharacterExports = new Set([
+    'assets/archetypes/Fighter/meshy-pilot-high.glb',
+    'assets/archetypes/Fighter/meshy-pilot-low.glb',
+    'assets/npcs/ilyra/ilyra-archmage.glb',
+    'assets/archetypes/Fighter/fighter.glb',
+    'assets/archetypes/Fighter/fighter-runtime-high.glb',
+    'assets/archetypes/Fighter/fighter-runtime-body-v2-high.glb',
+    'assets/archetypes/Fighter/fighter-runtime-body-v3-high.glb',
+    'assets/archetypes/Fighter/fighter-runtime-low.glb',
+    'assets/archetypes/Wizard/wizard.glb',
+    'assets/archetypes/Wizard/wizard-runtime-high.glb',
+    'assets/archetypes/Wizard/wizard-runtime-body-v2-high.glb',
+    'assets/archetypes/Wizard/wizard-runtime-body-v3-high.glb',
+    'assets/archetypes/Wizard/wizard-runtime-low.glb',
+    'assets/archetypes/Cleric/cleric.glb',
+    'assets/archetypes/Cleric/cleric-runtime-high.glb',
+    'assets/archetypes/Cleric/cleric-runtime-body-v2-high.glb',
+    'assets/archetypes/Cleric/cleric-runtime-body-v3-high.glb',
+    'assets/archetypes/Cleric/cleric-runtime-low.glb',
+    'assets/archetypes/Rogue/rogue.glb',
+    'assets/archetypes/Rogue/rogue-runtime-high.glb',
+    'assets/archetypes/Rogue/rogue-runtime-body-v2-high.glb',
+    'assets/archetypes/Rogue/rogue-runtime-body-v3-high.glb',
+    'assets/archetypes/Rogue/rogue-runtime-low.glb'
+]);
+// Owner-requested equipment delivery: exact catalog names, tiers and character
+// fits. Runtime references are limited to the audited modules below.
+const equipmentTiers = ['standard', 'legendary'];
+const fittedEquipmentIds = [
+    'leather-cap', 'iron-helm', 'silk-hood',
+    'leather-tunic', 'plate-mail', 'robes',
+    'leather-pants', 'plate-greaves', 'silk-skirt',
+    'leather-boots', 'iron-boots', 'sandals',
+    'leather-gloves', 'iron-gauntlets', 'silk-gloves',
+    'reinforced-spaulders', 'steel-pauldrons', 'velvet-mantle',
+    'studded-belt', 'plated-girdle', 'silk-sash',
+    'gold-ring', 'silver-ring', 'ruby-ring',
+    'pendant', 'choker', 'necklace',
+    'amulet-of-power', 'talisman-of-speed', 'orb-of-mana'
+];
+const stagedEquipmentExports = new Set([
+    ...['Fighter', 'Wizard', 'Cleric', 'Rogue'].map(character => `assets/equipment/authored/motions/${character}.glb`),
+    ...['iron-sword', 'steel-dagger', 'wooden-staff', 'cleric-mace', 'wooden-shield', 'spell-tome']
+        .flatMap(id => equipmentTiers.map(tier => `assets/equipment/authored/weapons/${id}-${tier}.glb`)),
+    ...['Fighter', 'Wizard', 'Cleric', 'Rogue'].flatMap(character => fittedEquipmentIds
+        .flatMap(id => equipmentTiers.map(tier => `assets/equipment/authored/fits/${character}/${id}-${tier}.glb`)))
+]);
+// These are the already-validated quality derivatives of the supplied fits,
+// not a blanket exemption for arbitrary GLBs or everything under runtime/.
+const wearableManifestBytes = fs.readFileSync(path.join(assetsRoot, 'equipment/runtime/manifest.json'));
+const wearableManifest = JSON.parse(wearableManifestBytes);
+const wearableRuntimeReferences = wearableManifest.sources.flatMap(row =>
+    ['high', 'low'].map(quality => row.variants[quality].file));
+const auditedWearableCopies = new Set(wearableRuntimeReferences.filter(file => file.startsWith('assets/equipment/runtime/')));
+// Explicit owner-requested complete garment delivery. No directory wildcard:
+// only these96 registered candidate fits may join the existing supplied-model audit.
+const auditedGarmentCopies = new Set(['iron-oath-regalia-v1', 'nightglass-cowl-v1', 'dawn-reliquary-v1', 'astral-sovereign-v1', 'winterthorn-revel-v1', 'hollow-court-v1', 'rosebound-vow-v1', 'lantern-envoy-v1', 'springbloom-jubilee-v1', 'solstice-pyre-v1', 'gilded-harvest-v1', 'midnight-masque-v1'].flatMap(id =>
+    ['Fighter', 'Rogue', 'Cleric', 'Wizard'].flatMap(actorClass => ['high', 'low'].map(quality => `assets/garments/${id}/${actorClass}-${quality}.glb`))));
+const garmentModels = Object.values(GARMENT_MODELS.outfits).flatMap(outfit => Object.values(outfit.models).flatMap(models => Object.values(models)));
+const garmentSources = Object.values(GARMENT_MODELS.outfits).flatMap(outfit => outfit.provenance);
+const auditedHeldCopies = new Set(['grovekeeper-blade-v1', 'skyweaver-dagger-v1', 'hearthkeeper-staff-v1',
+    'tidekeeper-mace-v1', 'grovekeeper-shield-v1', 'skyweaver-tome-v1'].flatMap(id =>
+    ['high', 'low'].map(quality => `assets/garments/${id}/universal-${quality}.glb`)));
+const heldModels = Object.values(HELD_GARMENT_MODELS).flatMap(record => Object.values(record.models));
+const heldSources = Object.values(HELD_GARMENT_MODELS).flatMap(record => record.provenance);
+const currentLegacyReferenceFiles = new Set([
+    'scripts/dev/serve-static.mjs'
+]);
+
+const INITIAL_LEGACY_MODEL_COUNT = 106;
+const INITIAL_LEGACY_MODEL_BYTES = 814551864;
+const MAX_LEGACY_MODEL_COUNT = 0;
+const MAX_LEGACY_MODEL_BYTES = 0;
+const MAX_RUNTIME_GLB_TOKENS = 1;
+const auditedAssetReferenceAllowlist = new Map([
+    // Owner-approved October 18 Meshy pilot: exactly two hashed derivatives.
+    ['src/art/actors/humanoids/MeshyFighter.js', new Set(['./assets/archetypes/Fighter/meshy-pilot-high.glb', './assets/archetypes/Fighter/meshy-pilot-low.glb'])],
+    ['src/assets/assetManifest.js', new Set(['./assets/archetypes/Fighter/meshy-pilot-high.glb', './assets/archetypes/Fighter/meshy-pilot-low.glb'])],
+    ['scripts/art/prepare-meshy-fighter.mjs', new Set(['assets/archetypes/Fighter/meshy-pilot-${quality}.glb'])],
+    ['src/art/actors/humanoids/AuthoredIlyra.js', new Set(['./assets/npcs/ilyra/ilyra-archmage.glb'])],
+    ['src/assets/garments.generated.js', [...garmentModels.map(model => model.file),
+        ...garmentSources.map(source => source.path), ...Object.keys(GARMENT_ASSET_VERSIONS)]],
+    ['scripts/content/generate-garment-models.mjs', new Set(['assets/garments/${design.id}/${actorClass}-${quality}.glb'])],
+    ['src/assets/heldGarments.generated.js', [...heldModels.map(model => model.file),
+        ...heldSources.map(source => source.reference), ...Object.keys(HELD_GARMENT_ASSET_VERSIONS)]],
+    ['scripts/content/generate-held-garments.mjs', new Set(['assets/garments/${offer.id}/universal-${quality}.glb'])],
+    ['src/art/actors/humanoids/AuthoredFighter.js', new Set()],
+    // Preserve duplicate original references for the32 unchanged variants:
+    // each appearance is expected, not an unlimited token or path allowance.
+    ['src/assets/authoredEquipment.generated.js', [
+        ...[...stagedCharacterExports].filter(file => file.includes('-runtime-')).map(file => `./${file}`),
+        ...['Fighter', 'Wizard', 'Cleric', 'Rogue'].map(name => `./assets/archetypes/${name}/${name.toLowerCase()}-runtime-low.glb`),
+        ...[...stagedEquipmentExports].map(file => `./${file}`),
+        ...wearableRuntimeReferences.map(file => `./${file}`)
+    ]],
+    ['scripts/art/import-wearable-runtime.mjs', new Set(['${destination}/${actorClass}/${item.id}-${tier}-${quality}.glb'])],
+    ['scripts/art/derive-wearable-catalog.mjs', new Set(['.glb'])],
+    // The validated catalog builder checks this exact suffix; it introduces no
+    // model path and remains subject to the same exact token-count audit.
+    ['scripts/content/generate-authored-equipment.mjs', new Set(['.glb'])],
+    // Local-only generator serves the supplied models with this exact MIME
+    // suffix; no model path or additional asset payload is authorized.
+    ['scripts/content/generate-gameplay-geometry-precomputed.mjs', new Set(['.glb'])],
+    ['scripts/art/derive-wearable-pilot.mjs', new Set(['.glb', '${stem}-pilot-${quality}.glb'])],
+    ['scripts/art/derive-body-lod-pilot.mjs', new Set(['${directory}/${stem}.glb', '${directory}/${stem}-runtime-${quality}.glb', '${stem}-body-pilot-${quality}.glb'])],
+    ['scripts/art/derive-wearable-attribute-pilot.mjs', new Set(['.glb', '${stem}-pilot-${quality}.glb'])],
+    ['scripts/art/inspect-body-lod.mjs', new Set(['${directory}/${stem}.glb', '${directory}/${stem}-runtime-${quality}.glb'])],
+    ['scripts/lib/character-runtime-selection.mjs', new Set(['-runtime-${quality}.glb'])],
+    ['scripts/art/derive-fighter-runtime.mjs', new Set(['fighter.glb', 'fighter-runtime-${quality}.glb'])]
+]);
+
+function walkFiles(root) {
+    if (!fs.existsSync(root)) return [];
+
+    return fs.readdirSync(root, { withFileTypes: true }).flatMap((entry) => {
+        const entryPath = path.join(root, entry.name);
+        return entry.isDirectory() ? walkFiles(entryPath) : [entryPath];
+    });
+}
+
+function relative(filePath) {
+    return path.relative(repoRoot, filePath).replaceAll(path.sep, '/');
+}
+
+describe('procedural art migration guard', () => {
+    test('only the exact six held garment designs and unchanged delivered grip references are allowed', () => {
+        const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+        expect(hash(fs.readFileSync(path.join(repoRoot, 'src/assets/heldGarments.generated.js'), 'utf8')
+            .replace('// Generated by scripts/content/', '// Generated by scripts/')))
+            .toBe('6b9c53560ebe59a75b71aab5f8c97c405dafd9b4fafb5a428b836b456d28193f');
+        expect(Object.values(HELD_GARMENT_MODELS)).toHaveLength(6);
+        expect(heldModels.map(model => model.file.slice(2)).sort()).toEqual([...auditedHeldCopies].sort());
+        expect(heldSources).toHaveLength(12);
+        for (const model of heldModels) {
+            const bytes = fs.readFileSync(path.join(repoRoot, model.file));
+            expect(bytes.length).toBe(model.bytes); expect(hash(bytes)).toBe(model.sha256);
+            expect(HELD_GARMENT_ASSET_VERSIONS[model.file]).toBe(model.sha256.slice(0, 16));
+        }
+        for (const source of heldSources) {
+            const file = source.reference.replace(/^\.\//, '');
+            expect(auditedWearableCopies.has(file) || stagedEquipmentExports.has(file)).toBe(true);
+            expect(hash(fs.readFileSync(path.join(repoRoot, file)))).toBe(source.sha256);
+        }
+    });
+    test('only the exact registered garment fits and their unchanged supplied sources are allowed', () => {
+        const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+        expect(hash(fs.readFileSync(path.join(repoRoot, 'src/assets/garments.generated.js'), 'utf8')
+            .replace('// Generated by scripts/content/', '// Generated by scripts/')))
+            .toBe('630787771058d77cce551a60dde586a672e1c4939e36eb658dbe914cf89e573a');
+        expect(Object.keys(GARMENT_MODELS.outfits)).toEqual(['Iron Oath Regalia', 'Nightglass Cowl', 'Dawn Reliquary', 'Astral Sovereign', 'Winterthorn Revel', 'Hollow Court', 'Rosebound Vow', 'Lantern Envoy', 'Springbloom Jubilee', 'Solstice Pyre', 'Gilded Harvest', 'Midnight Masque']);
+        expect(garmentModels.map(model => model.file.slice(2)).sort()).toEqual([...auditedGarmentCopies].sort());
+        expect(garmentSources).toHaveLength(672);
+        for (const model of garmentModels) {
+            const bytes = fs.readFileSync(path.join(repoRoot, model.file));
+            expect(bytes.length).toBe(model.bytes); expect(hash(bytes)).toBe(model.sha256);
+            expect(GARMENT_ASSET_VERSIONS[model.file]).toBe(model.sha256.slice(0, 16));
+        }
+        for (const source of garmentSources) {
+            const file = source.path.replace(/^\.\//, '');
+            expect(auditedWearableCopies.has(file) || stagedEquipmentExports.has(file)).toBe(true);
+            expect(hash(fs.readFileSync(path.join(repoRoot, source.path)))).toBe(source.sha256);
+        }
+    });
+    test('only the exact audited wearable catalog and unchanged supplied sources authorize runtime copies', () => {
+        const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+        // Source-location metadata moved to art/source; audited model rows and bytes are unchanged.
+        expect(hash(wearableManifestBytes)).toBe('b77586da5f1e44e59b8f5d3ecb0086ac443e268679a4865d347065190fbefb6d');
+        expect(hash(fs.readFileSync(path.join(assetsRoot, 'equipment/authored/manifest.json')))).toBe(wearableManifest.sourceManifestSHA256);
+        expect(wearableManifest.sources).toHaveLength(252);
+        expect(wearableRuntimeReferences).toHaveLength(504);
+        expect(auditedWearableCopies.size).toBe(472);
+        const sources = new Set();
+        for (const row of wearableManifest.sources) {
+            expect(stagedEquipmentExports.has(row.source)).toBe(true);
+            expect(sources.has(row.source)).toBe(false); sources.add(row.source);
+            expect(hash(fs.readFileSync(path.join(repoRoot, row.source)))).toBe(row.sourceHash);
+            expect(Object.keys(row.variants).sort()).toEqual(['high', 'low']);
+            for (const [quality, variant] of Object.entries(row.variants)) {
+                expect(variant.file).toBe(variant.reduced
+                    ? `assets/equipment/runtime/${row.actorClass}/${row.itemID}-${row.tier}-${quality}.glb` : row.source);
+                expect(hash(fs.readFileSync(path.join(repoRoot, variant.file)))).toBe(variant.sha256);
+                expect(variant.triangles).toBeLessThanOrEqual(row.originalTriangles);
+                expect(variant.reduced).toBe(variant.triangles < row.originalTriangles);
+            }
+        }
+    });
+    test('legacy authored model count and payload can only decrease from the audited baseline', () => {
+        const modelFiles = walkFiles(assetsRoot).filter((filePath) => (
+            legacyModelExtensions.has(path.extname(filePath).toLowerCase()) &&
+            !nonAuthoredMigrationBridges.has(relative(filePath)) &&
+            !stagedCharacterExports.has(relative(filePath)) &&
+            !stagedEquipmentExports.has(relative(filePath)) &&
+            !auditedWearableCopies.has(relative(filePath)) &&
+            !auditedGarmentCopies.has(relative(filePath)) &&
+            !auditedHeldCopies.has(relative(filePath))
+        ));
+        const totalBytes = modelFiles.reduce((sum, filePath) => sum + fs.statSync(filePath).size, 0);
+
+        expect(MAX_LEGACY_MODEL_COUNT).toBeLessThan(INITIAL_LEGACY_MODEL_COUNT);
+        expect(MAX_LEGACY_MODEL_BYTES).toBeLessThan(INITIAL_LEGACY_MODEL_BYTES);
+        expect(modelFiles).toEqual([]);
+        expect(modelFiles.length).toBe(MAX_LEGACY_MODEL_COUNT);
+        expect(totalBytes).toBe(MAX_LEGACY_MODEL_BYTES);
+    });
+
+    test('only audited actor, equipment and import modules may refer to the supplied exports and derivatives', () => {
+        const sourceFiles = [
+            ...runtimeRoots.flatMap((root) => walkFiles(path.join(repoRoot, root))),
+            ...runtimeFiles.map((file) => path.join(repoRoot, file)).filter(fs.existsSync)
+        ].filter((filePath) => /\.(?:html|js|json|mjs)$/i.test(filePath));
+
+        for (const [file, allowed] of auditedAssetReferenceAllowlist) {
+            const source = fs.readFileSync(path.join(repoRoot, file), 'utf8');
+            const paths = [...source.matchAll(/['"`]([^'"`\n]*\.glb)['"`]/g)].map(match => match[1]);
+            expect(paths.sort()).toEqual([...allowed].sort());
+            expect(source.match(/\.glb\b/gi)?.length || 0).toBe(allowed.size ?? allowed.length);
+        }
+        const references = sourceFiles.filter(file => !auditedAssetReferenceAllowlist.has(relative(file))).map((filePath) => ({
+            file: relative(filePath),
+            count: fs.readFileSync(filePath, 'utf8').match(/\.glb\b/gi)?.length || 0
+        })).filter(({ count }) => count > 0);
+        const unexpectedFiles = references
+            .map(({ file }) => file)
+            .filter((file) => !currentLegacyReferenceFiles.has(file));
+        const totalTokens = references.reduce((sum, { count }) => sum + count, 0);
+
+        expect(unexpectedFiles).toEqual([]);
+        expect(totalTokens).toBeLessThanOrEqual(MAX_RUNTIME_GLB_TOKENS);
+    });
+
+    test('migrated regional actor directories cannot return to runtime references', () => {
+        const retiredDirectories = [
+            'assets/enemies/undead/skeleton/',
+            'assets/enemies/undead/construct/',
+            'assets/enemies/demons/demon_orc/',
+            'assets/enemies/demons/imp/',
+            'assets/enemies/demons/inferno_titan/',
+            'assets/enemies/humanoid/mountain_troll/',
+            'assets/enemies/golems/aqua_golem/',
+            'assets/enemies/snow/siren/',
+            'assets/enemies/snow/frostguardian/',
+            'assets/enemies/dungeon/verdant_bastion_catacombs/rootbound_warden/',
+            'assets/enemies/dungeon/verdant_bastion_catacombs/briar_matron/',
+            'assets/enemies/dungeon/verdant_bastion_catacombs/rustbound_colossus/',
+            'assets/enemies/dungeon/verdant_bastion_catacombs/hollow_sentinel/',
+            'assets/plants/',
+            'assets/buildings/trading_house.glb',
+            'assets/buildings/blacksmith_forge.glb',
+            'assets/buildings/two_story_building.glb',
+            'assets/buildings/trading_post.glb',
+            'assets/buildings/blacksmith.glb',
+            'assets/buildings/camp_site.glb',
+            'assets/objects/chests/stash_base.glb',
+            'assets/buildings/dungeons/'
+        ];
+        const runtimeSource = [
+            ...runtimeRoots.flatMap((root) => walkFiles(path.join(repoRoot, root))),
+            ...runtimeFiles.map((file) => path.join(repoRoot, file)).filter(fs.existsSync)
+        ].filter((filePath) => /\.(?:html|js|json|mjs)$/i.test(filePath))
+            .map((filePath) => fs.readFileSync(filePath, 'utf8'))
+            .join('\n');
+
+        retiredDirectories.forEach((directory) => expect(runtimeSource).not.toContain(directory));
+    });
+
+    test('retired authored icon payload cannot return to assets or runtime paths', () => {
+        const retiredRoots = ['assets/icons', 'assets/items'];
+        retiredRoots.forEach((root) => expect(fs.existsSync(path.join(repoRoot, root))).toBe(false));
+
+        const runtimeSource = [
+            ...runtimeRoots.flatMap((root) => walkFiles(path.join(repoRoot, root))),
+            ...walkFiles(path.join(repoRoot, 'server')),
+            ...runtimeFiles.map((file) => path.join(repoRoot, file)).filter(fs.existsSync)
+        ].filter((filePath) => /\.(?:html|js|json|mjs|go)$/i.test(filePath))
+            .map((filePath) => fs.readFileSync(filePath, 'utf8'))
+            .join('\n');
+
+        expect(runtimeSource).not.toMatch(/assets\/icons\/(?:fighter|rogue|wizard|cleric|equipment|gems)\//);
+        expect(runtimeSource).not.toMatch(/assets\/items\/(?:eidolon_heart|eidolon_shard)\//);
+    });
+
+    test('authored raster payload and runtime image routes cannot return', () => {
+        const rasterFiles = walkFiles(assetsRoot).filter((filePath) => (
+            authoredRasterExtensions.has(path.extname(filePath).toLowerCase())
+        ));
+        expect(rasterFiles).toEqual([]);
+
+        const runtimeSource = [
+            ...walkFiles(path.join(repoRoot, 'src')),
+            ...walkFiles(path.join(repoRoot, 'server')),
+            path.join(repoRoot, 'index.html'),
+            path.join(repoRoot, 'repro.html'),
+            path.join(repoRoot, 'sw.js')
+        ].filter((filePath) => /\.(?:css|go|html|js|json|mjs)$/i.test(filePath) && fs.existsSync(filePath))
+            .map((filePath) => fs.readFileSync(filePath, 'utf8'))
+            .join('\n');
+
+        expect(runtimeSource).not.toMatch(/assets\/(?:backgrounds\/[^?'"\s]+|favicon)\.(?:png|jpe?g|webp|gif|bmp|tga)\b/i);
+    });
+});

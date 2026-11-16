@@ -13,11 +13,11 @@ COPY . .
 # Release identity changes on every deployment. Keep it out of dependency-layer
 # cache keys, while still relinking the executable with the exact release values.
 ARG BUILD_COMMIT=development
-ARG BUILD_VERSION="Alpha 1.80.4"
+ARG BUILD_VERSION="Alpha 1.80.5"
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath \
     -ldflags="-s -w -X 'main.buildCommit=${BUILD_COMMIT}' -X 'main.buildVersion=${BUILD_VERSION}'" \
-    -o /out/eidolon-server .
+    -o /out/eidolon-server ./cmd/eidolon
 
 FROM builder AS monitor-builder
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath \

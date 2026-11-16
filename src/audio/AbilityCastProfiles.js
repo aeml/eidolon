@@ -1,4 +1,4 @@
-import { getAbilityPresentation } from '../skills/abilityVisualManifest.js';
+import { getAbilityPresentation } from '../skills/shared/abilityVisualManifest.js';
 
 const tone = (frequency, endFrequency, duration, gain, type = 'triangle', delay = 0) =>
     Object.freeze({ frequency, endFrequency, duration, gain, type, delay });

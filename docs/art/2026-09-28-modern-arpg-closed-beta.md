@@ -61,10 +61,10 @@ work, not merely an optional way to divide a larger outsourced asset list.
 | No requested environment texture/shader production | Code-generated surface textures and PBR maps, terrain blending, lighting, reflection/atmosphere, shadows, weather, VFX, UI/item icons and quality/performance controls |
 | No external per-item modeling campaign assigned to the owner | Equipment families, fitted layers and adaptation to approved rigs; October15 also requires distinct new garment models and whole-outfit VIP collections, produced and integrated as implementation work |
 
-October15 expands cosmetic art delivery: [the garment contract](../plans/2026-10-15-garment-catalog-and-full-outfits.md)
+October15 expands cosmetic art delivery: [the garment contract](../records/2026/10/15/garment-catalog-and-full-outfits.md)
 requires modeled VIP weapons/offhands, four class-themed full outfits and eight
 universal outfits. Palette variations alone do not satisfy that requirement.
-The [quest/menu quality pass](../plans/2026-10-15-quest-lore-and-window-quality.md)
+The [quest/menu quality pass](../records/2026/10/15/quest-lore-and-window-quality.md)
 also requires interface presentation to match the improving world. Both remain
 open visual-quality work and preserve the existing supplied actor/rig contract.
 
@@ -151,8 +151,8 @@ Existing tests remain valuable for regressions but do not judge visual appeal.
 
 The original pilot request is historical: four class bodies,252 equipment
 models and four motion banks have since been delivered and integrated in1.58.2.
-See the [source/fit checks](../plans/2026-10-01-authored-equipment-checks.json)
-and [exact accepted public receipt](../plans/2026-10-01-release1-58-2-public.json).
+See the [source/fit checks](../records/2026/10/01/authored-equipment-checks.json)
+and [exact accepted public receipt](../records/releases/1.58.2/2026-10-01-public.json).
 Do not request an already delivered Fighter pilot or reframe the actor catalog
 as absent. Preserve the supplied assets/provenance and continue code-owned
 environment work, fitted equipment, animation and complete visual review.
@@ -183,7 +183,7 @@ integration needs:
   solve the engine integration before submitting the pilot.
 - A shared skeleton/retarget plan and explicit attachment mapping. Preserve the
   production state vocabulary and canonical equipment anchors from
-  `src/art/ProceduralHumanoid.js`; support both hands, shield, head, torso, neck,
+  `src/art/actors/humanoids/ProceduralHumanoid.js`; support both hands, shield, head, torso, neck,
   waist and paired shoulder/glove/leg/foot/accessory locations.
 - UVs, useful normals/tangents, physically based base-color/normal/roughness/
   metallic inputs as appropriate, with no baked directional light mistaken for

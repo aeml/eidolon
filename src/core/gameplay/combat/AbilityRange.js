@@ -1,0 +1,75 @@
+import { getClericBranchPlan } from '../../../skills/cleric/clericBranchRunes.js';
+import { getRogueBranchPlan } from '../../../skills/rogue/rogueBranchRunes.js';
+import { getFighterBranchPlan } from '../../../skills/fighter/fighterBranchRunes.js';
+import { CONSTANTS } from '../../Constants.js';
+import { getWizardBranchPlan } from '../../../skills/wizard/wizardBranchRunes.js';
+import { getWizardPrecisionPlan } from '../../../skills/wizard/wizardPrecisionRunes.js';
+
+export function getAbilityRange(player, skillName, baseRange) {
+    const className = player?.meshType || player?.subType || player?.constructor?.name;
+    let bonus = 0;
+    for (const talent of CONSTANTS.PASSIVE_TALENTS[className] || []) {
+        const effect = talent.abilityRange;
+        if (!effect || effect.skill && effect.skill !== skillName) continue;
+        const raw = Number(player?.talentRanks?.[talent.id] || 0);
+        const rank = Number.isFinite(raw) ? Math.max(0, Math.min(talent.maxRank, Math.floor(raw))) : 0;
+        bonus += effect.range * rank;
+    }
+    const runeRange = className === 'Wizard' ? getWizardPrecisionPlan(skillName, player?.skillRunes?.[skillName]).range : className === 'Fighter' ? getFighterBranchPlan(skillName, player?.skillRunes?.[skillName]).reach : className === 'Rogue' ? getRogueBranchPlan(skillName, player?.skillRunes?.[skillName]).reach : className === 'Cleric' ? getClericBranchPlan(skillName, player?.skillRunes?.[skillName]).reach : 1;
+    return baseRange * runeRange * Math.max(0, 1 + bonus);
+}
+
+export function getTeleportCastRange(player) {
+    const base = player?.skillRunes?.Teleport === 'teleport_blink' ? 22.5 : 15;
+    return getAbilityRange(player, 'Teleport', base);
+}
+
+export function getFlameWhipRadius(player) {
+    return getWizardAbilityAreaRadius(player, getAbilityRange(player, 'Flame Whip', 12) * getWizardBranchPlan('Flame Whip', player?.skillRunes?.['Flame Whip']).radius);
+}
+
+export function getWizardAbilityAreaRadius(player, base) {
+    return getAbilityAreaRadius(player, 'Wizard', base);
+}
+
+export function getAbilityAreaRadius(player, className, base, skillName = null) {
+    let areaBonus = 0;
+    for (const talent of CONSTANTS.PASSIVE_TALENTS[className] || []) {
+        const effect = talent.abilityArea;
+        if (!effect || effect.skill && effect.skill !== skillName) continue;
+        // Old saves used unpadded IDs. Like server normalization, take the
+        // highest bounded rank, never sum aliases or rewrite the saved map.
+        const [prefix, number] = talent.id.split('_');
+        let rank = 0;
+        for (const id of new Set([talent.id, `${prefix}_${Number(number)}`])) {
+            const raw = Number(player?.talentRanks?.[id] || 0);
+            if (Number.isFinite(raw)) rank = Math.max(rank, Math.min(talent.maxRank, Math.floor(raw)));
+        }
+        areaBonus += effect.radius * rank;
+    }
+    return base * Math.max(0, 1 + areaBonus);
+}
+
+export const WIZARD_GROUND_ABILITIES = new Set(['Gravity Well', 'Meteor Drop', 'Inferno Cataclysm']);
+
+export function getWizardGroundCastRange(player, skillName) {
+    return getAbilityRange(player, skillName, skillName === 'Gravity Well' ? 18 : 20);
+}
+
+// Ground placement range does not grow with the radius of the resulting area.
+export function clampWizardGroundTarget(player, skillName, target) {
+    const result = target.clone();
+    const distance = Math.hypot(target.x - player.position.x, target.z - player.position.z);
+    const range = getWizardGroundCastRange(player, skillName);
+    if (distance > range) {
+        result.x = player.position.x + (target.x - player.position.x) * range / distance;
+        result.z = player.position.z + (target.z - player.position.z) * range / distance;
+    }
+    return result;
+}
+
+export function getRogueMovementCastRange(player, skillName) {
+    let base = skillName === 'Backstab' ? 2.5 : 10;
+    if (skillName === 'Shadow Lunge' && player?.skillRunes?.[skillName] === 'shadowlunge_extended') base = 15;
+    return getAbilityRange(player, skillName, base);
+}

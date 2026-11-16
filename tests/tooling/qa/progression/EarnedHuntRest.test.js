@@ -1,0 +1,105 @@
+import { jest } from '@jest/globals';
+import { readFileSync } from 'node:fs';
+import { URL } from 'node:url';
+
+const recover = jest.fn();
+const readResources = jest.fn(), restore = jest.fn();
+jest.unstable_mockModule('../../../e2e/support/progression/earned-town-rest.js', () => ({ recoverBetweenCollectionEncounters: recover,
+    readEarnedRestResources: readResources, restoreEarnedTownResources: restore }));
+const { recoverBetweenHuntEncounters, recoverDuringHuntEncounter } = await import('../../../e2e/support/progression/earned-hunt-rest.js');
+beforeEach(() => jest.clearAllMocks());
+afterEach(() => jest.restoreAllMocks());
+
+test('an explicitly disabled diagnostic never invokes town recovery', async () => {
+    expect(await recoverBetweenHuntEncounters({}, { enabled: false, creditedKills: 2 })).toBe(false);
+    expect(recover).not.toHaveBeenCalled();
+});
+
+const healthy = { hp: 380, maxHP: 380, mana: 260, maxMana: 260, castCost: 30, dead: false, level: 11 };
+test('an unfinished resource-starved hunt can Recall before another credited kill', async () => {
+    const page = {}, leaveTown = jest.fn(), empty = { ...healthy, mana: 0 };
+    readResources.mockResolvedValueOnce(empty);
+    restore.mockResolvedValueOnce(true);
+    expect(await recoverDuringHuntEncounter(page, { enabled: true, leaveTown })).toBe(true);
+    expect(restore).toHaveBeenCalledWith(page, leaveTown, empty, 'mana', { preserveLevel: false });
+});
+test.each([{ ...healthy, mana: 30 }, { ...healthy, hp: 0, mana: 0, dead: true }])(
+    'healthy affordable combat and counted deaths are not disguised as a retreat', async state => {
+        readResources.mockResolvedValueOnce(state);
+        expect(await recoverDuringHuntEncounter({}, { enabled: true, leaveTown() {} })).toBe(false);
+        expect(restore).not.toHaveBeenCalled();
+    });
+test('no-rest diagnostics never observe or recover an unfinished encounter', async () => {
+    expect(await recoverDuringHuntEncounter({}, { enabled: false })).toBe(false);
+    expect(readResources).not.toHaveBeenCalled();
+    expect(restore).not.toHaveBeenCalled();
+});
+test('failed mid-encounter Recall is still fatal', async () => {
+    readResources.mockResolvedValueOnce({ ...healthy, mana: 0 });
+    restore.mockRejectedValueOnce(new Error('recall failed'));
+    await expect(recoverDuringHuntEncounter({}, { enabled: true, leaveTown() {} })).rejects.toThrow('recall failed');
+});
+test('town recovery preserves the remaining combat budget without granting a fresh window', async () => {
+    jest.spyOn(Date, 'now').mockReturnValueOnce(10_000).mockReturnValueOnce(120_083);
+    readResources.mockResolvedValueOnce({ ...healthy, mana: 0 });
+    restore.mockResolvedValueOnce(true);
+    let deadline = 120_000;
+    const onRecovered = jest.fn(elapsed => { deadline += elapsed; });
+    expect(await recoverDuringHuntEncounter({}, { enabled: true, leaveTown() {}, onRecovered })).toBe(true);
+    expect(onRecovered).toHaveBeenCalledTimes(1);
+    expect(onRecovered).toHaveBeenCalledWith(110_083);
+    expect(deadline - 120_083).toBe(110_000); // Ten combat seconds were already consumed.
+});
+test('healthy combat gets no recovery-time allowance', async () => {
+    readResources.mockResolvedValueOnce(healthy);
+    const onRecovered = jest.fn();
+    expect(await recoverDuringHuntEncounter({}, { enabled: true, leaveTown() {}, onRecovered })).toBe(false);
+    expect(onRecovered).not.toHaveBeenCalled();
+});
+test('unfinished retreat excludes only measured recovery time and cannot manufacture credit', () => {
+    const route = readFileSync(new URL('../../../e2e/support/progression/fresh-story-hunt-route.js', import.meta.url), 'utf8');
+    const loop = route.slice(route.indexOf('let deadline = Date.now() + 120_000'));
+    expect(loop).toContain('onRecovered: elapsed => { deadline += elapsed; }');
+    expect(loop).toContain('while (Date.now() < deadline');
+    expect(loop.match(/deadline\s*=/g)).toHaveLength(1);
+    expect(loop).toContain('toBeGreaterThan(credit)');
+    const recovery = readFileSync(new URL('../../../e2e/support/progression/earned-town-rest.js', import.meta.url), 'utf8');
+    expect(recovery).toContain('else await returnToTown(page, { allowRespawn: false })');
+});
+test('no extra rest stop before the first credited encounter', async () => {
+    expect(await recoverBetweenHuntEncounters({}, { enabled: true, creditedKills: 0, leaveTown() {} })).toBe(false);
+    expect(recover).not.toHaveBeenCalled();
+});
+test('credited encounters delegate to the existing real-resource recovery policy', async () => {
+    const page = {}, leaveTown = jest.fn();
+    recover.mockResolvedValue(true);
+    expect(await recoverBetweenHuntEncounters(page, { enabled: true, creditedKills: 2, leaveTown })).toBe(true);
+    expect(recover).toHaveBeenCalledWith(page, leaveTown);
+});
+test('a failed real recovery remains a route failure', async () => {
+    recover.mockRejectedValue(new Error('town not reached'));
+    await expect(recoverBetweenHuntEncounters({}, { enabled: true, creditedKills: 2, leaveTown() {} }))
+        .rejects.toThrow('town not reached');
+});
+test.each([-1, NaN, 1.5])('malformed credit %s is not an earned encounter', async creditedKills => {
+    await expect(recoverBetweenHuntEncounters({}, { enabled: true, creditedKills, leaveTown() {} }))
+        .rejects.toThrow('Invalid earned hunt credit');
+    expect(recover).not.toHaveBeenCalled();
+});
+test('enabled comparison cannot silently omit ordinary departure', async () => {
+    await expect(recoverBetweenHuntEncounters({}, { enabled: true, creditedKills: 2 }))
+        .rejects.toThrow('ordinary town departure');
+});
+test('normal rest is outside the unchanged credit watchdog; no-rest diagnostics are explicit', () => {
+    const route = readFileSync(new URL('../../../e2e/support/progression/fresh-story-hunt-route.js', import.meta.url), 'utf8');
+    const loop = route.slice(route.indexOf('while ((await readChronicleChapter'));
+    expect(loop.indexOf('recoverBetweenHuntEncounters(')).toBeGreaterThan(-1);
+    expect(loop.indexOf('let deadline = Date.now() + 120_000')).toBeGreaterThan(-1);
+    expect(loop.indexOf('recoverBetweenHuntEncounters(')).toBeLessThan(loop.indexOf('let deadline = Date.now() + 120_000'));
+    expect(loop.slice(loop.indexOf('let deadline = Date.now() + 120_000'))).not.toContain('recoverBetweenHuntEncounters(');
+    const shell = readFileSync(new URL('../../../../scripts/qa/run-isolated-character-qa.sh', import.meta.url), 'utf8');
+    expect(route).toContain('enabled: earnedTownRecoveryEnabled()');
+    expect(shell.match(/fresh-story-uninterrupted\)[\s\S]*?;;/)[0]).not.toContain('EIDOLON_E2E_REST_RECOVERY=0');
+    expect(shell.match(/fresh-rested-story-uninterrupted\)[\s\S]*?;;/)[0]).toContain('EIDOLON_E2E_REST_RECOVERY=1');
+    expect(shell.match(/fresh-story-no-rest-uninterrupted\)[\s\S]*?;;/)[0]).toContain('EIDOLON_E2E_REST_RECOVERY=0');
+});

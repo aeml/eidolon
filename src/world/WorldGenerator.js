@@ -1,50 +1,50 @@
-import { OwnedFoliageDraws } from '../art/OwnedFoliageDraws.js';
+import { OwnedFoliageDraws } from '../art/rendering/OwnedFoliageDraws.js';
 import * as THREE from 'three';
-import { createMotionPreference } from '../core/MotionPreference.js';
-import { createEarthOutcrops } from '../art/EarthOutcrops.js';
+import { createMotionPreference } from '../core/input/MotionPreference.js';
+import { createEarthOutcrops } from '../art/environment/earth/EarthOutcrops.js';
 import { EARTH_OUTCROP_COLLISIONS, EARTH_OUTCROP_PROFILE } from '../data/earthOutcrops.js';
-import { compileRockSolids } from '../core/RockCollision.js';
-import { createCasinoShell } from '../art/ProceduralCasino.js';
+import { compileRockSolids } from '../core/world/RockCollision.js';
+import { createCasinoShell } from '../art/environment/casino/ProceduralCasino.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { createProceduralPvPArena } from '../art/ProceduralPvPArena.js';
+import { createProceduralPvPArena } from '../art/environment/arenas/ProceduralPvPArena.js';
 import { buildDungeonSurfaceUnion } from './dungeonSurfaceUnion.js';
-import { getLanternholdWalkCollider } from '../art/ProceduralLanternholdArchitecture.js';
+import { getLanternholdWalkCollider } from '../art/environment/lanternhold/ProceduralLanternholdArchitecture.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 import {
     PROCEDURAL_FOLIAGE_RECIPES,
     createProceduralFoliagePlacements
-} from '../art/ProceduralRealmFoliage.js';
-import { computeFoliageCellBounds, getFoliageRenderBatches } from '../art/FoliageRenderBatches.js';
-import { createEarthUnderstory } from '../art/EarthUnderstory.js';
+} from '../art/environment/foliage/ProceduralRealmFoliage.js';
+import { computeFoliageCellBounds, getFoliageRenderBatches } from '../art/rendering/FoliageRenderBatches.js';
+import { createEarthUnderstory } from '../art/environment/foliage/EarthUnderstory.js';
 import {
     createProceduralLanternholdStructure
-} from '../art/ProceduralLanternholdArchitecture.js';
+} from '../art/environment/lanternhold/ProceduralLanternholdArchitecture.js';
 import {
     DUNGEON_ENTRANCE_DEFINITIONS,
     DUNGEON_ENTRANCE_IDS,
     createProceduralDungeonEntrance
-} from '../art/ProceduralDungeonEntrances.js';
+} from '../art/environment/dungeons/ProceduralDungeonEntrances.js';
 import {
     DUNGEON_FLOOR_TEXTURE_SPAN,
     animateDungeonRoomStatePresentation,
     applyDungeonRoomStatePresentation,
     createProceduralDungeonInteriorKit
-} from '../art/ProceduralDungeonInteriors.js';
-import { createProceduralTerrainTexture } from '../art/ProceduralRealmTerrain.js';
-import { createEarthPathNetwork, createWorldPathNetwork } from '../art/ProceduralWorldPaths.js';
-import { createEarthLocations } from '../art/ProceduralEarthLocations.js';
-import { createElementalLocations } from '../art/ProceduralElementalLocations.js';
+} from '../art/environment/dungeons/ProceduralDungeonInteriors.js';
+import { createProceduralTerrainTexture } from '../art/environment/world/ProceduralRealmTerrain.js';
+import { createEarthPathNetwork, createWorldPathNetwork } from '../art/environment/world/ProceduralWorldPaths.js';
+import { createEarthLocations } from '../art/environment/earth/ProceduralEarthLocations.js';
+import { createElementalLocations } from '../art/environment/world/ProceduralElementalLocations.js';
 import { WATER_PATHS, FIRE_PATHS, AIR_PATHS } from '../data/elementalPopulation.js';
-import { createLanternholdCourtyards } from '../art/ProceduralLanternholdCourtyards.js';
-import { createLanternholdStreetFurniture } from '../art/LanternholdStreetFurniture.js';
-import { createLanternholdRoadCart } from '../art/LanternholdRoadCart.js';
-import { createLanternholdNeighborhood } from '../art/LanternholdNeighborhood.js';
-import { createLanternholdPerimeter } from '../art/LanternholdPerimeter.js';
+import { createLanternholdCourtyards } from '../art/environment/lanternhold/ProceduralLanternholdCourtyards.js';
+import { createLanternholdStreetFurniture } from '../art/environment/lanternhold/LanternholdStreetFurniture.js';
+import { createLanternholdRoadCart } from '../art/environment/lanternhold/LanternholdRoadCart.js';
+import { createLanternholdNeighborhood } from '../art/environment/lanternhold/LanternholdNeighborhood.js';
+import { createLanternholdPerimeter } from '../art/environment/lanternhold/LanternholdPerimeter.js';
 import { WORLD_REGIONS, REALM_FENCE_NAMES, getRegionFencePosts } from '../data/worldGeography.js';
 import {
     CRYSTAL_SANCTUM_DEFINITIONS,
     createProceduralCrystalSanctum
-} from '../art/ProceduralCrystalSanctums.js';
+} from '../art/environment/dungeons/ProceduralCrystalSanctums.js';
 
 // Shared temp objects to reduce allocations during instancing
 const TEMP_POS = new THREE.Vector3();

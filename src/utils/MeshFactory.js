@@ -2,70 +2,70 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshCatalog } from './MeshCatalog.js';
 import { resolveAssetPath } from '../assets/assetManifest.js';
-import { clearEquipmentVisuals } from '../art/EquipmentVisuals.js';
-import { createAuthoredCharacter, isAuthoredPlayerClass } from '../art/AuthoredCharacters.js';
-import { createMeshyFighter, isMeshyFighterSelected, MESHY_FIGHTER_PATHS } from '../art/MeshyFighter.js';
-import { createAuthoredIlyraInstance, ILYRA_MODEL_PATH } from '../art/AuthoredIlyra.js';
+import { clearEquipmentVisuals } from '../art/equipment/EquipmentVisuals.js';
+import { createAuthoredCharacter, isAuthoredPlayerClass } from '../art/actors/humanoids/AuthoredCharacters.js';
+import { createMeshyFighter, isMeshyFighterSelected, MESHY_FIGHTER_PATHS } from '../art/actors/humanoids/MeshyFighter.js';
+import { createAuthoredIlyraInstance, ILYRA_MODEL_PATH } from '../art/actors/humanoids/AuthoredIlyra.js';
 import {
     createProceduralFighter,
     createProceduralRogue,
     createProceduralWizard,
     createProceduralCleric
-} from '../art/ProceduralHumanoid.js';
+} from '../art/actors/humanoids/ProceduralHumanoid.js';
 import {
     createProceduralDwarfSalesman,
     createProceduralQuestNPC,
     createProceduralDungeonNPC,
     createProceduralRespecNPC,
     createProceduralCrystalKeeper
-} from '../art/ProceduralTownActors.js';
-import { createProceduralAvengingSeraph } from '../art/ProceduralSummons.js';
+} from '../art/actors/npcs/ProceduralTownActors.js';
+import { createProceduralAvengingSeraph } from '../art/actors/summons/ProceduralSummons.js';
 import {
     createProceduralConstruct,
     createProceduralDemonOrc,
     createProceduralImp,
     createProceduralInfernoTitan,
     createProceduralSkeleton
-} from '../art/ProceduralLegacyEnemies.js';
+} from '../art/actors/enemies/ProceduralLegacyEnemies.js';
 import {
     createProceduralAquaGolem,
     createProceduralFrostGuardian,
     createProceduralMountainTroll,
     createProceduralSiren
-} from '../art/ProceduralMoonfrostEnemies.js';
+} from '../art/actors/enemies/ProceduralMoonfrostEnemies.js';
 import {
     createProceduralBriarMatron,
     createProceduralHollowSentinel,
     createProceduralRootboundWarden,
     createProceduralRustboundColossus
-} from '../art/ProceduralThorncryptBosses.js';
+} from '../art/actors/enemies/ProceduralThorncryptBosses.js';
 import {
     createProceduralCindermaw,
     createProceduralForgemasterPyrax,
     createProceduralLordInfernax,
     createProceduralObsidianGuardian,
     createProceduralScorchedTwins
-} from '../art/ProceduralMoltenBosses.js';
+} from '../art/actors/enemies/ProceduralMoltenBosses.js';
 import {
     createProceduralRocMatriarch,
     createProceduralStormcallers,
     createProceduralThunderlordKaelix,
     createProceduralWindshear,
     createProceduralZephyrion
-} from '../art/ProceduralTempestBosses.js';
+} from '../art/actors/enemies/ProceduralTempestBosses.js';
 import {
     createProceduralAbyssalGoliath,
     createProceduralDrownedChoir,
     createProceduralMaelstromWarden,
     createProceduralThalorath,
     createProceduralTiderendLeviathan
-} from '../art/ProceduralAbyssalBosses.js';
+} from '../art/actors/enemies/ProceduralAbyssalBosses.js';
 import {
     PROCEDURAL_OVERWORLD_ENEMY_DEFINITIONS,
     createProceduralOverworldEnemy
-} from '../art/ProceduralOverworldEnemies.js';
-import { createProceduralLanternholdStructure } from '../art/ProceduralLanternholdArchitecture.js';
-import { createProceduralDarkKing } from '../art/ProceduralDarkKing.js';
+} from '../art/actors/enemies/ProceduralOverworldEnemies.js';
+import { createProceduralLanternholdStructure } from '../art/environment/lanternhold/ProceduralLanternholdArchitecture.js';
+import { createProceduralDarkKing } from '../art/actors/enemies/ProceduralDarkKing.js';
 
 // New dungeon and raid enemies deliberately recompose existing production
 // rigs. Keep that relationship in the factory as well as GameEngine so direct

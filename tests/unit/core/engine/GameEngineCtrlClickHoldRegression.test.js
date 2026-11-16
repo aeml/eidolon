@@ -1,0 +1,545 @@
+import * as THREE from 'three';
+import { jest } from '@jest/globals';
+import { InputManager } from '../../../../src/core/input/InputManager.js';
+import { FootstepAudio, FOOTSTEP_CUE } from '../../../../src/audio/FootstepAudio.js';
+import { EARTH_ELEVATION as field } from '../../../../src/data/worldElevation.js';
+
+jest.unstable_mockModule('../../../../src/proto/state_pb.js', () => {
+    const mock = {
+        eidolon: {
+            state: {
+                StateEnvelope: {
+                    decode: jest.fn()
+                }
+            }
+        }
+    };
+    return { default: mock, ...mock };
+});
+
+const { GameEngine } = await import('../../../../src/core/GameEngine.js');
+const { LootDrop } = await import('../../../../src/entities/interactions/LootDrop.js');
+const { Actor } = await import('../../../../src/entities/base/Actor.js');
+
+function createEngineHarness() {
+    const engine = Object.create(GameEngine.prototype);
+    engine.frameCount = 0;
+    engine.gameTime = 0;
+    engine.raycastTimer = 0;
+    engine.needsRaycast = false;
+    engine.isMobile = false;
+    engine.isMultiplayer = true;
+    engine.hoveredEntity = null;
+    engine.pendingInteraction = null;
+    engine.activeEntitiesCache = [];
+    engine.entityCreationQueue = [];
+    engine.pendingEntityIds = new Set();
+    engine.remotePlayers = new Map();
+    engine.recentlyPickedUpLoot = new Set();
+    engine.playerJumpState = null;
+    engine.playerJumpVisualHeight = 0;
+    engine.network = {
+        messageQueue: [],
+        latestServerTime: null,
+        drainMessages: jest.fn(() => []),
+        send: jest.fn()
+    };
+    engine.performRaycast = jest.fn();
+    engine.updatePlayerJump = jest.fn();
+    engine.updateLootVisualFeedback = jest.fn();
+    engine.processAutoLoot = jest.fn();
+    engine.refreshCombatIntentState = jest.fn();
+    engine.refreshDungeonEntranceHint = jest.fn();
+    engine.clearCombatIntentState = jest.fn();
+    engine.applyPlayerJumpVisuals = jest.fn();
+    engine.isPlayerDead = jest.fn(() => false);
+    engine.chunkManager = {
+        getActiveEntities: jest.fn(() => [engine.player]),
+        update: jest.fn(),
+        updateEntityChunk: jest.fn()
+    };
+    engine.renderSystem = {
+        scene: { add: jest.fn(), remove: jest.fn(), traverse: jest.fn() },
+        render: jest.fn(),
+        setCameraTarget: jest.fn(),
+        updateEnvironmentLighting: jest.fn(),
+        cameraTarget: new THREE.Vector3(0, 0, 0)
+    };
+    engine.uiManager = {
+        isEscMenuOpen: false,
+        isPatchNotesOpen: false,
+        isShopOpen: false,
+        reportScreen: { style: { display: 'none' } },
+        showDeathScreen: jest.fn(),
+        hideDeathScreen: jest.fn(),
+        updatePlayerStats: jest.fn(),
+        updateXP: jest.fn(),
+        updateHotbarCooldowns: jest.fn(),
+        updateEnemyBars: jest.fn(),
+        updateInventory: jest.fn()
+    };
+    engine.minimap = { update: jest.fn() };
+    engine.worldMap = { update: jest.fn() };
+    engine.abilityController = {
+        processInputBuffer: jest.fn(),
+        performAbility: jest.fn(),
+        pendingAbilityTarget: null,
+        pendingAbilitySkill: null,
+        updatePendingTarget: jest.fn(),
+        performAttack: jest.fn()
+    };
+    engine.inputManager = {
+        isMouseDown: true,
+        isRightMouseDown: false,
+        keys: { control: true, alt: false },
+        getGroundIntersection: jest.fn(() => new THREE.Vector3(12, 0, 8)),
+        clearInputState: jest.fn(),
+        getMovementDirection: jest.fn(() => new THREE.Vector3(0, 0, 0))
+    };
+    engine.collisionManager = {
+        checkCollision: jest.fn(() => null),
+        constrainToDungeonWalkableArea: jest.fn(() => false)
+    };
+    engine.floatingTextManager = { update: jest.fn() };
+    engine.effects = [];
+    engine.hazards = new Map();
+    engine.lastPickupTime = 0;
+    engine.player = {
+        id: 'player-1',
+        position: new THREE.Vector3(0, 0, 0),
+        rotation: new THREE.Quaternion(),
+        state: 'IDLE',
+        targetPosition: null,
+        radius: 1.25,
+        lastAttackTime: 0,
+        stats: { attackSpeed: 1, hp: 100, maxHp: 100, mana: 100, maxMana: 100, speed: 5, damage: 10 },
+        mesh: {
+            lookAt: jest.fn(),
+            quaternion: new THREE.Quaternion(),
+            position: new THREE.Vector3(0, 0, 0)
+        },
+        playAnimation: jest.fn(),
+        getAttackHitDelay: jest.fn(() => 0),
+        render: jest.fn(),
+        groundToTerrain: Actor.prototype.groundToTerrain,
+        move: jest.fn()
+    };
+    engine.player.gameEngine = engine;
+    return engine;
+}
+
+describe('GameEngine ctrl-click hold regression', () => {
+    test('ordinary runtime contact audio observes resolved movement and stays silent against collision', () => {
+        const engine = createEngineHarness(), play = jest.fn(() => true);
+        engine.inputManager.isMouseDown = false; engine.player.state = 'MOVING';
+        engine.audioManager = { footsteps: new FootstepAudio({ play }) };
+        engine.chunkManager.update.mockImplementation(() => { engine.player.position.x += 1; });
+        for (let i = 0; i < 4; i++) engine.update(.1);
+        expect(play).toHaveBeenCalledTimes(1);
+        expect(play).toHaveBeenCalledWith(FOOTSTEP_CUE, { surface: 'earth', sequence: 0 });
+        engine.chunkManager.update.mockImplementation(() => {});
+        for (let i = 0; i < 8; i++) engine.update(.1);
+        expect(play).toHaveBeenCalledTimes(1);
+    });
+
+    test.each(['destroyed', 'replaced-player', 'replaced-mesh', 'changed-instance'])('a delayed ground attack cannot affect a %s session owner', reason => {
+        jest.useFakeTimers({ now: 50_000 });
+        const engine = createEngineHarness();
+        const target = { position: new THREE.Vector3(0, 0, 2), isActive: true, state: 'IDLE',
+            stats: { hp: 100 }, takeDamage: jest.fn() };
+        try {
+            engine.update(1 / 60);
+            expect(jest.getTimerCount()).toBe(1);
+            engine.chunkManager.getActiveEntities.mockReturnValue([engine.player, target]);
+            engine.isMultiplayer = false;
+            if (reason === 'destroyed') {
+                engine.network.destroy = jest.fn(); engine.renderSystem.dispose = jest.fn();
+                engine.collisionManager.clear = jest.fn();
+                engine.inputManager.dispose = jest.fn(); engine.floatingTextManager.dispose = jest.fn();
+                engine.worldMap.dispose = jest.fn(); engine.minimap.dispose = jest.fn();
+                engine.player.dispose = jest.fn(() => { engine.player.mesh = null; });
+                engine.destroy();
+                expect(jest.getTimerCount()).toBe(0);
+            } else if (reason === 'replaced-player') engine.player = { ...engine.player };
+            else if (reason === 'replaced-mesh') engine.player.mesh = { ...engine.player.mesh };
+            else engine.currentInstanceId = 'next-dungeon';
+            expect(() => jest.advanceTimersByTime(500)).not.toThrow();
+            expect(target.takeDamage).not.toHaveBeenCalled();
+        } finally { jest.clearAllTimers(); jest.useRealTimers(); }
+    });
+
+    test('a valid delayed local ground attack retains its existing timing and damage', () => {
+        jest.useFakeTimers({ now: 50_000 });
+        const engine = createEngineHarness();
+        const target = { position: new THREE.Vector3(0, 0, 2), isActive: true, state: 'IDLE',
+            stats: { hp: 100 }, takeDamage: jest.fn() };
+        const random = jest.spyOn(Math, 'random').mockReturnValue(.5);
+        try {
+            engine.inputManager.getGroundIntersection.mockReturnValue(new THREE.Vector3(0, 0, 10));
+            engine.update(1 / 60);
+            engine.chunkManager.getActiveEntities.mockReturnValue([engine.player, target]);
+            // The local damage path is tested independently of server authority.
+            engine.isMultiplayer = false;
+            jest.advanceTimersByTime(499); expect(target.takeDamage).not.toHaveBeenCalled();
+            jest.advanceTimersByTime(1); expect(target.takeDamage).toHaveBeenCalledWith(10);
+            expect(engine.pendingAttackTimers?.size ?? 0).toBe(0);
+        } finally { random.mockRestore(); jest.clearAllTimers(); jest.useRealTimers(); }
+    });
+
+    test.each(['high', 'low'])('hazard creation respects the five-entry tick budget and retains all %s boundaries', quality => {
+        const engine = createEngineHarness();
+        engine.renderSystem.graphicsQuality = quality;
+        engine.renderSystem.instanceEnvironmentGroup = new THREE.Group();
+        engine.inputManager.isMouseDown = false;
+        engine.inputManager.keys = {};
+        const payloads = Array.from({ length: 7 }, (_, index) => ({
+            id: `queued-hazard-${index}`, type: 'Hazard', subType: 'wind_gust',
+            x: 20 + index * 15, z: 0, scale: 6 + index, state: index % 2 ? 'CALMED' : 'IDLE'
+        }));
+        payloads.forEach(payload => engine.queueEntityCreation(payload));
+        try {
+            engine.update(1 / 60);
+            expect(engine.hazards.size).toBe(5);
+            expect(engine.entityCreationQueue.map(payload => payload.id)).toEqual(payloads.slice(5).map(payload => payload.id));
+            expect(engine.pendingEntityIds).toEqual(new Set(payloads.slice(5).map(payload => payload.id)));
+            engine.update(1 / 60);
+            expect(engine.hazards.size).toBe(7);
+            expect(engine.entityCreationQueue).toEqual([]);
+            expect(engine.pendingEntityIds.size).toBe(0);
+            for (const payload of payloads) {
+                const hazard = engine.hazards.get(payload.id);
+                expect(hazard.position.toArray()).toEqual([payload.x, 0, payload.z]);
+                expect(hazard.radius).toBe(payload.scale);
+                expect(hazard.boundaryMesh.parent).toBe(engine.renderSystem.instanceEnvironmentGroup);
+                expect(hazard.state).toBe(payload.state);
+            }
+        } finally { engine.hazards.forEach(hazard => hazard.dispose()); }
+    });
+
+    test('discarded loot also yields after five dequeues instead of scanning an unlimited stale burst', () => {
+        const engine = createEngineHarness();
+        engine.inputManager.isMouseDown = false;
+        engine.inputManager.keys = {};
+        const discarded = Array.from({ length: 12 }, (_, index) => ({ id: `picked-${index}`, type: 'Loot' }));
+        engine.entityCreationQueue = [...discarded];
+        engine.pendingEntityIds = new Set(discarded.map(payload => payload.id));
+        discarded.forEach(payload => engine.recentlyPickedUpLoot.add(payload.id));
+        const log = jest.spyOn(console, 'log').mockImplementation(() => {});
+        try {
+            engine.update(1 / 60);
+            expect(engine.entityCreationQueue).toHaveLength(7);
+            expect(engine.pendingEntityIds.size).toBe(7);
+            engine.update(1 / 60);
+            expect(engine.entityCreationQueue).toHaveLength(2);
+            engine.update(1 / 60);
+            expect(engine.entityCreationQueue).toEqual([]);
+            expect(engine.remotePlayers.size).toBe(0);
+            expect(engine.pendingEntityIds.size).toBe(0);
+        } finally { log.mockRestore(); }
+    });
+
+    test.each(['duplicate', 'failure'])('%s creation entries consume the same bounded tick allowance', mode => {
+        const engine = createEngineHarness();
+        engine.inputManager.isMouseDown = false;
+        engine.inputManager.keys = {};
+        const payloads = Array.from({ length: 7 }, (_, index) => ({ id: `queued-${index}`, type: 'Enemy' }));
+        engine.entityCreationQueue = [...payloads];
+        engine.pendingEntityIds = new Set(payloads.map(payload => payload.id));
+        if (mode === 'duplicate') payloads.forEach(payload => engine.remotePlayers.set(payload.id, { state: 'IDLE' }));
+        else engine.createRemotePlayer = jest.fn(() => { throw new Error('Fixture creation failure'); });
+        const errors = jest.spyOn(console, 'error').mockImplementation(() => {});
+        try {
+            engine.update(1 / 60);
+            expect(engine.entityCreationQueue).toEqual(payloads.slice(5));
+            expect(engine.pendingEntityIds.size).toBe(2);
+            if (mode === 'failure') expect(engine.createRemotePlayer).toHaveBeenCalledTimes(5);
+            engine.update(1 / 60);
+            expect(engine.entityCreationQueue).toEqual([]);
+            expect(engine.pendingEntityIds.size).toBe(0);
+            if (mode === 'failure') expect(errors).toHaveBeenCalledTimes(7);
+        } finally { errors.mockRestore(); }
+    });
+
+    test.each([['', true], ['dungeon_floor', false]])('held basic attack respects terrain ownership in %s', (instanceId, attacks) => {
+        const engine = createEngineHarness();
+        engine.terrainElevation = field;
+        engine.currentInstanceId = instanceId;
+        engine.inputManager.keys = {};
+        engine.getBasicAttackRangeForEntity = () => 5;
+        engine.showReadabilityFeedback = jest.fn();
+        engine.player.position.set(-525, field.sample(-525, 440), 440);
+        engine.hoveredEntity = Object.assign(Object.create(Actor.prototype), {
+            id: 'slope-target', state: 'IDLE', isActive: true,
+            position: engine.player.position.clone().add(new THREE.Vector3(4, 8, 0))
+        });
+        engine.update(.016);
+        expect(engine.abilityController.performAttack).toHaveBeenCalledTimes(attacks ? 1 : 0);
+        if (attacks) expect(engine.abilityController.performAttack).toHaveBeenCalledWith(engine.hoveredEntity);
+    });
+
+    test.each([2, 30])('held Shift keeps ground movement when a hostile is %sm away', distance => {
+        const engine = createEngineHarness();
+        // Use production modifier tracking, not an invented keys.shift value.
+        const input = new InputManager({}, {});
+        try {
+            input.onKeyDown({ key: 'Shift', code: 'ShiftLeft' });
+            engine.inputManager.keys = { ...input.keys };
+        } finally {
+            input.dispose();
+        }
+        engine.getBasicAttackRangeForEntity = () => 20;
+        engine.hoveredEntity = Object.assign(Object.create(Actor.prototype), {
+            id: 'enemy', type: 'Skeleton', state: 'MOVING', isActive: true,
+            position: new THREE.Vector3(distance, 0, 0)
+        });
+        engine.player.targetPosition = new THREE.Vector3(9, 0, 4);
+        engine.player.state = 'MOVING';
+        engine.player.move.mockImplementation(target => {
+            engine.player.targetPosition = target.clone();
+            engine.player.state = 'MOVING';
+        });
+        engine.abilityController.pendingAbilityTarget = engine.hoveredEntity;
+        engine.abilityController.pendingAbilitySkill = 'Fireball';
+        engine.showReadabilityFeedback = jest.fn();
+        engine.update(1 / 60);
+        expect(engine.player.targetPosition).toEqual(new THREE.Vector3(12, 0, 8));
+        expect(engine.player.move).toHaveBeenCalledWith(new THREE.Vector3(12, 0, 8));
+        expect(engine.abilityController.performAttack).not.toHaveBeenCalled();
+        expect(engine.abilityController.pendingAbilityTarget).toBeNull();
+        expect(engine.abilityController.pendingAbilitySkill).toBeNull();
+        expect(engine.pendingInteraction).toBeNull();
+    });
+    test.each([false, true])('window dismissal follows actual character movement, not desktop camera pan (mobile=%s)', mobile => {
+        const engine = createEngineHarness();
+        engine.isMobile = mobile;
+        engine.cameraLocked = mobile;
+        engine.inputManager.isMouseDown = false;
+        engine.inputManager.keys = { w: true, control: false };
+        engine.inputManager.getMovementDirection.mockImplementation(() => new THREE.Vector3(1, 0, 0));
+        engine.uiManager.closeForWorldInteraction = jest.fn();
+        engine.update(.1);
+        expect(engine.uiManager.closeForWorldInteraction).toHaveBeenCalledTimes(mobile ? 1 : 0);
+        expect(engine.player.position.x).toBeCloseTo(mobile ? .5 : 0);
+        if (!mobile) expect(engine.renderSystem.setCameraTarget.mock.calls.at(-1)[0].x).toBeLessThan(0);
+    });
+    test('manual phone movement cancels pursuit before queued actions and actor movement, preserving selection and new casts', () => {
+        const engine = createEngineHarness();
+        engine.isMobile = true;
+        engine.inputManager.isMouseDown = false;
+        engine.inputManager.keys.control = false;
+        engine.inputManager.getMovementDirection.mockImplementation(() => new THREE.Vector3(1, 0, 0));
+        const target = Object.assign(Object.create(Actor.prototype), {
+            id: 'selected', isActive: true, state: 'IDLE', position: new THREE.Vector3(2, 0, 0)
+        });
+        engine.mobileCombatTarget = target;
+        engine.pendingInteraction = target;
+        engine.player.targetPosition = target.position.clone();
+        engine.abilityController.pendingAbilityTarget = target;
+        const newCast = { skillName: 'Fireball' };
+        engine.abilityController.inputBuffer = [newCast];
+        engine.abilityController.processInputBuffer.mockImplementation(() => {
+            expect(engine.pendingInteraction).toBeNull();
+            expect(engine.abilityController.pendingAbilityTarget).toBeNull();
+            expect(engine.abilityController.inputBuffer).toEqual([newCast]);
+        });
+        engine.chunkManager.update.mockImplementation(() => expect(engine.player.targetPosition).toBeNull());
+        engine.update(0.1);
+        expect(engine.mobileCombatTarget).toBe(target);
+        expect(engine.abilityController.performAttack).not.toHaveBeenCalled();
+        expect(engine.player.position.x).toBeCloseTo(0.5);
+        engine.inputManager.getMovementDirection.mockImplementation(() => new THREE.Vector3());
+        engine.update(0.1);
+        expect(engine.player.position.x).toBeCloseTo(0.5);
+        expect(engine.pendingInteraction).toBeNull();
+    });
+    test('stationary hover refresh follows an acquired actor without polling empty ground', () => {
+        const engine = createEngineHarness();
+        engine.inputManager.isMouseDown = false;
+        engine.inputManager.pointerOverCanvas = true;
+        engine.raycastTimer = 0.06;
+
+        engine.update(1 / 60);
+        expect(engine.performRaycast).not.toHaveBeenCalled();
+
+        engine.hoveredEntity = Object.assign(Object.create(Actor.prototype), {
+            id: 'moving-hostile',
+            isActive: true,
+            state: 'MOVING',
+            position: new THREE.Vector3(10, 0, 10)
+        });
+        engine.raycastTimer = 0.06;
+        engine.update(1 / 60);
+
+        expect(engine.performRaycast).toHaveBeenCalledTimes(1);
+    });
+
+    test('multiplayer ctrl-click request clears held mouse state so update loop does not immediately force an attack animation', () => {
+        const engine = createEngineHarness();
+
+        const handled = engine.handlePrimaryClick({ ctrlKey: true });
+        engine.update(1 / 60);
+
+        expect(handled).toBe(true);
+        expect(engine.network.send).toHaveBeenCalledWith('jump', { x: 12, y: 0, z: 8, movementContext: '' });
+        expect(engine.inputManager.isMouseDown).toBe(false);
+        expect(engine.player.playAnimation).not.toHaveBeenCalledWith('Attack', false);
+        expect(engine.player.state).not.toBe('ATTACKING');
+    });
+
+    test('spamming ctrl-click while airborne still clears held mouse state instead of leaking into attack logic', () => {
+        const engine = createEngineHarness();
+
+        engine.handlePrimaryClick({ ctrlKey: true });
+        expect(engine.playerJumpState).not.toBeNull();
+
+        engine.inputManager.isMouseDown = true;
+        engine.handlePrimaryClick({ ctrlKey: true });
+        engine.update(1 / 60);
+
+        expect(engine.playerQueuedJump).toBe(true);
+        expect(engine.inputManager.isMouseDown).toBe(false);
+        expect(engine.player.playAnimation).not.toHaveBeenCalledWith('Attack', false);
+        expect(engine.player.state).not.toBe('ATTACKING');
+    });
+
+    test('ctrl-hold during a jump does not early-return the whole update loop on attack cooldown', () => {
+        const engine = createEngineHarness();
+        engine.cameraLocked = true;
+        engine.playerJumpState = {
+            start: new THREE.Vector3(0, 0, 0),
+            end: new THREE.Vector3(12, 0, 8),
+            elapsed: 0.2,
+            duration: 0.8,
+            height: 8,
+            serverDriven: false
+        };
+        engine.inputManager.isMouseDown = true;
+        engine.inputManager.keys.control = true;
+        engine.player.lastAttackTime = Date.now();
+
+        engine.update(1 / 60);
+
+        expect(engine.chunkManager.update).toHaveBeenCalled();
+        expect(engine.renderSystem.setCameraTarget).toHaveBeenCalled();
+        expect(engine.player.state).not.toBe('ATTACKING');
+    });
+
+    test('camera follows smoothed jump display position during authoritative jumps instead of snapped logical position', () => {
+        const engine = createEngineHarness();
+        engine.cameraLocked = true;
+        engine.player.position.set(12, 0, 8);
+        engine.playerJumpState = {
+            start: new THREE.Vector3(0, 0, 0),
+            end: new THREE.Vector3(20, 0, 12),
+            elapsed: 0.25,
+            duration: 0.8,
+            height: 8,
+            serverDriven: true,
+            visualHeight: 4,
+            displayPosition: new THREE.Vector3(6, 0, 4)
+        };
+        engine.inputManager.isMouseDown = false;
+        engine.updatePlayerJump = jest.fn(() => true);
+
+        engine.update(1 / 60);
+
+        expect(engine.renderSystem.setCameraTarget).toHaveBeenCalledWith(engine.playerJumpState.displayPosition);
+        expect(engine.renderSystem.setCameraTarget).not.toHaveBeenCalledWith(engine.player.position);
+    });
+
+    test('midair held mouse input does not trigger attack or ability loops', () => {
+        const engine = createEngineHarness();
+        engine.playerJumpState = {
+            start: new THREE.Vector3(0, 0, 0),
+            end: new THREE.Vector3(12, 0, 8),
+            elapsed: 0.25,
+            duration: 0.8,
+            height: 8,
+            serverDriven: false
+        };
+        engine.inputManager.isMouseDown = true;
+        engine.inputManager.isRightMouseDown = true;
+
+        engine.update(1 / 60);
+
+        expect(engine.abilityController.performAbility).not.toHaveBeenCalled();
+        expect(engine.abilityController.performAttack).not.toHaveBeenCalled();
+        expect(engine.player.playAnimation).not.toHaveBeenCalledWith('Attack', false);
+    });
+
+    test('local loot pickup fallback removes a reparented pendingInteraction mesh from its current parent', () => {
+        const dateNowSpy = jest.spyOn(Date, 'now').mockReturnValue(1000);
+        const engine = createEngineHarness();
+        const pendingMesh = { children: [], parent: null };
+        const otherParent = {
+            children: [],
+            add(mesh) {
+                if (!this.children.includes(mesh)) {
+                    this.children.push(mesh);
+                }
+                mesh.parent = this;
+            },
+            remove: jest.fn(function (mesh) {
+                this.children = this.children.filter(child => child !== mesh);
+                if (mesh.parent === this) {
+                    mesh.parent = null;
+                }
+            })
+        };
+        const pendingInteraction = Object.create(LootDrop.prototype);
+        pendingInteraction.id = 'loot-local-1';
+        pendingInteraction.isActive = true;
+        pendingInteraction.position = new THREE.Vector3(0, 0.5, 0);
+        pendingInteraction.item = { name: 'Radiant Ruby' };
+        pendingInteraction.mesh = pendingMesh;
+        pendingInteraction.dispose = undefined;
+
+        otherParent.add(pendingMesh);
+        engine.pendingInteraction = pendingInteraction;
+        engine.isMultiplayer = false;
+        engine.chunkManager = {
+            getActiveEntities: jest.fn(() => [engine.player]),
+            update: jest.fn(),
+            updateEntityChunk: jest.fn(),
+            getChunkKey: jest.fn(() => '0:0'),
+            chunks: new Map([['0:0', new Set([pendingInteraction])]])
+        };
+        engine.player.targetPosition = new THREE.Vector3(0, 0, 0);
+        engine.player.state = 'MOVING';
+        engine.player.addToInventory = jest.fn(() => true);
+        engine.player.getAttackHitDelay = jest.fn(() => Infinity);
+        engine.inputManager.isMouseDown = false;
+        engine.inputManager.keys.control = false;
+        engine.inputManager.keys.meta = false;
+        engine.getInteractionRangeForEntity = jest.fn(() => 5);
+
+        engine.update(1 / 60);
+
+        // Sanity: pickup path should have run and cleared the interaction.
+        expect(engine.player.addToInventory).toHaveBeenCalledWith(pendingInteraction.item);
+        expect(otherParent.remove).toHaveBeenCalledWith(pendingMesh);
+        expect(otherParent.children).toHaveLength(0);
+        expect(engine.renderSystem.scene.remove).not.toHaveBeenCalledWith(pendingMesh);
+        expect(engine.pendingInteraction).toBeNull();
+        expect(engine.chunkManager.chunks.get('0:0').has(pendingInteraction)).toBe(false);
+        dateNowSpy.mockRestore();
+    });
+
+    test('meta-hold uses the same modifier-held branch as ctrl-hold instead of falling back to click-to-move', () => {
+        const engine = createEngineHarness();
+        engine.cameraLocked = true;
+        engine.playerJumpState = null;
+        engine.inputManager.isMouseDown = true;
+        engine.inputManager.keys.control = false;
+        engine.inputManager.keys.meta = true;
+        engine.player.lastAttackTime = Date.now();
+
+        engine.update(1 / 60);
+
+        expect(engine.chunkManager.update).toHaveBeenCalled();
+        expect(engine.renderSystem.setCameraTarget).toHaveBeenCalled();
+        expect(engine.player.move).not.toHaveBeenCalled();
+        expect(engine.player.playAnimation).not.toHaveBeenCalledWith('Attack', false);
+        expect(engine.player.state).not.toBe('ATTACKING');
+    });
+});

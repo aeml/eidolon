@@ -1,0 +1,97 @@
+import { jest } from '@jest/globals';
+import { readFileSync } from 'node:fs';
+import { URL as NodeURL } from 'node:url';
+import { initializeAnalytics } from '../../../src/analytics/GoogleAnalytics.js';
+
+const source = readFileSync(new NodeURL('../../../src/core/RecoveryLinkBoot.js', import.meta.url), 'utf8');
+const html = readFileSync(new NodeURL('../../../index.html', import.meta.url), 'utf8');
+function boot(fragment, blocked = false, query = '?release=fixture') {
+    const win = { location: new URL(`https://play.eidolonrealms.com/${query}#${fragment}`) };
+    win.history = { replaceState: jest.fn((_, __, path) => { if (blocked) throw new Error('blocked'); win.location = new URL(path, win.location.origin); }) };
+    new Function('window', 'URLSearchParams', source)(win, URLSearchParams);
+    return win;
+}
+test('blocking private-link handoff precedes analytics and game modules', () => {
+    expect(html.indexOf('src/core/RecoveryLinkBoot.js')).toBeLessThan(html.indexOf('src/analytics/game.js'));
+    const script = new DOMParser().parseFromString(html, 'text/html').querySelector('script[src="./src/core/RecoveryLinkBoot.js"]');
+    expect(script.hasAttribute('async')).toBe(false); expect(script.hasAttribute('defer')).toBe(false); expect(script.hasAttribute('type')).toBe(false);
+});
+test.each(['verify', 'reset'])('%s handoff scrubs before analytics and stores proof only in non-enumerable RAM', kind => {
+    const fragment = new URLSearchParams({ 'eidolon-recovery': kind, account: 'owner with & symbols', token: 'a'.repeat(64) }).toString();
+    const win = boot(fragment);
+    expect(win.location.hash).toBe(''); expect(win.location.search).toBe('?release=fixture');
+    expect(win.__eidolonRecoveryHandoff).toEqual({ kind, username: 'owner with & symbols', token: 'a'.repeat(64), scrubbed: true });
+    expect(Object.keys(win)).not.toContain('__eidolonRecoveryHandoff');
+    const doc = { head: { appendChild: jest.fn() }, createElement: jest.fn() };
+    initializeAnalytics('game', win, doc)('gameplay_start');
+    expect(doc.head.appendChild).not.toHaveBeenCalled(); expect(win.dataLayer).toBeUndefined();
+    delete win.__eidolonRecoveryHandoff; expect(win.__eidolonRecoveryHandoff).toBeUndefined();
+});
+test('blocked history still suppresses analytics and flags the private address bar', () => {
+    const win = boot(`eidolon-recovery=reset&account=owner&token=${'a'.repeat(64)}`, true);
+    expect(win.__eidolonRecoveryHandoff.scrubbed).toBe(false); expect(win.__eidolonRecoverySensitivePage).toBe(true);
+    const doc = { head: { appendChild: jest.fn() } };
+    initializeAnalytics('game', win, doc)('gameplay_start'); expect(doc.head.appendChild).not.toHaveBeenCalled();
+});
+test.each(['eidolon-recovery=evil', 'eidolon-recovery=reset&account=owner&token=bad', `eidolon-recovery=reset&account=owner&account=other&token=${'a'.repeat(64)}`])('malformed private link is scrubbed without giving the UI a token', fragment => {
+    const win = boot(fragment); expect(win.location.hash).toBe(''); expect(win.__eidolonRecoveryHandoff).toEqual({ invalid: true, scrubbed: true });
+});
+test('unrelated game anchors are not consumed or treated as account recovery', () => {
+    const win = boot('quest-log'); expect(win.history.replaceState).not.toHaveBeenCalled(); expect(win.__eidolonRecoveryHandoff).toBeUndefined();
+});
+test.each(['eidolon-private=account', 'eidolon-private=unexpected', 'eidolon-private=account&eidolon-private=other'])('private export mode suppresses tag before initialization without an account/token handoff: %s', fragment => {
+    const win=boot(fragment);
+    expect(win.location.hash).toBe('');expect(win.location.search).toBe('');
+    expect(win.__eidolonRecoverySensitivePage).toBe(true);expect(win.__eidolonRecoveryHandoff).toBeUndefined();
+    const doc={head:{appendChild:jest.fn()}};
+    initializeAnalytics('game',win,doc)('account_export');
+    expect(doc.head.appendChild).not.toHaveBeenCalled();expect(win.dataLayer).toBeUndefined();
+});
+test('private mode keeps analytics off even when history cannot scrub its nonsecret marker',()=>{
+    const win=boot('eidolon-private=account',true);const doc={head:{appendChild:jest.fn()}};
+    initializeAnalytics('game',win,doc)('account_export');expect(doc.head.appendChild).not.toHaveBeenCalled();
+});
+test('private-mode navigation query boots a fresh sensitive document and is scrubbed before analytics',()=>{
+    const win=boot('',false,'?eidolon-private=account');
+    expect(win.location.search).toBe('');expect(win.__eidolonRecoverySensitivePage).toBe(true);
+    const doc={head:{appendChild:jest.fn()}};
+    initializeAnalytics('game',win,doc)('account_export');expect(doc.head.appendChild).not.toHaveBeenCalled();
+});
+
+const invitation = `v1.eyJ1c2VybmFtZSI6Ik1pcmEifQ.${'A'.repeat(43)}`;
+function expectPrivate(win) {
+    const doc = { head: { appendChild: jest.fn() } };
+    initializeAnalytics('game', win, doc)('gameplay_start');
+    expect(doc.head.appendChild).not.toHaveBeenCalled();
+    expect(win.dataLayer).toBeUndefined();
+}
+test('invitation is scrubbed before analytics, held only in non-enumerable RAM and never submitted on open', () => {
+    const win = boot(`invite=${invitation}&view=help`);
+    expect(win.location.hash).toBe('#view=help');
+    expect(win.location.search).toBe('?release=fixture');
+    expect(win.__eidolonInvitationHandoff).toEqual({ token: invitation, scrubbed: true });
+    expect(Object.keys(win)).not.toContain('__eidolonInvitationHandoff');
+    expect(win.fetch).toBeUndefined();
+    expectPrivate(win);
+});
+test.each([
+    ['invite=bad', '?release=fixture'],
+    [`invite=${invitation}&invite=${invitation}`, '?release=fixture'],
+    ['', `?invite=${invitation}&release=fixture`],
+    [`invite=${invitation}`, `?invite=${invitation}`],
+    [`invite=${invitation}&eidolon-recovery=reset&account=owner&token=${'a'.repeat(64)}`, '?release=fixture'],
+])('malformed, query, duplicate and mixed invitations fail closed before analytics', (fragment, query) => {
+    const win = boot(fragment, false, query);
+    expect(win.__eidolonInvitationHandoff).toEqual({ invalid: true, scrubbed: true });
+    expect(win.location.href).not.toContain(invitation);
+    if (fragment.includes('eidolon-recovery')) expect(win.__eidolonRecoveryHandoff.invalid).toBe(true);
+    expectPrivate(win);
+});
+test('blocked invitation history keeps analytics off even while the address cannot be scrubbed', () => {
+    const win = boot(`invite=${invitation}`, true);
+    expect(win.__eidolonInvitationHandoff.scrubbed).toBe(false);
+    expectPrivate(win);
+});
+test.each([['?invite=bad', ''], ['', '#invite=bad']])('analytics fallback suppresses private invitations even without the head handoff', (search, hash) => {
+    expectPrivate({ location: { hostname: 'play.eidolonrealms.com', search, hash } });
+});

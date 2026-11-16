@@ -1,0 +1,63 @@
+import { recordDarkKingPhase, assertDarkKingPhases } from '../../../support/world/darkKingPartyEvidence.js';
+
+afterEach(() => { document.body.replaceChildren(); });
+
+function observedPhases() {
+    const evidence = {};
+    const game = { currentInstanceId: 'owned-raid', currentInstanceType: 'weekly_raid',
+        player: { state: 'IDLE', stats: { hp: 500 } }, uiManager: {} };
+    const phases = ['Orun', 'Neris', 'Pyralis', 'Aeral'].map((eidolon, i) => ({
+        instanceId: 'owned-raid', phase: i + 1, eidolon, element: ['Earth', 'Water', 'Fire', 'Air'][i],
+        title: `Phase ${i + 1}`, effect: `${eidolon} offers aid`, dialogue: `${eidolon} speaks`
+    }));
+    for (const p of phases) {
+        const root = document.createElement('aside');
+        for (const [field, text] of Object.entries({ title: p.title, meta: `Phase ${p.phase} of 4 · ${p.element}`, effect: p.effect })) {
+            const span = document.createElement('span');
+            span.className = `eidolon-phase-notice__${field}`;
+            span.textContent = text;
+            root.append(span);
+        }
+        root.getBoundingClientRect = () => ({ height: 100 });
+        document.body.append(root);
+        game.uiManager = { eidolonPhaseNotice: { root } };
+        recordDarkKingPhase(evidence, game, p);
+    }
+    return { evidence, game, phases };
+}
+
+test('requires all four actual events with the correct rendered callout and living observer', () => {
+    const { evidence } = observedPhases();
+    expect(() => assertDarkKingPhases(evidence)).not.toThrow();
+});
+
+test('retains observation times for phase durations without changing game state', () => {
+    const { game, phases } = observedPhases();
+    const evidence = {}, before = JSON.stringify(game.player), root = game.uiManager.eidolonPhaseNotice.root;
+    const markup = root.outerHTML;
+    for (const [i, phase] of phases.entries()) recordDarkKingPhase(evidence, game, phase, 1000 + i * 90_000);
+    expect(evidence.darkKingPhases.map(p => p.observedAtMs)).toEqual([1000, 91000, 181000, 271000]);
+    expect(JSON.stringify(game.player)).toBe(before);
+    expect(game.uiManager.eidolonPhaseNotice.root).toBe(root);
+    expect(root.outerHTML).toBe(markup);
+});
+
+test.each([
+    e => { e.darkKingPhases.splice(1, 1); }, e => { e.darkKingPhases.reverse(); },
+    e => { e.darkKingPhases[1].eidolon = 'Orun'; }, e => { e.darkKingPhases[1].alive = false; },
+    e => { e.darkKingPhases[1].visible = false; }, e => { e.darkKingPhases[1].renderedTitle = 'stale boss warning'; },
+    e => { e.darkKingPhases[1].renderedEffect = ''; }, e => { e.darkKingPhases[1].dialogue = ''; },
+    e => { e.darkKingPhases.push(e.darkKingPhases[0]); }, e => { e.darkKingPhaseOverflow = true; }
+])('does not confuse skipped, duplicate, dead-player or unpresented phases with completion', change => {
+    const { evidence } = observedPhases(); change(evidence);
+    expect(() => assertDarkKingPhases(evidence)).toThrow('four ordered');
+});
+
+test('ignores events from another instance and bounds broken-server receipts without hiding overflow', () => {
+    const { evidence, game, phases } = observedPhases();
+    recordDarkKingPhase(evidence, game, { ...phases[0], instanceId: 'other-raid' });
+    expect(evidence.darkKingPhases).toHaveLength(4);
+    for (let i = 0; i < 10; i++) recordDarkKingPhase(evidence, game, phases[0]);
+    expect(evidence.darkKingPhases).toHaveLength(8);
+    expect(evidence.darkKingPhaseOverflow).toBe(true);
+});

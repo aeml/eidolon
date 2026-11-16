@@ -4,7 +4,7 @@ The 1.18 measurements below are historical workload evidence, not closed-beta
 approval or a current universal support promise. The owner has not selected a
 formal supported hardware/OS list. Do not convert browser emulation into a
 real-phone certification. Later qualified performance and lifetime results are
-linked from the [1.50 integration review](../plans/2026-09-30-release1-50-presentation-review.md).
+linked from the [1.50 integration review](../records/releases/1.50/2026-09-30-presentation-review.md).
 
 ## Evidence matrix
 
@@ -23,7 +23,7 @@ settings, alternating phone/desktop UI owners, lazy patch history and explicit
 graphics-unavailable recovery. Default headless Firefox still cannot create
 WebGL2 on this host; the material probe failed before drawing. This adds
 interface evidence only, not renderer or device support certification.
-[Results and retained failures](../plans/2026-10-15-firefox-interface-checks.json).
+[Results and retained failures](../records/2026/10/15/firefox-interface-checks.json).
 
 ## Existing quality behavior, now explained in Settings
 
@@ -43,7 +43,7 @@ the game. No silent automatic quality downgrade is introduced here.
 ## Bounded populated-world acceptance budget
 
 Declare before the1.18 run; retain the previously used frame-time targets.
-`tests/e2e/populated-earth-world.spec.js`, opt-in
+`tests/e2e/world/populated-earth-world.spec.js`, opt-in
 `EIDOLON_E2E_POPULATION_PROFILE=1`, covers four views per fixture: dense town/Earth,
 Water/Fire settlements and Air landmarks/camps. Each view warms30 frames and
 samples120 animation-frame intervals plus CPU submission time. High1280×844;

@@ -4,15 +4,15 @@ export default {
   "version": "supplied-indices-v1-.006-.12-collars",
   "provenance": {
     "files": {
-      "src/core/GameplayGeometryFingerprint.js": "82e8fb9b63cc38af0948a2400866648e491ff60309d4872c971d214888f5d2bc",
-      "src/core/GameplayGeometryPreparation.js": "66034c2b73a98dd10294d8241b207aa61f5ecc2f95c555c83c701d8609296bf4",
-      "src/core/GameplayGeometryIndexCodec.js": "74caf7b19ca7b6204d3a60ebbf19afb53d45041ac4a8f661a5d7f7a26672d78c",
+      "src/core/geometry/GameplayGeometryFingerprint.js": "82e8fb9b63cc38af0948a2400866648e491ff60309d4872c971d214888f5d2bc",
+      "src/core/geometry/GameplayGeometryPreparation.js": "b8e78a34a0143d278580b4ad62ff58cfa43c81e2bb4c4a70e412bc3e5ad6f248",
+      "src/core/geometry/GameplayGeometryIndexCodec.js": "74caf7b19ca7b6204d3a60ebbf19afb53d45041ac4a8f661a5d7f7a26672d78c",
       "src/art/GameplayBodyIndices.js": "be88b077fdb35f07f82242d5f1ec7e81449bb4a5e96762b39625da933aeeae55",
       "src/art/GameplayColorIndices.js": "e4c557546ee4b6f3e968f115537a3a699584be2e5125ae4bd94985f904c06b5f",
       "src/art/GameplayRigidIndices.js": "4a07deee4763d793483e627a203e48dde288c837169ec99b8f7251ef0bf38607",
-      "scripts/lib/gameplay-geometry-fixture.js": "5c71413b5aaa5c68d8e0d27f80ca92ebf004f55cc363d34f9151b03e1d30460b",
-      "scripts/lib/gameplay-geometry-artifact.mjs": "0ebb7db8fa78fb61aa62330052b8122045a81309e65ba5cb080d0d423f9e0f01",
-      "scripts/generate-gameplay-geometry-precomputed.mjs": "fc51a3c54065ee22d1392e9e29dbf5823bddba4e857f3a56c05e96aed2b883f4"
+      "scripts/lib/gameplay-geometry-fixture.js": "8bee9c7bfeee886f428b91eef3203ade90bd1122adc6dccecd1593bee2df9475",
+      "scripts/lib/gameplay-geometry-artifact.mjs": "8270508111ca891fbff27a1596f56f2abe430afaff7c02b7af96b2f946e11458",
+      "scripts/content/generate-gameplay-geometry-precomputed.mjs": "8d1cdf75ee676360cfa285b51c198657382054fdb9a336959baecd10aae80f18"
     },
     "meshoptimizer": {
       "version": "1.2.0",

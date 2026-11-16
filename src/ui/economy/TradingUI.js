@@ -1,0 +1,605 @@
+import { ownedEvent, disposeOwnedEvents } from '../OwnedEvents.js';
+/**
+ * Trading House UI module — handles auction browsing, listing, bidding,
+ * buying out, and collecting/cancelling auctions.
+ *
+ * Extracted from UIManager to keep each UI domain independently readable.
+ * The parent UIManager passes shared helpers via the `ctx` object.
+ */
+export class TradingUI {
+    /**
+     * @param {Object} ctx
+     * @param {Function} ctx.getLastPlayer      – returns current player ref
+     * @param {Function} ctx.getItemIconPath     – returns icon URL for an item
+     * @param {Function} ctx.getRarityColor      – returns CSS color string for rarity
+     * @param {Function} ctx.showItemTooltip     – (item, x, y) shows tooltip
+     * @param {Function} ctx.hideTooltips        – hides all tooltips
+     * @param {Function} ctx.addChatMessage      – (sender, msg) adds system chat
+     */
+    constructor(ctx) {
+        this.ctx = ctx;
+
+        // --- DOM refs ---
+        this.tradingHouseScreen = document.getElementById('trading-house-screen');
+        this.btnCloseTradingHouse = document.getElementById('btn-close-trading-house');
+
+        this.tabTradingBid = document.getElementById('tab-trading-bid');
+        this.tabTradingList = document.getElementById('tab-trading-list');
+        this.tabTradingMy = document.getElementById('tab-trading-my');
+        this.panelTradingBid = document.getElementById('trading-panel-bid');
+        this.panelTradingList = document.getElementById('trading-panel-list');
+        this.panelTradingMy = document.getElementById('trading-panel-my');
+
+        this.tradingSearchInput = document.getElementById('trading-search-input');
+        this.btnTradingSearch = document.getElementById('btn-trading-search');
+		this.tradingFilterType = document.getElementById('trading-filter-type');
+		this.tradingFilterRarity = document.getElementById('trading-filter-rarity');
+		this.tradingFilterMinLevel = document.getElementById('trading-filter-min-level');
+		this.tradingFilterMaxLevel = document.getElementById('trading-filter-max-level');
+        this.tradingListContainer = document.getElementById('trading-list-container');
+
+        this.tradingSellSlot = document.getElementById('trading-sell-slot');
+        this.tradingInputBid = document.getElementById('trading-input-bid');
+        this.tradingInputBuyout = document.getElementById('trading-input-buyout');
+        this.tradingInputDuration = document.getElementById('trading-input-duration');
+        this.btnTradingCreate = document.getElementById('btn-trading-create');
+        this.tradingInventoryList = document.getElementById('trading-inventory-list');
+
+        this.tradingMyList = document.getElementById('trading-my-list');
+
+        // --- State ---
+        this.selectedTradingItem = null;
+        this.pendingReads = new Map();
+        this.readStatus = new Map();
+        for (const [tab, list] of [['bid', this.tradingListContainer], ['my', this.tradingMyList]]) {
+            if (!list) continue;
+            const status = this.createMessage('');
+            status.className = 'trading-read-status';
+            status.setAttribute('role', 'status');
+            status.setAttribute('aria-live', 'polite');
+            status.hidden = true;
+            list.before(status);
+            this.readStatus.set(tab, status);
+        }
+
+        // --- Callbacks (set by GameEngine) ---
+        this.onTradingSearch = null;
+        this.onTradingCreate = null;
+        this.onTradingMyAuctions = null;
+        this.onTradingBuyout = null;
+        this.onTradingBid = null;
+        this.onTradingCollect = null;
+        this.onTradingCancel = null;
+
+        // --- Event listeners ---
+        if (this.btnCloseTradingHouse) {
+            ownedEvent(this, this.btnCloseTradingHouse, 'click', () => this.toggle());
+        }
+        if (this.tabTradingBid) ownedEvent(this, this.tabTradingBid, 'click', () => this.switchTab('bid'));
+        if (this.tabTradingList) ownedEvent(this, this.tabTradingList, 'click', () => this.switchTab('list'));
+        if (this.tabTradingMy) ownedEvent(this, this.tabTradingMy, 'click', () => this.switchTab('my'));
+        if (this.btnTradingSearch) ownedEvent(this, this.btnTradingSearch, 'click', () => this.handleSearch());
+        if (this.btnTradingCreate) ownedEvent(this, this.btnTradingCreate, 'click', () => this.handleCreate());
+    }
+
+    clearElement(element) {
+        element?.replaceChildren();
+    }
+
+    itemLabel(item) {
+        return [item.rarity, item.slot, item.level && `Level ${item.level}`,
+            item.potency > 0 && `Potency +${item.potency}`, `Quantity ${item.stack || 1}`].filter(Boolean).join(' · ');
+    }
+
+    appendItemDetails(container, item) {
+        const details = document.createElement('details');
+        details.className = 'auction-item-details';
+        const summary = document.createElement('summary');
+        summary.textContent = 'Item details';
+        details.append(summary);
+        const lines = [this.itemLabel(item), item.description,
+            ...Object.entries(item.stats || {}).map(([stat, value]) => `${stat}: ${value}`),
+            item.sockets > 0 && `Sockets: ${(item.gems || []).filter(Boolean).length} / ${item.sockets}`];
+        for (const text of lines.filter(Boolean)) details.append(this.createMessage(text));
+        container.append(details);
+    }
+
+    createMessage(text, styles = {}) {
+        const message = document.createElement('div');
+        Object.assign(message.style, styles);
+        message.textContent = text;
+        return message;
+    }
+
+    setPriceContent(container, values) {
+        container.replaceChildren();
+
+        values.forEach((value, index) => {
+            const amount = document.createElement('span');
+            amount.style.color = '#ffd700';
+            amount.textContent = String(value);
+            container.appendChild(amount);
+
+            if (index < values.length - 1) {
+                container.appendChild(document.createTextNode(' / '));
+            }
+        });
+    }
+
+    formatAuctionTimeRemaining(endTime) {
+        const endMs = Number(new Date(endTime));
+        if (!Number.isFinite(endMs)) {
+            return 'Time unknown';
+        }
+
+        const remainingMs = Math.max(0, endMs - Date.now());
+        const totalMinutes = Math.ceil(remainingMs / 60000);
+        if (totalMinutes < 60) {
+            return `${Math.max(1, totalMinutes)}m left`;
+        }
+
+        const totalHours = Math.ceil(totalMinutes / 60);
+        if (totalHours < 48) {
+            return `${totalHours}h left`;
+        }
+
+        return `${Math.ceil(totalHours / 24)}d left`;
+    }
+
+    updateTradingGuidance(text) {
+        const guidance = document.getElementById('trading-house-guidance');
+        if (guidance) {
+            guidance.textContent = text;
+        }
+    }
+
+    // ================================================================
+    // PUBLIC API
+    // ================================================================
+
+    /** Whether the trading house window is currently visible. */
+    get isOpen() {
+        return this.tradingHouseScreen &&
+               this.tradingHouseScreen.style.display === 'flex';
+    }
+
+    /** Toggle trading house open/closed. */
+    toggle() {
+        if (!this.tradingHouseScreen) return;
+
+        const isHidden = this.tradingHouseScreen.style.display === 'none' || this.tradingHouseScreen.style.display === '';
+        if (this.ctx.toggleManagedWindow) {
+            this.ctx.toggleManagedWindow('trading');
+        } else {
+            this.tradingHouseScreen.style.display = isHidden ? 'flex' : 'none';
+        }
+
+        if (isHidden) {
+            this.switchTab('bid');
+        } else {
+            this.close();
+        }
+    }
+
+    /** Close the trading house if open. */
+    close() {
+        this.clearPendingReads();
+        this.clearSelection();
+        if (this.tradingHouseScreen) {
+            this.tradingHouseScreen.style.display = 'none';
+        }
+    }
+
+    // ================================================================
+    // TAB MANAGEMENT
+    // ================================================================
+
+    switchTab(tab) {
+        if (this.tabTradingBid) this.tabTradingBid.classList.toggle('is-active', tab === 'bid');
+        if (this.tabTradingList) this.tabTradingList.classList.toggle('is-active', tab === 'list');
+        if (this.tabTradingMy) this.tabTradingMy.classList.toggle('is-active', tab === 'my');
+
+        if (this.panelTradingBid) this.panelTradingBid.style.display = 'none';
+        if (this.panelTradingList) this.panelTradingList.style.display = 'none';
+        if (this.panelTradingMy) this.panelTradingMy.style.display = 'none';
+
+        if (tab === 'bid') {
+            if (this.panelTradingBid) this.panelTradingBid.style.display = 'flex';
+            this.updateTradingGuidance('Browse live auctions, check the current bid versus buyout, and watch the time remaining before you commit gold.');
+            this.handleSearch();
+        } else if (tab === 'list') {
+            if (this.panelTradingList) this.panelTradingList.style.display = 'flex';
+            this.updateTradingGuidance('List market-worthy gear here. Set a realistic starting bid, a clean buyout, and remember sold auctions return gold after the sales fee plus your deposit.');
+            const player = this.ctx.getLastPlayer();
+            if (player) {
+                this.updateInventory(player);
+            }
+        } else if (tab === 'my') {
+            if (this.panelTradingMy) this.panelTradingMy.style.display = 'flex';
+            this.updateTradingGuidance('My Auctions separates active listings from sold, expired, and cancelled results so you can collect gold or reclaim items without guessing.');
+            this.handleMyAuctions();
+        }
+    }
+
+    // ================================================================
+    // SEARCH / CREATE
+    // ================================================================
+
+    handleSearch() {
+        const query = this.tradingSearchInput ? this.tradingSearchInput.value : '';
+        if (this.onTradingSearch) {
+            this.requestRead('bid', () => this.onTradingSearch({
+				query,
+				itemType: this.tradingFilterType?.value || '',
+				rarity: this.tradingFilterRarity?.value || '',
+				minLevel: Math.max(0, Number(this.tradingFilterMinLevel?.value) || 0),
+				maxLevel: Math.max(0, Number(this.tradingFilterMaxLevel?.value) || 0)
+            }));
+        }
+    }
+
+    handleMyAuctions() {
+        if (this.onTradingMyAuctions) this.requestRead('my', () => this.onTradingMyAuctions());
+    }
+
+    requestRead(tab, send) {
+        this.finishRead(tab);
+        const list = tab === 'bid' ? this.tradingListContainer : this.tradingMyList;
+        const status = this.readStatus.get(tab);
+        list?.setAttribute('aria-busy', 'true');
+        if (status) {
+            status.hidden = false;
+            status.textContent = 'Loading auctions… Previous results may be out of date.';
+        }
+        // Reads only: no automatic retry, bid, purchase or listing is ever sent.
+        this.pendingReads.set(tab, setTimeout(() => this.finishRead(tab,
+            tab === 'bid' ? 'Auctions did not load. Select Search to retry.'
+                : 'Auctions did not load. Select My Auctions to retry.'), 10000));
+        try {
+            if (send() === false) this.finishRead(tab, 'Not connected. Reconnect, then retry the auction search.');
+        } catch {
+            this.finishRead(tab, 'Auctions could not load. Reconnect, then retry.');
+        }
+    }
+
+    finishRead(tab, message = '') {
+        clearTimeout(this.pendingReads.get(tab));
+        this.pendingReads.delete(tab);
+        const list = tab === 'bid' ? this.tradingListContainer : this.tradingMyList;
+        list?.setAttribute('aria-busy', 'false');
+        const status = this.readStatus.get(tab);
+        if (status) {
+            status.textContent = message;
+            status.hidden = !message;
+        }
+    }
+
+    dispose() {
+        disposeOwnedEvents(this);
+        this.clearPendingReads();
+    }
+
+    clearPendingReads() {
+        for (const tab of new Set([...this.readStatus.keys(), ...this.pendingReads.keys()])) this.finishRead(tab);
+    }
+
+    handleCreate() {
+        if (!this.validateSelection(this.ctx.getLastPlayer())) return;
+        if (!this.selectedTradingItem) {
+            if (this.ctx.addChatMessage) this.ctx.addChatMessage("System", "Select an item to sell first.");
+            return;
+        }
+
+        const bid = parseInt(this.tradingInputBid.value);
+        const buyout = parseInt(this.tradingInputBuyout.value);
+        const duration = parseInt(this.tradingInputDuration.value);
+
+        if (isNaN(bid) || isNaN(buyout) || bid <= 0 || buyout <= 0) {
+            if (this.ctx.addChatMessage) this.ctx.addChatMessage("System", "Invalid price.");
+            return;
+        }
+
+        if (buyout < bid) {
+            if (this.ctx.addChatMessage) this.ctx.addChatMessage("System", "Buyout cannot be less than starting bid.");
+            return;
+        }
+
+        if (this.onTradingCreate) {
+            const selected = this.selectedTradingItem;
+            this.onTradingCreate(selected.slot, bid, buyout, duration, selected.id, selected.stack);
+            this.clearSelection();
+            this.switchTab('my');
+        }
+    }
+
+    clearSelection() {
+        this.selectedTradingItem = null;
+        this.ctx.hideTooltips?.();
+        if (!this.tradingSellSlot) return;
+        const addIcon = document.createElement('span');
+        addIcon.style.fontSize = '30px';
+        addIcon.style.color = '#444';
+        addIcon.textContent = '+';
+        this.tradingSellSlot.replaceChildren(addIcon);
+        this.tradingSellSlot.style.backgroundImage = 'none';
+        this.tradingSellSlot.style.border = '';
+        const caption = document.getElementById('trading-selected-name');
+        if (caption) caption.textContent = 'Choose an item below';
+        this.tradingInventoryList?.querySelectorAll('[aria-pressed]').forEach(row => row.setAttribute('aria-pressed', 'false'));
+    }
+
+    validateSelection(player) {
+        const selected = this.selectedTradingItem;
+        if (!selected) return true;
+        const current = player?.inventory?.[selected.slot];
+        if (selected.id && Number.isInteger(selected.stack) && selected.stack > 0 &&
+            current?.id === selected.id && current.stack === selected.stack) return true;
+        this.clearSelection();
+        const message = 'Your selected item or quantity changed. Select the item again before listing it.';
+        this.updateTradingGuidance(message);
+        this.ctx.addChatMessage?.('System', message);
+        return false;
+    }
+
+    // ================================================================
+    // INVENTORY (listing tab)
+    // ================================================================
+
+    updateInventory(player) {
+        this.validateSelection(player);
+        if (!this.tradingInventoryList) return;
+        this.tradingInventoryList.innerHTML = '';
+
+        player.inventory.forEach((item, index) => {
+            const el = document.createElement(item?.id ? 'button' : 'div');
+            el.className = item?.id ? 'inv-slot trading-item-choice' : 'inv-slot trading-item-empty';
+            el.style.width = '40px';
+            el.style.height = '40px';
+
+            if (item && item.id) {
+                el.type = 'button';
+                el.dataset.itemId = item.id;
+                el.setAttribute('aria-pressed', String(this.selectedTradingItem?.id === item.id));
+                el.setAttribute('aria-label', `${item.name} · ${this.itemLabel(item)}`);
+                const label = this.createMessage(item.name, {});
+                label.className = 'trading-item-name';
+                const meta = this.createMessage(this.itemLabel(item));
+                meta.className = 'trading-item-meta';
+                el.append(label, meta);
+                const iconPath = this.ctx.getItemIconPath(item);
+                el.style.backgroundImage = `url('${iconPath}')`;
+                el.style.backgroundSize = 'contain';
+                el.style.backgroundRepeat = 'no-repeat';
+                el.style.backgroundPosition = 'center';
+
+                if (item.rarity) {
+                    const color = this.ctx.getRarityColor(item.rarity);
+                    el.style.borderColor = color;
+                }
+
+                el.onclick = () => this.selectItem(item, index);
+                el.onmouseenter = (e) => {
+                    if (this.ctx.showItemTooltip) this.ctx.showItemTooltip(item, e.clientX, e.clientY);
+                };
+                el.onmouseleave = () => {
+                    if (this.ctx.hideTooltips) this.ctx.hideTooltips();
+                };
+            }
+            this.tradingInventoryList.appendChild(el);
+        });
+    }
+
+    selectItem(item, slotIndex) {
+        this.selectedTradingItem = { ...item, slot: slotIndex };
+        this.tradingInventoryList?.querySelectorAll('[aria-pressed]').forEach(row =>
+            row.setAttribute('aria-pressed', String(row.dataset.itemId === item.id)));
+        const caption = document.getElementById('trading-selected-name');
+        if (caption) caption.textContent = `${item.name} · Quantity ${item.stack || 1}`;
+
+        const iconPath = this.ctx.getItemIconPath(item);
+        this.tradingSellSlot.innerHTML = '';
+        this.tradingSellSlot.style.backgroundImage = `url('${iconPath}')`;
+        this.tradingSellSlot.style.backgroundSize = 'contain';
+        this.tradingSellSlot.style.backgroundRepeat = 'no-repeat';
+        this.tradingSellSlot.style.backgroundPosition = 'center';
+
+        if (item.rarity) {
+            const color = this.ctx.getRarityColor(item.rarity);
+            this.tradingSellSlot.style.border = `2px solid ${color}`;
+        }
+
+        this.updateTradingGuidance(`Listing ${item.name}. Starting bids open the auction, buyout closes it instantly, and sold auctions return gold after the sales fee plus your deposit.`);
+    }
+
+    // ================================================================
+    // AUCTION RENDERING
+    // ================================================================
+
+    renderAuctionList(auctions) {
+        this.finishRead('bid');
+        if (!this.tradingListContainer) return;
+        this.clearElement(this.tradingListContainer);
+
+        if (!auctions || auctions.length === 0) {
+            this.tradingListContainer.appendChild(this.createMessage('No auctions found.', {
+                padding: '10px',
+                color: '#888',
+                textAlign: 'center'
+            }));
+            return;
+        }
+
+        auctions.forEach(auction => {
+            const row = document.createElement('div');
+            row.className = 'auction-browse-row';
+            row.style.padding = '5px';
+            row.style.borderBottom = '1px solid #444';
+            row.style.alignItems = 'center';
+            row.style.fontSize = '12px';
+
+            // Item Name (with color)
+            const nameSpan = document.createElement('div');
+            nameSpan.className = 'auction-item-info';
+            nameSpan.textContent = auction.item.name;
+            this.appendItemDetails(nameSpan, auction.item);
+            nameSpan.style.color = this.ctx.getRarityColor(auction.item.rarity);
+            nameSpan.style.cursor = 'pointer';
+            nameSpan.onmouseenter = (e) => {
+                if (this.ctx.showItemTooltip) this.ctx.showItemTooltip(auction.item, e.clientX, e.clientY);
+            };
+            nameSpan.onmouseleave = () => {
+                if (this.ctx.hideTooltips) this.ctx.hideTooltips();
+            };
+            const bidState = auction.bidderName
+                ? `High bid: ${auction.bidderName}`
+                : 'No bids yet';
+            const timeState = this.formatAuctionTimeRemaining(auction.endTime);
+            nameSpan.title = `${bidState} • ${timeState}`;
+            row.appendChild(nameSpan);
+
+            // Seller
+            const sellerSpan = document.createElement('span');
+            sellerSpan.textContent = `${auction.sellerName} • ${timeState}`;
+            sellerSpan.style.color = '#aaa';
+            row.appendChild(sellerSpan);
+
+            // Price
+            const priceSpan = document.createElement('span');
+            priceSpan.className = 'auction-browse-price';
+            this.setPriceContent(priceSpan, [auction.currentBid, auction.buyoutPrice]);
+            priceSpan.title = bidState;
+            row.appendChild(priceSpan);
+
+            // Action
+            const actionDiv = document.createElement('div');
+            actionDiv.className = 'auction-browse-actions';
+            actionDiv.style.display = 'flex';
+            actionDiv.style.gap = '5px';
+
+            const btnBid = document.createElement('button');
+            btnBid.textContent = 'Bid';
+            btnBid.className = 'btn-menu';
+            btnBid.style.fontSize = '10px';
+            btnBid.style.padding = '2px 5px';
+            btnBid.onclick = () => {
+                let minBid = auction.currentBid + Math.ceil(auction.currentBid * 0.05);
+                if (minBid < auction.currentBid + 1) minBid = auction.currentBid + 1;
+                if (!auction.bidderId) minBid = auction.currentBid;
+
+                const amount = prompt(`Enter bid amount (Minimum: ${minBid})`, minBid);
+                if (amount !== null) {
+                    const val = parseInt(amount);
+                    if (!isNaN(val)) {
+                        if (this.onTradingBid) this.onTradingBid(auction.id, val);
+                    }
+                }
+            };
+            actionDiv.appendChild(btnBid);
+
+            const btnBuy = document.createElement('button');
+            btnBuy.textContent = 'Buyout';
+            btnBuy.className = 'btn-menu';
+            btnBuy.style.fontSize = '10px';
+            btnBuy.style.padding = '2px 5px';
+            btnBuy.onclick = () => {
+                if (this.onTradingBuyout) this.onTradingBuyout(auction.id);
+            };
+            actionDiv.appendChild(btnBuy);
+
+            row.appendChild(actionDiv);
+            this.tradingListContainer.appendChild(row);
+        });
+    }
+
+    renderMyAuctions(auctions) {
+        this.finishRead('my');
+        if (!this.tradingMyList) return;
+        this.clearElement(this.tradingMyList);
+
+        if (!auctions || auctions.length === 0) {
+            this.tradingMyList.appendChild(this.createMessage('You have no active auctions.', {
+                padding: '10px',
+                color: '#888',
+                textAlign: 'center'
+            }));
+            return;
+        }
+
+        auctions.forEach(auction => {
+            const row = document.createElement('div');
+            row.className = 'auction-owned-row';
+            row.style.display = 'grid';
+            row.style.gridTemplateColumns = '2fr 1fr 1fr 1fr';
+            row.style.padding = '5px';
+            row.style.borderBottom = '1px solid #444';
+            row.style.alignItems = 'center';
+            row.style.fontSize = '12px';
+
+            // Item Name
+            const nameSpan = document.createElement('div');
+            nameSpan.className = 'auction-item-info';
+            nameSpan.textContent = auction.item.name;
+            this.appendItemDetails(nameSpan, auction.item);
+            nameSpan.style.color = this.ctx.getRarityColor(auction.item.rarity);
+            row.appendChild(nameSpan);
+
+            // Status
+            const statusSpan = document.createElement('span');
+            statusSpan.textContent = auction.status;
+            statusSpan.style.color = auction.status === 'SOLD' ? '#0f0' : (auction.status === 'EXPIRED' ? '#f00' : '#fff');
+            row.appendChild(statusSpan);
+
+            // Price
+            const priceSpan = document.createElement('span');
+            this.setPriceContent(priceSpan, [auction.currentBid]);
+            row.appendChild(priceSpan);
+
+            // Action
+            const actionDiv = document.createElement('div');
+
+            if (auction.status === 'SOLD') {
+                const btnCollect = document.createElement('button');
+                btnCollect.textContent = 'Collect Gold';
+                btnCollect.className = 'btn-menu';
+                btnCollect.style.fontSize = '10px';
+                btnCollect.style.padding = '2px 5px';
+                btnCollect.title = 'Collect sold gold payout with deposit refund and sales fee already applied.';
+                btnCollect.onclick = () => {
+                    if (this.onTradingCollect) this.onTradingCollect(auction.id);
+                };
+                actionDiv.appendChild(btnCollect);
+            } else if (auction.status === 'EXPIRED' || auction.status === 'CANCELLED') {
+                const btnReclaim = document.createElement('button');
+                btnReclaim.textContent = 'Reclaim Item';
+                btnReclaim.className = 'btn-menu';
+                btnReclaim.style.fontSize = '10px';
+                btnReclaim.style.padding = '2px 5px';
+                btnReclaim.title = 'Return the unsold item to your inventory or stash.';
+                btnReclaim.onclick = () => {
+                    if (this.onTradingCollect) this.onTradingCollect(auction.id);
+                };
+                actionDiv.appendChild(btnReclaim);
+            } else {
+                const btnCancel = document.createElement('button');
+                btnCancel.textContent = 'Cancel';
+                btnCancel.className = 'btn-menu';
+                btnCancel.style.fontSize = '10px';
+                btnCancel.style.padding = '2px 5px';
+                btnCancel.style.background = '#500';
+                btnCancel.onclick = () => {
+                    if (this.onTradingCancel) this.onTradingCancel(auction.id);
+                };
+                actionDiv.appendChild(btnCancel);
+            }
+
+            actionDiv.title = auction.status === 'ACTIVE'
+                ? 'Listing is still live.'
+                : auction.status === 'SOLD'
+                    ? 'Gold is ready to collect.'
+                    : 'Item is ready to reclaim.';
+
+            row.appendChild(actionDiv);
+            this.tradingMyList.appendChild(row);
+        });
+    }
+}

@@ -1,0 +1,278 @@
+# Eidolon Implementation Checklist
+
+This checklist turns the four-phase recommendation plan into actionable engineering tasks with concrete acceptance criteria.
+
+## Phase 1 - Quick Wins (Correctness + Readability)
+
+### 1.1 Remote ability VFX name sync
+- [x] Replace legacy skill names in `triggerRemoteAbilityVisuals` with current canonical names from `Constants.js`/server events.
+- [x] Add a default fallback visual per class when a skill name is unknown.
+- [x] Add a dev-only warning log for unmapped remote skills to catch regressions.
+
+**Files**
+- `src/core/GameEngine.js`
+- `src/core/Constants.js`
+
+**Acceptance criteria**
+- Remote casts for all current Fighter/Rogue/Wizard/Cleric skills show the intended effect.
+- No silent "missing visual" cases for valid skills.
+
+### 1.2 Cooldown key mismatch fix (Meteor)
+- [x] Change server cooldown reset from `"Meteor"` to `"Meteor Drop"`.
+- [x] Audit nearby set-bonus and combo code for other string-key mismatches.
+
+**Files**
+- `server/internal/game/world.go`
+
+**Acceptance criteria**
+- Meteor cooldown reset effects consistently reset the actual skill cooldown.
+
+### 1.3 Projectile splash radius bug fix
+- [x] Replace hardcoded splash distance check with the computed `splashRadius` variable.
+- [x] Verify all projectile AoE branches use their local radius variables consistently.
+
+**Files**
+- `server/internal/game/world.go`
+
+**Acceptance criteria**
+- Fireball/ExplosiveTrap splash hit area matches configured design values.
+
+### 1.4 Known client logic correctness fixes
+- [x] Fix Wizard meteor burning-ground gate to use an existing skill/rune flag (or remove dead gate).
+- [x] Fix Cleric Spirit Guardians tick path so damage/heal outcomes are applied and visible.
+- [x] Remove stale inline comments that contradict current behavior.
+
+**Files**
+- `src/entities/players/Wizard.js`
+- `src/entities/players/Cleric.js`
+
+**Acceptance criteria**
+- No dead references to nonexistent skill tree nodes.
+- Spirit Guardians clearly apply periodic combat impact in live play.
+
+### 1.5 Validation for Phase 1
+- [x] Run JS tests: `npm test`
+- [x] Run Go tests: `go test ./...` (from `server/`)
+- [ ] Multiplayer smoke check: two clients in same zone; verify remote cast VFX for each class.
+
+---
+
+## Phase 2 - Gameplay Feel + Combat Consistency
+
+### 2.1 Shared ability config source
+- [x] Introduce a canonical ability config table (name, cooldown, mana, range, tags).
+- [x] Use it from server ability execution and client UI/hotbar display.
+- [x] Remove duplicated magic numbers where practical. All four classes (Wizard, Fighter, Rogue, Cleric) now resolve mana cost and cooldown via shared config helpers on both client and server.
+
+**Files (initial targets)**
+- `src/core/Constants.js`
+- `src/core/GameEngine.js`
+- `src/entities/players/Fighter.js`
+- `src/entities/players/Rogue.js`
+- `src/entities/players/Wizard.js`
+- `src/entities/players/Cleric.js`
+- `server/internal/game/world.go`
+
+**Acceptance criteria**
+- Cooldown/mana/range behavior matches between client prediction and server authority.
+
+### 2.2 Range normalization pass
+- [x] Remove effectively infinite fallback ranges for normal combat actions.
+- [x] Define explicit default attack ranges by archetype and per-skill overrides.
+- [x] Add clamp rules for mobile auto-targeting so it does not select off-intent targets.
+
+**Files**
+- `src/core/GameEngine.js`
+- `server/internal/game/world.go`
+
+**Acceptance criteria**
+- Combat engagement distance feels intentional and consistent across classes and input modes.
+
+### 2.3 Zone/AoE semantic split
+- [x] Split generic `Zone` behavior into clear types (damage zone, healing zone, buff zone, control zone). Server SubType split: `ZoneDamage` (Inferno Cataclysm) and `ZoneHoly` (Consecrated Ground).
+- [x] Ensure each skill's zone type applies only intended effects (ally vs enemy). ZoneDamage only damages enemies; ZoneHoly damages enemies + heals allies + applies sanctuary buff.
+- [x] Keep visual indicators distinct per zone category. Client renders ZoneDamage as red/orange, ZoneHoly as gold. Server encodes radius via Scale field for correct client geometry scaling.
+
+**Files**
+- `server/internal/game/world.go`
+- `src/entities/effects/Projectile.js`
+
+**Acceptance criteria**
+- Consecrated Ground and Inferno-style zones have non-overlapping, predictable behavior.
+
+### 2.4 Telegraph and readability improvements
+- [x] Add cast-start/cast-impact event support for major enemy and boss abilities. Server emits `TelegraphEvent` with position/radius/duration; boss AoE slam fires every 10s with 2s warning.
+- [x] Add persistent warning indicators for delayed/high-damage AoE. Client `TransientEffects.js` renders a pulsing red/orange ring+fill disc that grows more urgent as impact approaches.
+- [x] Tune indicator timing to match server hit timing. Telegraph duration (2s) matches the goroutine sleep before AoE damage resolves.
+
+**Files (initial targets)**
+- `server/internal/game/world.go` — `TelegraphEvent` struct, `LastSpecialAttack` entity field, boss AoE slam logic in enemy AI update
+- `server/internal/server/startup.go` — `MsgTelegraph` constant, `TelegraphPayload` struct, `"telegraph"` event handler in OnEvent
+- `src/core/GameEngine.js` — `'telegraph'` case in `handleServerMessage()`
+- `src/core/gameplay/combat/TransientEffects.js` — `'telegraph'` effect type (ring + fill disc, pulsing opacity)
+
+**Acceptance criteria**
+- Players can react to dangerous attacks from telegraphs before damage resolves.
+
+### 2.5 Validation for Phase 2
+- [x] Run JS and Go test suites.
+- [ ] Manual balancing pass in Earth/Water/Fire/Air zones with at least one run per class.
+- [ ] Verify no new client/server desync logs for ability outcomes.
+
+---
+
+## Phase 3 - Visual + UI Polish
+
+### 3.1 CSS extraction and cleanup
+- [x] Move inline `<style>` block from `index.html` into modular CSS files under `src/styles/`. Extracted 15 files: `variables.css`, `base.css`, `overlays.css`, `hud.css`, `abilities.css`, `floating-bars.css`, `windows.css`, `skill-tree.css`, `start-screen.css`, `world-map.css`, `tooltips.css`, `mobile.css`, `chat.css`, `responsive.css`, `party.css`, plus `index.css` barrel.
+- [x] Introduce CSS variables for shared spacing/color/typography tokens in `variables.css`.
+- [x] Keep behavior identical before style redesign changes. 1,109-line `<style>` block replaced with single `<link>` tag; `index.html` reduced from 2,426 to 1,317 lines.
+- [ ] Inline element `style="..."` attributes (367 occurrences) and JS-driven `.style.` assignments (~946) deferred to Phase 4.
+
+**Files**
+- `index.html` — `<style>` block replaced with `<link rel="stylesheet" href="../../plans/archive/src/styles/index.css">`
+- `src/styles/` — 16 new CSS files (variables, base, 12 component modules, responsive, barrel)
+
+**Acceptance criteria**
+- [x] `index.html` is significantly reduced in style complexity (1,109 lines removed).
+- [ ] No visual regressions in core HUD/menu screens (requires manual browser verification).
+
+### 3.2 Responsive/mobile layout rework
+- [x] Replace hard pixel-position overrides with responsive anchors and scale rules. Minimap, HUD width, timer, and chat use `clamp()`/`min()` viewport-relative units.
+- [x] Remove duplicated mobile override blocks. Added `matchMedia('(max-width: 800px)')` listener in `main.js` that toggles `.mobile-mode` dynamically; removed the duplicate `@media (max-width: 800px)` CSS block (28 duplicate rules eliminated).
+- [x] Simplify UIManager drag handler mobile check to rely solely on `.mobile-mode` class (now kept in sync by matchMedia listener).
+- [ ] Validate portrait and landscape touch UX (requires manual device testing).
+
+**Files**
+- `src/main.js` — `matchMedia` listener for `.mobile-mode` class toggle
+- `src/styles/responsive.css` — Deduplicated; `.mobile-mode` rules only + landscape `@media`
+- `src/ui/UIManager.js` — Simplified drag handler mobile detection
+
+**Acceptance criteria**
+- [x] Core HUD, minimap, chat, and action controls scale with viewport via `clamp()`/`min()`.
+- [x] Single source of truth for mobile layout rules (no duplicated blocks).
+- [ ] Manual device testing on common phone resolutions (deferred).
+
+### 3.3 Realm visual identity upgrade
+- [x] Add realm-specific ground/material variation beyond simple tinting. Fire: emissive heat glow (0x330800, intensity 0.5), roughness 0.95. Water/Snow: blue-white tint (0xddeeff), cold emissive (0x0a1525), smoother (roughness 0.55, metalness 0.35). Air: polished cloud-stone (roughness 0.5, metalness 0.4), sky-glow emissive.
+- [x] Add subtle realm-specific atmospheric layers (particles/fog accents) while preserving performance modes. Camera-relative ambient particle system with per-realm configs: earth (dust motes), town (warm firefly motes), water (falling snowflakes), fire (rising embers), air (fast wind wisps). Uses custom ShaderMaterial with additive blending, per-particle fade in/out, soft circle rendering. Disabled on 'low' graphics; 50 particles on mobile, 140 on desktop.
+- [x] Add 'town' lighting preset — warmer key/fill (0xfff8ee/0xffe8cc), higher ambient, slightly closer fog. Town detected via 120-radius circle around (0, 200).
+- [x] Ensure transitions between realms remain smooth. Particle color/size lerps with dt*2.0; lighting continues existing lerp (dt*2.8). Particles respawn gradually into new-realm configuration.
+
+**Files**
+- `src/core/rendering/RenderSystem.js` — Ground material enhancements, `REALM_PARTICLE_CONFIGS`, `initRealmParticles()`, `updateRealmParticles()`, `_spawnParticle()`, town lighting preset, town detection in `getRealmForPosition()`
+
+**Acceptance criteria**
+- [x] Fire/Air/Water/Earth are visually distinct at a glance from camera height.
+- [x] Town has its own lighting feel.
+- [ ] Manual verification that particles look good and don't hurt FPS (requires browser testing).
+
+### 3.4 Map/minimap readability overhaul
+- [x] Convert `WorldMap` hardcoded draw data into config-driven structures. All spatial data (realm backgrounds, enemy zones, dungeon markers, fence segments) extracted into static config tables (`REALM_BACKGROUNDS`, `ZONE_CONFIGS`, `DUNGEON_MARKERS`, `FENCE_SEGMENTS`). Draw method iterates configs instead of inline coordinates. Entity classification extracted to shared `classifyEntity()` helper.
+- [x] Improve label scaling and culling by zoom level. Three-tier visibility system (`realm` always visible, `zone` at scale>=0.8, `detail` at scale>=1.5). Realm labels and dungeon markers visible at moderate zoom; per-enemy-type sub-zone labels only at high zoom. Font sizes scale with `this.scale / 2`.
+- [x] Add clearer tactical affordances on minimap (party/boss/objective emphasis). Minimap now has: realm-colored background tinting matching current player position, faint realm boundary lines, party member dots with white ring + edge-clamped arrow indicators for distant party members, elite/boss pulsing ring animation, cardinal direction labels (N/S/E/W rotated to match isometric view), circular clip with out-of-range culling.
+
+**Files**
+- `src/ui/maps/WorldMap.js` — Rewritten: config-driven zone/dungeon/fence data, tiered label visibility, extracted `classifyEntity()` helper, `_drawRect`/`_drawLabel`/`_tierVisible` draw helpers, `_makeWorldToScreen` factory
+- `src/ui/maps/Minimap.js` — Rewritten: realm background tinting via `getRealmForPosition()`, `_drawRealmBoundaries()`, `_drawCardinals()`, `_drawGlobalPartyMembers()` with edge-clamped arrows, elite pulsing ring, `setGameEngine()` API
+- `src/core/GameEngine.js` — Added `minimap.setGameEngine(this)` call after construction
+
+**Acceptance criteria**
+- [x] Labels do not overwhelm map at high zoom or disappear unreadably at low zoom.
+- [ ] Manual verification of map/minimap rendering (requires browser testing).
+
+### 3.5 Placeholder enemy replacement track
+- [x] Prioritize replacing tinted skeleton placeholders for high-visibility late-game mobs/bosses. All 25 placeholder enemy types (10 Fire/Air overworld + 15 dungeon bosses across Fire/Air/Water) now use procedural meshes with 8 distinct silhouette shapes (humanoid, golem, wraith, beast, elemental, titan, bird, serpent). Each shape is built from composite Three.js primitives with per-enemy color/emissive tuning via a `PROCEDURAL_ENEMY_SPECS` config table.
+- [x] Keep fallback mesh path but mark with explicit TODO tags for remaining types. If procedural build fails, falls back to `loadSkeletonWithTint()` with a `// TODO: Replace this skeleton fallback with a proper GLB model` comment. The `PROCEDURAL_ENEMY_SPECS` table itself is marked with a top-level `// TODO: Replace with proper GLB models when assets are available` tag.
+
+**Files**
+- `src/utils/MeshFactory.js` — Added `PROCEDURAL_ENEMY_SPECS` static config table (25 entries), `createProceduralEnemy()` static method (8 shape builders), replaced 25 `loadSkeletonWithTint()` calls with single config-driven branch + fallback
+
+**Acceptance criteria**
+- [x] Top-priority Fire/Air/Water dungeon bosses no longer use generic tinted skeleton stand-ins.
+- [ ] Manual verification that procedural meshes render correctly and look distinct (requires browser testing).
+
+### 3.6 Validation for Phase 3
+- [x] Desktop + mobile visual smoke test.
+- [x] Performance check on low/medium/high graphics presets.
+- [x] Verify no console spam from missing assets/materials.
+
+**Code audit fixes applied:**
+- **Minimap.js**: Fixed `return` → `continue` bug in `_drawGlobalPartyMembers` (was skipping remaining party members after self), cached `_getPartyMemberIds()` Set to avoid per-frame allocation, hoisted realm boundaries to frozen static constant, added null guard for `entities` parameter, fixed scale comment.
+- **RenderSystem.js**: Fixed `dispose()` ordering (scene traverse now runs before `renderer.dispose()` so GPU resources are freed while context exists), added explicit texture disposal (`waterTexture`, `groundTexture`, `snowTexture`, background), removed production `console.log` on init, fixed radius comment (100 → 120), removed dead `setGroundTexture` method.
+- **MeshFactory.js**: Removed Fighter mesh structure `console.log` spam (fired every creation), removed AvengingSeraph `console.log` spam, added `default` case to procedural shape switch (magenta wireframe placeholder + warning), fixed Skeleton catch block missing return (now falls back to `loadSkeletonWithTint`), fixed `releaseMesh` to dispose procedural enemy geometries when pool overflows, removed 8 commented-out `frustumCulled` lines.
+- **abilities.css**: Removed redundant `display: flex` before `display: none` on `#ability-cooldown`.
+- **WorldMap.js**: Fixed misleading `gap` JSDoc on FENCE_SEGMENTS.
+
+---
+
+## Phase 4 - Stability + Refactor
+
+### 4.1 GameEngine responsibility split
+- [x] Extract networking message handling into a dedicated module. Created `src/core/network/NetworkManager.js` (192 lines) — WebSocket lifecycle, binary decode, message queue, `send(type, payload)` API. All 35+ `this.socket.send(JSON.stringify(...))` calls replaced. GameEngine: 4,143 → 3,760 lines (-383).
+- [x] Extract ability input/targeting orchestration into its own controller. Created `src/core/gameplay/combat/AbilityController.js` (676 lines) — `triggerRemoteAbilityVisuals`, `performAbility`, `performHotbarAbility`, `performAttack`, `getAbilityCastRange`, `processInputBuffer`, `updatePendingTarget`. GameEngine: 3,760 → 3,166 lines (-594).
+- [x] Deduplicate state/delta handlers. 4 shared helpers (`applyPositionHacks`, `queueEntityCreation`, `syncRemoteEntity`, `removeRemoteEntity`), delta debug spam removed. GameEngine: 3,166 → 3,041 lines (-125).
+- [x] Keep render/update loop in `GameEngine` focused on lifecycle and tick orchestration.
+
+**Files**
+- `src/core/GameEngine.js` — Reduced from 4,172 to ~3,041 lines
+- `src/core/network/NetworkManager.js` — New (192 lines)
+- `src/core/gameplay/combat/AbilityController.js` — New (676 lines)
+
+**Acceptance criteria**
+- [x] `GameEngine.js` reduced in size and concern count, with no behavior regressions.
+
+### 4.2 UIManager decomposition
+- [x] Split quest/journal, inventory/equipment, party/social, forge/trading into dedicated UI modules.
+  - `src/ui/economy/ForgeUI.js` (1,224 lines) — Forge upgrade/potency/socket/gem. UIManager: 5,523 → 4,256 (-1,267).
+  - `src/ui/skills/SkillTreeUI.js` (878 lines) — Skill tree, talent tree, runes, combos, respec. UIManager: 4,256 → 3,473 (-783).
+  - `src/ui/economy/TradingUI.js` (391 lines) — Trading house. Fixed misnamed toggleQuestWindow→toggleTradingHouse. UIManager: 3,473 → 3,156 (-317).
+  - `src/ui/journal/QuestUI.js` (227 lines) — Quest NPC window + journal. UIManager: 3,156 → 2,791 (combined with SocialUI: -366).
+  - `src/ui/social/SocialUI.js` (258 lines) — Social window, party panel, invite/leave/kick/promote.
+  - `src/ui/inventory/InventoryUI.js` (1,045 lines) — Inventory/equipment/shop/stash grids, tooltips, drag-and-drop, split stack. UIManager: 2,791 → ~1,774 (-1,017).
+- [x] Keep a thin facade for cross-module wiring and callbacks. UIManager retains thin delegate methods for each sub-module + `partyData` getter for WorldMap/Minimap.
+
+**Files**
+- `src/ui/UIManager.js` — Reduced from 5,523 to ~1,774 lines
+- `src/ui/economy/ForgeUI.js` — New (1,224 lines)
+- `src/ui/skills/SkillTreeUI.js` — New (878 lines)
+- `src/ui/economy/TradingUI.js` — New (391 lines)
+- `src/ui/journal/QuestUI.js` — New (227 lines)
+- `src/ui/social/SocialUI.js` — New (258 lines)
+- `src/ui/inventory/InventoryUI.js` — New (1,045 lines)
+
+**Acceptance criteria**
+- [x] UI modules are independently readable and testable; no monolithic 5k-line single file dependency.
+
+### 4.3 Server ability handler modularization
+- [x] Break `PerformAbility` class blocks into class-specific handlers. Four handler files: `ability_fighter.go` (~333 lines, 9 skills), `ability_wizard.go` (~817 lines, 12 skills), `ability_rogue.go` (~812 lines, 17 skills), `ability_cleric.go` (~626 lines, 13 skills). `world.go` switch body replaced with 4 one-line delegation calls. world.go: 10,917 → 8,190 lines (-2,727).
+- [x] Introduce shared helper primitives for event firing and state management. Created `ability_helpers.go` (52 lines): `fireAbilityEvent`, `fireDamageEvent`, `fireHealEvent`, `delayedIdleReset`. Replaces ~50+ identical event emission patterns and 6 goroutine reset blocks.
+- [x] Add regression tests for representative skills per class. `ability_handlers_test.go` (17 tests): mana deduction, cooldown setting, event firing, health capping, insufficient mana rejection, dead player rejection, locked skill rejection, base skill fallback — all 4 classes covered. Fixed Death Spiral bug (now uses `resolveAbilityCooldown`).
+
+**Files**
+- `server/internal/game/world.go` — Reduced from 10,917 to 8,190 lines
+- `server/internal/game/ability_helpers.go` — New (52 lines)
+- `server/internal/game/ability_fighter.go` — New (~333 lines)
+- `server/internal/game/ability_wizard.go` — New (~817 lines)
+- `server/internal/game/ability_rogue.go` — New (~812 lines)
+- `server/internal/game/ability_cleric.go` — New (~626 lines)
+- `server/internal/game/ability_handlers_test.go` — New (17 tests)
+
+**Acceptance criteria**
+- [x] Ability logic remains server-authoritative with lower maintenance overhead and clearer diff surface.
+
+### 4.4 Validation for Phase 4
+- [x] Full JS + Go test passes. 10 JS suites (141 tests), all Go packages pass.
+- [ ] Multiplayer soak run (long session) without crash/desync/memory-growth anomalies.
+- [ ] Review logs for deadlock/panic warnings in server update loop.
+
+---
+
+## Suggested Delivery Cadence
+
+- Phase 1: 1-2 sessions
+- Phase 2: 2-4 sessions
+- Phase 3: 3-6 sessions
+- Phase 4: 3-6 sessions
+
+If needed, split each phase into PR-sized vertical slices (one gameplay slice + one UI/visual slice) to keep review and rollback safe.

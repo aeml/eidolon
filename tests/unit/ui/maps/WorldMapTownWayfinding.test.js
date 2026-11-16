@@ -1,0 +1,322 @@
+import { WorldMap } from '../../../../src/ui/maps/WorldMap.js';
+import { TOWN_SERVICE_POINTS } from '../../../../src/ui/adventure/townServiceConfig.js';
+import { darkRealmFixture } from '../../../support/world/darkRealmFixture.js';
+
+describe('WorldMap town wayfinding', () => {
+    const originalGetContext = HTMLCanvasElement.prototype.getContext;
+    afterEach(() => { HTMLCanvasElement.prototype.getContext = originalGetContext; });
+    let texts;
+    let strokes;
+    let ctx;
+
+    beforeEach(() => {
+        texts = [];
+        strokes = [];
+        ctx = {
+            fillRect: () => {},
+            strokeRect: () => {},
+            transform: () => {},
+            translate: () => {},
+            rotate: () => {},
+            drawImage: () => {},
+            measureText: text => ({ width: String(text).length * 7 }),
+            beginPath: () => {},
+            arc: () => {},
+            fill: () => {},
+            stroke: () => strokes.push({ strokeStyle: ctx.strokeStyle, lineWidth: ctx.lineWidth }),
+            moveTo: () => {},
+            lineTo: () => {},
+            closePath: () => {},
+            clearRect: () => {},
+            save: () => {},
+            restore: () => {},
+            fillText: (...args) => texts.push(String(args[0])),
+            set fillStyle(value) { this._fillStyle = value; },
+            get fillStyle() { return this._fillStyle; },
+            set strokeStyle(value) { this._strokeStyle = value; },
+            get strokeStyle() { return this._strokeStyle; },
+            set lineWidth(value) { this._lineWidth = value; },
+            get lineWidth() { return this._lineWidth; },
+            font: '',
+            textAlign: ''
+        };
+
+        document.body.innerHTML = `
+            <div id="world-map" style="display:flex; width: 640px; height: 480px;">
+                <div id="world-map-header"></div>
+                <canvas id="world-map-canvas"></canvas>
+            </div>
+        `;
+
+        const container = document.getElementById('world-map');
+        Object.defineProperty(container, 'clientWidth', { configurable: true, value: 640 });
+        Object.defineProperty(container, 'clientHeight', { configurable: true, value: 480 });
+
+        // The atlas also owns offscreen cached terrain canvases.
+        HTMLCanvasElement.prototype.getContext = () => ctx;
+
+        global.ResizeObserver = class {
+            constructor(callback) {
+                this.callback = callback;
+            }
+            observe() {}
+            disconnect() {}
+        };
+    });
+
+    test('uses exact canonical town-service anchor positions for world-map wayfinding', () => {
+        expect(TOWN_SERVICE_POINTS).toEqual(expect.arrayContaining([
+            expect.objectContaining({ id: 'quest-giver', label: 'Quest Giver', x: -20, z: 200 }),
+            expect.objectContaining({ id: 'forge', label: 'Forge', x: -28, z: 218 }),
+            expect.objectContaining({ id: 'stash', label: 'Stash', x: -28, z: 210 }),
+            expect.objectContaining({ id: 'trading-house', label: 'Trading House', x: -22, z: 185 }),
+            expect.objectContaining({ id: 'vendor-repair', label: 'Vendor / Repair', x: 22.5, z: 200 }),
+            expect.objectContaining({ id: 'dungeon-guide', label: 'Dungeon Guide', x: 0, z: 240 })
+        ]));
+    });
+
+    test('world atlas takes the current server terrain profile, defaulting to the flat live world', () => {
+        const flat = new WorldMap({ player: null });
+        expect(flat.cartography.elevation).toBeNull(); flat.dispose();
+        const raised = new WorldMap({ player: null, terrainProfile: 'earth-elevation-rocks-v1' });
+        expect(raised.cartography.terrainProfile).toBe('earth-elevation-rocks-v1');
+        expect(raised.cartography.elevation.maxHeight).toBeGreaterThan(10); raised.dispose();
+    });
+
+    test('touch pan and pinch preserve the location beneath the gesture and stop on cancellation', () => {
+        const map = new WorldMap({ player: null });
+        map.canvas.getBoundingClientRect = () => ({ left: 0, top: 0, width: 640, height: 440 });
+        const touch = (type, points) => {
+            const event = new Event(type, { bubbles: true, cancelable: true });
+            Object.defineProperty(event, 'touches', { value: points.map(([clientX, clientY]) => ({ clientX, clientY })) });
+            map.canvas.dispatchEvent(event);
+        };
+        touch('touchstart', [[320, 220]]);
+        touch('touchmove', [[340, 230]]);
+        expect([map.mapOffsetX, map.mapOffsetY]).toEqual([20, 10]);
+        touch('touchstart', [[290, 230], [390, 230]]);
+        touch('touchmove', [[240, 230], [440, 230]]);
+        expect(map.scale).toBe(4);
+        expect([map.mapOffsetX, map.mapOffsetY]).toEqual([20, 10]);
+        expect(map.zoomLabel.textContent).toBe('200%');
+        touch('touchcancel', []);
+        touch('touchmove', [[600, 400]]);
+        expect([map.mapOffsetX, map.mapOffsetY]).toEqual([20, 10]);
+    });
+
+    test('map buttons zoom within limits and recenter without resetting zoom', () => {
+        const engine = { player: null };
+        const map = new WorldMap(engine);
+        document.querySelector('[data-map-zoom="in"]').click();
+        expect(map.scale).toBe(2.5);
+        document.querySelector('[data-map-zoom="out"]').click();
+        expect(map.scale).toBe(2);
+        map.setMapScale(100); expect(map.scale).toBe(10);
+        map.setMapScale(.001); expect(map.scale).toBe(.01);
+        map.setMapScale(NaN); expect(map.scale).toBe(.01);
+        engine.player = { position: { x: 70, z: 210 } };
+        map._redrawIfVisible = () => {};
+        map.mapOffsetX = 99; map.mapOffsetY = 90;
+        document.querySelector('[data-map-center]').click();
+        expect([map.cameraX, map.cameraZ, map.mapOffsetX, map.mapOffsetY]).toEqual([70, 210, 0, 0]);
+        expect(map.scale).toBe(.01);
+    });
+
+    test('renders named town POIs for new-player wayfinding', () => {
+        const worldMap = new WorldMap({
+            player: { position: { x: 0, z: 200 }, id: 'player-1' },
+            chunkManager: { getActiveEntities: () => [] },
+            uiManager: { partyData: { members: [] } }
+        });
+
+        worldMap.centerOnPlayer();
+
+        // Canvas labels now cull collisions; the equivalent location list must
+        // retain every essential service even when a nearby label cannot fit.
+        expect(worldMap.navigation.locations.map(p => p.name)).toEqual(expect.arrayContaining([
+            'Quest Giver',
+            'Stash',
+            'Forge',
+            'Trading House',
+            'Vendor / Repair',
+            'Dungeon Guide'
+        ]));
+    });
+
+    test('overview fits the real extents and replacement map removes prior input ownership', () => {
+        const engine = { player: { id: 'me', position: { x: 0, z: 200 } } };
+        const oldMap = new WorldMap(engine);
+        const map = new WorldMap(engine);
+        map.canvas.width = 640; map.canvas.height = 400;
+        map.showWorldOverview();
+        const project = map._makeWorldToScreen(320, 200);
+        for (const [x, z] of [[-3000, -2200], [3000, -2200], [-3000, 1000], [3000, 1000]]) {
+            const p = project(x, z);
+            expect(p.x).toBeGreaterThanOrEqual(30); expect(p.x).toBeLessThanOrEqual(610);
+            expect(p.y).toBeGreaterThanOrEqual(30); expect(p.y).toBeLessThanOrEqual(370);
+        }
+        map.canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+        expect(map.mapOffsetX).toBe(-60); expect(oldMap.mapOffsetX).toBe(0);
+        expect(document.querySelectorAll('.atlas-navigation')).toHaveLength(1);
+        expect(document.querySelectorAll('.atlas-waypoint-row')).toHaveLength(1);
+    });
+
+    test('disposing the map removes atlas controls and retires captured waypoint input', () => {
+        const map = new WorldMap({ player: { id: 'me', level: 30, position: { x: 0, z: 200 } } });
+        const navigation = map.navigation;
+        navigation.select('forge');
+        const button = navigation.detail.querySelector('button'), pending = button.onclick;
+        const row = navigation.waypointRow;
+        map.dispose(); map.dispose();
+        expect(navigation.root.isConnected).toBe(false); expect(row.isConnected).toBe(false);
+        pending.call(button, new MouseEvent('click')); expect(navigation.waypoint).toBeNull();
+        expect(navigation.focusQuest('daily_skeleton')).toBe(false);
+    });
+
+    test.each(['mousedown', 'touchend'])('%s on the waypoint toolbar stays out of world input', type => {
+        const map = new WorldMap({ player: { id: 'me', level: 30, position: { x: 0, z: 200 } } });
+        map.navigation.select('forge'); map.navigation.detail.querySelector('button').click();
+        let reachedWorld = 0;
+        const listen = () => { reachedWorld++; };
+        window.addEventListener(type, listen);
+        try {
+            map.navigation.clear.dispatchEvent(new Event(type, { bubbles: true }));
+            expect(reachedWorld).toBe(0);
+        } finally { window.removeEventListener(type, listen); map.dispose(); }
+    });
+
+    test('disposing the map retires the zoom toolbar and captured zoom callback', () => {
+        const map = new WorldMap({ player: { id: 'me', level: 30, position: { x: 0, z: 200 } } });
+        const button = map.container.querySelector('[data-map-zoom="in"]'), pending = button.onclick;
+        const scale = map.scale;
+        map.dispose(); pending.call(button, new MouseEvent('click'));
+        expect(map.scale).toBe(scale); expect(button.isConnected).toBe(false);
+    });
+
+    test('new-scene quest focus stays centered after the map initializes that instance', () => {
+        const engine = { currentInstanceId: '', currentInstanceType: '', player: {
+            id: 'me', level: 100, position: { x: 0, z: 200 }, quests: [
+                { id: 'daily_skeleton', title: 'Road patrol', type: 'KILL', target: 'Skeleton', accepted: true, maxCount: 10 }
+            ]
+        } };
+        const map = new WorldMap(engine), nav = map.navigation;
+        nav.focusQuest('daily_skeleton');
+        engine.currentInstanceId = 'dark-realm'; engine.currentInstanceType = 'dark_realm';
+        engine.currentDungeonLayout = darkRealmFixture();
+        engine.player.position = { x: 40000, z: 40800 };
+        engine.player.quests = [{ id: 'chronicle_dark_shore_collectors', title: 'Shore collectors', category: 'chronicle',
+            accepted: true, count: 3, maxCount: 3 }];
+        const before = JSON.stringify(engine.player);
+        expect(nav.focusQuest('chronicle_dark_shore_collectors')).toBe(true);
+        const selected = nav.locations.find(location => location.id === nav.selectedId);
+        expect(selected.questId).toBe('chronicle_dark_shore_collectors');
+        expect([map.cameraX, map.cameraZ, map.autoFitAtlas]).toEqual([selected.x, selected.z, false]);
+        expect(JSON.stringify(engine.player)).toBe(before); map.dispose();
+    });
+
+    test('selected service takes marker priority while crowded labels remain in the location list', () => {
+        const worldMap = new WorldMap({
+            player: { position: { x: 0, z: 200 }, id: 'player-1' },
+            chunkManager: { getActiveEntities: () => [] },
+            uiManager: { partyData: { members: [] } }
+        });
+
+        worldMap.navigation.select('forge');
+        expect(worldMap.visibleAtlasMarkers[0].id).toBe('forge');
+        expect(texts).toContain('Forge');
+        expect(worldMap.navigation.results.textContent).toContain('Quest Giver');
+        expect(worldMap.navigation.results.textContent).toContain('Stash');
+        expect(strokes).toEqual(expect.arrayContaining([expect.objectContaining({ lineWidth: 2.5 })]));
+    });
+
+    test('renders current and next dungeon beat markers for the active instance', () => {
+        const worldMap = new WorldMap({
+            player: { position: { x: 2400, z: 200 }, id: 'player-1' },
+            chunkManager: { getActiveEntities: () => [] },
+            uiManager: { partyData: { members: [] } },
+            currentInstanceType: 'tempest_spire', currentInstanceId: 'run-spire',
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 0,
+                objectiveRoomIndex: 1,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', hook: 'chest', explored: true, cleared: false },
+                    { index: 2, type: 'elite', hook: 'elite_ambush', explored: false, cleared: false },
+                    { index: 3, type: 'normal', hook: 'shrine', explored: false, cleared: false },
+                    { index: 4, type: 'boss', explored: false, cleared: false }
+                ].map((room, index) => ({ ...room, x: index * 100, z: 0, width: 60, height: 60 }))
+            })
+        });
+
+        worldMap.draw({ position: { x: 2400, z: 200 }, id: 'player-1' });
+
+        expect(texts).toEqual(expect.arrayContaining([
+            'Tempest Spire', 'Treasure Cache · Payoff',
+            'Next: Ambush Chamber'
+        ]));
+        expect(strokes).toEqual(expect.arrayContaining([
+            expect.objectContaining({ strokeStyle: '#e6c67e' }),
+            expect.objectContaining({ strokeStyle: '#e6c67e' })
+        ]));
+    });
+
+    test('renders boss approach beats before the active dungeon boss marker', () => {
+        const worldMap = new WorldMap({
+            player: { position: { x: 2400, z: 200 }, id: 'player-1' },
+            chunkManager: { getActiveEntities: () => [] },
+            uiManager: { partyData: { members: [] } },
+            currentInstanceType: 'tempest_spire', currentInstanceId: 'run-spire',
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 2,
+                objectiveRoomIndex: 3,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'elite', hook: 'elite_ambush', explored: true, cleared: true },
+                    { index: 2, type: 'normal', hook: 'shrine', explored: true, cleared: true },
+                    { index: 3, type: 'normal', pacing: 'boss_approach', explored: true, cleared: false },
+                    { index: 4, type: 'boss', explored: false, cleared: false }
+                ].map((room, index) => ({ ...room, x: index * 100, z: 0, width: 60, height: 60 }))
+            })
+        });
+
+        worldMap.draw({ position: { x: 2400, z: 200 }, id: 'player-1' });
+
+        expect(texts).toEqual(expect.arrayContaining([
+            'Tempest Spire', 'Boss Approach · Pressure',
+            'Next: Boss Lair'
+        ]));
+        expect(strokes).toEqual(expect.arrayContaining([
+            expect.objectContaining({ strokeStyle: '#e6c67e' })
+        ]));
+    });
+
+    test('renders a live boss marker when the active dungeon boss is already engaged', () => {
+        const worldMap = new WorldMap({
+            player: { position: { x: 2400, z: 200 }, id: 'player-1' },
+            chunkManager: { getActiveEntities: () => [] },
+            uiManager: { partyData: { members: [] } },
+            currentInstanceType: 'tempest_spire', currentInstanceId: 'run-spire',
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 4,
+                objectiveRoomIndex: 4,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', hook: 'chest', explored: true, cleared: true },
+                    { index: 2, type: 'elite', hook: 'elite_ambush', explored: true, cleared: true },
+                    { index: 3, type: 'normal', hook: 'shrine', explored: true, cleared: true },
+                    { index: 4, type: 'boss', explored: true, cleared: false }
+                ].map((room, index) => ({ ...room, x: index * 100, z: 0, width: 60, height: 60 }))
+            })
+        });
+
+        worldMap.draw({ position: { x: 2400, z: 200 }, id: 'player-1' });
+
+        expect(texts).toEqual(expect.arrayContaining([
+            'Tempest Spire', 'Boss Now · Climax'
+        ]));
+        expect(texts).not.toContain('Next: Boss Lair');
+        expect(strokes).toEqual(expect.arrayContaining([
+            expect.objectContaining({ strokeStyle: '#ed9990' })
+        ]));
+    });
+});

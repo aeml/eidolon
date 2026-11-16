@@ -1,0 +1,78 @@
+import * as THREE from 'three';
+import { createTownCompositionMask, sampleLanternholdGround } from '../../../../../src/art/environment/lanternhold/TownGroundComposition.js';
+import { createProceduralTerrainMaterial } from '../../../../../src/art/environment/world/ProceduralRealmTerrain.js';
+import { LANTERNHOLD_HOMES, LANTERNHOLD_HOME_SCALE } from '../../../../../src/data/lanternholdNeighborhood.js';
+
+test('doorway wear follows every rotated home and retired hearth scorch is removed', () => {
+    for (const home of LANTERNHOLD_HOMES) {
+        const point = (x, z) => [home.x + (Math.cos(home.rotation) * x + Math.sin(home.rotation) * z) * LANTERNHOLD_HOME_SCALE,
+            home.z + (-Math.sin(home.rotation) * x + Math.cos(home.rotation) * z) * LANTERNHOLD_HOME_SCALE];
+        const entrance = sampleLanternholdGround(...point(0, 3));
+        expect(entrance.campTraffic).toBe(1); expect(entrance.traffic).toBeGreaterThanOrEqual(.72);
+        expect(sampleLanternholdGround(...point(0, -3)).campTraffic).toBe(0);
+        expect(entrance.hearth).toBe(0);
+    }
+});
+
+test('connected town surfaces retain paved service courts and gates, with unpaved quiet edges', () => {
+    for (const [x, z] of [[0, 100], [0, 300], [-100, 200], [100, 200], [0, 200],
+        [-28, 210], [0, 182], [-55, 238], [55, 240], [40, 222], [-40, 229]]) {
+        expect(sampleLanternholdGround(x, z).paving).toBeGreaterThan(.85);
+    }
+    for (const [x, z] of [[-90, 120], [90, 280], [-90, 280], [85, 150]]) {
+        expect(sampleLanternholdGround(x, z).paving).toBeLessThan(.05);
+    }
+    // The north route goes around, not through, the casino shell.
+    expect(sampleLanternholdGround(0, 166).paving).toBe(0);
+    expect(sampleLanternholdGround(23, 166).paving).toBeGreaterThan(.9);
+});
+
+test('merchant and forge approaches connect to their neighboring paved courts', () => {
+    // Actual authoritative merchant/stash/forge anchors, with three metres of
+    // standing room in front of their west/east-facing service facades.
+    for (const [x, z] of [[22.5, 200], [19.5, 200], [-28, 218], [-25, 218], [-28, 210]]) {
+        expect(sampleLanternholdGround(x, z).paving).toBeGreaterThan(.9);
+    }
+    for (let x = 0; x <= 22.5; x += .5) expect(sampleLanternholdGround(x, 200).paving).toBeGreaterThan(.85);
+    for (let z = 200; z <= 218; z += .5) expect(sampleLanternholdGround(-25, z).paving).toBeGreaterThan(.85);
+    for (let z = 200; z <= 212; z += .5) expect(sampleLanternholdGround(24, z).paving).toBeGreaterThan(.85);
+});
+
+test('mask is deterministic, linear and registered between qualities', () => {
+    const high = createTownCompositionMask(), duplicate = createTownCompositionMask(), low = createTownCompositionMask('low');
+    expect(high.image.data).toEqual(duplicate.image.data);
+    expect(high.colorSpace).toBe(THREE.NoColorSpace);
+    expect(high.image.data.byteLength).toBe(256 * 256 * 4);
+    expect(low.image.data.byteLength).toBe(128 * 128 * 4);
+    for (let y = 0; y < 128; y += 9) for (let x = 0; x < 128; x += 9) {
+        expect(low.image.data.slice((y * 128 + x) * 4, (y * 128 + x) * 4 + 4))
+            .toEqual(high.image.data.slice((y * 2 * 256 + x * 2) * 4, (y * 2 * 256 + x * 2) * 4 + 4));
+    }
+    for (const texture of [high, duplicate, low]) texture.dispose();
+});
+
+test('town composition preserves depth, geometry and shared albedo ownership', () => {
+    const material = createProceduralTerrainMaterial('town', { quality: 'low' });
+    const { mask, soilTexture, paving } = material.userData.townGroundComposition;
+    const calls = { mask: 0, soil: 0, albedo: 0, court: 0, surface: 0 };
+    paving.color.addEventListener('dispose', () => calls.court++);
+    paving.surface.addEventListener('dispose', () => calls.surface++);
+    mask.addEventListener('dispose', () => calls.mask++);
+    soilTexture.addEventListener('dispose', () => calls.soil++);
+    material.map.addEventListener('dispose', () => calls.albedo++);
+    expect(material.transparent).toBe(false); expect(material.depthWrite).toBe(true);
+    expect(material.polygonOffset).toBe(false);
+    const shader = { uniforms: {}, vertexShader: THREE.ShaderLib.standard.vertexShader, fragmentShader: THREE.ShaderLib.standard.fragmentShader };
+    material.onBeforeCompile(shader);
+    expect(shader.uniforms.townComposition.value).toBe(mask);
+    expect(shader.uniforms.townCourt.value).toBe(paving.color);
+    expect(material.customProgramCacheKey()).toBe('eidolon-town-ground-composition-v3');
+    expect(shader.fragmentShader).toContain('vec4 townWear = texture2D(townComposition');
+    expect(shader.fragmentShader).toContain('vec3(.48, .44, .40), townWear.a');
+    expect(shader.fragmentShader).toContain('mix(townEarth, diffuseColor.rgb, townWear.r)');
+    expect(shader.fragmentShader).toContain('mix(townFlatNormal, normal, townWear.r)');
+    expect(shader.vertexShader).not.toContain('transformed +=');
+    material.dispose(); material.dispose();
+    expect(calls).toEqual({ mask: 1, soil: 1, albedo: 0, court: 1, surface: 1 });
+    material.map.dispose();
+});

@@ -1,0 +1,80 @@
+import * as THREE from 'three';
+import { readFile, writeFile } from 'node:fs/promises';
+import { pathToFileURL } from 'node:url';
+import { resolve } from 'node:path';
+import { WorldGenerator } from '../../src/world/WorldGenerator.js';
+import { CollisionManager } from '../../src/core/world/CollisionManager.js';
+import { createCasinoInterior, createCasinoFurnitureColliders } from '../../src/art/environment/casino/ProceduralCasino.js';
+import { createProceduralLanternholdStructure, getLanternholdWalkCollider } from '../../src/art/environment/lanternhold/ProceduralLanternholdArchitecture.js';
+import { createChronicleSiteModel, getChronicleSiteColliders } from '../../src/art/environment/props/ChronicleSiteModels.js';
+import { chronicleInvestigations } from '../../src/data/chronicleCatalog.js';
+import { getDarkRealmCampColliders, getDarkRealmCourtColliders } from '../../src/art/environment/dark/ProceduralDarkRealm.js';
+
+// Generated from actual client collision builders, not decorative mesh bounds.
+// Boxes: [centerX, centerZ, halfX, halfZ, yaw, minY, maxY].
+// The server uses live entity transforms for the three town-service templates.
+const round = value => Math.round(value * 1e6) / 1e6;
+function boxShape(box, matrix = new THREE.Matrix4()) {
+    const center = box.getCenter(new THREE.Vector3()).applyMatrix4(matrix);
+    const size = box.getSize(new THREE.Vector3());
+    const scale = new THREE.Vector3().setFromMatrixScale(matrix);
+    const worldBox = box.clone().applyMatrix4(matrix);
+    return [center.x, center.z, size.x * scale.x / 2, size.z * scale.z / 2,
+        Math.atan2(matrix.elements[8], matrix.elements[0]), worldBox.min.y, worldBox.max.y].map(round);
+}
+function shapes(manager) {
+    return {
+        boxes: [...manager.colliders.map(box => boxShape(box)),
+            ...manager.orientedColliders.map(collider => boxShape(collider.box, collider.matrix))],
+        circles: manager.circularColliders.map(({ x, z, radius }) => [x, z, radius].map(round))
+    };
+}
+
+export async function collectAdminLandingColliders() {
+    const scene = new THREE.Scene(), collision = new CollisionManager();
+    const generator = new WorldGenerator(scene, collision);
+    await generator.createTown(0, 200, 100);
+    await generator.createOverworldStructures();
+    const darkRealm = new CollisionManager();
+    getDarkRealmCampColliders().forEach(box => darkRealm.addCollider(box));
+    getDarkRealmCourtColliders().forEach(box => darkRealm.addCollider(box));
+    for (const chapter of chronicleInvestigations) for (const site of chapter.sites) {
+        if (site.kind !== 'inspect') continue;
+        const model = createChronicleSiteModel(site, chapter.realm);
+        model.mesh.position.set(site.x, 0, site.z);
+        const destination = chapter.realm === 'dark' ? darkRealm : collision;
+        getChronicleSiteColliders(model.mesh, model.walls).forEach(collider => destination.addOrientedCollider(collider));
+        model.dispose();
+    }
+    const casino = new CollisionManager();
+    createCasinoInterior(new THREE.Scene(), casino);
+    const entities = {};
+    for (const [type, id] of Object.entries({ TradingHouse: 'trading_house', Stash: 'stash', Forge: 'forge' })) {
+        const mesh = createProceduralLanternholdStructure(id, { optimized: true });
+        const collider = getLanternholdWalkCollider(mesh);
+        entities[type] = boxShape(collider.box, collider.matrix);
+    }
+    const furniture = Object.fromEntries(['slots', 'blackjack', 'poker', 'roulette', 'baccarat'].map(game =>
+        [game, boxShape(createCasinoFurnitureColliders([{ game, x: 0, z: 0 }])[0])]));
+    return { version: 1, overworld: shapes(collision), darkRealm: shapes(darkRealm), casino: shapes(casino), entities, furniture };
+}
+
+export function formatAdminLandingColliders(value) {
+    // One primitive per line keeps generated geometry reviews compact.
+    return JSON.stringify(value).replaceAll('],[', '],\n[') + '\n';
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+    // The casino's optional nameplate asks for a canvas. Headless geometry
+    // generation omits that non-solid sprite; all collision builders still run.
+    globalThis.document ??= { createElement(tag) {
+        if (tag !== 'canvas') throw new Error(`Unexpected geometry-generation element: ${tag}`);
+        return { getContext: () => null };
+    } };
+    const target = new URL('../../server/internal/game/content/admin-landing-colliders.json', import.meta.url);
+    const content = formatAdminLandingColliders(await collectAdminLandingColliders());
+    if (process.argv.includes('--check')) {
+        if (await readFile(target, 'utf8') !== content) throw new Error('Admin landing geometry is stale; run node scripts/content/admin-landing-colliders.mjs');
+    } else await writeFile(target, content);
+    console.log('Admin landing geometry matches the client collision builders.');
+}

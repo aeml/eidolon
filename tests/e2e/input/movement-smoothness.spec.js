@@ -1,0 +1,430 @@
+import { expect, test } from '../support/delivery/static-delivery-test.js';
+import { movementFrameBudget } from '../../support/input/movementFrameBudget.js';
+import { projectMovementGroundOffset } from '../../support/world/movementGroundProjection.js';
+import { holdGroundOffsetAndSample, movePointerAndReadHoveredEntity, waitForArrival } from '../support/input/movement-input-observation.js';
+import {
+    collectBrowserFailures,
+    credentialsFromEnvironment,
+    ensureDungeonReadyLevel,
+    loginAndEnterWorld,
+    readPlayerState,
+    useCombatQAWaypoint
+} from '../support/browser/helpers.js';
+
+const credentials = credentialsFromEnvironment();
+const hasCredentials = Boolean(credentials.username && credentials.password);
+
+async function assertHardwareRenderer(page) {
+    const renderer = await page.evaluate(() => {
+        const context = window.game?.renderSystem?.renderer?.getContext?.();
+        if (!context) return null;
+        const info = context.getExtension('WEBGL_debug_renderer_info');
+        return {
+            vendor: info ? context.getParameter(info.UNMASKED_VENDOR_WEBGL) : context.getParameter(context.VENDOR),
+            renderer: info ? context.getParameter(info.UNMASKED_RENDERER_WEBGL) : context.getParameter(context.RENDERER)
+        };
+    });
+    expect(renderer).not.toBeNull();
+    expect(`${renderer.vendor} ${renderer.renderer}`).not.toMatch(/swiftshader|llvmpipe|software/i);
+    return renderer;
+}
+
+async function projectExactGroundOffset(page, deltaX, deltaZ) {
+    return page.evaluate(projectMovementGroundOffset, { deltaX, deltaZ });
+}
+
+async function findOpenMovementDirection(page, distance, probeDistances = [distance]) {
+    return page.evaluate(({ requestedDistance, screenProbeDistances, pixelProbe }) => {
+        const game = window.game;
+        const player = game?.player;
+        const camera = game?.renderSystem?.camera;
+        if (!player?.position || !camera) return null;
+
+        const entities = (game.activeEntitiesCache || []).filter((entity) =>
+            entity !== player && entity?.isActive && entity.state !== 'DEAD' && entity.position
+        );
+        const boxes = game.collisionManager?.colliders || [];
+        const circles = game.collisionManager?.circularColliders || [];
+        let best = null;
+
+        for (let index = 0; index < 72; index += 1) {
+            // Diagnostic-only physical-input reproduction: at this angle the
+            // 0.05-unit projection truncates to a pixel outside the 0.1 dead zone.
+            // Keep normal ray/clearance checks and all movement assertions.
+            if (pixelProbe && screenProbeDistances.includes(0.05) && index !== 30) continue;
+            const angle = index * Math.PI * 2 / 72;
+            const dx = Math.cos(angle) * requestedDistance;
+            const dz = Math.sin(angle) * requestedDistance;
+            const target = player.position.clone();
+            target.x += dx;
+            target.z += dz;
+            const projected = target.clone().project(camera);
+            const x = (projected.x + 1) * window.innerWidth / 2;
+            const y = (-projected.y + 1) * window.innerHeight / 2;
+            if (projected.z < -1 || projected.z > 1 || x < 0 || x > window.innerWidth ||
+                y < 0 || y > window.innerHeight || document.elementFromPoint(x, y)?.tagName !== 'CANVAS') {
+                continue;
+            }
+
+            const entityMeshes = entities.filter((entity) => entity.mesh).map((entity) => entity.mesh);
+            const screenRayClear = screenProbeDistances.every((probeDistance) => {
+                const scale = probeDistance / requestedDistance;
+                const probe = player.position.clone();
+                probe.x += dx * scale;
+                probe.z += dz * scale;
+                const probeProjected = probe.project(camera);
+                game.inputManager.raycaster.setFromCamera(probeProjected, camera);
+                return game.inputManager.raycaster.intersectObjects(entityMeshes, true).length === 0;
+            });
+            if (!screenRayClear) continue;
+
+            let clearance = Number.POSITIVE_INFINITY;
+            for (let step = 1; step <= 8; step += 1) {
+                const progress = step / 8;
+                const sampleX = player.position.x + dx * progress;
+                const sampleZ = player.position.z + dz * progress;
+                for (const entity of entities) {
+                    const radius = Number(entity.radius || 1) + Number(player.radius || 1);
+                    clearance = Math.min(
+                        clearance,
+                        Math.hypot(sampleX - entity.position.x, sampleZ - entity.position.z) - radius
+                    );
+                }
+                for (const box of boxes) {
+                    const nearestX = Math.max(box.min.x, Math.min(box.max.x, sampleX));
+                    const nearestZ = Math.max(box.min.z, Math.min(box.max.z, sampleZ));
+                    clearance = Math.min(clearance, Math.hypot(sampleX - nearestX, sampleZ - nearestZ));
+                }
+                for (const circle of circles) {
+                    clearance = Math.min(
+                        clearance,
+                        Math.hypot(sampleX - circle.x, sampleZ - circle.z) -
+                            Number(circle.radius || 0) - Number(player.radius || 1)
+                    );
+                }
+            }
+            if (!best || clearance > best.clearance) best = { dx, dz, clearance };
+        }
+        return best;
+    }, { requestedDistance: distance, screenProbeDistances: probeDistances,
+        pixelProbe: process.env.EIDOLON_E2E_MOVEMENT_PIXEL_PROBE === '1' });
+}
+
+async function ensureCurrentGroundRayIsClear(page) {
+    let lastHoveredEntity = null;
+    for (let attempt = 0; attempt < 6; attempt += 1) {
+        const current = await projectExactGroundOffset(page, 0, 0);
+        expect(current?.canvas, 'Current player position must project onto the game canvas').toBe(true);
+        lastHoveredEntity = await movePointerAndReadHoveredEntity(page, current);
+        if (!lastHoveredEntity) return;
+
+        const relocationDistance = 8 + attempt * 2;
+        const direction = await findOpenMovementDirection(page, relocationDistance);
+        expect(direction, `A ray-clear relocation must exist away from ${lastHoveredEntity}`).not.toBeNull();
+        const relocation = await holdGroundOffsetAndSample(
+            page,
+            direction.dx,
+            direction.dz,
+            { holdMs: 90, sampleMs: 1_250 }
+        );
+        expect(relocation.pointerObservedDown).toBe(true);
+        await waitForArrival(page);
+    }
+    throw new Error(`No ray-clear current-position probe after bounded real-input relocation; last hover=${lastHoveredEntity}`);
+}
+
+async function findOpenMovementDirectionWithRelocation(page, distance, probeDistances = [distance]) {
+    for (let attempt = 0; attempt < 6; attempt += 1) {
+        const direction = await findOpenMovementDirection(page, distance, probeDistances);
+        if (direction) return direction;
+
+        let relocationDirection = null;
+        for (const relocationDistance of [8, 12, 16].map((value) => value + attempt * 2)) {
+            relocationDirection = await findOpenMovementDirection(page, relocationDistance);
+            if (relocationDirection) break;
+        }
+        expect(
+            relocationDirection,
+            `A ray-clear relocation must expose a ${distance}-unit movement target`
+        ).not.toBeNull();
+        const relocation = await holdGroundOffsetAndSample(
+            page,
+            relocationDirection.dx,
+            relocationDirection.dz,
+            { holdMs: 90, sampleMs: 1_250 }
+        );
+        expect(relocation.pointerObservedDown).toBe(true);
+        await waitForArrival(page);
+    }
+    throw new Error(`No ray-clear ${distance}-unit movement target after bounded real-input relocation`);
+}
+
+function movementAnalysis(frames, directionX, directionZ) {
+    expect(frames.length).toBeGreaterThan(10);
+    const magnitude = Math.hypot(directionX, directionZ) || 1;
+    const unitX = directionX / magnitude;
+    const unitZ = directionZ / magnitude;
+    const first = frames[0];
+    let priorLogicalProgress = 0;
+    let priorRenderProgress = 0;
+    let largestLogicalBacktrack = 0;
+    let largestRenderBacktrack = 0;
+    let largestRenderStep = 0;
+    let maxCameraError = 0;
+    let maxRenderLogicalGap = 0;
+    const animations = new Set();
+    const states = new Set();
+
+    for (const [index, frame] of frames.entries()) {
+        const logicalProgress = (frame.x - first.x) * unitX + (frame.z - first.z) * unitZ;
+        const renderProgress = (frame.renderX - first.renderX) * unitX +
+            (frame.renderZ - first.renderZ) * unitZ;
+        if (index > 0) {
+            largestLogicalBacktrack = Math.min(largestLogicalBacktrack, logicalProgress - priorLogicalProgress);
+            largestRenderBacktrack = Math.min(largestRenderBacktrack, renderProgress - priorRenderProgress);
+            largestRenderStep = Math.max(
+                largestRenderStep,
+                Math.hypot(frame.renderX - frames[index - 1].renderX, frame.renderZ - frames[index - 1].renderZ)
+            );
+        }
+        priorLogicalProgress = logicalProgress;
+        priorRenderProgress = renderProgress;
+        maxCameraError = Math.max(
+            maxCameraError,
+            Math.hypot(frame.cameraX - frame.renderX, frame.cameraZ - frame.renderZ)
+        );
+        maxRenderLogicalGap = Math.max(
+            maxRenderLogicalGap,
+            Math.hypot(frame.renderX - frame.x, frame.renderZ - frame.z)
+        );
+        if (frame.animation) animations.add(frame.animation);
+        if (frame.state) states.add(frame.state);
+    }
+
+    return {
+        ...movementFrameBudget(frames),
+        logicalTravel: Math.hypot(frames.at(-1).x - first.x, frames.at(-1).z - first.z),
+        renderTravel: Math.hypot(
+            frames.at(-1).renderX - first.renderX,
+            frames.at(-1).renderZ - first.renderZ
+        ),
+        largestLogicalBacktrack,
+        largestRenderBacktrack,
+        largestRenderStep,
+        maxCameraError,
+        maxRenderLogicalGap,
+        animations: [...animations],
+        states: [...states],
+        correctionFrames: frames.filter((frame) => frame.correctionActive).length,
+        sampledFrames: frames.length
+    };
+}
+
+async function movementMetrics(page) {
+    return page.evaluate(() => window.game?.getMovementMetrics?.() || null);
+}
+
+async function recallToTownForMovementQA(page) {
+    await page.bringToFront();
+    await page.keyboard.press('b');
+    await expect.poll(async () => {
+        const state = await readPlayerState(page);
+        return Math.hypot(state.x + 1.25, state.z - 200);
+    }, { timeout: 10_000 }).toBeLessThan(0.5);
+    await waitForArrival(page);
+    await page.waitForTimeout(250);
+}
+
+test.use({ trace: 'off', screenshot: 'off', video: 'off' });
+
+test.describe('real-input movement smoothness', () => {
+    test.skip(!hasCredentials, 'Set EIDOLON_E2E_USERNAME and EIDOLON_E2E_PASSWORD for movement QA');
+
+    test('nearby and sustained movement stays monotonic, acknowledged, and camera-coherent', async ({ page, baseURL }, testInfo) => {
+        test.setTimeout(180_000);
+        const failures = collectBrowserFailures(page, baseURL);
+        await loginAndEnterWorld(page, credentials);
+        if (process.env.EIDOLON_E2E_MOVEMENT_MAX_LEVEL === '1') {
+            // Explicit isolated speed-cap rehearsal, never a fresh-progression
+            // claim. The server must authorize this dedicated QA account.
+            expect(process.env.EIDOLON_E2E_REGISTER).toBe('1');
+            await ensureDungeonReadyLevel(page, 100);
+        }
+        const renderer = await assertHardwareRenderer(page);
+        await recallToTownForMovementQA(page);
+        if (process.env.EIDOLON_E2E_MOVEMENT_MAX_LEVEL === '1') {
+            await expect.poll(() => page.evaluate(() => window.game.player.stats.speed)).toBeCloseTo(31.68, 4);
+        }
+        await ensureCurrentGroundRayIsClear(page);
+
+        await waitForArrival(page);
+        const beforeNearby = await movementMetrics(page);
+        const start = await readPlayerState(page);
+        const exact = await holdGroundOffsetAndSample(page, 0, 0, { holdMs: 650, sampleMs: 1_000 });
+        await waitForArrival(page);
+        const afterExact = await movementMetrics(page);
+        const exactEnd = await readPlayerState(page);
+
+        expect(exact.pointerObservedDown).toBe(true);
+        expect(Math.hypot(exactEnd.x - start.x, exactEnd.z - start.z)).toBeLessThan(0.1);
+        expect(afterExact.local.actor.accepted - beforeNearby.local.actor.accepted).toBe(0);
+        expect(afterExact.local.actor.animationTransitions - beforeNearby.local.actor.animationTransitions).toBe(0);
+        expect(new Set(exact.frames.map((frame) => frame.state))).toEqual(new Set(['IDLE']));
+
+        const nearbyDirection = await findOpenMovementDirectionWithRelocation(page, 1.5, [0.05, 1.5]);
+        const nearbyMagnitude = Math.hypot(nearbyDirection.dx, nearbyDirection.dz);
+        const nearbyUnitX = nearbyDirection.dx / nearbyMagnitude;
+        const nearbyUnitZ = nearbyDirection.dz / nearbyMagnitude;
+        const beforeSubArrival = await movementMetrics(page);
+        const subArrival = await holdGroundOffsetAndSample(
+            page,
+            nearbyUnitX * 0.05,
+            nearbyUnitZ * 0.05,
+            { holdMs: 350, sampleMs: 750 }
+        );
+        await waitForArrival(page);
+        const afterSubArrival = await movementMetrics(page);
+        await testInfo.attach('sub-arrival-movement-diagnostics', {
+            body: JSON.stringify({ before: beforeSubArrival, after: afterSubArrival, subArrival,
+                analysis: movementAnalysis(subArrival.frames, nearbyUnitX, nearbyUnitZ) }),
+            contentType: 'application/json'
+        });
+        expect(subArrival.pointerObservedDown).toBe(true);
+        expect(subArrival.aimed.groundDistance, 'Actual physical input must be inside the arrival dead zone').toBeLessThan(0.1);
+        if (process.env.EIDOLON_E2E_MOVEMENT_PIXEL_PROBE === '1') expect(subArrival.aimed.groundDistance).toBeGreaterThan(0.01);
+        expect(afterSubArrival.local.actor.accepted - beforeSubArrival.local.actor.accepted).toBe(0);
+        expect(movementAnalysis(subArrival.frames, nearbyUnitX, nearbyUnitZ).logicalTravel).toBeLessThan(0.1);
+
+        const beforeShort = await movementMetrics(page);
+        const short = await holdGroundOffsetAndSample(
+            page,
+            nearbyDirection.dx,
+            nearbyDirection.dz,
+            { holdMs: 90, sampleMs: 1_250 }
+        );
+        await waitForArrival(page);
+        const afterShort = await movementMetrics(page);
+        const shortAnalysis = movementAnalysis(short.frames, nearbyDirection.dx, nearbyDirection.dz);
+        expect(shortAnalysis.logicalTravel).toBeGreaterThan(0.75);
+        expect(shortAnalysis.largestLogicalBacktrack).toBeGreaterThanOrEqual(-0.02);
+        expect(shortAnalysis.largestRenderBacktrack).toBeGreaterThanOrEqual(-0.02);
+        expect(shortAnalysis.maxCameraError).toBeLessThan(0.05);
+        expect(afterShort.local.actor.arrivals - beforeShort.local.actor.arrivals).toBe(1);
+
+        const sustainedDirection = await findOpenMovementDirectionWithRelocation(page, 8);
+        const beforeLong = await movementMetrics(page);
+        const sustained = await holdGroundOffsetAndSample(
+            page,
+            sustainedDirection.dx,
+            sustainedDirection.dz,
+            { holdMs: 90, sampleMs: 2_500 }
+        );
+        await waitForArrival(page);
+        await page.waitForTimeout(500);
+        const afterLong = await movementMetrics(page);
+        const sustainedAnalysis = movementAnalysis(
+            sustained.frames,
+            sustainedDirection.dx,
+            sustainedDirection.dz
+        );
+        await testInfo.attach('sustained-movement-samples', {
+            body: Buffer.from(JSON.stringify({ renderer, frames: sustained.frames,
+                analysis: sustainedAnalysis, transport: afterLong.local }, null, 2)),
+            contentType: 'application/json'
+        });
+        console.log('[movement-sustained]', JSON.stringify({ renderer, analysis: sustainedAnalysis,
+            speeds: [...new Set(sustained.frames.map(frame => frame.speed))] }));
+
+        expect(sustainedAnalysis.logicalTravel).toBeGreaterThan(6);
+        expect(sustainedAnalysis.renderTravel).toBeGreaterThan(6);
+        expect(sustainedAnalysis.largestLogicalBacktrack).toBeGreaterThanOrEqual(-0.02);
+        expect(sustainedAnalysis.largestRenderBacktrack).toBeGreaterThanOrEqual(-0.02);
+        expect(sustainedAnalysis.invalidFrames).toBe(0);
+        expect(sustainedAnalysis.maxSimulationTicks).toBeLessThanOrEqual(2);
+        expect(sustainedAnalysis.maxRenderStepExcess).toBeLessThan(1e-5);
+        expect(sustainedAnalysis.maxCameraError).toBeLessThan(0.05);
+        expect(sustainedAnalysis.maxRenderLogicalGap).toBeLessThan(0.75);
+        expect(sustainedAnalysis.states).toContain('MOVING');
+        expect(sustainedAnalysis.states).toContain('IDLE');
+        expect(sustainedAnalysis.animations).toContain('Run');
+        expect(sustainedAnalysis.correctionFrames).toBe(0);
+        expect(afterLong.local.serverAdjustments - beforeLong.local.serverAdjustments).toBe(0);
+        expect(afterLong.local.hardCorrections - beforeLong.local.hardCorrections).toBe(0);
+        expect(afterLong.local.actor.arrivals - beforeLong.local.actor.arrivals).toBe(1);
+        expect(afterLong.local.actor.animationTransitions - beforeLong.local.actor.animationTransitions).toBeLessThanOrEqual(3);
+        expect(afterLong.local.lastAcknowledgedSequence).toBeGreaterThanOrEqual(
+            afterLong.local.lastSentSequence - 2
+        );
+        expect(afterLong.local.pendingAcknowledgements).toBeLessThanOrEqual(2);
+
+        const beforeIdle = await movementMetrics(page);
+        await page.waitForTimeout(1_250);
+        const afterIdle = await movementMetrics(page);
+        expect(afterIdle.local.packetsSent - beforeIdle.local.packetsSent).toBeLessThanOrEqual(2);
+
+        // The original report occurred outside town. Exercise the same real
+        // ground-input path after a server-owned relocation beyond the town
+        // boundary, where denser entity streams used to make duplicate
+        // acknowledgement snapshots especially visible as rubberbanding.
+        await useCombatQAWaypoint(page);
+        const outsideStart = await readPlayerState(page);
+        expect(Math.hypot(outsideStart.x, outsideStart.z - 200)).toBeGreaterThan(100);
+        await ensureCurrentGroundRayIsClear(page);
+        let outsideDirection = await findOpenMovementDirectionWithRelocation(page, 8);
+        await waitForArrival(page);
+        let beforeOutside, outside;
+        for (let attempt = 0; attempt < 6; attempt += 1) {
+            expect(outsideDirection, 'A clear outside-town movement target must exist').not.toBeNull();
+            beforeOutside = await movementMetrics(page);
+            outside = await holdGroundOffsetAndSample(page, outsideDirection.dx, outsideDirection.dz,
+                { holdMs: 90, sampleMs: 2_500, reselectBlocked: true });
+            if (outside) break;
+            outsideDirection = await findOpenMovementDirection(page, 8);
+        }
+        expect(outside, 'A ground ray must remain clear before the actual movement input').not.toBeNull();
+        await waitForArrival(page);
+        await page.waitForTimeout(500);
+        const afterOutside = await movementMetrics(page);
+        const outsideAnalysis = movementAnalysis(
+            outside.frames,
+            outsideDirection.dx,
+            outsideDirection.dz
+        );
+        await testInfo.attach('outside-movement-samples', {
+            body: Buffer.from(JSON.stringify({ renderer, frames: outside.frames,
+                analysis: outsideAnalysis, transport: afterOutside.local }, null, 2)),
+            contentType: 'application/json'
+        });
+
+        expect(outsideAnalysis.logicalTravel).toBeGreaterThan(6);
+        expect(outsideAnalysis.renderTravel).toBeGreaterThan(6);
+        expect(outsideAnalysis.largestLogicalBacktrack).toBeGreaterThanOrEqual(-0.02);
+        expect(outsideAnalysis.largestRenderBacktrack).toBeGreaterThanOrEqual(-0.02);
+        expect(outsideAnalysis.invalidFrames).toBe(0);
+        expect(outsideAnalysis.maxSimulationTicks).toBeLessThanOrEqual(2);
+        expect(outsideAnalysis.maxRenderStepExcess).toBeLessThan(1e-5);
+        expect(outsideAnalysis.maxCameraError).toBeLessThan(0.05);
+        expect(outsideAnalysis.maxRenderLogicalGap).toBeLessThan(0.75);
+        expect(outsideAnalysis.correctionFrames).toBe(0);
+        expect(afterOutside.local.serverAdjustments - beforeOutside.local.serverAdjustments).toBe(0);
+        expect(afterOutside.local.hardCorrections - beforeOutside.local.hardCorrections).toBe(0);
+        expect(afterOutside.local.actor.arrivals - beforeOutside.local.actor.arrivals).toBe(1);
+        expect(afterOutside.local.lastAcknowledgedSequence).toBeGreaterThanOrEqual(
+            afterOutside.local.lastSentSequence - 2
+        );
+        expect(failures, failures.join('\n')).toEqual([]);
+
+        await testInfo.attach('movement-smoothness-evidence', {
+            body: Buffer.from(JSON.stringify({
+                renderer,
+                exactCurrentFrames: exact.frames.length,
+                subArrivalFrames: subArrival.frames.length,
+                short: shortAnalysis,
+                sustained: sustainedAnalysis,
+                outsideTown: outsideAnalysis,
+                transport: afterOutside.local
+            }, null, 2)),
+            contentType: 'application/json'
+        });
+    });
+});

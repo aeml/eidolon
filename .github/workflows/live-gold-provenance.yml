@@ -39,11 +39,11 @@ jobs:
           test -x /usr/bin/google-chrome
           sg render -c 'npm run verify:browser-gpu'
       - name: Observe the existing live QA boundary once
-        run: sg render -c 'npx playwright test tests/e2e/live-gold-provenance.spec.js --workers=1 --retries=0'
+        run: sg render -c 'npx playwright test tests/e2e/economy/live-gold-provenance.spec.js --workers=1 --retries=0'
       - name: Sanitize actual evidence
         id: sanitize
         if: ${{ always() }}
-        run: node scripts/sanitize-playwright-artifacts.mjs gold-provenance-evidence playwright-report test-results
+        run: node scripts/qa/sanitize-playwright-artifacts.mjs gold-provenance-evidence playwright-report test-results
       - name: Upload actual diagnostic evidence
         if: ${{ !cancelled() && steps.sanitize.outcome == 'success' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

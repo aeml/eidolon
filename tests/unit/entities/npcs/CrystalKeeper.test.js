@@ -1,0 +1,105 @@
+import { GameEngine } from '../../../../src/core/GameEngine.js';
+import { AvengingSeraph } from '../../../../src/entities/summons/AvengingSeraph.js';
+import { QuestNPC } from '../../../../src/entities/npcs/QuestNPC.js';
+import { MeshFactory } from '../../../../src/utils/MeshFactory.js';
+import { CrystalKeeper } from '../../../../src/entities/npcs/CrystalKeeper.js';
+import { Skeleton } from '../../../../src/entities/enemies/Skeleton.js';
+import * as THREE from 'three';
+
+test.each(['IDLE', 'CHANNELING'])('living Maelin is not a hostile target while %s', state => {
+    const engine = Object.create(GameEngine.prototype);
+    const keeper = engine.createRemotePlayer('NPC', 'crystal-artificer-raid', 'CrystalKeeper');
+    keeper.state = state;
+    keeper.isActive = true;
+    const enemy = new Skeleton('repair-wave-enemy');
+    enemy.isActive = true;
+    expect(engine.isInteractableEntity(keeper)).toBe(false);
+    expect(engine.isHostileActorTarget(keeper)).toBe(false);
+    expect(engine.isHostileActorTarget(enemy)).toBe(true);
+    engine.abilityController = { pendingAbilityTarget: keeper };
+    engine.hoveredEntity = keeper;
+    expect(engine.getEffectiveCombatTarget()).toBeNull();
+});
+
+test('Maelin is a clothed adult artificer, not a summoned guardian or quest giver', async () => {
+    const engine = Object.create(GameEngine.prototype);
+    const keeper = engine.createRemotePlayer('NPC', 'crystal-artificer-raid', 'CrystalKeeper');
+    expect(keeper).not.toBeInstanceOf(AvengingSeraph);
+    expect(keeper).not.toBeInstanceOf(QuestNPC);
+    expect(keeper.type).toBe('CrystalKeeper');
+    expect(keeper.name).toBe('Maelin, Resonance Artificer');
+    expect(keeper.meshType).toBe('CrystalKeeper');
+    expect(keeper.isRemote).toBe(true);
+    expect(keeper.radius).toBe(1.5);
+    expect(engine.isInteractableEntity(keeper)).toBe(false);
+    expect(keeper.markerSymbol).toBeUndefined();
+    expect(keeper.offlineOwner).toBeUndefined();
+    const mesh = await MeshFactory.createMeshForType(keeper.meshType);
+    expect(mesh.userData.assetFallback).toBeUndefined();
+    expect(mesh.userData.animations.some(clip => clip.name === 'Idle')).toBe(true);
+    expect(mesh.userData.animations.some(clip => clip.name === 'Channel')).toBe(true);
+    expect(mesh.getObjectByName('Maelin_TuningFork')).toBeDefined();
+    expect(mesh.getObjectByName('Maelin_FieldToolkit')).toBeDefined();
+    expect(mesh.getObjectByName('Wizard_Stormstaff')).toBeUndefined();
+    MeshFactory.releaseMesh(keeper.meshType, mesh);
+});
+
+test('a real remote Maelin tick loops the ritual only while the server says CHANNELING', () => {
+    const keeper = new CrystalKeeper('maelin-channel');
+    keeper.isRemote = true;
+    const requested = [];
+    keeper.playAnimation = name => { requested.push(name); return true; };
+    keeper.updateState('CHANNELING');
+    keeper.update(1 / 60, null, null, []);
+    expect(requested.at(-1)).toBe('Idle'); // Mesh is not ready yet.
+    keeper.animations.Channel = {};
+    keeper.update(1 / 60, null, null, []);
+    expect(requested.at(-1)).toBe('Channel');
+    keeper.updateState('IDLE');
+    keeper.update(1 / 60, null, null, []);
+    expect(requested.at(-1)).toBe('Idle');
+    expect(keeper.state).toBe('IDLE');
+});
+
+test('Maelin has actual moving ritual tracks and resets her pose when reused', async () => {
+    const mesh = await MeshFactory.createMeshForType('CrystalKeeper');
+    const clip = mesh.userData.animations.find(entry => entry.name === 'Channel');
+    expect(clip).toBeDefined();
+    const arm = mesh.getObjectByName('Rig_UpperArmRight');
+    const original = arm.quaternion.clone();
+    const mixer = new THREE.AnimationMixer(mesh);
+    mixer.clipAction(clip).play();
+    mixer.update(0.6);
+    expect(arm.quaternion.angleTo(original)).toBeGreaterThan(0.5);
+    mixer.stopAllAction();
+    MeshFactory.releaseMesh('CrystalKeeper', mesh);
+    const reused = await MeshFactory.createMeshForType('CrystalKeeper');
+    expect(reused).toBe(mesh);
+    expect(arm.quaternion.angleTo(original)).toBeLessThan(0.00001);
+    MeshFactory.releaseMesh('CrystalKeeper', reused);
+});
+
+test('joining during a ritual starts Channel after the actual mesh finishes loading', async () => {
+    const keeper = new CrystalKeeper('maelin-late-mesh');
+    // This lifecycle unit test has no real 2D canvas. The browser comparison
+    // separately renders the actual labels; leave mesh/mixer loading intact.
+    keeper.updateNameTag = () => {};
+    keeper.isRemote = true;
+    keeper.updateState('CHANNELING');
+    keeper.update(1 / 60, null, null, []);
+    await keeper.ensureMesh();
+    keeper.update(1 / 60, null, null, []);
+    expect(keeper.currentAction.getClip().name).toBe('Channel');
+    keeper.updateState('IDLE');
+    for (let frame = 0; frame < 45; frame++) keeper.update(1 / 60, null, null, []);
+    expect(keeper.currentAction.getClip().name).toBe('Idle');
+    expect(Math.abs(keeper.mesh.getObjectByName('Rig_UpperArmRight').rotation.x)).toBeLessThan(0.2);
+    keeper.dispose();
+});
+
+test('actual Spirit Guardians retain their summoned angel model', () => {
+    const engine = Object.create(GameEngine.prototype);
+    const guardian = engine.createRemotePlayer('NPC', 'seraph-owner-1', 'AvengingSeraph');
+    expect(guardian).toBeInstanceOf(AvengingSeraph);
+    expect(guardian.meshType).toBe('AvengingSeraph');
+});

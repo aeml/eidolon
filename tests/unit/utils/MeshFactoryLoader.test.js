@@ -1,0 +1,691 @@
+import * as THREE from 'three';
+import { MeshFactory, PROCEDURAL_MESH_ALIASES } from '../../../src/utils/MeshFactory.js';
+import { fighterRuntimePath } from '../../../src/art/actors/humanoids/AuthoredFighter.js';
+import { MeshCatalog } from '../../../src/utils/MeshCatalog.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { jest } from '@jest/globals';
+
+const PROCEDURAL_PLAYER_CLIPS = ['Idle', 'Walk', 'Run', 'Attack', 'Death',
+    'Cast', 'Channel', 'Guard', 'Shout', 'Bless'];
+
+describe('MeshFactory.loadModel', () => {
+    const originalCache = MeshFactory.cache;
+    const originalInflight = MeshFactory.inflight;
+
+    beforeEach(() => {
+        MeshFactory.cache = {};
+        MeshFactory.inflight = {};
+    });
+
+    afterAll(() => {
+        MeshFactory.cache = originalCache;
+        MeshFactory.inflight = originalInflight;
+    });
+
+    test('deduplicates concurrent GLB requests via inflight cache', async () => {
+        const fakeGltf = { scene: { name: 'scene' }, animations: [] };
+        const loadSpy = jest.spyOn(GLTFLoader.prototype, 'load').mockImplementation((path, onLoad) => {
+            setTimeout(() => onLoad(fakeGltf), 0);
+        });
+
+        const [resultA, resultB] = await Promise.all([
+            MeshFactory.loadModel('./assets/test.glb'),
+            MeshFactory.loadModel('./assets/test.glb')
+        ]);
+
+        expect(loadSpy).toHaveBeenCalledTimes(1);
+        expect(resultA).toBe(fakeGltf);
+        expect(resultB).toBe(fakeGltf);
+
+        loadSpy.mockRestore();
+    });
+
+    test('returns cached GLB on later requests without reloading', async () => {
+        const fakeGltf = { scene: { name: 'cached' }, animations: [] };
+        const loadSpy = jest.spyOn(GLTFLoader.prototype, 'load').mockImplementation((path, onLoad) => {
+            setTimeout(() => onLoad(fakeGltf), 0);
+        });
+
+        const first = await MeshFactory.loadModel('./assets/cached.glb');
+        const second = await MeshFactory.loadModel('./assets/cached.glb');
+
+        expect(loadSpy).toHaveBeenCalledTimes(1);
+        expect(first).toBe(fakeGltf);
+        expect(second).toBe(fakeGltf);
+
+        loadSpy.mockRestore();
+    });
+
+    test('an observation timeout retains a running request instead of starting a duplicate download', async () => {
+        let resolve;
+        const loadSpy = jest.spyOn(GLTFLoader.prototype, 'load').mockImplementation((_path, onLoad) => { resolve = onLoad; });
+        try {
+            await expect(MeshFactory.loadModelWithTimeout('./assets/slow.glb', 5)).rejects.toThrow('Timed out');
+            const pending = MeshFactory.loadModel('./assets/slow.glb');
+            expect(loadSpy).toHaveBeenCalledTimes(1);
+            const gltf = { scene: {}, animations: [] }; resolve(gltf);
+            expect(await pending).toBe(gltf);
+        } finally { loadSpy.mockRestore(); }
+    });
+
+    test('clears inflight entry after non-retriable error so next call can retry', async () => {
+        const expectedError = new Error('404 not found');
+        const fakeGltf = { scene: { name: 'retry' }, animations: [] };
+        let attempt = 0;
+        const loadSpy = jest.spyOn(GLTFLoader.prototype, 'load').mockImplementation((path, onLoad, onProgress, onError) => {
+            attempt += 1;
+            if (attempt === 1) {
+                setTimeout(() => onError(expectedError), 0);
+            } else {
+                setTimeout(() => onLoad(fakeGltf), 0);
+            }
+        });
+
+        await expect(MeshFactory.loadModel('./assets/retry.glb')).rejects.toThrow('404 not found');
+        await expect(MeshFactory.loadModel('./assets/retry.glb')).resolves.toBe(fakeGltf);
+
+        expect(loadSpy).toHaveBeenCalledTimes(2);
+
+        loadSpy.mockRestore();
+    });
+
+    test('retries transient loader failures before rejecting', async () => {
+        const transientError = new Error("Couldn't load texture blob:foo");
+        const fakeGltf = { scene: { name: 'retry-transient' }, animations: [] };
+        let attempt = 0;
+        const loadSpy = jest.spyOn(GLTFLoader.prototype, 'load').mockImplementation((path, onLoad, onProgress, onError) => {
+            attempt += 1;
+            if (attempt < 3) {
+                setTimeout(() => onError(transientError), 0);
+            } else {
+                setTimeout(() => onLoad(fakeGltf), 0);
+            }
+        });
+
+        await expect(MeshFactory.loadModel('./assets/retry-transient.glb')).resolves.toBe(fakeGltf);
+        expect(loadSpy).toHaveBeenCalledTimes(3);
+
+        loadSpy.mockRestore();
+    });
+
+    test('configures alpha-cutout shadow settings for foliage-like materials', () => {
+        const material = new THREE.MeshStandardMaterial({
+            map: { isTexture: true },
+            transparent: true,
+            side: THREE.DoubleSide
+        });
+        const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
+
+        MeshFactory.configureShadowCastingForObject(mesh, { isFoliage: true });
+
+        expect(mesh.castShadow).toBe(true);
+        expect(mesh.receiveShadow).toBe(true);
+        expect(mesh.material.transparent).toBe(false);
+        expect(mesh.material.alphaTest).toBeGreaterThanOrEqual(0.5);
+        expect(mesh.material.shadowSide).toBe(THREE.DoubleSide);
+        expect(mesh.material.forceSinglePass).toBe(true);
+        expect(mesh.material.alphaToCoverage).toBe(false);
+    });
+});
+
+describe('MeshFactory preload phases', () => {
+    test('startup preload excludes heavy world assets', () => {
+        const startup = MeshFactory.getStartupPreloadModelPaths();
+        expect(startup).not.toContain('./assets/buildings/trading_post.glb');
+        expect(startup).not.toContain('./assets/buildings/dungeons/the_verdant_bastion.glb');
+        expect(startup).not.toContain('./assets/archetypes/Fighter/idle.glb');
+        expect(startup).not.toContain('./assets/archetypes/Rogue/idle.glb');
+        expect(startup).not.toContain('./assets/archetypes/Wizard/idle.glb');
+        expect(startup).not.toContain('./assets/archetypes/Cleric/idle.glb');
+    });
+
+    test('player-specific startup preload bypasses synchronous procedural actors', () => {
+        const startup = MeshFactory.getStartupPreloadModelPaths('Cleric');
+
+        expect(startup).toEqual([]);
+        expect(startup).not.toContain('./assets/archetypes/Cleric/death.glb');
+        expect(startup).not.toContain('./assets/archetypes/Fighter/idle.glb');
+        expect(startup).not.toContain('./assets/enemies/undead/skeleton/idle.glb');
+        expect(startup).not.toContain('./assets/objects/chests/stash_base.glb');
+        expect(startup).not.toContain('./assets/summons/avenging_seraph/idle.glb');
+    });
+
+    test('background preload is empty after the final authored dungeon facades migrate', () => {
+        const background = MeshFactory.getBackgroundPreloadModelPaths();
+        expect(background).toEqual([]);
+        expect(MeshFactory.getPreloadModelPaths()).toEqual([]);
+    });
+
+    test('reports nonfatal preload failures so deferred scenery can stay optional', async () => {
+        const expectedError = new Error('slow scenery asset');
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModelWithTimeout')
+            .mockRejectedValueOnce(expectedError)
+            .mockResolvedValueOnce({ scene: {} });
+        const consoleWarn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+        try {
+            const result = await MeshFactory.preloadModels(
+                ['./assets/slow.glb', './assets/ready.glb'],
+                { concurrency: 1, timeoutMs: 50, failFast: false }
+            );
+
+            expect(result).toEqual({
+                completed: 2,
+                total: 2,
+                failures: [{ path: './assets/slow.glb', error: expectedError }]
+            });
+            expect(loadSpy).toHaveBeenNthCalledWith(1, './assets/slow.glb', 50);
+            expect(loadSpy).toHaveBeenNthCalledWith(2, './assets/ready.glb', 50);
+        } finally {
+            consoleWarn.mockRestore();
+            loadSpy.mockRestore();
+        }
+    });
+});
+
+describe('MeshFactory catalog integration', () => {
+    test('keeps the legacy procedural-spec registry empty after every actor gets an explicit rig', () => {
+        expect(MeshFactory.PROCEDURAL_ENEMY_SPECS).toBe(MeshCatalog.getProceduralEnemySpecs());
+        expect(MeshFactory.PROCEDURAL_ENEMY_SPECS).toEqual({});
+    });
+
+    test('fails closed instead of hiding a missing actor or shape behind a generic visual', async () => {
+        await expect(MeshFactory.createMeshForType('UncataloguedActor'))
+            .rejects.toThrow('Unknown procedural mesh type: UncataloguedActor');
+        expect(() => MeshFactory.createProceduralEnemy('BrokenActor', {
+            shape: 'uncatalogued-shape',
+            scale: 1,
+            color: 0xffffff,
+            emissive: 0x000000,
+            emissiveI: 0
+        })).toThrow('Unknown procedural shape "uncatalogued-shape" for actor "BrokenActor"');
+    });
+
+    test('the compatibility procedural builder still ships explicit idle, movement, attack, and death clips', () => {
+        const mesh = MeshFactory.createProceduralEnemy(
+            'TestWraith',
+            { shape: 'wraith', scale: 2.5, color: 0xD2B48C, emissive: 0x332200, emissiveI: 0.15 }
+        );
+        const clips = Object.fromEntries(mesh.userData.animations.map((clip) => [clip.name, clip]));
+
+        expect(Object.keys(clips)).toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+        expect(clips.Idle.tracks.length).toBeGreaterThan(0);
+        expect(clips.Attack.tracks.length).toBeGreaterThan(0);
+        expect(clips.Death.tracks.length).toBeGreaterThan(0);
+
+        const firstPart = mesh.getObjectByName('ProceduralPart0');
+        const originalRotation = firstPart.rotation.x;
+        const mixer = new THREE.AnimationMixer(mesh);
+        mixer.clipAction(clips.Attack).reset().play();
+        mixer.update(0.28);
+
+        expect(firstPart.rotation.x).not.toBeCloseTo(originalRotation, 4);
+        mixer.stopAllAction();
+        mixer.uncacheRoot(mesh);
+    });
+
+    test.each([
+        ['Fighter', new THREE.BoxGeometry(1, 1, 1), 0xd84a3a, 0.5],
+        ['Rogue', new THREE.CylinderGeometry(0.3, 0.3, 1.5, 8), 0x4a8f54, 0.75],
+        ['Wizard', new THREE.ConeGeometry(0.5, 1.5, 8), 0x496bd8, 0.75],
+        ['Cleric', new THREE.SphereGeometry(0.6, 16, 16), 0xe0c95a, 0.6]
+    ])('%s asset fallback remains fully animated', (type, geometry, color, centerY) => {
+        const mesh = MeshFactory.createAnimatedPlayerFallback(type, geometry, color, centerY);
+        const clipNames = mesh.userData.animations.map((entry) => entry.name);
+
+        expect(mesh.userData.assetFallback).toBe(true);
+        expect(mesh.userData.fallbackType).toBe(type);
+        expect(clipNames).toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+        expect(mesh.getObjectByName('ProceduralPart0')).not.toBeNull();
+    });
+
+    test('unavailable Fighter export falls back to the fully equipped procedural humanoid', async () => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModelWithTimeout').mockRejectedValue(new Error('404 not found'));
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType('Fighter');
+            expect(mesh.userData.proceduralHumanoid).toBe(true);
+            expect(mesh.userData.proceduralClass).toBe('Fighter');
+            expect(mesh.userData.animations.map((entry) => entry.name))
+                .toEqual(PROCEDURAL_PLAYER_CLIPS);
+            expect(loadSpy).toHaveBeenCalledWith(fighterRuntimePath('high'), 8000);
+            expect(mesh.userData.assetFallback).toBe(true);
+            MeshFactory.releaseMesh('Fighter', mesh);
+            expect(MeshFactory.pool.Fighter).toEqual([]);
+        } finally {
+            MeshFactory.pool = previousPool;
+            loadSpy.mockRestore();
+        }
+    });
+
+    test('Rogue retains the fully animated shadeblade when authored assets fail', async () => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModelWithTimeout').mockRejectedValue(new Error('offline'));
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType('Rogue');
+            expect(mesh.userData.proceduralHumanoid).toBe(true);
+            expect(mesh.userData.proceduralClass).toBe('Rogue');
+            expect(mesh.userData.artStyle).toBe('Gloamreach shadeblade');
+            expect(mesh.userData.animations.map((entry) => entry.name))
+                .toEqual(PROCEDURAL_PLAYER_CLIPS);
+            expect(loadSpy).toHaveBeenCalledTimes(1);
+            expect(mesh.userData.assetFallback).toBe(true);
+        } finally {
+            MeshFactory.pool = previousPool;
+            loadSpy.mockRestore();
+        }
+    });
+
+    test('Wizard retains the fully animated hexweaver when authored assets fail', async () => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModelWithTimeout').mockRejectedValue(new Error('offline'));
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType('Wizard');
+            expect(mesh.userData.proceduralHumanoid).toBe(true);
+            expect(mesh.userData.proceduralClass).toBe('Wizard');
+            expect(mesh.userData.artStyle).toBe('Stormcrown hexweaver');
+            expect(mesh.userData.animations.map((entry) => entry.name))
+                .toEqual(PROCEDURAL_PLAYER_CLIPS);
+            expect(loadSpy).toHaveBeenCalledTimes(1);
+            expect(mesh.userData.assetFallback).toBe(true);
+        } finally {
+            MeshFactory.pool = previousPool;
+            loadSpy.mockRestore();
+        }
+    });
+
+    test('Cleric retains the fully animated dawnwarden when authored assets fail', async () => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModelWithTimeout').mockRejectedValue(new Error('offline'));
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType('Cleric');
+            expect(mesh.userData.proceduralHumanoid).toBe(true);
+            expect(mesh.userData.proceduralClass).toBe('Cleric');
+            expect(mesh.userData.artStyle).toBe('Lanternhold dawnwarden');
+            expect(mesh.userData.animations.map((entry) => entry.name))
+                .toEqual(PROCEDURAL_PLAYER_CLIPS);
+            expect(loadSpy).toHaveBeenCalledTimes(1);
+            expect(mesh.userData.assetFallback).toBe(true);
+        } finally {
+            MeshFactory.pool = previousPool;
+            loadSpy.mockRestore();
+        }
+    });
+
+    test.each([
+        ['DwarfSalesman', 'Lanternhold ironmonger'],
+        ['QuestNPC', 'Lanternhold oathscribe'],
+        ['DungeonNPC', 'Lanternhold waywarden'],
+        ['RespecNPC', 'Lanternhold ash confessor']
+    ])('%s uses its procedural Lanternhold service silhouette without requesting a GLB', async (type, artStyle) => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType(type);
+            expect(mesh.userData).toEqual(expect.objectContaining({
+                proceduralTownActor: true,
+                proceduralActorType: type,
+                artStyle,
+                sharedGeometry: true
+            }));
+            expect(mesh.userData.animations.map((entry) => entry.name)).toEqual(['Idle']);
+            expect(loadSpy).not.toHaveBeenCalled();
+        } finally {
+            MeshFactory.pool = previousPool;
+            loadSpy.mockRestore();
+        }
+    });
+
+    test('Avenging Seraph uses its procedural reliquary rig without requesting a GLB', async () => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType('AvengingSeraph');
+            expect(mesh.userData).toEqual(expect.objectContaining({
+                proceduralSummon: true,
+                proceduralActorType: 'AvengingSeraph',
+                artStyle: 'Lanternhold reliquary seraph',
+                combatRadius: 1.5,
+                sharedGeometry: true
+            }));
+            expect(mesh.userData.animations.map((entry) => entry.name))
+                .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+            expect(loadSpy).not.toHaveBeenCalled();
+        } finally {
+            MeshFactory.pool = previousPool;
+            loadSpy.mockRestore();
+        }
+    });
+
+    test.each([
+        ['Skeleton', 'Gloamwood ossuary pilgrim', 1.25],
+        ['DemonOrc', 'Cinder Wastes kiln-warrior', 2],
+        ['Imp', 'Cinder Wastes ember-scavenger', 1],
+        ['Construct', 'Gloamwood grave-reliquary construct', 2.5],
+        ['InfernoTitan', 'Cinder Wastes crucible titan', 1]
+    ])('%s uses its regional procedural rig without requesting a GLB', async (type, artStyle, combatRadius) => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType(type);
+            expect(mesh.userData).toEqual(expect.objectContaining({
+                proceduralEnemyFamily: true,
+                proceduralActorType: type,
+                artStyle,
+                combatRadius,
+                sharedGeometry: true
+            }));
+            expect(mesh.userData.animations.map((entry) => entry.name))
+                .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+            expect(loadSpy).not.toHaveBeenCalled();
+        } finally {
+            MeshFactory.pool = previousPool;
+            loadSpy.mockRestore();
+        }
+    });
+
+    test.each([
+        ['MountainTroll', 'Moonfrost rimeback troll'],
+        ['AquaGolem', 'Moonfrost drowned-cairn golem'],
+        ['Siren', 'Moonfrost choir siren'],
+        ['FrostGuardian', 'Moonfrost glacial bell guardian']
+    ])('%s uses its Moonfrost procedural rig without requesting a GLB', async (type, artStyle) => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType(type);
+            expect(mesh.userData).toEqual(expect.objectContaining({
+                proceduralEnemyFamily: true,
+                proceduralActorType: type,
+                artStyle,
+                region: 'Moonfrost Expanse',
+                combatRadius: 1.25,
+                sharedGeometry: true
+            }));
+            expect(mesh.userData.animations.map((entry) => entry.name))
+                .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+            expect(loadSpy).not.toHaveBeenCalled();
+        } finally {
+            MeshFactory.pool = previousPool;
+            loadSpy.mockRestore();
+        }
+    });
+
+    test.each([
+        ['RootboundWarden', 'Thorncrypt root-gate warden', 2],
+        ['BriarMatron', 'Thorncrypt briar-crown matron', 1.5],
+        ['RustboundColossus', 'Thorncrypt rust-reliquary colossus', 3],
+        ['HollowSentinel', 'Thorncrypt hollow-vigil sentinel', 2.5]
+    ])('%s uses its Thorncrypt boss rig without requesting a GLB', async (type, artStyle, combatRadius) => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType(type);
+            expect(mesh.userData).toEqual(expect.objectContaining({
+                proceduralEnemyFamily: true,
+                proceduralBossFamily: 'thorncrypt',
+                proceduralActorType: type,
+                artStyle,
+                region: 'Verdant Bastion — The Thorncrypt',
+                combatRadius,
+                sharedGeometry: true
+            }));
+            expect(mesh.userData.animations.map((entry) => entry.name))
+                .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+            expect(loadSpy).not.toHaveBeenCalled();
+        } finally {
+            MeshFactory.pool = previousPool;
+            loadSpy.mockRestore();
+        }
+    });
+
+    test.each([
+        ['Cindermaw', 'Furnace Below cinder-hound'],
+        ['ScorchedTwins', 'Furnace Below twin-flame covenant'],
+        ['ForgemasterPyrax', 'Furnace Below oath-anvil forgemaster'],
+        ['ObsidianGuardian', 'Furnace Below black-glass bulwark'],
+        ['LordInfernax', 'Furnace Below crowned furnace-lord']
+    ])('%s uses its Molten Core boss rig without requesting a GLB', async (type, artStyle) => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType(type);
+            expect(mesh.userData).toEqual(expect.objectContaining({
+                proceduralEnemyFamily: true,
+                proceduralBossFamily: 'molten-core',
+                proceduralActorType: type,
+                artStyle,
+                region: 'Molten Core — The Furnace Below',
+                combatRadius: 1.25,
+                sharedGeometry: true
+            }));
+            expect(mesh.userData.animations.map((entry) => entry.name))
+                .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+            expect(loadSpy).not.toHaveBeenCalled();
+        } finally {
+            MeshFactory.pool = previousPool;
+            loadSpy.mockRestore();
+        }
+    });
+
+    test.each([
+        ['Windshear', 'Shattered Aerie wind-razor revenant'],
+        ['Stormcallers', 'Shattered Aerie divided storm-oracle'],
+        ['RocMatriarch', 'Shattered Aerie thunder-roc matriarch'],
+        ['ThunderlordKaelix', 'Shattered Aerie storm-bell thunderlord'],
+        ['Zephyrion', 'Shattered Aerie eternal-gale sovereign']
+    ])('%s uses its Tempest Spire boss rig without requesting a GLB', async (type, artStyle) => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType(type);
+            expect(mesh.userData).toEqual(expect.objectContaining({
+                proceduralEnemyFamily: true,
+                proceduralBossFamily: 'tempest-spire',
+                proceduralActorType: type,
+                artStyle,
+                region: 'Tempest Spire — The Shattered Aerie',
+                combatRadius: 1.25,
+                sharedGeometry: true
+            }));
+            expect(mesh.userData.animations.map((entry) => entry.name))
+                .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+            expect(loadSpy).not.toHaveBeenCalled();
+        } finally {
+            MeshFactory.pool = previousPool;
+            loadSpy.mockRestore();
+        }
+    });
+
+    test.each([
+        ['TiderendLeviathan', 'Drowned Sanctum tide-rend leviathan'],
+        ['DrownedChoir', 'Drowned Sanctum many-voiced reliquary'],
+        ['AbyssalGoliath', 'Drowned Sanctum anchor-cairn goliath'],
+        ['MaelstromWarden', 'Drowned Sanctum maelstrom bulwark'],
+        ['Thalorath', 'Drowned Sanctum moonless tide-king']
+    ])('%s uses its Abyssal Well boss rig without requesting a GLB', async (type, artStyle) => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType(type);
+            expect(mesh.userData).toEqual(expect.objectContaining({
+                proceduralEnemyFamily: true,
+                proceduralBossFamily: 'abyssal-well',
+                proceduralActorType: type,
+                artStyle,
+                region: 'Abyssal Well — The Drowned Sanctum',
+                combatRadius: 1.25,
+                sharedGeometry: true
+            }));
+            expect(mesh.userData.animations.map((entry) => entry.name))
+                .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+            expect(loadSpy).not.toHaveBeenCalled();
+        } finally {
+            MeshFactory.pool = previousPool;
+            loadSpy.mockRestore();
+        }
+    });
+
+    test.each([
+        ['SandstormDjinn', 'Cinder Wastes ash-dune djinn', 'cinder-wastes'],
+        ['MagmaGolem', 'Cinder Wastes fault-heart golem', 'cinder-wastes'],
+        ['ScorchedWraith', 'Cinder Wastes cinder-shroud wraith', 'cinder-wastes'],
+        ['InfernalBehemoth', 'Cinder Wastes horned kiln-behemoth', 'cinder-wastes'],
+        ['PhoenixSentinel', 'Cinder Wastes oathflame phoenix', 'cinder-wastes'],
+        ['StormHarpy', 'Stormcrown gale-talon harpy', 'stormcrown-reach'],
+        ['CloudElemental', 'Stormcrown captive-cloud elemental', 'stormcrown-reach'],
+        ['ThunderRoc', 'Stormcrown conductor roc', 'stormcrown-reach'],
+        ['TempestGiant', 'Stormcrown thunder-cairn giant', 'stormcrown-reach'],
+        ['CycloneAvatar', 'Stormcrown hollow-cyclone avatar', 'stormcrown-reach']
+    ])('%s uses its final overworld rig without requesting a GLB', async (type, artStyle, family) => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType(type);
+            expect(mesh.userData).toEqual(expect.objectContaining({
+                proceduralEnemyFamily: true,
+                proceduralOverworldFamily: family,
+                proceduralActorType: type,
+                artStyle,
+                combatRadius: 1.25,
+                sharedGeometry: true
+            }));
+            expect(mesh.userData.animations.map((entry) => entry.name))
+                .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+            expect(loadSpy).not.toHaveBeenCalled();
+        } finally {
+            MeshFactory.pool = previousPool;
+            loadSpy.mockRestore();
+        }
+    });
+
+    test.each([
+        'Skeleton', 'DemonOrc', 'Imp', 'Construct', 'InfernoTitan',
+        'MountainTroll', 'AquaGolem', 'Siren', 'FrostGuardian',
+        'RootboundWarden', 'BriarMatron', 'RustboundColossus', 'HollowSentinel',
+        'Cindermaw', 'ScorchedTwins', 'ForgemasterPyrax', 'ObsidianGuardian', 'LordInfernax',
+        'Windshear', 'Stormcallers', 'RocMatriarch', 'ThunderlordKaelix', 'Zephyrion',
+        'TiderendLeviathan', 'DrownedChoir', 'AbyssalGoliath', 'MaelstromWarden', 'Thalorath',
+        'SandstormDjinn', 'MagmaGolem', 'ScorchedWraith', 'InfernalBehemoth', 'PhoenixSentinel',
+        'StormHarpy', 'CloudElemental', 'ThunderRoc', 'TempestGiant', 'CycloneAvatar'
+    ])('a full %s pool never disposes shared generated resources', async (type) => {
+        const previousPool = MeshFactory.pool;
+        MeshFactory.pool = {};
+        const mesh = await MeshFactory.createMeshForType(type);
+        MeshFactory.pool[type] = Array.from({ length: 50 }, () => new THREE.Group());
+        const firstVisibleMesh = mesh.children.find((child) => child.isMesh);
+        const disposeSpy = jest.spyOn(firstVisibleMesh.material, 'dispose');
+
+        try {
+            MeshFactory.releaseMesh(type, mesh);
+            expect(disposeSpy).not.toHaveBeenCalled();
+            expect(MeshFactory.pool[type]).toHaveLength(50);
+        } finally {
+            disposeSpy.mockRestore();
+            MeshFactory.pool = previousPool;
+        }
+    });
+
+    test('a full Avenging Seraph pool never disposes shared generated resources', async () => {
+        const previousPool = MeshFactory.pool;
+        MeshFactory.pool = {};
+        const mesh = await MeshFactory.createMeshForType('AvengingSeraph');
+        MeshFactory.pool.AvengingSeraph = Array.from({ length: 50 }, () => new THREE.Group());
+        const material = mesh.getObjectByName('AvengingSeraph_BurialMask').material;
+        const disposeSpy = jest.spyOn(material, 'dispose');
+
+        try {
+            MeshFactory.releaseMesh('AvengingSeraph', mesh);
+            expect(disposeSpy).not.toHaveBeenCalled();
+            expect(MeshFactory.pool.AvengingSeraph).toHaveLength(50);
+        } finally {
+            disposeSpy.mockRestore();
+            MeshFactory.pool = previousPool;
+        }
+    });
+
+    test.each(Object.entries(PROCEDURAL_MESH_ALIASES))('%s resolves its declared production %s rig', async (type, sourceType) => {
+        const previousPool = MeshFactory.pool;
+        MeshFactory.pool = {};
+        try {
+            const mesh = await MeshFactory.createMeshForType(type);
+            expect(mesh.userData.proceduralAlias).toBe(type);
+            expect(mesh.userData.proceduralSourceType).toBe(sourceType);
+            expect(mesh.userData.animations.map((clip) => clip.name)).toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+            MeshFactory.releaseMesh(type, mesh);
+            expect(MeshFactory.pool[type]).toHaveLength(1);
+        } finally {
+            MeshFactory.pool = previousPool;
+        }
+    });
+
+    test('a full town actor pool never disposes shared generated resources', async () => {
+        const previousPool = MeshFactory.pool;
+        MeshFactory.pool = {};
+        const mesh = await MeshFactory.createMeshForType('QuestNPC');
+        MeshFactory.pool.QuestNPC = Array.from({ length: 50 }, () => new THREE.Group());
+        const resources = new Set();
+        mesh.traverse(part => {
+            if (!part.isMesh) return;
+            resources.add(part.geometry);
+            for (const material of Array.isArray(part.material) ? part.material : [part.material]) resources.add(material);
+        });
+        expect(resources.size).toBeGreaterThan(0);
+        const disposeSpies = [...resources].map(resource => jest.spyOn(resource, 'dispose'));
+
+        try {
+            MeshFactory.releaseMesh('QuestNPC', mesh);
+            for (const spy of disposeSpies) expect(spy).not.toHaveBeenCalled();
+            expect(MeshFactory.pool.QuestNPC).toHaveLength(50);
+        } finally {
+            for (const spy of disposeSpies) spy.mockRestore();
+            MeshFactory.pool = previousPool;
+        }
+    });
+
+    test('a full Rogue pool never disposes shared procedural render resources', async () => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModelWithTimeout').mockRejectedValue(new Error('offline'));
+        MeshFactory.pool = {};
+        const mesh = await MeshFactory.createMeshForType('Rogue');
+        MeshFactory.pool.Rogue = Array.from({ length: 50 }, () => new THREE.Group());
+        const material = mesh.getObjectByName('Rogue_Jerkin').material;
+        const disposeSpy = jest.spyOn(material, 'dispose');
+
+        try {
+            MeshFactory.releaseMesh('Rogue', mesh);
+            expect(disposeSpy).not.toHaveBeenCalled();
+            expect(MeshFactory.pool.Rogue).toHaveLength(50);
+        } finally {
+            disposeSpy.mockRestore();
+            loadSpy.mockRestore();
+            MeshFactory.pool = previousPool;
+        }
+    });
+});

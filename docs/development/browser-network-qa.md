@@ -9,7 +9,7 @@ existing launch policy. Local visual stages already using
 `run-native-visual-qa.sh` keep that runner's private loopback environment.
 
 Independent Chrome peers and per-file `test.use` launch overrides use
-`qaChromeLaunchOptions` from `tests/e2e/browserLaunchPolicy.js`. Explicit
+`qaChromeLaunchOptions` from `tests/e2e/support/browser/browserLaunchPolicy.js`. Explicit
 launches do not inherit the common config's executable, so they must opt into
 the same wrapper. Each peer remains a separate browser process and owns its
 own profile/download directory. Without isolation enabled, the helper returns
@@ -40,7 +40,7 @@ retry policy. Interface changes inside the browser's namespace still produce
 normal Chrome network errors.
 
 Normal exit and SIGTERM remove the launch's labeled container and network.
-Both self-hosted jobs also run `node scripts/cleanup-browser-network.mjs` with
+Both self-hosted jobs also run `node scripts/qa/cleanup-browser-network.mjs` with
 `always()`, covering a controller killed before its cleanup can finish. Cleanup
 requires `GITHUB_RUN_ID`, validates ownership labels and removes only that
 run's browser resources. Cleanup failure fails the job. Do not use global

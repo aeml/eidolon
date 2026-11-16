@@ -7,10 +7,10 @@ Cutover release: `Alpha 0.41.0.33`
 Historical migration evidence, not current modern-art approval. The September
 28 [modern ARPG visual contract](2026-09-28-modern-arpg-closed-beta.md) supersedes
 the faceted finish as the final quality target. See the
-[Alpha 1.50 presentation review](../plans/2026-09-30-release1-50-presentation-review.md)
+[Alpha 1.50 presentation review](../records/releases/1.50/2026-09-30-presentation-review.md)
 for current integration evidence and remaining limitations.
 
-This is the closure ledger for the procedural redesign defined in `goal.md`. It records the production scope, the evidence that guards it, and the release conditions that must all pass on the same Git commit. A future content addition is incomplete until it extends the relevant manifest and passes the same gates.
+This is the closure ledger for the procedural redesign defined in `docs/plans/goal.md`. It records the production scope, the evidence that guards it, and the release conditions that must all pass on the same Git commit. A future content addition is incomplete until it extends the relevant manifest and passes the same gates.
 
 ## Final production scope
 
@@ -51,7 +51,7 @@ Fixed gameplay boundaries never breathe, pulse, or scale. Motion belongs to inte
 - Unknown actor types and malformed procedural shapes fail closed; they cannot silently become a generic production fallback.
 - Superseded authored files remain recoverable through Git history and are not part of the deployed runtime dependency graph.
 
-The ratchet lives in `tests/ProceduralArtMigrationGuard.test.js`; asset catalog, pack, cache, page-runtime, and loader tests protect the surrounding delivery paths.
+The ratchet lives in `tests/unit/assets/ProceduralArtMigrationGuard.test.js`; asset catalog, pack, cache, page-runtime, and loader tests protect the surrounding delivery paths.
 
 ## Synchronization and lifecycle audit
 

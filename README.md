@@ -20,7 +20,7 @@ In one terminal, start the backend against your local MongoDB:
 
 ~~~sh
 cd server
-go run . --addr=127.0.0.1:8080 --mongo-uri=mongodb://127.0.0.1:27017
+go run ./cmd/eidolon --addr=127.0.0.1:8080 --mongo-uri=mongodb://127.0.0.1:27017
 ~~~
 
 In a second terminal at the repository root (Bash):
@@ -40,18 +40,20 @@ Open http://127.0.0.1:4173. The existing static-server override changes only the
 
 ## Find the code
 
+The [repository layout](docs/development/repository-layout.md) explains ownership and stable publication paths.
+
 | Area | Start here |
 | --- | --- |
 | Browser boot and game lifecycle | [index.html](index.html), [src/main.js](src/main.js), [src/core/](src/core/) |
 | UI and styles | [src/ui/](src/ui/), [src/styles/](src/styles/) |
 | World and actors | [src/world/](src/world/), [src/entities/](src/entities/) |
 | Go simulation and persistence | [server/internal/game/](server/internal/game/), [server/internal/database/](server/internal/database/) |
-| Wire protocol | [proto/](proto/), [protocol guide](docs/PROTOCOL.md) |
+| Wire protocol | [proto/](proto/), [protocol guide](docs/development/protocol.md) |
 | Art and generated catalogs | [art contract](docs/art/EQUIPMENT_ASSETS.md), [provenance](docs/art/CONTENT_PROVENANCE.md), [src/assets/](src/assets/) |
 | Tests and tooling | [tests/](tests/), [scripts/](scripts/), [edit-here/test-here map](docs/development/contributor-map.md) |
 | Standalone marketing site | [website/README.md](website/README.md) |
 
-The [architecture map](docs/ARCHITECTURE.md) distinguishes editable ES modules from the copied, bundled Pages publication. Do not edit generated publication files as source.
+The [architecture map](docs/development/architecture.md) distinguishes editable ES modules from the copied, bundled Pages publication. Do not edit generated publication files as source.
 
 ## Checks
 
@@ -67,9 +69,9 @@ Full client tests use npm test. Server tests/build run from server/ with go test
 
 ## Project status
 
-Current source version: `Alpha 1.80.4`.
+Current source version: `Alpha 1.80.5`.
 
-The latest documented accepted release is **Alpha 1.80.4**, runtime source dd4ca9337d2d57d9b1a7c9c66ac76d8512e22245. This is a release record, not a live availability claim. [Acceptance](docs/records/releases/1.80.4/2026-11-16-acceptance.md) · [remaining work](docs/plans/2026-10-09-release-readiness-remaining.md) · [roadmap](ROADMAP.md).
+The latest documented accepted release is **Alpha 1.80.4**, runtime source dd4ca9337d2d57d9b1a7c9c66ac76d8512e22245. This is a release record, not a live availability claim. [Acceptance](docs/records/releases/1.80.4/2026-11-16-acceptance.md) · [remaining work](docs/plans/release-readiness.md) · [roadmap](ROADMAP.md).
 
 The game remains open alpha. F1–F5 feature freeze is recorded as accepted; beta/launch gates and P01–P13 remain open. Soak/stress and owner-assigned human/device checks retain their documented deferrals. Versioned player patch notes are in the login screen.
 
@@ -85,4 +87,4 @@ The [previous full README](docs/history/readme-before-navigation-refresh-2026-11
 
 ## License
 
-Project-authored software uses [AGPL-3.0-only](LICENSE). Project-authored visual/audio assets and editable art sources use the separate [Eidolon Asset Share-Alike License](ASSET-LICENSE). Third-party inputs retain their own terms. See [NOTICE](NOTICE), [licensing and fork policy](docs/LICENSING.md), and the [provenance inventory](docs/art/CONTENT_PROVENANCE.md).
+Project-authored software uses [AGPL-3.0-only](LICENSE). Project-authored visual/audio assets and editable art sources use the separate [Eidolon Asset Share-Alike License](ASSET-LICENSE). Third-party inputs retain their own terms. See [NOTICE](NOTICE), [licensing and fork policy](docs/policies/licensing.md), and the [provenance inventory](docs/art/CONTENT_PROVENANCE.md).

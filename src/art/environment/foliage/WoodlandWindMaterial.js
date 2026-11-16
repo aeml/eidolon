@@ -1,0 +1,67 @@
+import * as THREE from 'three';
+import { createMotionPreference } from '../../../core/input/MotionPreference.js';
+import { applyWoodlandLeafSurface, woodlandLeafLighting } from './WoodlandLeafMaterial.js';
+
+// Maximum local-space displacement, including the small leaf flutter. The
+// largest (1.4x) plant still fits its existing 2.2m clearance envelope.
+export const WOODLAND_WIND_REACH = .22;
+
+const windShader = `
+uniform float woodlandTime;
+uniform float woodlandMotion;
+vec2 woodlandBend() {
+    vec3 anchor = vec3(0.);
+    vec2 direction = normalize(vec2(.86, .5));
+    #if defined(USE_BATCHING) || defined(USE_INSTANCING)
+        #ifdef USE_BATCHING
+            mat4 woodlandMatrix = getBatchingMatrix(getIndirectIndex(gl_DrawID));
+        #else
+            mat4 woodlandMatrix = instanceMatrix;
+        #endif
+        anchor = (modelMatrix * woodlandMatrix * vec4(0., 0., 0., 1.)).xyz;
+        // Undo horizontal stretch as well as rotation. Different growth habits
+        // must still share one breeze; retain the original maximum wind reach.
+        vec2 woodlandStretch = vec2(length(woodlandMatrix[0].xz), length(woodlandMatrix[2].xz));
+        vec2 woodlandSafeStretch = max(woodlandStretch, vec2(.001));
+        direction = vec2(dot(woodlandMatrix[0].xz / woodlandSafeStretch.x, direction),
+                         dot(woodlandMatrix[2].xz / woodlandSafeStretch.y, direction));
+        direction *= min(woodlandStretch.x, woodlandStretch.y) / woodlandSafeStretch;
+    #endif
+    float phase = dot(anchor.xz, vec2(.09, .055));
+    float gust = .65 + .35 * sin(woodlandTime * .3141592654 - phase * .3);
+    float sway = .20 * gust * sin(woodlandTime * 1.2566370614 - phase);
+    float flutter = .02 * sin(woodlandTime * 3.7699111843 + phase * 2.7);
+    return direction * (sway + flutter) * woodlandMotion;
+}
+`;
+
+export function createWoodlandWindMaterial({ now = () => performance.now() / 1000,
+    motionPreference = createMotionPreference() } = {}) {
+    const material = new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true,
+        side: THREE.DoubleSide, roughness: 1 });
+    const time = { value: 0 }, motion = { value: 1 };
+    const lighting = woodlandLeafLighting();
+    material.onBeforeRender = () => {
+        const seconds = now();
+        time.value = Number.isFinite(seconds) ? seconds : 0;
+        motion.value = motionPreference?.matches ? 0 : 1;
+    };
+    material.onBeforeCompile = shader => {
+        applyWoodlandLeafSurface(shader);
+        shader.fragmentShader = shader.fragmentShader.replace('#include <lights_physical_pars_fragment>', lighting);
+        shader.uniforms.woodlandTime = time;
+        shader.uniforms.woodlandMotion = motion;
+        shader.vertexShader = shader.vertexShader.replace('#include <batching_pars_vertex>', `#include <batching_pars_vertex>\n${windShader}`)
+            .replace('#include <beginnormal_vertex>', `#include <beginnormal_vertex>
+                // Analytic normal for x/z shear proportional to height squared.
+                // Root vertices (y=0) stay fixed, including on raised terrain.
+                vec2 woodlandOffset = woodlandBend();
+                float woodlandHeight = max(0., position.y);
+                objectNormal.y -= dot(woodlandOffset, objectNormal.xz) * 2. * woodlandHeight;`)
+            .replace('#include <begin_vertex>', `#include <begin_vertex>
+                transformed.xz += woodlandOffset * woodlandHeight * woodlandHeight;`);
+    };
+    material.customProgramCacheKey = () => 'woodland-rooted-wind-leaf-v5';
+    material.userData.woodlandWind = true;
+    return material;
+}

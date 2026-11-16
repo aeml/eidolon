@@ -1,0 +1,115 @@
+import * as THREE from 'three';
+import { jest } from '@jest/globals';
+import { RenderSystem } from '../../../../src/core/rendering/RenderSystem.js';
+import { PROCEDURAL_TERRAIN_DEFINITIONS } from '../../../../src/art/environment/world/ProceduralRealmTerrain.js';
+import { EARTH_ELEVATION } from '../../../../src/data/worldElevation.js';
+
+function createEnvironmentHarness(quality) {
+    const renderSystem = Object.create(RenderSystem.prototype);
+    renderSystem.graphicsQuality = quality;
+    renderSystem.isMobile = false;
+    renderSystem.scene = new THREE.Scene();
+    renderSystem.staticEnvironmentGroup = new THREE.Group();
+    renderSystem.scene.add(renderSystem.staticEnvironmentGroup);
+    renderSystem.renderer = {
+        capabilities: { getMaxAnisotropy: () => 8 }
+    };
+    renderSystem.createWaterMaterial = (texture) => new THREE.MeshBasicMaterial({ map: texture });
+    renderSystem.initRealmParticles = jest.fn(() => {
+        renderSystem._pMesh = { proceduralTestSentinel: true };
+    });
+    return renderSystem;
+}
+
+function disposeHarness(renderSystem) {
+    const textures = new Set([
+        renderSystem.backgroundTexture,
+        renderSystem.waterTexture,
+        ...Object.values(renderSystem.terrainTextures || {})
+    ].filter(Boolean));
+    renderSystem.staticEnvironmentGroup.traverse((object) => {
+        object.geometry?.dispose?.();
+        object.material?.dispose?.();
+    });
+    textures.forEach((texture) => texture.dispose());
+}
+
+describe.each(['high', 'low'])('RenderSystem procedural environment (%s)', (quality) => {
+    test('the opted-in elevation profile builds reusable cullable ground without tiling other realms', async () => {
+        const renderSystem = createEnvironmentHarness(quality);
+        renderSystem.terrainElevation = EARTH_ELEVATION;
+        try {
+            await renderSystem.preloadEnvironment();
+            const ground = renderSystem.groundEarth;
+            expect(ground.userData.tiledRealmGround).toBe(true);
+            expect(ground.position.toArray()).toEqual([0, 0, 200]);
+            expect(ground.children.every(tile => tile.material.map === renderSystem.terrainTextures.earth)).toBe(true);
+            expect(renderSystem.groundSnow.isMesh).toBe(true);
+            expect(renderSystem.groundTown.isMesh).toBe(true);
+            await renderSystem.preloadEnvironment();
+            expect(renderSystem.groundEarth).toBe(ground);
+            expect(renderSystem.staticEnvironmentGroup.children).toHaveLength(6);
+        } finally { disposeHarness(renderSystem); }
+    });
+
+    test('creates exact realm footprints without authored texture loading and remains idempotent', async () => {
+        const renderSystem = createEnvironmentHarness(quality);
+        const loadSpy = jest.spyOn(THREE.TextureLoader.prototype, 'loadAsync');
+        const progress = [];
+
+        try {
+            await renderSystem.preloadEnvironment((percent, label) => progress.push([percent, label]));
+            await renderSystem.preloadEnvironment();
+
+            expect(loadSpy).not.toHaveBeenCalled();
+            expect(progress.map(([percent]) => percent)).toEqual([0, 25, 50, 100]);
+            expect(progress.at(-1)[1]).toContain('codeborn realms ready');
+            expect(renderSystem.scene.background).toBe(renderSystem.backgroundTexture);
+            expect(renderSystem.backgroundTexture.isDataTexture).toBe(true);
+            expect(renderSystem.waterTexture.isDataTexture).toBe(true);
+            expect(renderSystem.waterPlane.position.toArray()).toEqual([0, -5, 0]);
+            expect(renderSystem.waterPlane.geometry.parameters).toEqual(expect.objectContaining({
+                width: 10000,
+                height: 10000
+            }));
+            expect(renderSystem.staticEnvironmentGroup.children).toHaveLength(6);
+            expect(renderSystem.initRealmParticles).toHaveBeenCalledTimes(1);
+
+            const realmSurfaces = [
+                ['groundEarth', 'earth', [0, 0, 200], [1998.5, 1598.5]],
+                ['groundSnow', 'water', [0, 0, -1400], [1998.5, 1598.5]],
+                ['groundFire', 'fire', [-2000, 0, 200], [1998.5, 1598.5]],
+                ['groundAir', 'air', [2000, 0, 200], [1998.5, 1598.5]],
+                ['groundTown', 'town', [0, 0.025, 200], [198.5, 198.5]]
+            ];
+            for (const [property, key, position, dimensions] of realmSurfaces) {
+                const surface = renderSystem[property];
+                expect(surface.position.toArray()).toEqual(position);
+                // The rectangle now shares one BufferGeometry with adjoining
+                // gate patches, so PlaneGeometry constructor metadata is gone.
+                // Assert its actual four base vertices instead; gateway bounds
+                // and exact single-floor coverage have their own geometry test.
+                const vertices = surface.geometry.getAttribute('position');
+                expect(Array.from({ length: 4 }, (_, i) => [vertices.getX(i), vertices.getY(i), vertices.getZ(i)]))
+                    .toEqual([
+                        [-dimensions[0] / 2, dimensions[1] / 2, 0],
+                        [dimensions[0] / 2, dimensions[1] / 2, 0],
+                        [-dimensions[0] / 2, -dimensions[1] / 2, 0],
+                        [dimensions[0] / 2, -dimensions[1] / 2, 0]
+                    ]);
+                expect(surface.userData).toEqual(expect.objectContaining({
+                    proceduralTerrain: true,
+                    terrainKey: key,
+                    terrainId: PROCEDURAL_TERRAIN_DEFINITIONS[key].id,
+                    motif: PROCEDURAL_TERRAIN_DEFINITIONS[key].motif
+                }));
+                expect(surface.material.map).toBe(renderSystem.terrainTextures[key]);
+                expect(surface.material.map.userData.quality).toBe(quality);
+                expect(surface.material.map.userData.resolution).toBe(quality === 'low' ? 128 : 256);
+            }
+        } finally {
+            loadSpy.mockRestore();
+            disposeHarness(renderSystem);
+        }
+    });
+});

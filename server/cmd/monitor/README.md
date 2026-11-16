@@ -57,9 +57,9 @@ but not establish off-machine reachability, every IPv4/IPv6 route, or availabili
 when the host itself fails. Owner-approved independent/off-machine coverage and
 safe deployment-transition/recovery exercises remain open. Exact source and
 read-only current-public checks are recorded in
-[the preparation receipt](../../../docs/plans/2026-10-08-public-monitor-checks.json).
+[the preparation receipt](../../../docs/records/2026/10/08/public-monitor-checks.json).
 The managed Compose/compiled-command path is separately qualified in
-[the service receipt](../../../docs/plans/2026-10-08-managed-public-monitor-checks.json).
+[the service receipt](../../../docs/records/2026/10/08/managed-public-monitor-checks.json).
 
 Reversible configuration uses the existing normal deployment flow after this
 code is accepted: paired public settings enable the observations; clearing both

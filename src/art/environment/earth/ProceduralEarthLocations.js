@@ -1,0 +1,308 @@
+import * as THREE from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { EARTH_LOCATIONS, EARTH_PATHS, distanceToPath } from '../../../data/worldPopulation.js';
+import { applyWorldSurfaceDetail } from '../world/WorldSurfaceDetail.js';
+import { createTaperedRoot, createGroveArchStone, createGrovePierCourse, createGroveThresholdStone } from './EarthLandmarkGeometry.js';
+import { createEarthGroundCoverTuft, earthGroundCoverPlacements } from './EarthGroundCover.js';
+import { createBastionPavingFragment, createBastionMarkerCap } from '../dungeons/BastionForecourtGeometry.js';
+import { createKeeperGardenPlant } from '../lanternhold/KeeperCottage.js';
+import { createScarStandingStone } from '../props/ReturningScar.js';
+import { createPilgrimCanopy } from '../props/PilgrimCampGeometry.js';
+
+// The environment owns these resources; no external asset or global disposable
+// cache is needed. Each location/material is a separate cullable draw batch.
+export function createEarthLocations({ quality = 'high' } = {}) {
+    const group = new THREE.Group(); group.name = 'Earth authored locations';
+    const pixels = new Uint8Array(64 * 64 * 4);
+    for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) {
+        const i = (y * 64 + x) * 4, radius = Math.hypot(x - 31.5, y - 31.5) / 31.5;
+        const noise = ((Math.imul(x + 3, 73856093) ^ Math.imul(y + 1, 19349663)) >>> 0) % 101 / 100;
+        pixels[i] = 80; pixels[i + 1] = 71; pixels[i + 2] = 51;
+        pixels[i + 3] = Math.max(0, Math.min(1, (1 - radius - noise * .14) * 2)) * 135;
+    }
+    const groundTexture = new THREE.DataTexture(pixels, 64, 64);
+    groundTexture.colorSpace = THREE.SRGBColorSpace; groundTexture.magFilter = THREE.LinearFilter;
+    groundTexture.needsUpdate = true;
+    const materials = {
+        stone: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x777366, roughness: .96 }), 'stone'),
+        fieldstone: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x777366, vertexColors: true, roughness: .96 }), 'fieldstone'),
+        wood: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x504435, roughness: .98 }), 'timber'),
+        bark: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x504435, roughness: .98 }), 'bark'),
+        iron: new THREE.MeshStandardMaterial({ color: 0x414647, roughness: .7, metalness: .65 }),
+        brass: new THREE.MeshStandardMaterial({ color: 0x93815a, roughness: .62, metalness: .55 }),
+        cloth: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x746a53, vertexColors: true, roughness: 1, side: THREE.DoubleSide }), 'canvas'),
+        moss: new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: 1, side: THREE.DoubleSide }),
+        soil: new THREE.MeshStandardMaterial({ map: groundTexture, vertexColors: true, roughness: 1, transparent: true, depthWrite: false, alphaTest: .01 })
+    };
+    const footprints = [];
+    const radial = quality === 'low' ? 6 : 10;
+    for (const site of EARTH_LOCATIONS) {
+        const root = new THREE.Group(); root.name = `earth-location:${site.id}`;
+        root.position.set(site.x, 0, site.z); root.userData.locationId = site.id;
+        const batches = new Map();
+        const part = (geometry, material, x, y, z, rotation = [0, 0, 0], scale = [1, 1, 1]) => {
+            // Vault, piers and fallen blocks share one natural-stone draw batch.
+            if (['root-arch', 'grave-road', 'wounded-grove'].includes(site.recipe) && material === 'stone') material = 'fieldstone';
+            const matrix = new THREE.Matrix4().compose(new THREE.Vector3(x, y, z),
+                new THREE.Quaternion().setFromEuler(new THREE.Euler(...rotation)), new THREE.Vector3(...scale));
+            const transformed = geometry.index ? geometry.toNonIndexed() : geometry.clone();
+            geometry.dispose(); transformed.applyMatrix4(matrix);
+            // Opaque soil and leaves share the existing rough vertex-color batch.
+            if (material === 'gardenEarth') {
+                const color = new THREE.Color(0x3a3429), values = [];
+                for (let i = 0; i < transformed.attributes.position.count; i++) values.push(color.r, color.g, color.b);
+                transformed.setAttribute('color', new THREE.Float32BufferAttribute(values, 3));
+                material = 'moss';
+            }
+            if (['moss', 'soil', 'fieldstone', 'cloth'].includes(material) && !transformed.attributes.color) {
+                const color = new THREE.Color(material === 'moss' ? 0x465942 : 0xffffff), values = [];
+                for (let i = 0; i < transformed.attributes.position.count; i++) values.push(color.r, color.g, color.b);
+                transformed.setAttribute('color', new THREE.Float32BufferAttribute(values, 3));
+            }
+            if (!batches.has(material)) batches.set(material, []);
+            batches.get(material).push(transformed);
+        };
+        const box = (m, x, y, z, w, h, d, angle = 0, solid = false) => {
+            part(new THREE.BoxGeometry(w, h, d), m, x, y, z, [0, angle, 0]);
+            if (solid) footprints.push({ siteId: site.id, x: site.x + x, z: site.z + z, width: w, depth: d, height: h, y, angle });
+        };
+        const cylinder = (m, x, y, z, top, bottom, height, rotation = [0, 0, 0]) =>
+            part(new THREE.CylinderGeometry(top, bottom, height, radial), m, x, y, z, rotation);
+        const stone = (x, y, z, sx, sy, sz, angle = 0) =>
+            part(new THREE.IcosahedronGeometry(1, quality === 'low' ? 0 : 1), 'stone', x, y, z, [0, angle, .15], [sx, sy, sz]);
+        const beam = (a, b, radius = .25, material = 'wood', sides = radial) => {
+            const start = new THREE.Vector3(...a), end = new THREE.Vector3(...b), direction = end.clone().sub(start);
+            const geometry = new THREE.CylinderGeometry(radius * .8, radius, direction.length(), sides);
+            geometry.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.normalize()));
+            const midpoint = start.add(end).multiplyScalar(.5);
+            part(geometry, material, midpoint.x, midpoint.y, midpoint.z);
+        };
+        const rootCurve = (points, radius) => part(createTaperedRoot(points, radius, quality), 'bark', 0, 0, 0);
+        const pennant = (x, z, height = 6) => {
+            cylinder('wood', x, height / 2, z, .12, .2, height);
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute([
+                x, height - .5, z, x + 2.5, height - 1, z + .4, x + 1.8, height - 2, z + .15,
+                x, height - .5, z, x + 1.8, height - 2, z + .15, x, height - 2.8, z
+            ], 3));
+            geometry.computeVertexNormals();
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(Array(18).fill(1), 3));
+            geometry.setAttribute('uv', new THREE.Float32BufferAttribute([0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1], 2));
+            // Already non-indexed; batching below expects a uniform attribute set.
+            if (!batches.has('cloth')) batches.set('cloth', []);
+            batches.get('cloth').push(geometry);
+        };
+        const hearth = (x, z) => {
+            cylinder('iron', x, .09, z, 1.5, 1.5, .16);
+            for (let i = 0; i < 9; i++) stone(x + Math.cos(i * Math.PI * 2 / 9) * 1.8, .35,
+                z + Math.sin(i * Math.PI * 2 / 9) * 1.8, .55, .35, .45, i);
+            beam([x - .8, .25, z - .2], [x + .8, .25, z + .2], .17);
+            beam([x - .6, .3, z + .6], [x + .5, .3, z - .7], .15);
+        };
+        switch (site.recipe) {
+        case 'evacuated-garden':
+            for (const side of [-1, 1]) {
+                for (let i = 0; i < 4; i++) box('wood', side * 8, .17, -5 + i * 3, 4, .3, .22);
+                for (let bed = 0; bed < 3; bed++) {
+                    const x = side * 8, z = -3.5 + bed * 3;
+                    for (const edge of [-1, 1]) box('wood', x + edge * 1.89, .13, z, .17, .21, 2.7);
+                    part(new THREE.SphereGeometry(1, 12, 6), 'gardenEarth', x, .015, z, [0, 0, 0], [1.78, .065, 1.23]);
+                    for (let plant = 0; plant < 6; plant++) {
+                        const seed = bed * 17 + plant * 7 + (side + 1) * 9;
+                        if (seed % 5 === 0) continue; // Empty spaces tell the evacuation story.
+                        part(createKeeperGardenPlant(seed), 'moss', x - 1.08 + plant % 3 * 1.02,
+                            .08, z - .55 + Math.floor(plant / 3) * 1.03, [0, seed, 0]);
+                    }
+                }
+                box('stone', side * 6, 1.15, 8, .9, 2.3, .9, 0, true);
+            }
+            box('wood', -9, .6, 9, 2.8, .25, 1.7);
+            for (const side of [-1, 1]) {
+                box('wood', -9, .97, 9 + side * .77, 2.55, .48, .13);
+                beam([-9.8, .43, 9 + side * .56], [-6.3, .72, 9 + side * .56], .11);
+                beam([-8.1, .1, 9 + side * .55], [-8.35, .55, 9 + side * .55], .1);
+            }
+            box('wood', -10.28, .97, 9, .13, .48, 1.44);
+            part(new THREE.TorusGeometry(.5, .09, 5, 14), 'wood', -10.3, .59, 9);
+            for (let spoke = 0; spoke < 6; spoke++) {
+                const angle = spoke * Math.PI / 3;
+                beam([-10.3, .59, 9], [-10.3 + Math.cos(angle) * .48, .59 + Math.sin(angle) * .48, 9], .045);
+            }
+            pennant(10, 9, 4);
+            break;
+        case 'wounded-grove':
+            for (let i = 0; i < 5; i++) {
+                const angle = Math.PI * .6 + i * .48, x = Math.cos(angle) * 19, z = Math.sin(angle) * 19;
+                part(createScarStandingStone(i, 1.25 + i % 2 * .12, 2.35 + i % 3 * .2), 'fieldstone', x, 0, z);
+                footprints.push({ siteId: site.id, x: site.x + x, z: site.z + z,
+                    width: 1.5, depth: 1.5, height: 2, y: 1, angle: 0 });
+                for (let plant = 0; plant < 3; plant++) part(createKeeperGardenPlant(i * 7 + plant),
+                    'moss', x - .6 + plant * .6, .03, z + .7, [0, plant * 2, 0]);
+            }
+            rootCurve([[-18, -.35, -8], [-17, .62, -10], [-15, .85, -13], [-10, .42, -15], [-5, .15, -17], [0, -.14, -19]], .65);
+            rootCurve([[-15, .68, -13], [-14, .4, -16], [-11, .15, -18], [-9, -.1, -19]], .24);
+            rootCurve([[-10, .36, -15], [-8, .18, -13], [-6, -.1, -12]], .18);
+            rootCurve([[-19, -.25, 4], [-17, .65, 1], [-15, .34, -1], [-12, -.15, -5]], .4);
+            rootCurve([[-17, .5, 1], [-19, .24, -1], [-20, -.15, -4]], .19);
+            break;
+        case 'grave-road':
+            for (const side of [-1, 1]) {
+                for (let i = 0; i < 3; i++) {
+                    // Same published walk solid; the visible marker now has
+                    // actual worn masonry courses grounded at its foot.
+                    const height = 3.6 - i * .45;
+                    footprints.push({ siteId: site.id, x: site.x + side * 12, z: site.z + 58 - i * 6,
+                        width: 1.5, depth: 1.5, height, y: 1.8, angle: 0 });
+                    for (let course = 0; course < 3; course++) {
+                        part(createGrovePierCourse(course), 'fieldstone', side * 12, .04, 58 - i * 6,
+                            [0, 0, 0], [.5, height / 4, .375]);
+                    }
+                    part(createBastionMarkerCap(i + side * 7), 'fieldstone', side * 12,
+                        height + .08, 58 - i * 6, [0, side * .025, 0]);
+                }
+                pennant(side * 18, 58, 8);
+                box('stone', side * 21, .32, 50, 2, .6, 8);
+            }
+            // Remnants of the burial procession road: almost flush with the
+            // dirt, broken into small runs rather than a pristine tiled apron.
+            // These are walkable decoration, not new navigation obstacles.
+            for (let row = 0; row < 13; row++) for (let column = -2; column <= 2; column++) {
+                const seed = row * 19 + column + 43;
+                if (seed % 5 === 0 || (row > 8 && seed % 3 === 0) || (row > 5 && column === -2)) continue;
+                part(createBastionPavingFragment(seed), 'fieldstone', column * 2.15 + (row % 2) * .25 + Math.sin(seed) * .12,
+                    .045 + (seed % 3) * .001, 35 + row * 2.2 + Math.cos(seed * 1.7) * .15,
+                    [0, Math.sin(seed * 2.7) * .24, 0], [1, 1, 1.2]);
+            }
+            break;
+        case 'root-arch':
+            for (const side of [-1, 1]) {
+                // Preserve the exact published solid while rendering separate
+                // worn courses within it instead of a featureless tall box.
+                footprints.push({ siteId: site.id, x: site.x + side * 8, z: site.z, width: 3, depth: 4, height: 8, y: 4, angle: 0 });
+                for (let course = 0; course < 6; course++) part(createGrovePierCourse(course), 'fieldstone', side * 8, 0, 0);
+                rootCurve([[side * 14, -.95, 4], [side * 10, 3, 2], [side * 9, 8, 2.1], [side * 5, 11.8, 2.15], [side, 13.15, 2.05]], .85);
+                rootCurve([[side * 10, 3, 2], [side * 10.8, 4.7, 2], [side * 11.5, 6.2, 1.6]], .25);
+                rootCurve([[side * 9, 8, 2.1], [side * 8.4, 9, 2.3], [side * 7.3, 10.3, 2.2]], .22);
+                rootCurve([[side * 10, .05, 3], [side * 10.8, .28, 5], [side * 12.6, .12, 6.8], [side * 15, -.15, 7.5]], .27);
+                stone(side * 16, .6, -4, 2, .8, 1.2);
+            }
+            for (let i = 0; i < 13; i++) part(createGroveArchStone(i), 'fieldstone', 0, 0, 0);
+            for (let row = -3; row <= 3; row++) for (let column = -2; column <= 2; column++) {
+                const seed = (row + 3) * 11 + column + 2;
+                if ((seed % 5 === 0) || (Math.abs(row) === 3 && column % 2 === 0)) continue;
+                part(createGroveThresholdStone(seed), 'fieldstone', column * 1.95 + (row % 2) * .35,
+                    .045 + (seed % 3) * .001, row * 1.55, [0, Math.sin(seed * 2.7) * .16, 0]);
+            }
+            break;
+        case 'pilgrim-camp':
+            hearth(0, -7);
+            for (const side of [-1, 1]) {
+                const shelterX = side * 9.5;
+                // Feet support each bench inside its existing seat footprint.
+                box('wood', side * 7, .75, -7, 5, .3, 1.4, .15 * side);
+                for (const end of [-1, 1]) {
+                    const dx = end * 1.65, angle = .15 * side;
+                    box('wood', side * 7 + Math.cos(angle) * dx, .3,
+                        -7 - Math.sin(angle) * dx, .34, .6, 1.05, angle);
+                }
+                beam([side * 5.35, .3, -7], [side * 8.65, .3, -7], .09);
+                part(createPilgrimCanopy(quality), 'cloth', shelterX, 0, 5.8);
+                beam([shelterX, 3.8, 3.2], [shelterX, 3.8, 8.4], .1, 'wood', 6);
+                for (const z of [3.2, 8.4]) {
+                    beam([shelterX, .02, z], [shelterX, 3.8, z], .09, 'wood', 6);
+                    // Short tension ropes and pegs stay outside the trail.
+                    for (const edge of [-1, 1]) {
+                        beam([shelterX + edge * 2.5, .42, z], [shelterX + edge * 2.8, .04, z + .2], .022, 'cloth', 4);
+                        cylinder('wood', shelterX + edge * 2.8, .12, z + .2, .035, .045, .26);
+                    }
+                }
+                part(new THREE.SphereGeometry(1, radial, 6), 'cloth', shelterX, .12, 5.8,
+                    [0, 0, 0], [.8, .12, 1.35]);
+                cylinder('cloth', shelterX, .23, 6.85, .19, .19, 1.65, [0, 0, Math.PI / 2]);
+                for (const strap of [-1, 1]) {
+                    part(new THREE.TorusGeometry(.195, .024, 4, radial), 'wood', shelterX + strap * .5,
+                        .23, 6.85, [0, Math.PI / 2, 0]);
+                }
+                // Closed boarded stores retain the exact old solid. Narrow
+                // gaps and folded iron straps replace an anonymous brown cube.
+                footprints.push({ siteId: site.id, x: site.x + side * 10, z: site.z - 13,
+                    width: 2, depth: 2, height: 1.4, y: .7, angle: 0 });
+                for (let plank = 0; plank < 4; plank++) {
+                    box('wood', side * 10 - .75 + plank * .5, .7, -13, .47, 1.4, 2);
+                }
+                for (const strap of [-.64, .64]) {
+                    part(new THREE.PlaneGeometry(.065, 2), 'iron', side * 10 + strap, 1.402, -13, [-Math.PI / 2, 0, 0]);
+                    for (const face of [-1, 1]) part(new THREE.PlaneGeometry(.065, 1.4), 'iron',
+                        side * 10 + strap, .7, -13 + face * 1.002, [0, face < 0 ? Math.PI : 0, 0]);
+                }
+            }
+            pennant(-4, 10, 7);
+            cylinder('iron', 0, .5, -7, .65, .5, .8);
+            part(new THREE.TorusGeometry(.65, .055, 4, radial * 2), 'iron', 0, .91, -7, [Math.PI / 2, 0, 0]);
+            part(new THREE.TorusGeometry(.52, .04, 4, radial * 2, Math.PI), 'iron', 0, .9, -7);
+            break;
+        case 'timber-yard':
+            for (const x of [-12, 12]) for (const z of [-10, 10]) box('wood', x, 3, z, .7, 6, .7, 0, true);
+            beam([-12, 6, -10], [12, 6, -10], .35);
+            beam([-12, 6, -10], [-12, 6, 10], .35);
+            box('wood', -10, 1.3, -2, 2.8, .45, 8, 0, true);
+            for (let i = 0; i < 5; i++) cylinder('wood', 8 + i % 2, .7 + Math.floor(i / 2) * 1.1, 7, .55, .65, 7, [Math.PI / 2, 0, 0]);
+            box('wood', 8.5, 1.5, 7, 2.4, 3, 7, 0, true);
+            for (let i = 0; i < 4; i++) box('wood', -3 + i * 2, .12, 12, 1.5, .2, 8, .07 * i);
+            part(new THREE.TorusGeometry(1.6, .18, 6, 16), 'wood', -11, 1.7, 5, [0, .2, 0]);
+            break;
+        case 'bell-cairn':
+            for (let i = 0; i < 11; i++) stone(Math.cos(i * 2.4) * (2.4 - i * .13), .4 + i * .14, -5 + Math.sin(i * 2.4) * 1.5, 1, .65, .8, i);
+            for (const side of [-1, 1]) box('wood', side * 3, 3.3, -5, .6, 6.6, .6, 0, true);
+            beam([-3, 6.5, -5], [3, 6.5, -5], .4);
+            cylinder('brass', 0, 4.4, -5, .65, 1.6, 2.2);
+            cylinder('iron', 0, 3.4, -5, .1, .22, 1.4);
+            box('stone', 6, .75, -6, 2.6, 1.5, 1.3, 0, true);
+            break;
+        case 'oath-stone':
+            box('stone', 8, 2.6, -4, 2.8, 5.2, 1.6, 0, true);
+            stone(8, 5.4, -4, 1.7, .8, 1.1);
+            for (let i = 0; i < 10; i++) box('brass', 7.4 + (i % 2) * 1.1, 1 + Math.floor(i / 2) * .65, -3.18, .7, .035, .035);
+            for (const side of [-1, 1]) box('stone', side * 5, .45, -4, 3.5, .8, 1.6);
+            pennant(-6, 2, 5);
+            break;
+        default: throw new Error(`Unknown Earth location recipe: ${site.recipe}`);
+        }
+        const apronX = site.arrivalOffset?.[0] || 0;
+        const apronZ = site.arrivalOffset?.[1] || 0;
+        const apronRadius = site.role === 'landmark' ? 15 : site.radius * .65;
+        part(new THREE.PlaneGeometry(apronRadius * 2, apronRadius * 1.6), 'soil', apronX, .018, apronZ, [-Math.PI / 2, 0, .12]);
+        // Quiet peripheral vegetation/debris ties the composition into the
+        // ground. Keep all of it low and off the actual walking centerlines;
+        // central mandatory evidence and dungeon silhouettes remain uncluttered.
+        for (let i = 0; i < 42; i++) {
+            const random = seed => ((Math.imul(seed + 91, 73856093) ^ Math.imul(seed + 7, 19349663)) >>> 0) / 4294967296;
+            const angle = random(i * 13 + site.id.length) * Math.PI * 2;
+            const radius = site.radius * (.22 + Math.sqrt(random(i * 37 + 11)) * .67);
+            const x = Math.cos(angle) * radius, z = Math.sin(angle) * radius;
+            if (site.role === 'story' && radius < 10) continue;
+            if (site.id === 'verdant-approach' && z < 42) continue;
+            if (EARTH_PATHS.some(path => distanceToPath(site.x + x, site.z + z, path.points) < path.width / 2 + 2)) continue;
+            if (i % 4 === 0) stone(x, .14, z, .45 + i % 3 * .3, .22, .4, angle);
+        }
+        for (const tuft of earthGroundCoverPlacements(site, quality)) {
+            // A soft humus/moss bed anchors each overlapping clump without a
+            // new texture, draw batch, collision surface or raised ground.
+            const bed = new THREE.PlaneGeometry(3.6, 3.2);
+            bed.setAttribute('color', new THREE.Float32BufferAttribute(Array.from({ length: 4 }, () => [.55, .85, .45]).flat(), 3));
+            part(bed, 'soil', tuft.x, .022, tuft.z, [-Math.PI / 2, 0, tuft.rotation]);
+            part(createEarthGroundCoverTuft(tuft.seed, quality), 'moss', tuft.x, .02, tuft.z, [0, tuft.rotation, 0]);
+        }
+        for (const [key, geometries] of batches) {
+            const geometry = mergeGeometries(geometries, false);
+            geometries.forEach(value => value.dispose());
+            if (!geometry) throw new Error(`Could not batch ${site.id}/${key}`);
+            const mesh = new THREE.Mesh(geometry, materials[key]); mesh.name = `${site.id}:${key}`;
+            mesh.castShadow = !['moss', 'soil'].includes(key); mesh.receiveShadow = true;
+            root.add(mesh);
+        }
+        group.add(root);
+    }
+    group.userData.walkFootprints = footprints;
+    return group;
+}

@@ -1,6 +1,6 @@
 # Architecture before the navigation refresh
 
-Historical snapshot of [docs/ARCHITECTURE.md at fe4fff6f28926e48537a207ca52b3467f63e2e56](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/ARCHITECTURE.md), preserved November 15, 2026. Relative document links below are pinned to that commit. Commands, release claims, paths and architectural limitations describe that earlier text, not a fresh verification or current operating instructions. In particular, its statements that the published client has no application bundle are superseded by the [current architecture](../ARCHITECTURE.md#source-and-published-client).
+Historical snapshot of [docs/ARCHITECTURE.md at fe4fff6f28926e48537a207ca52b3467f63e2e56](https://github.com/aeml/eidolon/blob/fe4fff6f28926e48537a207ca52b3467f63e2e56/docs/ARCHITECTURE.md), preserved November 15, 2026. Relative document links below are pinned to that commit. Commands, release claims, paths and architectural limitations describe that earlier text, not a fresh verification or current operating instructions. In particular, its statements that the published client has no application bundle are superseded by the [current architecture](../development/architecture.md#source-and-published-client).
 
 For current entry points use the [documentation index](../README.md), [local development guide](../development/local-development.md) and [contributor map](../development/contributor-map.md). No canonical content or release evidence was relocated.
 

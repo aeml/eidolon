@@ -1,0 +1,1292 @@
+# 1.10 final integration — evidence and remaining work
+
+## Current status — September 27
+
+Use the [Alpha1.10 release record](../../../releases/1.10/2026-09-23-playtest.md) for current
+delivery and outstanding checks. Alpha1.10.2 is verified live in CI36285496845;
+accepted elemental raid repairs, earned Air/Tempest, Nexus and finale/reward
+checks are recorded there. On September27 the user assigned uninterrupted
+campaign and human pacing validation to their playtest; do not start a long
+automated campaign or treat that handoff as a passed test. The dated evidence
+below remains valid within its stated scope,
+but its old “current”, “pending” and release-candidate paragraphs are historical.
+Do not restart those completed deployments or repeat accepted encounters based
+on these older queue descriptions.
+
+## Historical Alpha1.9.31 delivery — runner handoff resolved
+
+CI35835009087 completed successfully for exact
+1639fd6f2c5d1e025a67b17f2b5b48bd95d94e28. All jobs passed, including live
+character/recovery QA. The queued live job was assigned around08:36:46UTC.
+Luna repeated the public verifier after full workflow success: matching
+frontend/backend commit/version, ready database, login label, cumulative notes
+and all three expected assets passed. Root independently confirmed the terminal
+workflow status and SHA. No further runner restart is needed. Air's prepared
+1639fd6f route is ready to continue from unchanged Molten checkpoint20.
+
+User balance decisions are now recorded:2–3 hours to level30/first-dungeon entry,
+approximately100 hours to level100, moderate story potency and +20 as long-term
+endgame progression. These are targets, not delivered balance acceptance.
+
+### Historical queue delay — resolved by the complete result above
+
+Both deployment jobs succeeded. Luna's Node24 public verifier passed exact
+1639fd6f2c5d1e025a67b17f2b5b48bd95d94e28/Alpha1.9.31, frontend/backend identity,
+database readiness, login label, cumulative notes and three exact assets.
+Full workflow acceptance remains pending: Live Release and Character QA,
+job107101256968, has been queued since08:20:15UTC with no assigned runner.
+GitHub reports matching `eidolon-codex-chrome` online/idle. Root confirms its
+systemd service and Listener are running, no browser Runner.Worker, and prior
+predeploy completed08:18:51. Broker logs show a local-token cancellation during
+the normal job-status transition, not a proven root cause. No global Actions
+incident was reported by the status API when checked.
+
+After rechecking queued/idle/no worker, root attempted only the browser-runner
+service restart. The noninteractive sudo policy query allowed the command, but
+execution required a password and exited1; **no service was restarted**. The user
+needs to run the guarded sudo command if the job remains stalled. Luna monitors
+the original job; do not cancel/retry it, touch the soak runner, or overlap Air
+with pending CI browser work. Public availability is verified separately from
+the still-pending live-character acceptance.
+
+Exact1639fd6f2c5d1e025a67b17f2b5b48bd95d94e28 is pushed to master;
+CI35835009087 is queued/running, monitored by Luna. Do not claim it live before
+the complete workflow and exact public verifier pass. Last verified live is1.9.30.
+
+Live Resonance synchronization and desktop event-panel placement are fixed in
+db4d4a72. The broadcaster regression fails before the fix and passes afterward,
+including concurrent explicit updates, unchanged-state suppression, reconnect
+reset and failed-enqueue retry (focused Go race1.849s). Reward/progression checks
+pass0.922s; desktop/phone event rendering passes2/2 in15.4s, with both screenshots
+inspected. Release labels and cumulative notes are prepared for1.9.31;381 focused
+client/version/checkpoint/input tests pass3.037s.
+
+The zero-retry event recheck **passed1/1 in5.4min** on that frozen candidate:
+`/tmp/eidolon-earned-event-20260923-r3-veYvXh/run.sh`, native89450,
+runID `earnedevent0923c`, terminal exit0. Natural Root eventdisturbance-2983584
+completed all three waves and champion, with actual damage in each, rendered
+completion, and exact rewards after relogin:224763Gold,245125XP,3669579ResonanceXP,
+Resonance level0. This accepts one full scheduled event, not all-realm/group
+balance. The independent checkpoint19 branch does not replace campaign checkpoint20.
+Luna verified owned processes/containers/ports cleaned; credential scan passed.
+Root independently confirmed the terminal handle/log. Air's prepared launcher
+now targets1639fd6f and requires the event pass and exact public1.9.31 identities.
+No Air browser has started; deployment must finish first.
+
+## Current delivery — Alpha 1.9.30 verified live
+
+CI35826334400 succeeded on `cdf45e3ac40286698e494c9a0ba65980332907a0`:
+client, Go/race, all three browser shards, predeploy/input validation, both
+deployments and live character/recovery QA all passed. Luna's independent
+public verifier confirms exact frontend/backend identities, Alpha1.9.30,
+database readiness, login label, cumulative notes and three transformed assets.
+The gated launcher independently retained the same public receipt in
+`/tmp/eidolon-earned-molten-20260923-r3-Vc7JoT/run.log`, then started isolated
+party setup. No production-character mutations were used for that verifier.
+
+The expansion and initial XP tuning are delivered, not full1.10 acceptance.
+Molten continuation passed all five bosses, four manual rewards and saved Air
+handoffs (38.6min, no deaths, real Cleric healing); checkpoint20 is independently
+verified. See the [earned continuation](../20/earned-continuation.md).
+The separate earned public-event route failed in Tide wave1 on a shortened QA
+jump. Its input correction passes14 focused checks. The follow-up completed all Ember waves/champion but failed the
+reconnect comparison on4857 additional Resonance XP (Gold/ordinary XP matched).
+The candidate fixes a reproduced missing live-Resonance synchronization path;
+focused race/reward checks and the subsequent full event/reconnect pass (above).
+Desktop/phone event presentation passes both rendered checks; desktop
+instructions now leave central aiming clear. The campaign checkpoint20 is unchanged.
+The complete remaining Air/Tempest campaign,
+raids/finale, first-dungeon reward gap and full duration/economy tuning remain
+open. Late Forge potency still exceeds ordinary bag capacity; see the updated
+[supply and affordability audit](../07/loot-and-forge-baseline.md).
+Preserve accepted prior evidence, including the completed Root event above.
+
+### Historical 1.9.30 delivery corrections — resolved by the successful run above
+
+JSON-parser correction pushed at `cdf45e3ac40286698e494c9a0ba65980332907a0`,
+CI35826334400;286 focused release/history checks pass2.516s, lint/diff pass.
+Luna monitors this exact run and its subsequent gated Molten continuation.
+
+CI35824486046 deployed exacteed9e65d, then its live-matching step failed before
+browser QA: the old `sed` expression accepted only compact JSON and read an empty
+commit from the correctly formatted manifest. The manifest was **available**, not
+a404/outage. Root independently ran `/tmp/eidolon-verify-1-9-30.mjs`: exact public
+client/servereed9e65d, Alpha1.9.30, ready database, login version, cumulative notes
+and three transformed assets all passed, without production-character mutations.
+This establishes public identity, not the skipped live character/recovery checks.
+The live gate now uses Node JSON parsing for both manifest and health. Its actual
+workflow expressions are tested against compact, spaced and tab-indented JSON;
+the regression fails before the change. The gated Molten b launcher again exited
+delivery_wait/1, with no gameplay/services or earned-save changes.
+
+Manifest correction is pushed at `eed9e65da998979e1d9e8dd14f2761b69a559982`,
+CI35824486046. Luna monitors this exact replacement; no successful delivery is
+claimed yet. Focused release/history checks pass285/285 in1.842s, lint/diff pass.
+
+Corrected Go candidate1fa494e6 reached both production deployments in
+CI35822725614. Live QA then failed1/8 checks: the Pages workflow still wrote
+`Alpha 1.9.29` into public/release.json while the actual login screen correctly
+showed1.9.30. This was a real published identity mismatch, not a bad smoke-test
+expectation. Seven other live checks passed; later recovery QA was skipped.
+The gated Molten launcher stopped in delivery_wait/exit1 without starting any
+gameplay or services. The follow-up copies the repository release.json into
+the site and stamps its commit in the existing runtime-versioning script,
+removing the duplicate workflow version literal. Two regressions reproduced
+the old behavior;285 focused release/history checks pass after the fix. A
+corrected publication and complete live checks are still required.
+
+September23: the first release candidate1.9.30 was pushed at
+`c357f91bf317890017f99737b7d3d6d006490b9d`, CI35805973030. It failed the Go
+suite on three stale pre-tuning reward expectations: bleed/poison kills expected
+10XP instead of5, and a newly offered Skeleton daily expected4250XP instead of
+520. Client tests and all three browser-smoke shards passed. Both deployments
+and live QA were skipped;1.9.29 remains the last verified live release. The
+three assertions now match the approved anchors while retaining exact single-
+award, attribution, objective-count and Gold checks; no production reward or
+combat code was changed to accommodate this failure. Full `go test ./... -count=1`
+passed after correction (main16.151s, game183.714s), recorded in
+`/tmp/eidolon-1-9-30-server-regression.log`. The corrected push retains1.9.30
+because the earlier candidate never deployed. No release success is claimed
+before CI and public checks.
+It includes the shared Dark Realm,24 new chapters/38 discoveries, six optional
+residents, inhabited camp, personal/Nexus gating, guarded administration visits,
+Ilyra/movement re-entry fixes and incoming-XP tuning. Saved progression and
+accepted reward quotes remain intact. Version labels and cumulative notes match.
+
+Connected first-expedition chapter passed at`ed88ce6c` in79.994s, including manual
+reward and reconnect. Fresh opening `xpopening0923a` passed1.9min at`02b11f0d`:
+zero deaths, three kills, opening/diary manual rewards and saved level3. Focused
+Go campaign/gates/reward checks pass (game3.799s);352 focused client checks passed
+across two invocations after correcting the CI version default, and full lint
+passed. These checks do not establish all55 chapters, full raid clears or the
+100-hour/8–12-hour duration targets. Earned checkpoint19 remains unchanged.
+
+### Previous verified delivery — 1.9.29
+
+1.9.29 is pushed at `6cea8bb81715dc862aa9c3dff4345e0e9b1536ed`; CI
+`35556373863` succeeded (03:06:34–03:31:05 UTC,24m31s). Luna
+`/root/watch_release_1_9_21` verified the exact public frontend/backend commit,
+Alpha1.9.29, database readiness, login version, cumulative notes and three assets
+without production-character mutations. Receipt:
+`/tmp/eidolon-checkpoint-party-20260921-r2-NmWmUO/public-verification.log`.
+See the [campaign expansion plan](../21/campaign-pacing-and-dark-realm.md)
+for the subsequent expansion implementation, passing first-chapter evidence and
+remaining whole-campaign, pacing and visual acceptance work.
+
+### September21 approved additions — progression open, checkpoints local
+
+The player selected roughly100 hours to level100 plus8–12 hours of Dark Realm
+quests, lore and the dungeon leading to the raid (roughly112 hours overall).
+This adds substantial endgame-story and coordinated progression work to1.10;
+existing31 chapters and old earned timings do not meet that target. Preserve
+the separate5–10-minute Dark King encounter target. The
+[balance plan](../07/progression-balance-and-investigations.md#approved-pacing-target--september-21)
+records migration, level100 entry and content/evidence requirements.
+
+The player also approved active-dungeon town returns at the latest cleared boss
+checkpoint, retaining15-minute logout expiry. Candidate1.9.29 implements this
+using existing contiguous room-clear state, with entrance fallback before any
+boss clear and authoritative spawn in ordinary re-entry scene messages. It
+neither moves members already inside nor changes resources/rewards. The guide
+explains the rule. Recall/Respawn and scene regressions fail before the fix;
+focused server suites pass1.180s/1.673s.417 client/route/save/version checks pass
+7.743s; scoped lint/diff pass. Native prepared four-role checkpoint verification
+is next, not an immediate unchanged full dungeon rerun. Login/build/notes1.9.29
+are prepared, not yet deployed. No100-hour XP rebalance or8–12-hour story expansion
+is claimed in this patch.
+
+Bounded prepared pack/checkpoint check `checkpoint0921a` ended exit1 after3.9min on exact
+c88e77183d9c96dbcd7ae3abee9617a01d2dc737: root native68140/launcher4119440,
+`/tmp/eidolon-checkpoint-party-20260921-1Bzsij/ready-run.log`. It requires all
+four real town/guide returns at cleared boss room9, unchanged saved progress and
+pack clearance/survival/healing. Existing15min bound, zero native retries; Luna
+monitors terminal. An earlier invocation stopped at source_check while worktree
+checkout30791 was still finishing; no services or gameplay test started then.
+Checkout was confirmed complete/clean before this actual run began. The pack was
+cleared with the party alive, but guide return created a fresh dungeon: this
+prepared snapshot had a blank party owner, unlike the party formed through the
+invitation UI. The fixture now records the normal Fighter leader-derived party
+ID without prejoining characters or changing production ownership checks. Its
+unit regression covers all four snapshots. A corrected bounded run is required;
+this failure is not checkpoint acceptance. Owned services were cleaned.
+
+Corrected `checkpoint0921b` on a936e88a6cc11aa6476063e514587565ff74f579
+verified all four Recall/guide returns at room9 with identical seed, cleared-room
+state, inventory, Gold and quests. All roles survived and the mixed pack cleared.
+The overall harness still exited1 after3.2min: Cleric effective ally healing was0
+(Fighter took350 damage), failing its separate combat-role assertion. This is
+checkpoint acceptance only, not a passing full combat diagnostic or earned run.
+No assertion was weakened and no unchanged repeat is needed for checkpoint
+delivery; prior1.9.28 prepared pack evidence already includes493 real ally healing.
+Log: `/tmp/eidolon-checkpoint-party-20260921-r2-NmWmUO/run.log`; root43739 and
+launcher39580 terminal, owned services cleaned. Prepared-only archive
+`/tmp/eidolon-party-checkpoint-checkpoint0921b-PvLUWp/save.archive.gz`, SHA256
+`45707202d31e4fa13cf3e7118f7d290a4add7b1bc101b3346f718c187bcf4fa2`.
+Fixture ownership regression:4 tests pass0.968s. Proceed with the narrow1.9.29
+checkpoint release; the separate combat assertion remains recorded as failed.
+
+Earned `earnedmolten0921a` ended exit1/1.3h, four bosses cleared and all four
+roles alive, before the final boss. The reported failed spacing input actually
+ended within0.12 units of its requested point after8.96 units of real movement.
+The QA helper now permits one final settled-arrival observation after a polling
+timeout, with the same position/living/instance guards and no extra click or
+deadline increase. Preserve actual archive19 and its logout/resources; see the
+[earned record](../20/earned-continuation.md). Original frozen source was
+not edited. Root67495 is terminal and owned services are cleaned.
+
+### 1.9.28 verified — preserve restored encounter composition
+
+Prepared room10 diagnostic exposed a production discrepancy: restoration used
+generic packs rather than the original seeded types, counts, placement and
+family-specific profiles. Candidate9c78d7df reconstructs encounters privately
+with the current generator and requires exact saved-layout equality before
+transferring uncleared enemies. Cleared rooms, geometry, rewards, timestamps,
+15-minute expiry and boss balance are unchanged. Older/unmatched/fallback layouts
+retain the compatible legacy path. Ten-family fresh/restored comparisons reproduce
+the old defect; focused resume/compatibility checks pass1.432s,277 version/history
+checks pass1.416s and diff validation passes. Login/build metadata and cumulative
+notes are aligned and deployed together.
+
+Prepared-only pack recheck `moltenpack0921b` passed on that exact candidate with
+compact vitals reads and prior hostile-pack spacing correction. Root native75605,
+launcher2594832, `/tmp/eidolon-molten-pack-20260921-r2-19JwB1/`. Fifteen-minute
+test bound, zero retries; terminal exit0 in1.3min, combat32.8s. All four survived,
+three directly observed kills (two MagmaGolems and one InfernalBehemoth),493 ally
+healing, server room-clear assertion passed. Luna verified owned-service cleanup;
+root native75605 also exited0. This is prepared pack evidence, not earned full
+dungeon acceptance. Private prepared-only archive:
+`/tmp/eidolon-party-checkpoint-moltenpack0921b-y5PuuC/save.archive.gz`, SHA256
+`67d19498c74a5a23ccb2bf6498727adddf3aae57f630444dd10461d244dfd386`.
+Exact9c78d7df is verified live: CI35549007858 passed September21 at01:12:38UTC
+in21m09s, including live QA. Luna's read-only verifier confirms both exact
+identities, readiness, login, cumulative notes and three versioned assets:
+`/tmp/eidolon-release-1-9-28-20260921-SwZBYp/public-verification.log`.
+Previous trial all survived
+but used a generic pack and failed its healer-use assertion; it is not acceptance.
+After delivery completed, earned Molten continuation `earnedmolten0921a` started
+on exact9c78d7df using unchanged archive18 and ordinary15-minute expiry. It has
+the prior validated spacing correction and compact role/vitals observations,
+plus normal owned bag upgrades, not new balance/grants. Root native67495,
+launcher3020960, `/tmp/eidolon-earned-molten-20260921-r6-fXmuve/`. Existing2h
+bound, zero retries; Luna monitors terminal only. No deployment/browser overlap.
+That route is now terminal as recorded above; full earned clear and Air handoff
+remain unaccepted.
+
+### 1.9.27 verified — authoritative dungeon resume landing
+
+Prepared Guardian diagnostic b (0f20c854) restored all four into the same saved
+instance, but Fighter/Rogue appeared at the entrance while Cleric/Wizard retained
+the deep-room landing. The server's initial scene message supplied `spawn` only
+for PvP/casino; asynchronous client scenery creation otherwise resets to room0,
+racing position updates. Seven real dungeon/raid payload regressions fail on the
+old server response and pass after all restored instances carry their authoritative
+landing. Client scene tests retain the supplied position through async loading.
+No expiry, resource, progress, room-clear or boss balance policy changed.
+
+Alpha1.9.27 metadata/login/notes are prepared together; prior history remains.
+Server focused tests pass1.098s,32 client scene/fixture checks pass2.486s. Native
+prepared Guardian c passed4.6m on exact77ba49d486356282914b4b4531d56d536d6aadcc:
+all four deep-room positions validated, Guardian defeated and all four survived.
+This is prepared encounter evidence, not full earned Molten acceptance. The exact
+candidate is pushed to master; CI35542593860 passed at23:06:30UTC on September20
+in21m39s, including live character QA. Luna's read-only public verifier confirms
+exact frontend/backend identities, database readiness, login version, cumulative
+notes and three version-rewritten assets. Receipt:
+`/tmp/eidolon-release-1-9-27-20260920-DSHddo/public-verification.log`.
+No production account mutations or overlapping native GPU tests.
+
+Read-only inspection of earned checkpoint17 found a Rare intelligence/vitality
+staff already owned but not equipped. Regional/raid readiness omitted the existing
+first-dungeon bag-upgrade step; it now reuses that normal UI swap after verifying
+saved progression. No item grants, stat scaling or balance changes.39 focused
+readiness/equipment tests pass1.34s; scoped lint/diff pass. This makes the next
+earned attempt materially different without inventing progression.
+
+### Finale tuning target — approved 5–10 minutes, balance acceptance pending
+
+User confirmed a successful, well-geared five-player Dark King fight should
+take **5–10 minutes total across all four phases**, excluding travel/setup.
+The native combat watchdog now permits ten minutes for UmbraPrime in the weekly
+raid only, without resetting at phase changes; ordinary encounters retain their
+existing limits. It conservatively includes target acquisition/input overhead.
+The60-second damage-stall, survival, four-Eidolon and whole-expedition checks
+remain. This removes the inherited eight-minute mismatch, not the need to
+measure a successful fight. No boss health/damage changes are justified by the
+previous46-second failed attempt. Tune from sustained five-player combat evidence
+with the approved gear and no global stat scaling; preserve all four interventions.
+Focused timing coverage passes13 tests in2.844s; scoped lint and whitespace checks
+pass. This is QA/policy work for the next finale run, not a new deployed version.
+
+Read-only review while earned Molten runs: `enemy_balance.go` gives UmbraPrime
+an8x boss-health factor, combined with20x boss rank and4x Mythic health at100.
+The retained finale's actual1824000HP agrees with that profile; entry accepts
+5–10 players without a health adjustment by current party size. Before the user
+decision, the shared route inherited an eight-minute fight bound originally
+documented for ordinary Tempest combat, not a declared finale pacing target.
+The failed finale stopped after46.187s of combat (Rogue death), not that bound;
+its early HP observations and interrupted support cannot prove steady raid DPS
+or a full-fight duration. Do not label it a damage-timeout failure or nerf the
+boss to make the inherited QA timer pass. Previously corrected second-healer
+support remains awaiting native evidence. The user has now selected5–10 minutes;
+the scoped watchdog update above supersedes that earlier open decision.
+No encounter health/damage, party gates or Eidolon phases changed. The active
+Molten run remains on its frozen source, uninterrupted by this future-finale update.
+
+Next-finale measurement now retains a browser-monotonic timestamp for each
+actual phase event and a leader timestamp only after observed boss death. The
+next scheduled fight can therefore report phase intervals and total opening-to-
+death time without another dedicated run. Compare times within the same browser,
+not across separate clients.13 focused evidence tests pass1.514s; scoped lint
+and whitespace checks pass. The running Molten worktree remains unchanged.
+
+An idealized arithmetic cross-check of the existing1824000HP profile,8% phase3
+sear and25%/35% outgoing aid gives about1,497,842 pre-aid damage across the four
+quarters: `H * (.25 + .25 + .17/1.25 + .25/1.35)`. Your5–10-minute target thus
+implies roughly2,496–4,993 aggregate sustained pre-aid DPS in that simplified
+model. This omits rounding, mitigation interactions, movement, misses and input
+overhead; it is not an expected player DPS measurement or a tuning decision.
+The retained46-second failure cannot establish sustained output, and the
+prepared baseline is five Rare/nine Uncommon pieces per actor with primary
+mastery only, not a fully optimized endgame build. Preserve these distinctions
+when evaluating the next survival-corrected run; no boss stats changed.
+
+### Verified release and retained run evidence
+
+Latest `earnedmolten0920e` ended exit1/1.3h on4e8a0093. Four bosses, including
+the previous Guardian failure, and four town recoveries passed; Rogue died in
+the later MagmaGolem pack before the final boss. Luna/root agree terminal;
+owned services are cleaned. Latest independently inspected archive18 preserves
+actual Wizard100/245125XP/219700Gold/2562HP/3725MP and unfinished Molten0/1.
+The [earned record](../20/earned-continuation.md) contains exact archive,
+timing and support receipts. A reproduced selected-target-only spacing hold now
+accounts for nearby hostile pack members, with119 focused checks passing1.529s.
+No runtime balance change, full-dungeon acceptance or immediate full retry;
+native pack/control verification remains next. Historical runs below remain
+retained evidence, not the latest active run.
+
+Latest continuation `earnedmolten0920d` is terminal exit1/1.3h, frozen0788ca95,
+root21636/launcher44108 stopped. Luna confirms terminal cleanup. It passed normal
+Recall readiness, four-member entry, three bosses and three town recoveries,
+then Rogue died during Obsidian Guardian. No full clear or Air handoff accepted.
+See the [earned record](../20/earned-continuation.md) for the retained death
+evidence and independently verified latest archive index17. Next isolate that
+encounter/control delay with prepared actors before another full earned expedition;
+do not rerun the80-minute route unchanged or infer a boss nerf from this result.
+
+`earnedmolten0920c` is terminal exit1/1.8m from8569dcd8, before party formation.
+Root66703/launcher4125632 stopped; source/log:
+`/tmp/eidolon-earned-molten-20260920-r3-OHn2Eb/`. Normal15-minute restoration
+correctly returned the Wizard to Molten, but QA readiness looked for the town
+guide inside it. The shared readiness helper now uses normal Recall first for
+restored instances, failing closed if Recall fails; no expiry/progress rewrite.
+Luna confirms terminal cleanup. Latest independently inspected save is unchanged
+100/245125XP/214465Gold, Molten still0/1; see the earned record for archive index16.
+No new combat or completed dungeon acceptance. Original limits remain.
+
+Earned Molten `earnedmolten0920b` is terminal exit1/10.5m oncdf71b50, with
+Cindermaw and one town rest/re-entry, all four alive. Root1224/launcher3915852 and
+owned services are stopped. The recently introduced exact-waypoint requirement
+was a QA regression: real movement2.492units and actual complete party formation
+were rejected because the final position was0.536units from the projected point.
+Input witnessing now retains living/same-instance/directional-progress checks
+without pretending to own the separate final group-distance check. Short steps
+still require the arrival region.142 focused checks pass4.175s. This supersedes
+the strict long-step policy described below; no gameplay or deadline adjustment.
+The [earned record](../20/earned-continuation.md) pins the independently
+inspected latest archive and unchanged unfinished chapter. No full Molten clear.
+
+Alpha1.9.26 is verified live at`b1c5b06996286fb24ed77efe0fdaa1a89d130032`.
+CI35532592235 passed September20 at19:56:33UTC in24m46s, including live
+character QA; Luna supplied the terminal result. No native browser test overlapped
+delivery. Read-only public verification matches both exact release identities,
+database readiness, login version, cumulative1.9.26/25/24 notes and three exact
+version-rewritten engine assets. Receipt and verifier:
+`/tmp/eidolon-release-1-9-26-20260920-RsGsPH/`. No production account mutations.
+The full1.10 goal remains open; this is delivery acceptance, not raid acceptance.
+
+Fire `fireraid0920j`, frozendd7dc31f, is terminal exit1 after14.2m; native20683
+and launcher3722420 are stopped. Source/log/artifacts:
+`/tmp/eidolon-fire-raid-20260920-r10-gYf6xz/`. Luna confirms all five survived
+and owned containers are gone. The route stopped at another15s formation bound,
+before guardian/repair acceptance. Unlike the previous no-route failure, its
+trace shows seven progressing input batches through15.949s; the final Cleric
+remains outside the five-unit boundary, with nearby Golem/Behemoth bodies and
+three recorded collision stops. Do not infer a geometry defect or increase the
+deadline from this alone. The existing batching change is available for later
+work, not a measured solution to this failure. No immediate unchanged Fire retry.
+The log does independently observe foreground-target substitution followed by
+an actual defeated InfernalBehemoth while approaching a MagmaGolem; this accepts
+that bounded input branch, not the full assault or restored-crystal reward.
+Replay: generator2, seed`311554435171593545`. Private archive:
+`/tmp/eidolon-party-checkpoint-fireraid0920j-o3qd1J/save.archive.gz`, SHA256
+`4b1c09f4b344803887d72d95f05b61ab50656ea9b46c5e9c23573d9218ddacc6`.
+The test ran after verified delivery without overlapping native/deployment jobs.
+
+During that run, source review found the optional waypoint witness accepted any
+displacement over one unit before checking its required destination, living state
+or instance. Six new regressions reproduce that bypass (including an unchanged
+observation already inside the arrival region). The local QA helper now requires
+real displacement and the explicit living, same-instance arrival contract for
+both short and long steps; ordinary displacement-only callers are unchanged.
+75 focused movement/waypoint/ranged-spacing checks pass5.507s; lint/diff pass.
+No runtime balance or deadlines changed, and the running frozen Fire source was
+not edited/restarted. This is not evidence that earlier whole-route acceptance
+failed: final group gathering, survival and saved completion have separate checks.
+Air continuation already uses the existing regional route, saved-chapter skip,
+authored travel around the Bastion, four inspection sites and normal70 Tempest
+handoff. No new grants or duplicate driver are needed; earned Molten completion
+is still its prerequisite.
+
+Later party formation inputs now reuse the already-existing batched preparation
+used by telegraph escapes: one synchronous origin/path/projection observation
+instead of three separate browser round trips. The real ray, click receipt,
+strict arrival and group boundary checks remain. Unit observations verify four
+rather than six successful input round trips, including short-waypoint parity;
+58 focused preparation/input/arrival checks pass5.224s, lint/diff pass. This is
+not a measured end-to-end speedup, new native acceptance or a reason to restart
+the running frozen Fire test. No new timeout, gameplay setting or driver layer.
+
+Fire `fireraid0920i`, session3278, frozenf90581ae is terminal exit1 after6.9m:
+`Party failed to gather before the next pull`, with all five surviving. No
+guardian/repair completion or saved restored-crystal reward is accepted. Source,
+log and launcher: `/tmp/eidolon-fire-raid-20260920-r9-z4coHc/`. Owned containers
+are gone. Archive `/tmp/eidolon-party-checkpoint-fireraid0920i-YYjSTi/save.archive.gz`,
+SHA256`8b7374b2775e78935b91bf3ca00a48a9c9fd10d2d4027a12acd55acee78f899e`.
+The foreground-target change did not receive native acceptance in this run;
+do not repeat Fire unchanged.
+The retained formation trace reproduces a planner failure using only the
+observed actor circles: the Rogue remained6.641units from the tank, blocked by
+the settled Wizard. Its legal first detour corner is shorter than one unit,
+which the graph rejected despite the caller already verifying exact arrival
+within0.25units. A regression fails before the correction. Non-goal graph steps
+now permit lengths of at least0.5units, still requiring full floor/body clearance,
+strict arrival, the same five-unit gathering boundary and original deadline.
+86 focused controls, arrival, projection and geometry checks pass11.11s; lint/diff
+pass. The recorded Tidestar and crowded spawn routes also retain collision-safe
+completion. This is a local driver correction after the release push, not a
+native Fire success or part of1.9.26. Do not launch its next native attempt until
+CI releases the deployment browser slot.
+Cross-agent native handles proved unavailable to Luna, so it monitored one
+read-only wait on the verified launcher and inspected the actual terminal footer.
+A missing cross-agent handle was not mistaken for a stopped run.
+
+Alpha1.9.26 shipped as one presentation batch: walking service
+hint refresh, transition cleanup and encounter-timed Dark King opening. Login,
+client/server/container/deploy identities and patch notes advance together;
+prior notes remain intact. Fire was terminal before delivery, freeing the
+deployment browser queue. CI and public verification now confirm this release.
+The release batch was prepared at72089aed;275 version/history checks pass11.085s,
+with scoped lint, shell syntax and diff checks. The exact pushed identity and CI
+are recorded above.
+
+The existing five-role route now also accepts isolated `earned-party-raid`.
+It restores the checksum-pinned Wizard save rather than preparing that actor,
+requires every prior chapter from the validated server catalog in both client
+and saved state, and uses the ordinary Ilyra acceptance button for a still-new
+offer. Normal elemental entry levels30/60/70/70 and the Mythic100 finale are
+checked explicitly. Four other roles remain prepared and are labeled as such.
+Existing complete assault/three-wave repair or four-phase finale, individual
+manual reward, re-login and database assertions remain. Terminal finale saving
+correctly expects no next quest; it retains the existing epilogue check.
+The private archive cleanup includes this route. No Wizard resources, stats,
+inventory, earned receipts or logout timestamps are rewritten.57 focused
+continuation/fixture/cleanup/readiness checks pass; the six new readiness cases
+pass1.269s after correcting test-only syntax/environment issues. Scoped lint,
+shell syntax and diff pass. This closes driver plumbing, not earned raid
+acceptance: the latest actual earned checkpoint is still unfinished Molten.
+
+Fire `fireraid0920h`, session64215, frozen39d272a9 is terminal exit1 after10.5m.
+Launcher/log/source: `/tmp/eidolon-fire-raid-20260920-r8-BS0m11/`.
+The Rogue died during an assault Magma Golem pull, before guardian/repair stages.
+The two Clerics' later final snapshots are also dead, but do not conflate these
+with the first survival assertion: combat workers stop on that first failure.
+Owned processes and containers are gone. Private save:
+`/tmp/eidolon-party-checkpoint-fireraid0920h-Q8W8gR/save.archive.gz`,
+SHA256`e21404274d03bd0944ff4fa5f39571f78e6e231bb1a4cbfd32c63498cba60cf6`.
+
+This run retains an actionable control failure: the tank's selected Golem stayed
+at6340HP for48seconds while the pointer's actual foreground was an Infernal
+Behemoth. The saved ray hit stack contains two Behemoths ahead of the Golem,
+whose proxy is present/visible. The Fighter circled without landing the opener;
+DPS correctly waited for its real hit while the pack attacked the group. Both
+healers were close to the Rogue, so the separate finale escort change does not
+address this failure. No balance adjustment is justified by that driver stall.
+
+The driver now may select the actual foreground member of the same nearby
+hostile pack after its bounded aim search fails. It re-aims normally and switches
+party input workers before combat; it never substitutes a boss, selects a
+friendly/distant/dead actor, cycles back to an attempted target, extends the
+fight/stall deadline, or credits an untouched enemy as defeated. Only a confirmed
+death returns its actual identity to the full-room route.32 focused aiming,
+entry and tank-engagement checks pass (31 in1.176s plus the new15-test entry
+rerun in0.698s); scoped ESLint/diff pass. Full Fire completion remains open.
+
+During that same run, `source/test-results/five-player-raid-five-gear-73476-four-phase-Dark-King-finale/party-instance-entry.png`
+was inspected: the five-member raid roster and Fire entrance are rendered, with
+no stale Dungeon Guide prompt. The generated artifact directory uses the shared
+spec title; this is Fire, not a Dark King screenshot. This confirms the held
+entry-prompt correction without a separate browser run, not a Fire clear.
+
+Earned continuation now also permits Normal100 Umbral Nexus through the existing
+four-role route and private-save restore. Its pre-entry checks require the four
+prior dungeons, intervening regional chapters, and all four saved crystal
+restorations; the resonance-gate objective itself must still be accepted and0/1.
+The prepared support roles, ordinary guide entry/combat/manual turn-ins and
+saved reward checks are reused. Nothing seeds Wizard progression, restores
+resources or extends the15-minute expiry.34 focused regional/continuation/story
+tests pass1.944s; scoped ESLint/diff pass. No earned Umbral run or archive is
+claimed yet; this removes a known later-route limitation while Fire is running.
+
+Earned Molten native18707 is terminal exit1 after113.5m: four bosses cleared,
+all members alive, but traversal timed out during a cleared-room return before
+the final boss. Independently inspected save retains actual Gold213922 and all
+prior Fire rewards, with Molten0/1 still uncompleted. No Air handoff is claimed.
+The [continuation record](../20/earned-continuation.md) owns its archive,
+exact seed replay and evidence limits. Timeout observations now retain the
+in-dungeon position before automatic recall; existing deadlines are unchanged.
+
+Fire raid `fireraid0920g`, native33049, frozen567f8e24 is terminal exit1 after
+38.8m. Log/source/artifacts are under `/tmp/eidolon-fire-raid-20260920-r7-xSUXEP/`
+(the screenshot is in its `source/test-results/`, not the main worktree).
+Guardian and first repair wave cleared; all five were alive, but formation
+failed during wave2. All five receipts show ritual_start, wave1 start/clear and
+wave2 start only. No restored crystal, manual claim or saved reward is accepted.
+The previous Magma Golem targeting stall did not recur in this run; this is not
+proof that every targeting case is fixed. Owned services were cleaned up.
+Private archive `/tmp/eidolon-party-checkpoint-fireraid0920g-KZ5mPq/save.archive.gz`
+is retained, not a completed-raid checkpoint.
+
+The inspected failure screenshot and actual movement trace show the group
+gathering beside Maelin while the chamber defense was already active. The shared
+route was still finishing a center waypoint after the final guardian died;
+that delayed handing input ownership to its existing dedicated ritual driver.
+A regression reproduced this unnecessary movement. Raids now hand off after
+the actual final-boss death AND all authoritative assault rooms are cleared,
+with the common room/reward verification and complete three-wave defense still
+required. Ordinary dungeon traversal, formation tolerances, timeouts and gameplay
+are unchanged. This corrects the driver; connected Fire completion remains open.
+The handoff regression failed before the change;54 focused entry/timing/raid/
+phase/ritual checks pass1.298s after it, with scoped lint/diff clean.
+
+The shared five-role route now also supports `EIDOLON_E2E_RAID=weekly_raid`
+under the existing isolated `party-raid` launcher. This closes a driver gap, not
+the actual finale acceptance: the other path only handled elemental repair.
+It prepares legal level100 Rare/Uncommon role gear and catalog prerequisites,
+leaves Malachar's kill unearned, forms/readies/enters through the real Dark Realm
+card, and uses Mythic100 combat. No earned campaign progress is fabricated or
+claimed for this prepared encounter check. All five clients must receive the
+four ordered Orun/Neris/Pyralis/Aeral events while alive, with actual rendered
+aid callouts, then independently claim Ilyra's reward and retain it after login.
+The optional letter is opened through the UI, not treated as a new reward quest.
+Phase screenshots are captured only while their callout is actually visible.
+Existing elemental repair checks, raid re-entry, movement and timeouts remain.
+
+The actual Go level100 catalog successfully prepares all five roles with14
+legal items each and the final quest at0/1.78 focused fixture/story/aftermath/
+phase/entry/ritual tests pass3.848s; scoped lint/diff pass. The browser spec lists
+without launching another GPU workload. Do not count this as a connected finale,
+visual phase review, weekly-cache persistence proof or full earned campaign.
+Prepared finale `darkking0920a`, native9356, frozen7d1841fb is terminal exit1
+after4.7m. Launcher/log/source: `/tmp/eidolon-dark-king-party-20260920-r1-KgfwBt/`.
+All five entered Mythic100; all five received and presented Orun/phase1. Rogue
+died early in the fight; the test stopped its combat workers, and final cleanup
+snapshots then showed the whole party dead. Do not conflate those later deaths
+with the original failure timing. Boss started1824000HP, and phase2 was not
+reached. No final kill, manual claims, epilogue or four-phase acceptance.
+Full artifacts retain actual damage, healing, warning escape and ranged-spacing
+receipts. The first healer was16.1 units from the Rogue at the failure report;
+those records need a combat/control review before another finale run, not an
+unsubstantiated balance change or automatic retry. Owned services are gone.
+Archive `/tmp/eidolon-party-checkpoint-darkking0920a-o2hEMf/save.archive.gz`,
+SHA256`9b2c8af27ad5febf233fb4b5ba190adce3fa217d7c04bb16f1fc67ef72d1ce51`.
+
+Finale control review: retained `party-healer-decisions` shows both Clerics
+healing/following the Fighter while the full-health Rogue was already32.014
+units from the second healer. After injury that healer had to approach from
+32.014, then28.391, then17.380 units with the Rogue at1230/4255HP. This establishes
+a preventable support-positioning gap, not a complete explanation of the loss
+(late warning escapes and threat still matter). The finale-only driver now
+assigns the second Cleric to escort the ranged damage group before injury;
+the first Cleric retains the tank, and ranged spacing uses its assigned second
+healer. Ordinary dungeon and elemental ritual assignments are unchanged.
+Only real follow/heal controls are used, with existing warning/range/collision
+and survival checks. No boss stats, gear, rewards or deadlines changed.
+73 focused healing/spacing/ritual tests pass5.688s, plus scoped ESLint/diff.
+This is local driver preparation, not a native finale pass. Do not run another
+finale concurrently with the already-live Fire64215. The root confirmed its
+launcher3202828 and Playwright3213756 live at19:12UTC September20; host load was
+64.75, so no additional browser or full test matrix was started.
+
+An initial launcher hit
+the clean-source guard before worktree checkout had finished and exited1 without
+creating services; that receipt is retained as `source-preparation-race.log`.
+Only after checkout/link completion was confirmed did the actual run start.
+No gameplay attempt was restarted. An intermediate Luna missing-process report
+was contradicted by native9356 still returning a live handle, the exact launcher/
+Playwright PIDs, both containers and fresh combat output. Monitoring resumed on
+that same handle; only the later exit1/footer establishes its terminal result.
+
+### Next-release presentation fixes (local, not yet deployed)
+
+The inspected phase1 screenshot exposed a stale town Dungeon Guide service card
+covering the raid callout. Instance transitions now clear prior hover/raycast/
+active-entity references, pending service interaction, casino door hint and cursor
+before refreshing the new scene's hints. Both entry/return regressions failed
+before the change;70 focused scene/HUD/hint/phase tests pass1.979s afterward.
+The next already-required party route checks the stale Guide title is gone and
+captures entry presentation; no separate long browser run is needed for it.
+
+The same screenshot showed Orun's opening consumed at the portal, approximately
+240 units from the King, before the long approach. Opening phase0→1 now waits
+for a living connected raider within normal enemy sight range45. Later phases
+and aid retain their existing whole-raid eligibility, damage floors and budgets.
+The new entrance/approach regression failed before correction. Do not call this
+native four-phase acceptance or a change to the failed party's combat balance.
+Focused Dark King/contact Go race checks pass35.647s, including the existing
+phase integrity and damage-path regressions. Scoped lint/gofmt/diff checks pass.
+
+Player-facing notes for the next release batch: service prompts clear on zone
+changes and stay current while approaching; the Dark King's opening Eidolon
+callout waits until the raid approaches his encounter. Together with the held
+range-hint refresh, these are not part of live1.9.25 yet.
+
+Consolidated non-browser JS check on8f95311e:472/473 suites and7165/7166 tests
+passed in568.879s (`/tmp/eidolon-integration-unit-20260920-8f95311e.log`). The sole
+failure was an obsolete `const deadline` source assertion in FreshCampaignPhases,
+predating the accepted measured-recovery timer change. It now accepts const/let,
+still requires the120s combat bound and explicitly checks measured recovery.
+That file's9 tests pass3.2s after correction, plus lint/diff. No second complete
+matrix was run. Its existing behavior-level recovery checks passed in the full
+run. The background unit process was lowered to nice19 after observing load65
+on this16-core shared host; no unrelated process or gameplay setting was changed.
+This is not a performance baseline or a new deployment.
+
+Release `0a104720cad83d2314534ec042920ee0236207ad` / Alpha1.9.25 is verified live.
+CI35503417369 passed all jobs at10:14:07UTC in23m36s. Public client/server
+identities, ready database, login/cumulative notes and exact stash assets match.
+It includes the corrected stash location outside the blacksmith footprint and
+the bounded administration rejection/outage follow-ups. Desktop, portrait and
+landscape one-click/tap stash approaches passed in23.4s; retained full-town
+collision evidence and screenshots are in the [stash report](../20/stash-approach.md).
+
+Native47339 passed that exact CI/public verification, then failed after12.7m:
+a110-second real town recovery consumed the120-second combat window and the
+following search timed out. Stash preparation passed; saved progress is now
+level62/7668XP/51749Gold with28/70Golems. The QA timer excludes only successful
+recovery time while retaining the overall two-hour ceiling. Corrected
+`earnedwaterregion0920d` then ended at its third death after23.6m, with31/70kills
+saved. The driver searched through Troll territory without invoking defensive
+combat; fourteen pursuers surrounded it with most mana unused. Existing bounded
+approach combat now guards search strides, and move-only waypoint input avoids
+accidental attacks.119 focused tests pass. Corrected `earnedwaterregion0920e`
+used native7513 from the pinned dead save and successfully respawned normally.
+It advanced to saved80/87276XP/98595Gold and61/70kills without new deaths, then
+stopped on a gear-only bag-management assumption. QA storage now preserves
+gem/material/relic stacks with exact merge/overflow conservation;84 focused
+tests and Go stash checks pass. Corrected native2051/`earnedwaterregion0920f`
+passed in14.8m with no deaths, all70 kills, manual turn-in, relogin and saved
+Abyssal handoff. Independent archive restore confirms83/90198XP/104319Gold,
+all Water rewards retained, accepted Abyssal0/1 and no accepted dailies. The
+[earned continuation record](../20/earned-continuation.md) owns its launcher,
+archive and bounds. Water readiness is accepted. Its four-player Normal60
+Abyssal continuation also passed: native56558/earnedabyssal0920a on47e0adec,
+approximately65m, all five bosses, four town rests/re-entries, four manual claims
+and relogins. Independent saved Wizard85/4217XP/107425Gold has the claimed
+Abyssal reward and untouched Fire kiln offer. Retain those full checkpoints;
+next is Fire story, not another Water/Abyssal replay. The later campaign/raids
+and full1.10 remain open.
+
+The first Fire story continuation stopped after15.4m during its post-inventory
+return trip. Actual retained save87/72166XP/114225Gold has the completed kiln,
+seven unclaimed hunt kills and a transit death, not the last periodic five-kill
+report. Fixed waypoint travel now invokes the same bounded defensive combat as
+target search.120 focused tests pass; continue the pinned save through normal
+respawn. The earned continuation record above owns this failure and next run.
+
+That defended Fire continuation then completed the35-kill hunt and8-item
+collection with correct level100 Gold/Resonance claims. It stopped at the final
+investigation's missing QA combat callback, not an unsuccessful anchor fight.
+Actual pinned save100/245125XP/209955Gold retains ash evidence1/3 and those
+rewards. The existing anchor helper is now shared by both routes;105 focused
+checks pass. Next finish the retained investigation and Molten handoff, without
+repeating completed content. No Fire dungeon or raid completion is implied.
+
+Fire investigation/handoff is now accepted: native26744/earnedfire0920c on
+b910a268 passed2.8m, actual anchor death, freed ember, manual claim/relogin and
+saved Normal70 Molten entry. Independent save100/245125XP/211256Gold preserves
+all prior rewards and Molten0/1 accepted. The field-record screenshot is readable
+and shows the correct cap reward. Next is the earned Molten four-role continuation;
+retain the separate already-passed prepared Molten balance evidence. Full1.10
+and the remaining Air/raid/finale scope stay open.
+
+Next-batch local polish: the short stash screenshots exposed a service card
+remaining “Move closer” after approach, because hint updates depended on pointer
+raycasts. Refresh the already-visible card during rendering; the existing UI
+serializer still suppresses unchanged DOM writes. Both desktop/phone regressions
+failed before the correction; all43 HUD/hint/raycast checks pass after it (2.63s),
+plus lint/whitespace checks. No extra raycast, range change or new browser run.
+This change is not part of the immutable1.9.25 deployment; include its player-facing
+note with the next release batch, rather than creating another tiny hotfix now.
+
+## Last verified delivery — Alpha1.9.24
+
+Exactd1e707e3/Alpha1.9.24 is verified live. CI35500889856 passed all jobs in23m45s,
+ending September20 at09:19:12UTC. Public client/server identities, ready database,
+login/notes and five exact casino assets match. The enlarged equal-floor venue,
+all requested game counts, stash/sign and adminVIP/100EP shipped as one batch;
+see [expansion evidence](../20/casino-expansion.md).
+
+After that guard, native58053/run`earnedwaterregion0920b` ended exit1 after48.8s
+on frozen534da08b while opening storage, before new kills. Its actual saved
+level61/21946XP/51012Gold and25/70 Golem credit are unchanged. Full-town diagnosis
+found the former coffer inside the blacksmith footprint; the accepted correction
+and rejected initial approach-only attempt are retained in the stash report.
+Owned services are gone. Full Water/Abyssal and later campaign/raids remain open.
+
+## Previous September20 checkpoint —1.9.23 and Water partial save
+
+Alpha1.9.23 at1eb18f59 is delivered: Luna reports all CI35494967147 jobs passed
+at07:14:35UTC (31m09s). The Water launcher independently records
+`PUBLIC_RELEASE_VERIFIED` for the exact commit/version, ready database, login,
+cumulative audit-recovery notes and exact party CSS. Water-region parent15946
+ended exit1 after1.7h; actual archive restore confirms level61/21946XP/51012Gold,
+four further Water chapters complete and the final Golem hunt25/70 unclaimed.
+After a death and successful town respawn, its driver skipped regional departure
+and tried a direct blocked town walk. The QA route is corrected; full Water and
+Abyssal remain open. Resume the retained save, not completed chapters. See the
+linked earned record for evidence and bounds. Alpha1.9.24 casino/adminVIP at
+d1e707e3 published after owned Water cleanup; Luna monitors delivery. Do not
+overlap deployment native-browser QA with another gameplay run.
+
+Alpha1.9.22 at4f39328b is accepted: CI35492191742 passed all jobs in21m44s,
+ending06:00:17UTC; independent public verification confirms matching identities,
+database readiness, login/notes and the shipped four-member party layout.
+Guarded Water parent45531 passed that exact deployment and source verification,
+then ran `earnedwater0920a` from the saved level33 Wizard. It is now terminal
+exit1 after30.0m, reporting a retreat assertion near the whole-test ceiling.
+Actual archive restore confirms42/32261XP/25427Gold and58/60 unclaimed Ferry kills.
+The saved continuation `earnedwater0920b`, native40858, passed in2.2m on5c42b4dd:
+remaining two kills, manual reward, relogin and actual saved investigation offer.
+Independent archive restore confirms43/35906XP/27416Gold, Ferry60/60 completed
+and fresh Flood Shelter0/1. All owned services are gone; use its new full save
+for the remaining Water region after pending1.9.23 delivery. Do not repeat
+Missing Ferry, Earth or accepted Verdant. Full Water/Abyssal remains open.
+See [release status](../../../releases/1.9.22/2026-09-20-party-visibility.md) and
+[earned continuation](../20/earned-continuation.md).
+
+Earned Wizard Verdant continuation **passes**: native63326/run`earnedparty0920c`
+on3b163421,46.7m, no deaths, full four-player dungeon/four claims/relogin.
+Actual Mongo and independent archive restore confirm Wizard33/23108XP/10598Gold
+and fresh unaccepted Water offer. The other three roles used prepared legal gear.
+See [saved continuation evidence](../20/earned-continuation.md); do not
+repeat accepted Earth/Verdant work. Water hunts, later regions/raids and the
+remaining full integration scope stay open.
+
+No Fire run is active. Latest `fireraid0920f` ended exit1 after8.0m on127e39d6,
+native34554, at a Magma Golem damage stall; artifacts are retained under
+`/tmp/eidolon-fire-raid-20260920-r6-BnDcKk/`. It passed the earlier settled-member
+formation failure. Acquisition-time diagnostics and the recorded-scene check
+are now retained in main3a866b90 without extra browser polling. They do not
+establish the live stall's cause or prove full repair acceptance. Diagnose that
+specific failure; do not repeat accepted Earth/Verdant work, blindly rerun Fire,
+or weaken survival/damage bounds. The linked Fire record is authoritative over
+older active-run descriptions below.
+
+September 20 operator confirmation: the administrator found Activity history
+and reported that everything in the panel appears to work. The requested safe
+live read-only panel/history smoke is accepted. No production grants or teleports
+were requested or used as evidence. Final 1.10 identities and broader integration
+remain open; the physical-phone check is deferred at the player's request.
+
+Fire follow-up `fireraid0920c` is terminal exit1 (8.5 minutes); all five survived,
+but an elite-room Infernal Behemoth disappeared between combat observations.
+The final guardian was not reached. Artifacts are preserved, owned services gone;
+the [current Fire record](../20/ember-crown-party-validation.md) describes the
+bounded observed-death retention correction and its verification limits.
+
+Earned checkpoint continuation `earnedresume0920a` finished the four remaining
+Orc kills and manual reward in memory, reaching level31/12488XP/9011Gold without
+deaths or dailies. These were **not saved**: the fixture copied the old character
+name into a different account, while normal save lookup requires the new account
+name. Its archived database remains at level30/7170XP/8539Gold, Orc46/50.
+`earnedresume0920b` therefore failed its strict restore guard before gameplay;
+session49969 is terminal. Do not treat either archive as earned level31 proof.
+The corrected fixture remaps only the account save-key name, leaves the inherited
+party through normal controls, and requires an actual Mongo saved-handoff match.
+No inventory, rewards, logout times or gameplay rules are rewritten. The known
+September14 level30 archive remains the valid continuation point; four unsaved
+kills must be earned again, not inferred from the prior passing in-memory log.
+
+Fire run `fireraid0920d`, clean source82472be7, is terminal exit1 after33.7minutes.
+All assault rooms and the guardian cleared; repair wave1 cleared, then the Rogue
+died during wave2. The runner had moved beyond healing range. Artifacts and
+private save are retained, owned services gone. The linked Fire record describes
+the bounded proactive healer-escort correction, not yet connected acceptance.
+
+Earned-party run `earnedparty0920a` is terminal exit1 after3.5minutes, before
+dungeon entry. Its Wizard handoff **is saved** at31/12448XP/9047Gold; actual
+isolated Mongo restore confirms it. The verification reader, not gameplay,
+failed on mongosh optional-chain handling. The corrected reader and transfer of
+this newer full archive pass actual Mongo checks plus32 focused tests. See the
+[earned continuation record](../20/earned-continuation.md). Resume from
+the valid level31 save rather than replaying the four kills. Full party dungeon
+and claim remain open. The other three roles remain prepared, not earned.
+
+[Alpha1.9.21](../../../releases/1.9.21/2026-09-20-raid-roster.md) is accepted at44061ffe:
+all CI35483868157 jobs pass, public client/server identities match and database
+is ready. Five-to-ten-member desktop raid rosters fit above default chat; hosted
+checks now overlap without dropping gates. Total measured CI duration20m55s.
+
+[Fire run fireraid0920b](../20/ember-crown-party-validation.md) ended exit1
+after5.3minutes: first-room combat progressed, then a follower's planned ground
+click fell behind the wider roster. Exact-coordinate real-UI reproduction passes
+with visible-prefix planning; no stats, gathering deadline or combat watchdog
+changed. Session33534 is terminal, artifacts preserved, owned containers gone.
+Full Fire acceptance remains open. Rootheart, Molten and other documented accepted
+checks below stay accepted within their scope. Remaining Water/Fire/Air raids,
+earned full campaign, relevant dungeon families, integration and physical-phone
+checks remain open. Historical pending/failure paragraphs below are not orders
+to repeat completed work; use the linked current records.
+
+## September19 checkpoint — administration delivered, Rootheart accepted
+
+Alpha1.9.17 is publicly verified at `b5feba27`, with all ten CI35464162303 jobs
+passing, matching domains/database readiness and a protected schema12→14 backup.
+See [administration delivery](../../../releases/1.9.17/2026-09-19-administration.md).
+The subsequent [five-player Rootheart raid](../19/rootheart-party-acceptance.md)
+passed in29.5minutes: full original guardian, all three defended repair waves,
+five personal manual claims and saved re-logins, no deaths or retries. Native69714
+is terminal and cleaned up. Do not repeat it because the historical failures below
+remain in this audit. Remaining three elemental raids, earned full campaign,
+regional/cross-feature/phone checks and final1.10 delivery remain open.
+
+## Alpha 1.9.14 — friendly repair artificer targeting
+
+Raid49954 is terminal exit1 after15.0m on631030ab. Five-member town recovery
+and re-entry passed; clients observed ritual start and wave1. The driver then
+selected CrystalKeeper, whose1,000,000HP did not change for60seconds. Full repair,
+personal rewards and full raid acceptance remain unproven. Log:
+`/tmp/eidolon-earth-raid-r5-20260914-vwNevs/run.log`. Sanitized0; owned API/Mongo
+containers absent after cleanup. Private checkpoint:
+`/tmp/eidolon-party-checkpoint-earthraid0914e-FNrE47/save.archive.gz`, SHA256
+`62030983f3e74c8e51de5f7086301e3453fe24ad1090187750aa77aa95c08beb`.
+Not a verified playable resume. Do not poll/restart49954.
+
+This exposed a production targeting omission, not just a driver mistake:
+`GameEngine.isHostileActorTarget` treated non-interactive Maelin as an enemy.
+Server creates her as TypeNPC; the client creates CrystalKeeper but its generic
+Actor fallback returned hostile. Exclude CrystalKeeper without adding a service
+interaction or changing server ritual rules. Two regressions failed on the old
+predicate, then passed for IDLE and CHANNELING. Normal enemies remain targetable;
+hovered and buffered Maelin cannot become an effective combat target.
+295 tests across five focused targeting/presentation suites passed2.015s;
+ESLint, Bash syntax and diff checks passed. Login, runtime defaults and cumulative
+patch notes advance to1.9.14. Deployment and full raid retry are pending, not
+accepted by these unit checks. Avoid overlapping the retry with CI browser QA.
+
+Physical-phone feedback remains Brave/Chrome with positive general UI feedback;
+user has not tried dungeon or party play. Those checks remain open.
+
+Release3fb8d580 pushed to master; CI34856694692 started (watch57501). Do not
+supersede this deployment with QA-only commits. Before retrying, the failed log
+also proves two driver assumptions need correction: Graven Colossus was logged
+as HollowSentinel (its reused rendering class), and the second Cleric provided
+1228 effective ally healing while the first had zero. Resolve known boss identity
+from its server-generated ID prefix so boss-room bounds, screenshots and clear
+assertions use the actual guardian; do not rename or weaken expected bosses.
+Check aggregate effective Cleric healing rather than require the first Cleric
+to heal an already-full ally. Death, damage and reward assertions stay intact;
+four-player behavior still requires its single healer.18 focused encounter and
+timing tests passed0.560s, lint/diff passed. These are local QA-only corrections
+for the next run, not yet connected raid acceptance.
+
+## Earlier evidence
+
+Raid36074 terminalexit1: first assault room/recovery-size validation passed,
+then a moving DemonOrc remained at1719HP for60seconds in the next encounter.
+All five survived with218Gold; both Clerics healed (3627/1337). Repeated fallback
+ground inputs were unavailable while the target moved from5.38 to17.88units away.
+Inspection found the QA fallback still approached its initial target coordinates.
+It now rereads the live enemy position per approach, retains the12-unit movement
+bound and60-second damage-stall watchdog, and records latest approach diagnostics
+if the stall recurs. This is a specific QA correction, not yet proof that the
+encounter stall is resolved.12focused approach/timing tests pass0.659s
+(10821exit0); lint/diff pass. No production change or forced combat result.
+Log `/tmp/eidolon-earth-raid-r4-20260914-LKHD3v/run.log`; sanitized0/owned cleanup
+passed; private `/tmp/eidolon-party-checkpoint-earthraid0914d-HJBXQU/save.archive.gz`,
+SHA256`2d95e3cc00dca95464fc6044770d96a9d016b03852478c91e895f778699aaf94`.
+
+Raid8535 is terminalexit1 after2.4m: five-member UI formation/readiness/entry and
+first assault-room combat passed, each player alive with165Gold, but the shared
+QA rest validator required exactly four observations. Correction declares the
+expected group size (default4, explicit raid5–10), checks every observed member,
+and retains80%first/50%later rest thresholds and death/stale-pool rejection.
+21focused rest tests pass0.498s (6334exit0); lint/diff pass. Searched shared party
+helpers for remaining four-member count/index assumptions; the other matches
+were unrelated numeric limits. No production or encounter changes.
+Log `/tmp/eidolon-earth-raid-r3-20260914-2iB769/run.log`; sanitized0/owned cleanup
+passed. Private checkpoint `/tmp/eidolon-party-checkpoint-earthraid0914c-FIykh8/save.archive.gz`,
+SHA256`b18abbc59c046b7dddee9c8ba3c99187a7d0a264ded1bdc09c8992f838702ca5`.
+Not a raid clear; no repair credit was claimed.
+
+First five-player raid invocation29311 stopped before formation: the new helper
+expected raw `currentInstanceType === 'overworld'`, but initial town state is
+null. All five legal builds loaded/replicated; no raid entered or combat credit.
+Use existing `readPlayerState` normalization, as the dungeon route does. Native
+exit1, sanitized0, owned containers removed. Log
+`/tmp/eidolon-earth-raid-20260914-tRhG1L/run.log`; private checkpoint
+`/tmp/eidolon-party-checkpoint-earthraid0914a-T1yGnX/save.archive.gz`, SHA256
+`5dae8157b36b3af5b6683fdf83642eb0eb7769e6e8d979c066fbd5f651be2d54`.
+This is a QA assumption failure, not a demonstrated gameplay defect or raid clear.
+Retry5471 also exited1 before raid entry: all five builds and accepted party
+invitations passed, but the helper had not selected the guide's **Raids** tab.
+The card existed in the hidden panel, so its attribute assertion passed while
+accessible button lookup correctly timed out. Add the ordinary tab click and
+visible-card assertion. Log `/tmp/eidolon-earth-raid-r2-20260914-2CemVT/run.log`;
+sanitized0/owned cleanup passed. Private checkpoint
+`/tmp/eidolon-party-checkpoint-earthraid0914b-Z8od1W/save.archive.gz`, SHA256
+`eeeaa127059ca1cfd3281698a67d8623af661981e6105b78e495f783d81c254c`.
+
+Normal70 Molten now **accepted**: native49494 terminalexit0/54.1m, all five bosses,
+four geared roles, zero deaths, four town recoveries, each manual Fire handoff
+and re-login saved rewards. Exact f2fdea9b; cleanup/checkpoint verified. See
+[Molten acceptance](molten-party-acceptance.md). Do not repeat it for
+the local raid-driver extraction. Five-player full-raid driver is prepared, not
+yet accepted; remaining family/earned-campaign/raid/phone scope remains open.
+
+Alpha1.9.12 is publicly delivered on both domains at38847b2f, database ready;
+login/notes and eight served HTML/JS/CSS files exactly match the release source.
+CI34840066682 is **terminal success, all ten jobs passed**, including live
+saved-character play and town healing/Well Rested. Watch42418 exited0; do not
+repeat this accepted release. Alpha1.9.13 poker recovery is pushed asf2fdea9b,
+CI34843057369 **terminal success, all ten jobs passed**; watch51003 exited0.
+Live saved-character gameplay and town recovery/Well Rested passed. Do not
+repeat those completed gates. Exact public delivery passed at12:46:27UTC:
+both domains matchf2fdea9b/Alpha1.9.13, DBready, and eight served HTML/JS/CSS files
+match transformed committed source. This accepts1.9.13 delivery, not the remaining
+full1.10 campaign/raid/integrated-visual scope. The connected casino route
+passed and exposed table clipping, now repaired and verified at four screen
+sizes plus the actual two-player flow. See
+[connected casino and layout evidence](connected-casino-acceptance.md).
+This does not close earned campaign, remaining dungeons, actual group raids,
+busy-floor or physical-phone acceptance. Connected EP blackjack and paid slots
+now pass their bounded routes; [saved bonus/free-spin interactions](connected-slots-acceptance.md)
+also pass for both Gold and EP. These are prepared socket fixtures, not rendered
+venue or earned-currency evidence. Connected
+EP poker separately passed and exposed the packaged1.9.13 walk-back correction;
+see [EP hand and restart evidence](vip-poker-connected-recovery.md).
+
+Latest checkpoint:1.9.11 public delivery is verified at
+`bd56689384f737c18c78a84607bc4683e7fb11bd`: frontend manifest, backend health
+(database ready), login label/patch notes, actual runtime script/versioned
+imports and tracker JS/CSS match. **CI34829019013 is terminal success, all ten
+jobs passed**, including final live character and town recovery QA. See
+[party tracker correction and acceptance](party-quest-tracker.md).
+Do not poll or restart that completed run. Earlier1.9.10/4bab14fa CI34822657032
+also passed all ten jobs; the superseded1.9.11attempt34827963234 failed a stale
+test assertion before deployment and is terminal. Earlier
+1.9.9 CI34804655770 is terminal success, not pending work.
+The corrected strict earned Earth route
+now passes all eight phases on clean89c2ad5d, native10782 terminal success;
+[accepted result and earned checkpoint](earned-earth-acceptance.md).
+The old31615 attempt failed travel; do not treat it as active or rerun the
+subsequently accepted route.1.9.8 previously passed
+all CI gates with actual
+schema-upgrade backup confirmed. Snapshot sharing now passes the original
+50/100-client bounded criteria; see [accepted rerun evidence](broadcast-snapshot-sharing.md).
+The earlier100-client failure below is retained baseline evidence, not the
+current optimization outcome.1.9.9 packages that accepted change for publication;
+full earned campaign/raid/phone acceptance remains open. The controlled High/Low
+rendering workload now passes its predeclared frame-time and resource budgets;
+see [timings and inspected screenshots](final-render-workload.md).
+This is not an actual group raid or a physical-phone result. Do not repeat
+the completed concurrency or EP backup checks for documentation changes.
+
+September 14, 2026. This is an **open acceptance audit**, not a declaration of
+1.10 completion. Preserve the full [1.1–1.10 roadmap](../05/v1-1-to-v1-10-roadmap.md),
+[progression requirements](../07/progression-balance-and-investigations.md),
+and [casino scope](../09/town-casino-roadmap.md). The September 12 feature-first
+policy changes verification timing, not the required final experience.
+
+The dated release plans contain historical “not implemented/not published”
+paragraphs. Do not recreate shipped features or repeat a long passing route
+because an older checklist remains unchecked. Match evidence to its source and
+scope; do not count prepared characters as earned progression.
+
+## Historical release boundary — Alpha 1.9.10
+
+Live Alpha 1.9.10 integration patch: locked elemental-raid and
+portal cards now name the required Chronicle quests and explicitly tell players
+to turn them in to Archmage Ilyra. The old chapter3/5/7/9/13/14 labels predated
+the expanded story and sent players to the wrong journal chapters. Entry gates,
+levels, rewards and saved progress are unchanged. Focused menu checks compare
+these names with the actual server quest catalog. Cumulative login patch notes
+and package/server/CI version labels match. The Abyssal run ended on its
+original traversal deadline before publication, with artifacts retained; this
+guide correction does not claim a completed Abyssal clear.
+
+Prepared-release checks: version presentation, Pages runtime versioning, asset
+versioning, dungeon progression menu and dungeon preparation **282 tests across
+five suites passed in 10.087 seconds**. Focused ESLint and `git diff --check`
+passed. No browser run or previously accepted load/backup suite was repeated
+for this text-only game change. The full 1.10 acceptance scope remains open.
+
+- Verified public delivery: Alpha1.9.10, `4bab14fad67db14c26c93d9bacb0410f57187626`.
+  Exact CI **34822657032** passed all ten jobs, including live character QA.
+  Retained terminal metadata: `/tmp/eidolon-1-9-10-ci-final-20260914.json`.
+- Earlier Alpha1.9.9, `3481f89ae4c6e3f050ac6a3cb0494b27ea4245a4`, passed all
+  ten CI34804655770 jobs; do not poll/restart it. Earlier1.9.8 CI34802207933 and1.9.7
+  CI34800160671 are also terminal successes, not pending work.
+- 1.9.7 implements actual VIP-floor access and EP games, not payments. Keep
+  Gold→EP at 1,000,000:1, monthly entitlement at 100 EP, no EP→Gold conversion,
+  and EP rewards cosmetic-only outside EP wagering. Paid membership provisioning
+  is trusted administration; checkout and billing remain excluded.
+
+## Evidence recovered — retain instead of repeating
+
+**Bounded concurrency now measured:** [current trial results and allocation profile](concurrency-trials.md).
+10-client baseline and50-client120s stage passed admission/replication checks;
+50-client sampled memory also passed.100clients were all admitted but exceeded
+the fixed heap budget, so that stage was stopped early and is NOT accepted.
+No transport/decode errors; heap returned near baseline after clients left.
+Existing benchmark identifies repeated Entity snapshots as92.27% of allocation
+bytes. Address that measured cost before rerunning affected load, not a new soak.
+All owned services/listeners are stopped/removed; logs retained locally.
+
+**EP rollback defect repaired locally:** schema11 did not fence pre-EP writers.
+[Schema12 and current recovery evidence](ep-schema-recovery.md) now
+proves actual old-binary startup/preflight refusal with saved BSON unchanged,
+and authenticated backup/restore of EP, membership, cosmetics, receipts and a
+pending wager. These focused checks passed; corrective publication follows the
+running1.9.7 release. Do not repeat this backup matrix for documentation-only
+changes, or confuse the writer stand-in with actual post-restore gameplay.
+
+**Four-player Verdant already passed.** The authoritative result is in
+[role-appropriate dungeon equipment](../12/party-progressed-gear.md), not the
+earlier failed Common-gear attempts. Native 15051 on `9b6745d7` passed in 58.8
+minutes, zero retries, seed `-1286139677518117694`, Normal level 30. All rooms and
+four original-health bosses cleared without deaths, global stat scaling or
+mid-run grants. Fighter Strong, Rogue Agile, Wizard Brilliant, Cleric Wise;
+five Rare and nine Uncommon pieces each. Actual individual credit, manual Ilyra
+claims, Water offers, five town recoveries, completed-run re-entry and saved
+handoffs passed. Archive: `/tmp/eidolon-geared-party-pass-KVzr6y`.
+
+Do not describe that as a missing first-dungeon clear or rerun the same hour-long
+case by default. It is one prepared-party seed, before the 1.6 encounter changes;
+it does not prove earned leveling, the other dungeon families or crystal raids.
+Its 43.20 minutes of traversal includes 36.04 minutes of browser formation
+overhead: it is not a human clear-time benchmark.
+
+**Current EP shared-table check:** on the 1.9.7 candidate plus documentation,
+`EIDOLON_CASINO_TEST_MONGO_URI=... go test . -run '^TestVIPCasinoMongo' -count=1`
+passed in 1.520s using an owned loopback Mongo 7.0.16 container. This includes the
+last poker initialization correction: public/VIP lobbies have different round
+identities, two funded participants remain isolated from public play, private
+cards stay private, and funded poker/blackjack settlement survives VIP expiry
+without touching Gold. The exact owned container was stopped and removed.
+Reuse the previous [VIP game evidence](vip-casino-games.md) for other
+unchanged paths. This is not a production wager or a populated-floor benchmark.
+
+**Current progression source audit:** production catalog/drop audit passed;
+log `/tmp/eidolon-final-progression-budget-20260914.log`. There are 31 Chronicle
+chapters, including eight investigations. Earth has 40/60/50-kill authored hunts
+and eight collected seeds. Seed collection averaged 20.08 eligible kills with
+saved pity in 2,000 simulations (p90 26, maximum observed 34); all four collection
+definitions use the same measured distribution. The opening pays 100 XP/100 Gold;
+Earth dungeon chapter pays 10,562 XP/300 Gold. These are actual current budgets,
+not the obsolete million-XP catalog and not proof of satisfying campaign pacing.
+
+## Remaining acceptance, grouped to avoid repeated matrices
+
+### Actual-phone feedback — September 14 clarification
+
+September 20 user decision: defer the physical-phone dungeon/party check until
+the player has time. Do not repeat the request or pause other roadmap work for
+it. Keep the earlier positive general mobile feedback; this check remains
+pending, not failed or silently marked passed.
+
+The user uses **Brave or Chrome** on their phone and has **not tried a party or
+dungeon session**. Preserve their earlier positive general mobile-UI feedback;
+it does not establish mobile dungeon or multiplayer acceptance. Phone model/OS
+were not supplied. The browser question is answered; do not ask it again.
+Actual-phone party/dungeon play remains unverified, separate from automated
+responsive-layout and desktop hardware-rendering results.
+
+September23 public-event preparation: `earned-public-event` now selects one
+ordinary scheduled disturbance on a separate copy of the retained earned Wizard.
+It reuses normal travel/combat controls, requires all three waves plus champion,
+actual outgoing damage in each wave, the server's completed/calmed state, rendered
+completion and persisted rewards after reconnect. No clock, health, credit or
+resource override; zero retries and25min total, including at most one schedule
+interval. Lint, shell syntax and Playwright discovery pass. Native execution is
+accepted on the corrected runtime for one complete Root event, including exact
+reconnect rewards (see current result above). This does not establish all-realm
+balance or replace the campaign checkpoint; do not repeat the passed event solely
+for another version number.
+
+| Area | Existing implementation/evidence to retain | Still required |
+| --- | --- | --- |
+| 1.1 first hour and dungeon foundations | Manual Ilyra chain, town recovery/Well Rested, party credit; accepted Verdant/Abyssal/Molten, earned Air/Tempest and prepared Umbral Nexus routes. Current Earth reward/readiness checks reach level30 in all12 modeled scenarios without dailies | Actual fresh early progression under current rewards; retained routes are not an all-class/all-seed dungeon matrix or human pacing proof |
+| 1.2 character/equipment/mobile | Published class/equipment work, inspected galleries, real phone user reports “everything looks good,” responsive menu checks | Integrated High/Low visual review and sustained phone combat/party scope; do not erase the user's positive UI feedback |
+| 1.3 combat feel | Existing cast/impact, movement, aiming, telegraph and sound work with focused native receipts | Inspect/hear these together during the actual group/campaign routes, including other instances and representative runes |
+| 1.4 Chronicle | 55 chapters, eight original investigation sites plus38 Dark Realm discoveries, four town witnesses and six optional expedition residents; manual Ilyra conversations, restoration consequences and named-NPC click fix are live | Complete earned campaign through all four dungeon handoffs, four full raids and repair defenses, expanded Dark Realm, Nexus and four-Eidolon Dark King finale |
+| 1.5 progression/economy | Current reduced budgets, promised-reward migration, Forge refresh, builds, appearance collection, Gold/EP separation | Record earned XP/Gold/drops/upgrades and sources/sinks across the campaign; no mandatory daily wall, no max-level lost rewards |
+| 1.6 encounters | All four five-player elemental raid clears and three-wave repairs accepted: [Rootheart](../19/rootheart-party-acceptance.md), Water/Air and Fire's saved turn-in continuation in the [release record](../../../releases/1.10/2026-09-23-playtest.md). Individual manual rewards and relogin receipts retained. Four-player Nexus and five-player four-phase Dark King plus saved finale turn-ins accepted | Join these into earned campaign acceptance; retained prepared-party clears and saved continuations do not prove every wipe/re-entry state, all-class balance or a complete fresh campaign. Do not repeat already accepted clears just to remove this row |
+| 1.7 arena | Team elimination, practice/ranked, rating windows, build policy, durable results/season rewards and anti-farming; [connected restart/penalty evidence](connected-arena-acceptance.md) and [rendered four-client ranked2v2/results](../19/rendered-team-arena-preparation.md) pass | Retain these results in the final cross-feature review; do not recreate a season or repeat the standalone rendered match |
+| 1.8 social | Group finder, roles, guild calendar, invitations/readiness/moderation, shared seating; [connected recruitment/consent/readiness/token-resume roster](connected-group-finder-acceptance.md) and [connected guild invites/calendar permissions/reschedule consent/actual restart persistence](connected-guild-calendar-acceptance.md) pass | Integrated rendered group/raid/casino experience; retain accepted connected social evidence |
+| 1.9 world/casino | Connected public/VIP game, EP cosmetic, membership and recovery receipts retained. One naturally scheduled earned Root disturbance passed all three waves, champion and exact relogin rewards (`earnedevent0923c`, 5.4min). The [expanded casino review](../20/casino-expansion.md) covers all92 stations/232 seats, 40 equipped actors, all four High/Low floor views, isolated-floor/aura visibility, phone stairs and connected roulette/baccarat restart settlement | Remaining integrated venue experience and native populated-floor performance. Expanded-floor screenshots used software rendering, not40 connected players or native performance measurement. Retain the [current casino checklist](../09/town-casino-roadmap.md). One Root event does not prove all-realm event balance |
+| 1.10 integration/delivery | Alpha1.10.2 exact `8b2b955fbfa00e6fcdf3144ecb81eb6ea3d3a813`, all ten CI36285496845 jobs, public IPv4 frontend/backend identity, database readiness, cumulative notes and five exact assets verified; read-audit recovery delivered; retained bounded performance and persistence/backup results keep their original scopes | Campaign and human pacing are user-playtest-owned. Local casino rendering optimizations remain unshipped pending useful hardware timing evidence; IPv6 and physical-phone party/dungeon feedback are user-deferred |
+
+September27 reconciliation: the table above now incorporates the later encounter,
+event and release receipts rather than treating their historical pending entries
+as instructions to rerun them. This is an evidence/status correction, not a new
+test pass. It does not close the parent roadmap's compound requirements.
+
+The remaining work is separated into three categories. The campaign-related
+requirements in the table above now have the user-playtest ownership below;
+this changes ownership, not the evidence or targets.
+
+1. **Local code awaiting acceptance/delivery:** hidden-floor status animation
+   and actor scene traversal optimizations. The38 focused functional checks
+   pass, but hardware frame timing remains unaccepted on the heavily loaded
+   shared host. See the [bounded profile and candidate](../27/casino-frame-profile.md).
+   Read-audit recovery is already delivered in1.10.2. No further implementation
+   defect was confirmed by this reconciliation; that is not a bug-free claim.
+2. **Explicitly user-owned playtest:** on September27 the user chose to own
+   uninterrupted campaign and pacing validation. This includes earned
+   progression/economy through the full Dark Realm journey. Model outputs and
+   prepared characters do not prove these targets. Do not run a long automated
+   campaign, repeat accepted encounters, or keep these as agent-blocking gates.
+   Any concrete bug subsequently reported remains implementation work.
+3. **Explicitly deferred external checks:** physical-phone dungeon/party feedback
+   and the separate IPv6/DDNS configuration. Continue other work without repeating
+   those requests or misreporting either as passed.
+
+September19 crowded-floor visual review now has a bounded High/Low result:
+40 equipped models across the canonical public/VIP venue, actual seated poses
+and controller cutaway, with four inspected screenshots. It caught a missing
+upstairs-patron cutaway, fixed locally for the next release batch. Retain this
+[crowd review and its limits](../19/casino-crowd-review.md); do not rerun it
+as a new40-client networking, wagering or performance test. The existing
+connected game/settlement evidence remains distinct from this render evidence.
+
+September19 rendered ranked2v2 now passes with four actual prepared clients,
+normal UI invitations/queue/attacks, two rounds, individual results and saved
+re-login. Low-quality combat, round score and Victory/Defeat panels were
+inspected; see [result and scope](../19/rendered-team-arena-preparation.md).
+This closes the table's standalone rendered team-round/result review; retain
+the prior connected reward/restart evidence rather than rerunning it. It does
+not establish physical-phone or all-class balance acceptance.
+
+This table organizes work; it does not check off the parent roadmap's detailed
+requirements. In particular, preserve all five dungeon families (Verdant,
+Abyssal, Molten, Tempest, Umbral), failing seeds plus the specified seed coverage,
+all four classes, actual attacks/abilities rather than forced deaths, floor
+ownership/High–Low comparisons, exit/party/death/reconnect states and live smoke.
+Retain the casino's full public/VIP interaction and currency checklist, not just
+the newest EP tests. The population-dependent second PvP queue remains
+conditional; a fifth class/new continent and payment integration remain excluded.
+
+## Historical raid-driver preparation — superseded by current results above
+
+Raid preparation now reuses the legal progressed-gear catalog through
+`tests/raidPartyFixture.js`: five distinct level70 characters, Fighter tank,
+two Wise Clerics, Brilliant Wizard and Agile Rogue; each has five Rare and nine
+Uncommon pieces. The server's test-only catalog exports actual raid definitions.
+Native36884 passed preparation against all four definitions and their current
+Chronicle order. Three focused fixture tests pass (0.469s); lint/diff checks pass.
+Only prerequisite chapters are prepared: the selected Vigil remains accepted,
+zero-count and incomplete, with no later chapter or cleared-instance receipt.
+This is **setup, not a raid clear or earned campaign**. Next work must connect the
+five players, form/ready/enter through normal controls, complete assault rooms and
+guardian, defend all repair waves/objectives and manually claim each saved reward.
+Do not run an entry-only GPU test just to repeat entry during the full clear.
+`tests/e2e/raid-party-entry.js` now provides that five-player invitation, explicit
+acceptance, guide conversion, individual ready-check and shared-instance UI flow.
+It uses normal controls and read-only observations; conversion is confirmed by
+the server's chat receipt (party updates do not transmit MaxSize). Syntax/lint
+checks pass. **Not run against five browsers yet**; wire it into the complete
+combat/repair route before using GPU time. No live runtime change.
+`tests/raidVigilControls.js` and `tests/e2e/raid-vigil-input.js` now provide the
+ritual movement step for that route. They consume the live personal
+`currentDungeonRoomState.crystal` snapshot: Earth ward holding, Water's carried
+memory hint, ordered Fire channel points and alternating Wizard/Rogue Air runners.
+The tank and both Clerics retain combat/support ownership; the runner's sole
+input worker must invoke this after telegraph avoidance, before attack/follow.
+Only ground clicks are issued; no quest/wave/clock mutations. Nine planner tests
+pass0.469s; lint/diff pass (native29605 exited0). **Still not an actual defended
+raid or browser acceptance**; complete the shared combat/ritual driver next.
+
+The complete driver is now wired as `tests/e2e/five-player-raid.spec.js` using
+`geared-party-route.js` (the four-player spec remains a wrapper for its existing
+route). It combines five legal prepared roles, UI formation/readiness/entry,
+assault traversal and actual boss combat, live ritual movement during attacks,
+all three defended wave receipts on every client, restored scene screenshot,
+town recall/re-entry, individual manual Ilyra turn-ins and saved reward re-login.
+No runtime change, stat/HP adjustment, wave or quest mutation. The original
+120-minute expedition ceiling remains; the remaining ritual loop also has a
+15-minute bound and current-update/death checks. `party-raid` isolated route uses
+zero retries and retains a private checkpoint during owned cleanup.
+64 focused tests in five suites pass1.035s (native41198 exit0); Bash/lint/diff
+pass. Native51235 lists both browser specs successfully without launching GPU.
+**Not yet run as a full connected raid**. Run after Molten49494 releases the GPU;
+do not repeat accepted dungeon/slot routes for this QA-only extraction.
+
+### Bounded concurrency trial contract (before execution)
+
+Run on Ryzen7 5700G (8 cores/16 threads), 31,456MiB RAM, Linux, while no owned
+native Chrome gate is active. This is a shared development/production host;
+record that limitation rather than claiming dedicated-host or Internet capacity.
+Use an isolated loopback API/Mongo, exact release `08f020bc`, no production
+credentials, pre-created characters or privileged gameplay grants.
+
+Use the existing mixed combat/town/social loadtester: **10 clients/30 seconds**
+as a measured starting baseline, then **50/120 seconds**, and **100/120 seconds**
+only if the preceding stage passes. Each stage must admit every requested player,
+have zero unexpected read/write/decode errors, keep database-ready health, and
+deliver at least five aggregate state frames per client-second of the configured
+steady duration. This aggregate rate is not per-client latency or frame-time proof.
+API heap must remain below512MiB and below four times its pre-load healthy heap;
+allow normal garbage-collection fluctuations, not an inferred memory leak from
+one sample. Retain measured values. Do not weaken targets after seeing results.
+
+No long soak: stop at the first failure, distinguish test-driver/auth/protocol
+errors from server capacity, and fix only the demonstrated issue before deciding
+what to repeat. These trials do not replace raid gameplay, browser performance,
+long-duration retention, packet-loss or public Cloudflare/TLS checks.
+
+Concurrency preparation found an evidence bug in the existing load tester: it
+incremented `joined` after sending a request, without server admission. The tool
+now counts each own authoritative Player snapshot once, reports decoder errors,
+and exits unsuccessfully for missing admissions or transport/decode errors.
+Generated usernames are no longer printed as successful join receipts. Focused
+loadtest checks pass0.013s and the executable builds. This is not a measured
+concurrency run; run the existing tool against disposable services with explicit
+targets before claiming capacity. No second load-testing framework was added.
+
+1. Abyssal party20006 is terminal: four bosses cleared, then the original
+   120-minute traversal/recovery deadline. Artifacts and a verified private
+   four-boss saved-progress copy are retained; full clear/claims remain open.
+   See [regional result](regional-party-dungeons.md). Do not poll or
+   restart that handle.1.9.10 is now deployed with exact public identities;
+   all ten CI34822657032 jobs passed. Retain that release evidence, then continue
+   the missing encounter and cross-feature checks without overlapping GPU jobs.
+2. Retain the accepted earned Earth route10782 and prepared Verdant route15051;
+   neither proves the other realms or full earned campaign. Continue remaining
+   dungeon families using the existing prepared-party options, with Low graphics
+   for the next multi-browser functional run to reduce shared GPU contention.
+   Keep legal class gear, difficulty, actual inputs and completion gates intact.
+3. Continue earned realm/raid progression and cross-feature sessions; fix
+   demonstrated game defects, distinguish controller failures, and rerun only
+   affected paths. No debug kills, fabricated repair receipts or in-run gear grants.
+4. Retain the accepted bounded concurrency and controlled High/Low rendering
+   reports linked above. Do not rerun them for copy or documentation changes;
+   they do not replace actual group raids, campaign or physical-phone evidence.
+5. Retain the accepted schema12 backup/restore, old-writer refusal and actual
+   production upgrade-backup evidence. Revisit only for relevant storage changes.
+   Never run destructive recovery on production or restore an incompatible writer.
+6. Publish 1.10 only after the parent requirements have matching evidence, with
+   accurate cumulative patch notes and verified frontend/backend commit identity.
+
+The overall goal remains active. No broad soak or replacement deployment was
+started for this audit.

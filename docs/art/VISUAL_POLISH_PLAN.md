@@ -573,7 +573,7 @@ The complete goal remains active and all changes are local/unpublished.
   coverage verifies all five clips, resource isolation/reuse, grounded bounds,
   pool reset and production remote/factory selection. This is not evidence of
   completing the server's full 5–10-player Dark Realm encounter.
-- Regenerated `docs/ANIMATION_COVERAGE.md` from the updated actor manifest.
+- Regenerated `docs/art/animation-coverage.md` from the updated actor manifest.
   Full regression passed 142 suites / 2,027 tests; hardware model checks,
   lint and whitespace checks passed.
   Populated raid/service menus, the final equipment review, raid-scale cost

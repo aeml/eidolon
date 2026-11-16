@@ -1,0 +1,1131 @@
+import { QuestUI } from '../../../../src/ui/journal/QuestUI.js';
+import { jest } from '@jest/globals';
+
+function buildQuestDom() {
+    document.body.innerHTML = `
+        <div id="quest-window" style="display:none"></div>
+        <div id="quest-list"></div>
+        <div id="quest-journal" style="display:none"></div>
+        <div id="journal-list"></div>
+        <div id="objectives-panel" style="display:none"><div id="objectives-list"></div></div>
+        <button id="btn-close-quest"></button>
+        <button id="btn-close-journal"></button>
+    `;
+}
+
+describe('QuestUI objectives panel', () => {
+    test('party tracking retains every selected quest, readable tooltips and keyboard access', () => {
+        buildQuestDom();
+        document.body.classList.add('party-roster-visible');
+        try {
+            const ui = new QuestUI({ getLastPlayer: () => ({}) });
+            const summary = Array.from({ length: 8 }, (_, index) => ({
+                id: `daily_party_${index}`, badge: 'Daily', title: `A long quest title ${index}`,
+                progressLabel: `${index} / 10`, hint: 'Return to the town quest giver', progressPct: index * 10
+            }));
+            ui.loadTrackingPreferences();
+            ui.trackedQuestKeys = new Set(summary.map(quest => quest.id));
+            ui.renderObjectivesPanel(summary);
+            const list = document.getElementById('objectives-list');
+            expect(list.children).toHaveLength(8);
+            expect(list.getAttribute('role')).toBe('region');
+            expect(list.getAttribute('aria-label')).toBe('Tracked quests');
+            list.focus();
+            expect(document.activeElement).toBe(list);
+            expect(list.lastElementChild.title).toBe('A long quest title 7 · 7 / 10 · Return to the town quest giver');
+            ui.toggleJournal = jest.fn();
+            document.querySelector('.objectives-panel__more').click();
+            expect(ui.toggleJournal).toHaveBeenCalledTimes(1);
+            ui.renderObjectivesPanel([]);
+            expect(document.getElementById('objectives-panel').style.display).toBe('none');
+        } finally {
+            document.body.classList.remove('party-roster-visible');
+        }
+    });
+
+    test('phone tracker keeps button navigation without adding a scroll-region tab stop', () => {
+        buildQuestDom();
+        const ui = new QuestUI({ isMobile: true, getLastPlayer: () => ({}) });
+        ui.renderObjectivesPanel([{ id: 'daily_phone', badge: 'Daily', title: 'Phone quest', progressLabel: '1 / 3' }]);
+        expect(document.getElementById('objectives-list').hasAttribute('tabindex')).toBe(false);
+        expect(document.querySelector('.objective-entry').tagName).toBe('BUTTON');
+        expect(document.querySelector('.objective-entry').getAttribute('aria-label')).toContain('Open journal: Phone quest');
+    });
+
+    test('tracker scrolling does not bubble to gameplay shortcuts or prevent native scrolling', () => {
+        buildQuestDom();
+        new QuestUI({ getLastPlayer: () => ({}) });
+        const list = document.getElementById('objectives-list');
+        const gameplay = jest.fn();
+        window.addEventListener('keydown', gameplay);
+        try {
+            list.focus();
+            for (const key of [' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End']) {
+                const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+                list.dispatchEvent(event);
+                expect(event.defaultPrevented).toBe(false);
+            }
+            expect(gameplay).not.toHaveBeenCalled();
+            list.dispatchEvent(new KeyboardEvent('keydown', { key: 'j', bubbles: true }));
+            expect(gameplay).toHaveBeenCalledTimes(1);
+        } finally {
+            window.removeEventListener('keydown', gameplay);
+        }
+    });
+
+    test('daily summary puts ready and accepted work before larger unaccepted payouts', () => {
+        buildQuestDom();
+        const ui = new QuestUI({ getLastPlayer: () => ({ level: 2 }) });
+        const entries = [
+            { id: 'daily_high', target: 'PhoenixSentinel', rewardXP: 400000, maxCount: 100 },
+            { id: 'daily_active', target: 'Skeleton', accepted: true, count: 1, maxCount: 100, rewardXP: 100 },
+            { id: 'daily_ready', target: 'Imp', accepted: true, count: 2, maxCount: 2, rewardXP: 50 }
+        ];
+        expect(ui.buildRepeatableLadderSummary(entries).topEntries.map(entry => entry.id))
+            .toEqual(['daily_ready', 'daily_active', 'daily_high']);
+    });
+
+    test('daily disclosure and recovered lore keep independent open and focus state', () => {
+        buildQuestDom();
+        const quests = [
+            { id: 'chronicle_01', category: 'chronicle', chapter: 1, title: 'Recovered chapter', completed: true, lore: 'A remembered promise.' },
+            { id: 'chronicle_02', category: 'chronicle', chapter: 2, title: 'Next chapter', accepted: true, count: 0, maxCount: 1 },
+            { id: 'daily_skeleton', target: 'Skeleton', count: 0, maxCount: 100, rewardXP: 100 }
+        ];
+        const ui = new QuestUI({ getLastPlayer: () => ({ quests }) });
+        ui.updateJournal(quests);
+        document.querySelector('.quest-chronicle-archive').open = true;
+        document.querySelector('.quest-chronicle-archive > summary').focus();
+        ui.updateJournal(quests);
+        expect(document.querySelector('.quest-chronicle-archive').open).toBe(true);
+        expect(document.querySelector('.quest-repeatable-ladder').open).toBe(false);
+        expect(document.activeElement.matches('.quest-chronicle-archive > summary')).toBe(true);
+        document.querySelector('.quest-chronicle-archive').open = false;
+        document.querySelector('.quest-repeatable-ladder').open = true;
+        document.querySelector('.quest-repeatable-ladder > summary').focus();
+        ui.updateJournal(quests);
+        expect(document.querySelector('.quest-chronicle-archive').open).toBe(false);
+        expect(document.querySelector('.quest-repeatable-ladder').open).toBe(true);
+        expect(document.activeElement.matches('.quest-repeatable-ladder > summary')).toBe(true);
+    });
+
+    test.each([false, true])('optional daily offers stay compact beside active story and preserve reading controls (mobile=%s)', isMobile => {
+        buildQuestDom();
+        const quests = [
+            { id: 'chronicle_01', category: 'chronicle', chapter: 1, title: 'The first chapter', accepted: true, count: 0, maxCount: 3 },
+            { id: 'daily_high', target: 'PhoenixSentinel', rewardXP: 400000, count: 0, maxCount: 100 }
+        ];
+        const ui = new QuestUI({ isMobile, getLastPlayer: () => ({ level: 2, quests }) });
+        ui.updateJournal(quests);
+        const offers = document.querySelector('details.quest-repeatable-ladder');
+        expect(offers).not.toBeNull();
+        expect(offers.open).toBe(false);
+        expect(offers.querySelector('summary').textContent).toContain('Daily contracts');
+        expect(offers.querySelector('summary').style.minHeight).toBe('44px');
+        expect(offers.textContent).not.toMatch(/fastest|highest-value/i);
+        offers.open = true;
+        offers.querySelector('summary').focus();
+        ui.updateJournal(quests);
+        expect(document.querySelector('details.quest-repeatable-ladder').open).toBe(true);
+        expect(document.activeElement.matches('.quest-repeatable-ladder > summary')).toBe(true);
+        document.querySelector('details.quest-repeatable-ladder').open = false;
+        ui.updateJournal(quests);
+        expect(document.querySelector('details.quest-repeatable-ladder').open).toBe(false);
+    });
+    test.each([
+        ['PhoenixSentinel', 100, 'Phoenix Sentinels'],
+        ['CycloneAvatar', 100, 'Cyclone Avatars'],
+        ['MountainTroll', 1, 'Mountain Troll'],
+        ['StormHarpy', 100, 'Storm Harpies'],
+        ['SandstormDjinn', 100, 'Sandstorm Djinn'],
+        ['Verdant Memory Seed', 8, 'Verdant Memory Seeds'],
+        ['DungeonBossMythic', 4, 'Dungeon Bosses (Mythic)']
+    ])('formats quest target %s for %s objectives as %s', (target, count, label) => {
+        buildQuestDom();
+        const ui = new QuestUI({ getLastPlayer: () => ({ level: 100 }) });
+        expect(ui.formatQuestTarget(target, count)).toBe(label);
+    });
+
+    test.each([false, true])('repeatable rewards keep complete labels and values (mobile=%s)', isMobile => {
+        buildQuestDom();
+        const ui = new QuestUI({ isMobile, getLastPlayer: () => ({ level: 100 }) });
+        ui.updateJournal([{ id: 'daily_phoenix', target: 'PhoenixSentinel', count: 67, maxCount: 100,
+            accepted: true, completed: false, rewardXP: 10000000, rewardGold: 20000 }]);
+        const row = document.querySelector('.quest-ladder-row');
+        expect(row).not.toBeNull();
+        expect(row.style.flexDirection).toBe(isMobile ? 'column' : 'row');
+        expect(row.style.alignItems).toBe(isMobile ? 'stretch' : 'baseline');
+        expect(row.querySelector('.quest-ladder-row__label').textContent).toBe('Phoenix Sentinels • Active');
+        expect(row.querySelector('.quest-ladder-row__value').textContent).toBe('67 / 100 • 20,000 gold · 10,000,000 Resonance XP');
+    });
+
+    test('tracking remains usable with blocked storage and preserves checkbox focus', () => {
+        buildQuestDom();
+        const quest = { id: 'daily_storage', target: 'Skeleton', accepted: true, maxCount: 1 };
+        const read = jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new Error('blocked'); });
+        const write = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('blocked'); });
+        try {
+            const ui = new QuestUI({ getLastPlayer: () => ({ id: 'storage-blocked' }) });
+            ui.updateJournal([quest]);
+            const input = document.querySelector('[data-quest-track="daily_storage"]');
+            input.focus();
+            input.checked = false;
+            input.dispatchEvent(new Event('change'));
+            expect(document.activeElement.dataset.questTrack).toBe(quest.id);
+            expect(document.activeElement.checked).toBe(false);
+            ui.updateJournal([quest]);
+            expect(document.getElementById('objectives-list').children).toHaveLength(0);
+        } finally { read.mockRestore(); write.mockRestore(); }
+    });
+    test('lets the player track any dailies, hide story, and retain selections per character', () => {
+        buildQuestDom();
+        localStorage.clear();
+        const quests = [{ id: 'chronicle_01', title: 'Story chapter', category: 'chronicle', chapter: 1, accepted: true, maxCount: 1 },
+            ...Array.from({ length: 6 }, (_, index) => ({ id: `daily_${index}`, title: `Daily ${index}`, target: 'Skeleton', accepted: true, count: 0, maxCount: 2 }))];
+        const player = { id: 'tracker-test', quests };
+        const ui = new QuestUI({ getLastPlayer: () => player });
+        ui.updateJournal(quests);
+        const choose = (id, checked) => {
+            const input = document.querySelector(`[data-quest-track="${id}"]`);
+            input.checked = checked;
+            input.dispatchEvent(new Event('change'));
+        };
+        choose('chronicle_01', false);
+        choose('daily_0', false);
+        choose('daily_5', true);
+        const titles = () => [...document.querySelectorAll('#objectives-list .objective-entry__title')].map(node => node.textContent);
+        expect(titles()).toEqual(['Daily 1', 'Daily 5']);
+        for (const id of ['daily_0', 'daily_2', 'daily_3', 'daily_4']) choose(id, true);
+        expect(titles()).toHaveLength(6);
+        const reopened = new QuestUI({ getLastPlayer: () => player });
+        reopened.updateJournal(quests);
+        expect(titles()).toHaveLength(6);
+        expect(titles()).not.toContain('Story chapter');
+        player.id = 'different-character';
+        reopened.updateJournal(quests);
+        expect(titles()).toContain('Story chapter');
+        expect(titles()).toHaveLength(3);
+        localStorage.clear();
+    });
+
+    test('story tracking follows the next chapter without re-enabling untracked dailies', () => {
+        buildQuestDom();
+        const story = { id: 'chronicle_01', title: 'First chapter', category: 'chronicle', chapter: 1, accepted: true, maxCount: 1 };
+        const daily = { id: 'daily_other', title: 'Other daily', accepted: true, maxCount: 1 };
+        const ui = new QuestUI({ getLastPlayer: () => ({}) });
+        ui.updateJournal([story, daily]);
+        ui.setQuestTracked(daily, false);
+        ui.updateJournal([{ ...story, completed: true }, { ...story, id: 'chronicle_02', title: 'Next chapter', chapter: 2 }, daily]);
+        expect(document.getElementById('objectives-list').textContent).toContain('Next chapter');
+        expect(document.getElementById('objectives-list').textContent).not.toContain('Other daily');
+    });
+
+    test('an explicitly empty tracker stays empty and still offers its Journal shortcut', () => {
+        buildQuestDom();
+        const quest = { id: 'daily_only', title: 'Only daily', accepted: true, maxCount: 1 };
+        const ui = new QuestUI({ getLastPlayer: () => ({}) });
+        ui.updateJournal([quest]);
+        ui.setQuestTracked(quest, false);
+        ui.updateJournal([quest]);
+        expect(document.getElementById('objectives-list').children).toHaveLength(0);
+        expect(document.getElementById('objectives-panel').textContent).toContain('Track quests');
+    });
+    test('renders active quest progress and ready-to-turn-in state in objectives panel', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] })
+        });
+
+        questUI.updateJournal([
+            {
+                id: 'q1',
+                target: 'DungeonBoss',
+                accepted: true,
+                completed: false,
+                count: 1,
+                maxCount: 3,
+                rewardXP: 250
+            },
+            {
+                id: 'q2',
+                target: 'AbyssalWellBoss',
+                accepted: true,
+                completed: false,
+                count: 1,
+                maxCount: 1,
+                rewardXP: 900
+            },
+            {
+                id: 'q3',
+                target: 'MoltenCoreBoss',
+                accepted: false,
+                completed: false,
+                count: 0,
+                maxCount: 1,
+                rewardXP: 500
+            }
+        ]);
+
+        const panel = document.getElementById('objectives-panel');
+        const list = document.getElementById('objectives-list');
+        expect(panel.style.display).toBe('flex');
+        expect(list.children).toHaveLength(2);
+        expect(list.innerHTML).toContain('Kill Dungeon Bosses');
+        expect(list.innerHTML).toContain('1 / 3');
+        expect(list.innerHTML).toContain('2 remaining');
+        expect(list.innerHTML).toContain('Kill Abyssal Well Boss');
+        expect(list.innerHTML).toContain('click Complete Quest · 900 XP');
+        expect(list.querySelectorAll('.objective-entry__status.is-complete')).toHaveLength(1);
+    });
+
+    test('removes turned-in quests from objectives panel and journal entries', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] })
+        });
+
+        questUI.updateJournal([
+            {
+                id: 'q1',
+                target: 'DungeonBoss',
+                accepted: true,
+                completed: false,
+                count: 4,
+                maxCount: 4,
+                rewardXP: 500
+            },
+            {
+                id: 'q2',
+                target: 'TempestSpireBoss',
+                accepted: true,
+                completed: true,
+                count: 5,
+                maxCount: 5,
+                rewardXP: 900
+            }
+        ]);
+
+        const objectivesList = document.getElementById('objectives-list');
+        const journalList = document.getElementById('journal-list');
+        expect(objectivesList.children).toHaveLength(1);
+        expect(objectivesList.textContent).toContain('Kill Dungeon Bosses');
+        expect(objectivesList.textContent).not.toContain('Tempest Spire Boss');
+        expect(journalList.textContent).toContain('Kill Dungeon Bosses');
+        expect(journalList.textContent).not.toContain('Tempest Spire Boss');
+    });
+
+    test('renders a next-step handoff above active objectives for first-session guidance', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getCurrentInstanceId: () => null,
+            getCurrentInstanceType: () => 'overworld'
+        });
+
+        questUI.updateJournal([
+            {
+                id: 'q1',
+                target: 'DungeonBoss',
+                accepted: true,
+                completed: false,
+                count: 0,
+                maxCount: 3,
+                rewardXP: 250
+            }
+        ]);
+
+        const panel = document.getElementById('objectives-panel');
+        const guidance = panel.querySelector('.objective-guidance');
+        expect(panel.style.display).toBe('flex');
+        expect(guidance).toBeNull();
+        expect(panel.textContent).toContain('Kill Dungeon Bosses');
+        expect(panel.textContent).toContain('Journal (J)');
+    });
+
+    test('renders a starter town objective when the player has no active quests in town', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({
+                quests: [],
+                position: { x: 0, z: 200 }
+            }),
+            getCurrentInstanceId: () => null,
+            getCurrentInstanceType: () => 'overworld'
+        });
+
+        questUI.updateJournal([]);
+
+        const panel = document.getElementById('objectives-panel');
+        const guidance = panel.querySelector('.objective-guidance');
+        const list = document.getElementById('objectives-list');
+        expect(panel.style.display).toBe('flex');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Meet Archmage Ilyra');
+        expect(guidance.textContent).toContain('Quest Giver');
+        expect(guidance.textContent).toContain('Forge');
+        expect(guidance.textContent).toContain('Stash');
+        expect(guidance.textContent).toContain('vendor obvious Common junk');
+        expect(guidance.textContent).toContain('Shards');
+        expect(guidance.textContent).toContain('Hearts');
+        expect(guidance.textContent).toContain('Gems');
+        expect(guidance.textContent).toContain('World Map (M)');
+        expect(guidance.textContent).toContain('Quest Giver by the Forge');
+        expect(list.textContent).toContain('Meet Archmage Ilyra');
+        expect(list.textContent).toContain('optional daily contracts');
+        expect(list.textContent).toContain('Complete Quest');
+        expect(list.textContent).toContain('Stash');
+        expect(list.textContent).toContain('vendor obvious Common junk');
+        expect(list.textContent).toContain('check stronger drops before selling');
+        expect(list.textContent).toContain('keep Shards, Hearts, and Gems for the Forge');
+    });
+
+    test('renders a town recovery objective above active quests after a starter-town respawn', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({
+                level: 8,
+                quests: [],
+                position: { x: -1.25, z: 200 }
+            }),
+            getCurrentInstanceId: () => null,
+            getCurrentInstanceType: () => 'overworld',
+            getOnboardingRecoveryContext: () => ({ reason: 'respawn' })
+        });
+
+        questUI.updateJournal([
+            {
+                id: 'q1',
+                target: 'DungeonBoss',
+                accepted: true,
+                completed: false,
+                count: 0,
+                maxCount: 3,
+                rewardXP: 250
+            }
+        ]);
+
+        const panel = document.getElementById('objectives-panel');
+        const guidance = panel.querySelector('.objective-guidance');
+        const list = document.getElementById('objectives-list');
+        expect(panel.style.display).toBe('flex');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Recover in town and re-orient');
+        expect(guidance.textContent).toContain('Respawned in town');
+        expect(guidance.textContent).toContain('Anywhere inside Lanternhold');
+        expect(guidance.textContent).toContain('10% health and mana each second');
+        expect(guidance.textContent).toContain('Well Rested');
+        expect(guidance.textContent).toContain('World Map (M)');
+        expect(guidance.textContent).toContain('Journal (J)');
+        expect(guidance.querySelector('.objective-guidance__footer').textContent).toBe('World Map (M) · Journal (J)');
+        expect(panel.querySelectorAll('.objective-entry__title')).toHaveLength(2);
+        expect(list.firstChild).toBe(guidance);
+        expect(list.children).toHaveLength(2);
+        expect(list.firstChild.textContent).toContain('Recover in town and re-orient');
+        expect(list.textContent).toContain('Kill Dungeon Bosses');
+    });
+
+    test('renders a post-level-30 town objective that points the player toward the Dungeon Guide', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({
+                level: 36,
+                quests: [],
+                position: { x: 2, z: 210 }
+            }),
+            getCurrentInstanceId: () => null,
+            getCurrentInstanceType: () => 'overworld'
+        });
+
+        questUI.updateJournal([]);
+
+        const panel = document.getElementById('objectives-panel');
+        const guidance = panel.querySelector('.objective-guidance');
+        const list = document.getElementById('objectives-list');
+        expect(panel.style.display).toBe('flex');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Check the Dungeon Guide');
+        expect(guidance.textContent).toContain('Level 30 unlocked Verdant Bastion Catacombs');
+        expect(guidance.textContent).toContain('Dungeon Guide');
+        expect(guidance.textContent).toContain('World Map (M)');
+        expect(guidance.textContent).toContain('Journal (J)');
+        expect(list.children).toHaveLength(1);
+        expect(list.textContent).toContain('Check the Dungeon Guide');
+    });
+
+    test('renders a post-level-100 town objective that points the player toward Heroic and Mythic runs', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({
+                level: 100,
+                quests: [],
+                position: { x: -8, z: 220 }
+            }),
+            getCurrentInstanceId: () => null,
+            getCurrentInstanceType: () => 'overworld'
+        });
+
+        questUI.updateJournal([]);
+
+        const panel = document.getElementById('objectives-panel');
+        const guidance = panel.querySelector('.objective-guidance');
+        const list = document.getElementById('objectives-list');
+        expect(panel.style.display).toBe('flex');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Push Heroic and Mythic runs');
+        expect(guidance.textContent).toContain('Level 100 unlocked Heroic and Mythic');
+        expect(guidance.textContent).toContain('Dungeon Guide');
+        expect(guidance.textContent).toContain('Skills (K)');
+        expect(guidance.textContent).toContain('Forge');
+        expect(list.children).toHaveLength(1);
+        expect(list.textContent).toContain('Push Heroic and Mythic runs');
+    });
+
+    test('renders a daily summary in the journal with accurate rewards and reset time', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getServerEpochSeconds: () => Date.UTC(2026, 3, 19, 3, 30, 15) / 1000
+        });
+
+        questUI.updateJournal([
+            {
+                id: 'daily_dungeon_bosses_mythic',
+                target: 'DungeonBossMythic',
+                accepted: true,
+                completed: false,
+                count: 1,
+                maxCount: 4,
+                rewardXP: 15000000
+            },
+            {
+                id: 'daily_dungeon_bosses_heroic',
+                target: 'DungeonBossHeroic',
+                accepted: false,
+                completed: false,
+                count: 0,
+                maxCount: 4,
+                rewardXP: 10000000
+            },
+            {
+                id: 'daily_tempest_spire_bosses',
+                target: 'TempestSpireBoss',
+                accepted: true,
+                completed: false,
+                count: 5,
+                maxCount: 5,
+                rewardXP: 9000000
+            }
+        ]);
+
+        const journal = document.getElementById('journal-list');
+        expect(journal.textContent).toContain('Daily contracts');
+        expect(journal.textContent).toContain('Accepted now: 2');
+        expect(journal.textContent).toContain('Ready to claim: 1');
+        expect(journal.textContent).toContain('Daily reset:');
+        expect(journal.textContent).toContain('00:29:45 remaining');
+        expect(journal.textContent).toContain('Dungeon Boss (Mythic) • Active');
+        expect(journal.textContent).toContain('1 / 4 • 15,000,000 XP');
+        expect(journal.textContent).toContain('Dungeon Boss (Heroic) • Available');
+        expect(journal.textContent).toContain('Tempest Spire Bosses • Ready');
+        expect(journal.textContent).toContain('Daily contracts reset in 00:29:45');
+        expect(document.querySelector('.quest-repeatable-ladder').open).toBe(true);
+    });
+
+    test('keeps the repeatable ladder visible even when no dailies are currently accepted', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getServerEpochSeconds: () => Date.UTC(2026, 3, 19, 3, 30, 15) / 1000
+        });
+
+        questUI.updateJournal([
+            {
+                id: 'daily_molten_core_bosses',
+                target: 'MoltenCoreBoss',
+                accepted: false,
+                completed: false,
+                count: 0,
+                maxCount: 5,
+                rewardXP: 9000000
+            }
+        ]);
+
+        const journal = document.getElementById('journal-list');
+        expect(journal.textContent).toContain('Daily contracts');
+        expect(journal.textContent).toContain('Accepted now: 0');
+        expect(journal.textContent).toContain('Molten Core Bosses • Available');
+        expect(journal.textContent).toContain('No active quests.');
+    });
+
+    test('falls back to static reset guidance when authoritative server time is unavailable', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] })
+        });
+
+        questUI.updateJournal([
+            {
+                id: 'daily_molten_core_bosses',
+                target: 'MoltenCoreBoss',
+                accepted: false,
+                completed: false,
+                count: 0,
+                maxCount: 5,
+                rewardXP: 9000000
+            }
+        ]);
+
+        const journal = document.getElementById('journal-list');
+        expect(journal.textContent).toContain('Daily quests reset at 12:00 AM Eastern Time');
+        expect(journal.textContent).toContain('Daily contracts award XP and gold. Choose targets suited to your character.');
+    });
+
+    test('hides objectives panel when there are no accepted quests outside town', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({
+                quests: [],
+                position: { x: 800, z: -400 }
+            }),
+            getCurrentInstanceId: () => null,
+            getCurrentInstanceType: () => 'overworld'
+        });
+
+        questUI.updateJournal([
+            {
+                id: 'q1',
+                target: 'DungeonBoss',
+                accepted: false,
+                completed: false,
+                count: 0,
+                maxCount: 1,
+                rewardXP: 100
+            }
+        ]);
+
+        expect(document.getElementById('objectives-panel').style.display).toBe('none');
+        expect(document.getElementById('objectives-list').children).toHaveLength(0);
+        expect(document.querySelector('.objective-guidance')).toBeNull();
+    });
+
+    test('renders dungeon objective entries with status badges for routing states', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] })
+        });
+
+        questUI.renderObjectivesPanel([
+            {
+                id: 'dungeon-route-open',
+                title: 'Push deeper into Tempest Spire',
+                progressLabel: '2 / 4',
+                progressPct: 50,
+                rewardXP: 0,
+                completed: false,
+                badge: 'Objective',
+                badgeClass: 'is-objective',
+                hint: 'Boss path open — one room remains'
+            },
+            {
+                id: 'dungeon-route-boss',
+                title: 'Commit to the boss room',
+                progressLabel: '3 / 4',
+                progressPct: 75,
+                rewardXP: 0,
+                completed: false,
+                badge: 'Boss',
+                badgeClass: 'is-boss',
+                hint: 'Boss room ahead — reset and commit'
+            }
+        ]);
+
+        const badges = Array.from(document.querySelectorAll('.objective-entry__badge')).map((node) => ({
+            text: node.textContent,
+            className: node.className
+        }));
+        expect(badges).toEqual([
+            expect.objectContaining({ text: 'Objective', className: expect.stringContaining('is-objective') }),
+            expect.objectContaining({ text: 'Boss', className: expect.stringContaining('is-boss') })
+        ]);
+    });
+
+    test('builds dungeon routing objectives from live room state alongside quests', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 1,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'elite', explored: true, cleared: true },
+                    { index: 2, type: 'boss', explored: true, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'tempest_spire'
+        });
+
+        const summary = questUI.buildObjectiveSummary([
+            {
+                id: 'q1',
+                target: 'TempestSpireBoss',
+                accepted: true,
+                completed: false,
+                count: 0,
+                maxCount: 1,
+                rewardXP: 900
+            }
+        ]);
+
+        expect(summary).toEqual(expect.arrayContaining([
+            expect.objectContaining({
+                id: 'dungeon-route-tempest_spire',
+                title: 'Commit to the boss room',
+                badge: 'Boss',
+                badgeClass: 'is-boss',
+                hint: 'Boss room ahead — reset and commit Boss lair: commit to the encounter and survive.',
+                routeTone: 'danger',
+                cadenceLabel: 'Climax • Boss Lair'
+            }),
+            expect.objectContaining({
+                id: 'q1',
+                title: 'Kill Tempest Spire Boss'
+            })
+        ]));
+    });
+
+    test('builds a bridge-to-boss routing objective when one approach room remains', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 0,
+                objectiveRoomIndex: 1,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', explored: false, cleared: false },
+                    { index: 2, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'tempest_spire'
+        });
+
+        const summary = questUI.buildObjectiveSummary([]);
+
+        expect(summary).toEqual([
+            expect.objectContaining({
+                id: 'dungeon-route-tempest_spire',
+                title: 'Break through the last approach room',
+                badge: 'Objective',
+                badgeClass: 'is-objective',
+                hint: 'Boss path open — one last room before the boss Route hall: clear forward and watch for the next named beat.',
+                routeTone: 'neutral',
+                sequenceHint: 'Route: Route Hall -> Boss Lair',
+                cadenceLabel: 'Build • Route Hall'
+            })
+        ]);
+    });
+
+    test('renders clear-through guidance for transitional rooms before the shrine route', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 0,
+                objectiveRoomIndex: 1,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', explored: false, cleared: false },
+                    { index: 2, type: 'normal', explored: false, cleared: false },
+                    { index: 3, type: 'normal', hook: 'shrine', explored: false, cleared: false },
+                    { index: 4, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'molten_core'
+        });
+
+        questUI.updateJournal([]);
+
+        const guidance = document.querySelector('.objective-guidance');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Clear through to the shrine route');
+        expect(guidance.textContent).toContain('3 rooms remain before the shrine reset');
+        expect(guidance.textContent).toContain('Route hall: clear forward and watch for the next named beat.');
+        expect(guidance.textContent).toContain('Cadence: Build • Route Hall');
+        expect(guidance.textContent).toContain('Route: Route Hall -> Restorative Shrine -> Boss Lair');
+    });
+
+    test('builds a live boss objective when the player is already in the boss room', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 2,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'elite', explored: true, cleared: true },
+                    { index: 2, type: 'boss', explored: true, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'tempest_spire'
+        });
+
+        const summary = questUI.buildObjectiveSummary([]);
+
+        expect(summary).toEqual([
+            expect.objectContaining({
+                id: 'dungeon-route-tempest_spire',
+                title: 'Survive the boss fight',
+                badge: 'Boss Now',
+                badgeClass: 'is-boss',
+                hint: 'You are in the boss room — commit and survive Boss lair: commit to the encounter and survive.',
+                routeTone: 'danger',
+                sequenceHint: '',
+                cadenceLabel: 'Climax • Boss Lair'
+            })
+        ]);
+    });
+
+    test('builds an extraction objective when the dungeon is fully cleared', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 2,
+                objectiveRoomIndex: -1,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', explored: true, cleared: true },
+                    { index: 2, type: 'boss', explored: true, cleared: true }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'tempest_spire'
+        });
+
+        const summary = questUI.buildObjectiveSummary([]);
+
+        expect(summary).toEqual([
+            expect.objectContaining({
+                id: 'dungeon-route-tempest_spire',
+                title: 'Return to Lanternhold',
+                progressLabel: '2 / 2',
+                progressPct: 100,
+                badge: 'Exit',
+                badgeClass: 'is-exit',
+                completed: true,
+                hint: 'Boss down — press B or use Return to Lanternhold in the Escape menu to leave with your loot',
+                routeTone: 'support'
+            })
+        ]);
+    });
+
+    test('renders extraction guidance instead of generic completed turn-in copy for a cleared dungeon', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 2,
+                objectiveRoomIndex: -1,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', explored: true, cleared: true },
+                    { index: 2, type: 'boss', explored: true, cleared: true }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'tempest_spire'
+        });
+
+        questUI.updateJournal([]);
+
+        const guidance = document.querySelector('.objective-guidance');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Return to Lanternhold');
+        expect(guidance.textContent).toContain('Boss down — press B or use Return to Lanternhold in the Escape menu to leave with your loot');
+        expect(guidance.textContent).not.toContain('Turn this in for 0 XP');
+    });
+
+    test('builds an elite routing objective when the next discovered room is elite', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 1,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', explored: true, cleared: true },
+                    { index: 2, type: 'elite', explored: true, cleared: false },
+                    { index: 3, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'molten_core'
+        });
+
+        const summary = questUI.buildObjectiveSummary([]);
+
+        expect(summary).toEqual([
+            expect.objectContaining({
+                id: 'dungeon-route-molten_core',
+                title: 'Clear the elite room',
+                badge: 'Elite',
+                badgeClass: 'is-elite',
+                hint: 'Elite room discovered Elite guard: a heavier combat check on the route.',
+                routeTone: 'warning',
+                cadenceLabel: 'Pressure • Elite Guard'
+            })
+        ]);
+    });
+
+    test('builds an ambush routing objective with pressure-spike guidance', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 1,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', hook: 'chest', explored: true, cleared: true },
+                    { index: 2, type: 'elite', hook: 'elite_ambush', explored: true, cleared: false },
+                    { index: 3, type: 'normal', hook: 'shrine', explored: false, cleared: false },
+                    { index: 4, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'molten_core'
+        });
+
+        const summary = questUI.buildObjectiveSummary([]);
+
+        expect(summary).toEqual([
+            expect.objectContaining({
+                id: 'dungeon-route-molten_core',
+                title: 'Survive the ambush room',
+                badge: 'Ambush',
+                badgeClass: 'is-ambush',
+                hint: 'Elite room ahead — pressure spike incoming Ambush chamber: expect elite pressure and limited reset time.',
+                routeTone: 'warning',
+                sequenceHint: 'Route: Ambush Chamber -> Restorative Shrine -> Boss Lair',
+                cadenceLabel: 'Spike • Ambush Chamber'
+            })
+        ]);
+    });
+
+    test('renders pressure-spike guidance for ambush rooms in the journal', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 1,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', hook: 'chest', explored: true, cleared: true },
+                    { index: 2, type: 'elite', hook: 'elite_ambush', explored: true, cleared: false },
+                    { index: 3, type: 'normal', hook: 'shrine', explored: false, cleared: false },
+                    { index: 4, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'molten_core'
+        });
+
+        questUI.updateJournal([]);
+
+        const guidance = document.querySelector('.objective-guidance');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Survive the ambush room');
+        expect(guidance.textContent).toContain('Elite room ahead — pressure spike incoming');
+        expect(guidance.textContent).toContain('Ambush chamber: expect elite pressure and limited reset time.');
+        expect(guidance.textContent).toContain('Cadence: Spike • Ambush Chamber');
+        expect(guidance.textContent).toContain('Route: Ambush Chamber -> Restorative Shrine -> Boss Lair');
+    });
+
+    test('builds a treasure-room routing objective before the deeper shrine reset room', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 0,
+                objectiveRoomIndex: 1,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', hook: 'chest', explored: false, cleared: false },
+                    { index: 2, type: 'elite', hook: 'elite_ambush', explored: false, cleared: false },
+                    { index: 3, type: 'normal', hook: 'shrine', explored: false, cleared: false },
+                    { index: 4, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'verdant_bastion_catacombs'
+        });
+
+        const summary = questUI.buildObjectiveSummary([]);
+
+        expect(summary).toEqual([
+            expect.objectContaining({
+                id: 'dungeon-route-verdant_bastion_catacombs',
+                title: 'Secure the treasure room',
+                badge: 'Chest',
+                badgeClass: 'is-chest',
+                hint: 'Quick score before the ambush spike Treasure cache: a short payoff beat before route pressure returns.',
+                routeTone: 'support',
+                sequenceHint: 'Route: Treasure Cache -> Ambush Chamber -> Restorative Shrine -> Boss Lair',
+                cadenceLabel: 'Payoff • Treasure Cache'
+            })
+        ]);
+    });
+
+    test('renders route preview guidance for staged dungeon beats', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 0,
+                objectiveRoomIndex: 1,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', hook: 'chest', explored: false, cleared: false },
+                    { index: 2, type: 'elite', hook: 'elite_ambush', explored: false, cleared: false },
+                    { index: 3, type: 'normal', hook: 'shrine', explored: false, cleared: false },
+                    { index: 4, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'verdant_bastion_catacombs'
+        });
+
+        questUI.updateJournal([]);
+
+        const guidance = document.querySelector('.objective-guidance');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Secure the treasure room');
+        expect(guidance.textContent).toContain('Quick score before the ambush spike');
+        expect(guidance.textContent).toContain('Treasure cache: a short payoff beat before route pressure returns.');
+        expect(guidance.textContent).toContain('Cadence: Payoff • Treasure Cache');
+        expect(guidance.textContent).toContain('Route: Treasure Cache -> Ambush Chamber -> Restorative Shrine -> Boss Lair');
+    });
+
+    test('builds a shrine routing objective as the last reset before a boss push', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 1,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'elite', explored: true, cleared: true },
+                    { index: 2, type: 'normal', hook: 'shrine', explored: false, cleared: false },
+                    { index: 3, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'molten_core'
+        });
+
+        const summary = questUI.buildObjectiveSummary([]);
+
+        expect(summary).toEqual([
+            expect.objectContaining({
+                id: 'dungeon-route-molten_core',
+                title: 'Reach the shrine room',
+                badge: 'Shrine',
+                badgeClass: 'is-shrine',
+                hint: 'Last reset before the boss push Restorative shrine: stabilize resources before the next push.',
+                routeTone: 'support',
+                sequenceHint: 'Route: Restorative Shrine -> Boss Lair',
+                cadenceLabel: 'Reset • Restorative Shrine'
+            })
+        ]);
+    });
+
+    test('renders last-reset guidance for shrine rooms that directly precede the boss', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 1,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'elite', explored: true, cleared: true },
+                    { index: 2, type: 'normal', hook: 'shrine', explored: false, cleared: false },
+                    { index: 3, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'molten_core'
+        });
+
+        questUI.updateJournal([]);
+
+        const guidance = document.querySelector('.objective-guidance');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Reach the shrine room');
+        expect(guidance.textContent).toContain('Last reset before the boss push');
+        expect(guidance.textContent).toContain('Restorative shrine: stabilize resources before the next push.');
+        expect(guidance.textContent).toContain('Cadence: Reset • Restorative Shrine');
+        expect(guidance.textContent).toContain('Route: Restorative Shrine -> Boss Lair');
+    });
+
+    test('renders commit guidance for a discovered boss objective before the fight goes live', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 1,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', explored: true, cleared: true },
+                    { index: 2, type: 'boss', explored: true, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'tempest_spire'
+        });
+
+        questUI.updateJournal([]);
+
+        const guidance = document.querySelector('.objective-guidance');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Commit to the boss room');
+        expect(guidance.textContent).toContain('Boss room ahead — reset and commit');
+        expect(guidance.textContent).not.toContain('Boss Now');
+    });
+
+    test('renders execution guidance instead of route preview for a live boss objective', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 2,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'elite', explored: true, cleared: true },
+                    { index: 2, type: 'boss', explored: true, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'tempest_spire'
+        });
+
+        questUI.updateJournal([]);
+
+        const guidance = document.querySelector('.objective-guidance');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Survive the boss fight');
+        expect(guidance.textContent).toContain('You are in the boss room — commit and survive');
+        expect(guidance.textContent).not.toContain('Route:');
+    });
+});

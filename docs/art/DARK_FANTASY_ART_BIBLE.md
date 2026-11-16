@@ -40,7 +40,7 @@ The current production implementation is code-generated geometry, materials, sha
 | Tempest Spire | Shattered Aerie | floating slate, broken arches, conductors | lightning blue, violet charge |
 | Abyssal Well | Drowned Sanctum | flooded basalt, drowned reliquaries, coral | bioluminescent teal, deep-blue motes |
 
-The executable palette, lighting, particle, and hazard definitions live in `src/art/darkFantasyTheme.js`. New area art must consume or extend that manifest instead of introducing unrelated hard-coded palettes.
+The executable palette, lighting, particle, and hazard definitions live in `src/art/environment/dark/darkFantasyTheme.js`. New area art must consume or extend that manifest instead of introducing unrelated hard-coded palettes.
 
 ## Hazard language
 

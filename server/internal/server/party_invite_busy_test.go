@@ -1,0 +1,331 @@
+package server
+
+// Tests for 0.37.4: busy social status blocks party invites at the handler level.
+
+import (
+	"encoding/json"
+	"strings"
+	"testing"
+	"time"
+
+	"eidolon-server/internal/game"
+)
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+func newBusyTestPlayer(id, name, status string) *game.Entity {
+	e := &game.Entity{
+		ID:           id,
+		Type:         game.TypePlayer,
+		SubType:      "Fighter",
+		Name:         name,
+		State:        "IDLE",
+		Level:        1,
+		SocialStatus: status,
+		TalentRanks:  map[string]int{},
+		Inventory:    make([]game.Item, game.MaxInventorySize),
+		Equipment:    make(map[string]game.Item),
+		Cooldowns:    make(map[string]time.Time),
+		SkillRunes:   make(map[string]string),
+	}
+	e.RecalculateStats()
+	return e
+}
+
+func newBusyTestClient(playerID, username string) *Client {
+	return &Client{
+		send:      make(chan []byte, 32),
+		username:  username,
+		playerID:  playerID,
+		seenIDs:   make(map[string]bool),
+		lastState: make(map[string]*EntitySnapshot),
+	}
+}
+
+func sendPartyInvite(c *Client, targetName string) {
+	payload, _ := json.Marshal(PartyInvitePayload{TargetName: targetName})
+	c.handleMessage(Message{Type: MsgPartyInvite, Payload: payload})
+}
+
+func TestPartyInvite_RespectsBlockAndIgnoreInBothDirections(t *testing.T) {
+	for _, direction := range []string{"recipient-block", "sender-block", "recipient-ignore", "sender-ignore"} {
+		t.Run(direction, func(t *testing.T) {
+			restore := installChatTestState(t)
+			defer restore()
+			alice := addChatTestClient("alice", "")
+			bob := addChatTestClient("bob", "")
+			owner, other := "bob", "alice"
+			if strings.HasPrefix(direction, "sender") {
+				owner, other = other, owner
+			}
+			if strings.HasSuffix(direction, "block") {
+				chatService.SetBlocked(owner, other, true)
+			} else {
+				chatService.SetIgnored(owner, other, true)
+			}
+			sendPartyInvite(alice, "bob")
+			messages := drainSentMessages(alice.send)
+			if len(messages) != 1 || messages[0].Type != MsgError {
+				t.Fatalf("restricted contact did not reject: %+v", messages)
+			}
+			if messages := drainSentMessages(bob.send); len(messages) != 0 {
+				t.Fatalf("restricted recipient received invitation: %+v", messages)
+			}
+			if world.GetEntityCopy(alice.playerID).PartyID != "" {
+				t.Fatal("rejected contact still created a party")
+			}
+			request, _ := json.Marshal(FriendUsernamePayload{Username: "bob"})
+			alice.handleMessage(Message{Type: MsgFriendRequest, Payload: request})
+			messages = drainSentMessages(alice.send)
+			if len(messages) != 1 || messages[0].Type != MsgError {
+				t.Fatalf("restricted friend contact did not reject before persistence: %+v", messages)
+			}
+			if messages := drainSentMessages(bob.send); len(messages) != 0 {
+				t.Fatalf("restricted recipient received friend request: %+v", messages)
+			}
+		})
+	}
+}
+
+func TestClientSendSafePrefersPriorityChannel(t *testing.T) {
+	c := &Client{
+		send:         make(chan []byte, 1),
+		prioritySend: make(chan []byte, 1),
+	}
+	c.sendSafe([]byte("control"))
+
+	if len(c.prioritySend) != 1 || len(c.send) != 0 {
+		t.Fatalf("control message was not isolated from state traffic: priority=%d state=%d", len(c.prioritySend), len(c.send))
+	}
+}
+
+// ---------------------------------------------------------------------------
+// Busy blocks invite
+// ---------------------------------------------------------------------------
+
+func TestPartyInvite_BusyTarget_SendsErrorToInviter(t *testing.T) {
+	origWorld := world
+	origSessions := activeSessions
+	defer func() {
+		world = origWorld
+		activeSessions = origSessions
+	}()
+
+	world = game.NewWorld(nil)
+	activeSessions = make(map[string]*Client)
+
+	inviterEntity := newBusyTestPlayer("inv-1", "Alice", "available")
+	targetEntity := newBusyTestPlayer("tgt-1", "Bob", "busy")
+	world.AddEntity(inviterEntity)
+	world.AddEntity(targetEntity)
+
+	inviterClient := newBusyTestClient("inv-1", "Alice")
+	targetClient := newBusyTestClient("tgt-1", "Bob")
+	// activeSessions is keyed by username (see getClientByUsername).
+	activeSessions["Alice"] = inviterClient
+	activeSessions["Bob"] = targetClient
+
+	sendPartyInvite(inviterClient, "Bob")
+
+	msgs := drainSentMessages(inviterClient.send)
+	if len(msgs) == 0 {
+		t.Fatal("expected an error message to inviter, got none")
+	}
+	found := false
+	for _, m := range msgs {
+		if m.Type != MsgError {
+			continue
+		}
+		var errStr string
+		json.Unmarshal(m.Payload, &errStr)
+		if strings.Contains(errStr, "busy") {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Fatalf("expected a 'busy' error to inviter, got messages: %+v", msgs)
+	}
+}
+
+func TestPartyInvite_BusyTarget_DoesNotDeliverRequestToTarget(t *testing.T) {
+	origWorld := world
+	origSessions := activeSessions
+	defer func() {
+		world = origWorld
+		activeSessions = origSessions
+	}()
+
+	world = game.NewWorld(nil)
+	activeSessions = make(map[string]*Client)
+
+	inviterEntity := newBusyTestPlayer("inv-2", "Carol", "available")
+	targetEntity := newBusyTestPlayer("tgt-2", "Dave", "busy")
+	world.AddEntity(inviterEntity)
+	world.AddEntity(targetEntity)
+
+	inviterClient := newBusyTestClient("inv-2", "Carol")
+	targetClient := newBusyTestClient("tgt-2", "Dave")
+	activeSessions["Carol"] = inviterClient
+	activeSessions["Dave"] = targetClient
+
+	sendPartyInvite(inviterClient, "Dave")
+
+	msgs := drainSentMessages(targetClient.send)
+	for _, m := range msgs {
+		if m.Type == MsgPartyRequest {
+			t.Errorf("expected no MsgPartyRequest delivered to busy player, but got one")
+		}
+	}
+}
+
+func TestPartyInvite_BusyTarget_DoesNotCreatePartyForInviter(t *testing.T) {
+	origWorld := world
+	origSessions := activeSessions
+	defer func() {
+		world = origWorld
+		activeSessions = origSessions
+	}()
+
+	world = game.NewWorld(nil)
+	activeSessions = make(map[string]*Client)
+
+	inviterEntity := newBusyTestPlayer("inv-3", "Eve", "available")
+	targetEntity := newBusyTestPlayer("tgt-3", "Frank", "busy")
+	world.AddEntity(inviterEntity)
+	world.AddEntity(targetEntity)
+
+	inviterClient := newBusyTestClient("inv-3", "Eve")
+	targetClient := newBusyTestClient("tgt-3", "Frank")
+	activeSessions["Eve"] = inviterClient
+	activeSessions["Frank"] = targetClient
+
+	sendPartyInvite(inviterClient, "Frank")
+
+	// Inviter should still be partyless — invite was rejected before party creation.
+	updated := world.GetEntity("inv-3")
+	if updated == nil {
+		t.Fatal("inviter entity not found")
+	}
+	if updated.PartyID != "" {
+		t.Errorf("expected inviter to have no party after blocked invite, got PartyID=%q", updated.PartyID)
+	}
+	_ = targetClient // suppress unused warning
+}
+
+func TestPartyInvite_AvailableTarget_DeliversRequest(t *testing.T) {
+	origWorld := world
+	origSessions := activeSessions
+	defer func() {
+		world = origWorld
+		activeSessions = origSessions
+	}()
+
+	world = game.NewWorld(nil)
+	activeSessions = make(map[string]*Client)
+
+	inviterEntity := newBusyTestPlayer("inv-4", "Grace", "available")
+	targetEntity := newBusyTestPlayer("tgt-4", "Hank", "available")
+	world.AddEntity(inviterEntity)
+	world.AddEntity(targetEntity)
+
+	inviterClient := newBusyTestClient("inv-4", "Grace")
+	targetClient := newBusyTestClient("tgt-4", "Hank")
+	activeSessions["Grace"] = inviterClient
+	activeSessions["Hank"] = targetClient
+
+	sendPartyInvite(inviterClient, "Hank")
+
+	msgs := drainSentMessages(targetClient.send)
+	found := false
+	for _, m := range msgs {
+		if m.Type == MsgPartyRequest {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Fatalf("expected MsgPartyRequest delivered to available player, got messages: %+v", msgs)
+	}
+}
+
+func TestPartyInvite_AvailableTarget_ConfirmsWithoutProtocolError(t *testing.T) {
+	origWorld := world
+	origSessions := activeSessions
+	defer func() {
+		world = origWorld
+		activeSessions = origSessions
+	}()
+
+	world = game.NewWorld(nil)
+	activeSessions = make(map[string]*Client)
+
+	inviterEntity := newBusyTestPlayer("inv-confirm", "Inviter", "available")
+	targetEntity := newBusyTestPlayer("tgt-confirm", "Target", "available")
+	world.AddEntity(inviterEntity)
+	world.AddEntity(targetEntity)
+
+	inviterClient := newBusyTestClient("inv-confirm", "Inviter")
+	targetClient := newBusyTestClient("tgt-confirm", "Target")
+	activeSessions["Inviter"] = inviterClient
+	activeSessions["Target"] = targetClient
+
+	sendPartyInvite(inviterClient, "Target")
+
+	msgs := drainSentMessages(inviterClient.send)
+	foundConfirmation := false
+	for _, msg := range msgs {
+		if msg.Type == MsgError {
+			t.Fatalf("successful invite must not be reported as an error: %+v", msgs)
+		}
+		if msg.Type != MsgChat {
+			continue
+		}
+		var payload ChatPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			t.Fatalf("decode confirmation chat: %v", err)
+		}
+		foundConfirmation = payload.Sender == "System" && payload.Message == "Invite sent to Target"
+	}
+	if !foundConfirmation {
+		t.Fatalf("expected a system-chat invite confirmation, got messages: %+v", msgs)
+	}
+}
+
+func TestPartyInvite_LookingPartyTarget_DeliversRequest(t *testing.T) {
+	origWorld := world
+	origSessions := activeSessions
+	defer func() {
+		world = origWorld
+		activeSessions = origSessions
+	}()
+
+	world = game.NewWorld(nil)
+	activeSessions = make(map[string]*Client)
+
+	inviterEntity := newBusyTestPlayer("inv-5", "Iris", "available")
+	targetEntity := newBusyTestPlayer("tgt-5", "Jack", "looking_party")
+	world.AddEntity(inviterEntity)
+	world.AddEntity(targetEntity)
+
+	inviterClient := newBusyTestClient("inv-5", "Iris")
+	targetClient := newBusyTestClient("tgt-5", "Jack")
+	activeSessions["Iris"] = inviterClient
+	activeSessions["Jack"] = targetClient
+
+	sendPartyInvite(inviterClient, "Jack")
+
+	msgs := drainSentMessages(targetClient.send)
+	found := false
+	for _, m := range msgs {
+		if m.Type == MsgPartyRequest {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Fatalf("expected MsgPartyRequest delivered to looking_party player, got messages: %+v", msgs)
+	}
+}

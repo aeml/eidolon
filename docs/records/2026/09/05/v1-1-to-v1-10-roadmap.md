@@ -1,0 +1,612 @@
+# Eidolon 1.1–1.10 roadmap
+
+September 28 continuation: the [1.11–1.99 roadmap](../28/alpha1-11-to1-99-release-roadmap.md)
+now owns forward scheduling through playable beta and full-release readiness.
+This plan remains the inherited requirements/evidence source; no completed work
+is reset, no explicit user decision is revoked, and missing promises (including
+the physical Dark Realm portal) must be reconciled rather than called complete.
+
+Proposed September 5, 2026; updated September 9 with the player's two-floor
+town casino requirement, alongside dungeon and phone-playability reports.
+Status: implementation active; per-version evidence is tracked in
+[the execution ledger](roadmap-execution.md). The roadmap is not a
+claim of completed implementation or deployment.
+
+September 25: the [current1.10 release record](../../../releases/1.10/2026-09-23-playtest.md)
+tracks live delivery, accepted gameplay and the remaining encounter checks. Historical
+unchecked items below are requirements, not proof that shipped features are
+missing. [Final integration evidence and remaining work](../14/final-integration-audit.md)
+reconciles later releases with historical unchecked items. It preserves the full
+scope and identifies the already-passing geared party route to avoid duplicate QA.
+
+## Direction and versioning
+
+Latest September13 EP decision overrides older VIP-economy wording throughout
+this roadmap: **1,000,000 Gold → 1 EP**, **100 EP per VIP month**, **cosmetic-only
+spending and no pay-to-win**. No EP → Gold or indirect Gold/resource payout,
+power boosts or progression purchases. Follow-up clarification authorizes EP
+wagers up to100EP paying ONLY EP, never Gold. The earlier no-EP-wager interpretation
+is superseded; public games remain Gold-funded (100,000Gold cap). The upstairs
+guard now checks active VIP membership; EP ownership alone does not grant access.
+Payment integration is excluded. See the current
+[EP policy](../09/town-casino-roadmap.md#ep-economy--approved-policy-implemented-without-payments).
+The EP wallet, one-way exchange, membership allowance, VIP games and cosmetic
+vendor were delivered in the 1.9 series. Their connected persistence checks are
+linked from the integration audit; full rendered venue and phone acceptance
+remain open. Do not recreate these systems because older planning text calls
+them future work.
+
+September 12 player-directed delivery policy: **feature-first, proportionate
+verification**. Preserve every promised feature and milestone patch notes, but
+defer exhaustive cross-game matrices, repeated long playthroughs/soaks and broad
+certification-style evidence gathering until the full planned feature set is
+implemented. This overrides earlier per-milestone demands for exhaustive test
+coverage: those checks become final stabilization work, not repeated release
+barriers. During implementation use focused regression checks for changed
+behavior, relevant build checks and basic deployment/live smoke. Retain necessary
+security, save-data, currency and known progression-blocker checks. Reuse valid
+existing evidence; batch integration testing; do not build additional QA
+infrastructure without a concrete need. Already-running checks may finish.
+Do not silently remove mandatory publishing checks; simplify redundant workflow
+requirements explicitly where appropriate. Feature scope is unchanged, and
+deferred verification must be tracked honestly rather than marked passed.
+
+Move from a feature-complete alpha foundation to a polished, dependable beta.
+Existing systems need to work well together before substantially expanding scope.
+Versions run from `1.1.0` through `1.10.0`; `1.10.0` follows `1.9.0` and is not
+`1.0.10`. Necessary hotfixes use patch versions such as `1.1.1` and `1.1.2`.
+There is no fixed patch count or calendar commitment.
+
+September 12 release consolidation, confirmed with the player: the milestone
+sequence is `1.1.0 → 1.2.0 → 1.3.0 → 1.4.0 → 1.5.0 → 1.6.0 → 1.7.0 → 1.8.0
+→ 1.9.0 → 1.10.0`, with a patch-note entry for every milestone. `1.0.64` and
+`1.0.65` are the final two currently planned foundation hotfixes; `1.0.65` is
+the last planned ordinary `1.0.x` release. Bundle the remaining baseline work
+into `1.1.0` instead of creating a patch release for each individual polish
+change. Additional `1.0.x` releases are reserved for urgent live blockers.
+This changes release packaging, not scope: reliable dungeon/party clears,
+first-hour progression, reconnect verification and baseline balancing must
+still pass before `1.1.0`, and all later milestone requirements remain intact.
+
+Dungeon repair is an immediate priority, not deferred to the 1.6 PvE expansion.
+Confirmed progression blockers should ship in the next suitable `1.0.x` hotfix.
+All five reported issues below must be resolved and verified before 1.1 closes.
+
+September 19 player decision: **keep the existing 15-minute logout rule**.
+After more than 15 minutes offline, an instance character returns to town without
+restoring that dungeon. Re-entry within the window remains subject to the
+existing instance checks; do not add indefinite persistence until explicit reset.
+Retained QA database archives are not permission to bypass expiry or alter
+logout timestamps. This resolves the earlier open dungeon-persistence question.
+
+September21 additions to remaining1.10 scope:
+
+- Approved pacing is approximately100 hours to level100, a prerequisite for
+  Dark Realm entry, then8–12 hours of Dark Realm quests/lore and its dungeon
+  leading to the Dark King raid; aim for roughly112 hours total. This requires
+  coordinated progression and substantial authored endgame expansion, not just
+  the existing portal/dungeon/finale chain. See the
+  [approved balance scope](../07/progression-balance-and-investigations.md#approved-pacing-target--september-21).
+- Returning from town to an active dungeon uses its latest cleared boss
+  checkpoint; before the first boss clear, use the entrance. Do not skip
+  uncleared encounters, reset rewards or move party members already inside.
+  The15-minute logout expiry remains unchanged.
+
+Additional September 7 player reports belong in the next suitable 1.0.x hotfix,
+not the later Forge redesign: refresh selected Forge upgrade/potency details and
+material affordability immediately after authoritative incremental updates;
+filter new dungeon-guide run choices by the selected family's entry floor
+(Molten Core/Tempest Spire 70, Abyssal Well 60), while preserving saved active
+run settings. Both need regression coverage and the normal CI/live release gate.
+
+Phone playability is also a release priority following the September 6 report:
+the desktop framing forces excessive zoom-out, characters become too small, and
+menus are impractical to operate. Implement a phone-specific camera and interaction
+layout, not a uniformly shrunken desktop interface. Basic phone playability is a
+1.1 gate; finish the visual and ergonomic redesign in 1.2 and retain it thereafter.
+
+## Release sequence
+
+September 9 adds the [two-floor town casino](../09/town-casino-roadmap.md)
+as required scope for **1.10 completion**, not an immediate implementation task.
+Plan economy/currency boundaries in 1.5, shared seating/session infrastructure in
+1.8, build and playtest the location and games in 1.9, and finish both floors and
+their release acceptance in 1.10. The public floor uses existing Gold; the VIP
+floor requires a separate future currency whose name, economics and acquisition
+are deliberately undefined. Neither a menu-only substitute nor a Gold-funded VIP
+floor satisfies this requirement. Existing urgent repairs retain priority.
+
+September 8 adds [safe-zone recovery and Well Rested](../08/well-rested-implementation.md):
+living characters recover10% maximum HP/MP per second in town/future safe zones;
+each safe-zone second earns one buff second, capped at two hours and spent only
+outside safe zones. The active buff grants10% all stats and25% enemy-kill XP,
+with a readable particle aura. Recovery and Well Rested are live in Alpha1.0.58,
+verified against client/server ef9a638 and completed native production tests.
+Retain safe recovery, persistence and rested/unrested balance in the broader1.1
+acceptance gate; .01 passive regeneration outside safe zones remains unchanged.
+
+September9 delivery split: accepted standalone Alpha1.0.58 recovery follows
+canonical53–57, with its own login version, patch notes and release acceptance.
+It does not activate the expanded Chronicle or new reward curve. Those remain
+required later work, not removed from the goal or silently declared balanced.
+Full client/server, predeploy gameplay and final native production rest/expiry/
+party checks passed. All ten jobs of CI34361293407 succeeded; public client and
+backend identities were independently rechecked. This proves recovery58 delivery,
+not completion of the expanded campaign, pacing, phone or full-roadmap gates.
+Refer to the execution ledger and recovery58 acceptance record for exact evidence.
+
+September9 clarification: town recovery is the intended normal expedition loop.
+Primary progression QA should fight, return to safety to restore HP/MP and build
+rest, then resume ordinary travel/combat. Measure the frequency and burden of
+those visits alongside pacing and rewards. Long no-rest runs are comparative
+diagnostics, not a requirement to sustain combat indefinitely or a reason to
+undo the requested outside-regeneration reduction. Real recovery, saved progress,
+death handling and within-encounter combat checks still must pass.
+
+The September 7 report also adds a required
+[progression-balance and realm-investigation pass](../07/progression-balance-and-investigations.md):
+tune excessive XP, item drops and rewards; rebalance story collection/drop/kill
+requirements together; and add two authored investigation quests per realm.
+Immediate reward corrections belong in 1.0.x, baseline pacing is a 1.1 gate,
+the eight investigations belong in 1.4, economy completion in 1.5, and raid
+reward revalidation in 1.6. This is open scope, not shipped content.
+
+| Version | Theme | Planned player-facing outcome |
+|---|---|---|
+| 1.0.x | Current fixes and urgent dungeon repair | Publish and verify the pending quest/reward and realm-projectile fixes. Reproduce dungeon exit, boss targeting, ability, corridor, and floor reports; ship confirmed blockers promptly. Add quest-item bag icons, safe drag-out item drops, and player-selected quest tracking. Restore reliable deployment verification. |
+| 1.1 | A dependable adventure | Close the dungeon repair gate below; make the first hour, Ilyra's guidance, targeting, transitions, and reconnect dependable. Restore basic phone playability with useful camera framing, readable HUD, operable menus and touch targeting. Correct duel rating rewards and first-death 2v2 behavior. |
+| 1.2 | Heroes worth looking at | Refine four-class anatomy, faces, hair, silhouettes, movement, weapon grips, and equipment fit throughout animations. Finish the phone-specific HUD/menu redesign, thumb ergonomics, and portrait/landscape camera composition. Review equipment and character readability at actual desktop and phone gameplay sizes. |
+| 1.3 | Combat with impact | Improve anticipation, impacts, sound, casting feedback, camera options, and movement transitions. Tune touch aiming, target selection, telegraph readability and group-effect clutter on real phones as well as desktop; tune existing classes. Retain dungeon ability regression coverage. |
+| 1.4 | The Fourfold Chronicle | Deepen the existing campaign with supporting characters, conversations, optional lore, varied objectives, and visible restoration consequences. Preserve manual Ilyra turn-ins and the four dungeon → four raid/repair → Dark King progression. |
+| 1.5 | Loot with purpose | Improve Forge and comparison flows; tune quest/raid gold against sinks and Resonance against long-term balance. Add saved build/loadout and appearance collection support with authoritative switching rules. Plan casino Gold-economy safeguards and a boundary for the separate, still-undefined VIP currency. |
+| 1.6 | Dungeons and raids worth repeating | Improve existing encounter identity, mechanics, pacing, party preparation, wipe recovery, and lockout explanations. Differentiate all four crystal-defense events. Validate full campaign and raid progression with real groups. This is encounter-quality work, not the deadline for fixing broken dungeon fundamentals. |
+| 1.7 | A competitive arena | Refine team-elimination 2v2, practice/ranked separation, rating-aware matchmaking with widening search windows, and an explicit normalization policy. Add clearer results, seasonal rewards, and anti-farming safeguards. |
+| 1.8 | Find your people | Add activity group finding, recruitment/role listings, guild event scheduling, and better invitations/readiness. Strengthen moderation workflows; build on existing guild systems. Prepare authoritative multiplayer casino seating, table presence, and session/reconnect behavior. |
+| 1.9 | A world that stays interesting | Add rotating elemental disturbances, cooperative public events, and shared encounters. Build and playtest the physical two-floor town casino, its revised stash layout, lore-themed slots, multiplayer/solo-house blackjack and real-player poker. Pilot one objective-based PvP battleground only if population can sustain another queue. Avoid mandatory daily chores and reward inflation. |
+| 1.10 | The Resonant Age | Integrate these improvements into a beta milestone with measured concurrency, tested recovery, dependable desktop and phone play, dependable releases, a sustainable season/content cadence, and a small post-Malachar story hook. Complete and verify both casino floors, including the prestigious VIP experience using its separately implemented future currency. Deliver a full administrator-only operations panel with server-derived role status, online-player and bounded login/logout/audit views, item creation, Gold grants, and self/player teleportation, all strictly server-authorized, idempotent, persisted, and audited. |
+
+## Resource persistence — 1.1 reconnect gate
+
+- [x] Fix the confirmed HP/mana reconstruction on login: save current resources
+  and restore after calculating level/equipment-modified maxima.
+  Preserve actual depleted/full/zero resources across reconnect, with
+  explicit legacy migration and ordinary death recovery. Keep `.01` regeneration.
+- [ ] Verify all four classes, gear-modified maxima, repeated reconnects,
+  autosave/disconnect, dead characters, instance recovery and rollback behavior
+  using real saved sessions and browser input. A prepared QA resource reset is
+  not a gameplay fix or evidence that this gate passes.
+
+Implementation reconciled against current source on September19:
+`server/persistence.go` saves a versioned resource snapshot;
+`server/client_dispatch.go` restores it after build/Well Rested recalculation;
+`server/resource_persistence.go` preserves zero mana and death, clamps changed
+maxima, rejects invalid versions, and defines the legacy baseline explicitly.
+Ordinary dead-only recovery and the0.01 coefficient remain in
+`server/internal/game/player_lifecycle.go` and `regeneration.go`.
+`server/resource_persistence_test.go` covers the four-class round trip, legacy,
+zero/dead and changed-maxima cases. This closes the implementation item, not the
+broader actual-session/browser verification item above; several external-session
+tests are opt-in and a default green test suite does not establish their result.
+Retain the [historical implementation evidence](../08/resource-persistence-implementation.md)
+and [resource release scope](../08/release57-resource-persistence.md), whose
+development-time candidate status is not a statement of today's live version.
+
+## Phone playability and interface redesign — 1.1 through 1.3
+
+Status: **redesign open; incremental camera, touch combat, bag, quest, build,
+Settings and dungeon-guide work is tracked separately in the evidence document,
+not proof of this full release gate**. Keep actual publication status in the
+execution ledger: locally verified menus are not automatically live releases.
+The player's report is that
+maximum zoom-out is necessary to see enough of the world, but makes everything
+too small; the current UI is effectively unusable. Initial source inspection
+shows an orthographic camera whose horizontal span scales with viewport aspect
+ratio (`RenderSystem.js`) and fixed-pixel mobile control offsets/sizes
+(`src/styles/mobile.css`). This supports investigating portrait framing and
+control placement; it does not establish every cause of the reported experience.
+Concrete baseline findings and reproduction limits are recorded in
+[phone-playability evidence](../../../../qa/mobile-playability-evidence.md).
+
+### Intended phone experience
+
+Treat phone play as its own interface, not the desktop screen scaled down. The
+default view should make the adventure immediately playable without a zoom ritual.
+
+The design priority is **see enough, read comfortably, act reliably**. If those
+goals conflict on a small screen, reduce persistent HUD content and move secondary
+information into a tap-open view before shrinking characters, text or touch targets.
+Phone support must not depend on browser zoom, desktop-site mode or an external
+keyboard. Start with a coherent exploration/combat layout and carry that same
+navigation and sizing system through every menu.
+
+- **Portrait:** a compact status/objective strip at the top, a clear central world
+  view, movement under the left thumb and combat/context actions under the right.
+  Put secondary features behind a labeled Menu button; keep chat discoverable in
+  its small persistent strip rather than covering the encounter with a transcript.
+- **Landscape:** spread controls into the side thumb zones and keep the shallow
+  center view clear. Recompose the HUD on rotation instead of squeezing the
+  portrait layout into less vertical space.
+- **Menus:** open one readable full-screen panel or bottom sheet at a time, with
+  large item rows, tap-to-inspect details, explicit actions and consistent Back/
+  Close navigation. Preserve selections and scroll position when returning from
+  details. Do not require players to manipulate tiny overlapping windows.
+- **Camera and scale:** frame the hero and approaching threats within the usable
+  world area. Camera zoom, UI scale and rendering quality must be independent:
+  zooming out must not shrink text/buttons, and lowering graphics quality must not
+  make the interface blurry. Do not promise desktop-wide visibility at the cost
+  of unreadable characters; test framing against real encounters and telegraphs.
+
+Priority order: unblock camera/readability and essential touch flows in **1.1**,
+finish the coherent visual/menu redesign in **1.2**, then deepen touch combat and
+device-performance tuning in **1.3**. Physical-phone verification remains required;
+responsive layout checks alone do not establish that playing feels good.
+
+September 12 user feedback: the live-phone combat readability and bag, quest and
+skill-menu check received **“yes everything looks good.”** This is positive
+user-reported acceptance of those flows. The device/browser/build were not
+specified, so broader compatibility, measured performance and later ergonomic
+scope remain separate; see [phone evidence](../../../../qa/mobile-playability-evidence.md).
+
+### Mobile design pass — establish the shared layout before further rollout
+
+The [working phone layout specification](../../../../plans/mobile-layout-design.md) records the
+initial annotated wireframes, screen-space budgets and validation tasks. It is
+partially implemented through the camera, menu and navigation patches recorded
+in [phone evidence](../../../../qa/mobile-playability-evidence.md). Shared CSS-owned encounter
+reservations and both-axis camera composition are implemented and browser-tested
+in the local [1.0.39 candidate](../07/release39-phone-party.md); they are not
+physical-phone sign-off. The complete menu/ergonomic review remains open.
+
+- [ ] Produce annotated portrait and landscape mockups for exploration/combat,
+  an NPC conversation and inventory inspection. Show the same encounter and
+  character at actual phone display size beside the current interface; compare
+  readability and usable world view, not just how much terrain fits on screen.
+- [x] Define the usable encounter region after safe areas, persistent chat,
+  status information and thumb controls are accounted for. Reserve this region
+  for seeing and reacting to enemies; collapse secondary HUD information before
+  reducing actor size. Use this same region to guide camera framing and menu
+  placement, rather than treating camera and UI fixes as unrelated work.
+  Implemented locally in 1.0.39 with populated camera/HUD checks; publication and
+  physical-device play remain separate gates, not implied by this design task.
+- [ ] Prototype the complete touch loop: move and cast together, interact with
+  Ilyra and return to play, then inspect/equip an item and return to play. Review
+  default-zoom readability and accidental taps on physical phones before applying
+  the shared navigation, spacing and panel patterns to the remaining menus.
+  Include already-updated menus in this review so incremental fixes converge on
+  one consistent interface.
+
+Deliverable: a reviewed phone layout specification and before/after play evidence,
+with concrete follow-up tasks assigned to the 1.1 baseline, 1.2 interface polish
+and 1.3 combat milestones below. Mockups alone do not close a playability gate.
+
+### 1.1 — a usable phone baseline (release gate)
+
+- [ ] Reproduce on narrow portrait and landscape viewports, then real iOS Safari
+  and Android Chrome. Capture current camera bounds, playable canvas area, actor
+  size, controls, menu overflow and touch failures before changing defaults.
+- [ ] Make camera composition aware of aspect ratio and the area actually left
+  visible by the HUD. Choose a useful phone default with readable player/enemy
+  silhouettes and enough encounter space; do not fix the narrow view solely by
+  zooming farther out. Evaluate camera tilt, framing and restrained movement
+  look-ahead together. Avoid abrupt zoom changes or automatic camera oscillation.
+- [ ] Provide comfortable pinch zoom and an obvious reset/recenter action,
+  separate from adjustable UI scale. Normal exploration and combat must work
+  without continually pinching or staying at maximum zoom-out. Keep authoritative
+  targeting/range/LOS rules identical across input devices.
+- [ ] Replace overlapping desktop chrome with a compact phone HUD: readable
+  health/resource bars, one compact selected-objective summary with an expand
+  action, and a clear menu launcher. Preserve player-selected quest tracking.
+  Keep a small, always-visible chat entry/notification strip and an expandable
+  transcript; dismissing menus must not make chat disappear.
+- [ ] Make every essential action operable without hover, right-click, a keyboard
+  shortcut, or precision dragging. Provide reliable movement, attack, all equipped
+  abilities, contextual NPC/loot interaction, target switching and cast cancel.
+  UI touches must never leak into movement/attacks behind the UI. Movement and
+  aiming/ability input must work together with two thumbs.
+- [ ] Reflow inventory, equipment, quests/Ilyra dialogue, skills/runes, dungeon
+  guide and settings into full-screen panels or bottom sheets with clear Back/
+  Close controls, readable text and reachable primary actions. Avoid stacking
+  desktop draggable windows. Item inspection/comparison and an explicit Drop
+  action must remain available on touch without requiring drag-out precision;
+  preserve quest-item protections and server validation.
+- [ ] Respect notches, home indicators, browser bars, rotation and the software
+  keyboard. Use safe areas and the dynamic viewport; keep login/chat inputs and
+  their submit controls visible without clipping or trapping scroll/focus.
+
+Acceptance: on a 360-CSS-pixel-wide portrait viewport and a short phone landscape
+viewport, complete login, Ilyra acceptance/turn-in, quest tracking, item inspection/
+equip/drop, skill selection, normal combat, dungeon entry/recall and chat using
+touch alone. Primary targets have at least 44×44 CSS-pixel hit areas with separation;
+body text defaults to at least 16 CSS pixels with an adjustable readable scale.
+Panels scroll within their intended bounds, with no horizontal clipping or hidden
+mandatory controls. At the default gameplay framing, the hero, an ordinary enemy
+and its telegraph are readable while the player has enough view to approach and
+evade. Verify this with actual play and inspected captures, not only element bounds.
+
+**Default-view sign-off:** on each documented baseline iOS and Android phone,
+start with fresh camera/UI preferences and browser zoom at 100%. Play a ten-minute
+town-to-combat session, including an NPC conversation, quest tracking, inventory
+and chat, without changing gameplay zoom. Repeat in portrait and landscape.
+Record whether targets can be distinguished, threats seen in time, and primary
+actions reached without accidental neighboring taps. Needing maximum zoom-out,
+browser zoom or rotation to finish an ordinary flow fails this gate. Capture the
+same encounter before and after the redesign so a wider view alone cannot be
+mistaken for improved readability. This complements, not replaces, the dungeon
+and other touch-only acceptance flows above.
+
+### 1.2 — polished phone layouts and visual readability
+
+- [ ] Design distinct portrait and landscape compositions, with tablet and desktop
+  breakpoints. Landscape can be suggested, but do not require rotation to make
+  ordinary phone play usable. Preserve desktop keyboard/mouse ergonomics.
+- [ ] Refine thumb zones, action sizing/spacing, left-handed placement and
+  independently saved touch-control/UI-scale/camera preferences. Keep the central
+  encounter area clear; essential cooldown and resource feedback stays readable.
+- [ ] Complete the phone treatment for the remaining menus: vendor/Forge,
+  stash/trading house, party/guild/social, map, PvP/results and raid preparation.
+  Large lists need readable rows and sensible detail views, not smaller fonts.
+- [ ] Review all four hero silhouettes, equipped weapons, enemy markers and loot
+  at phone camera scale. Tune outlines/nameplates, text contrast and effect density
+  without losing the game's visual identity or hiding dangerous mechanics.
+
+Acceptance: inspect coherent portrait and landscape flows at 360×800, 390×844,
+430×932 and 844×390 CSS pixels, plus a tablet and desktop regression view. Browser
+emulation covers layout, but physical iOS/Android touch sessions are required for
+ergonomics, gestures, keyboard behavior and orientation handling.
+
+### 1.3 onward — keep phone combat and performance dependable
+
+- [ ] Tune tap-to-select/target cycling and drag-to-aim previews, range feedback,
+  aim cancellation and friendly/enemy targeting under actual combat pressure.
+  Do not replace deliberate targeting with uncontrolled auto-attacks or autoplay.
+- [ ] Validate boss telegraphs and group effects at both graphics settings without
+  requiring maximum zoom-out; retain visible danger when reducing cosmetic effects.
+- [ ] Record named physical-device baselines, render resolution, frame times and
+  sustained thermal behavior before setting release budgets. Target sustained
+  30 FPS on the documented supported baseline phone and 60 FPS where hardware
+  permits; adaptive resolution/effect budgets must not shrink or blur the UI.
+  An emulator or a desktop GPU is not proof of mobile performance.
+- [ ] Retain phone checks as new features land in 1.4–1.9: campaign conversations,
+  loadouts, raids, ranked PvP, group finding and public events must each ship with
+  usable touch flows. Test background/resume, reconnect and interrupted gestures.
+- [ ] Before 1.10, complete sustained physical-phone dungeon and party sessions,
+  including combat, menus, chat, rotation and reconnect; record devices, builds,
+  frame-time evidence and remaining limits alongside the desktop release evidence.
+
+Ship confirmed critical phone fixes in a suitable 1.0.x hotfix when ready, without
+claiming that a single responsive-CSS patch completes this redesign. Each release's
+patch notes must distinguish implemented phone improvements from this planned work.
+
+## Immediate dungeon repair gate — 1.0.x through 1.1
+
+These began as player-reported symptoms. Initial reproductions now identify
+overlapping floor/wall construction, inconsistent boss collision radii, stale
+recall movement/scene transitions, and an incorrect Teleport coordinate clamp.
+Evidence and hotfix status are recorded in the execution ledger. These findings
+do not establish that every reported failure has the same cause; the broader
+checks below remain open until verified.
+Record dungeon, difficulty, class/skill, instance seed, client/server commit,
+and reproduction steps for each failure. Preserve failing seeds as regressions.
+
+### Priority and milestone placement
+
+1. **Immediate 1.0.x fixes:** restore a reliable return to Lanternhold, then
+   address bosses that cannot be damaged and abilities that fail. Fix hallway
+   defects in the same urgent band whenever they block reaching an objective;
+   do not classify inaccessible routes as cosmetic issues.
+2. **Required before 1.1 closes:** finish all five checks below, including
+   randomized layout and floor cleanup. Verify them together in complete runs,
+   not only as isolated fixes. Returning to town and continuing the same party
+   run must preserve its dungeon, difficulty, level, and progress.
+3. **Retain through 1.3 and 1.6:** rerun dungeon ability checks during combat
+   polish and the full dungeon gate during encounter improvements. Later
+   releases must not reintroduce broken targeting, exits, or generated routes.
+
+The campaign depends on clearing each elemental dungeon to unlock its crystal
+raid. Verify those quest and raid unlocks after normal boss kills; auto-completing
+objectives or bypassing a dungeon is not an acceptable repair.
+
+### DUN-01: Cannot return to the starting city
+
+- [ ] Reproduce the dungeon exit/recall flow through the actual player controls.
+- [ ] Define and repair the route back to Lanternhold, the starting city, rather
+  than silently returning the player to an arbitrary dungeon entrance.
+- [ ] Verify server instance membership, town spawn, camera, collision, loaded
+  scene, party state, and dungeon HUD all transition together.
+- [ ] Check an unfinished run, a completed run, post-wipe recovery, and reconnect.
+  Test solo exits and one member leaving while the rest of a party remains.
+- [ ] Explain any intentional combat restrictions and provide a safe recovery
+  path; preserve lockouts/progress and prevent duplicated loot or stale instances.
+
+Acceptance: supported exit states consistently return the player to a walkable
+town location with working controls. Disallowed states give an actionable message,
+not a silent failure. Re-entry and remaining party members continue correctly.
+
+### DUN-02: Dungeon bosses cannot be attacked
+
+- [ ] Reproduce with actual boss models, mouse selection, and basic attacks.
+- [ ] Inspect target picking, hostile relationships, hit bounds, range checks,
+  instance identity, boss activation, and intended invulnerability transitions.
+- [ ] Exercise every dungeon boss with all four classes, solo and in a party.
+- [ ] Verify boss death, room completion, loot, and quest credit after combat.
+
+Acceptance: an active, vulnerable boss can be selected and damaged by valid
+attacks. Intended immunity is communicated and ends at the correct phase.
+Validation must use real attacks, not direct health edits or debug kill commands.
+
+### DUN-03: Abilities behave incorrectly in dungeons
+
+- [ ] Inventory the affected skills and reproduce each failure separately; do
+  not assume the overworld projectile-boundary fix addresses instance bugs.
+- [ ] Cover melee, projectiles, ground AoE, channels, healing, persistent effects,
+  and movement skills, including representative rune variants.
+- [ ] Check cursor-to-ground coordinates, floor elevation, line of sight,
+  collision, resource/cooldown consumption, and server/client effect agreement.
+- [ ] Verify room/corridor edges, boss fights, remote-player presentation, and
+  reconnect. Preserve authoritative walls and instance isolation.
+
+Acceptance: legal casts produce the expected visible and authoritative effect;
+rejected casts give accurate feedback without erroneous resource consumption.
+Skills cannot hit another instance or bypass intended walls and encounter gates.
+
+### DUN-04: Randomized hallways are broken
+
+- [ ] Capture failing seeds and compare generated layout with client meshes,
+  server walkability, door openings, navigation, and minimap geometry.
+- [ ] Check room-to-hall joins, bends, widths, elevations, spawn points, and
+  access to every required room, boss, and exit.
+- [ ] Add deterministic failing-seed tests plus a broader seed sweep; test
+  walking and movement abilities through production-generated layouts.
+
+Acceptance: required routes are connected and traversable, with no gaps,
+invisible blockers, contradictory collision, or inaccessible boss/exit rooms.
+
+### DUN-05: Ground tiles appear doubled or overlaid
+
+- [ ] Reproduce the visual artifact and inspect duplicate floor generation,
+  coplanar surfaces, room/corridor overlap, and stale meshes after transitions.
+  These are hypotheses, not established causes.
+- [ ] Audit floor ownership and scene cleanup across room loads, re-entry,
+  reconnect, and repeated dungeon-to-town transitions.
+- [ ] Compare identical seeds and camera angles at High and Low settings.
+  Correct unintended geometry/ownership conflicts rather than merely hiding them
+  with a small vertical offset.
+
+Acceptance: intended decorative layers remain, but unintended doubled floors,
+flicker/z-fighting, seams, and accumulating old dungeon meshes are absent.
+Rendered ground and authoritative walking height agree.
+
+## Dungeon verification and release evidence
+
+First-hour build preparation must also be trustworthy. Audit all four classes'
+160 talent entries against both displayed copy and real consumers: damage,
+healing, crit, area/range, duration, defense, mana and cooldowns. Use rank-zero
+versus ranked casts, valid point budgets, applicable runes/sets and saved-state
+checks; a populated definition or attractive talent menu is not proof of an
+effect. Ship confirmed nonfunctional bonuses promptly in 1.0.x, complete core
+build correctness with 1.1, and retain these checks during 1.3 tuning. The
+[talent economy record](../06/talent-economy.md) verifies one repair category
+and explicitly leaves the remaining consumers open; it is not full-tree sign-off.
+
+First-hour progression is tracked in
+[fresh-character evidence](../../../../qa/fresh-progression-evidence.md). Level-prepared dungeon
+QA does not close that gate: measure the ordinary opening quests, manual rewards,
+death recovery and under-level dungeon handoff without debug grants, then validate
+the earned route to the first dungeon. Keep human discoverability and physical
+phone play separate from automated navigation evidence.
+
+- Cover Verdant Bastion Catacombs, Abyssal Well, Molten Core, Tempest Spire,
+  and Umbral Nexus, including supported difficulties and relevant fallback paths.
+- Run deterministic checks across all four classes and applicable skills;
+  use at least three generated instances per dungeon for traversal inspection,
+  plus every reported failing seed and a documented broader automated seed sweep.
+- Run real-server browser routes for entry → hallway traversal → ordinary combat
+  → boss targeting/casting/kill → rewards/quest credit → return to Lanternhold
+  → re-entry. Include party, death/recovery, and reconnect variants.
+- Check elemental raids and Dark Realm for shared-generator, combat, or exit
+  regressions when common code changes. Do not change raid gates to bypass bugs.
+- Preserve screenshots, failure seeds, commands, build identities, and results.
+  A static gallery or unit test alone does not establish a playable dungeon.
+- After deployment, verify exact client/server commits and perform a live dungeon
+  smoke with approved QA accounts. Local evidence is not live-release evidence.
+
+The existing [dungeon checklist](../../../../qa/dungeon-manual-qa-checklist.md) supplies traversal
+detail; this section is the current release-blocking supplement, including the
+fifth dungeon and the newly reported failures.
+
+## Full administration panel — 1.10 release gate
+
+September27 delivery reconciliation: Alpha1.10.1 at
+f8a9b051c4043ad5a64cfaa57444a40df0515620 passed all ten jobs of
+[CI36283549819](https://github.com/aeml/eidolon/actions/runs/36283549819),
+including live character/recovery QA; independent public IPv4 identity/assets/
+database verification passed. Retain the administration implementation report's
+actual two-account mutation/restart, rendered controls and schema14 archive
+restore/rollback-fence evidence, plus the user's accepted live read-only panel
+check. This closes delivery acceptance below without repeating mutations.
+The rejection-history corrections described as local in older paragraphs are
+included in the deployed source and1.9.25 patch history. The broader audit and
+compound failure-coverage requirements remain separate: a forced process loss
+during simultaneous database/disk failure can lose RAM-only rejection or
+disconnect events, while value-changing operations fail closed. Do not mark
+that limitation as crash-durable or turn this delivery result into full campaign
+acceptance.
+
+Implementation shipped in Alpha1.9.17: the launcher, player/history views and
+confirmed item, Gold and teleport operations are available. See the
+[operator guide](../../../../operations/administration.md), [implementation evidence](../19/administration-console.md)
+and [verified delivery](../../../releases/1.9.17/2026-09-19-administration.md).
+September 20 reconciliation: the checked implementation requirements below are
+supported by shipped source and retained two-account socket, restart and browser
+evidence, not a new test run. `AdminUI`/`AdminOperations`, the server administration
+handlers/recovery journal, and database activity paging implement these controls.
+Remaining unchecked compound verification requirements are not instructions to
+rebuild them. The user subsequently found the history views and confirmed the
+live panel all seems to work; the safe live operator read-only check is accepted.
+Exact final 1.10 delivery and the remaining compound evidence requirements stay
+open. Do not ask for another operator smoke or infer production mutation testing.
+
+September20 local follow-up: [rejected-operation outage recovery](../20/admin-rejection-audit-recovery.md)
+fixes lost rejection history when Mongo is unavailable, reusing the durable
+activity outbox. That correction is verified live in1.9.23; the additional
+storage/recovery error-path follow-up is included in the pending1.9.24 batch.
+The subsequent local follow-up records replaced-session and authenticated
+payload/rate denials, bounds rejected traffic by closing its connection, and
+retains dual-store-failure rejections in the existing health/shutdown-blocking
+recovery buffer. Focused outage, exact replay, race and real transport checks
+pass; it is not in1.9.24. Final delivery and the compound acceptance requirements
+below remain open. RAM-only outage retention is explicitly not crash durability.
+
+- [x] Show an Administration launcher and clear administrator status only after the server derives it from the authenticated account's durable MongoDB `admin` role. Keep it absent for ordinary and QA-only accounts. A lookup failure must hide or disable the panel, and client visibility must never authorize an operation.
+- [x] Provide bounded, server-sourced views of authenticated online players and structured login, resume, logout/disconnect, and administrator-action history, with explicit loading, empty, refresh, and error states. Never expose raw server logs, credentials, password hashes, session tokens, or private gameplay state.
+- [x] Provide confirmed operations to create a canonical validated item for self or a selected account, grant bounded positive whole-number Gold, teleport the administrator to an online player or approved destination, and teleport an online player to the administrator or an approved destination.
+- [x] Use dedicated registered WebSocket message types with authentication requirements, payload ceilings, rate limits, and strict schemas. Derive the actor only from the authenticated connection, accept no actor or sender supplied by the client, and requery the durable administrator role for every status query, history query, and mutation. Fail closed on role-store errors; administrator and QA authority remain independent.
+- [x] Validate exact targets, item identifiers and attributes, quantities, inventory capacity, Gold caps and overflow, player state, instance boundaries, finite coordinates, collision and walkability. Reject ambiguous, stale, dead, offline, out-of-bounds, or otherwise invalid operations without partial mutation.
+- [x] Require a bounded opaque request ID on every operation. Mutations must enforce durable idempotency: an identical replay returns the recorded result without another grant, item, teleport, save, or audit entry; reuse with a different payload is rejected.
+- [x] Run mutations under the target account's character-work lock, reconcile the current authoritative online or offline character, and persist the complete resulting character before reporting success. A stale socket must not mutate a character owned by a newer connection.
+- [ ] Write an immutable structured audit record for every operation attempt containing actor, target, action, request ID, UTC timestamp, result, bounded reason, and sanitized change summary. Use one atomic transaction or a recoverable journal spanning idempotency receipt, character mutation, and audit append so partial success cannot grant value without a durable audit record.
+- [x] Store login/logout and administrator activity in a bounded audit collection, not raw logs. Queries require deterministic cursor pagination, server-capped page sizes, bounded filters, supporting indexes, and an explicitly documented and enforced retention policy.
+- [ ] Cover UI visibility and status, forged non-admin messages, QA-only and bootstrap-only accounts, role changes while the panel is open, store/save/audit failures, every validation boundary, concurrent duplicate requests, restart recovery, pagination without gaps or duplicates, retention configuration, and desktop/phone accessibility.
+- [x] Deployment acceptance requires migration/index and backup/restore checks, passing Go/Jest/lint/build/socket/browser tests, disposable two-account end-to-end proof of every mutation and post-restart persistence, exact 1.10 client/server identities, database readiness, and a safe live administrator read-only smoke. Production mutations are not required for acceptance. Retained scoped evidence and final1.10.1 delivery are reconciled above.
+
+## Patch policy and 1.10 completion criteria
+
+September27 ownership update: the user explicitly assigned the uninterrupted
+campaign and real-player pacing validation to their playtest and requested
+completion of remaining code gaps. Those evidence requirements below remain
+honest playtest follow-ups, not agent-blocking automation or passed checks.
+Retain accepted group encounter receipts without replaying them. Physical-phone
+dungeon/party feedback and IPv6 are also already user-deferred. Current code,
+delivery and performance status lives in the [release record](../../../releases/1.10/2026-09-23-playtest.md).
+
+Each milestone can have as many focused corrective patches as needed. Critical
+bugs ship when ready, not when their themed release arrives. Every published
+version needs accurate patch notes, synchronized login/server release identity,
+automated checks appropriate to its risk, and post-deployment verification.
+Planning documents are not patch notes for features that have not shipped.
+
+By 1.10, a fresh player should understand Ilyra's request, enjoy a responsive
+class, recognize meaningful upgrades, find companions, restore all four crystals,
+and defeat Malachar without progression blockers. Endgame should offer worthwhile
+build, PvE, PvP, guild, and world-event choices.
+The [two-floor casino completion checklist](../09/town-casino-roadmap.md)
+must also pass: an intentional Trading House–stash–casino layout, physical entry
+and seating, seamless table/machine cameras and controls, full lore-themed slot
+variants, solo/multiplayer house blackjack, real-player-only poker, and a working
+distinct VIP floor using the separate future currency. A facade, minigame menu,
+unfunded VIP placeholder or locally tested prototype does not close this scope.
+The progression-balance and investigation acceptance gates must also pass:
+measured rewards and meaningful upgrades, no mandatory daily leveling wall,
+eight playable lore investigations, and preserved existing-character progress.
+The supported phone experience must also satisfy the camera, touch-only core
+flows, portrait/landscape layout and physical-device verification gates above;
+desktop-only success does not establish beta readiness.
+
+Required evidence includes a complete fresh-character campaign, actual group
+raid completion, inspected High/Low visuals, hardware-specific performance
+targets, measured concurrency trials, persistence/reconnect and backup/rollback
+tests, and no known progression-blocking or reward-duplication bugs. Define
+performance/concurrency targets against documented baselines before testing;
+do not treat existing scripts as proof those targets have been met.
+
+A fifth class and a large new continent remain outside the committed scope.

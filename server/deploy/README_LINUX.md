@@ -268,7 +268,7 @@ ready; runtime retries process at most50 durable operations per5second pass and
 stop on the first storage failure. Affected character commands/reconnects wait
 for recovery, without adding Mongo queries to unaffected movement packets.
 Role-gated grant/teleport handlers and panel controls are now enabled; use the
-confirmed, audited procedures in [the administration guide](../../docs/ADMINISTRATION.md).
+confirmed, audited procedures in [the administration guide](../../docs/operations/administration.md).
 They do not confer password-reset or arbitrary account-ownership authority.
 
 Retention is applied when records are created. Reads also enforce the current
@@ -413,7 +413,7 @@ durable trade/drop/reward custody. The focused disposable-Mongo
 `TestSchema17UpgradePreservesAccountsAndFencesPreviousWriter` verifies unchanged
 legacy documents/indexes, empty new ledgers, repeated-startup stability and
 refusal by the exact previously deployed schema17 executable. See
-[upgrade evidence](../../docs/plans/2026-10-04-release1-73-schema17-upgrade-checks.json).
+[upgrade evidence](../../docs/records/releases/1.73/2026-10-04-schema17-upgrade-checks.json).
 It requires explicit disposable-database, loopback and previous-binary gates;
 the ordinary unit suite skips it without that configuration. This is not a
 production migration or complete valuable-operation replay certificate.

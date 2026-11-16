@@ -1,0 +1,257 @@
+# Garments: full outfits and distinct VIP models
+
+Owner requirement added October 15, 2026. **Required before beta; full scope
+remains open.** The minimum18distinct modeled looks and all four class fits are
+implemented/deployed in scoped acceptedAlpha1.79.58; the centered equipment row
+is delivered in59 and retained in accepted64. [Collection acceptance](../../../releases/1.79.58/2026-10-16-acceptance.md),
+[current delivery](../../../releases/1.79.63/2026-10-16-acceptance.md).
+Final collection art and the broader behavior/pose/device acceptance below
+remain open. Counts and narrower cosmetic checks do not close that scope.
+
+## Appearance behavior
+
+- One armor garment selects a complete outfit, replacing the appearance of all
+  worn body equipment together. It must not require separate cosmetic purchases
+  or selections for head, chest, shoulders, gloves, belt, legs and boots. Suppress
+  any visible underlying gear/accessories that conflict with the outfit.
+- Weapon and offhand garments remain independent selections and replace only
+  the corresponding held item. An armor outfit must not override either hand.
+- Real equipment, stats, class eligibility, attack behavior and earned ownership
+  remain unchanged. An empty hand does not gain a weapon from a cosmetic.
+- Removing the outfit restores current real gear and any retained individual
+  appearance choices. Gear changes made under an outfit must restore correctly.
+  Retain old saves and purchased unlocks; do not silently discard old cosmetics.
+- Apply the same result in wardrobe/vendor previews, character panels, gameplay,
+  remote players and reconnects. Respect legal dual wielding and hand orientation.
+- Preserve supplied class bodies, rigs and animation banks. Fit garments to those
+  models; do not replace approved actors to make a costume easier to render.
+
+## Character equipment layout — October 16
+
+The owner requires Weapon Garment, Armor Garment and Offhand Garment together
+in one centered row immediately below the character picture. Show the confirmed
+appearance or Original gear and connect each slot to the existing owned Wardrobe
+selector. This preserves the full-outfit/independent-hand behavior above and the
+server's existing ownership, application and reset rules. The implementation is
+deployed and independently verified in Alpha1.79.59.
+[Acceptance](../../../releases/1.79.59/2026-10-16-acceptance.md).
+[Scoped layout qualification](../16/character-garment-row-qualification.md).
+
+## Minimum model catalog
+
+Current source inventory: `src/core/ItemSystem.js` defines four weapon families
+and two dedicated offhand families; `src/core/EquipmentSlots.js` defines four
+classes and legal offhand weapon use. Cover every additional family introduced
+before beta. The minimum is **18 distinct looks**, plus necessary rig/fit variants:
+
+| Category | Required models | Minimum |
+| --- | --- | ---: |
+| VIP weapons | Sword, dagger, mace, staff; distinctly designed 3D silhouettes/materials | 4 |
+| VIP dedicated offhands | Shield and tome; visibly modeled faces, edges and fittings | 2 |
+| VIP class outfits | One full outfit matching each of Fighter, Rogue, Cleric and Wizard | 4 |
+| VIP universal outfits | Eight full outfits wearable by every class | 8 |
+
+Weapon garments must also work in supported offhand/dual-wield combinations;
+the two dedicated offhands do not replace that coverage. Class-themed describes
+art direction, not a newly authorized cosmetic equip restriction.
+
+Proposed universal themes: Christmas/winter festival, Halloween, Valentine's,
+Lunar New Year, spring equinox, midsummer, harvest festival and masquerade.
+The first three come from the owner; the other five are implementation proposals.
+Keep each recognizable and compatible with Eidolon's dark-fantasy presentation.
+These are wearable collections, not an instruction to add seasonal scheduling
+or limited-time sales.
+
+Each new garment needs actual rendered 3D model geometry with a deliberate
+silhouette, fitted details and finished materials. Recoloring the existing item,
+renaming an unlock or supplying a concept image does not fulfill model delivery.
+Existing elemental cosmetics can be upgraded where appropriate, but their
+current palette variants do not count as completed new models. Production and
+integration remain implementation work; this request does not assign an
+external modeling campaign to the owner. Do not introduce new pricing, payment
+integration or membership restrictions as part of this requirement.
+
+## Delivery and acceptance
+
+- [ ] Implement whole-outfit selection, precedence, persistence and restoration
+  across current individual cosmetics, underlying gear changes and old saves.
+- [x] Complete a manifest of model IDs, target families/classes, source/provenance,
+  material/texture assets, compatible rigs and quality-level budgets.
+- [x] Produce and integrate all 18 minimum models, with all four class fits for
+  the eight universal outfits; extend the manifest for new equipment families.
+- [ ] Match vendor/wardrobe previews to equipped local and remote appearances;
+  retain current server-authoritative ownership and purchase behavior.
+- [ ] Review at gameplay and preview zoom, idle/run/attack/cast/jump/death poses,
+  legal dual wielding, High/Low, swapping, pooling, reconnect and scene teardown.
+  No floating pieces, exposed underlying armor, broken grips or missing models.
+
+  October20 terminology reconciliation: the supported movement action is jump;
+  the earlier word "dodge" did not identify a separate delivered animation or
+  owner-requested dodge mechanic. Review the existing jump, block and applicable
+  hit-reaction clips as well as the states above. This adds no movement mechanic
+  and waives no supported motion/fit review.
+- [x] Check representative equipped-party rendering/resource costs and bounded
+  cleanup. Focused validation continues; soak remains deferred.
+- [ ] Complete owner visual review of the finished collection and record scoped
+  deployment evidence. Catalog counts alone do not establish visual quality.
+
+## First scoped implementation — October 15
+
+A server-authoritative `outfit` selection now replaces all seven body gear visuals
+as one complete model while preserving actual combat gear, independent held
+looks and the player's individual appearance choices. Clear restores those
+underlying looks. Owned selection, character saves and remote appearance updates
+use the existing acknowledgement/persistence rules. Vendor/wardrobe previews
+show the same complete model and allow armor-free appearance selection.
+
+The first Fighter-themed Iron Oath Regalia has actual crowned-helm, curved
+shoulder-fin and covenant-seal geometry, eight validated skinned GLBs for four
+class fits and High/Low, exact asset versions and source provenance. This is
+**one distinct look**, not four class-themed looks.121focused client checks,
+focused server custody checks, full lint,15content groups and four distinct
+native render/vendor cases pass. Corrected prepared party totals are236draws/
+191549tri High and124/78191Low; frame-time acceptance is not claimed. Earlier
+Low budget/export failures remain in the receipt.
+[Qualification](full-outfit-garment-qualification.json).
+
+Selected locally for the next milestone. The other17minimum looks, wider motion
+coverage, final collection review and beta acceptance remain open. Existing
+12palette cosmetics still do not count as new model deliveries.
+
+## Isolated held-model candidates — October 15
+
+Six modeled candidates now replace the old palette-only visuals for existing
+Grovekeeper Blade/Shield, Skyweaver Dagger/Tome, Hearthkeeper Staff and Tidekeeper
+Mace unlocks. Their distinct thornblade, swept crescent, phoenix fork, tide-flange,
+oak relief and crescent-bound grimoire forms produce12High/Low GLBs while
+retaining all existing IDs/names/prices/ownership and original hand grips.
+
+176focused checks, explicit asset/source audit,12clean official glTF validations
+and16content groups pass. **Unselected and isolated**: native art, motion,
+preview and resource review is pending ordered56CI completion. No additional
+model is counted as accepted yet.
+[Preparation and retained fixture failures](held-garment-preparation.json).
+
+## Qualified held garments selection — October 15
+
+Six distinct held 3D looks: sword, dagger, staff, mace, shield and tome, twelve High/Low GLBs. Existing unlock IDs, prices, ownership, real gear and actual socket transforms are preserved. Adds on-demand held-model inspection to the existing vendor preview.
+
+180 distinct focused checks across 12 suites, full lint and 16 generated-content groups pass. All twelve final GLBs have zero official validator errors or warnings. 14 distinct cases pass with no retries: two four-class High/Low full-party cases plus twelve real vendor preview/compare/inspect/rotate/apply cases. Three repeated swap/restore cycles retain exact geometry/texture counts. Each quality exercises sixteen supplied pose records and ninety continuous Run frames.
+
+Selected for the next coherent release after native visual review. Scoped implementation selection only. Final owner collection review, broader world/frame-time/device quality and complete eighteen-look collection remain open.
+[Qualification and retained evidence](held-garment-qualification.json).
+
+## Isolated remaining class outfits — October 15
+
+Nightglass Cowl, Dawn Reliquary and Astral Sovereign add distinct Rogue, Cleric
+and Wizard designs, with24new GLBs for four supplied rigs/High/Low. They retain
+existing source gear/rigs and the25EP armor tier; class theme adds no cosmetic
+restriction. Their raven vanes, solar crest/leaves and sculpted lunar crown/
+crescent pauldrons are modeled geometry, rather than palette-only variants.
+
+186focused checks, focused server custody checks, full lint and15content groups
+pass. All32total outfit GLBs validate without errors/warnings; the eight original
+IronOath files remain byte-identical. **Unselected and isolated** pending actual
+native gameplay/preview/motion/resource review. The16-case gallery is prepared;
+no new class look is counted accepted yet.
+[Preparation](class-garment-preparation.json).
+
+## Qualified class garments selection — October 15
+
+Nightglass Cowl, Dawn Reliquary and Astral Sovereign complete the three remaining class-themed designs. Winterthorn Revel adds the first universal Christmas/winter-festival outfit. Four supplied fits and High/Low for each: 32 new GLBs, 40 current outfit GLBs including unchanged Iron Oath.
+
+196 distinct focused client checks across twelve suites pass using corrected retained evidence, plus focused current seventeen-entry server wardrobe/vendor checks, full lint and fifteen generated-content groups. All forty current GLBs have byte-matched official zero-error/zero-warning validation evidence; original Iron Oath remains byte-identical. Sixteen distinct new class/Winter cases have passing native evidence across the first twelve-case run and corrected six-case lunar/Winter run. Each full-party case exercises 27 supplied pose records and 90 continuous Run frames; three strict swap/restore cycles remain equal. Unchanged original Iron Oath four-case evidence is reused only for its earlier pose scope; integrated required native plan will exercise all twenty cases.
+
+Selected for the next coherent release after native visual review. Astral Low controlled fixture has only 66 triangles of headroom; no broader world/frame-time margin claim. Seven universal themes, whole collection/final owner art, physical devices and beta readiness remain open.
+[Qualification and retained evidence](class-and-winter-garment-qualification.json).
+
+## Current selected collection
+
+The earlier preparation sections record historical isolated states. The current
+selected and independently verified collection contains eighteen distinct looks:
+six held-family models, four class-themed outfits and eight universal outfits,
+with96body-fit/quality GLBs and12held-quality GLBs. All seven later universal
+looks ship in accepted Alpha1.79.58. Class themes do not add equip restrictions.
+[Deployment acceptance](../../../releases/1.79.58/2026-10-16-acceptance.md).
+[Model/fit/resource qualification](../16/universal-garment-qualification.json).
+The checked technical catalog/model/resource items above have scoped evidence;
+unchecked behavior/visual review items retain their full scope. Final owner
+collection review, broader art/device/performance and beta gates stay open.
+
+## Remaining universal candidates — October 15
+
+Hollow Court (Halloween), Rosebound Vow (Valentine's), Lantern Envoy (Lunar New
+Year), Springbloom Jubilee, Solstice Pyre (midsummer), Gilded Harvest and Midnight
+Masque now have deliberately modeled silhouettes, seven-piece clothing coverage
+and all four supplied class fits in High/Low. Together with Winterthorn Revel,
+these provide eight universal candidate designs. They reuse the existing25EP
+armor tier without class/calendar restrictions or membership/payment changes.
+
+212focused checks, current24-entry server custody checks, full lint and16content
+groups pass. All96outfit GLBs have byte-matched official zero-error/zero-warning
+validation evidence; all52predecessor outfit/held GLBs remain byte-exact. The Low
+masquerade eye-loop export failure and its geometry correction are retained.
+
+Veyra's collection now offers labeled name/theme search, slot categories and a
+result count, retaining current selection, pending-unlock custody and existing
+purchase confirmation. Search does not issue a purchase or mutate equipment.
+Filters survive same-character reopening and reset for a different character.
+
+**Isolated and unselected** until native visual/motion/preview/budget/resource
+review.28new outfit cases and two revised store interaction cases are prepared;
+none is claimed executed. Alpha1.79.57 is still undergoing ordered CI/deployment.
+The minimum eighteen looks are not yet declared accepted or deployed as a whole.
+
+## Qualified universal collection and service-menu selection — October 16
+
+All seven remaining universal designs are selected after42distinct native cases,
+reviewed gameplay/preview/menu captures, unchanged scene budgets and strict
+resource cycles. The minimum18distinct modeled looks is implemented; final
+owner collection art approval remains open. Search/categories and current-owner
+scroll/focus retention improve Veyra browsing. Shared service framing, readable
+tabs/trade controls and saved layout behavior have desktop/phone evidence.
+292distinct focused checks, focused server custody, full lint, content/model
+validation and exact predecessor-asset proof pass. Initial spring petal flicker
+and store fixture failures are retained with their corrections.
+[Qualification and evidence](../16/universal-garment-qualification.json).
+Deployed and independently verified as Alpha1.79.58.
+[Acceptance](../../../releases/1.79.58/2026-10-16-acceptance.md). Broader original quality/
+readiness gates and deferred playtests remain open. This collection milestone
+does not complete the full goal.
+
+
+## Qualified saved sessions and remote protocol — October16
+
+New actual Mongo/socket evidence covers a returning legacy collection, the full
+armor outfit with independent weapon/offhand looks, exact EP debit/replay,
+owner/observer protobuf updates and three ordinary process lifetimes. Removing
+the outfit preserves retained individual/hand choices and its saved cleared
+state. Real gear, combat/base stats, Gold, items and level/XP remain unchanged.
+[Qualification and retained rest-transition fixture finding](../16/garment-saved-session-qualification.json).
+This coverage is included in accepted62 and its actual hosted socket stage;
+it does not add browser/model-fit/old-binary/owner art acceptance or close the
+full garment checklist. No production accounts or access were changed.
+
+
+## Actual rendered returning sessions — accepted Alpha 1.79.63
+
+Mandatory native CI now verifies normal purchases, local/remote/preview models,
+independent garments, real weapon/chest changes, saved Low preference and
+persisted clearing across nine phases. The centered garment row is retained.
+[Qualification](../16/garment-rendered-session-qualification.md),
+[release acceptance](../../../releases/1.79.63/2026-10-16-acceptance.md).
+All-class/old-binary, broader poses, physical-device and final owner collection
+acceptance remain open; this does not complete the full garment checklist.
+
+
+## Four-class actual wardrobe delivery — October 16
+
+Accepted Alpha 1.79.64 verifies normal purchases, local/remote/preview models,
+real gear changes, saved Low preferences and returning/cleared outfits across
+all four supplied classes, including the Rogue offhand blade. The centered
+three-slot row remains below the portrait; View character returns to its model
+and keyboard control, and phone forms respect the menu text-size preference.
+[Acceptance](../../../releases/1.79.64/2026-10-16-acceptance.md),
+[qualification](../16/wardrobe-class-sessions-qualification.md).
+This closes that scoped class/session coverage; broader old-binary/pose/device
+behavior and final owner collection art review remain open.

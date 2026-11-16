@@ -2,7 +2,7 @@ import { MeshCatalog } from '../utils/MeshCatalog.js';
 import { AUTHORED_ASSET_VERSIONS } from './authoredEquipment.generated.js';
 import { HELD_GARMENT_ASSET_VERSIONS } from './heldGarments.generated.js';
 import { GARMENT_ASSET_VERSIONS } from './garments.generated.js';
-import { ILYRA_MODEL_PATH } from '../art/AuthoredIlyra.js';
+import { ILYRA_MODEL_PATH } from '../art/actors/humanoids/AuthoredIlyra.js';
 
 const DEFAULT_ASSET_VERSION = '2026-09-04-11';
 

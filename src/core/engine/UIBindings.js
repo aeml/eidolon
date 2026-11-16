@@ -1,0 +1,384 @@
+import { collectReportContext } from '../../ui/ReportUI.js';
+import { PasswordChangeUI } from '../../ui/PasswordChangeUI.js';
+import { RecoveryEmailSetupUI } from '../../ui/EmailRecoveryUI.js';
+
+const PROTECTED_INVENTORY_TYPES = new Set(['GEM', 'MATERIAL', 'RELIC']);
+const PROTECTED_INVENTORY_SLOTS = new Set(['gem', 'material', 'relic']);
+
+function isSellableEquipment(item) {
+    if (!item?.slot) return false;
+
+    const type = String(item.type || '').toUpperCase();
+    const slot = String(item.slot).toLowerCase();
+    return !PROTECTED_INVENTORY_TYPES.has(type) && !PROTECTED_INVENTORY_SLOTS.has(slot);
+}
+
+export class UIBindings {
+    constructor(engine) {
+        this.engine = engine;
+    }
+
+    bindConstructorCallbacks() {
+        const engine = this.engine;
+        const ui = engine.uiManager;
+
+        ui.onGraphicsQualityChange = (quality) => {
+            const result = engine.renderSystem.setGraphicsQuality(quality);
+            // The overworld generator is constructed before these saved UI
+            // preferences are applied. Keep initial and future scene builds in
+            // sync with the renderer, not the constructor's default High.
+            const normalized = ['low', 'medium', 'high'].includes(quality) ? quality : 'high';
+            if (engine.worldGenerator) engine.worldGenerator.graphicsQuality = normalized;
+            if (engine.activeWorldGenerator) engine.activeWorldGenerator.graphicsQuality = normalized;
+            // Lighting/effects change immediately, but existing authored actors
+            // retain their owned skeleton/mesh until reloaded. Use the existing
+            // optional reload prompt rather than silently leaving High bodies
+            // active under Low or replacing a combat actor in flight.
+            const actorQuality = engine.renderSystem.isMobile || normalized === 'low' ? 'low' : 'high';
+            let actorReloadRequired = false;
+            engine.renderSystem.entityGroup?.traverse(part => {
+                if (part.userData?.authoredClass && part.userData.authoredQuality !== actorQuality) actorReloadRequired = true;
+            });
+            // Existing instance textures, like actors, retain owned resources
+            // until reload. Do not rebuild a dungeon or reset its progress when
+            // changing quality in combat. Verdant keeps its established maps.
+            const kit = engine.activeWorldGenerator?.dungeonInteriorKit;
+            const surfaceQuality = normalized === 'low' ? 'low' : 'high';
+            const surfaceReloadRequired = kit?.surfaceQuality && kit.dungeonType !== 'verdant_bastion_catacombs' &&
+                kit.surfaceQuality !== surfaceQuality;
+            return actorReloadRequired || surfaceReloadRequired ? { ...result, reloadRequired: true } : result;
+        };
+        ui.onBrightnessChange = (level) => {
+            engine.renderSystem.setBrightnessLevel(level);
+        };
+        ui.onCameraShakeChange = (enabled) => {
+            engine.renderSystem.setCameraShakeEnabled(enabled);
+        };
+        ui.onCameraShakeStrengthChange = (strength) => {
+            engine.renderSystem.setCameraShakeStrength(strength);
+        };
+
+        ui.onGraphicsQualityChange(ui.getGraphicsQuality());
+        engine.renderSystem.setBrightnessLevel(ui.getBrightnessLevel());
+        engine.renderSystem.setCameraShakeEnabled(ui.getCameraShakeEnabled());
+        engine.renderSystem.setCameraShakeStrength?.(ui.getCameraShakeStrength?.() ?? 50);
+
+        ui.inventory.onBuyGamble = (slot) => {
+            engine.network.send('buy_gamble', { slot });
+        };
+        ui.inventory.onSellItem = (index) => {
+            const item = engine.player.inventory[index];
+            if (!item) return;
+
+            engine.network.send('sell', { itemId: item.id, slotIndex: index });
+        };
+        ui.inventory.onBuyback = (itemId) => {
+            engine.network.send('buyback', { itemId });
+        };
+        ui.inventory.onSellAll = (rarityName) => {
+            if (!engine.player) return;
+            for (let i = engine.player.inventory.length - 1; i >= 0; i--) {
+                const item = engine.player.inventory[i];
+                if (item?.rarity?.name === rarityName && isSellableEquipment(item)) {
+                    ui.inventory.onSellItem(i);
+                }
+            }
+        };
+
+        ui.social.onSocialOpen = () => {
+            engine.network.send('social', {});
+            // Login snapshots are not enough after offline requests, blocks or
+            // reconnects. Opening the panel reconciles persisted relationships.
+            engine.network.send('friend_list', {});
+        };
+        ui.social.onGroupFinder = payload => engine.network.send('group_finder', payload);
+        ui.social.onSocialStatusChange = (status) => {
+            engine.network.send('social_status', { status });
+            engine.network.send('social', {});
+        };
+        ui.trading.onTradingSearch = (filters) => {
+            return engine.network.send('trading_search', filters);
+        };
+        ui.trading.onTradingCreate = (slotIndex, bid, buyout, duration, expectedItemId, expectedStack) => {
+            engine.network.send('trading_create', { slotIndex, bid, buyout, duration, expectedItemId, expectedStack });
+        };
+        ui.trading.onTradingMyAuctions = () => {
+            return engine.network.send('trading_my_auctions', {});
+        };
+        ui.trading.onTradingBuyout = (auctionId) => {
+            engine.network.send('trading_buyout', { auctionId });
+        };
+        ui.trading.onTradingBid = (auctionId, amount) => {
+            engine.network.send('trading_bid', { auctionId, amount });
+        };
+        ui.trading.onTradingCollect = (auctionId) => {
+            engine.network.send('trading_collect', { auctionId });
+        };
+        ui.trading.onTradingCancel = (auctionId) => {
+            engine.network.send('trading_cancel', { auctionId });
+        };
+
+        ui.getReportContext = diagnostics => collectReportContext(engine, diagnostics);
+        const passwordParent = ui.phoneSettings?.sections?.get('device') || ui.settingsScreen?.querySelector('.support-window__body--settings');
+        if (passwordParent) {
+            const current = () => !ui.disposed && !engine.isDestroyed && window.game === engine && engine.isMultiplayer
+                && engine.network?.socket?.readyState === WebSocket.OPEN;
+            ui.passwordChange = new PasswordChangeUI({ parent: passwordParent, isCurrent: current,
+                send: payload => current() && engine.network.send('change_password', payload) });
+            ui.recoveryEmail = new RecoveryEmailSetupUI({ parent: passwordParent, isCurrent: current,
+                send: (type, payload) => current() && engine.network.send(type, payload) });
+        }
+        ui.getPlaytestContext = () => ({ level: engine.player?.level,
+            className: engine.player?.meshType,
+            partySize: ui.social?.partyData?.partyId ? ui.social.partyData.members?.length : 1,
+            connected: engine.isMultiplayer === true && engine.network?.socket?.readyState === WebSocket.OPEN });
+        ui.onReportSubmit = (type, text, requestId) => {
+            if (!engine.isMultiplayer || engine.network?.socket?.readyState !== WebSocket.OPEN) return false;
+            engine.network.send('report', { reportType: type, text, requestId });
+            return true;
+        };
+        ui.onReportLookup = (reportId, requestId) => {
+            if (!engine.isMultiplayer || engine.network?.socket?.readyState !== WebSocket.OPEN) return false;
+            engine.network.send('report_status', { reportId, requestId });
+            return true;
+        };
+        ui.isOwnerExportSessionCurrent = () => !ui.disposed && !engine.isDestroyed && window.game === engine && engine.isMultiplayer && engine.network?.socket?.readyState === WebSocket.OPEN;
+        ui.onOwnerExportSection = payload => {
+            if (!ui.isOwnerExportSessionCurrent()) return false;
+            engine.network.send('owner_export_section', payload); return true;
+        };
+        ui.onModerationNoticeLookup = requestId => {
+            if (!engine.isMultiplayer || engine.network?.socket?.readyState !== WebSocket.OPEN) return false;
+            engine.network.send('moderation_notice', { requestId });
+            return true;
+        };
+        ui.social.onSafety = (action, username, context = '') => {
+            if (typeof username !== 'string' || !username || /\s/.test(username) || username.length > 32) return;
+            if (action === 'report') {
+                if (!ui.report?.startPlayerReport) return;
+                // The report owns pending/draft bounds; no contextual action
+                // may rewrite a submitted report while its reply is outstanding.
+                ui.report.startPlayerReport(username, context);
+                if (!ui.isElementVisible?.(ui.reportScreen)) ui.toggleReport?.();
+                ui.reportText?.focus();
+                return;
+            }
+            if (['block', 'ignore', 'unblock', 'unignore'].includes(action)) {
+                engine.network.send('chat', { message: `/${action} ${username}` });
+            }
+        };
+        ui.onResonanceSpend = (trait) => engine.network.send('endgame_spend', { trait });
+        ui.social.onPartyInvite = (targetName) => {
+            engine.socialController.sendPartyMessage('party_invite', { targetName });
+        };
+        ui.social.onFriendWhisper = (username, displayName) => {
+            ui.social.toggleSocial(false);
+            if (displayName === undefined) ui.chat?.beginWhisper(username);
+            else ui.chat?.beginWhisper(username, displayName);
+        };
+        ui.social.onPartyLeave = () => {
+            engine.socialController.sendPartyMessage('party_leave', {});
+        };
+        ui.social.onPartyResponse = (inviterName, accepted, invitationId) => {
+            engine.socialController.sendPartyMessage('party_response', { inviterName, accepted, invitationId });
+        };
+        ui.social.onPartyKick = (targetId) => {
+            engine.socialController.kickPartyMember(targetId);
+        };
+        ui.social.onPartyPromote = (targetId) => {
+            engine.socialController.promotePartyMember(targetId);
+        };
+		ui.social.onPartyReadyCheck = () => {
+			engine.socialController.sendPartyMessage('party_ready_check', {});
+		};
+		ui.social.onPartyReady = (ready) => {
+			engine.socialController.sendPartyMessage('party_ready', { ready });
+		};
+        ui.social.onPartyLootRule = (rule) => {
+			engine.socialController.sendPartyMessage('party_loot_rule', { rule });
+		};
+
+        // Friends callbacks (0.38)
+        ui.social.onFriendRequest = (username) => {
+            engine.network.send('friend_request', { username });
+        };
+		ui.social.onTradeRequest = (targetName) => engine.network.send('trade_request', { targetName });
+		ui.directTrade.onOffer = (tradeId, itemIds, gold) => engine.network.send('trade_offer', { tradeId, itemIds, gold });
+		ui.directTrade.onConfirm = (tradeId) => engine.network.send('trade_confirm', { tradeId });
+		ui.directTrade.onCancel = (tradeId) => engine.network.send('trade_cancel', { tradeId });
+        ui.social.onFriendAccept = (username) => {
+            engine.network.send('friend_accept', { username });
+        };
+        ui.social.onFriendDecline = (username) => {
+            engine.network.send('friend_decline', { username });
+        };
+        ui.social.onFriendRemove = (username) => {
+            engine.network.send('friend_remove', { username });
+        };
+        const guild = ui.social.guild;
+        if (guild) {
+			guild.onEvent = payload => engine.network.send('guild_event', payload);
+			guild.onPartyInvite = username => ui.social.onPartyInvite?.(username);
+			guild.onPartyReadyCheck = () => ui.social.onPartyReadyCheck?.();
+            guild.onCreate = (name, tag) => engine.network.send('guild_create', { name, tag });
+            guild.onInvite = (username) => engine.network.send('guild_invite', { username });
+            guild.onRespond = (guildId, accept) => engine.network.send('guild_respond', { guildId, accept });
+            guild.onLeave = () => engine.network.send('guild_leave', {});
+            guild.onKick = (username) => engine.network.send('guild_kick', { username });
+            guild.onSetRank = (playerId, rank) => engine.network.send('guild_set_rank', { playerId, rank });
+            guild.onTransfer = (playerId) => engine.network.send('guild_transfer', { playerId });
+            guild.onSetMOTD = (motd) => engine.network.send('guild_set_motd', { motd });
+            guild.onDisband = () => engine.network.send('guild_disband', {});
+            guild.onClaimLeadership = () => engine.network.send('guild_claim_leader', {});
+            guild.onBankDeposit = (payload) => engine.network.send('guild_bank_deposit', payload);
+            guild.onBankWithdraw = (payload) => engine.network.send('guild_bank_withdraw', payload);
+            guild.onLeaderboard = (payload) => engine.network.send('guild_leaderboard', payload);
+        }
+        if (ui.pvp) {
+            ui.pvp.onRefresh = () => engine.network.send('pvp_get', {});
+            ui.pvp.onDuelRespond = (requesterId, challengeId, accept) => engine.network.send('duel_respond', { requesterId, challengeId, accept });
+            ui.pvp.onQueue = (teamSize, practice = false) => engine.network.send('arena_queue', { teamSize, practice });
+            ui.pvp.onLeave = () => engine.network.send('arena_leave', {});
+            ui.pvp.onLeaderboard = () => engine.network.send('pvp_leaderboard', {});
+            ui.pvp.onFlag = (enabled) => engine.network.send('pvp_flag', { enabled });
+        }
+        ui.social.onDuelRequest = (username) => engine.network.send('duel_request', { username });
+
+        ui.skillTree.onSelectBranch = (branch, requestId) => {
+            engine.network.send('selectBranch', { branch, ...(requestId ? { requestId } : {}) });
+        };
+        ui.skillTree.onUnlockSkill = (skillName) => {
+            engine.network.send('unlockSkill', { skillName });
+        };
+        ui.skillTree.onUnlockTalent = (talentId, requestId) => {
+            engine.network.send('unlockTalent', { talentId, ...(requestId ? { requestId } : {}) });
+        };
+        ui.skillTree.onResetTalents = (requestId) => {
+            engine.network.send('resetTalents', requestId ? { requestId } : {});
+        };
+        ui.skillTree.onSelectRune = (skill, runeId, requestId) => {
+            engine.network.send('select_rune', { skill, runeId, ...(requestId ? { requestId } : {}) });
+        };
+
+        ui.inventory.onStashDeposit = (itemId) => {
+            engine.network.send('stash_deposit', { itemId });
+        };
+        ui.inventory.onStashWithdraw = (itemId) => {
+            engine.network.send('stash_withdraw', { itemId });
+        };
+        ui.inventory.onUnequipRequest = (slot, itemId) => {
+            engine.network.send('unequip', { slot, ...(itemId ? { itemId } : {}) });
+        };
+        ui.inventory.onSortInventory = () => {
+            engine.network.send('inventory_sort', {});
+        };
+        ui.inventory.onLoadoutRequest = (type, payload) => engine.network.send(type, payload);
+        ui.onWardrobeRequest = (type, payload) => engine.network.send(type, payload);
+        ui.onAdminRequest = (type, payload) => engine.network.send(type, payload);
+
+        ui.forge.onForgeUpgrade = (slot, amount, expected) => {
+            engine.network.send('forge_upgrade', { slot, amount, expected });
+        };
+        ui.forge.onForgePotency = (slot, expected) => {
+            engine.network.send('forge_potency', { slot, expected });
+        };
+        ui.forge.onForgeSocket = (slot, expected) => {
+            engine.network.send('forge_socket', { slot, expected });
+        };
+        ui.forge.onForgeInsertGem = (equipSlot, gemInvIndex, socketIndex, expected) => {
+            engine.network.send('forge_insert_gem', { equipSlot, gemInvIndex, socketIndex, expected });
+        };
+        ui.forge.onForgeCombineGem = (gemIndices, expected) => {
+            engine.network.send('forge_combine_gem', { gemIndices, expected });
+        };
+        ui.forge.onForgeRemoveGem = (equipSlot, socketIndex, expected) => {
+            engine.network.send('forge_remove_gem', { equipSlot, socketIndex, expected });
+        };
+
+        ui.quest.onAcceptQuest = (questId) => {
+            engine.network.send('accept_quest', { questId });
+        };
+        ui.quest.onCompleteQuest = (questId) => {
+            engine.network.send('complete_quest', { questId });
+        };
+        ui.quest.onClaimQuestItem = (questId, itemId) => {
+            engine.network.send('claim_quest_item', { questId, itemId });
+        };
+        ui.quest.onRequestQuests = () => {
+            engine.network.send('request_quests', {});
+        };
+
+        this.bindMapCallbacks();
+    }
+
+    bindMapCallbacks() {
+        const engine = this.engine, ui = engine.uiManager;
+        ui.onMapToggle = () => engine.worldMap.toggle();
+        ui.onQuestMapFocus = questId => {
+            if (!engine.worldMap.isVisible?.()) ui.toggleWorldMap();
+            const navigation = engine.worldMap.navigation;
+            const focused = navigation?.focusQuest?.(questId) || false;
+            if (focused) queueMicrotask(() => {
+                // The ordinary map opener first focuses its canvas. A deliberate
+                // quest request then moves to the selected destination's detail.
+                if (engine.worldMap.isVisible?.() && navigation.questFocusId === questId)
+                    navigation.detail.querySelector('h3')?.focus({ preventScroll: true });
+            });
+            else ui.addChatMessage?.('System', 'This quest has no mapped target in your current area. The map shows your current surroundings.');
+            return focused;
+        };
+        ui.social.onGroupMeetingPoint = id => {
+            if (engine.currentInstanceId) {
+                ui.addChatMessage?.('System', 'Leave your current instance to view the Lanternhold meeting point on the world map.');
+                return;
+            }
+            ui.social.toggleSocial(false);
+            if (!engine.worldMap.isVisible?.()) engine.worldMap.toggle();
+            engine.worldMap.navigation?.refresh(true);
+            engine.worldMap.navigation?.select(id);
+        };
+    }
+
+    bindSessionCallbacks() {
+        const engine = this.engine;
+        const ui = engine.uiManager;
+
+        ui.toggleChat(true);
+        ui.onChatSend = (msg) => {
+            engine.network.send('chat', { message: msg, sender: engine.username });
+        };
+
+        ui.showHUD();
+        if (engine.isMobile) engine.renderSystem.updateCameraProjection();
+        ui.onRecall = () => engine.requestTownRecall();
+        ui.onRespawn = () => {
+            if (!engine.player) return;
+
+            const x = -1.25;
+            const z = 200;
+            if (engine.isMultiplayer) {
+                engine.network.send('respawn', { movementContext: crypto.randomUUID() });
+            }
+
+            engine.player.respawn(x, z);
+            engine.player.timeSinceDeath = null;
+            engine.player.targetPosition = null;
+            engine.pendingInteraction = null;
+            engine.abilityController.pendingAbilityTarget = null;
+            engine.abilityController.pendingAbilitySkill = null;
+            engine.chunkManager.updateEntityChunk(engine.player);
+            engine.renderSystem.setCameraTarget(engine.player.position);
+            engine.chunkManager.update(engine.player, 0, engine.collisionManager);
+        };
+
+        ui.onHotbarAssign = (slotIndex, skillName) => {
+            if (engine.player) {
+                if (!engine.player.hotbar) engine.player.hotbar = [null, null, null, null];
+                engine.player.hotbar[slotIndex] = skillName;
+            }
+        };
+        ui.onHotbarCast = (slotIndex) => {
+            engine.abilityController.performHotbarAbility(slotIndex);
+        };
+    }
+}

@@ -2,6 +2,10 @@
 
 This is the authoritative multiplayer server for Eidolon, written in Go.
 
+## Source layout
+
+`cmd/` contains executable entrypoints; `cmd/eidolon/` starts the game service. `internal/server/` owns the application and transport, `internal/game/` the simulation, and `internal/database/` persistence. Supporting internal packages own lifecycle, operations and other independent domains. Go tests remain with their packages; independent deployment checks live in `deploy/tests/`. See the [repository layout](../docs/development/repository-layout.md).
+
 ## Current runtime notes
 - Go module/toolchain version: `go 1.27.4` (November 15 dependency correction)
 - Persistence: MongoDB
@@ -15,7 +19,7 @@ This is the authoritative multiplayer server for Eidolon, written in Go.
 From `server/`:
 
 ```bash
-go run .
+go run ./cmd/eidolon
 ```
 
 Default local endpoint:
@@ -33,7 +37,7 @@ If you want local `wss://` for browser testing, generate a self-signed cert:
 
 ```bash
 openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/CN=localhost"
-go run . --cert=cert.pem --key=key.pem
+go run ./cmd/eidolon --cert=cert.pem --key=key.pem
 ```
 
 Then trust the certificate in your browser before testing `wss://localhost:8080/ws`.
@@ -60,7 +64,7 @@ See these docs for deployment details:
 Example Linux build:
 
 ```bash
-go build -trimpath -o eidolon-server .
+go build -trimpath -o eidolon-server ./cmd/eidolon
 ```
 
 ## Database
@@ -95,6 +99,6 @@ tokens, links, passwords or raw provider responses into reports.
 
 ## Administrator bootstrap
 
-Administrator access is a durable account role and is separate from QA access. An exact authenticated username in `EIDOLON_ADMIN_BOOTSTRAP_USERNAMES` can use `/relevel` once to persist the role without changing character level or progression. See `../docs/ADMINISTRATION.md` for the authorization and audit requirements for future administrator operations.
+Administrator access is a durable account role and is separate from QA access. An exact authenticated username in `EIDOLON_ADMIN_BOOTSTRAP_USERNAMES` can use `/relevel` once to persist the role without changing character level or progression. See `../docs/operations/administration.md` for the authorization and audit requirements for future administrator operations.
 
 The load-test driver generates cryptographically random, in-memory credentials by default. An explicit `--credentials-file` is read-only; credential files and legacy `bot_data.json` paths are ignored by Git.

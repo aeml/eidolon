@@ -2,7 +2,7 @@
 
 ## Current catalog review — October 20, 2026
 
-The [feature-freeze review](../plans/2026-10-20-feature-freeze-review.md)
+The [feature-freeze review](../records/2026/10/20/feature-freeze-review.md)
 pins the accepted Alpha 1.79.86 source/catalog, lockfiles, license/notice files
 and the original Pages artifact receipt. Existing project code and asset
 licenses are committed choices; earlier statements below about an unchosen
@@ -47,8 +47,8 @@ inputs; the final1.86/1.96 shipped-catalog rights review remains open.
 | Cleric source components | [provenance](../../assets/archetypes/Cleric/PROVENANCE.md), [supplied notice](../../assets/archetypes/Cleric/LICENSE-MAKEHUMAN-CC0.txt) | Source notices do not license the game or all derived work |
 | Ilyra appearance | [NPC source/readme](../../assets/npcs/ilyra/README.md) referencing Wizard notices | Dedicated project-authored outfit; keep inherited source references and resolve project-specific licensing with the owner |
 |252 equipment GLBs and four weapon-motion banks | [delivery manifest](../../assets/equipment/authored/manifest.json), [equipment source guide](EQUIPMENT_ASSETS.md) | Exact hashes, authoring/source paths and binding instructions exist. These are provenance/integrity evidence, not a supplied project license or final fit/art approval |
-| Twelve complete garment outfits / 96 GLBs | [garment source records](../../assets/garments/PROVENANCE.md), [output/input registry](../../src/assets/garments.generated.js), [generator](../../scripts/generate-garment-models.mjs) | Four supplied class fits at High/Low. Registry records 672 references to 168 fitted equipment inputs; source-component and project-specific rights retain their original scope |
-| Six held garment designs / twelve GLBs | [held registry](../../src/assets/heldGarments.generated.js), [generator](../../scripts/generate-held-garments.mjs) | Sword, dagger, staff, mace, shield and tome; twelve recorded grip-coordinate/size references. These source records add no separate license grant |
+| Twelve complete garment outfits / 96 GLBs | [garment source records](../../assets/garments/PROVENANCE.md), [output/input registry](../../src/assets/garments.generated.js), [generator](../../scripts/content/generate-garment-models.mjs) | Four supplied class fits at High/Low. Registry records 672 references to 168 fitted equipment inputs; source-component and project-specific rights retain their original scope |
+| Six held garment designs / twelve GLBs | [held registry](../../src/assets/heldGarments.generated.js), [generator](../../scripts/content/generate-held-garments.mjs) | Sword, dagger, staff, mace, shield and tome; twelve recorded grip-coordinate/size references. These source records add no separate license grant |
 
 The current character and wearable derivatives remain recorded in
 `assets/archetypes/runtime-selection.json` and
