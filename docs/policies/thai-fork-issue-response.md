@@ -3,7 +3,7 @@
 Thank you for asking and for your interest in bringing Eidolon to Thai players!
 I've clarified the licensing: the software uses [GNU AGPL v3](https://github.com/aeml/eidolon/blob/master/LICENSE),
 and game assets use a separate [asset share-alike license](https://github.com/aeml/eidolon/blob/master/ASSET-LICENSE).
-The [licensing guide](https://github.com/aeml/eidolon/blob/master/docs/LICENSING.md)
+The [licensing guide](https://github.com/aeml/eidolon/blob/master/docs/policies/licensing.md)
 explains the details.
 
 1. **Translation:** Yes, you may translate the UI, menus, items, quests, and other

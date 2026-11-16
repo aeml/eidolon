@@ -18,13 +18,13 @@ Tidekeeper Mace, Grovekeeper Shield and Skyweaver Tome.
 
 - [Outfit registry](../../src/assets/garments.generated.js) records every output
   file, byte length and SHA-256, plus 672 source references to 168 distinct fitted
-  equipment inputs. [The outfit generator](https://github.com/aeml/eidolon/blob/master/scripts/generate-garment-models.mjs)
+  equipment inputs. [The outfit generator](https://github.com/aeml/eidolon/blob/master/scripts/content/generate-garment-models.mjs)
   derives the outfits from that delivered equipment and its skin bindings, with
   project-specific materials and ornaments. It does not modify the supplied
   equipment inputs.
 - [Held registry](../../src/assets/heldGarments.generated.js) records the six
   designs, their twelve outputs and twelve delivered grip-coordinate/size
-  references. [The held generator](https://github.com/aeml/eidolon/blob/master/scripts/generate-held-garments.mjs)
+  references. [The held generator](https://github.com/aeml/eidolon/blob/master/scripts/content/generate-held-garments.mjs)
   produces the corresponding rigid appearances.
 - [Equipment delivery records](../equipment/authored/manifest.json) identify the
   supplied equipment. Runtime derivatives are recorded in
