@@ -1,0 +1,56 @@
+import { qaChromeLaunchOptions } from '../support/browser/browserLaunchPolicy.js';
+import { expect, test } from '@playwright/test';
+
+// Prepared wallet replies, not actual currency settlement or physical-phone QA.
+test.use({ launchOptions: qaChromeLaunchOptions({ args: ['--disable-gpu'] }) });
+for (const width of [390, 1440]) test(`EP wallet confirmation is usable at ${width}px`, async ({ page }, testInfo) => {
+    await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
+    await page.route('**/src/main.js', route => route.fulfill({ contentType: 'text/javascript', body: '' }));
+    await page.route('**/src/analytics/game.js', route => route.fulfill({ contentType: 'text/javascript', body: '' }));
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.evaluate(async (mobile) => {
+        const { EPWalletUI } = await import('/src/ui/economy/EPWalletUI.js');
+        document.getElementById('start-screen').style.display = 'none';
+        document.body.classList.toggle('mobile-mode', mobile);
+        const sheet = document.getElementById('character-sheet');
+        // Match toggleManagedWindow: phone CSS turns display:block into a
+        // column, while forcing display:flex here would create a fake row.
+        sheet.style.display = 'block';
+        const host = sheet.querySelector('.char-sheet-body');
+        host.replaceChildren();
+        window.__epRequests = [];
+        const ui = new EPWalletUI({ host, getPlayer: () => ({ id: 'ep-layout-player' }), send: (type, payload) => {
+            window.__epRequests.push({ type, payload });
+            if (type === 'get_vip_status') ui.handleVIPStatus({ playerID: 'ep-layout-player', success: true, active: true, until: '2026-10-14T00:00:00Z', monthlyEP: 100,
+                asOf: '2026-10-01T00:00:00Z', awardedEP: 0, ep: 8, gold: 3000000, goldPerEP: 1000000 });
+            else if (type === 'get_ep_wallet') ui.handleResult({ playerID: 'ep-layout-player', success: true, ep: 8, gold: 3000000, goldPerEP: 1000000 });
+            else ui.handleResult({ playerID: 'ep-layout-player', id: payload.id, success: true, pending: false, ep: 10, gold: 1000000, goldPerEP: 1000000, message: 'Exchange saved.' });
+        } });
+        ui.root.open = true;
+    }, width === 390);
+    const wallet = page.locator('.ep-wallet-panel');
+    await expect(wallet.locator('[data-balance]')).toContainText('8 EP');
+    await expect(wallet.locator('[data-vip-status]')).toContainText('100 EP per membership month');
+    await expect(wallet).toContainText('Administrator VIP follows the current account role');
+    const refresh = wallet.getByRole('button', { name: 'Refresh VIP status', exact: true });
+    await refresh.click();
+    expect((await refresh.boundingBox()).height).toBeGreaterThanOrEqual(44);
+    expect(await page.evaluate(() => window.__epRequests.filter(r => r.type === 'get_vip_status').length)).toBe(2);
+    await wallet.getByLabel('EP to receive').fill('2');
+    await wallet.getByRole('button', { name: 'Review exchange' }).click();
+    await expect(wallet.locator('[data-confirmation]')).toContainText('2,000,000 Gold');
+    await expect(wallet.locator('[data-confirmation]')).toContainText('no exchange back');
+    const confirm = wallet.getByRole('button', { name: 'Confirm permanent exchange' });
+    await confirm.scrollIntoViewIfNeeded();
+    expect((await confirm.boundingBox()).height).toBeGreaterThanOrEqual(44);
+    expect((await wallet.boundingBox()).width).toBeGreaterThan(280);
+    expect(await wallet.evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(1);
+    await page.screenshot({ path: testInfo.outputPath(`ep-confirmation-${width}.png`) });
+    await confirm.click();
+    await expect(wallet.locator('[role="status"]')).toHaveText('Exchange saved.');
+    await expect(wallet.locator('[data-balance]')).toContainText('10 EP');
+    const requests = await page.evaluate(() => window.__epRequests.filter(r => r.type === 'exchange_gold_for_ep'));
+    expect(requests).toHaveLength(1);
+    expect(requests[0].payload).toMatchObject({ amount: 2, confirmed: true });
+});

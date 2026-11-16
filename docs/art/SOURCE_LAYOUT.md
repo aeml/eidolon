@@ -46,9 +46,9 @@ imports in the moved tools remain valid because the new prefix has the same dept
 
 ## Working safely
 
-Run `node scripts/check-art-source-layout.mjs` to verify the listed delivery files,
+Run `node scripts/art/check-art-source-layout.mjs` to verify the listed delivery files,
 source locators and LFS rule without changing assets. Run
-`node scripts/generate-authored-equipment.mjs --check` for manifest hashes and the
+`node scripts/content/generate-authored-equipment.mjs --check` for manifest hashes and the
 runtime projection; `npm run check:content` covers the other generated content.
 
 The retained export/QA helpers intentionally keep their existing behavior. Some

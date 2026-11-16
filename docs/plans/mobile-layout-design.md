@@ -5,12 +5,12 @@ This is the shared design pass requested by the mobile roadmap, not a replacemen
 for its release gates. Existing phone menu improvements must be reviewed against
 the same composition rather than treated as a finished interface.
 Incremental camera, navigation, bag, conversation, build, Settings and adventure
-work is recorded in [phone evidence](mobile-playability-evidence.md); publication
-status is separate in [the execution ledger](2026-09-05-roadmap-execution.md).
+work is recorded in [phone evidence](../qa/mobile-playability-evidence.md); publication
+status is separate in [the execution ledger](../records/2026/09/05/roadmap-execution.md).
 The complete default-view encounter composition and real-device sign-off remain
 open, including party healing, software keyboards and the remaining town menus.
 
-The September 7 [shared-region/party prototype](2026-09-07-phone-camera-party.md)
+The September 7 [shared-region/party prototype](../records/2026/09/07/phone-camera-party.md)
 now implements one CSS-owned encounter reservation read by the camera. It keeps
 the established default actor scale and offsets the framing around persistent
 controls, including horizontal offset in short landscape. Current no-notch
@@ -44,7 +44,7 @@ open, and keyboard/touch navigation before closing this part of the phone gate.
 The local Alpha 1.0.33 candidate implements that status entry. Four crowded-list
 touch fixtures and the actual server shield countdown/expiry/cast/chat route now
 pass, including saved training in landscape. Short landscape uses a smaller map
-so Attack stays reachable. See [status evidence](2026-09-07-phone-status.md) for
+so Attack stays reachable. See [status evidence](../records/2026/09/07/phone-status.md) for
 the retained failures, verification and limits. This closes the emulated status
 interaction checks, not the physical-device or broader camera/HUD acceptance gate.
 
@@ -77,7 +77,7 @@ telegraph at default scale, but its sparse terrain and fixture label do not
 establish crowded encounter, restoration-world or real-device readability. Keep
 the populated campaign/combat and physical-phone acceptance gates open.
 
-September 7 follow-up: [finite notices and a one-row tracker](2026-09-07-phone-encounter-space.md)
+September 7 follow-up: [finite notices and a one-row tracker](../records/2026/09/07/phone-encounter-space.md)
 address two observed intrusions on the encounter view. The objective itself opens
 the journal; Next retains access to all selected quests. A level-up callout now
 has an actual lifetime instead of remaining indefinitely. This is an incremental

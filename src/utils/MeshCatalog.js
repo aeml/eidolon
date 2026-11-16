@@ -1,4 +1,4 @@
-import { PROCEDURAL_FOLIAGE_RECIPES } from '../art/ProceduralRealmFoliage.js';
+import { PROCEDURAL_FOLIAGE_RECIPES } from '../art/environment/foliage/ProceduralRealmFoliage.js';
 
 const PRELOAD_MODEL_PATHS = [];
 

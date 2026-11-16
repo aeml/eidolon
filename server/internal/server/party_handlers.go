@@ -1,0 +1,249 @@
+package server
+
+import (
+	"encoding/json"
+	"time"
+
+	"eidolon-server/internal/game"
+)
+
+// handleMsgPartyInvite invites a player to the caller's party, creating one if needed.
+func handleMsgPartyInvite(c *Client, msg Message) {
+	if c.playerID == "" {
+		return
+	}
+	var payload PartyInvitePayload
+	if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+		return
+	}
+
+	targetClient := activeClientByPublicName(payload.TargetName)
+	if targetClient == nil {
+		c.sendError("Player not found or offline")
+		return
+	}
+
+	// Check if self
+	if targetClient.playerID == c.playerID {
+		c.sendError("Cannot invite yourself")
+		return
+	}
+	if chatService.shouldFilter(targetClient.username, c.username) || chatService.shouldFilter(c.username, targetClient.username) {
+		c.sendError("Player is not available for party invitations")
+		return
+	}
+
+	inviter := world.GetEntityCopy(c.playerID)
+	if inviter == nil {
+		return
+	}
+
+	// Reject if target has set their social status to "busy" (0.37.4).
+	if ok, reason := world.CanReceivePartyInvite(targetClient.playerID); !ok {
+		switch reason {
+		case "busy":
+			c.sendError(clientPublicName(targetClient) + " is busy and cannot receive party invites")
+		default:
+			c.sendError("Player not available")
+		}
+		return
+	}
+
+	// Create party if not exists
+	if inviter.PartyID == "" {
+		party := world.CreateParty(c.playerID)
+		if party == nil {
+			c.sendError("Failed to create party")
+			return
+		}
+		broadcastPartyUpdate(party) // Update inviter's UI
+	} else {
+		// Check if leader
+		party := world.GetParty(inviter.PartyID)
+		if party == nil {
+			c.sendError("Party no longer exists")
+			return
+		}
+		_, leaderID, members := party.GetSnapshot()
+		party.Mu.RLock()
+		maxSize := party.MaxSize
+		party.Mu.RUnlock()
+		if leaderID != c.playerID {
+			c.sendError("Only party leader can invite")
+			return
+		}
+		if len(members) >= maxSize {
+			c.sendError("Party is full")
+			return
+		}
+	}
+
+	// Send invite to target
+	invite, err := world.IssuePartyInvitation(c.playerID, targetClient.playerID, time.Now())
+	if err != nil {
+		c.sendError(err.Error())
+		return
+	}
+	deliverPartyInvitation(c, targetClient, invite, "")
+}
+
+func deliverPartyInvitation(c, targetClient *Client, invite game.PartyInvitation, context string) {
+	reqPayload := PartyRequestPayload{
+		DisplayName:  clientPublicName(c),
+		TargetName:   c.username, // The name of the person inviting
+		InvitationID: invite.ID, Context: context,
+	}
+	reqBytes, _ := json.Marshal(reqPayload)
+	if !targetClient.sendSafe(createMessage(MsgPartyRequest, reqBytes)) {
+		_, _ = world.RespondPartyInvitation(targetClient.playerID, c.playerID, invite.ID, false, time.Now())
+		c.sendError("Invitation could not be delivered; try again when the player reconnects")
+		return
+	}
+	// A successfully delivered invite is informational, not a protocol error.
+	// Keep it in the existing system-chat surface so the player still receives
+	// visible confirmation without emitting a false console error in browsers.
+	c.sendSystemChat("Invite sent to " + clientPublicName(targetClient))
+}
+
+// handleMsgPartyResponse handles acceptance or rejection of a party invite.
+func handleMsgPartyResponse(c *Client, msg Message) {
+	if c.playerID == "" {
+		return
+	}
+	var payload PartyResponsePayload
+	if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+		return
+	}
+
+	inviterClient := getClientByUsername(payload.InviterName)
+	if inviterClient == nil {
+		c.sendError("Inviter is no longer online")
+		return
+	}
+
+	if chatService.shouldFilter(inviterClient.username, c.username) || chatService.shouldFilter(c.username, inviterClient.username) {
+		c.sendError("Player is not available for party invitations")
+		return
+	}
+
+	party, err := world.RespondPartyInvitation(c.playerID, inviterClient.playerID, payload.InvitationID, payload.Accepted, time.Now())
+	if err != nil {
+		c.sendError("Failed to join party: " + err.Error())
+		return
+	}
+
+	if party != nil {
+		broadcastPartyUpdate(party)
+	}
+}
+
+// handleMsgPartyLeave removes the caller from their current party.
+func handleMsgPartyLeave(c *Client, msg Message) {
+	if c.playerID == "" {
+		return
+	}
+	party, err := world.LeaveParty(c.playerID)
+	if err != nil {
+		c.sendError(err.Error())
+		return
+	}
+
+	// Clear client's party UI
+	emptyPayload := map[string]interface{}{
+		"partyId": "",
+		"members": []interface{}{},
+	}
+	emptyBytes, _ := json.Marshal(emptyPayload)
+	c.sendSafe(createMessage(MsgPartyUpdate, emptyBytes))
+
+	if party != nil {
+		broadcastPartyUpdate(party)
+	}
+}
+
+// handleMsgPartyKick removes a member from the caller's party (leader only).
+func handleMsgPartyKick(c *Client, msg Message) {
+	if c.playerID == "" {
+		return
+	}
+	var payload PartyKickPayload
+	if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+		return
+	}
+
+	party, err := world.KickPartyMember(c.playerID, payload.TargetID)
+	if err != nil {
+		c.sendError(err.Error())
+		return
+	}
+
+	broadcastPartyUpdate(party)
+
+	// Notify kicked player
+	targetClient := getClientByPlayerID(payload.TargetID)
+	if targetClient != nil {
+		emptyPayload := map[string]interface{}{
+			"partyId": "",
+			"members": []interface{}{},
+		}
+		emptyBytes, _ := json.Marshal(emptyPayload)
+		targetClient.sendSafe(createMessage(MsgPartyUpdate, emptyBytes))
+		targetClient.sendError("You have been kicked from the party")
+	}
+}
+
+// handleMsgPartyPromote promotes a party member to leader (leader only).
+func handleMsgPartyPromote(c *Client, msg Message) {
+	if c.playerID == "" {
+		return
+	}
+	var payload PartyPromotePayload
+	if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+		return
+	}
+
+	party, err := world.PromotePartyMember(c.playerID, payload.TargetID)
+	if err != nil {
+		c.sendError(err.Error())
+		return
+	}
+
+	broadcastPartyUpdate(party)
+}
+
+func handleMsgPartyReadyCheck(c *Client, msg Message) {
+	party, err := world.StartPartyReadyCheck(c.playerID)
+	if err != nil {
+		c.sendError(err.Error())
+		return
+	}
+	broadcastPartyUpdate(party)
+}
+
+func handleMsgPartyReady(c *Client, msg Message) {
+	var payload PartyReadyPayload
+	if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+		c.sendError("invalid ready payload")
+		return
+	}
+	party, err := world.SetPartyReady(c.playerID, payload.Ready)
+	if err != nil {
+		c.sendError(err.Error())
+		return
+	}
+	broadcastPartyUpdate(party)
+}
+
+func handleMsgPartyLootRule(c *Client, msg Message) {
+	var payload PartyLootRulePayload
+	if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+		c.sendError("invalid loot rule payload")
+		return
+	}
+	party, err := world.SetPartyLootRule(c.playerID, payload.Rule, payload.MasterLooterID)
+	if err != nil {
+		c.sendError(err.Error())
+		return
+	}
+	broadcastPartyUpdate(party)
+}

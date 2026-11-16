@@ -1,4 +1,4 @@
-import { gameplayGeometryFingerprint } from './GameplayGeometryFingerprint.js';
+import { gameplayGeometryFingerprint } from './geometry/GameplayGeometryFingerprint.js';
 import { gameplayGeometryPrecomputed } from './GameplayGeometryPrecomputed.js';
 
 // Register the message listener before awaiting the WASM-backed algorithms.
@@ -19,7 +19,7 @@ self.addEventListener('message', async ({ data: { id, kind, source } }) => {
         else {
             row = await gameplayGeometryPrecomputed(key, kind, source);
             if (!row) {
-                algorithms ||= import('./GameplayGeometryPreparation.js');
+                algorithms ||= import('./geometry/GameplayGeometryPreparation.js');
                 const { prepareGameplayGeometry } = await algorithms;
                 const result = prepareGameplayGeometry(kind, source);
                 row = { indices: result.indices, fallback: result.fallback || null };

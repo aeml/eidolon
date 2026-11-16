@@ -3,7 +3,7 @@
 export async function gameplayGeometryFixture({ quality }) {
     const phone = quality === 'low', engineModule = '/src/core/GameEngine.js';
             const { GameEngine } = await import(engineModule);
-            const { BASE_ITEMS } = await import('/src/core/ItemSystem.js');
+            const { BASE_ITEMS } = await import('/src/core/gameplay/equipment/ItemSystem.js');
             document.getElementById('start-screen').style.display = 'none';
             const game = new GameEngine('Fighter', phone, true, '', 'geometry-generation-only', null, 'flat-v1');
             const render = game.renderSystem;

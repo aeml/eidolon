@@ -7,7 +7,7 @@ Start with the [local development guide](docs/development/local-development.md),
 Eidolon is open alpha. Preserve existing accounts, story/instance IDs, inventories,
 Gold/EP ownership and the server's authority. A working asset export or green
 unit test is not final art, gameplay, capacity or release approval. Changes ship
-through the [versioned roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md)
+through the [versioned roadmap](docs/records/2026/09/28/alpha1-11-to1-99-release-roadmap.md)
 with cumulative notes and exact frontend/backend deployment checks.
 
 ## Before editing
@@ -38,13 +38,13 @@ translation support still needs its own actual coverage.
 
 | Content | Canonical input | Existing projection/check |
 | --- | --- | --- |
-| Elemental investigations | [story text](docs/plans/2026-09-07-investigation-story-content.md) and [sites](src/data/chronicleInvestigationSites.json) | `node scripts/generate-chronicle-investigations.mjs --check` |
-| Preparation hunts | [chronicle-hunts.json](server/internal/game/content/chronicle-hunts.json) | `node scripts/generate-chronicle-hunts.mjs --check` |
-| Dark Realm chapters | [dark-realm-chronicle.json](server/internal/game/content/dark-realm-chronicle.json) | `node scripts/generate-dark-realm-chronicle.mjs --check` |
-| Essential locations | [world-locations.json](server/internal/game/content/world-locations.json) | `node scripts/generate-world-locations.mjs --check` |
-| Region geography | [world-geography.json](server/internal/game/content/world-geography.json) | `node scripts/generate-world-geography.mjs --check` |
-| Scenery/optional readings | [worldPopulation.js](src/data/worldPopulation.js), [elementalPopulation.js](src/data/elementalPopulation.js) and their actual builders | `node scripts/generate-world-population.mjs --check` verifies shared spawn exclusions/reading anchors; it does not prove navigation or scenery quality |
-| Wearable assets | [delivery manifest](assets/equipment/authored/manifest.json), class runtime manifests, motion profiles and grips | `node scripts/generate-authored-equipment.mjs --check` |
+| Elemental investigations | [story text](docs/content/investigation-story.md) and [sites](src/data/chronicleInvestigationSites.json) | `node scripts/content/generate-chronicle-investigations.mjs --check` |
+| Preparation hunts | [chronicle-hunts.json](server/internal/game/content/chronicle-hunts.json) | `node scripts/content/generate-chronicle-hunts.mjs --check` |
+| Dark Realm chapters | [dark-realm-chronicle.json](server/internal/game/content/dark-realm-chronicle.json) | `node scripts/content/generate-dark-realm-chronicle.mjs --check` |
+| Essential locations | [world-locations.json](server/internal/game/content/world-locations.json) | `node scripts/content/generate-world-locations.mjs --check` |
+| Region geography | [world-geography.json](server/internal/game/content/world-geography.json) | `node scripts/content/generate-world-geography.mjs --check` |
+| Scenery/optional readings | [worldPopulation.js](src/data/worldPopulation.js), [elementalPopulation.js](src/data/elementalPopulation.js) and their actual builders | `node scripts/content/generate-world-population.mjs --check` verifies shared spawn exclusions/reading anchors; it does not prove navigation or scenery quality |
+| Wearable assets | [delivery manifest](assets/equipment/authored/manifest.json), class runtime manifests, motion profiles and grips | `node scripts/content/generate-authored-equipment.mjs --check` |
 | Cosmetics | [vendor catalog](server/internal/game/content/cosmetics.json) and [earned catalog](server/internal/game/content/season-cosmetics.json) | Existing `generate-cosmetics.mjs` writes the projection; run it deliberately, review its diff and use `AuthoredAssetCatalog.test.js`/`CosmeticVendor.test.js` |
 
 For generators supporting `--check`, omission of the flag deliberately writes

@@ -4,17 +4,17 @@
 
 Latest public patch: **Alpha 1.80.2**, source `b3889294cb3c0db234f54f854e6d7151865692b8` /
 original [CI 39497820995](https://github.com/aeml/eidolon/actions/runs/39497820995), all ten jobs, both deployments/live QA and exact
-public verification passed. The [playable-shore/ocean correction](docs/plans/2026-10-20-release1-80-2-acceptance.md)
+public verification passed. The [playable-shore/ocean correction](docs/records/releases/1.80.2/2026-10-20-acceptance.md)
 keeps movement on canonical land and improves the ocean's water presentation.
-The [previous fence correction](docs/plans/2026-10-20-release1-80-1-acceptance.md),
+The [previous fence correction](docs/records/releases/1.80.1/2026-10-20-acceptance.md),
 accepted feature boundary below and all remaining beta requirements remain.
 
 The **Alpha 1.80.0 feature freeze was accepted and deployed** at source
 `805e7219ce1d1595184ee030a115bdcb0ea00134` / original [CI 39356611063](https://github.com/aeml/eidolon/actions/runs/39356611063).
 All ten jobs, both deployments/live QA and exact artifact/public checks pass.
-[Acceptance](docs/plans/2026-10-20-release1-80-0-acceptance.md) records scope and exclusions.
+[Acceptance](docs/records/releases/1.80.0/2026-10-20-acceptance.md) records scope and exclusions.
 
-F1–F5 now define the frozen feature boundary. The [review](docs/plans/2026-10-20-feature-freeze-review.md)
+F1–F5 now define the frozen feature boundary. The [review](docs/records/2026/10/20/feature-freeze-review.md)
 reconciles 85 promises and 69 pre-freeze milestones; the owner confirmed the
 operating baseline. The thirteen named workgroups retain all original art,
 performance, human/device/audio, recovery/capacity, rights and beta/launch gates.
@@ -26,14 +26,14 @@ operations and consolidation work before 1.90 beta review.
 ## Historical checkpoint — October 18, 2026
 
 Alpha 1.79.80 is the verified live frontend/backend, with database ready. Its
-experimental Fighter appearance is opt-in. [Acceptance](docs/plans/2026-10-18-release1-79-80-meshy-fighter.md).
+experimental Fighter appearance is opt-in. [Acceptance](docs/records/releases/1.79.80/2026-10-18-meshy-fighter.md).
 
 Alpha 1.79.81 is merged and pushed to master, including three-second recall and
 quest-object casts, outside-click window dismissal, melee contact, walkable
 roofs and the town-style Earth fence. NPC quest acceptance and turn-in remain
 immediate. The phone cast panel is also clear of the movement/action controls.
-[Release plan](docs/plans/2026-10-18-release1-79-81-roofs-and-interactions.md).
-[Phone qualification](docs/plans/2026-10-18-mobile-cast-control-layout.md).
+[Release plan](docs/records/releases/1.79.81/2026-10-18-roofs-and-interactions.md).
+[Phone qualification](docs/records/2026/10/18/mobile-cast-control-layout.md).
 
 Local evidence includes eight API/Mongo cases, six connected native gameplay
 cases on the original runtime, the subsequent jump-endpoint/clock corrections,
@@ -42,8 +42,8 @@ source and evidence scopes. The aggregate recovery fixture now budgets the four
 required living-character recall casts; all eight original cases pass unchanged.
 The publication escape fixture avoids unrelated vendor copying and keeps its
 original five-second limit, with stronger source-integrity checks. Earlier
-failed runs remain failures. [Recovery budget](docs/plans/2026-10-18-release1-79-81-recovery-watchdog.md).
-[Publication fixture](docs/plans/2026-10-18-release1-79-81-publication-escape-fixture.md).
+failed runs remain failures. [Recovery budget](docs/records/releases/1.79.81/2026-10-18-recovery-watchdog.md).
+[Publication fixture](docs/records/releases/1.79.81/2026-10-18-publication-escape-fixture.md).
 
 The earlier source `966d5639a917919dea813b39a3162e506aa8dfca` passed all five
 hosted jobs in [CI39122629755](https://github.com/aeml/eidolon/actions/runs/39122629755),
@@ -52,7 +52,7 @@ instant recall during a jump. A disposable reproduction confirms the server
 correctly cancels that moving cast. The corrected route verifies cancellation,
 landing and a fresh three-second recall; all four enabled release-smoke cases
 pass, and the existing separately selected long-jump case remains skipped.
-[Qualification](docs/plans/2026-10-18-dungeon-stationary-recall-qualification.md).
+[Qualification](docs/records/2026/10/18/dungeon-stationary-recall-qualification.md).
 The selected QA corrections also inspect encoded JSON reporter attachments
 before artifact publication. The corrected81 source still requires its own
 complete CI, deployment and public-asset verification. Earlier failures remain
@@ -88,14 +88,14 @@ remove two High/one Low submissions, with the additional High shadow triangles
 recorded. The masonry component adds no texture, material, module or permanent browser case.
 Original geometry/observer failures and superseded accounting remain retained.
 [Component](docs/art/2026-10-17-dungeon-masonry-and-ambush-piers.md).
-[Assembly](docs/plans/2026-10-17-room-masonry-assembly.md).
+[Assembly](docs/records/2026/10/17/room-masonry-assembly.md).
 This is a bounded masonry improvement; sparse room architecture/dressing and
 final modern art remain open. Alpha1.79.78 is accepted after its own exact
 CI/deployment/public verification. The native wardrobe fixture now waits for exact intended real gear on both
 clients when a full outfit hides an equipment change. One focused Fighter case
 passes all nine phases with zero retries; game runtime and cosmetic rules remain
 unchanged. Both earlier failed CI attempts stay frozen, with deployments skipped.
-[Wardrobe correction](docs/plans/2026-10-18-release1-79-79-wardrobe-readiness-correction.md).
+[Wardrobe correction](docs/records/releases/1.79.79/2026-10-18-wardrobe-readiness-correction.md).
 The dedicated loot fixture now prepares ordinary bag capacity after its ability
 encounter and before its guaranteed loot kill. A controlled native comparison
 reproduces the old full-bag refusal, then verifies the corrected real pickup,
@@ -103,7 +103,7 @@ original gear, owned stash item, equipment, EP and saved fresh login with zero
 retries. Game inventory rules and all original pickup assertions stay unchanged.
 D2's completed CI and both deployments remain recorded, but its configured live
 retry kept it unaccepted; the original failure stays frozen without a waiver.
-[Loot correction](docs/plans/2026-10-18-release1-79-79-loot-readiness-correction.md).
+[Loot correction](docs/records/releases/1.79.79/2026-10-18-loot-readiness-correction.md).
 The fourth corrected source's client job exhausted a reused Jest worker's4GB
 heap after803suites/12,517tests passed; four combo-notification cases never ran.
 The test harness now retires workers between completed suites after768MB idle
@@ -112,7 +112,7 @@ the original combo/engine-lifetime suites pass all11cases with coverage. Every
 original Jest field, assertion, coverage threshold and concurrency policy stays.
 Game runtime/assets/server, both fixture corrections, version and notes remain.
 This source needs a fresh full pipeline; the failed client result is not waived.
-[Worker lifetime](docs/plans/2026-10-18-release1-79-79-jest-worker-lifetime.md).
+[Worker lifetime](docs/records/releases/1.79.79/2026-10-18-jest-worker-lifetime.md).
 The fifth source005/CI39092994270 passes804client suites/12,521tests,
 server and hosted browser jobs, plus146native cases. One Fighter wardrobe case
 fails before engine startup after220module downloads report ERR_NETWORK_CHANGED;
@@ -140,7 +140,7 @@ preserve the chosen branch alongside saved quest offers through reconnect.
 51 CI-policy checks/four suites and the
 469-case exact hosted partition pass. One UI module and two permanent browser
 cases are added. This is not native GPU, campaign pacing or physical-device
-acceptance. [Quest and specialization](docs/plans/2026-10-18-specialization-unlock-and-quest-equipment-rewards.md).
+acceptance. [Quest and specialization](docs/records/2026/10/18/specialization-unlock-and-quest-equipment-rewards.md).
 This prepared release still requires its own exact CI and live acceptance.
 Full original game/world/art/combat/audio/performance/device/security/operations/
 owner/F1-F5/beta/1.99 scope stays active. Human campaign/phone feedback and
@@ -156,7 +156,7 @@ receipt assertions, adds a level9 refusal, and selects at level10.34focused
 Go race checks pass, with five explicit opt-in skips. Runtime rules and all
 original failures remain retained; this correction needs its own complete CI
 and deployment acceptance.
-[Fixture correction](docs/plans/2026-10-18-level10-legacy-branch-fixture.md).
+[Fixture correction](docs/records/2026/10/18/level10-legacy-branch-fixture.md).
 
 Alpha 1.79.78 is deployed and verified with verified standalone recovery points, selected
 SSH transfer and an updated promise register. Operators can explicitly capture
@@ -182,12 +182,12 @@ acceptable lost progress, restore time and retention remain owner decisions.
 The promise register adds garments, quest/Lore/window quality, centered garment
 slots and road layers while preserving all71prior rows; scoped delivery does
 not close final art, supported-device, feature-freeze or beta gates.
-[Assembly](docs/plans/2026-10-17-recovery-tooling-assembly.md).
-[Standalone recovery](docs/plans/2026-10-17-standalone-recovery-qualification.md).
-[Selected transfer](docs/plans/2026-10-17-backup-transfer-qualification.md).
+[Assembly](docs/records/2026/10/17/recovery-tooling-assembly.md).
+[Standalone recovery](docs/records/2026/10/17/standalone-recovery-qualification.md).
+[Selected transfer](docs/records/2026/10/17/backup-transfer-qualification.md).
 Alpha 1.79.77 is accepted after its exact CI/deployment/public verification.
 All ten CI jobs pass. Fresh normal-TLS verification matches both78 identities, ready database, open registration, flat terrain and all393 asset pins at 2026-10-17T22:57:43.766027+00:00.
-[Acceptance](docs/plans/2026-10-17-release1-79-78-acceptance.md).
+[Acceptance](docs/records/releases/1.79.78/2026-10-17-acceptance.md).
 Full original game/
 world/art/combat/audio/performance/device/security/operations/owner/F1-F5/beta/
 1.99 scope stays active. Human campaign/phone feedback and soak/stress remain
@@ -215,11 +215,11 @@ game/combat/audio/performance/device/security/operations/owner/F1-F5/beta/1.99 s
 remains active. Sparse/repeating rooms, moving world/combat quality, original
 performance limits and final owner review remain open. Human campaign/phone
 feedback and soak/stress are deferred, not passed.
-[Assembly](docs/plans/2026-10-17-quest-map-and-entry-assembly.md).
-[CI correction](docs/plans/2026-10-17-release1-79-77-ci-correction.md).
-[Quest guidance](docs/plans/2026-10-17-direct-quest-map-guidance.md).
+[Assembly](docs/records/2026/10/17/quest-map-and-entry-assembly.md).
+[CI correction](docs/records/releases/1.79.77/2026-10-17-ci-correction.md).
+[Quest guidance](docs/records/2026/10/17/direct-quest-map-guidance.md).
 All ten CI jobs pass. Fresh normal-TLS verification matches both77 identities, ready database, open registration, flat terrain and all393 asset pins at 2026-10-17T21:34:48.249899+00:00.
-[Acceptance](docs/plans/2026-10-17-release1-79-77-acceptance.md).
+[Acceptance](docs/records/releases/1.79.77/2026-10-17-acceptance.md).
 Public access, progression and supplied actor/equipment assets are unchanged.
 
 
@@ -236,9 +236,9 @@ dispatch after cancellation. Every return preserves the retained128geometry/
 High/Low; this is resource ownership proof, not frame-time or device acceptance.
 The exact accepted75 delivery reproduces the scheduled-callback finding in
 all eight observations. Its failure and a zero-test discovery error are retained.
-[Qualification](docs/plans/2026-10-17-geometry-preparation-quiescence.md).
+[Qualification](docs/records/2026/10/17/geometry-preparation-quiescence.md).
 All ten CI jobs pass. Fresh normal-TLS verification matches both76 identities, ready database, open registration, flat terrain and all389 asset pins at 2026-10-17T19:34:17.755523+00:00.
-[Acceptance](docs/plans/2026-10-17-release1-79-76-acceptance.md).
+[Acceptance](docs/records/releases/1.79.76/2026-10-17-acceptance.md).
 Full world/art/game/combat/audio/device/performance/operations/owner/F1-F5/beta/
 1.99 scope remains active. Human campaign/phone feedback and soak/stress are deferred.
 Public access, progression and supplied actor/equipment assets are unchanged.
@@ -256,11 +256,11 @@ four exact equipment-release cycles. The legacy High fitted-source comparison
 still fails identically in accepted74/current controls and remains open.
 Focused and software audio evidence checks
 the warning envelope; human listening and busy-party performance remain open.
-[Assembly](docs/plans/2026-10-17-warning-audio-and-actor-batching-assembly.md).
-[Warning mix](docs/plans/2026-10-17-danger-audio-mix.md).
-[Hidden actors](docs/plans/2026-10-17-hidden-actor-color-batches.md).
+[Assembly](docs/records/2026/10/17/warning-audio-and-actor-batching-assembly.md).
+[Warning mix](docs/records/2026/10/17/danger-audio-mix.md).
+[Hidden actors](docs/records/2026/10/17/hidden-actor-color-batches.md).
 All ten CI jobs pass. Fresh normal-TLS verification matches both75 identities, ready database, open registration, flat terrain and all388 asset pins at 2026-10-17T17:33:01.217826+00:00.
-[Acceptance](docs/plans/2026-10-17-release1-79-75-acceptance.md).
+[Acceptance](docs/records/releases/1.79.75/2026-10-17-acceptance.md).
 Full world/art/game/combat/audio/device/performance/operations/owner/F1-F5/beta/
 1.99 scope remains active. Human campaign/phone feedback and soak/stress are deferred.
 Public access, progression and supplied actor/equipment assets are unchanged.
@@ -279,13 +279,13 @@ Grounded bracken/sedge use coherent leaf detail with unchanged plant positions,
 geometry counts, wind and canopy treatment. Ordinary native views and moving
 outfits retain their original limits; source/candidate close views still exceed
 their original budgets. No rejected renderer shortcut is included.
-[Assembly](docs/plans/2026-10-17-lore-and-leaf-assembly.md).
-[Lore qualification](docs/plans/2026-10-17-lore-people-and-places.md).
-[Leaf component review](docs/plans/2026-10-17-understory-surface-component-review.md).
-[Witness reading](docs/plans/2026-10-17-witness-reading-continuity.md).
-[Retained native findings](docs/plans/2026-10-17-close-camera-native-attribution.md).
+[Assembly](docs/records/2026/10/17/lore-and-leaf-assembly.md).
+[Lore qualification](docs/records/2026/10/17/lore-people-and-places.md).
+[Leaf component review](docs/records/2026/10/17/understory-surface-component-review.md).
+[Witness reading](docs/records/2026/10/17/witness-reading-continuity.md).
+[Retained native findings](docs/records/2026/10/17/close-camera-native-attribution.md).
 All ten CI jobs pass. Fresh normal-TLS verification matches both74 identities, ready database, open registration, flat terrain and all385 asset pins at 2026-10-17T15:58:23.905124+00:00.
-[Acceptance](docs/plans/2026-10-17-release1-79-74-acceptance.md).
+[Acceptance](docs/records/releases/1.79.74/2026-10-17-acceptance.md).
 Broader world/art/game/audio/device/performance/operations/owner/F1-F5/beta/1.99
 scope stays active. Human campaign/phone feedback and soak/stress remain deferred.
 Public access, earned progression and supplied actor/equipment assets are unchanged.
@@ -303,14 +303,14 @@ the original scene limits; cold-wide and close-camera/global performance finding
 remain open. Five Player Guide paragraphs explain garments, Journal/Lore Book
 tasks and device-local window positions. The assembly reuses exact qualified
 runtime and HTML bytes; unselected leaf-surface experiments are excluded.
-[Assembly qualification](docs/plans/2026-10-17-world-quality-assembly-qualification.md).
-[Court qualification](docs/plans/2026-10-17-town-court-material-qualification.md).
-[Elemental markers](docs/plans/2026-10-17-elemental-story-grounding-qualification.md).
-[Low fallback](docs/plans/2026-10-17-low-residential-fallback-findings.md).
-[Guide checks](docs/plans/2026-10-17-player-guide-new-features.json).
-[Close-camera finding](docs/plans/2026-10-17-close-camera-rendering-finding.md).
+[Assembly qualification](docs/records/2026/10/17/world-quality-assembly-qualification.md).
+[Court qualification](docs/records/2026/10/17/town-court-material-qualification.md).
+[Elemental markers](docs/records/2026/10/17/elemental-story-grounding-qualification.md).
+[Low fallback](docs/records/2026/10/17/low-residential-fallback-findings.md).
+[Guide checks](docs/records/2026/10/17/player-guide-new-features.json).
+[Close-camera finding](docs/records/2026/10/17/close-camera-rendering-finding.md).
 All ten corrected-source CI jobs pass. Fresh normal-TLS verification matches both73 identities, ready database, open registration, flat terrain and all380 asset pins at 2026-10-17T14:34:51.974410+00:00.
-[Acceptance](docs/plans/2026-10-17-release1-79-73-acceptance.md).
+[Acceptance](docs/records/releases/1.79.73/2026-10-17-acceptance.md).
 Broader world/art/game/audio/device/performance/operations/owner/F1-F5/beta/1.99
 scope stays active. Human campaign/phone feedback and soak/stress remain deferred.
 Public access, earned progression and supplied actor/equipment assets are unchanged.
@@ -332,12 +332,12 @@ fixtures, not frame-time, physical-device or earned-progression acceptance.
 Modal exits synchronously release their own focused control, repairing the
 retained71 keyboard-remapping flaky finding. Native controls remain protected
 while open;54 focused checks and both unchanged keyboard browser cases pass.
-[Record qualification](docs/plans/2026-10-17-dark-record-architecture-qualification.md).
-[Material qualification](docs/plans/2026-10-17-dark-paving-material-qualification.md).
-[Marker qualification](docs/plans/2026-10-17-dark-record-marker-qualification.md).
-[Focus qualification](docs/plans/2026-10-17-modal-keyboard-focus-qualification.md).
+[Record qualification](docs/records/2026/10/17/dark-record-architecture-qualification.md).
+[Material qualification](docs/records/2026/10/17/dark-paving-material-qualification.md).
+[Marker qualification](docs/records/2026/10/17/dark-record-marker-qualification.md).
+[Focus qualification](docs/records/2026/10/17/modal-keyboard-focus-qualification.md).
 All ten CI jobs pass. Fresh normal-TLS verification matches both72 identities, ready database, open registration, flat terrain and all380 asset pins at 2026-10-17T12:51:20.503638+00:00.
-[Acceptance](docs/plans/2026-10-17-release1-79-72-acceptance.md).
+[Acceptance](docs/records/releases/1.79.72/2026-10-17-acceptance.md).
 Broader district/world composition, art/game/performance/readiness/owner/beta
 gates stay open. Human campaign/phone feedback and soak/stress remain deferred.
 Full original goal active; public access and progression rules are unchanged.
@@ -356,8 +356,8 @@ delivery observations persist independently of the browser reporter. Published
 garment source records preserve the supplied notices; final rights review remains
 open.
 All ten CI jobs pass. Fresh normal-TLS verification matches both71 identities, ready database, open registration, flat terrain and all378 asset pins at 2026-10-17T11:08:12.194414+00:00. Hosted browser results retain450 clean passes,13 skips and one keyboard-focus flaky case; its qualified repair is queued for72, not counted as a clean pass here.
-[Acceptance](docs/plans/2026-10-17-release1-79-71-acceptance.md).
-[Qualification](docs/plans/2026-10-17-instance-grounding-qualification.md).
+[Acceptance](docs/records/releases/1.79.71/2026-10-17-acceptance.md).
+[Qualification](docs/records/2026/10/17/instance-grounding-qualification.md).
 Broader world/art/game/performance/readiness/owner/beta gates remain open. Human
 pacing, physical-phone feedback and soak/stress remain deferred. Full goal active.
 
@@ -367,7 +367,7 @@ ground-marker scope. All ten jobs qualify after one documented live-job repeat: 
 451 hosted browser passes / 13 skips, 140 native passes / one skip and live checks.
 Normal-TLS 370 pins, both identities, ready database, open registration, flat
 terrain and analytics match at 2026-10-17T08:04:38.667797+00:00.
-[Acceptance](docs/plans/2026-10-17-release1-79-70-acceptance.md).
+[Acceptance](docs/records/releases/1.79.70/2026-10-17-acceptance.md).
 Native High/Low fitted-arena views and public/VIP marker comparisons, plus actual
 four-class practice duels, qualify the scope. Broader art/game/performance/
 readiness/owner/beta gates remain open. Human pacing/physical-phone feedback and
@@ -379,7 +379,7 @@ material/indoor-atmosphere scope. All ten CI jobs pass: 790 client suites /
 12,265 tests, 451 hosted browser passes / 13 skips, 140 native passes / one skip and
 live/recovery/rested-party checks. Normal-TLS 369 pins, both identities, ready
 database, open registration, flat terrain and analytics match at 2026-10-17T06:27:37.443767+00:00.
-[Acceptance](docs/plans/2026-10-17-release1-79-69-acceptance.md).
+[Acceptance](docs/records/releases/1.79.69/2026-10-17-acceptance.md).
 Native fitted-crowd views and actual connected casino entry/settlement/reconnect/
 guard/menu-recall checks pass within scope. High full-hall medians remain failed
 for both prior/candidate art; broader game/performance/final-art/readiness/owner/
@@ -392,7 +392,7 @@ Fire/Air rigid-rig scope. All ten CI jobs pass: 790 client suites / 12,263 tests
 451 hosted browser passes / 13 skips, 140 native passes / one skip and live/
 recovery/rested-party checks. Normal-TLS 368 pins, both identities, ready database,
 open registration, flat terrain and analytics match at 2026-10-17T03:39:26.185328+00:00.
-[Acceptance](docs/plans/2026-10-17-release1-79-68-acceptance.md).
+[Acceptance](docs/records/releases/1.79.68/2026-10-17-acceptance.md).
 Current-rig Fire/Air walks and party/save checks pass within scope; moving draw
 peaks of 492/360 and Air's 33.2 ms party median retain original performance
 findings. Broader game/readiness/owner/beta gates remain open. Human pacing,
@@ -405,7 +405,7 @@ pass: 789 client suites / 12,080 tests, 451 hosted browser passes / 13 skips,
 100 native passes / one skip and live/recovery/rested-party checks. Normal-TLS
 366 pins, both identities, ready database, open registration, flat terrain and
 analytics match at 2026-10-17T00:02:22.342936+00:00.
-[Acceptance](docs/plans/2026-10-17-release1-79-67-acceptance.md).
+[Acceptance](docs/records/releases/1.79.67/2026-10-17-acceptance.md).
 Moving draw peaks and original performance, broader art/game/readiness/owner/
 beta gates remain open. Human pacing/physical-phone feedback and soak/stress
 remain deferred. The full original goal remains active.
@@ -416,7 +416,7 @@ scope. All ten CI jobs pass: 789 client suites / 12,075 tests, 451 hosted
 browser passes / 13 skips, 98 native passes / one skip and first-attempt live,
 recovery and rested-party checks. Normal-TLS 366 pins, both identities, ready
 database, open registration, flat terrain and analytics match at 2026-10-16T21:00:17.637704+00:00.
-[Acceptance](docs/plans/2026-10-16-release1-79-66-acceptance.md).
+[Acceptance](docs/records/releases/1.79.66/2026-10-16-acceptance.md).
 The initial workflow parsing failure is retained with its block-scalar correction
 and regression check. High shader churn correction is not whole-game FPS
 acceptance; Low/Medium retain borrowed materials after inconclusive Low cost data.
@@ -431,7 +431,7 @@ All ten CI jobs pass: 787 client suites / 12,054 tests, 451 hosted browser
 passes / 13 skips, 92 native passes / one skip and first-attempt live/recovery/party
 checks. Normal-TLS 363 asset pins, both identities, ready database, open registration,
 flat terrain and analytics match at 2026-10-16T17:29:43.935838+00:00.
-[Acceptance](docs/plans/2026-10-16-release1-79-65-acceptance.md).
+[Acceptance](docs/records/releases/1.79.65/2026-10-16-acceptance.md).
 The separate High-party 33.3/49.9 ms frame finding remains above retained 20/33.4 ms
 limits. Original performance, broader art/game/readiness and owner gates stay open.
 Installed-host TLS/logging activation needs an administrator. Human pacing,
@@ -444,7 +444,7 @@ scope. All ten CI jobs pass: 785 client suites / 12,046 tests,
 451 hosted browser passes / 13 skips, 92 native passes / one skip and first-attempt
 live/recovery/party checks. Fresh normal-TLS 362 asset pins, both identities,
 ready database, open registration and flat terrain match at 2026-10-16T15:39:02.254518+00:00.
-[Acceptance](docs/plans/2026-10-16-release1-79-64-acceptance.md).
+[Acceptance](docs/records/releases/1.79.64/2026-10-16-acceptance.md).
 The town-batching regression remains rejected and isolated. Original performance
 findings and broader game/readiness gates remain open. Installed-host TLS/logging
 activation needs an administrator. Human pacing, physical-phone feedback and
@@ -456,7 +456,7 @@ wardrobe and query-free Pages delivery-diagnostics scope. All ten CI jobs pass:
 785 client suites / 12,044 tests, 451 hosted browser passes / 13 skips, 89 native passes / one
 skip and first-attempt live/recovery/party passes. Fresh normal-TLS 362 asset pins,
 both identities, ready database, open registration and flat terrain match at 2026-10-16T12:18:22.987413+00:00.
-[Acceptance](docs/plans/2026-10-16-release1-79-63-acceptance.md).
+[Acceptance](docs/records/releases/1.79.63/2026-10-16-acceptance.md).
 Installed-host TLS/logging activation remains pending an administrator; template
 publication does not change the live Nginx file. Earlier transport findings,
 original performance failures and full game/readiness gates remain open. Human
@@ -468,7 +468,7 @@ cap/root, phone garment text, saved-session wardrobe and secure-template scope.
 All ten CI jobs pass:785client suites/12044tests,451hosted browser passes/13skips,
 88native passes/one skip and first-attempt live/recovery/party passes. Fresh
 normal-TLS362asset pins, both identities, readyDB, open registration and flat
-terrain match at2026-10-16T10:26:30.161423+00:00. [Acceptance](docs/plans/2026-10-16-release1-79-62-acceptance.md).
+terrain match at2026-10-16T10:26:30.161423+00:00. [Acceptance](docs/records/releases/1.79.62/2026-10-16-acceptance.md).
 Installed host TLS activation remains pending an administrator; template
 publication does not change the live Nginx file. Earlier transport findings and
 the full original game/readiness gates remain open. Human pacing/physical-phone
@@ -481,80 +481,80 @@ entrance and analytics startup scope. All ten CI jobs pass: 785 client suites /
 and first-attempt live, recovery and party passes. Fresh normal-TLS checks match
 359 asset pins, both identities, a ready database, open registration and flat
 terrain at 2026-10-16T08:18:03.708942+00:00.
-[Acceptance](docs/plans/2026-10-16-release1-79-61-acceptance.md).
+[Acceptance](docs/records/releases/1.79.61/2026-10-16-acceptance.md).
 Earlier transport failures and full original game/readiness gates remain open.
 Soak/stress and human pacing/physical-phone feedback remain deferred.
 
 
-October16 previous accepted public checkpoint: Alpha1.79.60/exact`800f3acef` is accepted within guild-menu continuity and inactive invitation preparation scope. All ten ordered CI jobs pass. Normal-TLS356pins/identities/readyDB/open-registration/flat-profile match with an initial publicHTTP408 and configured live geometry-load retry retained. [Acceptance](docs/plans/2026-10-16-release1-79-60-acceptance.md). Full original goal and quality/owner/F1–F5/beta/release gates remain open; alpha access unchanged. [Remaining work](docs/plans/2026-10-09-release-readiness-remaining.md).
+October16 previous accepted public checkpoint: Alpha1.79.60/exact`800f3acef` is accepted within guild-menu continuity and inactive invitation preparation scope. All ten ordered CI jobs pass. Normal-TLS356pins/identities/readyDB/open-registration/flat-profile match with an initial publicHTTP408 and configured live geometry-load retry retained. [Acceptance](docs/records/releases/1.79.60/2026-10-16-acceptance.md). Full original goal and quality/owner/F1–F5/beta/release gates remain open; alpha access unchanged. [Remaining work](docs/plans/release-readiness.md).
 
 Historical documentation-push observation at `d1a04f16b`:
 its redeployment passed both deployments, but live recovery retained an HTTP408
 module-load failure. Fresh normal-TLS351asset/identity checks pass; that later
-workflow is not fully accepted. [Finding](docs/plans/2026-10-16-receipt59-redeployment-finding.md).
+workflow is not fully accepted. [Finding](docs/records/2026/10/16/receipt59-redeployment-finding.md).
 
-Historical October 13 checkpoint: Alpha1.79.49/exact`8e5f888a` is accepted live within qualified town aprons, exact character color batching, Dark Realm masonry, private disposable smoke and active-cutaway shutdown scope. OwnCI38346406878attempt1 all ten ordered jobs succeeded05:15:55UTC:756client suites/11343tests,351browser passes/10skips,59required native passes/1skip; live8first-attempt passes/1skip/0flakes plus recovery2/rested-party1. Four optional stages remain skips. Fresh15:10:30UTC normal-TLS157asset hashes/bytes, frontend/backend identities, readyDB and analyticsJS match. Original crowded-town performance, earlier network failures, failed41soak and full readiness gates remain open. [Accepted49](docs/plans/2026-10-13-public49-terminal-qualification.json). Historical checkpoints below retain their dated evidence. [Current remaining work](docs/plans/2026-10-09-release-readiness-remaining.md).
+Historical October 13 checkpoint: Alpha1.79.49/exact`8e5f888a` is accepted live within qualified town aprons, exact character color batching, Dark Realm masonry, private disposable smoke and active-cutaway shutdown scope. OwnCI38346406878attempt1 all ten ordered jobs succeeded05:15:55UTC:756client suites/11343tests,351browser passes/10skips,59required native passes/1skip; live8first-attempt passes/1skip/0flakes plus recovery2/rested-party1. Four optional stages remain skips. Fresh15:10:30UTC normal-TLS157asset hashes/bytes, frontend/backend identities, readyDB and analyticsJS match. Original crowded-town performance, earlier network failures, failed41soak and full readiness gates remain open. [Accepted49](docs/records/2026/10/13/public49-terminal-qualification.json). Historical checkpoints below retain their dated evidence. [Current remaining work](docs/plans/release-readiness.md).
 
-Alpha1.79.48/exact`9b536c1c` ownCI38338720250attempt1 failed predeploy disposable inventory/Journal reload:144engine-module ERR_NETWORK_CHANGED failures prevent engine startup. All five initial jobs and55preceding native cases passed; smoke3passed/1skipped/1failed. Production validation/both deployments/liveQA skipped; accepted47 stays public. Original failure/artifact retained, no retry/waiver; private-network smoke qualification next, exact interface cause unproven. [Failure](docs/plans/2026-10-13-release48-predeploy-network-failure.json). Full original goal remains active.
+Alpha1.79.48/exact`9b536c1c` ownCI38338720250attempt1 failed predeploy disposable inventory/Journal reload:144engine-module ERR_NETWORK_CHANGED failures prevent engine startup. All five initial jobs and55preceding native cases passed; smoke3passed/1skipped/1failed. Production validation/both deployments/liveQA skipped; accepted47 stays public. Original failure/artifact retained, no retry/waiver; private-network smoke qualification next, exact interface cause unproven. [Failure](docs/records/2026/10/13/release48-predeploy-network-failure.json). Full original goal remains active.
 
-The49 publication and retained initial copied-build failure are now resolved within the acceptance above. [Publication](docs/plans/2026-10-13-release49-masonry-publication.json).
+The49 publication and retained initial copied-build failure are now resolved within the acceptance above. [Publication](docs/records/2026/10/13/release49-masonry-publication.json).
 
-Alpha1.79.43/exact`d7de00d8` is accepted live with Lanternhold homes, strolling residents, blended gate roads, combat recipient resilience and qualified map-focus/district work. All ten ordered CI38208653308attempt1 jobs passed, including741client suites/11014tests, both deployments and liveQA. Fresh15:39:35UTC normal-TLS checks match all121assets, frontend/backend identities and readyDB. Four optional QA steps remain skipped. Crowded-town/High frame and Low plaza triangle failures remain open; full original goal active. [Acceptance](docs/plans/2026-10-12-public43-terminal-qualification.json).
+Alpha1.79.43/exact`d7de00d8` is accepted live with Lanternhold homes, strolling residents, blended gate roads, combat recipient resilience and qualified map-focus/district work. All ten ordered CI38208653308attempt1 jobs passed, including741client suites/11014tests, both deployments and liveQA. Fresh15:39:35UTC normal-TLS checks match all121assets, frontend/backend identities and readyDB. Four optional QA steps remain skipped. Crowded-town/High frame and Low plaza triangle failures remain open; full original goal active. [Acceptance](docs/records/2026/10/12/public43-terminal-qualification.json).
 
 > Project by [Robert Mendola](https://mendola.tech)
 >
 > Current-status pointers refreshed: October 12, 2026
 
-This is the product-level roadmap and historical Alpha 1.0 closeout record. The authoritative forward plan is [Alpha 1.11–1.99: playable beta to release readiness](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md). Per-patch history lives in `index.html`; implementation and release evidence lives under `docs/`.
+This is the product-level roadmap and historical Alpha 1.0 closeout record. The authoritative forward plan is [Alpha 1.11–1.99: playable beta to release readiness](docs/records/2026/09/28/alpha1-11-to1-99-release-roadmap.md). Per-patch history lives in `index.html`; implementation and release evidence lives under `docs/`.
 
 ## Current Snapshot
 
-- Alpha1.79.41/exact`defdb64e` is accepted live: all ten ordered CI38196589643 attempt1 jobs passed; fresh03:35:51UTC normal-TLS checks match109asset hashes/bytes, frontend/backend identity and readyDB. Four optional steps remain skipped. Alpha1.79.42 failed before deployment; its qualified district/map source is included with town/transport work in published43, now accepted within its retained scope. Full original readiness requirements remain open. [Acceptance](docs/plans/2026-10-12-public41-terminal-qualification.json).
+- Alpha1.79.41/exact`defdb64e` is accepted live: all ten ordered CI38196589643 attempt1 jobs passed; fresh03:35:51UTC normal-TLS checks match109asset hashes/bytes, frontend/backend identity and readyDB. Four optional steps remain skipped. Alpha1.79.42 failed before deployment; its qualified district/map source is included with town/transport work in published43, now accepted within its retained scope. Full original readiness requirements remain open. [Acceptance](docs/records/2026/10/12/public41-terminal-qualification.json).
 
-- Alpha 1.79.40 is accepted live at `5e98360a4cd7aa8c48aecebaa7bf826d6066e795`. Corrective CI38189518140 attempt1 passed all ten ordered jobs, including 733 client suites/10,925 tests, server race checks, three browser shards, native predeployment checks and live QA. Fresh 01:35:56 UTC normal-TLS checks match frontend/backend identities, ready database and all 101 served asset sizes/SHA. Ordinary quests pay 75% and dungeon story quests 125% of their content-level bar, with a two-level turn-in ceiling and 62 smaller regional chapters. Existing earned progression, paid receipts and access remain intact. Original stale QA reader failure is retained; human pacing remains owner-deferred. [Acceptance](docs/plans/2026-10-12-public40-terminal-qualification.json).
+- Alpha 1.79.40 is accepted live at `5e98360a4cd7aa8c48aecebaa7bf826d6066e795`. Corrective CI38189518140 attempt1 passed all ten ordered jobs, including 733 client suites/10,925 tests, server race checks, three browser shards, native predeployment checks and live QA. Fresh 01:35:56 UTC normal-TLS checks match frontend/backend identities, ready database and all 101 served asset sizes/SHA. Ordinary quests pay 75% and dungeon story quests 125% of their content-level bar, with a two-level turn-in ceiling and 62 smaller regional chapters. Existing earned progression, paid receipts and access remain intact. Original stale QA reader failure is retained; human pacing remains owner-deferred. [Acceptance](docs/records/2026/10/12/public40-terminal-qualification.json).
 
-- Alpha1.79.37/exact`92c7392e9be5cbc2d2a2771b17cd4f83fa012d62` is accepted live. CI38169083772attempt1 passed all10ordered jobs, with4optional stages skipped. Fresh20:29:43UTC normal-TLS checks match frontend/backend identities, readyDB and all86served asset sizes/SHA. Original fac failure remains recorded; the corrective cast/delayed-impact guard, Forge and buyback work are accepted within retained scope. [Acceptance](docs/plans/2026-10-11-public37-terminal-qualification.json).
+- Alpha1.79.37/exact`92c7392e9be5cbc2d2a2771b17cd4f83fa012d62` is accepted live. CI38169083772attempt1 passed all10ordered jobs, with4optional stages skipped. Fresh20:29:43UTC normal-TLS checks match frontend/backend identities, readyDB and all86served asset sizes/SHA. Original fac failure remains recorded; the corrective cast/delayed-impact guard, Forge and buyback work are accepted within retained scope. [Acceptance](docs/records/2026/10/11/public37-terminal-qualification.json).
 
-- Corrective Alpha1.79.39/exact`a1ebc4046a294ac315b97d9e86e9057a6f13294b` is accepted live. CI38178405817attempt2 passed all10ordered jobs; four optional stages remain skipped. Fresh22:56:11UTC normal-TLS checks match frontend/backend identities, readyDB and all93served asset sizes/SHA. Original stale-audit failure and attempt1 live network/HTTP408 failure remain recorded; one failed-job-only rerun passed on unchanged source. Cold geometry, connected frame-time, memory, physical-device and final-art gates remain open. [Acceptance](docs/plans/2026-10-11-public39-terminal-qualification.json).
+- Corrective Alpha1.79.39/exact`a1ebc4046a294ac315b97d9e86e9057a6f13294b` is accepted live. CI38178405817attempt2 passed all10ordered jobs; four optional stages remain skipped. Fresh22:56:11UTC normal-TLS checks match frontend/backend identities, readyDB and all93served asset sizes/SHA. Original stale-audit failure and attempt1 live network/HTTP408 failure remain recorded; one failed-job-only rerun passed on unchanged source. Cold geometry, connected frame-time, memory, physical-device and final-art gates remain open. [Acceptance](docs/records/2026/10/11/public39-terminal-qualification.json).
 
-- Alpha1.79.38/exact`91ee3ec85ed13a643025c047bbaba5eba14528d7` is accepted live. CI38172700682attempt1 passed all10ordered jobs, with4optional stages skipped. Fresh21:28:05UTC normal-TLS checks match frontend/backend identities, readyDB and all86served asset sizes/SHA. Per-job geometry signature reuse and the master-only branch consolidation are accepted within retained scope. [Acceptance](docs/plans/2026-10-11-public38-terminal-qualification.json).
+- Alpha1.79.38/exact`91ee3ec85ed13a643025c047bbaba5eba14528d7` is accepted live. CI38172700682attempt1 passed all10ordered jobs, with4optional stages skipped. Fresh21:28:05UTC normal-TLS checks match frontend/backend identities, readyDB and all86served asset sizes/SHA. Per-job geometry signature reuse and the master-only branch consolidation are accepted within retained scope. [Acceptance](docs/records/2026/10/11/public38-terminal-qualification.json).
 
-- Reproducible precomputed supplied-character geometry is qualified and ordinarily merged into local master`11d9b911`, included in accepted39, within the retained qualification scope.133 exact initial/equipped inputs use a777321-byte immutable artifact; all109 original outputs remain exact.142 distinct focused checks/ten suites, three native copied-publication/offline cases, all12 content groups and lint pass. Same-source generation is byte-exact; corrupt/missing/changed data retains original fallback. Peak memory, first-frame performance and existing cold-triangle/frame-time failures remain open. [Qualification](docs/plans/2026-10-11-precomputed-geometry-qualification.json).
+- Reproducible precomputed supplied-character geometry is qualified and ordinarily merged into local master`11d9b911`, included in accepted39, within the retained qualification scope.133 exact initial/equipped inputs use a777321-byte immutable artifact; all109 original outputs remain exact.142 distinct focused checks/ten suites, three native copied-publication/offline cases, all12 content groups and lint pass. Same-source generation is byte-exact; corrupt/missing/changed data retains original fallback. Peak memory, first-frame performance and existing cold-triangle/frame-time failures remain open. [Qualification](docs/records/2026/10/11/precomputed-geometry-qualification.json).
 
-- Geometry preparation now reuses exact signatures within each job; selected source`143be329` is ordinarily merged into local master`03fa966f`, included and accepted in38 within retained scope.71focused checks/four suites pass. Six native High/Low observations preserve all152reference-job input fingerprints and complete output indices across109unique input/output pairs; candidate worker wall times improve in both qualities against both references. Cold triangle and connected frame-time failures remain open; this is preparation latency evidence, not FPS/art/device acceptance. [Qualification](docs/plans/2026-10-11-geometry-signature-preparation-qualification.json).
+- Geometry preparation now reuses exact signatures within each job; selected source`143be329` is ordinarily merged into local master`03fa966f`, included and accepted in38 within retained scope.71focused checks/four suites pass. Six native High/Low observations preserve all152reference-job input fingerprints and complete output indices across109unique input/output pairs; candidate worker wall times improve in both qualities against both references. Cold triangle and connected frame-time failures remain open; this is preparation latency evidence, not FPS/art/device acceptance. [Qualification](docs/records/2026/10/11/geometry-signature-preparation-qualification.json).
 
-- Alpha1.79.36/exact`aee9c3dba85da6f11555439a3ad4476597aaada3` is accepted live. CI38161891123 attempt1 passed all ten jobs. Fresh normal-TLS checks at18:52:03UTC match frontend/backend identities, ready database and all82served asset hashes/byte counts. Four optional stages remain skips.448distinct prepublication focused checks/six suites and four native publication cases pass, retries/skips0;12versions align and471notes preserve all470prior entries byte-exact. [Publication](docs/plans/2026-10-11-release36-publication.json). [Acceptance](docs/plans/2026-10-11-public36-terminal-qualification.json).
+- Alpha1.79.36/exact`aee9c3dba85da6f11555439a3ad4476597aaada3` is accepted live. CI38161891123 attempt1 passed all ten jobs. Fresh normal-TLS checks at18:52:03UTC match frontend/backend identities, ready database and all82served asset hashes/byte counts. Four optional stages remain skips.448distinct prepublication focused checks/six suites and four native publication cases pass, retries/skips0;12versions align and471notes preserve all470prior entries byte-exact. [Publication](docs/records/2026/10/11/release36-publication.json). [Acceptance](docs/records/2026/10/11/public36-terminal-qualification.json).
 
-- Forge gem keyboard choices and identity/focus continuity are qualified and merged locally as`eeade50f` for a later coherent milestone.68distinct focused checks/seven suites and four distinct Chrome desktop/phone cases pass; one reproduced reorder-visibility failure and original fixture correction are retained. Included and accepted in corrective37, within its retained scope. [Qualification](docs/plans/2026-10-11-forge-gem-keyboard-qualification.json).
+- Forge gem keyboard choices and identity/focus continuity are qualified and merged locally as`eeade50f` for a later coherent milestone.68distinct focused checks/seven suites and four distinct Chrome desktop/phone cases pass; one reproduced reorder-visibility failure and original fixture correction are retained. Included and accepted in corrective37, within its retained scope. [Qualification](docs/records/2026/10/11/forge-gem-keyboard-qualification.json).
 
-- Merchant buyback keyboard and price controls are qualified and merged locally as`49b50d7b`. Native item buttons show quantities and exact total Gold prices, preserve focus/scroll across refresh and reordering, and refuse obsolete, ambiguous or invalid choices.65focused checks/five suites and two Chrome desktop/phone cases pass;359mandatory browser cases are discovered exactly once. Included and accepted in corrective37, within its retained scope. [Qualification](docs/plans/2026-10-11-buyback-keyboard-qualification.json).
+- Merchant buyback keyboard and price controls are qualified and merged locally as`49b50d7b`. Native item buttons show quantities and exact total Gold prices, preserve focus/scroll across refresh and reordering, and refuse obsolete, ambiguous or invalid choices.65focused checks/five suites and two Chrome desktop/phone cases pass;359mandatory browser cases are discovered exactly once. Included and accepted in corrective37, within its retained scope. [Qualification](docs/records/2026/10/11/buyback-keyboard-qualification.json).
 
-- Owner-requested master-only cleanup has consolidated all old local/remote tips into local master`4a1a4176`, retaining the selected source tree exactly.653local and50remote old branch names are removed; only master remains locally and on origin.129existing working trees retain identical HEAD/index/status/changed-file hashes, including465original dirty paths. Superseded/unselected experiments remain archived rather than enabled. The archive tag is published and verified; All old tips are now ancestors of published origin/master91ee3ec8. [Archive and preservation](docs/plans/2026-10-11-master-only-branch-consolidation.json).
+- Owner-requested master-only cleanup has consolidated all old local/remote tips into local master`4a1a4176`, retaining the selected source tree exactly.653local and50remote old branch names are removed; only master remains locally and on origin.129existing working trees retain identical HEAD/index/status/changed-file hashes, including465original dirty paths. Superseded/unselected experiments remain archived rather than enabled. The archive tag is published and verified; All old tips are now ancestors of published origin/master91ee3ec8. [Archive and preservation](docs/records/2026/10/11/master-only-branch-consolidation.json).
 
 - Previous accepted public release: Alpha1.79.35, exact
 `ade204b800faa2cba8eacf1da71b100590e88d87`, CI38154778403 attempt1.
 All ten ordered jobs succeed. Fresh post-terminal normal-TLS frontend/backend
 identities, ready database and all78served asset hashes/byte counts match at
 17:02:13UTC. Four optional stages remain skips.
-[Acceptance](docs/plans/2026-10-11-public35-terminal-qualification.json).
+[Acceptance](docs/records/2026/10/11/public35-terminal-qualification.json).
 - Coherent35 combines qualified guild/venue/build-menu/direct-trade work.
 728distinct focused checks/17suites and two native publication cases pass;
 12versions align35;470cumulative notes preserve all469prior entries byte-exact.
-[Publication](docs/plans/2026-10-11-release35-publication.json).
-[Prepublication](docs/plans/2026-10-11-release35-menu-review-prepublication.json).
+[Publication](docs/records/2026/10/11/release35-publication.json).
+[Prepublication](docs/records/2026/10/11/release35-menu-review-prepublication.json).
 - Before the master-only cleanup above,592of653local branch names were ancestors of master;61unmerged histories still required review. Completed content-validation, environment and selected Earth ground histories
 are merged and included in the pushed36 milestone. Prior34 failures remain
 retained in its historical acceptance receipt.
-- The [remaining-work register](docs/plans/2026-10-09-release-readiness-remaining.md) tracks original world/art/gameplay/device/performance/operations/F1–F5/beta/launch/handoff gaps. High frame-time counterexamples remain open. The current 100-client soak38109009521 is still running, not capacity certification. Owner-deferred uninterrupted campaign/pacing and physical-phone review remain for playtests. Feature freeze and closed beta are not approved by these scoped releases.
+- The [remaining-work register](docs/plans/release-readiness.md) tracks original world/art/gameplay/device/performance/operations/F1–F5/beta/launch/handoff gaps. High frame-time counterexamples remain open. The current 100-client soak38109009521 is still running, not capacity certification. Owner-deferred uninterrupted campaign/pacing and physical-phone review remain for playtests. Feature freeze and closed beta are not approved by these scoped releases.
 
-- Working-candidate and verified-live versions are tracked separately in the [execution ledger](docs/plans/2026-09-05-roadmap-execution.md). The login screen shows its build's version; a locally prepared candidate is not automatically deployed.
+- Working-candidate and verified-live versions are tracked separately in the [execution ledger](docs/records/2026/09/05/roadmap-execution.md). The login screen shows its build's version; a locally prepared candidate is not automatically deployed.
 - Accepted group clears cover all four elemental repair raids, Umbral Nexus and the Dark King, with the exact prepared-party/saved-continuation scopes in the release record. Earned Air/Tempest is also accepted. On September27 the user assigned uninterrupted campaign and pacing validation to their playtest; do not run another long automated campaign or mark those checks passed.
-- Historical October4 acceptance: `Alpha 1.73.0`, exact `ad59bffbeb0f471d27da125f7bc5c0c1b3d95619`, CI37201238962 passed all ten jobs. Post-terminal public IPv4 checks confirmed matching identities, database readiness, login/cumulative notes and five exact changed-UI/bootstrap/recovery runtime files. [Acceptance receipt](docs/plans/2026-10-04-release1-73-public-acceptance.json) distinguishes passed QA from skipped fresh GPU/animation coverage and both earlier fixture failures. Durable valuable-operation recovery and earned reward custody through schema22 are live. Four-class models, fitted equipment, effects, equipment-type tooltips and permanently dressed Ilyra remain delivered; moderation, social/casino and Postmark recovery releases are live. Actual inbox delivery, modern-art approval, human pacing, physical-phone party play and IPv6/DDNS remain separate.1.74 administration is assembled, not yet accepted live.
-- The shared Dark Realm and55-chapter campaign are deployed, including24 added chapters,38 discoveries and six optional conversational residents. Connected first-expedition and fresh-opening checks passed. The full campaign/raid/finale route and approximately100 hours to level100 plus8–12 hours in the Dark Realm remain for the user's playtest, not additional agent campaign automation. See the [campaign integration and remaining work](docs/plans/2026-09-21-campaign-pacing-and-dark-realm.md).
+- Historical October4 acceptance: `Alpha 1.73.0`, exact `ad59bffbeb0f471d27da125f7bc5c0c1b3d95619`, CI37201238962 passed all ten jobs. Post-terminal public IPv4 checks confirmed matching identities, database readiness, login/cumulative notes and five exact changed-UI/bootstrap/recovery runtime files. [Acceptance receipt](docs/records/releases/1.73/2026-10-04-public-acceptance.json) distinguishes passed QA from skipped fresh GPU/animation coverage and both earlier fixture failures. Durable valuable-operation recovery and earned reward custody through schema22 are live. Four-class models, fitted equipment, effects, equipment-type tooltips and permanently dressed Ilyra remain delivered; moderation, social/casino and Postmark recovery releases are live. Actual inbox delivery, modern-art approval, human pacing, physical-phone party play and IPv6/DDNS remain separate.1.74 administration is assembled, not yet accepted live.
+- The shared Dark Realm and55-chapter campaign are deployed, including24 added chapters,38 discoveries and six optional conversational residents. Connected first-expedition and fresh-opening checks passed. The full campaign/raid/finale route and approximately100 hours to level100 plus8–12 hours in the Dark Realm remain for the user's playtest, not additional agent campaign automation. See the [campaign integration and remaining work](docs/records/2026/09/21/campaign-pacing-and-dark-realm.md).
 - The 1.10 candidate addresses early-story/regional XP gaps and unpayable late Forge potency costs while preserving saved contracts and gear. Its sequential forecast supports the 2–3-hour first-dungeon / roughly100-hour level-cap targets, not measured human completion. Late-game repeat-content pacing remains a playtest priority. Physical-phone dungeon/party feedback is user-deferred and nonblocking.
-- Forward scope: [1.11–1.99 roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md). Per the owner's latest decision,1.20/1.40 remain open-alpha quality milestones. Closed beta waits until the game is nearly complete, targeted for the1.90 readiness review after1.80 feature freeze; release readiness remains1.99. Existing accounts/characters stay; new beta players are invited, up to100 planned. Support uses in-game reports with an administrator-only JSON viewer. No automatic beta transition or unmeasured capacity promise. The [1.1–1.10 plan](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md) remains the inherited scope.
+- Forward scope: [1.11–1.99 roadmap](docs/records/2026/09/28/alpha1-11-to1-99-release-roadmap.md). Per the owner's latest decision,1.20/1.40 remain open-alpha quality milestones. Closed beta waits until the game is nearly complete, targeted for the1.90 readiness review after1.80 feature freeze; release readiness remains1.99. Existing accounts/characters stay; new beta players are invited, up to100 planned. Support uses in-game reports with an administrator-only JSON viewer. No automatic beta transition or unmeasured capacity promise. The [1.1–1.10 plan](docs/records/2026/09/05/v1-1-to-v1-10-roadmap.md) remains the inherited scope.
 - Physical resonance portal delivered in 1.12: Lanternhold (28, 235), east of the Dungeon Guide, with personal server-enforced eligibility. Guide entry remains compatible. Later population/atlas and beta gates remain open; a version number is not full roadmap completion.
-- Phone UI work and the user's positive general-use feedback are retained. Actual dungeon/party phone feedback is user-deferred; further supported-device validation and launch support decisions are planned in 1.18, 1.47 and 1.95. See the [original mobile requirements](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
+- Phone UI work and the user's positive general-use feedback are retained. Actual dungeon/party phone feedback is user-deferred; further supported-device validation and launch support decisions are planned in 1.18, 1.47 and 1.95. See the [original mobile requirements](docs/records/2026/09/05/v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
 - The planned `0.50`, `0.60`, `0.70`, `0.80`, and `0.90` bands are implemented in the working tree
 - Historical Alpha 1.0 architecture measurements: `world.go` 1,422 LOC, `main.go` 938, `GameEngine.js` 2,310, and `UIManager.js` 1,216 (not current measurements).
 - Release identity is aligned across the browser, server health endpoint, container defaults, deploy scripts, isolated QA, and CI
@@ -660,20 +660,20 @@ The user supplies actor models only (player classes, monsters/bosses and NPCs).
 Environment/equipment geometry, textures/materials, lighting, shaders, effects
 and integration remain code-owned, as detailed in the visual contract.
 
-The [populated-world and atlas contract](docs/plans/2026-09-28-world-population-and-atlas.md)
+The [populated-world and atlas contract](docs/records/2026/09/28/world-population-and-atlas.md)
 adds purposeful landmarks, roads, camps, ambient life, discoveries and working
 optional activities, plus an accurate modern world map/minimap. First-pass
 coverage is required before closed beta; later realm milestones refine it.
-The [execution goal](goal.md) is to complete, test, publish and live-verify each
+The [execution goal](docs/plans/goal.md) is to complete, test, publish and live-verify each
 milestone in order, then continue; Luna monitors deployments.
 
-The [complete release roadmap](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md)
+The [complete release roadmap](docs/records/2026/09/28/alpha1-11-to1-99-release-roadmap.md)
 defines all 89 minor milestones, deliverables, evidence, dependencies, inherited
 rules, decision points and beta/full-release gates. **1.32 is accepted live**
 (CI36496302108, exact8a68685b); **1.33 is in local development**. Later milestones
 remain planned, not delivered.
 
-Owner-expanded 1.33 scope: [complete class-kit rework](docs/plans/2026-09-28-class-kit-rework.md)
+Owner-expanded 1.33 scope: [complete class-kit rework](docs/records/2026/09/28/class-kit-rework.md)
 for all twelve specializations, including single-branch combos. Wizard's two
 non-Pyromancer branches and all Fighter branches lead the pass, followed by
 Rogue and Cleric. Existing skill/talent selections and gear remain preserved;
@@ -701,16 +701,16 @@ continents and Jev bots are not automatic launch prerequisites.
 ### Inherited 1.10 foundation and evidence
 
 The September 7 scope addition requires a
-[progression/economy balancing pass and eight realm investigations](docs/plans/2026-09-07-progression-balance-and-investigations.md).
+[progression/economy balancing pass and eight realm investigations](docs/records/2026/09/07/progression-balance-and-investigations.md).
 Reduced reward/drop budgets, the current XP curve, the expanded55-chapter
 Chronicle and realm diary/discovery or magical-disturbance sites are delivered.
 Earned regional continuations and all four elemental raid repair routes have
 scoped acceptance; uninterrupted campaign/economy/pacing validation belongs to
 the user's playtest. Follow the
-[current integration audit](docs/plans/2026-09-14-final-integration-audit.md)
+[current integration audit](docs/records/2026/09/14/final-integration-audit.md)
 rather than treating the historical staging plan as unimplemented content.
 
-The [1.1–1.10 plan](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md) records the preceding foundation scope. Its dated release instructions are historical; newly confirmed blockers ship in an appropriate current corrective patch, not by restarting the 1.0.x sequence. The new forward roadmap inherits outstanding promises without reimplementing accepted work.
+The [1.1–1.10 plan](docs/records/2026/09/05/v1-1-to-v1-10-roadmap.md) records the preceding foundation scope. Its dated release instructions are historical; newly confirmed blockers ship in an appropriate current corrective patch, not by restarting the 1.0.x sequence. The new forward roadmap inherits outstanding promises without reimplementing accepted work.
 
 ### Phone-first playability — a release requirement
 
@@ -733,7 +733,7 @@ from remaining actual-device validation.
 Success means normal play without maximum zoom-out, browser zoom, or forced
 rotation; readable text and separated touch targets; and verified town, combat,
 inventory, quest and dungeon flows on actual iOS and Android phones. The detailed
-[mobile acceptance gates](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13)
+[mobile acceptance gates](docs/records/2026/09/05/v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13)
 retain their evidence requirements. The user has confirmed general mobile UI
 looks good and deferred dungeon/party feedback; neither erases implemented UI
 work nor proves every device. The forward plan owns remaining support decisions.
@@ -741,11 +741,11 @@ work nor proves every device. The forward plan owns remaining support decisions.
 ## Supporting Documents
 
 - [Engineering roadmap pointer](docs/ROADMAP.md)
-- [Alpha 1.0 release-band closeout](docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md)
-- [Alpha 1.0 implementation record](docs/plans/2026-05-03-v1-0-implementation-plan.md)
-- [Protocol compatibility policy](docs/PROTOCOL.md)
-- [Architecture](docs/ARCHITECTURE.md)
-- [Live browser QA checklist](docs/plans/live-browser-qa-checklist.md)
+- [Alpha 1.0 release-band closeout](docs/records/2026/04/18/alpha-1-0-roadmap-and-status.md)
+- [Alpha 1.0 implementation record](docs/records/2026/05/03/v1-0-implementation-plan.md)
+- [Protocol compatibility policy](docs/development/protocol.md)
+- [Architecture](docs/development/architecture.md)
+- [Live browser QA checklist](docs/qa/live-browser-qa-checklist.md)
 
 ## License
 

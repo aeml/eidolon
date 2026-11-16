@@ -1,14 +1,14 @@
 import * as THREE from 'three';
-import { Fighter } from './entities/Fighter.js';
-import { Rogue } from './entities/Rogue.js';
-import { Wizard } from './entities/Wizard.js';
-import { Cleric } from './entities/Cleric.js';
-import { AvengingSeraph } from './entities/AvengingSeraph.js';
-import { Actor } from './entities/Actor.js';
-import { AreaOfEffect } from './entities/AreaOfEffect.js';
-import { Projectile } from './entities/Projectile.js';
-import { LootDrop } from './entities/LootDrop.js';
-import { createTransientEffect } from './core/TransientEffects.js';
+import { Fighter } from './entities/players/Fighter.js';
+import { Rogue } from './entities/players/Rogue.js';
+import { Wizard } from './entities/players/Wizard.js';
+import { Cleric } from './entities/players/Cleric.js';
+import { AvengingSeraph } from './entities/summons/AvengingSeraph.js';
+import { Actor } from './entities/base/Actor.js';
+import { AreaOfEffect } from './entities/effects/AreaOfEffect.js';
+import { Projectile } from './entities/effects/Projectile.js';
+import { LootDrop } from './entities/interactions/LootDrop.js';
+import { createTransientEffect } from './core/gameplay/combat/TransientEffects.js';
 import { CONSTANTS } from './core/Constants.js';
 import { MeshFactory } from './utils/MeshFactory.js';
 import {
@@ -18,39 +18,39 @@ import {
     isAbilityVisualLayerEnabled,
     listPlayerAbilityPresentationVariants,
     listPlayerAbilityPresentations
-} from './skills/abilityVisualManifest.js';
-import { ACTOR_ANIMATION_MANIFEST, listActorAnimationEntries } from './entities/actorAnimationManifest.js';
-import { BASE_ITEMS } from './core/ItemSystem.js';
+} from './skills/shared/abilityVisualManifest.js';
+import { ACTOR_ANIMATION_MANIFEST, listActorAnimationEntries } from './entities/base/actorAnimationManifest.js';
+import { BASE_ITEMS } from './core/gameplay/equipment/ItemSystem.js';
 import {
     EQUIPMENT_RENDER_SLOTS,
     EQUIPMENT_VISUAL_DESCRIPTORS
-} from './art/ProceduralEquipment.js';
-import { getAbilityAoeRadius } from './skills/abilityRadii.js';
-import { PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS } from './art/ProceduralProjectileEffects.js';
+} from './art/equipment/ProceduralEquipment.js';
+import { getAbilityAoeRadius } from './skills/shared/abilityRadii.js';
+import { PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS } from './art/effects/ProceduralProjectileEffects.js';
 import {
     PROCEDURAL_STATUS_EFFECT_DEFINITIONS,
     getProceduralStatusEffectCacheMetrics
-} from './art/ProceduralStatusEffects.js';
-import { getProceduralAbilityCastCacheMetrics } from './art/ProceduralAbilityCasts.js';
+} from './art/effects/ProceduralStatusEffects.js';
+import { getProceduralAbilityCastCacheMetrics } from './art/effects/ProceduralAbilityCasts.js';
 import {
     PROCEDURAL_PROJECTILE_IMPACT_DEFINITIONS,
     getProceduralProjectileImpactCacheMetrics
-} from './art/ProceduralProjectileImpacts.js';
+} from './art/effects/ProceduralProjectileImpacts.js';
 import {
     PROCEDURAL_COMBAT_FEEDBACK_DEFINITIONS,
     getProceduralCombatFeedbackCacheMetrics
-} from './art/ProceduralCombatFeedback.js';
+} from './art/effects/ProceduralCombatFeedback.js';
 import {
     PROCEDURAL_ABILITY_ICON_DEFINITIONS,
     PROCEDURAL_ITEM_ICON_DEFINITIONS,
     getProceduralAbilityIcon,
     getProceduralIconCacheMetrics,
     getProceduralItemIcon
-} from './art/ProceduralIcons.js';
+} from './art/icons/ProceduralIcons.js';
 import {
     PROCEDURAL_LOOT_IDENTITIES,
     getProceduralLootCacheMetrics
-} from './art/ProceduralLoot.js';
+} from './art/environment/props/ProceduralLoot.js';
 
 const PLAYER_TYPES = Object.freeze({ Fighter, Rogue, Wizard, Cleric });
 const PLAYER_TYPE_NAMES = Object.freeze(Object.keys(PLAYER_TYPES));

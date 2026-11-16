@@ -9,8 +9,8 @@ export default {
         '^three/addons/(.*)$': '<rootDir>/node_modules/three/examples/jsm/$1'
     },
     setupFiles: [
-        '<rootDir>/tests/setupEnvironment.js',
-        '<rootDir>/tests/setup.js'
+        '<rootDir>/tests/support/setup/setupEnvironment.js',
+        '<rootDir>/tests/support/setup/setup.js'
     ],
     testPathIgnorePatterns: [
         '<rootDir>/tests/e2e/'

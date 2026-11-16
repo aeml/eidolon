@@ -1,0 +1,1353 @@
+import * as THREE from 'three';
+import { createOceanWaterMaterial } from '../../art/rendering/materials/OceanWaterMaterial.js';
+import { createVisualMotionClock } from '../input/MotionPreference.js';
+import { createRendererWithGraphicsError } from '../GraphicsStartup.js';
+import { prefersReducedMotion } from '../input/MotionPreference.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
+import { CONSTANTS } from '../Constants.js';
+import { SceneryVisibility } from './SceneryVisibility.js';
+import { ActorContactShadows } from './shadows/ActorContactShadows.js';
+import { ActorInstanceBatches } from '../../art/rendering/ActorInstanceBatches.js';
+import { ActorGameplayGeometryRuntime } from '../geometry/ActorGameplayGeometryRuntime.js';
+import { OpaqueSkinnedShadowRuntime } from './shadows/OpaqueSkinnedShadowRuntime.js';
+import { OpaqueSkinnedColorRuntime } from './shadows/OpaqueSkinnedColorRuntime.js';
+import { updateFoliageRenderQuality } from '../../art/rendering/FoliageRenderBatches.js';
+import { updateElementalGroundCoverQuality } from '../../art/environment/world/ElementalGroundCover.js';
+import { getShadowViewBounds } from './shadows/ShadowViewCoverage.js';
+import { FoliageShadowInfluence } from './shadows/FoliageShadowInfluence.js';
+import { cacheUnchangedLocalMatrix } from './UnchangedLocalMatrix.js';
+import { WORLD_REGIONS } from '../../data/worldGeography.js';
+import { createRealmGroundMesh } from '../../art/environment/world/RealmGroundMesh.js';
+import { createProceduralReflectionEnvironment } from '../../art/rendering/lighting/ProceduralReflectionEnvironment.js';
+import { CASINO_INTERIOR_LIGHTING } from '../../art/environment/casino/CasinoInteriorLighting.js';
+import {
+    DUNGEON_THEME_KEYS,
+    createRegionLightingPresets,
+    createRegionParticleConfigs
+} from '../../art/environment/dark/darkFantasyTheme.js';
+import {
+    PROCEDURAL_TERRAIN_DEFINITIONS,
+    createProceduralTerrainMaterial,
+    createProceduralTerrainTexture
+} from '../../art/environment/world/ProceduralRealmTerrain.js';
+
+const DUNGEON_THEME_KEY_SET = new Set(DUNGEON_THEME_KEYS);
+const RAID_ENVIRONMENT_THEMES = Object.freeze({
+    dark_realm: 'umbral_nexus',
+    earth_crystal_raid: 'verdant_bastion_catacombs',
+    water_crystal_raid: 'abyssal_well',
+    fire_crystal_raid: 'molten_core',
+    air_crystal_raid: 'tempest_spire',
+    weekly_raid: 'umbral_nexus'
+});
+
+export class RenderSystem {
+    constructor(isMobile = false) {
+        this.scene = new THREE.Scene();
+        // Background/ground/water assets are loaded via `preloadEnvironment()`.
+        // Keep a non-black fallback so the scene isn't empty if loading fails.
+        this.scene.background = new THREE.Color(0x9eb4c9);
+        
+        // Optimization: Mobile Settings
+        this.isMobile = isMobile;
+        this.graphicsQuality = 'high';
+        try {
+            const savedQuality = localStorage.getItem('eidolon.graphicsQuality');
+            if (['low', 'medium', 'high'].includes(savedQuality)) this.graphicsQuality = savedQuality;
+        } catch { /* Storage is optional; retain the existing default. */ }
+
+        // Camera Setup (Isometric Orthographic)
+        this.currentZoom = CONSTANTS.CAMERA.ZOOM;
+        try {
+            const saved = localStorage.getItem(this.isMobile ? 'eidolon.phoneCameraZoom' : 'eidolon.cameraZoom');
+            const zoom = Number(saved);
+            if (saved !== null && Number.isFinite(zoom)) {
+                this.currentZoom = Math.max(CONSTANTS.CAMERA.MIN_ZOOM, Math.min(CONSTANTS.CAMERA.MAX_ZOOM, zoom));
+            }
+        } catch { /* Camera remains usable when browser storage is unavailable. */ }
+        this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 2000);
+        this.updateCameraProjection();
+        
+        // Isometric rotation
+        this.cameraOffset = new THREE.Vector3(100, 100, 100);
+        this.cameraTarget = new THREE.Vector3(0, 0, 0);
+        this.updateCamera();
+        
+        // Renderer
+        // Optimization: Disable antialias on mobile for performance
+        // Firefox Optimization: alpha: false (we have a background), stencil: false (unused)
+        const isFirefox = /firefox/i.test(navigator.userAgent);
+        
+        this.renderer = createRendererWithGraphicsError({
+            antialias: !this.isMobile && !isFirefox, // Disable AA on Firefox for performance
+            powerPreference: "high-performance",
+            alpha: false,
+            stencil: false
+        }, options => new THREE.WebGLRenderer(options));
+        
+        // Optimization: Cap pixel ratio to save fill rate on high DPI screens
+        // Firefox: Cap at 1.0 to ensure smooth framerate
+        const maxPixelRatio = isFirefox ? 1.0 : (this.isMobile ? 1.0 : 1.5);
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
+        
+        this.renderer.setSize(window.innerWidth, window.innerHeight, false);
+        this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+        // Roll bright metal/elemental light into display range rather than
+        // clipping it; OutputPass uses this same curve on the bloom path.
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.toneMappingExposure = 1.45;
+        this.reflectionEnvironment = createProceduralReflectionEnvironment();
+        this.scene.environment = this.reflectionEnvironment;
+        this.scene.environmentIntensity = 0.65;
+        // Mobile preset: shadows are a major GPU cost; disable entirely on mobile.
+        this.renderer.shadowMap.enabled = !this.isMobile;
+        this.renderer.shadowMap.autoUpdate = true;
+        this.renderer.shadowMap.needsUpdate = true;
+        // Optimization: Prefer filtered soft shadows for readable shape fidelity.
+        // Firefox keeps PCF shadows here too because the visual quality loss from BasicShadowMap was too severe.
+        this.renderer.shadowMap.type = this.isMobile ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
+        
+        this.perfOverlay = null;
+        this.composer = null;
+        this.renderPass = null;
+        this.bloomPass = null;
+        this.fxaaPass = null;
+        this.outputPass = null;
+        this.usePostProcessing = false;
+        this.postProcessingInitFailed = false;
+        this.bloomQualityScale = 1.0;
+        this.effectQualityScale = 1.0;
+        this.brightnessLevel = 50;
+        const legacyMinBrightnessScale = 1.18 / 1.45;
+        this.minBrightnessScale = 0.6;
+        this.midBrightnessScale = legacyMinBrightnessScale + 0.5 * (1 - legacyMinBrightnessScale);
+        this.brightnessScale = 1.0;
+        this.currentRealm = null;
+        this.environmentThemeOverride = null;
+        this.targetLighting = null;
+        this.environmentGroup = new THREE.Group();
+        this.environmentGroup.name = 'EnvironmentGroup';
+        this.staticEnvironmentGroup = new THREE.Group();
+        this.staticEnvironmentGroup.name = 'StaticEnvironmentGroup';
+        this.instanceEnvironmentGroup = new THREE.Group();
+        this.instanceEnvironmentGroup.name = 'InstanceEnvironmentGroup';
+        this.entityGroup = new THREE.Group();
+        this.entityGroup.name = 'EntityGroup';
+        this.effectGroup = new THREE.Group();
+        this.effectGroup.name = 'EffectGroup';
+        this.environmentGroup.add(this.staticEnvironmentGroup);
+        this.environmentGroup.add(this.instanceEnvironmentGroup);
+        this.scene.add(this.environmentGroup);
+        this.scene.add(this.entityGroup);
+        this.scene.add(this.effectGroup);
+        this.restoreSceneMatrices = [this.scene, this.environmentGroup, this.staticEnvironmentGroup,
+            this.instanceEnvironmentGroup, this.entityGroup, this.effectGroup]
+            .map(cacheUnchangedLocalMatrix).filter(Boolean);
+        // Three updates scene/camera matrices before this hook and submits
+        // shadow draws afterwards. Install before actor batching so its normal
+        // hook composition and enable/disable lifecycle remain unchanged.
+        this.foliageShadowInfluence = new FoliageShadowInfluence(this.scene,
+            [this.scene, this.environmentGroup, this.staticEnvironmentGroup, this.instanceEnvironmentGroup]);
+        this.scene.onBeforeRender = (renderer, scene, camera) => {
+            const light = renderer.shadowMap?.enabled && this.keyLight?.castShadow ? this.keyLight : null;
+            this.foliageShadowInfluence.beginFrame(scene, camera, light,
+                renderer.shadowMap?.type, renderer.capabilities?.maxTextureSize);
+        };
+        this.scene.onAfterRender = () => this.foliageShadowInfluence.endFrame();
+        this.actorInstances = null;
+        // Original close geometry stays live; prepare bounded derivatives only
+        // after an eligible actor arrives. Unsupported workers retain originals.
+        this.actorGameplayGeometry = null;
+        this.actorShadowBatches = null;
+        this.actorColorBatches = null;
+        this.setActorInstancesEnabled(true);
+        this.setActorGameplayGeometryEnabled(true);
+        this.setActorShadowBatchesEnabled(true);
+        this.setActorColorBatchesEnabled(true);
+        this.sceneryVisibility = new SceneryVisibility();
+        this.sceneryFocus = null;
+        // Cross-light the fixed isometric view: one visible face catches the
+        // key while the other retains cool fill. A camera-aligned key flattened
+        // both faces and hid most ground contact shadows behind the object.
+        this.shadowFollowOffset = new THREE.Vector3(-320, 500, 260);
+        this.shadowTarget = new THREE.Vector3();
+        this.shadowViewBounds = getShadowViewBounds(this.camera, this.cameraOffset, this.shadowFollowOffset);
+        this.shadowCoverageRadius = Math.max(this.shadowViewBounds.right - this.shadowViewBounds.left,
+            this.shadowViewBounds.top - this.shadowViewBounds.bottom) / 2;
+        this.shadowTexelSnap = true;
+        this.cameraShakeEnabled = false;
+        this.cameraShakeStrength = 0.5;
+        this.cameraPunch = null;
+        this.currentLighting = {
+            ambientIntensity: 2.25,
+            keyIntensity: 2.25,
+            keyColor: new THREE.Color(0xffffff),
+            fillColor: new THREE.Color(0xd9e6ff),
+            fillIntensity: 0.36,
+            fogColor: new THREE.Color(0xb4bccb),
+            fogNear: 1200,
+            fogFar: 4200
+        };
+
+        this.realmLightingPresets = { ...createRegionLightingPresets(), casino: CASINO_INTERIOR_LIGHTING };
+        this.perfStats = {
+            lastTime: performance.now(),
+            lastUpdate: performance.now(),
+            fps: 0,
+            frameTime: 0,
+            frames: 0
+        };
+
+        // Ensure canvas is behind UI but visible
+        this.renderer.domElement.style.position = 'absolute';
+
+        this.renderer.domElement.style.top = '0';
+        this.renderer.domElement.style.left = '0';
+        // Fixed pixel CSS dimensions make mobile browsers shrink the layout
+        // viewport when the screen narrows. Let CSS follow the viewport while
+        // setSize updates only the drawing buffer; native page zoom stays enabled.
+        this.renderer.domElement.style.width = '100%';
+        this.renderer.domElement.style.height = '100%';
+        this.renderer.domElement.style.zIndex = '1'; // Behind UI (which is 10)
+        
+        document.body.appendChild(this.renderer.domElement);
+
+        // Lighting
+        this.setupLights();
+        this.applyLightingPreset('earth', true);
+        // The quality setter owns postprocessing initialization. In particular,
+        // Low must never allocate a temporary High composer during startup.
+        this.setGraphicsQuality(this.graphicsQuality);
+        this.setBrightnessLevel(50);
+
+        // Water/Ground are created via `preloadEnvironment()` so the loading screen
+        // can reliably wait for textures before gameplay begins.
+
+        // Handle Resize
+        this._onWindowResize = () => this.onWindowResize();
+        window.addEventListener('resize', this._onWindowResize, false);
+        const encounterRegion = this.isMobile && document.getElementById('phone-encounter-region');
+        if (encounterRegion && typeof ResizeObserver !== 'undefined') {
+            this.phoneEncounterObserver = new ResizeObserver(() => this.updateCameraProjection());
+            this.phoneEncounterObserver.observe(encounterRegion);
+        }
+    }
+
+    async preloadEnvironment(onProgress) {
+        const report = (p, text) => {
+            if (onProgress) onProgress(p, text);
+        };
+        const quality = this.graphicsQuality === 'low' ? 'low' : 'high';
+        report(0, 'Forging the Eidolic night...');
+        if (!this.backgroundTexture) {
+            this.backgroundTexture = createProceduralTerrainTexture('sky', { quality });
+            this.scene.background = this.backgroundTexture;
+        }
+
+        report(25, 'Stirring the blackwater...');
+        if (!this.waterTexture) {
+            this.waterTexture = createProceduralTerrainTexture('ocean', { quality });
+            this.setupTexture(this.waterTexture, 180, 180);
+        }
+        if (!this.waterPlane) {
+            const geo = new THREE.PlaneGeometry(10000, 10000);
+            const mat = this.createWaterMaterial(this.waterTexture);
+            this.waterPlane = new THREE.Mesh(geo, mat);
+            this.waterPlane.name = 'ProceduralEidolicBlackwater';
+            this.waterPlane.userData.proceduralTerrain = true;
+            this.waterPlane.userData.terrainKey = 'ocean';
+            this.waterPlane.userData.motif = PROCEDURAL_TERRAIN_DEFINITIONS.ocean.motif;
+            this.waterPlane.rotation.x = -Math.PI / 2;
+            this.waterPlane.position.y = -5;
+            this.waterPlane.renderOrder = -1;
+        }
+        if (!this.waterPlane.parent) this.staticEnvironmentGroup.add(this.waterPlane);
+
+        report(50, 'Carving the five realms...');
+        this.terrainTextures ||= {};
+        const createRealmGround = (property, key, y = 0) => {
+            const region = WORLD_REGIONS[key];
+            const x = (region.minX + region.maxX) / 2;
+            const z = (region.minZ + region.maxZ) / 2;
+            if (!this.terrainTextures[key]) {
+                this.terrainTextures[key] = createProceduralTerrainTexture(key, { quality });
+                this.setupTexture(this.terrainTextures[key], ...PROCEDURAL_TERRAIN_DEFINITIONS[key].surface.repeat);
+            }
+            if (!this[property]) {
+                const material = createProceduralTerrainMaterial(key, {
+                    quality,
+                    texture: this.terrainTextures[key]
+                });
+                const ground = createRealmGroundMesh(region, material, key === 'earth' ? this.terrainElevation : null);
+                ground.name = `ProceduralRealmTerrain:${key}`;
+                ground.userData.proceduralTerrain = true;
+                ground.userData.terrainKey = key;
+                ground.userData.terrainId = PROCEDURAL_TERRAIN_DEFINITIONS[key].id;
+                ground.userData.motif = PROCEDURAL_TERRAIN_DEFINITIONS[key].motif;
+                ground.rotation.x = -Math.PI / 2;
+                ground.position.set(x, y, z);
+                ground.receiveShadow = true;
+                this[property] = ground;
+            }
+            if (!this[property].parent) this.staticEnvironmentGroup.add(this[property]);
+        };
+
+        createRealmGround('groundEarth', 'earth');
+        createRealmGround('groundSnow', 'water');
+        createRealmGround('groundFire', 'fire');
+        createRealmGround('groundAir', 'air');
+        createRealmGround('groundTown', 'town', 0.025);
+
+        report(100, 'Five codeborn realms ready');
+        if (!this._pMesh) this.initRealmParticles();
+    }
+
+    /* ----------------------------------------------------------------
+       Realm Ambient Particles
+       ----------------------------------------------------------------
+       Lightweight camera-relative particle system that gives each realm
+       a distinct atmospheric feel:
+         earth — gentle floating dust motes
+         town  — warm firefly-like motes
+         water — falling snowflakes
+         fire  — rising embers
+         air   — fast horizontal wind wisps
+       ---------------------------------------------------------------- */
+
+    static REALM_PARTICLE_CONFIGS = createRegionParticleConfigs();
+
+    initRealmParticles() {
+        const count = this.isMobile ? 50 : 140;
+        this._pCount = count;
+
+        const positions = new Float32Array(count * 3);
+        const alphas = new Float32Array(count);
+
+        // Initialize all below ground (invisible)
+        for (let i = 0; i < count; i++) {
+            positions[i * 3 + 1] = -200;
+            alphas[i] = 0;
+        }
+
+        const geom = new THREE.BufferGeometry();
+        geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geom.setAttribute('alpha', new THREE.BufferAttribute(alphas, 1));
+
+        const mat = new THREE.ShaderMaterial({
+            uniforms: {
+                uColor: { value: new THREE.Color(0xc8b89a) },
+                uSize: { value: 3.0 }
+            },
+            vertexShader: `
+                attribute float alpha;
+                varying float vAlpha;
+                uniform float uSize;
+                void main() {
+                    vAlpha = alpha;
+                    gl_PointSize = uSize;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform vec3 uColor;
+                varying float vAlpha;
+                void main() {
+                    float d = length(gl_PointCoord - vec2(0.5));
+                    if (d > 0.5) discard;
+                    float soft = 1.0 - smoothstep(0.25, 0.5, d);
+                    gl_FragColor = vec4(uColor, vAlpha * soft);
+                }
+            `,
+            transparent: true,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending
+        });
+
+        this._pMesh = new THREE.Points(geom, mat);
+        this._pMesh.frustumCulled = false;
+        this.staticEnvironmentGroup.add(this._pMesh);
+
+        // Internal per-particle state (plain arrays, not GPU attributes)
+        this._pVel = new Float32Array(count * 3);
+        this._pLife = new Float32Array(count);     // remaining life
+        this._pMaxLife = new Float32Array(count);  // total life (for fade calc)
+        this._pRealm = null;                       // currently-configured realm
+        this._pTargetColor = new THREE.Color(0xc8b89a);
+    }
+
+    /** Spawn / reset a single particle at `index` using `cfg` around `center`. */
+    _spawnParticle(index, cfg, center) {
+        const pos = this._pMesh.geometry.attributes.position.array;
+        const i3 = index * 3;
+
+        const rand = (min, max) => min + Math.random() * (max - min);
+
+        pos[i3]     = center.x + rand(-cfg.spread[0], cfg.spread[0]);
+        pos[i3 + 1] = rand(cfg.spawnY[0], cfg.spawnY[1]);
+        pos[i3 + 2] = center.z + rand(-cfg.spread[2], cfg.spread[2]);
+
+        this._pVel[i3]     = rand(cfg.velXZ[0], cfg.velXZ[1]);
+        this._pVel[i3 + 1] = rand(cfg.velY[0], cfg.velY[1]);
+        this._pVel[i3 + 2] = rand(cfg.velXZ[0], cfg.velXZ[1]);
+
+        const life = rand(cfg.life[0], cfg.life[1]);
+        this._pLife[index] = life;
+        this._pMaxLife[index] = life;
+    }
+
+    /**
+     * Called every frame from `updateEnvironmentLighting`.
+     * Moves particles, recycles dead ones, and transitions color/size on realm change.
+     */
+    updateRealmParticles(dt, cameraTarget) {
+        if (!this._pMesh) return;
+        if (this.graphicsQuality === 'low' || this.environmentThemeOverride === 'casino') {
+            this._pMesh.visible = false;
+            return;
+        }
+        this._pMesh.visible = true;
+
+        const realm = this.currentRealm || 'earth';
+        // Town shares earth particles when no town config (but we do have one)
+        const cfg = RenderSystem.REALM_PARTICLE_CONFIGS[realm]
+            || RenderSystem.REALM_PARTICLE_CONFIGS.earth;
+
+        // On realm change, update target color/size (particles respawn gradually)
+        if (realm !== this._pRealm) {
+            this._pRealm = realm;
+            this._pTargetColor.set(cfg.color);
+        }
+
+        // Lerp material color/size toward target
+        const mat = this._pMesh.material;
+        mat.uniforms.uColor.value.lerp(this._pTargetColor, Math.min(1, dt * 2.0));
+        mat.uniforms.uSize.value = THREE.MathUtils.lerp(
+            mat.uniforms.uSize.value, cfg.size, Math.min(1, dt * 2.0)
+        );
+
+        const pos = this._pMesh.geometry.attributes.position.array;
+        const alphas = this._pMesh.geometry.attributes.alpha.array;
+        const count = this._pCount;
+        const center = cameraTarget || this.cameraTarget;
+
+        for (let i = 0; i < count; i++) {
+            this._pLife[i] -= dt;
+            if (this._pLife[i] <= 0) {
+                // Respawn
+                this._spawnParticle(i, cfg, center);
+                alphas[i] = 0; // fade in from zero
+            } else {
+                // Move
+                const i3 = i * 3;
+                pos[i3]     += this._pVel[i3] * dt;
+                pos[i3 + 1] += this._pVel[i3 + 1] * dt;
+                pos[i3 + 2] += this._pVel[i3 + 2] * dt;
+
+                // Fade: ramp up in first 20% of life, ramp down in last 30%
+                const t = this._pLife[i] / this._pMaxLife[i]; // 1→0
+                const fadeIn = Math.min(1, (1 - t) / 0.2);    // 0→1 in first 20%
+                const fadeOut = Math.min(1, t / 0.3);          // 1→0 in last 30%
+                alphas[i] = fadeIn * fadeOut * 0.6;             // cap at 0.6 opacity
+            }
+        }
+
+        this._pMesh.geometry.attributes.position.needsUpdate = true;
+        this._pMesh.geometry.attributes.alpha.needsUpdate = true;
+    }
+
+    setupLights() {
+        this.disposeShadowTargets();
+        if (this.ambientLight?.parent?.remove) {
+            this.ambientLight.parent.remove(this.ambientLight);
+        }
+        if (this.keyLight?.parent?.remove) {
+            this.keyLight.parent.remove(this.keyLight);
+        }
+        if (this.keyLight?.target?.parent?.remove) {
+            this.keyLight.target.parent.remove(this.keyLight.target);
+        }
+        if (this.fillLight?.parent?.remove) {
+            this.fillLight.parent.remove(this.fillLight);
+        }
+        if (this.fillLight?.target?.parent?.remove) {
+            this.fillLight.target.parent.remove(this.fillLight.target);
+        }
+
+        const ambientLight = new THREE.AmbientLight(0x404040, 2); // Soft white light
+        this.scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 2);
+        dirLight.position.copy(this.shadowTarget).add(this.shadowFollowOffset);
+        dirLight.castShadow = this.renderer.shadowMap.enabled;
+        
+        // Optimization: Reduce Shadow Map Size on Mobile
+        // Keep high quality sharper now that the shadow frustum follows the player.
+        const shadowSize = this.getShadowMapSize();
+        dirLight.shadow.mapSize.width = shadowSize;
+        dirLight.shadow.mapSize.height = shadowSize;
+        dirLight.shadow.autoUpdate = true;
+        dirLight.shadow.radius = this.graphicsQuality === 'high' ? 4.5 : 3.0;
+        dirLight.shadow.bias = -0.00014;
+        dirLight.shadow.normalBias = 0.05;
+        dirLight.shadow.camera.near = 1;
+        dirLight.shadow.camera.far = 1400;
+        this.configureShadowFrustum(dirLight);
+        dirLight.target.position.copy(this.shadowTarget);
+        this.scene.add(dirLight.target);
+        this.scene.add(dirLight);
+
+        const fillLight = new THREE.DirectionalLight(0x99b7ff, 0.35);
+        fillLight.position.set(14, 12, 8);
+        fillLight.castShadow = false;
+        this.scene.add(fillLight);
+
+        this.ambientLight = ambientLight;
+        this.keyLight = dirLight;
+        this.fillLight = fillLight;
+    }
+
+    setupPostProcessing() {
+        this.disposePostProcessing();
+        const params = new URLSearchParams(window.location.search);
+        const forcePost = params.get('post') === '1';
+        const disablePost = params.get('post') === '0';
+        if (disablePost || this.graphicsQuality === 'low' || (this.isMobile && !forcePost)) {
+            this.usePostProcessing = false;
+            return;
+        }
+
+        try {
+            this.composer = new EffectComposer(this.renderer);
+            this.renderPass = new RenderPass(this.scene, this.camera);
+            this.composer.addPass(this.renderPass);
+
+            this.bloomPass = new UnrealBloomPass(
+                new THREE.Vector2(window.innerWidth, window.innerHeight),
+                0.24,
+                0.3,
+                0.82
+            );
+            this.composer.addPass(this.bloomPass);
+
+            // FXAA evaluates display-space luminance. Keep bloom in HDR,
+            // then tone map/encode before filtering the final visible edges.
+            this.outputPass = new OutputPass();
+            this.composer.addPass(this.outputPass);
+
+            this.fxaaPass = new ShaderPass(FXAAShader);
+            this.updateFxaaResolution();
+            this.composer.addPass(this.fxaaPass);
+
+            this.usePostProcessing = true;
+            this.postProcessingInitFailed = false;
+            this.applyPostProcessingPreset(this.targetLighting || this.realmLightingPresets.earth);
+        } catch (error) {
+            console.warn('RenderSystem: Post-processing disabled due to setup failure.', error);
+            this.disposePostProcessing();
+            this.postProcessingInitFailed = true;
+        }
+    }
+
+    disposePostProcessing() {
+        // EffectComposer owns its two buffers/copy pass, not its added passes.
+        // Include partially constructed passes when initialization failed.
+        const passes = new Set([...(this.composer?.passes || []), this.renderPass,
+            this.bloomPass, this.fxaaPass, this.outputPass].filter(Boolean));
+        passes.forEach(pass => pass.dispose?.());
+        this.composer?.dispose();
+        this.composer = this.renderPass = this.bloomPass = this.fxaaPass = this.outputPass = null;
+        this.usePostProcessing = false;
+    }
+
+    disposeShadowTargets() {
+        const shadow = this.keyLight?.shadow;
+        if (!shadow) return;
+        new Set([shadow.map, shadow.mapPass].filter(Boolean)).forEach(target => target.dispose());
+        shadow.map = shadow.mapPass = null;
+    }
+
+    updateFxaaResolution() {
+        if (!this.fxaaPass) return;
+        const pixelRatio = this.renderer.getPixelRatio();
+        this.fxaaPass.material.uniforms.resolution.value.set(
+            1 / (window.innerWidth * pixelRatio),
+            1 / (window.innerHeight * pixelRatio)
+        );
+    }
+
+    getRealmForPosition(position) {
+        if (this.environmentThemeOverride) return this.environmentThemeOverride;
+        if (!position) return 'earth';
+        if (position.z < -600) return 'water';
+        if (position.x < -1000) return 'fire';
+        if (position.x > 1000) return 'air';
+        // Town is a ~120-radius area centered at (0, 200) within Earth
+        const dx = position.x;
+        const dz = position.z - 200;
+        if (dx * dx + dz * dz < 120 * 120) return 'town';
+        return 'earth';
+    }
+
+    setEnvironmentContext(context = null, position = null, immediate = true) {
+        // Local-origin casino, arena and crypt floors are instance-owned.
+        // Underlying overworld ground must not share the server-grounded floor.
+        if (this.staticEnvironmentGroup) this.staticEnvironmentGroup.visible = context !== 'casino' && context !== 'pvp_arena' && context !== 'crypt';
+        // Remote raid coordinates are allocation slots, not overworld realm
+        // coordinates. Preserve each raid's authored lighting and atmosphere.
+        const sceneTheme = RAID_ENVIRONMENT_THEMES[context] || context;
+        const dungeonTheme = DUNGEON_THEME_KEY_SET.has(sceneTheme) ? sceneTheme : null;
+        this.environmentThemeOverride = context === 'casino' ? 'casino' : dungeonTheme;
+        const realm = this.getRealmForPosition(position || this.cameraTarget);
+        this.currentRealm = realm;
+        this.applyLightingPreset(realm, immediate);
+
+        // Recycle the atmosphere immediately so a dungeon transition cannot
+        // carry overworld snow, embers, or wind across the loading boundary.
+        if (this._pLife) this._pLife.fill(0);
+        if (this._pMesh) this._pMesh.visible = context !== 'casino' && this.graphicsQuality !== 'low';
+        this._pRealm = null;
+        return realm;
+    }
+
+    applyLightingPreset(realm, immediate = false) {
+        const preset = this.realmLightingPresets[realm] || this.realmLightingPresets.earth;
+        this.targetLighting = {
+            ambientIntensity: preset.ambientIntensity,
+            keyIntensity: preset.keyIntensity,
+            keyColor: new THREE.Color(preset.keyColor),
+            fillColor: new THREE.Color(preset.fillColor),
+            fillIntensity: preset.fillIntensity,
+            fogColor: new THREE.Color(preset.fogColor),
+            fogNear: preset.fogNear,
+            fogFar: preset.fogFar,
+            exposure: preset.exposure,
+            bloomStrength: preset.bloomStrength,
+            bloomRadius: preset.bloomRadius,
+            bloomThreshold: preset.bloomThreshold
+        };
+
+        if (immediate) {
+            this.currentLighting.ambientIntensity = this.targetLighting.ambientIntensity;
+            this.currentLighting.keyIntensity = this.targetLighting.keyIntensity;
+            this.currentLighting.keyColor.copy(this.targetLighting.keyColor);
+            this.currentLighting.fillColor.copy(this.targetLighting.fillColor);
+            this.currentLighting.fillIntensity = this.targetLighting.fillIntensity;
+            this.currentLighting.fogColor.copy(this.targetLighting.fogColor);
+            this.currentLighting.fogNear = this.targetLighting.fogNear;
+            this.currentLighting.fogFar = this.targetLighting.fogFar;
+            this.renderer.toneMappingExposure = this.targetLighting.exposure * this.brightnessScale;
+            this.applyLightingState();
+            this.applyPostProcessingPreset(this.targetLighting);
+        }
+    }
+
+    applyPostProcessingPreset(preset) {
+        if (!this.bloomPass) return;
+        this.bloomPass.strength = preset.bloomStrength * this.bloomQualityScale;
+        this.bloomPass.radius = preset.bloomRadius;
+        this.bloomPass.threshold = preset.bloomThreshold;
+    }
+
+    getShadowMapSize() {
+        if (this.isMobile || this.graphicsQuality === 'low') return 512;
+        if (this.graphicsQuality === 'medium') return 2048;
+        return 4096;
+    }
+
+    configureShadowFrustum(light) {
+        if (!light?.shadow?.camera) return;
+        const bounds = this.shadowViewBounds || { left: -280, right: 280, top: 280, bottom: -280 };
+        Object.assign(light.shadow.camera, bounds);
+        // Preserve the existing world-space depth bias when fitting far. A
+        // constant normalized bias would otherwise change shadow contact.
+        const baseBias = this.graphicsQuality === 'high' ? -0.00014 : -0.00012;
+        light.shadow.bias = baseBias * 1399 / (light.shadow.camera.far - light.shadow.camera.near);
+        light.shadow.camera.updateProjectionMatrix();
+        light.shadow.needsUpdate = true;
+    }
+
+    getShadowWorldTexelSize() {
+        const mapSize = this.keyLight?.shadow?.mapSize?.width || this.getShadowMapSize();
+        const coverage = Number(this.shadowCoverageRadius) || 280;
+        return (coverage * 2) / Math.max(1, mapSize);
+    }
+
+    getShadowSnappedTarget(position) {
+        if (!this.shadowTexelSnap || !position) {
+            return new THREE.Vector3(position?.x || 0, 0, position?.z || 0);
+        }
+
+        const texelSize = this.getShadowWorldTexelSize();
+        return new THREE.Vector3(
+            Math.round(position.x / texelSize) * texelSize,
+            0,
+            Math.round(position.z / texelSize) * texelSize
+        );
+    }
+
+    updateShadowFocus(position = null) {
+        if (!this.keyLight || !position) return;
+        // The light is ground-anchored and texel-snapped, even while the hero
+        // and camera move above it. Fit receiver rays in that actual frame;
+        // subtracting the elevated hero instead shifts/clips the shadow map.
+        const snappedTarget = this.getShadowSnappedTarget(position);
+        const bounds = getShadowViewBounds(this.camera, this.cameraOffset, this.shadowFollowOffset,
+            this.cameraTarget.clone().sub(snappedTarget));
+        if (Object.keys(bounds).some(edge => bounds[edge] !== this.shadowViewBounds?.[edge])) {
+            this.shadowViewBounds = bounds;
+            this.shadowCoverageRadius = Math.max(bounds.right - bounds.left, bounds.top - bounds.bottom) / 2;
+            this.configureShadowFrustum(this.keyLight);
+        }
+        this.shadowTarget.copy(snappedTarget);
+        this.keyLight.target.position.copy(this.shadowTarget);
+        this.keyLight.position.copy(this.shadowTarget).add(this.shadowFollowOffset);
+        this.keyLight.target.updateMatrixWorld?.();
+        this.keyLight.shadow.camera.updateProjectionMatrix();
+        this.keyLight.shadow.needsUpdate = true;
+    }
+
+    getBrightnessScale(level = 100) {
+        const clamped = Math.max(0, Math.min(100, Number(level) || 0));
+        if (clamped <= 50) {
+            const t = clamped / 50;
+            return this.minBrightnessScale + t * (this.midBrightnessScale - this.minBrightnessScale);
+        }
+        const t = (clamped - 50) / 50;
+        return this.midBrightnessScale + t * (1 - this.midBrightnessScale);
+    }
+
+    setBrightnessLevel(level = 100) {
+        const clamped = Math.max(0, Math.min(100, Number(level) || 0));
+        this.brightnessLevel = clamped;
+        this.brightnessScale = this.getBrightnessScale(clamped);
+        if (this.targetLighting) {
+            this.renderer.toneMappingExposure = this.targetLighting.exposure * this.brightnessScale;
+        }
+    }
+
+    setGraphicsQuality(quality = 'high') {
+        const normalized = (quality === 'low' || quality === 'medium' || quality === 'high') ? quality : 'high';
+        const previousQuality = this.graphicsQuality;
+        this.graphicsQuality = normalized;
+        if (previousQuality !== normalized) this.actorColorBatches?.reset();
+        // Low/Medium keep the original direct-singleton path; High combines
+        // compatible leaves only when the frame has native multi-draw support.
+        if (this.actorInstances) {
+            this.actorInstances.batchSingletons = normalized === 'high';
+            // Paired native cost qualification selects owned shader variants
+            // for High; Low/Medium retain their existing borrowed materials.
+            if (this.actorInstances.multiDraw) this.actorInstances.multiDraw.materialVariants = normalized === 'high';
+        }
+        updateFoliageRenderQuality(this.instanceEnvironmentGroup, normalized);
+        updateElementalGroundCoverQuality(this.instanceEnvironmentGroup, normalized);
+        this.bloomQualityScale = normalized === 'high' ? 1.0 : (normalized === 'medium' ? 0.66 : 0.0);
+        this.effectQualityScale = normalized === 'high' ? 1.0 : (normalized === 'medium' ? 0.78 : 0.52);
+
+        const isFirefox = /firefox/i.test(navigator.userAgent);
+        const allowShadows = normalized !== 'low' && !this.isMobile;
+        this.renderer.shadowMap.enabled = allowShadows;
+        if (!allowShadows) this.actorShadowBatches?.reset();
+        if (allowShadows) this.actorContactShadows?.clear();
+        this.renderer.shadowMap.autoUpdate = true;
+        this.renderer.shadowMap.needsUpdate = true;
+        this.renderer.shadowMap.type = allowShadows
+            ? THREE.PCFSoftShadowMap
+            : THREE.BasicShadowMap;
+
+        if (this.keyLight) {
+            this.keyLight.castShadow = allowShadows;
+            const shadowSize = this.getShadowMapSize();
+            // Three only allocates a PCF target when map is null; changing
+            // mapSize alone otherwise leaves the old-sized texture in use.
+            if (!allowShadows || this.keyLight.shadow.mapSize.width !== shadowSize ||
+                this.keyLight.shadow.mapSize.height !== shadowSize) this.disposeShadowTargets();
+            this.keyLight.shadow.mapSize.width = shadowSize;
+            this.keyLight.shadow.mapSize.height = shadowSize;
+            this.keyLight.shadow.autoUpdate = true;
+            this.keyLight.shadow.radius = normalized === 'high' ? 4.5 : 3.0;
+            this.keyLight.shadow.bias = normalized === 'high' ? -0.00014 : -0.00012;
+            this.keyLight.shadow.normalBias = normalized === 'high' ? 0.05 : 0.045;
+            this.configureShadowFrustum(this.keyLight);
+            this.keyLight.shadow.needsUpdate = true;
+        }
+
+        if (normalized === 'low') {
+            this.disposePostProcessing();
+        } else {
+            if (!this.composer) {
+                this.setupPostProcessing();
+            }
+            this.usePostProcessing = !!this.composer;
+        }
+
+        if (this.targetLighting) {
+            this.applyPostProcessingPreset(this.targetLighting);
+        }
+
+        const reloadRequired = normalized !== 'low' && !this.composer && this.postProcessingInitFailed;
+        return {
+            changed: previousQuality !== normalized,
+            reloadRequired
+        };
+    }
+
+    getEffectQualityScale() {
+        return this.effectQualityScale;
+    }
+
+    applyLightingState() {
+        if (!this.ambientLight || !this.keyLight || !this.fillLight) return;
+        this.ambientLight.intensity = this.currentLighting.ambientIntensity;
+        this.keyLight.intensity = this.currentLighting.keyIntensity;
+        this.keyLight.color.copy(this.currentLighting.keyColor);
+        this.fillLight.intensity = this.currentLighting.fillIntensity;
+        this.fillLight.color.copy(this.currentLighting.fillColor);
+        // Keep reflected light in step with regional ambience, including fades
+        // into darker interiors, without rebuilding the shared radiance map.
+        this.scene.environmentIntensity = 0.65 * THREE.MathUtils.clamp(this.currentLighting.ambientIntensity / 1.9, 0.45, 1.1);
+        if (!this.scene.fog) {
+            this.scene.fog = new THREE.Fog(
+                this.currentLighting.fogColor.clone(),
+                this.currentLighting.fogNear,
+                this.currentLighting.fogFar
+            );
+        } else {
+            this.scene.fog.color.copy(this.currentLighting.fogColor);
+            this.scene.fog.near = this.currentLighting.fogNear;
+            this.scene.fog.far = this.currentLighting.fogFar;
+        }
+    }
+
+    updateEnvironmentLighting(position, dt = 1 / 60) {
+        const realm = this.getRealmForPosition(position);
+        if (realm !== this.currentRealm || !this.targetLighting) {
+            this.currentRealm = realm;
+            this.applyLightingPreset(realm, false);
+        }
+        if (!this.targetLighting) return;
+
+        const blend = Math.min(1, dt * 2.8);
+        this.currentLighting.ambientIntensity = THREE.MathUtils.lerp(this.currentLighting.ambientIntensity, this.targetLighting.ambientIntensity, blend);
+        this.currentLighting.keyIntensity = THREE.MathUtils.lerp(this.currentLighting.keyIntensity, this.targetLighting.keyIntensity, blend);
+        this.currentLighting.fillIntensity = THREE.MathUtils.lerp(this.currentLighting.fillIntensity, this.targetLighting.fillIntensity, blend);
+        this.currentLighting.fogNear = THREE.MathUtils.lerp(this.currentLighting.fogNear, this.targetLighting.fogNear, blend);
+        this.currentLighting.fogFar = THREE.MathUtils.lerp(this.currentLighting.fogFar, this.targetLighting.fogFar, blend);
+        this.currentLighting.keyColor.lerp(this.targetLighting.keyColor, blend);
+        this.currentLighting.fillColor.lerp(this.targetLighting.fillColor, blend);
+        this.currentLighting.fogColor.lerp(this.targetLighting.fogColor, blend);
+        const targetExposure = this.targetLighting.exposure * this.brightnessScale;
+        this.renderer.toneMappingExposure = THREE.MathUtils.lerp(this.renderer.toneMappingExposure, targetExposure, blend);
+
+        this.applyLightingState();
+
+        if (this.bloomPass) {
+            const targetStrength = this.targetLighting.bloomStrength * this.bloomQualityScale;
+            this.bloomPass.strength = THREE.MathUtils.lerp(this.bloomPass.strength, targetStrength, blend);
+            this.bloomPass.radius = THREE.MathUtils.lerp(this.bloomPass.radius, this.targetLighting.bloomRadius, blend);
+            this.bloomPass.threshold = THREE.MathUtils.lerp(this.bloomPass.threshold, this.targetLighting.bloomThreshold, blend);
+        }
+
+        this.updateShadowFocus(position);
+
+        // Update ambient particles (follows camera, realm-dependent)
+        this.updateRealmParticles(dt, position ? { x: position.x, z: position.z } : null);
+    }
+
+    // setupWater/setupGround were replaced by `preloadEnvironment()`.
+
+    setupTexture(texture, repeatX = 80, repeatY = 80) {
+        if (!texture) return;
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.minFilter = THREE.LinearMipmapLinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.anisotropy = this.isMobile ? 1 : Math.min(this.renderer.capabilities.getMaxAnisotropy(), 4);
+        texture.repeat.set(repeatX, repeatY);
+        texture.colorSpace = THREE.SRGBColorSpace;
+    }
+
+    createWaterMaterial(texture) {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('waterShader') === '0') {
+            return new THREE.MeshBasicMaterial({
+                map: texture,
+                color: 0x255766,
+                transparent: false,
+                depthWrite: false
+            });
+        }
+
+        return createOceanWaterMaterial(texture);
+    }
+
+    updateCameraProjection() {
+        const width = Math.max(1, window.innerWidth || 1);
+        const height = Math.max(1, window.innerHeight || 1);
+        const aspect = width / height;
+        // Phones keep a stable world scale through rotation. At default zoom,
+        // the shorter viewport edge covers 24 units (desktop remains unchanged).
+        // This widens portrait encounters without requiring maximum zoom, and
+        // enlarges landscape actors instead of retaining desktop vertical scale.
+        const d = this.isMobile
+            ? 12 * (this.currentZoom / CONSTANTS.CAMERA.ZOOM) * height / Math.min(width, height)
+            : this.currentZoom;
+        let verticalOffset = 0, horizontalOffset = 0;
+        this.phoneEncounterBounds = null;
+        if (this.isMobile) {
+            const rect = document.getElementById('phone-encounter-region')?.getBoundingClientRect();
+            // One layout-owned region includes the objective/minimap and both
+            // thumb zones. No per-frame DOM reads or menu-driven camera shifts.
+            if (rect && [rect.left, rect.top, rect.width, rect.height].every(Number.isFinite) && rect.width > 0 && rect.height > 0) {
+                const left = Math.max(0, rect.left), top = Math.max(0, rect.top);
+                const right = Math.min(width, rect.left + rect.width), bottom = Math.min(height, rect.top + rect.height);
+                if (right > left && bottom > top) {
+                    this.phoneEncounterBounds = { left, top, right, bottom };
+                    verticalOffset = ((top + bottom) / 2 - height / 2) * (2 * d / height);
+                    horizontalOffset = (width / 2 - (left + right) / 2) * (2 * d / height);
+                }
+            }
+        }
+        this.camera.left = -d * aspect + horizontalOffset;
+        this.camera.right = d * aspect + horizontalOffset;
+        this.camera.top = d + verticalOffset;
+        this.camera.bottom = -d + verticalOffset;
+        this.camera.updateProjectionMatrix();
+        if (this.keyLight) this.updateShadowFocus(this.shadowTarget);
+    }
+
+    onWindowResize() {
+        this.updateCameraProjection();
+        this.renderer.setSize(window.innerWidth, window.innerHeight, false);
+        if (this.composer) {
+            this.composer.setSize(window.innerWidth, window.innerHeight);
+        }
+        this.updateFxaaResolution();
+    }
+
+    setZoom(zoomLevel) {
+        if (!Number.isFinite(zoomLevel)) return;
+        this.currentZoom = Math.max(CONSTANTS.CAMERA.MIN_ZOOM, Math.min(CONSTANTS.CAMERA.MAX_ZOOM, zoomLevel));
+        try {
+            localStorage.setItem(this.isMobile ? 'eidolon.phoneCameraZoom' : 'eidolon.cameraZoom', String(this.currentZoom));
+        } catch { /* Keep the session preference even if persistence is blocked. */ }
+        // Zoom changes the projection, not the drawing-buffer dimensions.
+        this.updateCameraProjection();
+    }
+
+    resetCamera(target) {
+        this.setZoom(CONSTANTS.CAMERA.ZOOM);
+        if (target) this.setCameraTarget(target);
+    }
+
+    updateCamera() {
+        this.camera.position.copy(this.cameraTarget).add(this.cameraOffset);
+
+        if (this.cameraPunch) {
+            const elapsed = (performance.now() - this.cameraPunch.startTime) / (this.cameraPunch.duration * 1000);
+            if (elapsed >= 1) {
+                this.cameraPunch = null;
+            } else {
+                const damping = 1 - elapsed;
+                const oscillation = Math.sin(elapsed * Math.PI * 6);
+                this.camera.position.y += oscillation * this.cameraPunch.vertical * this.cameraPunch.intensity * damping;
+                this.camera.position.x += Math.cos(elapsed * Math.PI * 4) * this.cameraPunch.horizontal * this.cameraPunch.intensity * damping;
+            }
+        }
+
+        this.camera.lookAt(this.cameraTarget);
+    }
+
+    panCamera(deltaX, deltaZ) {
+        this.cameraTarget.x += deltaX;
+        this.cameraTarget.z += deltaZ;
+        this.updateCamera();
+    }
+
+    setCameraTarget(target) {
+        this.cameraTarget.copy(target);
+        this.updateCamera();
+    }
+
+    setSceneryFocus(position) {
+        if (!position) { this.sceneryFocus = null; return; }
+        if (!this.sceneryFocus) this.sceneryFocus = new THREE.Vector3();
+        this.sceneryFocus.copy(position);
+    }
+
+    setCameraShakeEnabled(enabled) {
+        this.cameraShakeEnabled = Boolean(enabled);
+        if (!this.cameraShakeEnabled) {
+            this.cameraPunch = null;
+            this.updateCamera();
+        }
+    }
+
+    setCameraShakeStrength(percent) {
+        this.cameraShakeStrength = Number.isFinite(percent) ? Math.max(0, Math.min(100, percent)) / 100 : 0.5;
+        this.cameraPunch = null;
+        this.updateCamera();
+    }
+
+    applyCameraPunch({ intensity = 0.8, duration = 0.16, vertical = 1.0, horizontal = 0.45 } = {}) {
+        const strength = this.cameraShakeStrength ?? 0.5;
+        if (!this.cameraShakeEnabled || strength === 0 || prefersReducedMotion()) {
+            this.cameraPunch = null;
+            this.updateCamera();
+            return;
+        }
+
+        const scaledIntensity = Math.max(0, intensity) * 0.35 * strength;
+        const scaledDuration = Math.max(0.05, duration * 0.56);
+        const scaledVertical = vertical * 0.55;
+        const scaledHorizontal = horizontal * 0.3;
+
+        this.cameraPunch = {
+            startTime: performance.now(),
+            duration: scaledDuration,
+            intensity: scaledIntensity,
+            vertical: scaledVertical,
+            horizontal: scaledHorizontal
+        };
+        this.updateCamera();
+    }
+
+    setActorInstancesEnabled(enabled) {
+        if (this._disposed || Boolean(enabled) === Boolean(this.actorInstances)) return;
+        // Color wraps the scene's actor-instance callback as well as render;
+        // retire it first so the old instance hook can restore its predecessor.
+        const restoreColors = Boolean(this.actorColorBatches);
+        if (restoreColors) this.setActorColorBatchesEnabled(false);
+        try {
+            if (enabled) {
+                this.actorInstances = new ActorInstanceBatches(this.scene, [this.scene, this.entityGroup], { shadowInfluence: true, multiDraw: true, instanceFrustum: true, batchSingletons: this.graphicsQuality === 'high' });
+                if (this.actorInstances.multiDraw) this.actorInstances.multiDraw.materialVariants = this.graphicsQuality === 'high';
+            } else {
+                this.actorInstances.dispose(); this.actorInstances = null;
+            }
+        } finally { if (restoreColors) this.setActorColorBatchesEnabled(true); }
+    }
+
+    setActorGameplayGeometryEnabled(enabled, options = {}) {
+        if (this._disposed || Boolean(enabled) === Boolean(this.actorGameplayGeometry)) return;
+        // Retire outer wrappers before replacing the inner geometry owner;
+        // restore geometry -> shadow -> color ordering for nested passes.
+        const restoreColors = Boolean(this.actorColorBatches), restoreShadows = Boolean(this.actorShadowBatches);
+        if (restoreColors) this.setActorColorBatchesEnabled(false);
+        if (restoreShadows) this.setActorShadowBatchesEnabled(false);
+        try {
+            if (enabled) this.actorGameplayGeometry = new ActorGameplayGeometryRuntime(this.renderer, this.scene, this.camera,
+                [this.scene, this.entityGroup], options);
+            else { this.actorGameplayGeometry.dispose(); this.actorGameplayGeometry = null; }
+        } finally {
+            if (restoreShadows) this.setActorShadowBatchesEnabled(true);
+            if (restoreColors) this.setActorColorBatchesEnabled(true);
+        }
+    }
+
+    setActorShadowBatchesEnabled(enabled) {
+        if (this._disposed || Boolean(enabled) === Boolean(this.actorShadowBatches)) return;
+        const restoreColors = Boolean(this.actorColorBatches);
+        if (restoreColors) this.setActorColorBatchesEnabled(false);
+        try {
+            if (enabled && typeof this.renderer.shadowMap?.render === 'function') {
+                this.actorShadowBatches = new OpaqueSkinnedShadowRuntime(this.renderer, this.scene, [this.scene, this.entityGroup],
+                    { staticGroups: [this.instanceEnvironmentGroup, this.entityGroup] });
+            } else if (!enabled && this.actorShadowBatches) {
+                this.actorShadowBatches.dispose(); this.actorShadowBatches = null;
+            }
+        } finally { if (restoreColors) this.setActorColorBatchesEnabled(true); }
+    }
+
+    setActorColorBatchesEnabled(enabled) {
+        if (this._disposed) return;
+        if (enabled && !this.actorColorBatches && typeof this.renderer.renderBufferDirect === 'function') {
+            this.actorColorBatches = new OpaqueSkinnedColorRuntime(this.renderer, this.scene, this.camera, [this.scene, this.entityGroup]);
+        } else if (!enabled && this.actorColorBatches) {
+            this.actorColorBatches.dispose(); this.actorColorBatches = null;
+        }
+    }
+
+    add(mesh) {
+        if (mesh) {
+            this.entityGroup.add(mesh);
+        } else {
+            console.warn("RenderSystem: Attempted to add null/undefined mesh to scene.");
+        }
+    }
+
+    remove(mesh) {
+        if (mesh?.parent?.remove) {
+            mesh.parent.remove(mesh);
+        } else {
+            this.scene.remove(mesh);
+        }
+    }
+
+    addToEnvironment(mesh) {
+        if (mesh) {
+            this.instanceEnvironmentGroup.add(mesh);
+        }
+    }
+
+    addToEffects(mesh) {
+        if (mesh) {
+            this.effectGroup.add(mesh);
+        }
+    }
+
+    clearInstanceScene() {
+        this.actorColorBatches?.clear();
+        this.actorShadowBatches?.clear();
+        this.actorGameplayGeometry?.clear();
+        this.actorInstances?.clear();
+        this.actorContactShadows?.clear();
+        this.clearGroupChildren(this.instanceEnvironmentGroup, { dispose: true });
+        this.clearGroupChildren(this.entityGroup);
+        this.clearGroupChildren(this.effectGroup);
+    }
+
+    clearGroupChildren(group, options = {}) {
+        if (!group) return;
+        if (group === this.instanceEnvironmentGroup) {
+            this.sceneryVisibility?.clear();
+            this.sceneryFocus = null;
+        }
+        if (options.dispose) {
+            // Traverse the whole ownership group once so resources shared by
+            // sibling room, corridor, and dressing roots are deduplicated.
+            this.disposeObjectResources(group);
+        }
+        while (group.children.length > 0) {
+            const child = group.children[0];
+            group.remove(child);
+        }
+    }
+
+    disposeObjectResources(object, disposedTextures = new Set()) {
+        if (!object) return;
+        const disposedGeometries = new Set();
+        const pendingGeometries = new Set();
+        const disposedMaterials = new Set();
+        const disposeMaterial = (material) => {
+            if (!material || disposedMaterials.has(material)) return;
+            disposedMaterials.add(material);
+            for (const value of Object.values(material)) {
+                if (value?.isTexture && !disposedTextures.has(value)) {
+                    disposedTextures.add(value);
+                    value.dispose?.();
+                }
+            }
+            material.dispose?.();
+        };
+        object.traverse?.((child) => {
+            // Instance matrices/colors belong to each mesh, not its shared
+            // geometry. Three releases their GPU buffers on the mesh's own
+            // dispose event; disposing only geometry leaks them on area swaps.
+            if (child.isInstancedMesh) child.dispose?.();
+            if (child.isBatchedMesh) {
+                // Every batch owns separate matrix/color/indirection textures,
+                // even when an immutable recipe has a shared geometry owner.
+                // Its dispose handles geometry lifetime; visit every batch.
+                disposedGeometries.add(child.geometry);
+                pendingGeometries.delete(child.geometry);
+                child.dispose();
+            } else if (child.geometry?.dispose && !disposedGeometries.has(child.geometry)) {
+                pendingGeometries.add(child.geometry);
+            }
+            if (Array.isArray(child.material)) {
+                child.material.forEach(disposeMaterial);
+            } else {
+                disposeMaterial(child.material);
+            }
+        });
+        // A mesh referencing a batch geometry may precede its owner in the
+        // group. Defer ordinary geometries so child order cannot leak textures
+        // or double-dispose an owner's buffer.
+        pendingGeometries.forEach(geometry => geometry.dispose());
+    }
+
+    updateActorContactShadows(entities, options) {
+        const enabled = !this.renderer.shadowMap.enabled;
+        if (enabled) this.actorContactShadows ??= new ActorContactShadows(this.scene);
+        this.actorContactShadows?.update(entities, { ...options, enabled });
+    }
+
+    prepareInitialView({ shouldContinue = () => true } = {}) {
+        if (this._disposed || !shouldContinue()) return Promise.resolve(false);
+        if (this._initialViewPreparation) return this._initialViewPreparation.promise;
+        const preparation = { frames: 0, request: null };
+        preparation.promise = new Promise((resolve, reject) => {
+            preparation.finish = (ready, error) => {
+                if (this._initialViewPreparation !== preparation) return;
+                if (preparation.request !== null) cancelAnimationFrame(preparation.request);
+                this._initialViewPreparation = null;
+                if (error) reject(error); else resolve(ready);
+            };
+        });
+        this._initialViewPreparation = preparation;
+        const frame = () => {
+            preparation.request = null;
+            if (this._disposed || !shouldContinue()) { preparation.finish(false); return; }
+            try {
+                // Real rendering also prepares shadow, texture uploads and
+                // composer passes that compileAsync(scene) alone omits.
+                this.render();
+            } catch (error) { preparation.finish(false, error); return; }
+            if (this._initialViewPreparation !== preparation) return;
+            // Shadow receiving programs may first appear on the second frame.
+            if (++preparation.frames === 2) preparation.finish(true);
+            else preparation.request = requestAnimationFrame(frame);
+        };
+        preparation.request = requestAnimationFrame(frame);
+        return preparation.promise;
+    }
+
+    render() {
+        this.sceneryVisibility?.update(this.instanceEnvironmentGroup, this.camera, this.sceneryFocus, performance.now() / 1000);
+        if (this.waterTexture) {
+            this.waterMotionClock ||= createVisualMotionClock();
+            const time = this.waterMotionClock.update(performance.now() / 1000, 0).time;
+            if (this.waterPlane && this.waterPlane.material && this.waterPlane.material.uniforms && this.waterPlane.material.uniforms.uTime) {
+                this.waterPlane.material.uniforms.uTime.value = time;
+            } else {
+                this.waterTexture.offset.x = time * .003;
+                this.waterTexture.offset.y = time * .002;
+            }
+        }
+        // Count the complete frame (shadow maps, world and post-processing),
+        // not just the composer's final fullscreen triangle. Restore the
+        // renderer's policy for callers that use it outside this frame.
+        const info = this.renderer.info;
+        const autoReset = info.autoReset;
+        info.autoReset = false;
+        info.reset();
+        try {
+            if (this.usePostProcessing && this.composer) {
+                this.composer.render();
+            } else {
+                this.renderer.render(this.scene, this.camera);
+            }
+        } finally {
+            // Scene.onAfterRender is not called if a renderer/pass throws.
+            // Never let frame-only batching hide actors from subsequent input.
+            this.actorInstances?.endFrame();
+            this.foliageShadowInfluence?.endFrame();
+            info.autoReset = autoReset;
+        }
+        this.updatePerfOverlay();
+    }
+
+    enablePerfOverlay(element) {
+        if (!element) return;
+        this.perfOverlay = element;
+        this.perfOverlay.style.display = 'block';
+        this.updatePerfOverlay(true);
+    }
+
+    updatePerfOverlay(force = false) {
+        if (!this.perfOverlay) return;
+
+        const now = performance.now();
+        const stats = this.perfStats;
+        stats.frames += 1;
+        stats.frameTime = now - stats.lastTime;
+        stats.lastTime = now;
+
+        const interval = force ? 0 : 250;
+        if (now - stats.lastUpdate < interval) {
+            return;
+        }
+
+        stats.fps = Math.round(1000 / Math.max(stats.frameTime, 0.001));
+        stats.lastUpdate = now;
+
+        const info = this.renderer.info;
+        const mem = info.memory || {};
+        const render = info.render || {};
+
+        const memoryLine = (performance && performance.memory)
+            ? `heap ${(performance.memory.usedJSHeapSize / 1048576).toFixed(1)} MB`
+            : 'heap n/a';
+
+        this.perfOverlay.textContent =
+            `fps ${stats.fps}\n` +
+            `frame ${stats.frameTime.toFixed(1)} ms\n` +
+            `calls ${render.calls ?? 0}\n` +
+            `tris ${render.triangles ?? 0}\n` +
+            `geo ${mem.geometries ?? 0} tex ${mem.textures ?? 0}\n` +
+            memoryLine;
+    }
+
+
+    dispose() {
+        if (this._disposed) return;
+        this._disposed = true;
+        this._initialViewPreparation?.finish(false);
+        // Restore originals before traversing scene resources: active cutaways
+        // temporarily substitute owned clones that share the original maps.
+        this.sceneryVisibility?.clear();
+        this.sceneryFocus = null;
+        this.actorColorBatches?.dispose(); this.actorColorBatches = null;
+        this.actorShadowBatches?.dispose(); this.actorShadowBatches = null;
+        this.actorGameplayGeometry?.dispose(); this.actorGameplayGeometry = null;
+        this.actorInstances?.dispose(); this.actorInstances = null;
+        this.foliageShadowInfluence?.dispose();
+        for (const restore of this.restoreSceneMatrices || []) restore();
+        this.restoreSceneMatrices = [];
+        this.actorContactShadows?.dispose();
+        this.actorContactShadows = null;
+        this.disposePostProcessing();
+        this.disposeShadowTargets();
+        if (this._onWindowResize) window.removeEventListener('resize', this._onWindowResize, false);
+        this.phoneEncounterObserver?.disconnect();
+        if (this._pMesh) {
+            this._pMesh.geometry.dispose();
+            this._pMesh.material.dispose();
+            if (this._pMesh.parent?.remove) {
+                this._pMesh.parent.remove(this._pMesh);
+            } else {
+                this.scene.remove(this._pMesh);
+            }
+            this._pMesh = null;
+        }
+
+        // Dispose generated textures (material.dispose() does NOT release these).
+        const ownedTextures = new Set([
+            this.waterTexture,
+            this.backgroundTexture,
+            this.reflectionEnvironment,
+            ...Object.values(this.terrainTextures || {})
+        ].filter(Boolean));
+        ownedTextures.forEach((texture) => texture.dispose());
+        this.waterTexture = null;
+        this.backgroundTexture = null;
+        this.reflectionEnvironment = null;
+        this.scene.environment = null;
+        this.terrainTextures = {};
+        if (this.scene.background?.isTexture) this.scene.background = new THREE.Color(0x080b11);
+
+        // Traverse scene BEFORE renderer.dispose() so GPU resources are freed while context exists
+        this.disposeObjectResources(this.scene, ownedTextures);
+
+        if (this.renderer) {
+            this.renderer.dispose();
+            // This session creates its own renderer/context and never reuses
+            // it. Release that context after owned resources, rather than
+            // leaving removed canvases alive until browser garbage collection.
+            this.renderer.forceContextLoss?.();
+            if (this.renderer.domElement && this.renderer.domElement.parentNode) {
+                this.renderer.domElement.parentNode.removeChild(this.renderer.domElement);
+            }
+        }
+
+        if (this.perfOverlay) {
+            this.perfOverlay.style.display = 'none';
+        }
+    }
+
+}

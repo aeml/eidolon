@@ -1,0 +1,1830 @@
+package server
+
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+	"maps"
+	"strings"
+	"time"
+
+	"eidolon-server/internal/database"
+	"eidolon-server/internal/game"
+)
+
+func (c *Client) dispatchMessage(msg Message) {
+	switch msg.Type {
+	case MsgRegister:
+		if c.transportClosed.Load() || c.retired.Load() {
+			return
+		}
+		var payload AuthPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+		if err := validateRegistrationCredentials(payload); err != nil {
+			c.sendError("Registration failed: " + err.Error())
+			return
+		}
+		done, err := credentialAdmission.begin(msg.Type, payload.Username, time.Now())
+		if err != nil {
+			c.sendError(err.Error())
+			return
+		}
+		defer done()
+		if err := registrationInvitations.Check(payload.Username, payload.Invitation, time.Now()); err != nil {
+			c.sendRegistrationInvitationRequired()
+			c.sendError("Registration failed: " + err.Error())
+			return
+		}
+		err = db.CreateUser(payload.Username, payload.Email, payload.Password)
+		done()
+		if err != nil {
+			c.sendError("Registration failed: " + err.Error())
+			return
+		}
+		c.sendError("Registration successful! Please login.")
+
+	case MsgLogin:
+		// Login skips ordinary character-owner admission. A retired transport
+		// must not start credential work while awaiting network-hub cleanup.
+		if c.transportClosed.Load() || c.retired.Load() {
+			return
+		}
+		var payload AuthPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+		if c.username != "" && c.username != payload.Username {
+			c.sendError("Use a new connection to switch accounts.")
+			return
+		}
+		done, err := credentialAdmission.beginLogin(payload.Username, time.Now())
+		// A queued login may outlive its transport or be replaced meanwhile.
+		// Release capacity and suppress even a delayed rejection before storage.
+		if c.transportClosed.Load() || c.retired.Load() {
+			if done != nil {
+				done()
+			}
+			return
+		}
+		if err != nil {
+			c.sendError(err.Error())
+			return
+		}
+		defer done()
+		// Verify under the account handoff lock: an old-password comparison
+		// must not finish before a password change and acquire ownership after it.
+		unlockCharacter, _, err := lockDirectTradeWork(true, payload.Username)
+		if err != nil {
+			c.sendError("Login recovery is unavailable. Please retry shortly.")
+			return
+		}
+		defer unlockCharacter()
+		if c.transportClosed.Load() || c.retired.Load() {
+			return
+		}
+		authenticatedID, success, err := db.AuthenticateAccount(payload.Username, payload.Password)
+		done() // Hydration, activity storage and takeover do not occupy hash slots.
+		if err != nil {
+			c.sendError("Login error")
+			return
+		}
+		if !success {
+			c.sendError("Invalid credentials")
+			return
+		}
+		if c.transportClosed.Load() || c.retired.Load() {
+			return
+		}
+		user, err := db.GetCharacterEntryAccount(payload.Username)
+		if err != nil || user.ID != authenticatedID || !clientAcceptsAccountID(c, authenticatedID) || !liveAccountIdentityMatches(payload.Username, authenticatedID) {
+			c.sendError("Account identity could not be restored. Please use a new connection or contact support.")
+			return
+		}
+		if err := recordClientSessionActivity(c, payload.Username, "login"); err != nil {
+			c.sendError("Login activity storage is unavailable. Please retry shortly.")
+			return
+		}
+		if err := recoverColdAccountDirectTradeLocked(payload.Username); err != nil {
+			c.sendError("Your item/trade transfer is awaiting recovery. Please retry shortly.")
+			return
+		}
+		if err := recoverAccountAdminOperationsLocked(payload.Username); err != nil {
+			c.sendError("An administration change to your character is awaiting recovery. Please retry shortly.")
+			return
+		}
+		if err := recoverAccountGuildBankOperationsLocked(payload.Username); err != nil {
+			c.sendError("Your guild bank transfer is awaiting recovery. Please retry shortly.")
+			return
+		}
+		if !sessionAccountIdentityCurrent(c, payload.Username, authenticatedID) || !pinClientAccountID(c, authenticatedID) {
+			c.sendError("Account identity changed. Please use a new connection.")
+			return
+		}
+		if c.username == "" {
+			c.username = payload.Username
+		}
+		c.retired.Store(false)
+		sessionsMu.Lock()
+		previous := activeSessions[c.username]
+		sessionsMu.Unlock()
+		if previous != nil && previous != c {
+			cleanupClientLocked(previous)
+			closeReplacedClient(previous)
+		}
+
+		// Enforce single session
+		sessionsMu.Lock()
+		activeSessions[c.username] = c
+		sessionsMu.Unlock()
+
+		// Check for characters
+		hasCharacter := false
+		characterType := ""
+		if len(user.Characters) > 0 && user.Characters[0] != nil {
+			hasCharacter = true
+			characterType = user.Characters[0].Class
+		}
+		name := user.PublicName
+		if name == "" {
+			name = c.username
+		}
+		setClientPublicName(c, name)
+
+		// Issue session-resume token
+		resumeToken, err := issueResumeToken(c.username, c)
+		if err != nil {
+			log.Printf("Failed to issue resume token for %s: %v", c.username, err)
+			resumeToken = ""
+		}
+
+		// Send success message
+		response := map[string]interface{}{
+			"message":          "Login successful",
+			"gameplayProtocol": gameplayProtocol,
+			"terrainProfile":   world.TerrainProfile(),
+			"hasCharacter":     hasCharacter,
+			"characterType":    characterType,
+			"resumeToken":      resumeToken,
+		}
+		payloadBytes, _ := json.Marshal(response)
+
+		successMsg := Message{
+			Type:    "login_success",
+			Payload: payloadBytes,
+		}
+		data, _ := json.Marshal(successMsg)
+		c.sendSafe(data)
+
+	case MsgJoin:
+		if c.username == "" {
+			log.Printf("MsgJoin failed: User not logged in (Client: %s)", c.conn.RemoteAddr())
+			c.sendError("Please login first")
+			return
+		}
+		var payload JoinPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			log.Printf("MsgJoin failed: Invalid payload from %s", c.username)
+			return
+		}
+		if !sessionAccountIdentityCurrent(c, c.username, clientAccountID(c)) {
+			c.sendError("Account identity changed or is unavailable. Please log in again.")
+			return
+		}
+		if err := hydrateClientPublicName(c); err != nil {
+			c.sendError("Your public name could not be restored. Please reconnect.")
+			return
+		}
+		if !worldAdmissionAllowed(c) {
+			return
+		}
+		if !gameplayAdmissionAllowed(c, payload.GameplayProtocol) {
+			return
+		}
+
+		if err := recoverAccountAdminOperationsLocked(c.username); err != nil {
+			c.sendError("An administration change to your character is awaiting recovery. Please retry shortly.")
+			return
+		}
+		if err := recoverAccountGuildBankOperationsLocked(c.username); err != nil {
+			c.sendError("Your guild bank transfer is awaiting recovery. Please retry shortly.")
+			return
+		}
+		if err := recoverAccountBlackjackLocked(c.username); err != nil {
+			c.sendError("Your table funds are awaiting recovery. Please try again shortly.")
+			return
+		}
+		// A full login can follow a transport loss before its DB save completes.
+		// Keep the authoritative live entity, including resources/cooldowns/death,
+		// rather than replacing it with an older persisted snapshot.
+		if existing := world.GetEntityCopy("player-" + c.username); existing != nil {
+			c.bindPlayerID(existing.ID)
+			world.ClearEntityDisconnected(existing.ID)
+			c.resetSnapshotHistory()
+			world.GenerateDailyQuests(c.playerID)
+			refreshChatBlocks(c.username)
+			existing = world.GetEntityCopy(c.playerID)
+			sendInitialPlayerState(c, existing, existing.InstanceID)
+			scheduleFriendPresence(c)
+			return
+		}
+
+		if err := retryPendingCharacterSaveLocked(c.username); err != nil {
+			c.sendError("Your latest character save is awaiting recovery. Please try again later.")
+			return
+		}
+		log.Printf("Player joining: %s (Class: %s)", c.username, payload.Type)
+
+		// Hydrate the original first character and trusted account generation,
+		// without fetching credentials or unrelated character receipt maps.
+		user, err := db.GetCharacterEntryAccount(c.username)
+		if err != nil {
+			c.sendError("Failed to load user data")
+			return
+		}
+		if requireBoundCharacterSaves && user.ID.IsZero() {
+			c.sendError("Account identity could not be restored. Please contact support.")
+			return
+		}
+		if requireBoundCharacterSaves && user.ID != clientAccountID(c) {
+			c.sendError("Account identity changed. Please log in again using a new connection.")
+			return
+		}
+
+		var char *database.Character
+		// Simple logic: Use the first character if it exists, otherwise create one
+		// In a real game, we'd have a character selection screen
+		if len(user.Characters) > 0 {
+			// Find character matching the requested class if possible, or just use the first one
+			// For now, let's just use the first one to support persistence
+			char = user.Characters[0]
+			// If the class doesn't match what they selected in UI, we might want to warn or just use the DB one
+			// Let's assume the DB one is authoritative
+		} else {
+			// Create new character
+			char = newPlayerCharacter(c.username, payload.Type)
+			char.AccountID = user.ID
+			// Save new character to DB
+			var err error
+			if user.Characters == nil {
+				// If characters array is nil/null in DB, use $set to initialize it
+				err = db.SetFirstCharacter(c.username, char)
+			} else {
+				// Otherwise use $push
+				err = db.CreateCharacter(c.username, char)
+			}
+
+			if err != nil {
+				log.Printf("Failed to create character for %s: %v", c.username, err)
+				c.sendError("Failed to create character")
+				return
+			}
+		}
+
+		progression, err := game.MigrateSavedProgression(char.Level, char.XP, char.ProgressionVersion)
+		if err != nil {
+			c.sendError("Unable to restore character progression; please contact support.")
+			log.Printf("Cannot restore progression for %s: %v", c.username, err)
+			return
+		}
+
+		// Create player entity from DB character
+		playerID := "player-" + c.username
+		c.bindPlayerID(playerID)
+
+		// Check if player was in an instance and logged out more than 15 minutes ago
+		spawnX := char.X
+		spawnY := char.Y
+		spawnZ := char.Z
+		instanceID := char.InstanceID
+		spawnX, spawnY, spawnZ = game.RestoreCasinoPosition(instanceID, spawnX, spawnY, spawnZ)
+
+		if instanceID != "" && instanceID != game.CasinoInstanceID && instanceID != game.DarkRealmInstanceID {
+			// Player was in a dungeon instance
+			timeSinceLogout := time.Since(char.LastLogout)
+			if timeSinceLogout > 15*time.Minute {
+				// More than 15 minutes - return to town
+				log.Printf("Player %s was in instance %s but logged out %v ago - returning to town", c.username, instanceID, timeSinceLogout)
+				spawnX = -1.25 // Town center
+				spawnY = 0
+				spawnZ = 200
+				instanceID = "" // Clear instance
+			} else {
+				// Less than 15 minutes - check if instance still exists
+				_, exists := world.GetInstanceLayout(instanceID)
+				if !exists && char.DungeonProgress != nil && char.DungeonProgress.InstanceID == instanceID {
+					if err := world.RestoreDungeon(dungeonResumeFromDatabase(char.DungeonProgress)); err != nil {
+						log.Printf("Player %s dungeon restore for %s failed: %v", c.username, instanceID, err)
+					} else {
+						_, exists = world.GetInstanceLayout(instanceID)
+						if exists {
+							log.Printf("Restored dungeon %s from persisted room state for %s", instanceID, c.username)
+						}
+					}
+				}
+				if !exists {
+					// Instance no longer exists - return to town
+					log.Printf("Player %s was in instance %s but it no longer exists - returning to town", c.username, instanceID)
+					spawnX = -1.25
+					spawnY = 0
+					spawnZ = 200
+					instanceID = ""
+				} else {
+					log.Printf("Player %s reconnecting to instance %s (logged out %v ago)", c.username, instanceID, timeSinceLogout)
+				}
+			}
+		}
+
+		entity := &game.Entity{
+			PersistenceAccountID:     user.ID,
+			PublicName:               clientPublicName(c),
+			ID:                       playerID,
+			Name:                     c.username,
+			Type:                     game.TypePlayer,
+			SubType:                  char.Class,
+			X:                        spawnX,
+			Y:                        spawnY,
+			Z:                        spawnZ,
+			InstanceID:               instanceID,
+			Health:                   char.Stats.Vitality * 10,
+			MaxHealth:                char.Stats.Vitality * 10,
+			Mana:                     char.Stats.Intelligence * 10,
+			MaxMana:                  char.Stats.Intelligence * 10,
+			Level:                    char.Level,
+			Experience:               char.XP,
+			MaxExperience:            game.ExperienceRequiredForLevel(char.Level),
+			ResonanceLevel:           char.ResonanceLevel,
+			ResonanceXP:              char.ResonanceXP,
+			ResonancePoints:          char.ResonancePoints,
+			ResonanceRanks:           char.ResonanceRanks,
+			Gold:                     char.Gold,
+			GoldCreditReceipts:       cloneGoldCreditReceipts(char.GoldCreditReceipts),
+			DirectTradeState:         database.CloneDirectTradeState(char.DirectTradeState),
+			GuildBankRevision:        char.GuildBankRevision,
+			GuildBankOpID:            char.GuildBankOpID,
+			GuildBankOpFingerprint:   char.GuildBankOpFingerprint,
+			EP:                       char.EP,
+			EPExchangeReceipts:       cloneGoldCreditReceipts(char.EPExchangeReceipts),
+			EPCasinoReceipts:         cloneGoldCreditReceipts(char.EPCasinoReceipts),
+			CasinoWalletCheckpoints:  maps.Clone(char.CasinoWalletCheckpoints),
+			VIPAllowanceReceipts:     cloneGoldCreditReceipts(char.VIPAllowanceReceipts),
+			ItemDeliveryReceipts:     cloneItemDeliveryReceipts(char.ItemDeliveryReceipts),
+			GroundAccountOrdinal:     char.GroundAccountOrdinal,
+			GroundAccountOperationID: char.GroundAccountOperationID,
+			GroundAccountFingerprint: char.GroundAccountFingerprint,
+			PendingBossLoot:          append([]string(nil), char.PendingBossLoot...),
+			AdminOperationReceipts:   cloneItemDeliveryReceipts(char.AdminOperationReceipts),
+			WeeklyRaidRewardReceipts: maps.Clone(char.WeeklyRaidRewardReceipts),
+			WeeklyRaidCompletions:    maps.Clone(char.WeeklyRaidCompletions),
+			State:                    "IDLE",
+			Damage:                   char.Stats.Strength * 2,
+			Defense:                  0,
+			AttackCooldown:           1000 * time.Millisecond,
+			Scale:                    1.0,
+			BaseStats: game.Stats{
+				Strength:     char.Stats.Strength,
+				Dexterity:    char.Stats.Dexterity,
+				Intelligence: char.Stats.Intelligence,
+				Wisdom:       char.Stats.Wisdom,
+				Vitality:     char.Stats.Vitality,
+			},
+			SkillPoints:          max(0, char.SkillPoints),
+			EquipmentLoadouts:    gameLoadouts(char.EquipmentLoadouts),
+			AppearanceCollection: gameAppearances(char.AppearanceCollection),
+			Appearances:          gameAppearances(char.Appearances),
+			SavedHotbar:          append([]string(nil), char.SavedHotbar...),
+			SelectedBranch:       char.SelectedBranch,
+			UnlockedSkills:       []string{},
+		}
+		entity.NormalizeResonanceProgress()
+		entity.ApplySavedProgression(progression)
+
+		// Passive talents: ranked map. Migrate legacy unlocked_talents (rank=1) if needed.
+		if char.TalentRanks != nil {
+			entity.TalentRanks = make(map[string]int, len(char.TalentRanks))
+			for k, v := range char.TalentRanks {
+				entity.TalentRanks[k] = v
+			}
+		} else if len(char.UnlockedTalents) > 0 {
+			// Legacy migration safety:
+			// Older saves may have large unlocked_talents lists that don't map cleanly to the
+			// new ranked + budgeted system (1 point per 5 levels). If we blindly convert all
+			// legacy unlocked IDs into ranks, players can appear to have 0 available points.
+			//
+			// If the legacy list exceeds the new budget, start them with a clean slate so
+			// they can re-allocate under the new rules.
+			budget := 0
+			if entity.Level >= 5 {
+				budget = entity.Level / 5
+			}
+			uniq := make(map[string]struct{}, len(char.UnlockedTalents))
+			for _, tid := range char.UnlockedTalents {
+				if tid == "" {
+					continue
+				}
+				uniq[tid] = struct{}{}
+			}
+			if len(uniq) > budget {
+				log.Printf("Legacy talent migration for %s: %d unlocked_talents exceeds budget %d at level %d; resetting talents to avoid 0 available points", c.username, len(uniq), budget, entity.Level)
+				entity.TalentRanks = make(map[string]int)
+			} else {
+				entity.TalentRanks = make(map[string]int, len(uniq))
+				for tid := range uniq {
+					entity.TalentRanks[tid] = 1
+				}
+			}
+		}
+		// Sanitize ranks: only allow class-specific IDs and clamp to max rank.
+		// TalentPoints are derived later during RecalculateStats().
+		entity.NormalizeTalentRanks()
+		// Helpful debug line for shipping confidence: shows what we loaded from DB.
+		log.Printf("Login %s: TalentRanks=%d, TalentPoints=%d (Level=%d)", c.username, len(entity.TalentRanks), entity.TalentPoints, entity.Level)
+
+		// Load Skill Runes
+		if char.SkillRunes != nil {
+			entity.SkillRunes = make(map[string]string, len(char.SkillRunes))
+			for k, v := range char.SkillRunes {
+				entity.SkillRunes[k] = v
+			}
+		}
+
+		// Auto-Unlock Skills based on Level and Branch
+		world.UpdateUnlockedSkills(entity)
+
+		log.Printf("Login %s: Level %d, Branch %s, Unlocked %v",
+			c.username, entity.Level, entity.SelectedBranch, entity.UnlockedSkills)
+
+		// Convert DB Inventory to Game Inventory
+		entity.Inventory = make([]game.Item, game.MaxInventorySize)
+		if len(char.Inventory) > 0 {
+			log.Printf("Loading inventory for %s: %d items", c.username, len(char.Inventory))
+			// Fill slots sequentially for now (since DB doesn't store slot index)
+			for i, dbItem := range char.Inventory {
+				if i >= game.MaxInventorySize {
+					break
+				}
+				// Fix for old items (Shards/Hearts missing MaxStack)
+				maxStack := dbItem.MaxStack
+				if (dbItem.Name == "Shard" || dbItem.Name == "Eidolon Shard" || dbItem.Name == "Heart" || dbItem.Name == "Eidolon Heart") && maxStack == 0 {
+					maxStack = 1000
+				}
+
+				// Migration: Rename "Heart" to "Eidolon Heart"
+				name := dbItem.Name
+				if name == "Heart" {
+					name = "Eidolon Heart"
+				}
+				if name == "Eidolon Heart" {
+					dbItem.Icon = "procedural:item:eidolon-heart"
+				}
+				// Migration: Rename "Shard" to "Eidolon Shard"
+				if name == "Shard" {
+					name = "Eidolon Shard"
+				}
+				if name == "Eidolon Shard" {
+					dbItem.Icon = "procedural:item:eidolon-shard"
+				}
+
+				// Fix for old items (Missing Stack count)
+				stack := dbItem.Stack
+				if stack == 0 {
+					stack = 1
+				}
+
+				loadedItem := game.Item{
+					ID:               dbItem.ID,
+					Name:             name,
+					Type:             game.ItemType(dbItem.Type),
+					Rarity:           game.ItemRarity(dbItem.Rarity),
+					Slot:             dbItem.Slot,
+					Level:            dbItem.Level,
+					Value:            dbItem.Value,
+					Icon:             dbItem.Icon,
+					Description:      dbItem.Description,
+					Stats:            dbItem.Stats,
+					Stack:            stack,
+					MaxStack:         maxStack,
+					Potency:          dbItem.Potency,
+					Sockets:          dbItem.Sockets,
+					Gems:             socketedGemsFromDatabase(dbItem.Gems),
+					SetID:            dbItem.SetID,
+					UniqueEffect:     dbItem.UniqueEffect,
+					GemType:          game.GemType(dbItem.GemType),
+					GemQuality:       game.GemQuality(dbItem.GemQuality),
+					StatScaleVersion: dbItem.StatScaleVersion,
+				}
+				game.NormalizeItemStatScale(&loadedItem)
+				loadedItem.ForgeBasis = dbItem.ForgeBasis.Clone()
+				entity.Inventory[i] = loadedItem
+			}
+		}
+
+		// Convert DB Stash to Game Stash
+		entity.Stash = make([]game.Item, 0)
+		if len(char.Stash) > 0 {
+			entity.Stash = make([]game.Item, len(char.Stash))
+			for i, dbItem := range char.Stash {
+				// Fix for old items
+				maxStack := dbItem.MaxStack
+				if (dbItem.Name == "Shard" || dbItem.Name == "Eidolon Shard" || dbItem.Name == "Heart" || dbItem.Name == "Eidolon Heart") && maxStack == 0 {
+					maxStack = 1000
+				}
+
+				// Migration: Rename "Heart" to "Eidolon Heart"
+				name := dbItem.Name
+				if name == "Heart" {
+					name = "Eidolon Heart"
+				}
+				if name == "Eidolon Heart" {
+					dbItem.Icon = "procedural:item:eidolon-heart"
+				}
+				// Migration: Rename "Shard" to "Eidolon Shard"
+				if name == "Shard" {
+					name = "Eidolon Shard"
+				}
+				if name == "Eidolon Shard" {
+					dbItem.Icon = "procedural:item:eidolon-shard"
+				}
+
+				stack := dbItem.Stack
+				if stack == 0 {
+					stack = 1
+				}
+
+				loadedItem := game.Item{
+					ID:               dbItem.ID,
+					Name:             name,
+					Type:             game.ItemType(dbItem.Type),
+					Rarity:           game.ItemRarity(dbItem.Rarity),
+					Slot:             dbItem.Slot,
+					Level:            dbItem.Level,
+					Value:            dbItem.Value,
+					Icon:             dbItem.Icon,
+					Description:      dbItem.Description,
+					Stats:            dbItem.Stats,
+					Stack:            stack,
+					MaxStack:         maxStack,
+					Potency:          dbItem.Potency,
+					Sockets:          dbItem.Sockets,
+					Gems:             socketedGemsFromDatabase(dbItem.Gems),
+					SetID:            dbItem.SetID,
+					UniqueEffect:     dbItem.UniqueEffect,
+					GemType:          game.GemType(dbItem.GemType),
+					GemQuality:       game.GemQuality(dbItem.GemQuality),
+					StatScaleVersion: dbItem.StatScaleVersion,
+				}
+				game.NormalizeItemStatScale(&loadedItem)
+				loadedItem.ForgeBasis = dbItem.ForgeBasis.Clone()
+				entity.Stash[i] = loadedItem
+			}
+		}
+
+		// Convert DB Buyback to Game Buyback
+		entity.Buyback = make([]game.Item, 0)
+		if len(char.Buyback) > 0 {
+			entity.Buyback = make([]game.Item, len(char.Buyback))
+			for i, dbItem := range char.Buyback {
+				// Fix for old items
+				maxStack := dbItem.MaxStack
+				if (dbItem.Name == "Shard" || dbItem.Name == "Eidolon Shard" || dbItem.Name == "Heart" || dbItem.Name == "Eidolon Heart") && maxStack == 0 {
+					maxStack = 1000
+				}
+
+				// Migration: Rename "Heart" to "Eidolon Heart"
+				name := dbItem.Name
+				if name == "Heart" {
+					name = "Eidolon Heart"
+				}
+				if name == "Eidolon Heart" {
+					dbItem.Icon = "procedural:item:eidolon-heart"
+				}
+				// Migration: Rename "Shard" to "Eidolon Shard"
+				if name == "Shard" {
+					name = "Eidolon Shard"
+				}
+				if name == "Eidolon Shard" {
+					dbItem.Icon = "procedural:item:eidolon-shard"
+				}
+
+				stack := dbItem.Stack
+				if stack == 0 {
+					stack = 1
+				}
+
+				loadedItem := game.Item{
+					ID:               dbItem.ID,
+					Name:             name,
+					Type:             game.ItemType(dbItem.Type),
+					Rarity:           game.ItemRarity(dbItem.Rarity),
+					Slot:             dbItem.Slot,
+					Level:            dbItem.Level,
+					Value:            dbItem.Value,
+					Icon:             dbItem.Icon,
+					Description:      dbItem.Description,
+					Stats:            dbItem.Stats,
+					Stack:            stack,
+					MaxStack:         maxStack,
+					Potency:          dbItem.Potency,
+					Sockets:          dbItem.Sockets,
+					Gems:             socketedGemsFromDatabase(dbItem.Gems),
+					SetID:            dbItem.SetID,
+					UniqueEffect:     dbItem.UniqueEffect,
+					GemType:          game.GemType(dbItem.GemType),
+					GemQuality:       game.GemQuality(dbItem.GemQuality),
+					StatScaleVersion: dbItem.StatScaleVersion,
+				}
+				game.NormalizeItemStatScale(&loadedItem)
+				loadedItem.ForgeBasis = dbItem.ForgeBasis.Clone()
+				entity.Buyback[i] = loadedItem
+			}
+		}
+
+		// Convert DB Equipment to Game Equipment
+		entity.Equipment = make(map[string]game.Item)
+		if len(char.Equipment) > 0 {
+			for slot, dbItem := range char.Equipment {
+				stack := dbItem.Stack
+				if stack == 0 {
+					stack = 1
+				}
+				loadedItem := game.Item{
+					ID:               dbItem.ID,
+					Name:             dbItem.Name,
+					Type:             game.ItemType(dbItem.Type),
+					Rarity:           game.ItemRarity(dbItem.Rarity),
+					Slot:             dbItem.Slot,
+					Level:            dbItem.Level,
+					Value:            dbItem.Value,
+					Icon:             dbItem.Icon,
+					Description:      dbItem.Description,
+					Stats:            dbItem.Stats,
+					Stack:            stack,
+					MaxStack:         dbItem.MaxStack,
+					Potency:          dbItem.Potency,
+					Sockets:          dbItem.Sockets,
+					Gems:             socketedGemsFromDatabase(dbItem.Gems),
+					SetID:            dbItem.SetID,
+					UniqueEffect:     dbItem.UniqueEffect,
+					GemType:          game.GemType(dbItem.GemType),
+					GemQuality:       game.GemQuality(dbItem.GemQuality),
+					StatScaleVersion: dbItem.StatScaleVersion,
+				}
+				game.NormalizeItemStatScale(&loadedItem)
+				loadedItem.ForgeBasis = dbItem.ForgeBasis.Clone()
+				entity.Equipment[slot] = loadedItem
+			}
+		}
+
+		// Convert DB Quests to Game Quests
+		if len(char.Quests) > 0 {
+			entity.Quests = make([]game.Quest, len(char.Quests))
+			for i, q := range char.Quests {
+				entity.Quests[i] = questFromDatabase(q)
+			}
+		}
+		entity.LastDailyQuest = char.LastDailyQuest
+		if entity.InstanceID == game.DarkRealmInstanceID && !game.DarkRealmEntryAllowed(entity) && darkRealmAdministrator(c) {
+			game.RestoreDarkRealmPositionForAdministrator(entity)
+		} else {
+			game.RestoreDarkRealmPosition(entity)
+		}
+
+		// Fix for persistence issue: If we have quests but no date (or zero date), assume they are valid for today to prevent reset
+		if len(entity.Quests) > 0 && entity.LastDailyQuest.IsZero() {
+			log.Printf("Restoring LastDailyQuest for %s (was zero, setting to Now)", c.username)
+			entity.LastDailyQuest = time.Now().UTC()
+		}
+
+		if err := restoreCharacterWellRested(entity, char.WellRested); err != nil {
+			c.sendError("Unable to restore Well Rested; please contact support.")
+			log.Printf("Cannot restore Well Rested for %s: %v", c.username, err)
+			return
+		}
+		entity.RecalculateStats()
+		if err := restoreCharacterResources(entity, char.Resources); err != nil {
+			c.sendError("Unable to restore character resources; please contact support.")
+			log.Printf("Cannot restore resources for %s: %v", c.username, err)
+			return
+		}
+		if progression.PendingLevels > 0 {
+			// Preserve the existing earned-level migration reward for living
+			// characters, without reviving a saved death or refilling mana.
+			if entity.State != "DEAD" {
+				entity.Health = entity.MaxHealth
+			}
+		}
+		world.AddEntity(entity)
+
+		// Attempt to rejoin the persisted party (0.37.1).
+		// The party may no longer exist (all members left / server restart) — fail silently.
+		if char.PartyID != "" {
+			if err := world.RejoinOrRestoreParty(playerID, char.PartyID); err != nil {
+				log.Printf("Party rejoin for %s (party %s) skipped: %v", c.username, char.PartyID, err)
+			} else {
+				log.Printf("Player %s rejoined party %s on login", c.username, char.PartyID)
+			}
+		}
+
+		// Generate Daily Quests if needed
+		world.GenerateDailyQuests(playerID)
+		refreshChatBlocks(c.username)
+
+		sendInitialPlayerState(c, entity, instanceID)
+		// Notify online friends that this player has come online (0.38.1).
+		scheduleFriendPresence(c)
+
+	case MsgEnterDungeon:
+		if c.playerID == "" {
+			return
+		}
+
+		var req struct {
+			DungeonType string `json:"dungeonType"`
+			Difficulty  string `json:"difficulty"`
+			RunLevel    int    `json:"runLevel"`
+		}
+		if len(msg.Payload) > 0 {
+			json.Unmarshal(msg.Payload, &req)
+		}
+		dungeonType := req.DungeonType
+		if dungeonType == "" {
+			dungeonType = "crypt"
+		}
+
+		// Parse difficulty
+		difficulty := game.DifficultyNormal
+		switch req.Difficulty {
+		case "heroic":
+			difficulty = game.DifficultyHeroic
+		case "mythic":
+			difficulty = game.DifficultyMythic
+		}
+
+		runLevel := req.RunLevel
+		if runLevel == 0 {
+			runLevel = game.DungeonUnlockLevel
+		}
+		run, members, err := world.EnterPartyDungeon(c.playerID, dungeonType, difficulty, runLevel)
+		if err != nil {
+			c.sendError(err.Error())
+			return
+		}
+		sendDungeonEntry(run, members)
+
+	case MsgGetDungeonStatus:
+		if c.playerID == "" {
+			return
+		}
+
+		var statusReq struct {
+			DungeonType string `json:"dungeonType"`
+		}
+		if len(msg.Payload) > 0 {
+			_ = json.Unmarshal(msg.Payload, &statusReq)
+		}
+		player := world.GetEntityCopy(c.playerID)
+		if player == nil {
+			return
+		}
+
+		// Auto-create party for solo players
+		if player.PartyID == "" {
+			party := world.CreateParty(c.playerID)
+			if party != nil {
+				broadcastPartyUpdate(party)
+				// Update local player copy's PartyID
+				player.PartyID = party.ID
+			} else {
+				// Check if failure was due to race condition (already in party)
+				updatedPlayer := world.GetEntityCopy(c.playerID)
+				if updatedPlayer != nil && updatedPlayer.PartyID != "" {
+					player.PartyID = updatedPlayer.PartyID
+				} else {
+					// DEBUG: Detailed failure reason
+					exists := false
+					pid := "nil"
+					if updatedPlayer != nil {
+						exists = true
+						pid = updatedPlayer.PartyID
+					}
+					c.sendError(fmt.Sprintf("Failed to create party. Exists: %v, PID: %s, ID: %s", exists, pid, c.playerID))
+					return
+				}
+			}
+		}
+
+		hasInstance, timeLeft := world.GetDungeonStatus(player.PartyID)
+
+		// Check if leader
+		party := world.GetParty(player.PartyID)
+		isLeader := false
+		if party != nil {
+			_, leaderID, _ := party.GetSnapshot()
+			isLeader = (leaderID == c.playerID)
+		}
+
+		resp := map[string]interface{}{
+			"hasInstance":                  hasInstance,
+			"timeLeft":                     timeLeft,
+			"isLeader":                     isLeader,
+			"playerLevel":                  player.Level,
+			"maxPlayerLevel":               game.MaxPlayerLevel,
+			"dungeonUnlockLevel":           game.DungeonUnlockLevel,
+			"dungeonEntryLevels":           game.DungeonEntryLevels(),
+			"endgameDifficultyUnlockLevel": game.EndgameDifficultyUnlockLevel,
+			"availableRunLevels":           game.AvailableDungeonRunLevelsForPlayer(player.Level),
+		}
+		crystalsRestored, darkRealmOpen, darkKingDefeated := game.ChronicleAccessStatus(player)
+		resp["crystalsRestored"] = crystalsRestored
+		resp["darkRealmOpen"] = darkRealmOpen
+		resp["darkKingDefeated"] = darkKingDefeated
+		resp["darkRealmExpedition"] = true
+		adminDarkRealmAccess := player.Level >= 100 && darkRealmAdministrator(c)
+		resp["adminDarkRealmAccess"] = adminDarkRealmAccess
+		resp["canEnterDarkRealm"] = (game.DarkRealmEntryAllowed(player) || adminDarkRealmAccess) && player.InstanceID == ""
+		resp["canEnterUmbralNexus"] = game.CanEnterUmbralNexus(player)
+		resp["elementalRaidAccess"] = game.ElementalRaidAccessForPlayer(player)
+		if player.Level >= game.MaxPlayerLevel {
+			now := time.Now().UTC()
+			status := "unknown"
+			if claimed, err := db.HasWeeklyRaidReward(c.playerID, now); err == nil {
+				status = "available"
+				if claimed {
+					status = "claimed"
+				}
+			}
+			resp["weeklyRaidReward"] = map[string]interface{}{"status": status, "resetsAt": database.NextRaidWeekReset(now)}
+		}
+		if statusReq.DungeonType != "" {
+			resp["dungeonType"] = statusReq.DungeonType
+		}
+		if run, exists := world.GetPartyDungeonRun(player.PartyID); exists {
+			resp["activeRun"] = run
+		}
+		payloadBytes, _ := json.Marshal(resp)
+		log.Printf("Sending Dungeon Menu to %s: %+v", c.username, resp)
+		c.sendSafe(createMessage(MsgGetDungeonStatus, payloadBytes))
+		// c.sendError(fmt.Sprintf("Debug: Menu Data Sent. Party: %s, Leader: %v", player.PartyID, isLeader))
+
+	case MsgResetDungeon:
+		if c.playerID == "" {
+			return
+		}
+		player := world.GetEntityCopy(c.playerID)
+		if player == nil || player.PartyID == "" {
+			return
+		}
+
+		party := world.GetParty(player.PartyID)
+		if party == nil {
+			return
+		}
+		_, leaderID, _ := party.GetSnapshot()
+		if leaderID != c.playerID {
+			c.sendError("Only the party leader can reset the dungeon.")
+			return
+		}
+
+		if err := world.ResetDungeon(player.PartyID); err != nil {
+			c.sendError(err.Error())
+			return
+		}
+		c.sendSystemChat("Dungeon reset.")
+
+	case MsgResumeSession:
+		// Do not burn a single-use token on an unavailable recipient.
+		if c.transportClosed.Load() || c.retired.Load() {
+			return
+		}
+		// Check presentation capability before looking up or consuming a token.
+		var payload struct {
+			Token            string `json:"token"`
+			GameplayProtocol string `json:"gameplayProtocol"`
+		}
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil || payload.Token == "" {
+			c.sendError("Invalid resume_session payload")
+			return
+		}
+		if !gameplayAdmissionAllowed(c, payload.GameplayProtocol) {
+			return
+		}
+
+		username, ok := resumeTokenAccount(payload.Token, c.username)
+		if !ok {
+			c.sendError("Session token invalid or expired. Please log in again.")
+			return
+		}
+		if c.username != "" && c.username != username {
+			c.sendError("Use a new connection to switch accounts.")
+			return
+		}
+		unlockCharacter, _, err := lockDirectTradeWork(true, username)
+		if err != nil {
+			c.sendError("Session recovery is unavailable. Please log in again shortly.")
+			return
+		}
+		defer unlockCharacter()
+		if c.transportClosed.Load() || c.retired.Load() {
+			return
+		}
+		resumeID, identityOK := resumeTokenIdentity(payload.Token, username)
+		if !identityOK {
+			// Password rotation can revoke a token while its resume waits for
+			// the account lock. This is an invalid token, not a changed account.
+			c.sendError("Session token invalid or expired. Please log in again.")
+			return
+		}
+		if !sessionAccountIdentityCurrent(c, username, resumeID) {
+			c.sendError("Session identity changed or is unavailable. Please log in again.")
+			return
+		}
+		if _, ok := validateAndConsumeResumeToken(payload.Token, c.username); !ok {
+			c.sendError("Session token invalid or expired. Please log in again.")
+			return
+		}
+		if err := recoverColdAccountDirectTradeLocked(username); err != nil {
+			c.sendError("Your item/trade transfer is awaiting recovery. Please log in again shortly.")
+			return
+		}
+		sessionsMu.Lock()
+		owner := activeSessions[username]
+		sessionsMu.Unlock()
+		if owner != nil && owner != c {
+			if !owner.transportClosed.Load() {
+				c.sendError("A newer login owns this character. Please log in again.")
+				return
+			}
+			cleanupClientLocked(owner)
+		}
+
+		// Clear the disconnected flag; this also returns the live entity pointer.
+		if err := recoverAccountAdminOperationsLocked(username); err != nil {
+			c.sendError("An administration change to your character is awaiting recovery. Please retry shortly.")
+			return
+		}
+		if err := recoverAccountGuildBankOperationsLocked(username); err != nil {
+			c.sendError("Your guild bank transfer is awaiting recovery. Please retry shortly.")
+			return
+		}
+		if err := recoverAccountBlackjackLocked(username); err != nil {
+			c.sendError("Your table funds are awaiting recovery. Please try again shortly.")
+			return
+		}
+		if err := recoverAccountAuctionBidsLocked(username); err != nil {
+			c.sendError("Your pending auction bid is awaiting recovery. Please log in again shortly.")
+			return
+		}
+		playerID := "player-" + username
+		// Token validation authenticates the account, not an alternate display
+		// name. Restore its current label before reconnecting the live entity.
+		previousUsername, previousLabel := c.username, c.publicName.Load()
+		previousIdentity := c.accountIdentity.Load()
+		if !pinClientAccountID(c, resumeID) {
+			c.sendError("Session identity changed. Please use a new connection.")
+			return
+		}
+		resumeAccepted := false
+		defer func() {
+			if !resumeAccepted {
+				// Hydration/permission/audit failure must not leave a partially
+				// authenticated resume on this transport.
+				c.username = previousUsername
+				c.publicName.Store(previousLabel)
+				c.accountIdentity.Store(previousIdentity)
+			}
+		}()
+		if c.username == "" {
+			c.username = username
+		}
+		if err := hydrateClientPublicName(c); err != nil {
+			c.sendError("Your public name could not be restored. Please log in again.")
+			return
+		}
+		if !worldAdmissionAllowed(c) {
+			return
+		}
+		if !sessionAccountIdentityCurrent(c, username, resumeID) {
+			c.sendError("Session identity changed or is unavailable. Please log in again.")
+			return
+		}
+		// Public character copies intentionally omit connection metadata.
+		var previousDisconnectedAt time.Time
+		if previous := world.GetEntity(playerID); previous != nil {
+			previous.Mu.RLock()
+			previousDisconnectedAt = previous.DisconnectedAt
+			previous.Mu.RUnlock()
+		}
+		entity, ok := world.ClearEntityDisconnected(playerID)
+		if !ok {
+			// Entity already swept or was never disconnected — fall back to normal login.
+			c.sendError("No resumable session found. Please log in and join normally.")
+			return
+		}
+		if err := recordClientSessionActivity(c, username, "resume"); err != nil {
+			// Do not extend the existing session/instance window on an audit
+			// failure. The client has not received a resume acknowledgement.
+			if !previousDisconnectedAt.IsZero() {
+				world.SetEntityDisconnected(playerID, previousDisconnectedAt)
+			}
+			c.sendError("Session activity storage is unavailable. Please log in again shortly.")
+			return
+		}
+
+		// Bind this new client to the existing entity.
+		if c.username == "" {
+			c.username = username
+		}
+		c.bindPlayerID(playerID)
+		c.retired.Store(false)
+		resumeAccepted = true
+
+		sessionsMu.Lock()
+		// Kick any stale session for this username (shouldn't exist, but be safe).
+		old := activeSessions[username]
+		activeSessions[username] = c
+		sessionsMu.Unlock()
+		if old != c {
+			closeReplacedClient(old)
+		}
+
+		// Issue a fresh resume token for the next disconnect.
+		newToken, err := issueResumeToken(username, c)
+		if err != nil {
+			log.Printf("Failed to re-issue resume token for %s: %v", username, err)
+			newToken = ""
+		}
+
+		// Notify the client that the session resumed successfully.
+		resumeResp := map[string]interface{}{
+			"playerID":         playerID,
+			"gameplayProtocol": gameplayProtocol,
+			"terrainProfile":   world.TerrainProfile(),
+			"resumeToken":      newToken,
+		}
+		resumePayload, _ := json.Marshal(resumeResp)
+		resumeMsg := Message{Type: MsgResumeSession, Payload: resumePayload}
+		b, _ := json.Marshal(resumeMsg)
+		c.sendSafe(b)
+
+		// Re-send all initial state so the client can repopulate its UI.
+		world.GenerateDailyQuests(playerID)
+		refreshChatBlocks(c.username)
+		instanceID := entity.InstanceID
+		sendInitialPlayerState(c, entity, instanceID)
+
+		log.Printf("Session resumed: %s (playerID: %s)", username, playerID)
+
+	case MsgMove:
+		if c.playerID == "" {
+			return
+		}
+		var payload MovePayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+		world.UpdatePlayerMovementWithContext(
+			c.playerID, payload.X, payload.Y, payload.Z, payload.Rotation,
+			payload.State, payload.Sequence, payload.MovementContext,
+		)
+
+	case MsgJump:
+		if c.playerID == "" {
+			return
+		}
+		var payload JumpPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+		world.StartPlayerJumpWithContext(c.playerID, payload.X, payload.Y, payload.Z, payload.MovementContext)
+
+	case MsgAttack:
+		if c.playerID == "" {
+			return
+		}
+		var payload AttackPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		world.PerformAttack(c.playerID, payload.TargetID)
+		// Damage is now broadcast via OnEvent("damage") asynchronously
+
+	case MsgPickup:
+		handleGroundItemPickup(c, msg)
+
+	case MsgAbility:
+		if c.playerID == "" {
+			return
+		}
+		var payload AbilityPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+		result := world.PerformAbility(c.playerID, payload.TargetX, payload.TargetZ, payload.TargetID, payload.SkillName)
+		resultPayload, _ := json.Marshal(result)
+		resultMessage, _ := json.Marshal(Message{Type: MsgAbilityResult, Payload: resultPayload})
+		c.sendSafe(resultMessage)
+		if result.Accepted && (result.SkillName == "Time Warp" || result.SkillName == "Iron Fortress" || result.SkillName == "Smoke Bomb" || result.SkillName == "Blessing of Zeal") {
+			// Reuse the complete authoritative snapshot so refreshed controls
+			// become usable immediately, without waiting for local timers/relogin.
+			cooldowns, _ := world.GetAbilityCooldownSnapshot(c.playerID)
+			payload, _ := json.Marshal(map[string]interface{}{"cooldowns": cooldowns})
+			c.sendSafe(createMessage(MsgAbilityCooldowns, payload))
+		}
+
+	case MsgChat:
+		if c.username == "" {
+			return
+		}
+		var payload ChatPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+		if handled := c.handleChatCommand(strings.TrimSpace(payload.Message)); handled {
+			return
+		}
+		if handled, err := chatService.HandleModerationCommand(c, strings.TrimSpace(payload.Message)); handled {
+			if err != nil {
+				c.sendError(err.Error())
+			}
+			return
+		}
+
+		if err := chatService.Send(c, payload); err != nil {
+			c.sendError(err.Error())
+		}
+
+	case MsgGetLoadouts, MsgSaveLoadout, MsgApplyLoadout:
+		c.handleEquipmentLoadout(msg)
+	case MsgGetWardrobe, MsgCollectAppearances, MsgSelectAppearance:
+		c.handleWardrobe(msg)
+	case MsgGetEPWallet, MsgExchangeGoldForEP:
+		c.handleEPWallet(msg)
+	case MsgGetCosmeticVendor, MsgBuyCosmetic:
+		c.handleCosmeticVendor(msg)
+	case MsgGetVIPStatus:
+		sendVIPStatus(c)
+
+	case MsgEquip:
+		if c.playerID == "" {
+			return
+		}
+		var payload EquipPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		player, success := world.PerformEquip(c.playerID, payload.ItemID, payload.Slot)
+		if success {
+			// Send Inventory Update
+			invPayload, _ := json.Marshal(player.Inventory)
+			msg := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			b, _ := json.Marshal(msg)
+			c.sendSafe(b)
+		}
+
+	case MsgUnequip:
+		if c.playerID == "" {
+			return
+		}
+		var payload UnequipPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		player, success := world.PerformUnequip(c.playerID, payload.Slot, payload.ItemID)
+		if success {
+			// Send Inventory Update
+			invPayload, _ := json.Marshal(player.Inventory)
+			msg := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			b, _ := json.Marshal(msg)
+			c.sendSafe(b)
+			savePlayer(c)
+		}
+		resultMessage := "Item returned to your bag."
+		if !success {
+			resultMessage = "Could not return that item to your bag. Free enough bag space and try again."
+		}
+		resultPayload, _ := json.Marshal(map[string]interface{}{"slot": payload.Slot, "itemId": payload.ItemID, "success": success, "message": resultMessage})
+		resultBytes, _ := json.Marshal(Message{Type: MsgEquipmentResult, Payload: resultPayload})
+		c.sendSafe(resultBytes)
+
+	case MsgInventoryDrop:
+		handleGroundItemDrop(c, msg)
+
+	case MsgInventoryMove:
+		if c.playerID == "" {
+			return
+		}
+		var payload InventoryMovePayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		player, success := world.PerformInventoryMove(c.playerID, payload.FromIndex, payload.ToIndex)
+		if success {
+			// Send Inventory Update
+			invPayload, _ := json.Marshal(player.Inventory)
+			msg := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			b, _ := json.Marshal(msg)
+			c.sendSafe(b)
+		}
+
+	case MsgInventorySort:
+		if c.playerID == "" {
+			return
+		}
+
+		player, success := world.PerformInventorySort(c.playerID)
+		if success {
+			invPayload, _ := json.Marshal(player.Inventory)
+			msg := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			b, _ := json.Marshal(msg)
+			c.sendSafe(b)
+		}
+
+	case MsgSplitStack:
+		if c.playerID == "" {
+			return
+		}
+		var payload SplitStackPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		player, success := world.PerformSplitStack(c.playerID, payload.Slot, payload.Amount)
+		if success {
+			// Send Inventory Update
+			invPayload, _ := json.Marshal(player.Inventory)
+			msg := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			b, _ := json.Marshal(msg)
+			c.sendSafe(b)
+		}
+
+	case MsgTradingSearch:
+		handleMsgTradingSearch(c, msg)
+
+	case MsgTradingMyAuctions:
+		handleMsgTradingMyAuctions(c, msg)
+
+	case MsgTradingCreate:
+		handleMsgTradingCreate(c, msg)
+
+	case MsgTradingBid:
+		handleMsgTradingBid(c, msg)
+
+	case MsgTradingBuyout:
+		handleMsgTradingBuyout(c, msg)
+
+	case MsgTradingCollect:
+		handleMsgTradingCollect(c, msg)
+
+	case MsgTradingCancel:
+		handleMsgTradingCancel(c, msg)
+
+	case MsgTradeRequest:
+		handleDirectTradeRequest(c, msg)
+
+	case MsgTradeOffer:
+		handleDirectTradeOffer(c, msg)
+
+	case MsgTradeConfirm:
+		handleDirectTradeConfirm(c, msg)
+
+	case MsgTradeCancel:
+		handleDirectTradeCancel(c, msg)
+
+	case MsgBuyGamble:
+		handleMysteryPurchase(c, msg)
+
+	case MsgSell, MsgBuyback:
+		handleVendorTransaction(c, msg)
+
+	case MsgPartyInvite:
+		handleMsgPartyInvite(c, msg)
+
+	case MsgPartyResponse:
+		handleMsgPartyResponse(c, msg)
+
+	case MsgPartyLeave:
+		handleMsgPartyLeave(c, msg)
+
+	case MsgPartyKick:
+		handleMsgPartyKick(c, msg)
+
+	case MsgPartyPromote:
+		handleMsgPartyPromote(c, msg)
+
+	case MsgPartyReadyCheck:
+		handleMsgPartyReadyCheck(c, msg)
+
+	case MsgPartyReady:
+		handleMsgPartyReady(c, msg)
+
+	case MsgPartyLootRule:
+		handleMsgPartyLootRule(c, msg)
+
+	case MsgSocial:
+		handleMsgSocial(c, msg)
+
+	case MsgSocialStatus:
+		handleMsgSocialStatus(c, msg)
+
+	// ── Friends (0.38) ──────────────────────────────────────────────────────────
+
+	case MsgFriendList:
+		handleMsgFriendList(c, msg)
+
+	case MsgFriendRequest:
+		handleMsgFriendRequest(c, msg)
+
+	case MsgFriendAccept:
+		handleMsgFriendAccept(c, msg)
+
+	case MsgFriendDecline:
+		handleMsgFriendDecline(c, msg)
+
+	case MsgFriendRemove:
+		handleMsgFriendRemove(c, msg)
+
+	case MsgGuildGet:
+		handleMsgGuildGet(c, msg)
+
+	case MsgGuildCreate:
+		handleMsgGuildCreate(c, msg)
+
+	case MsgGuildInvite:
+		handleMsgGuildInvite(c, msg)
+
+	case MsgGuildRespond:
+		handleMsgGuildRespond(c, msg)
+
+	case MsgGuildLeave:
+		handleMsgGuildLeave(c, msg)
+
+	case MsgGuildKick:
+		handleMsgGuildKick(c, msg)
+
+	case MsgGuildSetRank:
+		handleMsgGuildSetRank(c, msg)
+
+	case MsgGuildTransfer:
+		handleMsgGuildTransfer(c, msg)
+
+	case MsgGuildSetMOTD:
+		handleMsgGuildSetMOTD(c, msg)
+
+	case MsgGuildDisband:
+		handleMsgGuildDisband(c, msg)
+
+	case MsgGuildClaimLeader:
+		handleMsgGuildClaimLeader(c, msg)
+
+	case MsgGuildBankDeposit:
+		handleMsgGuildBankDeposit(c, msg)
+
+	case MsgGuildBankWithdraw:
+		handleMsgGuildBankWithdraw(c, msg)
+
+	case MsgGuildLeaderboard:
+		handleMsgGuildLeaderboard(c, msg)
+
+	case MsgDuelRequest:
+		handleMsgDuelRequest(c, msg)
+
+	case MsgDuelRespond:
+		handleMsgDuelRespond(c, msg)
+
+	case MsgArenaQueue:
+		handleMsgArenaQueue(c, msg)
+
+	case MsgArenaLeave:
+		handleMsgArenaLeave(c, msg)
+
+	case MsgPvPGet:
+		handleMsgPvPGet(c, msg)
+
+	case MsgPvPLeaderboard:
+		handleMsgPvPLeaderboard(c, msg)
+
+	case MsgPvPFlag:
+		handleMsgPvPFlag(c, msg)
+
+	case MsgEndgameGet:
+		handleMsgEndgameGet(c, msg)
+
+	case MsgEndgameSpend:
+		handleMsgEndgameSpend(c, msg)
+
+	case MsgRaidConvert:
+		handleMsgRaidConvert(c, msg)
+
+	case MsgRaidEnter:
+		handleMsgRaidEnter(c, msg)
+
+	case MsgRespawn:
+		if c.playerID == "" {
+			return
+		}
+		var recovery TownRecoveryPayload
+		if len(msg.Payload) > 0 && json.Unmarshal(msg.Payload, &recovery) != nil {
+			c.sendError("Invalid recovery request")
+			return
+		}
+
+		// Check if in instance before respawn resets it
+		p := world.GetEntity(c.playerID)
+		wasInInstance := p != nil && p.InstanceID != ""
+
+		if err := world.PerformRespawn(c.playerID, recovery.MovementContext); err != nil {
+			c.sendError(err.Error())
+			return
+		}
+		sendMovementContext(c)
+
+		if wasInInstance {
+			log.Printf("Respawn: Sending return to overworld for %s", c.playerID)
+			// Send "return to overworld" message
+			resp := map[string]interface{}{
+				"instanceId": "",
+				"type":       "overworld",
+			}
+			payloadBytes, _ := json.Marshal(resp)
+			msg := Message{
+				Type:    MsgEnterInstance,
+				Payload: payloadBytes,
+			}
+			b, _ := json.Marshal(msg)
+			c.sendSafe(b)
+			// Auto-revert social status: available (0.37.4)
+			autoSetSocialStatus(c, c.playerID, "available")
+		}
+
+	case MsgRecall:
+		if c.playerID == "" {
+			return
+		}
+		var recovery TownRecoveryPayload
+		if len(msg.Payload) > 0 && json.Unmarshal(msg.Payload, &recovery) != nil {
+			c.sendError("Invalid recovery request")
+			return
+		}
+
+		c.startStationaryCast("recall", recovery.MovementContext, func(castID uint64) error {
+			p := world.GetEntityCopy(c.playerID)
+			wasInInstance := p != nil && p.InstanceID != ""
+			if err := world.CompleteRecallCast(c.playerID, castID, recovery.MovementContext); err != nil {
+				return err
+			}
+			c.sendStationaryCast(castID, "recall", recovery.MovementContext, "completed")
+			sendMovementContext(c)
+			if wasInInstance {
+				payload, _ := json.Marshal(map[string]interface{}{"instanceId": "", "type": "overworld"})
+				c.sendSafe(createMessage(MsgEnterInstance, payload))
+				autoSetSocialStatus(c, c.playerID, "available")
+			}
+			return nil
+		})
+
+	case MsgReport:
+		c.handleReport(msg.Payload)
+
+	case MsgStashDeposit:
+		if c.playerID == "" {
+			return
+		}
+		var payload StashDepositPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		player, success := world.PerformStashDeposit(c.playerID, payload.ItemID)
+		if success {
+			// Send Inventory Update
+			invPayload, _ := json.Marshal(player.Inventory)
+			msgInv := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			bInv, _ := json.Marshal(msgInv)
+			c.sendSafe(bInv)
+
+			// Send Stash Update
+			stashPayload, _ := json.Marshal(player.Stash)
+			msgStash := Message{
+				Type:    MsgStash,
+				Payload: stashPayload,
+			}
+			bStash, _ := json.Marshal(msgStash)
+			c.sendSafe(bStash)
+		}
+
+		if !success {
+			c.sendSystemChat("Could not store that item. Check stash space and select the item again. Chronicle quest items stay in your bag.")
+		}
+
+	case MsgStashWithdraw:
+		if c.playerID == "" {
+			return
+		}
+		var payload StashWithdrawPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		player, success := world.PerformStashWithdraw(c.playerID, payload.ItemID)
+		if success {
+			// Send Inventory Update
+			invPayload, _ := json.Marshal(player.Inventory)
+			msgInv := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			bInv, _ := json.Marshal(msgInv)
+			c.sendSafe(bInv)
+
+			// Send Stash Update
+			stashPayload, _ := json.Marshal(player.Stash)
+			msgStash := Message{
+				Type:    MsgStash,
+				Payload: stashPayload,
+			}
+			bStash, _ := json.Marshal(msgStash)
+			c.sendSafe(bStash)
+		}
+
+		if !success {
+			c.sendSystemChat("Could not withdraw that item. Check bag space and select the item again.")
+		}
+
+	case MsgChronicleInspect:
+		c.handleChronicleInspection(msg.Payload)
+
+	case MsgRequestQuests:
+		c.handleQuestSnapshotRequest()
+
+	case MsgAcceptQuest, MsgCompleteQuest, MsgClaimQuestItem:
+		handleQuestConversation(c, msg)
+
+	case MsgForgeUpgrade, MsgForgePotency, MsgForgeSocket, MsgForgeInsertGem, MsgForgeCombineGem, MsgForgeRemoveGem:
+		handleForgeTransaction(c, msg)
+
+	case MsgSelectBranch:
+		requestID, valid := c.buildRequestID(msg)
+		if !valid {
+			return
+		}
+		if c.playerID == "" {
+			return
+		}
+		var payload SelectBranchPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+		if _, success := world.PerformSelectBranch(c.playerID, payload.Branch); success {
+			c.sendBuildActionResult(requestID, true, "Specialization selected")
+			savePlayer(c) // Persist immediately
+		} else {
+			message := "Choose a valid specialization for your character"
+			if player := world.GetEntityCopy(c.playerID); player != nil && player.Level < 10 {
+				message = "Specializations unlock at level 10. You can preview the branches in Skills."
+			}
+			c.sendBuildActionResult(requestID, false, message)
+		}
+
+	case MsgUnlockSkill:
+		if c.playerID == "" {
+			return
+		}
+		var payload UnlockSkillPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+		if _, success := world.PerformUnlockSkill(c.playerID, payload.SkillName); success {
+			savePlayer(c) // Persist immediately
+		}
+
+	case MsgUnlockTalent:
+		requestID, valid := c.buildRequestID(msg)
+		if !valid {
+			return
+		}
+		if c.playerID == "" {
+			return
+		}
+		var payload UnlockTalentPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+		if _, success, msgStr := world.PerformUnlockTalent(c.playerID, payload.TalentId); success {
+			c.sendBuildActionResult(requestID, true, "Talent rank added")
+			savePlayer(c) // Persist immediately
+		} else {
+			c.sendBuildActionResult(requestID, false, msgStr)
+		}
+
+	case MsgResetTalents:
+		requestID, valid := c.buildRequestID(msg)
+		if !valid {
+			return
+		}
+		if c.playerID == "" {
+			return
+		}
+		if _, success, msgStr := world.PerformResetTalents(c.playerID); success {
+			c.sendBuildActionResult(requestID, true, "Talent ranks reset")
+			savePlayer(c) // Persist immediately
+		} else {
+			c.sendBuildActionResult(requestID, false, msgStr)
+		}
+
+	case MsgRespec:
+		if c.playerID == "" {
+			return
+		}
+		var payload RespecPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			c.sendError("Invalid respec payload")
+			return
+		}
+		if player, success, msgStr := world.PerformRespec(c.playerID, payload.RespecType); success {
+			// Send Inventory Update (includes gold)
+			player.Mu.RLock()
+			invPayload, _ := json.Marshal(player.Inventory)
+			player.Mu.RUnlock()
+			invMsg := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			b, _ := json.Marshal(invMsg)
+			c.sendSafe(b)
+			savePlayer(c) // Persist immediately
+		} else {
+			c.sendError(msgStr)
+		}
+
+	case MsgRespecCost:
+		if c.playerID == "" {
+			return
+		}
+		var payload RespecPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			c.sendError("Invalid respec payload")
+			return
+		}
+		cost := world.GetRespecCost(c.playerID, payload.RespecType)
+		// Send cost response
+		response := map[string]interface{}{
+			"type":      payload.RespecType,
+			"cost":      cost,
+			"canAfford": false,
+		}
+		if player := world.GetEntity(c.playerID); player != nil {
+			player.Mu.RLock()
+			response["canAfford"] = player.Gold >= cost
+			player.Mu.RUnlock()
+		}
+		respBytes, _ := json.Marshal(response)
+		costMsg := Message{
+			Type:    MsgRespecCost,
+			Payload: respBytes,
+		}
+		msgBytes, _ := json.Marshal(costMsg)
+		c.sendSafe(msgBytes)
+
+	case MsgSelectRune:
+		requestID, valid := c.buildRequestID(msg)
+		if !valid {
+			return
+		}
+		if c.playerID == "" {
+			return
+		}
+		var payload struct {
+			Skill  string `json:"skill"`
+			RuneID string `json:"runeId"` // Empty string to unequip
+		}
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			c.sendBuildActionResult(requestID, false, "Invalid rune payload")
+			return
+		}
+
+		player := world.GetEntity(c.playerID)
+		if player == nil {
+			return
+		}
+
+		player.Mu.Lock()
+		// Validate the rune if one is being equipped
+		if payload.RuneID != "" {
+			runeDef, ok := game.GetRuneDef(payload.RuneID)
+			if !ok {
+				player.Mu.Unlock()
+				c.sendBuildActionResult(requestID, false, "Invalid rune ID")
+				return
+			}
+			// Check level requirement
+			if player.Level < runeDef.UnlockLevel {
+				player.Mu.Unlock()
+				c.sendBuildActionResult(requestID, false, fmt.Sprintf("You need to be level %d to use this rune", runeDef.UnlockLevel))
+				return
+			}
+			// Check that the rune matches the skill
+			if runeDef.Skill != payload.Skill {
+				player.Mu.Unlock()
+				c.sendBuildActionResult(requestID, false, "This rune doesn't work with that skill")
+				return
+			}
+			// Verify player has this skill unlocked
+			// Base abilities do not require specialization, just as for casting.
+			hasSkill := game.IsBaseClassSkill(player.SubType, payload.Skill)
+			for _, s := range player.UnlockedSkills {
+				if s == payload.Skill {
+					hasSkill = true
+					break
+				}
+			}
+			if !hasSkill {
+				player.Mu.Unlock()
+				c.sendBuildActionResult(requestID, false, "You don't have this skill unlocked")
+				return
+			}
+		}
+
+		// Initialize map if needed
+		if player.SkillRunes == nil {
+			player.SkillRunes = make(map[string]string)
+		}
+
+		// Set or clear the rune
+		if payload.RuneID == "" {
+			delete(player.SkillRunes, payload.Skill)
+		} else {
+			player.SkillRunes[payload.Skill] = payload.RuneID
+		}
+		player.Mu.Unlock()
+
+		// Send updated runes to client
+		player.Mu.RLock()
+		runesPayload, _ := json.Marshal(map[string]interface{}{
+			"skillRunes": player.SkillRunes,
+		})
+		player.Mu.RUnlock()
+		runeMsg := Message{
+			Type:    MsgSelectRune,
+			Payload: runesPayload,
+		}
+		b, _ := json.Marshal(runeMsg)
+		c.sendSafe(b)
+		c.sendBuildActionResult(requestID, true, "Rune updated")
+		savePlayer(c)
+
+	case MsgGetRunes:
+		if c.playerID == "" {
+			return
+		}
+		player := world.GetEntity(c.playerID)
+		if player == nil {
+			return
+		}
+
+		player.Mu.RLock()
+		classType := player.SubType
+		level := player.Level
+		equippedRunes := player.SkillRunes
+		player.Mu.RUnlock()
+
+		// Get all available runes for this class
+		allRunes := game.GetAllRunesForClass(classType)
+		unlockedRunes := game.GetUnlockedRunes(classType, level)
+
+		response := map[string]interface{}{
+			"allRunes":      allRunes,
+			"unlockedRunes": unlockedRunes,
+			"equippedRunes": equippedRunes,
+		}
+		respBytes, _ := json.Marshal(response)
+		runeMsg := Message{
+			Type:    MsgGetRunes,
+			Payload: respBytes,
+		}
+		msgBytes, _ := json.Marshal(runeMsg)
+		c.sendSafe(msgBytes)
+	}
+}

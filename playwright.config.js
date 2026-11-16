@@ -1,10 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
 import { existsSync } from 'node:fs';
-import { isolatedBrowserLaunchOptions } from './scripts/qa-browser-launch-options.mjs';
+import { isolatedBrowserLaunchOptions } from './scripts/qa/qa-browser-launch-options.mjs';
 import {
     backendOriginBrowserArgs,
     hardwareWebGLBrowserArgs
-} from './tests/e2e/browserLaunchPolicy.js';
+} from './tests/e2e/support/browser/browserLaunchPolicy.js';
 
 const configuredLocalServerPort = process.env.EIDOLON_E2E_WEB_PORT || '4173';
 const localServerPort = Number(configuredLocalServerPort);
@@ -70,7 +70,7 @@ export default defineConfig({
         video: hasCredentialedRoute ? 'off' : 'retain-on-failure'
     },
     webServer: useLocalServer ? {
-        command: 'node scripts/serve-static.mjs',
+        command: 'node scripts/dev/serve-static.mjs',
         env: {
             ...process.env,
             PORT: String(localServerPort),

@@ -4,10 +4,10 @@ Use `EIDOLON_E2E_STATIC_ROOT` to run Playwright against the complete copied
 publication. Game modules and assets must come from that publication.
 
 Some prepared UI cases import presentation-only data from
-`/tests/darkRealmFixture.js`. That module is intentionally absent from the
+`/tests/support/world/darkRealmFixture.js`. That module is intentionally absent from the
 production publication. Set `EIDOLON_STATIC_TEST_ROOT` to an owned fixture
-directory containing the exact, source-pinned `darkRealmFixture.js` when running
-those cases. Playwright forwards this setting to `scripts/serve-static.mjs`.
+directory containing the exact, source-pinned `support/world/darkRealmFixture.js` when running
+those cases. Playwright forwards this setting to `scripts/dev/serve-static.mjs`.
 
 The optional directory serves only the `/tests/` namespace. It cannot override
 `/src/`, assets, the login document or release metadata. Missing test files
@@ -23,8 +23,8 @@ requirements and all original test assertions still apply.
 
 ## Assembled UI fixture handoff
 
-Atlas/quest scenarios import `tests/darkRealmFixture.js`; the party layout
-scenario also imports `tests/groundInputProjection.js`. Copy both exact source
+Atlas/quest scenarios import `tests/support/world/darkRealmFixture.js`; the party layout
+scenario also imports `tests/support/world/groundInputProjection.js`. Copy both exact source
 files into the owned `EIDOLON_STATIC_TEST_ROOT` namespace and pin their hashes.
 Do not expose the repository test tree in the game publication or substitute
 those files for game modules. Audit the selected specs for additional browser

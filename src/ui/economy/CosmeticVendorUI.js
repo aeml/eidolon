@@ -1,0 +1,250 @@
+import { ownedEvent, disposeOwnedEvents } from '../OwnedEvents.js';
+import { CharacterPreview } from '../character/CharacterPreview.js';
+import { isActiveEquipment } from '../../core/gameplay/equipment/EquipmentSlots.js';
+
+const node = (tag, text, className) => {
+    const element = document.createElement(tag);
+    if (text) element.textContent = text;
+    if (className) element.className = className;
+    return element;
+};
+
+export class CosmeticVendorUI {
+    constructor({ getPlayer, send, createPreview = host => new CharacterPreview(host, { inspectPoses: true }) }) {
+        this.getPlayer = getPlayer; this.send = send; this.createPreview = createPreview;
+        this.disposed = false; this.ready = false; this.catalogueEpoch = 0;
+        this.catalogue = []; this.collection = {};
+        this.root = node('dialog', '', 'casino-entry-dialogue cosmetic-vendor');
+        this.root.setAttribute('aria-label', 'Veyra’s cosmetic wardrobe');
+        const header = node('header');
+        header.append(node('h2', 'Veyra · VIP Outfitter'), this.button('Close', () => this.close()));
+        this.balance = node('p');
+        const intro = node('p', 'Permanent appearance unlocks only. No stats, no sellable items, no Gold resale. VIP membership is not required.');
+        const body = node('div', '', 'cosmetic-vendor-body');
+        const browser = node('section', '', 'cosmetic-browser');
+        const filters = node('div', '', 'cosmetic-filters');
+        const searchLabel = node('label', 'Find a look');
+        this.search = node('input'); this.search.type = 'search'; this.search.placeholder = 'Name, theme or style';
+        searchLabel.append(this.search);
+        const categoryLabel = node('label', 'Collection');
+        this.category = node('select');
+        for (const [value, label] of [['all', 'All looks'], ['outfit', 'Complete outfits'], ['mainHand', 'Weapons'], ['offHand', 'Offhands'], ['armor', 'Individual armor']]) {
+            const option = node('option', label); option.value = value; this.category.append(option);
+        }
+        categoryLabel.append(this.category); filters.append(searchLabel, categoryLabel);
+        this.results = node('p', '', 'cosmetic-results'); this.results.setAttribute('role', 'status');
+        this.results.setAttribute('aria-live', 'polite');
+        this.empty = node('p', 'No looks match. Try another name or collection.', 'cosmetic-empty'); this.empty.hidden = true;
+        this.list = node('div', '', 'cosmetic-catalogue');
+        this.list.setAttribute('aria-label', 'Cosmetic collection');
+        browser.append(filters, this.results, this.list, this.empty);
+        const details = node('section', '', 'cosmetic-detail');
+        this.title = node('h3'); this.description = node('p');
+        this.previewHost = node('div', '', 'character-preview cosmetic-preview');
+        this.previewHost.innerHTML = `<div class="character-preview-label"></div><div class="character-preview-stage"><span class="character-preview-status" role="status">Select a look to preview.</span></div><div class="character-preview-controls"><button type="button" data-preview-turn="-0.785398" aria-label="Rotate preview left">↶</button><button type="button" data-preview-turn="reset">Front</button><button type="button" data-preview-turn="0.785398" aria-label="Rotate preview right">↷</button></div>`;
+        this.inspect = this.button('Inspect held look', () => {
+            if (!this.canAct() || !this.selected || this.inspect.hidden) return;
+            this.inspectHeld = !this.inspectHeld; this.renderPreview();
+        });
+        this.inspect.hidden = true;
+        this.inspectOutfit = this.button('Hide held gear in preview', () => {
+            if (!this.canAct() || this.inspectOutfit.hidden) return;
+            this.hideHeldGear = !this.hideHeldGear; this.renderPreview();
+        });
+        this.inspectOutfit.hidden = true; this.inspectOutfit.setAttribute('aria-pressed', 'false');
+        this.compare = this.button('Show equipped look', () => { if (!this.canAct()) return; this.showOriginal = !this.showOriginal; this.renderPreview(); });
+        this.buy = this.button('Unlock cosmetic', () => this.reviewPurchase());
+        this.apply = this.button('Apply owned look', () => {
+            if (!this.canAct() || !this.selected || this.apply.disabled) return;
+            this.status.textContent = 'Applying your owned appearance…';
+            this.send('select_appearance', { slot: this.selected.appearance.slot, key: this.lookKey(this.selected) });
+        });
+        this.confirmation = node('div', '', 'cosmetic-confirmation'); this.confirmation.hidden = true;
+        this.cost = node('p');
+        this.confirmation.append(this.cost, this.button('Confirm EP purchase', () => this.confirmPurchase()),
+            this.button('Cancel', () => { this.confirmation.hidden = true; }));
+        this.retry = this.button('Retry pending unlock', () => {
+            if (this.canAct() && this.pendingID) this.send('buy_cosmetic', { id: this.pendingID, priceEP: this.pendingPrice, confirmed: true });
+        }); this.retry.hidden = true;
+        this.status = node('p', '', 'cosmetic-status'); this.status.setAttribute('role', 'status'); this.status.setAttribute('aria-live', 'polite');
+        details.append(this.title, this.description, this.previewHost, this.inspect, this.inspectOutfit, this.compare, this.buy, this.apply, this.confirmation, this.retry);
+        body.append(browser, details);
+        this.root.append(header, this.balance, intro, body, this.status);
+        document.body.append(this.root);
+        ownedEvent(this, this.root, 'keydown', event => event.stopPropagation());
+        ownedEvent(this, this.search, 'input', () => this.filterCatalogue());
+        ownedEvent(this, this.category, 'change', () => this.filterCatalogue());
+        ownedEvent(this, this.root, 'close', () => { this.ready = false; this.preview?.dispose(); this.preview = null; });
+    }
+
+    button(text, handler) { const button = node('button', text); button.type = 'button'; button.onclick = handler; return button; }
+    lookKey(offer) { return `${offer.appearance.baseName}|${offer.appearance.rarity}`; }
+    hasCurrentOwner() { return !this.disposed && Boolean(this.playerID) && this.getPlayer()?.id === this.playerID; }
+    canAct() { return this.root.open && this.ready && this.hasCurrentOwner(); }
+
+    open() {
+        const player = this.getPlayer();
+        if (this.disposed || !player?.id) return false;
+        if (this.playerID !== player.id) {
+            this.pendingID = null; this.pendingPrice = null;
+            this.search.value = ''; this.category.value = 'all';
+        }
+        this.playerID = player.id;
+        this.ready = false; this.catalogueEpoch++;
+        this.catalogue = []; this.collection = {}; this.selected = null; this.reviewedOffer = null; this.ep = null;
+        this.offerCards = []; this.search.disabled = true; this.category.disabled = true;
+        this.results.textContent = 'Loading collection…'; this.empty.hidden = true; this.previewHost.hidden = true;
+        this.inspectHeld = false; this.inspect.hidden = true; this.inspect.textContent = 'Inspect held look'; this.inspect.setAttribute('aria-pressed', 'false');
+        this.hideHeldGear = false; this.inspectOutfit.hidden = true; this.inspectOutfit.setAttribute('aria-pressed', 'false');
+        this.preview?.dispose(); this.preview = null;
+        this.balance.textContent = 'Loading your EP balance…'; this.title.textContent = 'Select a cosmetic'; this.description.textContent = '';
+        this.compare.disabled = true; this.retry.hidden = true;
+        this.confirmation.hidden = true;
+        this.list.replaceChildren(); this.buy.disabled = true; this.apply.disabled = true;
+        this.status.textContent = 'Opening Veyra’s wardrobe…';
+        if (!this.root.open) this.root.showModal();
+        this.send('get_cosmetic_vendor', {});
+        return true;
+    }
+
+    close() { if (this.root.open) this.root.close(); }
+
+    refreshPlayer() {
+        if (this.disposed || !this.root.open) return;
+        const player = this.getPlayer(), p = player?.position;
+        if (player?.id !== this.playerID || player?.state === 'DEAD' || player?.instanceId ||
+            (p && (!Number.isFinite(p.x) || !Number.isFinite(p.z) || Math.hypot(p.x - 12, p.z - 185) > 7))) this.close();
+    }
+
+    handleResult(result) {
+        if (this.disposed || !this.root.open) return false;
+        if (!this.hasCurrentOwner()) { this.close(); return false; }
+        if (result?.playerID !== this.playerID || !Array.isArray(result.catalogue) ||
+            !Number.isSafeInteger(result.ep) || result.ep < 0 || typeof result.success !== 'boolean' || typeof result.pending !== 'boolean') return false;
+        this.ready = true;
+        const epoch = ++this.catalogueEpoch;
+        this.catalogue = result.catalogue;
+        this.collection = result?.collection || {};
+        this.ep = result.ep;
+        this.balance.textContent = `${this.ep.toLocaleString()} EP · Permanent cosmetic unlocks`;
+        if (result.id === this.pendingID && result.pending === false) this.pendingID = null;
+        this.retry.hidden = !this.pendingID;
+        this.status.textContent = result?.message || 'Choose a look to preview.';
+        const scrollTop = this.list.scrollTop;
+        const focusedID = this.list.contains(document.activeElement)
+            ? document.activeElement.closest('[data-offer-id]')?.dataset.offerId : null;
+        this.list.replaceChildren();
+        this.offerCards = []; this.search.disabled = false; this.category.disabled = false;
+        for (const offer of this.catalogue) {
+            const owned = Boolean(this.collection[this.lookKey(offer)]);
+            const button = this.button(`${offer.name} · ${owned ? 'Owned' : `${offer.priceEP} EP`}`, () => {
+                if (this.canAct() && !button.hidden && epoch === this.catalogueEpoch) this.select(offer);
+            });
+            button.dataset.offerId = offer.id;
+            const swatch = node('span', offer.realm, 'cosmetic-swatch');
+            swatch.style.borderColor = `#${Number(offer.primary).toString(16).padStart(6, '0')}`;
+            button.prepend(swatch); this.list.append(button); this.offerCards.push({ offer, button });
+        }
+        this.filterCatalogue();
+        this.select(this.catalogue.find(offer => offer.id === this.selected?.id) || this.offerCards.find(card => !card.button.hidden)?.offer);
+        this.list.scrollTop = scrollTop;
+        if (focusedID) this.offerCards.find(card => card.offer.id === focusedID && !card.button.hidden)?.button.focus({ preventScroll: true });
+        if (!result?.success) this.buy.disabled = true;
+        return true;
+    }
+
+    filterCatalogue() {
+        if (!this.canAct()) return;
+        const query = this.search.value.trim().toLocaleLowerCase(), category = this.category.value;
+        let count = 0;
+        for (const { offer, button } of this.offerCards) {
+            const slot = offer.appearance.slot;
+            const group = ['outfit', 'mainHand', 'offHand'].includes(slot) ? slot : 'armor';
+            const text = `${offer.name} ${offer.description} ${offer.realm}`.toLocaleLowerCase();
+            button.hidden = (category !== 'all' && category !== group) || !text.includes(query);
+            if (!button.hidden) count++;
+        }
+        this.results.textContent = `${count} of ${this.catalogue.length} looks`;
+        this.empty.hidden = count > 0;
+        // Browsing never purchases or changes the selected preview. A cost
+        // confirmation must be reviewed again after changing browsing context.
+        this.confirmation.hidden = true; this.reviewedOffer = null;
+    }
+
+    select(offer) {
+        if (!this.canAct()) return;
+        offer = this.catalogue.find(current => current.id === offer?.id);
+        this.selected = offer; this.showOriginal = false; this.confirmation.hidden = true; this.reviewedOffer = null;
+        this.compare.disabled = !offer;
+        this.previewHost.hidden = !offer;
+        if (!offer) {
+            this.preview?.dispose(); this.preview = null;
+            this.title.textContent = 'Choose a look'; this.description.textContent = '';
+            this.inspect.hidden = true; this.buy.disabled = true; this.apply.disabled = true; return;
+        }
+        this.title.textContent = offer.name;
+        this.description.textContent = offer.description;
+        this.list.querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.offerId === offer.id)));
+        const owned = Boolean(this.collection[this.lookKey(offer)]);
+        this.buy.textContent = owned ? 'Already owned' : `Unlock for ${offer.priceEP} EP`;
+        this.buy.disabled = owned || Boolean(this.pendingID) || this.ep < offer.priceEP;
+        const item = this.getPlayer()?.equipment?.[offer.appearance.slot];
+        const outfit = offer.appearance.slot === 'outfit';
+        this.apply.disabled = !owned || Boolean(this.pendingID) || (!outfit && (!item?.id || !isActiveEquipment(offer.appearance.slot, item)));
+        this.apply.textContent = owned && !outfit && !item?.id ? 'Equip gear in this slot to apply' : outfit ? 'Apply complete outfit' : 'Apply owned look';
+        this.renderPreview();
+    }
+
+    renderPreview() {
+        if (!this.canAct() || !this.selected) return;
+        this.preview ||= this.createPreview(this.previewHost);
+        const player = this.getPlayer(), look = this.selected.appearance, slot = look.slot;
+        // Preview-only data, never placed in a bag or sent as a combat item.
+        const model = this.showOriginal ? player : {
+            ...player,
+            equipment: { ...player.equipment, [slot]: { ...player.equipment?.[slot], id: 'cosmetic-preview', slot,
+                type: ['mainHand', 'offHand'].includes(slot) ? 'WEAPON' : 'ARMOR', name: this.selected.base, rarity: 'Common' } },
+            appearances: { ...player.appearances, [slot]: look }
+        };
+        if (!this.showOriginal && slot === 'outfit') model.equipment = { ...player.equipment };
+        const held = ['mainHand', 'offHand'].includes(slot);
+        this.inspect.hidden = !held;
+        if (!held) this.inspectHeld = false;
+        this.inspectOutfit.hidden = slot !== 'outfit';
+        if (slot !== 'outfit') this.hideHeldGear = false;
+        this.inspectOutfit.setAttribute('aria-pressed', String(Boolean(this.hideHeldGear)));
+        this.preview.setHeldGearVisible?.(!this.hideHeldGear);
+        this.preview.update(model);
+        this.preview.setFocusSlot?.(held && this.inspectHeld ? slot : null);
+        this.inspect.textContent = this.inspectHeld ? 'Show full character' : 'Inspect held look';
+        this.inspect.setAttribute('aria-pressed', String(Boolean(this.inspectHeld)));
+        this.compare.textContent = this.showOriginal ? 'Show selected cosmetic' : 'Show equipped look';
+    }
+
+    reviewPurchase() {
+        if (!this.canAct() || !this.selected || this.buy.disabled) return;
+        this.reviewedOffer = { id: this.selected.id, priceEP: this.selected.priceEP, epoch: this.catalogueEpoch };
+        this.cost.textContent = `Permanently unlock ${this.selected.name} for ${this.selected.priceEP} EP? This grants an appearance only, with no Gold resale or stat bonuses.`;
+        this.confirmation.hidden = false;
+    }
+
+    confirmPurchase() {
+        if (!this.canAct() || this.confirmation.hidden || this.buy.disabled || !this.selected ||
+            this.reviewedOffer?.id !== this.selected.id || this.reviewedOffer.priceEP !== this.selected.priceEP || this.reviewedOffer.epoch !== this.catalogueEpoch) return;
+        this.pendingID = this.selected.id; this.confirmation.hidden = true;
+        this.pendingPrice = this.selected.priceEP;
+        this.buy.disabled = true; this.retry.hidden = false;
+        this.status.textContent = 'Saving your cosmetic unlock…';
+        this.send('buy_cosmetic', { id: this.pendingID, priceEP: this.pendingPrice, confirmed: true });
+    }
+
+    handleAppearanceResult(result) {
+        if (!this.canAct() || result?.playerID !== this.playerID) return false;
+        this.status.textContent = result?.message || 'Appearance updated.'; this.renderPreview(); return true;
+    }
+    dispose() {
+        if (this.disposed) return;
+        this.disposed = true; this.ready = false; this.catalogueEpoch++;
+        disposeOwnedEvents(this); this.close(); this.preview?.dispose(); this.preview = null; this.root.remove();
+    }
+}

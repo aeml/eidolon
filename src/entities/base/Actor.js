@@ -1,0 +1,2254 @@
+import { getHeroBasicAttackReach } from '../../core/gameplay/combat/BasicAttackReach.js';
+import * as THREE from 'three';
+import { Entity } from './Entity.js';
+import { calculateSetBonuses, getEquippedUniqueEffects, getGemStats, UNIQUE_EFFECTS } from '../../core/gameplay/equipment/ItemSystem.js';
+import { isEquippableItem, isActiveEquipment, canEquipItem, isDualWieldingRogue } from '../../core/gameplay/equipment/EquipmentSlots.js';
+import { advanceFighterDamageBuffs, applyOfflineFighterDamageBuffStats, clearOfflineFighterDamageBuffs } from '../../skills/fighter/offlineFighterDamageBuffs.js';
+import { advanceClericUtilityBuffs, applyOfflineClericUtilityStats } from '../../skills/cleric/clericUtilityPower.js';
+import { getAbilityManaCost, getAbilityCooldown } from '../../core/gameplay/combat/AbilityEconomy.js';
+import { playLocalAbilityCue } from '../../audio/AudioManager.js';
+import { updateOfflineHealingLight } from '../../core/gameplay/combat/AbilityHealing.js';
+import { PASSIVE_REGEN_PER_STAT } from '../../core/gameplay/progression/Regeneration.js';
+import { getBasicAttackDamage } from '../../core/gameplay/combat/BasicAttackDamage.js';
+import { getOfflineBasicAttackArmor } from '../../core/gameplay/combat/OfflineArmor.js';
+import { applyActorStealthAppearance, restoreActorStealthAppearance } from './ActorStealthAppearance.js';
+import { basicAttackInterval, usesPlayerAttackCadence } from '../../core/gameplay/combat/BasicAttackCadence.js';
+import { rollOfflineCriticalDamage } from '../../core/gameplay/combat/AbilityCritical.js';
+import { applyOfflineStatus, clearOfflineStatus, updateOfflineDamageOverTime } from '../../core/gameplay/combat/OfflineDamageOverTime.js';
+import { GUARDIAN_ROAR_DAMAGE_REDUCTION_PERCENT } from '../../core/gameplay/combat/GuardianRoar.js';
+import { CONSTANTS } from '../../core/Constants.js';
+import { awardOfflineExperience, experienceRequiredForLevel, PLAYER_LEVEL_CAP } from '../../core/gameplay/progression/ProgressionCurve.js';
+import {
+    exponentialSmoothingFactor,
+    horizontalDistanceSquared,
+    MOVEMENT_ARRIVAL_DISTANCE,
+    MOVEMENT_TARGET_EQUIVALENCE_DISTANCE,
+    RemoteTransformBuffer
+} from '../../core/network/MovementSmoothing.js';
+import {
+    getAbilityAnimationProfile,
+    getAbilityPresentation,
+    isAbilityVisualLayerEnabled
+} from '../../skills/shared/abilityVisualManifest.js';
+import { getAbilityAoeArc, getAbilityAoeRadius, isAoeBoundaryVisualType } from '../../skills/shared/abilityRadii.js';
+import { clampWizardGroundTarget, WIZARD_GROUND_ABILITIES } from '../../core/gameplay/combat/AbilityRange.js';
+import { getWhirlwindCastDuration } from '../../skills/fighter/whirlwindPresentation.js';
+import { spawnEarthshakerPresentation } from '../../skills/fighter/earthshakerPresentation.js';
+import { ACTOR_STATUS_VISUAL_STATES, AttachedStatusEffect } from '../effects/AttachedStatusEffect.js';
+import { applyEquipmentVisuals, clearEquipmentVisuals } from '../../art/equipment/EquipmentVisuals.js';
+import { equipmentWithAppearances } from '../../core/gameplay/equipment/EquipmentAppearance.js';
+import { ActorHitReaction } from './ActorHitReaction.js';
+import { ActorMovingCastGait } from './ActorMovingCastGait.js';
+import { getGroundAwareDistance, getGroundedActorHeight, getActorCombatDistance } from '../../core/world/WorldGrounding.js';
+import { absorbOfflineArcaneShield, addOfflineDamageReflection, clearOfflineArcaneShield, expireOfflineArcaneShield, flushOfflineArcaneShieldReaction } from '../../skills/wizard/offlineArcaneShield.js';
+
+// Optimization: Reusable temporary objects to avoid GC
+const TEMP_VEC = new THREE.Vector3();
+const TEMP_VEC2 = new THREE.Vector3();
+const TEMP_VEC3 = new THREE.Vector3();
+const TEMP_QUAT = new THREE.Quaternion();
+const UP_VEC = new THREE.Vector3(0, 1, 0);
+const ZERO_VEC = new THREE.Vector3(0, 0, 0);
+const REMOTE_ABILITY_ANIMATION_DEFER_MS = 2000;
+
+export class Actor extends Entity {
+    constructor(id, config) {
+        super(id);
+        
+        // Base Stats
+        const baseStats = config.STATS || {
+            STRENGTH: 5,
+            INTELLIGENCE: 5,
+            DEXTERITY: 5,
+            WISDOM: 5,
+            STAMINA: 5
+        };
+
+        let manaStatName = config.MANA_STAT || 'INTELLIGENCE';
+        
+        // Ensure we can find the value in baseStats
+        let manaStatValue = baseStats[manaStatName];
+        
+        if (manaStatValue === undefined) {
+            // Try finding it with different casing
+            const upper = manaStatName.toUpperCase();
+            if (baseStats[upper] !== undefined) {
+                manaStatName = upper;
+                manaStatValue = baseStats[upper];
+            } else {
+                console.warn(`Mana stat ${manaStatName} not found in baseStats. Defaulting to INTELLIGENCE.`);
+                manaStatName = 'INTELLIGENCE';
+                manaStatValue = baseStats.INTELLIGENCE || 5;
+            }
+        }
+
+        this.manaStatName = manaStatName.toLowerCase(); // Store as lowercase for property access in this.stats
+
+        // Base Stats (Permanent)
+        this.baseStats = {
+            strength: baseStats.STRENGTH,
+            intelligence: baseStats.INTELLIGENCE,
+            dexterity: baseStats.DEXTERITY,
+            wisdom: baseStats.WISDOM,
+            vitality: baseStats.STAMINA
+        };
+
+        // Derived Stats (Total)
+        this.stats = {
+            ...this.baseStats,
+            maxHp: this.baseStats.vitality * 10,
+            hp: this.baseStats.vitality * 10,
+            maxMana: this.baseStats.intelligence * 10,
+            mana: this.baseStats.intelligence * 10,
+            speed: 3 + (this.baseStats.dexterity * 0.5),
+            damage: getBasicAttackDamage(this.constructor.name, this.baseStats),
+            defense: 0,
+            hpRegen: this.baseStats.vitality * PASSIVE_REGEN_PER_STAT,
+            manaRegen: this.baseStats.wisdom * PASSIVE_REGEN_PER_STAT,
+            attackSpeed: usesPlayerAttackCadence(this.constructor.name)
+                ? basicAttackInterval(this.baseStats.dexterity, this.constructor.name)
+                : 1 + (this.baseStats.dexterity / 5) * 0.05,
+            cooldownReduction: Math.min(0.5, this.baseStats.intelligence * 0.01),
+            manaCostReduction: 0, 
+            castSpeed: 1 + (this.baseStats.wisdom / 5) * 0.01,
+            critChanceBonus: 0,
+            poisonDamageBonus: 0,
+            fireDamageBonus: 0,
+            healingDoneBonus: 0,
+            holyDamageBonus: 0,
+            lifestealBonus: 0,
+            allResistBonus: 0
+        };
+
+        // Progression
+        this.level = 1;
+        this.xp = 0;
+        this.xpToNextLevel = 100;
+        this.statPoints = 0;
+        
+        this.regenTimer = 0; // Accumulator for regeneration
+        
+        // Ability State
+        this.abilityCooldown = 0;
+        this.abilityMaxCooldown = 0;
+        this.abilityManaCost = 0;
+        this.abilityName = "Unknown";
+        this.abilityDescription = "No ability";
+
+        this.lastAttackTime = 0; // For melee attack speed limit
+        this.attackTimer = null;
+        this.stunTimer = 0; // Time remaining for stun
+        this.guardianRoarTimer = 0; // Guardian Roar Buff
+        this.guardianRoarReduction = 0;
+        this.slowTimer = 0;
+        this.slowFactor = 0;
+        this.lastStandTimer = 0; // Last Stand Rampage Buff
+        this.lastStandDamageBoost = 0;
+        this.lastStandMultiplier = 1;
+        this.berserkerEdgeActive = false; // Passive check
+        this.berserkerEdgeTimer = 0;
+        this.berserkerEdgeMultiplier = 1;
+
+        // Cleric Buffs/Debuffs
+        this.blessingResolveTimer = 0;
+        this.blessingResolveReduction = 0;
+        this.blessingResolvePower = 0;
+        this.zealPower = 0;
+        this.divineInterventionTimer = 0; // Remaining rescue window; display-only for replicas
+        this.divineInterventionGuardianTimer = 0;
+        this.blessingZealTimer = 0;
+        this.blessingZealFactor = 0;
+        this.markWeaknessTimer = 0;
+        this.markWeaknessFactor = 0;
+
+        // Hotbar (Default empty)
+        this.hotbar = [null, null, null, null];
+        this.unlockedSkills = [];
+
+        // Rogue Debuffs
+        this.bleedTimer = 0;
+        this.bleedStacks = 0;
+        this.bleedTickDamage = 0;
+        this.weakPointMarkTimer = 0;
+        
+        // Rogue Branch C Debuffs
+        this.accuracyReductionTimer = 0;
+        this.accuracyReductionFactor = 0;
+        this.healingReductionTimer = 0;
+        this.healingReductionFactor = 0;
+        this.rootTimer = 0;
+        this.armorReduction = 0;
+        this.armorReductionTimer = 0;
+        this.stealthTimer = 0;
+        this.poisonTimer = 0;
+        this.poisonStacks = 0;
+        this.poisonTickDamage = 0;
+        this.speedBoostTimer = 0;
+        this.speedBoostFactor = 0;
+
+        // Wizard Debuffs/Buffs
+        this.frozenTimer = 0; // Stun + Visual
+        this.arcaneShieldTimer = 0; // Display-only authoritative shield duration
+        this.shieldHP = 0; // Absorbs damage
+        this.arcaneShieldRuneId = '';
+        this.arcaneShieldAbsorbed = 0;
+        this.arcaneShieldEngine = null;
+        this.arcaneShieldInstanceId = '';
+        this.hasteTimer = 0; // Speed + CDR
+        this.hasteFactor = 0;
+        this.spellFocusTimer = 0; // Display-only authoritative spell focus duration
+        
+        // Unique Effect Timers
+        this.swiftBuffTimer = 0; // Swift effect: +20% speed for 3s after skill use
+
+        // Hotbar & Skills
+        this.hotbar = [null, null, null, null];
+        this.unlockedSkills = [];
+        this.cooldowns = {}; // Map of skillName -> cooldown timer
+
+        // Passive Talents
+        this.talentPoints = 0;
+        this.talentRanks = {};
+
+        // Inventory & Equipment
+        this.inventory = new Array(25).fill(null); // 25 slots
+        this.equipment = {
+            head: null,
+            chest: null,
+            legs: null,
+            feet: null,
+            gloves: null,
+            shoulders: null,
+            belt: null,
+            ring1: null,
+            ring2: null,
+            neck: null,
+            trinket1: null,
+            trinket2: null,
+            mainHand: null,
+            offHand: null
+        };
+        
+        this.targetPosition = null;
+        this.velocity = new THREE.Vector3();
+        this.state = 'IDLE'; // IDLE, MOVING, ATTACKING, DEAD
+        this.remoteTransformBuffer = null;
+        this.blockedTargetPosition = null;
+        this.movementNoProgressFrames = 0;
+        this.movementMetrics = {
+            requests: 0,
+            accepted: 0,
+            equivalentTargets: 0,
+            nearbyNoops: 0,
+            arrivals: 0,
+            blockedTargetNoops: 0,
+            blockedStops: 0,
+            animationTransitions: 0
+        };
+        
+        this.mixer = null;
+        this.animations = {};
+        this.currentAction = null;
+        this.currentAnimationName = null;
+        this._animFinishedHandler = null;
+        this.missingAnimationClips = new Set();
+        this.currentAbilityAnimation = null;
+        this.pendingRemoteAbilityAnimation = null;
+        this.lastAbilityPresentation = null;
+        this.managedTimers = new Set();
+        this.attachedStatusEffects = new Map();
+        
+        this.radius = 1.25; // Collision radius (matches 2.5 scale width)
+
+        this.isRunning = true; // Default to running (Players run, Enemies walk)
+        
+        this.gold = 0; // Currency
+        this.scaleAnimSpeed = true; // Default to scaling animation speed with movement speed
+        this.visualOffset = new THREE.Vector3(); // Visual separation offset
+    }
+
+    syncPresentationTransform() {
+        // Interpolation, jump/correction and visual separation have now placed
+        // the mesh for this frame. World-space auras must follow that pose.
+        this.attachedStatusEffects.forEach(effect => effect.update(0));
+        this.spiritEffect?.syncToSource?.(true);
+    }
+
+    modifyMesh(mesh) {
+        if (this.isElite) {
+            mesh.scale.multiplyScalar(2.0);
+        }
+    }
+
+    setSkillCooldown(skillName, seconds) {
+        const cdr = this.stats.cooldownReduction || 0;
+        this.cooldowns[skillName] = seconds * (1 - cdr);
+    }
+
+    scheduleTask(callback, delayMs) {
+        const timer = setTimeout(() => {
+            this.managedTimers.delete(timer);
+            callback();
+        }, Math.max(0, Number(delayMs) || 0));
+        this.managedTimers.add(timer);
+        return timer;
+    }
+
+    clearScheduledTask(timer) {
+        if (!timer) return;
+        clearTimeout(timer);
+        this.managedTimers.delete(timer);
+    }
+
+    clearManagedTimers() {
+        this.managedTimers.forEach((timer) => clearTimeout(timer));
+        this.managedTimers.clear();
+        this.attackTimer = null;
+    }
+
+    getEffectScene() {
+        return this.gameEngine?.renderSystem?.effectGroup
+            || this.gameEngine?.effectScene
+            || this.gameEngine?.scene
+            || null;
+    }
+
+    syncAttachedStatusEffects(dt = 0) {
+        const scene = this.getEffectScene();
+        const quality = this.gameEngine?.renderSystem?.graphicsQuality || 'high';
+        const canDisplay = this.state !== 'DEAD' && this.isActive !== false && Boolean(scene);
+
+        Object.entries(ACTOR_STATUS_VISUAL_STATES).forEach(([statusKey, isActive]) => {
+            const shouldDisplay = canDisplay && Boolean(isActive(this));
+            let effect = this.attachedStatusEffects.get(statusKey);
+            if (!shouldDisplay) {
+                if (effect) {
+                    effect.dispose();
+                    this.attachedStatusEffects.delete(statusKey);
+                }
+                return;
+            }
+
+            if (!effect || effect.disposed || effect.scene !== scene || effect.quality !== quality) {
+                effect?.dispose?.();
+                effect = new AttachedStatusEffect(scene, this, statusKey, { quality });
+                this.attachedStatusEffects.set(statusKey, effect);
+            }
+            effect.update(dt);
+        });
+        return this.attachedStatusEffects.size;
+    }
+
+    clearAttachedStatusEffects() {
+        this.attachedStatusEffects.forEach((effect) => effect.dispose());
+        this.attachedStatusEffects.clear();
+    }
+
+    getAttachedStatusEffectMetrics() {
+        const totals = { effects: this.attachedStatusEffects.size, meshes: 0, geometries: 0, materials: 0 };
+        this.attachedStatusEffects.forEach((effect) => {
+            const metrics = effect.getMetrics();
+            totals.meshes += metrics.meshes;
+            totals.geometries += metrics.geometries;
+            totals.materials += metrics.materials;
+        });
+        return totals;
+    }
+
+    updateBasicEnemyAI(dt, player) {
+        if (this.state === 'DEAD') return true;
+
+        if (player && player.state !== 'DEAD') {
+            const dist = getGroundAwareDistance(this.gameEngine, this.position, player.position);
+
+            if (dist < this.sightRange) {
+                if (dist < this.attackRange) {
+                    this.attack(player);
+                } else {
+                    this.move(player.position);
+                }
+                return true;
+            }
+        }
+
+        if (this.state === 'IDLE') {
+            this.roamTimer -= dt;
+            if (this.roamTimer <= 0) {
+                this.roamRandomly();
+                this.roamTimer = this.roamInterval + Math.random() * 2;
+            }
+        }
+
+        return false;
+    }
+
+    roamRandomly() {
+        const angle = Math.random() * Math.PI * 2;
+        const radius = Math.random() * this.roamRadius;
+        const dx = Math.cos(angle) * radius;
+        const dz = Math.sin(angle) * radius;
+
+        const target = new THREE.Vector3(
+            this.position.x + dx,
+            this.position.y,
+            this.position.z + dz
+        );
+
+        this.move(target);
+    }
+
+    setScale(scale) {
+        super.setScale(scale);
+        if (this.baseRadius === undefined) {
+            this.baseRadius = this.radius;
+        }
+        this.radius = this.authoritativeBodyRadius || this.baseRadius * scale;
+    }
+
+    setBodyRadius(radius) {
+        if (!Number.isFinite(radius) || radius <= 0) return;
+        this.authoritativeBodyRadius = radius;
+        this.radius = radius;
+    }
+
+    setMesh(mesh) {
+        this.corpsePresentation?.dispose();
+        this.corpsePresentation = null;
+        this.movingCastGait?.dispose();
+        this.movingCastGait = null;
+        this.hitReaction?.dispose();
+        this.hitReaction = null;
+        restoreActorStealthAppearance(this);
+        super.setMesh(mesh);
+
+        // Equipment state commonly arrives before an asynchronous class mesh.
+        // Apply it as soon as the shared procedural rig is ready so local and
+        // replicated actors never flash the default kit after loading.
+        this.syncEquipmentVisuals(this.equipment, { force: true });
+
+        // Add Hitbox for easier clicking
+        // Model-backed actors retain the historic local box (their root is
+        // scaled by MeshFactory). Procedural actors declare world-size bounds
+        // so their interaction volume covers the full generated silhouette.
+        // Reuse it when a pooled mesh changes owners to avoid accumulating
+        // invisible raycast targets with stale entity ids.
+        const declaredBounds = mesh.userData.bounds;
+        let hitbox = mesh.getObjectByName('ActorInteractionHitbox');
+        if (!hitbox) {
+            // Moving server actors can advance between pointer projection and
+            // the next rendered input sample. Procedural enemy families opt
+            // into a small input-only margin so a visibly acquired target does
+            // not turn into a ground click under real network latency. This is
+            // deliberately separate from the authoritative combat radius.
+            const interactionPadding = Math.max(0, Number(mesh.userData.interactionPadding) || 0);
+            const hitWidth = declaredBounds?.radius
+                ? (declaredBounds.radius + interactionPadding) * 2
+                : 1;
+            const hitHeight = declaredBounds?.height || 2;
+            const hitGeo = new THREE.BoxGeometry(hitWidth, hitHeight, hitWidth);
+            const hitMat = new THREE.MeshBasicMaterial({
+                visible: true,
+                transparent: true,
+                opacity: 0,
+                colorWrite: false,
+                depthWrite: false
+            });
+            hitbox = new THREE.Mesh(hitGeo, hitMat);
+            hitbox.name = 'ActorInteractionHitbox';
+            hitbox.position.y = hitHeight / 2;
+            mesh.add(hitbox);
+        }
+        hitbox.userData.entityId = this.id;
+        this.interactionHitbox = hitbox;
+
+        // Setup Animation Mixer if mesh has animations
+        if (mesh.userData.animations && mesh.userData.animations.length > 0) {
+            this.mixer = new THREE.AnimationMixer(mesh);
+            
+            // Map animations by name (assuming standard naming conventions)
+            // You might need to adjust these names based on your actual GLB file
+            mesh.userData.animations.forEach(clip => {
+                this.animations[clip.name] = this.mixer.clipAction(clip);
+            });
+            if (mesh.userData.proceduralClass || mesh.userData.lowerBodyAnimationTracks) this.movingCastGait = new ActorMovingCastGait(this);
+
+            // Initial Animation State
+            if (this.state === 'DEAD') {
+                if (this.animations['Death']) {
+                    const action = this.animations['Death'];
+                    action.reset().play();
+                    action.setLoop(THREE.LoopOnce);
+                    action.clampWhenFinished = true;
+                    // Fast forward to end so it appears as a corpse immediately
+                    action.time = action.getClip().duration;
+                    this.currentAction = action;
+                }
+            } else if (this.state === 'ATTACKING') {
+                this.playAnimation('Attack', false);
+            } else if (this.state === 'MOVING') {
+                const moveAnim = this.getMovementAnimationName(this.isRunning);
+                if (moveAnim) this.playAnimation(moveAnim);
+            } else {
+                if (this.animations['Idle']) {
+                    this.playAnimation('Idle');
+                }
+            }
+
+            // A replicated cast can arrive while an on-demand remote class
+            // mesh is still loading. Retain only a recent one-shot so the
+            // event is not silently lost when the animation mixer becomes
+            // ready, while avoiding a visibly stale cast long afterward.
+            const pending = this.pendingRemoteAbilityAnimation;
+            this.pendingRemoteAbilityAnimation = null;
+            if (pending && Date.now() - pending.queuedAt <= REMOTE_ABILITY_ANIMATION_DEFER_MS) {
+                this.playAbilityAnimation(pending.skillName, {
+                    ...pending.options,
+                    deferUntilReady: false
+                });
+            }
+        }
+    }
+
+    getMovementAnimationName(preferRun = true) {
+        if (preferRun && this.animations['Run']) return 'Run';
+        if (this.animations['Walk']) return 'Walk';
+        if (this.animations['Run']) return 'Run';
+        if (this.animations['Idle']) return 'Idle';
+        return null;
+    }
+
+    getAnimationForCurrentState() {
+        if (this.state === 'DEAD') return this.animations.Death ? 'Death' : null;
+        if (this.state === 'JUMPING') return null;
+        if (this.isCharging) return this.getMovementAnimationName(true);
+        if (this.isWhirlwinding) return this.animations.Attack ? 'Attack' : null;
+        if (this.state === 'MOVING' || this.targetPosition) {
+            return this.getMovementAnimationName(this.isRunning);
+        }
+        return this.animations.Idle ? 'Idle' : this.getMovementAnimationName(false);
+    }
+
+    clearAnimationFinishedHandler() {
+        if (this._animFinishedHandler && this.mixer?.removeEventListener) {
+            this.mixer.removeEventListener('finished', this._animFinishedHandler);
+        }
+        this._animFinishedHandler = null;
+    }
+
+    restoreAnimationForState(force = true) {
+        if (this.state === 'JUMPING') return false;
+        const nextAnimation = this.getAnimationForCurrentState();
+        if (!nextAnimation) return false;
+        this.currentAction?.setEffectiveTimeScale?.(1.0);
+        return this.playAnimation(nextAnimation, nextAnimation !== 'Death', force);
+    }
+
+    getMovementAnimationTimeScale(speed = this.stats?.speed) {
+        let effectiveSpeed = Math.max(0, Number(speed) || 0);
+        if (!this.isRunning) effectiveSpeed *= 0.5;
+        if (this.slowTimer > 0 && !this.isMultiplayer && !this.isRemote) {
+            effectiveSpeed *= Math.max(0, 1 - (this.slowFactor || 0));
+        }
+        if (this.cloakSwift && this.stealthTimer > 0 && !this.isMultiplayer && !this.isRemote) effectiveSpeed *= 1.3;
+        if (this.speedBoostTimer > 0) effectiveSpeed *= 1 + Math.max(0, this.speedBoostFactor || 0);
+        const authoredSpeed = this.isRunning ? 6.0 : 3.0;
+        return Math.max(0.35, Math.min(2.5, effectiveSpeed / authoredSpeed));
+    }
+
+    getAnimationAction(name) {
+        if (this.animations[name]) return this.animations[name];
+        // Mixed weapon stances are composed only when equipped/used. Bind
+        // their action once and let the existing mixer lifecycle own cleanup.
+        const clip = this.mesh?.userData.animations?.find(clip => clip.name === name);
+        if (!clip || !this.mixer) return null;
+        return this.animations[name] = this.mixer.clipAction(clip);
+    }
+
+    syncMovementAnimationSpeed(speed = this.stats?.speed) {
+        const movementName = this.getMovementAnimationName(this.isRunning);
+        if (!movementName) return false;
+        const resolvedName = this.mesh?.userData?.resolveAnimationName?.(movementName, {
+            restart: false, currentName: this.currentAnimationName
+        }) || movementName;
+        const movementAction = this.getAnimationAction(resolvedName) || this.animations[movementName];
+        if (!movementAction || this.currentAction !== movementAction) return false;
+        this.currentAction.setEffectiveTimeScale?.(
+            this.scaleAnimSpeed ? this.getMovementAnimationTimeScale(speed) : 1.0
+        );
+        return true;
+    }
+
+    playAbilityAnimation(skillName, options = {}) {
+        const className = this.meshType || this.subType || this.constructor.name;
+        const profile = getAbilityAnimationProfile(className, skillName);
+        const presentation = getAbilityPresentation(className, skillName);
+        let clipName = options.clip || this.mesh?.userData?.resolveAbilityAnimationName?.(
+            presentation?.animation, presentation?.canonicalName) || profile.clip;
+        if (!this.animations[clipName]) {
+            clipName = this.animations.Attack ? 'Attack' : (this.animations.Idle ? 'Idle' : null);
+        }
+        if (!clipName) {
+            if (this.isRemote && options.deferUntilReady !== false) {
+                this.pendingRemoteAbilityAnimation = {
+                    skillName,
+                    options: { ...options },
+                    queuedAt: Date.now()
+                };
+            }
+            return false;
+        }
+
+        this.pendingRemoteAbilityAnimation = null;
+
+        const played = this.playAnimation(clipName, false, true);
+        if (!played || !this.currentAction?.getClip) return played;
+
+        const authoredDuration = skillName === 'Whirlwind' && className === 'Fighter'
+            ? getWhirlwindCastDuration(this) : profile.duration;
+        const duration = Math.max(0.15, Number(options.duration || authoredDuration) || 0.7);
+        const clipDuration = Math.max(0.001, this.currentAction.getClip()?.duration || duration);
+        this.currentAction.setEffectiveTimeScale?.(clipDuration / duration);
+        this.currentAbilityAnimation = {
+            skillName,
+            profile,
+            clipName,
+            duration
+        };
+        return true;
+    }
+
+    spawnAbilityPresentation(gameEngine, skillName, targetVector, options = {}) {
+        if (skillName === 'Earthshaker') {
+            const spawned = spawnEarthshakerPresentation(gameEngine, this, targetVector);
+            if (spawned) playLocalAbilityCue(gameEngine, this, skillName);
+            if (spawned) this.lastAbilityPresentation = { skillName, requestedSkillName: skillName, layerCount: 1,
+                timestamp: globalThis.performance?.now?.() ?? Date.now() };
+            return spawned;
+        }
+        const className = this.meshType || this.subType || this.constructor.name;
+        const presentation = getAbilityPresentation(className, skillName);
+        if (!presentation || typeof gameEngine?.spawnTransientEffect !== 'function') return false;
+        playLocalAbilityCue(gameEngine, this, skillName);
+
+        const sourcePosition = this.position?.clone?.() || this.position;
+        let targetPosition = targetVector?.clone?.() || targetVector || sourcePosition;
+        if (className === 'Wizard' && WIZARD_GROUND_ABILITIES.has(skillName)) targetPosition = clampWizardGroundTarget(this, skillName, targetPosition);
+        const direction = sourcePosition?.clone && targetPosition?.clone
+            ? targetPosition.clone().sub(sourcePosition).normalize()
+            : null;
+        const capturedRadius = Number.isFinite(options.radius) && options.radius > 0 ? options.radius : null;
+        const gameplayRadius = capturedRadius ?? getAbilityAoeRadius(className, skillName, this)
+            ?? getAbilityAoeRadius(className, presentation.canonicalName, this);
+        const gameplayArc = getAbilityAoeArc(className, skillName, this)
+            ?? getAbilityAoeArc(className, presentation.canonicalName, this);
+        let spawned = false;
+        const activeLayers = presentation.layers.filter((entry) =>
+            isAbilityVisualLayerEnabled(entry, this, presentation.canonicalName) && !(options.skipTelegraph && entry.type === 'telegraph')
+        );
+        activeLayers.forEach((entry, index) => {
+            const position = entry.anchor === 'target' ? targetPosition : sourcePosition;
+            if (!position) return;
+            spawned = gameEngine.spawnTransientEffect(entry.type, position, entry.color, {
+                source: this,
+                direction,
+                abilityName: presentation.canonicalName,
+                requestedAbilityName: presentation.skillName,
+                abilityLayer: index,
+                ...(gameplayRadius && isAoeBoundaryVisualType(entry.type)
+                    ? { radius: gameplayRadius, ...(gameplayArc ? { arc: gameplayArc } : {}) }
+                    : {})
+            }) || spawned;
+        });
+        if (spawned) {
+            this.lastAbilityPresentation = {
+                skillName: presentation.canonicalName,
+                requestedSkillName: skillName,
+                layerCount: activeLayers.length,
+                timestamp: globalThis.performance?.now?.() ?? Date.now()
+            };
+        }
+        // Older class handlers still contain a few one-shot calls used by the
+        // offline combat path. Suppress only the synchronous duplicate cast
+        // flash; delayed projectile impacts and periodic pulses remain visible.
+        this._suppressLegacyCastVisualUntil = Date.now() + 80;
+        return spawned;
+    }
+
+    shouldSuppressLegacyCastVisual() {
+        return Number(this._suppressLegacyCastVisualUntil || 0) >= Date.now();
+    }
+
+    playAnimation(name, loop = true, force = false) {
+        if (!this.mixer) return false;
+
+        // Death is terminal until an explicit respawn changes actor state.
+        if (this.state === 'DEAD' && name !== 'Death') return false;
+
+        if (!this.animations[name]) {
+            this.missingAnimationClips.add(name);
+            return false;
+        }
+
+        // Ability actions are short, non-looping presentation locks. Logical
+        // state can still converge while they play, but routine Idle/Run
+        // reconciliation must not erase the visible cast on the next frame.
+        // A forced action is an intentional interrupt (new cast, jump, basic
+        // attack, or restore after completion), so it releases the old lock.
+        if (this.currentAbilityAnimation) {
+            if (!force && name !== this.currentAbilityAnimation.clipName) {
+                return false;
+            }
+            if (force) this.currentAbilityAnimation = null;
+        }
+
+        const resolvedName = this.mesh?.userData?.resolveAnimationName?.(name, { restart: force, currentName: this.currentAnimationName }) || name;
+        const action = this.getAnimationAction(resolvedName) || this.animations[name];
+        if (!force && this.currentAction === action) return true;
+
+        if (this.currentAction !== action) {
+            this.movementMetrics.animationTransitions += 1;
+        }
+
+        this.clearAnimationFinishedHandler();
+
+        // Short actions must reach full weight during anticipation, not after
+        // the release pose. This changes blending only, never attack timing.
+        const fadeDuration = !loop && name !== 'Death' ? 0.06 : 0.16;
+        if (this.currentAction && this.currentAction !== action) {
+            this.currentAction.fadeOut?.(fadeDuration);
+        }
+
+        if (force && this.currentAction === action) {
+            action.stop?.();
+        }
+
+        const movingCastPhase = this.movingCastGait?.phaseFor(name);
+        action.enabled = true;
+        action.reset?.();
+        if (movingCastPhase != null) action.time = movingCastPhase;
+        action.fadeIn?.(fadeDuration);
+        action.play?.();
+        action.setEffectiveTimeScale?.(1.0);
+        action.setLoop?.(loop ? THREE.LoopRepeat : THREE.LoopOnce);
+        action.clampWhenFinished = !loop;
+
+        this.currentAction = action;
+        this.currentAnimationName = name;
+
+        if (!loop && name !== 'Death' && this.state !== 'DEAD' && this.mixer.addEventListener) {
+            this._animFinishedHandler = (e) => {
+                if (e.action === action) {
+                    this.clearAnimationFinishedHandler();
+                    // Basic attacks retain their authoritative ATTACKING window;
+                    // ability casts usually leave gameplay state untouched and
+                    // return immediately to the correct idle/run presentation.
+                    if (this.state === 'ATTACKING' && this.attackTimer) return;
+                    this.currentAbilityAnimation = null;
+                    this.restoreAnimationForState(true);
+                }
+            };
+            this.mixer.addEventListener('finished', this._animFinishedHandler);
+        }
+        return true;
+    }
+
+    move(targetVector) {
+        this.movementMetrics.requests += 1;
+        if (this.state === 'DEAD' || !targetVector ||
+            !Number.isFinite(targetVector.x) || !Number.isFinite(targetVector.z)) return false;
+        const movementSuppressed = this.stunTimer > 0 || this.rootTimer > 0 || this.frozenTimer > 0;
+
+        const arrivalDistanceSq = MOVEMENT_ARRIVAL_DISTANCE * MOVEMENT_ARRIVAL_DISTANCE;
+        if (horizontalDistanceSquared(this.position, targetVector) <= arrivalDistanceSq) {
+            this.movementMetrics.nearbyNoops += 1;
+            this.targetPosition = null;
+            this.velocity.set(0, 0, 0);
+            if (this.state === 'MOVING') {
+                this.state = 'IDLE';
+                this.playAnimation('Idle');
+                this.currentAction?.setEffectiveTimeScale?.(1.0);
+            }
+            return false;
+        }
+
+        if (this.blockedTargetPosition &&
+            horizontalDistanceSquared(this.blockedTargetPosition, targetVector) <= arrivalDistanceSq) {
+            this.movementMetrics.blockedTargetNoops += 1;
+            return false;
+        }
+        this.blockedTargetPosition = null;
+
+        const targetEquivalenceSq = MOVEMENT_TARGET_EQUIVALENCE_DISTANCE *
+            MOVEMENT_TARGET_EQUIVALENCE_DISTANCE;
+        const equivalentTarget = this.targetPosition &&
+            horizontalDistanceSquared(this.targetPosition, targetVector) <= targetEquivalenceSq;
+        if (equivalentTarget) {
+            this.movementMetrics.equivalentTargets += 1;
+            if (this.state === 'MOVING' || movementSuppressed) return false;
+        } else {
+            this.targetPosition = targetVector.clone();
+            this.movementMetrics.accepted += 1;
+            this.movementNoProgressFrames = 0;
+        }
+
+        // Preserve the queued destination without restarting Run/Idle on every
+        // held-input frame while a root or freeze prevents locomotion.
+        if (movementSuppressed) {
+            this.velocity.set(0, 0, 0);
+            return false;
+        }
+
+        // Only trigger animation if changing state
+        if (this.state !== 'MOVING') {
+            this.state = 'MOVING';
+            const moveAnim = this.getMovementAnimationName(this.isRunning);
+            if (moveAnim) this.playAnimation(moveAnim);
+        }
+        return true;
+    }
+
+    updateAnimationMixer(dt) {
+        if (!this.mixer) return;
+        this.movingCastGait?.restore();
+        this.mixer.update(dt);
+        this.movingCastGait?.apply(dt);
+        this.mesh?.userData?.updateEquipmentPose?.();
+    }
+
+    clearBlockedMovementTarget() {
+        this.blockedTargetPosition = null;
+        this.movementNoProgressFrames = 0;
+    }
+
+    pushRemoteTransform(position, rotation, options = {}) {
+        if (!this.remoteTransformBuffer) {
+            this.remoteTransformBuffer = new RemoteTransformBuffer();
+        }
+        const result = this.remoteTransformBuffer.push(position, rotation, options);
+        if (result.teleported) {
+            this.position.copy(position);
+            this.targetServerPosition = position.clone();
+            if (Number.isFinite(rotation)) {
+                this.targetServerRotation = rotation;
+                this.rotation.setFromAxisAngle(UP_VEC, rotation);
+            }
+            this.resetTransformInterpolation?.();
+        }
+        return result;
+    }
+
+    clearRemoteTransformBuffer() {
+        this.remoteTransformBuffer?.clear?.();
+        this.remoteTransformBuffer = null;
+    }
+
+    playJumpAnimation(jumpState = null) {
+        const duration = Math.max(0.001, Number.isFinite(jumpState?.duration) ? jumpState.duration : 0.8);
+        const animationName = this.animations?.Jump
+            ? 'Jump'
+            : this.getMovementAnimationName(this.isRunning);
+        if (!animationName) return false;
+
+        this.playAnimation(animationName, false, true);
+        const clipDuration = this.currentAction?.getClip?.()?.duration || duration;
+        const timeScale = Math.max(0.01, clipDuration / duration);
+        this.currentAction?.setEffectiveTimeScale?.(timeScale);
+        this.jumpAnimationRestore = {
+            name: animationName,
+            timeScale
+        };
+        this.syncJumpAnimationToVisualState(jumpState);
+        return true;
+    }
+
+    syncJumpAnimationToVisualState(jumpState = this.jumpVisualState) {
+        if (!this.currentAction?.getClip || !jumpState) return false;
+
+        const duration = Math.max(0.001, Number.isFinite(jumpState.duration) ? jumpState.duration : 0.8);
+        const progress = Number.isFinite(jumpState.visualProgress)
+            ? jumpState.visualProgress
+            : (Number.isFinite(jumpState.progress)
+                ? jumpState.progress
+                : (Number.isFinite(jumpState.elapsed) ? jumpState.elapsed / duration : 0));
+        const clipDuration = this.currentAction.getClip()?.duration || duration;
+        const clampedProgress = Math.max(0, Math.min(1, progress));
+        this.currentAction.time = Math.min(clipDuration, Math.max(0, clipDuration * clampedProgress));
+        return true;
+    }
+
+    clearJumpAnimation() {
+        if (!this.jumpAnimationRestore) {
+            return;
+        }
+
+        if (this.currentAction?.setEffectiveTimeScale) {
+            this.currentAction.setEffectiveTimeScale(1.0);
+        }
+        this.jumpAnimationRestore = null;
+    }
+
+    useAbility(targetVector, gameEngine, skillNameOverride = null) {
+        // Base implementation checks costs
+        if (this.state === 'DEAD' || this.stunTimer > 0) return false;
+        
+        // Bypass checks for remote entities (visual only)
+        if (this.isRemote) {
+            return true;
+        }
+
+        const skillName = skillNameOverride || this.abilityName;
+        const className = this.meshType || this.subType || this.constructor.name;
+        const classAbilityConfig = CONSTANTS.ABILITY_CONFIG ? CONSTANTS.ABILITY_CONFIG[className] : null;
+        const defaultAbilityConfig = classAbilityConfig ? classAbilityConfig.default : null;
+        const skillAbilityConfig = (classAbilityConfig && classAbilityConfig.skills && skillName) ? classAbilityConfig.skills[skillName] : null;
+        const manaCostBase = (skillAbilityConfig && typeof skillAbilityConfig.mana === 'number')
+            ? skillAbilityConfig.mana
+            : (defaultAbilityConfig && typeof defaultAbilityConfig.mana === 'number')
+                ? defaultAbilityConfig.mana
+                : this.abilityManaCost;
+        const cooldownBase = (skillAbilityConfig && typeof skillAbilityConfig.cooldown === 'number')
+            ? skillAbilityConfig.cooldown
+            : (defaultAbilityConfig && typeof defaultAbilityConfig.cooldown === 'number')
+                ? defaultAbilityConfig.cooldown
+                : this.abilityMaxCooldown;
+
+        // Check specific cooldown
+        if (this.cooldowns[skillName] > 0) {
+            console.log(`Skill ${skillName} on cooldown: ${this.cooldowns[skillName].toFixed(1)}s`);
+            return false;
+        }
+
+        // Fallback to global cooldown if no specific skill name (legacy)
+        if (!skillNameOverride && this.abilityCooldown > 0) {
+            console.log("Ability on cooldown");
+            return false;
+        }
+        
+        // Apply Mana Cost Reduction
+        const cost = getAbilityManaCost(this, skillName, manaCostBase);
+        
+        if (this.stats.mana < cost) {
+            console.log("Not enough mana");
+            return false;
+        }
+
+        // Ability animation playback is presentation-only and can safely run
+        // while ordinary click-to-move continues. Only stop locomotion when
+        // the destination belongs to an interaction/ability chase that this
+        // committed cast explicitly supersedes; clearing every movement
+        // target here made self-cast buffs snap players back to their cast
+        // origin as the server reconciled the artificial stop.
+        const supersededChase = Boolean(
+            gameEngine?.pendingInteraction ||
+            gameEngine?.abilityController?.pendingAbilityTarget
+        );
+        if (supersededChase) {
+            this.targetPosition = null;
+            this.velocity?.set?.(0, 0, 0);
+            if (this.state === 'MOVING') this.state = 'IDLE';
+        }
+        if (gameEngine) {
+            gameEngine.pendingInteraction = null;
+            if (gameEngine.abilityController) {
+                gameEngine.abilityController.pendingAbilityTarget = null;
+                gameEngine.abilityController.pendingAbilitySkill = null;
+            }
+        }
+
+        this.stats.mana -= cost;
+        
+        // Apply Cooldown Reduction
+        const maxCd = getAbilityCooldown(this, skillName, cooldownBase);
+        
+        // Set Cooldown
+        if (skillName) {
+            this.cooldowns[skillName] = maxCd;
+        }
+        
+        // Also set global cooldown for legacy support / base ability
+        if (!skillNameOverride) {
+            this.abilityCooldown = maxCd;
+        }
+        
+        // Unique Effect: Swift - +20% move speed for 3s after using a skill
+        if (this.hasSwiftEffect) {
+            this.swiftBuffTimer = 3.0; // 3 seconds duration
+            console.log(`${this.id} Swift effect triggered! +20% move speed for 3s`);
+        }
+
+        this.playAbilityAnimation(skillName);
+        // Teleport must use its clipped landing, not the aim point. Offline
+        // Wizard resolves it below; multiplayer waits for the accepted event.
+        const offlineCharge = className === 'Fighter' && skillName === 'Charge' &&
+            !this.isRemote && !this.isMultiplayer && !gameEngine?.isMultiplayer;
+        const offlineMeteor = className === 'Wizard' && skillName === 'Meteor Drop' &&
+            !this.isRemote && !this.isMultiplayer && !gameEngine?.isMultiplayer;
+        // Offline Meteor owns one exact warning per falling projectile,
+        // including Cluster staggering and Apocalypse's delayed launches.
+        if (skillName !== 'Teleport' && skillName !== 'Juggernaut Charge' && !offlineCharge) {
+            this.spawnAbilityPresentation(gameEngine, skillName, targetVector, { skipTelegraph: offlineMeteor });
+        }
+
+        // Subclasses implement actual logic
+        return true;
+    }
+
+    useSkill(skillName, targetVector, gameEngine) {
+        // Default implementation: just use the base ability
+        // In the future, this should switch on skillName
+        console.log(`Using skill: ${skillName}`);
+        return this.useAbility(targetVector, gameEngine, skillName);
+    }
+
+    updateState(newState) {
+        if (this.isRemote) {
+            if (newState === 'ATTACKING') {
+                if (this.state !== 'ATTACKING') {
+                    this.setAttackingState(true);
+                }
+            } else if (newState === 'DEAD') {
+                this.die();
+            } else {
+                if (this.attackTimer) {
+                    clearTimeout(this.attackTimer);
+                    this.attackTimer = null;
+                }
+                if (this.state === 'ATTACKING' && this.currentAction) {
+                    this.currentAction.setEffectiveTimeScale(1.0);
+                }
+                this.state = newState;
+            }
+        } else {
+            this.state = newState;
+        }
+    }
+
+    groundToTerrain() {
+        const height = getGroundedActorHeight(this);
+        if (height !== null) this.position.y = height;
+    }
+
+    render(interpolation) {
+        super.render(interpolation);
+        if (!this.mesh) return;
+        // Sampling only packet/tick endpoints cuts a chord through a curved
+        // slope. Use the interpolated X/Z, including visual separation.
+        const height = getGroundedActorHeight(this, this.mesh.position);
+        if (height !== null) this.mesh.position.y = height + (this.visualOffset?.y || 0);
+    }
+
+    syncEquipmentVisuals(equipment = this.equipment, options = {}) {
+        if (equipment && equipment !== this.equipment) this.equipment = equipment;
+        return applyEquipmentVisuals(this.mesh, equipmentWithAppearances(this.equipment, this.appearances), options);
+    }
+
+    playHitReaction(sourcePosition, amount) {
+        if (!this.mesh) return false;
+        this.hitReaction ??= new ActorHitReaction(this);
+        return this.hitReaction.play(sourcePosition, amount);
+    }
+
+    update(dt, collisionManager, player, activeEntities) {
+        super.update(dt);
+        this.groundToTerrain();
+        this.hitReaction?.update(dt);
+        this.syncAttachedStatusEffects(dt);
+        // Recipient-owned Renewal continues while stunned; never heal replicas.
+        updateOfflineHealingLight(this, dt);
+        updateOfflineDamageOverTime(this, dt);
+
+        // Recipient-owned debuffs continue counting down even while a longer
+        // stun suppresses movement. Do not let stun extend marks or roots.
+        if (this.slowTimer > 0) {
+            this.slowTimer = Math.max(0, this.slowTimer-dt);
+            if (!this.slowTimer) this.slowFactor = 0;
+        }
+        if (this.markWeaknessTimer > 0) {
+            this.markWeaknessTimer = Math.max(0, this.markWeaknessTimer-dt);
+            if (!this.markWeaknessTimer) this.markWeaknessFactor = 0;
+        }
+        if (this.weakPointMarkTimer > 0) this.weakPointMarkTimer = Math.max(0, this.weakPointMarkTimer-dt);
+        if (this.accuracyReductionTimer > 0) {
+            this.accuracyReductionTimer = Math.max(0, this.accuracyReductionTimer-dt);
+            if (!this.accuracyReductionTimer) this.accuracyReductionFactor = 0;
+        }
+        if (this.healingReductionTimer > 0) {
+            this.healingReductionTimer = Math.max(0, this.healingReductionTimer-dt);
+            if (!this.healingReductionTimer) this.healingReductionFactor = 0;
+        }
+        if (this.rootTimer > 0) this.rootTimer = Math.max(0, this.rootTimer-dt);
+        if (this.armorReductionTimer > 0) {
+            this.armorReductionTimer = Math.max(0, this.armorReductionTimer-dt);
+            if (!this.armorReductionTimer) this.armorReduction = 0;
+        }
+
+        for (const timer of ['spiritSanctuaryTimer', 'consecratedSanctuaryTimer']) {
+            if (this[timer] > 0) this[timer] = Math.max(0, this[timer] - dt);
+        }
+
+        // Guardian Roar Buff Logic
+        if (this.guardianRoarTimer > 0) {
+            this.guardianRoarTimer -= dt;
+            if (this.guardianRoarTimer <= 0) {
+                this.guardianRoarTimer = 0;
+                this.guardianRoarReduction = 0;
+            }
+        }
+
+        // Party buffs also expire on non-Fighter recipients.
+        advanceFighterDamageBuffs(this, dt);
+
+        // Cleric Buffs/Debuffs Logic
+        advanceClericUtilityBuffs(this, dt);
+        if (this.divineInterventionTimer > 0) {
+            this.divineInterventionTimer -= dt;
+            if (this.divineInterventionTimer <= 0) {
+                this.divineInterventionTimer = 0;
+                if (!this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) {
+                    this.divineInterventionActive = false;
+                }
+            }
+        }
+        if (this.divineInterventionGuardianTimer > 0) {
+            this.divineInterventionGuardianTimer = Math.max(0, this.divineInterventionGuardianTimer-dt);
+        }
+        // Rogue Branch C Logic
+        if (this.speedBoostTimer > 0) {
+            this.speedBoostTimer -= dt;
+            if (this.speedBoostTimer <= 0) {
+                this.speedBoostTimer = 0;
+                this.speedBoostFactor = 0;
+            }
+        }
+        
+        if (this.stealthTimer > 0) {
+            this.stealthTimer -= dt;
+            if (this.stealthTimer > 0) applyActorStealthAppearance(this);
+            else restoreActorStealthAppearance(this);
+        } else {
+            restoreActorStealthAppearance(this);
+        }
+
+
+        // The attached frost-prison effect owns freeze readability. Procedural
+        // actor materials are pooled, so recoloring a mesh material here would
+        // tint every actor sharing that material rather than only this target.
+        if (this.frozenTimer > 0) {
+            this.frozenTimer = Math.max(0, this.frozenTimer - dt);
+        }
+        
+        if (this.offlineTeleportChargeTimer > 0) {
+            this.offlineTeleportChargeTimer = Math.max(0, this.offlineTeleportChargeTimer - dt);
+        }
+        if (this.teleportPhaseTimer > 0) {
+            this.teleportPhaseTimer = Math.max(0, this.teleportPhaseTimer - dt);
+        }
+        // Periodic ticks above use the pre-frame lifetime and their own
+        // offsets. Expiring afterward preserves protection on earlier ticks.
+        if (this.ironFortressTimer > 0) {
+            this.ironFortressTimer = Math.max(0, this.ironFortressTimer - dt);
+            if (!this.ironFortressTimer) {
+                this.ironFortressReduction = 0;
+                this.ironFortressThorns = this.ironFortressImmovable = false;
+                if (!this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) this.recalculateStats();
+            }
+        }
+        if (this.invulnerabilityTimer > 0) {
+            this.invulnerabilityTimer = Math.max(0, this.invulnerabilityTimer - dt);
+        }
+        if (!(this.teleportPhaseTimer > 0) && !(this.invulnerabilityTimer > 0)) {
+            const protection = this.attachedStatusEffects.get('invulnerable');
+            if (protection) {
+                protection.dispose();
+                this.attachedStatusEffects.delete('invulnerable');
+            }
+        }
+        if (this.hasteTimer > 0) {
+            this.hasteTimer = Math.max(0, this.hasteTimer - dt);
+            if (this.hasteTimer <= 0) {
+                this.hasteFactor = 0;
+                if (!this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) this.recalculateStats();
+            }
+        }
+
+        if (this.spellFocusTimer > 0) {
+            this.spellFocusTimer -= dt;
+            if (this.spellFocusTimer <= 0) {
+                this.spellFocusTimer = 0;
+                if (!this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) {
+                    this.spellFocusActive = false;
+                    this.spellFocusMultiplier = 1;
+                    this.spellFocusCharges = 0; this.spellFocusRuneId = '';
+                }
+            }
+        }
+
+        if (this.arcaneShieldTimer > 0) {
+            this.arcaneShieldTimer -= dt;
+            if (this.arcaneShieldTimer <= 0) {
+                this.arcaneShieldTimer = 0;
+                if (!this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) {
+                    clearOfflineArcaneShield(this);
+                }
+            }
+        }
+        
+        // Swift unique effect timer
+        if (this.swiftBuffTimer > 0) {
+            this.swiftBuffTimer -= dt;
+        }
+
+        // Cooldown time also continues during stun. Remote presentation does
+        // not own cooldown prediction; preserve its server-owned values.
+        if (!this.isRemote) {
+            if (this.abilityCooldown > 0) this.abilityCooldown = Math.max(0, this.abilityCooldown - dt);
+            for (const skill in this.cooldowns) {
+                if (this.cooldowns[skill] > 0) this.cooldowns[skill] = Math.max(0, this.cooldowns[skill] - dt);
+            }
+        }
+
+        // Stun suppresses actions, not elapsed buff or debuff lifetimes.
+        // Keep this after recipient timers so existing buffs cannot be extended
+        // by crowd control, and never run those timers twice in one update.
+        if (this.stunTimer > 0) {
+            this.stunTimer = Math.max(0, this.stunTimer - dt);
+            if (this.stunTimer === 0) {
+                if (this.state !== 'DEAD') {
+                    this.state = 'IDLE';
+                    this.playAnimation('Idle');
+                }
+            } else if (this.state !== 'DEAD') {
+                return;
+            }
+        }
+
+        if (this.isRemote) {
+            // Interpolate Position
+            let movedDistance = 0;
+            const remoteSample = this.remoteTransformBuffer?.sample?.();
+            if (remoteSample) {
+                TEMP_VEC.copy(this.position);
+                this.position.copy(remoteSample.position);
+                movedDistance = this.position.distanceTo(TEMP_VEC);
+                this.targetServerRotation = remoteSample.rotation;
+            } else if (this.targetServerPosition) {
+                const lerpFactor = dt >= 0.1 ? 1 : exponentialSmoothingFactor(10, dt);
+                TEMP_VEC.copy(this.position); // Save old pos
+                this.position.lerp(this.targetServerPosition, lerpFactor);
+                movedDistance = this.position.distanceTo(TEMP_VEC);
+                
+                // Snap if very close to avoid micro-jitter
+                if (this.position.distanceTo(this.targetServerPosition) < 0.05) {
+                    this.position.copy(this.targetServerPosition);
+                }
+            }
+
+            this.groundToTerrain();
+
+            // Interpolate Rotation
+            if (this.targetServerRotation !== undefined) {
+                TEMP_QUAT.setFromAxisAngle(UP_VEC, this.targetServerRotation);
+                this.rotation.slerp(TEMP_QUAT, dt >= 0.1 ? 1 : exponentialSmoothingFactor(10, dt));
+            } else if (movedDistance > 0.001) {
+                // Fallback: Face movement direction if no server rotation provided
+                // This ensures entities don't slide sideways if the server omits rotation
+                // Use TEMP_VEC to calculate look target without cloning
+                TEMP_VEC.copy(this.targetServerPosition).sub(this.position).add(this.position);
+                TEMP_VEC.y = this.position.y;
+                
+                if (this.mesh) {
+                    this.mesh.lookAt(TEMP_VEC);
+                    this.rotation.copy(this.mesh.quaternion);
+                }
+            }
+
+            // Apply Entity Separation (Visual De-stacking)
+            // Decay offset
+            this.visualOffset.lerp(ZERO_VEC, 2.0 * dt);
+
+            // Note: activeEntities parameter is now actually chunkManager
+            if (collisionManager && activeEntities) {
+                // If this is a remote entity, ignore the local player for separation
+                // to prevent fighting with server position updates (chasing).
+                const ignore = this.isRemote ? player : null;
+                const separation = collisionManager.checkEntityCollision(this, activeEntities, ignore);
+                if (separation) {
+                    // Separation is purely visual. Near the local player, we keep the "spread out" look
+                    // but avoid pushing enemies *away* from the player (which makes melee hits look wrong).
+                    if (player && player.position) {
+                        const rx = this.position.x - player.position.x;
+                        const rz = this.position.z - player.position.z;
+                        const distSq = rx * rx + rz * rz;
+                        let offsetStrength = 7.5;
+                        let maxVisualOffset = 2.0;
+
+                        // Apply only when near the player (combat cluster).
+                        if (distSq < 9.0 * 9.0 && distSq > 0.0001) {
+                            offsetStrength = 3.0;
+                            maxVisualOffset = 0.6;
+                            const invLen = 1.0 / Math.sqrt(distSq);
+                            const ux = rx * invLen;
+                            const uz = rz * invLen;
+
+                            // Reduce outward radial component (dot > 0 means pushing farther from player).
+                            // Keep a small amount so enemies can still "make room" instead of stacking,
+                            // but avoid large visual gaps where melee hits look out-of-range.
+                            const dot = separation.x * ux + separation.z * uz;
+                            if (dot > 0) {
+                                separation.x -= ux * dot * 0.75;
+                                separation.z -= uz * dot * 0.75;
+                            }
+                        }
+
+                        // Add to visual offset instead of position to avoid fighting Lerp
+                        this.visualOffset.add(separation.multiplyScalar(offsetStrength * dt));
+                        // Clamp to avoid extreme offsets
+                        if (this.visualOffset.length() > maxVisualOffset) {
+                            this.visualOffset.setLength(maxVisualOffset);
+                        }
+                    } else {
+                        this.visualOffset.add(separation.multiplyScalar(7.5 * dt));
+                        if (this.visualOffset.length() > 2.0) {
+                            this.visualOffset.setLength(2.0);
+                        }
+                    }
+                }
+            }
+
+            // Update Mesh
+            if (this.mesh) {
+                // Combine logical position (Server) with visual offset (Client Separation)
+                this.mesh.position.copy(this.position).add(this.visualOffset);
+                this.mesh.quaternion.copy(this.rotation);
+            }
+
+            // Animation Logic (Remote)
+            if (this.state === 'DEAD') {
+                // Ensure death animation is playing/played
+                if (this.currentAction !== this.animations['Death'] && this.animations['Death']) {
+                    this.playAnimation('Death', false);
+                }
+            } else if (this.state === 'JUMPING' || this.jumpVisualState) {
+                if (!this.jumpAnimationRestore) {
+                    this.playJumpAnimation(this.jumpVisualState);
+                } else {
+                    this.syncJumpAnimationToVisualState(this.jumpVisualState);
+                }
+            } else if (this.isCharging) {
+                const moveAnim = this.getMovementAnimationName(true);
+                if (moveAnim) {
+                    this.playAnimation(moveAnim);
+                    this.syncMovementAnimationSpeed();
+                }
+            } else if (this.state === 'ATTACKING') {
+                this.playAnimation('Attack', false);
+                // Scale animation speed for remote entities
+                if (!this.currentAbilityAnimation && this.currentAction && this.stats.attackSpeed) {
+                    const cooldown = this.stats.attackSpeed;
+
+                    // Play slightly faster (90% of cooldown) to ensure it finishes before server state reset
+                    // For RootboundWarden, play even faster (70%) to align hit with server damage (35%)
+                    let speedFactor = 0.9;
+                    if (this.type === 'RootboundWarden') {
+                        speedFactor = 0.7;
+                    }
+
+                    const timeScale = this.getBasicAttackAnimationTimeScale(cooldown, speedFactor);
+                    this.currentAction.setEffectiveTimeScale(timeScale);
+                }
+            } else if (this.state === 'MOVING') {
+                const moveAnim = this.getMovementAnimationName(this.isRunning);
+                if (moveAnim) {
+                    this.playAnimation(moveAnim);
+                    this.syncMovementAnimationSpeed();
+                }
+            } else {
+                this.playAnimation(this.getRemoteRestAnimationName?.() || 'Idle');
+            }
+
+            if (this.mixer) {
+                this.updateAnimationMixer(dt);
+            }
+            return;
+        }
+        
+        // Regeneration Logic (1 second tick)
+        if (this.state !== 'DEAD' && this.stats.hp > 0 && !this.isMultiplayer && !this.isRemote) {
+            this.regenTimer += dt;
+            if (this.regenTimer >= 1.0) {
+                this.regenTimer -= 1.0;
+                
+                // Regenerate HP
+                if (this.stats.hp < this.stats.maxHp) {
+                    let regenAmount = this.stats.hpRegen;
+                    if (this.healingReductionTimer > 0) {
+                        regenAmount *= (1 - this.healingReductionFactor);
+                    }
+                    this.stats.hp = Math.min(this.stats.maxHp, this.stats.hp + regenAmount);
+                }
+                
+                // Regenerate Mana
+                if (this.stats.mana < this.stats.maxMana) {
+                    this.stats.mana = Math.min(this.stats.maxMana, this.stats.mana + this.stats.manaRegen);
+                }
+            }
+        }
+
+        if (this.mixer) {
+            this.updateAnimationMixer(dt);
+        }
+
+        // A delayed authoritative packet can report MOVING after local
+        // click-to-move has already reached its destination and cleared the
+        // target. Without this convergence guard the client echoes that stale
+        // state back to the server forever and the actor runs in place.
+        if (this.state === 'MOVING' && !this.targetPosition) {
+            this.state = 'IDLE';
+            this.velocity.set(0, 0, 0);
+            this.playAnimation('Idle');
+            if (this.currentAction) this.currentAction.setEffectiveTimeScale(1.0);
+        }
+
+        if (this.state === 'MOVING' && this.targetPosition) {
+            // Root/Freeze Check
+            if (this.stunTimer > 0 || this.rootTimer > 0 || this.frozenTimer > 0) {
+                this.state = 'IDLE';
+                this.velocity.set(0, 0, 0);
+                this.playAnimation('Idle');
+                return;
+            }
+
+            // Use temp vector for direction calculation to avoid allocation
+            TEMP_VEC2.subVectors(this.targetPosition, this.position);
+            TEMP_VEC2.y = 0;
+            const distance = TEMP_VEC2.length();
+
+            if (distance <= MOVEMENT_ARRIVAL_DISTANCE) {
+                this.position.x = this.targetPosition.x;
+                this.position.z = this.targetPosition.z;
+                this.targetPosition = null;
+                this.state = 'IDLE';
+                this.velocity.set(0, 0, 0);
+                this.movementMetrics.arrivals += 1;
+                this.clearBlockedMovementTarget();
+                this.playAnimation('Idle');
+                if (this.currentAction) this.currentAction.setEffectiveTimeScale(1.0); // Reset speed for Idle
+            } else {
+                TEMP_VEC2.normalize();
+                
+                // Determine Speed
+                let currentSpeed = this.stats.speed;
+                if (!this.isRunning) {
+                    currentSpeed *= 0.5; // Walk speed is half (for enemies)
+                }
+                
+                // Apply Slow
+                // Multiplayer speed already includes authoritative slow/haste/
+                // Swift modifiers in the replicated derived stat. Applying the
+                // slow again here made local movement slower than the server
+                // contract and caused a second correction when the buff ended.
+                if (this.slowTimer > 0 && !this.isMultiplayer && !this.isRemote) {
+                    currentSpeed *= (1 - this.slowFactor);
+                }
+
+                if (this.cloakSwift && this.stealthTimer > 0 && !this.isMultiplayer && !this.isRemote) currentSpeed *= 1.3;
+
+                // Apply Speed Boost
+                if (this.speedBoostTimer > 0) {
+                    currentSpeed *= (1 + this.speedBoostFactor);
+                }
+
+                let moveDist = currentSpeed * dt;
+                // Prevent overshoot (Fix for high speed jitter)
+                if (moveDist > distance) {
+                    moveDist = distance;
+                }
+
+                this.velocity.copy(TEMP_VEC2).multiplyScalar(moveDist);
+
+                const previousX = this.position.x;
+                const previousZ = this.position.z;
+
+                // Proposed new position - use temp vector
+                TEMP_VEC3.copy(this.position).add(this.velocity);
+                const supportHeight = getGroundedActorHeight(this, TEMP_VEC3);
+                if (supportHeight !== null) TEMP_VEC3.y = supportHeight;
+                
+                // Check Collision
+                if (collisionManager) {
+                    // 1. Static World Collision
+                    const correctedPos = collisionManager.checkCollision(TEMP_VEC3, this.radius, this.position); 
+                    if (correctedPos) {
+                        this.position.copy(correctedPos);
+                    } else {
+                        this.position.copy(TEMP_VEC3);
+                    }
+
+                    // 2. Dynamic Entity Collision (Separation)
+                    if (activeEntities) {
+                        const separation = collisionManager.checkEntityCollision(this, activeEntities);
+                        if (separation) {
+                            this.position.add(separation);
+
+                            // Resolve toward the contact surface, then bound the
+                            // complete result to one movement step. A collision
+                            // response may slide sideways, but it must not move
+                            // backward relative to the requested direction.
+                            let resolvedX = this.position.x - previousX;
+                            let resolvedZ = this.position.z - previousZ;
+                            const forwardProgress = resolvedX * TEMP_VEC2.x + resolvedZ * TEMP_VEC2.z;
+                            if (forwardProgress < 0) {
+                                this.position.x -= TEMP_VEC2.x * forwardProgress;
+                                this.position.z -= TEMP_VEC2.z * forwardProgress;
+                                resolvedX = this.position.x - previousX;
+                                resolvedZ = this.position.z - previousZ;
+                            }
+                            const resolvedDistance = Math.hypot(resolvedX, resolvedZ);
+                            if (resolvedDistance > moveDist && resolvedDistance > 0) {
+                                const displacementScale = moveDist / resolvedDistance;
+                                this.position.x = previousX + resolvedX * displacementScale;
+                                this.position.z = previousZ + resolvedZ * displacementScale;
+                            }
+
+                            // Re-check static collision to ensure we didn't get pushed into a wall
+                            const finalCheck = collisionManager.checkCollision(this.position, this.radius, this.position);
+                            if (finalCheck) {
+                                this.position.copy(finalCheck);
+                            }
+                        }
+                    }
+                } else {
+                    this.position.copy(TEMP_VEC3);
+                }
+
+                // Ground Clamp: Ensure we never go below ground
+                if (this.position.y < 0) {
+                    this.position.y = 0;
+                }
+
+                const remainingDistance = Math.sqrt(horizontalDistanceSquared(this.position, this.targetPosition));
+                if (!Number.isFinite(remainingDistance) || remainingDistance >= distance - 0.001) {
+                    this.movementNoProgressFrames += 1;
+                } else {
+                    this.movementNoProgressFrames = 0;
+                }
+
+                if (this.movementNoProgressFrames >= 3) {
+                    this.blockedTargetPosition = this.targetPosition.clone();
+                    this.targetPosition = null;
+                    this.state = 'IDLE';
+                    this.velocity.set(0, 0, 0);
+                    this.movementMetrics.blockedStops += 1;
+                    this.playAnimation('Idle');
+                    this.currentAction?.setEffectiveTimeScale?.(1.0);
+                    return;
+                }
+                
+                // Rotate to face movement - use temp vector instead of allocating
+                TEMP_VEC.set(this.targetPosition.x, this.position.y, this.targetPosition.z);
+                if (this.mesh) {
+                    this.mesh.lookAt(TEMP_VEC);
+                    this.rotation.copy(this.mesh.quaternion);
+                }
+                
+                // Update Animation Speed based on movement type
+                const moveAnim = this.getMovementAnimationName(this.isRunning);
+                if (moveAnim) this.playAnimation(moveAnim);
+
+                this.syncMovementAnimationSpeed(this.stats.speed);
+            }
+        }
+        this.groundToTerrain();
+    }
+
+    cleanse() {
+        this.stunTimer = 0;
+        this.slowTimer = 0;
+        this.slowFactor = 0;
+        this.markWeaknessTimer = 0;
+        this.markWeaknessFactor = 0;
+        clearOfflineStatus(this, 'bleed');
+        this.weakPointMarkTimer = 0;
+        this.rootTimer = 0;
+        clearOfflineStatus(this, 'poison');
+        this.healingReductionTimer = 0;
+        this.healingReductionFactor = 0;
+        console.log(`${this.id} was cleansed!`);
+    }
+
+    takeDamage(amount, attacker = null, elapsedInFrame = 0, damageContext = null) {
+        if (this.state === 'DEAD' || this.isMultiplayer || this.isRemote || this.gameEngine?.isMultiplayer) return 0;
+        // A Phase window blocks the impact before shields, death saves and
+        // retaliation, just like authoritative gameplay invulnerability.
+        const impactElapsed = Number.isFinite(elapsedInFrame) ? Math.max(0, elapsedInFrame) : 0;
+        if (!damageContext?.reflection) expireOfflineArcaneShield(this, impactElapsed);
+        if (!damageContext?.reflection && this.teleportPhaseTimer > impactElapsed) return 0;
+        
+        let finalAmount = amount;
+        
+        // Damage Reductions (Buffs)
+        if (this.guardianRoarTimer > impactElapsed) {
+            finalAmount = Math.floor(finalAmount * (100 - GUARDIAN_ROAR_DAMAGE_REDUCTION_PERCENT) / 100);
+        }
+
+        // Damage Increases (Debuffs)
+        if (!damageContext?.inherited && !damageContext?.reflection && this.markWeaknessTimer > 0) {
+            finalAmount *= (1 + this.markWeaknessFactor);
+        }
+        
+        const sanctuary = this.consecratedSanctuaryTimer > impactElapsed ? .3 : this.spiritSanctuaryTimer > impactElapsed ? .2 : 0;
+        if (!damageContext?.reflection && sanctuary > 0) finalAmount = Math.floor(finalAmount * (1 - sanctuary));
+        if (!damageContext?.reflection && this.divineInterventionGuardianTimer > impactElapsed) finalAmount = Math.floor(finalAmount * .5);
+
+        // Reactions execute only after this hit has committed. A fully absorbed
+        // hit still reflects, and a lethal break still detonates exactly once.
+        const shield = damageContext?.reflection ? { damage: finalAmount }
+            : absorbOfflineArcaneShield(this, finalAmount, impactElapsed);
+        finalAmount = shield.damage;
+        if (!damageContext?.reflection) addOfflineDamageReflection(this, shield, finalAmount, impactElapsed);
+        const retaliate = () => flushOfflineArcaneShieldReaction(this, attacker, shield);
+        if (finalAmount <= 0) { retaliate();return 0; }
+
+        // Divine Intervention Check
+        if (!damageContext?.reflection && this.divineInterventionActive && (this.stats.hp - finalAmount <= 0)) {
+            this.stats.hp = Math.max(1, Math.floor(this.stats.maxHp * 0.30)); // Heal to 30%
+            this.divineInterventionActive = false;
+            this.divineInterventionTimer = 0;
+            console.log(`${this.id} was saved by Divine Intervention!`);
+            retaliate();
+            return finalAmount;
+        }
+
+        this.stats.hp -= finalAmount;
+        console.log(`${this.id} took ${finalAmount} damage (was ${amount}). HP: ${this.stats.hp}`);
+        
+        if (this.stats.hp <= 0) {
+            // Trigger onKill effects for the attacker before dying
+            if (attacker && attacker !== this) {
+                this.triggerOnKillEffects(attacker);
+            }
+            this.die();
+        }
+        retaliate();
+        return finalAmount;
+    }
+    
+    // Called when this entity is killed by an attacker
+    triggerOnKillEffects(killer) {
+        if (!killer) return;
+        
+        // Vampiric effect - restore 5% HP on kill
+        if (killer.hasVampiricEffect) {
+            const healAmount = Math.floor(killer.stats.maxHp * 0.05);
+            killer.stats.hp = Math.min(killer.stats.maxHp, killer.stats.hp + healAmount);
+            console.log(`${killer.id} healed ${healAmount} HP from Vampiric effect`);
+        }
+        
+        // Explosive effect - dealt via callback if set (GameEngine sets this)
+        // This needs access to nearby entities, so we use a callback pattern
+        if (killer.hasExplosiveEffect && this.onExplosiveDeath) {
+            const explosionDamage = Math.floor(killer.stats.damage * 0.5);
+            this.onExplosiveDeath(this.position, explosionDamage, killer);
+            console.log(`${this.id} exploded for ${explosionDamage} damage (Explosive effect)`);
+        }
+    }
+
+    die() {
+        if (this.state === 'DEAD') return;
+        clearOfflineFighterDamageBuffs(this);
+        clearOfflineArcaneShield(this);
+        this.teleportPhaseTimer = 0;
+        this.invulnerabilityTimer = 0;
+        this.invulnerableActive = false;
+        this.stealthTimer = 0;
+        this.spiritSanctuaryTimer = 0;
+        this.consecratedSanctuaryTimer = 0;
+        restoreActorStealthAppearance(this);
+        this.state = 'DEAD';
+        this.currentAbilityAnimation = null;
+        this.targetPosition = null;
+        this.clearManagedTimers();
+        this.playAnimation('Death', false);
+        // timeSinceDeath is managed by GameEngine
+        this.cancelAbilities();
+        this.clearAttachedStatusEffects();
+        // Do not set isActive = false, so animation plays
+    }
+
+    cancelAbilities() {
+        // Override in subclasses
+    }
+
+    getBasicAttackAnimationTimeScale(cooldown, fallbackDurationFactor = .9) {
+        const clip = this.currentAction?.getClip?.();
+        const duration = clip?.duration || 1;
+        const interval = Number.isFinite(cooldown) && cooldown > 0 ? cooldown : 1;
+        const contact = this.mesh?.userData?.basicAttackContactTime;
+        // Only annotated basic clips opt in. Unreviewed enemy/imported rigs
+        // and ability clips retain their existing playback.
+        // Server and offline basic damage both land at 35% of the interval.
+        // Match the visible contact, not the entire clip's arbitrary duration.
+        const reviewedBasic = clip?.name === 'Attack' || this.mesh?.userData?.basicAttackContactClipNames?.includes(clip?.name);
+        if (reviewedBasic && Number.isFinite(contact) && contact > 0 && contact <= duration) {
+            return contact / (interval * .35);
+        }
+        return duration / (interval * fallbackDurationFactor);
+    }
+
+    getAttackHitDelay() {
+        let cooldown = this.stats.attackSpeed || 1.0;
+        if (this.hasteTimer > 0) {
+            cooldown /= (1 + this.hasteFactor);
+        }
+        return (cooldown * 1000) * 0.35; // 35% through animation
+    }
+
+    attack(target, onHit = null) {
+        const meleeHero = ['Fighter', 'Cleric'].includes(this.constructor.name);
+        const inMeleeRange = () => target?.position && getActorCombatDistance(this.gameEngine, this, target)
+            <= getHeroBasicAttackReach(this.constructor.name, this, target);
+        if (meleeHero && !inMeleeRange()) return false;
+        if (this.state === 'DEAD') return false;
+        if (target && target.state === 'DEAD') return false; // Don't attack dead targets
+        
+        // Frozen Check
+        if (this.frozenTimer > 0) return false;
+
+        // Accuracy Check (Blindness)
+        if (this.accuracyReductionTimer > 0) {
+            if (Math.random() < this.accuracyReductionFactor) {
+                console.log(`${this.id} missed due to blindness!`);
+                // Trigger cooldown anyway to prevent spamming until hit
+                this.lastAttackTime = Date.now();
+                return false;
+            }
+        }
+
+        // Attack Speed Check
+        const now = Date.now();
+        let cooldownMs = this.stats.attackSpeed * 1000;
+        
+        // Apply Attack Speed Buffs
+        if (this.hasteTimer > 0) {
+            cooldownMs /= (1 + this.hasteFactor);
+        }
+
+        if (now - this.lastAttackTime < cooldownMs) {
+            return false;
+        }
+        this.lastAttackTime = now;
+        
+        if (this.attackTimer) {
+            this.clearScheduledTask(this.attackTimer);
+            this.attackTimer = null;
+        }
+
+        this.state = 'ATTACKING';
+        this.playAnimation('Attack', false, true);
+
+        // Match the authored contact pose to the existing delayed impact.
+        const effectiveCooldown = cooldownMs / 1000;
+        if (this.currentAction) {
+            this.currentAction.setEffectiveTimeScale(this.getBasicAttackAnimationTimeScale(effectiveCooldown, 1));
+        }
+
+        const duration = cooldownMs;
+        // Impact timing stays at 35% of the gameplay cooldown.
+        const hitDelay = duration * 0.35;
+
+        // Face target
+        const lookTarget = new THREE.Vector3(target.position.x, this.position.y, target.position.z);
+        if (this.mesh) {
+            this.mesh.lookAt(lookTarget);
+            this.rotation.copy(this.mesh.quaternion);
+        }
+
+        // Deal damage after a delay
+        this.attackTimer = this.scheduleTask(() => {
+            if (this.state === 'DEAD' || meleeHero && !inMeleeRange()) return;
+
+            if (target && target.stats.hp > 0) {
+                let baseDmg = Math.max(1, this.stats.damage - getOfflineBasicAttackArmor(this, target));
+                if (this.cloakNextAttackBonus > 0 && !this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) {
+                    baseDmg = Math.floor(baseDmg * (1 + this.cloakNextAttackBonus));
+                    this.cloakNextAttackBonus = 0;
+                    this.stealthTimer = 0;
+                    this.cloakSwift = false;
+                    restoreActorStealthAppearance(this);
+                }
+                const variance = (Math.random() * 0.4) + 0.8;
+                let finalDmg = Math.max(1, Math.floor(baseDmg * variance));
+                
+                // Unique Effect: Berserker - +30% damage when below 30% HP
+                if (this.hasBerserkerEffect && this.stats.hp < this.stats.maxHp * 0.3) {
+                    finalDmg = Math.floor(finalDmg * 1.3);
+                    console.log(`${this.id} Berserker proc! +30% damage`);
+                }
+                
+                // Unique Effect: Executioner - +25% damage to enemies below 25% HP
+                if (this.hasExecutionerEffect && target.stats.hp < target.stats.maxHp * 0.25) {
+                    finalDmg = Math.floor(finalDmg * 1.25);
+                    console.log(`${this.id} Executioner proc! +25% damage to low HP target`);
+                }
+                
+                // Unique Effect: Lucky - 10% chance to deal double damage
+                if (this.hasLuckyEffect && Math.random() < 0.1) {
+                    finalDmg = Math.floor(finalDmg * 2);
+                    console.log(`${this.id} Lucky proc! Double damage!`);
+                }
+                
+                finalDmg = rollOfflineCriticalDamage(this, finalDmg).amount;
+                target.takeDamage(finalDmg, this);
+                if (this.poisonCoatingActive) {
+                    applyOfflineStatus(this, target, 'poison', 8+Math.floor(this.stats.dexterity/2), 8, 'Poison Coating');
+                }
+                
+                if (onHit) onHit(finalDmg, target);
+            }
+            this.attackTimer = null;
+        }, hitDelay);
+        
+        // Reset state when animation finishes
+        this.scheduleTask(() => {
+            if (this.state === 'ATTACKING') {
+                this.state = 'IDLE';
+                this.playAnimation('Idle');
+                if (this.currentAction) this.currentAction.setEffectiveTimeScale(1.0);
+            }
+        }, duration);
+        
+        return true;
+    }
+
+    performSkill(targetVector) {
+        if (this.state === 'DEAD') return;
+        console.log(`${this.constructor.name} performing skill at`, targetVector);
+        this.state = 'ATTACKING';
+        this.playAnimation('Attack', false); // Assuming 'Attack' is the animation name
+        
+        // Rotate to face target
+        const lookTarget = new THREE.Vector3(targetVector.x, this.position.y, targetVector.z);
+        if (this.mesh) {
+            this.mesh.lookAt(lookTarget);
+            this.rotation.copy(this.mesh.quaternion);
+        }
+
+        // Reset to IDLE after a short delay (placeholder for animation duration)
+        // Ideally, we listen for the mixer 'finished' event
+        if (this.mixer) {
+            const onFinished = (e) => {
+                // Ensure we only handle the attack animation finishing
+                if (e.action === this.animations['Attack']) {
+                    this.mixer.removeEventListener('finished', onFinished); // Cleanup
+                    
+                    if (this.state === 'ATTACKING') {
+                        this.state = 'IDLE';
+                        this.playAnimation('Idle');
+                    }
+                }
+            };
+            this.mixer.addEventListener('finished', onFinished);
+        } else {
+             this.scheduleTask(() => {
+                if (this.state === 'ATTACKING') this.state = 'IDLE';
+            }, 500);
+        }
+    }
+
+    respawn(x, z) {
+        this.supportSurface = '';
+        this.teleportPhaseTimer = 0;
+        this.invulnerabilityTimer = 0;
+        this.invulnerableActive = false;
+        this.stealthTimer = 0;
+        this.spiritSanctuaryTimer = 0;
+        this.consecratedSanctuaryTimer = 0;
+        restoreActorStealthAppearance(this);
+        const wasDead = this.state === 'DEAD' || this.stats.hp <= 0;
+        if (wasDead) this.stats.mana = this.stats.maxMana;
+        this.position.set(x, 0, z);
+        this.stats.hp = this.stats.maxHp;
+        this.state = 'IDLE';
+        this.isActive = true;
+        this.playAnimation('Idle');
+        this.syncAttachedStatusEffects(0);
+        
+        // Reset visual rotation if needed
+        this.rotation.set(0, 0, 0, 1);
+        if (this.mesh) {
+            this.mesh.quaternion.copy(this.rotation);
+        }
+        
+        console.log(`${this.id} respawned at ${x}, ${z}`);
+    }
+
+    gainXp(amount) {
+        return awardOfflineExperience(this, amount);
+    }
+
+    levelUp() {
+        if (this.isMultiplayer || this.isRemote || this.level >= PLAYER_LEVEL_CAP) return;
+        this.level++;
+        this.xp -= this.xpToNextLevel;
+        this.xpToNextLevel = experienceRequiredForLevel(this.level);
+        
+        this.statPoints += 3;
+        
+        // Recalculate to apply level scaling
+        this.recalculateStats();
+        
+        // Heal on level up
+        this.stats.hp = this.stats.maxHp;
+        this.stats.mana = this.stats.maxMana;
+        
+        console.log(`${this.id} leveled up to ${this.level}! Points: ${this.statPoints}`);
+    }
+    increaseStat(statName) {
+        if (this.isMultiplayer || this.isRemote) return false;
+        if (this.statPoints > 0 && this.baseStats[statName] !== undefined) {
+            this.baseStats[statName]++;
+            this.statPoints--;
+            this.recalculateStats();
+            return true;
+        }
+        return false;
+    }
+
+    recalculateStats() {
+        // 1. Start with Base Stats
+        // Optimization: Avoid object spread { ...this.baseStats }
+        const totalStats = this._tempStats || {
+            strength: 0, intelligence: 0, dexterity: 0, wisdom: 0, vitality: 0,
+            damage: 0, defense: 0
+        };
+        this._tempStats = totalStats;
+        const bonusStats = {
+            critChance: 0,
+            poisonDamage: 0,
+            fireDamage: 0,
+            cdr: 0,
+            manaRegen: 0,
+            healingDone: 0,
+            holyDamage: 0,
+            moveSpeed: 0,
+            allResist: 0,
+            lifesteal: 0
+        };
+
+        const applyItemStats = (statsMap) => {
+            if (!statsMap) return;
+
+            for (const [stat, value] of Object.entries(statsMap)) {
+                if (totalStats[stat] !== undefined) {
+                    totalStats[stat] += value;
+                } else if (stat === 'damage') {
+                    totalStats.damage += value;
+                } else if (stat === 'defense') {
+                    totalStats.defense += value;
+                } else if (bonusStats[stat] !== undefined) {
+                    bonusStats[stat] += value;
+                }
+            }
+        };
+        
+        totalStats.strength = this.baseStats.strength;
+        totalStats.intelligence = this.baseStats.intelligence;
+        totalStats.dexterity = this.baseStats.dexterity;
+        totalStats.wisdom = this.baseStats.wisdom;
+        totalStats.vitality = this.baseStats.vitality;
+        
+        // Initialize derived stats that accumulate
+        totalStats.damage = 0;
+        totalStats.defense = 0;
+
+        // Add Equipment Stats
+        const activeEquipment = Object.fromEntries(Object.entries(this.equipment).filter(([slot, item]) => isActiveEquipment(slot, item, this.constructor.name)));
+        for (const slot in activeEquipment) {
+            const item = activeEquipment[slot];
+            if (item) {
+                applyItemStats(item.stats);
+
+                // Add socketed gem stats
+                if (item.gems && Array.isArray(item.gems)) {
+                    for (const gem of item.gems) {
+                        if (gem) applyItemStats(gem.stats);
+                    }
+                }
+            }
+        }
+
+        // Calculate Set Bonuses
+        this.activeSetBonuses = calculateSetBonuses(activeEquipment);
+        for (const setId in this.activeSetBonuses) {
+            const setBonus = this.activeSetBonuses[setId];
+            if (setBonus.stats) {
+                for (const stat in setBonus.stats) {
+                    // Handle percentage-based bonuses
+                    if (stat === 'maxHealth') {
+                        // Applied later as percentage
+                    } else if (stat === 'armor') {
+                        totalStats.defense += setBonus.stats[stat];
+                    } else if (bonusStats[stat] !== undefined) {
+                        bonusStats[stat] += setBonus.stats[stat];
+                    } else if (totalStats[stat] !== undefined) {
+                        totalStats[stat] += setBonus.stats[stat];
+                    }
+                }
+            }
+        }
+
+        // Get Unique Effects from equipment
+        this.activeUniqueEffects = getEquippedUniqueEffects(activeEquipment);
+
+        // Update Total Stats in this.stats
+        this.stats.strength = totalStats.strength;
+        this.stats.dexterity = totalStats.dexterity;
+        this.stats.intelligence = totalStats.intelligence;
+        this.stats.wisdom = totalStats.wisdom;
+        this.stats.vitality = totalStats.vitality;
+
+        // 2. Recalculate derived stats based on Total Attributes
+        const levelBonus = (this.level - 1) * 5; 
+        
+        // Vit: Increase health and health regen
+        let baseMaxHp = (totalStats.vitality * 10) + levelBonus;
+        
+        // Apply maxHealth percentage bonus from set bonuses
+        for (const setId in this.activeSetBonuses) {
+            const setBonus = this.activeSetBonuses[setId];
+            if (setBonus.stats && setBonus.stats.maxHealth) {
+                baseMaxHp = Math.floor(baseMaxHp * (1 + setBonus.stats.maxHealth / 100));
+            }
+        }
+        
+        this.stats.maxHp = baseMaxHp;
+        this.stats.hpRegen = totalStats.vitality * PASSIVE_REGEN_PER_STAT;
+        
+        // Apply regenerative unique effect
+        if (this.activeUniqueEffects) {
+            for (const effect of this.activeUniqueEffects) {
+                if (effect.id === 'regenerative') {
+                    this.stats.hpRegen += this.stats.maxHp * 0.01; // +1% HP regen per second
+                }
+            }
+        }
+
+        // Int: Increase max mana and reduces ability cooldown (up to 50% max)
+        this.stats.maxMana = (totalStats.intelligence * 10) + levelBonus;
+        this.stats.cooldownReduction = Math.min(0.5, (totalStats.intelligence * 0.01) + (bonusStats.cdr / 100));
+
+        // Hero primary-stat scaling must match the authoritative server.
+        // Enemies/NPCs retain their existing Strength formula.
+        this.stats.damage = getBasicAttackDamage(this.constructor.name, totalStats, totalStats.damage);
+        
+        // Apply berserker unique effect (checked during combat, but flag here)
+        this.hasBerserkerEffect = false;
+        this.hasGuardianEffect = false;
+        this.hasExecutionerEffect = false;
+        this.hasLuckyEffect = false;
+        this.hasEfficientEffect = false;
+        this.hasSwiftEffect = false;
+        this.hasThornsEffect = false;
+        this.hasVampiricEffect = false;
+        this.hasExplosiveEffect = false;
+        
+        if (this.activeUniqueEffects) {
+            for (const effect of this.activeUniqueEffects) {
+                if (effect.id === 'berserker') this.hasBerserkerEffect = true;
+                if (effect.id === 'guardian') this.hasGuardianEffect = true;
+                if (effect.id === 'executioner') this.hasExecutionerEffect = true;
+                if (effect.id === 'lucky') this.hasLuckyEffect = true;
+                if (effect.id === 'efficient') this.hasEfficientEffect = true;
+                if (effect.id === 'swift') this.hasSwiftEffect = true;
+                if (effect.id === 'thorns') this.hasThornsEffect = true;
+                if (effect.id === 'vampiric') this.hasVampiricEffect = true;
+                if (effect.id === 'explosive') this.hasExplosiveEffect = true;
+            }
+        }
+
+        // Defense
+        this.stats.defense = totalStats.defense;
+        if (bonusStats.allResist > 0) {
+            this.stats.defense = Math.floor(this.stats.defense * (1 + (bonusStats.allResist / 100)));
+        }
+        
+        // Apply guardian effect if above 80% HP
+        if (this.hasGuardianEffect && this.stats.hp > this.stats.maxHp * 0.8) {
+            this.stats.defense = Math.floor(this.stats.defense * 1.2); // +20% armor
+        }
+
+        // Dex: Movement speed and melee attack speed
+        // Cap movement speed at 300% of base movement (derived from base stats)
+        
+        // Calculate Speed
+        this.stats.speed = (3 + (totalStats.dexterity * 0.5)) * 1.2;
+        if (bonusStats.moveSpeed > 0) {
+            this.stats.speed *= (1 + (bonusStats.moveSpeed / 100));
+        }
+        
+        // Haste Buff
+        if (this.hasteTimer > 0) {
+            this.stats.speed *= (1 + this.hasteFactor);
+            this.stats.cooldownReduction = Math.min(0.8, this.stats.cooldownReduction + 0.2); // +20% CDR
+        }
+        
+        // Swift Unique Effect - +20% move speed for 3s after skill use
+        if (this.swiftBuffTimer > 0) {
+            this.stats.speed *= 1.2;
+        }
+
+        // Cap Speed (Max = 3x Speed at 10 Dex)
+        const refDex = 10;
+        const refSpeed = (3 + (refDex * 0.5)) * 1.2; // ~9.6
+        const maxSpeed = refSpeed * 3.0; // ~28.8
+
+        if (this.stats.speed > maxSpeed) {
+            this.stats.speed = maxSpeed;
+        }
+
+        // Hero fallback cadence matches the authoritative player formula;
+        // enemy recalculation retains its existing five-second base curve.
+        this.stats.attackSpeed = basicAttackInterval(totalStats.dexterity, this.constructor.name);
+        if (isDualWieldingRogue(this.constructor.name, activeEquipment)) this.stats.attackSpeed *= 2 / 3;
+
+        // Wisdom: Mana regen and cast speed
+        this.stats.manaRegen = totalStats.wisdom * PASSIVE_REGEN_PER_STAT;
+        if (bonusStats.manaRegen > 0) {
+            this.stats.manaRegen *= (1 + (bonusStats.manaRegen / 100));
+        }
+        this.stats.castSpeed = 1 + (totalStats.wisdom / 5) * 0.01;
+        this.stats.critChanceBonus = bonusStats.critChance / 100;
+        this.stats.poisonDamageBonus = bonusStats.poisonDamage / 100;
+        this.stats.fireDamageBonus = bonusStats.fireDamage / 100;
+        this.stats.healingDoneBonus = bonusStats.healingDone / 100;
+        this.stats.holyDamageBonus = bonusStats.holyDamage / 100;
+        this.stats.lifestealBonus = bonusStats.lifesteal / 100;
+        this.stats.allResistBonus = bonusStats.allResist / 100;
+        
+        // Mana cost reduction from efficient effect
+        this.stats.manaCostReduction = this.hasEfficientEffect ? 0.1 : 0;
+
+        applyOfflineFighterDamageBuffStats(this);
+        applyOfflineClericUtilityStats(this);
+
+        // Clamp current HP/Mana
+        if (this.stats.hp > this.stats.maxHp) this.stats.hp = this.stats.maxHp;
+        if (this.stats.mana > this.stats.maxMana) this.stats.mana = this.stats.maxMana;
+    }
+
+    equipItem(item, requestedSlot) {
+        if (!isEquippableItem(item)) return false;
+        
+        if (this.level < item.level) {
+            console.log(`Cannot equip ${item.name}. Level ${item.level} required.`);
+            return false;
+        }
+
+        let targetSlot = requestedSlot || item.slot;
+        if (item.slot === 'ring') {
+             if (!this.equipment.ring1) targetSlot = 'ring1';
+             else if (!this.equipment.ring2) targetSlot = 'ring2';
+             else targetSlot = 'ring1';
+        } else if (item.slot === 'trinket') {
+             if (!this.equipment.trinket1) targetSlot = 'trinket1';
+             else if (!this.equipment.trinket2) targetSlot = 'trinket2';
+             else targetSlot = 'trinket1';
+        }
+
+        if (!canEquipItem(this.constructor.name, item, targetSlot)) return false;
+
+        // Unequip current item in slot if exists
+        const currentItem = this.equipment[targetSlot];
+        if (currentItem) {
+            this.addToInventory(currentItem);
+        }
+        
+        this.equipment[targetSlot] = item;
+        this.recalculateStats();
+        console.log(`${this.id} equipped ${item.name} to ${targetSlot}`);
+        return true;
+    }
+
+    unequipItem(slot) {
+        const item = this.equipment[slot];
+        if (item) {
+            if (this.addToInventory(item)) {
+                this.equipment[slot] = null;
+                this.recalculateStats();
+                console.log(`${this.id} unequipped ${item.name}`);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    addToInventory(item) {
+        // Find first empty slot. Treat null/undefined and placeholder objects without id as empty.
+        const index = this.inventory.findIndex(slot => !slot || !slot.id);
+        if (index !== -1) {
+            this.inventory[index] = item;
+            return true;
+        }
+        console.log("Inventory full!");
+        return false;
+    }
+
+    setAttackingState(restartAnimation = true) {
+        if (this.state === 'DEAD') return;
+        this.currentAbilityAnimation = null;
+        
+        if (this.attackTimer) {
+            this.clearScheduledTask(this.attackTimer);
+            this.attackTimer = null;
+        }
+
+        this.state = 'ATTACKING';
+        this.playAnimation('Attack', false, restartAnimation);
+
+        // Scale animation speed
+        const cooldown = this.stats.attackSpeed || 1.0;
+
+        if (this.currentAction) {
+            const timeScale = this.getBasicAttackAnimationTimeScale(cooldown);
+            this.currentAction.setEffectiveTimeScale(timeScale);
+        }
+
+        const duration = cooldown * 1000;
+
+        this.attackTimer = this.scheduleTask(() => {
+            if (this.state === 'ATTACKING') {
+                this.state = 'IDLE';
+                this.playAnimation('Idle');
+                if (this.currentAction) this.currentAction.setEffectiveTimeScale(1.0);
+            }
+            this.attackTimer = null;
+        }, duration);
+    }
+
+    dispose() {
+        clearOfflineArcaneShield(this);
+        this.corpsePresentation?.dispose();
+        this.corpsePresentation = null;
+        this.movingCastGait?.dispose();
+        this.movingCastGait = null;
+        this.hitReaction?.dispose();
+        this.hitReaction = null;
+        restoreActorStealthAppearance(this);
+        this.clearManagedTimers();
+        this.clearAnimationFinishedHandler();
+        this.cancelAbilities?.();
+        this.clearAttachedStatusEffects();
+        this.mixer?.stopAllAction?.();
+        if (this.mixer && this.mesh) {
+            this.mixer.uncacheRoot?.(this.mesh);
+        }
+        this.currentAction = null;
+        this.currentAnimationName = null;
+        this.pendingRemoteAbilityAnimation = null;
+        this.animations = {};
+        this.mixer = null;
+        this.interactionHitbox = null;
+        clearEquipmentVisuals(this.mesh);
+        super.dispose();
+    }
+}

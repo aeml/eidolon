@@ -1,6 +1,6 @@
 import catalog from '../data/gameplayGeometryPrecomputed.js';
-import { GAMEPLAY_GEOMETRY_ALGORITHM } from './GameplayGeometryFingerprint.js';
-import { decodeIndices } from './GameplayGeometryIndexCodec.js';
+import { GAMEPLAY_GEOMETRY_ALGORITHM } from './geometry/GameplayGeometryFingerprint.js';
+import { decodeIndices } from './geometry/GameplayGeometryIndexCodec.js';
 const hex = bytes => [...new Uint8Array(bytes)].map(value => value.toString(16).padStart(2, '0')).join('');
 const identity = (spec, maximum) => Number.isSafeInteger(spec?.bytes) && spec.bytes > 0 && spec.bytes <= maximum &&
     /^[a-f0-9]{64}$/.test(spec.sha256) && spec.url === `../../assets/gameplay-geometry/indices.${spec.sha256.slice(0, 16)}.bin`;

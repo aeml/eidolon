@@ -1,0 +1,485 @@
+package server
+
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"log"
+	"net/http"
+	"time"
+
+	"eidolon-server/internal/database"
+	"eidolon-server/internal/game"
+
+	"github.com/gorilla/websocket"
+)
+
+func runHub() {
+	for {
+		select {
+		case reply := <-hubQuiesce:
+			closing := make([]*Client, 0, len(clients))
+			for client := range clients {
+				client.recordTransportClosure(transportHubShutdown)
+				client.markTransportClosed()
+				if client.conn != nil {
+					client.conn.Close()
+				}
+				client.closeSendQueues()
+				closing = append(closing, client)
+				delete(clients, client)
+			}
+			reply <- closing
+		case client := <-register:
+			clients[client] = true
+		case client := <-unregister:
+			if _, ok := clients[client]; ok {
+				client.markTransportClosed()
+				scheduleClientCleanup(client)
+				delete(clients, client)
+				client.closeSendQueues()
+			}
+		case message := <-broadcast:
+			deliverBroadcast(message)
+		case message := <-encounterBroadcast:
+			// An independent reserved lane keeps warnings/encounter updates
+			// from sitting behind a full ordinary visual backlog. The same
+			// select still services registration, retirement and shutdown.
+			deliverBroadcast(message)
+		}
+	}
+}
+
+// sendInitialPlayerState pushes inventory, stash, buyback, quests, skill runes,
+// and (optionally) the current dungeon instance layout to the client. It is
+// called both on a fresh MsgJoin and on a successful MsgResumeSession.
+func sendInitialPlayerState(c *Client, entity *game.Entity, instanceID string) {
+	if state, err := database.DecodeDirectTradeState(entity.DirectTradeState); err == nil && state.Delivery != nil {
+		c.sendSystemChat("A trade delivery is safely retained. Free bag space or wallet room; it will retry after bag actions.")
+	}
+	sendMovementContext(c)
+	sendCasinoState(c)
+	eventPayload, _ := json.Marshal(world.PublicEventSnapshot())
+	eventMessage, _ := json.Marshal(Message{Type: "public_event", Payload: eventPayload})
+	c.sendSafe(eventMessage)
+	// Cooldowns are server-owned and survive the session-resume window. Send a
+	// complete snapshot so reconnecting clients do not show abilities as ready
+	// only to have the server reject their first cast.
+	cooldowns, _ := world.GetAbilityCooldownSnapshot(entity.ID)
+	cooldownPayload, _ := json.Marshal(map[string]interface{}{
+		"cooldowns": cooldowns,
+	})
+	cooldownMessage, _ := json.Marshal(Message{Type: MsgAbilityCooldowns, Payload: cooldownPayload})
+	c.sendSafe(cooldownMessage)
+
+	// Inventory
+	if len(entity.Inventory) > 0 {
+		invPayload, _ := json.Marshal(entity.Inventory)
+		msg := Message{Type: MsgInventory, Payload: invPayload}
+		b, _ := json.Marshal(msg)
+		c.sendSafe(b)
+	}
+
+	// Empty storage is authoritative state too. Always send an array on join
+	// and resume so a new account is distinguishable from a missing snapshot,
+	// and a reconnect can clear previously displayed contents.
+	stash := entity.Stash
+	if stash == nil {
+		stash = []game.Item{}
+	}
+	stashPayload, _ := json.Marshal(stash)
+	stashMessage, _ := json.Marshal(Message{Type: MsgStash, Payload: stashPayload})
+	c.sendSafe(stashMessage)
+
+	// Buyback list
+	if len(entity.Buyback) > 0 {
+		buybackPayload, _ := json.Marshal(entity.Buyback)
+		msg := Message{Type: MsgBuybackList, Payload: buybackPayload}
+		b, _ := json.Marshal(msg)
+		c.sendSafe(b)
+	}
+
+	// Quests
+	if len(entity.Quests) > 0 {
+		questPayload, _ := json.Marshal(entity.Quests)
+		msg := Message{Type: MsgQuestUpdate, Payload: questPayload}
+		b, _ := json.Marshal(msg)
+		c.sendSafe(b)
+	}
+
+	// Skill runes
+	if len(entity.SkillRunes) > 0 {
+		runesPayload, _ := json.Marshal(map[string]interface{}{
+			"skillRunes": entity.SkillRunes,
+		})
+		msg := Message{Type: MsgSelectRune, Payload: runesPayload}
+		b, _ := json.Marshal(msg)
+		c.sendSafe(b)
+	}
+
+	// Owner-only presets and skill bar on both login and resume.
+	c.sendLoadoutSnapshot(loadoutResponse{Action: MsgGetLoadouts, Success: true, Restored: true})
+
+	// Dungeon instance layout (reconnect / session-resume)
+	if instanceID != "" {
+		layout, hasLayout := world.GetInstanceLayout(instanceID)
+		if hasLayout {
+			log.Printf("Sending instance layout to %s for instance %s: %d rooms", c.username, instanceID, len(layout.Rooms))
+			resp := map[string]interface{}{
+				"instanceId": instanceID,
+				"type":       world.GetInstanceType(instanceID),
+				"layout":     layout,
+				// Rebuilding a resumed dungeon must use the saved landing too.
+				// Otherwise scene generation resets to room zero and races the
+				// authoritative position stream, splitting a reconnecting party.
+				"spawn": map[string]float64{"x": entity.X, "y": entity.Y, "z": entity.Z},
+			}
+			if roomState, ok := world.GetDungeonRoomSummary(instanceID, c.playerID); ok {
+				resp["roomState"] = roomState
+			}
+			payloadBytes, _ := json.Marshal(resp)
+			instMsg := Message{Type: MsgEnterInstance, Payload: payloadBytes}
+			b, _ := json.Marshal(instMsg)
+			c.sendSafe(b)
+		}
+	}
+
+	chatService.Replay(c, entity.PartyID)
+	sendGuildState(c)
+	hydratePvPProfile(c.playerID)
+	sendPvPState(c)
+	sendEndgameState(c)
+	sendVIPStatus(c)
+	scheduleClientCharacterWork(c, func() { touchAndBroadcastGuildPresence(c.playerID, time.Now()) })
+}
+
+// Recovery state survives a transport reconnect but is not persisted across a
+// new server entity. Send it on join/resume as well as each approved recovery.
+func sendMovementContext(c *Client) {
+	if player := world.GetEntityCopy(c.playerID); player != nil {
+		payload, _ := json.Marshal(map[string]string{"movementContext": player.MovementContext})
+		c.sendSafe(createMessage(MsgMovementContext, payload))
+	}
+}
+
+func cleanupClient(client *Client) {
+	if client == nil || client.username == "" {
+		return
+	}
+	unlock, _, err := lockDirectTradeWork(false, client.username)
+	if err != nil {
+		// Still mark/save the transport closure. Retain persisted escrow and a
+		// pending decision rather than acquiring an unordered peer or refunding.
+		unlock = lockCharacterWork(client.username)
+		defer unlock()
+		cleanupClientWithTradeOwnershipLocked(client, false)
+		return
+	}
+	defer unlock()
+	cleanupClientLocked(client)
+}
+
+// Caller holds the cold/hot-discovered trade work-lock closure, never hub/session.
+func cleanupClientLocked(client *Client) {
+	cleanupClientWithTradeOwnershipLocked(client, true)
+}
+
+func cleanupClientWithTradeOwnershipLocked(client *Client, recoverTrade bool) {
+	if !currentCharacterConnection(client) {
+		return
+	}
+	if err := recordClientSessionDisconnect(client); err != nil {
+		log.Print("Session disconnect activity awaits durable local storage")
+	}
+	client.retired.Store(true)
+	if world == nil {
+		return
+	}
+	if !serverStopping.Load() {
+		world.ForfeitPvP(client.playerID)
+	}
+	if err := recoverAccountGroundItemLocked(client.username); err != nil {
+		log.Print("Ground item disconnect recovery remains pending")
+	}
+	if err := recoverAccountDungeonRoomRewardsLocked(client.username); err != nil {
+		log.Print("Dungeon room disconnect recovery remains pending")
+	}
+	// Resolve an existing first decision, otherwise journal one cancellation.
+	// A recovery error does not undo custody or prevent saving the disconnect.
+	if recoverTrade && directTradeOperations != nil {
+		if err := cancelDisconnectedDirectTradeLocked(client); err != nil {
+			log.Print("Direct trade disconnect recovery remains pending")
+		}
+	} else if recoverTrade && directTradeOperations == nil {
+		// Legacy no-store fixtures only. Runtime initializes the durable store
+		// before any admission; private state rejects the legacy refund path.
+		if trade := world.CancelDirectTradesForPlayer(client.playerID); trade != nil {
+			sendDirectTradeUpdate(trade, "cancelled")
+			sendInventoryForPlayer(trade.PlayerAID)
+			sendInventoryForPlayer(trade.PlayerBID)
+		}
+	}
+
+	if err := recoverAccountBossVictoriesLocked(client.username); err != nil {
+		log.Print("Boss victory disconnect recovery remains pending")
+	}
+	if bossLootCharacters != nil {
+		if err := recoverLiveBossLootLocked(client.username, true); err != nil {
+			log.Print("Boss loot disconnect recovery remains pending")
+		}
+	}
+
+	// 2. Mark entity as disconnected before capturing resources: a world tick
+	// between capture and marking must not grant unsaved regeneration.
+	//    The entity remains in the world during the resume window so a
+	//    reconnecting client can pick up where it left off.
+	if client.playerID != "" {
+		disconnectedAt := time.Now()
+		if firstClosure := client.transportClosedAt.Load(); firstClosure != nil {
+			disconnectedAt = *firstClosure
+		}
+		if !world.SetEntityDisconnected(client.playerID, disconnectedAt) {
+			// Entity was already gone (e.g. removed by the sweep); nothing to do.
+			log.Printf("cleanupClient: entity %s not found in world", client.playerID)
+		}
+	}
+	var entity *game.Entity
+	if client.playerID != "" {
+		entity = world.GetEntityCopy(client.playerID)
+	}
+
+	// 4. Cleanup session (fast)
+	sessionsMu.Lock()
+	if existing, exists := activeSessions[client.username]; exists && existing == client {
+		delete(activeSessions, client.username)
+	}
+	sessionsMu.Unlock()
+
+	// 5. Notify online friends that this player has gone offline (0.38.1).
+	if client.username != "" {
+		scheduleFriendPresence(client)
+		scheduleClientCharacterWork(client, func() { touchAndBroadcastGuildPresence(client.playerID, time.Now()) })
+	}
+
+	// 6. Save before releasing character ownership. This function runs outside
+	// the network hub; new login waits here without blocking other accounts.
+	if entity != nil {
+		if characterSaveJournal != nil && characterSaveCommitter != nil {
+			saveCharacterDB(client, entity)
+		}
+	}
+}
+
+func serveWs(w http.ResponseWriter, r *http.Request) {
+	done, admitted := serverAdmission.Begin()
+	if !admitted {
+		http.Error(w, "server is shutting down", http.StatusServiceUnavailable)
+		return
+	}
+	defer done()
+	if !websocket.IsWebSocketUpgrade(r) {
+		logSuspicious(r, "non-websocket request to /ws", nil)
+		http.Error(w, "websocket upgrade required", http.StatusBadRequest)
+		return
+	}
+
+	release, admitted := websocketAdmission.begin()
+	if !admitted {
+		w.Header().Set("Retry-After", "1")
+		http.Error(w, "server connection limit reached; please retry", http.StatusServiceUnavailable)
+		return
+	}
+	readerOwnsSlot := false
+	defer func() {
+		if !readerOwnsSlot {
+			release()
+		}
+	}()
+	c, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		logSuspicious(r, "websocket upgrade failed", err)
+		return
+	}
+
+	client := &Client{
+		conn:         c,
+		send:         make(chan []byte, 256), // State traffic is lossy under pressure.
+		prioritySend: make(chan []byte, 64),  // Control/UI messages must not starve behind state.
+		lastState:    make(map[string]*EntitySnapshot),
+		seenIDs:      make(map[string]bool),
+	}
+	client.initializeConnectionWork(release)
+	register <- client
+
+	readerOwnsSlot = true
+	go client.writePump()
+	go client.readPump()
+}
+
+func (c *Client) readPump() {
+	defer func() {
+		c.markTransportClosed()
+		c.conn.Close()
+		// Keep the slot while waiting for hub retirement too: reconnect floods
+		// must not accumulate unbounded readers holding their send queues.
+		unregister <- c
+		c.finishConnectionWork()
+	}()
+
+	reader := newInboundMessageReader(c.conn, time.Now, pongWait, inboundMessageAssemblyWait)
+	guard := newInboundFrameGuard(time.Now())
+	guard.installControlHandlers(c.conn, time.Now)
+
+	for {
+		_, message, err := reader.readMessage()
+		if err != nil {
+			c.recordTransportClosure(transportReadFailure(err))
+			if !errors.Is(err, errInboundFrameLimit) && websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+				logWebsocketReadError(err, time.Now())
+			}
+			break
+		}
+
+		now := time.Now()
+		if !guard.acceptPayload(len(message), now) {
+			c.recordTransportClosure(transportInboundLimit)
+			_ = guard.rejectFrame(c.conn, now)
+			return
+		}
+		msg, err := decodeInboundMessage(message)
+		if err != nil {
+			// Do not write raw decode errors/body fragments to the general log.
+			// Repeated malformed frames have their own transport budget.
+			if !guard.acceptMalformed(now) {
+				c.recordTransportClosure(transportInboundLimit)
+				c.conn.WriteControl(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.ClosePolicyViolation, "Malformed message limit exceeded"), now.Add(writeWait))
+				return
+			}
+			continue
+		}
+
+		c.handleMessage(msg)
+	}
+}
+
+func decodeInboundMessage(frame []byte) (Message, error) {
+	if len(frame) == 0 {
+		return Message{}, fmt.Errorf("empty frame")
+	}
+	if len(frame) > maxMessageSize {
+		return Message{}, fmt.Errorf("frame exceeds %d bytes", maxMessageSize)
+	}
+	var message Message
+	if err := json.Unmarshal(frame, &message); err != nil {
+		return Message{}, fmt.Errorf("decode JSON envelope: %w", err)
+	}
+	if message.Type == "" {
+		return Message{}, fmt.Errorf("message type is required")
+	}
+	if len(message.Payload) > 0 && !json.Valid(message.Payload) {
+		return Message{}, fmt.Errorf("payload must be valid JSON")
+	}
+	return message, nil
+}
+
+func (c *Client) writePump() {
+	ticker := time.NewTicker(pingPeriod)
+	defer ticker.Stop()
+	c.writePumpWithTicks(ticker.C)
+}
+
+// The production writer owns both data and keepalive frames. A supplied tick
+// channel lets bounded socket checks exercise its scheduling without a54s wait.
+func (c *Client) writePumpWithTicks(pings <-chan time.Time) {
+	defer func() {
+		c.conn.Close()
+		c.finishConnectionWork()
+	}()
+
+	writeMessage := func(message []byte) error {
+		c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+		msgType := websocket.TextMessage
+		if len(message) > 5 && bytes.Equal(message[0:4], stateProtoMagic) {
+			msgType = websocket.BinaryMessage
+		}
+		w, err := c.conn.NextWriter(msgType)
+		if err != nil {
+			return err
+		}
+		if _, err := w.Write(message); err != nil {
+			_ = w.Close()
+			return err
+		}
+		if err := w.Close(); err != nil {
+			return err
+		}
+		// Flush the denial before ending this game transport. Older clients
+		// also lose world control and must pass the new entry/resume gate.
+		if bytes.HasPrefix(message, []byte(`{"type":"world_access_denied",`)) {
+			c.recordTransportClosure(transportAccessDenied)
+			return fmt.Errorf("world access denial delivered")
+		}
+		return nil
+	}
+
+	writePing := func() error {
+		c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+		return c.conn.WriteMessage(websocket.PingMessage, nil)
+	}
+
+	for {
+		// Keepalives have their own deadline: an always-ready priority queue
+		// must not defer the ping past the reader's idle timeout. Only the
+		// existing writer emits it; control still precedes queued state.
+		select {
+		case <-pings:
+			if err := writePing(); err != nil {
+				c.recordTransportClosure(transportWriteFailure(err))
+				return
+			}
+		default:
+		}
+		// Give already-queued control traffic precedence over state.
+		select {
+		case message, ok := <-c.prioritySend:
+			if !ok {
+				c.recordTransportClosure(transportQueuesClosed)
+				return
+			}
+			if err := writeMessage(message); err != nil {
+				c.recordTransportClosure(transportWriteFailure(err))
+				return
+			}
+			continue
+		default:
+		}
+
+		select {
+		case message, ok := <-c.prioritySend:
+			if !ok {
+				c.recordTransportClosure(transportQueuesClosed)
+				return
+			}
+			if err := writeMessage(message); err != nil {
+				c.recordTransportClosure(transportWriteFailure(err))
+				return
+			}
+		case message, ok := <-c.send:
+			if !ok {
+				c.recordTransportClosure(transportQueuesClosed)
+				_ = c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+				return
+			}
+			if err := writeMessage(message); err != nil {
+				c.recordTransportClosure(transportWriteFailure(err))
+				return
+			}
+		case <-pings:
+			if err := writePing(); err != nil {
+				c.recordTransportClosure(transportWriteFailure(err))
+				return
+			}
+		}
+	}
+}

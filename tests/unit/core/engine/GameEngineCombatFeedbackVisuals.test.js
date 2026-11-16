@@ -1,0 +1,255 @@
+import * as THREE from 'three';
+import { jest } from '@jest/globals';
+import { GameEngine } from '../../../../src/core/GameEngine.js';
+
+function actor(id, meshType, x = 0, z = 0) {
+    return { id, meshType, position: new THREE.Vector3(x, 0.5, z) };
+}
+
+function makeEngine() {
+    const player = actor('player-local', 'Fighter');
+    const engine = {
+        player,
+        currentInstanceId: 'dungeon-feedback',
+        remotePlayers: new Map(),
+        combatFeedbackCueTimestamps: new Map(),
+        spawnTransientEffect: jest.fn(() => true),
+        floatingTextManager: { spawn: jest.fn() },
+        playAudioCue: jest.fn(),
+        isPlayerClassEntity: (entity) => ['Fighter', 'Rogue', 'Wizard', 'Cleric'].includes(entity?.meshType),
+        isNearbyCombatEvent: jest.fn(() => true),
+        resolveCombatFeedbackKind: GameEngine.prototype.resolveCombatFeedbackKind,
+        renderCombatFeedback: GameEngine.prototype.renderCombatFeedback,
+        handleServerMessage: GameEngine.prototype.handleServerMessage,
+        showNearbyRemoteDamageFeedback: jest.fn(() => true)
+    };
+    return engine;
+}
+
+describe('authoritative combat feedback visuals', () => {
+    test('direct contact faces the source; periodic receipts stay body-centered without moving the target', () => {
+        const engine = makeEngine(), enemy = actor('enemy', 'Skeleton', 0, 6);
+        enemy.mesh = { userData: { bounds: { height: 4, radius: 1 } }, scale: { x: 1, y: 1 } };
+        engine.remotePlayers.set(enemy.id, enemy);
+        const original = enemy.position.clone();
+        engine.renderCombatFeedback({ sourceId: engine.player.id, targetId: enemy.id, amount: 30, kind: 'physical' });
+        const [, contact, , options] = engine.spawnTransientEffect.mock.calls[0];
+        expect(contact.y).toBeCloseTo(2.3);
+        expect(contact.z).toBeCloseTo(5.45);
+        expect(options.impactDirection).toEqual({ x: 0, z: -1 });
+        expect(enemy.position.equals(original)).toBe(true);
+        engine.renderCombatFeedback({ sourceId: engine.player.id, targetId: enemy.id, amount: 3, kind: 'poison' });
+        expect(engine.spawnTransientEffect.mock.calls[1][1].equals(original.clone().add(new THREE.Vector3(0, 1.8, 0)))).toBe(true);
+        expect(enemy.position.equals(original)).toBe(true);
+        expect(engine.spawnTransientEffect.mock.calls[1][3].impactDirection).toBeUndefined();
+        expect(engine.spawnTransientEffect.mock.calls[1][3].bodyRadius).toBe(.8);
+    });
+
+    test.each([0, -1, NaN, Infinity])('non-damage %s cannot produce a confirmed hit flash', amount => {
+        const engine = makeEngine();
+        expect(engine.renderCombatFeedback({ sourceId: 'enemy', targetId: engine.player.id, amount })).toBe(false);
+        expect(engine.spawnTransientEffect).not.toHaveBeenCalled();
+    });
+
+    test('accepted direct hits react; healing, periodic damage, hazards and other instances do not', () => {
+        const engine = makeEngine(), enemy = actor('enemy', 'Skeleton');
+        enemy.playHitReaction = jest.fn(); engine.remotePlayers.set(enemy.id, enemy);
+        const hit = { sourceId: engine.player.id, targetId: enemy.id, amount: 30, kind: 'physical' };
+        engine.renderCombatFeedback(hit);
+        expect(enemy.playHitReaction).toHaveBeenCalledWith(engine.player.position, 30);
+        for (const kind of ['poison', 'bleed', 'lava_pool']) engine.renderCombatFeedback({ ...hit, kind });
+        engine.renderCombatFeedback({ ...hit, kind: 'holy' }, 'heal');
+        engine.combatFeedbackCueTimestamps.clear();
+        engine.renderCombatFeedback({ ...hit, instanceId: 'other-room' });
+        expect(enemy.playHitReaction).toHaveBeenCalledTimes(1);
+    });
+
+    test('only local direct hits punch the camera, once per burst', () => {
+        const engine = makeEngine();
+        engine.renderSystem = { applyCameraPunch: jest.fn() };
+        const enemy = actor('enemy', 'Skeleton');
+        engine.remotePlayers.set(enemy.id, enemy);
+        const hit = { sourceId: engine.player.id, targetId: enemy.id, amount: 30, kind: 'physical' };
+        engine.renderCombatFeedback(hit);
+        expect(engine.renderSystem.applyCameraPunch).toHaveBeenCalledTimes(1);
+        engine.combatFeedbackCueTimestamps.clear();
+        engine.renderCombatFeedback(hit);
+        expect(engine.renderSystem.applyCameraPunch).toHaveBeenCalledTimes(1);
+        engine.lastLocalImpactAt = -Infinity;
+        engine.renderCombatFeedback({ ...hit, kind: 'poison' });
+        expect(engine.renderSystem.applyCameraPunch).toHaveBeenCalledTimes(1);
+        engine.renderCombatFeedback({ ...hit, sourceId: enemy.id, targetId: engine.player.id });
+        expect(engine.renderSystem.applyCameraPunch).toHaveBeenCalledTimes(2);
+    });
+    test('remote decorative hits are compact and rate-limited, but local hits and hazards retain full feedback', () => {
+        const engine = makeEngine();
+        const source = actor('ally', 'Wizard'), target = actor('enemy', 'Skeleton');
+        engine.remotePlayers.set(source.id, source); engine.remotePlayers.set(target.id, target);
+        const hit = { sourceId: source.id, targetId: target.id, amount: 30, kind: 'arcane' };
+        expect(engine.renderCombatFeedback(hit)).toBe(true);
+        expect(engine.spawnTransientEffect.mock.lastCall[3].feedbackDensity).toBe('compact');
+        expect(engine.renderCombatFeedback(hit)).toBe(false);
+        engine.combatFeedbackCueTimestamps.clear();
+        engine.renderCombatFeedback({ ...hit, sourceId: engine.player.id });
+        expect(engine.spawnTransientEffect.mock.lastCall[3].feedbackDensity).toBe('full');
+        engine.combatFeedbackCueTimestamps.clear();
+        engine.renderCombatFeedback({ ...hit, sourceId: 'hazard-lava', kind: 'lava_pool' });
+        expect(engine.spawnTransientEffect.mock.lastCall[3].feedbackDensity).toBe('full');
+    });
+    test.each([
+        ['physical', 'Fighter', 'fighter_strike'],
+        ['physical', 'Rogue', 'rogue_strike'],
+        ['arcane', 'Wizard', 'wizard_strike'],
+        ['holy', 'Cleric', 'cleric_strike'],
+        ['bleed', 'Rogue', 'bleed_tick'],
+        ['poison', 'Rogue', 'poison_tick'],
+        ['reflect', 'Fighter', 'reflect_strike'],
+        ['lava_pool', null, 'lava_tick'],
+        ['sandstorm', null, 'sandstorm_tick'],
+        ['lightning_zone', null, 'lightning_tick'],
+        ['wind_gust', null, 'wind_tick']
+    ])('maps server damage kind %s to %s', (kind, meshType, expected) => {
+        const engine = makeEngine();
+        const source = meshType ? actor('source', meshType) : null;
+        expect(engine.resolveCombatFeedbackKind({ kind, sourceId: 'source' }, source, engine.player, 'damage')).toBe(expected);
+    });
+
+    test.each([
+        ['holy', 'Cleric', 'other', 'cleric_heal'],
+        ['healing_light_hot', 'Cleric', 'other', 'restoration_tick'],
+        ['guardian_embrace', 'Cleric', 'other', 'restoration_tick'],
+        ['spirit_guardians', 'Cleric', 'other', 'restoration_tick'],
+        ['lifesteal', 'Fighter', 'player-local', 'lifesteal'],
+        ['self_restore', 'Fighter', 'player-local', 'self_restore'],
+        ['self_restore', 'Cleric', 'player-local', 'self_restore'],
+        ['divine_intervention', 'Cleric', 'player-local', 'self_restore']
+    ])('maps server healing kind %s to %s', (kind, meshType, targetId, expected) => {
+        const engine = makeEngine();
+        const source = actor('player-local', meshType);
+        expect(engine.resolveCombatFeedbackKind({
+            kind, sourceId: 'player-local', targetId
+        }, source, engine.player, 'heal')).toBe(expected);
+    });
+
+    test('damage messages retain floating numbers and add a compact typed reaction', () => {
+        const engine = makeEngine();
+        const enemy = actor('enemy-1', 'Skeleton', 2, 3);
+        engine.remotePlayers.set(enemy.id, enemy);
+        engine.handleServerMessage({
+            type: 'damage',
+            payload: {
+                sourceId: engine.player.id,
+                targetId: enemy.id,
+                amount: 72,
+                kind: 'physical',
+                instanceId: 'dungeon-feedback'
+            }
+        });
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith(72, enemy.position, '#ffff00');
+        expect(engine.spawnTransientEffect).toHaveBeenCalledWith(
+            'combat_feedback', expect.objectContaining({
+                x: expect.closeTo(2 - 2 / Math.sqrt(13) * .33, 8),
+                y: expect.closeTo(.5 + 2.6 * .45, 8),
+                z: expect.closeTo(3 - 3 / Math.sqrt(13) * .33, 8)
+            }), 0xffffff,
+            expect.objectContaining({
+                feedbackKind: 'fighter_strike', amount: 72,
+                sourceId: engine.player.id, targetId: enemy.id,
+                instanceId: 'dungeon-feedback'
+            })
+        );
+    });
+
+    test('heal messages use their authoritative restoration kind', () => {
+        const engine = makeEngine();
+        engine.player.meshType = 'Cleric';
+        engine.handleServerMessage({
+            type: 'heal',
+            payload: {
+                sourceId: engine.player.id,
+                targetId: engine.player.id,
+                amount: 41,
+                kind: 'healing_light_hot',
+                instanceId: 'dungeon-feedback'
+            }
+        });
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('+41', engine.player.position, '#55ff9b');
+        expect(engine.spawnTransientEffect).toHaveBeenCalledWith(
+            'combat_feedback', expect.any(THREE.Vector3), 0xffffff,
+            expect.objectContaining({ feedbackKind: 'restoration_tick', amount: 41 })
+        );
+    });
+
+    test('filters other instances and unrelated distant fights', () => {
+        const engine = makeEngine();
+        const enemy = actor('enemy-1', 'Skeleton', 2, 3);
+        engine.remotePlayers.set(enemy.id, enemy);
+        expect(engine.renderCombatFeedback({
+            sourceId: engine.player.id, targetId: enemy.id, amount: 10,
+            kind: 'physical', instanceId: 'other-dungeon'
+        }, 'damage')).toBe(false);
+        engine.isNearbyCombatEvent.mockReturnValue(false);
+        expect(engine.renderCombatFeedback({
+            sourceId: 'enemy-far', targetId: enemy.id, amount: 10,
+            kind: 'physical', instanceId: 'dungeon-feedback'
+        }, 'damage')).toBe(false);
+        expect(engine.spawnTransientEffect).not.toHaveBeenCalled();
+    });
+
+    test('keeps combat messages safe before a production effect scene exists', () => {
+        const engine = makeEngine();
+        const enemy = actor('enemy-1', 'Skeleton', 2, 3);
+        engine.remotePlayers.set(enemy.id, enemy);
+        delete engine.spawnTransientEffect;
+        expect(engine.renderCombatFeedback({
+            sourceId: engine.player.id, targetId: enemy.id, amount: 10,
+            kind: 'physical', instanceId: 'dungeon-feedback'
+        }, 'damage')).toBe(false);
+    });
+
+    test('throttles only matching target/kind reactions while preserving different afflictions', () => {
+        const clock = jest.spyOn(Date, 'now').mockReturnValue(10_000);
+        try {
+            const engine = makeEngine();
+            const enemy = actor('enemy-1', 'Skeleton', 2, 3);
+            engine.remotePlayers.set(enemy.id, enemy);
+            const base = {
+                sourceId: engine.player.id, targetId: enemy.id, amount: 10,
+                instanceId: 'dungeon-feedback'
+            };
+            expect(engine.renderCombatFeedback({ ...base, kind: 'bleed' }, 'damage')).toBe(true);
+            expect(engine.renderCombatFeedback({ ...base, kind: 'bleed' }, 'damage')).toBe(false);
+            expect(engine.renderCombatFeedback({ ...base, kind: 'poison' }, 'damage')).toBe(true);
+            const other = actor('enemy-2', 'Skeleton', 4, 3);
+            engine.remotePlayers.set(other.id, other);
+            expect(engine.renderCombatFeedback({ ...base, targetId: other.id, kind: 'bleed' }, 'damage')).toBe(true);
+            expect(engine.spawnTransientEffect).toHaveBeenCalledTimes(3);
+        } finally {
+            clock.mockRestore();
+        }
+    });
+
+    test.each([
+        ['damage', 'bleed', 80],
+        ['heal', 'healing_light_hot', 140]
+    ])('%s / %s feedback resumes exactly at its %sms throttle boundary', (eventType, kind, interval) => {
+        const clock = jest.spyOn(Date, 'now').mockReturnValue(10_000);
+        try {
+            const engine = makeEngine();
+            const target = actor('target', 'Skeleton', 2, 3);
+            engine.remotePlayers.set(target.id, target);
+            const event = { sourceId: engine.player.id, targetId: target.id, amount: 10,
+                kind, instanceId: 'dungeon-feedback' };
+            expect(engine.renderCombatFeedback(event, eventType)).toBe(true);
+            clock.mockReturnValue(10_000 + interval - 1);
+            expect(engine.renderCombatFeedback(event, eventType)).toBe(false);
+            clock.mockReturnValue(10_000 + interval);
+            expect(engine.renderCombatFeedback(event, eventType)).toBe(true);
+            clock.mockReturnValue(10_000 + interval * 2 + 1);
+            expect(engine.renderCombatFeedback(event, eventType)).toBe(true);
+            expect(engine.spawnTransientEffect).toHaveBeenCalledTimes(3);
+        } finally {
+            clock.mockRestore();
+        }
+    });
+});

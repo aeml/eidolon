@@ -37,7 +37,7 @@ The preview camera and lights are added after export and are not game geometry.
 
 After regeneration, validate the GLB, update its content hash in
 `src/assets/assetManifest.js`, and run `AuthoredIlyra.test.js` and
-`tests/e2e/ilyra-archmage.spec.js`. Inspect front, side, back and isometric
+`tests/e2e/rendering/ilyra-archmage.spec.js`. Inspect front, side, back and isometric
 screenshots before accepting changes. The runtime shares immutable geometry
 and materials while cloning bones and animation clips per NPC.
 
@@ -52,6 +52,6 @@ acceptance. It is published in Alpha 1.58.5, exact source
 `397bd41d0a8209eb466204aa9b8ccf64024a933e`. All ten CI jobs passed,
 including native predeployment and live character QA. The public NPC GLB hash
 matches this file; the player Wizard source hash remains unchanged. See the
-[public acceptance receipt](../../../docs/plans/2026-10-02-release1-58-5-public.json).
+[public acceptance receipt](../../../docs/records/releases/1.58.5/2026-10-02-public.json).
 The checked-in generator and existing source notices make subsequent outfit
 changes reproducible without altering player bodies or unrelated Blender scenes.

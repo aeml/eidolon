@@ -54,11 +54,11 @@ Content sources for the September 29, 2026 update:
 - [`../README.md`](../README.md), Current Features: implemented gameplay and social/economy systems.
 - [`../server/internal/game/quests.go`](../server/internal/game/quests.go) and [`../server/internal/game/content/`](../server/internal/game/content/): elemental covenant, investigations, crystal Vigils, and Dark Realm story.
 - [`../ROADMAP.md`](../ROADMAP.md): the 55-chapter campaign, level-100 progression, Resonance, and raid structure.
-- [`../docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md`](../docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md): authoritative forward scope and the open-alpha-to-closed-beta direction.
+- [`../docs/records/2026/09/28/alpha1-11-to1-99-release-roadmap.md`](../docs/records/2026/09/28/alpha1-11-to1-99-release-roadmap.md): authoritative forward scope and the open-alpha-to-closed-beta direction.
 
 The page deliberately avoids a hard-coded current game version; the game's login-screen patch notes identify the build actually being played. Existing concept art and alpha gameplay captures are labeled separately. Social previews use the actual gameplay capture.
 
-The site uses system fonts, lightweight GA4 analytics, and no remote visual assets. The inline JSON-LD script is structured data only. The shared analytics loader in `../src/analytics/GoogleAnalytics.js` is copied into the public build; the complete repository checkout must be present. See [analytics events and reporting setup](../docs/ANALYTICS.md).
+The site uses system fonts, lightweight GA4 analytics, and no remote visual assets. The inline JSON-LD script is structured data only. The shared analytics loader in `../src/analytics/GoogleAnalytics.js` is copied into the public build; the complete repository checkout must be present. See [analytics events and reporting setup](../docs/operations/analytics.md).
 
 ## Technical SEO
 

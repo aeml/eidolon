@@ -27,7 +27,7 @@ profiles and their review sources are documented in
 [the equipment delivery](../../../docs/art/EQUIPMENT_ASSETS.md).
 
 See [the integration record](../../../docs/art/2026-09-30-fighter-pilot.md) and
-[verified release](../../../docs/plans/2026-09-30-release1-54-acceptance.md).
+[verified release](../../../docs/records/releases/1.54/2026-09-30-acceptance.md).
 This is scoped alpha integration, not final armor art, physical-phone performance
 or full-world capacity approval. Blender paths above describe the source export;
 the final packed source is included through Git LFS. Run `git lfs pull` before

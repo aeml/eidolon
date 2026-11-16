@@ -1,0 +1,607 @@
+import { jest } from '@jest/globals';
+import { acquirePartyAllyPointer, gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyFormationStep, partyFormationArrival, partyCombatFollowObservation, PartyFormationRouteUnavailable, partyPathAvoidsActors, partyFormationPathsDisjoint, partyWarningInputPolicy, planPartyTelegraphEscape } from '../../../support/dungeons/partyDungeonControls.js';
+import { clipDungeonEffectSegment } from '../../../../src/skills/shared/dungeonEffectGeometry.js';
+import { groundMovementObserved } from '../../../support/world/groundMovementObservation.js';
+
+test('a long formation route does not clip its first issued step onto a blocked destination', () => {
+    const origin = { x: 0, z: 0, blockedTargetPosition: { x: 12, z: 0 } };
+    const step = partyFormationStep(origin, { x: 30, z: 0 }, null, () => true);
+    expect(Math.hypot(step.dx - 12, step.dz)).toBeGreaterThan(.35);
+    expect(Math.hypot(step.dx, step.dz)).toBeLessThanOrEqual(12.000001);
+});
+
+test('recorded post-Sentinel formation replans away from the remembered blocked destination', () => {
+    const state = { x: 20003.205716013712, z: 18383.88517710351, radius: 1.25,
+        blockedTargetPosition: { x: 20002.861915313555, z: 18383.41188011564 } };
+    const anchor = { x: 19999.95378555282, z: 18379.98756259074 };
+    const previous = { x: 20000.211470994593, z: 18384.01648419884 };
+    const bodies = [anchor, { x: 20004.342560558413, z: 18380.889675028517 },
+        { x: 19995.979641193368, z: 18382.23935570613 }];
+    const step = partyFormationStep(state, anchor, previous,
+        (step, from) => partyPathAvoidsActors(from, step, bodies), 4, -Math.PI / 3, bodies);
+    expect(partyPathAvoidsActors(state, step, bodies)).toBe(true);
+    // Actor.move rejects a repeated blocked destination within .1 units.
+    // Reserve the existing .25 ground-projection tolerance as well.
+    expect(Math.hypot(state.x + step.dx - state.blockedTargetPosition.x,
+        state.z + step.dz - state.blockedTargetPosition.z)).toBeGreaterThan(.35);
+    expect(Math.hypot(state.x + step.dx - anchor.x, state.z + step.dz - anchor.z)).toBeLessThan(5);
+});
+
+test('moving-boss deflection is real combat-follow input, not a settled formation arrival', () => {
+    const before = { x: 109994.55393638906, z: 19319.384811486263,
+        instanceId: 'air-raid', instanceType: 'air_crystal_raid' };
+    const after = { ...before, x: 109994.28053740878, z: 19321.223809168812, state: 'IDLE', health: 2975 };
+    const step = { dx: 1.060660171773634, dz: 1.0606601717809099 };
+    const observation = partyCombatFollowObservation(before, step, before.instanceId);
+    expect(observation.minimumDistance).toBeCloseTo(.75);
+    expect(groundMovementObserved(before, after, observation.minimumDistance)).toBe(true);
+    expect(groundMovementObserved(before, before, observation.minimumDistance)).toBe(false);
+    expect(groundMovementObserved(before, after, 1, partyFormationArrival(before, step, before.instanceId))).toBe(false);
+});
+
+test('short combat-follow deflection witnesses input without claiming a fixed formation arrival', () => {
+    const origin = { x: 109999.95393505205, z: 19318.067295727946, instanceId: 'raid', instanceType: 'air_crystal_raid' };
+    const step = { dx: .5460649479500717, dz: .4248129661209532 };
+    const after = { ...origin, x: 110000.93200029542, z: 19318.11084424956, state: 'IDLE', health: 2975 };
+    const observation = partyCombatFollowObservation(origin, step, 'raid');
+    expect(observation.minimumDistance).toBeCloseTo(.3459227);
+    expect(groundMovementObserved(origin, after, observation.minimumDistance)).toBe(true);
+    expect(groundMovementObserved(origin, origin, observation.minimumDistance)).toBe(false);
+    expect(groundMovementObserved(origin, { ...origin, x: origin.x + .1 }, observation.minimumDistance)).toBe(false);
+    expect(groundMovementObserved(origin, after, 1, partyFormationArrival(origin, step, 'raid'))).toBe(false);
+    expect(partyCombatFollowObservation(origin, { dx: 12, dz: 0 }, 'raid')).toEqual({ minimumDistance: 1 });
+    expect(() => partyCombatFollowObservation(origin, { dx: NaN, dz: 0 }, 'raid')).toThrow();
+});
+
+test('healer stops seven units short of the tank rather than aiming into the boss', () => {
+    expect(partyFollowStep({ x: 0, z: 0 }, { x: 0, z: -12 }, 7)).toEqual({ dx: 0, dz: -5 });
+});
+test('long diagonal approaches preserve direction and the twelve-unit input bound', () => {
+    const step = partyFollowStep({ x: 10, z: 20 }, { x: 40, z: 60 }, 7);
+    expect(Math.hypot(step.dx, step.dz)).toBeCloseTo(12);
+    expect(step.dx / step.dz).toBeCloseTo(3 / 4);
+});
+test.each([0, 3, 4, 4.9])('no invalid sub-unit input within the formation margin: %s', x => {
+    expect(partyFollowStep({ x: 0, z: 0 }, { x, z: 0 }, 4)).toBeNull();
+});
+test.each([NaN, Infinity, -1])('invalid spacing fails closed: %s', spacing => {
+    expect(() => partyFollowStep({ x: 0, z: 0 }, { x: 10, z: 10 }, spacing)).toThrow();
+});
+
+test('following uses real move-only walking, never a covered-ground jump', () => {
+    expect(PARTY_FOLLOW_INPUT_OPTIONS).toEqual({ moveOnly: true, allowJumpFallback: false });
+});
+
+test('formation follows the walked corner instead of cutting an L-shaped hallway', () => {
+    const floors = [{ x: -10, z: 0, width: 24, height: 4 }, { x: 0, z: 10, width: 4, height: 24 }];
+    const follower = { x: -4, z: 0 }, anchor = { x: 0, z: 14 }, corner = { x: 0, z: 0 };
+    const clear = from => step => !clipDungeonEffectSegment(floors, from,
+        { x: from.x + step.dx, z: from.z + step.dz }).blocked;
+    expect(clear(follower)(partyFollowStep(follower, anchor))).toBe(false);
+    const first = partyFormationStep(follower, anchor, corner, (step, from) => clear(from)(step));
+    expect(clear(follower)(first)).toBe(true);
+    const second = partyFormationStep(corner, anchor, corner, (step, from) => clear(from)(step));
+    expect(second).toEqual({ dx: 0, dz: 10 });
+});
+
+test('recorded Skyglass healer approach detours around the boss and touching teammates', () => {
+    const follower = { x: 109994.89166654447, z: 19313.926397707975, radius: 1.25 };
+    const direct = { dx: -2.50777362195548, dz: -8.452585637930195 };
+    const length = Math.hypot(direct.dx, direct.dz);
+    const anchor = { x: follower.x + direct.dx * (length + 7) / length,
+        z: follower.z + direct.dz * (length + 7) / length };
+    const bodies = [
+        { x: 109996.5234375, z: 19312.767578125, radius: 1.25 },
+        { x: 110006.9609375, z: 19315.36328125, radius: 1.25 },
+        { x: 109994.3828125, z: 19311.447265625, radius: 1.25 },
+        { x: 109988.28125, z: 19302.306640625, radius: 1.25 },
+        { x: 109989.515625, z: 19315.32421875, radius: 5 }
+    ];
+    const clear = (step, from = follower) => partyPathAvoidsActors(from, step, bodies);
+    expect(clear(direct)).toBe(false);
+    let inputs = 0;
+    while (partyFollowStep(follower, anchor, 7) && inputs++ < 12) {
+        const step = partyFormationStep(follower, anchor, null, clear, 7, null, bodies);
+        expect(clear(step)).toBe(true);
+        follower.x += step.dx;
+        follower.z += step.dz;
+    }
+    expect(Math.hypot(follower.x - anchor.x, follower.z - anchor.z)).toBeLessThan(8);
+});
+
+test('a teammate occupying the straight gathering destination gets a verified alternative', () => {
+    const follower = { x: 0, z: 5.8 }, tank = { x: 0, z: 0 };
+    const bodies = [{ ...tank, radius: 1.25 }, { x: 0, z: 2.5, radius: 1.25 }];
+    const clear = (step, from = follower) => partyPathAvoidsActors(from, step, bodies);
+    expect(clear(partyFollowStep(follower, tank))).toBe(false);
+    const step = partyFormationStep(follower, tank, null, clear, 4, null, bodies);
+    expect(clear(step)).toBe(true);
+    expect(Math.abs(step.dx)).toBeGreaterThan(1);
+});
+test('side and rear slots leave a clear arrival lane inside the unchanged five-unit boundary', () => {
+    const anchor = { x: 0, z: 0 }, previous = { x: 0, z: 12 };
+    const followers = [0, 1, 2].map(() => ({ ...previous }));
+    for (const [index, offset] of [Math.PI / 3, -Math.PI / 3, 0].entries()) {
+        const follower = followers[index];
+        const bodies = [anchor, ...followers.filter(other => other !== follower)];
+        const step = partyFormationStep(follower, anchor, previous,
+            (candidate, from) => partyPathAvoidsActors(from, candidate, bodies), 4, offset, bodies);
+        follower.x += step.dx;
+        follower.z += step.dz;
+        expect(Math.hypot(follower.x, follower.z)).toBeCloseTo(4.5);
+    }
+    for (const [index, follower] of followers.entries()) {
+        for (const other of followers.slice(index + 1)) {
+            expect(Math.hypot(follower.x - other.x, follower.z - other.z)).toBeGreaterThan(2.6);
+        }
+    }
+});
+test('a nearby blocking body can be passed using a complete checked detour', () => {
+    const follower = { x: 0, z: 18 }, tank = { x: 0, z: 0 };
+    const bodies = [{ x: 0, z: 15, radius: 1.25 }];
+    const clear = (step, from = follower) => partyPathAvoidsActors(from, step, bodies);
+    for (let count = 0; partyFollowStep(follower, tank) && count < 8; count++) {
+        const step = partyFormationStep(follower, tank, { x: 0, z: 14 }, clear, 4, null, bodies);
+        expect(clear(step)).toBe(true);
+        expect(Math.hypot(step.dx, step.dz)).toBeLessThanOrEqual(12.00001);
+        follower.x += step.dx;
+        follower.z += step.dz;
+    }
+    expect(partyFollowStep(follower, tank)).toBeNull();
+});
+
+test('recorded Tidestar touching bodies can separate before routing around a teammate', () => {
+    const follower = { x: 90003.87987528516, z: 19649.26019470357, radius: 1.25 };
+    const anchor = { x: 89999.91506357842, z: 19654.989958102615 };
+    const previous = { x: 90007.9352489816, z: 19655.11411778255 };
+    const bodies = [
+        { x: 90002.078125, z: 19658.943359375, radius: 1.25 },
+        { x: 89999.9140625, z: 19654.990234375, radius: 1.25 },
+        { x: 90002.1953125, z: 19651.107421875, radius: 1.25 },
+        { x: 90003.9609375, z: 19655.724609375, radius: 1.25 }
+    ];
+    const floor = [{ x: 90000, z: 19655, width: 60, height: 70 }];
+    const clear = (step, from) => partyPathAvoidsActors(from, step, bodies) &&
+        !clipDungeonEffectSegment(floor, from, { x: from.x + step.dx, z: from.z + step.dz }).blocked;
+    // Short polygon corners may be necessary after departure; explicit arrival
+    // verification supports them without shrinking any collision radii.
+    let inputs = 0;
+    while (partyFollowStep(follower, anchor) && inputs++ < 12) {
+        const step = partyFormationStep(follower, anchor, previous, clear, 4, 0, bodies);
+        expect(clear(step, follower)).toBe(true);
+        expect(Math.hypot(step.dx, step.dz)).toBeGreaterThanOrEqual(.5);
+        follower.x += step.dx;
+        follower.z += step.dz;
+    }
+    expect(Math.hypot(follower.x - anchor.x, follower.z - anchor.z)).toBeLessThan(5);
+    expect(inputs).toBeLessThan(12);
+});
+test('already-overlapping actors can separate, but not walk through one another', () => {
+    const from = { x: 0, z: 0 }, bodies = [{ x: 1, z: 0, radius: 1.25 }];
+    expect(partyPathAvoidsActors(from, { dx: -3, dz: 0 }, bodies)).toBe(true);
+    expect(partyPathAvoidsActors(from, { dx: 0, dz: 3 }, bodies)).toBe(true);
+    expect(partyPathAvoidsActors(from, { dx: 3, dz: 0 }, bodies)).toBe(false);
+    expect(partyPathAvoidsActors(from, { dx: 0, dz: 0 }, bodies)).toBe(false);
+});
+
+test('coincident spawn positions can separate instead of trapping every planned direction', () => {
+    expect(partyPathAvoidsActors({ x: 0, z: 0 }, { dx: 3, dz: 0 }, [{ x: 0, z: 0, radius: 1.25 }])).toBe(true);
+});
+test('recorded post-rest body barrier reaches formation without cycling through the previous anchor', () => {
+    const follower = { x: 19957.501629686893, z: 19887.593814190874 };
+    const anchor = { x: 19949.62800608872, z: 19887.402609344314 };
+    const previous = { x: 19957.589265926803, z: 19887.585694589347 };
+    const bodies = [anchor, { x: 19953.934357986913, z: 19884.873595691028 },
+        { x: 19953.408112250418, z: 19889.393467331647 }];
+    for (let count = 0; partyFollowStep(follower, anchor) && count < 8; count++) {
+        const clear = (step, from = follower) => partyPathAvoidsActors(from, step, bodies);
+        const step = partyFormationStep(follower, anchor, previous, clear, 4, -Math.PI / 3, bodies);
+        expect(clear(step)).toBe(true);
+        follower.x += step.dx;
+        follower.z += step.dz;
+    }
+    expect(partyFollowStep(follower, anchor)).toBeNull();
+});
+test('recorded post-Warden follower positions have a complete body-clear route', () => {
+    const follower = { x: 19959.79135649875, z: 19507.19396907301 };
+    const anchor = { x: 19971.456330809397, z: 19499.363238894413 };
+    const previous = { x: 19959.886184897914, z: 19507.23852946556 };
+    const bodies = [anchor, { x: 19970.771101265793, z: 19503.25162702815 },
+        { x: 19966.867154454183, z: 19500.528392315224 }];
+    for (let count = 0; partyFollowStep(follower, anchor) && count < 8; count++) {
+        const clear = (step, from = follower) => partyPathAvoidsActors(from, step, bodies);
+        const step = partyFormationStep(follower, anchor, previous, clear, 4, 0, bodies);
+        expect(clear(step)).toBe(true);
+        follower.x += step.dx;
+        follower.z += step.dz;
+    }
+    expect(partyFollowStep(follower, anchor)).toBeNull();
+});
+test('a legal intermediate sidestep without an onward route is not accepted', () => {
+    const state = { x: 20, z: 0 }, anchor = { x: 0, z: 0 }, previous = { x: 20, z: 3 };
+    const clear = (step, from) => from.x + step.dx >= 10;
+    expect(clear({ dx: 0, dz: 3 }, state)).toBe(true);
+    expect(() => partyFormationStep(state, anchor, previous, clear)).toThrow('no verified walking route');
+});
+test('an impassable crowded scene has bounded search rather than unchecked fallback input', () => {
+    const bodies = Array.from({ length: 100 }, (_, index) => ({ x: 10 + index / 100, z: index / 100 }));
+    const clear = jest.fn(() => false);
+    expect(() => partyFormationStep({ x: 20, z: 0 }, { x: 0, z: 0 }, { x: 20, z: 3 }, clear, 4, 0, bodies))
+        .toThrow('no verified walking route');
+    expect(clear.mock.calls.length).toBeLessThan(150);
+});
+test('sub-millimetre replicated spawn offsets use the collision system coincident-body rule', () => {
+    const from = { x: 19999.907985236892, z: 19990.008490300283 };
+    const body = { x: 19999.908203125, z: 19990.0078125, radius: 1.25 };
+    expect(partyPathAvoidsActors(from, { dx: 0, dz: -6 }, [body])).toBe(true);
+});
+test('recorded Fire follower takes a short verified corner around the settled Wizard', () => {
+    let state = { x: 99994.98955206946, z: 19774.44204078348, radius: 1.25 };
+    const anchor = { x: 99999.90731917076, z: 19769.978778746274 };
+    const previous = { x: 99999.92828317474, z: 19780.95989785865 };
+    const bodies = [anchor, { x: 100002.02564952637, z: 19771.567764424588 },
+        { x: 99997.63256365072, z: 19773.865685548888 },
+        { x: 100003.0241874891, z: 19766.764707695962 }];
+    const origin = { ...state };
+    const steps = [];
+    for (let i = 0; i < 8 && Math.hypot(state.x - anchor.x, state.z - anchor.z) >= 5; i++) {
+        const step = partyFormationStep(state, anchor, previous,
+            (delta, from) => partyPathAvoidsActors(from, delta, bodies), 4, 0, bodies);
+        expect(partyPathAvoidsActors(state, step, bodies)).toBe(true);
+        steps.push(step);
+        state = { ...state, x: state.x + step.dx, z: state.z + step.dz };
+    }
+    expect(Math.hypot(steps[0].dx, steps[0].dz)).toBeLessThan(1);
+    expect(Math.hypot(steps[0].dx, steps[0].dz)).toBeGreaterThanOrEqual(.5);
+    expect(Math.hypot(state.x - anchor.x, state.z - anchor.z)).toBeLessThan(5);
+    const arrival = partyFormationArrival(origin, steps[0], 'fire');
+    expect(Math.hypot(origin.x - arrival.x, origin.z - arrival.z)).toBeGreaterThan(arrival.radius);
+});
+
+test('formation preserves an already-safe direct step and refuses an unverified alternative', () => {
+    const follower = { x: 0, z: 0 }, anchor = { x: 14, z: 0 };
+    expect(partyFormationStep(follower, anchor, null, () => true)).toEqual({ dx: 10, dz: 0 });
+    expect(() => partyFormationStep(follower, anchor, { x: 0, z: 2 }, () => false)).toThrow('no verified walking route');
+});
+test('a missing safe plan cannot count an out-of-formation member as gathered', async () => {
+    let clock = 0;
+    await expect(gatherPartyFormation({ read: async () => { clock += 1000; return [{ x: 0, z: 0 }, { x: 20, z: 0 }]; },
+        plan: async () => null, move: jest.fn(), now: () => clock, timeout: 2000 })).rejects.toThrow('failed to gather');
+});
+test('arrival between position and planning reads is verified again without a false failure', async () => {
+    const read = jest.fn().mockResolvedValueOnce([{ x: 0, z: 0 }, { x: 6, z: 0 }])
+        .mockResolvedValue([{ x: 0, z: 0 }, { x: 4, z: 0 }]);
+    const move = jest.fn();
+    await gatherPartyFormation({ read, plan: async () => null, move });
+    expect(read).toHaveBeenCalledTimes(2);
+    expect(move).not.toHaveBeenCalled();
+});
+
+test('recorded five-player entry gives the second healer a short body-clear departure', async () => {
+    const states = [
+        { x: 79999.77670563449, z: 19915.92597951876 },
+        { x: 79995.83365575141, z: 19932.194045444576 },
+        { x: 80003.68159562619, z: 19932.204885161216 },
+        { x: 79999.77202765665, z: 19934.482501527076 },
+        { x: 80002.21313057405, z: 19933.936621815974 }
+    ];
+    const previous = { x: 79999.79653603515, z: 19929.970094412947 };
+    const blocked = [], moved = [];
+    let clock = 0;
+    await gatherPartyFormation({
+        read: async () => { clock += 100; return states.map(state => ({ ...state })); },
+        now: () => clock,
+        plan: async (index, state, anchor, spacing) => {
+            const bodies = states.filter((_, other) => other !== index)
+                .map(body => ({ x: Math.fround(body.x), z: Math.fround(body.z), radius: 1.25 }));
+            try {
+                return partyFormationStep(state, anchor, previous,
+                    (step, from) => partyPathAvoidsActors(from, step, bodies), spacing,
+                    [Math.PI / 3, -Math.PI / 3, 0][index - 1], bodies);
+            } catch (error) {
+                if (!(error instanceof PartyFormationRouteUnavailable)) throw error;
+                blocked.push({ index, moves: moved.length });
+                return null;
+            }
+        },
+        move: async (index, step) => {
+            expect(partyPathAvoidsActors(states[index], step,
+                states.filter((_, other) => other !== index))).toBe(true);
+            moved.push(index);
+            states[index].x += step.dx;
+            states[index].z += step.dz;
+        }
+    });
+    expect(blocked).toEqual([]);
+    expect(moved).toContain(4);
+    expect(states.slice(1).every(state => !partyFollowStep(state, states[0]))).toBe(true);
+});
+
+test('unexpected formation planner errors still stop the run', async () => {
+    const move = jest.fn();
+    await expect(gatherPartyFormation({ read: async () => [{ x: 0, z: 0 }, { x: 20, z: 0 }],
+        plan: async () => { throw new Error('browser disconnected'); }, move }))
+        .rejects.toThrow('browser disconnected');
+    expect(move).not.toHaveBeenCalled();
+});
+
+test('recorded Water formation plans against the same precise bodies used by reservations', async () => {
+    const states = [
+        { x: 89999.95337286495, z: 19745.028321341353 },
+        { x: 89995.99778057265, z: 19747.21404472539 },
+        { x: 90003.70630106355, z: 19747.262241753368 },
+        { x: 89999.84396047727, z: 19749.541117246867 },
+        { x: 90005.57076582064, z: 19749.480259900993 }
+    ];
+    const previous = { x: 89999.88258515942, z: 19755.917688744194 };
+    const rounded = states.slice(0, 4).map(p => ({ x: Math.fround(p.x), z: Math.fround(p.z) }));
+    const oldStep = partyFormationStep(states[4], states[0], previous,
+        (step, from) => partyPathAvoidsActors(from, step, rounded), 4, null, rounded);
+    expect(partyPathAvoidsActors(states[4], oldStep, rounded)).toBe(true);
+    expect(partyPathAvoidsActors(states[4], oldStep, states.slice(0, 4))).toBe(false);
+    let clock = 0, moves = 0;
+    await gatherPartyFormation({
+        now: () => clock,
+        read: async () => { clock += 100; return states.map(p => ({ ...p })); },
+        plan: async (index, state, anchor, spacing, observed) => {
+            const bodies = observed.filter((_, other) => other !== index);
+            return partyFormationStep(state, anchor, previous,
+                (step, from) => partyPathAvoidsActors(from, step, bodies), spacing, null, bodies);
+        },
+        move: async (index, step) => {
+            expect(partyPathAvoidsActors(states[index], step, states.filter((_, other) => other !== index))).toBe(true);
+            states[index].x += step.dx; states[index].z += step.dz; moves++;
+        }
+    });
+    expect(moves).toBeGreaterThan(0);
+    expect(moves).toBeLessThan(10);
+    expect(states.slice(1).every(state => !partyFollowStep(state, states[0]))).toBe(true);
+});
+
+test('recorded Fire route cannot walk into a settled teammate missing from its remote planning view', async () => {
+    const states = [
+        { x: 100000.67491701675, z: 19779.387366209627 },
+        { x: 99996.38621340395, z: 19777.920880768615 },
+        { x: 99997.46347481768, z: 19782.120100489166 },
+        { x: 99994.9340341354, z: 19780.6805311197 },
+        { x: 99995.62663934159, z: 19772.732746566802 }
+    ];
+    const badStep = { dx: 1.251757785837981, dz: -1.6058242723956937 };
+    expect(partyPathAvoidsActors(states[3], badStep, [states[1]])).toBe(false);
+    let clock = 0, offeredStale = false;
+    const moved = [];
+    await gatherPartyFormation({
+        read: async () => { clock += 100; return states.map(state => ({ ...state })); },
+        now: () => clock,
+        plan: async (index, state, anchor, spacing) => {
+            if (index === 3 && !offeredStale) { offeredStale = true; return badStep; }
+            const bodies = states.filter((_, other) => other !== index);
+            try {
+                return partyFormationStep(state, anchor, null,
+                    (step, from) => partyPathAvoidsActors(from, step, bodies), spacing,
+                    [Math.PI / 3, -Math.PI / 3, 0][index - 1], bodies);
+            } catch (error) {
+                if (!(error instanceof PartyFormationRouteUnavailable)) throw error;
+                return null;
+            }
+        },
+        move: async (index, step) => {
+            expect(step).not.toBe(badStep);
+            expect(partyPathAvoidsActors(states[index], step,
+                states.filter((_, other) => other !== index))).toBe(true);
+            moved.push(index);
+            states[index].x += step.dx;
+            states[index].z += step.dz;
+        }
+    });
+    expect(offeredStale).toBe(true);
+    expect(moved).toContain(3);
+    expect(states.slice(1).every(state => !partyFollowStep(state, states[0]))).toBe(true);
+    expect(clock).toBeLessThan(15_000);
+});
+
+test.each([
+    [{ active: false, safe: true }, { holdMelee: false, allowCasts: true, allowApproach: true }],
+    [{ active: true, safe: true }, { holdMelee: true, allowCasts: true, allowApproach: false }],
+    [{ active: true, safe: false }, { holdMelee: true, allowCasts: false, allowApproach: false }]
+])('warning policy preserves safe ranged casts without permitting a chase: %j', (warning, expected) => {
+    expect(partyWarningInputPolicy(warning)).toEqual(expected);
+});
+
+test('formation waits for observed catch-up instead of counting an issued step as arrival', async () => {
+    const tank = { x: 0, z: 0 };
+    const read = jest.fn().mockResolvedValueOnce([tank, { x: 30, z: 0 }])
+        .mockResolvedValueOnce([tank, { x: 18, z: 0 }]).mockResolvedValueOnce([tank, { x: 4, z: 0 }]);
+    const move = jest.fn();
+    await gatherPartyFormation({ read, move });
+    expect(read).toHaveBeenCalledTimes(3);
+    expect(move).toHaveBeenCalledTimes(2);
+});
+
+test('followers replan after each settled move instead of choosing a shared destination concurrently', async () => {
+    const states = [{ x: 0, z: 0 }, { x: 0, z: 12 }, { x: 0, z: 12 }, { x: 0, z: 12 }];
+    let activeMoves = 0, peakMoves = 0;
+    const planned = [];
+    await gatherPartyFormation({ read: async () => states.map(s => ({ ...s })),
+        plan: async (index, state) => {
+            planned.push({ index, firstFollower: { ...states[1] }, activeMoves });
+            const destination = { x: (index - 2) * 3, z: 3 };
+            return { dx: destination.x - state.x, dz: destination.z - state.z };
+        },
+        move: async (index, step) => {
+            peakMoves = Math.max(peakMoves, ++activeMoves);
+            await Promise.resolve();
+            states[index].x += step.dx;
+            states[index].z += step.dz;
+            activeMoves--;
+        } });
+    expect(peakMoves).toBe(1);
+    expect(planned.every(p => p.activeMoves === 0)).toBe(true);
+    expect(planned.filter(p => p.index === 2).at(-1).firstFollower).toEqual({ x: -3, z: 3 });
+    expect(states.slice(1).every(s => Math.hypot(s.x, s.z) < 5)).toBe(true);
+});
+
+test('disjoint follower lanes move together without extending the original gathering deadline', async () => {
+    const states = [{ x: 0, z: 0 }, { x: -4, z: 12 }, { x: 4, z: 12 }, { x: 0, z: 16 }];
+    const destinations = [null, { x: -4, z: 1 }, { x: 4, z: 1 }, { x: 0, z: 4 }];
+    let clock = 0, active = 0, peak = 0;
+    await gatherPartyFormation({ read: async () => states.map(s => ({ ...s })), now: () => clock,
+        plan: async (index, state) => ({ dx: destinations[index].x - state.x, dz: destinations[index].z - state.z }),
+        move: async (index, step) => {
+            const began = clock;
+            peak = Math.max(peak, ++active);
+            await Promise.resolve();
+            clock = Math.max(clock, began + 6000);
+            Object.assign(states[index], { x: states[index].x + step.dx, z: states[index].z + step.dz });
+            active--;
+        } });
+    expect(peak).toBe(3);
+    expect(clock).toBe(6000);
+    expect(states.slice(1).every(s => Math.hypot(s.x, s.z) < 5)).toBe(true);
+});
+
+test.each([
+    [{ x: 0, z: 0 }, { dx: 12, dz: 0 }, { x: 0, z: 3 }, { dx: 12, dz: 0 }, true],
+    [{ x: 0, z: 0 }, { dx: 12, dz: 0 }, { x: 0, z: 2.59 }, { dx: 12, dz: 0 }, false],
+    [{ x: 0, z: 0 }, { dx: 12, dz: 0 }, { x: 6, z: -5 }, { dx: 0, dz: 10 }, false],
+    [{ x: 0, z: 0 }, { dx: 4, dz: 12 }, { x: 0, z: 0 }, { dx: -4, dz: 12 }, false],
+    [{ x: 0, z: 0 }, { dx: 12, dz: 0 }, { x: 10, z: 0 }, { dx: -4, dz: 0 }, false],
+    [{ x: 0, z: 0 }, { dx: 4, dz: 0 }, { x: 10, z: 0 }, { dx: 4, dz: 0 }, true],
+    [{ x: 0, z: 0 }, { dx: 4, dz: 0 }, { x: 5, z: 2 }, { dx: 0, dz: 4 }, false],
+    [{ x: 0, z: 0, radius: 3 }, { dx: 12, dz: 0 }, { x: 0, z: 5, radius: 3 }, { dx: 12, dz: 0 }, false]
+])('concurrent paths reserve the whole actor capsule: %j %j %j %j', (first, a, second, b, expected) => {
+    expect(partyFormationPathsDisjoint(first, a, second, b)).toBe(expected);
+    expect(partyFormationPathsDisjoint(second, b, first, a)).toBe(expected);
+});
+test.each([{ dx: 0, dz: 0 }, { dx: NaN, dz: 1 }, { dx: Infinity, dz: 0 }])('invalid reservations fail closed: %j', step => {
+    expect(partyFormationPathsDisjoint({ x: 0, z: 0 }, step, { x: 5, z: 5 }, { dx: 2, dz: 0 })).toBe(false);
+});
+test('a failed batch waits for every issued move and records the failure without accepting formation', async () => {
+    let finishedOther = false;
+    const trace = jest.fn();
+    await expect(gatherPartyFormation({ read: async () => [{ x: 0, z: 0 }, { x: -4, z: 12 }, { x: 4, z: 12 }],
+        plan: async () => ({ dx: 0, dz: -10 }), trace,
+        move: async index => {
+            if (index === 1) throw new Error('real input failed');
+            await Promise.resolve();
+            await Promise.resolve();
+            finishedOther = true;
+        } })).rejects.toThrow('real input failed');
+    expect(finishedOther).toBe(true);
+    expect(trace.mock.calls.map(([entry]) => entry.phase)).toEqual(['planned', 'settled']);
+    expect(trace.mock.calls[1][0].members).toEqual([{ index: 1, outcome: 'rejected' }, { index: 2, outcome: 'fulfilled' }]);
+});
+test('reservations use the actual planning origin rather than an older group snapshot', async () => {
+    const states = [{ x: 0, z: 0 }, { x: -4, z: 12 }, { x: 4, z: 12 }];
+    const trace = jest.fn();
+    let active = 0, peak = 0;
+    await gatherPartyFormation({ read: async () => states.map(s => ({ ...s })), trace,
+        plan: async () => ({ dx: 0, dz: -8, origin: { x: 0, z: 12 } }),
+        move: async index => {
+            peak = Math.max(peak, ++active);
+            await Promise.resolve();
+            states[index].z = 2;
+            active--;
+        } });
+    expect(peak).toBe(1);
+    expect(trace.mock.calls[0][0].members[0].from).toEqual({ x: 0, z: 12 });
+});
+
+test('blocked followers hit the original bounded gathering deadline', async () => {
+    let clock = 0;
+    await expect(gatherPartyFormation({ read: async () => [{ x: 0, z: 0 }, { x: 30, z: 0 }],
+        move: async () => { clock += 1000; }, now: () => clock, timeout: 2000 })).rejects.toThrow('failed to gather');
+});
+
+test('a dead follower fails gathering without moving or disguising a wipe', async () => {
+    const move = jest.fn();
+    await expect(gatherPartyFormation({ read: async () => [{ x: 0, z: 0 }, { x: 30, z: 0, dead: true }], move }))
+        .rejects.toThrow('cannot hide a death');
+    expect(move).not.toHaveBeenCalled();
+});
+
+test('matching coordinates in different instances cannot satisfy formation', async () => {
+    const move = jest.fn();
+    await expect(gatherPartyFormation({ read: async () => [
+        { x: 0, z: 0, instance: 'run-a' }, { x: 0, z: 0, instance: 'run-b' }
+    ], move })).rejects.toThrow('cannot cross instances');
+    expect(move).not.toHaveBeenCalled();
+});
+
+test('healing pointer skips a boss-covered center and confirms an exposed ally hitbox', async () => {
+    const input = { project: jest.fn().mockResolvedValue({ x: 100, y: 100, visible: true }),
+        move: jest.fn(), settle: jest.fn(), hoveredId: jest.fn().mockResolvedValueOnce('boss').mockResolvedValue('ally') };
+    expect(await acquirePartyAllyPointer(input, 'ally')).toBe(true);
+    expect(input.project).toHaveBeenCalledTimes(2);
+    expect(input.project).toHaveBeenLastCalledWith('ally', { x: .5, y: .85, z: .5 });
+    expect(input.move).toHaveBeenCalledTimes(2);
+});
+
+test('a completely covered ally does not authorize a misdirected heal', async () => {
+    const input = { project: jest.fn().mockResolvedValue({ x: 100, y: 100, visible: true }),
+        move: jest.fn(), settle: jest.fn(), hoveredId: jest.fn().mockResolvedValue('boss') };
+    expect(await acquirePartyAllyPointer(input, 'ally')).toBe(false);
+    expect(input.move).toHaveBeenCalledTimes(10);
+});
+
+test('offscreen allies cause no pointer input, and projection errors still fail', async () => {
+    const input = { project: jest.fn().mockResolvedValue(null), move: jest.fn(), settle: jest.fn(), hoveredId: jest.fn() };
+    expect(await acquirePartyAllyPointer(input, 'ally')).toBe(false);
+    expect(input.move).not.toHaveBeenCalled();
+    input.project.mockRejectedValueOnce(new Error('projection failed'));
+    await expect(acquirePartyAllyPointer(input, 'ally')).rejects.toThrow('projection failed');
+});
+
+test('a melee tank walks beyond the full visible quake with a safety margin', () => {
+    const step = planPartyTelegraphEscape({ x: 8, z: 0 }, [{ x: 0, z: 0, radius: 12.5 }]);
+    expect(step.x).toBeCloseTo(6.5);
+    expect(step.z).toBeCloseTo(0);
+});
+test('already-safe players hold position instead of issuing unnecessary movement', () => {
+    expect(planPartyTelegraphEscape({ x: 16, z: 0 }, [{ x: 0, z: 0, radius: 12.5 }])).toBeNull();
+});
+test('near-edge telegraph escape leaves room for real click movement to settle', () => {
+    // Pyrax's failed diagnostic chose a1.37-unit step and observed only0.60.
+    // Do not accept that failed movement; choose a longer verified input.
+    const canStep = jest.fn(() => true);
+    const step = planPartyTelegraphEscape({ x: 13.13, z: 0 }, [{ x: 0, z: 0, radius: 12.5 }], canStep);
+    expect(step.x).toBeCloseTo(3);
+    expect(step.z).toBeCloseTo(0);
+    expect(canStep).toHaveBeenCalledWith(step);
+    expect(13.13 + step.x).toBeGreaterThan(14);
+});
+test('extended escape still requires the whole path to be clear', () => {
+    const canStep = jest.fn(step => Math.hypot(step.x, step.z) < 2);
+    expect(planPartyTelegraphEscape({ x: 13.13, z: 0 }, [{ x: 0, z: 0, radius: 12.5 }], canStep)).toBeNull();
+    expect(canStep).toHaveBeenCalled();
+    for (const [step] of canStep.mock.calls) expect(Math.hypot(step.x, step.z)).toBeGreaterThanOrEqual(3 - 1e-9);
+});
+test('blocked radial routes use only a fully validated alternative', () => {
+    const canStep = jest.fn(step => step.z > 1);
+    const step = planPartyTelegraphEscape({ x: 8, z: 0 }, [{ x: 0, z: 0, radius: 12.5 }], canStep);
+    expect(step.z).toBeGreaterThan(1);
+    expect(canStep).toHaveBeenCalledWith(step);
+});
+test('no legal escape is not fabricated as a successful move', () => {
+    expect(planPartyTelegraphEscape({ x: 8, z: 0 }, [{ x: 0, z: 0, radius: 12.5 }], () => false)).toBeNull();
+});
+test('telegraph escape avoids a teammate occupying the shortest radial path', () => {
+    const state = { x: 8, z: 0, radius: 1.25 }, bodies = [{ x: 11, z: 0, radius: 1.25 }];
+    const step = planPartyTelegraphEscape(state, [{ x: 0, z: 0, radius: 12.5 }], () => true, bodies);
+    expect(step).not.toBeNull();
+    expect(partyPathAvoidsActors(state, { dx: step.x, dz: step.z }, bodies, state.radius)).toBe(true);
+    expect(Math.hypot(state.x + step.x, state.z + step.z)).toBeGreaterThanOrEqual(14);
+});
+test('body-safe escape still respects every floor and warning constraint', () => {
+    const state = { x: 8, z: 0, radius: 1.25 }, bodies = [{ x: 11, z: 0, radius: 1.25 }];
+    const step = planPartyTelegraphEscape(state, [{ x: 0, z: 0, radius: 12.5 }], move => move.z > 0, bodies);
+    expect(step.z).toBeGreaterThan(0);
+    expect(partyPathAvoidsActors(state, { dx: step.x, dz: step.z }, bodies, state.radius)).toBe(true);
+    expect(planPartyTelegraphEscape(state, [{ x: 0, z: 0, radius: 12.5 }], () => false, bodies)).toBeNull();
+});
+test('escaping one warning must not walk into another', () => {
+    const warnings = [{ x: 0, z: 0, radius: 12.5 }, { x: 15, z: 0, radius: 3 }];
+    const step = planPartyTelegraphEscape({ x: 8, z: 0 }, warnings);
+    expect(step).not.toBeNull();
+    for (const warning of warnings) expect(Math.hypot(8 + step.x - warning.x, step.z - warning.z)).toBeGreaterThanOrEqual(warning.radius + 1.5);
+});

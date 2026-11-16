@@ -1,0 +1,223 @@
+# Alpha 1.43 — combat presentation preview
+
+Unreleased integrated candidate on the prepared1.42 branch. Runtime/package/
+login/CI/default build identities and cumulative notes now identify1.43.0.
+Ordered publication waits for preceding accepted deployments. Human campaign/
+phone observations remain playtest-owned; they are not a new permission gate.
+
+September30 update:1427ee8c07b is now independently accepted following CI
+36660471426 attempt2 success and matching public runtime/font evidence.
+See [receipt](../1.42/2026-09-30-acceptance.md). Earlier investigation notes
+below describe the initial failure, not the current terminal state.143 remains
+unreleased pending its own exact deployment and verification.
+
+## Compatible dependency-security correction before release
+
+Pushed be0d2605 after freshfetch/merge and unchanged website verification.
+CI36666914512 caught a high-severity brace-expansion audit failure in the client
+job before deployment. Local npm audit reproduces the same four transitive
+development nodes. Published [quadratic expansion advisory](https://github.com/advisories/GHSA-q2hr-2g5m-vwhr),
+[nested-brace advisory](https://github.com/advisories/GHSA-qhr7-859c-m2p7) and
+[comma-parser advisory](https://github.com/advisories/GHSA-6j4f-fj2g-mc7p)
+identify the compatible patched1.x/2.x lines. npm audit fix --package-lock-only
+--ignore-scripts changes only four lock entries: three1.1.18→1.1.21 nodes and
+one2.1.4→2.1.7, plus their integrity/license metadata. Direct dependencies,
+production protobuf/Three versions and package constraints unchanged; no
+force update, audit suppression or broader dependency migration. Result reports
+zero vulnerabilities.1.42 remains the independently accepted public build
+until corrected143passes its own CI/deployment/live checks.
+Fresh isolated npm ci --ignore-scripts installs443packages in8s and reports
+zero vulnerabilities; separate npm audit --audit-level=high also passes.
+Focused suites333checks pass3.083s and scoped ESLint passes with that fresh
+toolchain, not the shared old node_modules symlink. Whitespace clean. No
+unbounded adversarial payload or campaign replay.
+
+The same initial CI's shard2 also exposed Maelin's stale visual-reference
+assertion: it treated the current Wizard as an old rig with no Channel even
+though143adds the full class kit. Update the explicitly non-live reference to
+the current Wizard with exact Idle/Channel/Idle expectations, no missing clips,
+Wizard type and no Maelin tuning fork. Preserve the distinct CrystalKeeper
+type/fork, own channel pose and recovery assertions on High/Low at both screen
+sizes. Two actual Chrome cases pass13.1s; scoped lint/whitespace pass. No game
+animation changed or failure suppressed. Attempt to use the isolated dependency
+prefix's Playwright hit duplicate test instances from the project symlink,
+before tests ran; use the project-local runner for this source-render check.
+Fresh-toolchain dependency/Jest/ESLint evidence above remains separate.
+
+## Public-access investigation and scoped proxy correction — September30
+
+Owner confirmed access recovered after reporting the page failed to load.
+Both normal-hostname IPv4 endpoints returned200 with deployed1427ee8c07b;
+backend database ready. No restart, rollback or DNS edit was performed.
+Live142CI36660471426 nevertheless failed its live job after seven checks
+passed: Verdant completed its two-boss route but the final collector contained
+generic ERR_NAME_NOT_RESOLVED messages. Retry navigation had no HTTP response.
+Sanitized artifacts omit the raw traces; they do not identify failed URLs.
+Do not claim the error came from gameplay or that its exact cause is proven.
+
+Read-only nginx logs establish a separate actionable issue: requests for the
+document and versioned game modules attempt GitHub Pages IPv6 upstreams,
+which fail with Network is unreachable on this host. Actual server has no
+public IPv6 address or default route. This is upstream routing, separate from
+the advertised DDNS AAAA previously deferred by the owner. The template now
+uses the local systemd-resolved stub with ipv6=off and a fixed-host variable,
+preserving full request URI/query, Pages Host routing and TLS SNI. Backend
+loopback/WebSocket configuration, public DNS and other virtual hosts unchanged.
+See [nginx resolver](https://nginx.org/en/docs/http/ngx_http_core_module.html#resolver)
+and [variable proxy_pass](https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_pass).
+
+An isolated unprivileged nginx1.24 instance on127.0.0.1:18443 passed syntax,
+returned200 for exact142 release.json, document and versioned main.js, and
+served the local font with the expected f4d83d34...a4e0f34 SHA256. Probe stopped
+cleanly. This validates routing, not active production configuration or TLS
+certificate-file access. Staged /tmp/eidolon-pages-ipv4-20260930.conf preserves
+the actual Certbot blocks; diff changes only the frontend proxy and final
+newline. /tmp/eidolon-fix-pages-ipv4-20260930.sh requires owner sudo, guards the
+inspected active hash, preserves a backup, tests before reload and restores on
+failure. It has not been run in production. No143push until142acceptance.
+
+Browser QA now retains Chrome console source URLs for generic resource errors
+and includes the original navigation error in exhausted document assertions.
+No new suppression, larger retry budget or weakened acceptance. Three focused
+diagnostic regression cases pass alongside all existing helper checks;18total
+in0.768s. Scoped lint passes. Additional source-config invariants retain fixed
+upstream, request URI/query, Host/SNI and backend upgrade behavior.
+Combined helper/config/version suites333checks pass2.912s; scoped ESLint and
+git diff --check pass. No long encounter replay, public bypass or143push.
+
+## Draft patch notes
+
+- Retained supporting1.42 contact shadows for phones and Low graphics, grounding
+  characters without enabling expensive directional shadows. Contacts follow
+  movement and fade during jumps; hidden/stealthed actors remain unrevealed.
+  See the [connected route and rendered-floor checks](../../2026/09/29/low-quality-actor-grounding.md).
+
+- Corrected the four player classes' floating walk/run poses. Walks now make
+  ground contact and runs retain stance and flight, including equipped boots
+  and moving casts. Movement speed and combat timing are unchanged. See the
+  [gait contact review](../../2026/09/29/humanoid-gait-contact.md).
+
+- Seven creature attacks now use distinct gores, pecks, bites and a javelin
+  thrust with anticipation and recovery, aligned to the existing hit timing.
+  Planted feet and actual contact anatomy are checked throughout the motion.
+  See the [creature pose review](../../2026/09/29/creature-attack-poses.md).
+
+- Corrected forward basic swings and hit-time alignment for26 additional armed
+  regional enemies and dungeon bosses, including Rootbound Warden. Distinct
+  bird/bite rigs are not given an assumed weapon animation. See the
+  [regional strike review](../../2026/09/29/regional-strike-contact.md).
+
+- Skeletons, Demon Orcs, Imps, Constructs and Inferno Titans swing toward their
+  targets, with the visible strike aligned to the existing basic-attack damage
+  time. Damage and cooldowns are unchanged. See the
+  [strike direction and timing checks](../../2026/09/29/legacy-enemy-strike-contact.md).
+
+- Corrected below-floor death poses for22 more regional enemy and boss models,
+  including Constructs, Moonfrost enemies and several dungeon bosses. Attack
+  animations, collision bounds and encounter timing remain unchanged. See
+  [regional death grounding](../../2026/09/29/regional-death-grounding.md).
+
+- Enemy corpses hold after their death animation and fade instead of abruptly
+  disappearing. Skeletons now fall above the floor rather than sinking below
+  it. Loot, combat and server respawn timing are unchanged. See the
+  [death-presentation checks](../../2026/09/29/enemy-death-presentation.md).
+
+- Enemy health bars follow camera/movement smoothly and account for model
+  height. Wounded and selected foes remain readable without hover, including
+  phone targets and PvP opponents. A brief loss segment clarifies hits and
+  honors reduced motion; friendly services do not get enemy bars. See the
+  [health feedback checks](../../2026/09/29/enemy-health-feedback.md).
+
+- Periodic damage and healing use smaller body-level cues instead of additional
+  decorative ground rings and large particle bursts. Reduced motion retains
+  feedback without particle travel. Actual danger/healing ranges and combat
+  values are unchanged. See [verification](../../2026/09/29/periodic-combat-feedback.md).
+
+Supporting1.42 warning/terrain presentation remains integrated:
+
+- Boss danger circles, their shaded areas and regional motifs now sit above
+  dungeon floors instead of being hidden underneath them.
+- Fireball, Meteor and Explosive Trap impact areas remain visible on dungeon
+  floors, without changing their damage radius.
+- Guardian Embrace's healing-range circle and ground-level buff rings are no
+  longer buried under dungeon floors. Character and body-aura positions stay put.
+- Boss warnings respect the device's reduced-motion preference: decorative
+  pulsing/rotation stops while the warning edge, label and countdown remain.
+
+No combat balance, encounter timing, rewards, character saves or network
+protocol changes. Camera shake already respects reduced motion and its own
+strength setting; this preview does not claim universal motion suppression.
+
+See [combat presentation preflight](../../2026/09/29/1-43-combat-presentation-preflight.md)
+for before/after rendering evidence, focused lifecycle/cast checks and crowded
+High/Low warning review. Earlier release gates and public deployment remain
+outstanding; no live release or complete 1.43 milestone is claimed.
+
+## Ordered integration verification
+
+Built on prepared1.42 commit18a53061; eleven remaining combat commits integrate
+through34f32b14. Shared warning/contact/aura and terrain consumers were already
+assembled in1.42, so their fixes are retained rather than reapplied. Art source
+comparison against048aec6e now shows only the harmless batch-helper blank line.
+Actor differs only by forthcoming1.44 audio skill-name arguments; runtime
+differences are forthcoming audio and1.45 loot-label presentation. No final
+audio/interface code was silently copied into this candidate.
+
+Resolved documentation overlaps by preserving both scoped notes. Retained
+newer class batching tests when adding skeleton coverage. The enemy-health
+browser-stage conflict adds only its real new test file, not the five absent
+future1.45 UI fixtures. Corpse presentation and contact-shadow rendering now
+both have their valid imports. No source force-copy or test tolerance change.
+
+Seven existing moving-cast/gait/ability-gesture/batch/health/corpse/basic-contact
+seam suites pass79 checks in7.429s; full lint, shell syntax and whitespace pass.
+Desktop four-class equipped moving-cast/walk/run/support rendering passes8.7s,
+and prepared enemy health/camera/contact/death rendering passes16.7s. Inspected
+moving-cast and enemy-contact captures at
+/tmp/eidolon-1-43-integrated-cast-0930 and
+/tmp/eidolon-1-43-integrated-health-0930. These checks use prepared actors,
+not authenticated enemy clears or human combat-feel/pacing measurements.
+Unchanged full actor-family/gallery evidence remains in the linked preflights.
+
+Metadata-only synchronization was checked directly: all package/build/runtime
+labels agree, cumulative entries are unique and ordered1.43 before1.42, old
+1.0 history remains, and every registered explicit browser file exists. This
+does not replace the standard CI required for eventual publication. Website
+files still matchad22dea7; fetch/merge newer master before each push.
+
+Final authored actors, human enjoyment, full modern-art acceptance and later
+representative performance/capacity gates remain open. No additional campaign
+soak, real-phone claim, save wipe, production terrain activation or beta access
+change. The candidate is ready for ordered CI publication after predecessors
+pass, not yet a live or fully accepted Q/CB release.
+
+## Publication integration update
+
+Merged current origin/master0dcb1fd3 into this prepared candidate after a fresh
+fetch. Retained all1.42 required-fixture and explicit visible-jump corrections,
+the accepted1.40/1.41 receipts, and the website agent's unchanged files. The
+single README conflict retains1.43 source identity and the newer accepted1.41
+baseline instead of rolling either back.1.42 CI36657023723 is still pending;
+this merge does not authorize publication before its public acceptance.
+
+Six changed-seam/version suites pass355 checks in2.879s. Scoped lint and
+whitespace pass, and website diff against current master is empty. The
+prepared combat gallery evidence above is unchanged and reused; no campaign
+or encounter replay is claimed. Fetch/merge again immediately before pushing,
+then require this exact candidate's own CI and public release checks.
+
+Latest integration retains1.42 first-party Cinzel correction7ee8c07b and the
+full license/source notice. The sole package-script conflict is resolved by
+retaining both local-fonts and enemy-health-feedback exactly once in required
+interface coverage, not choosing one side. Six font/version/asset/grounding/
+resource suites349checks pass4.866s; whitespace passes and website diff remains
+empty.1.42 CI36660471426 is pending; this prepared merge is unpublished and
+still requires exact1.42 public acceptance before ordered1.43 publication.
+
+Additional loader-seam review reproduced four stale catalog assertions: the
+procedural player factories now include Cast/Channel/Guard/Shout/Bless, not
+only the prior five basic states. Require the exact ten animation names for
+all four classes; keep the emergency fallback and enemy expectations unchanged.
+No production animation is removed and no subset assertion replaces the full
+list. Loader and actual ability-clip suites122checks pass3.634s; whitespace
+passes. This catches a known publication mismatch before1.43's required CI.

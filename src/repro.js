@@ -1,27 +1,27 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { RenderSystem } from './core/RenderSystem.js';
+import { RenderSystem } from './core/rendering/RenderSystem.js';
 import { AnimationGallery } from './animationGallery.js';
-import { EnvironmentalHazard } from './entities/EnvironmentalHazard.js';
-import { getRegionTheme } from './art/darkFantasyTheme.js';
+import { EnvironmentalHazard } from './entities/interactions/EnvironmentalHazard.js';
+import { getRegionTheme } from './art/environment/dark/darkFantasyTheme.js';
 import {
     FOLIAGE_HAZARD_CLEARINGS,
     PROCEDURAL_FOLIAGE_RECIPES,
     createProceduralFoliagePreview,
     getProceduralFoliageCacheMetrics
-} from './art/ProceduralRealmFoliage.js';
+} from './art/environment/foliage/ProceduralRealmFoliage.js';
 import {
     LANTERNHOLD_STRUCTURE_DEFINITIONS,
     LANTERNHOLD_STRUCTURE_IDS,
     createProceduralLanternholdStructure,
     getProceduralLanternholdCacheMetrics
-} from './art/ProceduralLanternholdArchitecture.js';
+} from './art/environment/lanternhold/ProceduralLanternholdArchitecture.js';
 import {
     DUNGEON_ENTRANCE_DEFINITIONS,
     DUNGEON_ENTRANCE_IDS,
     createProceduralDungeonEntrance,
     getProceduralDungeonEntranceCacheMetrics
-} from './art/ProceduralDungeonEntrances.js';
+} from './art/environment/dungeons/ProceduralDungeonEntrances.js';
 import {
     DUNGEON_INTERIOR_DEFINITIONS,
     DUNGEON_INTERIOR_IDS,
@@ -29,13 +29,13 @@ import {
     animateDungeonRoomStatePresentation,
     applyDungeonRoomStatePresentation,
     createProceduralDungeonInteriorKit
-} from './art/ProceduralDungeonInteriors.js';
-import { createTransientEffect } from './core/TransientEffects.js';
+} from './art/environment/dungeons/ProceduralDungeonInteriors.js';
+import { createTransientEffect } from './core/gameplay/combat/TransientEffects.js';
 import {
     PROCEDURAL_TERRAIN_DEFINITIONS,
     createProceduralTerrainMaterial,
     getProceduralTerrainMetrics
-} from './art/ProceduralRealmTerrain.js';
+} from './art/environment/world/ProceduralRealmTerrain.js';
 
 const urlParams = new URLSearchParams(window.location.search);
 const perfOverlayEnabled = urlParams.get('perf') === '1';

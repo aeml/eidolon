@@ -56,7 +56,7 @@ jobs:
         env:
           MONGO_URI: mongodb://127.0.0.1:${{ job.services.mongodb.ports[27017] }}
           SOAK_DISPOSABLE_DATABASE: '1'
-        run: node scripts/run-nightly-soak.mjs
+        run: node scripts/qa/run-nightly-soak.mjs
 
       - name: Upload soak evidence
         if: ${{ !cancelled() && steps.soak.outputs.evidence-dir != '' }}

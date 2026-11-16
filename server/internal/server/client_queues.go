@@ -1,0 +1,81 @@
+package server
+
+import "time"
+
+// Record the first closure before publishing the closed flag. Hub, reader and
+// queue cleanup can observe the same loss without extending its resume window.
+func (c *Client) markTransportClosed() { c.markTransportClosedAt(time.Now()) }
+
+func (c *Client) markTransportClosedAt(now time.Time) {
+	c.transportClosedAt.CompareAndSwap(nil, &now)
+	c.transportClosed.Store(true)
+}
+
+// Queue closure and every producer use the same lock. Recovering from a send
+// panic is not synchronization: a concurrent close/send is still a data race.
+func (c *Client) closeSendQueues() {
+	c.sendMu.Lock()
+	defer c.sendMu.Unlock()
+	if c.sendClosed {
+		return
+	}
+	c.recordTransportClosure(transportQueuesClosed)
+	c.sendClosed = true
+	c.markTransportClosed()
+	if c.send != nil {
+		close(c.send)
+	}
+	if c.prioritySend != nil {
+		close(c.prioritySend)
+	}
+}
+
+// State, time and transient combat visuals can be dropped under pressure;
+// critical traffic uses sendSafe's independent priority lane. A rejected state
+// snapshot forces a full resync through broadcastState. Neither path blocks the hub.
+func (c *Client) sendState(data []byte) bool {
+	c.sendMu.RLock()
+	defer c.sendMu.RUnlock()
+	if c.sendClosed {
+		return false
+	}
+	select {
+	case c.send <- data:
+		return true
+	default:
+		return false
+	}
+}
+
+// Character identity is assigned once, before publishing a joined connection
+// to snapshot readers under sessionsMu. Subsequent Join requests cannot rewrite
+// the string while a reader uses this already-published immutable binding.
+func (c *Client) bindPlayerID(id string) {
+	sessionsMu.Lock()
+	defer sessionsMu.Unlock()
+	if c.playerID == "" {
+		c.playerID = id
+	}
+}
+
+func (c *Client) boundPlayerID() string {
+	sessionsMu.Lock()
+	defer sessionsMu.Unlock()
+	return c.playerID
+}
+
+func (c *Client) resetSnapshotHistory() {
+	c.stateMu.Lock()
+	defer c.stateMu.Unlock()
+	c.clearSnapshotVisibilityLocked()
+	c.lastEndgame = nil
+}
+
+// Caller holds stateMu. A rejected snapshot must not advance delta history;
+// clearing it forces a full replacement when the state queue is available.
+// Independently queued private endgame progress is not reset by state pressure.
+func (c *Client) clearSnapshotVisibilityLocked() {
+	c.seenIDs = make(map[string]bool)
+	c.lastState = make(map[string]*EntitySnapshot)
+	c.seenScene = ""
+}

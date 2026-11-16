@@ -1,0 +1,1441 @@
+import { ownedEvent, disposeOwnedEvents } from '../OwnedEvents.js';
+import { appendQuestRewardChoices } from './QuestRewardChoices.js';
+import { renderQuestConversation } from './QuestConversation.js';
+import { QuestTracker } from './QuestTracker.js';
+import { getFinaleExitGuidance } from '../adventure/FinaleGuidance.js';
+import { appendChronicleRecap } from './ChronicleRecap.js';
+import { LoreBook } from './LoreBook.js';
+import { hasCompletedDarkKing } from '../../data/chronicleAftermath.js';
+import { renderWitnessConversation } from './ChronicleWitnessConversation.js';
+import { formatQuestRewards } from './questRewards.js';
+import { MAX_PLAYER_LEVEL } from '../../data/dungeonProgression.js';
+import { CHRONICLE_CHAPTER_COUNT, getCurrentChronicleQuest, getRecordedChronicleDiscoveries } from '../../core/gameplay/events/ChronicleInvestigation.js';
+import { CHRONICLE_RESTORATIONS, hasChronicleRestoration } from '../../core/gameplay/events/ChronicleRestoration.js';
+import {
+    findNextDungeonMeaningfulRoom,
+    getDungeonCadenceLabel,
+    getDungeonDifficultyPacingHint,
+    getDungeonDifficultyPacingLabel,
+    getDungeonRoomIdentityHint,
+    getDungeonRoomIdentityLabel,
+    getDungeonRoomRole,
+    isLiveDungeonBossRoom
+} from '../../utils/dungeonRoomMetadata.js';
+
+/**
+ * Quest UI module — handles the quest NPC window (accept / turn-in)
+ * and the quest journal (active quest progress).
+ *
+ * Extracted from UIManager to keep each UI domain independently readable.
+ * The parent UIManager passes shared helpers via the `ctx` object.
+ */
+export class QuestUI {
+    /**
+     * @param {Object} ctx
+     * @param {Function} ctx.getLastPlayer – returns current player ref
+     */
+    constructor(ctx) {
+        this.ctx = ctx;
+        this.activeQuestSummary = [];
+        this.questKind = 'daily';
+
+        // --- DOM refs ---
+        this.questWindow = document.getElementById('quest-window');
+        this.questList = document.getElementById('quest-list');
+        this.questJournal = document.getElementById('quest-journal');
+        this.journalList = document.getElementById('journal-list');
+        this.objectivesPanel = document.getElementById('objectives-panel');
+        this.objectivesList = document.getElementById('objectives-list');
+        this.tracker = new QuestTracker(this);
+        if (this.objectivesList && !ctx.isMobile) {
+            this.objectivesList.tabIndex = 0;
+            this.objectivesList.setAttribute('role', 'region');
+            this.objectivesList.setAttribute('aria-label', 'Tracked quests');
+            ownedEvent(this, this.objectivesList, 'keydown', event => {
+                // Keep native scrolling, without bubbling Space to the game's
+                // cast shortcut. Journal and other non-scroll shortcuts still work.
+                if ([' ', 'Enter', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End'].includes(event.key)) {
+                    event.stopPropagation();
+                }
+            });
+        }
+        this.btnCloseQuest = document.getElementById('btn-close-quest');
+        this.btnCloseJournal = document.getElementById('btn-close-journal');
+        if (ctx.isMobile && this.questWindow) {
+            this.questWindow.querySelector('.phone-quest-actions')?.remove();
+            this.questActions = document.createElement('div');
+            this.questActions.className = 'phone-quest-actions';
+            this.questWindow.appendChild(this.questActions);
+        }
+
+        // --- Callbacks (set by GameEngine) ---
+        this.onAcceptQuest = null;
+        this.onCompleteQuest = null;
+        this.onRequestQuests = null;
+        this.onClaimQuestItem = null;
+
+        // --- Event listeners ---
+        if (this.btnCloseQuest) ownedEvent(this, this.btnCloseQuest, 'click', () => this.toggleQuestWindow());
+        if (this.btnCloseJournal) ownedEvent(this, this.btnCloseJournal, 'click', () => this.toggleJournal());
+    }
+
+    // ================================================================
+    // PUBLIC API
+    // ================================================================
+
+    dispose() {
+        if (this.disposed) return;
+        this.disposed = true;
+        disposeOwnedEvents(this);
+        this.tracker?.dispose();
+        this.loreBook?.dispose();
+        for (const root of this.rewardChoiceRoots?.values() || []) root.remove();
+        this.rewardChoiceRoots?.clear();
+        this.rewardChoiceSelections?.clear();
+        this.journalNavigation?.remove();
+        this.questJournal?.classList.remove('is-lore-book');
+        this.questActions?.remove();
+    }
+
+    /** Whether the quest NPC window is visible. */
+    get isQuestWindowOpen() {
+        return this.questWindow &&
+               this.questWindow.style.display === 'flex';
+    }
+
+    /** Whether the quest journal is visible. */
+    get isJournalOpen() {
+        return this.questJournal &&
+               this.questJournal.style.display === 'flex';
+    }
+
+    /** Toggle the quest NPC window. */
+    toggleQuestWindow(kind) {
+        if (kind && this.witnessId) this.closeQuestWindow();
+        this.witnessId = null;
+        if (kind && kind !== this.questKind) {
+            this.closeQuestWindow();
+            this.questKind = kind;
+        }
+        const isHidden = this.questWindow.style.display === 'none' || this.questWindow.style.display === '';
+        if (this.ctx.toggleManagedWindow) {
+            this.ctx.toggleManagedWindow('quest');
+        } else {
+            this.questWindow.style.display = isHidden ? 'flex' : 'none';
+        }
+        if (isHidden) {
+            this.questWindowSignature = '';
+            this.conversationReading = new Map();
+            this.conversationRoute = null;
+            // Reopening requests authoritative state and permits a safe retry
+            // if a previous connection lost its acknowledgement.
+            this.pendingQuestAction = null;
+            this.pendingRewardClaim = null;
+            this.selectedQuestId = null;
+            this.completedDialogue = null;
+            this.questActionError = '';
+            this.onRequestQuests?.();
+            const player = this.ctx.getLastPlayer();
+            if (player && player.quests) {
+                this.updateQuestWindow(player.quests);
+            }
+        }
+    }
+
+    /** Toggle the quest journal. */
+    toggleJournal() {
+        const isHidden = this.questJournal.style.display === 'none' || this.questJournal.style.display === '';
+        if (isHidden) {
+            this.pendingRewardClaim = null;
+            this.questActionError = '';
+            this.onRequestQuests?.();
+        }
+        if (isHidden && !this.ctx.toggleManagedWindow) {
+            this.ctx.closePrimaryHudMenus?.({ except: 'journal' });
+        }
+        if (this.ctx.toggleManagedWindow) {
+            this.ctx.toggleManagedWindow('journal');
+        } else {
+            this.questJournal.style.display = isHidden ? 'flex' : 'none';
+        }
+        if (isHidden) {
+            const player = this.ctx.getLastPlayer();
+            if (player && player.quests) {
+                this.updateJournal(player.quests);
+            }
+        }
+    }
+
+    openChronicleDiscovery(receipt) {
+        const player = this.ctx.getLastPlayer?.();
+        const quest = player?.quests?.find(quest => quest.id === receipt?.questId);
+        if (!getRecordedChronicleDiscoveries(quest).some(site => site.id === receipt?.siteId)) return false;
+        if (!this.isJournalOpen) this.toggleJournal();
+        else this.updateJournal(player.quests);
+        this.setJournalView('story');
+        const record = [...this.journalList.querySelectorAll('details[data-discovery-id]')]
+            .find(record => record.dataset.discoveryId === receipt.siteId);
+        if (!record) return false;
+        record.open = true;
+        record.scrollIntoView?.({ block: 'start', behavior: 'instant' });
+        record.querySelector('summary')?.focus({ preventScroll: true });
+        return true;
+    }
+
+    /** Close the quest NPC window if open. */
+    closeQuestWindow() {
+        this.witnessId = null;
+        if (this.questWindow) this.questWindow.style.display = 'none';
+    }
+
+    openWitnessConversation(id) {
+        if (!this.questWindow) return false;
+        if (!this.isQuestWindowOpen) {
+            if (this.ctx.toggleManagedWindow) this.ctx.toggleManagedWindow('quest');
+            else this.questWindow.style.display = 'flex';
+        }
+        this.witnessId = id;
+        this.witnessPlayerId = this.ctx.getLastPlayer?.()?.id;
+        this.witnessSignature = null;
+        this.questList.replaceChildren();
+        renderWitnessConversation(this, this.ctx.getLastPlayer?.()?.quests || []);
+        return Boolean(this.witnessId);
+    }
+
+    /** Close the quest journal if open. */
+    closeJournal() {
+        if (this.questJournal) this.questJournal.style.display = 'none';
+    }
+
+    openTrackedObjective(objective) {
+        const quests = this.ctx.getLastPlayer?.()?.quests || this.lastJournalQuests || [];
+        const quest = quests.find(quest => quest.id === objective.id);
+        if (!this.isJournalOpen) this.toggleJournal();
+        else this.updateJournal(quests);
+        if (!quest) return;
+        this.setJournalView(quest.category === 'chronicle' || quest.id?.startsWith('chronicle_') ? 'story' : 'contracts');
+        const control = [...this.journalList.querySelectorAll('[data-quest-track]')]
+            .find(input => input.dataset.questTrack === quest.id);
+        control?.scrollIntoView?.({ block: 'center' });
+        control?.focus({ preventScroll: true });
+    }
+
+    // ================================================================
+    // HELPERS
+    // ================================================================
+
+    questTrackingKey(quest) {
+        if (quest?.legacyOptional) return quest.id;
+        return quest?.category === 'chronicle' || quest?.badge?.startsWith('Story') || quest?.id?.startsWith('chronicle_')
+            ? 'story' : quest?.id;
+    }
+
+    loadTrackingPreferences() {
+        const player = this.ctx.getLastPlayer?.();
+        const identity = player?.id || player?.characterId;
+        const key = identity ? `eidolon.questTracking.v1:${identity}` : null;
+        if (this.trackingStorageKey === key) return;
+        this.trackingStorageKey = key;
+        this.trackedQuestKeys = null;
+        if (!key) return;
+        try {
+            const saved = JSON.parse(localStorage.getItem(key));
+            if (Array.isArray(saved) && saved.every(value => typeof value === 'string')) {
+                this.trackedQuestKeys = new Set(saved.slice(0, 200));
+            }
+        } catch { /* Storage may be unavailable; tracking still works this session. */ }
+    }
+
+    getTrackedObjectives(summary = this.activeQuestSummary) {
+        this.loadTrackingPreferences();
+        if (!this.trackedQuestKeys) return summary.slice(0, 3);
+        return summary.filter(objective =>
+            !['Daily', 'Story'].some(kind => objective.badge?.startsWith(kind)) ||
+            this.trackedQuestKeys.has(this.questTrackingKey(objective)));
+    }
+
+    setQuestTracked(quest, tracked) {
+        const visible = this.getTrackedObjectives();
+        if (!this.trackedQuestKeys) {
+            this.trackedQuestKeys = new Set(visible
+                .filter(objective => objective.badge === 'Daily' || objective.badge?.startsWith('Story'))
+                .map(objective => this.questTrackingKey(objective)));
+        }
+        const key = this.questTrackingKey(quest);
+        if (tracked) this.trackedQuestKeys.add(key);
+        else this.trackedQuestKeys.delete(key);
+        try {
+            if (this.trackingStorageKey) localStorage.setItem(this.trackingStorageKey, JSON.stringify([...this.trackedQuestKeys]));
+        } catch { /* Keep the in-memory choice when browser storage is blocked. */ }
+        const scrollTop = this.journalList?.scrollTop || 0;
+        const restoreFocus = document.activeElement?.dataset?.questTrack === quest.id;
+        this.updateJournal(this.lastJournalQuests || []);
+        if (this.journalList) this.journalList.scrollTop = scrollTop;
+        if (restoreFocus) {
+            [...this.journalList.querySelectorAll('[data-quest-track]')]
+                .find(input => input.dataset.questTrack === quest.id)?.focus({ preventScroll: true });
+        }
+    }
+
+    createTrackingControl(quest) {
+        const label = document.createElement('label');
+        label.className = 'quest-tracking-control';
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.dataset.questTrack = quest.id;
+        input.checked = this.getTrackedObjectives().some(objective => this.questTrackingKey(objective) === this.questTrackingKey(quest));
+        input.setAttribute('aria-label', `Track ${this.getQuestTitle(quest)}`);
+        input.addEventListener('change', () => this.setQuestTracked(quest, input.checked));
+        label.append(input, document.createTextNode('Track on screen'));
+        return label;
+    }
+
+    createQuestMapControl(quest) {
+        if (!quest?.id || !this.ctx.showQuestOnMap) return null;
+        const button = document.createElement('button'); button.type = 'button';
+        button.className = 'menu-btn quest-map-action'; button.textContent = 'Show quest on map';
+        button.dataset.questMap = quest.id;
+        button.onclick = () => this.ctx.showQuestOnMap(quest.id);
+        return button;
+    }
+
+    formatQuestTarget(target, maxCount) {
+        const targetMap = {
+            DungeonBoss: 'Dungeon Boss',
+            DungeonBossNormal: 'Dungeon Boss (Normal)',
+            DungeonBossHeroic: 'Dungeon Boss (Heroic)',
+            DungeonBossMythic: 'Dungeon Boss (Mythic)',
+            VerdantBastionBoss: 'Verdant Bastion Boss',
+            MoltenCoreBoss: 'Molten Core Boss',
+            TempestSpireBoss: 'Tempest Spire Boss',
+            AbyssalWellBoss: 'Abyssal Well Boss'
+        };
+
+        const label = targetMap[target] || String(target || 'target')
+            .replace(/([a-z\d])([A-Z])/g, '$1 $2');
+        if (maxCount === 1) return label;
+        if (label.includes('Boss')) {
+            return label.replace('Boss', 'Bosses');
+        }
+        if (label.endsWith('s') || label.endsWith('Djinn')) return label;
+        if (/[^aeiou]y$/i.test(label)) return `${label.slice(0, -1)}ies`;
+        return `${label}s`;
+    }
+
+    getQuestTitle(quest) {
+        if (quest?.title) return quest.title;
+        const target = this.formatQuestTarget(quest?.target, quest?.maxCount);
+        return quest?.type === 'COLLECT' ? `Collect ${target}` : `Kill ${target}`;
+    }
+
+    getQuestObjective(quest) {
+        if (quest?.objectiveText) return quest.objectiveText;
+        const target = this.formatQuestTarget(quest?.target, quest?.maxCount);
+        const verb = quest?.type === 'COLLECT' ? 'Collect' : 'Defeat';
+        return `${verb} ${quest?.maxCount || 0} ${target}.`;
+    }
+
+    getQuestRewardLabel(quest, options) {
+        return formatQuestRewards(quest, this.ctx.getLastPlayer?.(), options);
+    }
+
+    clearElement(element, retainedChild = null) {
+        const retained = new Set((Array.isArray(retainedChild) ? retainedChild : [retainedChild])
+            .filter(child => child && child.parentNode === element));
+        if (retained.size) {
+            for (const child of [...element.childNodes]) if (!retained.has(child)) child.remove();
+        } else element?.replaceChildren();
+    }
+
+    createMessage(text, styles = {}) {
+        const message = document.createElement('div');
+        message.className = 'quest-copy';
+        Object.assign(message.style, styles);
+        message.textContent = text;
+        return message;
+    }
+
+    buildRepeatableLadderSummary(quests) {
+        if (!Array.isArray(quests)) return null;
+
+        const repeatableQuests = quests.filter((quest) => quest?.id?.startsWith('daily_') && !quest.completed);
+        if (repeatableQuests.length === 0) return null;
+
+        const formatLadderLabel = (quest) => {
+            if (quest?.target === 'DungeonBossHeroic') return 'Dungeon Boss (Heroic)';
+            if (quest?.target === 'DungeonBossMythic') return 'Dungeon Boss (Mythic)';
+            return this.formatQuestTarget(quest?.target, quest?.maxCount);
+        };
+
+        const priority = quest => !quest.accepted ? 0 : quest.maxCount > 0 && quest.count >= quest.maxCount ? 2 : 1;
+        const topEntries = [...repeatableQuests]
+            .sort((left, right) => priority(right) - priority(left) ||
+                (Number(right?.rewardXP) || 0) - (Number(left?.rewardXP) || 0))
+            .slice(0, 3)
+            .map((quest) => ({
+                id: quest.id,
+                label: formatLadderLabel(quest),
+                accepted: Boolean(quest.accepted && !quest.completed),
+                completed: Boolean(quest.accepted && quest.count >= quest.maxCount),
+                progressText: `${Math.max(0, Number(quest.count) || 0)} / ${Math.max(0, Number(quest.maxCount) || 0)}`,
+                rewardXP: Number(quest.rewardXP) || 0,
+                rewardLabel: this.getQuestRewardLabel(quest)
+            }));
+
+        return {
+            acceptedCount: repeatableQuests.filter((quest) => quest?.accepted && !quest?.completed).length,
+            readyCount: repeatableQuests.filter((quest) => quest?.accepted && quest.count >= quest.maxCount).length,
+            topEntries
+        };
+    }
+
+    getDailyResetSnapshot() {
+        const progression = Number(this.ctx.getLastPlayer?.()?.level) >= MAX_PLAYER_LEVEL ? 'Resonance XP' : 'XP';
+        const serverEpochSeconds = Number(this.ctx.getServerEpochSeconds?.() || 0);
+        if (!Number.isFinite(serverEpochSeconds) || serverEpochSeconds <= 0) {
+            return {
+                statusLine: 'Daily quests reset at 12:00 AM Eastern Time',
+                ladderLine: `Daily contracts award ${progression} and gold. Choose targets suited to your character.`
+            };
+        }
+
+        const now = new Date(serverEpochSeconds * 1000);
+        const formatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'America/New_York',
+            hour: 'numeric',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true,
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric'
+        });
+        const parts = formatter.formatToParts(now);
+        const part = (type) => parts.find((entry) => entry.type === type)?.value || '';
+        const weekday = part('weekday');
+        const month = part('month');
+        const day = part('day');
+        const hour = part('hour');
+        const minute = Number(part('minute') || 0);
+        const second = Number(part('second') || 0);
+        const dayPeriod = part('dayPeriod');
+        const hour24 = Number(new Intl.DateTimeFormat('en-US', {
+            timeZone: 'America/New_York',
+            hour: 'numeric',
+            hourCycle: 'h23'
+        }).format(now));
+
+        let remainingTotalSeconds = (24 * 60 * 60) - ((hour24 * 60 * 60) + (minute * 60) + second);
+        if (remainingTotalSeconds <= 0) {
+            remainingTotalSeconds = 24 * 60 * 60;
+        }
+        const remainingHours = Math.floor(remainingTotalSeconds / 3600);
+        const remainingMinutes = Math.floor((remainingTotalSeconds % 3600) / 60);
+        const remainingSeconds = remainingTotalSeconds % 60;
+
+        const countdown = [remainingHours, remainingMinutes, remainingSeconds]
+            .map((value) => String(Math.max(0, value)).padStart(2, '0'))
+            .join(':');
+        const easternNow = `${weekday} ${month} ${day} • ${hour}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')} ${dayPeriod} ET`.trim();
+
+        return {
+            statusLine: `Daily reset: ${countdown} remaining (${easternNow})`,
+            ladderLine: `Daily contracts reset in ${countdown} and award ${progression} and gold. Choose targets suited to your character.`
+        };
+    }
+
+    isPlayerInTown(player = this.ctx.getLastPlayer?.()) {
+        if (!player?.position) return false;
+        const x = Number(player.position.x);
+        const z = Number(player.position.z);
+        if (!Number.isFinite(x) || !Number.isFinite(z)) return false;
+        return x >= -100 && x <= 100 && z >= 100 && z <= 300;
+    }
+
+    isStarterProgressionWindow(player = this.ctx.getLastPlayer?.()) {
+        const level = Number(player?.level);
+        return !Number.isFinite(level) || level < 30;
+    }
+
+    buildTownRecoveryObjective(quests) {
+        const hasAcceptedQuest = Array.isArray(quests) && quests.some((q) => q?.accepted && !q?.completed);
+        if (!hasAcceptedQuest) return null;
+        if (!this.isStarterProgressionWindow()) return null;
+        if (this.ctx.getCurrentInstanceId?.()) return null;
+        if ((this.ctx.getCurrentInstanceType?.() || 'overworld') !== 'overworld') return null;
+        if (!this.isPlayerInTown()) return null;
+
+        // A claimable quest is a concrete town action. A prior Recall/Respawn
+        // must not keep its generic orientation card ahead of manual turn-in.
+        // Keep the player's tracking choices and ordinary recovery unchanged.
+        if (quests.some(quest => quest?.accepted && !quest.completed &&
+            quest.maxCount > 0 && quest.count >= quest.maxCount)) return null;
+
+        const recovery = this.ctx.getOnboardingRecoveryContext?.() || null;
+        // The auto-start Chronicle is already a concrete next step. Generic
+        // town orientation should not displace it; explicit recovery still can.
+        if (!['respawn', 'recall'].includes(recovery?.reason) && quests.some((quest) => quest?.category === 'chronicle' && !quest.completed)) return null;
+        const reason = recovery?.reason || 'town_return';
+        const copyByReason = {
+            respawn: {
+                title: 'Recover in town and re-orient',
+                hint: 'Respawned in town. Anywhere inside Lanternhold restores 10% health and mana each second and builds Well Rested time. Repair or sort gear if needed, then open World Map (M) or Journal (J) to resume your route.'
+            },
+            recall: {
+                title: 'Re-orient after recalling',
+                hint: 'Recalled to town. Recover health and mana anywhere inside Lanternhold and build Well Rested time. Sort gear or repair if needed, then open World Map (M) or Journal (J) to resume your route.'
+            },
+            town_return: {
+                title: 'Pick up the route again',
+                hint: 'Back in town. Open World Map (M) or Journal (J), get your bearings, then head back to the next quest objective.'
+            }
+        };
+        const details = copyByReason[reason] || copyByReason.town_return;
+
+        return {
+            id: `starter-town-recovery-${reason}`,
+            title: details.title,
+            progressLabel: 'Town',
+            progressPct: 12,
+            rewardXP: 0,
+            completed: false,
+            badge: 'Town',
+            badgeClass: 'is-objective',
+            routeTone: 'support',
+            hint: details.hint
+        };
+    }
+
+    buildStarterTownObjective(quests) {
+        const hasAcceptedQuest = Array.isArray(quests) && quests.some((q) => q?.accepted && !q?.completed);
+        if (hasAcceptedQuest) return null;
+        if (!this.isStarterProgressionWindow()) return null;
+        if (this.ctx.getCurrentInstanceId?.()) return null;
+        if ((this.ctx.getCurrentInstanceType?.() || 'overworld') !== 'overworld') return null;
+        if (!this.isPlayerInTown()) return null;
+
+        return {
+            id: 'starter-town-quest-giver',
+            title: 'Meet Archmage Ilyra',
+            progressLabel: 'Town',
+            progressPct: 5,
+            rewardXP: 0,
+            completed: false,
+            badge: 'Town',
+            badgeClass: 'is-objective',
+            routeTone: 'support',
+            hint: 'Speak to Archmage Ilyra beneath the gold marker for your story; return and click Complete Quest to claim rewards. The blue Quest Giver by the Forge offers optional daily contracts. Open World Map (M) or Journal (J) for directions. Use the Stash, vendor obvious Common junk, check stronger drops before selling, and keep Shards, Hearts, and Gems for the Forge.'
+        };
+    }
+
+    buildTownProgressionObjective(quests) {
+        const hasAcceptedQuest = Array.isArray(quests) && quests.some((q) => q?.accepted && !q?.completed);
+        if (hasAcceptedQuest) return null;
+        if (this.isStarterProgressionWindow()) return null;
+        if (this.ctx.getCurrentInstanceId?.()) return null;
+        if ((this.ctx.getCurrentInstanceType?.() || 'overworld') !== 'overworld') return null;
+        if (!this.isPlayerInTown()) return null;
+
+        const level = Number(this.ctx.getLastPlayer?.()?.level || 0);
+        if (level >= 100) {
+            return {
+                id: 'town-progression-endgame',
+                title: 'Push Heroic and Mythic runs',
+                progressLabel: 'Town',
+                progressPct: 84,
+                rewardXP: 0,
+                completed: false,
+                badge: 'Endgame',
+                badgeClass: 'is-objective',
+                routeTone: 'support',
+                hint: 'Level 100 unlocked Heroic and Mythic. Visit the Dungeon Guide, choose a difficulty, check your build in Skills (K), and use the Forge before your next push.'
+            };
+        }
+
+        return {
+            id: 'town-progression-dungeon-guide',
+            title: 'Check the Dungeon Guide',
+            progressLabel: 'Town',
+            progressPct: 48,
+            rewardXP: 0,
+            completed: false,
+            badge: 'Town',
+            badgeClass: 'is-objective',
+            routeTone: 'support',
+            hint: 'Level 30 unlocked Verdant Bastion Catacombs. Other realms require higher levels; check the Dungeon Guide for each route. Use World Map (M), Journal (J), Stash, and Forge to get ready before leaving town.'
+        };
+    }
+
+    buildDungeonRouteSequenceHint(summary, objectiveRoom) {
+        if (!summary || !Array.isArray(summary.rooms) || !objectiveRoom) {
+            return '';
+        }
+
+        const currentObjectiveIndex = typeof objectiveRoom.index === 'number'
+            ? objectiveRoom.index
+            : Number(summary.objectiveRoomIndex);
+        if (!Number.isFinite(currentObjectiveIndex)) {
+            return '';
+        }
+
+        const nextMeaningfulRoom = findNextDungeonMeaningfulRoom(summary, currentObjectiveIndex);
+
+        const labelForRoom = (room) => {
+            if (!room) return null;
+            const role = getDungeonRoomRole(room);
+            if (['reward', 'event', 'recovery', 'boss', 'elite', 'approach'].includes(role)) return getDungeonRoomIdentityLabel(room);
+            if (room.index === currentObjectiveIndex && getDungeonRoomRole(nextMeaningfulRoom) === 'recovery') return getDungeonRoomIdentityLabel(room);
+            if (room.index === currentObjectiveIndex && getDungeonRoomRole(nextMeaningfulRoom) === 'boss') return getDungeonRoomIdentityLabel(room);
+            return null;
+        };
+
+        const orderedBeats = summary.rooms
+            .filter((room) => room && typeof room.index === 'number' && room.index >= currentObjectiveIndex && !room.cleared)
+            .map((room) => labelForRoom(room))
+            .filter(Boolean)
+            .filter((label, index, labels) => labels.indexOf(label) === index);
+
+        return orderedBeats.length >= 2 ? `Route: ${orderedBeats.join(' -> ')}` : '';
+    }
+
+    buildDungeonRoutingObjective() {
+        const instanceId = this.ctx.getCurrentInstanceId?.();
+        const summary = this.ctx.getDungeonRoomSummary?.();
+        if (!instanceId || !summary || !Array.isArray(summary.rooms) || summary.rooms.length === 0) {
+            return null;
+        }
+
+        const instanceType = this.ctx.getCurrentInstanceType?.() || 'dungeon';
+        const crystal = summary.crystal;
+        if (crystal?.stage === 'fractured' && summary.rooms.some(room => room?.type === 'boss') &&
+            summary.rooms.every(room => room && (room.type === 'start' || room.cleared))) {
+            return {
+                id: `dungeon-vigil-${instanceType}`,
+                title: 'Stay for Maelin’s Vigil', progressLabel: 'Guardian defeated · repair pending', progressPct: 0,
+                rewardXP: 0, completed: false, badge: 'Crystal Vigil', badgeClass: 'is-active', routeTone: 'support',
+                hint: 'The assault is cleared, but the crystal is not restored. Regroup in the crystal chamber for Maelin’s repair ritual.',
+                sequenceHint: 'Defend all three waves and complete their ritual tasks before returning to Ilyra.'
+            };
+        }
+        if (crystal?.stage === 'restored') {
+            return {
+                id: `dungeon-vigil-${instanceType}`,
+                title: 'Return to Ilyra in town', progressLabel: 'Crystal restored · 3/3 waves', progressPct: 100,
+                rewardXP: 0, completed: true, badge: 'Exit', badgeClass: 'is-exit', routeTone: 'support',
+                hint: 'Return to Lanternhold and speak to Ilyra. Use Complete Quest for your ready repair quest; each character claims personally.',
+                sequenceHint: 'Press B or use Return to Lanternhold in the Escape menu. Check your Chronicle, then click Complete Quest with Ilyra. Every character must claim their own quest.'
+            };
+        }
+        if (crystal?.stage === 'repairing') {
+            const ritual = crystal.objective;
+            return {
+                id: `dungeon-vigil-${instanceType}`,
+                title: ritual?.title || `Defend ${crystal.name || 'the crystal'}`,
+                progressLabel: crystal.wave > 0
+                    ? `Wave ${crystal.wave}/3 · ${ritual?.current || 0}/${ritual?.total || 1}` : 'Preparing the Vigil',
+                progressPct: Math.min(99, Number(crystal.progress) || 0),
+                rewardXP: 0,
+                completed: false,
+                badge: ritual?.paused ? 'Regroup' : 'Crystal Vigil',
+                badgeClass: 'is-objective',
+                routeTone: 'support',
+                hint: ritual?.hint || 'Stay with Maelin and defeat the three repair waves.',
+                sequenceHint: 'Finish the ritual task AND defeat every attacker. Return to Ilyra after all three waves.'
+            };
+        }
+        const objectiveRoom = typeof summary.objectiveRoomIndex === 'number' && summary.objectiveRoomIndex >= 0
+            ? summary.rooms.find((room) => room && room.index === summary.objectiveRoomIndex)
+            : null;
+
+        const clearedCount = summary.rooms.filter((room) => room?.cleared && room.type !== 'start').length;
+        const traversableRooms = summary.rooms.filter((room) => room && room.type !== 'start');
+        const totalProgressRooms = Math.max(1, traversableRooms.length);
+        const progressLabel = `${Math.min(clearedCount, totalProgressRooms)} / ${totalProgressRooms}`;
+        const progressPct = Math.min(100, (Math.min(clearedCount, totalProgressRooms) / totalProgressRooms) * 100);
+        const isLiveBossObjective = isLiveDungeonBossRoom(objectiveRoom, summary);
+        const sequenceHint = isLiveBossObjective ? '' : this.buildDungeonRouteSequenceHint(summary, objectiveRoom);
+
+        if (!objectiveRoom) {
+            const nexus = instanceType === 'umbral_nexus' && this.ctx.getLastPlayer?.()?.quests?.some(quest =>
+                quest?.id === 'chronicle_14_resonance_gate' && quest.accepted && !quest.completed);
+            return {
+                id: `dungeon-route-${instanceType}`,
+                title: nexus ? 'Return to Ilyra in town' : 'Return to Lanternhold',
+                progressLabel,
+                progressPct,
+                rewardXP: 0,
+                completed: true,
+                badge: 'Exit',
+                badgeClass: 'is-exit',
+                routeTone: 'support',
+                hint: nexus ? 'Nexus cleared — return to Ilyra and click Complete Quest for your ready Fifth Note. Each character claims personally; boss loot does not unlock the court.'
+                    : 'Boss down — press B or use Return to Lanternhold in the Escape menu to leave with your loot',
+                sequenceHint: nexus ? 'Press B or use Return to Lanternhold in the Escape menu. After your personal claim, speak to the Dungeon Guide and prepare the Dark King raid.' : '',
+                ...getFinaleExitGuidance(instanceType, this.ctx.getLastPlayer?.()?.quests)
+            };
+        }
+
+        const nextUnclearedBeat = objectiveRoom ? findNextDungeonMeaningfulRoom(summary, objectiveRoom.index) : null;
+        const cadenceLabel = getDungeonCadenceLabel(objectiveRoom);
+        const roomIdentityLabel = getDungeonRoomIdentityLabel(objectiveRoom);
+        const roomIdentityHint = getDungeonRoomIdentityHint(objectiveRoom);
+        const difficultyPacingLabel = getDungeonDifficultyPacingLabel(summary);
+        const difficultyPacingHint = getDungeonDifficultyPacingHint(summary);
+        const cadenceWithContext = [cadenceLabel, roomIdentityLabel, difficultyPacingLabel].filter(Boolean).join(' • ');
+        const withRouteContext = (hint) => [hint, roomIdentityHint, difficultyPacingHint].filter(Boolean).join(' ');
+
+        if (getDungeonRoomRole(objectiveRoom) === 'recovery') {
+            return {
+                id: `dungeon-route-${instanceType}`,
+                title: 'Reach the shrine room',
+                progressLabel,
+                progressPct,
+                rewardXP: 0,
+                completed: false,
+                badge: 'Shrine',
+                badgeClass: 'is-shrine',
+                routeTone: 'support',
+                hint: withRouteContext(getDungeonRoomRole(nextUnclearedBeat) === 'boss'
+                    ? 'Last reset before the boss push'
+                    : objectiveRoom.explored
+                        ? 'Shrine discovered'
+                        : 'A restorative shrine lies ahead'),
+                sequenceHint,
+                cadenceLabel: cadenceWithContext
+            };
+        }
+
+        if (getDungeonRoomRole(objectiveRoom) === 'reward') {
+            return {
+                id: `dungeon-route-${instanceType}`,
+                title: 'Secure the treasure room',
+                progressLabel,
+                progressPct,
+                rewardXP: 0,
+                completed: false,
+                badge: 'Chest',
+                badgeClass: 'is-chest',
+                routeTone: 'support',
+                hint: withRouteContext(getDungeonRoomRole(nextUnclearedBeat) === 'event'
+                    ? 'Quick score before the ambush spike'
+                    : objectiveRoom.explored
+                        ? 'Treasure room discovered'
+                        : 'Treasure cache detected deeper inside'),
+                sequenceHint,
+                cadenceLabel: cadenceWithContext
+            };
+        }
+
+        if (getDungeonRoomRole(objectiveRoom) === 'event') {
+            return {
+                id: `dungeon-route-${instanceType}`,
+                title: 'Survive the ambush room',
+                progressLabel,
+                progressPct,
+                rewardXP: 0,
+                completed: false,
+                badge: 'Ambush',
+                badgeClass: 'is-ambush',
+                routeTone: 'warning',
+                hint: withRouteContext('Elite room ahead — pressure spike incoming'),
+                sequenceHint,
+                cadenceLabel: cadenceWithContext
+            };
+        }
+
+        if (getDungeonRoomRole(objectiveRoom) === 'boss') {
+            return {
+                id: `dungeon-route-${instanceType}`,
+                title: isLiveBossObjective ? 'Survive the boss fight' : 'Commit to the boss room',
+                progressLabel,
+                progressPct,
+                rewardXP: 0,
+                completed: false,
+                badge: isLiveBossObjective ? 'Boss Now' : 'Boss',
+                badgeClass: 'is-boss',
+                routeTone: 'danger',
+                hint: withRouteContext(isLiveBossObjective
+                    ? 'You are in the boss room — commit and survive'
+                    : 'Boss room ahead — reset and commit'),
+                sequenceHint,
+                cadenceLabel: cadenceWithContext
+            };
+        }
+
+        if (getDungeonRoomRole(objectiveRoom) === 'elite') {
+            return {
+                id: `dungeon-route-${instanceType}`,
+                title: 'Clear the elite room',
+                progressLabel,
+                progressPct,
+                rewardXP: 0,
+                completed: false,
+                badge: 'Elite',
+                badgeClass: 'is-elite',
+                routeTone: 'warning',
+                hint: withRouteContext(objectiveRoom.explored ? 'Elite room discovered' : 'Elite threat ahead'),
+                sequenceHint,
+                cadenceLabel: cadenceWithContext
+            };
+        }
+
+        if (getDungeonRoomRole(objectiveRoom) === 'approach') {
+            return {
+                id: `dungeon-route-${instanceType}`,
+                title: 'Break through the boss approach',
+                progressLabel,
+                progressPct,
+                rewardXP: 0,
+                completed: false,
+                badge: 'Approach',
+                badgeClass: 'is-approach',
+                routeTone: 'warning',
+                hint: withRouteContext('Final room before the boss — clear it, then commit'),
+                sequenceHint,
+                cadenceLabel: cadenceWithContext
+            };
+        }
+
+        const unclearedNonBossRooms = traversableRooms.filter((room) => !room.cleared && room.type !== 'boss');
+        const remainingRooms = Math.max(1, unclearedNonBossRooms.length);
+        const nextMeaningfulRoom = findNextDungeonMeaningfulRoom(summary, objectiveRoom.index);
+        const isBridgeToBoss = getDungeonRoomRole(nextMeaningfulRoom) === 'boss' && remainingRooms === 1;
+        const isBridgeToShrine = getDungeonRoomRole(nextMeaningfulRoom) === 'recovery';
+
+        return {
+            id: `dungeon-route-${instanceType}`,
+            title: isBridgeToBoss
+                ? 'Break through the last approach room'
+                : isBridgeToShrine
+                    ? 'Clear through to the shrine route'
+                    : 'Push deeper into the dungeon',
+            progressLabel,
+            progressPct,
+            rewardXP: 0,
+            completed: false,
+            badge: 'Objective',
+            badgeClass: 'is-objective',
+            routeTone: 'neutral',
+            hint: withRouteContext(isBridgeToBoss
+                ? 'Boss path open — one last room before the boss'
+                : isBridgeToShrine
+                    ? `${remainingRooms} rooms remain before the shrine reset`
+                    : `Clear ${remainingRooms} more rooms`),
+            sequenceHint,
+            cadenceLabel: cadenceWithContext
+        };
+    }
+
+    buildObjectiveSummary(quests) {
+        const questObjectives = Array.isArray(quests)
+            ? quests
+                .filter((q) => q && q.accepted && !q.completed)
+                .map((q) => {
+                    const remaining = Math.max(0, (q.maxCount || 0) - (q.count || 0));
+                    const isChronicle = q.category === 'chronicle';
+                    return {
+                        id: q.id,
+                        legacyOptional: Boolean(q.legacyOptional),
+                        title: this.getQuestTitle(q),
+                        progressLabel: `${q.count || 0} / ${q.maxCount || 0}`,
+                        progressPct: q.maxCount > 0 ? Math.min(100, ((q.count || 0) / q.maxCount) * 100) : 0,
+                        rewardXP: q.rewardXP || 0,
+                        rewardLabel: this.getQuestRewardLabel(q),
+                        completed: Boolean(q.completed || ((q.count || 0) >= (q.maxCount || 0))),
+                        badge: isChronicle ? q.legacyOptional ? q.type === 'INVESTIGATE' ? 'Story · Optional lore' : 'Story · Optional expedition' : `Story ${q.chapter || ''}`.trim() : 'Daily',
+                        badgeClass: isChronicle ? 'is-objective' : '',
+                        routeTone: isChronicle ? 'warning' : 'neutral',
+                        hint: q.maxCount > 0 && q.count >= q.maxCount
+                            ? `Speak to ${isChronicle ? 'Archmage Ilyra' : 'the Quest Giver'} in town and click Complete Quest`
+                            : isChronicle
+                            ? this.getQuestObjective(q)
+                            : remaining > 0 ? `${remaining} remaining` : 'Return to the quest NPC for your reward'
+                    };
+                })
+                .sort((left, right) => Number(right.badge?.startsWith('Story')) * (right.legacyOptional ? 1 : 2) - Number(left.badge?.startsWith('Story')) * (left.legacyOptional ? 1 : 2))
+            : [];
+
+        const nextStory = getCurrentChronicleQuest(quests);
+        const offeredStory = nextStory && !nextStory.accepted ? nextStory : null;
+        if (offeredStory) questObjectives.unshift({
+            id: offeredStory.id, title: 'Speak to Archmage Ilyra', progressLabel: 'Available', progressPct: 0,
+            badge: `Story ${offeredStory.chapter || 1}`, badgeClass: 'is-objective', routeTone: 'warning',
+            hint: 'Follow the gold ! in Lanternhold to accept your next Chronicle chapter.'
+        });
+
+        const dungeonObjective = this.buildDungeonRoutingObjective();
+        if (dungeonObjective) {
+            return [dungeonObjective, ...questObjectives];
+        }
+
+        const townRecoveryObjective = this.buildTownRecoveryObjective(quests);
+        if (townRecoveryObjective) {
+            return [townRecoveryObjective, ...questObjectives];
+        }
+        if (offeredStory) return questObjectives;
+
+        const starterTownObjective = this.buildStarterTownObjective(quests);
+        if (starterTownObjective) {
+            return [starterTownObjective, ...questObjectives];
+        }
+
+        const townProgressionObjective = this.buildTownProgressionObjective(quests);
+        return townProgressionObjective ? [townProgressionObjective, ...questObjectives] : questObjectives;
+    }
+
+    renderObjectiveGuidance(objective, entry) {
+        if (!objective || !entry) return;
+        // Enrich the primary objective itself instead of repeating its title
+        // and instructions in a separate card above the objective list.
+        entry.classList.add('objective-guidance');
+        const heading = this.createMessage('Next Step');
+        heading.className = 'objective-guidance__heading';
+        entry.prepend(heading);
+        const appendDetail = (text, className) => {
+            const detail = this.createMessage(text);
+            detail.className = className;
+            entry.appendChild(detail);
+        };
+        if (objective.cadenceLabel) appendDetail(`Cadence: ${objective.cadenceLabel}`, 'objective-guidance__cadence');
+        if (objective.sequenceHint) appendDetail(objective.sequenceHint, 'objective-guidance__sequence');
+        appendDetail('World Map (M) · Journal (J)', 'objective-guidance__footer');
+    }
+
+    renderObjectivesPanel(summary) {
+        this.tracker.update(summary);
+    }
+
+    // ================================================================
+    // QUEST NPC WINDOW
+    // ================================================================
+
+    updateQuestWindow(quests) {
+        if (!this.questList) return;
+        this.acknowledgeRewardClaim(quests);
+        const rewardFocus = this.questList.contains(document.activeElement) ? { item: document.activeElement.dataset.rewardItem, claim: document.activeElement.dataset.rewardClaim } : null;
+        const pending = this.pendingQuestAction;
+        const acknowledged = pending && quests?.find((quest) => quest.id === pending.quest.id && (pending.complete ? quest.completed : quest.accepted));
+        if (acknowledged) {
+            if (pending.complete && (pending.quest.category === 'chronicle') === (this.questKind === 'story')) this.completedDialogue = { ...pending.quest, ...acknowledged };
+            this.pendingQuestAction = null;
+        }
+        if (this.witnessId) {
+            renderWitnessConversation(this, quests);
+            return;
+        }
+        const signature = JSON.stringify([this.questKind, this.selectedQuestId, quests, this.completedDialogue?.id, Boolean(this.pendingQuestAction), this.pendingRewardClaim, this.questActionError, Number(this.ctx.getLastPlayer?.()?.level) >= MAX_PLAYER_LEVEL]);
+        if (signature === this.questWindowSignature) return;
+        this.questWindowSignature = signature;
+        const offered = (quests || []).filter(q => !q.completed &&
+            (q.category === 'chronicle' || Boolean(q.id?.startsWith('chronicle_'))) === (this.questKind === 'story'));
+        const route = `${this.questKind}:${this.completedDialogue ? `reply:${this.completedDialogue.id}`
+            : this.selectedQuestId || (this.questKind === 'story' ? offered[0]?.id : 'contracts')}`;
+        const sameRoute = route === this.conversationRoute;
+        this.conversationReading ||= new Map();
+        if (this.conversationRoute) this.conversationReading.set(this.conversationRoute, {
+            scroll: this.questList.scrollTop, loreOpen: Boolean(this.questList.querySelector('details')?.open)
+        });
+        const { scroll = 0, loreOpen = false } = this.conversationReading.get(route) || {};
+        const loreFocused = sameRoute && document.activeElement === this.questList.querySelector('details > summary');
+        this.conversationRoute = route;
+        renderQuestConversation(this, quests);
+        if (loreOpen && this.questList.querySelector('details')) this.questList.querySelector('details').open = true;
+        if (this.questActions) {
+            // Keep reachable actions mounted across state updates: focus and a
+            // held pointer belong to this DOM node, not its replacement.
+            const remaining = new Set(this.questActions.children);
+            for (const next of this.questList.querySelectorAll('.quest-dialogue > button, .quest-dialogue__actions > button, .quest-dialogue__error')) {
+                const current = next.dataset.questAction && [...remaining].find(node => node.dataset.questAction === next.dataset.questAction);
+                if (current) {
+                    current.onclick = next.onclick;
+                    current.disabled = next.disabled;
+                    current.textContent = next.textContent;
+                    remaining.delete(current);
+                    next.remove();
+                } else this.questActions.appendChild(next);
+            }
+            for (const obsolete of remaining) obsolete.remove();
+        }
+        this.questList.scrollTop = acknowledged ? 0 : scroll;
+        this.restoreRewardFocus(this.questList, rewardFocus);
+        if (loreFocused && !acknowledged) this.questList.querySelector('details > summary')?.focus({ preventScroll: true });
+        if (acknowledged && this.isQuestWindowOpen) {
+            const focusTarget = this.ctx.isMobile ? this.questList.querySelector('h3') : this.questList.querySelector('button:not(:disabled)');
+            if (focusTarget) {
+                if (this.ctx.isMobile) focusTarget.tabIndex = -1;
+                focusTarget.focus({ preventScroll: true });
+            }
+        }
+    }
+
+    restoreRewardFocus(parent, focus) {
+        if (!focus?.item && !focus?.claim) return;
+        [...parent?.querySelectorAll('[data-reward-item], [data-reward-claim]') || []]
+            .find(control => focus.item ? control.dataset.rewardItem === focus.item : control.dataset.rewardClaim === focus.claim)?.focus({ preventScroll: true });
+    }
+
+    acknowledgeRewardClaim(quests) {
+        if (this.pendingRewardClaim && quests?.some(q => q.id === this.pendingRewardClaim.questId && q.claimedRewardId)) {
+            this.pendingRewardClaim = null;
+            this.questActionError = '';
+        }
+    }
+
+    claimQuestItem(questId, itemId) {
+        if (this.disposed || this.pendingRewardClaim || !this.onClaimQuestItem) return;
+        this.pendingRewardClaim = { questId, itemId };
+        this.questActionError = '';
+        const quests = this.ctx.getLastPlayer?.()?.quests || [];
+        this.updateQuestWindow(quests);
+        this.updateJournal(quests);
+        this.onClaimQuestItem(questId, itemId);
+    }
+
+    handleQuestActionError(message) {
+        if (!this.pendingQuestAction && !this.pendingRewardClaim) return;
+        this.pendingRewardClaim = null;
+        this.pendingQuestAction = null;
+        this.questActionError = String(message);
+        this.updateQuestWindow(this.ctx.getLastPlayer()?.quests || []);
+        this.updateJournal(this.ctx.getLastPlayer()?.quests || []);
+    }
+
+    // ================================================================
+    // QUEST JOURNAL
+    // ================================================================
+
+    setJournalView(view) {
+        this.journalView = ['all', 'story', 'contracts', 'lore'].includes(view) ? view : 'all';
+        this.applyJournalView();
+        if (this.journalList) this.journalList.scrollTop = 0;
+    }
+
+    updateJournalNavigation(quests) {
+        if (!this.journalList) return;
+        const identity = this.ctx.getLastPlayer?.()?.id || this.ctx.getLastPlayer?.()?.characterId;
+        if (identity !== this.journalIdentity) {
+            this.journalIdentity = identity;
+            this.journalView = 'all';
+        }
+        if (!this.journalNavigation) {
+            const nav = document.createElement('div');
+            nav.className = 'quest-journal-navigation';
+            nav.setAttribute('role', 'group');
+            nav.setAttribute('aria-label', 'Quest journal sections');
+            for (const [view, label] of [['all', 'All quests'], ['story', 'Story'], ['contracts', 'Contracts'], ['lore', 'Lore Book']]) {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.dataset.journalView = view;
+                button.dataset.label = label;
+                button.setAttribute('aria-controls', 'journal-list');
+                button.addEventListener('click', () => this.setJournalView(view));
+                nav.appendChild(button);
+            }
+            nav.addEventListener('keydown', event => {
+                if ([' ', 'Enter'].includes(event.key)) event.stopPropagation();
+            });
+            this.journalList.before(nav);
+            this.journalNavigation = nav;
+        }
+        const contracts = (quests || []).filter(q => q.accepted && !q.completed && q.category !== 'chronicle' && !q.id?.startsWith('chronicle_'));
+        for (const button of this.journalNavigation.children) {
+            button.textContent = button.dataset.label + (button.dataset.journalView === 'contracts' ? ` (${contracts.length})` : '');
+        }
+    }
+
+    applyJournalView() {
+        const view = this.journalView || 'all';
+        this.questJournal?.classList.toggle('is-lore-book', view === 'lore');
+        for (const button of this.journalNavigation?.children || []) {
+            button.setAttribute('aria-pressed', String(button.dataset.journalView === view));
+        }
+        for (const section of this.journalList?.querySelectorAll('[data-journal-section]') || []) {
+            section.hidden = section.dataset.journalSection === 'lore' ? view !== 'lore'
+                : view !== 'all' && section.dataset.journalSection !== view;
+        }
+        for (const shared of this.journalList?.querySelectorAll('[data-journal-shared]') || []) shared.hidden = view === 'lore';
+        const existing = this.journalList?.querySelector('.quest-journal-empty');
+        existing?.remove();
+        if (view !== 'all' && !this.journalList?.querySelector(`[data-journal-section="${view}"]:not(.quest-journal-reset)`)) {
+            const empty = this.createMessage(view === 'story'
+                ? 'No story chapters recorded. Speak to Archmage Ilyra in Lanternhold.'
+                : 'No active contracts. Visit the daily quest giver in Lanternhold to choose one.');
+            empty.className = 'quest-journal-empty';
+            this.journalList?.appendChild(empty);
+        }
+    }
+
+    renderChronicleSection(quests, existingRecords = new Map(), existingRecap = null) {
+        const chronicle = Array.isArray(quests)
+            ? quests.filter((q) => q?.category === 'chronicle' || q?.id?.startsWith('chronicle_'))
+                .sort((left, right) => (Number(left.chapter) || 0) - (Number(right.chapter) || 0))
+            : [];
+        if (chronicle.length === 0) return false;
+
+        const completed = chronicle.filter((quest) => quest.completed);
+        const current = getCurrentChronicleQuest(chronicle);
+        const optional = chronicle.filter(quest => quest.legacyOptional && !quest.completed);
+        const optionalKind = optional.some(quest => quest.type !== 'INVESTIGATE') ? 'story chapters' : 'investigations';
+        const section = document.createElement('section');
+        section.className = 'chronicle-journal';
+        section.dataset.journalSection = 'story';
+
+        section.appendChild(this.createMessage('The Fourfold Chronicle', {
+            color: '#dfb5ff', fontSize: '14px', fontWeight: 'bold', letterSpacing: '0.08em', textTransform: 'uppercase'
+        }));
+        section.appendChild(this.createMessage(
+            `${completed.length} of ${CHRONICLE_CHAPTER_COUNT} chapters complete${optional.length ? ` • ${optional.length} earlier ${optionalKind} optional` : ''} • Earth → Water → Fire → Air → Dark Realm`,
+            { color: '#aab8d0', fontSize: '11px' }
+        ));
+
+        if (current) {
+            section.appendChild(this.createTrackingControl(current));
+            const map = this.createQuestMapControl(current); if (map) section.appendChild(map);
+            section.appendChild(this.createMessage(!current.accepted ? 'Available from Archmage Ilyra in Lanternhold' : current.count >= current.maxCount ? 'Ready to complete — return to Archmage Ilyra' : 'Given by Archmage Ilyra · Return to her when ready', { color: '#ffd56a', fontSize: '12px' }));
+            section.appendChild(this.createMessage(`Chapter ${current.chapter}: ${this.getQuestTitle(current)}`, {
+                color: '#fff2bd', fontSize: '15px', fontWeight: 'bold', marginTop: '3px'
+            }));
+            section.appendChild(this.createMessage(current.description || this.getQuestObjective(current), {
+                color: '#e0e4ed', fontSize: '12px', lineHeight: '1.55'
+            }));
+            section.appendChild(this.createMessage(`Objective — ${this.getQuestObjective(current)}`, {
+                color: '#ffd36f', fontSize: '12px', fontWeight: 'bold'
+            }));
+            section.appendChild(this.createMessage(`${current.count || 0} / ${current.maxCount || 0} • ${this.getQuestRewardLabel(current)}`, {
+                color: '#8fd3ff', fontSize: '11px'
+            }));
+            if (current.lore && current.type !== 'INVESTIGATE') {
+                const lore = document.createElement('blockquote');
+                lore.style.margin = '5px 0 0';
+                lore.style.padding = '9px 11px';
+                lore.style.borderLeft = '3px solid rgba(192, 102, 255, 0.65)';
+                lore.style.background = 'rgba(6, 8, 15, 0.42)';
+                lore.style.color = '#c9bed6';
+                lore.style.fontSize = '11px';
+                lore.style.lineHeight = '1.55';
+                lore.textContent = current.lore;
+                section.appendChild(lore);
+            }
+        } else if (hasCompletedDarkKing(chronicle)) {
+            section.appendChild(this.createMessage('The resonance is whole. Malachar has fallen, and Eidolon belongs to no king.', {
+                color: '#7cf0a5', fontSize: '13px', fontWeight: 'bold'
+            }));
+            section.appendChild(this.createMessage('Speak to Archmage Ilyra to read A Letter Without a Throne. Your completed Chronicle and earned rewards are unchanged.', {
+                color: '#aab8d0', fontSize: '12px', lineHeight: '1.55'
+            }));
+        } else {
+            section.appendChild(this.createMessage('The Chronicle continues. Return to Archmage Ilyra in Lanternhold to review your next chapter.', {
+                color: '#ffd56a', fontSize: '13px', fontWeight: 'bold'
+            }));
+        }
+
+        appendChronicleRecap(section, chronicle, existingRecap);
+        if (completed.length > 0) {
+            const archive = document.createElement('details');
+            archive.className = 'quest-chronicle-archive';
+            const summary = document.createElement('summary');
+            summary.textContent = `Recovered Lore (${completed.length})`;
+            summary.style.color = '#caa8e7';
+            summary.style.cursor = 'pointer';
+            summary.style.fontSize = '11px';
+            archive.appendChild(summary);
+            completed.forEach((quest) => {
+                const entry = document.createElement('div');
+                entry.style.marginTop = '8px';
+                entry.style.paddingTop = '8px';
+                entry.style.borderTop = '1px solid rgba(255,255,255,0.08)';
+                entry.appendChild(this.createMessage(`Chapter ${quest.chapter}: ${this.getQuestTitle(quest)}`, {
+                    color: '#ded3e8', fontSize: '11px', fontWeight: 'bold'
+                }));
+                entry.appendChild(this.createMessage(quest.lore || quest.description || '', {
+                    color: '#9fa8b8', fontSize: '11px', lineHeight: '1.45', marginTop: '3px'
+                }));
+                archive.appendChild(entry);
+            });
+            section.appendChild(archive);
+        }
+        if (optional.length) {
+            const catchup = document.createElement('section');
+            catchup.append(this.createMessage(`Optional earlier ${optionalKind}`, { color: '#dfb5ff', fontWeight: 'bold' }));
+            catchup.append(this.createMessage('Your completed dungeon and raid access is unchanged. Ask Ilyra about these discoveries when you wish.'));
+            for (const quest of optional) {
+                catchup.append(this.createMessage(this.getQuestTitle(quest)));
+                if (quest.accepted) {
+                    catchup.append(this.createTrackingControl(quest));
+                    const map = this.createQuestMapControl(quest); if (map) catchup.append(map);
+                    catchup.append(this.createMessage(this.getQuestObjective(quest)));
+                }
+            }
+            section.append(catchup);
+        }
+        for (const quest of chronicle) {
+            const discoveries = getRecordedChronicleDiscoveries(quest);
+            if (!discoveries.length) continue;
+            const records = document.createElement('section');
+            records.append(this.createMessage(`Field records · ${this.getQuestTitle(quest)}`, { color: '#ffd36f', fontWeight: 'bold' }));
+            for (const site of discoveries) {
+                // Authored evidence is immutable within this client session.
+                // Keep its actual controls/text nodes across reward/countdown
+                // refreshes so an in-flight reading gesture retains its target.
+                const record = existingRecords.get(site.id) || document.createElement('details');
+                if (!record.dataset.discoveryId) {
+                    record.dataset.discoveryId = site.id;
+                    const heading = document.createElement('summary');
+                    heading.textContent = site.title;
+                    record.append(heading);
+                    for (const paragraph of site.text.split(/\n\s*\n/)) record.append(this.createMessage(paragraph, { lineHeight: '1.6' }));
+                }
+                records.append(record);
+            }
+            section.append(records);
+        }
+        for (const [realm, restoration] of Object.entries(CHRONICLE_RESTORATIONS)) {
+            if (!hasChronicleRestoration(chronicle, realm)) continue;
+            const id = `restoration-${realm}`;
+            const record = existingRecords.get(id) || document.createElement('details');
+            if (!record.dataset.discoveryId) {
+                record.dataset.discoveryId = id;
+                const heading = document.createElement('summary');
+                heading.textContent = `After the Vigil · ${restoration.title}`;
+                record.append(heading);
+                for (const paragraph of restoration.text.split(/\n\s*\n/)) record.append(this.createMessage(paragraph, { lineHeight: '1.6' }));
+            }
+            section.append(record);
+        }
+        this.journalList.appendChild(section);
+        return Boolean(current);
+    }
+
+    updateJournal(quests) {
+        if (this.disposed) return;
+        this.acknowledgeRewardClaim(quests);
+        const rewardFocus = this.journalList?.contains(document.activeElement) ? { item: document.activeElement.dataset.rewardItem, claim: document.activeElement.dataset.rewardClaim } : null;
+        const loreFocus = this.loreBook?.element.contains(document.activeElement) ? document.activeElement : null;
+        const loreScroll = this.loreBook && this.loreBook.identity === this.journalIdentity ? {
+            index: this.loreBook.index.scrollTop, article: this.loreBook.article.scrollTop,
+            pageSignature: this.loreBook.pageSignature
+        } : null;
+        const existingRecap = this.journalList?.querySelector('.quest-chronicle-recap');
+        const recapFocused = Boolean(existingRecap && document.activeElement === existingRecap.firstElementChild);
+        const existingRecords = new Map([...this.journalList?.querySelectorAll('details[data-discovery-id]') || []]
+            .map(record => [record.dataset.discoveryId, record]));
+        const scroll = this.journalList?.scrollTop || 0;
+        const archiveOpen = Boolean(this.journalList?.querySelector('.quest-chronicle-archive')?.open);
+        const archiveFocused = document.activeElement === this.journalList?.querySelector('.quest-chronicle-archive > summary');
+        const dailyOpen = this.journalList?.querySelector('.quest-repeatable-ladder')?.open;
+        const dailyFocused = document.activeElement === this.journalList?.querySelector('.quest-repeatable-ladder > summary');
+        const focusedQuest = this.journalList?.contains(document.activeElement) ? document.activeElement.dataset.questTrack : null;
+        const focusedQuestMap = !loreFocus && this.journalList?.contains(document.activeElement) ? document.activeElement.dataset.questMap : null;
+        const openDiscoveries = new Set([...this.journalList?.querySelectorAll('details[data-discovery-id][open]') || []].map(record => record.dataset.discoveryId));
+        const focusedDiscovery = document.activeElement?.closest?.('details[data-discovery-id]')?.dataset.discoveryId;
+        const restoreReading = () => {
+            this.applyJournalView();
+            this.restoreRewardFocus(this.journalList, rewardFocus);
+            if (this.journalView === 'lore' && loreFocus) {
+                const key = loreFocus.dataset.loreAction ? 'loreAction' : loreFocus.dataset.memoryId ? 'memoryId' : null;
+                const replacement = key && [...this.loreBook.element.querySelectorAll('button')]
+                    .find(button => button.dataset[key] === loreFocus.dataset[key]);
+                (loreFocus.isConnected ? loreFocus : replacement)?.focus({ preventScroll: true });
+            }
+            // Detached lists have no layout/scroll range. Restore only after
+            // reattaching the book and making its reading view visible again.
+            if (loreScroll && this.journalView === 'lore') {
+                this.loreBook.index.scrollTop = loreScroll.index;
+                if (this.loreBook.pageSignature === loreScroll.pageSignature) this.loreBook.article.scrollTop = loreScroll.article;
+            }
+            if (recapFocused && existingRecap?.isConnected) existingRecap.firstElementChild.focus({ preventScroll: true });
+            const archive = this.journalList?.querySelector('.quest-chronicle-archive');
+            if (archive && archiveOpen) archive.open = true;
+            if (archiveFocused) archive?.querySelector('summary')?.focus({ preventScroll: true });
+            if (dailyFocused) this.journalList?.querySelector('.quest-repeatable-ladder > summary')?.focus({ preventScroll: true });
+            if (focusedQuest) [...this.journalList.querySelectorAll('[data-quest-track]')]
+                .find(input => input.dataset.questTrack === focusedQuest)?.focus({ preventScroll: true });
+            if (focusedQuestMap) [...this.journalList.querySelectorAll('[data-quest-map]')]
+                .find(button => !this.loreBook?.element.contains(button) && button.dataset.questMap === focusedQuestMap)?.focus({ preventScroll: true });
+            for (const record of this.journalList?.querySelectorAll('details[data-discovery-id]') || []) {
+                record.open = openDiscoveries.has(record.dataset.discoveryId);
+                if (record.dataset.discoveryId === focusedDiscovery) record.querySelector('summary')?.focus({ preventScroll: true });
+            }
+            // Restore expanded height first: browsers otherwise clamp the
+            // saved offset to the shorter, collapsed journal's scroll range.
+            if (this.journalList) this.journalList.scrollTop = scroll;
+        };
+        this.lastJournalQuests = quests;
+        this.renderObjectivesPanel(this.buildObjectiveSummary(quests));
+        this.updateJournalNavigation(quests);
+        // A mouse press belongs to a continuously attached element. Reusing
+        // its node after detaching the whole section still cancels the click.
+        const rewardRoot = this.rewardChoiceRoots?.get('journal');
+        const retainedLore = this.loreBook?.identity === this.journalIdentity ? this.loreBook?.element : null;
+        this.clearElement(this.journalList, [rewardRoot, retainedLore]);
+        const appendPrelude = node => this.journalList.insertBefore(node,
+            rewardRoot?.parentNode === this.journalList ? rewardRoot : null);
+        if (this.journalList) {
+            this.loreBook ||= new LoreBook(this);
+            this.loreBook.update(quests, this.journalIdentity);
+            if (this.loreBook.element.parentNode !== this.journalList) appendPrelude(this.loreBook.element);
+        }
+        const resetSnapshot = this.getDailyResetSnapshot();
+
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'quest-journal-reset';
+        infoDiv.dataset.journalSection = 'contracts';
+        infoDiv.style.color = '#888';
+        infoDiv.style.fontSize = '12px';
+        infoDiv.style.marginBottom = '15px';
+        infoDiv.style.textAlign = 'center';
+        infoDiv.style.borderBottom = '1px solid #444';
+        infoDiv.style.paddingBottom = '10px';
+        infoDiv.textContent = resetSnapshot.statusLine;
+        appendPrelude(infoDiv);
+        const trackingHint = this.createMessage(this.ctx.isMobile
+            ? 'Choose “Track on screen” below; use › on the tracker to cycle quests. Story tracking follows new chapters.'
+            : 'Choose “Track on screen” on any quest. Scroll the left tracker to see all your selections. Story tracking follows the next chapter.');
+        trackingHint.className = 'quest-tracking-hint';
+        trackingHint.dataset.journalShared = 'true';
+        appendPrelude(trackingHint);
+
+        appendQuestRewardChoices(this, quests, this.journalList, 'journal');
+        const hasActiveChronicle = this.renderChronicleSection(quests, existingRecords, existingRecap);
+
+        const repeatableLadder = this.buildRepeatableLadderSummary(quests);
+        if (repeatableLadder) {
+            const ladder = document.createElement('details');
+            ladder.className = 'quest-repeatable-ladder';
+            ladder.dataset.journalSection = 'contracts';
+            ladder.open = dailyOpen ?? (repeatableLadder.acceptedCount > 0 || !hasActiveChronicle);
+            ladder.style.background = 'linear-gradient(180deg, rgba(29, 35, 46, 0.95), rgba(18, 22, 29, 0.95))';
+            ladder.style.border = '1px solid rgba(143, 176, 217, 0.35)';
+            ladder.style.padding = '10px';
+            ladder.style.marginBottom = '14px';
+            const title = document.createElement('summary');
+            title.textContent = `Daily contracts · ${repeatableLadder.acceptedCount} active · ${repeatableLadder.readyCount} ready`;
+            Object.assign(title.style, {
+                color: '#ffd700',
+                fontSize: '13px',
+                fontWeight: 'bold',
+                minHeight: '44px',
+                boxSizing: 'border-box',
+                padding: '12px 0',
+                cursor: 'pointer'
+            });
+            const content = document.createElement('div');
+            Object.assign(content.style, { display: 'flex', flexDirection: 'column', gap: '6px' });
+            const body = this.createMessage(
+                `Accepted now: ${repeatableLadder.acceptedCount} • Ready to claim: ${repeatableLadder.readyCount}. ${resetSnapshot.ladderLine}`,
+                { color: '#d7dfef', fontSize: '12px', lineHeight: '1.5' }
+            );
+
+            ladder.appendChild(title);
+            ladder.appendChild(content);
+            content.appendChild(body);
+
+            repeatableLadder.topEntries.forEach((entry) => {
+                const row = document.createElement('div');
+                row.className = 'quest-ladder-row';
+                row.style.display = 'flex';
+                row.style.flexDirection = this.ctx.isMobile ? 'column' : 'row';
+                row.style.justifyContent = 'space-between';
+                row.style.gap = this.ctx.isMobile ? '4px' : '10px';
+                row.style.fontSize = '12px';
+                row.style.alignItems = this.ctx.isMobile ? 'stretch' : 'baseline';
+
+                const left = this.createMessage(
+                    `${entry.label}${entry.completed ? ' • Ready' : entry.accepted ? ' • Active' : ' • Available'}`,
+                    { color: entry.completed ? '#7cf0a5' : entry.accepted ? '#ffd36f' : '#cfd7e2' }
+                );
+                const right = this.createMessage(
+                    `${entry.progressText} • ${entry.rewardLabel}`,
+                    { color: '#8fd3ff' }
+                );
+                left.classList.add('quest-ladder-row__label');
+                right.classList.add('quest-ladder-row__value');
+                row.appendChild(left);
+                row.appendChild(right);
+                content.appendChild(row);
+            });
+
+            this.journalList.appendChild(ladder);
+        }
+
+        if (!quests) { restoreReading(); return; }
+        let hasActive = hasActiveChronicle;
+
+        const isReady = q => q.maxCount > 0 && q.count >= q.maxCount;
+        const contracts = quests.filter(q => q.accepted && !q.completed && q.category !== 'chronicle' && !q.id?.startsWith('chronicle_'));
+        contracts.sort((a, b) => Number(isReady(b)) - Number(isReady(a)));
+        contracts.forEach(q => {
+            hasActive = true;
+
+            const div = document.createElement('div');
+            div.className = 'quest-journal-entry';
+            div.dataset.journalSection = 'contracts';
+            div.dataset.questId = q.id;
+
+            const count = Math.max(0, Number(q.count) || 0);
+            const maxCount = Math.max(0, Number(q.maxCount) || 0);
+            const pct = maxCount > 0 ? Math.min(100, count / maxCount * 100) : 0;
+            const ready = isReady(q);
+            div.classList.toggle('is-ready', ready);
+
+            const header = document.createElement('div');
+            header.className = 'quest-journal-entry__header';
+
+            const title = document.createElement('span');
+            title.className = 'quest-journal-entry__title';
+            title.textContent = this.getQuestTitle(q);
+
+            const statusEl = document.createElement('span');
+            statusEl.className = 'quest-journal-entry__status';
+            statusEl.textContent = ready ? 'Ready to turn in' : 'In progress';
+
+            header.appendChild(title);
+            header.appendChild(statusEl);
+
+            const progress = document.createElement('div');
+            progress.className = 'quest-journal-entry__progress';
+            progress.setAttribute('role', 'progressbar');
+            progress.setAttribute('aria-label', this.getQuestTitle(q));
+            progress.setAttribute('aria-valuemin', '0');
+            progress.setAttribute('aria-valuemax', String(maxCount || 1));
+            progress.setAttribute('aria-valuenow', String(Math.min(count, maxCount)));
+            progress.setAttribute('aria-valuetext', `${count} / ${maxCount}`);
+
+            const progressFill = document.createElement('div');
+            progressFill.className = 'quest-journal-entry__fill';
+            progressFill.style.width = `${pct}%`;
+
+            const progressLabel = document.createElement('div');
+            progressLabel.className = 'quest-journal-entry__count';
+            progressLabel.textContent = `${count} / ${maxCount}`;
+
+            progress.appendChild(progressFill);
+            const progressRow = document.createElement('div');
+            progressRow.className = 'quest-journal-entry__progress-row';
+            progressRow.append(progress, progressLabel);
+
+            const reward = document.createElement('div');
+            reward.className = 'quest-journal-entry__reward';
+            reward.textContent = `Reward: ${this.getQuestRewardLabel(q)}`;
+
+            div.appendChild(header);
+            div.appendChild(this.createMessage(ready ? 'Return to the daily quest giver in Lanternhold to claim your rewards.' : this.getQuestObjective(q)));
+            div.appendChild(progressRow);
+            div.appendChild(reward);
+            div.appendChild(this.createTrackingControl(q));
+            const map = this.createQuestMapControl(q); if (map) div.appendChild(map);
+            this.journalList.appendChild(div);
+        });
+
+        if (!hasActive) {
+            const empty = this.createMessage('No active quests.', {
+                color: '#888',
+                textAlign: 'center',
+                marginTop: '20px'
+            });
+            empty.dataset.journalShared = 'true';
+            this.journalList.appendChild(empty);
+        }
+        restoreReading();
+    }
+}

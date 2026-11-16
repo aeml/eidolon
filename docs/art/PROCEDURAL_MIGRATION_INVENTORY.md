@@ -13,7 +13,7 @@ First procedural-art release: `Alpha 0.41.0.0`
 
 Current migration release: `Alpha 0.41.0.36`
 
-This inventory is the migration ledger for the complete Eidolon dark-fantasy redesign. A category is only marked migrated after its production runtime reference, visual coverage, lifecycle behavior, and representative browser evidence pass. The legacy counts are maximums enforced by `tests/ProceduralArtMigrationGuard.test.js`; they may decrease but cannot increase.
+This inventory is the migration ledger for the complete Eidolon dark-fantasy redesign. A category is only marked migrated after its production runtime reference, visual coverage, lifecycle behavior, and representative browser evidence pass. The legacy counts are maximums enforced by `tests/unit/assets/ProceduralArtMigrationGuard.test.js`; they may decrease but cannot increase.
 
 ## Legacy dependency baseline
 

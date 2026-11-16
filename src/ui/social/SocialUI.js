@@ -1,0 +1,815 @@
+import { ownedEvent, disposeOwnedEvents } from '../OwnedEvents.js';
+import { GuildUI } from './GuildUI.js';
+import { GroupFinderUI } from './GroupFinderUI.js';
+import { socialSafetyActions, socialSafetySettings } from './SocialSafetyUI.js';
+import { PhonePartyUI } from '../mobile/PhonePartyUI.js';
+import { PARTY_REWARD_DETAILS, PARTY_REWARD_SUMMARY } from '../adventure/PartyRewardGuidance.js';
+import { renderPartyRoster } from './PartyRoster.js';
+
+/**
+ * Social UI module — handles the social (online players) window,
+ * party panel, party invite/leave/kick/promote, and party request modal.
+ *
+ * Extracted from UIManager to keep each UI domain independently readable.
+ * The parent UIManager passes shared helpers via the `ctx` object.
+ */
+export class SocialUI {
+    dispose() {
+        this.disposed = true;
+        this.clearPartyRoster();
+        disposeOwnedEvents(this);
+        this.hidePartyRequest();
+        this.groupFinder?.setActive(false);
+        this.phoneParty?.dispose();
+        this.guild?.dispose();
+    }
+
+    /**
+     * @param {Object} ctx
+     * @param {Function} ctx.getLastPlayer  – returns current player ref
+     * @param {Function} ctx.addChatMessage – (sender, msg) adds system chat
+     */
+    constructor(ctx) {
+        this.ctx = ctx;
+
+        // --- State ---
+        this.partyData = null;
+        this.selectedSupportTargetId = null;
+        this.supportTargetPlayerId = null;
+        this.supportTargetPartyId = null;
+        this.supportTargetButtons = new Map();
+        this.partyRows = new Map();
+        this.partyRosterEpoch = 0;
+        this.inParty = false;
+        this.currentInviter = null;
+        this.currentSocialStatus = 'available';
+
+        // --- Friends state (0.38) ---
+        this.friendEntries = [];   // [{ username, online, socialStatus }]
+        this.pendingUsernames = []; // incoming pending requests
+        this._activeTab = 'online';
+
+        // --- Callbacks (set by GameEngine) ---
+        this.onSocialOpen = null;
+        this.onSocialStatusChange = null;
+        this.onPartyInvite = null;
+        this.onPartyLeave = null;
+        this.onPartyResponse = null;
+        this.onPartyKick = null;
+        this.onPartyPromote = null;
+		this.onPartyReadyCheck = null;
+		this.onPartyReady = null;
+        this.onPartyLootRule = null;
+		this.onTradeRequest = null;
+		this.onDuelRequest = null;
+
+        // --- Friends callbacks (set by UIBindings / GameEngine, 0.38) ---
+        this.onFriendRequest = null;   // (username) → send request
+        this.onFriendAccept  = null;   // (username) → accept pending
+        this.onFriendDecline = null;   // (username) → decline pending
+        this.onFriendRemove  = null;   // (username) → remove friend
+        this.onFriendWhisper = null;   // (username) → compose private message
+
+        // --- Create the social window DOM element ---
+        this._createSocialWindow();
+
+        // --- Party DOM refs ---
+        this.partyPanel = document.getElementById('party-panel');
+        this.partyList = document.getElementById('party-list');
+        if (this.partyList) this.partyList._partyOwner = this;
+        this.partyInviteInput = document.getElementById('party-invite-input');
+        this.btnInviteParty = document.getElementById('btn-invite-party');
+		this.btnTradePlayer = document.getElementById('btn-trade-player');
+        this.btnLeaveParty = document.getElementById('btn-leave-party');
+		this.btnPartyReadyCheck = document.getElementById('btn-party-ready-check');
+		this.btnPartyReady = document.getElementById('btn-party-ready');
+		this.partyReadyStatus = document.getElementById('party-ready-status');
+		this.partyLootRule = document.getElementById('party-loot-rule');
+        this.partyRequestModal = document.getElementById('party-request-modal');
+        this.partyInviterName = document.getElementById('party-inviter-name');
+        this.btnAcceptParty = document.getElementById('btn-accept-party');
+        this.btnDeclineParty = document.getElementById('btn-decline-party');
+
+        // --- Party event listeners ---
+        if (this.btnInviteParty) ownedEvent(this, this.btnInviteParty, 'click', () => {
+            const name = this.partyInviteInput.value.trim();
+            if (name && this.onPartyInvite) {
+                this.onPartyInvite(name);
+                this.partyInviteInput.value = '';
+            }
+        });
+		ownedEvent(this, this.btnTradePlayer, 'click', () => {
+			const name = this.partyInviteInput?.value.trim();
+			if (name) {
+				this.onTradeRequest?.(name);
+				this.partyInviteInput.value = '';
+			}
+		});
+
+        if (this.btnLeaveParty) ownedEvent(this, this.btnLeaveParty, 'click', () => {
+            if (this.onPartyLeave) this.onPartyLeave();
+        });
+
+		ownedEvent(this, this.btnPartyReadyCheck, 'click', () => this.onPartyReadyCheck?.());
+		ownedEvent(this, this.btnPartyReady, 'click', () => {
+			const ready = this.btnPartyReady.dataset.ready !== 'true';
+			this.onPartyReady?.(ready);
+		});
+		ownedEvent(this, this.partyLootRule, 'change', () => {
+			this.onPartyLootRule?.(this.partyLootRule.value);
+		});
+
+        if (this.btnAcceptParty) ownedEvent(this, this.btnAcceptParty, 'click', () => {
+            if (this.onPartyResponse) this.onPartyResponse(this.currentInviter, true, this.currentInvitationId);
+            this.hidePartyRequest();
+        });
+
+        if (this.btnDeclineParty) ownedEvent(this, this.btnDeclineParty, 'click', () => {
+            if (this.onPartyResponse) this.onPartyResponse(this.currentInviter, false, this.currentInvitationId);
+            this.hidePartyRequest();
+        });
+
+        this.socialStatusSelect = document.getElementById('social-status-select');
+        if (ctx.isMobile) this.phoneParty = new PhonePartyUI(this);
+        if (this.socialStatusSelect) {
+            this.socialStatusSelect.value = this.currentSocialStatus;
+            ownedEvent(this, this.socialStatusSelect, 'change', () => {
+                this.setSocialStatus(this.socialStatusSelect.value, { notify: true });
+            });
+        }
+    }
+
+    // ================================================================
+    // PUBLIC API
+    // ================================================================
+
+    /** Whether the social window is currently visible. */
+    get isOpen() {
+        return this.socialWindow &&
+               this.socialWindow.style.display === 'block';
+    }
+
+    /** Close the social window. */
+    close() {
+        if (this.socialWindow) this.socialWindow.style.display = 'none';
+        this.groupFinder?.setActive(false);
+    }
+
+    openGroupFinder(activityId) {
+        if (this.disposed) return;
+        this._activeTab = 'groups';
+        this.toggleSocial(true);
+        this._switchTab('groups');
+        // A calendar handoff starts at the recruitment guidance, even when
+        // the player scrolled far down the previous tab.
+        this.socialWindow.scrollTop = 0;
+        this.groupFinder.focusActivity(activityId);
+    }
+
+    openPartyPreparation() {
+        if (this.phoneParty) { this.phoneParty.open(); return; }
+        this.ctx.closePrimaryHudMenus?.();
+        this.setPartyPanelVisible(true);
+        const target = [this.btnPartyReadyCheck, this.btnPartyReady, document.getElementById('party-invite-input')]
+            .find(control => control && !control.hidden && !control.disabled);
+        target?.focus({ preventScroll: true });
+    }
+
+    /** Toggle social window open/closed. */
+    toggleSocial(show) {
+        if (show === undefined) {
+            show = this.socialWindow.style.display === 'none';
+        }
+        if (show) {
+            if (this.ctx.openManagedWindow) {
+                this.ctx.openManagedWindow('social');
+            } else {
+                this.ctx.closePrimaryHudMenus?.({ except: 'social' });
+                this.socialWindow.style.display = 'block';
+            }
+        } else if (this.ctx.closeManagedWindow) {
+            this.ctx.closeManagedWindow('social');
+        } else {
+            this.socialWindow.style.display = 'none';
+        }
+
+        if (show) {
+            if (this.onSocialOpen) this.onSocialOpen();
+            this.groupFinder?.setActive(this._activeTab === 'groups');
+            document.getElementById('close-social')?.focus();
+            if (this.partyPanel) {
+                this.setPartyPanelVisible(true);
+            }
+        } else {
+            this.groupFinder?.setActive(false);
+            if (this.partyPanel && !this.inParty) {
+                this.setPartyPanelVisible(false);
+            }
+        }
+    }
+
+    // ================================================================
+    // SOCIAL LIST
+    // ================================================================
+
+    updateSocialList(players) {
+        // Status broadcasts also keep an already-open Friends tab current.
+        for (const entry of this.friendEntries) {
+            const player = players.find(p => (p.username || p.name) === entry.username);
+            if (player) { entry.socialStatus = this.normalizeSocialStatus(player.socialStatus); entry.displayName = player.name; }
+        }
+        if (this._activeTab === 'friends') this._renderFriendsPanel();
+        this.socialList.innerHTML = '';
+        const player = this.ctx.getLastPlayer();
+
+        players.forEach(p => {
+            const row = document.createElement('div');
+            row.className = 'social-window__row';
+
+            const account = p.username || p.name;
+            const isSelf = player && (p.playerId ? player.id === p.playerId : player.name === p.name);
+
+            const name = document.createElement('span');
+            name.className = `social-window__cell social-window__name${isSelf ? ' social-window__name--self' : ''}`;
+            name.textContent = p.name;
+            row.appendChild(name);
+
+            const className = document.createElement('span');
+            className.className = 'social-window__cell social-window__class';
+            className.textContent = p.class;
+            row.appendChild(className);
+
+            const level = document.createElement('span');
+            level.className = 'social-window__cell social-window__level';
+            level.textContent = String(p.level);
+            row.appendChild(level);
+
+            const status = document.createElement('span');
+            status.className = `social-window__cell social-window__status social-window__status--${this.normalizeSocialStatus(p.socialStatus)}`;
+            status.textContent = this.getSocialStatusLabel(p.socialStatus);
+            row.appendChild(status);
+
+            const action = document.createElement('div');
+            action.className = 'social-window__cell social-window__action';
+            if (!isSelf) {
+                const inviteButton = document.createElement('button');
+                inviteButton.className = 'social-window__invite-btn';
+                inviteButton.type = 'button';
+                inviteButton.dataset.name = account;
+                inviteButton.textContent = 'Invite';
+                inviteButton.setAttribute('aria-label', `Invite ${p.name} to party`);
+                inviteButton.addEventListener('click', (e) => {
+                    const nameToInvite = e.currentTarget?.getAttribute('data-name');
+                    if (nameToInvite && this.onPartyInvite) {
+                        this.onPartyInvite(nameToInvite);
+                        if (this.ctx.addChatMessage) this.ctx.addChatMessage('System', `Invited ${p.name} to party.`);
+                    }
+                });
+                action.appendChild(inviteButton);
+                const duelButton = document.createElement('button');
+                duelButton.className = 'social-window__invite-btn';
+                duelButton.type = 'button';
+                duelButton.textContent = 'Duel';
+                duelButton.setAttribute('aria-label', `Challenge ${p.name} to a duel`);
+                duelButton.addEventListener('click', () => this.onDuelRequest?.(account));
+                action.appendChild(duelButton);
+                action.appendChild(socialSafetyActions(account, 'Online player list', (...args) => this.onSafety?.(...args), p.name));
+            } else {
+                const selfBadge = document.createElement('span');
+                selfBadge.className = 'social-window__self-badge';
+                selfBadge.textContent = 'You';
+                action.appendChild(selfBadge);
+            }
+            row.appendChild(action);
+
+            this.socialList.appendChild(row);
+        });
+    }
+
+    setSocialStatus(status, options = {}) {
+        const normalized = this.normalizeSocialStatus(status);
+        this.currentSocialStatus = normalized;
+        if (this.socialStatusSelect && this.socialStatusSelect.value !== normalized) {
+            this.socialStatusSelect.value = normalized;
+        }
+        if (options.notify) {
+            this.onSocialStatusChange?.(normalized);
+            this.ctx.addChatMessage?.('System', `Social status set to ${this.getSocialStatusLabel(normalized)}.`);
+        }
+        return normalized;
+    }
+
+    normalizeSocialStatus(status) {
+        return ['available', 'looking_party', 'in_run', 'busy'].includes(status) ? status : 'available';
+    }
+
+    getSocialStatusLabel(status) {
+        switch (this.normalizeSocialStatus(status)) {
+        case 'looking_party':
+            return 'Looking for Party';
+        case 'in_run':
+            return 'In Run';
+        case 'busy':
+            return 'Busy';
+        case 'available':
+        default:
+            return 'Available';
+        }
+    }
+
+    // ================================================================
+    // FRIENDS (0.38)
+    // ================================================================
+
+    /**
+     * Called when a `friend_list` message is received from the server.
+     * @param {{ friends: Array<{username,online,socialStatus}>, pending: string[] }} payload
+     */
+    updateFriendList(payload) {
+        this.friendEntries = Array.isArray(payload.friends) ? payload.friends : [];
+        this.pendingUsernames = Array.isArray(payload.pending) ? payload.pending : [];
+        this.pendingNames = payload.pendingNames || {};
+        if (this._activeTab === 'friends') {
+            this._renderFriendsPanel();
+        }
+        this._updateFriendsBadge();
+    }
+
+    /**
+     * Called when a `friend_presence` message is received.
+     * Updates the relevant entry and refreshes the panel if visible.
+     * @param {{ username: string, online: boolean, socialStatus?: string }} data
+     */
+    onFriendPresence(data) {
+        const entry = this.friendEntries.find(e => e.username === data.username);
+        if (entry) {
+            if (data.displayName) entry.displayName = data.displayName;
+            entry.online = data.online;
+            if (!data.online) entry.socialStatus = '';
+            else if (data.socialStatus) entry.socialStatus = this.normalizeSocialStatus(data.socialStatus);
+        }
+        if (this._activeTab === 'friends') {
+            this._renderFriendsPanel();
+        }
+    }
+
+    /**
+     * Called when a `friend_request` notification is pushed by the server
+     * (someone sent *this* player a request).
+     * @param {{ username: string }} data
+     */
+    onIncomingFriendRequest(data) {
+        this.pendingNames ||= {};
+        if (data.displayName) this.pendingNames[data.username] = data.displayName;
+        if (!this.pendingUsernames.includes(data.username)) {
+            this.pendingUsernames.push(data.username);
+        }
+        if (this._activeTab === 'friends') {
+            this._renderFriendsPanel();
+        }
+        this._updateFriendsBadge();
+    }
+
+    // ================================================================
+    // PARTY
+    // ================================================================
+
+    setPartyPanelVisible(visible) {
+        if (!this.partyPanel) return;
+        if (this.ctx.isMobile) {
+            this.partyPanel.style.display = 'none';
+            document.body.classList.remove('party-roster-visible');
+            return;
+        }
+        this.partyPanel.style.display = visible
+            ? (this.partyPanel.classList.contains('party-panel--group') ? 'flex' : 'block') : 'none';
+        document.body.classList.toggle('party-roster-visible', visible);
+    }
+
+    clearPartyRoster() {
+        this.partyRosterEpoch++;
+        this.partyRows.clear(); this.supportTargetButtons.clear();
+        this.supportModeButton = null;
+        if (this.partyList?._partyOwner === this) this.partyList.replaceChildren();
+    }
+
+    isPartyRosterCurrent(epoch) {
+        return !this.disposed && this.partyRosterEpoch === epoch && this.partyList?._partyOwner === this
+            && this.partyList.isConnected && this.supportTargetPartyId === this.partyData?.partyId
+            && this.supportTargetPlayerId === (this.ctx.getLastPlayer()?.id || null);
+    }
+
+    updateParty(partyData) {
+        if (this.disposed || (this.partyList && this.partyList._partyOwner !== this)) return;
+        const playerId = this.ctx.getLastPlayer()?.id || null;
+        if (this.supportTargetPartyId !== partyData?.partyId || this.supportTargetPlayerId !== playerId) {
+            this.selectedSupportTargetId = null;
+            this.clearPartyRoster();
+        }
+        this.supportTargetPlayerId = playerId;
+        this.supportTargetPartyId = partyData?.partyId;
+        if (!partyData?.members?.some(member => member.id === this.selectedSupportTargetId)) this.selectedSupportTargetId = null;
+        this.partyData = partyData;
+        if (this.phoneParty) {
+            this.inParty = Boolean(partyData?.partyId);
+            this.setPartyPanelVisible(false);
+            this.phoneParty.update(partyData);
+            return;
+        }
+        if (!this.partyPanel || !this.partyList) return;
+
+        const panelGuidance = document.getElementById('party-panel-guidance');
+
+        const inParty = !!(partyData && partyData.partyId);
+        this.inParty = inParty;
+        const memberCount = inParty ? (partyData.members?.length || 0) : 0;
+        this.partyPanel.classList.toggle('party-panel--raid', memberCount > 4);
+        this.partyPanel.classList.toggle('party-panel--group', memberCount === 4);
+        const panelTitle = this.partyPanel.querySelector('.party-panel__title');
+        if (panelTitle) panelTitle.textContent = memberCount > 4 ? `RAID · ${memberCount}` : 'PARTY';
+
+        if (!inParty) {
+			if (this.btnPartyReadyCheck) this.btnPartyReadyCheck.hidden = true;
+			if (this.btnPartyReady) this.btnPartyReady.hidden = true;
+			if (this.partyReadyStatus) this.partyReadyStatus.textContent = '';
+			if (this.partyLootRule) {
+				this.partyLootRule.value = 'ffa';
+				this.partyLootRule.disabled = true;
+			}
+            if (panelGuidance) {
+                panelGuidance.textContent = PARTY_REWARD_SUMMARY;
+                panelGuidance.title = PARTY_REWARD_DETAILS;
+            }
+            if (this.socialWindow.style.display === 'none') {
+                this.setPartyPanelVisible(false);
+            } else {
+                this.setPartyPanelVisible(true);
+            }
+            this.partyList.replaceChildren();
+            this.supportTargetButtons.clear();
+            const emptyState = document.createElement('div');
+            emptyState.style.color = '#aaa';
+            emptyState.style.fontStyle = 'italic';
+            emptyState.style.padding = '5px';
+            emptyState.textContent = 'No party. Invite someone!';
+            this.partyList.appendChild(emptyState);
+            return;
+        }
+
+        this.setPartyPanelVisible(true);
+        const members = partyData.members || [];
+        const leaderId = partyData.leaderId;
+        const player = this.ctx.getLastPlayer();
+        const myId = player ? player.id : null;
+        const amILeader = myId === leaderId;
+		const myMember = members.find((member) => member.id === myId);
+		const readyCheckActive = !!partyData.readyCheckActive;
+		if (this.btnPartyReadyCheck) this.btnPartyReadyCheck.hidden = !amILeader;
+		if (this.btnPartyReady) {
+			this.btnPartyReady.hidden = !readyCheckActive;
+			this.btnPartyReady.dataset.ready = String(!!myMember?.ready);
+			this.btnPartyReady.textContent = myMember?.ready ? 'Not Ready' : 'Ready';
+		}
+		if (this.partyReadyStatus) {
+			this.partyReadyStatus.textContent = readyCheckActive ? 'Check active' : partyData.allReady ? 'All ready' : '';
+		}
+		if (this.partyLootRule) {
+			this.partyLootRule.value = partyData.lootRule || 'ffa';
+			this.partyLootRule.disabled = !amILeader;
+		}
+        const maxGoldPoolBonusPct = members.length * 10;
+        if (panelGuidance) {
+            panelGuidance.title = PARTY_REWARD_DETAILS;
+            panelGuidance.textContent = `${amILeader ? 'Leader view' : 'Party member'} · ${PARTY_REWARD_SUMMARY} Up to +${maxGoldPoolBonusPct}% eligible-party Gold pool, not personal XP.`;
+        }
+
+        renderPartyRoster(this, members, myId, leaderId);
+    }
+
+    showPartyRequest(inviterName, invitationId, context = '', displayName = inviterName) {
+        if (!this.partyRequestModal) return;
+        // Static HUD stacking contexts cannot cover this consent surface.
+        // Keep it at the same root/layer as dynamically created windows.
+        document.body.appendChild(this.partyRequestModal);
+        this.currentInviter = inviterName;
+        this.currentInvitationId = invitationId;
+        if (this.partyInviterName) this.partyInviterName.textContent = displayName;
+        const benefits = document.getElementById('party-request-benefits');
+        if (benefits) {
+            benefits.textContent = `${context ? `${context} ` : ''}Accept to share kill rewards across the whole dungeon or within roughly two screens in the overworld, plus party-led dungeon entry. Invitations expire after 60 seconds and must still belong to the same party, leader and recruitment plan.`;
+            benefits.title = PARTY_REWARD_DETAILS;
+        }
+        this.partyRequestModal.style.display = 'block';
+        this.btnAcceptParty?.focus();
+    }
+
+    hidePartyRequest() {
+        if (!this.partyRequestModal) return;
+        this.partyRequestModal.style.display = 'none';
+        this.currentInviter = null;
+        this.currentInvitationId = null;
+    }
+
+    // ================================================================
+    // INTERNAL
+    // ================================================================
+
+    /** Create the social window DOM element (called from constructor). */
+    _createSocialWindow() {
+        const div = document.getElementById('social-window') || document.createElement('div');
+        div.id = 'social-window';
+        div.className = 'window social-window content-aware-window';
+        div.setAttribute('role', 'dialog');
+        div.setAttribute('aria-modal', 'true');
+        div.setAttribute('aria-labelledby', 'social-window-title');
+        div.style.display = 'none';
+        div.style.position = 'absolute';
+        div.style.top = '50%';
+        div.style.left = '50%';
+        div.style.transform = 'translate(-50%, -50%)';
+        div.style.userSelect = 'none';
+        div.style.webkitUserSelect = 'none';
+
+        div.innerHTML = `
+            <div class="window-header social-window__header">
+                <span id="social-window-title" class="social-window__title">SOCIAL</span>
+                <button id="close-social" class="close-btn" type="button" aria-label="Close social window">×</button>
+            </div>
+            <div class="social-window__status-control">
+                <label class="social-window__status-label" for="social-status-select">My social status</label>
+                <select id="social-status-select" class="social-window__status-select">
+                    <option value="available">Available</option>
+                    <option value="looking_party">Looking for Party</option>
+                    <option value="in_run">In Run</option>
+                    <option value="busy">Busy</option>
+                </select>
+            </div>
+            <div class="social-window__tabs" role="tablist">
+                <button class="social-window__tab social-window__tab--active"
+                        id="tab-btn-online" role="tab"
+                        aria-selected="true" aria-controls="tab-panel-online"
+                        type="button">Online</button>
+                <button class="social-window__tab"
+                        id="tab-btn-friends" role="tab"
+                        aria-selected="false" aria-controls="tab-panel-friends"
+                        type="button">Friends <span id="friends-badge" class="social-window__friends-badge" style="display:none"></span></button>
+                <button class="social-window__tab"
+                        id="tab-btn-guild" role="tab"
+                        aria-selected="false" aria-controls="tab-panel-guild"
+                        type="button">Guild</button>
+                <button class="social-window__tab" id="tab-btn-groups" role="tab" aria-selected="false" aria-controls="tab-panel-groups" type="button">Groups</button>
+            </div>
+            <div id="tab-panel-online" role="tabpanel" aria-labelledby="tab-btn-online">
+                <div class="social-window__columns">
+                    <span>Name</span>
+                    <span>Class</span>
+                    <span>Level</span>
+                    <span>Status</span>
+                    <span>Action</span>
+                </div>
+                <div id="social-list" class="social-window__list">
+                </div>
+            </div>
+            <div id="tab-panel-friends" role="tabpanel" aria-labelledby="tab-btn-friends" style="display:none">
+                <div class="friends-add-row">
+                    <input type="text" id="friend-add-input"
+                           class="friends-add-input" placeholder="Username" maxlength="32"
+                           aria-label="Friend username to add" />
+                    <button id="btn-add-friend" class="friends-add-btn" type="button">Add Friend</button>
+                </div>
+                <div id="friends-pending-section" class="friends-pending-section" style="display:none">
+                    <div class="friends-section-header">Pending Requests</div>
+                    <div id="friends-pending-list" class="friends-pending-list"></div>
+                </div>
+                <div class="friends-section-header">Friends</div>
+                <div id="friends-list" class="friends-list"></div>
+            </div>
+            <div id="tab-panel-guild" role="tabpanel" aria-labelledby="tab-btn-guild" style="display:none"></div>
+            <div id="tab-panel-groups" role="tabpanel" aria-labelledby="tab-btn-groups" style="display:none"></div>
+        `;
+
+        if (!div.parentElement) {
+            document.body.appendChild(div);
+        }
+
+        ownedEvent(this, div.querySelector('#close-social'), 'click', () => this.toggleSocial(false));
+
+        // Tab switching
+        ownedEvent(this, div.querySelector('#tab-btn-online'), 'click', () => this._switchTab('online'));
+        ownedEvent(this, div.querySelector('#tab-btn-friends'), 'click', () => {
+            this._switchTab('friends');
+            this._renderFriendsPanel();
+        });
+        ownedEvent(this, div.querySelector('#tab-btn-guild'), 'click', () => this._switchTab('guild'));
+        ownedEvent(this, div.querySelector('#tab-btn-groups'), 'click', () => this._switchTab('groups'));
+
+        // Add friend button
+        const addBtn = div.querySelector('#btn-add-friend');
+        const addInput = div.querySelector('#friend-add-input');
+        if (addBtn && addInput) {
+            const submit = () => {
+                const name = addInput.value.trim();
+                if (name && this.onFriendRequest) {
+                    this.onFriendRequest(name);
+                    addInput.value = '';
+                }
+            };
+            ownedEvent(this, addBtn, 'click', submit);
+            ownedEvent(this, addInput, 'keydown', (e) => {
+                if (e.key === 'Enter') submit();
+            });
+        }
+
+        this.socialWindow = div;
+        div.append(socialSafetySettings((...args) => this.onSafety?.(...args)));
+        this.groupFinder = new GroupFinderUI(div.querySelector('#tab-panel-groups'), {
+            action: payload => this.onGroupFinder?.(payload), meeting: id => this.onGroupMeetingPoint?.(id),
+            safety: (...args) => this.onSafety?.(...args)
+        });
+        this.socialList = div.querySelector('#social-list');
+        this._friendsPanel = div.querySelector('#tab-panel-friends');
+        this._friendsList = div.querySelector('#friends-list');
+        this._friendsPendingList = div.querySelector('#friends-pending-list');
+        this._friendsPendingSection = div.querySelector('#friends-pending-section');
+        this._friendsBadge = div.querySelector('#friends-badge');
+        this.guild = new GuildUI({
+            container: div.querySelector('#tab-panel-guild'),
+            getLastPlayer: this.ctx.getLastPlayer,
+            addChatMessage: this.ctx.addChatMessage,
+        });
+        this.guild.onSafety = (...args) => this.onSafety?.(...args);
+        this.guild.onFindGroup = activity => this.openGroupFinder(activity);
+    }
+
+    /** Switch between 'online' and 'friends' tabs. */
+    _switchTab(tab) {
+        this._activeTab = tab;
+        this.groupFinder?.setActive(tab === 'groups');
+        const onlinePanel = this.socialWindow.querySelector('#tab-panel-online');
+        const friendsPanel = this.socialWindow.querySelector('#tab-panel-friends');
+        const guildPanel = this.socialWindow.querySelector('#tab-panel-guild');
+        const onlineBtn = this.socialWindow.querySelector('#tab-btn-online');
+        const friendsBtn = this.socialWindow.querySelector('#tab-btn-friends');
+        const guildBtn = this.socialWindow.querySelector('#tab-btn-guild');
+        const groupsPanel = this.socialWindow.querySelector('#tab-panel-groups');
+        const groupsBtn = this.socialWindow.querySelector('#tab-btn-groups');
+
+        for (const panel of [onlinePanel, friendsPanel, guildPanel, groupsPanel]) panel.style.display = 'none';
+        for (const button of [onlineBtn, friendsBtn, guildBtn, groupsBtn]) {
+            button?.classList.remove('social-window__tab--active');
+            button?.setAttribute('aria-selected', 'false');
+        }
+
+        if (tab === 'online') {
+            if (onlinePanel) onlinePanel.style.display = '';
+            onlineBtn?.classList.add('social-window__tab--active');
+            onlineBtn?.setAttribute('aria-selected', 'true');
+        } else if (tab === 'friends') {
+            if (friendsPanel) friendsPanel.style.display = '';
+            friendsBtn?.classList.add('social-window__tab--active');
+            friendsBtn?.setAttribute('aria-selected', 'true');
+        } else if (tab === 'groups') {
+            groupsPanel.style.display = '';
+            groupsBtn.classList.add('social-window__tab--active');
+            groupsBtn.setAttribute('aria-selected', 'true');
+        } else {
+            if (guildPanel) guildPanel.style.display = '';
+            guildBtn?.classList.add('social-window__tab--active');
+            guildBtn?.setAttribute('aria-selected', 'true');
+        }
+    }
+
+    /** Rebuild the friends tab content from current state. */
+    _renderFriendsPanel() {
+        if (!this._friendsList) return;
+
+        // Pending requests section
+        if (this._friendsPendingSection && this._friendsPendingList) {
+            if (this.pendingUsernames.length > 0) {
+                this._friendsPendingSection.style.display = '';
+                this._friendsPendingList.replaceChildren();
+                this.pendingUsernames.forEach(username => {
+                    const row = document.createElement('div');
+                    row.className = 'friends-row friends-row--pending';
+
+                    const nameEl = document.createElement('span');
+                    nameEl.className = 'friends-name';
+                    nameEl.textContent = this.pendingNames?.[username] || username;
+                    row.appendChild(nameEl);
+
+                    const actions = document.createElement('div');
+                    actions.className = 'friends-actions';
+
+                    const acceptBtn = document.createElement('button');
+                    acceptBtn.type = 'button';
+                    acceptBtn.className = 'friends-btn friends-btn--accept';
+                    acceptBtn.textContent = 'Accept';
+                    acceptBtn.addEventListener('click', () => {
+                        this.onFriendAccept?.(username);
+                    });
+
+                    const declineBtn = document.createElement('button');
+                    declineBtn.type = 'button';
+                    declineBtn.className = 'friends-btn friends-btn--decline';
+                    declineBtn.textContent = 'Decline';
+                    declineBtn.addEventListener('click', () => {
+                        this.onFriendDecline?.(username);
+                    });
+
+                    actions.appendChild(acceptBtn);
+                    actions.appendChild(declineBtn);
+                    row.appendChild(actions);
+                    this._friendsPendingList.appendChild(row);
+                });
+            } else {
+                this._friendsPendingSection.style.display = 'none';
+            }
+        }
+
+        // Friends list
+        this._friendsList.replaceChildren();
+
+        if (this.friendEntries.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'friends-empty';
+            empty.textContent = 'No friends yet. Add someone!';
+            this._friendsList.appendChild(empty);
+            return;
+        }
+
+        // Sort: online first, then alphabetical
+        const sorted = [...this.friendEntries].sort((a, b) => {
+            if (a.online !== b.online) return a.online ? -1 : 1;
+            return a.username.localeCompare(b.username);
+        });
+
+        sorted.forEach(entry => {
+            const row = document.createElement('div');
+            row.className = `friends-row${entry.online ? ' friends-row--online' : ' friends-row--offline'}`;
+
+            const dot = document.createElement('span');
+            dot.className = `friends-dot friends-dot--${entry.online ? 'online' : 'offline'}`;
+            dot.setAttribute('aria-hidden', 'true');
+            row.appendChild(dot);
+
+            const nameEl = document.createElement('span');
+            nameEl.className = 'friends-name';
+            const displayName = entry.displayName || entry.username;
+            nameEl.textContent = displayName;
+            row.appendChild(nameEl);
+
+            if (entry.online && entry.socialStatus) {
+                const statusEl = document.createElement('span');
+                statusEl.className = `friends-status friends-status--${this.normalizeSocialStatus(entry.socialStatus)}`;
+                statusEl.textContent = this.getSocialStatusLabel(entry.socialStatus);
+                row.appendChild(statusEl);
+            } else if (!entry.online) {
+                const offlineEl = document.createElement('span');
+                offlineEl.className = 'friends-status friends-status--offline';
+                offlineEl.textContent = 'Offline';
+                row.appendChild(offlineEl);
+            }
+
+            const actions = document.createElement('div');
+            actions.className = 'friends-actions';
+            for (const [label, callback] of [['Invite', () => this.onPartyInvite?.(entry.username)],
+                ['Whisper', () => displayName === entry.username
+                    ? this.onFriendWhisper?.(entry.username)
+                    : this.onFriendWhisper?.(entry.username, displayName)]]) {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = `friends-btn friends-btn--${label.toLowerCase()}`;
+                button.textContent = label;
+                button.disabled = !entry.online;
+                button.setAttribute('aria-label', `${label} ${displayName}${label === 'Invite' ? ' to party' : ''}`);
+                button.addEventListener('click', callback);
+                actions.appendChild(button);
+            }
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'friends-btn friends-btn--remove';
+            removeBtn.title = `Remove ${displayName}`;
+            removeBtn.textContent = '✕';
+            removeBtn.setAttribute('aria-label', `Remove ${displayName} from friends`);
+            removeBtn.addEventListener('click', () => {
+                this.onFriendRemove?.(entry.username);
+            });
+            actions.appendChild(removeBtn);
+            row.appendChild(actions);
+
+            this._friendsList.appendChild(row);
+        });
+    }
+
+    /** Update the pending-requests badge on the Friends tab button. */
+    _updateFriendsBadge() {
+        if (!this._friendsBadge) return;
+        const count = this.pendingUsernames.length;
+        if (count > 0) {
+            this._friendsBadge.textContent = String(count);
+            this._friendsBadge.style.display = '';
+        } else {
+            this._friendsBadge.style.display = 'none';
+        }
+    }
+}

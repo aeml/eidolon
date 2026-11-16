@@ -1,6 +1,6 @@
 # Dependency audit policy
 
-CI runs `node scripts/audit-dependencies.mjs`, which executes the full
+CI runs `node scripts/validation/audit-dependencies.mjs`, which executes the full
 `npm audit --json --audit-level=low` scan, including development dependencies.
 Every active source advisory blocks CI. Registry errors, unknown report schemas,
 missing advisory provenance and unexpected subprocess failures also block CI.

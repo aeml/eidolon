@@ -25,16 +25,16 @@ With local MongoDB already running, use a separate terminal:
 
 ~~~sh
 cd server
-go run . --addr=127.0.0.1:8080 --mongo-uri=mongodb://127.0.0.1:27017
+go run ./cmd/eidolon --addr=127.0.0.1:8080 --mongo-uri=mongodb://127.0.0.1:27017
 ~~~
 
 The explicit bind keeps this development API on loopback. Use your own local authenticated URI if MongoDB requires it; do not put real credentials into committed scripts or examples. Go reads the command flags shown here; the deployment Compose environment is a separate setup.
 
-Check http://127.0.0.1:8080/healthz before testing. A ready response must report status ok and database ready. A running process alone is not sufficient. The readiness function can fail for durable session-activity storage, shutdown state, an uninitialized database, or Mongo connectivity. See [server/main.go](../../server/main.go).
+Check http://127.0.0.1:8080/healthz before testing. A ready response must report status ok and database ready. A running process alone is not sufficient. The readiness function can fail for durable session-activity storage, shutdown state, an uninitialized database, or Mongo connectivity. See [server/internal/server/startup.go](../../server/internal/server/startup.go).
 
 ## Select the backend without editing index.html
 
-The checked-in [index.html](../../index.html) contains the public production WebSocket address. The existing [static server](../../scripts/serve-static.mjs) accepts EIDOLON_STATIC_WS_URL and substitutes the hidden server-address value in the **served** index response. It does not write index.html or change the production deployment.
+The checked-in [index.html](../../index.html) contains the public production WebSocket address. The existing [static server](../../scripts/dev/serve-static.mjs) accepts EIDOLON_STATIC_WS_URL and substitutes the hidden server-address value in the **served** index response. It does not write index.html or change the production deployment.
 
 From the repository root, Bash:
 
@@ -80,6 +80,6 @@ For Playwright's managed local server, use EIDOLON_E2E_WEB_PORT for the client p
 
 ## Source, publication and website
 
-Local npm run serve serves the source checkout. The game publication is a copied tree with a lazy engine bundle, analytics/style processing and release-versioned imports; see [architecture](../ARCHITECTURE.md#source-and-published-client). Never run publication transforms against the editable root.
+Local npm run serve serves the source checkout. The game publication is a copied tree with a lazy engine bundle, analytics/style processing and release-versioned imports; see [architecture](architecture.md#source-and-published-client). Never run publication transforms against the editable root.
 
 The standalone marketing site has its own [website/README.md](../../website/README.md) and npm --prefix website run build command. It is not the game-client build or a replacement for backend readiness.

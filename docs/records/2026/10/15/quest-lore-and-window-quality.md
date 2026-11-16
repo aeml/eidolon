@@ -1,0 +1,224 @@
+# Quest, lore and window quality
+
+Owner requirement added October 15, 2026. **Required before beta; full review open.**
+Quest/Lore Book improvements, durable window layouts/reset and the first
+character/bag/merchant polish slice are deployed/verified throughAlpha1.79.57.
+Related service-window refinements are deployed in acceptedAlpha1.79.58.
+Returning Lore Book task/finale context and the centered garment row are deployed
+in acceptedAlpha1.79.59 and retained through accepted64. Improve
+the whole quest experience and bring game menus up to the visual quality of the
+improved world. Existing functionality is a foundation, not final acceptance.
+
+## Quest tracking and conversations
+
+- Make the current task immediately understandable: what to do, why it matters,
+  objective progress, where to go and whom to return to. Distinguish main story,
+  optional quests and repeatable contracts without overwhelming the HUD.
+- Improve pin/unpin tracking, selected-objective focus, map/journal navigation,
+  readable progress updates and the ready-to-turn-in state on desktop and phone.
+  Preserve the player's tracking choices across updates and reconnects.
+- Improve NPC quest browsing, acceptance, in-progress dialogue and turn-in as
+  one coherent flow. Clearly show speaker, context, objectives, rewards and next
+  action. Acceptance and claiming rewards remain explicit player actions.
+- Handle pending, rejected and successful server responses visibly. Avoid lost
+  selection/scroll, duplicate actions, premature completion displays and accidental
+  acceptance of the next quest. Preserve earned rewards and manual story handoffs.
+
+## Lore book and story recall
+
+- Provide an easily discoverable lore book with a concise **Story so far** recap
+  and **What I'm doing now** section linked to the current quest and map.
+- Organize earned chapters, people, places and discoveries with clear navigation
+  and readable detail pages. Allow rereading completed story and important NPC
+  dialogue/context without requiring the player to remember where it occurred.
+- Derive unlocked content and recap from actual saved progress. Do not reveal
+  future chapters, discoveries or outcomes. Explain current stakes and next
+  steps rather than presenting only a raw completed-quest list.
+- Preserve optional/legacy discoveries and returning-save progress. Future lore
+  and unearned memories must not appear merely because static content exists.
+- Connect the tracker, quest journal, conversations and lore book so returning
+  players can recover both their narrative context and immediate next action.
+
+## Remembered menu positions and visual polish
+
+- After a player drags a window, closing and reopening it restores that position.
+  Cover character, bags/inventory and stores first, then the shared draggable
+  window system, including stash, forge, trading and quest/journal windows.
+- Automatic companion layouts, content refresh and resize observers must not
+  overwrite a deliberate dragged position on the same viewport.
+- Keep restored panels and their close/drag controls reachable after resizing,
+  browser zoom or desktop/phone changes. Phone layouts retain usable sizing,
+  scrolling and touch targets rather than inheriting offscreen desktop offsets.
+- Provide a predictable layout reset. At minimum preserve positions across
+  close/reopen within a session; durable browser-local preferences are the
+  implementation direction, with graceful handling of unavailable storage.
+- Improve typography, spacing, framing, materials, tabs, icons, item/reward
+  hierarchy, tooltips, preview presentation and action states across character,
+  inventory and store windows, then related shared surfaces. Keep a coherent
+  dark-fantasy visual language and readable contrast rather than adding clutter.
+- Preserve keyboard/focus behavior, accessible labels, touch access, drag versus
+  click discrimination, safe-area handling and usable low-resolution layouts.
+
+## Existing foundations and known gap
+
+`QuestUI.js` already provides tracking preferences, a Chronicle recap, recovered
+lore and discovery records; `QuestConversation.js` owns manual quest dialogue
+and completion replies. Build on these and authored Chronicle content rather
+than duplicating progression state or presenting old functionality as new work.
+
+At the initial request, `UIManagerWindows.js` already clamped panels to the viewport
+and observed content size. Its service/companion reflow unconditionally recentered or re-paired some
+windows; the generic dragged-window guard alone does not protect those paths.
+Inspect drag completion, reopening and session teardown before selecting a fix.
+
+## Acceptance checklist
+
+- [ ] Finish quest tracker, journal and NPC conversation redesign end to end.
+- [ ] Deliver a navigable lore book with earned recap and current task context.
+- [ ] Complete representative fresh, mid-story, returning, optional-catch-up and
+  finale states without spoilers, lost progression or misleading rewards.
+- [ ] Restore dragged window positions through close/reopen, paired windows,
+  store interactions and changing content; verify resize and phone recovery.
+- [ ] Finish coordinated character, inventory and store presentation polish.
+- [ ] Exercise actual mouse, keyboard and touch flows in desktop/phone browser
+  views; retain focused regression and screenshot evidence for changed behavior.
+- [ ] Publish and verify the selected milestone. Final usability/visual review
+  remains distinct from unit/browser checks and from deferred physical playtests.
+
+
+## First scoped correction — October 15
+
+Automatic centering and companion pairing now preserve dragged positions across
+close/reopen in the current UI session.79 focused checks and one real-browser
+mouse/reopen/content-resize/viewport-resize case pass. The initial browser
+fixture failed at cleanup on the wrong disposal method; corrected cleanup passes
+with unchanged layout assertions. [Qualification](window-position-qualification.json).
+This correction is selected locally, not deployed. Durable preferences, layout
+reset, full phone policy and the broader quest/lore/menu redesign remain open.
+
+## Quest experience implementation — October 15
+
+A dedicated searchable Lore Book now presents earned chapters, exact recorded
+discoveries, restoration accounts, Ilyra replies, story recap and current task.
+It links back to the current quest and map, retains in-session reading choices
+and clears old-character state. Tracked cards open the corresponding journal
+section by keyboard or touch. NPC review now leads with state/objective/reward,
+preserves paragraph breaks and keeps manual actions reachable through long
+dialogue. Pending, rejected and acknowledged transitions retain their rules.
+
+227 distinct focused checks and13 distinct native UI cases have passing evidence;
+full lint and reviewed desktop/phone captures qualify this local selection.
+[Evidence, stale fixture and invocation failures](quest-book-qualification.json).
+Publication follows acceptance of54. This does not close shared-menu polish,
+durable position/reset preferences, physical playtests or final owner review.
+
+## Durable layout implementation — October 15
+
+Dragged registered windows now save device-local positions across reloads, with
+separate wide and compact desktop layouts. Temporary content/viewport clamping
+does not overwrite the saved coordinates; expanding restores the prior layout.
+Phone sessions retain their responsive default layout and ignore desktop offsets.
+Settings includes a keyboard/touch-accessible Reset window positions action that
+clears saved layouts and recenters the current panels. Unavailable/malformed
+storage falls back gracefully. Drag listeners retire with their UI session.
+
+94focused checks and five distinct native cases pass, retaining the initial
+accessible-name failure and corrected desktop/phone evidence.
+[Qualification](durable-window-layout-qualification.json).
+This selection closes the implementation gap for durable registered-window
+positions/reset; broader menu polish and final usability review remain open.
+
+## Isolated equipment-menu refinement — October 15
+
+Merchant offers now use readable slot cards with code-native item icons/mystery
+badges, explicit prices and wallet/full-bag status. Cards retain their DOM/focus
+through character updates, and purchases keep the existing server callback
+without speculative Gold/item changes. The old heading's34.68Gold/level
+calculation disagreed with the actual35Gold/level purchase cost; presentation
+now matches the existing server rule. Inventory shows used/capacity counts and
+shares the character sheet's restrained metal framing with the merchant.
+
+150focused/related checks and full lint pass. **Unselected and isolated** pending
+native desktop/phone captures and interaction review; no broad menu or final
+visual acceptance is claimed.
+[Preparation and retained stale markup failure](equipment-menu-preparation.json).
+
+## Qualified menu polish selection — October 15
+
+Readable merchant slot cards, actual existing Gold prices, stable focus, wallet/full-bag feedback, inventory capacity and coordinated character/bag/store framing. Readable Sell All colors and at least 44px touch targets. No server economy or speculative wallet/item mutations.
+
+151 distinct focused and related checks across nine suites pass, including the required native routing guard. Full lint and subsequent fixture lint pass. Three distinct native desktop/phone cases pass without retries. Keyboard and real virtual touch taps exercise existing callbacks, tabs and close/reopen; a CDP touch swipe scrolls offers without buying, then taps the last offhand offer. Wallet remains unchanged until authoritative updates.
+
+Selected for the next coherent release after native visual review. First selected equipment-menu slice. Stash/forge/trading presentation, final owner usability/art review and physical phone testing remain open.
+[Qualification and retained evidence](equipment-menu-qualification.json).
+
+## Related service-window polish candidate — October 15
+
+The staged menu family now extends restrained metal framing to stash, forge,
+trading-house and direct-trade panels. Shared tabs have readable text, a clear
+active underline and44px minimum height, retaining phone text-size preferences.
+Direct-trade offer rows and the Gold field gain readable sizing and consistent
+inset surfaces. Trade drafts, acknowledgements, transfers and confirmation rules
+are unchanged. Veyra's expanded collection also gains search/category browsing.
+
+79existing focused menu/layout checks pass. Twelve existing native service/layout
+cases are prepared for review after the ordered57pipeline; no changed visual or
+physical-device acceptance is claimed yet. This remains isolated with the
+universal garment candidates and does not select unfinished work into master.
+
+## Qualified universal collection and service-menu selection — October 16
+
+All seven remaining universal designs are selected after42distinct native cases,
+reviewed gameplay/preview/menu captures, unchanged scene budgets and strict
+resource cycles. The minimum18distinct modeled looks is implemented; final
+owner collection art approval remains open. Search/categories and current-owner
+scroll/focus retention improve Veyra browsing. Shared service framing, readable
+tabs/trade controls and saved layout behavior have desktop/phone evidence.
+292distinct focused checks, focused server custody, full lint, content/model
+validation and exact predecessor-asset proof pass. Initial spring petal flicker
+and store fixture failures are retained with their corrections.
+[Qualification and evidence](../16/universal-garment-qualification.json).
+Not yet deployed; broader original quality/readiness gates and deferred playtests
+remain open. This selected milestone does not complete the full goal.
+
+## Returning-story/current-task candidate — October 16
+
+The isolated Lore Book refinement recognizes personally claimed finale receipts,
+uses past-tense expedition/court recap after those milestones, and shows other
+accepted tasks with objective/progress and direct journal links. It preserves
+keyboard focus when an acknowledged update rebuilds an overview action. Counts
+alone cannot claim the finale; unaccepted contracts stay out of current tasks.
+141focused checks and changed-file lint pass. Four desktop/phone browser cases
+are prepared but unexecuted while the ordered58pipeline runs. This is not an
+earned campaign or physical playtest receipt, and remains unselected.
+[Preparation and retained focus/fixture failures](../16/lore-task-context-preparation.json).
+
+
+## Current delivered scope — October16
+
+Quest conversations/tracker/Lore Book and durable window positions are delivered
+through55/56, service-menu polish through58, and returning earned-story/current-
+task context through59, retained in accepted63. [Character/lore qualification](../16/character-garment-row-qualification.md),
+[accepted59](../../../releases/1.79.59/2026-10-16-acceptance.md),
+[accepted58](../../../releases/1.79.58/2026-10-16-acceptance.md).
+The earlier isolated/pending sections retain their original dated states; they
+do not override this delivery checkpoint. Final full UI/owner/physical-device
+review remains open. Phone garment-text preference support is delivered in accepted62.
+[Qualification](../16/garment-phone-text-qualification.md). Broader full-game gates remain active.
+
+
+Alpha 1.79.63 retains this delivered UI and verifies the real two-client wardrobe
+purchase/equipment/save workflow in mandatory native CI. Final full UI, owner
+and physical-device review remain open.
+[Current acceptance](../../../releases/1.79.63/2026-10-16-acceptance.md).
+
+
+## Wardrobe return and phone form delivery — October 16
+
+Accepted Alpha 1.79.64 retains the centered garment row and adds View character
+without changing appearance or rotation. Phone loadout, Wardrobe and wallet forms
+follow the selected menu text size. Three native desktop/compact/phone cases
+verify the portrait return/focus, row alignment, 44px controls and 125% phone text.
+[Acceptance](../../../releases/1.79.64/2026-10-16-acceptance.md),
+[qualification](../16/wardrobe-class-sessions-qualification.md).
+Final full UI/owner/physical-device review and the full goal remain open.

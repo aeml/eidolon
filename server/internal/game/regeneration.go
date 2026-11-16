@@ -6,7 +6,7 @@ import (
 )
 
 // Resource points per second, per Vitality/Wisdom point. Keep the offline
-// constant in src/core/Regeneration.js and stat descriptions in agreement.
+// constant in src/core/gameplay/progression/Regeneration.js and stat descriptions in agreement.
 const PassiveRegenPerStat = 0.01
 
 // Resource state is integer-valued, so retain sub-point regeneration between
