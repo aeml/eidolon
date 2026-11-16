@@ -16,7 +16,8 @@ test('records the actual live persistent QA Gold boundary once with unchanged as
     test.setTimeout(180_000);
     const credentials = credentialsFromEnvironment();
     expect(Boolean(credentials.username && credentials.password)).toBe(true);
-    const expected = '77859697a71329facd0584a95167c80eac392398';
+    const expected = process.env.EIDOLON_EXPECTED_COMMIT;
+    expect(expected, 'One exact deployed source is required before login').toMatch(/^[a-f0-9]{40}$/);
     const release = await (await page.request.get(`${baseURL}/release.json`, { timeout: 10_000 })).json();
     const health = await (await page.request.get(process.env.EIDOLON_E2E_HEALTH_URL, { timeout: 10_000 })).json();
     expect(release.commit).toBe(expected); expect(health.commit).toBe(expected);
