@@ -1,10 +1,11 @@
-import { execFileSync } from 'node:child_process';
+import { readReferenceSource, rebaseReferenceImports } from '../rendering/reference-modules.js';
+
 import { expect } from '@playwright/test';
 
 export async function prepareDungeonRelicReference(page) {
     if (process.env.EIDOLON_E2E_DUNGEON_RELIC_COMPARE !== '1') return;
-    const source = execFileSync('git', ['show', 'f37b035c:src/art/environment/dungeons/ProceduralDungeonInteriors.js'], { encoding: 'utf8' });
-    await page.route('**/src/art/DungeonRelicInteriorsReference.js', route => route.fulfill({ body: source, contentType: 'text/javascript' }));
+    const source = readReferenceSource('f37b035c:src/art/environment/dungeons/ProceduralDungeonInteriors.js');
+    await page.route('**/src/art/DungeonRelicInteriorsReference.js', route => route.fulfill({ body: rebaseReferenceImports(source, 'f37b035c:src/art/environment/dungeons/ProceduralDungeonInteriors.js'), contentType: 'text/javascript' }));
 }
 
 // Prepared motion beside both actual production motifs at ordinary camera

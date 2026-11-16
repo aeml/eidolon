@@ -1,5 +1,6 @@
+import { readReferenceSource, rebaseReferenceImports } from '../support/rendering/reference-modules.js';
 import { expect, test } from '@playwright/test';
-import { execFileSync } from 'node:child_process';
+
 import { collectBrowserFailures } from '../support/browser/helpers.js';
 
 const actorName = 'Aurelian Of The Crystal Watch';
@@ -12,8 +13,8 @@ for (const [width, height] of [[1280, 720], [1920, 1080]]) {
         if (baseline) {
             // Exact pre-change dispatch; the actual current text renderer is
             // unchanged. This is a controlled visual comparison, not PvP proof.
-            const source = execFileSync('git', ['show', '2505b36918ab0e2cc4b0dc788efd3c65ae27bb62:src/core/GameEngine.js'], { encoding: 'utf8' });
-            await page.route('**/src/core/GameEngine.js', route => route.fulfill({ body: source, contentType: 'text/javascript' }));
+            const source = readReferenceSource('2505b36918ab0e2cc4b0dc788efd3c65ae27bb62:src/core/GameEngine.js');
+            await page.route('**/src/core/GameEngine.js', route => route.fulfill({ body: rebaseReferenceImports(source, '2505b36918ab0e2cc4b0dc788efd3c65ae27bb62:src/core/GameEngine.js'), contentType: 'text/javascript' }));
         }
         await page.setViewportSize({ width, height });
         await page.goto('/', { waitUntil: 'networkidle' });

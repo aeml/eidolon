@@ -1,6 +1,8 @@
+import { execFileSync } from 'node:child_process';
+import { readReferenceSource, rebaseReferenceImports } from '../support/rendering/reference-modules.js';
 import { qaChromeLaunchOptions } from '../support/browser/browserLaunchPolicy.js';
 import { expect, test } from '@playwright/test';
-import { execFileSync } from 'node:child_process';
+
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { cpus, loadavg } from 'node:os';
@@ -32,7 +34,7 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
         throw new Error('Casino profile view must name one existing quality/floor');
     if (artReference) {
         const source = readFileSync(artReference, 'utf8');
-        await page.route('**/src/art/environment/casino/ProceduralCasino.js*', route => route.fulfill({ body: source, contentType: 'text/javascript' }));
+        await page.route('**/src/art/environment/casino/ProceduralCasino.js*', route => route.fulfill({ body: rebaseReferenceImports(source, 'src/art/environment/casino/ProceduralCasino.js'), contentType: 'text/javascript' }));
         await testInfo.attach('casino-art-reference', { body: JSON.stringify({ file: artReference,
             sha256: createHash('sha256').update(source).digest('hex'), scope: 'Immutable art source only; current scene, actors, camera, lighting and timing budgets retained.' }), contentType: 'application/json' });
     }
@@ -44,10 +46,10 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
         // Same current art/workload/browser on both sides; replace only the
         // optimized runtime modules with their immutable baseline source.
         for (const file of ['src/core/gameplay/casino/CasinoController.js', 'src/entities/effects/AttachedStatusEffect.js', 'src/art/equipment/FittedEquipment.js', 'src/art/actors/humanoids/AuthoredFighter.js', 'src/art/actors/animation/AuthoredFighterSeatedPose.js']) {
-            const body = execFileSync('git', ['show', `${baselineCommit}:${file}`], { encoding: 'utf8' });
+            const body = readReferenceSource(`${baselineCommit}:${file}`);
             await page.route(`**/${file}*`, route => {
                 baselineModulesServed.add(file);
-                return route.fulfill({ body, contentType: 'text/javascript' });
+                return route.fulfill({ body: rebaseReferenceImports(body, `${baselineCommit}:${file}`), contentType: 'text/javascript' });
             });
         }
     }

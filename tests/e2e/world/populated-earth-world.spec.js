@@ -1,6 +1,7 @@
+import { readReferenceSource, rebaseReferenceImports, currentReferencePath } from '../support/rendering/reference-modules.js';
 import { expect, test } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
-import { execFileSync } from 'node:child_process';
+
 import { collectBrowserFailures } from '../support/browser/helpers.js';
 
 // Bounded production-renderer scene review, not campaign or network coverage.
@@ -25,10 +26,10 @@ for (const review of elemental === 'earth' ? ['presentation'] : ['presentation',
             // use the exact pre-change leaf geometry and instance appearance.
             // Default CI never requires this historical commit in shallow Git.
             for (const name of ['EarthUnderstory', 'WoodlandUnderstoryGeometry']) {
-                const body = execFileSync('git', ['show', `54c1634a:src/art/${name}.js`], { encoding: 'utf8' });
-                await page.route(`**/src/art/${name}.js*`, route => {
+                const body = readReferenceSource(`54c1634a:src/art/${name}.js`);
+                await page.route(`**${currentReferencePath(`54c1634a:src/art/${name}.js`)}*`, route => {
                     woodlandReferenceHits.add(name);
-                    return route.fulfill({ body, contentType: 'text/javascript' });
+                    return route.fulfill({ body: rebaseReferenceImports(body, `54c1634a:src/art/${name}.js`), contentType: 'text/javascript' });
                 });
             }
         }

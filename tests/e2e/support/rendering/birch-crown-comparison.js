@@ -1,11 +1,10 @@
-import { execFileSync } from 'node:child_process';
-
+import { readReferenceSource, rebaseReferenceImports } from './reference-modules.js';
 const base = 'fdb1bba251922b140fd0d3127fef7685f79e5008';
 export async function prepareBirchComparison(page) {
     for (const file of ['ProceduralRealmFoliage', 'FoliageRenderBatches']) {
-        let body = execFileSync('git', ['show', `${base}:src/art/${file}.js`], { encoding: 'utf8' });
+        let body = readReferenceSource(`${base}:src/art/${file}.js`);
         if (file === 'FoliageRenderBatches') body = body.replace("'./ProceduralRealmFoliage.js'", "'./ProceduralRealmFoliageBirchReference.js'");
-        await page.route(`**/src/art/${file}BirchReference.js`, route => route.fulfill({ body, contentType: 'text/javascript' }));
+        await page.route(`**/src/art/${file}BirchReference.js`, route => route.fulfill({ body: rebaseReferenceImports(body, `${base}:src/art/${file}.js`), contentType: 'text/javascript' }));
     }
 }
 

@@ -1,4 +1,5 @@
-import { execFileSync } from 'node:child_process';
+import { readReferenceSource, rebaseReferenceImports } from '../rendering/reference-modules.js';
+
 import { writeFile } from 'node:fs/promises';
 import { expect } from '@playwright/test';
 
@@ -7,8 +8,8 @@ const compare = process.env.EIDOLON_E2E_DUNGEON_COMPOSITION_COMPARE === '1';
 export async function prepareDungeonFloorCompositionReference(page) {
     if (!compare) return;
     const revision = process.env.EIDOLON_E2E_DUNGEON_COMPOSITION_REFERENCE || '5ee21689';
-    const source = execFileSync('git', ['show', `${revision}:src/art/environment/dungeons/ProceduralDungeonInteriors.js`], { encoding: 'utf8' });
-    await page.route('**/src/art/DungeonCompositionReference.js', route => route.fulfill({ body: source, contentType: 'text/javascript' }));
+    const source = readReferenceSource(`${revision}:src/art/environment/dungeons/ProceduralDungeonInteriors.js`);
+    await page.route('**/src/art/DungeonCompositionReference.js', route => route.fulfill({ body: rebaseReferenceImports(source, `${revision}:src/art/environment/dungeons/ProceduralDungeonInteriors.js`), contentType: 'text/javascript' }));
 }
 
 export async function reviewDungeonFloorComposition(page, testInfo, key, type, layout) {

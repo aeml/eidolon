@@ -1,4 +1,5 @@
-import { execFileSync } from 'node:child_process';
+import { readReferenceSource, rebaseReferenceImports } from '../support/rendering/reference-modules.js';
+
 import { writeFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from '../support/browser/helpers.js';
@@ -6,11 +7,11 @@ import { collectBrowserFailures } from '../support/browser/helpers.js';
 for (const [quality, width] of [['high', 1280], ['low', 390]]) {
     test(`Earth surface morphology beside equipped Fighter and raised scenery: ${quality}`, async ({ page, baseURL }, testInfo) => {
         test.skip(process.env.EIDOLON_E2E_EARTH_SURFACE_COMPARE !== '1', 'Explicit private predecessor art comparison; retained native execution is the evidence');
-        const previous = execFileSync('git', ['show', '8e6cdb8f:src/art/environment/earth/EarthGroundComposition.js'], { encoding: 'utf8' });
-        const terrain = execFileSync('git', ['show', '8e6cdb8f:src/art/environment/world/ProceduralRealmTerrain.js'], { encoding: 'utf8' })
+        const previous = readReferenceSource('8e6cdb8f:src/art/environment/earth/EarthGroundComposition.js');
+        const terrain = readReferenceSource('8e6cdb8f:src/art/environment/world/ProceduralRealmTerrain.js')
             .replace("'./EarthGroundComposition.js'", "'./EarthGroundCompositionReference.js'");
-        await page.route('**/src/art/EarthGroundCompositionReference.js', route => route.fulfill({ body: previous, contentType: 'text/javascript' }));
-        await page.route('**/src/art/ProceduralRealmTerrainReference.js', route => route.fulfill({ body: terrain, contentType: 'text/javascript' }));
+        await page.route('**/src/art/EarthGroundCompositionReference.js', route => route.fulfill({ body: rebaseReferenceImports(previous, '8e6cdb8f:src/art/environment/earth/EarthGroundComposition.js'), contentType: 'text/javascript' }));
+        await page.route('**/src/art/ProceduralRealmTerrainReference.js', route => route.fulfill({ body: rebaseReferenceImports(terrain, '8e6cdb8f:src/art/environment/world/ProceduralRealmTerrain.js'), contentType: 'text/javascript' }));
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         const failures = collectBrowserFailures(page, baseURL);
         await page.setViewportSize({ width, height: 844 }); await page.goto('/', { waitUntil: 'networkidle' });

@@ -1,5 +1,6 @@
+import { readReferenceSource, rebaseReferenceImports } from '../support/rendering/reference-modules.js';
 import { expect, test } from '@playwright/test';
-import { execFileSync } from 'node:child_process';
+
 import { readFile, writeFile } from 'node:fs/promises';
 import { collectBrowserFailures } from '../support/browser/helpers.js';
 import { DUNGEON_INTERIOR_IDS } from '../../../src/art/environment/dungeons/ProceduralDungeonInteriors.js';
@@ -13,16 +14,16 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
     test.setTimeout(180000);
     const failures = collectBrowserFailures(page, baseURL);
     if (comparePredecessor) {
-        let previous = execFileSync('git', ['show', `${referenceCommit}:src/art/environment/dungeons/ProceduralDungeonInteriors.js`], { encoding: 'utf8' });
+        let previous = readReferenceSource(`${referenceCommit}:src/art/environment/dungeons/ProceduralDungeonInteriors.js`);
         if (compareFloor) {
             previous = previous.replace("'./VerdantMasonry.js'", "'./VerdantMasonryReference.js'");
-            const masonry = execFileSync('git', ['show', `${referenceCommit}:src/art/environment/dungeons/VerdantMasonry.js`], { encoding: 'utf8' })
+            const masonry = readReferenceSource(`${referenceCommit}:src/art/environment/dungeons/VerdantMasonry.js`)
                 .replace("'./DungeonFlagstone.js'", "'./DungeonFlagstoneReference.js'");
-            const flagstone = execFileSync('git', ['show', `${referenceCommit}:src/art/environment/dungeons/DungeonFlagstone.js`], { encoding: 'utf8' });
-            await page.route('**/src/art/VerdantMasonryReference.js', route => route.fulfill({ body: masonry, contentType: 'text/javascript' }));
-            await page.route('**/src/art/DungeonFlagstoneReference.js', route => route.fulfill({ body: flagstone, contentType: 'text/javascript' }));
+            const flagstone = readReferenceSource(`${referenceCommit}:src/art/environment/dungeons/DungeonFlagstone.js`);
+            await page.route('**/src/art/VerdantMasonryReference.js', route => route.fulfill({ body: rebaseReferenceImports(masonry, `${referenceCommit}:src/art/environment/dungeons/VerdantMasonry.js`), contentType: 'text/javascript' }));
+            await page.route('**/src/art/DungeonFlagstoneReference.js', route => route.fulfill({ body: rebaseReferenceImports(flagstone, `${referenceCommit}:src/art/environment/dungeons/DungeonFlagstone.js`), contentType: 'text/javascript' }));
         }
-        await page.route('**/src/art/DungeonInteriorsWardReference.js', route => route.fulfill({ body: previous, contentType: 'text/javascript' }));
+        await page.route('**/src/art/DungeonInteriorsWardReference.js', route => route.fulfill({ body: rebaseReferenceImports(previous, `${referenceCommit}:src/art/environment/dungeons/ProceduralDungeonInteriors.js`), contentType: 'text/javascript' }));
     }
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.setViewportSize({ width, height: 844 });

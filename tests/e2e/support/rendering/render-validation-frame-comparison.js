@@ -1,4 +1,5 @@
-import { execFileSync } from 'node:child_process';
+import { readReferenceSource, rebaseReferenceImports } from './reference-modules.js';
+
 import { createHash } from 'node:crypto';
 import { profileGameplayScene } from './scene-performance.js';
 
@@ -8,14 +9,14 @@ const referenceCommit = '8e5f888a66b65e6a69e26c62499b4113549b40c0';
 const files = ['OpaqueSkinnedShadowBatches.js', 'OpaqueSkinnedColorBatches.js', 'OpaqueSkinnedShadowRuntime.js'];
 export async function compareRenderValidationFrames(page, baseURL) {
     const sourcePins = [], modules = files.map(file => {
-        const source = execFileSync('git', ['show', `${referenceCommit}:src/core/${file}`], { encoding: 'utf8' });
+        const source = readReferenceSource(`${referenceCommit}:src/core/${file}`);
         sourcePins.push({ path: `src/core/${file}`, sha256: createHash('sha256').update(source).digest('hex') });
         const rewritten = source.replace(/from '([^']+)'/g, (_match, specifier) => {
             const target = specifier === 'three' ? new URL('/vendor/three/build/three.module.js', baseURL)
                 : new URL(specifier, new URL('/src/core/' + file, baseURL));
             return `from '${target.href}'`;
         });
-        return 'data:text/javascript;base64,' + Buffer.from(rewritten).toString('base64');
+        return 'data:text/javascript;base64,' + Buffer.from(rebaseReferenceImports(rewritten, `${referenceCommit}:src/core/${file}`, baseURL)).toString('base64');
     });
     await page.waitForFunction(() => window.game?.renderSystem?.actorGameplayGeometry?.delivery.jobs.size === 0, null, { timeout: 30_000 });
     const initial = await page.evaluate(async modules => {

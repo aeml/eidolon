@@ -1,8 +1,9 @@
+import { readReferenceSource, rebaseReferenceImports } from '../support/rendering/reference-modules.js';
 import { prepareActorCellMultiDrawParty } from '../support/social/actor-cell-multidraw-party.js';
 import { capturePartySubmissionFrames } from '../support/social/party-submission-frames.js';
 import { captureActorSubmissionCensus } from '../support/rendering/actor-submission-census.js';
 import { expect, test } from '@playwright/test';
-import { execFileSync } from 'node:child_process';
+
 import { readFile, writeFile } from 'node:fs/promises';
 import { installBodyLodPilot } from '../support/rendering/body-lod-pilot.js';
 import { installWearableAttributePilot } from '../support/equipment/wearable-attribute-pilot.js';
@@ -306,8 +307,8 @@ test(`single native renderer observes three live equipped party socket peers on 
     };
     const send = (peer, type, payload) => peer.socket.send(JSON.stringify({ type, payload }));
     if (process.env.EIDOLON_TERRAIN_PARTY_FOLIAGE_COMPARE === '1') {
-        const previous = execFileSync('git', ['show', '5c4998e9:src/core/rendering/shadows/FoliageShadowInfluence.js'], { encoding: 'utf8' });
-        await page.route('**/src/core/FoliageShadowInfluenceReference.js', route => route.fulfill({ body: previous, contentType: 'text/javascript' }));
+        const previous = readReferenceSource('5c4998e9:src/core/rendering/shadows/FoliageShadowInfluence.js');
+        await page.route('**/src/core/FoliageShadowInfluenceReference.js', route => route.fulfill({ body: rebaseReferenceImports(previous, '5c4998e9:src/core/rendering/shadows/FoliageShadowInfluence.js'), contentType: 'text/javascript' }));
     }
     try {
         await page.setViewportSize({ width: 1280, height: 844 });

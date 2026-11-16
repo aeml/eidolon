@@ -1,5 +1,6 @@
+import { readReferenceSource, rebaseReferenceImports } from '../support/rendering/reference-modules.js';
 import fs from 'node:fs';
-import { execFileSync } from 'node:child_process';
+
 import { writeFile } from 'node:fs/promises';
 import { test, expect } from '@playwright/test';
 import { collectBrowserFailures } from '../support/browser/helpers.js';
@@ -23,11 +24,11 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
         await prepareDungeonPropReference(page);
         await prepareDungeonRelicReference(page);
         if (compareFloor) {
-            const previous = execFileSync('git', ['show', `${referenceCommit}:src/art/environment/dungeons/ProceduralDungeonInteriors.js`], { encoding: 'utf8' })
+            const previous = readReferenceSource(`${referenceCommit}:src/art/environment/dungeons/ProceduralDungeonInteriors.js`)
                 .replace("'./ElementalDungeonSurface.js'", "'./ElementalDungeonSurfaceReference.js'");
-            const surface = execFileSync('git', ['show', `${referenceCommit}:src/art/environment/dungeons/ElementalDungeonSurface.js`], { encoding: 'utf8' });
-            await page.route('**/src/art/ElementalDungeonInteriorsReference.js', route => route.fulfill({ body: previous, contentType: 'text/javascript' }));
-            await page.route('**/src/art/ElementalDungeonSurfaceReference.js', route => route.fulfill({ body: surface, contentType: 'text/javascript' }));
+            const surface = readReferenceSource(`${referenceCommit}:src/art/environment/dungeons/ElementalDungeonSurface.js`);
+            await page.route('**/src/art/ElementalDungeonInteriorsReference.js', route => route.fulfill({ body: rebaseReferenceImports(previous, `${referenceCommit}:src/art/environment/dungeons/ProceduralDungeonInteriors.js`), contentType: 'text/javascript' }));
+            await page.route('**/src/art/ElementalDungeonSurfaceReference.js', route => route.fulfill({ body: rebaseReferenceImports(surface, `${referenceCommit}:src/art/environment/dungeons/ElementalDungeonSurface.js`), contentType: 'text/javascript' }));
         }
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         await page.setViewportSize({ width, height });
