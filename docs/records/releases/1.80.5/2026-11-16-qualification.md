@@ -7,7 +7,7 @@ This milestone reorganizes the repository without selecting unfinished gameplay 
 ## Structural preservation
 
 - All 10,214 original tracked files have retained destinations: 470 Go files, 552 client/tooling files, 1,378 test/helper files and 1,500 documentation files were relocated.
-- All tracked public asset/art payloads retain their baseline SHA-256 digests. Of 5,189 asset/art files checked, 5,186 are byte-identical; three Markdown guides update navigation or tooling paths.
+- All tracked public asset/art payloads retain their baseline SHA-256 digests. Of 5,189 asset/art files checked, 5,185 are byte-identical; four Markdown guides update navigation or tooling paths.
 - All 721 relocated JSON evidence receipts retain their original bytes.
 - Executable AST comparison matches 564 of 565 client modules after normalizing import/path references. The remaining generated geometry catalog matches exactly after removing only its source/generator provenance, refreshed by real native-GPU generation. Geometry binaries retain their existing digests.
 - All 2,781 Go test/benchmark declarations, 829 baseline Jest suites and 1,066 Playwright cases remain discoverable. The accepted publication repair adds one Jest suite, for 830 total. Browser case titles, projects, expected status and timeouts remain unchanged.
@@ -22,7 +22,7 @@ All Go module tests and the full race suite passed (game package 504.523 seconds
 
 Final lint, layout, synchronized Alpha 1.80.5 defaults and client preparation passed. Native System Chrome publication qualification passed four cases with zero retries: scene-profiler delivery, interrupted engine recovery, lazy login/four-class construction, and immutable/cached worker delivery. All 526 earlier patch-note entries remain byte-identical in the 527-entry cumulative history.
 
-The layout gate accepts a clean temporary fixture and rejects loose files from package roots. All 17 content groups pass without rewriting outputs. All original asset/art payload hashes and 721 raw receipt hashes are unchanged; the three asset-directory guide edits are limited to current paths. Exact browser smoke coverage remains 583 cases.
+The layout gate accepts a clean temporary fixture and rejects loose files from package roots. All 17 content groups pass without rewriting outputs. All original asset/art payload hashes and 721 raw receipt hashes are unchanged; the four asset-directory guide edits are limited to current paths. Exact browser smoke coverage remains 583 cases.
 
 This is local structural qualification, not production acceptance. The mandatory hosted server/browser, native predeployment, frontend/backend publication and live character/recovery gates remain in force. Record the exact successful run and public release identities in a separate acceptance receipt.
 
@@ -37,3 +37,7 @@ This is local structural qualification, not production acceptance. The mandatory
 Eighteen QA files now use one reference-module helper. It reads the original module from its recorded Git tree and rebases only parsed import/export locations to the current source tree. Virtual comparison modules retain their original namespace; ambiguous filenames fail. Parsing is lazy and uses the already-declared ESLint development dependency. Default browser checks do not fetch historical source.
 
 Qualification preserves the executable AST of 40 actual pinned modules. Native System Chrome import checks loaded all 40 dependency graphs and the two-module virtual Birch pair with zero retries. The helper's eight regression cases use a disposable local Git repository, so shallow CI checkouts need no old project commits. The focused tooling/release run passed 194 suites / 2,592 tests. Playwright discovery remains identical for all 1,066 original cases, with the same 583-case smoke partition. The added helper suite raises full Jest discovery to 831 suites / 12,898 cases. No production client/server code, assertion, exclusion, timeout or retry policy changes in this correction.
+
+## Absolute documentation links
+
+The final absolute-URL audit found three current-branch GitHub links in two Markdown guides that the relative-link scan did not cover. The generator links in the garment provenance guide and the licensing link in the Thai fork response now point to their current locations. Pinned commit URLs, asset payloads and raw receipts remain unchanged. [Run 43793627793](https://github.com/aeml/eidolon/actions/runs/43793627793) at `87ef3980118c990cb019e2391da86c5caf2e0dde` passed all five hosted jobs, including 831 suites / 12,898 client tests and 566 browser passes / 17 existing exclusions, before being held during native QA to include this documentation-only correction in the same unpublished release.
