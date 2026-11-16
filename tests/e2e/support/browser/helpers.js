@@ -10,6 +10,7 @@ import { armManualLootClickObservation, readLootPointerTarget, readLootBlockingH
 import { observeStartupModules } from '../delivery/startup-module-evidence.js';
 import { waitForPersistentQAGoldBaseline } from '../economy/persistent-qa-gold.js';
 import { beginPersistentQABagRewards, waitForPersistentQABagGold, endPersistentQABagRewards } from '../economy/persistent-qa-bag-rewards.js';
+import { preparePersistentQALootSlot } from '../economy/prepare-persistent-qa-bag.js';
 import {
     isBenignCanceledAssetRequest,
     isIgnoredBrowserRequest
@@ -1592,6 +1593,9 @@ export async function exerciseCombatAndLoot(page, { storeSpare } = {}) {
     // death overlay intentionally intercepts every menu click while active.
     await recoverThroughDeathScreen(page);
     await disableAutoLootThroughSettings(page);
+    // Make space before initiating combat. Exact vendor/stash checks run only
+    // after ordinary Recall, away from this route's continuing basic attacks.
+    const storedItems = await preparePersistentQALootSlot(page, { storeSpare });
 
     let abilityWasUsed = false;
 
@@ -1651,11 +1655,10 @@ export async function exerciseCombatAndLoot(page, { storeSpare } = {}) {
         throw new Error(`The primary ability never entered cooldown after bounded real right-clicks: ${JSON.stringify(abilityDiagnostic)}`);
     }
 
-    // The ability encounter and already-earned deliveries can fill a slot
-    // freed before combat. Prepare the authoritative bag after that encounter,
-    // before the deterministic loot kill. A stash fallback can return to town;
-    // the following waypoint then reacquires the ordinary combat position.
-    const storedItems = await freePersistentQALootSlot(page, { storeSpare });
+    // Retained deliveries or an earlier real pickup can fill the prepared
+    // slot. If so, finish ordinary Recall before another exact bag boundary.
+    // Never absorb an unrelated combat balance delta into a sale receipt.
+    storedItems.push(...await preparePersistentQALootSlot(page, { storeSpare }));
     await useEncounterQAWaypoint(page);
 
     await page.keyboard.press('Enter');
