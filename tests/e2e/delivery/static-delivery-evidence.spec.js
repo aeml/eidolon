@@ -1,3 +1,4 @@
+import { repositoryPath } from '../../support/repositoryPaths.js';
 import { test, expect } from '../support/delivery/static-delivery-test.js';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
@@ -14,7 +15,7 @@ for (const stage of ['headers', 'body']) test(`geometry worker recovers one time
     const files = new Map();
     for (const name of ['src/core/GameplayGeometryPrecomputed.js', 'src/core/geometry/GameplayGeometryFingerprint.js',
         'src/core/geometry/GameplayGeometryIndexCodec.js', 'src/data/gameplayGeometryPrecomputed.js', shard.url.slice(6)]) {
-        files.set('/' + name, await readFile(new URL('../../' + name, import.meta.url)));
+        files.set('/' + name, await readFile(repositoryPath(name)));
     }
     const path = '/' + shard.url.slice(6), timers = new Set(), serverRequests = []; let attempts = 0, proof;
     const server = createServer((request, response) => {

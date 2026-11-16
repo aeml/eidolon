@@ -25,3 +25,7 @@ Final lint, layout, synchronized Alpha 1.80.5 defaults and client preparation pa
 The layout gate accepts a clean temporary fixture and rejects loose files from package roots. All 17 content groups pass without rewriting outputs. All original asset/art payload hashes and 721 raw receipt hashes are unchanged; the three asset-directory guide edits are limited to current paths. Exact browser smoke coverage remains 583 cases.
 
 This is local structural qualification, not production acceptance. The mandatory hosted server/browser, native predeployment, frontend/backend publication and live character/recovery gates remain in force. Record the exact successful run and public release identities in a separate acceptance receipt.
+
+## First hosted candidate
+
+[Initial run 43785385307](https://github.com/aeml/eidolon/actions/runs/43785385307) at `62a8ec84175e33026de9d88651b540ad8bd7336c` retained two failures in the static-delivery browser fixture: a computed URL still assumed its earlier directory depth. Deployment was blocked. The fixture now uses the repository-root path helper; all four static-delivery cases pass in native System Chrome with zero retries. An AST audit reviewed every computed `new URL(..., import.meta.url)` in tracked JavaScript and found no other unresolved relocation. No production code or test assertion changed in this correction.
