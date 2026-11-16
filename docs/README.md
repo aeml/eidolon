@@ -40,7 +40,7 @@ Use disposable fixtures for destructive/reward/recovery tests. Keep credentials,
 - [Administration](ADMINISTRATION.md), [beta operations](BETA_OPERATIONS.md), and [monitor documentation](../server/cmd/monitor/README.md).
 - [Current remaining-work register](plans/2026-10-09-release-readiness-remaining.md) and [roadmap](../ROADMAP.md).
 - [Feature-freeze review](plans/2026-10-20-feature-freeze-review.md).
-- [Latest documented Alpha 1.80.2 acceptance](plans/2026-10-20-release1-80-2-acceptance.md).
+- [Latest documented Alpha 1.80.4 acceptance](records/releases/1.80.4/2026-11-16-acceptance.md).
 
 Acceptance documents prove the named release and scoped checks at their recorded time. They do not establish current uptime, complete campaign quality, physical-device support, or beta/release approval. Check exact frontend/backend identities when verifying an authorized deployment.
 
